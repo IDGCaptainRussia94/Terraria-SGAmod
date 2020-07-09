@@ -52,7 +52,7 @@ namespace SGAmod.Projectiles
 
 			GameShaders.Armor.GetShaderFromItemId(ItemID.SolarDye).Apply(null);
 
-			Texture2D tex = ModContent.GetTexture("Terraria/Projectile_"+ 51);
+			Texture2D tex = Main.projectileTexture[51];
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
 
 			//oldPos.Length - 1
@@ -165,7 +165,7 @@ namespace SGAmod.Projectiles
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 
-			Texture2D tex = ModContent.GetTexture("Terraria/Projectile_" + 51);
+			Texture2D tex = Main.projectileTexture[51];
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
 
 			//oldPos.Length - 1
@@ -394,13 +394,13 @@ namespace SGAmod.Projectiles
 
 			if (scale > 0)
 			{
-				Texture2D texture = ModContent.GetTexture("Terraria/Projectile_" + 641);
-				Texture2D outer = ModContent.GetTexture("Terraria/Projectile_" + 657);
+				Texture2D texture = SGAmod.ExtraTextures[99];
+				Texture2D outer = SGAmod.ExtraTextures[101];
 				spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f) * 0.5f, projectile.rotation, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
 				spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f) * 0.5f, -projectile.rotation, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
 
 
-				outer = ModContent.GetTexture("Terraria/Projectile_" + 644);
+				outer = SGAmod.ExtraTextures[102];
 				spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f)*0.5f, projectile.rotation*2, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
 				spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f)*0.5f, -projectile.rotation*2, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
 

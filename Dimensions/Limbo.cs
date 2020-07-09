@@ -13,8 +13,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.UI;
-using Terraria.DataStructures;
-using Terraria.GameContent.UI;
 using Terraria.Utilities;
 using Idglibrary;
 using SubworldLibrary;
@@ -247,7 +245,7 @@ namespace SGAmod.Dimensions
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1f));
 				ArmorShaderData shader2 = GameShaders.Armor.GetShaderFromItemId(ItemID.ShadowDye); shader2.Apply(null);
-				Texture2D sun = ModContent.GetTexture("Terraria/Sun");
+				Texture2D sun = SGAmod.ExtraTextures[100];
 				spriteBatch.Draw(sun, new Vector2(Main.screenWidth / 2, Main.screenHeight / 8), null, Color.DarkGray, 0, new Vector2(sun.Width / 2f, sun.Height / 2f), new Vector2(5f, 5f), SpriteEffects.None, 0f);
             //}
 

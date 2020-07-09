@@ -292,7 +292,7 @@ namespace SGAmod.Items.Weapons
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 
-			Texture2D sun = ModContent.GetTexture("Terraria/Sun");
+			Texture2D sun = SGAmod.ExtraTextures[100];
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 

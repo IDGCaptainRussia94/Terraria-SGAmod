@@ -2484,15 +2484,14 @@ namespace SGAmod.NPCs.Hellion
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			lightColor = Color.White;
-			int[] texturexxxs = { NPCID.Stylist, NPCID.Mechanic, NPCID.DyeTrader, NPCID.Dryad, NPCID.PartyGirl };
 
-			Texture2D texture6 = ModContent.GetTexture("Terraria/Projectile_" + 540);
+			Texture2D texture6 = SGAmod.HellionTextures[5];
 			spriteBatch.Draw(texture6, npc.Center - Main.screenPosition, null, lightColor, 0, new Vector2(texture6.Width / 2f, texture6.Height / 2f), new Vector2(1f, 1f), SpriteEffects.None, 0f);
 
 
 			for (int rotz = 0; rotz < 5; rotz += 1)
 			{
-				Texture2D tex = ModContent.GetTexture("Terraria/NPC_" + texturexxxs[rotz]);
+				Texture2D tex = SGAmod.HellionTextures[rotz];
 
 
 				//oldPos.Length - 1
@@ -2502,7 +2501,7 @@ namespace SGAmod.NPCs.Hellion
 					float locoff = MathHelper.ToRadians((((rotz * (360f / 5f)) + (k * 3f)) + Main.GlobalTime * 17.4f));
 					Vector2 locoffset = new Vector2((float)Math.Cos(locoff), (float)Math.Sin(locoff)) * chicksdist;
 
-					int maxframes = Main.npcFrameCount[texturexxxs[rotz]];
+					int maxframes = Main.npcFrameCount[NPCID.Guide];
 					Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / maxframes) / 2f;
 					int timing = (int)((npc.localAI[0] + k) / 8f);
 					timing %= maxframes;
@@ -2925,7 +2924,7 @@ namespace SGAmod.NPCs.Hellion
 
 
 					//effect += 0.1f;
-					Texture2D inner = ModContent.GetTexture("Terraria/Extra_19");
+					Texture2D inner = SGAmod.ExtraTextures[19];
 
 					for (int i = 0; i < 360; i += 360 / 12)
 					{

@@ -379,7 +379,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D texture = ModContent.GetTexture("Terraria/Projectile_" + 540);
+			Texture2D texture = SGAmod.ExtraTextures[96];
 			float fadin = MathHelper.Clamp(1f-((float)projectile.timeLeft-stopmoving) / fadeinouttime, 0.1f,0.75f);
 			if (projectile.timeLeft<(int)fadeinouttime)
 				fadin = ((float)projectile.timeLeft/ fadeinouttime) *0.75f;

@@ -802,7 +802,12 @@ namespace SGAmod.Dimensions
                         Main.chest[chestid].item[e].stack = 1;
                         e += 1;
                     } 
-                    
+                    if (unirand.Next(0, 100) < 3 + (SGAWorld.dungeonlevel * 1))
+                    {
+                        Main.chest[chestid].item[e].SetDefaults(SGAmod.Instance.ItemType("PortalEssence"));
+                        Main.chest[chestid].item[e].stack = 1;
+                        e += 1;
+                    }                    
                     if (unirand.Next(0, 100) < 10 + (SGAWorld.dungeonlevel * 10))
                     {
                         int index = unirand.Next(0, lootrare.Count);

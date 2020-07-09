@@ -21,9 +21,10 @@ namespace SGAmod.Buffs
 			player.GetModPlayer<SGAPlayer>().NoFly=true;
 		}
 
-		//public override void Update(NPC npc, ref int buffIndex)
-		//{
-		//	npc.GetGlobalNPC<SGAWorld>(mod).eFlames = true;
-		//}
+		public override void ModifyBuffTip(ref string tip, ref int rare)
+		{
+			if (NPC.CountNPCS(mod.NPCType("Cirno")) < 1)
+				tip += "\nBeat Cirno to remove this effect";
+		}
 	}
 }

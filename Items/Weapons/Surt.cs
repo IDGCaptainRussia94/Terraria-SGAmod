@@ -485,7 +485,7 @@ namespace SGAmod.Items.Weapons
 		{
 			Vector2 basepoint = (new HalfVector2() { PackedValue = ReLogic.Utilities.ReinterpretCast.FloatAsUInt(projectile.localAI[0]) }.ToVector2())+new Vector2(0,8);
 
-			Texture2D tex = ModContent.GetTexture("Terraria/Projectile_"+ProjectileID.SolarFlareRay);
+			Texture2D tex = SGAmod.ExtraTextures[97];
 			spriteBatch.Draw(tex, basepoint - Main.screenPosition, null, Color.White*((float)projectile.timeLeft/25f), projectile.rotation, new Vector2(tex.Width / 2f, tex.Height), new Vector2(projectile.scale, projectile.scale), SpriteEffects.None, 0f);
 
 			return false;

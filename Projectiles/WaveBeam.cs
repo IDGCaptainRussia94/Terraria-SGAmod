@@ -45,30 +45,26 @@ namespace SGAmod.Projectiles
 
 		public override void AI()
 		{
-		Vector2 positiondust = Vector2.Normalize(new Vector2(projectile.velocity.X, projectile.velocity.Y)) * 3f;
+			Vector2 positiondust = Vector2.Normalize(new Vector2(projectile.velocity.X, projectile.velocity.Y)) * 3f;
 
-		if (projectile.ai[0]==0){
-		projectile.ai[0]=1;
-				int proj=Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, projectile.velocity.X, projectile.velocity.Y, mod.ProjectileType("WaveProjectile"), projectile.damage, projectile.knockBack, projectile.owner);
-				Main.projectile[proj].timeLeft=projectile.timeLeft;
-				Main.projectile[proj].penetrate=1;
-				Main.projectile[proj].ai[0]=(float)Math.PI;
-				Main.projectile[proj].ai[1]=(float)projectile.whoAmI;
+			if (projectile.ai[0] == 0) {
+				projectile.ai[0] = 1;
+				int proj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, projectile.velocity.X, projectile.velocity.Y, mod.ProjectileType("WaveProjectile"), projectile.damage, projectile.knockBack, projectile.owner);
+				Main.projectile[proj].timeLeft = projectile.timeLeft;
+				Main.projectile[proj].penetrate = 1;
+				Main.projectile[proj].ai[0] = (float)Math.PI;
+				Main.projectile[proj].ai[1] = (float)projectile.whoAmI;
 
-				proj=Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, projectile.velocity.X, projectile.velocity.Y, mod.ProjectileType("WaveProjectile"), projectile.damage, projectile.knockBack, projectile.owner);
-				Main.projectile[proj].timeLeft=projectile.timeLeft;
-				Main.projectile[proj].penetrate=1;
-				Main.projectile[proj].ai[0]=(float)-Math.PI;
-				Main.projectile[proj].ai[1]=(float)projectile.whoAmI;
+				proj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, projectile.velocity.X, projectile.velocity.Y, mod.ProjectileType("WaveProjectile"), projectile.damage, projectile.knockBack, projectile.owner);
+				Main.projectile[proj].timeLeft = projectile.timeLeft;
+				Main.projectile[proj].penetrate = 1;
+				Main.projectile[proj].ai[0] = (float)-Math.PI;
+				Main.projectile[proj].ai[1] = (float)projectile.whoAmI;
 				//IdgProjectile.AddOnHitBuff(proj,BuffID.OnFire,60*10);
+			}
 		}
 
 
-
-
-
-
-		}
 
 	}
 

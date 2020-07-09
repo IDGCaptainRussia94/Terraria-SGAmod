@@ -954,7 +954,7 @@ return false;
 		{
 			if (projectile.localAI[0] < 100)
 				projectile.localAI[0] = 100+Main.rand.Next(0, 3);
-			Texture2D tex = ModContent.GetTexture("Terraria/Projectile_" + fakeid);
+			Texture2D tex = Main.projectileTexture[fakeid];
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 5) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
 			int timing = (int)(projectile.localAI[0] - 100);

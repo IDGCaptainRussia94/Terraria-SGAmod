@@ -96,7 +96,7 @@ namespace SGAmod.UI
 			baseTitle2.Left.Set(0, 0f);
 			bufferpanel.Append(baseTitle2);
 
-			UIImageButton uIImageButton = new UIImageButton(ModContent.GetTexture("Terraria/UI/ButtonDelete"));
+			UIImageButton uIImageButton = new UIImageButton(SGAmod.ExtraTextures[103]);
 			uIImageButton.OnClick += new UIElement.MouseEvent(this.CloseButton_OnClick);
 			uIImageButton.Width.Set(20f, 0f);
 			uIImageButton.Height.Set(20f, 0f);
@@ -107,35 +107,35 @@ namespace SGAmod.UI
 			EnchantingStationsPanels = new List<UIEnchantingCatalystPanel>();
 
 			float nextinline = 0;
-			UIEnchantingBookShelfPanel mypanel = new UIEnchantingBookShelfPanel(0, 0, ModContent.GetTexture("Terraria/Item_" + ItemID.Bookcase), "Place Bookcase Here");
+			UIEnchantingBookShelfPanel mypanel = new UIEnchantingBookShelfPanel(0, 0, Main.itemTexture[ItemID.Bookcase], "Place Bookcase Here");
 			mypanel.Left.Set(nextinline, 0f);
 			mypanel.Top.Set(40f, 0f);
 			basePanel.Append(mypanel);
 			EnchantingStationsPanels.Add(mypanel);
 
 			nextinline = (mypanel.Left.Pixels + mypanel.Width.Pixels) + 15f;
-			UIEnchantingCrystalBallPanel mypanel2 = new UIEnchantingCrystalBallPanel(0, 0, ModContent.GetTexture("Terraria/Item_" + ItemID.CrystalBall), "Place Crystal Ball Here");
+			UIEnchantingCrystalBallPanel mypanel2 = new UIEnchantingCrystalBallPanel(0, 0, Main.itemTexture[ItemID.CrystalBall], "Place Crystal Ball Here");
 			mypanel2.Left.Set(nextinline, 0f);
 			mypanel2.Top.Set(40f, 0f);
 			basePanel.Append(mypanel2);
 			EnchantingStationsPanels.Add(mypanel2);
 
 			nextinline = (mypanel2.Left.Pixels + mypanel2.Width.Pixels) + 15f;
-			UIEnchantingShinyStonePanel mypanel3 = new UIEnchantingShinyStonePanel(0, 0, ModContent.GetTexture("Terraria/Item_" + ItemID.ShinyStone), "Place Focusing Crystal Here");
+			UIEnchantingShinyStonePanel mypanel3 = new UIEnchantingShinyStonePanel(0, 0, Main.itemTexture[ItemID.ShinyStone], "Place Focusing Crystal Here");
 			mypanel3.Left.Set(nextinline, 0f);
 			mypanel3.Top.Set(40f, 0f);
 			basePanel.Append(mypanel3);
 			EnchantingStationsPanels.Add(mypanel3);
 
 			nextinline = (mypanel3.Left.Pixels + mypanel3.Width.Pixels) + 15f;
-			mypanel2 = new UIEnchantingCrystalBallPanel(0, 0, ModContent.GetTexture("Terraria/Item_" + ItemID.CrystalBall), "Place Crystal Ball Here");
+			mypanel2 = new UIEnchantingCrystalBallPanel(0, 0, Main.itemTexture[ItemID.CrystalBall], "Place Crystal Ball Here");
 			mypanel2.Left.Set(nextinline, 0f);
 			mypanel2.Top.Set(40f, 0f);
 			basePanel.Append(mypanel2);
 			EnchantingStationsPanels.Add(mypanel2);
 
 			nextinline = (mypanel2.Left.Pixels + mypanel2.Width.Pixels) + 15f;
-			mypanel = new UIEnchantingBookShelfPanel(0, 0, ModContent.GetTexture("Terraria/Item_" + ItemID.Bookcase), "Place Bookcase Here");
+			mypanel = new UIEnchantingBookShelfPanel(0, 0, Main.itemTexture[ItemID.Bookcase], "Place Bookcase Here");
 			mypanel.Left.Set(nextinline, 0f);
 			mypanel.Top.Set(40f, 0f);
 			basePanel.Append(mypanel);
@@ -143,7 +143,7 @@ namespace SGAmod.UI
 
 
 
-			this.EnchantingCataylstPanel = new UIEnchantingCatalystPanel(0, 0, ModContent.GetTexture("Terraria/Item_" + ItemID.Diamond), "Place 5 Catalyst Agents here");
+			this.EnchantingCataylstPanel = new UIEnchantingCatalystPanel(0, 0, Main.itemTexture[ItemID.Diamond], "Place 5 Catalyst Agents here");
 			this.EnchantingCataylstPanel.Top.Set(100, 0f);
 			this.basePanel.Append(this.EnchantingCataylstPanel);
 
@@ -152,7 +152,7 @@ namespace SGAmod.UI
 			this.EnchantingCataylstPanel2.Top.Set(100, 0f);
 			this.basePanel.Append(this.EnchantingCataylstPanel2);
 
-			this.EItemPanel = new UIEItemPanel(0, 0, ModContent.GetTexture("Terraria/Item_" + ItemID.CopperShortsword), "Place Weapon Here");
+			this.EItemPanel = new UIEItemPanel(0, 0, Main.itemTexture[ItemID.CopperShortsword], "Place Weapon Here");
 			this.EItemPanel.Top.Set(260, 0f);
 			this.basePanel.Append(this.EItemPanel);
 			this.EItemPanel.DoUpdate();
@@ -165,7 +165,7 @@ namespace SGAmod.UI
 
 			EnchantButton = new UIImageButton[3];
 
-			this.EnchantButton[0] = new UIImageButton(ModContent.GetTexture("Terraria/Item_" + ItemID.MagicMirror));
+			this.EnchantButton[0] = new UIImageButton(Main.itemTexture[ItemID.MagicMirror]);
 			this.EnchantButton[0].OnClick += new UIElement.MouseEvent(this.EnchantButtonOnClick);
 			this.EnchantButton[0].Width.Set(30f, 0f);
 			this.EnchantButton[0].Height.Set(30f, 0f);

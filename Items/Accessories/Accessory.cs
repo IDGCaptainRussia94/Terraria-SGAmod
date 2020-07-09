@@ -321,7 +321,7 @@ namespace SGAmod.Items.Accessories
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 
-			Texture2D inner = ModContent.GetTexture("Terraria/Extra_57");
+			Texture2D inner = SGAmod.ExtraTextures[57];
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
@@ -1057,13 +1057,15 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blink Tech Canister");
-			Tooltip.SetDefault("Enables a short ranged blink teleport\nHold UP and press left or right to teleport in the direction\ngives chaos state for 2 seconds, blinking not possible while you have chaos state\n5% increased Technological Damage");
+			Tooltip.SetDefault("Enables a short ranged blink teleport\nHold UP and press left or right to teleport in the direction\ngives chaos state for 2 seconds, blinking not possible while you have chaos state\n5% increased Technological Damage\n+2000 Max Electric Charge, +1 passive Electric Charge Rate");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.GetModPlayer<SGAPlayer>().maxblink += 3;
-			player.GetModPlayer<SGAPlayer>().techdamage += 0.05f;
+			player.SGAPly().maxblink += 3;
+			player.SGAPly().techdamage += 0.05f;
+			player.SGAPly().electricChargeMax += 2000;
+			player.SGAPly().electricrechargerate += 1;
 		}
 
 		public override string Texture
@@ -1084,9 +1086,9 @@ public class BlinkTechGear : IdolOfMidas
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Glass, 10);
-			recipe.AddIngredient(ItemID.FallenStar, 5);
 			recipe.AddIngredient(ItemID.MeteoriteBar, 3);
-			recipe.AddIngredient(mod.ItemType("VialofAcid"), 4);
+			recipe.AddIngredient(mod.ItemType("ManaBattery"), 1);
+			recipe.AddIngredient(mod.ItemType("VialofAcid"), 12);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
@@ -1765,15 +1767,14 @@ public class BlinkTechGear : IdolOfMidas
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.twinesoffate = true;
 		}
-
 		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
 			if (!Main.gameMenu)
 			{
-				Texture2D texture = ModContent.GetTexture("Terraria/Item_" + ItemID.GuideVoodooDoll);
+				Texture2D texture = Main.itemTexture[ItemID.GuideVoodooDoll];
 				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
-				spriteBatch.Draw(ModContent.GetTexture("Terraria/Item_" + ItemID.GuideVoodooDoll),  item.Center+ new Vector2(-6, 0)-Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
-				spriteBatch.Draw(ModContent.GetTexture("Terraria/Item_" + ItemID.ClothierVoodooDoll), item.Center + new Vector2(6, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(texture,  item.Center+ new Vector2(-6, 0)-Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(Main.itemTexture[ItemID.ClothierVoodooDoll], item.Center + new Vector2(6, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.FlipHorizontally, 0f);
 			}
 			return false;
 		}
@@ -1781,13 +1782,13 @@ public class BlinkTechGear : IdolOfMidas
 		{
 			if (!Main.gameMenu)
 			{
-				Texture2D texture = ModContent.GetTexture("Terraria/Item_" + ItemID.GuideVoodooDoll);
+				Texture2D texture = Main.itemTexture[ItemID.GuideVoodooDoll];
 				Vector2 slotSize = new Vector2(52f, 52f);
 				position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
 				Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
 				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
-				spriteBatch.Draw(ModContent.GetTexture("Terraria/Item_"+ItemID.GuideVoodooDoll), drawPos+new Vector2(-6,0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
-				spriteBatch.Draw(ModContent.GetTexture("Terraria/Item_" + ItemID.ClothierVoodooDoll), drawPos + new Vector2(6,0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(texture, drawPos+new Vector2(-6,0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
+				spriteBatch.Draw(Main.itemTexture[ItemID.ClothierVoodooDoll], drawPos + new Vector2(6,0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.FlipHorizontally, 0f);
 			}
 			return false;
 		}
@@ -1886,7 +1887,7 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Plasma Pack");
-			Tooltip.SetDefault("20% increased Plasma capacity\n+2 Booster recharge rate\nEffects of Blink Tech Canister");
+			Tooltip.SetDefault("20% increased Plasma capacity\n+2 Booster recharge rate\n+3000 Max Electric Charge, +1 passive Electric Charge Rate\nEffects of Blink Tech Canister");
 		}
 
 		public override void SetDefaults()
@@ -1903,6 +1904,8 @@ public class BlinkTechGear : IdolOfMidas
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.boosterrechargerate += 2;
 			sgaply.plasmaLeftInClipMax = (int)((float)sgaply.plasmaLeftInClipMax*1.20f);
+			sgaply.electricChargeMax += 3000;
+			player.SGAPly().electricrechargerate += 2;
 			ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
 		}
 		public override void AddRecipes()
@@ -2283,7 +2286,7 @@ public override void UpdateAccessory(Player player, bool hideVisual)
 public override void SetStaticDefaults()
 {
 DisplayName.SetDefault("Shin Sash");
-Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nEnemies affected by this bomb become far more likely to cause the player to dodge their melee attacks\n"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stacks, adds 90 seconds each")+"\nThrowing damage and crit chance are increased by 10%\nEffects of Ninja Sash and Thrower Pouch");
+Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nEnemies affected become far more likely to cause the player to black belt dodge contact damage\n"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each")+"\nThrowing damage and crit chance are increased by 10%\nEffects of Ninja Sash and Thrower Pouch");
 }
 
 public override void SetDefaults()
@@ -2319,14 +2322,49 @@ recipe.AddRecipe();
 
 }
 
-	/*
+	public class ShinobiShiv : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Shinobi's Shadow");
+			Tooltip.SetDefault("When you Ninja Dodge an attack, you turn invisble and gain Striking moment for 4 seconds");
+		}
 
-public class KouSash : ModItem
-{
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 6;
+			item.value = Item.buyPrice(0, 5, 0, 0);
+			item.accessory = true;
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.Black * 0.50f;
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_"+ItemID.WinterCape); }
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.shinobj = 3;
+		}
+
+	}
+
+
+	[AutoloadEquip(EquipType.Waist)]
+	public class KouSash : ShinSash
+	{
 public override void SetStaticDefaults()
 {
-DisplayName.SetDefault("Kou Stash");
-Tooltip.SetDefault("Scoring an Apocalyptical imbues all your currently thrown projectiles\nImbued projectiles gain 50% increased damage and inflict Moonlight Curse\nEffects of and stacks with Shin Sash\nThrowing damage increased by 20%, and crit chance is increased by 10%");
+DisplayName.SetDefault("Kou Sash");
+Tooltip.SetDefault("'A true assassin's attire'\nScoring an Apocalyptical imbues all your currently thrown projectiles\nImbued projectiles gain 50% increased damage and inflict Moonlight Curse\nThrowing damage increased by 20%, and crit chance is increased by 10%\nEffects of Shin Sash, Gi, and Shinobi's Shadow");
 }
 
 public override void SetDefaults()
@@ -2334,27 +2372,40 @@ public override void SetDefaults()
 item.width = 24;
 item.height = 24;
 item.rare = 9;
+item.defense = 4;
 item.value = Item.sellPrice(0, 5, 0, 0);
 item.accessory = true;
 }
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			ModContent.GetInstance<ShinobiShiv>().UpdateAccessory(player, hideVisual);
+			sgaply.ninjaSash = Math.Max(sgaply.ninjaSash, 3);
+			player.Throwing().thrownDamage += 0.20f;
+			player.Throwing().thrownCrit += 10;
+			player.Throwing().thrownDamage += 0.05f; player.meleeDamage += 0.05f; player.rangedDamage += 0.05f; player.magicDamage += 0.05f; player.minionDamage += 0.05f;
+			player.Throwing().thrownCrit+=5; player.rangedCrit += 5; player.magicCrit += 5; player.meleeCrit += 5;
+			player.meleeSpeed += 0.10f;
+			player.moveSpeed += 0.10f;
+			SGAmod.BoostModdedDamage(player, 0.05f, 5);
+		}
 
-public override void UpdateAccessory(Player player, bool hideVisual)
+		public override void AddRecipes()
 {
-base.UpdateAccessory(player,hideVisual);
-SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-}
-public override void AddRecipes()
-{
-ModRecipe recipe = new ModRecipe(mod);
-recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
-recipe.AddTile(TileID.TinkerersWorkbench);
-recipe.SetResult(this);
-recipe.AddRecipe();
-}
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("ShinSash"), 1);
+			recipe.AddIngredient(ItemID.Gi, 1);
+			recipe.AddIngredient(mod.ItemType("ShinobiShiv"), 1);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 15);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
 
 }
 
-*/
 
 
 }

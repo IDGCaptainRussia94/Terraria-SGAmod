@@ -137,7 +137,7 @@ namespace SGAmod.Items.Pets
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
 
-            Texture2D tex = ModContent.GetTexture("Terraria/Wings_1");
+            Texture2D tex = SGAmod.ExtraTextures[90];
             Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
             Vector2 drawPos = (((projectile.Center - Main.screenPosition)) + new Vector2(projectile.velocity.X > 0 ? -8f : -2f, 0f)*projectile.rotation.ToRotationVector2())+new Vector2(0f,-2f);
             int timing = (int)(projectile.localAI[0] / 6f);
@@ -257,7 +257,7 @@ namespace SGAmod.Items.Pets
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
 
-            Texture2D tex = ModContent.GetTexture("Terraria/Wings_2");
+            Texture2D tex = SGAmod.ExtraTextures[91];
             Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
             Vector2 drawPos = (((projectile.Center - Main.screenPosition)) + new Vector2(projectile.velocity.X > 0 ? -8f : -2f, 0f) * projectile.rotation.ToRotationVector2()) + new Vector2(0f, -2f);
             int timing = (int)(projectile.localAI[0] / 6f);

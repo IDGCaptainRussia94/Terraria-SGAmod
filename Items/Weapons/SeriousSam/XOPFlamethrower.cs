@@ -182,7 +182,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-			Texture2D tex = ModContent.GetTexture("Terraria/Projectile_612");
+			Texture2D tex = SGAmod.ExtraTextures[94];
 
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);

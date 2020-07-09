@@ -127,6 +127,10 @@ namespace SGAmod
             {
                 return "Novus";
             }
+            if (head.type == mod.ItemType("NoviteHelmet") && body.type == mod.ItemType("NoviteChestplate") && legs.type == mod.ItemType("NoviteLeggings"))
+            {
+                return "Novite";
+            }
             if (head.type == mod.ItemType("BlazewyrmHelm") && body.type == mod.ItemType("BlazewyrmBreastplate") && legs.type == mod.ItemType("BlazewyrmLeggings"))
             {
                 return "Blazewyrm";
@@ -163,6 +167,11 @@ namespace SGAmod
                 player.setBonus = "Novus items emit more light when used and deal 20% more damage\nGain an additional free Cooldown Stack";
                 sgaplayer.Novusset = 3;
                 sgaplayer.MaxCooldownStacks += 1;
+            }
+            if (set == "Novite")
+            {
+                player.setBonus = "Gain a movement bonus based on current charge\nWhen you take damage you discharge a chain bolt at a nearby enemy\nThis costs 750 Electic Charge and is scaled based on Defense and Technological Damage";
+                sgaplayer.Noviteset = 3;
             }
             if (set == "Blazewyrm")
             {
@@ -473,10 +482,25 @@ namespace SGAmod
 
     }
 
+    public class MiscPrefixAccessory : TrapPrefix
+    {
+
+        public override PrefixCategory Category { get { return PrefixCategory.Accessory; } }
+
+        public MiscPrefixAccessory()
+        {
+        }
+        public MiscPrefixAccessory(int misc)
+        {
+            this.misc = misc;
+        }
+
+    }
+
     public class ThrowerPrefix : TrapPrefix
     {
 
-        public override PrefixCategory Category { get { return PrefixCategory.AnyWeapon; } }
+        public override PrefixCategory Category { get { return PrefixCategory.Custom; } }
 
         public ThrowerPrefix()
         {
@@ -488,9 +512,13 @@ namespace SGAmod
             this.armorbreak = armorbreak;
             this.damage = damage;
         }
+        public override float RollChance(Item item)
+        {
+            return 1f;
+        }
         public override bool CanRoll(Item item)
         {
-            return item.thrown;
+            return item.thrown || item.Throwing().thrown;
         }
     }
 
@@ -618,6 +646,7 @@ namespace SGAmod
         }
 
     }
+
     public class TrapPrefix : ModPrefix
     {
         public float armorbreak = 0f;
@@ -630,6 +659,7 @@ namespace SGAmod
         public double apocochance = 0.0;
         public float greed = 0f;
         public float apocochancestrength = 0f;
+        public int misc = 0;
 
         public override PrefixCategory Category { get { return PrefixCategory.AnyWeapon; } }
         public TrapPrefix()
@@ -691,6 +721,10 @@ namespace SGAmod
                     mod.AddPrefix("Grubby", new EAPrefixAccessory(0.05f));
                     mod.AddPrefix("Share Holding", new EAPrefixAccessory(0.075f));
                 }
+                if (GetType() == typeof(MiscPrefixAccessory))
+                {
+                    mod.AddPrefix("Energized", new MiscPrefixAccessory(1));
+                }            
             }
             return false;
         }
@@ -724,13 +758,14 @@ namespace SGAmod
             myitem.greed = greed;
              myitem.damageacc = damageacc;
              myitem.damagecrit = damagecrit;
-             myitem.apocochancestrength = apocochancestrength;        
+             myitem.apocochancestrength = apocochancestrength;
+            myitem.misc = misc;
             /*if (item.damage > 0)
           {
               item.damage = (int)(item.damage * (1f + damage));
           }*/
-        //myitem.damage = damage;
-    }
+            //myitem.damage = damage;
+        }
     }
 
     public class TrapDamageItems : GlobalItem
@@ -743,6 +778,7 @@ namespace SGAmod
         public float greed = 0f;
         public float damageacc = 0f;
         public int damagecrit = 0;
+        public int misc = 0;
        public float apocochancestrength = 0f;
          public double apocochance = 0;
         public override bool InstancePerEntity
@@ -764,6 +800,7 @@ namespace SGAmod
             myClone.greed = greed;
             myClone.damageacc = damageacc;
             myClone.damagecrit = damagecrit;
+            myClone.misc = misc;
             myClone.apocochancestrength=apocochancestrength;
             return myClone;
         }
@@ -781,6 +818,7 @@ namespace SGAmod
             damageacc = 0f;
             damagecrit = 0;
             apocochancestrength = 0;
+            misc = 0;
             return base.NewPreReforge(item);
         }
 
@@ -825,6 +863,9 @@ namespace SGAmod
             player.GetModPlayer<SGAPlayer>().Thrownsavingchance += thrownsavingchance;
             player.GetModPlayer<SGAPlayer>().greedyperc += greed;
             player.GetModPlayer<SGAPlayer>().apocalypticalStrength += apocochancestrength;
+            if (misc == 1)
+                player.GetModPlayer<SGAPlayer>().electricrechargerate += 1;
+
             player.magicDamage += damageacc; player.minionDamage += damageacc; player.rangedDamage += damageacc; player.meleeDamage += damageacc; player.Throwing().thrownDamage += damageacc;
             player.magicCrit += damagecrit; player.rangedCrit += damagecrit; player.meleeCrit += damagecrit; player.Throwing().thrownCrit += damagecrit;
             for (int i = 0; i < player.GetModPlayer<SGAPlayer>().apocalypticalChance.Length; i += 1)
@@ -850,7 +891,7 @@ namespace SGAmod
                 string line2 = "% extra trap damage (while held)";
                 if (item.accessory)
                     line2 = "% extra trap damage";
-                TooltipLine line = new TooltipLine(mod, "Trapline1", "+" + ((damage2) * 100f) + line2);
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", "+" + ((damage2) * 100f) + line2);
                 line.isModifier = true;
                 tooltips.Add(line);
             }
@@ -859,53 +900,60 @@ namespace SGAmod
                 string line2 = "%";
                 if (item.accessory)
                     line2 = "% trap damage";
-                TooltipLine line = new TooltipLine(mod, "Trapline2", "+" + ((armorbreak) * 100f) + line2 + " armor piercing");
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", "+" + ((armorbreak) * 100f) + line2 + " armor piercing");
                 line.isModifier = true;
                 tooltips.Add(line);
             }
             if (throweruserate > 0)
             {
                 string line2 = "% throwing rate";
-                TooltipLine line = new TooltipLine(mod, "Trapline3", "+" + ((throweruserate) * 100f) + line2);
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", "+" + ((throweruserate) * 100f) + line2);
                 line.isModifier = true;
                 tooltips.Add(line);
             }
             if (thrownvelocity > 0)
             {
                 string line2 = "% throwing velocity";
-                TooltipLine line = new TooltipLine(mod, "Trapline4", "+" + ((thrownvelocity) * 100f) + line2);
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", "+" + ((thrownvelocity) * 100f) + line2);
                 line.isModifier = true;
                 tooltips.Add(line);
             }
             if (thrownsavingchance > 0)
             {
                 string line2 = "% chance to not consume thrown item";
-                TooltipLine line = new TooltipLine(mod, "Trapline5", "+" + ((thrownsavingchance) * 100f) + line2);
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", "+" + ((thrownsavingchance) * 100f) + line2);
                 line.isModifier = true;
                 tooltips.Add(line);
             }
             if (greed > 0)
             {
                 string line2 = "% shop discounts";
-                TooltipLine line = new TooltipLine(mod, "Trapline7", "+" + (greed*100f) + line2);
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", "+" + (greed*100f) + line2);
                 line.isModifier = true;
                 tooltips.Add(line);
             }
             if (apocochancestrength > 0)
             {
                 string line2 = "% Apocalyptical Strength";
-                TooltipLine line = new TooltipLine(mod, "Trapline6", "+" + (apocochancestrength*100) + line2);
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", "+" + (apocochancestrength*100) + line2);
                 line.isModifier = true;
                 tooltips.Add(line);
             }              
             if (apocochance > 0)
             {
                 string line2 = "% Apocalyptical Chance";
-                TooltipLine line = new TooltipLine(mod, "Trapline8", "+" + (apocochance) + line2);
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", "+" + (apocochance) + line2);
                 line.isModifier = true;
                 tooltips.Add(line);
                 tooltips.Add(new TooltipLine(mod, "apocthing", SGAGlobalItem.apocalypticaltext));
-            }            
+            }
+            if (misc == 1)
+            {
+                string line2 = "+1 passive Electric Charge Rate";
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+            }
         }
         public override void NetSend(Item item, BinaryWriter writer)
         {

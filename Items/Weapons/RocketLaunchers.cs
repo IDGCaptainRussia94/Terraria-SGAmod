@@ -73,7 +73,6 @@ namespace SGAmod.Items.Weapons
 		public override float UseTimeMultiplier(Player player)
 		{
 			SGAPlayer sgaply = player.SGAPly();
-			Main.NewText("test: "+ sgaply.soldierboost);
 			return (sgaply.soldierboost > 0 ? 2.5f : 1f) + ((float)sgaply.tf2emblemLevel * 0.25f);
 		}
 
@@ -304,7 +303,7 @@ namespace SGAmod.Items.Weapons
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			getstuff();
-			Texture2D tex = ModContent.GetTexture("Terraria/Projectile_540");
+			Texture2D tex = SGAmod.ExtraTextures[96];
 			float timeleft = ((float)projectile.timeLeft / 20f);
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition));

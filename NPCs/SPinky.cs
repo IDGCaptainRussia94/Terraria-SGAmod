@@ -126,7 +126,7 @@ namespace SGAmod.NPCs
 				//shader.UseColor(glowingcolors1.R, glowingcolors1.G, glowingcolors1.B);
 				DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), drawPos + thisloc + new Vector2(Main.rand.Next(-100, 100), Main.rand.Next(-100, 100)), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 512, 512)), Microsoft.Xna.Framework.Color.White, inrc*15f, new Vector2(256f, 256f), 5f, SpriteEffects.None, 0);
 				//DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 600, 600)), Microsoft.Xna.Framework.Color.White * 1f, npc.rotation, new Vector2(600f, 600f), 1, SpriteEffects.None, 0);
-				Texture2D texture = ModContent.GetTexture("Terraria/Projectile_" + 540);
+				Texture2D texture = SGAmod.ExtraTextures[96];
 
 				shader.UseOpacity(0.25f);
 				shader.Apply(null, new DrawData?(value9));

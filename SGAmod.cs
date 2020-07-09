@@ -37,6 +37,7 @@ using SGAmod.HavocGear.Items.Weapons;
 using SGAmod.HavocGear.Items.Accessories;
 using SGAmod.Items;
 using SGAmod.Items.Weapons;
+using SGAmod.Items.Armors;
 using SGAmod.Items.Accessories;
 using SGAmod.Items.Consumable;
 using SGAmod.Items.Weapons.Caliburn;
@@ -128,6 +129,20 @@ namespace SGAmod
 		public static SGACustomUIMenu CustomUIMenu;
 		public static UserInterface CustomUIMenuInterface;
 
+		private void Player_NinjaDodge(On.Terraria.Player.orig_NinjaDodge orig, Player self)
+		{
+			// 'orig' is a delegate that lets you call back into the original method.
+			// 'self' is the 'this' parameter that would have been passed to the original method.
+
+			if (self.SGAPly().shinobj > 0)
+			{
+				self.AddBuff(BuffID.Invisibility,60*4);
+				self.AddBuff(BuffID.ParryDamageBuff, 60 * 4);
+			}
+			orig(self);
+
+		}
+
 		public int OSDetect()
 		{
 
@@ -189,6 +204,82 @@ namespace SGAmod
 			Filters.Scene["SGAmod:CirnoBlizzard"].Deactivate();
 		}
 
+		public static List<Texture2D> HellionGores;
+		public static List<Texture2D> HellionTextures;
+		public static List<Texture2D> ExtraTextures;
+
+		public static void LoadOrUnloadTextures(bool load)
+		{
+			if (load)
+			{
+				HellionGores = new List<Texture2D>();
+				HellionTextures = new List<Texture2D>();
+				ExtraTextures = new List<Texture2D>();
+				HellionTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.Stylist));
+				HellionTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.Mechanic));
+				HellionTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.DyeTrader));
+				HellionTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.PartyGirl));
+				HellionTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.Dryad));
+				HellionTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 540));
+
+			}
+
+			//Terraria/Wings_1
+
+			for (int i = 0; i < 90; i += 1)
+			{
+				if (load)
+				{
+					if (i<50)
+					HellionGores.Add(ModContent.GetTexture("Terraria/Gore_" + Main.rand.Next(10, 100)));
+					ExtraTextures.Add(ModContent.GetTexture("Terraria/Extra_" + i));
+				}
+				else
+				{
+					if (i < 50)
+						HellionGores[i].Dispose();
+				}
+			}
+
+			if (load)
+			{
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Wings_1"));//90
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Wings_2"));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 658));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/FlameRing"));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_612"));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.CoinPortal));//95
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 540));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.SolarFlareRay));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 658));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 641));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Sun"));//100
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 657));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 644));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/UI/ButtonDelete"));
+
+			}
+			else
+			{
+
+				for (int i = 0; i < ExtraTextures.Count; i += 1)
+				{
+					ExtraTextures[i].Dispose();
+				}
+					for (int i = 0; i < HellionTextures.Count; i += 1)
+				{
+					HellionTextures[i].Dispose();
+				}
+
+					HellionTextures = null;
+					HellionGores = null;
+					ExtraTextures = null;
+
+				}
+
+			}
+
+
 		public override void Load()
 		{
 #if Dimensions
@@ -220,10 +311,12 @@ namespace SGAmod
 			NinjaSashHotkey = RegisterHotKey("Shin Sash Ability", "Q");
 			OSType = OSDetect();
 			SGAmod.PostDraw = new List<PostDrawCollection>();
+			On.Terraria.Player.NinjaDodge += Player_NinjaDodge;
 			if (!Main.dedServ)
 			{
 				SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
 				DrakeniteBar.CreateTextures();
+				LoadOrUnloadTextures(true);
 
 				CustomUIMenu = new SGACustomUIMenu();
 				CustomUIMenu.Activate();
@@ -291,6 +384,7 @@ namespace SGAmod
 					SGAmod.ParadoxMirrorTex.Dispose();
 				if (SGAmod.hellionLaserTex != null)
 					SGAmod.hellionLaserTex.Dispose();
+				//LoadOrUnloadTextures(false);
 			}
 			NightmareUnlocked = false;
 			Instance = null;
@@ -480,8 +574,15 @@ namespace SGAmod
 				bossList.Call("AddBoss", 6.45f, ModContent.NPCType<Murk>(), this, "Murk-Lord of the Flies", (Func<bool>)(() => SGAWorld.GennedVirulent), new List<int>() { ModContent.ItemType<RoilingSludge>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<MurkBossBag>(), ModContent.ItemType<MudAbsorber>(), ModContent.ItemType<MurkyGel>(), ModContent.ItemType<MurkFlail>(), ModContent.ItemType<Mudmore>(), ModContent.ItemType<Mossthorn>(), ModContent.ItemType<Landslide>() }, "Use a [i:" + ItemType("RoilingSludge") + "] in the jungle during hardmode and after killing the fly swarm, defeating this buffed version causes a new ore to generate", "Empowered Murk slinks back into the depths of the jungle");
 				bossList.Call("AddBoss", 6.5f, ModContent.NPCType<Cirno>(), this, "Cirno", (Func<bool>)(() => SGAWorld.downedCirno), new List<int>() { ModContent.ItemType<Nineball>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CirnoWings>(), ModContent.ItemType<CryostalBar>(), ModContent.ItemType<IceScepter>(), ModContent.ItemType<Snowfall>(), ModContent.ItemType<RubiedBlade>(), ModContent.ItemType<Starburster>(), ModContent.ItemType<IcicleFall>() }, "Use a [i:" + ItemType("Nineball") + "] in in the snow biome during the day", "Cirno retains their title of 'The Strongest'");
 				bossList.Call("AddMiniBoss", 9.1f, ModContent.NPCType<CaliburnGuardianHardmode>(), this, "Wrath of Caliburn", (Func<bool>)(() => SGAWorld.downedCaliburnGuardianHardmode), new List<int>() { ModContent.ItemType<CaliburnCompess>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CaliburnTypeA>(), ModContent.ItemType<CaliburnTypeB>(), ModContent.ItemType<CaliburnTypeC>() }, "Use a [i:" + ItemType("CaliburnCompess") + "] in Dank Shrines in hardmode", "The Caliburn Spirit returns to its slumber");
-				bossList.Call("AddBoss", 10.5f, ModContent.NPCType<Murk>(), this, "Cratrosity", (Func<bool>)(() => SGAWorld.downedCratrosity), new List<int>() { ModContent.ItemType<TerrariacoCrateBase>(), ItemID.GoldenKey, ItemID.NightKey, ItemID.LightKey }, new List<int>() { }, new List<int>() { ModContent.ItemType<TerrariacoCrateKey>(), ModContent.ItemType<CrateBossWeaponMelee>(), ModContent.ItemType<CrateBossWeaponRanged>(), ModContent.ItemType<CrateBossWeaponMagic>(), ModContent.ItemType<CrateBossWeaponSummon>(), ModContent.ItemType<CrateBossWeaponThrown>(), ModContent.ItemType<IdolOfMidas>(), ModContent.ItemType<TF2Emblem>(), ModContent.ItemType<EntropyTransmuter>() }, "Right Click a [i:" + ItemType("TerrariacoCrateBase") + "] while you have any of the listed keys in your inventory at night", "All players have paid up their lives to microtransactions", "SGAmod/NPCs/Cratrosity/CratrosityLog");
-
+				bossList.Call("AddBoss", 9.5f, ModContent.NPCType<Cirno>(), this, "Sharkvern", (Func<bool>)(() => SGAWorld.downedSharkvern), new List<int>() { ModContent.ItemType<ConchHorn>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<SerratedTooth>(), ModContent.ItemType<SharkTooth>(), ModContent.ItemType<Jaws>(), ModContent.ItemType<SnappyShark>(), ModContent.ItemType<SkytoothStorm>(), ModContent.ItemType<SharkBait>(),ItemID.Starfish,ItemID.Seashell,ItemID.Coral,ItemID.SharkFin,ItemID.SoulofFlight }, "Use a [i:" + ItemType("ConchHorn") + "] at the ocean", "The Sharkvern retreats back into seclusion");
+				bossList.Call("AddBoss", 10.5f, ModContent.NPCType<Cratrosity>(), this, "Cratrosity", (Func<bool>)(() => SGAWorld.downedCratrosity), new List<int>() { ModContent.ItemType<TerrariacoCrateBase>(), ItemID.GoldenKey, ItemID.NightKey, ItemID.LightKey }, new List<int>() { }, new List<int>() { ModContent.ItemType<TerrariacoCrateKey>(), ModContent.ItemType<CrateBossWeaponMelee>(), ModContent.ItemType<CrateBossWeaponRanged>(), ModContent.ItemType<CrateBossWeaponMagic>(), ModContent.ItemType<CrateBossWeaponSummon>(), ModContent.ItemType<CrateBossWeaponThrown>(), ModContent.ItemType<IdolOfMidas>(), ModContent.ItemType<TF2Emblem>(), ModContent.ItemType<EntropyTransmuter>() }, "Right Click a [i:" + ItemType("TerrariacoCrateBase") + "] while you have any of the listed keys in your inventory at night", "All players have paid up their lives to microtransactions", "SGAmod/NPCs/Cratrosity/CratrosityLog");
+				bossList.Call("AddBoss", 11.25f, ModContent.NPCType<TPD>(), this, "Twin Prime Destroyers", (Func<bool>)(() => SGAWorld.downedTPD), new List<int>() { ModContent.ItemType<TerrariacoCrateBase>(), ItemID.GoldenKey, ItemID.NightKey, ItemID.LightKey }, new List<int>() { }, new List<int>() { ItemID.ChlorophyteBar,ItemID.ShroomiteBar,ItemID.SpectreBar,ItemID.Ectoplasm,ModContent.ItemType<StarMetalMold>() }, "Use a [i:" + ItemType("Mechacluskerf") + "] anywhere at night");
+				bossList.Call("AddBoss", 11.85f, ModContent.NPCType<Harbinger>(), this, "Doom Harbinger", (Func<bool>)(() => SGAWorld.downedHarbinger), new List<int>() { ModContent.ItemType<TruelySusEye>()}, new List<int>() { }, new List<int>() { }, "Can spawn randomly at the start of night after golem is beaten, the Old One's Army event is finished on tier 3, and the Martians are beaten, or use a [i:" + ItemType("TruelySusEye") + "]. Defeating him will allow the cultists to spawn (Single Player Only)");
+				bossList.Call("AddBoss", 12.5f, ModContent.NPCType<LuminiteWraith>(), this, "Luminite Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() {ItemID.LunarCraftingStation }, "Use a [i:" + ItemType("WraithCoreFragment3") + "], defeat this boss to get the Ancient Manipulator.","","SGAmod/NPCs/Wraiths/LWraithLog");
+				bossList.Call("AddBoss", 14.8f, ModContent.NPCType<LuminiteWraith>(), this, "Luminite Wraith (Rematch)", (Func<bool>)(() => (SGAWorld.downedWraiths > 3)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CosmicFragment>(), ItemID.FragmentNebula, ItemID.FragmentVortex, ItemID.FragmentStardust, ItemID.FragmentSolar, ItemID.LunarBar, ItemID.LunarOre }, "Use a [i:" + ItemType("WraithCoreFragment3") + "] after the first fight when Moonlord is defeated to issue a rematch; the true battle begins...","", "SGAmod/NPCs/Wraiths/LWraithLog");
+				bossList.Call("AddBoss", 15f, ModContent.NPCType<Cratrogeddon>(), this, "Cratrogeddon", (Func<bool>)(() => SGAWorld.downedCratrosityPML), new List<int>() { ModContent.ItemType<SalvagedCrate>(), ItemID.TempleKey}, new List<int>() { }, new List<int>() { ModContent.ItemType<TerrariacoCrateKeyUber>(), ModContent.ItemType<MoneySign>()}, "Right Click a [i:" + ItemType("SalvagedCrate") + "] while you have a [i:" + ItemID.TempleKey + "] in your inventory at night", "All players have paid up their lives to microtransactions, again", "SGAmod/NPCs/Cratrosity/CratrosityLog");
+				bossList.Call("AddBoss", 16f, ModContent.NPCType<SPinky>(), this, "Supreme Pinky", (Func<bool>)(() => SGAWorld.downedSPinky), new List<int>() { ModContent.ItemType<Prettygel>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<LunarSlimeHeart>(), ModContent.ItemType<LunarRoyalGel>() }, "Use a [i:" + ItemType("Prettygel") + "] at night", "Supreme Pinky is content with the justice they have dealt");
+				bossList.Call("AddBoss", 17.5f, ModContent.NPCType<Hellion>(), this, "Helon 'Hellion' Weygold", (Func<bool>)(() => SGAWorld.downedHellion>1), new List<int>() { ModContent.ItemType<HellionSummon>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CodeBreakerHead>(), ModContent.ItemType<ByteSoul>(), ModContent.ItemType<DrakeniteBar>() }, "Use a [i:" + ItemType("HellionSummon") + "]. Talk to Draken when the time is right... (Expert Only)");
 
 				//CaliburnCompess
 				//bossList.Call("AddMiniBossWithInfo", "The Caliburn Guardians", 1.4f, (Func<bool>)(() => SGAWorld.downedCaliburnGuardians > 2), "Find Caliburn Alters in Dank Shrines Underground and right click them to fight a Caliburn Spirit, after beating a sprite you can retrive your reward by breaking the Alter; each guardian is stronger than the previous");
@@ -491,15 +592,15 @@ namespace SGAmod
 				//bossList.Call("AddBossWithInfo", "Murk (Hardmode)", 6.5f, (Func<bool>)(() => SGAWorld.downedMurk > 1 && SGAWorld.GennedVirulent), string.Format("Use a [i:{0}] in the jungle in Hardmode (fly swarm must be defeated), defeating this buffed version causes a new ore to generate", ItemType("RoilingSludge")));
 				//bossList.Call("AddBossWithInfo", "Cirno", 6.5f, (Func<bool>)(() => SGAWorld.downedCirno), string.Format("Use a [i:{0}] in the snow biome during the day", ItemType("Nineball")));
 				//bossList.Call("AddBossWithInfo", "Cobalt Wraith", 6.6f, (Func<bool>)(() => (SGAWorld.downedWraiths > 1)), string.Format("Use a [i:{0}] at anytime, defeat this boss to unlock crafting a hardmode anvil, as well as anything crafted at one", ItemType("WraithCoreFragment2")));
-				bossList.Call("AddBossWithInfo", "Sharkvern", 9.5f, (Func<bool>)(() => SGAWorld.downedSharkvern), string.Format("Use a [i:{0}] at the ocean", ItemType("ConchHorn")));
+				//bossList.Call("AddBossWithInfo", "Sharkvern", 9.5f, (Func<bool>)(() => SGAWorld.downedSharkvern), string.Format("Use a [i:{0}] at the ocean", ItemType("ConchHorn")));
 				//bossList.Call("AddBossWithInfo", "Cratrosity", 10.5f, (Func<bool>)(() => SGAWorld.downedCratrosity), string.Format("Use any key that is not a [i:{1}] with a [i:{0}] at night, get a [i:{2}] from the merchant to allow enemies to drop [i:{0}], you can use different keys to get a customized boss", ItemType("TerrariacoCrateBase"), ItemType("TerrariacoCrateKey"), ItemType("PremiumUpgrade")));
-				bossList.Call("AddBossWithInfo", "Twin Prime Destroyers", 11.25f, (Func<bool>)(() => SGAWorld.downedTPD), string.Format("Use a [i:{0}] anywhere at night", ItemType("Mechacluskerf")));
-				bossList.Call("AddBossWithInfo", "Doom Harbinger", 11.85, (Func<bool>)(() => SGAWorld.downedHarbinger), string.Format("Can spawn randomly at the start of night after golem is beaten, the Old One's Army event is finished on tier 3, and the Martians are beaten, defeating him will allow the cultists to spawn (Single Player Only)", ItemType("Prettygel")));
-				bossList.Call("AddBossWithInfo", "Luminite Wraith", 12.5f, (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), string.Format("Use a [i:{0}], defeat this boss to get the Ancient Manipulator", ItemType("WraithCoreFragment3")));
-				bossList.Call("AddBossWithInfo", "Luminite Wraith (Rematch)", 14.8f, (Func<bool>)(() => (SGAWorld.downedWraiths > 3)), string.Format("Use a [i:{0}] after the first fight when Moonlord is defeated to issue a rematch; the true battle begins...", ItemType("WraithCoreFragment3")));
-				bossList.Call("AddBossWithInfo", "Cratrogeddon", 15f, (Func<bool>)(() => SGAWorld.downedCratrosityPML), string.Format("Use a [i:{1}] with a [i:{0}] at night", ItemType("SalvagedCrate"), ItemID.TempleKey));
-				bossList.Call("AddBossWithInfo", "Supreme Pinky", 16f, (Func<bool>)(() => SGAWorld.downedSPinky), string.Format("Use a [i:{0}] anywhere at night", ItemType("Prettygel")));
-				bossList.Call("AddBossWithInfo", "Helon 'Hellion' Weygold", 17.5f, (Func<bool>)(() => Main.LocalPlayer.GetModPlayer<SGAPlayer>().downedHellion > 1), string.Format("Talk to Draken when the time is right... (Expert Only)"));
+				//bossList.Call("AddBossWithInfo", "Twin Prime Destroyers", 11.25f, (Func<bool>)(() => SGAWorld.downedTPD), string.Format("Use a [i:{0}] anywhere at night", ItemType("Mechacluskerf")));
+				//bossList.Call("AddBossWithInfo", "Doom Harbinger", 11.85, (Func<bool>)(() => SGAWorld.downedHarbinger), string.Format("Can spawn randomly at the start of night after golem is beaten, the Old One's Army event is finished on tier 3, and the Martians are beaten, defeating him will allow the cultists to spawn (Single Player Only)", ItemType("Prettygel")));
+				//bossList.Call("AddBossWithInfo", "Luminite Wraith", 12.5f, (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), string.Format("Use a [i:{0}], defeat this boss to get the Ancient Manipulator", ItemType("WraithCoreFragment3")));
+				//bossList.Call("AddBossWithInfo", "Luminite Wraith (Rematch)", 14.8f, (Func<bool>)(() => (SGAWorld.downedWraiths > 3)), string.Format("Use a [i:{0}] after the first fight when Moonlord is defeated to issue a rematch; the true battle begins...", ItemType("WraithCoreFragment3")));
+				//bossList.Call("AddBossWithInfo", "Cratrogeddon", 15f, (Func<bool>)(() => SGAWorld.downedCratrosityPML), string.Format("Use a [i:{1}] with a [i:{0}] at night", ItemType("SalvagedCrate"), ItemID.TempleKey));
+				//bossList.Call("AddBossWithInfo", "Supreme Pinky", 16f, (Func<bool>)(() => SGAWorld.downedSPinky), string.Format("Use a [i:{0}] anywhere at night", ItemType("Prettygel")));
+				//bossList.Call("AddBossWithInfo", "Helon 'Hellion' Weygold", 17.5f, (Func<bool>)(() => Main.LocalPlayer.GetModPlayer<SGAPlayer>().downedHellion > 1), string.Format("Talk to Draken when the time is right... (Expert Only)"));
 
 			}
 
@@ -915,7 +1016,13 @@ namespace SGAmod
 			Item c0decrown = new Item();
 			c0decrown.SetDefaults(ItemType("CodeBreakerHead"));
 			Main.armorHeadLoaded[c0decrown.headSlot] = true;
-			Main.armorHeadTexture[c0decrown.headSlot] = ModContent.GetTexture("Terraria/Armor_Head_" + Main.rand.Next(1, 216));
+			Texture2D thisz = null;
+			while (thisz == null)
+			{
+				thisz=Main.armorHeadTexture[Main.rand.Next(1, Main.armorHeadTexture.Length)];
+			}
+			Main.armorHeadTexture[c0decrown.headSlot] = thisz;
+				//ModContent.GetTexture("Terraria/Armor_Head_" + Main.rand.Next(1, 216));
 			if (!Main.dedServ)
 			{
 				for (int i = 0; i < Main.maxNPCs; i += 1)

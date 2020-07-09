@@ -106,9 +106,9 @@ namespace SGAmod.Projectiles
 
 			if (scale > 0)
 			{
-				Texture2D inner = ModContent.GetTexture("Terraria/Projectile_" + 658);
-				Texture2D texture = ModContent.GetTexture("Terraria/Projectile_" + 641);
-				Texture2D outer = ModContent.GetTexture("Terraria/Projectile_" + 657);
+				Texture2D inner = SGAmod.ExtraTextures[98];
+				Texture2D texture = SGAmod.ExtraTextures[99];
+				Texture2D outer = SGAmod.ExtraTextures[101];
 				spriteBatch.Draw(inner, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Magenta, lightColor, 0.6f), (float)Math.Sin((double)projectile.rotation), new Vector2(inner.Width / 2, inner.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
 				spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Magenta, lightColor, 0.75f), projectile.rotation, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
 				spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Magenta, lightColor, 0.75f), -projectile.rotation, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;

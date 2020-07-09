@@ -708,7 +708,7 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = ModContent.GetTexture("Terraria/Item_" + fishtype);
+            Texture2D tex = Main.itemTexture[fishtype];
             Vector2 drawOrigin = new Vector2(tex.Width, tex.Height)/2;
             Vector2 drawPos = ((projectile.Center - Main.screenPosition));
             spriteBatch.Draw(tex, drawPos,null, lightColor, MathHelper.ToRadians(0) + projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);

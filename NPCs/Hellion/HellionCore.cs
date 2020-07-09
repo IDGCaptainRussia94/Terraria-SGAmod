@@ -571,12 +571,7 @@ namespace SGAmod.NPCs.Hellion
 
 
                     };*/
-                    int rando = Main.rand.Next(0, 2);
-                    atex = ModContent.GetTexture("Terraria/Gore_"+ Main.rand.Next(1, 800));
-                    while (atex == null)
-                    {
-                        ModContent.GetTexture("Terraria/Gore_" + Main.rand.Next(1, 800));
-                    }
+                    atex = SGAmod.HellionGores[Main.rand.Next(0, SGAmod.HellionGores.Count)];
 
                     rotoffset = Main.rand.Next(0, 360);
                     npc.scale = Main.rand.NextFloat(1.5f, 2.5f);

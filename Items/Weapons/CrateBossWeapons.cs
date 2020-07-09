@@ -585,7 +585,7 @@ namespace SGAmod.Items.Weapons
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 
-			Texture2D tex = ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.CoinPortal);
+			Texture2D tex = SGAmod.ExtraTextures[95];
 
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);

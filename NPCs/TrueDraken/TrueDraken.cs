@@ -178,9 +178,9 @@ namespace SGAmod.NPCs.TrueDraken
 				{
 					for (int i = -1; i < 2; i += 2)
 					{
-						Texture2D texture7 = ModContent.GetTexture("Terraria/Extra_" + 34);
+						Texture2D texture7 = SGAmod.ExtraTextures[34];
 						spriteBatch.Draw(texture7, npc.Center - Main.screenPosition, null, Main.hslToRgb((Main.GlobalTime) % 1f, 1f, 0.75f) * 0.50f* empowered*stealth, -Main.GlobalTime * 17.134f * i, new Vector2(texture7.Width / 2f, texture7.Height / 2f), new Vector2((float)Math.Abs(Math.Sin(Main.GlobalTime / 1.1694794f)), 1f)* empowered, SpriteEffects.None, 0f);
-						texture7 = ModContent.GetTexture("Terraria/Projectile_490");
+						texture7 = Main.projectileTexture[490];
 						spriteBatch.Draw(texture7, npc.Center - Main.screenPosition, null, Main.hslToRgb((Main.GlobalTime) % 1f, 1f, 0.75f) * 0.50f* empowered * stealth, Main.GlobalTime * 17.134f * i, new Vector2(texture7.Width / 2f, texture7.Height / 2f), new Vector2((float)Math.Abs(Math.Sin(Main.GlobalTime / 1.1694794f)), 1f)* empowered, SpriteEffects.None, 0f);
 					}
 				}
@@ -202,7 +202,7 @@ namespace SGAmod.NPCs.TrueDraken
 
 				drawPos = ((npc.Center - Main.screenPosition));
 				spriteBatch.Draw(tex, drawPos - adder, new Rectangle(0, timing + 2, tex.Width, (tex.Height - 1) / 4), Color.White * stealth, npc.rotation - (float)(mydirection < 0 ? Math.PI : 0), drawOrigin, npc.scale, mydirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-				Texture2D texture6 = ModContent.GetTexture("Terraria/Projectile_" + 540);
+				Texture2D texture6 = SGAmod.ExtraTextures[96]
 				spriteBatch.Draw(texture6, npc.Center - Main.screenPosition, null, Main.hslToRgb((Main.GlobalTime) % 1f, 1f, 0.75f)*0.50f* empowered * stealth, Main.GlobalTime*37.134f, new Vector2(texture6.Width / 2f, texture6.Height / 2f), new Vector2((float)Math.Abs(Math.Sin(Main.GlobalTime*1.694794f)), 3f), SpriteEffects.None, 0f);
 
 

@@ -768,9 +768,14 @@ return true;
 		{
 			if (Main.rand.Next(0, 3) == 1 && Main.hardMode)
 			{
-				shop[nextSlot] = mod.ItemType("PeacekeepersDuster");
+				shop[nextSlot] = mod.ItemType(Main.rand.NextBool() ? "ShinobiShiv" : "PeacekeepersDuster");
 				nextSlot++;
-			}
+			}			
+			if (Main.rand.Next(0, 5) == 1 && Main.hardMode)
+			{
+				shop[nextSlot] = mod.ItemType("SoldierRocketLauncher");
+				nextSlot++;
+			}			
 			if (Main.rand.Next(0, 3) == 1 && NPC.downedBoss2)
 			{
 				shop[nextSlot] = mod.ItemType("DynastyJavelin");

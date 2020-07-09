@@ -249,7 +249,7 @@ namespace SGAmod.Items.Weapons.Technical
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Circuit Breaker Blade");
-			Tooltip.SetDefault("Melee hits against enemies discharge bolts of energy at nearby enemies that chain to other enemies on hit\nChains up to a max of 3 times, and each bolt may hit 2 targets max\nCounts as a True Melee sword");
+			Tooltip.SetDefault("Melee hits against enemies discharge bolts of energy at nearby enemies that chain to other enemies on hit\nChains up to a max of 3 times, and each bolt may hit 2 targets max\nRequires 500 Electric Charge to discharge bolts\nCounts as a True Melee sword");
 		}
 		public override void SetDefaults()
 		{
@@ -283,17 +283,21 @@ namespace SGAmod.Items.Weapons.Technical
 
 			position += (eree * Main.rand.NextFloat(58f,160f));
 
-
-			target.immune[player.whoAmI] = 15;
-			NPC target2 = CircuitBreakerBlade.FindClosestTarget(player, position, new Vector2(0, 0));
-			if (target2 != null)
+			if (player.SGAPly().ConsumeElectricCharge(500, 100))
 			{
-				Vector2 Speed = (target2.Center - target.Center);
-				Speed.Normalize(); Speed *= 2f;
-				int prog = Projectile.NewProjectile(target.Center.X, target.Center.Y, Speed.X, Speed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)(damage * 0.80), knockBack / 2f, player.whoAmI,3);
-				IdgProjectile.Sync(prog);
-				Main.PlaySound(SoundID.Item93, position);
 
+
+				target.immune[player.whoAmI] = 15;
+				NPC target2 = CircuitBreakerBlade.FindClosestTarget(player, position, new Vector2(0, 0));
+				if (target2 != null)
+				{
+					Vector2 Speed = (target2.Center - target.Center);
+					Speed.Normalize(); Speed *= 2f;
+					int prog = Projectile.NewProjectile(target.Center.X, target.Center.Y, Speed.X, Speed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)(damage * 0.80), knockBack / 2f, player.whoAmI, 3);
+					IdgProjectile.Sync(prog);
+					Main.PlaySound(SoundID.Item93, position);
+
+				}
 			}
 
 		}
@@ -344,6 +348,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
+			projectile.ignoreWater = true;
 			projectile.Kill();
 			return false;
 		}
@@ -359,25 +364,36 @@ namespace SGAmod.Items.Weapons.Technical
 					Vector2 Speed = (target2.Center - target.Center);
 					Speed.Normalize(); Speed *= 2f;
 					int prog = Projectile.NewProjectile(target.Center.X, target.Center.Y, Speed.X, Speed.Y, ModContent.ProjectileType<CBreakerBolt>(),projectile.damage, projectile.knockBack / 2f, projectile.owner, projectile.ai[0]);
+					Main.projectile[prog].melee = projectile.melee;
+					Main.projectile[prog].magic = projectile.magic;
 					IdgProjectile.Sync(prog);
 					Main.PlaySound(SoundID.Item93, projectile.Center);
 				}
+			}
+			if (projectile.penetrate < 1)
+			{
+				projectile.ignoreWater = true;
+				projectile.Kill();
 			}
 		}
 
 		public override bool PreKill(int timeLeft)
 		{
-			for (int k = 0; k < 10; k++)
-			{
-				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 1f;
-				int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1.5f);
-				Main.dust[num655].noGravity = true;
-				Main.dust[num655].velocity *= 0.5f;
+			if (projectile.ignoreWater) {
+				for (int k = 0; k < 10; k++)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 1f;
+					int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1.5f);
+					Main.dust[num655].noGravity = true;
+					Main.dust[num655].velocity *= 0.5f;
+				}
 			}
 
 
 			return true;
 		}
+
+		Vector2 basepoint=Vector2.Zero;
 
 		public override void AI()
 		{
@@ -385,6 +401,25 @@ namespace SGAmod.Items.Weapons.Technical
 			int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1f);
 			Main.dust[num655].noGravity = true;
 			Main.dust[num655].velocity *= 0.5f;
+
+			Vector2 gothere = projectile.velocity;
+			gothere=gothere.RotatedBy(MathHelper.ToRadians(90));
+			gothere.Normalize();
+
+			if (basepoint == Vector2.Zero)
+			{
+				basepoint = projectile.Center;
+				projectile.localAI[1] = (float)SGAWorld.modtimer;
+			}
+			else
+			{
+				basepoint += projectile.velocity;
+			}
+
+			float theammount = ((float)projectile.timeLeft + (float)(projectile.whoAmI*6454f)+(projectile.localAI[1]*3.137f));
+
+			projectile.Center += ((gothere * ((float)Math.Sin((double)theammount / 7.10) * 1.97f))+ (gothere * ((float)Math.Cos((double)theammount / -13.00) * 2.95f))+ (gothere * ((float)Math.Sin((double)theammount / 4.34566334) * 2.1221f))
+				*(1f-projectile.ai[1]));
 
 			if (projectile.localAI[1] == 0f)
 			{
@@ -398,15 +433,15 @@ namespace SGAmod.Items.Weapons.Technical
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tesla Staff");
-			Tooltip.SetDefault("Zaps nearby enemies with a shock of electricity that is able to pierce twice");
+			Tooltip.SetDefault("Zaps nearby enemies with a shock of electricity that is able to pierce twice\nRequires 50 Electric Charge to discharge bolts");
 			Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 10;
+			item.damage = 20;
 			item.magic = true;
-			item.mana = 3;
+			item.mana = 2;
 			item.width = 40;
 			item.height = 40;
 			item.useTime = 4;
@@ -431,17 +466,20 @@ namespace SGAmod.Items.Weapons.Technical
 			position += normz * 58f;
 
 
-				NPC target2 = CircuitBreakerBlade.FindClosestTarget(player, position, new Vector2(0, 0));
-				if (target2 != null)
+			NPC target2 = CircuitBreakerBlade.FindClosestTarget(player, position, new Vector2(0, 0));
+			if (target2 != null)
+			{
+				if (player.SGAPly().ConsumeElectricCharge(50, 60))
 				{
 					Vector2 Speed = (target2.Center - position);
 					Speed.Normalize(); Speed *= 2f;
 					int prog = Projectile.NewProjectile(position.X, position.Y, Speed.X, Speed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)(damage * 1), knockBack, player.whoAmI);
 					Main.projectile[prog].melee = false;
-				Main.projectile[prog].magic = true;
-				IdgProjectile.Sync(prog);
+					Main.projectile[prog].magic = true;
+					IdgProjectile.Sync(prog);
 					Main.PlaySound(SoundID.Item93, position);
 				}
+			}
 
 			return false;
 		}

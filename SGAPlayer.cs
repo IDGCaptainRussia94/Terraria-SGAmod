@@ -24,6 +24,7 @@ using SGAmod.NPCs.SpiderQueen;
 using SGAmod.NPCs.Hellion;
 using CalamityMod;
 using AAAAUThrowing;
+using Terraria.Utilities;
 
 namespace SGAmod
 {
@@ -49,6 +50,7 @@ namespace SGAmod
 		public bool noactionstackringofrespite = false;
 		public int tf2emblemLevel = 0;
 		public int ninjaSash = 0;
+		public int shinobj = 0;
 		public int previoustf2emblemLevel = 0;
 		public int lockoneffect = 0;
 		public int soldierboost = 0;
@@ -106,7 +108,7 @@ namespace SGAmod
 		public bool CirnoWings = false;
 		public bool SerratedTooth = false;
 		private int lockedelay = 0;
-		public int Novusset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false;
+		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false;
 		public float SpaceDiverWings = 0f;
 		public int Havoc = 0;
 		public int NoFireBurn = 0;
@@ -118,9 +120,10 @@ namespace SGAmod
 		public float TrapDamageMul = 1f; public float TrapDamageAP = 0f;
 		public float ThrowingSpeed = 1f; public float Thrownsavingchance = 0f;
 		public Vector2 Locked = new Vector2(100, 300);
+		public int electricCharge = 0; public int electricChargeMax = 0;
 		public int ammoLeftInClip = 6; public int plasmaLeftInClip = 1000;
 		public int ammoLeftInClipMax = 6; public int plasmaLeftInClipMax = 1000;
-		public int boosterPowerLeft = 10000; public int boosterPowerLeftMax = 10000; public float boosterdelay = -500; public int boosterrechargerate = 15;
+		public int boosterPowerLeft = 10000; public int boosterPowerLeftMax = 10000; public float boosterdelay = -500;  public float electricdelay = -500; public int boosterrechargerate = 15; public int electricrechargerate = 1;
 		public int digiStacks = 0; public int digiStacksMax = 0;
 		public int digiStacksCount = 16;
 		public bool modcheckdelay = false;
@@ -130,7 +133,7 @@ namespace SGAmod
 		public int devpower = 0;
 		public float beedamagemul = 1f;
 		public bool JaggedWoodenSpike = false; public bool JuryRiggedSpikeBuckler = false; public bool HeartGuard = false; public bool GoldenCog = false;
-		public bool devpowerbool = false; public int Redmanastar = 0;
+		public bool devpowerbool = false; public int Redmanastar = 0; public int Electicpermboost = 0;
 		public int MidasIdol = 0; public bool OmegaSigil = false;
 		public bool MurkyDepths = false;
 		public int[] ammoinboxes = new int[4];
@@ -267,7 +270,16 @@ namespace SGAmod
 
 		}
 
-
+		public bool ConsumeElectricCharge(int requiredcharge,int delay)
+		{
+			if (electricCharge > requiredcharge)
+			{
+				electricdelay = Math.Max(delay,electricdelay);
+				electricCharge -= requiredcharge;
+				return true;
+			}
+			return false;
+		}
 		public void StackAttack(ref int damage, Projectile proj)
 		{
 
@@ -436,12 +448,13 @@ namespace SGAmod
 			if (gunslingerLegendtarget > -1)
 			{
 				NPC them = Main.npc[gunslingerLegendtarget];
-				if (!them.active)
+				if (!them.active || them.life<1)
 					gunslingerLegendtarget = -1;
 			}
 
 			if (soldierboost>0)
 			soldierboost-=1;
+			shinobj -= 1;
 			previoustf2emblemLevel = tf2emblemLevel;
 			tf2emblemLevel = 0;
 			ninjaSash = 0;
@@ -526,13 +539,22 @@ namespace SGAmod
 			timer += 1;
 			mudbuff = false;
 			boosterdelay -= 1;
+			electricdelay -= 1;
 			digiStacks = (int)MathHelper.Clamp(digiStacks,0,digiStacksMax);
 			CustomWings = 0;
 			JoyrideShake -= 1;
+
 			if (boosterdelay < 1)
 			{
 				boosterPowerLeft = Math.Min(boosterPowerLeft+ boosterrechargerate, boosterPowerLeftMax);
 			}
+			if (electricdelay < 1)
+			{
+				electricCharge = Math.Min(electricCharge + electricrechargerate, electricChargeMax);
+			}
+
+			electricChargeMax = Electicpermboost;
+			electricrechargerate = 0;
 			boosterrechargerate = 15;
 			boosterPowerLeftMax = 10000;
 			for (int a = 0; a < devempowerment.Length; a++)
@@ -550,6 +572,7 @@ namespace SGAmod
 			}
 			MaxCooldownStacks = 1;
 			noactionstackringofrespite = false;
+			Noviteset = 0;
 		}
 
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
@@ -852,8 +875,24 @@ namespace SGAmod
 			if (player.HasBuff(mod.BuffType("TechnoCurse")))
 			{
 				techdamage /= 2f;
-
 			}
+
+			if (Noviteset > 0 && electricChargeMax > 0)
+			{
+				if (Math.Abs(player.velocity.X) > 4f && player.velocity.Y == 0.0 && !player.mount.Active && !player.mount.Cart && electricdelay<1)
+				{
+					electricCharge += 10;
+				}
+
+				if (Noviteset > 1)
+				{
+					player.moveSpeed += (float)electricCharge / 7500f;
+					player.maxRunSpeed += (float)electricCharge / 10000f;
+					player.runAcceleration += (float)electricCharge / 7500f;
+					player.accRunSpeed += (float)electricCharge / 2500f;
+				}
+			}
+
 			DashBlink();
 
 			if (!granteditems)
@@ -1539,6 +1578,46 @@ modeproj.enhancedbees=true;
 
 		}
 
+		public bool ChainBolt()
+		{
+			WeightedRandom<int> rando = new WeightedRandom<int>();
+
+			if (ConsumeElectricCharge(750, 120))
+			{
+
+				for (int i = 0; i < Main.maxNPCs; i += 1)
+				{
+					if (Main.npc[i].active && !Main.npc[i].townNPC && !Main.npc[i].friendly)
+					{
+						if (Main.npc[i].CanBeChasedBy() && !Main.npc[i].dontTakeDamage)
+						{
+							float dist = Main.npc[i].Distance(player.Center);
+							if (dist < 250)
+							{
+								rando.Add(i, 250.00 - (double)dist);
+							}
+						}
+					}
+				}
+
+				if (rando.elements.Count > 0)
+				{
+					NPC luckyguy = Main.npc[rando.Get()];
+
+					Vector2 Speed = (luckyguy.Center - player.Center);
+					Speed.Normalize(); Speed *= 2f;
+					int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, Speed.X, Speed.Y, mod.ProjectileType("CBreakerBolt"), 30+((int)((float)(player.statDefense * techdamage))), 3f, player.whoAmI, 3);
+					IdgProjectile.Sync(prog);
+					Main.PlaySound(SoundID.Item93, player.Center);
+					return true;
+				}
+			}
+
+
+
+			return false;
+		}
+
 		private int OnHit(ref int damage, bool crit,NPC npc, Projectile projectile)
 		{
 			if (Hellion.GetHellion() != null)
@@ -1569,6 +1648,10 @@ modeproj.enhancedbees=true;
 			{
 				player.AddBuff(BuffID.Electrified, 20+(damage * 2));
 			}
+
+			if (Noviteset > 2)
+			ChainBolt();
+
 			if (CirnoWings)
 		{
 				if (npc != null)
@@ -1702,7 +1785,7 @@ modeproj.enhancedbees=true;
 			}
 			if (SGAmod.NinjaSashHotkey.JustPressed)
 			{
-				if (ninjaSash>1 && AddCooldownStack(60*90))
+				if (ninjaSash>1 && AddCooldownStack(60*60))
 				{
 					Main.PlaySound(SoundID.Item39, player.Center);
 					Vector2 tomouse = Main.MouseWorld - player.Center;
@@ -1961,7 +2044,7 @@ modeproj.enhancedbees=true;
 
 							Vector2 apos = new Vector2((float)Math.Cos(angle) * 64, (float)Math.Sin(angle) * 12);
 
-							Texture2D texture = ModContent.GetTexture("Terraria/Item_" + ItemID.ManaCrystal);
+							Texture2D texture = Main.itemTexture[ItemID.ManaCrystal];
 
 							int drawX = (int)((drawPlayer.Center.X + apos.X) - Main.screenPosition.X);
 							int drawY = (int)((drawPlayer.MountedCenter.Y + apos.Y) - Main.screenPosition.Y);//gravDir 
@@ -2020,7 +2103,7 @@ modeproj.enhancedbees=true;
 					drawY = (int)((drawPlayer.MountedCenter.Y + nalzs2 - 8f));//gravDir 
 					Vector2 whereat2 = (new Vector2(drawX, drawY).RotatedBy(drawPlayer.fullRotation, drawPlayer.MountedCenter));
 					color = Lighting.GetColor((int)(whereat2.X / 16f), (int)(whereat2.Y / 16f)) * stealth;
-					texture = ModContent.GetTexture("Terraria/Item_" + ItemID.Megashark);
+					texture = Main.itemTexture[ItemID.Megashark];
 					org = new Vector2(texture.Width * (drawPlayer.direction > 0 ? 0.25f : 0.25f), texture.Height / 2f);
 					DrawData data2 = new DrawData(texture, whereat2 - Main.screenPosition, null, color, (float)drawPlayer.fullRotation + angle, org, 0.75f, (drawPlayer.direction == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
 					data2.shader = (int)drawPlayer.cWings;
@@ -2030,7 +2113,7 @@ modeproj.enhancedbees=true;
 				nalzs = Main.rand.NextFloat(-joy, joy) / 2f;
 				nalzs2 = Main.rand.NextFloat(-joy / 1f, 0);
 
-				texture = ModContent.GetTexture("Terraria/Item_" + ItemID.ChainGun);
+				texture = Main.itemTexture[ItemID.ChainGun];
 				drawX = (int)((drawPlayer.MountedCenter.X + (drawPlayer.direction * -8) + nalzs));
 				drawY = (int)((drawPlayer.MountedCenter.Y + nalzs2 - 6f));//gravDir 
 				Vector2 whereat = (new Vector2(drawX, drawY).RotatedBy(drawPlayer.fullRotation, drawPlayer.MountedCenter));
@@ -2156,6 +2239,7 @@ modeproj.enhancedbees=true;
 			tag["devpower"] = devpowerbool;
 			tag["devpowerint"] = devpower;
 			tag["Redmanastar"] = Redmanastar;
+			tag["Electicpermboost"] = Electicpermboost;
 
 			tag["ZZZExpertiseCollectedZZZ"] = ExpertiseCollected;
 			tag["ZZZExpertiseCollectedTotalZZZ"] = ExpertiseCollectedTotal;
@@ -2202,6 +2286,8 @@ modeproj.enhancedbees=true;
 			resetver = tag.GetInt("resetver");
 			if (tag.ContainsKey("nightmareplayer"))
 			nightmareplayer = tag.GetBool("nightmareplayer");
+			if (tag.ContainsKey("Electicpermboost"))
+				Electicpermboost = tag.GetInt("Electicpermboost");
 
 			if (tag.ContainsKey("Drakenshopunlock"))
 				Drakenshopunlock = tag.GetBool("Drakenshopunlock");	

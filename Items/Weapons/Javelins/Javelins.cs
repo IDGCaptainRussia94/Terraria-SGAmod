@@ -181,44 +181,6 @@ namespace SGAmod.Items.Weapons.Javelins
             }
             
         }
-        public override int ChoosePrefix(UnifiedRandom rand)
-        {
-                switch (rand.Next(16))
-                {
-                    case 1:
-                        return PrefixID.Demonic;
-                    case 2:
-                        return PrefixID.Frenzying;
-                    case 3:
-                        return PrefixID.Dangerous;
-                    case 4:
-                        return PrefixID.Savage;
-                    case 5:
-                        return PrefixID.Furious;
-                    case 6:
-                        return PrefixID.Terrible;
-                    case 7:
-                        return PrefixID.Awful;
-                    case 8:
-                        return PrefixID.Dull;
-                    case 9:
-                        return PrefixID.Unhappy;
-                    case 10:
-                        return PrefixID.Unreal;
-                    case 11:
-                        return PrefixID.Shameful;
-                    case 12:
-                        return PrefixID.Heavy;
-                    case 13:
-                        return PrefixID.Zealous;
-                    case 14:
-                        return mod.PrefixType("Tossable");
-                    case 15:
-                        return mod.PrefixType("Impacting");
-                    default:
-                        return mod.PrefixType("Olympian");
-                }
-        }
 
         public override bool ConsumeItem(Player player)
         {

@@ -54,6 +54,7 @@ namespace SGAmod
         public static bool WorldIsTin = false;
         public static bool WorldIsNovus = true;
         public static int dungeonlevel = 0;
+        public static bool portalcanmovein = false;
 
         public static int SnapCooldown = 0;
 
@@ -77,6 +78,7 @@ namespace SGAmod
             Instance = this;
             if (SGAmod.cachedata == false)
             {
+                portalcanmovein = false;
                 oretypesprehardmode = new int[4] { TileID.Copper, TileID.Iron, TileID.Silver, TileID.Gold };
                 oretypeshardmode = new int[3] { TileID.Cobalt, TileID.Mythril, TileID.Adamantite};
                 NightmareHardcore = 0;
@@ -292,10 +294,11 @@ namespace SGAmod
             tag["downedMurk"] = downedMurklegacy;
             tag["downedMurk2"] = downedMurk;
             tag["downedHellion"] = downedHellion;
-           tag["downedWraiths"] = downedWraiths;
+            tag["downedWraiths"] = downedWraiths;
             tag["tf2quest"] = tf2quest;
             tag["craftwarning"] = craftwarning;
             tag["bossprgressor"] = bossprgressor;
+            tag["portalcanmovein"] = portalcanmovein;
             tag["GennedVirulent"] = GennedVirulent; 
             tag["downedSpiderQueen"] = downedSpiderQueen; 
             tag["downedCratrosityPML"] = downedCratrosityPML; 
@@ -355,6 +358,7 @@ namespace SGAmod
             downedCaliburnGuardians = tag.GetInt("downedCaliburnGuardians");
             downedCaliburnGuardiansPoints = tag.GetInt("downedCaliburnGuardiansPoints");
             if (tag.ContainsKey("downedCaliburnGuardianHardmode")) { downedCaliburnGuardianHardmode = tag.GetBool("downedCaliburnGuardianHardmode"); }
+            if (tag.ContainsKey("portalcanmovein")) { portalcanmovein = tag.GetBool("portalcanmovein"); }
             if (tag.ContainsKey("downedWraiths")) { downedWraiths = tag.GetInt("downedWraiths"); }
             if (tag.ContainsKey("tf2quest")) { tf2quest = 0; }//tag.GetInt("tf2quest");}
             if (tag.ContainsKey("bossprgressor")) { bossprgressor = tag.GetInt("bossprgressor"); }

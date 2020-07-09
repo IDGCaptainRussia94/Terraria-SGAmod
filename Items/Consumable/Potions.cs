@@ -51,7 +51,7 @@ namespace SGAmod.Items.Consumable
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Condenser's Potion");
+			DisplayName.SetDefault("Condensing Potion");
 			Tooltip.SetDefault("'Helps deal with overheating, allowing you to preform more actions'\nGrants an additonal free Cooldown Stack, however, all new Cooldown Stacks are 15% longer");
 		}
 

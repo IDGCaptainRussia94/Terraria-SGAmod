@@ -1,5 +1,5 @@
-# Terraria-SGAmod
-A Content mod of original content for Terraria (are you content with that?)
+# SGAmod
+IDGCaptainRussia94's content mod
 
 //Items with place holder sprites and need resprites: Heart Guard, Hellion's Cascade, Revolving West, Twines of Fate, Icicle Fall, Shark Bait, MVM Upgrade, Jagged Overgrown Spike, Joyrider, Truely Suspicious Looking Eye, Book of Jones, Hellion's Crown (Item Sprite ?)
 
@@ -13,7 +13,7 @@ Changelog:
 
 --Added
 
--Gucci Gauntlet, Soldier's Rocket Launcher, Acid Rocket, Transmutation Powder, Condenser's Potion, Ragnarok's Brew, Consumable Hell, Terra Trident, Solis Nova, Stone Barrier Staff, True Wraith Notch, Ring of Respite, Necklace O' Nerve, Plasma Pack, Gun Barrel Parts, Second Cylinder, Peacekeeper's Duster, Sparing Spurs, High Noon,Dualing Deity Shades, Gunslinger of Song and Legend, Ninja Sash, Shin Sash
+-Gucci Gauntlet, Soldier's Rocket Launcher, Acid Rocket, Transmutation Powder, Condenser's Potion, Ragnarok's Brew, Energizer Battery, Consumable Hell, Portal Essence, Terra Trident, Solis Nova, Stone Barrier Staff, True Wraith Notch, Ring of Respite, Necklace O' Nerve, Shinobi's Shadow, Plasma Pack, Gun Barrel Parts, Second Cylinder, Peacekeeper's Duster, Sparing Spurs, High Noon,Dualing Deity Shades, Gunslinger of Song and Legend, Ninja Sash, Shin Sash
 
 -Novite Ore, Bars, and Gear!
 
@@ -24,6 +24,8 @@ Changelog:
 -The Deeper Dungeons! There's a strange portal in the dungeon... (Still a bit of a WIP, find unique loot, how deep can you go?)
 
 -A complete rework for Action Cooldowns and all items that use them: they are now stackable!
+
+-Electric Charges, heavy WIP, but some items are changed to use this new system +1 new prefix to match.
 
 
 --Changed:
@@ -38,7 +40,7 @@ Changelog:
 
 -Caliburn Guardian has been moved to post EoC and the boulder attack has been given a delay
 
--Added a DPS cap to Hellion, exceeding 50K damage will make your attacks only do 1 damage
+-Added a DPS cap to Hellion, exceeding 50K DPS will make your attacks only do 1 damage
 
 -Popular Modded damage types (Calamity and Thorium's) are accounted for in items that boost class-wide general damage
 
@@ -57,6 +59,8 @@ Changelog:
 -Acid Rounds renamed to Acid Bullet
 
 -Nerfed Gatlipiller
+
+-Bolts now arc around rather than having perfect accuracy
 
 -Nerfed Serpent's Redemption of all bonus crit chance
 
@@ -80,16 +84,16 @@ Changelog:
 
 -Removed a Webmillio from the github
 
--General Quailty of Life changes like Boss Heads and better cross mod support
+-General Quailty of Life changes like Boss Heads and better cross mod support, and of course resprites
 
 
 --Fixed:
 
--The Hellion unlock message has been fixed, hopefully, for good this time! Not this time recipe browser! (Thank god if so! MAJOR props to Ekyo for helping me figure this one out!)
+-The Hellion unlock message has been fixed, hopefully, finally, for good this time! Not this time recipe browser! (Thank god if so! MAJOR props to Ekyo for helping me figure this one out!)
 
 -Hopefully Hellion going non-existant mid fight
 
--Hellion Beam textures being created at all times and better resource managment, this should hopefully not crash TML64bit within a few minutes now
+-Hellion Beam textures being created at all times and better resource managment, Also redid all uses of ModContent.GetTexture("Terraria/) being called every frame, this should hopefully not crash TML64bit within a few minutes now
 
 -Paradox Mirrors and Hellion's circle arena should no longer draw outside your screen, improving FPS
 
@@ -110,6 +114,8 @@ Changelog:
 -Mangrove Hammer not being part of the Mangrove set
 
 -Herald of War of boosting the wrong damage type
+
+-Snowfrosted now tells you to fight Cirno when outside the boss fight
 
 -Ice Faries spawning during the night, underground, and their gold dropped being too much
 

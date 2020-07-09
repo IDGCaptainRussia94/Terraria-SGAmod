@@ -161,7 +161,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 				if (type == 1)
 				{
-					Texture2D tex = ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.Leaf);
+					Texture2D tex = Main.projectileTexture[ProjectileID.Leaf];
 					int frame = (int)((projectile.localAI[0] + (i/3f))/5f);
 					frame %= 5;
 

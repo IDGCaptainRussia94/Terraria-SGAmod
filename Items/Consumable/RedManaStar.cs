@@ -142,6 +142,63 @@ namespace SGAmod.Items.Consumable
 		}
 	}
 
+	public class PortalEssence : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Portal Essence");
+			Tooltip.SetDefault("Allows the Strange Portal to 'move in' into a free housing in your town");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.maxStack = 30;
+			item.rare = 1;
+			item.value = Item.sellPrice(gold: 1);
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item9;
+			item.consumable = true;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Projectiles/FieryRock"); }
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb((Main.GlobalTime * 0.916f) % 1f, 0.8f, 0.75f);
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			foreach (TooltipLine line in tooltips)
+			{
+				if (line.mod == "Terraria" && line.Name == "ItemName")
+				{
+					line.overrideColor = Color.Lerp(Color.Yellow, Color.Blue, 0.5f + (float)Math.Sin(Main.GlobalTime * 0.5f));
+				}
+			}
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			if (SGAmod.anysubworld)
+				return false;
+				return !SGAWorld.portalcanmovein;
+		}
+		public override bool UseItem(Player player)
+		{
+			SGAWorld.portalcanmovein = true;
+			return true;
+		}
+	}
+
 	public class Debug3 : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -239,6 +296,7 @@ namespace SGAmod.Items.Consumable
 			sgaplayer.ExpertiseCollected = 0;
 			sgaplayer.ExpertiseCollectedTotal = 0;
 			sgaplayer.Redmanastar = 0;
+			sgaplayer.Electicpermboost = 0;
 			sgaplayer.gothellion = false;
 			sgaplayer.Drakenshopunlock = false;
 			sgaplayer.GenerateNewBossList();

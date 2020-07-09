@@ -444,7 +444,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			getstuff();
-			Texture2D tex = ModContent.GetTexture("Terraria/FlameRing");
+			Texture2D tex = SGAmod.ExtraTextures[93];
 			float timeleft = ((float)projectile.timeLeft / 60f);
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition));

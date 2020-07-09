@@ -380,7 +380,7 @@ namespace SGAmod.Items.Weapons
 		protected override Vector2 offsetholding => new Vector2(0, -16);
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D tex = ModContent.GetTexture("Terraria/Tiles_" + TileID.SnowballLauncher);
+			Texture2D tex = Main.tileTexture[TileID.SnowballLauncher];
 			int frames = 4;
 			//Texture2D texGlow = ModContent.GetTexture("SGAmod/Items/Weapons/SeriousSam/BeamGunProjGlow");
 			SpriteEffects effects = SpriteEffects.FlipHorizontally;

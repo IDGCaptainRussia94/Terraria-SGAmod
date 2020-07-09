@@ -84,7 +84,7 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override bool CheckConditions(int left, int right, int top, int bottom)
 		{
-			return true;
+			return SGAWorld.portalcanmovein;
 		}
 
 		public override string TownNPCName()

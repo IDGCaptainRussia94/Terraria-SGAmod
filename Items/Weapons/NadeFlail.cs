@@ -135,7 +135,7 @@ namespace SGAmod.Items.Weapons
         {
 
 
-                Texture2D texture = ModContent.GetTexture("Terraria/Chain2");
+                Texture2D texture = Main.chain2Texture;
 
             Vector2 position = projectile.Center;
             Vector2 mountedCenter = Main.player[projectile.owner].MountedCenter;
@@ -176,7 +176,7 @@ namespace SGAmod.Items.Weapons
             for (int num315 = 0; num315 < angles.Length; num315 = num315 + 1)
             {
                 Vector2 there = new Vector2((float)Math.Cos(angles[num315]), (float)Math.Sin(angles[num315])) * dist[num315];
-                Texture2D tex2 = ModContent.GetTexture("Terraria/Item_" + ItemID.StickyGrenade);
+                Texture2D tex2 = Main.itemTexture[ItemID.StickyGrenade];
                 Main.spriteBatch.Draw(tex2, there, sourceRectangle, lightColor, 0, new Vector2(tex2.Width, tex2.Height)/2, 1f, SpriteEffects.None, 0.0f);
             }
             Main.spriteBatch.End();

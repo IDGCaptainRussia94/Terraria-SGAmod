@@ -714,7 +714,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D texture = ModContent.GetTexture("Terraria/Chain");
+			Texture2D texture = Main.chainTexture;
 
 			Vector2 position = projectile.Center;
 			Vector2 mountedCenter = Main.player[projectile.owner].MountedCenter;

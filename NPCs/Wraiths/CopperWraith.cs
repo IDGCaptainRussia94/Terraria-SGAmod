@@ -11,16 +11,16 @@ using Idglibrary;
 
 namespace SGAmod.NPCs.Wraiths
 {
-	public class CopperArmorPiece: ModNPC
+	public class CopperArmorPiece : ModNPC
 	{
 
 
-		public int armortype=ItemID.CopperChainmail;
-		public int attachedID=0;
-		public int CoreID=0;
-		public float friction=0.75f;
-		public float speed=0.3f;
-		public string attachedType="CopperWraith";
+		public int armortype = ItemID.CopperChainmail;
+		public int attachedID = 0;
+		public int CoreID = 0;
+		public float friction = 0.75f;
+		public float speed = 0.3f;
+		public string attachedType = "CopperWraith";
 		public bool selfdestruct;
 
 		public override void SendExtraAI(BinaryWriter writer)
@@ -36,26 +36,26 @@ namespace SGAmod.NPCs.Wraiths
 		}
 
 		public virtual void ArmorMalfunction()
-        {  
-        selfdestruct=true;
-        CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
-        npc.velocity=new Vector2(Main.rand.Next(-5,5),Main.rand.Next(-5,5));
-        npc.StrikeNPCNoInteraction((int)(npc.lifeMax*0.15f), 0f, 0);
-        }
+		{
+			selfdestruct = true;
+			CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
+			npc.velocity = new Vector2(Main.rand.Next(-5, 5), Main.rand.Next(-5, 5));
+			npc.StrikeNPCNoInteraction((int)(npc.lifeMax * 0.15f), 0f, 0);
+		}
 
 		public override void NPCLoot()
 		{
 
-		if (Main.rand.Next(0,3)<2)
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CopperWraithNotch"));
+			if (Main.rand.Next(0, 3) < 2)
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CopperWraithNotch"));
 		}
 
 		public override bool CheckActive()
 		{
-        CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
-		int npctype=mod.NPCType(myself.attachedType);
-		NPC myowner=Main.npc[myself.attachedID];
-		return (!myowner.active);
+			CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
+			int npctype = mod.NPCType(myself.attachedType);
+			NPC myowner = Main.npc[myself.attachedID];
+			return (!myowner.active);
 		}
 
 		public override void SetStaticDefaults()
@@ -98,10 +98,10 @@ namespace SGAmod.NPCs.Wraiths
 		}
 		public override void AI()
 		{
-		int npctype=mod.NPCType(attachedType);
-		if (NPC.CountNPCS(npctype)>0){
-		NPC myowner=Main.npc[NPC.FindFirstNPC(npctype)];
-		}else{npc.active=false;}
+			int npctype = mod.NPCType(attachedType);
+			if (NPC.CountNPCS(npctype) > 0) {
+				NPC myowner = Main.npc[NPC.FindFirstNPC(npctype)];
+			} else { npc.active = false; }
 
 		}
 
@@ -126,9 +126,9 @@ namespace SGAmod.NPCs.Wraiths
 	}
 
 
-	public class CopperArmorChainmail: CopperArmorPiece
+	public class CopperArmorChainmail : CopperArmorPiece
 	{
-		public int armortype=ItemID.CopperChainmail;
+		public int armortype = ItemID.CopperChainmail;
 
 		public override void SetDefaults()
 		{
@@ -159,24 +159,82 @@ namespace SGAmod.NPCs.Wraiths
 		}
 		public override void AI()
 		{
-		CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
-		NPC myowner=Main.npc[myself.attachedID];
-		if (myowner.active==false){
-		myself.ArmorMalfunction();
-		}else{
-		npc.velocity=npc.velocity+(myowner.Center+new Vector2((float)npc.ai[1],(float)npc.ai[2])-npc.Center)*(myself.speed);
-		npc.velocity=npc.velocity*myself.friction;
-		npc.rotation=(float)npc.velocity.X*0.1f;
-		//npc.position=myowner.position;
-		npc.timeLeft=999;
+			CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
+			NPC myowner = Main.npc[myself.attachedID];
+			if (myowner.active == false) {
+				myself.ArmorMalfunction();
+			} else {
+				npc.velocity = npc.velocity + (myowner.Center + new Vector2((float)npc.ai[1], (float)npc.ai[2]) - npc.Center) * (myself.speed);
+				npc.velocity = npc.velocity * myself.friction;
+				npc.rotation = (float)npc.velocity.X * 0.1f;
+				//npc.position=myowner.position;
+				npc.timeLeft = 999;
+			}
+
+
 		}
 
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D texture = Main.npcTexture[npc.type];
+			Vector2 drawPos = npc.Center - Main.screenPosition;
+			Color lights = lightColor;
+			lights.A = (byte)(npc.alpha);
+			Vector2 origin = new Vector2((float)texture.Width * 0.5f, (float)texture.Height * 0.5f);
 
+			Vector2 drawoffset = new Vector2((float)Math.Sin(Main.GlobalTime * 1.61775f + ((float)npc.whoAmI * 5.734575f)) * 7f, (float)Math.Cos(Main.GlobalTime*1.246f + ((float)npc.whoAmI * 5.734575f)) * 5f);
+
+			if (GetType() == typeof(CopperArmorChainmail) || GetType() == typeof(CopperArmorGreaves) || GetType() == typeof(CopperArmorHelmet)
+				|| GetType() == typeof(CobaltArmorChainmail) || GetType() == typeof(CobaltArmorGreaves) || GetType() == typeof(CobaltArmorHelmet))
+			{
+				Rectangle drawrect;
+				texture = GetType() == typeof(CobaltArmorGreaves) ? mod.GetTexture("NPCs/Wraiths/Cobalt_Wraith_resprite_leggys") : mod.GetTexture("NPCs/Wraiths/Copper_Wraith_resprite_leggys");
+				origin = new Vector2((float)texture.Width * 0.5f, -12);
+				if (GetType() == typeof(CopperArmorChainmail) || GetType() == typeof(CobaltArmorChainmail))
+				{
+					texture = GetType() == typeof(CobaltArmorChainmail) ? mod.GetTexture("NPCs/Wraiths/Cobalt_Wraith_resprite_chestplate") : mod.GetTexture("NPCs/Wraiths/Copper_Wraith_resprite_chestplate");
+					origin = new Vector2((float)texture.Width * 0.5f, (float)texture.Height * 0.5f);
+				}
+				if (GetType() == typeof(CopperArmorHelmet) || GetType() == typeof(CobaltArmorHelmet))
+				{
+					texture = GetType() == typeof(CobaltArmorHelmet) ? mod.GetTexture("NPCs/Wraiths/Cobalt_Wraith_resprite_Helmet") : mod.GetTexture("NPCs/Wraiths/Copper_Wraith_resprite_Helmet_1");
+					int offset = (int)(Math.Min(((int)((float)Main.GlobalTime * 8f)) % 15f, 5) * ((float)texture.Height / 6f));
+					drawrect = new Rectangle(0, offset, texture.Width, (int)(texture.Height / 6f));
+					origin = new Vector2((float)texture.Width * 0.5f, ((float)(texture.Height / 6f) * 0.5f) + 20f);
+				}
+				else
+				{
+					drawrect = new Rectangle(0, 0, texture.Width, texture.Height);
+				}
+
+				SpriteEffects effect = SpriteEffects.None;
+				Player theplayer = Main.LocalPlayer;
+				if (theplayer.active && !theplayer.dead)
+				{
+					if (theplayer.Center.X < npc.Center.X)
+						effect = SpriteEffects.FlipHorizontally;
+				}
+
+				for (float speez = npc.velocity.Length(); speez > 0f; speez -= 0.5f)
+				{
+					Vector2 speedz = (npc.velocity); speedz.Normalize();
+					spriteBatch.Draw(texture, drawPos + (speedz * speez * -2f) + drawoffset, drawrect, lights * 0.02f, npc.rotation, origin, new Vector2(1f, 1f), effect, 0f);
+
+				}
+
+				spriteBatch.Draw(texture, drawPos + drawoffset, drawrect, lightColor, npc.rotation, origin, new Vector2(1f, 1f), effect, 0f);
+
+			}
+			else
+			{
+				spriteBatch.Draw(texture, drawPos + (drawoffset / 3f), null, lightColor, npc.rotation, origin, new Vector2(1f, 1f), SpriteEffects.None, 0f);
+			}
+			return false;
 		}
 
 	}
 
-	public class CopperArmorHelmet: CopperArmorChainmail
+	public class CopperArmorHelmet : CopperArmorChainmail
 	{
 		public int armortype=ItemID.CopperHelmet;
 

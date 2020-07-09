@@ -79,8 +79,10 @@ namespace SGAmod
 		{
 
 			if (Main.gameMenu || SGAmod.Instance == null && !Main.dedServ)
-				return true;
+				return false;
 			Player locply = Main.LocalPlayer;
+			if (locply == null)
+				return false;
 			if (locply != null && locply.whoAmI == Main.myPlayer)
 			{
 				SpriteBatch spriteBatch = Main.spriteBatch;
@@ -181,24 +183,70 @@ namespace SGAmod
 					SGAPlayer modply = locply.GetModPlayer<SGAPlayer>();
 
 					float perc = (float)modply.boosterPowerLeft / (float)modply.boosterPowerLeftMax;
+
+					Texture2D texture = mod.GetTexture("BoostBar");
+
+					int offsetY = -texture.Height;
+
 					if (perc > 0)
 					{
 
-						spriteBatch.End();
-
-						Vector2 scaler = new Vector2(modply.boosterPowerLeftMax / 300f, 1);
-						int drawX = (int)(((locply.position.X + (locply.width / 2))) - Main.screenPosition.X);
-						int drawY = (int)((locply.position.Y + (locply.gravDir == 1 ? locply.height + 10 : -10)) - Main.screenPosition.Y);//gravDir 
-
-						spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
-
 						float drawcolortrans = MathHelper.Clamp((modply.boosterdelay + 100) / 100f, 0f, 1f);
-						Texture2D texture = mod.GetTexture("BoostBar");
-						spriteBatch.Draw(texture, new Vector2(-scaler.X - 2, 0), new Rectangle(0, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-						spriteBatch.Draw(texture, new Vector2(-scaler.X, 0), new Rectangle(2, 0, 2, texture.Height), Color.DarkGray * drawcolortrans, 0f, new Vector2(0, 0), scaler, SpriteEffects.None, 0);
-						spriteBatch.Draw(texture, new Vector2(-scaler.X, 0), new Rectangle(2, 0, 2, texture.Height), Color.Orange * drawcolortrans, 0f, new Vector2(0, 0), new Vector2(scaler.X * perc, scaler.Y), SpriteEffects.None, 0);
-						spriteBatch.Draw(texture, new Vector2(+scaler.X, 0), new Rectangle(4, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+
+							spriteBatch.End();
+
+							Vector2 scaler = new Vector2(modply.boosterPowerLeftMax / 300f, 1);
+							int drawX = (int)(((locply.position.X + (locply.width / 2))) - Main.screenPosition.X);
+							int drawY = (int)((locply.position.Y + (locply.gravDir == 1 ? locply.height + 10 : -10)) - Main.screenPosition.Y);//gravDir 
+
+							spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
+
+						if (drawcolortrans > 0f)
+						{
+							spriteBatch.Draw(texture, new Vector2(-scaler.X - 2, offsetY), new Rectangle(0, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+							spriteBatch.Draw(texture, new Vector2(-scaler.X, offsetY), new Rectangle(2, 0, 2, texture.Height), Color.DarkGray * drawcolortrans, 0f, new Vector2(0, 0), scaler, SpriteEffects.None, 0);
+							spriteBatch.Draw(texture, new Vector2(-scaler.X, offsetY), new Rectangle(2, 0, 2, texture.Height), Color.Orange * drawcolortrans, 0f, new Vector2(0, 0), new Vector2(scaler.X * perc, scaler.Y), SpriteEffects.None, 0);
+							spriteBatch.Draw(texture, new Vector2(+scaler.X, offsetY), new Rectangle(4, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+							offsetY += texture.Height;
+						}
 					}
+
+					if (modply.electricChargeMax > 0)
+					{
+						perc = (float)modply.electricCharge / (float)modply.electricChargeMax;
+						if (perc > 0)
+						{
+
+							spriteBatch.End();
+
+							Vector2 scaler = new Vector2(modply.electricChargeMax / 200f, 1);
+							int drawX = (int)(((locply.position.X + (locply.width / 2))) - Main.screenPosition.X);
+							int drawY = (int)((locply.position.Y + (locply.gravDir == 1 ? locply.height + 10 : -10)) - Main.screenPosition.Y);//gravDir 
+
+							spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
+
+							float drawcolortrans = MathHelper.Clamp((modply.electricdelay + 100) / 100f, 0.15f+(float)Math.Sin(Main.GlobalTime*5f)/10f, 1f)* (MathHelper.Clamp((1f-perc) * 250f, 0f, 1f));
+
+							if (drawcolortrans > 0f)
+							{
+								spriteBatch.Draw(texture, new Vector2(-scaler.X - 2, offsetY), new Rectangle(0, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+								spriteBatch.Draw(texture, new Vector2(-scaler.X, offsetY), new Rectangle(2, 0, 2, texture.Height), Color.DarkGray * drawcolortrans, 0f, new Vector2(0, 0), scaler, SpriteEffects.None, 0);
+
+								spriteBatch.End();
+								spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
+								GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye).Apply(null);
+
+								spriteBatch.Draw(texture, new Vector2(-scaler.X, offsetY), new Rectangle(2, 2, 2, texture.Height-2), Color.Aqua * drawcolortrans, 0f, new Vector2(0, 0), new Vector2(scaler.X * perc, scaler.Y), SpriteEffects.None, 0);
+								
+								spriteBatch.End();
+								spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
+
+								spriteBatch.Draw(texture, new Vector2(+scaler.X, offsetY), new Rectangle(4, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+								offsetY += texture.Height;
+							}
+						}
+					}
+
 					perc = (float)SGAWorld.SnapCooldown / (60f * 300f);
 					if (perc > 0)
 					{
@@ -212,28 +260,20 @@ namespace SGAmod
 						spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
 
 						float drawcolortrans = MathHelper.Clamp(perc*50f, 0f, 1f);
-						Texture2D texture = mod.GetTexture("BoostBar");
-						spriteBatch.Draw(texture, new Vector2(-scaler.X - 2, -texture.Height), new Rectangle(0, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
-						spriteBatch.Draw(texture, new Vector2(-scaler.X, -texture.Height), new Rectangle(2, 0, 2, texture.Height), Color.DarkGray * drawcolortrans, 0f, new Vector2(0, 0), scaler, SpriteEffects.None, 0);
-						spriteBatch.Draw(texture, new Vector2(-scaler.X, -texture.Height), new Rectangle(2, 0, 2, texture.Height), Main.hslToRgb((Main.GlobalTime/3f)%1f,1f,0.75f) * drawcolortrans, 0f, new Vector2(0, 0), new Vector2(scaler.X * perc, scaler.Y), SpriteEffects.None, 0);
-						spriteBatch.Draw(texture, new Vector2(+scaler.X, -texture.Height), new Rectangle(4, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+						spriteBatch.Draw(texture, new Vector2(-scaler.X - 2, offsetY), new Rectangle(0, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+						spriteBatch.Draw(texture, new Vector2(-scaler.X, offsetY), new Rectangle(2, 0, 2, texture.Height), Color.DarkGray * drawcolortrans, 0f, new Vector2(0, 0), scaler, SpriteEffects.None, 0);
+						spriteBatch.Draw(texture, new Vector2(-scaler.X, offsetY), new Rectangle(2, 0, 2, texture.Height), Main.hslToRgb((Main.GlobalTime/3f)%1f,1f,0.75f) * drawcolortrans, 0f, new Vector2(0, 0), new Vector2(scaler.X * perc, scaler.Y), SpriteEffects.None, 0);
+						spriteBatch.Draw(texture, new Vector2(+scaler.X, offsetY), new Rectangle(4, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+						offsetY += texture.Height;
 					}
-				}
 
-				//spriteBatch.End();
-				//spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
-				
-				if (!locply.dead)
-				{
-					SGAPlayer modply = locply.GetModPlayer<SGAPlayer>();
 					if (modply.CooldownStacks.Count > 0)
 					{
 
-						SGAmod mod = SGAmod.Instance;
 
-						Texture2D texture = mod.GetTexture("ActionCooldown");
+						texture = mod.GetTexture("ActionCooldown");
 						int drawX = (int)(((-texture.Width / 4f)));
-						int drawY = (int)(((48)));//gravDir 
+						int drawY = (int)(((48+offsetY)));//gravDir 
 
 						spriteBatch.End();
 						spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(locply.Center.X - Main.screenPosition.X, locply.Center.Y - Main.screenPosition.Y, 0));
@@ -246,7 +286,7 @@ namespace SGAmod
 							{
 								float xoffset = ((float)q * ((float)texture.Width * 0.5f));
 
-								float perc = Math.Min(1f, (float)modply.CooldownStacks[q].timeleft / 30f);
+								perc = Math.Min(1f, (float)modply.CooldownStacks[q].timeleft / 30f);
 								float percprev = 0f;
 								if (q - 1 >= 0)
 									percprev = Math.Min(1f, (float)modply.CooldownStacks[q - 1].timeleft / 30f);

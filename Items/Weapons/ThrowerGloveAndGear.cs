@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
 using SGAmod.NPCs.Sharkvern;
 using AAAAUThrowing;
+using Terraria.Utilities;
 
 namespace SGAmod.Items.Weapons
 {
@@ -336,8 +337,8 @@ namespace SGAmod.Items.Weapons
 			tooltips.Add(new TooltipLine(mod, "GucciGlove", Idglib.ColorText(Color.White, "100000 * ((Melee+Ranged+Magic+Summon+Throwing)/5)")));
 			tooltips.Add(new TooltipLine(mod, "GucciGlove", Idglib.ColorText(Color.White, "If an enemy's life exceeds this they will will receive the fading debuff")));
 			tooltips.Add(new TooltipLine(mod, "GucciGlove", Idglib.ColorText(Color.White, "This debuff does massive damage over time, and fades enemies out of existance when they run out of life")));
-			tooltips.Add(new TooltipLine(mod, "GucciGlove", Idglib.ColorText(Color.White, "Bosses will never be able to be erased noramlly")));
-			tooltips.Add(new TooltipLine(mod, "GucciGlove", Idglib.ColorText(Color.White, "Enemies who fade out of existance do not drop anything or count as being killed")));
+			tooltips.Add(new TooltipLine(mod, "GucciGlove", Idglib.ColorText(Color.White, "Bosses affected will only receive the fading debuff")));
+			tooltips.Add(new TooltipLine(mod, "GucciGlove", Idglib.ColorText(Color.White, "Enemies who fade out of existance do not drop anything (unless a boss) or count as being killed")));
 
 			}
 			else
@@ -611,6 +612,7 @@ namespace SGAmod.Items.Weapons
 			item.CloneDefaults(ItemID.Grenade);
 			item.useStyle = 1;
 			item.Throwing().thrown = true;
+			item.thrown = false;
 			item.damage = 65;
 			item.shootSpeed = 3f;
 			item.shoot = mod.ProjectileType("AcidGrenadeProj");
@@ -650,6 +652,7 @@ namespace SGAmod.Items.Weapons
 			item.CloneDefaults(ItemID.Grenade);
 			item.useStyle = 1;
 			item.Throwing().thrown = true;
+			item.thrown = false;
 			item.damage = 72;
 			item.shootSpeed = 3f;
 			item.shoot = mod.ProjectileType("ThermalGrenadeProj");
@@ -840,6 +843,7 @@ namespace SGAmod.Items.Weapons
 			item.CloneDefaults(ItemID.MolotovCocktail);
 			item.useStyle = 1;
 			item.Throwing().thrown = true;
+			item.thrown = false;
 			item.damage = 50;
 			item.useTime = 40;
 			item.useAnimation = 40;
@@ -1445,7 +1449,7 @@ namespace SGAmod.Items.Weapons
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 
-			Texture2D tex = ModContent.GetTexture("Terraria/NPC_"+NPCID.Shark);
+			Texture2D tex = Main.npcTexture[NPCID.Shark];
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
 			Color color = projectile.GetAlpha(lightColor) * 1f; //* ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);

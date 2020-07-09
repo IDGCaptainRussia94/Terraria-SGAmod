@@ -522,7 +522,7 @@ spriteBatch.Draw(texture, drawPos, null, glowingcolors1, npc.spriteDirection+(np
 			if (fighttversion == 1 && warninglevel > maxfight && quitermode > -1)
 			{
 
-				Texture2D sun = ModContent.GetTexture("Terraria/Sun");
+				Texture2D sun = SGAmod.ExtraTextures[100];
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
@@ -793,7 +793,6 @@ return false;
 
 			Vector2 drawOrigin = new Vector2(Main.npcTexture[npc.type].Width/2, Main.npcTexture[npc.type].Height / 2);
 			//spriteBatch.Draw(Main.npcTexture[npc.type], npc.position-Main.screenPosition, null, drawColor, npc.rotation, drawOrigin, npc.scale, npc.spriteDirection > 0 ? (SpriteEffects.FlipVertically) : SpriteEffects.None, 0f);
-			//spriteBatch.Draw(ModContent.GetTexture("Terraria/Glow_197"), npc.position - Main.screenPosition, null, drawColor, npc.rotation, drawOrigin, npc.scale, npc.spriteDirection < 1 ? (SpriteEffects.FlipVertically) : SpriteEffects.None, 0f);
 
 
 			return true;
@@ -1940,9 +1939,9 @@ return false;
 
 			if (scale > 0)
 			{
-				Texture2D inner = ModContent.GetTexture("Terraria/Projectile_" + 658);
-				Texture2D texture = ModContent.GetTexture("Terraria/Projectile_" + 641);
-				Texture2D outer = ModContent.GetTexture("Terraria/Projectile_" + 657);
+				Texture2D inner = SGAmod.ExtraTextures[98];
+				Texture2D texture = SGAmod.ExtraTextures[99];
+				Texture2D outer = SGAmod.ExtraTextures[101];
 				spriteBatch.Draw(inner, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Magenta, lightColor, 0.2f), (float)Math.Sin((double)projectile.rotation), new Vector2(inner.Width / 2, inner.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
 				spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Turquoise, lightColor, 0.15f), projectile.rotation, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
 				spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.White, lightColor, 0.25f), -projectile.rotation, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;

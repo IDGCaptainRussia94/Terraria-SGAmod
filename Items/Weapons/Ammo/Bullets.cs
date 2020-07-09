@@ -182,13 +182,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 
-			Texture2D inner = ModContent.GetTexture("Terraria/Projectile_" + 658);
-			/*Texture2D texture = ModContent.GetTexture("Terraria/Projectile_" + 641);
-			Texture2D outer = ModContent.GetTexture("Terraria/Projectile_" + 657);
-			spriteBatch.Draw(inner, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Magenta, lightColor, 0.6f), (float)Math.Sin((double)projectile.rotation), new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
-			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Magenta, lightColor, 0.75f), projectile.rotation, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
-			spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Magenta, lightColor, 0.75f), -projectile.rotation, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
-*/
+			Texture2D inner = SGAmod.ExtraTextures[92];
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);

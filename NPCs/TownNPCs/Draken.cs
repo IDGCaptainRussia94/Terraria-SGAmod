@@ -762,7 +762,7 @@ namespace SGAmod.NPCs.TownNPCs
 
 
 			//effect += 0.1f;
-			Texture2D inner = ModContent.GetTexture("Terraria/Extra_19");
+			Texture2D inner = SGAmod.ExtraTextures[19];
 
 			for (int i = 0; i < 360; i += 360 / 12)
 			{

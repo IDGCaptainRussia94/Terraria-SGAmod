@@ -487,7 +487,6 @@ namespace SGAmod.Dimensions
                 }*/
 
 
-                //Texture2D myTexture = ModContent.GetTexture("Terraria/NPC_"+NPCID.EyeofCthulhu);
                 float alpha = 1f-((Main.LocalPlayer.GetModPlayer<SGADimPlayer>().lightsize - 1800f) / 600f);
 
                 if (alpha > 0f)

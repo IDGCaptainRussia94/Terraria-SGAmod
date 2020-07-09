@@ -2,18 +2,18 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using AAAAUThrowing;
+using System;
 
 namespace SGAmod.Items.Armors
 {
 
 	[AutoloadEquip(EquipType.Head)]
-	public class UnmanedHood : ModItem
+	public class NoviteHelmet : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Novus Hood");
-			Tooltip.SetDefault("5% faster item use times");
+			DisplayName.SetDefault("Novite Helmet");
+			Tooltip.SetDefault("5% increased Technological damage\nGain an additional free Cooldown Stack\n+1500 Max Electric Charge");
 		}
 		public override void SetDefaults()
 		{
@@ -21,17 +21,18 @@ namespace SGAmod.Items.Armors
 			item.height = 18;
 			item.value = 10000;
 			item.rare = 2;
-			item.defense=2;
+			item.defense=3;
 		}
 		public override void UpdateEquip(Player player)
 		{
-			SGAPlayer sgaplayer = player.GetModPlayer(mod,typeof(SGAPlayer).Name) as SGAPlayer;
-            sgaplayer.UseTimeMul+=0.05f;
+			player.SGAPly().techdamage += 0.05f;
+			player.SGAPly().MaxCooldownStacks += 1;
+			player.SGAPly().electricChargeMax += 1500;
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -39,12 +40,12 @@ namespace SGAmod.Items.Armors
 	}
 
 	[AutoloadEquip(EquipType.Body)]
-	public class UnmanedBreastplate : ModItem
+	public class NoviteChestplate : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Novus Breastplate");
-			Tooltip.SetDefault("5% increased crit chance");
+			DisplayName.SetDefault("Novite Chestplate");
+			Tooltip.SetDefault("10% increased Technological and Trap damage\n+1 passive Electric Charge Rate\n+2500 Max Electric Charge");
 		}
 		public override void SetDefaults()
 		{
@@ -52,19 +53,19 @@ namespace SGAmod.Items.Armors
 			item.height = 18;
 			item.value = 10000;
 			item.rare = 2;
-			item.defense=4;
+			item.defense=5;
 		}
 		public override void UpdateEquip(Player player)
 		{
-			player.meleeCrit += 5;
-			player.rangedCrit += 5;
-			player.magicCrit += 5;
-			player.Throwing().thrownCrit += 5;
-		}		
+			player.SGAPly().techdamage += 0.10f;
+			player.SGAPly().TrapDamageMul += 0.10f;
+			player.SGAPly().electricChargeMax += 2500;
+			player.SGAPly().electricrechargerate += 1;
+		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 15);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 15);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -72,12 +73,12 @@ namespace SGAmod.Items.Armors
 	}
 
 	[AutoloadEquip(EquipType.Legs)]
-	public class UnmanedLeggings : ModItem
+	public class NoviteLeggings : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Novus Leggings");
-			Tooltip.SetDefault("5% increased movement speed\n10% increased acceleration and max running speed");
+			DisplayName.SetDefault("Novite Leggings");
+			Tooltip.SetDefault("5% increased Technological damage\nCharge is built up by running around at high speeds (600/Second)\n+1000 Max Electric Charge");
 		}
 		public override void SetDefaults()
 		{
@@ -89,14 +90,14 @@ namespace SGAmod.Items.Armors
 		}
 		public override void UpdateEquip(Player player)
 		{
-			player.moveSpeed *= 1.05f;
-			player.accRunSpeed *= 1.1f;
-			player.maxRunSpeed *= 1.1f;
+			player.SGAPly().techdamage += 0.05f;
+			player.SGAPly().Noviteset = Math.Max(player.SGAPly().Noviteset, 1);
+			player.SGAPly().electricChargeMax += 1000;
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

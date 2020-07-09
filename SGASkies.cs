@@ -257,7 +257,7 @@ namespace SGAmod
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 				ArmorShaderData shader2 = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye); shader2.Apply(null);
-				Texture2D sun = ModContent.GetTexture("Terraria/Sun");
+				Texture2D sun = SGAmod.ExtraTextures[100];
 				spriteBatch.Draw(sun, new Vector2(Main.screenWidth / 2, Main.screenHeight / 8), null, Color.DeepPink * SGAmod.ProgramSkyAlpha, 0, new Vector2(sun.Width / 2f, sun.Height / 2f), new Vector2(5f, 5f) * SGAmod.ProgramSkyAlpha, SpriteEffects.None, 0f);
 			}
 			Main.spriteBatch.End();

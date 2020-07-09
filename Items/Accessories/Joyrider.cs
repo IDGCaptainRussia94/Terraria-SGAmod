@@ -33,7 +33,7 @@ namespace SGAmod.Items.Accessories
 		{
 			if (!Main.gameMenu)
 			{
-				Texture2D texture = ModContent.GetTexture("Terraria/Item_" + ItemID.Jetpack);
+				Texture2D texture = Main.itemTexture[ItemID.Jetpack];
 				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
 				spriteBatch.Draw(texture, item.Center - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
 			}
@@ -43,7 +43,7 @@ namespace SGAmod.Items.Accessories
 		{
 			if (!Main.gameMenu)
 			{
-				Texture2D texture = ModContent.GetTexture("Terraria/Item_" + ItemID.Jetpack);
+				Texture2D texture = Main.itemTexture[ItemID.Jetpack];
 				Vector2 slotSize = new Vector2(52f, 52f);
 				position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
 				Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;

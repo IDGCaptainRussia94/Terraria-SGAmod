@@ -50,21 +50,21 @@ namespace SGAmod.Items.Weapons
 			item.reuseDelay = 5;
 			item.expert=true;
 		}
-
 		public override void AddRecipes()
 		{
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.LunarBar, 10);
-            recipe.AddIngredient(ItemID.FragmentVortex, 8);
-            recipe.AddIngredient(ItemID.FragmentNebula, 6);
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("NoviteBlaster"), 1);
+			recipe.AddIngredient(ItemID.LunarBar, 8);
+			recipe.AddIngredient(ItemID.FragmentVortex, 6);
+			recipe.AddIngredient(ItemID.FragmentNebula, 5);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
-			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
+			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 2);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 5);
 			recipe.AddIngredient(mod.ItemType("ManaBattery"), 2);
 			recipe.AddIngredient(mod.ItemType("CosmicFragment"), 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
-            recipe.AddRecipe();
+			recipe.AddRecipe();
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)

@@ -234,7 +234,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Elite Emblem");
-			Tooltip.SetDefault("10% increased crit chance, 20% increased damage, 50% increased throwing velocity\n100 increased Max HP\n120 Increased Max Mana and 10% mana cost reduction\n15% extra throwing damage\nRestored mana when hit and effects of MVM Upgrade");
+			Tooltip.SetDefault("10% increased crit chance, 20% increased damage, 50% increased throwing velocity\n100 increased Max HP\n120 Increased Max Mana and 10% mana cost reduction\n15% extra throwing damage\nEffects of MVM Upgrade");
 		}
 
 		public override void SetDefaults()
@@ -269,7 +269,6 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("TF2EmblemAssassin"), 1);
 			recipe.AddIngredient(mod.ItemType("MVMUpgrade"), 1);
-			recipe.AddIngredient(ItemID.MagicCuffs, 1);
 			recipe.AddIngredient(ItemID.ManaCrystal, 3);
 			recipe.AddIngredient(ItemID.LifeFruit, 5);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);

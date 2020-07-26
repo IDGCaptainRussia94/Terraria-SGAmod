@@ -90,7 +90,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.reuseDelay = 30;
 			item.useStyle = 1;
 			item.knockBack = 5;
-			Item.sellPrice(0, 5, 0, 0);
+			item.value=Item.buyPrice(0, 5, 0, 0);
 			item.rare = 2;
 			item.UseSound = SoundID.Item1;
 			item.shoot = mod.ProjectileType("CaliburnSpectralBlade");
@@ -219,7 +219,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.reuseDelay = 30;
 			item.useStyle = 1;
 			item.knockBack = 8;
-			Item.sellPrice(0, 5, 0, 0);
+			item.value = Item.buyPrice(0, 5, 0, 0);
 			item.rare = 2;
 			item.UseSound = SoundID.Item1;
 			item.shoot = mod.ProjectileType("CaliburnHomingSword");
@@ -560,7 +560,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.reuseDelay = 30;
 			item.useStyle = 1;
 			item.knockBack = 5;
-			Item.sellPrice(0, 4, 0, 0);
+			item.value = Item.buyPrice(0, 5, 0, 0);
 			item.rare = 2;
 	        item.UseSound = SoundID.Item1;
 	        item.shoot=mod.ProjectileType("SurtCharging");

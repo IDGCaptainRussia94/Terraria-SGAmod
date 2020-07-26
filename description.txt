@@ -18,7 +18,151 @@ And finally, alot of content in this mod is placeholder sprites due to a lack of
 
 Changelog:
 
-3.100-(7/9/20)-End of the Beginning pt2:
+3.200-(7/25/20)-End of the Beginning pt3:
+
+
+--Added:
+
+-Eastern Gong, Laser Lance, Beserker Aura Staff
+
+-New Dialog options for Draken! No more is there a "button 2"
+
+-Fargo's Mutant Mod Support
+
+
+--Changed:
+
+-Acidic Skull and Radiation Cure both now add resistance against the health lose from the Radiation debuffs (This does not include Limbo Fading however)
+
+-Entrophite Tranmuter has been moved to Draken's shop (4000 Expertise to unlock, 750 to purchase)
+
+-More overhauls and changed moves to Hellion
+
+-Portal now gets in on the party
+
+-Nightmare's Expertise bonus has been increased to 25% from 15%
+
+-Dank Wood Armor has been buffed a bit to compensate for the effort required to get it
+
+-Infact added the Stone Barrier Staff to be obtainable, check the Deeper Dungeons
+
+-Removed Mana Battery from Condensing Potion recipe; it really didn't make much sense
+
+-Removed bonus action cooldown stack off Novite Helmet, and replaced with a energy saving buff
+
+-Greatly reduced item values for Cratrosity's drops, and the boss's own gold dropped down to 10 gold (from 45)
+
+-If the Traveling Merchant is selling Soldier's Rocket Launcher or the player owns one, he now also sells Rocket MK1's
+
+-Energizer Battery's restore percent decreased to 20%
+
+
+--Fixed
+
+-Hopefully, fixed the unkillable Supreme Pinky Glitch
+
+-Throwing Gloves not accounting for Throwing Item Saving Chances
+
+-The broken tools bug that happened when you died in the Deeper Dungeons and couldn't use your tools without restarting your game
+
+-Energizer Battery stacking infinity
+
+-Kou Sash using the wrong Jab-Lin accessory
+
+-Luminite Wraith's debug text showing up
+
+-Caliburn's having no sell value and being practically free to reforge
+
+-Reality's Sunder not craftable without beating Hellion's 1st phase if you've already talked to Draken on that character
+
+-True Copper Wraith Notch dropping 24/7 off Copper Wraith if you got it once, now only drops once per world
+
+-Twin Prime Destroyers listing incorrect info in Boss Checklist's book
+
+
+
+3.179-(7/17/20)-Hot Fix #10:
+--WIll be updating Hotfix #10 as I make more smaller changes post-3.100 release
+
+--Added:
+
+-Added Bombs to all chest types in the Deeper Dungeon: a 50% chance to have 5-10 bombs (25% to be sticky bombs), added a hint that they can break the spike walls!
+
+-More Deeper Dungeon Varity hall types-Cobwebs,Frozen Halls, and the occasional traps!
+
+-Glass Swords, Kou Sash
+
+
+--Changed:
+
+-Buffed Big Bang: Auto swing and +5 crit chance for melee
+
+-Novite Armor has less acceleration per charge and can now be toggled all together with WalkMode
+
+-Tech Master's Gear now requires the Night Vision Helmet instead on Ninja Gear
+
+-Charms have been renamed to Amulets to seperate them from other accessories that bare the name
+
+-Can you summon Hellion's Main fight and skip Hellion core now, Reality's Sunder says how (also updated the text effect to be able to be read lol)
+
+-Dying in a subworld now sends you back to the overworld
+
+-Strange Portal now sells the loot found in the Subworlds for Expertise in Multiplayer
+
+-Greatly Increased Shinobi's Shadow cost
+
+-Reduced Supreme Pinky minion count, but increased HP, removed falling slimes in the final phase, reworked attacked to be easier to dodge and more predictable
+
+-Hellion: Drone HP reduced, reworked the army phases to no longer disable your accessories, but gives Limbo Fading and other debuffs that reduce defense and attack, during said army phases you now have Snowfrosted, Hellion no longer regens HP from taunting (unless during army phases), Getting hit no longer gives Radiation 1, Changed the Brain Scrabler bolts to something that doesn't cause confusion, greatly increased the number of Drakenite Bars that Hellion drops, Removed anti-cheese
+-Yet More Hellion reworks... Cirno assists during the goblin army phase and basic (non summoner) goblin count doubled, Cratogeddon's special crates assist during the Pirate/Frost Legion phase, Topaz attack damage reduced, Drones do not deal any contact damage
+-Hellion Core: attempted to telegraph charge attacks with speed depending on distance, reduced laser firerates, changed projectile types, removed extra spam attacks
+
+-Cratogeddon: increased drops, reduced attack power, reduced/capped movement speed, slower attacks, bullet hell phase is easier and the easily dodged bullets gained damage, all other attacks have reduced damage, reduced Cratogeddon special crate projectile damage
+
+-Cratrosity Reduced base attack power, charge attack has capped movement speed
+
+-All other Javelins items have been renamed to Jab-lin
+
+-Ice Fairy spawn rate reduced and loot increased
+
+-Electric discharges now have a size depending on how many times they can arc
+
+-Buffed Blazewyrm Armor
+
+-Forgot to remove Magic Cuffs completely off Elite Emblem, whoops!
+
+-Entrophite Tranmuter has been moved to Draken's shop (4000 Expertise to unlock, 750 to purchase)
+
+
+--Fixed
+
+-True Copper Wraith Notch dropping 24/7 off Copper Wraith if you got it once, now only drops once per world
+
+-Anticipation Charm softlocking players while they were holding no items in their hand
+
+-Sharkvern using Cirno in the Boss Checklist book
+
+-A bug that prevented online play all together
+
+-Cirno's Attacks and Icicle fall not working anymore
+
+-Hopefully fixed the crash on world load bug
+
+-Novite Tesla Tower targeting 'nothing' and consuming electricity, hopefully anyways
+
+-Gunslinger of song and legend's ability causing damage problems
+
+-Boss Spawns no longer working in multiplayer
+
+-Circuit Breaker Blade using Electric Charge without spawning an electric discharge
+
+-Novite and Novus both generating in a world due to a coding oversight
+-^fixed the above, again :/
+
+-True Copper Wraith Notch dropping 24/7 off Copper Wraith if you got it once, now only drops once per world
+
+
+3.100-(7/8/20)-End of the Beginning pt2:
 
 --Added
 

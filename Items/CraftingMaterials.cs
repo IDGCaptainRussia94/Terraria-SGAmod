@@ -396,7 +396,7 @@ namespace SGAmod.Items
 			recipe.AddIngredient(mod.ItemType("NoviteBar"), 2);
 			recipe.AddIngredient(ItemID.Wire, 10);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
-			recipe.SetResult(this,2);
+			recipe.SetResult(this,3);
 			recipe.AddRecipe();
 		}
 	}
@@ -614,8 +614,8 @@ public class LunarRoyalGel : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Empty Charm");
-			Tooltip.SetDefault("An empty charm necklace, ready for enchanting");
+			DisplayName.SetDefault("Empty Amulet");
+			Tooltip.SetDefault("An empty amulet necklace, ready for enchanting");
 		}
 		public override void SetDefaults()
 		{
@@ -970,6 +970,31 @@ public class LunarRoyalGel : ModItem
 
 		}
 	}
+	public class NoviteOre : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Ore");
+			Tooltip.SetDefault("Brassy metal of electronical use...");
+		}
+		public override void SetDefaults()
+		{
+			item.width = 16;
+			item.height = 16;
+			item.maxStack = 99;
+			item.value = 50;
+			item.rare = ItemRarityID.Blue;
+			item.alpha = 0;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = mod.TileType("NoviteOreTile");
+
+		}
+	}
 	public class NoviteBar : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -1001,31 +1026,6 @@ public class LunarRoyalGel : ModItem
 			recipe.AddTile(TileID.Furnaces);
 			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
-		}
-	}
-	public class NoviteOre : ModItem
-	{
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Novus Ore");
-			Tooltip.SetDefault("Brassy metal of electronical use...");
-		}
-		public override void SetDefaults()
-		{
-			item.width = 16;
-			item.height = 16;
-			item.maxStack = 99;
-			item.value = 50;
-			item.rare = ItemRarityID.Blue;
-			item.alpha = 0;
-			item.useTurn = true;
-			item.autoReuse = true;
-			item.useAnimation = 15;
-			item.useTime = 10;
-			item.useStyle = ItemUseStyleID.SwingThrow;
-			item.consumable = true;
-			item.createTile = mod.TileType("NoviteOreTile");
-
 		}
 	}
 	public class MoneySign : ModItem

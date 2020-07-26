@@ -487,9 +487,9 @@ namespace SGAmod.Items.Weapons
 			Main.projectile[probg].Throwing().thrown = true;
 			Main.projectile[probg].friendly = true;
 			Main.projectile[probg].hostile = false;
-			Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(25));
-			//Main.projectile[probg].velocity.X = perturbedSpeed.X*player.thrownVelocity;
-			//Main.projectile[probg].velocity.Y = perturbedSpeed.Y*player.thrownVelocity;
+			Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(10));
+			Main.projectile[probg].velocity.X = perturbedSpeed.X*player.thrownVelocity;
+			Main.projectile[probg].velocity.Y = perturbedSpeed.Y*player.thrownVelocity;
 			Main.projectile[probg].owner = player.whoAmI;
 			SGAprojectile modeproj = Main.projectile[probg].GetGlobalProjectile<SGAprojectile>();
 			modeproj.myplayer = player;

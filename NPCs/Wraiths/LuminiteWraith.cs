@@ -1602,7 +1602,7 @@ return false;
 		droploot=true;
 		if (npc.ai[3]<1 && npc.ai[3]>-500){
 		npc.ai[3]=(float)armors[0];
-		Main.NewText("got this item: [i:"+armors[0]+"]");
+		//Main.NewText("got this item: [i:"+armors[0]+"]");
 		tempappeance=armors[0];
 		armors.RemoveAt(0);
 		hitstate=false;

@@ -43,7 +43,7 @@ namespace SGAmod.Items.Weapons.Auras
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 				tooltips.Add(new TooltipLine(mod, "AuraUse", "Reusing the item consumes an extra minion slot and increases the current Aura Strength"));
-			tooltips.Add(new TooltipLine(mod, "AuraUse", "Alt Fire to relocate the Aura, Alt Fire again to return it to you"));
+			//tooltips.Add(new TooltipLine(mod, "AuraUse", "Alt Fire to relocate the Aura, Alt Fire again to return it to you"));
 		}
 
 		public override bool CanUseItem(Player player)
@@ -69,7 +69,7 @@ namespace SGAmod.Items.Weapons.Auras
 						}
 					}
 				}
-				Main.NewText("" + (player.maxMinions - player.GetModPlayer<SGAPlayer>().GetMinionSlots));
+				//Main.NewText("" + (player.maxMinions - player.GetModPlayer<SGAPlayer>().GetMinionSlots));
 				return false;
 			}
 
@@ -103,7 +103,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public virtual float CalcAuraPower(Player player)
 		{
-			thepower = (player.minionDamage * 1f + (projectile.minionSlots / 3f));
+			thepower = (player.minionDamage * (1f + (projectile.minionSlots / 3f)));
 			return thepower;
 		}
 

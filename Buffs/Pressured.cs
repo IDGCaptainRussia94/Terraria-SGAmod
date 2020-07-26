@@ -20,15 +20,28 @@ namespace SGAmod.Buffs
 		{
 			player.GetModPlayer<SGAPlayer>().Pressured=true;
 		}
-
-		/*public override void Update(NPC npc, ref int buffIndex)
+	}
+	public class ShieldBreak: ModBuff
+	{
+		public override void SetDefaults()
 		{
-			npc.GetGlobalNPC<SGAnpcs>(mod).Pressured=true;
-		}*/
+			DisplayName.SetDefault("Shield Break");
+			Description.SetDefault("No Electric Charge Regen\nTaking off an Energy Shield will hurt the player");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = false;
+		}
 
-		//public override void Update(NPC npc, ref int buffIndex)
-		//{
-		//	npc.GetGlobalNPC<SGAWorld>(mod).eFlames = true;
-		//}
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/AcidBurn";
+			return true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.GetModPlayer<SGAPlayer>().Shieldbreak = true;
+		}
 	}
 }

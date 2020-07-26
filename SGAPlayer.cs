@@ -25,6 +25,7 @@ using SGAmod.NPCs.Hellion;
 using CalamityMod;
 using AAAAUThrowing;
 using Terraria.Utilities;
+using SGAmod.SkillTree;
 
 namespace SGAmod
 {
@@ -47,16 +48,21 @@ namespace SGAmod
 		public class SGAPlayer : ModPlayer
 	{
 		public List<ActionCooldownStack> CooldownStacks;
+		public SkillManager skillMananger;
 		public bool noactionstackringofrespite = false;
 		public int tf2emblemLevel = 0;
 		public int ninjaSash = 0;
 		public int shinobj = 0;
+		public int surprised = 0;
+		public float[] beserk = { 0, 0 };
+		public float actionCooldownRate = 1f;
 		public int previoustf2emblemLevel = 0;
 		public int lockoneffect = 0;
 		public int soldierboost = 0;
 		public bool dualityshades = false;
 		public bool gunslingerLegend = false;
 		public int gunslingerLegendtarget = -1;
+		public int gunslingerLegendtargettype = 0;
 		public ushort FireBreath = 0;
 		public int MaxCooldownStacks = 1;
 		public float RevolverSpeed = 1f;
@@ -69,6 +75,8 @@ namespace SGAmod
 		public bool twinesoffate = false;
 		public bool Walkmode = false;
 		public bool MVMBoost = false;
+		public bool Shieldbreak = false;
+		public byte ShieldType = 0;
 		public int realIFrames = 0;
 		public int myammo = 0;
 		public int timer = 0;
@@ -120,7 +128,7 @@ namespace SGAmod
 		public float TrapDamageMul = 1f; public float TrapDamageAP = 0f;
 		public float ThrowingSpeed = 1f; public float Thrownsavingchance = 0f;
 		public Vector2 Locked = new Vector2(100, 300);
-		public int electricCharge = 0; public int electricChargeMax = 0;
+		public int electricCharge = 0; public int electricChargeMax = 0; public float electricChargeCost = 1f; public float electricChargeReducedDelay = 1f;
 		public int ammoLeftInClip = 6; public int plasmaLeftInClip = 1000;
 		public int ammoLeftInClipMax = 6; public int plasmaLeftInClipMax = 1000;
 		public int boosterPowerLeft = 10000; public int boosterPowerLeftMax = 10000; public float boosterdelay = -500;  public float electricdelay = -500; public int boosterrechargerate = 15; public int electricrechargerate = 1;
@@ -148,6 +156,7 @@ namespace SGAmod
 		public double[] apocalypticalChance = { 0, 0, 0, 0 };
 		public float apocalypticalStrength = 1f;
 		public int entropycollected = 0;
+		public int activestacks = 0;
 		public float greedyperc = 0f;
 		public float lifestealentropy = 0f;
 		public int maxblink = 0;
@@ -156,7 +165,6 @@ namespace SGAmod
 		public bool demonsteppers = false;
 		public bool FridgeflameCanister = false;
 		public bool IceFire = false;
-		public int playertimer = 0;
 		public bool BIP = false;
 		public float summonweaponspeed = 0f;
 		public bool grippinggloves = false;
@@ -259,8 +267,10 @@ namespace SGAmod
 		{
 			if (CooldownStacks.Count+ (count-1) < MaxCooldownStacks) 
 			{
-				if (player.HasBuff(mod.BuffType("CondenserBuff")))
-					time = (int)((float)time * 1.15f);
+				//if (player.HasBuff(mod.BuffType("CondenserBuff")))
+				//	time = (int)((float)time * 1.15f);
+
+				time = (int)((float)time * actionCooldownRate);
 
 				for (int i = 0; i < count; i += 1)
 					CooldownStacks.Add(new ActionCooldownStack(time));
@@ -270,14 +280,22 @@ namespace SGAmod
 
 		}
 
-		public bool ConsumeElectricCharge(int requiredcharge,int delay)
+		public bool ConsumeElectricCharge(int requiredcharge,int delay,bool damage=false)
 		{
 			if (electricCharge > requiredcharge)
 			{
-				electricdelay = Math.Max(delay,electricdelay);
-				electricCharge -= requiredcharge;
+				electricdelay = Math.Max(delay * electricChargeReducedDelay, electricdelay);
+				electricCharge -= (int)((float)requiredcharge*electricChargeCost);
 				return true;
 			}
+
+			if (damage && ShieldType > 0 && electricCharge>0 && electricCharge-requiredcharge <0)
+			{
+				electricCharge = 0;
+				electricdelay = 30;
+				player.AddBuff(mod.BuffType("Shieldbreak"), 60 * 5);
+			}
+
 			return false;
 		}
 		public void StackAttack(ref int damage, Projectile proj)
@@ -445,15 +463,15 @@ namespace SGAmod
 			gunslingerLegend = false;
 			if (!player.HasBuff(mod.BuffType("ConsumeHellBuff")))
 			FireBreath = 0;
-			if (gunslingerLegendtarget > -1)
+			beserk[0]-=1;
+			if (beserk[0] < 1)
 			{
-				NPC them = Main.npc[gunslingerLegendtarget];
-				if (!them.active || them.life<1)
-					gunslingerLegendtarget = -1;
+				beserk[0] = 0; beserk[1] = 0;
 			}
 
 			if (soldierboost>0)
 			soldierboost-=1;
+			surprised = Math.Max(surprised - 1, 0);
 			shinobj -= 1;
 			previoustf2emblemLevel = tf2emblemLevel;
 			tf2emblemLevel = 0;
@@ -539,10 +557,12 @@ namespace SGAmod
 			timer += 1;
 			mudbuff = false;
 			boosterdelay -= 1;
-			electricdelay -= 1;
 			digiStacks = (int)MathHelper.Clamp(digiStacks,0,digiStacksMax);
 			CustomWings = 0;
 			JoyrideShake -= 1;
+
+			if (!Shieldbreak)
+				electricdelay -= 1;
 
 			if (boosterdelay < 1)
 			{
@@ -555,8 +575,13 @@ namespace SGAmod
 
 			electricChargeMax = Electicpermboost;
 			electricrechargerate = 0;
+			electricChargeCost = 1f;
+			electricChargeReducedDelay = 1f;
 			boosterrechargerate = 15;
 			boosterPowerLeftMax = 10000;
+			Shieldbreak = false;
+			ShieldType = 0;
+
 			for (int a = 0; a < devempowerment.Length; a++)
 				devempowerment[a] = Math.Max(devempowerment[a]-1,0);
 
@@ -572,6 +597,7 @@ namespace SGAmod
 			}
 			MaxCooldownStacks = 1;
 			noactionstackringofrespite = false;
+			actionCooldownRate = 1f;
 			Noviteset = 0;
 		}
 
@@ -618,6 +644,7 @@ namespace SGAmod
 			sgaplayer.entropycollected = entropycollected;
 			sgaplayer.DefenseFrame = DefenseFrame;
 			sgaplayer.gunslingerLegendtarget = gunslingerLegendtarget;
+			sgaplayer.activestacks = activestacks;
 
 			for (int i = 54; i < 58; i++)
 			{
@@ -641,7 +668,7 @@ namespace SGAmod
 			}
 			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots || sgaplayer.entropycollected != entropycollected || sgaplayer.DefenseFrame != DefenseFrame
 			|| sgaplayer.plasmaLeftInClip!= plasmaLeftInClip || sgaplayer.Redmanastar != Redmanastar || sgaplayer.ExpertiseCollected != ExpertiseCollected || sgaplayer.ExpertiseCollectedTotal != ExpertiseCollectedTotal
-			 || sgaplayer.gunslingerLegendtarget != gunslingerLegendtarget)
+			 || sgaplayer.gunslingerLegendtarget != gunslingerLegendtarget || sgaplayer.activestacks != activestacks)
 				mismatch = true;
 
 
@@ -669,6 +696,7 @@ namespace SGAmod
 				packet.Write(entropycollected);
 				packet.Write((short)DefenseFrame);
 				packet.Write((short)gunslingerLegendtarget);
+				packet.Write((short)activestacks);
 				for (int i = 54; i < 58; i++)
 				{
 					packet.Write(ammoinboxes[i - 54]);
@@ -773,15 +801,44 @@ namespace SGAmod
 		{
 			Item item = new Item();
 
-
 			item.SetDefaults(ModLoader.GetMod("SGAmod").ItemType("IDGStartBag"), false);
 
 			items.Add(item);
 
 		}
 
+		public override void NaturalLifeRegen(ref float regen)
+		{
+			skillMananger.NaturalLifeRegen(ref regen);
+		}
+
+		public override void GetHealLife(Item item, bool quickHeal, ref int healValue)
+		{
+			skillMananger.GetHealLife(item,quickHeal, ref healValue);
+		}
+
+		public override void GetHealMana(Item item, bool quickHeal, ref int healValue)
+		{
+			skillMananger.GetHealMana(item, quickHeal, ref healValue);
+		}
+
 		public override void PostUpdateRunSpeeds()
 		{
+
+			if (Noviteset > 0 && electricChargeMax > 0)
+			{
+
+				if (Noviteset > 1)
+				{
+					if (!Walkmode)
+					{
+						player.moveSpeed += (float)electricCharge / 7500f;
+						player.maxRunSpeed += (float)electricCharge / 10000f;
+						player.runAcceleration += (float)electricCharge / 12500f;
+						player.accRunSpeed += (float)electricCharge / 7500f;
+					}
+				}
+			}
 
 			if (SlowDownDefense > 0f)
 			{
@@ -801,12 +858,13 @@ namespace SGAmod
 				player.maxRunSpeed *= 1.15f;
 			}
 
+			skillMananger.PostUpdateRunSpeeds();
+
 		}
 
 		public override void PreUpdate()
 		{
 			downedHellion = SGAWorld.downedHellion;
-			playertimer += 1;
 			for (int i = 54; i < 58; i++)
 			{
 
@@ -831,6 +889,13 @@ namespace SGAmod
 		{
 
 			//Minecarts-
+
+			if (gunslingerLegendtarget > -1)
+			{
+				NPC them = Main.npc[gunslingerLegendtarget];
+				if (!them.active || them.life < 1 || them.type!= gunslingerLegendtargettype)
+					gunslingerLegendtarget = -1;
+			}
 
 			Item minecart = player.miscEquips[2];
 			if (!minecart.IsAir)
@@ -883,14 +948,6 @@ namespace SGAmod
 				{
 					electricCharge += 10;
 				}
-
-				if (Noviteset > 1)
-				{
-					player.moveSpeed += (float)electricCharge / 7500f;
-					player.maxRunSpeed += (float)electricCharge / 10000f;
-					player.runAcceleration += (float)electricCharge / 7500f;
-					player.accRunSpeed += (float)electricCharge / 2500f;
-				}
 			}
 
 			DashBlink();
@@ -934,13 +991,13 @@ namespace SGAmod
 					{
 						if (player.buffType[g] == BuffID.PotionSickness && player.buffTime[g] > 10)
 						{
-							if (SGAWorld.modtimer % potionsicknessincreaser == 0)
+							if (timer % potionsicknessincreaser == 0)
 								player.buffTime[g] += 1;
 						}
 					}
 				}
 
-				if (SGAWorld.modtimer % (EnhancingCharm) == 0)
+				if (timer % (EnhancingCharm) == 0)
 				{
 					//longerExpertDebuff
 					for (int i = 0; i < Player.MaxBuffs; i += 1)
@@ -960,7 +1017,7 @@ namespace SGAmod
 
 			if (anticipationLevel > 0)
 			{
-				if (IdgNPC.bossAlive && !player.HasBuff(mod.BuffType("BossHealingCooldown")) && anticipation<20*anticipationLevel)
+				if (IdgNPC.bossAlive && !player.HasBuff(mod.BuffType("BossHealingCooldown")) && anticipation < 20 * anticipationLevel)
 				{
 					anticipation = 100;
 					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Green, "Anticipated!", false, false);
@@ -969,16 +1026,19 @@ namespace SGAmod
 					player.statLife += anticipationLevel * 100;
 				}
 				Item helditem = player.HeldItem;
-				if (helditem.Throwing().thrown)
-				player.Throwing().thrownDamage += (float)(anticipation / 3000f);
-				if (helditem.magic)
-					player.magicDamage += (float)(anticipation / 3000f);
-				if (helditem.summon)
-					player.minionDamage += (float)(anticipation / 3000f);
-				if (helditem.ranged)
-					player.rangedDamage += (float)(anticipation / 3000f);
-				if (helditem.melee)
-					player.meleeDamage += (float)(anticipation / 3000f);
+				if (!player.HeldItem.IsAir)
+				{
+					if (helditem.Throwing().thrown)
+						player.Throwing().thrownDamage += (float)(anticipation / 3000f);
+					if (helditem.magic)
+						player.magicDamage += (float)(anticipation / 3000f);
+					if (helditem.summon)
+						player.minionDamage += (float)(anticipation / 3000f);
+					if (helditem.ranged)
+						player.rangedDamage += (float)(anticipation / 3000f);
+					if (helditem.melee)
+						player.meleeDamage += (float)(anticipation / 3000f);
+				}
 			}
 
 			int adderlevel = Math.Max(-1, (int)Math.Pow(anticipationLevel, 0.75));
@@ -1366,33 +1426,43 @@ modeproj.enhancedbees=true;
 				}
 
 
-					if (player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1)
+					if (player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1 && player.HeldItem.modItem!=null)
 				{
 
 					Dictionary<int, int> shieldtypes = new Dictionary<int, int>();
 					shieldtypes.Add(mod.ItemType("CapShield"), mod.ProjectileType("CapShieldProj"));
 					shieldtypes.Add(mod.ItemType("CorrodedShield"), mod.ProjectileType("CorrodedShieldProj"));
-					int projtype;
+					int projtype=-1;
 					if (shieldtypes.ContainsKey(player.HeldItem.type))
 					{
 						shieldtypes.TryGetValue(player.HeldItem.type, out projtype);
-						if (player.ownedProjectileCounts[projtype] < 1)
-							Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, projtype, player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
+						if (projtype > 0)
+						{
+							if (player.ownedProjectileCounts[projtype] < 1)
+								Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, projtype, player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
+						}
 					}
 				}
 			}
 
-			if (CooldownStacks.Count > 0)
+
+			if (Main.netMode != NetmodeID.Server)
 			{
-				for(int stackindex = 0; stackindex < CooldownStacks.Count; stackindex += 1)
+				if (CooldownStacks.Count > 0)
 				{
-					ActionCooldownStack stack = CooldownStacks[stackindex];
-					stack.timeleft -= 1;
-					stack.timerup += 1;
-					if (stack.timeleft < 1)
-					CooldownStacks.RemoveAt(stackindex);
+					for (int stackindex = 0; stackindex < CooldownStacks.Count; stackindex += 1)
+					{
+						ActionCooldownStack stack = CooldownStacks[stackindex];
+						stack.timeleft -= 1;
+						stack.timerup += 1;
+						if (stack.timeleft < 1)
+							CooldownStacks.RemoveAt(stackindex);
+					}
 				}
+				activestacks = CooldownStacks.Count;
 			}
+
+			skillMananger.PostUpdateEquips();
 
 			mspeed = player.meleeSpeed;
 			modcheckdelay =true;
@@ -1439,12 +1509,12 @@ modeproj.enhancedbees=true;
 		{
 			if (PrimordialSkull)
 			damage = damage / 2;
-			damage=OnHit(ref damage,crit,npc,null);
+			damage=OnHit(ref damage, ref crit, npc,null);
 		}
 
 		public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref bool crit)
 		{
-			damage=OnHit(ref damage,crit,null,projectile);
+			damage=OnHit(ref damage,ref crit,null,projectile);
 		}
 
 		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
@@ -1618,31 +1688,36 @@ modeproj.enhancedbees=true;
 			return false;
 		}
 
-		private int OnHit(ref int damage, bool crit,NPC npc, Projectile projectile)
+		private int OnHit(ref int damage,ref bool crit,NPC npc, Projectile projectile)
 		{
 			if (Hellion.GetHellion() != null)
 			{
-			if (Hellion.GetHellion().army.Count > 0)
+				Hellion hell = Hellion.GetHellion();
+			if (hell.army.Count > 0)
 				{
-					player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("NullExceptionDebuff").Type, 60 * 2);
+					player.AddBuff(Idglib.Instance.BuffType("LimboFading"), 60 * 4);
+
+					if (hell.phase < 3)
+						player.AddBuff(BuffID.BrokenArmor, 60 * 3);
+					if (hell.phase < 5)
+					{
+						player.AddBuff(BuffID.WitheredArmor, 60 * 5);
+						player.AddBuff(BuffID.WitheredWeapon, 60 * 3);
+					}
+
 				}
-			if (npc != null)
+
+				if (npc != null)
 				{
 					if (npc.type==NPCID.SkeletronHand)
 						player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("HotBarCurse").Type, 60 * 20);
 					if (npc.type==NPCID.SkeletronHand)
 						player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("ItemCurse").Type, 60 * 25);
-
-
 				}
 			}
 			if (NPC.CountNPCS(mod.NPCType("Murk")) > 0 && Main.hardMode && Main.expertMode)
 			{
 				player.AddBuff(mod.BuffType("MurkyDepths"), damage * 5);
-			}
-			if (NPC.CountNPCS(mod.NPCType("Hellion")) > 0)
-			{
-				player.AddBuff(Idglib.Instance.BuffType("RadiationOne"), 60*5);
 			}
 			if (NPC.CountNPCS(mod.NPCType("TPD")) > 0 && Main.rand.Next(0,10)<(Main.expertMode ? 6 : 3))
 			{
@@ -1724,12 +1799,23 @@ modeproj.enhancedbees=true;
 				damage=(int)(damage*2.0);
 			}}
 
+			skillMananger.OnPlayerDamage(ref damage,ref crit,npc,projectile);
 
-		return damage;
+
+			return damage;
 		}
 
 		public override void ProcessTriggers(TriggersSet triggersSet)
 		{
+			if (Main.netMode == 0)
+			{
+				/*if (SGAmod.SkillTestKey.JustPressed)
+				{
+					SGAmod.SkillUIActive = !SGAmod.SkillUIActive;
+					return;
+				}*/
+			}
+
 			if (SGAmod.CollectTaxesHotKey.JustPressed)
 			{
 				if (EALogo)
@@ -1756,6 +1842,7 @@ modeproj.enhancedbees=true;
 				{
 					float dist = 999999;
 					int theone = -1;
+					int theonetype = -1;
 					for (int num172 = 0; num172 < Main.maxNPCs; num172 += 1)
 					{
 						NPC target = Main.npc[num172];
@@ -1766,6 +1853,7 @@ modeproj.enhancedbees=true;
 							{
 								dist = dit;
 								theone = target.whoAmI;
+								theonetype = target.type;
 							}
 
 						}
@@ -1777,6 +1865,7 @@ modeproj.enhancedbees=true;
 						{
 							Main.PlaySound(SoundID.Item91, player.Center);
 							gunslingerLegendtarget = theone;
+							gunslingerLegendtargettype = theonetype;
 							lockoneffect = 0;
 							//Effects I guess
 						}
@@ -2273,6 +2362,8 @@ modeproj.enhancedbees=true;
 		public override void Load(TagCompound tag)
 		{
 			CooldownStacks = new List<ActionCooldownStack>();
+			skillMananger = new SkillManager(player);
+
 			playercreated = true;
 
 			ExpertiseCollected = 0;
@@ -2445,7 +2536,7 @@ modeproj.enhancedbees=true;
 				if (Main.expertMode)
 				{
 					if (SGAWorld.NightmareHardcore > 0)
-						collected = (int)(collected * (SGAWorld.NightmareHardcore == 1 ? 1.15f : 1.25f));
+						collected = (int)(collected * (SGAWorld.NightmareHardcore == 1 ? 1.25f : 1.40f));
 				}
 				else
 				{
@@ -2605,6 +2696,7 @@ modeproj.enhancedbees=true;
 
 			for (int i = 0; i < 100; i += 1)
 			{
+				//ignore this, it's filler to keep the list from running out
 				addtolist(NPCID.CultistArcherWhite, 1);
 			}
 

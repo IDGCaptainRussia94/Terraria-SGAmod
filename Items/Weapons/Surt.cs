@@ -180,7 +180,7 @@ namespace SGAmod.Items.Weapons
 			item.useAnimation = 15;
 			item.useStyle = 1;
 			item.knockBack = 5;
-			Item.sellPrice(1, 0, 0, 0);
+			item.value=Item.sellPrice(0, 50, 0, 0);
 			item.rare = 10;
 			item.UseSound = SoundID.Item1;
 			item.shoot = mod.ProjectileType("BrimflameCharging");

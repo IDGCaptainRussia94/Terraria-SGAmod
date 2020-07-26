@@ -64,6 +64,14 @@ namespace SGAmod
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
+            if (SGAmod.anysubworld)
+            {
+                if (item.type == ItemID.Bomb || item.type == ItemID.Dynamite || item.type == ItemID.BombFish || item.type == ItemID.StickyBomb || item.type == ItemID.BouncyBomb || item.type == ItemID.BouncyDynamite || item.type == ItemID.StickyDynamite)
+                {
+                    tooltips.Add(new TooltipLine(mod, "BombHint", "Use these to destroy blocking walls of spikes"));
+                }
+            }
+
             if (item.modItem != null) {
                 if (item.owner > -1) {
                     SGAPlayer sgaply = (Main.player[item.owner].GetModPlayer<SGAPlayer>());
@@ -209,9 +217,56 @@ namespace SGAmod
             }
         }
 
+        public bool NovusCoreCheck(Player player,Item item)
+        {
+
+            if (player.SGAPly().Novusset > 3)
+            {
+                RecipeFinder finder = new RecipeFinder();
+                finder.AddIngredient(mod.ItemType("UnmanedBar"));
+                List<Recipe> reclist = finder.SearchRecipes();
+
+                Recipe foundone = reclist.Find(rec => rec.createItem.type == item.type);
+
+                if (foundone != null)
+                {
+                    return true;
+                }
+
+            }
+            return false;
+
+        }
+
+        public override void MeleeEffects(Item item, Player player, Rectangle hitbox)
+        {
+            if (NovusCoreCheck(player, item))
+            {
+                if (Main.rand.Next(7) == 0)
+                {
+                    SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+                    int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, mod.DustType("NovusSparkle"));
+                    Main.dust[dust].color = new Color(180, 60, 140);
+                    Main.dust[dust].alpha = 181;
+                }
+            }
+        }
+
+        public override bool ReforgePrice(Item item, ref int reforgePrice, ref bool canApplyDiscount)
+        {
+            Main.LocalPlayer.SGAPly().skillMananger.ReforgePrice(item, ref reforgePrice, ref canApplyDiscount);
+            return true;
+        }
+
         [System.Obsolete]
         public override void GetWeaponDamage(Item item, Player player, ref int damage) {
+
+            float basemul = 1f;
+
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+
+            if (NovusCoreCheck(player,item))
+                basemul += 0.1f;
 
             if (item.modItem != null) {
                 var myType = (item.modItem).GetType();
@@ -231,6 +286,10 @@ namespace SGAmod
             {
                 damage = damage+(int)((float)damage*((float)sgaplayer.digiStacks/ (float)sgaplayer.digiStacksMax)*1.00f);
             }
+
+            damage = (int)(damage * (float)basemul);
+
+            player.SGAPly().skillMananger.GetWeaponDamage(item, ref damage);
 
         }
 
@@ -280,6 +339,7 @@ namespace SGAmod
 
                 }
             }
+            player.SGAPly().skillMananger.UseItem(item);
             return base.UseItem(item, player);
         }
 
@@ -386,6 +446,7 @@ namespace SGAmod
                 }
             }
 
+            player.SGAPly().skillMananger.UseTimeMultiplier(item,ref usetimetemp);
             return (usetimetemp * sgaplayer.UseTimeMul);
         }
 

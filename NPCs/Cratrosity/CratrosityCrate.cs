@@ -38,7 +38,7 @@ namespace SGAmod.NPCs.Cratrosity
 			npc.height = 24;
 			npc.damage = 40;
 			npc.defense = 0;
-			npc.lifeMax = 2000;
+			npc.lifeMax = 7500;
 			npc.HitSound = SoundID.NPCHit7;
 			npc.DeathSound = SoundID.NPCDeath43;
 			npc.value = 0f;
@@ -59,8 +59,10 @@ namespace SGAmod.NPCs.Cratrosity
 		counter=counter+Main.rand.Next(-3,15);
 		int npctype=mod.NPCType("Cratrosity");
 		int npctype2=mod.NPCType("Cratrogeddon");
-		if (NPC.CountNPCS(npctype2)>0){npctype=mod.NPCType("Cratrogeddon");}
-		if (NPC.CountNPCS(npctype)>0){
+		int npctype3 = mod.NPCType("Hellion");
+			if (NPC.CountNPCS(npctype2)>0){npctype=mod.NPCType("Cratrogeddon");}
+			if (Hellion.Hellion.GetHellion() != null) { npctype = Hellion.Hellion.GetHellion().npc.type; }
+			if (NPC.CountNPCS(npctype)>0){
 		NPC myowner=Main.npc[NPC.FindFirstNPC(npctype)];
 		if (counter%600<450){
 		npc.velocity=(npc.velocity+((myowner.Center+apointzz-(npc.position))*0.02f)*0.035f)*0.99f;

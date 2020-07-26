@@ -16,10 +16,10 @@ namespace SGAmod
 		public static bool postCacheFields=false;
 		public static Mod mod;
 
-		public static void InitCache()
+		public static void InitCache(Mod mod)
 		{
 			cache = new List<SubworldCacheClass>();
-			mod = SGAmod.Instance;
+			mod = mod;
 		}
 
 		public static void UnloadCache()

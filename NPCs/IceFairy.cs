@@ -41,14 +41,14 @@ namespace SGAmod.NPCs
 				public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
 			Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY];
-			bool underground = (int)((double)(spawnInfo.spawnTileY * 2f) - Main.worldSurface * 2.0) > 0;
-			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && !underground && spawnInfo.spawnTileY < Main.rockLayer && Main.dayTime && spawnInfo.player.ZoneSnow && Main.hardMode ? 0.35f : 0f;
+			bool underground = (int)((double)(spawnInfo.spawnTileY+20) - Main.worldSurface) > 0;
+			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && !underground && Main.dayTime && spawnInfo.player.ZoneSnow && Main.hardMode ? 0.25f : 0f;
 		}
 
 		public override void NPCLoot()
 		{
 
-				for (int i = 0; i <= Main.rand.Next(2,5); i++){
+				for (int i = 0; i <= Main.rand.Next(3,6); i++){
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IceFairyDust"));
 				}
 		

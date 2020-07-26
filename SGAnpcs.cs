@@ -770,12 +770,23 @@ return true;
 			{
 				shop[nextSlot] = mod.ItemType(Main.rand.NextBool() ? "ShinobiShiv" : "PeacekeepersDuster");
 				nextSlot++;
-			}			
+			}
+			bool rocket = false;
 			if (Main.rand.Next(0, 5) == 1 && Main.hardMode)
 			{
 				shop[nextSlot] = mod.ItemType("SoldierRocketLauncher");
 				nextSlot++;
-			}			
+				rocket = true;
+			}
+			if (Main.LocalPlayer.HasItem(mod.ItemType("SoldierRocketLauncher")))
+				rocket = true;
+
+			if (rocket)
+			{
+				shop[nextSlot] = ItemID.RocketI;
+				nextSlot++;
+			}
+			
 			if (Main.rand.Next(0, 3) == 1 && NPC.downedBoss2)
 			{
 				shop[nextSlot] = mod.ItemType("DynastyJavelin");
@@ -1094,6 +1105,22 @@ if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (S
 						}
 					}
 
+					if (moddedplayer.ninjaSash > 2)
+					{
+					for(int i = 0; i < Main.maxProjectiles; i += 1)
+						{
+							Projectile proj = Main.projectile[i];
+							if (proj.active && proj.owner == player.whoAmI)
+							{
+								if (proj.Throwing().thrown)
+									proj.SGAProj().Embue(projectile);
+
+							}
+
+						}
+
+					}
+
 					if (moddedplayer.dualityshades)
 					{
 						int ammo = 0;
@@ -1226,6 +1253,7 @@ if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (S
 					damage = (int)(damage * 1.20f);
 				}
 			}
+			player.SGAPly().skillMananger.OnEnemyDamage(ref damage,ref crit, ref knockback, item,null);
 			LifeSteal(npc, player, ref damage, ref knockback, ref crit);
 		}
 
@@ -1321,6 +1349,8 @@ if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (S
 				}
 
 			}
+			if (player != null)
+				player.SGAPly().skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, null, projectile);
 			LifeSteal(npc, player, ref damage, ref knockback, ref crit);
 		}
 
@@ -1515,12 +1545,6 @@ return true;
 						}
 
 					}
-					if (SGAWorld.downedWraiths == 0 && Main.rand.Next(0, 2) == 0)
-						chat = "I'd be careful using the furnace if I were you, something is watching... Prehaps you can lure it out beforehand with a [i:" + mod.ItemType("WraithCoreFragment") + "] before it catches you off guard, I heard these can be made with copper/tin ore and fallen stars";
-					if (SGAWorld.downedWraiths == 1 && Main.rand.Next(0, 2) == 0 && Main.hardMode)
-						chat = "Hmmm... Another creature has done something worse this time, they have stolen your knowledge to make a hardmode anvil, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment2") + "] which is as made from tier 1 hardmode ores and the previous summoning item";
-					if (SGAWorld.downedWraiths < 4 && Main.rand.Next(0, 2) == 0 && NPC.downedAncientCultist)
-						chat = "Yet Another creature has stolen knowledge from you, this time the Anicent Manipulator AND made you lose your knowledge to craft Luminite Bars, yes I know this is getting old but this is the last one, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment3") + "] made with lunar fragments and the previous summoning item. Rematch will unlock Luminite bars but require defeating Moonlord first.";
 					break;
 				case NPCID.ArmsDealer:
 					if (Main.rand.Next(0, 5) == 0)

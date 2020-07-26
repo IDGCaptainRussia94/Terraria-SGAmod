@@ -13,7 +13,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Helmet");
-			Tooltip.SetDefault("5% increased Technological damage\nGain an additional free Cooldown Stack\n+1500 Max Electric Charge");
+			Tooltip.SetDefault("5% increased Technological damage\n+1500 Max Electric Charge\n25% reduced Electric Consumption");
 		}
 		public override void SetDefaults()
 		{
@@ -26,7 +26,7 @@ namespace SGAmod.Items.Armors
 		public override void UpdateEquip(Player player)
 		{
 			player.SGAPly().techdamage += 0.05f;
-			player.SGAPly().MaxCooldownStacks += 1;
+			player.SGAPly().electricChargeCost *= 0.75f;
 			player.SGAPly().electricChargeMax += 1500;
 		}
 		public override void AddRecipes()

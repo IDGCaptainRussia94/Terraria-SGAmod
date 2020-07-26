@@ -276,6 +276,7 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("Why are you looking at me like that? Is there something on my snout?");
 				chat.Add("You think I look nice? Well from what i heard: my 'sprites' were a paid commission, and they wern't cheap. Thank you eitherway!");
 				chat.Add("Often I feel timid but then I talk about things that I can only relate as Meta, it's very strange.");
+				chat.Add("I remember a time, when all everyone would say, the sounds would echo: 'Button 2'");
 				if (!npc.homeless)
 				{
 					chat.Add("The dwelling you made is far better than being forced to sleep outside.");
@@ -421,7 +422,7 @@ namespace SGAmod.NPCs.TownNPCs
 			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)) {
 				button = "Check Expertise";
 			}
-			button2 = "More Info";
+			button2 = "What's Next?";
 		}
 
 		public override void OnChatButtonClicked(bool firstButton, ref bool shop)
@@ -462,7 +463,79 @@ namespace SGAmod.NPCs.TownNPCs
 					shop = true;
 				}
 			} else {
-				Main.npcChatText = "Button 2";
+				string chat = "There is still more trouble out there, please, protect us";
+				if (Main.rand.Next(0, 2) == 0)
+					chat = "More trouble looms from overhead, and below. Keep up the good work " + Main.LocalPlayer.name + "!";
+
+				if (SGAWorld.downedHellion<2 && SGAWorld.downedSPinky && SGAWorld.downedWraiths>3 && SGAWorld.downedCratrosityPML && Main.LocalPlayer.SGAPly().gothellion)
+				{
+					chat = "What are you doing right now!? use the [i:" + mod.ItemType("HellionSummon") + "] and stop Hellion!";
+					if (Main.rand.Next(0,2)==0)
+						chat = "They're going to recapture me and force me into slavery, you need to use the [i:" + mod.ItemType("HellionSummon") + "] and stop them!";
+				}
+
+				if (!SGAWorld.downedSPinky && SGAWorld.downedWraiths > 3)
+				{
+					chat = "That pinky slime is mad, like REALLY mad and it distresses and worries me, I cannot imagine what would happen if you made it made it envious too, such as something like a  [i:" + mod.ItemType("Prettygel") + "]";
+				}
+
+				if (!SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths > 3)
+				{
+					chat = "That being calling itself Cthulhu's brother dropped... a [i:" + mod.ItemType("SalvagedCrate") + "]? It mentions a special kind of key, the same key used to enter the Temple it seems, at nighttime...";
+				}
+
+				if (SGAWorld.downedWraiths < 4 && NPC.downedAncientCultist)
+					chat = "Yet Another creature has stolen knowledge from you, this time the Anicent Manipulator AND made you lose your knowledge to craft Luminite Bars, yes I know this is getting old but this is the last one, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment3") + "] made with lunar fragments and the previous summoning item. Rematch will unlock Luminite bars but require defeating Moonlord first.";
+
+				if (!SGAWorld.downedHarbinger && NPC.downedGolemBoss)
+				{
+					chat = "We're being watched, I don't know by what, but I do know the dungeon isn't ocupied by anyone, depsite what everyone else is talking about. Maybe those alien-like Probes and those Etheria monsters are behind this?";
+					if (DD2Event.DownedInvasionT3 && NPC.downedMartians)
+						chat = "After dispatching those previous foes I figured it out: we're being watched, by something from outside this world and I think I know how to get rid of it. I think you could mix some ectoplasm with one of those bloody eyes to create a [i:" + mod.ItemType("TruelySusEye") + "] and see what happens";
+				}
+
+				if (!SGAWorld.downedTPD && NPC.downedGolemBoss)
+					chat = "In the night skies I sense those mechanical creations again, but worse... I have only seen a glimpse of their apperence and the best I could describe them as is a [i:" + mod.ItemType("Mechacluskerf") + "]";
+
+				if (!SGAWorld.downedCratrosity && NPC.downedPlantBoss)
+				{
+					if (SGAWorld.tf2cratedrops)
+					{
+						chat = "The town seems obsessed with these [i:" + mod.ItemType("TerrariacoCrateBase") + "] of late every night. It is written on them to not use other keys, but maybe if you tried to use those golden keys on it, what would happen?";
+					}
+					if (SGAWorld.tf2cratedrops)
+					{
+						if (NPC.CountNPCS(NPCID.Merchant) > 0)
+							chat = Main.npc[NPC.FindFirstNPC(NPCID.Merchant)].GivenName + "is selling something... Fishy, a [i:" + mod.ItemType("PremiumUpgrade") + "]?, maybe should check it out I don't like the sound of it.";
+						else
+							chat = "I heard of something called a [i:" + mod.ItemType("PremiumUpgrade") + "] but the merchant is no where to be found";
+					}
+				}
+
+				if (!SGAWorld.downedSharkvern && NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
+					chat = "The skies above the oceans have been more turbulent than usual lately from my flights over them as if, something had recently been roused from its slumber. Go there and check it out, You'd need something to sound it from the depths, something like a [i:" + mod.ItemType("ConchHorn") + "] made with sea materials and that new green stuff in the underground jungle";
+
+				if (SGAWorld.downedWraiths == 1 && Main.hardMode)
+					chat = "Hmmm... Another strange creation has done something worse this time, they have stolen your knowledge to make a hardmode anvil, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment2") + "] which is as made from tier 1 hardmode ores and the previous summoning item";
+				if (!SGAWorld.GennedVirulent && Main.rand.Next(0, 2) == 0 && Main.hardMode)
+					chat = "Murk has returned, more powerful than ever, but at the same time that very power is seeping out of his gelatin body. Prehaps it could be released into the jungle... Take a [i:" + mod.ItemType("RoilingSludge") + "] to the jnugle and find out";
+				if (!SGAWorld.downedCirno && Main.rand.Next(0, 2) == 0 && Main.hardMode)
+					chat = "The snowy lands are colder than usually and I can feel iceflakes forming on my own wings, let alone yours, a strong being of ice is hampering our ability to fly, craft a core of its power, a [i:" + mod.ItemType("Nineball") + "] with Ice Fairy dusts and souls and take it to the frostly plains during the day";
+
+				if (SGAWorld.downedMurk<2)
+					chat = "The dank structures' walls are protected by a strong, fly swaming, roiling creature in the jungle, prehaps a [i:" + mod.ItemType("RoilingSludge") + "] may attract its fly swamps, and its wrath";
+				if (SGAWorld.downedSpiderQueen)
+					chat = "A high voracious creature lurks below the surface, I fear it might eat a small dragon like me whole, go and find it please, I think an [i:" + mod.ItemType("AcidicEgg") + "] will lure it from its feasting to confront you";
+				if (SGAWorld.downedCaliburnGuardians<3 && Main.rand.Next(0,3)==0 && Main.LocalPlayer.SGAPly().ExpertiseCollectedTotal>=300)
+					chat = "I've noticed 3 structures below the surface that warrent investigation, I have found a [i: " + mod.ItemType("CaliburnCompess") + "] that may help you with that.";
+
+				if (SGAWorld.downedWraiths == 0)
+					chat = "I'd be careful using the furnace if I were you, something is watching... Prehaps you can lure it out beforehand with a [i:" + mod.ItemType("WraithCoreFragment") + "] before it catches you off guard, I heard these can be made with copper/tin ore and fallen stars";
+
+				if (SGAWorld.downedHellion > 1)
+					chat = "You've done it, thank you [i: " + ItemID.Heart + "]!";
+
+				Main.npcChatText = chat;
 				//Main.CloseNPCChatOrSign();
 				//SGAmod.TryToggleUI(null);
 			}
@@ -480,6 +553,8 @@ namespace SGAmod.NPCs.TownNPCs
 			{ SGAmod.Instance.ItemType("RedManaStar"),500 },			
 			{ ItemID.Arkhalis,1000 },
 			{ ItemID.RodofDiscord,2000 },
+			{ SGAmod.Instance.ItemType("Gong"),2500 },
+			{ SGAmod.Instance.ItemType("EntropyTransmuter"),4000 },
 			{ SGAmod.Instance.ItemType("PrimordialSkull"),5000 },
 			{ SGAmod.Instance.ItemType("MVMUpgrade"),6000 },
 			{ ItemID.AviatorSunglasses,10000 },
@@ -583,6 +658,7 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}
+				
 			if (modplayer.ExpertiseCollectedTotal >= 2000)
 			{
 				shop.item[nextSlot].SetDefaults(ItemID.RodofDiscord);
@@ -590,6 +666,20 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}
+			if (modplayer.ExpertiseCollectedTotal >= 2500)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("Gong"));
+				shop.item[nextSlot].shopCustomPrice = 150;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}			
+			if (modplayer.ExpertiseCollectedTotal >= 4000)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("EntropyTransmuter"));
+				shop.item[nextSlot].shopCustomPrice = 75;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}			
 			if (modplayer.ExpertiseCollectedTotal >= 5000)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("PrimordialSkull"));
@@ -679,7 +769,7 @@ namespace SGAmod.NPCs.TownNPCs
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Enemies have 20% more HP")));
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Your health is tripled, however you take triple damage")));
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Some SGAmod bosses gain new abilities")));
-					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Your Expertise gain is increased by 15%")));
+					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Your Expertise gain is increased by 25%")));
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Enemy money dropped is increased by 50%")));
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "There is a 10% chance for enemies to drop double loot")));
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.DimGray, "Does not properly support online play, yet")));

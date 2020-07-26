@@ -24,9 +24,11 @@ namespace SGAmod.NPCs
 	int fatherphase=0;
 	int fathercharge=-150;
 	int fatherhp=0;
+		float circlesize = 2400;
 		float dpscap = 0;
 		int generalcounter = 0;
 		float drawdist = 0;
+		int stopmoving = 0;
 		int radpoison = 0;
 		public override void SetStaticDefaults()
 		{
@@ -114,7 +116,7 @@ namespace SGAmod.NPCs
 				//double angle = ((1f + i / 10f)) + 2.0 * Math.PI * (i / ((double)10f));
 				//double angle = (double)(1f+(inrc + (i / 10f))) + (2.0 * Math.PI) * (double)(i / (10f));
 				float angle = (2f * (float)Math.PI / 720f * i)+ inrc;
-				float dist = 1600f;
+				float dist = circlesize;
 				Vector2 thisloc = new Vector2((float)(Math.Cos(angle) * dist), (float)(Math.Sin(angle) * dist));
 
 
@@ -210,6 +212,7 @@ namespace SGAmod.NPCs
 
 				npc.netUpdate = true;
 npc.timeLeft=99999;
+if (npc.life>0)
 npc.active=true;
 
 if (npc.aiStyle<0){
@@ -236,13 +239,19 @@ adder=90;
 if (npc.aiStyle==52){
 adder=60;
 }
-if (phase==1){
-npc.velocity.Normalize();
-npc.velocity=npc.velocity*(dist.Length()/300);
-}if (phase==3){
-npc.velocity.Normalize();
-npc.velocity=npc.velocity*(dist.Length()/40);
-}
+				if (stopmoving < 1)
+				{
+					if (phase == 1)
+					{
+						npc.velocity.Normalize();
+						npc.velocity = npc.velocity * (dist.Length() / 300);
+					}
+					if (phase == 3)
+					{
+						npc.velocity.Normalize();
+						npc.velocity = npc.velocity * (dist.Length() / 40);
+					}
+				}
 if (isboss>0){
 if (father>0){
 fatherhp=Main.npc[father].life;
@@ -282,6 +291,10 @@ Main.npc[father].noGravity = true;
 
 				if (GetType()==typeof(SPinky))
 				{
+					stopmoving -= 1;
+					if (stopmoving > 0)
+						npc.velocity = Vector2.Zero;
+
 					if (NPC.CountNPCS(mod.NPCType("SPinkyClone"))+NPC.CountNPCS(NPCID.KingSlime) < 1 && npc.aiStyle != 69)
 						generalcounter += 1;
 					else
@@ -291,36 +304,39 @@ Main.npc[father].noGravity = true;
 					{
 						if (phase < 2)
 						{
+							stopmoving = 75;
 							/*for (int i = 0; i < itz.Count; i += 1) {
 								itz[i].friendly = false;
 								itz[i].hostile = true;
 								itz[i].netUpdate = true;
 								}*/
-							int staff = generalcounter + 15;
-								if (generalcounter % 20 == 0)
-									Idglib.Shattershots(npc.Center + new Vector2(Main.rand.Next(-100, 100), 0), P.Center, new Vector2(0, 0), ProjectileID.DemonScythe, 50, 1f, 120, 14, false, 0, true, 220);
-							if (staff % 30 == 0)
-								Idglib.Shattershots(npc.Center + new Vector2(Main.rand.Next(-100, 100), 0), P.Center, new Vector2(0, 0), ProjectileID.DemonScythe, 50, 5f, 50, 3, true, 0, true, 220);
+								if (generalcounter % 10 == 0)
+									Idglib.Shattershots(npc.Center, P.Center, new Vector2(0, 0), ProjectileID.DemonScythe, 50, 1f, (100-(float)((generalcounter % 300)-200)*2)*2, 2, false, 0, true, 220);
 
 						}
 					}
 
 					if (phase > 1)
 					{
-						if (generalcounter % 300 > 200 && generalcounter % 10 == 0)
+						if (generalcounter % 400 > 150 && generalcounter % 5 == 0)
 						{
+							stopmoving = 15;
 							Vector2 here = (P.Center - npc.Center);
 							here.Normalize();
-							List<Projectile> itz = Idglib.Shattershots(npc.Center + (here * 1600f), P.Center, new Vector2(0, 0), ProjectileID.DemonScythe, 50, 10f, 70, 2, true, 0, true, 220);
+							List<Projectile> itz = Idglib.Shattershots(npc.Center + (here * circlesize), npc.Center, new Vector2(0, 0), ProjectileID.DemonScythe, 50, 1f, 70, 1, true, 0, true, 180);
+							itz = Idglib.Shattershots(npc.Center, npc.Center + (here * circlesize), new Vector2(0, 0), ProjectileID.DemonScythe, 50, 1f, 70, 1, true, 0, true, 180);
 
 						}
 
-						if (generalcounter % 300 > 100 && generalcounter % 150 == 0)
+						if (generalcounter % 400 > 100 && generalcounter % 150 == 0)
 						{
 							Vector2 here = (P.Center - npc.Center);
 							here.Normalize();
-							Idglib.Shattershots(npc.Center + new Vector2(Main.rand.Next(-100, 100), 0), P.Center, new Vector2(0, 0), ProjectileID.SaucerMissile, 25, 35f, 180, 2, true, 0, false, 220);
-
+							List<Projectile> itz=Idglib.Shattershots(npc.Center + new Vector2(0, 0), P.Center, new Vector2(0, 0), ProjectileID.SaucerMissile, 50, 18f, 200, 2, false, 0, false, 400);
+							itz[0].localAI[1] = -20;
+							itz[1].localAI[1] = -20;
+							itz = Idglib.Shattershots(npc.Center, P.Center.RotatedBy(MathHelper.ToRadians(180), npc.Center), new Vector2(0, 0), ProjectileID.SaucerMissile, 50, 15f, 180, 1, true, 0, false, 400);
+							itz[0].localAI[1] = -10;
 						}
 
 					}
@@ -336,7 +352,7 @@ Main.npc[father].noGravity = true;
 						int modez = (Main.expertMode ? 1 : 2);
 						if (generalcounter % ((50 + npc.aiStyle)* modez) == 0)
 						{
-							List<Projectile> itz = Idglib.Shattershots(npc.Center, P.Center, new Vector2(0, 0), ProjectileID.NebulaBolt, 30, 14f, 40, 2, true, 0, true, 200);
+							List<Projectile> itz = Idglib.Shattershots(npc.Center, P.Center, new Vector2(0, 0), ProjectileID.NebulaBolt, 30, 12f, 40, 2, true, 0, true, 200);
 
 						}
 					}
@@ -347,7 +363,8 @@ Main.npc[father].noGravity = true;
 				if (aicounter != 0 || drawdist>0)
 				drawdist += (1f - drawdist) * 0.01f;
 				if (dist.Length()>(2200-(isboss*800)) || (aicounter==0 && dist.Length()>600) || pushtimes>190-adder){
-if (aicounter!=0 && isboss==1 && dist.Length()>1600){
+if (aicounter!=0 && isboss==1 && dist.Length()> circlesize)
+					{
 P.AddBuff(21, 120);
 P.AddBuff(160, 150);
 //P.velocity=P.velocity*10;
@@ -359,15 +376,22 @@ Main.NewText("<Supreme Pinky> YOU AIN`T GOING ANYWHERE",255, 100, 255);
 }
 }
 
-if (ploc.X>meloc.X){
-npc.velocity=new Vector2(4f,(((ploc.Y+8)-meloc.Y)/8)+moveup);
-}else{
-npc.velocity=new Vector2(-4f,(((ploc.Y+8)-meloc.Y)/8)+moveup);
-}
-npc.velocity.Normalize();
-npc.velocity=npc.velocity*12;
-npc.noTileCollide = true;
-npc.noGravity = true;
+					if (stopmoving < 1)
+					{
+						if (ploc.X > meloc.X)
+						{
+							npc.velocity = new Vector2(4f, (((ploc.Y + 8) - meloc.Y) / 8) + moveup);
+						}
+						else
+						{
+							npc.velocity = new Vector2(-4f, (((ploc.Y + 8) - meloc.Y) / 8) + moveup);
+						}
+						npc.velocity.Normalize();
+						npc.velocity = npc.velocity * 12;
+						npc.noTileCollide = true;
+						npc.noGravity = true;
+					}
+
 }else{
 if (npc.aiStyle!=63 && npc.aiStyle!=91 && npc.aiStyle!=23 && npc.aiStyle!=4 && npc.aiStyle!=69 && npc.aiStyle!=52 && npc.aiStyle!=19){
 npc.noTileCollide = false;
@@ -650,15 +674,15 @@ if (aicounter==200550){
 Main.NewText("<Supreme Pinky> MY CHILDREN! I NEED YOU ALL!",255, 100, 255);
 }
 
-if (aicounter>90560 && aicounter<90820){
-if (aicounter%18==0){
+if (aicounter>90560 && aicounter<91220){
+if (aicounter%50==0){
 for (int i = 0; i <= 2; i++)
 {
                 int newguy5=NPC.NewNPC((int)npc.Center.X + 150-Main.rand.Next(300), (int)npc.Center.Y + 30, 1);
-			Main.npc[newguy5].life=npc.lifeMax/80;
-			Main.npc[newguy5].lifeMax=npc.lifeMax/80;
-			Main.npc[newguy5].life=npc.lifeMax/80;
-			Main.npc[newguy5].lifeMax=npc.lifeMax/80;
+			Main.npc[newguy5].life=npc.lifeMax/30;
+			Main.npc[newguy5].lifeMax=npc.lifeMax/30;
+			Main.npc[newguy5].life=npc.lifeMax/30;
+			Main.npc[newguy5].lifeMax=npc.lifeMax/30;
 			Main.npc[newguy5].boss=false;
 			Main.npc[newguy5].defense=90;
 			if (aicounter>90650){
@@ -675,11 +699,11 @@ for (int i = 0; i <= 2; i++)
 
 }
 
-if (aicounter>100550 && aicounter<101550){
-if (aicounter%32==0){
+if (aicounter>100550 && aicounter<101750){
+if (aicounter%64==0){
                 int newguy55=NPC.NewNPC((int)P.Center.X + Main.rand.Next(-300,300), (int)P.Center.Y - 320, 16,npc.whoAmI);
-			Main.npc[newguy55].life=npc.lifeMax/25;
-			Main.npc[newguy55].lifeMax=npc.lifeMax/25;
+			Main.npc[newguy55].life=npc.lifeMax/12;
+			Main.npc[newguy55].lifeMax=npc.lifeMax/12;
 			Main.npc[newguy55].boss=false;
 			Main.npc[newguy55].defense=40;
 			Main.npc[newguy55].noTileCollide = true;
@@ -689,8 +713,8 @@ if (aicounter%32==0){
 							Main.npc[newguy55].netUpdate = true;
 
 							int newguy16=NPC.NewNPC((int)P.Center.X - 800, (int)P.Center.Y - 30, 1);
-			Main.npc[newguy16].life=npc.lifeMax/30;
-			Main.npc[newguy16].lifeMax=npc.lifeMax/30;
+			Main.npc[newguy16].life=npc.lifeMax/15;
+			Main.npc[newguy16].lifeMax=npc.lifeMax/15;
 			Main.npc[newguy16].boss=false;
 			Main.npc[newguy16].defense=50;
 			Main.npc[newguy16].noTileCollide = true;
@@ -700,8 +724,8 @@ if (aicounter%32==0){
 							Main.npc[newguy16].netUpdate = true;
 
 							int newguy116=NPC.NewNPC((int)P.Center.X + 800, (int)P.Center.Y - 30, 1);
-			Main.npc[newguy116].life=npc.lifeMax/30;
-			Main.npc[newguy116].lifeMax=npc.lifeMax/30;
+			Main.npc[newguy116].life=npc.lifeMax/15;
+			Main.npc[newguy116].lifeMax=npc.lifeMax/15;
 			Main.npc[newguy116].boss=false;
 			Main.npc[newguy116].defense=60;
 			Main.npc[newguy116].noTileCollide = true;
@@ -713,13 +737,13 @@ if (aicounter%32==0){
 						}
 }
 
-if (aicounter>200550 && aicounter<202550){
-if (aicounter%160==0){
-                int newguy5=NPC.NewNPC((int)npc.Center.X - 80, (int)P.Center.Y - 350, 71);
-			Main.npc[newguy5].life=npc.lifeMax/9;
-			Main.npc[newguy5].lifeMax=npc.lifeMax/9;
-			Main.npc[newguy5].life=npc.lifeMax/9;
-			Main.npc[newguy5].lifeMax=npc.lifeMax/9;
+if (aicounter>200550 && NPC.CountNPCS(NPCID.DungeonSlime)<5){
+if (aicounter%200==0){
+                int newguy5=NPC.NewNPC((int)npc.Center.X - 80, (int)P.Center.Y - 350, NPCID.DungeonSlime);
+			Main.npc[newguy5].life=npc.lifeMax/3;
+			Main.npc[newguy5].lifeMax=npc.lifeMax/3;
+			Main.npc[newguy5].life=npc.lifeMax/3;
+			Main.npc[newguy5].lifeMax=npc.lifeMax/3;
 			Main.npc[newguy5].boss=false;
 			Main.npc[newguy5].defense=70;
 			Main.npc[newguy5].noTileCollide = true;
@@ -730,20 +754,8 @@ if (aicounter%160==0){
 						}
 					}
 if (aicounter>200550){
-if (aicounter%60==0){
-                int newguy316=NPC.NewNPC((int)npc.Center.X + 80, (int)P.Center.Y - 350, 81,npc.whoAmI,0,npc.whoAmI);
-			Main.npc[newguy316].life=npc.lifeMax/60;
-			Main.npc[newguy316].lifeMax=npc.lifeMax/60;
-			Main.npc[newguy316].boss=false;
-			Main.npc[newguy316].defense=90;
-			Main.npc[newguy316].noTileCollide = true;
-			Main.npc[newguy316].noGravity = true;
-			Main.npc[newguy316].aiStyle=9;
-			Main.npc[newguy316].ai[3]=npc.whoAmI;
-			Main.npc[newguy316].damage=63;
-							Main.npc[newguy316].netUpdate = true;
 
-						}
+						//nope
 }
 
 

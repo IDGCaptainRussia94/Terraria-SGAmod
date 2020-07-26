@@ -46,29 +46,6 @@ namespace SGAmod.Buffs
 				player.buffTime[buffIndex] = Math.Max(player.buffTime[buffIndex], 2);
 		}
 	}
-	public class CondenserBuff : ModBuff
-	{
-		public override void SetDefaults()
-		{
-			DisplayName.SetDefault("Condenser");
-			Description.SetDefault("1 free Cooldown Stack, 15% longer cooldown times");
-			Main.debuff[Type] = false;
-			Main.pvpBuff[Type] = true;
-			Main.buffNoSave[Type] = false;
-		}
-
-
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = "SGAmod/ActionCooldown";
-			return true;
-		}
-
-		public override void Update(Player player, ref int buffIndex)
-		{
-			player.SGAPly().MaxCooldownStacks += 1;
-		}
-	}
 
 
 }

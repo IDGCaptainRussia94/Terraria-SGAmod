@@ -75,13 +75,12 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.HealingPotion);
+			recipe.AddIngredient(ItemID.HealingPotion,1);
 			recipe.AddIngredient(ItemID.StrangeBrew);
-			recipe.AddIngredient(null, "ManaBattery", 1);
 			recipe.AddIngredient(null, "FrigidShard", 3);
 			recipe.AddIngredient(null, "NoviteBar", 2);
 			recipe.AddTile(TileID.Bottles);
-			recipe.SetResult(this, 1);
+			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
 		}
 	}
@@ -91,7 +90,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Radiation Cure Potion");
-			Tooltip.SetDefault("'Radiation is not easy to cure, but thankfully, we have MAGIC!'\nGrants increased Radiation poisoning recovery while no bosses are alive");
+			Tooltip.SetDefault("'Radiation is not easy to cure, but thankfully, we have MAGIC!'\nGrants increased Radiation poisoning recovery while no bosses are alive\nGrants 50% increased radiation resistance");
 		}
 
 		public override bool CanUseItem(Player player)
@@ -119,12 +118,12 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.RestorationPotion);
+			recipe.AddIngredient(ItemID.RestorationPotion,3);
 			recipe.AddIngredient(ItemID.StrangeBrew);
 			recipe.AddIngredient(null, "ManaBattery", 1);
-			recipe.AddIngredient(ItemID.ChlorophyteOre,3);
+			recipe.AddIngredient(ItemID.ChlorophyteOre,5);
 			recipe.AddTile(TileID.AlchemyTable);
-			recipe.SetResult(this, 1);
+			recipe.SetResult(this, 3);
 			recipe.AddRecipe();
 		}
 	}

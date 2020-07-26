@@ -172,7 +172,6 @@ namespace SGAmod
                 NightmareHardcore = Main.LocalPlayer.GetModPlayer<SGAPlayer>().nightmareplayer ? 1 : 0;
 
             WorldIsTin = (WorldGen.CopperTierOre == 7 ? false : true) ;
-            SGAWorld.modtimer +=1;
             if (Main.dayTime == true) {
                 harbingercounter = 0;
             }
@@ -423,18 +422,19 @@ namespace SGAmod
             writer.Write(bossprgressor);
             writer.Write(modtimer);
             writer.Write((short)NightmareHardcore);
+            writer.Write(portalcanmovein);
 
             for (x = 0; x < questvars.Length; x++)
             {
-                writer.Write(questvars[x]);
+                writer.Write((ushort)questvars[x]);
             }
             for (x = 0; x < oretypesprehardmode.Length; x++)
             {
-                writer.Write(oretypesprehardmode[x]);
+                writer.Write((ushort)oretypesprehardmode[x]);
             }
             for (x = 0; x < oretypeshardmode.Length; x++)
             {
-                writer.Write(oretypeshardmode[x]);
+                writer.Write((ushort)oretypeshardmode[x]);
             }
         }
 
@@ -463,18 +463,19 @@ namespace SGAmod
             bossprgressor = reader.ReadInt32();
             modtimer = reader.ReadInt32();
             NightmareHardcore = reader.ReadInt16();
+            portalcanmovein = reader.ReadBoolean();
 
             for (x = 0; x < questvars.Length; x++)
             {
-                tf2quest = reader.ReadInt32();
+                tf2quest = reader.ReadUInt16();
             }
             for (x = 0; x < oretypesprehardmode.Length; x++)
             {
-                oretypesprehardmode[x] = reader.ReadInt32();
+                oretypesprehardmode[x] = reader.ReadUInt16();
             }
             for (x = 0; x < oretypeshardmode.Length; x++)
             {
-                oretypeshardmode[x] = reader.ReadInt32();
+                oretypeshardmode[x] = reader.ReadUInt16();
             }
         }
 
@@ -529,21 +530,22 @@ namespace SGAmod
 
         public static void GenNovus()
         {
+            int tiletype2 = TileType<UnmanedOreTile>();
+            if (WorldGen.genRand.NextBool())
+            {
+                WorldIsNovus = false;
+                tiletype2 = TileType<NoviteOreTile>();
+            }
 
             //WorldGen.TileRunner(x, y, (double)WorldGen.genRand.Next(3, 6), WorldGen.genRand.Next(2, 6), TileType<ExampleOre>(), false, 0f, 0f, false, true);
             for (double k = 0; k < (Main.maxTilesX - 200) * (Main.maxTilesY - 150 - (int)Main.rockLayer) / 25.0 / 1.0; k += 1.0)
             {
+                int tiletype = tiletype2;
                 int genx = WorldGen.genRand.Next(100, Main.maxTilesX - 100);
                 int geny = WorldGen.genRand.Next((int)0, (int)Main.rockLayer + 150);
                  Tile tile = Framing.GetTileSafely(genx, geny);
                 int chance = 0;
                 int[] size = { 3, 8 };
-                int tiletype = TileType<UnmanedOreTile>();
-                if (WorldGen.genRand.NextBool())
-                {
-                    WorldIsNovus = false;
-                    tiletype = TileType<NoviteOreTile>();
-                }
                 if (tile.active() && (tile.type == TileID.Dirt || tile.type == TileID.Stone || tile.type == TileID.RainCloud || tile.type == TileID.Cloud))
                 {
                     chance = 2;
@@ -589,6 +591,34 @@ namespace SGAmod
             //SGAPlayer modPlayer = Main.player[Main.myPlayer].GetModPlayer<SGAPlayer>();
             MoistStonecount = tileCounts[mod.TileType("MoistStone")];
         }
+
+
+        //Unused code, was meant to help someone else and I had to write it down, might use it later, lol
+        /*public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
+        {
+
+            int genIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Shinies"));
+            if (genIndex == -1)
+            {
+                return;
+            }
+
+            {
+
+                
+                tasks.Insert(tasks.FindIndex(genpass => genpass.Name.Equals("Shinies")) + 1, new PassLegacy("ArcticOcean", delegate (GenerationProgress progress)
+                {
+                    progress.Message = "Cold, Iced ocean!";
+                    for (int i = 0; i < Main.maxTilesX / 900; i++)       //900 is how many biomes. the bigger is the number = less biomes
+                    {
+                        int X = WorldGen.genRand.Next(1, Main.maxTilesX/10);
+                        int Y = WorldGen.genRand.Next((int)100, (int)WorldGen.worldSurfaceHigh);
+                        int TileType = mod.TileType("ArcticIce");
+
+                        WorldGen.TileRunner(X, Y, 150, WorldGen.genRand.Next(100, 300), TileType, false, 0f, 0f, true, true); 
+                    } }));
+            }   }*/
+
 
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {

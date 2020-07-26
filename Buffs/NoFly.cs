@@ -23,8 +23,10 @@ namespace SGAmod.Buffs
 
 		public override void ModifyBuffTip(ref string tip, ref int rare)
 		{
-			if (NPC.CountNPCS(mod.NPCType("Cirno")) < 1)
+			if (NPC.CountNPCS(mod.NPCType("Cirno")) < 1 && !SGAWorld.downedCirno)
 				tip += "\nBeat Cirno to remove this effect";
+			if (NPC.CountNPCS(mod.NPCType("Hellion")) > 0)
+				tip += "\nHellion's Army has Cirno using this debuff against you";
 		}
 	}
 }

@@ -21,6 +21,7 @@ using SGAmod;
 using SubworldLibrary;
 using ReLogic.Graphics;
 using Terraria.Utilities;
+using SGAmod.Effects;
 
 namespace SGAmod.Dimensions
 {
@@ -34,6 +35,17 @@ namespace SGAmod.Dimensions
         {
             //TheProgrammer
             player.ManageSpecialBiomeVisuals("SGAmod:LimboSky", SGAPocketDim.WhereAmI == typeof(LimboDim) ? true : false, player.Center);
+        }
+
+        public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        {
+            if (SGAmod.anysubworld)
+            {
+                if (SLWorld.currentSubworld is SGAPocketDim sub)
+                    DimDingeonsWorld.deathtimer = Math.Max(1,DimDingeonsWorld.deathtimer);
+
+            }
+            return true;
         }
 
         public override void ResetEffects()
@@ -137,12 +149,15 @@ namespace SGAmod.Dimensions
     {
         public override bool CanUseItem(Item item, Player player)
         {
-            if (SLWorld.currentSubworld is SGAPocketDim sub)
+            if (SGAPocketDim.WhereAmI != null)
             {
-                int limit = sub.LimitPlayers;
-                if (limit % 3 == 0 && limit > 0 && (item.pick> 0 || item.hammer > 0 || item.axe > 0 || item.createTile> 0 || item.createWall > 0))
+                if (SLWorld.currentSubworld is SGAPocketDim sub)
                 {
-                    return false;
+                    int limit = sub.LimitPlayers;
+                    if (limit % 3 == 0 && limit > 0 && (item.pick > 0 || item.hammer > 0 || item.axe > 0 || item.createTile > 0 || item.createWall > 0))
+                    {
+                        return false;
+                    }
                 }
             }
             return base.CanUseItem(item, player);
@@ -158,13 +173,33 @@ namespace SGAmod.Dimensions
             if (SLWorld.currentSubworld is SGAPocketDim sub)
             {
                 int dimmusic = sub.LimitPlayers;
-                if (dimmusic > 0 && dimmusic % 3 == 0 && (type!=TileID.Spikes && type != TileID.WoodenSpikes))
+                if (dimmusic > 0 && dimmusic % 3 == 0)
                 {
-                    return false;
+                    if (DeeperDungeon.instance.IsSpike(type))
+                        return true;
 
+                    return false;
                 }
             }
             return base.CanExplode(i, j, type);
+        }
+        public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
+        {
+
+            if (SLWorld.currentSubworld is SGAPocketDim sub)
+            {
+                int dimmusic = sub.LimitPlayers;
+                if (dimmusic > 0 && dimmusic % 3 == 0)
+                {
+                    if (DeeperDungeon.instance.IsSpike(type))
+                    {
+                        fail = false;
+                        effectOnly = false;
+                    }
+
+                }
+            }
+
         }
     }
 
@@ -219,7 +254,9 @@ namespace SGAmod.Dimensions
 
             get
             {
-                if (!SLWorld.subworld)
+                if (Main.netMode > 0)
+                    return null;//This is null for clients on the overworld (normal), but not on the server, wtf? Whatever SP only content!
+                if (!SLWorld.subworld || !Subworld.AnyActive(SGAmod.Instance))
                     return null;
                 return SLWorld.currentSubworld.GetType();
             }
@@ -241,7 +278,7 @@ namespace SGAmod.Dimensions
         }
         public virtual bool IsSpike(int it)
         {
-            return it == TileID.Spikes || it == TileID.WoodenSpikes;
+            return it == TileID.Spikes || it == TileID.WoodenSpikes || it == TileID.Cobweb || it==TileID.BreakableIce;
         }
 
         public virtual bool IsDirt(int it)
@@ -441,7 +478,7 @@ namespace SGAmod.Dimensions
         }
 
         public static BasicEffect basicEffect;
-        public static Matrix world = Matrix.CreateTranslation(0, 0, 0);
+        public static Matrix world = WVP.World();
         public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, 3), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
         public static Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), 800f/600f, 0.01f, 500f);
 
@@ -456,18 +493,23 @@ namespace SGAmod.Dimensions
         {
             if (!Main.dedServ)
             {
-
-                /*view = Matrix.CreateLookAt(new Vector3(0, 0, 100), new Vector3(0, 0, 0), new Vector3(0, 1, 0));//*Matrix.CreateScale(Main.screenWidth/1920f, Main.screenHeight / 1024f,1f);
-
-                Vector3 loc = ConvertToPolyspace(Main.MouseScreen);
+                
+                /*
+                Vector3 loc = new Vector3(Main.MouseScreen.X, Main.MouseScreen.Y, 0);
 
                 VertexPositionColor[] vertices = new VertexPositionColor[3];
-                vertices[0] = new VertexPositionColor(loc+new Vector3(0, 1f, 0), Color.Red);
-                vertices[1] = new VertexPositionColor(loc+new Vector3(+1f, -1f, 0), Color.Green);
-                vertices[2] = new VertexPositionColor(loc+new Vector3(-1f, -1f, 0), Color.Blue);
+                vertices[0] = new VertexPositionColor(loc+new Vector3(0, 100f, 0), Color.Red);
+                vertices[1] = new VertexPositionColor(loc+new Vector3(+100f, -100f, 0), Color.Green);
+                vertices[2] = new VertexPositionColor(loc+new Vector3(-100f, -100f, 0), Color.Blue);
 
-                DrawOverride.vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
+                DrawOverride.vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), vertices.Length, BufferUsage.WriteOnly);
                 DrawOverride.vertexBuffer.SetData<VertexPositionColor>(vertices);
+
+                //GraphicsDevice device = Main.graphics.GraphicsDevice;
+
+                Vector2 zoom = Main.GameViewMatrix.Zoom;
+                view = WVP.View(zoom);
+                projection = WVP.Projection();
 
                 basicEffect.World = world;
                 basicEffect.View = view;
@@ -531,6 +573,7 @@ namespace SGAmod.Dimensions
 
         private Subworld lastworld;
         public static int texttimer=0;
+        public static int deathtimer = 0;
         public static ModWorld Instance;
 
         public override void Load(TagCompound tag)
@@ -539,6 +582,7 @@ namespace SGAmod.Dimensions
         }
         public override void PostUpdate()
         {
+
             if (SGAPocketDim.WhereAmI != null)
                 SGAmod.cachedata = true;
 
@@ -552,6 +596,17 @@ namespace SGAmod.Dimensions
                 if (lastworld != SLWorld.currentSubworld || SGAPocketDim.WhereAmI==null)
                     DimDingeonsWorld.texttimer = 0;
                 lastworld = SLWorld.currentSubworld;
+
+                if (DimDingeonsWorld.deathtimer > 0)
+                {
+                    DimDingeonsWorld.deathtimer +=1;
+                    if (deathtimer > 200)
+                    {
+                        DimDingeonsWorld.deathtimer = 0;
+                        Subworld.Exit(true);
+                    }
+                }
+
             }
         }
 
@@ -591,11 +646,13 @@ namespace SGAmod.Dimensions
                     float alpha = Math.Min((DimDingeonsWorld.texttimer - 150f) / 80f, 1f);
                     if (DimDingeonsWorld.texttimer>400)
                         alpha = 1-Math.Min((DimDingeonsWorld.texttimer - 500f) / 80f, 1f);
+
+                    SpriteBatch spriteBatch = Main.spriteBatch;
+
                     if (dimstring != null)
                         {
 
                             Player locply = Main.LocalPlayer;
-                            SpriteBatch spriteBatch = Main.spriteBatch;
                             spriteBatch.End();
 
                             Vector2 offset = new Vector2(Main.screenWidth / 2, Main.screenHeight / 3);
@@ -605,11 +662,18 @@ namespace SGAmod.Dimensions
 
                             Vector2 size = Main.fontDeathText.MeasureString(dimstring);
                             if (alpha > 0f)
-                            spriteBatch.DrawString(Main.fontDeathText, dimstring, new Vector2(-size.X/3f, 0), Color.White*alpha);
+                            spriteBatch.DrawString(Main.fontDeathText, dimstring, new Vector2(-size.X/2f, 0), Color.White*alpha);
 
-                            spriteBatch.End();
-                            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
-                        }
+                     }
+
+                    spriteBatch.End();
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1f,1f,1f));
+
+                    spriteBatch.Draw(Main.blackTileTexture, Vector2.Zero, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), (Color.Black * ((float)DimDingeonsWorld.deathtimer / 200f)), 0, Vector2.Zero, new Vector2(1f, 1f), SpriteEffects.None, 0f);
+                    spriteBatch.End();
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+
 
                 }
             }

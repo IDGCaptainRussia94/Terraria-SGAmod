@@ -145,6 +145,8 @@ namespace SGAmod.Items.Weapons
 			if (type!=ProjectileID.Beenade)
 			damage += (int)((float)basetype2.damage * player.Throwing().thrownDamage);
 
+
+			if (TrapDamageItems.SavingChanceMethod(player,true))
 			player.ConsumeItem(basetype);
 
 			Projectile proj = Main.projectile[Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI)];
@@ -330,7 +332,7 @@ namespace SGAmod.Items.Weapons
 			}
 
 			tooltips.Add(new TooltipLine(mod, "GucciGlove", Idglib.ColorText(Color.White, "When you have all 7 gems, Equip the glove and throw a 'grapple hook' to 'snap'")));
-			tooltips.Add(new TooltipLine(mod, "GucciGlove", Idglib.ColorText(Color.White, "Snapping will erase half the enemies and hostile projectiles, with a cooldown")));
+			tooltips.Add(new TooltipLine(mod, "GucciGlove", Idglib.ColorText(Color.White, "Snapping will erase half the enemies, with a cooldown")));
 			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl))
 			{
 			tooltips.Add(new TooltipLine(mod, "GucciGlove", Idglib.ColorText(Color.White, "Snapping will erase enemies with less than 100000 HP times the average of your damage bonuses")));
@@ -405,7 +407,8 @@ namespace SGAmod.Items.Weapons
 			Main.projectile[proj].netUpdate = true;
 			IdgProjectile.Sync(proj);
 
-			player.ConsumeItem(basetype);
+			if (TrapDamageItems.SavingChanceMethod(player, true))
+				player.ConsumeItem(basetype);
 
 			projectile.Kill();
 		}

@@ -10,6 +10,7 @@ using Terraria.ID;
 using Terraria.GameContent.UI;
 using Terraria.UI;
 using Terraria.Graphics;
+using SGAmod.SkillTree;
 
 namespace SGAmod
 {
@@ -18,6 +19,17 @@ namespace SGAmod
 	{
 		public static void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 		{
+
+			if (SGAmod.SkillUIActive)
+			{
+				layers.Clear();
+				layers.Add(new LegacyGameInterfaceLayer(
+					"SGAmod: SkillUI", SKillUI.DrawSkillUI,
+					InterfaceScaleType.UI)
+				);
+				return;
+			}
+
 			for (int k = 0; k < layers.Count; k++)
 			{
 				if (layers[k].Name == "Vanilla: Resource Bars")

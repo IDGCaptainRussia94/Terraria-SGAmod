@@ -40,8 +40,6 @@ namespace SGAmod.Items
 			if (Main.rand.Next(0, 3) == 1)
 				ply.QuickSpawnItem(mod.ItemType("TF2Emblem"), 1);
 			if (Main.rand.Next(0, 3) == 1)
-				ply.QuickSpawnItem(mod.ItemType("EntropyTransmuter"), 1);
-			if (Main.rand.Next(0, 3) == 1)
 				ply.QuickSpawnItem(typeofloot[Main.rand.Next(0, typeofloot.Length)], 1);
 		}
 

@@ -86,6 +86,7 @@ namespace SGAmod.NPCs.Hellion
         int nomove = 0;
         int slowedspeed = 0;
         bool onlyonce = false;
+        int chargewarning = 0;
 
         public Vector2 localdist;
         public override void SetStaticDefaults()
@@ -216,9 +217,12 @@ namespace SGAmod.NPCs.Hellion
                     {
                         int whento = phase < 1 ? 160 : 250;
 
-                        if (npc.ai[0] % whento > whento-20)
+                        chargewarning=(int)Math.Max((npc.ai[0] % whento)- (whento - 120),0);
+                        float chargespeedmul = MathHelper.Clamp(theplayerdir.Length() / 1000f, 0.5f, 1f); 
+
+                            if (npc.ai[0] % whento > whento-20)
                         {
-                            acceerate = 4f;
+                            acceerate = 4f* chargespeedmul;
                         }
                         else
                         {
@@ -230,6 +234,7 @@ namespace SGAmod.NPCs.Hellion
 
                         if (npc.ai[0] % 800 > 400)
                         {
+                            chargewarning = 0;
                             if (phase > 0)
                             {
                                 theplayerdir = player.Center - (npc.Center + ((npc.ai[2] + MathHelper.ToRadians(npc.ai[0])).ToRotationVector2() * 1000f));
@@ -245,17 +250,17 @@ namespace SGAmod.NPCs.Hellion
                             acceeratedist = 1500f;
                             facetoplayer = true;
 
-                            if (npc.ai[0] % 25 == 0)
+                            if (npc.ai[0] % 35 == 0)
                                 if (phase == 0)
                                     Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.EyeLaser, 40, 12, 20 + (400 - (npc.ai[0] % 400)) / 20, 2, true, 0, false, 400);
-                            if (npc.ai[0] % 125 == 0)
-                                if (phase == 1)
-                                    Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.EyeLaser, 25, 8, 20 + (400 - (npc.ai[0] % 400)) / 20, 3, true, 0, false, 400);
+                           // if (npc.ai[0] % 125 == 0)
+                           //     if (phase == 1)
+                           //         Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.DesertDjinnCurse, 25, 8, 20 + (400 - (npc.ai[0] % 400)) / 20, 1, true, 0, false, 400);
                         }
                         else
                         {
-                            if (npc.ai[0] % 100 == 0)
-                                Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.CursedFlameHostile, 25, 20, 160, Hellion.GetHellion().phase<1 ? 5 : 3, false, 0, false, 200);
+                            if (npc.ai[0] % 180 == 0 && phase<2)
+                                Idglib.Shattershots(npc.Center, npc.Center + npc.rotation.ToRotationVector2(), new Vector2(0, 0), ProjectileID.CursedFlameHostile, 25, 15, 160, Hellion.GetHellion().phase<1 ? 5 : 3, false, 0, false, 250);
 
 
                         }
@@ -378,7 +383,7 @@ namespace SGAmod.NPCs.Hellion
                                 Vector2 thingz = player.Center - npc.Center;
                                 thingz.Normalize();
                                 npc.velocity += thingz * -85f;
-                                Idglib.Shattershots(npc.Center, player.Center, new Vector2(0, 0), ProjectileID.CursedFlameHostile, 40, 40, 160, 1, true, 0, false, 200);
+                                Idglib.Shattershots(npc.Center, player.Center, new Vector2(0, 0), ProjectileID.CursedFlameHostile, 40, 20, 160, 1, true, 0, false, 200);
 
                             }
                             former.Normalize();
@@ -447,12 +452,12 @@ namespace SGAmod.NPCs.Hellion
                 if (npc.ai[0] % 800 <= 400)
                 {
 
-                    if (npc.ai[0] % 160 == 30 + aioffset * 2)
+                    /*if (npc.ai[0] % 160 == 30 + aioffset * 2)
                     {
                         Vector2 theplayerdir = player.Center - (npc.Center);
                         Idglib.Shattershots(npc.Center, player.Center, new Vector2(0, 0), ProjectileID.ShadowFlame, 30, 25, 60, 1, true, 0, false, 150);
 
-                    }
+                    }*/
 
                 }
             }
@@ -500,10 +505,11 @@ namespace SGAmod.NPCs.Hellion
             };
             Func<float, bool> projectilepattern = (time) => (time % 70 == 0);
 
-            int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 30, 250, wheretogo2.Y, ProjectileID.NebulaLaser, projectilepattern, 15f, 200);
+            int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 30, 250, wheretogo2.Y,phase<1 ? ProjectileID.NebulaLaser : ProjectileID.DesertDjinnCurse,
+                projectilepattern, phase < 1 ? 15f : 3f, 200);
             (Main.projectile[ize2].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
             (Main.projectile[ize2].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
-            Main.PlaySound(SoundID.Item, (int)Main.projectile[ize2].position.X, (int)Main.projectile[ize2].position.Y, 33, 0.25f, 0.5f);
+            Main.PlaySound(SoundID.Item, (int)Main.projectile[ize2].position.X, (int)Main.projectile[ize2].position.Y, 45, 0.25f, 0.5f);
             Main.projectile[ize2].netUpdate = true;
 
         }
@@ -551,6 +557,7 @@ namespace SGAmod.NPCs.Hellion
         public override bool PreAI()
         {
 
+            chargewarning = 0;
             nomove -= 1;
             slowedspeed -= 1;
             if (aioffset == 9990)
@@ -708,6 +715,15 @@ namespace SGAmod.NPCs.Hellion
             Idglib.coloroverride = Color.White;
 
             NPC myowner = Main.npc[(int)npc.ai[3]];
+
+            if (Main.player[npc.target] != null)
+            {
+                Vector2 there = (Main.player[npc.target].Center - npc.Center);
+                float dist = there.Length();
+                    spriteBatch.Draw(Main.blackTileTexture, npc.Center-Main.screenPosition, new Rectangle(0,0,1,8), Color.Red*MathHelper.Clamp((float)chargewarning / 90f,0f,1f), there.ToRotation(), new Vector2(0, 4), new Vector2(dist,(float)chargewarning/30f), SpriteEffects.None, 0f);
+
+
+            }
 
             if (armtex != null && phase>1 && noact<200)
             {
@@ -1288,7 +1304,7 @@ namespace SGAmod.NPCs.Hellion
         {
             npc.width = 16;
             npc.height = 16;
-            npc.damage = 10;
+            npc.damage = 0;
             npc.defense = 0;
             npc.lifeMax = 10000;
             npc.HitSound = SoundID.NPCHit5;

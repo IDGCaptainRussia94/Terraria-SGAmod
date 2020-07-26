@@ -580,7 +580,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			item.CloneDefaults(ItemID.Revolver);
-			item.damage = 30;
+			item.damage = 28;
 			item.width = 48;
 			item.height = 24;
 			item.useTime = 30;

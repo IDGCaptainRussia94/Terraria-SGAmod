@@ -76,7 +76,7 @@ namespace SGAmod.HavocGear.Items
             else if (pick == 11)
                 player.QuickSpawnItem(mod.ItemType("Biomass"), Main.rand.Next(4, 16));    
             else if (pick == 12)
-                player.QuickSpawnItem(mod.ItemType("UnmanedOre"), Main.rand.Next(4, 16));    
+                player.QuickSpawnItem(SGAWorld.WorldIsNovus ? mod.ItemType("UnmanedOre") : mod.ItemType("NoviteOre"), Main.rand.Next(4, 16));    
 
         }
 	}

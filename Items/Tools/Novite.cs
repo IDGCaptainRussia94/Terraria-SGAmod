@@ -20,12 +20,13 @@ namespace SGAmod.Items.Tools
 			item.shoot = mod.ProjectileType("NoviteDrillProj");
 			item.useAnimation = 40;
 			item.damage = 8;
+			item.pick = 65;
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("NoviteBar"), 10);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 12);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

@@ -94,7 +94,7 @@ namespace SGAmod
             //if (Main.LocalPlayer.GetModPlayer<MyPlayer>(mod).GetExp() < experienceNeeded)
             //    return false;
             //else
-            if (SGAWorld.downedHellion < 1)
+            if (SGAWorld.downedHellion < 1 && !Main.LocalPlayer.SGAPly().gothellion)
                 return false;
             return SgaLib.EnforceDuplicatesInRecipe(this);
         }

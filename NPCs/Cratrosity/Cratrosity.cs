@@ -63,7 +63,7 @@ public float nonaispin=0f;
 		{
 			npc.width = 24;
 			npc.height = 24;
-			npc.damage = 60;
+			npc.damage = 50;
 			npc.defense = 50;
 			npc.lifeMax = 5000;
 			npc.HitSound = SoundID.NPCHit4;
@@ -76,7 +76,7 @@ public float nonaispin=0f;
 			npc.noTileCollide = true;
 			npc.noGravity = true;
 			theclostestcrate=npc.Center;
-			npc.value = Item.buyPrice(0, 45, 0, 0);
+			npc.value = Item.buyPrice(0, 10, 0, 0);
 		}
 
 		public override string Texture
@@ -169,7 +169,7 @@ return false;
 		npc.velocity=(npc.velocity+((gohere-npc.Center)*thespeed))*0.98f;
 		}else{
 
-		npc.velocity=new Vector2(-theammount* ((GetType() == typeof(Cratrogeddon)) ? 30 : 10),0);
+		npc.velocity=new Vector2(-theammount* ((GetType() == typeof(Cratrogeddon)) ? 15 : 10),0);
 		if (npc.ai[0]%15==0){
 		List<Projectile> itz=Idglib.Shattershots(npc.Center,P.Center+new Vector2(0,P.Center.Y>npc.Center.Y ? 600 : -600),new Vector2(0,0),ProjectileID.CopperCoin,(int)(npc.damage*(20.00/defaultdamage)),10,0,1,true,0,true,100);
 		}
@@ -216,7 +216,7 @@ return false;
 		}else{
 		Vector2 gogo=P.Center-npc.Center; gogo.Normalize(); gogo=gogo*(8-phase*1);
 		if (GetType() == typeof(Cratrogeddon))
-		gogo *= 2f;
+		gogo *= 1.25f;
 		npc.velocity=gogo;
 		compressvargoal=2;
 		}
@@ -271,10 +271,19 @@ return false;
 		compressvargoal=0.4f;
 		Vector2 gogo=P.Center-npc.Center; gogo.Normalize(); gogo=gogo*(30-phase*2);
 				if (GetType() == typeof(Cratrogeddon))
-				gogo *= 0.3f;
-		if (npc.ai[0]%(25+(phase*10))< (GetType() == typeof(Cratrogeddon) ? 20 : 1))
+				gogo *= 0.4f;
+
+						float tiev = (GetType() == typeof(Cratrogeddon)) ? npc.ai[0] % (50 + (phase * 3)) : npc.ai[0] % (25 + (phase * 10));
+
+		if (tiev < (GetType() == typeof(Cratrogeddon) ? 10 : 1))
 						{
 		npc.velocity=(npc.velocity+gogo);
+							if (npc.velocity.Length() > 30)
+							{
+								npc.velocity.Normalize();
+								npc.velocity *= 30f;
+							}
+
 		}
 		npc.velocity=npc.velocity*friction2;
 		}

@@ -15,7 +15,7 @@ namespace SGAmod.Items.Accessories.Charms
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Mining Charm Tier 1");
+			DisplayName.SetDefault("Mining Amulet Tier 1");
 			Tooltip.SetDefault("25% increased mining/hammering/chopping speed\n"+Idglib.ColorText(Color.Red,"Damage you take is increased by 20%"));
 		}
 
@@ -78,7 +78,7 @@ namespace SGAmod.Items.Accessories.Charms
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Enhancing Charm Tier 1");
+			DisplayName.SetDefault("Enhancing Amulet Tier 1");
 			Tooltip.SetDefault("buffs are 25% longer and debuffs are 25% shorter\n" + Idglib.ColorText(Color.Red, "Potion Sickness is not affected, and is also 10% longer"));
 		}
 
@@ -121,7 +121,7 @@ namespace SGAmod.Items.Accessories.Charms
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Anticipation Charm Tier 1");
+			DisplayName.SetDefault("Anticipation Amulet Tier 1");
 			Tooltip.SetDefault("When a boss fight starts, you are healed by 100 HP, but only every 2 minutes and while " + Idglib.ColorText(Color.Green, "Anticipation") + " is low" +
 				"\nDuring a boss fight, you build up " + Idglib.ColorText(Color.Green, "Anticipation") + ", which causes your held weapon to do more damage, this caps at a 25% increase\n" +
 	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\n" + Idglib.ColorText(Color.Red, "There is a very rare chance to consume an extra item whenever items are consumed"));
@@ -164,7 +164,7 @@ namespace SGAmod.Items.Accessories.Charms
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Anticipation Charm Tier 2");
+			DisplayName.SetDefault("Anticipation Amulet Tier 2");
 			Tooltip.SetDefault("When a boss fight starts, you are healed by 200 HP, but only every 2 minutes and while " + Idglib.ColorText(Color.Green, "Anticipation") + " is low" +
 				"\nDuring a boss fight, you build up " + Idglib.ColorText(Color.Green, "Anticipation") + ", which causes your held weapon to do more damage, this caps at a 50% increase\n" +
 	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\n" + Idglib.ColorText(Color.Red, "There is a rare chance to consume an extra item whenever items are consumed"));
@@ -205,7 +205,7 @@ namespace SGAmod.Items.Accessories.Charms
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Anticipation Charm Tier 3");
+			DisplayName.SetDefault("Anticipation Amulet Tier 3");
 			Tooltip.SetDefault("When a boss fight starts, you are healed by 300 HP, but only every 2 minutes and while " + Idglib.ColorText(Color.Green, "Anticipation") + " is low" +
 				"\nDuring a boss fight, you build up " + Idglib.ColorText(Color.Green, "Anticipation") + ", which causes your held weapon to do more damage, this caps at a near 100% increase\n" +
 	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\n" + Idglib.ColorText(Color.Red, "There is a semi-rare chance to consume an extra item whenever items are consumed"));
@@ -246,7 +246,7 @@ namespace SGAmod.Items.Accessories.Charms
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Enhancing Charm Tier 2");
+			DisplayName.SetDefault("Enhancing Amulet Tier 2");
 			Tooltip.SetDefault("buffs are 50% longer and debuffs are 33% shorter\n" + Idglib.ColorText(Color.Red, "Potion Sickness is not affected, and is also 15% longer"));
 		}
 
@@ -285,7 +285,7 @@ namespace SGAmod.Items.Accessories.Charms
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Enhancing Charm Tier 3");
+			DisplayName.SetDefault("Enhancing Amulet Tier 3");
 			Tooltip.SetDefault("buffs are 100% longer and debuffs are 50% shorter\n" + Idglib.ColorText(Color.Red, "Potion Sickness is not affected, and is also 20% longer"));
 		}
 
@@ -325,7 +325,7 @@ namespace SGAmod.Items.Accessories.Charms
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Mining Charm Tier 2");
+			DisplayName.SetDefault("Mining Amulet Tier 2");
 			Tooltip.SetDefault("50% increased mining/hammering/chopping speed\n" + Idglib.ColorText(Color.Red, "Damage you take is increased by 30%"));
 		}
 
@@ -364,7 +364,7 @@ namespace SGAmod.Items.Accessories.Charms
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Mining Charm Tier 3");
+			DisplayName.SetDefault("Mining Amulet Tier 3");
 			Tooltip.SetDefault("100% increased mining/hammering/chopping speed\n" + Idglib.ColorText(Color.Red, "Damage you take is increased by 40%"));
 		}
 

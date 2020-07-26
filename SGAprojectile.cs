@@ -23,6 +23,7 @@ namespace SGAmod
 	public bool enhancedbees=false;
 	public bool splittingcoins=false;
 	public bool raindown=false;
+		public bool embued = false;
 		public bool onehit = false;
 	public Vector2 splithere=new Vector2(0,0);
 		public int shortlightning = 0;
@@ -63,12 +64,45 @@ namespace SGAmod
 		}
 		public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
 		{
+			if (embued)
+			{
+				target.AddBuff(mod.BuffType("MoonLightCurse"),90);
+			}
 
-			if (onehit)
+				if (onehit)
 				projectile.Kill();
+		}
+
+		public void Embue(Projectile projectile)
+		{
+			if (!embued)
+			{
+				for (float i = 1f; i < 12; i += 0.8f)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+					int dust = Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.AncientLight, 0f, 0f, 100, default(Color), 1f);
+					Main.dust[dust].noGravity = true;
+					Main.dust[dust].fadeIn = 0.6f;
+					Main.dust[dust].velocity = randomcircle * i;
+					Main.dust[dust].color = Main.hslToRgb(((float)(Main.GlobalTime / 3) + (float)projectile.whoAmI * 7.16237f) % 1f, 0.9f, 0.65f);
+				}
+				projectile.damage = (int)((float)projectile.damage * 1.50f);
+				embued = true;
+			}
 		}
 		public override void PostAI(Projectile projectile)
 		{
+
+			if (embued)
+			{
+
+				int dust = Dust.NewDust(projectile.position,projectile.width, projectile.height, DustID.AncientLight, 0f, 0f, 100, default(Color), 1f);
+				Main.dust[dust].noGravity = true;
+				Main.dust[dust].fadeIn = 0.6f;
+				Main.dust[dust].velocity = projectile.velocity*Main.rand.NextFloat(0.25f,0.80f);
+				Main.dust[dust].color = Main.hslToRgb(((float)(Main.GlobalTime / 3)+(float)projectile.whoAmI*7.16237f) % 1f, 0.9f, 0.65f);
+
+			}
 
 			SGAprojectile modeproj = projectile.GetGlobalProjectile<SGAprojectile>();
 			if (projectile.owner < 255 && Main.player[projectile.owner].active && projectile.friendly && !projectile.hostile)

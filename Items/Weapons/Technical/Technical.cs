@@ -283,23 +283,20 @@ namespace SGAmod.Items.Weapons.Technical
 
 			position += (eree * Main.rand.NextFloat(58f,160f));
 
-			if (player.SGAPly().ConsumeElectricCharge(500, 100))
-			{
-
-
 				target.immune[player.whoAmI] = 15;
 				NPC target2 = CircuitBreakerBlade.FindClosestTarget(player, position, new Vector2(0, 0));
 				if (target2 != null)
 				{
+					if (player.SGAPly().ConsumeElectricCharge(500, 100))
+					{
 					Vector2 Speed = (target2.Center - target.Center);
 					Speed.Normalize(); Speed *= 2f;
 					int prog = Projectile.NewProjectile(target.Center.X, target.Center.Y, Speed.X, Speed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)(damage * 0.80), knockBack / 2f, player.whoAmI, 3);
 					IdgProjectile.Sync(prog);
 					Main.PlaySound(SoundID.Item93, position);
+					}
 
 				}
-			}
-
 		}
 
 		public override void AddRecipes()
@@ -383,7 +380,7 @@ namespace SGAmod.Items.Weapons.Technical
 				for (int k = 0; k < 10; k++)
 				{
 					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 1f;
-					int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1.5f);
+					int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1.5f*(1f+(projectile.ai[0]/3f)));
 					Main.dust[num655].noGravity = true;
 					Main.dust[num655].velocity *= 0.5f;
 				}
@@ -398,18 +395,19 @@ namespace SGAmod.Items.Weapons.Technical
 		public override void AI()
 		{
 			Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 0.1f;
-			int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1f);
+			int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1f * (1f + (projectile.ai[0] / 3f)));
 			Main.dust[num655].noGravity = true;
 			Main.dust[num655].velocity *= 0.5f;
 
 			Vector2 gothere = projectile.velocity;
 			gothere=gothere.RotatedBy(MathHelper.ToRadians(90));
 			gothere.Normalize();
+			Player player = Main.player[projectile.owner];
 
 			if (basepoint == Vector2.Zero)
 			{
 				basepoint = projectile.Center;
-				projectile.localAI[1] = (float)SGAWorld.modtimer;
+				projectile.localAI[1] = (float)player.SGAPly().timer;
 			}
 			else
 			{

@@ -33,7 +33,7 @@ namespace SGAmod.Projectiles
 			public override void OnHitNPC(NPC n, int damage, float knockback, bool crit)
 		{
 			Player owner = Main.player[projectile.owner];
-			n.AddBuff(189, 5*60);
+			n.AddBuff(189, 4*60);
 		}
 
 

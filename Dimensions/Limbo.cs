@@ -234,9 +234,7 @@ namespace SGAmod.Dimensions
 
 			if (maxDepth >= 0 && minDepth < 0)
 			{
-
 				spriteBatch.Draw(Main.blackTileTexture, Vector2.Zero, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), (Color.Black * 1f), 0, Vector2.Zero, new Vector2(1f, 1f), SpriteEffects.None, 0f);
-
 			}
 
 

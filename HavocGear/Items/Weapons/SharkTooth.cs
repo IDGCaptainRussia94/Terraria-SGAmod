@@ -11,7 +11,8 @@ namespace SGAmod.HavocGear.Items.Weapons
 	public override void SetStaticDefaults()
 	{
 		DisplayName.SetDefault("Shark Tooth");
-	}
+            Tooltip.SetDefault("May be bought from the Arms Dealer if the player has a [i:" + mod.ItemType("SnappyShark") + "] in their inventory");
+        }
 
         public override void SetDefaults()
         {

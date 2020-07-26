@@ -13,7 +13,7 @@ namespace SGAmod.HavocGear.Items.Armor
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Dank Wood Helmet");
-            Tooltip.SetDefault("3% increased critical strike chance");
+            Tooltip.SetDefault("4% increased critical strike chance");
         }
 
         public override void SetDefaults()
@@ -27,10 +27,11 @@ namespace SGAmod.HavocGear.Items.Armor
 
         public override void UpdateEquip(Player player)
         {
-            player.magicCrit += 3;
-            player.rangedCrit += 3;
-            player.meleeCrit += 3;
-            player.Throwing().thrownCrit += 3;
+            player.magicCrit += 4;
+            player.rangedCrit += 4;
+            player.meleeCrit += 4;
+            player.Throwing().thrownCrit += 4;
+            SGAmod.BoostModdedDamage(player, 0, 4);
         }
 
         public override void AddRecipes()
@@ -50,7 +51,7 @@ namespace SGAmod.HavocGear.Items.Armor
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Dank Wood Chestplate");
-            Tooltip.SetDefault("7.5% increased item use rate");
+            Tooltip.SetDefault("8% increased item use rate, improved life regen");
         }
 
         public override void SetDefaults()
@@ -59,13 +60,14 @@ namespace SGAmod.HavocGear.Items.Armor
             item.height = 22;
             item.value = 10000;
             item.rare = 1;
+            item.lifeRegen = 1;
             item.defense = 3;
         }
 
         public override void UpdateEquip(Player player)
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-            sgaplayer.UseTimeMul += 0.075f;
+            sgaplayer.UseTimeMul += 0.08f;
         }
 
         public override void AddRecipes()
@@ -94,7 +96,7 @@ namespace SGAmod.HavocGear.Items.Armor
             item.height = 12;
 			item.value = 10000;
 			item.rare = 1;
-			item.defense = 1;
+			item.defense = 2;
 		}
 
 		public override void UpdateEquip(Player player)

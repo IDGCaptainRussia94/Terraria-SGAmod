@@ -27,7 +27,7 @@ namespace SGAmod.Items.Weapons
 			item.useAnimation = 10;
 			item.useStyle = 1;
 			item.knockBack = 3;
-			item.value = Item.sellPrice(0, 20, 0, 0);
+			item.value = Item.sellPrice(0, 5, 0, 0);
 			item.rare = 7;
 			item.UseSound = SoundID.Item1;
 			item.autoReuse = true;
@@ -80,7 +80,7 @@ namespace SGAmod.Items.Weapons
 			item.useAnimation = 15;
 			item.useStyle = 5;
 			item.knockBack = 6;
-			item.value = 500000;
+			item.value = 100000;
 			item.rare = 7;
 			item.shootSpeed = 8f;
 			item.noMelee = true;
@@ -167,7 +167,7 @@ namespace SGAmod.Items.Weapons
 			item.useTime = 20;
 			item.useAnimation = 20;
 			item.knockBack = 6;
-			item.value = 1000000;
+			item.value = 100000;
 			item.ranged = true;
 			item.rare = 7;
 			item.shootSpeed = 14f;
@@ -240,7 +240,7 @@ namespace SGAmod.Items.Weapons
 			item.noUseGraphic = true;
 			item.noMelee = true;
 			item.autoReuse = true;
-			item.value = Item.buyPrice(0, 15, 0, 0);
+			item.value = Item.buyPrice(0, 3, 0, 0);
 			item.rare = 7;
 		}
 
@@ -370,7 +370,7 @@ namespace SGAmod.Items.Weapons
 			item.useTime = 36;
 			item.useAnimation = 36;
 			item.useStyle = 1;
-			item.value = Item.buyPrice(0, 20, 0, 0);
+			item.value = Item.buyPrice(0, 4, 0, 0);
 			item.rare = 7;
 			item.UseSound = SoundID.Item44;
 

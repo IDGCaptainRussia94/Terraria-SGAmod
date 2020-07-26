@@ -63,7 +63,7 @@ namespace SGAmod.Dimensions.NPCs
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
 			//Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY];
-			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && NPC.downedBoss3 && !spawnInfo.invasion && spawnInfo.player.ZoneDungeon && NPC.CountNPCS(mod.NPCType("DungeonPortal"))<1 &&
+			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && NPC.downedBoss3 && !spawnInfo.invasion && spawnInfo.player.ZoneDungeon && NPC.CountNPCS(ModContent.NPCType<DungeonPortal>())<1 &&
 				(spawnInfo.spawnTileType==TileID.BlueDungeonBrick || spawnInfo.spawnTileType == TileID.PinkDungeonBrick || spawnInfo.spawnTileType == TileID.GreenDungeonBrick) ? 0.02f : 0f;
 		}
 
@@ -131,10 +131,35 @@ namespace SGAmod.Dimensions.NPCs
 
 			for (float valez = 0.1f; valez < 10f; valez += 0.2f)
 			{
-				spriteBatch.Draw(tex, drawPos, null, color*0.05f, ((npc.localAI[0] / 15f)* (6f-valez))+ (valez/3.12612f), drawOrigin, npc.scale* valez, npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(tex, drawPos, null, color*0.05f, (((npc.localAI[0] / 15f)* (6f-valez))+ (valez/3.12612f))/3f, drawOrigin, (npc.scale* valez)*0.75f, npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 			}
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+
+			if (BirthdayParty.PartyIsUp)
+			{
+
+				UnifiedRandom rando = new UnifiedRandom(npc.whoAmI);
+
+				for (int i = 0; i < 5; i += 1)
+				{
+
+					int[] offsets = { 0, 16, 17, 18, 19 };
+
+					float anglz = (Main.GlobalTime* rando.NextFloat(0.25f, 2f)* (rando.NextBool() ? 1f : -1f));
+
+					float dist = 24f + rando.NextFloat(0f,72f)+(float)Math.Sin(Main.GlobalTime*(rando.NextFloat(0.25f,1.25f)))* rando.NextFloat(8f, 54f);
+
+					Vector2 angelz = new Vector2((float)Math.Cos(anglz), (float)Math.Sin(anglz)) * dist;
+					float angle = Main.GlobalTime* rando.NextFloat(0.25f, 3f);
+
+					tex = Main.extraTexture[72];
+
+					int scalehalf = (tex.Width / 20);
+
+					spriteBatch.Draw(tex, npc.Center+ angelz - Main.screenPosition, new Rectangle((int)(scalehalf) * offsets[i], 0, (int)(tex.Width / 20), tex.Height), Color.Gray, angle, new Vector2(scalehalf/2f, tex.Height/2f), new Vector2(1, 1), SpriteEffects.None, 0f);
+				}
+			}
 
 			return false;
 		}
@@ -160,7 +185,9 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				return "Go deeper to Floor " + (SGAWorld.dungeonlevel + 2)+"?";
 			}
-			return "Do you dare enter?"; // chat is implicitly cast to a string. You can also do "return chat.Get();" if that makes you feel better
+			if (BirthdayParty.PartyIsUp)
+				return "Are you sure you wish to leave the party?";
+			return "Do you dare enter?";
 		}
 
 		public override void SetChatButtons(ref string button, ref string button2)
@@ -168,13 +195,36 @@ namespace SGAmod.Dimensions.NPCs
 			//button = Language.GetTextValue("LegacyInterface.28");
 			if (Main.netMode < 1)
 				button = "Enter";
+			else
+				button = "Buy Loot";
+		}
+
+		public override void SetupShop(Chest shop, ref int nextSlot)
+		{
+
+		shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("RingOfRespite"));
+		shop.item[nextSlot].shopCustomPrice = 75;
+		shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+		nextSlot++;
+
+			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("NinjaSash"));
+			shop.item[nextSlot].shopCustomPrice = 120;
+			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+			nextSlot++;
 		}
 
 		public override void OnChatButtonClicked(bool firstButton, ref bool shop)
 		{
 			if (firstButton)
 			{
-				SGAPocketDim.EnterSubworld(mod.GetType().Name + "_DeeperDungeon",true);
+				if (Main.netMode < 1)
+				{
+					SGAPocketDim.EnterSubworld(mod.GetType().Name + "_DeeperDungeon", true);
+				}
+				else
+				{
+					shop = true;
+				}
 			}
 		}
 

@@ -24,9 +24,10 @@ namespace SGAmod.Items.Weapons
 			item.width = 44;
 			item.height = 52;
 			item.useTime = 25;
-			item.crit = 10;
+			item.crit = 15;
 			item.useAnimation = 26;
 			item.useStyle = 5;
+			item.autoReuse = true;
 			item.knockBack = 15;
 			item.value = 500000;
 			item.shootSpeed = 8f;

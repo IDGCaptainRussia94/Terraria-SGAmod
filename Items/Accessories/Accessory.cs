@@ -456,7 +456,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 52;
 			item.rare = ItemRarityID.Lime;
-			item.value = Item.sellPrice(1, 0, 0, 0); ;
+			item.value = Item.sellPrice(0, 25, 0, 0); ;
 			item.accessory = true;
 			item.expert = true;
 		}
@@ -548,13 +548,13 @@ namespace SGAmod.Items.Accessories
 	}
 
 
-public class BlinkTechGear : IdolOfMidas
+public class BlinkTechGear : ModItem
 	{
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tech Master's Gear");
-			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\n+5 Booster Recharge Rate, 20% increased plasma capacity, and 15% increased Booster Capacity\n5% increased Technological damage, Grants the effects of:\n-Master Ninja Gear and Fridgeflame Canister\n-Handling Gloves and Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
+			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\n+5 Booster Recharge Rate, 20% increased plasma capacity, and 15% increased Booster Capacity\nGrants the effects of:\n-Night Vision Helmet and Fridgeflame Canister\n-Handling Gloves and Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
 		}
 
 		public override void SetDefaults()
@@ -565,17 +565,11 @@ public class BlinkTechGear : IdolOfMidas
 			item.defense = 12;
 			item.height = 24;
 			item.accessory = true;
-			item.handOnSlot = 11;
-			item.handOffSlot = 6;
-			item.shoeSlot = 14;
-			item.waistSlot = 10;
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.blackBelt = true;
-			player.dash = 1;
-			player.spikedBoots = 2;
+			player.nightVision = true;
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			player.meleeDamage += 0.05f; player.magicDamage += 0.05f; player.rangedDamage += 0.05f; player.minionDamage += 0.05f; player.Throwing().thrownDamage += 0.05f;
 			SGAmod.BoostModdedDamage(player, 0.05f, 5);
@@ -592,7 +586,7 @@ public class BlinkTechGear : IdolOfMidas
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.MasterNinjaGear, 1);
+			recipe.AddIngredient(ItemID.NightVisionHelmet, 1);
 			recipe.AddIngredient(ItemID.LunarBar, 8);
 			recipe.AddRecipeGroup("SGAmod:HardmodeEvilAccessory",1);
 			recipe.AddIngredient(mod.ItemType("PlasmaPack"), 1);
@@ -611,7 +605,7 @@ public class BlinkTechGear : IdolOfMidas
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Bundle of Javelin Bases");
+			DisplayName.SetDefault("Bundle of Jab-lin Bases");
 			Tooltip.SetDefault("Improves the damage over time of javelins by 25%\nJavelin damage increased by 10%");
 		}
 
@@ -647,7 +641,7 @@ public class BlinkTechGear : IdolOfMidas
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Bundle of Javelin Spear Heads");
+			DisplayName.SetDefault("Bundle of Jab-lin Spear Heads");
 			Tooltip.SetDefault("The ammount of javelins you can stick into a target increases by 1\nJavelin damage increased by 15%");
 		}
 
@@ -685,7 +679,7 @@ public class BlinkTechGear : IdolOfMidas
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Bundle of Javelin Parts");
+			DisplayName.SetDefault("Bundle of Jab-lin Parts");
 			Tooltip.SetDefault("'Worthless money-wise, but won't discount your life'\nThe ammount of javelins you can stick into a target increases by 1\nImproves the damage over time of javelins by 25%\nJavelin damage increased by 25%\nDoesn't stack with component parts");
 		}
 
@@ -903,17 +897,13 @@ public class BlinkTechGear : IdolOfMidas
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Corroded Skull");
-			Tooltip.SetDefault("'It seems suprisingly intact, yet corroded by the Spider Queen'\nGrants immunity against Acid Burn");
+			Tooltip.SetDefault("'It seems suprisingly intact, yet corroded by the Spider Queen'\nGrants immunity against Acid Burn\nGrants 50% increased radiation resistance");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			if (player.HasBuff(BuffID.OnFire))
-			{
-				player.AddBuff(BuffID.Inferno, 2);
-				player.GetModPlayer<SGAPlayer>().PrimordialSkull = true;
-			}
 			player.buffImmune[mod.BuffType("AcidBurn")] = true;
+			player.GetModPlayer<IdgPlayer>().radresist += 0.25f;
 		}
 
 		public override void SetDefaults()
@@ -1529,6 +1519,11 @@ public class BlinkTechGear : IdolOfMidas
 			Item itz = new Item();
 			bool defined = false;
 			if (Main.LocalPlayer.HeldItem != null) {
+				if (Main.LocalPlayer.HeldItem.damage > 0)
+				{
+					itz.SetDefaults(ModContent.ItemType<GreenApocalypse>());
+					defined = true;
+				}
 				if (Main.LocalPlayer.HeldItem.ranged)
 				{
 					itz.SetDefaults(ModContent.ItemType<DarkApocalypse>());
@@ -1542,11 +1537,6 @@ public class BlinkTechGear : IdolOfMidas
 				if (Main.LocalPlayer.HeldItem.magic)
 				{
 					itz.SetDefaults(ModContent.ItemType<WhiteApocalypse>());
-					defined = true;
-				}
-				if (Main.LocalPlayer.HeldItem.Throwing().thrown || Main.LocalPlayer.HeldItem.thrown)
-				{
-					itz.SetDefaults(ModContent.ItemType<GreenApocalypse>());
 					defined = true;
 				}
 			}
@@ -1712,7 +1702,7 @@ public class BlinkTechGear : IdolOfMidas
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.breathMax *= 2;
+			player.breathMax += 200;
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			int defensegiven = 8;
 				defensegiven += SGAWorld.downedWraiths*2;
@@ -1903,7 +1893,7 @@ public class BlinkTechGear : IdolOfMidas
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.boosterrechargerate += 2;
-			sgaply.plasmaLeftInClipMax = (int)((float)sgaply.plasmaLeftInClipMax*1.20f);
+			sgaply.plasmaLeftInClipMax += 200;
 			sgaply.electricChargeMax += 3000;
 			player.SGAPly().electricrechargerate += 2;
 			ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
@@ -2335,7 +2325,7 @@ recipe.AddRecipe();
 			item.width = 18;
 			item.height = 24;
 			item.rare = 6;
-			item.value = Item.buyPrice(0, 5, 0, 0);
+			item.value = Item.buyPrice(0, 60, 0, 0);
 			item.accessory = true;
 		}
 
@@ -2364,39 +2354,51 @@ recipe.AddRecipe();
 public override void SetStaticDefaults()
 {
 DisplayName.SetDefault("Kou Sash");
-Tooltip.SetDefault("'A true assassin's attire'\nScoring an Apocalyptical imbues all your currently thrown projectiles\nImbued projectiles gain 50% increased damage and inflict Moonlight Curse\nThrowing damage increased by 20%, and crit chance is increased by 10%\nEffects of Shin Sash, Gi, and Shinobi's Shadow");
+Tooltip.SetDefault("'A true assassin's attire'\nScoring an Apocalyptical imbues all your currently thrown projectiles\nImbued projectiles gain 50% increased damage and inflict Moonlight Curse\nThrowing damage increased by 20%, and crit chance is increased by 10%\nCombines the effects of:\n-Shin Sash\n-Master Ninja Gear\n-Gi\n-Shinobi's Shadow\n-Bundle of Jab-lin Parts");
 }
 
 public override void SetDefaults()
 {
 item.width = 24;
 item.height = 24;
-item.rare = 9;
+item.rare = ItemRarityID.Cyan;
 item.defense = 4;
-item.value = Item.sellPrice(0, 5, 0, 0);
+item.handOnSlot = 11;
+item.handOffSlot = 6;
+item.shoeSlot = 14;
+item.value = Item.sellPrice(0, 25, 0, 0);
 item.accessory = true;
 }
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			base.UpdateAccessory(player, hideVisual);
+			player.blackBelt = true;
+			player.dash = 1;
+			player.spikedBoots = 2;
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			ModContent.GetInstance<ShinobiShiv>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<JavelinBundle>().UpdateAccessory(player, hideVisual);
 			sgaply.ninjaSash = Math.Max(sgaply.ninjaSash, 3);
-			player.Throwing().thrownDamage += 0.20f;
+
 			player.Throwing().thrownCrit += 10;
-			player.Throwing().thrownDamage += 0.05f; player.meleeDamage += 0.05f; player.rangedDamage += 0.05f; player.magicDamage += 0.05f; player.minionDamage += 0.05f;
+			player.Throwing().thrownDamage += 0.25f;//20% + 5% from Gi
+
+			player.meleeDamage += 0.05f; player.rangedDamage += 0.05f; player.magicDamage += 0.05f; player.minionDamage += 0.05f;
 			player.Throwing().thrownCrit+=5; player.rangedCrit += 5; player.magicCrit += 5; player.meleeCrit += 5;
+			SGAmod.BoostModdedDamage(player, 0.05f, 5);
+
 			player.meleeSpeed += 0.10f;
 			player.moveSpeed += 0.10f;
-			SGAmod.BoostModdedDamage(player, 0.05f, 5);
 		}
 
 		public override void AddRecipes()
 {
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("ShinSash"), 1);
+			recipe.AddIngredient(ItemID.MasterNinjaGear, 1);
 			recipe.AddIngredient(ItemID.Gi, 1);
 			recipe.AddIngredient(mod.ItemType("ShinobiShiv"), 1);
+			recipe.AddIngredient(mod.ItemType("JavelinBaseBundle"), 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 15);
 			recipe.AddTile(TileID.LunarCraftingStation);
@@ -2406,6 +2408,95 @@ item.accessory = true;
 
 }
 
+	public class NoviteCore : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Core");
+			Tooltip.SetDefault("'Core of modern technology, could be put to good use'\n10% increased Technological damage, 5% increased Trap damage\nCharge is built up by running around at high speeds (600/Second)\n20% reduced Electric Consumption, +2500 Max Electric Charge, +2 passive Electric Charge Rate");
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/CalamityRune"); }
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().techdamage += 0.10f;
+			player.SGAPly().TrapDamageMul += 0.05f;
+			player.SGAPly().electricChargeMax += 2500;
+			player.SGAPly().electricrechargerate += 2;
+			player.SGAPly().electricChargeCost *= 0.80f;
+			player.SGAPly().Noviteset = Math.Max(player.SGAPly().Noviteset, 1);
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 2);
+			item.rare = ItemRarityID.LightPurple;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 15);
+			recipe.AddIngredient(mod.ItemType("NoviteHelmet"), 1);
+			recipe.AddIngredient(mod.ItemType("NoviteChestplate"), 1);
+			recipe.AddIngredient(mod.ItemType("NoviteLeggings"), 1);
+			recipe.AddIngredient(ItemID.HallowedBar, 8);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class NovusCore : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novus Core");
+			Tooltip.SetDefault("'Core of untapped magic, could be put to good use'\nAny item that uses Novus Bars in its crafting recipe get both the following:\n10% increased damage and emits Novus particles\n5% faster item use times\nAll effects of Novus set bonus");
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/CalamityRune"); }
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().Novusset = 5;
+			player.SGAPly().UseTimeMul += 0.05f;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 2);
+			item.rare = ItemRarityID.LightPurple;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 15);
+			recipe.AddIngredient(mod.ItemType("UnmanedHood"), 1);
+			recipe.AddIngredient(mod.ItemType("UnmanedBreastplate"), 1);
+			recipe.AddIngredient(mod.ItemType("UnmanedLeggings"), 1);
+			recipe.AddIngredient(ItemID.HallowedBar, 8);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
 
 
 }

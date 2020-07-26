@@ -560,7 +560,10 @@ namespace SGAmod.NPCs.Wraiths
 			WorldGen.GoldTierOre = 8;*/
 
 			if (SGAWorld.craftwarning < 30)
+			{
+				SGAWorld.craftwarning = 50;
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TrueCopperWraithNotch"));
+			}
 
 			int shardtype = mod.ItemType("WraithFragment");
 			/*if (SGAWorld.WorldIsTin)

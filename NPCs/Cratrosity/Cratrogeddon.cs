@@ -15,9 +15,6 @@ namespace SGAmod.NPCs.Cratrosity
 
 	public class Cratrogeddon: Cratrosity
 	{
-
-
-
 		private int pmlphase=0;
 		private int pmlphasetimer=0;
 		private List<int> summons=new List<int>();
@@ -42,10 +39,10 @@ namespace SGAmod.NPCs.Cratrosity
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
-			npc.damage = 70;
-			npc.defense = 40;
+			npc.damage = 50;
+			npc.defense = 50;
 			npc.lifeMax = 40000;
-			npc.value = Item.buyPrice(2, 0, 0, 0);
+			npc.value = Item.buyPrice(1, 0, 0, 0);
 			music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Evoland 2 OST - Track 46 (Ceres Battle)");
 			animationType = 0;
 			npc.noTileCollide = true;
@@ -56,7 +53,7 @@ namespace SGAmod.NPCs.Cratrosity
 		{
 			if (Main.expertMode)
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateKeyUber"));
-			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("MoneySign"), Main.rand.Next(15, Main.expertMode ? 35 : 25));
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("MoneySign"), Main.rand.Next(40, Main.expertMode ? 85 : 65));
 			Achivements.SGAAchivements.UnlockAchivement("Cratrogeddon", Main.LocalPlayer);
 			if (SGAWorld.downedCratrosityPML == false)
 			{
@@ -90,13 +87,13 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		it.Normalize();
 
 
-		if (a==0 && pmlphasetimer%50==i*5 && pmlphasetimer<1100 && pmlphasetimer>0){
-		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+new Vector2(it.X*((i+1)%2),it.Y*(i%2))*50,new Vector2(0,0),ProjectileID.GoldCoin,45,(float)3,0,1,true,0,false,300);
-		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+new Vector2(it.X*((i)%2),it.Y*((i+1)%2))*50,new Vector2(0,0),ProjectileID.GoldCoin,45,(float)4,0,1,true,0,false,300);
+		if (a==0 && pmlphasetimer%80==i*5 && pmlphasetimer<1100 && pmlphasetimer>0){
+		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+new Vector2(it.X*((i+1)%2),it.Y*(i%2))*50,new Vector2(0,0),ProjectileID.SilverCoin, 35,(float)3,0,1,true,0,false,300);
+		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+new Vector2(it.X*((i)%2),it.Y*((i+1)%2))*50,new Vector2(0,0),ProjectileID.SilverCoin,35,(float)4,0,1,true,0,false,300);
 		}
 
 		if (a==1 && pmlphasetimer%200<40 && pmlphasetimer<2200 && pmlphasetimer>1200 && pmlphasetimer%20==i){
-		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+it*50,new Vector2(0,0),ProjectileID.SilverCoin,35,(float)12,0,1,true,0,false,300);
+		Idglib.Shattershots(Cratesvector[a,i],Cratesvector[a,i]+it*50,new Vector2(0,0),ProjectileID.GoldCoin, 45,(float)12,0,1,true,0,false,300);
 		}
 
 		if (a==2 && pmlphasetimer%180==i*10 && pmlphasetimer>2200 && pmlphasetimer<2800){
@@ -226,10 +223,13 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 				//phase 4
 				if (pmlphase > 3)
 				{
-					npc.velocity /= 1.5f;
+					if (pmlphasetimer < 300)
+						npc.dontTakeDamage = false;
+
+					npc.velocity /= 1.4f;
 					if (pmlphasetimer > 1000)
 					{
-						pmlphasetimer = 100;
+						pmlphasetimer = 400;
 					}
 
 				}
@@ -276,6 +276,7 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		protected override int BuffType => BuffID.WitheredWeapon;
 		public override void SetStaticDefaults()
 		{
+			base.SetStaticDefaults();
 			DisplayName.SetDefault("Crate Of Withered Weapon");
 			Main.npcFrameCount[npc.type] = 1;
 		}
@@ -285,6 +286,7 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		protected override int BuffType => BuffID.WitheredArmor;
 		public override void SetStaticDefaults()
 		{
+			base.SetStaticDefaults();
 			DisplayName.SetDefault("Crate Of Withered Armor");
 			Main.npcFrameCount[npc.type] = 1;
 		}
@@ -295,6 +297,7 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		protected override int BuffType => BuffID.Venom;
 		public override void SetStaticDefaults()
 		{
+			base.SetStaticDefaults();
 			DisplayName.SetDefault("Crate Of Venom");
 			Main.npcFrameCount[npc.type] = 1;
 		}
@@ -307,6 +310,8 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		{
 			DisplayName.SetDefault("Crate Of Slowing");
 			Main.npcFrameCount[npc.type] = 1;
+			npc.life = 150000;
+			npc.lifeMax = 150000;
 		}
 
 
@@ -325,6 +330,8 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		{
 			base.AI();
 			int npctype = mod.NPCType("Cratrogeddon");
+			if (Hellion.Hellion.GetHellion()!=null)
+			npctype = mod.NPCType("Hellion");
 			if (NPC.CountNPCS(npctype) > 0)
 			{
 
@@ -345,7 +352,7 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 				if (myowner.ai[0] % 150 == 140)
 				{
 					Player P = Main.player[myowner.target];
-					List<Projectile> itz = Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ProjectileID.PlatinumCoin, 70, 8, 0, 1, true, 0, false, 220);
+					List<Projectile> itz = Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ProjectileID.PlatinumCoin, 45, 8, 0, 1, true, 0, false, 220);
 					itz[0].aiStyle = 5;
 				}
 			}

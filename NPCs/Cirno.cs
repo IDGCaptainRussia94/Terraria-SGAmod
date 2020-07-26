@@ -107,7 +107,7 @@ namespace SGAmod.NPCs
 		public override void AI()
 		{
 			Player P = Main.player[npc.target];
-			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active || !Main.dayTime)
+			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active || (!Main.dayTime && GetType() == typeof(Cirno)))
 			{
 				npc.TargetClosest(false);
 				P = Main.player[npc.target];
@@ -134,9 +134,17 @@ npc.timeLeft=99999;
 bobbing=bobbing+1;
 npc.spriteDirection=-npc.direction;
 aicounter=aicounter+1;
-Vector2 dist=P.Center-npc.Center;
 
-	if (card > 0)
+				Vector2 playerloc = P.Center;
+				if (GetType() == typeof(CirnoHellion) && Hellion.Hellion.GetHellion() != null)
+				{
+					playerloc = Hellion.Hellion.GetHellion().npc.Center;
+					npc.dontTakeDamage = true;
+				}
+
+Vector2 dist= playerloc - npc.Center;
+
+				if (card > 0)
 	{
 					if (nightmaremode)
 					{
@@ -204,7 +212,7 @@ npc.direction=-1;
 if (dist.X>0){
 npc.direction=1;
 }
-npc.velocity=new Vector2(((P.Center.X-((npc.Center.X)))/150),((P.Center.Y-((npc.Center.Y+120)))/110)+floater);
+npc.velocity=new Vector2(((playerloc.X - ((npc.Center.X)))/150),((playerloc.Y - ((npc.Center.Y+120)))/110)+floater);
 if (npc.life<npc.lifeMax*damagetospellcard){
 aistate=0;
 aicounter=0;
@@ -230,7 +238,7 @@ if (aicounter>15){
 				dust.noGravity = true;
 				//dust.color=Main.hslToRgb((float)(npc.ai[0]/300)%1, 1f, 0.9f);
 
-npc.velocity=npc.velocity+(npc.DirectionTo(P.Center)*0.7f);
+npc.velocity=npc.velocity+(npc.DirectionTo(playerloc) *0.7f);
 if (npc.velocity.Length()>14){
 npc.velocity.Normalize();
 npc.velocity=npc.velocity*14;
@@ -286,8 +294,8 @@ stateaction=2;
 frameid=14;
 }
 if (aicounter>140 || (aicounter>100 && card==3)){
-//if (!Collision.CheckAABBvLineCollision(P.Center-new Vector2(8,8), new Vector2(16,16), npc.Center+new Vector2(npc.Center.X+(npc.direction*64),0), P.Center, 10, ref point))
-//
+
+
 aicounter=0;
 aistate=1;
 framevar=0;
@@ -299,11 +307,11 @@ attacktype=(int)Main.rand.Next(0,2);
 
 //}
 	float floater=(float)(Math.Sin(bobbing/17f)*9f);
-if (npc.Center.X<P.Center.X){
+if (npc.Center.X< playerloc.X){
 npc.direction=1;
-npc.velocity=new Vector2(2,((P.Center.Y-npc.Center.Y)/12)+floater);
+npc.velocity=new Vector2(2,((playerloc.Y-npc.Center.Y)/12)+floater);
 }else{
-npc.velocity=new Vector2(-2,((P.Center.Y-npc.Center.Y)/12)+floater);
+npc.velocity=new Vector2(-2,((playerloc.Y-npc.Center.Y)/12)+floater);
 npc.direction=-1;
 }
 
@@ -940,9 +948,9 @@ return false;
 			projectile.hostile = true;
 			projectile.friendly = false;
 			projectile.penetrate = 1;
-			projectile.thrown = true;
 			projectile.extraUpdates = 0;
 			projectile.aiStyle = -1;
+			projectile.timeLeft = 1000;
 		}
 
 		public override string Texture
@@ -954,7 +962,7 @@ return false;
 		{
 			if (projectile.localAI[0] < 100)
 				projectile.localAI[0] = 100+Main.rand.Next(0, 3);
-			Texture2D tex = Main.projectileTexture[fakeid];
+			Texture2D tex = SGAmod.HellionTextures[5];
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 5) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
 			int timing = (int)(projectile.localAI[0] - 100);
@@ -991,6 +999,52 @@ return false;
 			target.AddBuff(BuffID.Chilled, 60 * 5);
 		}
 
+	}
+
+	public class CirnoHellion : Cirno
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Cirno, Hellion Annointed");
+			Main.npcFrameCount[npc.type] = 20;
+		}
+
+		public override string Texture
+		{
+			get { return "SGAmod/NPCs/Cirno"; }
+		}
+		public override void AI()
+		{
+			base.AI();
+			Hellion.Hellion hell = Hellion.Hellion.GetHellion();
+			if (hell == null)
+			{
+				npc.active = false;
+				return;
+			}
+			npc.life = 10 + (int)(((float)hell.army.Count / (float)hell.armysize) * npc.lifeMax);
+		}
+		public override void SetDefaults()
+		{
+			npc.width = 50;
+			npc.height = 60;
+			npc.damage = 90;
+			npc.defense = 30;
+			npc.lifeMax = 25000;
+			npc.HitSound = SoundID.NPCHit1;
+			npc.DeathSound = SoundID.NPCDeath1;
+			npc.value = Item.buyPrice(0, 20, 0, 0);
+			npc.knockBackResist = 0f;
+			npc.aiStyle = -1;
+			npc.boss = true;
+			aiType = NPCID.Wraith;
+			animationType = 0;
+			npc.noTileCollide = true;
+			npc.noGravity = true;
+			music = MusicID.Boss2;
+			bossBag = mod.ItemType("CirnoBag");
+			npc.value = Item.buyPrice(0, 15, 0, 0);
+		}
 	}
 
 }

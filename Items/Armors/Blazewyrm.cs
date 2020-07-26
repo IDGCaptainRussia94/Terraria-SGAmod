@@ -12,7 +12,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blazewyrm Helm");
-			Tooltip.SetDefault("16% faster melee speed and melee damage");
+			Tooltip.SetDefault("1% increased Melee Apocalyptical Chance\n16% faster melee speed and melee damage");
 		}
 		public override void SetDefaults()
 		{
@@ -34,6 +34,7 @@ namespace SGAmod.Items.Armors
 			SGAPlayer sgaplayer = player.GetModPlayer(mod,typeof(SGAPlayer).Name) as SGAPlayer;
 			player.meleeSpeed += 0.16f;
 			player.meleeDamage += 0.16f;
+			sgaplayer.apocalypticalChance[0] += 1.0;
 		}
 		public override void AddRecipes()
 		{
@@ -45,15 +46,19 @@ namespace SGAmod.Items.Armors
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "accapocalypticaltext", SGAGlobalItem.apocalypticaltext));
+		}
 	}
 
 	[AutoloadEquip(EquipType.Body)]
-	public class BlazewyrmBreastplate : ModItem
+	public class BlazewyrmBreastplate : BlazewyrmHelm
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blazewyrm Breastplate");
-			Tooltip.SetDefault("12% increase melee crit chance");
+			Tooltip.SetDefault("1% increased Melee Apocalyptical Chance\n12% increase melee crit chance");
 		}
 		public override void SetDefaults()
 		{
@@ -65,7 +70,8 @@ namespace SGAmod.Items.Armors
 		}
 		public override void UpdateEquip(Player player)
 		{
-			player.meleeCrit += 12; 
+			player.meleeCrit += 12;
+			player.SGAPly().apocalypticalChance[0] += 1.0;
 		}
 
 		public override void UpdateVanity(Player player, EquipType type)
@@ -90,12 +96,12 @@ namespace SGAmod.Items.Armors
 	}
 
 	[AutoloadEquip(EquipType.Legs)]
-	public class BlazewyrmLeggings : ModItem
+	public class BlazewyrmLeggings : BlazewyrmHelm
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blazewyrm Leggings");
-			Tooltip.SetDefault("25% increase to movement speed\nEven faster in lava");
+			Tooltip.SetDefault("1% increased Melee Apocalyptical Chance\n25% increase to movement speed\nEven faster in lava");
 		}
 		public override void SetDefaults()
 		{
@@ -123,6 +129,7 @@ namespace SGAmod.Items.Armors
 				player.accRunSpeed *= 1.2f;
 				player.maxRunSpeed *= 1.2f;
 			}
+			player.SGAPly().apocalypticalChance[0] += 1.0;
 		}
 		public override void AddRecipes()
 		{

@@ -424,7 +424,7 @@ namespace SGAmod.Items.Weapons.Technical
 				if (projectile.ai[0] % 20 == 0)
 				{
 					NPC target = Main.npc[Idglib.FindClosestTarget(0, projectile.Center - new Vector2(0f, 20f), new Vector2(0f, 0f), true, true, true, projectile)];
-					if (target != null && Vector2.Distance(target.Center, projectile.Center) < 300)
+					if (target != null && target.active && target.life>0 && Vector2.Distance(target.Center, projectile.Center) < 300)
 					{
 						if (player.SGAPly().ConsumeElectricCharge(25, 60))
 						{

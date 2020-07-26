@@ -250,11 +250,8 @@ namespace SGAmod.Items
 		public override void OpenBossBag(Player player)
 		{
 			player.TryGettingDevArmor();
-			for (int i = 0; i <= Main.rand.Next(40, 60); i++)
-			{
-				player.QuickSpawnItem(mod.ItemType("LunarRoyalGel"));
+				player.QuickSpawnItem(mod.ItemType("LunarRoyalGel"), Main.rand.Next(40, 60));
 				//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("LunarRoyalGel"));
-			}
 			player.QuickSpawnItem(mod.ItemType("LunarSlimeHeart"));
 
 		}

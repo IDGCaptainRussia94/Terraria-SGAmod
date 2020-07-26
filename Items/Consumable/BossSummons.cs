@@ -160,6 +160,10 @@ namespace SGAmod.Items.Consumable
 
 		public override bool CanUseItem(Player player)
 		{
+			if (Main.netMode==NetmodeID.Server)
+			SGAmod.Instance.Logger.Warn("DEBUG SERVER: item canuse");
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				SGAmod.Instance.Logger.Warn("DEBUG CLIENT: item canuse");
 			if (!NPC.AnyNPCs(mod.NPCType("CopperWraith")) && !NPC.AnyNPCs(mod.NPCType("CobaltWraith")) && !NPC.AnyNPCs(mod.NPCType("LuminiteWraith")))
 			{
 				return base.CanUseItem(player);
@@ -169,6 +173,11 @@ namespace SGAmod.Items.Consumable
 		}
 		public override bool UseItem(Player player)
 		{
+			if (Main.netMode == NetmodeID.Server)
+				SGAmod.Instance.Logger.Warn("DEBUG SERVER: item used");
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				SGAmod.Instance.Logger.Warn("DEBUG CLIENT: item used");
+
 			NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("CopperWraith"));
 			Main.PlaySound(15, (int)player.position.X, (int)player.position.Y, 0);
 			return true;
@@ -716,6 +725,8 @@ namespace SGAmod.Items.Consumable
 
 			if (SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths>3)
 			{
+				if (SGAWorld.downedHellion > 0)
+					tooltips.Add(new TooltipLine(mod, "Nmxx", "Hold 'left control' while you use the item to skip Hellion Core, this costs 25 Souls of Byte"));
 				if (SGAWorld.downedHellion < 2)
 				{
 					if (SGAWorld.downedHellion == 0)
@@ -749,7 +760,7 @@ namespace SGAmod.Items.Consumable
 					string newline = "";
 					for (int i = 0; i < text.Length; i += 1)
 					{
-						newline += Idglib.ColorText(Main.hslToRgb((Main.rand.NextFloat(0, 1)) % 1f, 0.75f, Main.rand.NextFloat(0.25f, 0.5f)), text[i].ToString());
+						newline += Idglib.ColorText(Color.Lerp(Color.White, Main.hslToRgb((Main.rand.NextFloat(0, 1)) % 1f, 0.75f, Main.rand.NextFloat(0.25f, 0.5f)),MathHelper.Clamp(0.5f+(float)Math.Sin(Main.GlobalTime*2f)/1.5f,0.2f,1f)), text[i].ToString());
 
 
 					}
@@ -782,7 +793,18 @@ namespace SGAmod.Items.Consumable
 		}
 		public override bool UseItem(Player player)
 		{
-			NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("HellionCore"));
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) && player.CountItem(mod.ItemType("ByteSoul")) > 24 && SGAWorld.downedHellion > 0)
+			{
+				for (int i = 0; i < 25; i += 1)
+				{
+					player.ConsumeItem(mod.ItemType("ByteSoul"));
+				}
+				NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("Hellion"));
+			}
+			else
+			{
+				NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("HellionCore"));
+			}
 			//Main.PlaySound(15, (int)player.position.X, (int)player.position.Y, 0);
 			return true;
 		}

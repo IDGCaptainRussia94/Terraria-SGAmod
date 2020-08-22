@@ -73,7 +73,7 @@ namespace SGAmod.SkillTree
 
 
 
-    public class Skill
+    public abstract class Skill
     {
         public ushort[] buycost;
         public ushort unlockcost = 0;
@@ -196,7 +196,8 @@ namespace SGAmod.SkillTree
         public static Matrix world = WVP.World();
         public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, 3), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
         public static Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), 800f / 600f, 0.01f, 500f);
-        public static float rotangle=0f;
+        public static float UIAngle=0f;
+        public static float UIAngleTo = MathHelper.ToRadians(180);
 
         public static float PercentLerp(float value,float minsize,float maxsize,float totalsize)
         {
@@ -259,7 +260,7 @@ namespace SGAmod.SkillTree
 
                     for (int i = 0; i < vertices.Length - 3; i += (polys * 3))
                     {
-                        float adder = rotangle + MathHelper.ToRadians(((float)tree / (float)treecount) * 360f);
+                        float adder = UIAngle + MathHelper.ToRadians(((float)tree / (float)treecount) * 360f);
                         float maxdegre = (360f / (float)treecount);
                         float rad1 = (((float)i / (vertices.Length - (polys * 3))) * 360f) * ripplecount;
                         float rad2 = (((float)(i + (polys * 3)) / (vertices.Length - (polys * 3))) * 360f) * ripplecount;
@@ -314,15 +315,15 @@ namespace SGAmod.SkillTree
                 //Lines and stuff
                 for (int i = 0; i < treecount; i += 1)
                 {
-                    Main.spriteBatch.Draw(Main.blackTileTexture, loc2, new Rectangle(0, 0, 10, 10), Color.Black, rotangle + MathHelper.ToRadians(((float)i / (float)treecount) * 360f), new Vector2(0f, 5f), new Vector2(maxsize / 10f, 1f), SpriteEffects.None, 0f);
+                    Main.spriteBatch.Draw(Main.blackTileTexture, loc2, new Rectangle(0, 0, 10, 10), Color.Black, -UIAngle + MathHelper.ToRadians(((float)i / (float)treecount) * 360f), new Vector2(0f, 5f), new Vector2(maxsize / 10f, 1f), SpriteEffects.None, 0f);
                 }
                 for (int i = 0; i < treecount; i += 1)
                 {
-                    Main.spriteBatch.Draw(Main.blackTileTexture, loc2, new Rectangle(0, 0, 10, 6), Color.Gray, rotangle + MathHelper.ToRadians(((float)i / (float)treecount) * 360f), new Vector2(0f, 3f), new Vector2(maxsize / 10f, 1f), SpriteEffects.None, 0f);
+                    Main.spriteBatch.Draw(Main.blackTileTexture, loc2, new Rectangle(0, 0, 10, 6), Color.Gray, -UIAngle + MathHelper.ToRadians(((float)i / (float)treecount) * 360f), new Vector2(0f, 3f), new Vector2(maxsize / 10f, 1f), SpriteEffects.None, 0f);
                 }
                 for (int i = 0; i < treecount; i += 1)
                 {
-                    Main.spriteBatch.Draw(Main.blackTileTexture, loc2, new Rectangle(0, 0, 10, 4), Color.White, rotangle + MathHelper.ToRadians(((float)i / (float)treecount) * 360f), new Vector2(0f, 2f), new Vector2(maxsize / 10f, 1f), SpriteEffects.None, 0f);
+                    Main.spriteBatch.Draw(Main.blackTileTexture, loc2, new Rectangle(0, 0, 10, 4), Color.White, -UIAngle + MathHelper.ToRadians(((float)i / (float)treecount) * 360f), new Vector2(0f, 2f), new Vector2(maxsize / 10f, 1f), SpriteEffects.None, 0f);
                 }
             }
 
@@ -345,6 +346,10 @@ namespace SGAmod.SkillTree
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
             }
 
+
+
+            if (!draw)
+                UIAngle=UIAngle.AngleLerp(UIAngleTo, 0.1f);
 
         }
 

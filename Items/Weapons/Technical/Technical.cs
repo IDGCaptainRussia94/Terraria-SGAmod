@@ -531,6 +531,7 @@ namespace SGAmod.Items.Weapons.Technical
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "PrismalLauncher", 1);
+			recipe.AddIngredient(null, "QuasarCannon", 1);
 			recipe.AddIngredient(ItemID.ProximityMineLauncher,1);
 			recipe.AddIngredient(ItemID.Stynger, 1);
 			recipe.AddIngredient(ItemID.FragmentStardust, 10);

@@ -94,6 +94,13 @@ namespace SGAmod
                     tooltips.Add(new TooltipLine(mod, "Plasma Item", Idglib.ColorText(c, "This weapon uses plasma cells for recharging")));
                 }
 
+                if (SGAmod.StuffINeedFuckingSpritesFor.ContainsKey(item.type))
+                {
+                    string tt = "This is a placeholder sprite";
+                    Color c = Main.hslToRgb(0f, 0.75f, 0.7f);
+                    tooltips.Add(new TooltipLine(mod, "Plasma Item", SGAmod.StuffINeedFuckingSpritesFor.TryGetValue(item.type,out tt) ? tt : tt));
+                }
+
                 int ammoclip = Main.LocalPlayer.SGAPly().IsRevolver(item);
                 if (ammoclip>0) { Color c = Main.hslToRgb(0.7f, 0.15f, 0.7f);
                     tooltips.Add(new TooltipLine(mod, "Clip Item", Idglib.ColorText(c, ammoclip == 2 ? "Counts as a revolver: Automatically Reloads itself when held" : "This weapon has a clip and requires manual reloading")));
@@ -233,6 +240,17 @@ namespace SGAmod
                     return true;
                 }
 
+                finder = new RecipeFinder();
+                finder.AddIngredient(mod.ItemType("FieryShard"));
+                reclist = finder.SearchRecipes();
+
+                Recipe foundanother = reclist.Find(rec => rec.createItem.type == item.type);
+
+                if (foundanother != null)
+                {
+                    return true;
+                }
+
             }
             return false;
 
@@ -254,7 +272,8 @@ namespace SGAmod
 
         public override bool ReforgePrice(Item item, ref int reforgePrice, ref bool canApplyDiscount)
         {
-            Main.LocalPlayer.SGAPly().skillMananger.ReforgePrice(item, ref reforgePrice, ref canApplyDiscount);
+            if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
+                Main.LocalPlayer.SGAPly().skillMananger.ReforgePrice(item, ref reforgePrice, ref canApplyDiscount);
             return true;
         }
 
@@ -289,7 +308,8 @@ namespace SGAmod
 
             damage = (int)(damage * (float)basemul);
 
-            player.SGAPly().skillMananger.GetWeaponDamage(item, ref damage);
+            if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
+                player.SGAPly().skillMananger.GetWeaponDamage(item, ref damage);
 
         }
 
@@ -339,7 +359,8 @@ namespace SGAmod
 
                 }
             }
-            player.SGAPly().skillMananger.UseItem(item);
+            if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
+                player.SGAPly().skillMananger.UseItem(item);
             return base.UseItem(item, player);
         }
 
@@ -446,7 +467,8 @@ namespace SGAmod
                 }
             }
 
-            player.SGAPly().skillMananger.UseTimeMultiplier(item,ref usetimetemp);
+            if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
+                player.SGAPly().skillMananger.UseTimeMultiplier(item,ref usetimetemp);
             return (usetimetemp * sgaplayer.UseTimeMul);
         }
 

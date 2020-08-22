@@ -156,7 +156,7 @@ namespace SGAmod.Items.Weapons.Auras
 					int frame = (int)((projectile.localAI[0] + (i / 3f)) / 5f);
 					frame %= 1;
 
-					Main.spriteBatch.Draw(tex, (projectile.Center + loc3*96f) - Main.screenPosition, new Rectangle(0, frame * (int)tex.Height / 1, tex.Width, (int)tex.Height / 1), Color.Red*0.5f, angle + MathHelper.ToRadians(90), new Vector2(tex.Width / 2f, (tex.Height / 5f) / 2f), projectile.scale, SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(tex, (projectile.Center + loc) - Main.screenPosition, new Rectangle(0, frame * (int)tex.Height / 1, tex.Width, (int)tex.Height / 1), Color.Red*0.5f, angle + MathHelper.ToRadians(90), new Vector2(tex.Width / 2f, (tex.Height / 5f) / 2f), projectile.scale, SpriteEffects.None, 0f);
 
 				}
 

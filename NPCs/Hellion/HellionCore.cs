@@ -817,23 +817,41 @@ namespace SGAmod.NPCs.Hellion
             Hellion Hellinstance = new Hellion();
 
             if (npc.ai[0]==120)
-                Hellinstance.HellionTaunt("hmmmm...");
+                Hellinstance.HellionTaunt("Why... Why are you fighting?");
             if (npc.ai[0] == 260)
-                Hellinstance.HellionTaunt("It seems you have destroyed my most powerful creation...");
+                Hellinstance.HellionTaunt("He needs us, Draken needs me");
             if (npc.ai[0] == 460)
-                Hellinstance.HellionTaunt("Your powerful, very powerful, maybe that's why he fled to you.");
+                Hellinstance.HellionTaunt("He doesn't want to accept the facts, he doesn't want to accept why I exist");
             if (npc.ai[0] == 700)
-                Hellinstance.HellionTaunt("With that kind of power, we could have been allies, But in the end...");
+                Hellinstance.HellionTaunt("I... Am Helen Hellion Weygold, a villian orginally created by a Pathfinder DM");
             if (npc.ai[0] == 1000)
-                Hellinstance.HellionTaunt("I have put far too many resources into the project");
-            if (npc.ai[0] == 1100)
-                Hellinstance.HellionTaunt("And far too many slip ups to have let accured");
+                Hellinstance.HellionTaunt("It was suppose to be a fun time, a group of friends, roll20...");
             if (npc.ai[0] == 1300)
-                Hellinstance.HellionTaunt("So...");
-            if (npc.ai[0] == 1500)
-                Hellinstance.HellionTaunt("I think it's finally time, I ended this, myself");
+                Hellinstance.HellionTaunt("To the others, it was just a game, to Draken, it was his calling");
+            if (npc.ai[0] == 1600)
+                Hellinstance.HellionTaunt("He needed to find who he was and give his otherself meaning");
+            if (npc.ai[0] == 1900)
+                Hellinstance.HellionTaunt("But the DM ended it, they deleted the campaign");
+            if (npc.ai[0] == 2100)
+                Hellinstance.HellionTaunt("They blocked everyone, he did nothing wrong to them");
+            if (npc.ai[0] == 2300)
+                Hellinstance.HellionTaunt("We never found out why, but Draken was devastated");
+            if (npc.ai[0] == 2500)
+                Hellinstance.HellionTaunt("He was fulled with such grief, so much grief...");
+            if (npc.ai[0] == 2800)
+                Hellinstance.HellionTaunt("That that very grief manifested itself into a being");
+            if (npc.ai[0] == 3100)
+                Hellinstance.HellionTaunt("That being, is this... Helen Hellion Weygold");
+            if (npc.ai[0] == 3400)
+                Hellinstance.HellionTaunt("I am the weight that hangs down his soul, I am not evil");
+            if (npc.ai[0] == 3600)
+                Hellinstance.HellionTaunt("I am merly the reality he refuses to accept");
+            if (npc.ai[0] == 3800)
+                Hellinstance.HellionTaunt("But now... You have summoned reality forth to finish the job");
+            if (npc.ai[0] == 4000)
+                Hellinstance.HellionTaunt("It must be done...");
 
-            if (npc.ai[0] == 1700)
+            if (npc.ai[0] == 4200)
             {
                 NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)npc.position.Y + npc.height / 2, mod.NPCType("Hellion"), npc.whoAmI, 0f, 0f, 0f, 0f, 255);
                 npc.life = 0;
@@ -972,7 +990,6 @@ namespace SGAmod.NPCs.Hellion
             }
             if (hellionmessages == 2 && npc.life < npc.lifeMax * 0.8)
             {
-                HellionTaunt("You ain't bad! But you won't last much longer");
                 hellionmessages = 3;
             }
             if (hellionmessages == 3 && npc.life < npc.lifeMax * 0.75)
@@ -1007,18 +1024,18 @@ namespace SGAmod.NPCs.Hellion
             if (npc.life < (int)(npc.lifeMax * HellionCore.beginphase[0]) && phase == 0)
             {
                 phase = 1;
-                HellionTaunt("Engauge Seperate Protocall!");
+                HellionTaunt("ENGAUGE SEPERATE PROTOCALL!",1);
             }
             if (npc.life < (int)(npc.lifeMax * HellionCore.beginphase[1]) && phase == 1)
             {
                 npc.ai[0] = 0;
                 phase = 2;
-                HellionTaunt("Begin Planetary Ravanger mode!");
+                HellionTaunt("Uh... Hello?");
             }
             if (phase == 2 && npc.ai[0] == 80)
-                HellionTaunt("Time to meet your end!");
+                HellionTaunt("Wait what are you?");
             if (phase==2 && npc.ai[0]==200)
-                HellionTaunt("Now witness the power that ended your friend's world!");
+                HellionTaunt("I... I don't want...");
 
         }
 

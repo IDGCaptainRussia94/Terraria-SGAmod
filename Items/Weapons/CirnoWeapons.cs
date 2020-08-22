@@ -317,12 +317,12 @@ namespace SGAmod.Items.Weapons
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			if (projectile.localAI[0] == 0)
-				projectile.localAI[0] = Main.rand.Next(0, 3);
-			Texture2D tex = Main.projectileTexture[fakeid];
+			if (projectile.localAI[0] < 100)
+				projectile.localAI[0] = 100 + Main.rand.Next(0, 3);
+			Texture2D tex = SGAmod.HellionTextures[5];
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 5) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
-			int timing = (int)(projectile.localAI[0] - 1);
+			int timing = (int)(projectile.localAI[0] - 100);
 			timing %= 5;
 			timing *= ((tex.Height) / 5);
 			spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 5), lightColor, MathHelper.ToRadians(180) + projectile.velocity.X * -0.08f, drawOrigin, projectile.scale, SpriteEffects.None, 0f);

@@ -20,6 +20,10 @@ namespace SGAmod.NPCs.Wraiths
 		public int aiattackstatething = 0;
 		public Vector2 previousgo;
 		public Vector2 Startloc;
+		public override bool Autoload(ref string name)
+		{
+			return false;
+		}
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Skeletron?");

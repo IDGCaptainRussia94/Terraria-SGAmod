@@ -206,7 +206,7 @@ namespace SGAmod
 
 			if (Combusted>0)
 			{
-				npc.lifeRegen -= 100+(int)Math.Pow(npc.lifeMax, 0.5);	
+				npc.lifeRegen -= 50+(int)(Math.Pow(npc.lifeMax, 0.5)/3.0);	
 				Combusted-=1;
 				if (damage < 50)
 					damage = 50;
@@ -1253,7 +1253,9 @@ if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (S
 					damage = (int)(damage * 1.20f);
 				}
 			}
-			player.SGAPly().skillMananger.OnEnemyDamage(ref damage,ref crit, ref knockback, item,null);
+
+			if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
+				player.SGAPly().skillMananger.OnEnemyDamage(ref damage,ref crit, ref knockback, item,null);
 			LifeSteal(npc, player, ref damage, ref knockback, ref crit);
 		}
 
@@ -1350,7 +1352,10 @@ if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (S
 
 			}
 			if (player != null)
-				player.SGAPly().skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, null, projectile);
+			{
+				if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
+					player.SGAPly().skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, null, projectile);
+			}
 			LifeSteal(npc, player, ref damage, ref knockback, ref crit);
 		}
 
@@ -1491,7 +1496,7 @@ hasabuff=true;
 
 
 if (DosedInGas && hasabuff){
-Combusted=60*10;
+Combusted=60*6;
 int buff=npc.FindBuffIndex(mod.BuffType("DosedInGas"));
 
 				if ((isproj && Main.player[projectile.owner].GetModPlayer<SGAPlayer>().MVMBoost) || (item != null && player.GetModPlayer<SGAPlayer>().MVMBoost))

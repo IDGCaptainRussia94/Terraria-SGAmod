@@ -554,7 +554,7 @@ public class BlinkTechGear : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tech Master's Gear");
-			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\n+5 Booster Recharge Rate, 20% increased plasma capacity, and 15% increased Booster Capacity\nGrants the effects of:\n-Night Vision Helmet and Fridgeflame Canister\n-Handling Gloves and Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
+			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\n+3 Booster Recharge Rate, 20% increased plasma capacity, and 15% increased Booster Capacity\nGrants the effects of:\n-Prismal Core and Fridgeflame Canister\n-Handling Gloves and Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
 		}
 
 		public override void SetDefaults()
@@ -569,27 +569,27 @@ public class BlinkTechGear : ModItem
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.nightVision = true;
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			player.meleeDamage += 0.05f; player.magicDamage += 0.05f; player.rangedDamage += 0.05f; player.minionDamage += 0.05f; player.Throwing().thrownDamage += 0.05f;
 			SGAmod.BoostModdedDamage(player, 0.05f, 5);
 			player.meleeCrit += 5; player.magicCrit += 5; player.rangedCrit += 5; player.Throwing().thrownCrit += 5;
 			sgaply.maxblink += hideVisual ? 0 : 60 * 6;
 			sgaply.boosterPowerLeftMax += (int)(10000f * 0.15f);
-			sgaply.boosterrechargerate += 5;
+			sgaply.boosterrechargerate += 3;
 			sgaply.plasmaLeftInClipMax = (int)((float)sgaply.plasmaLeftInClipMax * 1.20f);
 			ModContent.GetInstance<FridgeFlamesCanister>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<HandlingGloves>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<PrismalCore>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<JindoshBuckler>().UpdateAccessoryThing(player, hideVisual, true);
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.NightVisionHelmet, 1);
 			recipe.AddIngredient(ItemID.LunarBar, 8);
 			recipe.AddRecipeGroup("SGAmod:HardmodeEvilAccessory",1);
 			recipe.AddIngredient(mod.ItemType("PlasmaPack"), 1);
+			recipe.AddIngredient(mod.ItemType("PrismalCore"), 1);
 			recipe.AddIngredient(mod.ItemType("HandlingGloves"), 1);
 			recipe.AddIngredient(mod.ItemType("JindoshBuckler"), 1);
 			recipe.AddIngredient(mod.ItemType("FridgeFlamesCanister"), 1);
@@ -1877,7 +1877,7 @@ public class BlinkTechGear : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Plasma Pack");
-			Tooltip.SetDefault("20% increased Plasma capacity\n+2 Booster recharge rate\n+3000 Max Electric Charge, +1 passive Electric Charge Rate\nEffects of Blink Tech Canister");
+			Tooltip.SetDefault("20% increased Plasma capacity\n+3 Booster recharge rate\n+3000 Max Electric Charge, +1 passive Electric Charge Rate\nEffects of Blink Tech Canister");
 		}
 
 		public override void SetDefaults()
@@ -1892,7 +1892,7 @@ public class BlinkTechGear : ModItem
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-			sgaply.boosterrechargerate += 2;
+			sgaply.boosterrechargerate += 3;
 			sgaply.plasmaLeftInClipMax += 200;
 			sgaply.electricChargeMax += 3000;
 			player.SGAPly().electricrechargerate += 2;
@@ -2416,11 +2416,6 @@ item.accessory = true;
 			Tooltip.SetDefault("'Core of modern technology, could be put to good use'\n10% increased Technological damage, 5% increased Trap damage\nCharge is built up by running around at high speeds (600/Second)\n20% reduced Electric Consumption, +2500 Max Electric Charge, +2 passive Electric Charge Rate");
 		}
 
-		public override string Texture
-		{
-			get { return ("SGAmod/Items/CalamityRune"); }
-		}
-
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.SGAPly().techdamage += 0.10f;
@@ -2454,23 +2449,18 @@ item.accessory = true;
 		}
 
 	}
-
 	public class NovusCore : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novus Core");
-			Tooltip.SetDefault("'Core of untapped magic, could be put to good use'\nAny item that uses Novus Bars in its crafting recipe get both the following:\n10% increased damage and emits Novus particles\n5% faster item use times\nAll effects of Novus set bonus");
-		}
-
-		public override string Texture
-		{
-			get { return ("SGAmod/Items/CalamityRune"); }
+			Tooltip.SetDefault("'Core of untapped magic, could be put to good use'\nAny item that uses Novus Bars or Fiery Shards in its crafting recipe get both the following:\n10% increased damage and emits Novus particles\n5% faster use time on all items\nAll effects of Novus set bonus");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.SGAPly().Novusset = 5;
+			player.SGAPly().MaxCooldownStacks += 1;
 			player.SGAPly().UseTimeMul += 0.05f;
 		}
 
@@ -2491,6 +2481,44 @@ item.accessory = true;
 			recipe.AddIngredient(mod.ItemType("UnmanedBreastplate"), 1);
 			recipe.AddIngredient(mod.ItemType("UnmanedLeggings"), 1);
 			recipe.AddIngredient(ItemID.HallowedBar, 8);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class PrismalCore : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Prismal Core");
+			Tooltip.SetDefault("'Core of Mettle and Magic'\n+2 Booster recharge rate, 10% increased Booster Capacity\nCombines the effects of both Novite and Novus Cores");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			ModContent.GetInstance<NoviteCore>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<NovusCore>().UpdateAccessory(player, hideVisual);
+			player.SGAPly().boosterrechargerate += 2;
+			player.SGAPly().boosterPowerLeftMax += (int)(10000f * 0.10f);
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 2);
+			item.rare = ItemRarityID.LightPurple;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
+			recipe.AddIngredient(mod.ItemType("NoviteCore"), 1);
+			recipe.AddIngredient(mod.ItemType("NovusCore"), 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

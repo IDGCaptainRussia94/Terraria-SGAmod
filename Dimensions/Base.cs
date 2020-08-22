@@ -22,6 +22,7 @@ using SubworldLibrary;
 using ReLogic.Graphics;
 using Terraria.Utilities;
 using SGAmod.Effects;
+using SGAmod.NPCs.Hellion;
 
 namespace SGAmod.Dimensions
 {
@@ -416,7 +417,7 @@ namespace SGAmod.Dimensions
                     Main.spriteBatch.End();
 
 
-                    pern = ModContent.GetTexture("DimDungeons/Extra_49");
+                    pern = ModContent.GetTexture("SGAmod/Extra_49");
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
 
                     foreach (PostDrawCollection postdraw in SGAmod.PostDraw)
@@ -538,6 +539,17 @@ namespace SGAmod.Dimensions
                     Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
                     Main.spriteBatch.Draw(SGAmod.drawnscreen, new Vector2(0, 0), null, new Color(50, 50, 50) * alpha, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
+                }
+
+                List<HellionInsanity> madness= DimDungeonsProxy.madness;
+
+                if (madness.Count > 0)
+                {
+                    for (int i = 0; i < madness.Count; i += 1)
+                    {
+                        HellionInsanity pleasemakeitstop = madness[i];
+                        pleasemakeitstop.Draw();
+                    }
                 }
             }
 
@@ -683,6 +695,6 @@ namespace SGAmod.Dimensions
 
 
 
-    }
+    } 
 
 }

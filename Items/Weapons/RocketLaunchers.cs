@@ -34,7 +34,7 @@ namespace SGAmod.Items.Weapons
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.6f);
 			tooltips.Add(new TooltipLine(mod, "IDG Debug Item", Idglib.ColorText(c, "'He didn't fly into heaven, he rocket jumped into heaven'")));
 			c = Main.hslToRgb((float)((Main.GlobalTime+5.77163f) / 4) % 1f, 0.35f, 0.65f);
-			tooltips.Add(new TooltipLine(mod, "IDG Debug Item", Idglib.ColorText(c, "RIP Rick May: 2040-2020")));
+			tooltips.Add(new TooltipLine(mod, "IDG Debug Item", Idglib.ColorText(c, "RIP Rick May: 1940-2020")));
 		}
 
 		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)

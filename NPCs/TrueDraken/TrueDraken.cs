@@ -40,6 +40,11 @@ namespace SGAmod.NPCs.TrueDraken
 
 		float stealth = 1f;
 
+		public override bool Autoload(ref string name)
+		{
+			return false;
+		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("TRUE Draken");

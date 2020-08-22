@@ -10,6 +10,44 @@ using Idglibrary;
 
 namespace SGAmod.Items.Consumable
 {
+	public class ClarityPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Clarity Potion");
+			Tooltip.SetDefault("Reduces Mana costs by 3%\nWhile you have mana sickness, this is increased to 10%");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = 2;
+			item.value = 500;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.potion = true;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = SGAmod.Instance.BuffType("ClarityPotionBuff");
+			item.buffTime = 60 * 300;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.ShinePotion);
+			recipe.AddIngredient(ItemID.Sunflower, 1);
+			recipe.AddIngredient(ItemID.FallenStar,3);
+			recipe.AddIngredient(null, "MurkyGel", 4);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this, 2);
+			recipe.AddRecipe();
+		}
+	}
 	public class RagnarokBrew : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -28,11 +66,12 @@ namespace SGAmod.Items.Consumable
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
+			item.potion = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
 			item.buffType = SGAmod.Instance.BuffType("RagnarokBrewBuff");
-			item.buffTime = 60 * 120;
+			item.buffTime = 60 * 300;
 		}
 
 		public override void AddRecipes()
@@ -65,11 +104,12 @@ namespace SGAmod.Items.Consumable
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
+			item.potion = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
 			item.buffType = SGAmod.Instance.BuffType("CondenserBuff");
-			item.buffTime = 60 * 180;
+			item.buffTime = 60 * 300;
 		}
 
 		public override void AddRecipes()
@@ -108,6 +148,7 @@ namespace SGAmod.Items.Consumable
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
+			item.potion = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
@@ -146,6 +187,7 @@ namespace SGAmod.Items.Consumable
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
+			item.potion = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
@@ -197,11 +239,12 @@ namespace SGAmod.Items.Consumable
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
+			item.potion = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
 			item.buffType = mod.BuffType("IceFirePotion");
-			item.buffTime = 60 * 90;
+			item.buffTime = 60 * 300;
 		}
 
 		public override void AddRecipes()

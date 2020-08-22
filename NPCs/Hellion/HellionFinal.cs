@@ -28,7 +28,10 @@ namespace SGAmod.NPCs.Hellion
 	{
 		public override bool rematch => true;
 
-
+		public override bool Autoload(ref string name)
+		{
+			return false;
+		}
 		public override void SetDefaults()
 		{
 			base.SetDefaults();

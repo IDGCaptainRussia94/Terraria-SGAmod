@@ -102,6 +102,7 @@ namespace SGAmod
 		public static Dictionary<int, int> UsesClips;
 		public static Dictionary<int, int> UsesPlasma;
 		public static Dictionary<int, int> NonStationDefenses;
+		public static Dictionary<int, string> StuffINeedFuckingSpritesFor;
 		public static Dictionary<int, EnchantmentCraftingMaterial> EnchantmentCatalyst;
 		public static Dictionary<int, EnchantmentCraftingMaterial> EnchantmentFocusCrystal;
 		public static int[] otherimmunes = new int[3];
@@ -126,6 +127,12 @@ namespace SGAmod
 		public static RenderTarget2D drawnscreen;
 		public static SGACustomUIMenu CustomUIMenu;
 		public static UserInterface CustomUIMenuInterface;
+		public static byte SkillRun = 1;
+
+		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
+		{
+			base.ModifyTransformMatrix(ref Transform);
+		}
 
 		private void Player_CheckDrowning(On.Terraria.Player.orig_CheckDrowning orig, Player self)
 		{
@@ -292,6 +299,9 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 657));
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 644));
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/UI/ButtonDelete"));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 424));//104
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 425));
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 426));
 
 			}
 			else
@@ -331,6 +341,7 @@ namespace SGAmod
 			anysubworld = false;
 			SGAmod.SkillUIActive = false;
 			SkillTree.SKillUI.SkillUITimer = 0;
+			SGAmod.StuffINeedFuckingSpritesFor = new Dictionary<int, string>();
 
 			SGAmod.UsesClips = new Dictionary<int, int>();
 			SGAmod.UsesPlasma = new Dictionary<int, int>();
@@ -354,7 +365,8 @@ namespace SGAmod
 			On.Terraria.Player.CheckDrowning += Player_CheckDrowning;
 			if (!Main.dedServ)
 			{
-				SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
+				SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.HdrBlendable, DepthFormat.None,1,RenderTargetUsage.DiscardContents);
+				//RenderTarget2D ss=new RenderTarget2D()
 				DrakeniteBar.CreateTextures();
 				LoadOrUnloadTextures(true);
 				SkillTree.SKillUI.InitThings();
@@ -390,6 +402,7 @@ namespace SGAmod
 				Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/Shockwave"));
 				Filters.Scene["SGAmod:Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
 				GameShaders.Misc["SGAmod:DeathAnimation"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/EffectDeath")), "DeathAnimation").UseImage("Images/Misc/Perlin");
+				GameShaders.Misc["SGAmod:ShaderOutline"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/ShaderOutline")), "ShaderOutline").UseImage("Images/Misc/Perlin");
 				//AddEquipTexture(new Items.Armors.Dev.Dragonhead(), null, EquipType.Head, "Dragonhead", "SGAmod/Items/Armors/Dev/IDGHead_SmallerHead");
 			}
 			SkyManager.Instance["SGAmod:ProgramSky"] = new ProgramSky();
@@ -414,7 +427,8 @@ namespace SGAmod
 #if Dimensions
 			proxydimmod.Unload();
 #endif
-			SGAmod.UsesClips = null;
+			SGAmod.StuffINeedFuckingSpritesFor = null;
+			SGAmod.UsesClips = null;			
 			SGAmod.UsesPlasma = null;
 			SGAmod.ScrapCustomCurrencySystem = null;
 			SGAmod.EnchantmentCatalyst = null;
@@ -689,7 +703,6 @@ namespace SGAmod
 			SGAmod.EnchantmentFocusCrystal.Add(ModContent.ItemType<EntropyTransmuter>(), new EnchantmentCraftingMaterial(15, 200, "One enchantment will always grant entropy bonuses"));
 			SGAmod.EnchantmentFocusCrystal.Add(ModContent.ItemType<CalamityRune>(), new EnchantmentCraftingMaterial(20, 200, "Enchantments may grant bonuses to Apocalypticals"));
 
-
 			//SGAWorld.downedCopperWraith==0 ? true : false)
 			Idglib.AbsentItemDisc.Add(this.ItemType("Tornado"), "5% to drop from Wyverns after Golem");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Upheaval"), "20% to drop from Golem");
@@ -728,6 +741,40 @@ namespace SGAmod
 			Idglib.AbsentItemDisc.Add(this.ItemType("ByteSoul"), "Drops from Hellion Core's 'arms'");
 			Idglib.AbsentItemDisc.Add(this.ItemType("StarMetalMold"), "Drops from Twin Prime Destroyers");
 			Idglib.AbsentItemDisc.Add(this.ItemType("DrakeniteBar"), "Drops Hellion's 2nd form");
+
+			/*SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("PrismalBooster"), "Recolor because lack of spriters");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("NovusCore"), "Don't complain about the placeholder sprite, my spriters wouldn't do jack shit about despite my efforts");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("NoviteCore"), "Don't complain about the placeholder sprite, my spriters wouldn't do jack shit about despite my efforts");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("NeckONerves"), "I made due with what I fucking had for sprites");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("RingOfRespite"), "I made due with what I fucking had for sprites");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("BrokenImmortalityCore"), "I made due with what I fucking had for sprites");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("AncientFabricItem"), "I made due with what I fucking had for sprites");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("NoviteChestplate"), "They didn't finish it, all they did was apploguise");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("NoviteLeggings"), "They didn't finish it, all they did was apploguise");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("BeserkerAuraStaff"), "I made due with what I fucking had for sprites");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("NonStationaryBunnyCannonLauncher"), "I made due with what I fucking had for sprites");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("NonStationarySnowballLauncher"), "I made due with what I fucking had for sprites");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("NonStationaryCannonLauncher"), "I made due with what I fucking had for sprites");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("GrippingGloves"), "Placeholder, fucking placeholder cus no one will help me with it! I can't sprite");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("HandlingGloves"), "Placeholder, fucking placeholder cus no one will help me with it! I can't sprite");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("HeartGuard"), "Placeholder, fucking placeholder cus no one will help me with it! I can't sprite");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("GoldenCog"), "Placeholder, fucking placeholder cus no one will help me with it! I can't sprite");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("JaggedOvergrownSpike"), "Placeholder, fucking placeholder cus no one will help me with it! I can't sprite");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("NadeFlail"), "Ugly ass piece of shit sprite edit");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("ClarityPotion"), "Placeholder, consider 'helping' rather than complaining about the sprite");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("RagnarokBrew"), "Placeholder, consider 'helping' rather than complaining about the sprite");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("RadCurePotion"), "Placeholder, consider 'helping' rather than complaining about the sprite");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("DragonsMightPotion"), "Placeholder, consider 'helping' rather than complaining about the sprite");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("TungstenBullet"), "Because I can't Get-C");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("AcidBullet"), "People to help me-A");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("BlazeBullet"), "At all, all they ever want-L");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("PrismicBullet"), "Is to be a part of winning team-A");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("PrismalBullet"), "The little guy doesn't matter-M");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("PortalBullet"), "They have no faith in him-I");
+			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("AimBotBullet"), "Only ever they want only to be a part of-TY");*/
+
+
+
 		}
 
 		public override void AddRecipeGroups()

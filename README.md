@@ -1,7 +1,7 @@
 # SGAmod
 IDGCaptainRussia94's content mod
 
-//Items with place holder sprites and need resprites: Heart Guard, Hellion's Cascade, Revolving West, Twines of Fate, Icicle Fall, Shark Bait, MVM Upgrade, Jagged Overgrown Spike, Joyrider, Truely Suspicious Looking Eye, Book of Jones, Hellion's Crown (Item Sprite ?)
+//Items with place holder sprites and need resprites: Heart Guard, Hellion's Cascade, Revolving West, Twines of Fate, Shark Bait, MVM Upgrade, Jagged Overgrown Spike, Joyrider, Truely Suspicious Looking Eye, Book of Jones, Hellion's Crown (Item Sprite ?), All Buff Icons
 
 //Items that are NOT ok to be resprited: Stormbreaker, Wave Beam, Serpent's Redemption, Creeper's Throw, The trap related weapons for now
 
@@ -11,6 +11,61 @@ Github was moved: previous builds of the mod can be found over here: https://git
 -Corruption only: Gas Passer, Wraith Arrows, Dosed Arrows, Corrupted Tome, Cursed Hail, Jagged Spike Buckler (can be bypassed with fishing)
 
 Changelog:
+
+3.325-(8/22/20)-Hotfix #11:
+
+
+--Added:
+
+-Novus Core, Novite Core, Prismal Core, Quasar Cannon
+
+-Proper Sprites and resprites for a few things
+
+
+--Changed:
+
+-Tech Master's Gear now requires the Prismal Core instead of the Night Vision Helmet, has lost 2 point of booster recharge to make up for the new addition
+
+-Plasma Pack's Booster bonus has been increased to 3 (from 2)
+
+-Massacre Prototype requires the Quasar Cannon
+
+
+--Fixed:
+
+-Potions not being counted as a 'potion', minor, but worth noting
+
+-Online play breaking, hopefully for real this time
+
+
+
+3.300-(7/28/20)-Mid Update/Hellion Fix Patch:
+
+
+--Added:
+
+-Clarity Potion
+
+-A proper personality for Hellion
+
+-Placeholder warnings
+
+
+--Changed:
+
+-Hellion's fight, made it better
+
+-Greatly increased the duration of most potions (to atleast 5 minutes)
+
+-Gas Passer nerfed to account for the ability to spam throw it now, Jarate and Gas Passer made cheaper to craft
+
+-Altered the visuals a bit on the Berserker Aura Staff
+
+
+--Fixed
+
+-Hellion
+
 
 
 3.200-(7/25/20)-End of the Beginning pt3:
@@ -26,6 +81,8 @@ Changelog:
 
 
 --Changed:
+
+-Portal now has a party
 
 -Acidic Skull and Radiation Cure both now add resistance against the health lose from the Radiation debuffs (This does not include Limbo Fading however)
 

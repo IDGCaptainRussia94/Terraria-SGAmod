@@ -50,9 +50,9 @@ namespace SGAmod.Projectiles
 
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-			GameShaders.Armor.GetShaderFromItemId(ItemID.SolarDye).Apply(null);
+			//GameShaders.Armor.GetShaderFromItemId(ItemID.SolarDye).Apply(null);
 
-			Texture2D tex = Main.projectileTexture[51];
+			Texture2D tex = mod.GetTexture("Items/Weapons/Ammo/BlazeBullet");
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
 
 			//oldPos.Length - 1
@@ -165,7 +165,7 @@ namespace SGAmod.Projectiles
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 
-			Texture2D tex = Main.projectileTexture[51];
+			Texture2D tex = mod.GetTexture("Items/Weapons/Ammo/AcidBullet");
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
 
 			//oldPos.Length - 1

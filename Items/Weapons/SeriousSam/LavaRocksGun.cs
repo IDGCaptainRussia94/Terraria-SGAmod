@@ -134,7 +134,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			shader.Apply(null);
 			bool facingleft = projectile.velocity.X > 0;
 			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
-			Texture2D texture = Main.projectileTexture[(int)(424 + projectile.ai[0])];
+			Texture2D texture = SGAmod.ExtraTextures[104+(int)projectile.ai[0]];
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor* trans, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale, facingleft ? effect : SpriteEffects.None, 0);
 			Main.spriteBatch.End();

@@ -21,6 +21,7 @@ namespace SGAmod
 		private Color acolor = Color.White;
 		private static bool spinornah=false;
 
+
 		private static void drawit(Matrix zoomitz, float rotation = 0f, float scale = 1f)
 		{
 			if (Hellion.GetHellion() != null)
@@ -61,6 +62,7 @@ namespace SGAmod
 			beam.SetData(0, null, dataColors, 0, width * height);
 			Color color = Color.White;
 			float tempcolor = SGAmod.HellionSkyalpha;
+
 			if (SGAmod.HellionSkyalpha > 0.30)
 			{
 				color = Color.Lerp(Color.White, Color.Black, Math.Min(0.9f, (SGAmod.HellionSkyalpha - 0.30f) * 3.50f));
@@ -143,6 +145,9 @@ namespace SGAmod
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
 
 				HellionSky.drawit(Main.GameViewMatrix.ZoomMatrix);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
 
 				//Main.spriteBatch.End();
 				//Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.Transform);

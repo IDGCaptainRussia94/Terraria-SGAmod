@@ -311,6 +311,15 @@ namespace SGAmod.Items.Weapons
 			return false;
 		}
 
+		/*Viewport viewport = Main.graphics.GraphicsDevice.Viewport;
+
+BasicEffect basicEffect = new BasicEffect(Main.graphics.GraphicsDevice);
+
+basicEffect.Projection = Matrix.CreateTranslation(-0.5f, -0.5f, 0) *
+						 Matrix.CreateOrthographicOffCenter(0, viewport.Width, viewport.Height, 0, 0, 1);
+
+Main.spriteBatch.Begin(0, null, null, null, null, basicEffect);*/
+
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			base.PostDraw(spriteBatch, lightColor);

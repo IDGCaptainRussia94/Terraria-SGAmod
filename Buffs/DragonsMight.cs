@@ -33,15 +33,31 @@ namespace SGAmod.Buffs
 			tempimmune = player.buffImmune[BuffID.Weak] = tempimmune;
 			}
 		}
-
-		//public override void Update(NPC npc, ref int buffIndex)
-		//{
-		//	npc.GetGlobalNPC<SGAWorld>(mod).eFlames = true;
-		//}
+	}
+	public class ClarityPotionBuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Clarity");
+			Description.SetDefault("3% reduced mana costs, 10% reduced mana costs while you are Mana sick");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			Main.debuff[Type] = false;
+		}
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/MatrixBuff";
+			return true;
+		}
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.manaCost -= 0.03f;
+			if (player.manaSick)
+				player.manaCost -= 0.07f;
+		}
 	}
 	public class RagnarokBrewBuff : ModBuff
 	{
-
 		public override bool Autoload(ref string name, ref string texture)
 		{
 			texture = "SGAmod/Buffs/MatrixBuff";

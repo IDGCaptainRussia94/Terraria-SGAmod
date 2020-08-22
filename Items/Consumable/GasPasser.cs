@@ -19,7 +19,7 @@ namespace SGAmod.Items.Consumable
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Gas Passer");
-			Tooltip.SetDefault("Throws gasoline canisters on your enemies dousing them in gas, which you can ignite them for massive damage over time!\nDoes more damage against enemies with more max HP\nCombustion increases the damage of burning-based debuffs greatly\nLess ass then the source material" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 45 seconds"));
+			Tooltip.SetDefault("Throws gasoline canisters on your enemies dousing them in gas, which you can ignite them for massive damage over time!\nDoes more damage against enemies with more max HP\nCombustion increases the damage of burning-based debuffs greatly\nLess ass then the source material\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 45 seconds"));
 
 		}
 
@@ -68,10 +68,10 @@ namespace SGAmod.Items.Consumable
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Explosives);
-			recipe.AddIngredient(mod.ItemType("IceFairyDust"), 3);
-			recipe.AddIngredient(mod.ItemType("WraithFragment4"),5);
-			recipe.AddIngredient(mod.ItemType("MurkyGel"), 10);
-			recipe.AddIngredient(ItemID.CursedFlame, 5);
+			recipe.AddIngredient(mod.ItemType("IceFairyDust"), 2);
+			recipe.AddIngredient(mod.ItemType("WraithFragment4"),4);
+			recipe.AddIngredient(mod.ItemType("MurkyGel"), 8);
+			recipe.AddIngredient(ItemID.CursedFlame, 4);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this,3);
 			recipe.AddRecipe();

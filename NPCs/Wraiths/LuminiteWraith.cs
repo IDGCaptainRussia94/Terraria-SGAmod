@@ -1735,8 +1735,10 @@ return false;
 	public class LuminiteWraithChestPlate: LuminiteWraithArmor
 	{
 
-		public override void SetDefaults()
+		public LuminiteWraithChestPlate()
 		{
+		//public override void SetDefaults()
+		//{
 
 				for (int x = 0; x < 50; x += 1)
 				{
@@ -1767,9 +1769,10 @@ return false;
 
 	public class LuminiteWraithPants: LuminiteWraithArmor
 	{
-
-		public override void SetDefaults()
+		public LuminiteWraithPants()
 		{
+		//public override void SetDefaults()
+		//{
 				for (int x = 0; x < 50; x += 1)
 				{
 					armors.Insert(Main.rand.Next(0, armors.Count), ItemID.SpectrePants);
@@ -1799,9 +1802,10 @@ return false;
 
 	public class LuminiteWraithHead: LuminiteWraithArmor
 	{
-
-		public override void SetDefaults()
+		public LuminiteWraithHead()
 		{
+		//public override void SetDefaults()
+		//{
 
 				for (int x = 0; x < 50; x += 1)
 				{

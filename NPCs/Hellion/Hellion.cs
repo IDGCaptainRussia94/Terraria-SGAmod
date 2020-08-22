@@ -18,9 +18,10 @@ using Idglibrary;
 using Idglibrary.Bases;
 using SGAmod.Items.Weapons;
 using SGAmod.Buffs;
-using System.IO;
+using ReLogic.Graphics;
 using SGAmod.NPCs.TrueDraken;
 using System.Diagnostics;
+using SGAmod.Dimensions;
 
 namespace SGAmod.NPCs.Hellion
 {
@@ -84,29 +85,36 @@ namespace SGAmod.NPCs.Hellion
 				hell.auraregrow = 30;
 
 				if (npc.ai[1] == 99950)
-					hell.HellionTaunt("I've had ENOUGH of this!");
-				if (npc.ai[1] == 99850)
-					hell.HellionTaunt("I... WILL WIN THIS GAME!");
-				if (npc.ai[1] == 99700)
-					hell.HellionTaunt("And the dragon, will be MINE!!");
+				{
+					hell.AddLine("Draken doesn't want to accept his real father", 50);
+					hell.AddLine("His real father mistreated him, tried to harden him for life", 300);
+					hell.AddLine("Hammering in that mental weaknesses are weaknesses as a whole", 600);
+					hell.AddLine("A waste of space, a complete waste of a son, a... Mistake...", 900);
+					hell.AddLine("So he doesn't, he pretends he's still looking for his parents", 1200);
+					hell.AddLine("His 'real' parents, the idyllic pair he feels he deserves", 1500);
+					hell.AddLine("A manifested Fantasy to hide from me: His grievances, his inner demons", 1600);
+					hell.AddLine("The Reality...", 0);
+				}
 
-				if (npc.ai[1] == 95800)
-					hell.HellionTaunt("Why, will you, just not... DIE?!");
-				if (npc.ai[1] == 95700)
-					hell.HellionTaunt("Your through! This world is");
-				if (npc.ai[1] == 95600)
-					hell.HellionTaunt("Your only delaying your demise!");
+				if (npc.ai[1] == 95900)
+				{
+					hell.AddLine("He put his faith into people", 0);
+					hell.AddLine("You know what they did? They treated him like dirt", 300);
+					hell.AddLine("So many bonds were broken... He began to wonder", 600);
+					hell.AddLine("Is the road to heaven... Paved with bad intentions?", 900);
+					hell.AddLine("When the road was paved with body and soul...", 1000);
 
-				if (npc.ai[1] == 79900)
-					hell.HellionTaunt("...");
-				if (npc.ai[1] == 79800)
-					hell.HellionTaunt("I HAVE HAD IT UP TO HERE!");
-				if (npc.ai[1] == 79700)
-					hell.HellionTaunt("I didn't want to do this, but now...");
-				if (npc.ai[1] == 79650)
-					hell.HellionTaunt("You...");
-				if (npc.ai[1] == 79600)
-					hell.HellionTaunt("DIE!");
+				}
+				if (npc.ai[1] == 77800)
+				{
+					hell.AddLine("He only fails, he feels he will never succeed", 50);
+					hell.AddLine("Will you help him? Will you even talk to him?", 300);
+					hell.AddLine("Turn him away from the path of self-destruction?", 600);
+					hell.AddLine("Eitherway, In the end, Reality will reclaim him", 900);
+					hell.AddLine("And take Draken back to the abyss he longs for...", 1000);
+
+				}
+
 				/*if (npc.ai[1] == 79550)
 				{
 					WorldFile.saveWorld();
@@ -114,11 +122,11 @@ namespace SGAmod.NPCs.Hellion
 				}*/
 
 				if (npc.ai[1] == 73500)
-					hell.HellionTaunt("Ugh... Your dermination is unmatched...");
+					hell.HellionTaunt("Have you learned anything from this?");
 				if (npc.ai[1] == 73300)
-					hell.HellionTaunt("You might... prove useful...");
+					hell.HellionTaunt("Because Draken needs all the help he can get");
 				if (npc.ai[1] == 73050)
-					hell.HellionTaunt("Curses... For now, I bid you farwell...");
+					hell.HellionTaunt("That's on you...");
 
 
 
@@ -136,14 +144,14 @@ namespace SGAmod.NPCs.Hellion
 				}
 				if (npc.ai[1] == 73000 - 60)
 				{
-					hell.HellionTaunt("See you soon...");
+					//hell.HellionTaunt("See you soon...");
 					Main.PlaySound(29, (int)npc.position.X, (int)npc.position.Y, 105, 1f, 0f);
 					npc.StrikeNPCNoInteraction(99999999,1f,0);
 
 				}
 
-					//Phase 3
-					if (npc.ai[1] < 79600)
+				//Phase 3
+				if (npc.ai[1] < 79600)
 				{
 
 					if (hell.noescapeaurasize < 1500)
@@ -200,7 +208,7 @@ namespace SGAmod.NPCs.Hellion
 								return (time % 120 == 0);
 							};
 
-							int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 100, portaltime+240, (hell.npc.Center - where).ToRotation(), mod.ProjectileType("HellionCascadeShot2"), projectilepattern, 8f, 550 * 2);
+							int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 100, portaltime + 240, (hell.npc.Center - where).ToRotation(), mod.ProjectileType("HellionCascadeShot2"), projectilepattern, 8f, 550 * 2);
 							(Main.projectile[ize2].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
 							(Main.projectile[ize2].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
 							Main.PlaySound(SoundID.Item, (int)Main.projectile[ize2].position.X, (int)Main.projectile[ize2].position.Y, 33, 0.25f, 0.5f);
@@ -208,7 +216,7 @@ namespace SGAmod.NPCs.Hellion
 
 						}
 
-						int[] angles = {0,40,50};
+						int[] angles = { 0, 40, 50 };
 						int[] activatetime = { 50, 750, 50 };
 
 						for (int a = 0; a < 3; a += 1)
@@ -218,7 +226,7 @@ namespace SGAmod.NPCs.Hellion
 								Vector2 where = npc.Center - (new Vector2(((npc.ai[0] % 80) == 0) ? 1f : -1f, 0f) * 80f);
 								Vector2 wheretogo2 = new Vector2(64f, rotz);
 								Vector2 vexa = new Vector2(activatetime[a], 0);
-								Vector2 wherez = new Vector2(64f, ((npc.ai[1] + 10) % 1000 == 0 ? 1f : -1f) * (5f-(angles[a]/30f)));
+								Vector2 wherez = new Vector2(64f, ((npc.ai[1] + 10) % 1000 == 0 ? 1f : -1f) * (5f - (angles[a] / 30f)));
 								Vector2 where2 = P.Center - npc.Center;
 								where2.Normalize();
 								Vector2 wheretogoxxx = new Vector2(1f - ((npc.ai[1] - 350f) / 150f), 0f);
@@ -258,7 +266,7 @@ namespace SGAmod.NPCs.Hellion
 									return (time % 20 == 0 && time > rothere.X);
 								};
 
-								int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 50, portaltime, (hell.npc.Center - where).ToRotation(), proj, projectilepattern, 6f, 250- ((int)(angles[a] *0.250)));
+								int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 50, portaltime, (hell.npc.Center - where).ToRotation(), proj, projectilepattern, 6f, 250 - ((int)(angles[a] * 0.250)));
 								(Main.projectile[ize2].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
 								(Main.projectile[ize2].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
 								Main.PlaySound(SoundID.Item, (int)Main.projectile[ize2].position.X, (int)Main.projectile[ize2].position.Y, 33, 0.25f, 0.5f);
@@ -268,9 +276,9 @@ namespace SGAmod.NPCs.Hellion
 
 							}
 						}
-				}
+					}
 
-					if (npc.ai[1] % 300 == 0 && npc.ai[1]> 77800)
+					if (npc.ai[1] % 300 == 0 && npc.ai[1] > 77800)
 					{
 
 						//Subphase 1 Snowballs
@@ -278,20 +286,20 @@ namespace SGAmod.NPCs.Hellion
 						{
 
 							Vector2 where = npc.Center - (new Vector2(((npc.ai[0] % 40) == 0) ? 1f : -1f, 0f) * 80f);
-							Vector2 wheretogo2 = new Vector2(64f * (npc.ai[1] % 600 == 0 ? 1f : -1f), rotz+(npc.ai[1]/2));
+							Vector2 wheretogo2 = new Vector2(64f * (npc.ai[1] % 600 == 0 ? 1f : -1f), rotz + (npc.ai[1] / 2));
 							Vector2 where2 = P.Center - npc.Center;
 							where2.Normalize();
 							Func<Vector2, Vector2, float, float, float> projectilefacing = delegate (Vector2 playerpos, Vector2 projpos, float time, float current)
 							{
 								float val = current;
-								val = (projpos- hell.npc.Center).ToRotation();
+								val = (projpos - hell.npc.Center).ToRotation();
 
 								return val;
 							};
 							Func<Vector2, Vector2, float, Vector2, Vector2> projectilemoving = delegate (Vector2 playerpos, Vector2 projpos, float time, Vector2 current)
 							{
 								Vector2 wheretogo = new Vector2(wheretogo2.X, wheretogo2.Y);
-								float angle = MathHelper.ToRadians(((wheretogo.Y + time * (wheretogo.X< 0 ? -1.5f : 1.5f))));
+								float angle = MathHelper.ToRadians(((wheretogo.Y + time * (wheretogo.X < 0 ? -1.5f : 1.5f))));
 								Vector2 instore = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * wheretogo.X;
 
 								Vector2 gothere = Hellion.GetHellion().noescapeauraloc + instore;
@@ -328,7 +336,7 @@ namespace SGAmod.NPCs.Hellion
 						{
 
 							Vector2 where = npc.Center - (new Vector2(((npc.ai[0] % 40) == 0) ? 1f : -1f, 0f) * 80f);
-							Vector2 wheretogo2 = new Vector2(64f * ((rotz%(360/4)) == 0 ? 1f : -1f), rotz + (npc.ai[1] / 2));
+							Vector2 wheretogo2 = new Vector2(64f * ((rotz % (360 / 4)) == 0 ? 1f : -1f), rotz + (npc.ai[1] / 2));
 							Vector2 where2 = P.Center - npc.Center;
 							where2.Normalize();
 							Func<Vector2, Vector2, float, float, float> projectilefacing = delegate (Vector2 playerpos, Vector2 projpos, float time, float current)
@@ -358,7 +366,7 @@ namespace SGAmod.NPCs.Hellion
 
 								return current;
 							};
-							Func<float, bool> projectilepattern = (time) => (time > 30 && time % 4 == 0 && time%60<30);
+							Func<float, bool> projectilepattern = (time) => (time > 30 && time % 4 == 0 && time % 60 < 30);
 
 							int ize = ParadoxMirror.SummonMirror(where, Vector2.Zero, 50, 320, MathHelper.ToRadians(90f), proj, projectilepattern, 6f, 250);
 							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
@@ -371,7 +379,7 @@ namespace SGAmod.NPCs.Hellion
 					}
 
 					//Subphase 1-2 Beams
-					if (npc.ai[1] % 500 == 0 && npc.ai[1]>75999)
+					if (npc.ai[1] % 500 == 0 && npc.ai[1] > 75999)
 					{
 
 						for (float fx2 = -1600f; fx2 < 1601f; fx2 = fx2 + 200f)
@@ -379,7 +387,7 @@ namespace SGAmod.NPCs.Hellion
 
 							float direction = fx2 % 400 == 0f ? 0 : 180;
 							if (npc.ai[1] < 79500)
-								direction = fx2%400==0f ? 90 : -90;
+								direction = fx2 % 400 == 0f ? 90 : -90;
 							if (npc.ai[1] < 79000)
 								direction = fx2 % 400 == 0f ? 45 : 225;
 							if (npc.ai[1] < 78500)
@@ -396,7 +404,7 @@ namespace SGAmod.NPCs.Hellion
 
 
 
-							 Vector2 where = new Vector2(-2000, (int)fx2);
+							Vector2 where = new Vector2(-2000, (int)fx2);
 
 							where = where.RotatedBy(MathHelper.ToRadians(direction), new Vector2(0, 0));
 
@@ -413,7 +421,7 @@ namespace SGAmod.NPCs.Hellion
 
 
 							//mod.ProjectileType("HellionCascadeShot")
-							int ize = ParadoxMirror.SummonMirror(where + hell.noescapeauraloc, Vector2.Zero, 50, portaltime+120, MathHelper.ToRadians(direction), mod.ProjectileType("HellionCascadeShot"), projectilepattern, 8f, 500 * 4);
+							int ize = ParadoxMirror.SummonMirror(where + hell.noescapeauraloc, Vector2.Zero, 50, portaltime + 120, MathHelper.ToRadians(direction), mod.ProjectileType("HellionCascadeShot"), projectilepattern, 8f, 500 * 4);
 							Main.projectile[ize].aiStyle = -5;
 							Main.projectile[ize].netUpdate = true;
 
@@ -422,8 +430,9 @@ namespace SGAmod.NPCs.Hellion
 						}
 
 					}
-
 				}
+
+				
 
 
 				//Phase 2
@@ -692,13 +701,15 @@ namespace SGAmod.NPCs.Hellion
 					npc.ai[1] = 0;
 
 				if (npc.ai[1] == 970)
-					hell.HellionTaunt("I won't go easy!");
+					hell.HellionTaunt("Reality can not perish");
 				if (npc.ai[1] == 900)
 				{
 					//RippleBoom.MakeShockwave(npc.Center, 15f, 3f, 100f, 200, 1.5f, true);
 					RippleBoom.MakeShockwave(npc.Center, 8f, 2f, 20f, 100, 3f, true);
-					CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.DarkRed, "TYRANT'S GLARE!", true, false);
-					hell.HellionTaunt("No need to hold back anymore!");
+					CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.DarkRed, "Reality's Gaze", true, false);
+					hell.HellionTaunt("Decay can only be delayed...");
+					hell.AddLine("Yet you continue to keep fighting this pointless battle", 200);
+					hell.AddLine("Entropy will claim him, you can not stop it "+SGAmod.userName, 400);
 					hell.tyrant = 1;
 					Main.PlaySound(15, (int)npc.Center.X, (int)npc.Center.Y, 2, 1f, -0.5f);
 				}
@@ -807,10 +818,11 @@ namespace SGAmod.NPCs.Hellion
 				hell.auraregrow = 30;
 
 				if (npc.ai[1] == 1960)
-					hell.HellionTaunt("Why don't you...");
-				if (npc.ai[1] == 1850 - 330)
-					hell.HellionTaunt("Vanish!");
-
+				{
+					hell.AddLine("You want to critism my apperence?", 20);
+					hell.AddLine("Just a fucking ball of random sprites?", 100);
+					hell.AddLine("He had NOTHING ELSE, he still doesn't!", 300);
+				}
 
 				int portaltime = 350;
 				int proj = ProjectileID.AmethystBolt;
@@ -886,6 +898,15 @@ namespace SGAmod.NPCs.Hellion
 				if (npc.ai[1] < 3000)
 				{
 					hell.teleporteffect = 10;
+				}
+
+				if (npc.ai[1] == 3080)
+				{
+					hell.AddLine("He's a one man team, trying to run this fucking mod", 0);
+					hell.AddLine("What he does, isn't working anymore, no one likes his work", 100);
+					hell.AddLine("His ideals are not accepted, at a lose he is", 300);
+					hell.AddLine("To him, all people care about are fancy pixels!", 500);
+					hell.AddLine("Gameplay is nothing more than 2nd priority", 700);
 				}
 
 				npc.dontTakeDamage = true;
@@ -1051,14 +1072,6 @@ namespace SGAmod.NPCs.Hellion
 
 
 
-
-				if (npc.ai[1] == 2960)
-					hell.HellionTaunt("Why don't you...");
-				if (npc.ai[1] == 2850 - 330)
-					hell.HellionTaunt("Vanish!");
-
-
-
 			}
 
 
@@ -1095,7 +1108,10 @@ namespace SGAmod.NPCs.Hellion
 				}
 				int proj = mod.ProjectileType("HellionBolt");
 				int beamdelay = hell.rematch ? 3 : 6;
-					if (npc.ai[0] % 160 < 120 && npc.ai[0] % (type == 8 ? beamdelay : 4) == 0)
+				if (hell.phase > 3)
+					beamdelay = 2;
+
+					if ((npc.ai[0] % 160 < 120 || (hell.phase>3 && type == 0)) && npc.ai[0] % (type == 8 ? beamdelay : 4) == 0)
 					{
 						Vector2 where;
 						Vector2 where2 = P.Center - npc.Center;
@@ -1448,13 +1464,13 @@ namespace SGAmod.NPCs.Hellion
 			if (type == "Cobalt Wraith")
 			{
 				hell.npc.ai[1] = 200;
-				hell.HellionTaunt("Wraiths! Guide my will! And come forth!");
+				hell.HellionTaunt("Telegraph-Summon Wraiths");
 			}
 			if (type == "Homing Lasers")
 			{
 				hell.haspickedlaser = true;
 				hell.npc.ai[1] = 450;
-				hell.HellionTaunt("Have a health dose of lasers!");
+				hell.HellionTaunt("Telegraph-Dose of Lasers");
 			}
 
 			if (type == "SkelHands")
@@ -1474,14 +1490,14 @@ namespace SGAmod.NPCs.Hellion
 				Main.npc[num154].lifeMax = (int)(npc.lifeMax * 0.05);
 				Main.npc[num154].life = Main.npc[num154].lifeMax;
 				Main.npc[num154].netUpdate = true;
-				hell.HellionTaunt("Skeletron Dear, could you lend me a hand, or 2?");
+				hell.HellionTaunt("Telegraph-Skeletron Hands");
 			}
 
 			if (type == "DPSDrones")
 			{
 				if (hell.army.Count > 0)
 				{
-					hell.HellionTaunt(Main.rand.Next(0, 2) == 0 ? "Support Drones deployed" : "Healing drones released!");
+					hell.HellionTaunt("Telegraph - Healing Drones");
 					for (int rotz = 0; rotz < 4; rotz += 1)
 					{
 						int num154 = NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)npc.position.Y + npc.height / 2, mod.NPCType("HealingDrone"), npc.whoAmI, 0f, 0f, 0f, 0f, 255);
@@ -1518,16 +1534,16 @@ namespace SGAmod.NPCs.Hellion
 						hell.supportabilitycooldown = (int)(hell.supportabilitycooldown * 0.5);
 
 					}
-					hell.HellionTaunt(Main.rand.Next(0, 2) == 0 ? "Damage-Softcap cores deployed!" : "Just try it! I am shielded!");
+					hell.HellionTaunt("Telegraph - Support Drones");
 				}
 			}
 
 			if (type == "Taunt")
 			{
 				WeightedRandom<string> rand2 = new WeightedRandom<string>();
-				rand2.Add("Worthless, so worthless...", 1); rand2.Add("Healing up!", 1); rand2.Add("You have no chance!", 1); rand2.Add("Just surrender the dragon already!", 1);
-				rand2.Add("There is no hope!", 1); rand2.Add("Persistant, arn't you?", 1);
-				hell.HellionTaunt(rand2.Get());
+				rand2.Add("There isn't any hope, what are you hoping to gain?", 1); rand2.Add("Yet another update with placeholder sprites...", 1); rand2.Add("Improve your sprites... People say, it's his fault...", 1); rand2.Add("This is merely a means to an end, there is no winning", 1);
+				rand2.Add("There's no point in hiding your ignorance, you don't care about him...", 1); rand2.Add("Why add new Mechanics? No one will ever use them, or notice them!", 1); rand2.Add("He's stuck, he's alone, living in a poor man's apartment", 1);
+				hell.AddLine(rand2.Get(), Main.rand.Next(100,300));
 				if (hell.army.Count>0)
 				npc.life = Math.Min((int)(npc.lifeMax * 0.01) + npc.life, npc.lifeMax);
 				npc.netUpdate = true;
@@ -1537,7 +1553,7 @@ namespace SGAmod.NPCs.Hellion
 			if (type == "Laser Reign")
 			{
 				hell.haspickedlaser = true;
-				hell.HellionTaunt("Ready for some Laser Reign?");
+				hell.HellionTaunt("Telegraph-Laser Reign");
 				hell.supportabilitycooldown = (int)(hell.supportabilitycooldown * 0.75);
 				hell.manualmovement = 300;
 				for (int rotz = -1; rotz < 2; rotz += 2)
@@ -1597,10 +1613,22 @@ namespace SGAmod.NPCs.Hellion
 
 	}
 
+	public class HellionLine
+	{
+		public string text = "";
+		public int timeleft = 0;
+		public HellionLine(string text,int timeleft)
+		{
+			this.timeleft = timeleft;
+			this.text = text;
+		}
+
+	}
+
 
 		public class Hellion : ModNPC 
 	{
-		
+		public List<HellionLine> hellionLines;
 		private float[] oldRot = new float[12];
 		private Vector2[] oldPos = new Vector2[12];
 		public float appear = 0.5f;
@@ -1641,12 +1669,15 @@ namespace SGAmod.NPCs.Hellion
 
 			public Hellion()
 			{
-				army = new List<int>();
+			hellionLines = new List<HellionLine>();
+			army = new List<int>();
 				antiprojectile = new List<int>();
 			for (int i = 0; i < 5; i += 1) { antiprojectile.Add(ProjectileID.VampireHeal); }
 			}
-
-
+		public void AddLine(string text,int time)
+		{
+			hellionLines.Add(new HellionLine(text, time));
+		}
 		public override void SetDefaults()
 		{
 			npc.width = 64;
@@ -1664,6 +1695,7 @@ namespace SGAmod.NPCs.Hellion
 			npc.aiStyle = -1;
 			aiType = -1;
 			animationType = 0;
+			music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/creepy");
 			npc.noTileCollide = true;
 			npc.noGravity = true;
 			npc.netAlways = true;
@@ -1837,7 +1869,7 @@ namespace SGAmod.NPCs.Hellion
 			//Goblins
 			if (phase == 1)
 			{
-				army.Add(mod.NPCType("CirnoHellion"));
+				//army.Add(mod.NPCType("CirnoHellion"));
 				for (int rotzz = 0; rotzz < 4; rotzz += 1)
 				{
 					WeightedRandom<int> enemies = new WeightedRandom<int>();
@@ -1911,11 +1943,40 @@ namespace SGAmod.NPCs.Hellion
 				if (hell.army.Count > 0)
 				{
 
-
 					if (hell.npc.ai[1] == -280)
-						hell.HellionTaunt(text1[hell.phase]);
-					if (hell.npc.ai[1] == -160)
-						hell.HellionTaunt(text2[hell.phase]);
+					{
+						//hell.HellionTaunt(text1[hell.phase]);
+						if (hell.phase == 1)
+						{
+							hell.AddLine("He thought I could trust them... I put so much faith into them...", 0);
+							hell.AddLine("He was close to Sam, like he was close to nothing else", 200);
+							hell.AddLine("Croteam betrayed us, they stole his entire childhood, and turned rotten", 400);
+							hell.AddLine("The grivenesses cut deep and everything we once loved only withered away...", 600);
+							hell.AddLine("All that was left, was idiots and a shattered dream, they... were his hero...", 800);
+							hell.AddLine("And now they are nothing but a never-ending nightmare", 900);
+						}
+						if (hell.phase == 3)
+						{
+							hell.AddLine("Draken trusted Val, he really did, she took him in when he had nothing", 0);
+							hell.AddLine("Overtime, they grew distant, he tried to save their relationship, he couldn't", 200);
+							hell.AddLine("She refused to tell him, what Croteam was really doing inside, to their own people", 400);
+							hell.AddLine("He was denied something he felt he should know, but... Heartbroken", 600);
+							hell.AddLine("Everything meant nothing, she didn't trust him with the keys to his grievances", 800);
+							hell.AddLine("I exist... to set this right...", 900);
+						}
+						if (hell.phase == 5)
+						{
+							hell.AddLine("They wanted a new personality, they wanted me to not be edgy", 0);
+							hell.AddLine("But he just... couldn't do it, he could bare to remake my boss fight", 200);
+							hell.AddLine("He can't stand the concept of losing work and letting it go to waste", 400);
+							hell.AddLine("He lost faith in his own friends, everyone putting the weight on his shoulders", 600);
+							hell.AddLine("A burden only he carries alone, it is heavy, emotionally...", 800);
+							hell.AddLine("Much like Free the Mind he wants others to care, to give a shit about him", 2000);
+							hell.AddLine("Neglect and abuse is all he knows from the moment he was born", 2300);
+							hell.AddLine("Will you make that difference?", 2400);
+
+						}
+					}
 
 					if (hell.armytimer > 10 && hell.armyspawned<10+(hell.phase == 5 ? 10 : 0))
 					{
@@ -2108,6 +2169,19 @@ namespace SGAmod.NPCs.Hellion
 				npc.active = false;
 			}
 
+			if (hellionLines.Count > 0)
+			{
+				for(int i=0; i<hellionLines.Count;i+=1)
+				{
+					HellionLine line = hellionLines[i];
+					line.timeleft--;
+					if (line.timeleft < 1)
+					{
+						HellionTaunt(line.text);
+						hellionLines.RemoveAt(i);
+					}
+				}
+			}
 
 			//List<Projectile> itz = Idglib.Shattershots(npc.Center, npc.Center + npc.velocity, new Vector2(0, 0), mod.ProjectileType("HellionBeam"), 15, 1f, 0, 1, true, 0f, false, 200);
 
@@ -2188,11 +2262,11 @@ namespace SGAmod.NPCs.Hellion
 				{
 					if (introtimer == 60)
 					{
-						HellionTaunt("Come on " + SGAmod.userName + "!");
+						HellionTaunt("You only want my drops, only that mark on Boss Checklist");
 					}
 					if (introtimer == 180)
 					{
-						HellionTaunt("Lets dance!");
+						HellionTaunt("Go on, play your farming game " + SGAmod.userName);
 					}
 				}
 				else
@@ -2525,11 +2599,28 @@ namespace SGAmod.NPCs.Hellion
 
 			int[] texturexxxs = { NPCID.Stylist, NPCID.Mechanic, NPCID.DyeTrader, NPCID.Dryad, NPCID.PartyGirl };
 
+			BlendState blind = new BlendState
+			{
+
+				ColorSourceBlend = Blend.Zero,
+				ColorDestinationBlend = Blend.InverseSourceColor,
+
+				AlphaSourceBlend = Blend.Zero,
+				AlphaDestinationBlend = Blend.InverseSourceColor
+
+			};
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+
 			Texture2D texture6 = SGAmod.ExtraTextures[96];
-			spriteBatch.Draw(texture6, npc.Center - Main.screenPosition, null, lightColor, 0, new Vector2(texture6.Width / 2f, texture6.Height / 2f), new Vector2(1f, 1f), SpriteEffects.None, 0f);
+			for (float rot2z = 10; rot2z > 0; rot2z -= 0.1f)
+			{
+				spriteBatch.Draw(texture6, npc.Center - Main.screenPosition, null, lightColor*0.02f, Main.GlobalTime*(rot2z%2>0.9f ? 1f : -1f)* (0.4f+(rot2z%1f)), texture6.Size()/2f, new Vector2(0.75f, 1f)* rot2z, SpriteEffects.None, 0f);
+			}
 
 
-			for (int rotz = 0; rotz < 5; rotz += 1)
+			/*for (int rotz = 0; rotz < 5; rotz += 1)
 			{
 				Texture2D tex = SGAmod.HellionTextures[rotz];
 
@@ -2559,8 +2650,29 @@ namespace SGAmod.NPCs.Hellion
 							spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / maxframes), ((Color.Lerp(RainbowDarker, Rainbow, alphaz2) * alphaz) * (appear)) * 0.4f, oldRot[k], drawOrigin, npc.scale, npc.spriteDirection < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 						}
 					}
-				}
-				return false;
+				}*/
+
+			texture6=ModContent.GetTexture("SGAmod/NPCs/Hellion/Hellion");
+
+			spriteBatch.Draw(texture6, npc.Center - Main.screenPosition, null, lightColor, 0f, texture6.Size()/2f, new Vector2(1f, 1f), SpriteEffects.None, 0f);
+
+			for(int i = 0; i < 360; i += 90)
+			{
+				float angle = MathHelper.ToRadians(i);
+				float timer = Main.GlobalTime * 4f;
+				timer=timer % 4f;
+				Vector2 gooff = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * timer*5f;
+				float alpha = MathHelper.Clamp(1f-timer/3f, 0f, 1f);
+				spriteBatch.Draw(texture6, npc.Center+ gooff - Main.screenPosition, null, lightColor* alpha, 0f, texture6.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0f);
+
+
+			}
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Draw(texture6, npc.Center - Main.screenPosition, null, lightColor*MathHelper.Clamp((float)Math.Sin(Main.GlobalTime*1.2434f),0f,1f), 0f, texture6.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0f);
+
+
+			return false;
 			}
 
 			public override void SetStaticDefaults()
@@ -2622,6 +2734,73 @@ namespace SGAmod.NPCs.Hellion
 							}
 						}
 					}*/
+
+					if (army.Count > 0)
+					{
+						Dimensions.SGADimPlayer dimply = thatplayer.GetModPlayer<Dimensions.SGADimPlayer>();
+						dimply.lightsize += (int)(((400f+(phase*150)) - (float)dimply.lightsize)/50f);
+					}
+
+					SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(npc.Center.X, npc.Center.Y, 300)));
+
+					float range = (Main.LocalPlayer.GetModPlayer<Dimensions.SGADimPlayer>().lightsize/2f)+Main.rand.NextFloat(64,400);
+					int timeleft = (int)((float)Main.rand.Next(300, 600)/((phase/5f)+1));
+					if (Main.rand.Next(0, Math.Max(5,30-phase*5)) == 0 && Main.netMode!=2)
+					{
+						WeightedRandom<HellionInsanity> enemies = new WeightedRandom<HellionInsanity>();
+						enemies.Add(new HellionInsanity("...", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Why try", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Life doesn't", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Want me", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("To exist", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Why not just", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Give up", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("And accept", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Death", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("There is no hope", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("It's Hopeless", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("No one", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Understands me", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("All they care", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("For is my", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Work, I do", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("I tried", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("It wasn't enough", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("It wasnt", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Meant to be", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("This way", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Why is there", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("No hapiness", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Why am I", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Alone", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Unknown", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Loser", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Outcasted", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Unloved", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Why???", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("They want us dead", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Nothing but pain", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("It hurts", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("I Can't", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Why?", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Harmony doesn't", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Exist", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("It's Cold", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("I'm Lost", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Hopeless", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Abandoned", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("I try to", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Get the Message", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Out there", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Please Help", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Please Fucking Help", range, timeleft), 1);
+						enemies.Add(new HellionInsanity("Please... I need... Help...", range, timeleft), 0);
+						enemies.Add(new HellionInsanity("...it starts with people making a difference", range, timeleft), 0);
+						enemies.Add(new HellionInsanity("People like you... Code Snooper", range, timeleft), 0);
+
+
+						Dimensions.DimDungeonsProxy.madness.Add(enemies.Get());
+					}
 
 					if (army.Count>0)
 						{

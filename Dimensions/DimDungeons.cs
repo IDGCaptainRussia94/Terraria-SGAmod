@@ -20,6 +20,8 @@ using MonoMod.RuntimeDetour.HookGen;
 using SubworldLibrary;
 using SGAmod.Dimensions;
 using SGAmod;
+using SGAmod.NPCs.Hellion;
+using ReLogic.Graphics;
 
 
 namespace SGAmod.Dimensions
@@ -30,12 +32,14 @@ namespace SGAmod.Dimensions
 		public static DimDungeonsProxy Instance;
 		public static int counter=0;
 		public static int DungeonSeeds;
+		public static List<HellionInsanity> madness;
 		public DimDungeonsProxy()
 		{
 		}
 
 		public void Load()
 		{
+			DimDungeonsProxy.madness = new List<HellionInsanity>();
 			DimDungeonsProxy.Instance = this;
 			DimDungeonsProxy.counter = 0;
 			DimDungeonsProxy.DungeonSeeds = (int)(System.DateTime.Now.Millisecond * 1370.3943162338);
@@ -65,6 +69,23 @@ namespace SGAmod.Dimensions
 		{
 			DrawOverride.DrawFog();
 			SGAmod.PostDraw.Clear();
+
+			List<HellionInsanity> madness = DimDungeonsProxy.madness;
+
+			if (madness.Count > 0)
+			{
+				for (int i = 0; i < madness.Count; i += 1)
+				{
+					HellionInsanity pleasemakeitstop = madness[i];
+					pleasemakeitstop.timeleft--;
+					pleasemakeitstop.Update();
+					if (pleasemakeitstop.timeleft < 1)
+					{
+						madness.RemoveAt(i);
+					}
+				}
+			}
+
 		}
 
 
@@ -298,6 +319,57 @@ namespace SGAmod.Dimensions
 
 			//}
 
+
+		}
+
+	}
+
+	public class HellionInsanity
+	{
+		public string text = "";
+		public float angle;
+		float angleAdder;
+		public float distance;
+		public int timeleft = 0;
+		public float flipped = 0f;
+		public float addone = 0f;
+		public HellionInsanity(string text, float distance, int timeleft)
+		{
+			angle = MathHelper.ToRadians(Main.rand.NextFloat(0f, 360f));
+			this.distance = distance;
+			angleAdder = MathHelper.ToRadians(Main.rand.NextFloat(-1, 1)) / 10f;
+			this.text = text;
+			this.timeleft = timeleft;
+			flipped = 0f;
+			addone = 0f;
+			if (this.angle > MathHelper.ToRadians(180))
+				flipped = MathHelper.ToRadians(180);
+		}
+
+		public void Update()
+		{
+			addone += 1f;
+			timeleft -= 1;
+			angle += angleAdder;
+		}
+
+		public void Draw()
+		{
+			float alpha = MathHelper.Clamp((float)timeleft / 150f, 0f, Math.Min(addone / 100f, 1f));
+			Vector2 size = Main.fontDeathText.MeasureString(text);
+
+			Vector2 mathstuff = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * distance;
+
+			Matrix mat = Matrix.CreateTranslation(-size.X / 2f, 0, 0) * Matrix.CreateRotationZ(angle - MathHelper.ToRadians(90) - flipped) * Matrix.CreateTranslation(mathstuff.X, mathstuff.Y, 0) *
+			Matrix.CreateTranslation((float)Main.screenWidth / 2f, (float)Main.screenHeight / 2f, 0) * Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, mat * Main.GameViewMatrix.ZoomMatrix);
+
+			Main.spriteBatch.DrawString(Main.fontDeathText, text, Vector2.Zero, Color.Red * alpha);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
 
 		}
 

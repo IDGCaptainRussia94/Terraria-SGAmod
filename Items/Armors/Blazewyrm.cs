@@ -120,14 +120,12 @@ namespace SGAmod.Items.Armors
 		}
 		public override void UpdateEquip(Player player)
 		{
-			player.maxRunSpeed += 1f;
-			player.accRunSpeed += 1f;
-			player.runAcceleration += 0.075f;
+			player.moveSpeed += 1.25f;
+			player.accRunSpeed += 1.5f;
 			if (player.lavaWet)
 			{
 				player.moveSpeed *= 1.2f;
 				player.accRunSpeed *= 1.2f;
-				player.maxRunSpeed *= 1.2f;
 			}
 			player.SGAPly().apocalypticalChance[0] += 1.0;
 		}

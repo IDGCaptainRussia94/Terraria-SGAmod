@@ -255,7 +255,7 @@ namespace SGAmod.Items.Weapons.Technical
 		{
 			base.SetDefaults();
 
-			item.damage = 65;
+			item.damage = 80;
 			item.width = 48;
 			item.height = 48;
 			item.melee = true;

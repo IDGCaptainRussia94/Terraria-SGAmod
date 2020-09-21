@@ -152,10 +152,11 @@ namespace SGAmod
 		public bool nightmareplayer = false;
 		public bool playercreated = false;
 		public bool granteditems = false;
+		public bool restorationFlower = false;
 		public float techdamage = 1f;
 		public double[] apocalypticalChance = { 0, 0, 0, 0 };
 		public float apocalypticalStrength = 1f;
-		public int entropycollected = 0;
+		public int entropyCollected = 0;
 		public int activestacks = 0;
 		public float greedyperc = 0f;
 		public float lifestealentropy = 0f;
@@ -197,13 +198,151 @@ namespace SGAmod
 
 		public int downedHellion = 0;
 
-
-		enum MessageType : byte
-		{
-			ClientSendInfo
-		}
-
 		public int Microtransactionsdelay = 0;
+
+		public override void ResetEffects()
+		{
+			MVMBoost = false;
+			gunslingerLegend = false;
+			if (!player.HasBuff(mod.BuffType("ConsumeHellBuff")))
+				FireBreath = 0;
+			beserk[0] -= 1;
+			if (beserk[0] < 1)
+			{
+				beserk[0] = 0; beserk[1] = 0;
+			}
+
+			if (soldierboost > 0)
+				soldierboost -= 1;
+			surprised = Math.Max(surprised - 1, 0);
+			shinobj -= 1;
+			previoustf2emblemLevel = tf2emblemLevel;
+			tf2emblemLevel = 0;
+			ninjaSash = 0;
+			RevolverSpeed = 1f;
+			ReloadingRevolver = Math.Max(ReloadingRevolver - 1, 0);
+			twinesoffate = false;
+			Duster = false;
+			dualityshades = false;
+			realIFrames -= 1;
+			HeavyCrates = false;
+			Microtransactions = false;
+			MoneyMismanagement = false;
+			Lockedin = false;
+			NoFly = false;
+			CirnoWings = false;
+			MassiveBleeding = false;
+			thermalblaze = false; acidburn = false; ELS = false;
+			SerratedTooth = false;
+			UseTimeMul = 1f;
+			UseTimeMulPickaxe = 1f;
+			ThrowingSpeed = 1f;
+			SpaceDiverset = false;
+			potionsicknessincreaser = 0;
+			Blazewyrmset = false;
+			Mangroveset = false;
+			IDGset = false;
+			Pressured = false;
+			Havoc = 0;
+			SunderedDefense = false;
+			lockoneffect = Math.Min(lockoneffect + 1, 5000);
+
+			if (ammoLeftInClip > ammoLeftInClipMax)
+				ammoLeftInClip = ammoLeftInClipMax;
+
+			ammoLeftInClipMax = 6;
+			SpaceDiverWings = 0f;
+			ActionCooldown = false;
+			lunarSlimeHeart = false;
+			TrapDamageMul = 1f; TrapDamageAP = 0f;
+			Thrownsavingchance = 0f;
+			LifeFlower = false; GeyserInABottleActive = false; JavelinBaseBundle = false; JavelinSpearHeadBundle = false; restorationFlower = false;
+			BoosterMagnet = false;
+			EnhancingCharm = 0;
+			if (devpower > 0)
+				devpower -= 1;
+			devpowerbool = false;
+			MisterCreeperset = false;
+			Noselfdamage = false;
+			JaggedWoodenSpike = false; JuryRiggedSpikeBuckler = false; HeartGuard = false; GoldenCog = false;
+			MidasIdol = 0;
+			OmegaSigil = false;
+			MurkyDepths = false;
+			MatrixBuffp = false;
+			plasmaLeftInClipMax = 1000;
+			beedamagemul = 1f;
+			anticipationLevel = -1;
+			noModTeleport = false;
+			PrimordialSkull = false;
+			NoFireBurn = Math.Max(NoFireBurn - 1, 0);
+			if (player.itemTime < 1)
+				recoil = Math.Max(recoil - 0.5f, 0f);
+			greandethrowcooldown = Math.Max(greandethrowcooldown - 1, 0);
+			techdamage = 1f;
+			HoE = false;
+			CalamityRune = false;
+			for (int a = 0; a < apocalypticalChance.Length; a++)
+				apocalypticalChance[a] = 0;
+			apocalypticalStrength = 1f;
+			greedyperc = 0f;
+			lifestealentropy = Math.Min(lifestealentropy + 0.20f, 500);
+			maxblink = 0;
+			EALogo = false;
+			demonsteppers = false;
+			IceFire = false;
+			FridgeflameCanister = false;
+			BIP = false;
+			morespawns = 1f;
+			damagetaken = 1f;
+			summonweaponspeed = 0f;
+			SlowDownReset -= 1;
+			grippinggloves = false;
+			timer += 1;
+			mudbuff = false;
+			boosterdelay -= 1;
+			digiStacks = (int)MathHelper.Clamp(digiStacks, 0, digiStacksMax);
+			CustomWings = 0;
+			JoyrideShake -= 1;
+
+			if (!Shieldbreak)
+				electricdelay -= 1;
+
+			if (boosterdelay < 1)
+			{
+				boosterPowerLeft = Math.Min(boosterPowerLeft + boosterrechargerate, boosterPowerLeftMax);
+			}
+			if (electricdelay < 1)
+			{
+				electricCharge = Math.Min(electricCharge + electricrechargerate, electricChargeMax);
+			}
+
+			electricChargeMax = Electicpermboost;
+			electricrechargerate = 0;
+			electricChargeCost = 1f;
+			electricChargeReducedDelay = 1f;
+			boosterrechargerate = 15;
+			boosterPowerLeftMax = 10000;
+			Shieldbreak = false;
+			ShieldType = 0;
+
+			for (int a = 0; a < devempowerment.Length; a++)
+				devempowerment[a] = Math.Max(devempowerment[a] - 1, 0);
+
+			for (int i = 0; i < armorglowmasks.Length; i += 1)
+			{
+				armorglowmasks[i] = null;
+				armorglowcolor[i] = delegate (Player player, int index)
+				{
+					return Color.White;
+				};
+				digiStacksMax = 0;
+				player.breathMax = 200;
+			}
+			MaxCooldownStacks = 1;
+			noactionstackringofrespite = false;
+			actionCooldownRate = 1f;
+			Noviteset = 0;
+		}
 
 		public bool CalamityAbyss
 		{
@@ -228,10 +367,10 @@ namespace SGAmod
 
 		public void AddEntropy(int ammount)
 		{
-			entropycollected += ammount;
-			while (entropycollected > 100000)
+			entropyCollected += ammount;
+			while (entropyCollected > Items.EntropyTransmuter.MaxEntropy)
 			{
-				entropycollected -= 100000;
+				entropyCollected -= Items.EntropyTransmuter.MaxEntropy;
 				for (int fgf = 0; fgf < 20; fgf += 1)
 				{
 					int type = -1;
@@ -457,150 +596,6 @@ namespace SGAmod
 			downedHellion = 0;
 		}
 
-		public override void ResetEffects()
-		{
-			MVMBoost = false;
-			gunslingerLegend = false;
-			if (!player.HasBuff(mod.BuffType("ConsumeHellBuff")))
-			FireBreath = 0;
-			beserk[0]-=1;
-			if (beserk[0] < 1)
-			{
-				beserk[0] = 0; beserk[1] = 0;
-			}
-
-			if (soldierboost>0)
-			soldierboost-=1;
-			surprised = Math.Max(surprised - 1, 0);
-			shinobj -= 1;
-			previoustf2emblemLevel = tf2emblemLevel;
-			tf2emblemLevel = 0;
-			ninjaSash = 0;
-			RevolverSpeed = 1f;
-			ReloadingRevolver = Math.Max(ReloadingRevolver - 1, 0);
-			twinesoffate = false;
-			Duster = false;
-			dualityshades = false;
-			realIFrames -= 1;
-			HeavyCrates = false;
-			Microtransactions = false;
-			MoneyMismanagement = false;
-			Lockedin = false;
-			NoFly = false;
-			CirnoWings = false;
-			MassiveBleeding = false;
-			thermalblaze = false; acidburn = false; ELS = false;
-			SerratedTooth = false;
-			UseTimeMul = 1f;
-			UseTimeMulPickaxe = 1f;
-			ThrowingSpeed = 1f;
-			SpaceDiverset = false;
-			potionsicknessincreaser = 0;
-			Blazewyrmset = false;
-			Mangroveset = false;
-			IDGset = false;
-			Pressured = false;
-			Havoc = 0;
-			SunderedDefense = false;
-			lockoneffect = Math.Min(lockoneffect+1,5000);
-
-			if (ammoLeftInClip > ammoLeftInClipMax)
-			ammoLeftInClip = ammoLeftInClipMax;
-
-			ammoLeftInClipMax = 6;
-			SpaceDiverWings = 0f;
-			ActionCooldown = false;
-			lunarSlimeHeart = false;
-			TrapDamageMul = 1f; TrapDamageAP = 0f;
-			Thrownsavingchance = 0f;
-			LifeFlower = false; GeyserInABottleActive = false; JavelinBaseBundle = false; JavelinSpearHeadBundle = false;
-			BoosterMagnet = false;
-			EnhancingCharm = 0;
-			if (devpower>0)
-			devpower -= 1;
-			devpowerbool = false;
-			MisterCreeperset = false;
-			Noselfdamage = false;
-			JaggedWoodenSpike = false; JuryRiggedSpikeBuckler = false; HeartGuard = false; GoldenCog = false;
-			MidasIdol = 0;
-			OmegaSigil = false;
-			MurkyDepths = false;
-			MatrixBuffp = false;
-			plasmaLeftInClipMax = 1000;
-			beedamagemul = 1f;
-			anticipationLevel = -1;
-			noModTeleport = false;
-			PrimordialSkull = false;
-			NoFireBurn = Math.Max(NoFireBurn-1,0);
-			if (player.itemTime < 1)
-			recoil = Math.Max(recoil - 0.5f, 0f);
-			greandethrowcooldown = Math.Max(greandethrowcooldown - 1, 0);
-			techdamage = 1f;
-			HoE = false;
-			CalamityRune = false;
-			for (int a = 0; a < apocalypticalChance.Length; a++)
-			apocalypticalChance[a] = 0;
-			apocalypticalStrength = 1f;
-			greedyperc = 0f;
-			lifestealentropy = Math.Min(lifestealentropy + 0.20f, 500);
-			maxblink = 0;
-			EALogo = false;
-			demonsteppers = false;
-			IceFire = false;
-			FridgeflameCanister = false;
-			BIP = false;
-			morespawns = 1f;
-			damagetaken = 1f;
-			summonweaponspeed = 0f;
-			SlowDownReset -= 1;
-			grippinggloves = false;
-			timer += 1;
-			mudbuff = false;
-			boosterdelay -= 1;
-			digiStacks = (int)MathHelper.Clamp(digiStacks,0,digiStacksMax);
-			CustomWings = 0;
-			JoyrideShake -= 1;
-
-			if (!Shieldbreak)
-				electricdelay -= 1;
-
-			if (boosterdelay < 1)
-			{
-				boosterPowerLeft = Math.Min(boosterPowerLeft+ boosterrechargerate, boosterPowerLeftMax);
-			}
-			if (electricdelay < 1)
-			{
-				electricCharge = Math.Min(electricCharge + electricrechargerate, electricChargeMax);
-			}
-
-			electricChargeMax = Electicpermboost;
-			electricrechargerate = 0;
-			electricChargeCost = 1f;
-			electricChargeReducedDelay = 1f;
-			boosterrechargerate = 15;
-			boosterPowerLeftMax = 10000;
-			Shieldbreak = false;
-			ShieldType = 0;
-
-			for (int a = 0; a < devempowerment.Length; a++)
-				devempowerment[a] = Math.Max(devempowerment[a]-1,0);
-
-			for (int i = 0; i < armorglowmasks.Length; i += 1)
-			{
-				armorglowmasks[i] = null;
-				armorglowcolor[i] = delegate (Player player, int index)
-				{
-					return Color.White;
-				};
-			digiStacksMax = 0;
-				player.breathMax = 200;
-			}
-			MaxCooldownStacks = 1;
-			noactionstackringofrespite = false;
-			actionCooldownRate = 1f;
-			Noviteset = 0;
-		}
-
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
 
@@ -641,7 +636,7 @@ namespace SGAmod
 			sgaplayer.Redmanastar = Redmanastar;
 			sgaplayer.ExpertiseCollected = ExpertiseCollected;
 			sgaplayer.ExpertiseCollectedTotal = ExpertiseCollectedTotal;
-			sgaplayer.entropycollected = entropycollected;
+			sgaplayer.entropyCollected = entropyCollected;
 			sgaplayer.DefenseFrame = DefenseFrame;
 			sgaplayer.gunslingerLegendtarget = gunslingerLegendtarget;
 			sgaplayer.activestacks = activestacks;
@@ -666,7 +661,7 @@ namespace SGAmod
 					break;
 				}
 			}
-			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots || sgaplayer.entropycollected != entropycollected || sgaplayer.DefenseFrame != DefenseFrame
+			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots || sgaplayer.entropyCollected != entropyCollected || sgaplayer.DefenseFrame != DefenseFrame
 			|| sgaplayer.plasmaLeftInClip!= plasmaLeftInClip || sgaplayer.Redmanastar != Redmanastar || sgaplayer.ExpertiseCollected != ExpertiseCollected || sgaplayer.ExpertiseCollectedTotal != ExpertiseCollectedTotal
 			 || sgaplayer.gunslingerLegendtarget != gunslingerLegendtarget || sgaplayer.activestacks != activestacks)
 				mismatch = true;
@@ -693,7 +688,7 @@ namespace SGAmod
 				packet.Write((short)Redmanastar);				
 				packet.Write(ExpertiseCollected);
 				packet.Write(ExpertiseCollectedTotal);
-				packet.Write(entropycollected);
+				packet.Write(entropyCollected);
 				packet.Write((short)DefenseFrame);
 				packet.Write((short)gunslingerLegendtarget);
 				packet.Write((short)activestacks);
@@ -809,18 +804,29 @@ namespace SGAmod
 
 		public override void NaturalLifeRegen(ref float regen)
 		{
+			if (Main.hardMode && restorationFlower && player.HasBuff(BuffID.PotionSickness))
+				regen *= 1.25f;
+
 			if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
 				skillMananger.NaturalLifeRegen(ref regen);
 		}
 
 		public override void GetHealLife(Item item, bool quickHeal, ref int healValue)
 		{
+			bool restpotion = (item.type == ItemID.RestorationPotion || item.type == ItemID.LesserRestorationPotion || item.type == ItemID.StrangeBrew);
+			if (restorationFlower && restpotion)
+				healValue = (int)((float)healValue * 1.50);
+
 			if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
 				skillMananger.GetHealLife(item,quickHeal, ref healValue);
 		}
 
 		public override void GetHealMana(Item item, bool quickHeal, ref int healValue)
 		{
+			bool restpotion = (item.type == ItemID.RestorationPotion || item.type == ItemID.LesserRestorationPotion || item.type == ItemID.StrangeBrew);
+			if (restorationFlower && restpotion)
+				healValue = (int)((float)healValue * 1.50);
+
 			if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
 				skillMananger.GetHealMana(item, quickHeal, ref healValue);
 		}
@@ -836,9 +842,7 @@ namespace SGAmod
 					if (!Walkmode)
 					{
 						player.moveSpeed += (float)electricCharge / 7500f;
-						player.maxRunSpeed += (float)electricCharge / 10000f;
-						player.runAcceleration += (float)electricCharge / 12500f;
-						player.accRunSpeed += (float)electricCharge / 7500f;
+						player.accRunSpeed += (float)electricCharge / 9000f;
 					}
 				}
 			}
@@ -1088,13 +1092,6 @@ namespace SGAmod
 							Vector2 here = new Vector2((float)Math.Cos(angles), (float)Math.Sin(angles));
 
 							int thisone = Projectile.NewProjectile(player.Center.X + (here.X * randomx) - 100, player.Center.Y + (here.Y * randomx) - 100, here.X, here.Y, mod.ProjectileType("CreepersThrowBoom2"), player.statDefense * 8, 0f, player.whoAmI, 0.0f, 0f);
-							Main.projectile[thisone].timeLeft = 3;
-							Main.projectile[thisone].width = 200;
-							Main.projectile[thisone].height = 200;
-							Main.projectile[thisone].scale = 0.001f;
-							Main.projectile[thisone].netUpdate = true;
-							Main.projectile[thisone].timeLeft = 2;
-							Main.projectile[thisone].penetrate = 1;
 						}
 
 					}
@@ -2035,25 +2032,10 @@ modeproj.enhancedbees=true;
 			tag["ZZZExpertiseCollectedTotalZZZ"] = ExpertiseCollectedTotal;
 			tag["resetver"] = resetver;
 			tag["nightmareplayer"] = nightmareplayer;
-			tag["entropycollected"] = entropycollected;
+			tag["entropycollected"] = entropyCollected;
 			tag["Drakenshopunlock"] = Drakenshopunlock;
 
-			if (ExpertisePointsFromBosses != null)
-			{
-
-				tag["enemyvaluesTotal"] = ExpertisePointsFromBosses.Count;
-				for (int i = 0; i < ExpertisePointsFromBosses.Count; i += 1)
-				{
-					int value = ExpertisePointsFromBosses[i];
-					string tagname = "enemyvalues" + ((string)i.ToString());
-					tag[tagname] = value;
-					string tagname2 = "enemyvaluesPoints" + ((string)i.ToString());
-					tag[tagname2] = ExpertisePointsFromBossesPoints[i];
-					string tagname3 = "enemyvaluesModded" + ((string)i.ToString());
-					tag[tagname3] = ExpertisePointsFromBossesModded[i];
-				}
-
-			}
+			SaveExpertise(ref tag);
 
 			//ExpertisePointsFromBosses = null;
 			//ExpertisePointsFromBossesPoints = null;
@@ -2074,7 +2056,7 @@ modeproj.enhancedbees=true;
 			devpowerbool = tag.GetBool("devpower");
 			devpower = tag.GetInt("devpowerint");
 			Redmanastar = tag.GetInt("Redmanastar");
-			int? resetver2=null;
+
 			resetver = tag.GetInt("resetver");
 			if (tag.ContainsKey("nightmareplayer"))
 			nightmareplayer = tag.GetBool("nightmareplayer");
@@ -2085,46 +2067,9 @@ modeproj.enhancedbees=true;
 				Drakenshopunlock = tag.GetBool("Drakenshopunlock");	
 			
 			if (tag.ContainsKey("entropycollected"))
-				entropycollected = tag.GetInt("entropycollected");
+				entropyCollected = tag.GetInt("entropycollected");
 
-			ExpertiseCollected = tag.GetInt("ZZZExpertiseCollectedZZZ");
-			int maybeExpertiseCollected = tag.GetInt("ZZZExpertiseCollectedTotalZZZ");
-			ExpertiseCollectedTotal = maybeExpertiseCollected;
-
-			if (maybeExpertiseCollected < 1 || (!tag.ContainsKey("resetver")))
-			{
-
-				GenerateNewBossList();
-			}
-			else
-			{
-				int maxx = tag.GetInt("enemyvaluesTotal");
-				if (maxx < 1)
-				{
-					GenerateNewBossList();
-
-				}
-				else
-				{
-					ExpertisePointsFromBosses = new List<int>();
-					ExpertisePointsFromBossesPoints = new List<int>();
-					ExpertisePointsFromBossesModded = new List<string>();
-					for (int i = 0; i < maxx; i += 1)
-					{
-						int v1 = tag.GetInt("enemyvalues" + ((string)i.ToString()));
-						int v2 = tag.GetInt("enemyvaluesPoints" + ((string)i.ToString()));
-						string v3 = tag.GetString("enemyvaluesModded" + ((string)i.ToString()));
-
-						ExpertisePointsFromBosses.Add(v1);
-						ExpertisePointsFromBossesPoints.Add(v2);
-						ExpertisePointsFromBossesModded.Add(v3);
-					}
-				}
-
-			}
-
-
-
+			LoadExpertise(tag);
 
 		}
 
@@ -2154,258 +2099,6 @@ modeproj.enhancedbees=true;
 					caughtType = mod.ItemType("DankCrate");
 			}
 		}
-
-		public int? FindBossEXP(int npcid,NPC npc)
-		{
-			int? found = -1;
-			int? foundpre = -1;
-
-			int modnpc = 0;
-			if (npc != null) {
-				if (npc.modNPC != null)
-				{
-					foundpre = ExpertisePointsFromBossesModded.FindIndex(x => (x == npc.modNPC.GetType().Name));
-					//Main.NewText(foundpre);
-					//Main.NewText(npc.modNPC.GetType().Name);
-					if (foundpre != null && foundpre > -1)
-					{
-						return foundpre;
-					}
-				}
-					
-			}
-			
-
-
-				if (npcid == NPCID.EaterofWorldsHead || npcid == NPCID.EaterofWorldsBody || npcid == NPCID.EaterofWorldsTail)
-			{
-				found = ExpertisePointsFromBosses.FindIndex(x => (x == NPCID.EaterofWorldsHead));
-				goto gohere;
-			}
-			if (npcid == NPCID.DD2DarkMageT1 || npcid == NPCID.DD2DarkMageT3)
-			{
-				found = ExpertisePointsFromBosses.FindIndex(x => (x == NPCID.DD2DarkMageT1));
-				goto gohere;
-			}
-			if (npcid == NPCID.DD2OgreT2 || npcid == NPCID.DD2OgreT3)
-			{
-				found = ExpertisePointsFromBosses.FindIndex(x => (x == NPCID.DD2OgreT2));
-				goto gohere;
-			}
-			if (npcid == NPCID.GoblinSorcerer || npcid == NPCID.GoblinPeon || npcid == NPCID.GoblinThief || npcid == NPCID.GoblinWarrior || npcid == NPCID.GoblinArcher)
-			{
-				found = ExpertisePointsFromBosses.FindIndex(x => (x == NPCID.GoblinPeon));
-				goto gohere;
-			}
-			goherelook:
-
-			found = ExpertisePointsFromBosses.FindIndex(x => x == npcid);
-
-			gohere:
-
-			return found;
-
-		}
-
-		public void DoExpertiseCheck(NPC npc,bool tempc=false)
-		{
-			if (tempc == false)
-			{
-				if (npc == null)
-					return;
-				if (!npc.active)
-					return;
-				if (npc.lifeMax < 100)
-					return;
-			}
-			if (ExpertisePointsFromBosses == null)
-			{
-				Main.NewText("The enemy list was somehow null... HOW?!");
-				return;
-			}
-
-			if (ExpertisePointsFromBosses.Count<1)
-				return;
-
-			int npcid = npc.type;
-
-			int? found = FindBossEXP(npcid, npc);
-
-			if (found != null && found > -1)
-			{
-				int collected = ExpertisePointsFromBossesPoints[(int)found];
-				if (Main.expertMode)
-				{
-					if (SGAWorld.NightmareHardcore > 0)
-						collected = (int)(collected * (SGAWorld.NightmareHardcore == 1 ? 1.25f : 1.40f));
-				}
-				else
-				{
-					collected = (int)(collected * 0.80);
-				}
-
-				ExpertiseCollected += collected;
-				ExpertiseCollectedTotal += collected;
-
-				CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.LimeGreen, "+" + collected + " Expertise", false, false);
-
-				ExpertisePointsFromBosses.RemoveAt((int)found);
-				ExpertisePointsFromBossesPoints.RemoveAt((int)found);
-				ExpertisePointsFromBossesModded.RemoveAt((int)found);
-
-				int? findagain = FindBossEXP(npcid,npc);
-
-				if (findagain == null || findagain < 0)
-				{
-					if (Main.myPlayer == player.whoAmI)
-						Main.NewText("You have gained Expertise! (you now have " + ExpertiseCollected + ")");
-
-
-				}
-
-			}
-
-
-		}
-
-		public void addtolist(int value,int s2ndvalue)
-		{
-			ExpertisePointsFromBosses.Add(value);
-			ExpertisePointsFromBossesPoints.Add(s2ndvalue);
-			ExpertisePointsFromBossesModded.Add("");
-		}
-		public void addtolistmodded(string value, int s2ndvalue)
-		{
-			ExpertisePointsFromBosses.Add(-1);
-			ExpertisePointsFromBossesPoints.Add(s2ndvalue);
-			ExpertisePointsFromBossesModded.Add(value);
-		}
-
-
-		public void GenerateNewBossList()
-		{
-			ExpertisePointsFromBosses = new List<int>();
-			ExpertisePointsFromBossesPoints = new List<int>();
-			ExpertisePointsFromBossesModded = new List<string>();
-
-			//Prehardmode Bosses (+2500 total)
-
-			addtolistmodded("CopperWraith", 100);
-
-			addtolist(NPCID.KingSlime,100);
-
-			addtolist(NPCID.EyeofCthulhu, 100);
-
-			addtolistmodded("CaliburnGuardian", 75);
-
-			for (int i = 0; i < 50; i += 1)
-			{
-				addtolist(NPCID.EaterofWorldsHead, 3);
-			}
-
-			addtolistmodded("CaliburnGuardian", 100);
-
-			addtolist(NPCID.BrainofCthulhu, 150);
-
-			addtolist(NPCID.QueenBee, 150);
-
-			addtolistmodded("SpiderQueen", 250);
-
-			addtolistmodded("CaliburnGuardian", 125);
-
-			addtolist(NPCID.SkeletronHead, 200);
-
-			addtolistmodded("BossFlyMiniboss1", 200);
-
-			addtolistmodded("Murk", 300);
-
-			addtolist(NPCID.WallofFlesh, 500);
-
-
-			//Hardmode Bosses (+8500 total)
-
-			addtolistmodded("CobaltWraith", 300);
-			addtolistmodded("Cirno", 300);
-			addtolist(NPCID.TheDestroyer, 300);
-			addtolist(NPCID.SkeletronPrime, 300);
-			addtolist(NPCID.Spazmatism, 150);
-			addtolist(NPCID.Retinazer, 150);//1500
-			addtolistmodded("SharkvernHead", 500);
-			addtolist(NPCID.Plantera, 600);//2600
-			addtolistmodded("Cratrosity", 700);
-			addtolist(NPCID.Golem, 500);
-			addtolist(NPCID.DD2Betsy, 700);
-			addtolist(NPCID.CultistBoss, 500);//5000
-			addtolistmodded("TPD", 800);
-			addtolistmodded("Harbinger", 700);
-			addtolist(NPCID.LunarTowerNebula, 250);
-			addtolist(NPCID.LunarTowerSolar, 250);
-			addtolist(NPCID.LunarTowerStardust, 250);
-			addtolist(NPCID.LunarTowerVortex, 250);
-			addtolist(NPCID.MoonLordCore, 1000);//8500
-
-			//Post-moonlord Bosses (+7500 total)
-
-			addtolistmodded("LuminiteWraith", 1500);
-			addtolistmodded("SPinky", 1500);
-			addtolistmodded("Cratrogeddon", 1500);
-			addtolistmodded("Hellion", 3000);
-
-			//Not bosses (+500 total)
-			for (int i = 0; i < 75; i += 1)
-			{
-				addtolist(NPCID.GoblinPeon, 2);
-			}
-
-			addtolistmodded("TidalElemental", 75);
-			addtolist(NPCID.Tim, 50);
-			addtolist(NPCID.DoctorBones, 50);
-			addtolist(NPCID.Nymph, 50);
-			addtolist(NPCID.TheGroom, 25);
-			addtolist(NPCID.TheBride, 25);
-			addtolist(NPCID.DD2DarkMageT1, 75);
-
-			//Not bosses: Hardmode (+2600 total)
-			for (int i = 0; i < 2; i += 1)//800
-			{
-				addtolist(NPCID.GoblinSummoner, 50);
-				addtolist(NPCID.Mothron, 75);
-				addtolist(NPCID.Mimic, 50);
-				addtolist(NPCID.MartianSaucerCore, 150);
-				addtolist(NPCID.PirateShip, 75);
-				addtolist(NPCID.PirateCaptain, 50);
-			}
-			//500
-			addtolist(NPCID.MartianProbe, 75);
-			addtolist(NPCID.Medusa, 50);
-			addtolist(NPCID.Clown, 50);
-			addtolist(NPCID.RuneWizard, 50);
-			addtolist(NPCID.RainbowSlime, 50);
-			addtolist(NPCID.Moth, 75);
-			addtolist(NPCID.DD2OgreT2, 50);
-			addtolist(NPCID.IceGolem, 50);
-			addtolist(NPCID.SandElemental, 50);
-
-			for (int i = 0; i < 3; i += 1)//1200
-			{
-				addtolist(NPCID.MourningWood, 50);
-				addtolist(NPCID.Pumpking, 100);
-				addtolist(NPCID.Everscream, 50);
-				addtolist(NPCID.SantaNK1, 75);
-				addtolist(NPCID.IceQueen, 125);
-			}
-
-			for (int i = 0; i < 100; i += 1)
-			{
-				//ignore this, it's filler to keep the list from running out
-				addtolist(NPCID.CultistArcherWhite, 1);
-			}
-
-			//Tally-21600 Expertise
-
-		}
-
-
 	}
 
 	public class IDGStartBag : StartBag

@@ -156,11 +156,11 @@ for (int i = 0; i < Cratesperlayer[a]; i=i+1){
 		Cratrosity origin = npc.modNPC as Cratrosity;
 		pmlphasetimer--;
 		npc.dontTakeDamage=false;
-		if (pmlphasetimer>0){
-
+		if (pmlphasetimer > 0) {
+			npc.localAI[0] = 5;
 
 		//phase 1
-		if (pmlphase==1){
+				if (pmlphase==1){
 		OrderOfTheCrates(P);
 		origin.compressvargoal=4f;
 		origin.themode=1;

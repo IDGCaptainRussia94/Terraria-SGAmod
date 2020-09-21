@@ -589,9 +589,8 @@ return true;
 		}
 
 		Achivements.SGAAchivements.UnlockAchivement("Cobalt Wraith", Main.LocalPlayer);
-		if (SGAWorld.downedWraiths<2){SGAWorld.downedWraiths=2;
-		Idglib.Chat("You have regained the knowledge to craft a hardmode anvil!",20, 60, 220);
-		}
+		if (SGAWorld.downedWraiths<2)
+			SGAWorld.downedWraiths=2;
 
         }
 

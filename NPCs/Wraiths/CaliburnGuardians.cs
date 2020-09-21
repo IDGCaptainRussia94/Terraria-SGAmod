@@ -51,8 +51,8 @@ namespace SGAmod.NPCs.Wraiths
 
 		private float[] oldRot = new float[12];
 		private Vector2[] oldPos = new Vector2[12];
-		public float appear = 0.5f;
-		public int nohit = 0;
+		public float appear = 0f;
+		public int nohit;
 		protected virtual int caliburnlevel => SGAWorld.downedCaliburnGuardians;
 
 		public virtual void trailingeffect()
@@ -105,6 +105,7 @@ namespace SGAmod.NPCs.Wraiths
 				//Color color = Color.Lerp(Color.Lime, lightColor, (float)k / (oldPos.Length + 1));
 				float alphaz = (1f - (float)(k + 1) / (float)(oldRot.Length + 2)) * 1f;
 				float alphaz2 = Math.Max((0.5f - (float)(k + 1) / (float)(oldRot.Length + 2)) * 1f,0f);
+				float fadein = MathHelper.Clamp(nohit+10f/60, 0f, 0.2f);
 				for (float xx = 0; xx < 1f; xx += 0.20f)
 				{
 					Vector2 drawPos = ((oldPos[k] - Main.screenPosition)) + (npc.velocity * xx);
@@ -117,6 +118,10 @@ namespace SGAmod.NPCs.Wraiths
 		public override string Texture
 		{
 			get { return "SGAmod/Items/Weapons/Caliburn/CaliburnTypeA"; }
+		}
+		public CaliburnGuardian()
+		{
+			nohit = 60;
 		}
 		public override void SetDefaults()
 		{
@@ -303,8 +308,7 @@ namespace SGAmod.NPCs.Wraiths
 		public override void AI()
 		{
 			npc.localAI[0] -= 1;
-			//npc.ai[3] = caliburnlevel;
-			appear = Math.Max(appear - 0.03f, appear);
+			appear = Math.Max(appear - 0.03f, Math.Min(appear+0.025f,0.50f));
 			trailingeffect();
 			npc.knockBackResist = 0.85f;
 			nohit += 1;

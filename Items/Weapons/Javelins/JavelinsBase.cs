@@ -20,7 +20,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
         //public delegate int PerformCalculation(int x, int y);
         //public Action<string> messageTarget;
-        //public Func<int, int, bool> testForEquality = (x, y) => x == y;
+        public Func<int, int, bool> testForEquality = (x, y) => x == y;
         public virtual int Penetrate => 5;
         public virtual float Stabspeed => 1.20f;
         public virtual float Throwspeed => 6f;

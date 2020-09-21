@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
+using AAAAUThrowing;
 
 namespace SGAmod.Items.Armors
 {
@@ -31,7 +32,7 @@ namespace SGAmod.Items.Armors
 		Lighting.AddLight(player.Center, 0.2f, 0.0f, 0.5f);
 		}
 		player.arcticDivingGear = true;
-		player.magicDamage -= 0.05f; player.rangedDamage -= 0.05f; player.minionDamage -= 0.05f; player.thrownDamage -= 0.05f; player.meleeDamage -= 0.05f;
+		player.magicDamage -= 0.05f; player.rangedDamage -= 0.05f; player.minionDamage -= 0.05f; player.Throwing().thrownDamage -= 0.05f; player.meleeDamage -= 0.05f;
 			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.05f);
 			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 2;
 		}
@@ -41,7 +42,11 @@ namespace SGAmod.Items.Armors
 			if (!Main.dedServ)
 				sgaplayer.armorglowmasks[0] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
 		}
-		public override void AddRecipes()
+        public override bool DrawHead()
+        {
+            return false;
+        }
+        public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
@@ -77,7 +82,7 @@ namespace SGAmod.Items.Armors
 			player.iceSkate = true;
 			player.ignoreWater = true;
             sgaplayer.UseTimeMul+=0.10f;
-			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
+			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.Throwing().thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
 			SGAmod.BoostModdedDamage(player, -0.1f, 0);
 			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.05f);
 			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 3;
@@ -125,7 +130,7 @@ namespace SGAmod.Items.Armors
 			player.accRunSpeed *= 1.20f;
 			player.maxRunSpeed *= 1.20f;
 		}
-			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
+			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.Throwing().thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
 			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.05f);
 			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 2;
 		}

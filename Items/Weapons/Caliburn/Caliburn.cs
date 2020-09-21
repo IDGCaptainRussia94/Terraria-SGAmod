@@ -1287,9 +1287,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			Texture2D texture = mod.GetTexture("Items/Weapons/Caliburn/CapShield");
-			Texture2D texture2 = mod.GetTexture("Projectiles/Scythe");
 			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1), SpriteEffects.None, 0f);
-			//spriteBatch.Draw(texture2, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1), SpriteEffects.None, 0f);
 			return false;
 		}
 

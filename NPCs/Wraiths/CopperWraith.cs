@@ -590,7 +590,7 @@ namespace SGAmod.NPCs.Wraiths
 
 		Achivements.SGAAchivements.UnlockAchivement("Copper Wraith", Main.LocalPlayer);
 		if (SGAWorld.downedWraiths<1){SGAWorld.downedWraiths=1;
-		Idglib.Chat("You have regained the knowledge to craft a furnace!",150, 150, 70);
+		Idglib.Chat("You may now craft bars without being attacked",150, 150, 70);
 		}
         }
 

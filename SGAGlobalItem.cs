@@ -692,16 +692,6 @@ namespace SGAmod
             Main.projectile[itt].timeLeft = 90;
             base.Apply(item);
         }
-        /*public override void SetStats(ref float damageMult, ref float knockbackMult, ref float useTimeMult, ref float scaleMult, ref float shootSpeedMult, ref float manaMult, ref int critBonus)
-        {
-            damageMult += uber[0];
-            knockbackMult += uber[1];
-            useTimeMult += uber[2];
-            scaleMult += uber[3];
-            shootSpeedMult += uber[4];
-            manaMult += uber[5];
-            critBonus += (int)uber[6];
-        }*/
 
     }    
     public class EAPrefixAccessory : TrapPrefix
@@ -826,7 +816,7 @@ namespace SGAmod
 
         public override float RollChance(Item item)
         {
-            return 3f;
+            return 1f;
         }
 
         public override void Apply(Item item)

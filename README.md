@@ -12,6 +12,117 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 Changelog:
 
+3.360-(8/30/20)-Patch #8:
+
+
+--Added:
+
+-Coralrang, FridgeFlamarang, Fortune Falchion, Restoration Flower
+
+-Luminite Wraith's entire resprite collection; about time!
+
+-Resprites for the Amulets
+
+-Added a Client Config option to force Hellion to respect your privacy
+
+
+--Changed:
+
+-Duke Fishron has been added to the Expertise Rewards, Expertise cap is now 22000, Mimic and Goblin Summoner rewards have been halved, Pillars reduced to 200, added Big Mimics for 100 each
+
+-Attempting to spawn Cratrosity during the day tells you to try again at night
+
+-Biomass has been rebranded as Photosyte, and spawns less often in clouds
+
+-Energizer Battery now requires Photosyte instead of Photosyte Bars (has been moved earlier)
+
+-Murk's flies/Killer Fly Swarm have increasing and decreasing speed caps depending on the distance to the player while charging
+
+-Murk's movement speed is now dependant on player distance, he is overall faster in Hardmode
+
+-Cirno is way more aggressive and faster when chasing the player, but stops charging from a greater distance, this helps to avoid the circing cheese
+
+-Removed the Cobalt Wraith defeat line, and changed Copper Wraith's to reflect that you can craft a furnace before fighting it
+
+-Caliburn Guardians fade in when summoned
+
+-Cratrosity can no longer hit the player if they are not actively moving towards them (they can still hit the playing when flying side to side thou) to prevent cheat hits
+
+-Buffed Circuit Breaker Blade
+
+-Wraith Core Fragments cost more in Mutant's shop
+
+-Quasar Cannon has been added to the Former Havoc Mod item collection
+
+-Nerfed Plythe: damage has been reduced to 110 (from 125), Knockback has been reduced to 0, stacks simliar to light disks to 5, and has gotten a visual overhaul, requires Light Disks instead of Avali Scythe
+
+-Avali Scythe is cheaper to craft
+
+-Buffed Rubied Blade: more knockback
+
+-Reworked Midas Touch: Larger Resprite, damage reduced to 70 (from 85), unique property doesn't function when under the effects of a Flask of Gold, old sprite repurposed into the Fortune Falchion
+
+-Braxsaw mining power increased to 250
+
+-Trap and Thrower prefixes now have only 1X chance of being picked (VS 3X chance from before)
+
+-Idol Of Midas's buff condictions changed to player's direction instead of where in the world you were
+
+-Removed Boss Fight Purity off Luminite Wraith
+
+-Removed being unable to open a Terraria Co Supply Crate if you had a Shadow Key/Temple Key in your inventory (could be a fix depending on how you look at it)
+
+-Novite and Novus Ore have a stacksize of 999, the bars a stack size of 99
+
+-Novite Drill and Novus Pickaxe are no longer better than an Evil Prehardmode Pickaxe, novus pickaxe is now faster
+
+-Demon Steppers, Luminary Wings, and dev armors have had their movement speed bonuses rebalanced
+
+-Fiery Shards drop more often, Sharks drop Sharkteeth after Sharkvern is defeated
+
+-Readjusted Item Prices
+
+
+--Fixed:
+
+-Entrophite Tranmuter not working online
+
+-Hellion's Story dialog should now properly work online
+
+-Gucci Snap having a 100% chance to effect enemies
+
+-Glass Sword Shards being counted as magic damage and being uncraftable
+
+-Caliburn Guardians dealing damage if you were hit within a frame of them spawning (IE standing directly on the alter)
+
+-Spider Queen not stretching out their legs when doing the spinning webbing attack
+
+-Caliburn Shrines not dropping their swords in multiplayer
+
+-Player's head being visable while wearing Space Diver Armor
+
+-Improper speed increases accross all armors and accessories (thanks Qwerty3.14!)
+
+-Mangrove Orbs not doing Magic damage from the Mangrove staff, Mangrove Staff and Mangrove Armor Set Bonus not being seperate projectiles, reduced Mangrove Staff mana costs (also Qwerty3.14)
+
+-Fixed Fiery Shards dropping above hell
+
+-Incorrect info on the Entropy Transmuter
+
+-Spelling mistakes
+
+-Tiding up code, making better use of Radians, fixed netcode for a few weapons
+
+
+
+3.350-(8/29/20)-Hellion Revert And update:
+
+
+--Changed:
+
+-Reverted Hellion back to their state before July 29th, removed Cirno from the fight, added extra army stuff
+
+
 3.325-(8/22/20)-Hotfix #11:
 
 
@@ -82,7 +193,7 @@ Changelog:
 
 --Changed:
 
--Portal now has a party
+-Portal now has a proper party getup
 
 -Acidic Skull and Radiation Cure both now add resistance against the health lose from the Radiation debuffs (This does not include Limbo Fading however)
 
@@ -130,6 +241,7 @@ Changelog:
 -True Copper Wraith Notch dropping 24/7 off Copper Wraith if you got it once, now only drops once per world
 
 -Twin Prime Destroyers listing incorrect info in Boss Checklist's book
+
 
 
 3.177-(7/17/20)-Hot Fix #10 Mania:
@@ -292,7 +404,7 @@ Changelog:
 
 -Hopefully Hellion going non-existant mid fight
 
--Hellion Beam textures being created at all times and better resource managment, Also redid all uses of ModContent.GetTexture("Terraria/) being called every frame, this should hopefully not crash TML64bit within a few minutes now
+-Hellion Beam textures being created at all times and better resource managment, Also redid all uses of ModContent.GetTexture("Terraria/) being called every frame, this should hopefully not crash TML64bit within a few minutes now (Thanks Oli.H!)
 
 -Paradox Mirrors and Hellion's circle arena should no longer draw outside your screen, improving FPS
 

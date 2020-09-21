@@ -13,7 +13,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Big Bang");
-			Tooltip.SetDefault("Honed by the elements, requires a small ammount of mana to swing\nFunctions as both a sword and a staff\nHitting with the blade opens rifts that launch Enchanted Swords\nAfter the swing animation hold left mouse to open a rift to fire cirno bolts!\nThis is 50% of the weapon's base damage multiplied by your magic damage multiplier");
+			Tooltip.SetDefault("Honed by the elements, requires a small amount of mana to swing\nFunctions as both a sword and a staff\nHitting with the blade opens rifts that launch Enchanted Swords\nAfter the swing animation hold left mouse to open a rift to fire cirno bolts!\nThis is 50% of the weapon's base damage multiplied by your magic damage multiplier");
 			Item.staff[item.type] = true;
 		}
 

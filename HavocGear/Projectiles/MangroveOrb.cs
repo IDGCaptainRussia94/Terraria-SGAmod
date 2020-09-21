@@ -10,13 +10,9 @@ using SGAmod.Dusts;
 
 namespace SGAmod.HavocGear.Projectiles
 {
-	public class MangroveOrb : ModProjectile
+
+	public class MangroveStaffOrb : MangroveOrb
 	{
-		double keepspeed = 0.0;
-		float homing = 0.15f;
-		public float beginhoming = 20f;
-		public Player P;
-		public NPC target2;
 
 		public override void SetStaticDefaults()
 		{
@@ -35,6 +31,46 @@ namespace SGAmod.HavocGear.Projectiles
 			projectile.penetrate = 1;
 			projectile.timeLeft = 320;
 			projectile.alpha = 100;
+			projectile.magic = false;
+			projectile.light = 0.4f;
+			projectile.ignoreWater = true;
+			projectile.tileCollide = true;
+			projectile.extraUpdates = 1;
+			aiType = ProjectileID.AmethystBolt;
+		}
+	}
+
+		public class MangroveOrb : ModProjectile
+	{
+		double keepspeed = 0.0;
+		float homing = 0.15f;
+		public float beginhoming = 20f;
+		public Player P;
+		public NPC target2;
+
+		public override string Texture
+		{
+			get { return ("SGAmod/HavocGear/Projectiles/MangroveOrb"); }
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Mangrove Orb");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.aiStyle = -1;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.penetrate = 1;
+			projectile.timeLeft = 320;
+			projectile.alpha = 100;
+			projectile.magic = true;
 			projectile.light = 0.4f;
 			projectile.ignoreWater = true;
 			projectile.tileCollide = true;

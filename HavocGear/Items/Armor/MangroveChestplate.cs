@@ -111,10 +111,9 @@ namespace SGAmod.HavocGear.Items.Armor
 		public override void UpdateEquip(Player player)
 		{
 			player.GetModPlayer<SGAPlayer>().ThrowingSpeed += 0.25f;
-			player.maxRunSpeed += 0.5f;
-			player.accRunSpeed += 0.5f;
-			player.runAcceleration += 0.25f;
 			player.Throwing().thrownDamage += 0.07f;
+			player.moveSpeed += 0.5f;
+			player.accRunSpeed += 0.25f;
 		}
 
 		public override void SetDefaults()

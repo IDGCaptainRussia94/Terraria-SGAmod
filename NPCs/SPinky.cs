@@ -111,6 +111,13 @@ namespace SGAmod.NPCs
 				return;
 			float inrc = Main.GlobalTime / 30f;
 
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.NegativeDye);
+			//DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), drawPos + thisloc + new Vector2(Main.rand.Next(-100, 100), Main.rand.Next(-100, 100)), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 512, 512)), Microsoft.Xna.Framework.Color.White, inrc * 15f, new Vector2(256f, 256f), 5f, SpriteEffects.None, 0);
+			shader.UseOpacity(0.25f);
+			//shader.Apply(null, new DrawData?(value9));
+
 			for (int i = 0; i < 720; i += 1)
 			{
 				//double angle = ((1f + i / 10f)) + 2.0 * Math.PI * (i / ((double)10f));
@@ -119,19 +126,12 @@ namespace SGAmod.NPCs
 				float dist = circlesize;
 				Vector2 thisloc = new Vector2((float)(Math.Cos(angle) * dist), (float)(Math.Sin(angle) * dist));
 
-
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-				ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.NegativeDye);
 				//Color glowingcolors1 = Main.hslToRgb(0.6f, 0.9f, 0.9f);//(inrc + (((float)i) / 480f)) / 640f
 				Color glowingcolors1 = Main.hslToRgb((float)(((float)i/720f) +Main.GlobalTime / 50) % 1, 0.9f, 0.65f);
 				//shader.UseColor(glowingcolors1.R, glowingcolors1.G, glowingcolors1.B);
-				DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), drawPos + thisloc + new Vector2(Main.rand.Next(-100, 100), Main.rand.Next(-100, 100)), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 512, 512)), Microsoft.Xna.Framework.Color.White, inrc*15f, new Vector2(256f, 256f), 5f, SpriteEffects.None, 0);
 				//DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 600, 600)), Microsoft.Xna.Framework.Color.White * 1f, npc.rotation, new Vector2(600f, 600f), 1, SpriteEffects.None, 0);
 				Texture2D texture = SGAmod.ExtraTextures[96];
 
-				shader.UseOpacity(0.25f);
-				shader.Apply(null, new DrawData?(value9));
 				//GameShaders.Misc["ForceField"].Apply(new DrawData?(value9));
 				//Main.pixelShader.CurrentTechnique.Passes[0].Apply();
 

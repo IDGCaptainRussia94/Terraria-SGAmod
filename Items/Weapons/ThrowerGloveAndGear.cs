@@ -424,41 +424,12 @@ namespace SGAmod.Items.Weapons
 	internal class GrenadeNotAHook2 : GrenadeNotAHook
 	{
 		public override int level => 1;
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("${ProjectileName.GemHookAmethyst}");
-		}
-
-		public override void SetDefaults()
-		{
-			projectile.CloneDefaults(ProjectileID.GemHookAmethyst);
-		}
-
-		public override string Texture
-		{
-			get { return ("SGAmod/Items/Weapons/AcidGrenade"); }
-		}
 
 	}
 
 	internal class GrenadeNotAHook3 : GrenadeNotAHook
 	{
 		public override int level => 2;
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("${ProjectileName.GemHookAmethyst}");
-		}
-
-		public override void SetDefaults()
-		{
-			projectile.CloneDefaults(ProjectileID.GemHookAmethyst);
-		}
-
-		public override string Texture
-		{
-			get { return ("SGAmod/Items/Weapons/AcidGrenade"); }
-		}
-
 	}
 
 	internal class GrenadeNotAHook4 : GrenadeNotAHook
@@ -473,7 +444,6 @@ namespace SGAmod.Items.Weapons
 		{
 			return false;
 		}
-
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			return false;
@@ -490,10 +460,10 @@ namespace SGAmod.Items.Weapons
 					Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, projectile.velocity.X, projectile.velocity.Y, ModContent.ProjectileType<GucciSnap>(), (int)(100000f*basevalues), 10f, projectile.owner);
 					projectile.Kill();
 					SGAWorld.SnapCooldown = 60*300;
-					if (Main.netMode != NetmodeID.SinglePlayer)
+					if (Main.dedServ)
 					{
 						ModPacket packet = SGAmod.Instance.GetPacket();
-						packet.Write((int)105);
+						packet.Write((ushort)SGAmod.MessageType.Snapped);
 						packet.Write(60 * 300);
 						packet.Send();
 					}
@@ -545,7 +515,7 @@ namespace SGAmod.Items.Weapons
 					{
 						if (!npc.friendly && !npc.townNPC && !npc.immortal && !npc.dontTakeDamage && npc.realLife<1)
 						{
-							if (Main.rand.Next(0, 1) == 0)
+							if (Main.rand.Next(0, 2) == 0)
 							{
 								if (npc.life < projectile.damage && !npc.boss)
 								{
@@ -1266,10 +1236,12 @@ namespace SGAmod.Items.Weapons
 			}
 
 			int[] dustype = {DustID.Blood};
+
 			int dust = Dust.NewDust(new Vector2(projectile.Center.X-16, projectile.Center.Y-16), 32, 32, dustype[Main.rand.Next(0, dustype.Length)]);
 			Main.dust[dust].scale = 0.75f;
 			Main.dust[dust].noGravity = false;
 			Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(60, 100) * 0.01f);
+
 			projectile.timeLeft -= 1;
 			projectile.velocity.Y += 0.25f;
 			projectile.velocity.X *= 0.98f;
@@ -1400,6 +1372,7 @@ namespace SGAmod.Items.Weapons
 			projectile.extraUpdates = 0;
 			projectile.tileCollide = false;
 			projectile.aiStyle = -1;
+
 			int[] types = { ItemID.Fish, ItemID.Trout, ItemID.TundraTrout, ItemID.ReaverShark, ItemID.Goldfish, ItemID.Ebonkoi, ItemID.MirageFish, ItemID.PrincessFish, ItemID.FrostDaggerfish };
 			fishtype = types[Main.rand.Next(types.Length)];
 		}

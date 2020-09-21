@@ -138,18 +138,29 @@ namespace SGAmod
         {
             if (!Main.expertMode)
                 return;
-            if (questvars[10] < 2400 && questvars[10]>2299)
+
+
+                if (questvars[10] < 2400 && questvars[10] > 2299)
+                {
+                    questvars[10] = 2401;
+                    return;
+                }
+                if (questvars[10] > 999 && questvars[10] < 1100)
+                {
+                    questvars[10] = 1101;
+                    return;
+                }
+                if (questvars[10] < 1)
+                    questvars[10] = 101;
+
+            if (Main.dedServ)
             {
-                questvars[10] = 2401;
-                return;
+                SGAmod.Instance.Logger.Debug("DEBUG server: Story Advanced");
+                ModPacket packet = SGAmod.Instance.GetPacket();
+                packet.Write((ushort)SGAmod.MessageType.HellionStory);
+                packet.Write(questvars[10]);
+                packet.Send(-1);
             }
-            if (questvars[10] > 999 && questvars[10] < 1100)
-            {
-                questvars[10] = 1101;
-                return;
-            }
-            if (questvars[10] < 1)
-                questvars[10] = 101;
 
 
         }
@@ -551,15 +562,15 @@ namespace SGAmod
                     chance = 2;
                     if (tile.active() && tile.type == TileID.RainCloud || tile.type == TileID.Cloud)
                     {
-                        chance = 5;
+                        chance = 4;
                         tiletype = TileType<Biomass>();
                         size[0] = 2;
                         size[1] = 5;
                     }
                     if (tile.active() && (geny < WorldGen.worldSurfaceLow || (WorldGen.genRand.Next(0, 1000) < 2)))
-                        {
-                            chance = 100;
-                            tiletype=TileType<Biomass>();
+                    {
+                        chance = 100;
+                        tiletype = TileType<Biomass>();
                     }
                 }
 
@@ -721,7 +732,7 @@ namespace SGAmod
                     {
                         for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
                         {
-                            if (chest.item[inventoryIndex].type == 0)
+                            if (chest.item[inventoryIndex].IsAir)
                             {
                                 itemsToPlaceInOvergrownChestsChoiceSecond = Main.rand.Next(itemsToPlaceInOvergrownChestsSecond.Length);
                                 chest.item[inventoryIndex].SetDefaults(itemsToPlaceInOvergrownChestsSecond[itemsToPlaceInOvergrownChestsChoiceSecond]);

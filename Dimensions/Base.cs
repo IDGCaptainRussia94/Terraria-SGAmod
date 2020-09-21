@@ -155,7 +155,7 @@ namespace SGAmod.Dimensions
                 if (SLWorld.currentSubworld is SGAPocketDim sub)
                 {
                     int limit = sub.LimitPlayers;
-                    if (limit % 3 == 0 && limit > 0 && (item.pick > 0 || item.hammer > 0 || item.axe > 0 || item.createTile > 0 || item.createWall > 0))
+                    if (limit % 3 == 0 && limit > 0 && (item.pick > 0 || item.hammer > 0 || item.axe > 0 || item.createTile > -1 || item.createWall > -1))
                     {
                         return false;
                     }

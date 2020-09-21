@@ -374,7 +374,7 @@ namespace SGAmod.Items.Weapons
 			item.useTime = 15;
 			item.useAnimation = 15;
 			item.useStyle = 1;
-			item.knockBack = 2;
+			item.knockBack = 4;
 			item.crit = 7;
 			item.value = Item.sellPrice(0, 15, 0, 0);
 			item.rare = 5;
@@ -392,7 +392,7 @@ namespace SGAmod.Items.Weapons
 			Vector2 hereas = new Vector2(Main.rand.Next(-1000, 1000), Main.rand.Next(-1000, 1000)); hereas.Normalize();
 			hereas *= Main.rand.NextFloat(50f, 100f);
 			hereas += target.Center;
-			hereas += new Vector2(0, -800);
+			hereas -= new Vector2(0, 800);
 			Vector2 gohere = ((hereas + new Vector2(Main.rand.NextFloat(-100f, 100f), 800f)) - hereas); gohere.Normalize(); gohere *= 15f;
 			int proj = Projectile.NewProjectile(hereas, gohere, ProjectileID.RubyBolt, (int)(damage * 1), knockBack, player.whoAmI);
 			Main.projectile[proj].melee = true;
@@ -421,7 +421,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Star Burster");
-			Tooltip.SetDefault("Fires 4 stars in bursts at the cost of 1, but requires a small ammount of mana\nuses Fallen Stars for Ammo, the stars cannot pass through platforms");
+			Tooltip.SetDefault("Fires 4 stars in bursts at the cost of 1, but requires a small amount of mana\nuses Fallen Stars for Ammo, the stars cannot pass through platforms");
 		}
 		public override void SetDefaults()
 		{
@@ -476,7 +476,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Star'Fish' Burster");
-			Tooltip.SetDefault("Fires 4 starfish in bursts at the cost of 1, but requires a small ammount of mana\nStarfish bounce off walls and pierce\nuses Starfish as ammo");
+			Tooltip.SetDefault("Fires 4 starfish in bursts at the cost of 1, but requires a small amount of mana\nStarfish bounce off walls and pierce\nuses Starfish as ammo");
 		}
 		public override bool CanUseItem(Player player)
 		{

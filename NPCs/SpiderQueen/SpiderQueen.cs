@@ -160,8 +160,8 @@ namespace SGAmod.NPCs.SpiderQueen
 
 						if ((npc.ai[0] % (Main.expertMode ? 15 : 20)) == 0 && phase > 1)
 						{
-							Idglib.Shattershots(npc.Center, npc.Center + (npc.rotation + MathHelper.ToRadians(90)).ToRotationVector2() * 64, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 10, 7, 35, 1, true, 0, true, 1600);
-							Idglib.Shattershots(npc.Center, npc.Center + (npc.rotation + MathHelper.ToRadians(-90)).ToRotationVector2() * 64, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 10, 7, 35, 1, true, 0, true, 1600);
+							Idglib.Shattershots(npc.Center, npc.Center + (npc.rotation + MathHelper.Pi/2f).ToRotationVector2() * 64, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 10, 7, 35, 1, true, 0, true, 1600);
+							Idglib.Shattershots(npc.Center, npc.Center + (npc.rotation - MathHelper.Pi/2f).ToRotationVector2() * 64, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 10, 7, 35, 1, true, 0, true, 1600);
 							Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 102, 0.25f, -0.25f);
 						}
 
@@ -188,6 +188,7 @@ namespace SGAmod.NPCs.SpiderQueen
 				if (npc.ai[0] > 3100 && npc.ai[0] < 3300)
 				{
 
+					legdists = 72;
 					float angle1; float angle2;
 					GetAngleDifferenceBlushiMagic(new Vector2(npc.localAI[1], npc.localAI[2]), out angle1, out angle2);
 					float rotSpeed = angle2 > angle1 ? 0.05f : -0.05f;
@@ -444,7 +445,6 @@ namespace SGAmod.NPCs.SpiderQueen
 			Texture2D texBodyOverlay = ModContent.GetTexture("SGAmod/NPCs/SpiderQueen/SpiderQueenOverlay");
 			Vector2 drawOriginBody = new Vector2(texBody.Width, texBody.Height / 2);
 			Vector2 drawPos = ((npc.Center - Main.screenPosition)) + npc.rotation.ToRotationVector2() * -46f;
-			//((npc.rotation + MathHelper.ToRadians(90)).ToRotationVector2() * 0f)
 			Vector2 drawPosHead = ((npc.Center - Main.screenPosition)) + npc.rotation.ToRotationVector2() * 38f;
 			Color color = lightColor;
 
@@ -460,7 +460,7 @@ namespace SGAmod.NPCs.SpiderQueen
 			Vector2 floatypos = new Vector2((float)Math.Cos(Main.GlobalTime / 1f) * 6f, (float)Math.Sin(Main.GlobalTime / 1.37f) * 3f);
 			spriteBatch.Draw(texBody, drawPosHead, null, color, npc.rotation, drawOriginBody, npc.scale, SpriteEffects.None, 0f);
 			spriteBatch.Draw(texBodyGlow, drawPosHead, null, Color.White, npc.rotation, drawOriginBody, npc.scale, SpriteEffects.None, 0f);
-			spriteBatch.Draw(texSkull, drawPos+ floatypos.RotatedBy(npc.rotation), null, Color.White*0.75f, npc.rotation+MathHelper.ToRadians((float)npc.whoAmI*37.53f), new Vector2(texSkull.Width / 2f, texSkull.Height / 2f), npc.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(texSkull, drawPos+ floatypos.RotatedBy(npc.rotation), null, Color.White*0.75f, npc.rotation+((float)npc.whoAmI*0.753f), new Vector2(texSkull.Width / 2f, texSkull.Height / 2f), npc.scale, SpriteEffects.None, 0f);
 			spriteBatch.Draw(texBodyOverlay, drawPosHead, null, color, npc.rotation, drawOriginBody, npc.scale, SpriteEffects.None, 0f);
 
 			return false;
@@ -547,7 +547,7 @@ namespace SGAmod.NPCs.SpiderQueen
 
 				Vector2 middle = LegPos - start;
 
-				float angleleg1 = (LegPos - start).ToRotation() + (MathHelper.ToRadians(MathHelper.Clamp(90f - middle.Length() / 1.6f, 15f, 90f)) * side);
+				float angleleg1 = (LegPos - start).ToRotation() + (MathHelper.Clamp((MathHelper.Pi/2f) - MathHelper.ToRadians(middle.Length() / 1.6f), MathHelper.Pi / 12f, MathHelper.Pi / 2f) * side);
 
 				Vector2 legdist = angleleg1.ToRotationVector2();
 				legdist.Normalize();

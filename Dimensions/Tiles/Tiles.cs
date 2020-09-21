@@ -10,11 +10,85 @@ using Terraria.GameContent.Generation;
 using SubworldLibrary;
 using SGAmod;
 using SGAmod.Items;
+using IL.Terraria.DataStructures;
+using Idglibrary;
 
 namespace SGAmod.Dimensions.Tiles
 {
+	class WatcherOre : ModTile
+	{
+		public override void SetDefaults()
+		{
+			Main.tileSolid[Type] = true;
+			Main.tileBrick[Type] = false;
+			Main.tileFrameImportant[Type] = true;
+			minPick = 200;
+			soundType = 7;
+			mineResist = 3f;
+			dustType = DustID.Smoke;
+			TileID.Sets.CanBeClearedDuringGeneration[Type] = true;
+			drop = ModContent.ItemType<Entrophite>();
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("???");
+			AddMapEntry(new Color(0, 255, 255), name);
+		}
 
-	public class EntrophicOre : ModTile
+		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
+			Vector2 location = (new Vector2(i, j) * 16) + zerooroffset;
+			spriteBatch.Draw(Main.tileTexture[Main.tile[i, j].type], location - Main.screenPosition, new Rectangle(Main.tile[i, j].frameX, Main.tile[i, j].frameY, 16, 16), Lighting.GetColor(i, j), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
+			return true;
+		}
+
+		public override void DrawEffects(int x, int y, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
+		{
+			if (Main.tile[x, y].type == base.Type)
+			{
+				if (nextSpecialDrawIndex < Main.specX.Length)
+				{
+					Main.specX[nextSpecialDrawIndex] = x;
+					Main.specY[nextSpecialDrawIndex] = y;
+					nextSpecialDrawIndex += 1;
+				}
+			}
+		}
+
+		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+
+			if (Main.tile[i, j].type == base.Type)
+			{
+
+				NoiseGenerator Noisegen = new NoiseGenerator(WorldGen._lastSeed);
+				Noisegen.Amplitude = 1.5f;
+				Noisegen.Frequency *= 3.50;
+
+				//spriteBatch.Draw(texture, drawPos, null, drawColor, 0f, textureOrigin, Main.inventoryScale * 2f, SpriteEffects.None, 0f);
+				Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
+				Vector2 location = (new Vector2(i, j) * 16) + new Vector2(8, 8) + zerooroffset;
+				Texture2D tex = ModContent.GetTexture("SGAmod/Items/WatchersOfNull");
+				int framesize = (int)(tex.Height / 13f);
+				Rectangle Frame = new Rectangle(0, framesize * 4, tex.Width, framesize);
+				Vector2 offset = new Vector2(tex.Width / 2f, (tex.Height / 13f) / 2f);
+
+				Vector2 drawOffset2 = new Vector2((float)(i * 16) - Main.screenPosition.X, (float)(j * 16) - Main.screenPosition.Y) + zerooroffset;
+
+				Vector2 playerdist = (Main.LocalPlayer.Center + zerooroffset) - location;
+				Vector2 offset2 = new Vector2(0,0)+Vector2.Normalize((Main.LocalPlayer.Center + zerooroffset) - location)*16f;
+
+				spriteBatch.Draw(LimboDim.staticeffects[Main.rand.Next(0, LimboDim.staticeffects.Length)], drawOffset2, Color.Black);
+
+				Color color = Color.White * MathHelper.Clamp(0.50f + (float)Noisegen.Noise(i + (int)(Main.GlobalTime * 10.00), j+(int)(Main.GlobalTime * -5.00)) / 2f, 0f, 1f);
+
+				spriteBatch.Draw(tex, location + offset2 - Main.screenPosition, Frame, color, 0f, offset, 0.5f, SpriteEffects.None, 0f);
+
+			}
+		}
+	}
+
+	public class EntrophicOre : Fabric
 	{
 		public override void SetDefaults()
 		{
@@ -37,28 +111,10 @@ namespace SGAmod.Dimensions.Tiles
 		{
 			return false;
 		}
-		public override void DrawEffects(int x, int y, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
-		{
-			if (nextSpecialDrawIndex < Main.specX.Length && Main.rand.Next(0, 10) == 1)
-			{
-				Main.specX[nextSpecialDrawIndex] = x;
-				Main.specY[nextSpecialDrawIndex] = y;
-				nextSpecialDrawIndex += 1;
-			}
-		}
-		public override void SpecialDraw(int x, int y, SpriteBatch spriteBatch)
-		{
-			if (Main.tile[x, y].type == base.Type)
-			{
-				Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
-				Vector2 drawOffset = new Vector2((float)(x * 16) - Main.screenPosition.X, (float)(y * 16) - Main.screenPosition.Y) + zerooroffset;
-
-				spriteBatch.Draw(LimboDim.staticeffects[Main.rand.Next(0, LimboDim.staticeffects.Length)], drawOffset, Color.Lerp(Lighting.GetColor((int)drawOffset.X, (int)drawOffset.Y), Color.Purple, 0.5f));
-			}
-		}
 	}
 
-	public class AncientFabric : ModTile
+
+	public class AncientFabric : Fabric
 	{
 		public override void SetDefaults()
 		{
@@ -66,7 +122,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("Fabric")] = true;
-			minPick = 0;
+			minPick = 240;
 			soundType = 7;
 			mineResist = 5f;
 			dustType = DustID.Smoke;
@@ -88,28 +144,9 @@ namespace SGAmod.Dimensions.Tiles
 		{
 			SGAPocketDim.ExitSubworld();
 		}
-		public override void DrawEffects(int x, int y, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
-		{
-			if (nextSpecialDrawIndex < Main.specX.Length && Main.rand.Next(0, 5) == 1)
-			{
-				Main.specX[nextSpecialDrawIndex] = x;
-				Main.specY[nextSpecialDrawIndex] = y;
-				nextSpecialDrawIndex += 1;
-			}
-		}
-		public override void SpecialDraw(int x, int y, SpriteBatch spriteBatch)
-		{
-			if (Main.tile[x, y].type == base.Type)
-			{
-				Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
-				Vector2 drawOffset = new Vector2((float)(x * 16) - Main.screenPosition.X, (float)(y * 16) - Main.screenPosition.Y) + zerooroffset;
-
-				spriteBatch.Draw(LimboDim.staticeffects[Main.rand.Next(0, LimboDim.staticeffects.Length)], drawOffset, Color.Lerp(Lighting.GetColor((int)drawOffset.X, (int)drawOffset.Y), Color.Red, 0.5f));
-			}
-		}
 	}
 
-		public class Fabric : ModTile
+	public class Fabric : ModTile
 	{
 		public override void SetDefaults()
 		{
@@ -125,25 +162,45 @@ namespace SGAmod.Dimensions.Tiles
 			//drop = mod.ItemType("Moist Stone");
 			AddMapEntry(new Color(50, 50, 50));
 		}
-		public override void DrawEffects(int x, int y, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
+		public override void PostDraw(int x, int y, SpriteBatch spriteBatch)
 		{
-			if (nextSpecialDrawIndex < Main.specX.Length && Main.rand.Next(0, 100) == 1)
-			{
-				Main.specX[nextSpecialDrawIndex] = x;
-				Main.specY[nextSpecialDrawIndex] = y;
-				nextSpecialDrawIndex += 1;
-			}
-		}
-		public override void SpecialDraw(int x, int y, SpriteBatch spriteBatch)
-		{
-			if (Main.tile[x,y].type==base.Type)
+			if (Main.tile[x, y].type == base.Type)
 			{
 				Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
-				Vector2 drawOffset = new Vector2((float)(x * 16) - Main.screenPosition.X, (float)(y * 16) - Main.screenPosition.Y)+ zerooroffset;
+				Vector2 drawOffset = new Vector2((float)(x * 16), (float)(y * 16)) + zerooroffset;
 				//spriteBatch.Draw(Main.blackTileTexture, drawOffset);
 				//spriteBatch.Draw(Main.blackTileTexture, drawOffset, new Rectangle(0, 0, 16, 16), Color.Purple, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
-				spriteBatch.Draw(LimboDim.staticeffects[Main.rand.Next(0, LimboDim.staticeffects.Length)],drawOffset, Color.Lerp(Lighting.GetColor((int)drawOffset.X, (int)drawOffset.Y), Color.White, 0.25f));
+				int chance = 20;
+
+				Color light = Lighting.GetColor(x, y);
+
+				Color basecolor = Color.White;
+				float basealpha = 1f;
+				if (GetType() == typeof(AncientFabric))
+				{
+					basecolor = Color.Red;
+					basealpha = 0.5f;
+					chance = 50;
+				}
+				if (GetType() == typeof(EntrophicOre))
+				{
+					basecolor = Color.Purple;
+					basealpha = 0.5f;
+					chance = 50;
+				}
+
+				if (Main.rand.Next(0, 100) < chance)
+					return;
+
+				//stem.Drawing.Color basiccolor = System.Drawing.Color.FromArgb(lightblack.R, lightblack.G, lightblack.B);
+
+				float brightness = Math.Max((float)light.R, Math.Max((float)light.G, (float)light.B))/255f;
+
+				float alpha = Main.rand.Next(0, 50) == 0 ? Main.rand.NextFloat(0.25f, 1f) : brightness;
+
+				if (alpha > 0f)
+					spriteBatch.Draw(LimboDim.staticeffects[Main.rand.Next(0, LimboDim.staticeffects.Length)], drawOffset- Main.screenPosition, Color.Lerp(light, basecolor, basealpha) * alpha);
 			}
 		}
 	}

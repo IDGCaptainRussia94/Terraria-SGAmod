@@ -46,7 +46,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
 		{
 			//add += player.GetModPlayer<SGAPlayer>().techdamage-1f;
-			mult = mult*player.GetModPlayer<SGAPlayer>().techdamage;
+			mult *= player.GetModPlayer<SGAPlayer>().techdamage;
 		}
 	}
 

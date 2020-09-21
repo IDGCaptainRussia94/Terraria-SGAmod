@@ -61,9 +61,8 @@ namespace SGAmod.Items.Accessories
 			{
 				if (!player.GetModPlayer<SGAPlayer>().Walkmode)
 				{
-					player.maxRunSpeed += 2.5f;
 					player.accRunSpeed += 3f;
-					player.runAcceleration += 0.50f;
+					player.runAcceleration += 0.15f;
 				}
 				player.rocketBoots = 2;
 			}

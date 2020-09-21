@@ -20,7 +20,7 @@ namespace SGAmod.Items.Tools
 			item.shoot = mod.ProjectileType("NoviteDrillProj");
 			item.useAnimation = 40;
 			item.damage = 8;
-			item.pick = 65;
+			item.pick = 55;
 		}
 
 		public override void AddRecipes()

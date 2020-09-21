@@ -193,9 +193,8 @@ namespace SGAmod.Items.Armors.Dev
 			}
 			public override void AddEffects(Player player)
 			{
-				player.maxRunSpeed += 2f;
+				player.moveSpeed += 2f;
 				player.accRunSpeed += 2f;
-				player.runAcceleration += 0.5f;
 				player.wingTimeMax = (int)((float)player.wingTimeMax*(1.20f));
 				player.maxMinions += 2;
 				player.statManaMax2 += 60;

@@ -135,7 +135,7 @@ namespace SGAmod.Tiles
                 {
                     //Item.NewItem(i * 16, j * 16, 48, 48, mod.ItemType(myitem), 1, false, 0, false, false);
                     NPC npc = new NPC();
-                    npc.DropItemInstanced(new Vector2(i * 16, j * 16), new Vector2(48, 48), mod.ItemType(myitem));
+                    npc.DropItemInstanced(new Vector2(i * 16, j * 16), new Vector2(48, 48), mod.ItemType(myitem),1,false);
                     SGAWorld.downedCaliburnGuardiansPoints -= 1;
                     if (Main.netMode == NetmodeID.Server)
                     {

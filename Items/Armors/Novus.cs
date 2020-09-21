@@ -23,7 +23,11 @@ namespace SGAmod.Items.Armors
 			item.rare = 2;
 			item.defense=2;
 		}
-		public override void UpdateEquip(Player player)
+        public override bool DrawHead()
+        {
+            return false;
+        }
+        public override void UpdateEquip(Player player)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod,typeof(SGAPlayer).Name) as SGAPlayer;
             sgaplayer.UseTimeMul+=0.05f;

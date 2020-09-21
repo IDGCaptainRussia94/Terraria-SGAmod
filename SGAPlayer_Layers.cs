@@ -225,6 +225,8 @@ namespace SGAmod
 			//plasmaLeftInClip
 			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
 
+			#region MiscVisuals
+
 			if (sgaplayer.SpaceDiverset && CustomWings<1)
 			{
 			int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
@@ -262,7 +264,11 @@ namespace SGAmod
 
 			}
 
-			string[] stringsz = { "Head", "Body", "Arms", "Legs"};
+            #endregion
+
+            #region armor glowmasks
+
+            string[] stringsz = { "Head", "Body", "Arms", "Legs"};
 			PlayerLayer[] thelayer = { PlayerLayer.Head, PlayerLayer.Body, PlayerLayer.Arms, PlayerLayer.Legs };
 
 			for (int intc = 0; intc < 4; intc += 1)
@@ -293,9 +299,10 @@ namespace SGAmod
 				}
 
 			}
+            #endregion
 
-		}
+        }
 
-	}
+    }
 
 }

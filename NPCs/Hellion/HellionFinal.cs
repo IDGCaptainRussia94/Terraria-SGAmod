@@ -19,7 +19,6 @@ using Idglibrary;
 using Idglibrary.Bases;
 using SGAmod.Items.Weapons;
 using SGAmod.Buffs;
-using System.IO;
 using System.Diagnostics;
 
 namespace SGAmod.NPCs.Hellion
@@ -28,10 +27,11 @@ namespace SGAmod.NPCs.Hellion
 	{
 		public override bool rematch => true;
 
-		public override bool Autoload(ref string name)
-		{
-			return false;
-		}
+		//public override bool Autoload(ref string name)
+		//{
+		//	return false;
+		//}
+
 		public override void SetDefaults()
 		{
 			base.SetDefaults();

@@ -52,8 +52,8 @@ namespace SGAmod
 		bool fireimmunestate=false;
 		bool[] otherimmunesfill=new bool[3];
 		public bool Mircotransactions;
+		public int hellionTimer = 0;
 		public int counter = 0;
-
 
 		public int FindBuffIndex(NPC npc,int type)
 		{
@@ -637,10 +637,51 @@ return true;
 
 			if (HellionArmy)
 			{
-				if (Hellion.GetHellion()!=null)
-				if (Hellion.GetHellion().army.Count<1)
+				Hellion hell = Hellion.GetHellion();
+				if (hell != null)
+				{
+					Player ply = Main.player[hell.npc.target];
+					hellionTimer += 1;
+					if (hellionTimer % 5 == 0)
+					{
+						if (!Collision.CanHit(npc.Center, 1, 1, Main.player[hell.npc.target].Center, 1, 1) && npc.aiStyle < 15 && npc.aiStyle > -1)
+						{
+							hellionTimer += 500;
+							if (hellionTimer > 30000)
+								hellionTimer = -300;
+						}
+					}
+					if (hellionTimer < 0)
+					{
+						Vector2 dists = new Vector2(5+(float)Math.Sin(MathHelper.ToRadians((hellionTimer+npc.whoAmI*9f) / 100f))*20f, (float)Math.Cos(npc.whoAmI / 4f));
+						hellionTimer += 1;
+						Vector2 dists2 = (ply.Center + new Vector2(npc.spriteDirection * (dists.X * -64f), -64+ dists.Y*64f));
+						npc.position.X += (dists2.X - npc.Center.X) / 200f;
+						npc.position.Y += (dists2.Y - npc.Center.Y) / 100f;
+
+						npc.position.X += (ply.Center.X + (float)Math.Sin((hell.npc.ai[0] + (npc.whoAmI * 9f))*400f) - npc.Center.X) / 150f;
+						npc.velocity.Y = (float)Math.Sin(hellionTimer/90f)*5f;
+
+						int typr = mod.DustType("TornadoDust");
+
+						Dust dust = Dust.NewDustPerfect(npc.position+new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height)), typr);
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						Vector2 normvel = npc.velocity;
+						normvel.Normalize(); normvel *= 2f;
+						Color Rainbow = Main.hslToRgb(((Main.GlobalTime+npc.whoAmI) / 3.63f) % 1f, 0.81f, 0.5f);
+						dust.color = Rainbow;
+						dust.scale = 1f;
+						dust.velocity = ((randomcircle / 1f) + (-normvel)) - npc.velocity;
+						dust.noGravity = true;
+
+					}
+				}
+
+
+				if (hell != null)
+				if (hell.army.Count<1)
 				npc.StrikeNPCNoInteraction(9999999, 1, 1);
-				if (Hellion.GetHellion() == null)
+				if (hell == null)
 				npc.StrikeNPCNoInteraction(9999999, 1, 1);
 
 			}
@@ -828,7 +869,7 @@ return true;
 
 		public override void NPCLoot(NPC npc)
 		{
-			
+
 			for (int playerid = 0; playerid < Main.maxPlayers; playerid += 1)
 			{
 				Player ply = Main.player[playerid];
@@ -843,7 +884,7 @@ return true;
 						if ((ply.Center - npc.Center).Length() < 1400)
 						{
 							ModPacket packet = mod.GetPacket();
-							packet.Write(250);
+							packet.Write((ushort)SGAmod.MessageType.GrantExpertise);
 							packet.Write(npc.type);
 							packet.Send(ply.whoAmI);
 						}
@@ -853,8 +894,15 @@ return true;
 						if (npc.Distance(ply.Center) < 1000)
 						{
 							ply.GetModPlayer<SGAPlayer>().AddEntropy(npc.lifeMax);
-						}
 
+							if (Main.dedServ)
+							{
+								ModPacket packet = mod.GetPacket();
+								packet.Write((ushort)SGAmod.MessageType.GrantEntrophite);
+								packet.Write(npc.lifeMax);
+								packet.Send(ply.whoAmI);
+							}
+						}
 					}
 
 				}
@@ -874,9 +922,9 @@ return true;
 				if (Main.rand.Next(10) < (Main.expertMode ? 2 : 1))
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SwordofTheBlueMoon"));
 				if (SGAWorld.downedCratrosity)
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SalvagedCrate"));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SalvagedCrate"));
 				if (!Main.expertMode)
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("EldritchTentacle"),Main.rand.Next(15,30));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("EldritchTentacle"), Main.rand.Next(15, 30));
 			}
 			if (npc.type == NPCID.Golem && SGAWorld.bossprgressor == 0)
 			{
@@ -898,57 +946,64 @@ return true;
 			}
 
 
-//if (!NPC.BusyWithAnyInvasionOfSorts())
-//{
-if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (SGAWorld.downedCratrosity == false && Main.rand.Next(0, 30) < 1)))
-	{
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateBase"));
-	}
-	if (npc.type == NPCID.WyvernHead && NPC.downedGolemBoss && Main.rand.Next(100) <= 5)
-	{
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Tornado"));
-	}
+			//if (!NPC.BusyWithAnyInvasionOfSorts())
+			//{
+			if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (SGAWorld.downedCratrosity == false && Main.rand.Next(0, 30) < 1)))
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateBase"));
+			}
+			if (npc.type == NPCID.WyvernHead && NPC.downedGolemBoss && Main.rand.Next(100) <= 5)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Tornado"));
+			}
 
-	if (npc.type == NPCID.Golem && Main.rand.Next(100) <= 20 && !Main.expertMode)
-	{
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Upheaval"));
-	}
-	if (npc.type == NPCID.DD2Betsy && !Main.expertMode)
-	{
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("OmegaSigil"));
-	}
+			if (npc.type == NPCID.Golem && Main.rand.Next(100) <= 20 && !Main.expertMode)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Upheaval"));
+			}
+			if (npc.type == NPCID.DD2Betsy && !Main.expertMode)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("OmegaSigil"));
+			}
 
-	if (npc.type == NPCID.WallofFlesh && Main.rand.Next(100) <= 10 && !Main.expertMode)
-	{
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
-	}
+			if (npc.type == NPCID.WallofFlesh && Main.rand.Next(100) <= 10 && !Main.expertMode)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
+			}
 
-	if (npc.type == NPCID.RedDevil)
-	{
-		if (Main.rand.Next(2) <= 1)
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(2, 4));
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("ConsumeHell"), Main.rand.Next(1, 3));
-	}
-	if (npc.type == NPCID.Lavabat && Main.rand.Next(4) <= 1 && Main.hardMode)
-	{
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(1, 2));
-	}
-	if (npc.Center.Y > Main.maxTilesY - 100 && Main.rand.Next(100) < 1 && Main.hardMode)
-	{
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"));
-	}
+			if (Main.rand.Next(100) < 50 && SGAWorld.downedSharkvern)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SharkTooth"), 10 + Main.rand.Next(20));
+			}
 
-	if (npc.type==NPCID.WallCreeper || npc.type == NPCID.BloodCrawler || npc.type == NPCID.JungleCreeper ||
-	npc.type == NPCID.WallCreeperWall || npc.type == NPCID.BloodCrawlerWall || npc.type == NPCID.JungleCreeperWall || npc.type == NPCID.BlackRecluse || npc.type == NPCID.BlackRecluseWall)
-	if (Main.rand.Next(0,2)==0)
-	Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.RottenEgg);
+			if (npc.type == NPCID.RedDevil)
+			{
+				if (Main.rand.Next(2) <= 1)
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(2, 4));
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("ConsumeHell"), Main.rand.Next(1, 3));
+			}
 
-	if ((npc.type == NPCID.EnchantedSword || npc.type == NPCID.IlluminantBat || npc.type == NPCID.IlluminantSlime || npc.type == NPCID.ChaosElemental) && Main.rand.Next(2) <= 1 && NPC.downedMoonlord)
-	{
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, 3));
-	}
+			if (npc.type == NPCID.Lavabat && Main.rand.Next(4) <= 1 && Main.hardMode)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(1, 2));
+			}
 
-			if (npc.aiStyle!=107 && npc.aiStyle!= 108 && npc.aiStyle != 109 && npc.aiStyle != 110 && npc.aiStyle != 111)
+			if (npc.Center.Y > (Main.maxTilesY * 16) - 150 && Main.rand.Next(100) < 2 && Main.hardMode)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"));
+			}
+
+			if (npc.type == NPCID.WallCreeper || npc.type == NPCID.BloodCrawler || npc.type == NPCID.JungleCreeper ||
+			npc.type == NPCID.WallCreeperWall || npc.type == NPCID.BloodCrawlerWall || npc.type == NPCID.JungleCreeperWall || npc.type == NPCID.BlackRecluse || npc.type == NPCID.BlackRecluseWall)
+				if (Main.rand.Next(0, 2) == 0)
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.RottenEgg);
+
+			if ((npc.type == NPCID.EnchantedSword || npc.type == NPCID.IlluminantBat || npc.type == NPCID.IlluminantSlime || npc.type == NPCID.ChaosElemental) && Main.rand.Next(2) <= 1 && NPC.downedMoonlord)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, 3));
+			}
+
+			if (npc.aiStyle != 107 && npc.aiStyle != 108 && npc.aiStyle != 109 && npc.aiStyle != 110 && npc.aiStyle != 111)
 			{
 				if (Main.player[npc.target] != null)
 				{
@@ -961,7 +1016,7 @@ if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (S
 					}
 				}
 			}
-	
+
 
 
 			//}

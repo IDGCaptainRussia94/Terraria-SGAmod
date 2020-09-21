@@ -19,21 +19,6 @@ namespace SGAmod.NPCs.TownNPCs
 	{
 
 		float walkframe = 0f;
-		/*public override string Texture
-		{
-			get
-			{
-				return "SGAmod/NPCs/TownNPCs/ContrabandMerchant";
-			}
-		}
-
-		public override string[] AltTextures
-		{
-			get
-			{
-				return new string[] { "SGAmod/NPCs/TownNPCs/ContrabandMerchant" };
-			}
-		}*/
 
 		public override bool Autoload(ref string name)
 		{
@@ -91,7 +76,7 @@ namespace SGAmod.NPCs.TownNPCs
 
 				if (Main.player[gg].active)
 				{
-					if (Main.player[gg].GetModPlayer<SGAPlayer>().ExpertiseCollectedTotal > 0)
+					if (Main.player[gg].SGAPly().ExpertiseCollectedTotal > 0)
 					{
 						return true;
 					}
@@ -763,7 +748,7 @@ namespace SGAmod.NPCs.TownNPCs
 				if (Main.expertMode)
 				{
 					tooltips.Add(new TooltipLine(mod, "Nmxx", "'I have provided you with one of my chromatic mirrors, and it will keep returning to your hand as you keep returning to " + Main.worldName + "'"));
-					tooltips.Add(new TooltipLine(mod, "Nmxx", "You just might go far " + SGAmod.userName + ", just might..."));
+					tooltips.Add(new TooltipLine(mod, "Nmxx", "You just might go far " + SGAmod.HellionUserName + ", just might..."));
 					tooltips.Add(new TooltipLine(mod, "Nmxx", Idglib.ColorText(Color.OrangeRed, "By being granted this item your character is in Nightmare Mode, which does the following:")));
 
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Enemies have 20% more HP")));

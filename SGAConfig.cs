@@ -31,6 +31,18 @@ namespace SGAmod
 		[DefaultValue(true)]
 		public bool GolemImprovement { get; set; }
 
+	}
+
+	public class SGAConfigClient : ModConfig
+	{
+		public static SGAConfigClient Instance;
+		// You MUST specify a ConfigScope.
+		public override ConfigScope Mode => ConfigScope.ClientSide;
+
+		[Label("Hellion Privacy")]
+		[Tooltip("Enables/Disables Hellion refering to the player by their computer login name (will refer to local player name when on)")]
+		[DefaultValue(false)]
+		public bool HellionPrivacy { get; set; }
 
 	}
 

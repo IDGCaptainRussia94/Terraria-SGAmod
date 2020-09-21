@@ -18,6 +18,14 @@ And finally, alot of content in this mod is placeholder sprites due to a lack of
 
 Changelog:
 
+3.350-(8/28/20)-Revert:
+
+
+--Changed:
+
+-Reverted Hellion back to their state before July 29th, removed Cirno from the fight, added extra army stuff
+
+
 3.325-(8/22/20)-Hotfix #11:
 
 

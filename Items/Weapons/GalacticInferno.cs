@@ -85,9 +85,9 @@ namespace SGAmod.Items.Weapons
 					Main.projectile[proj].magic = false;
 					Main.projectile[proj].hostile = false;
 					Main.projectile[proj].friendly = true;
-					Main.projectile[proj].netUpdate = true;
 					Main.projectile[proj].timeLeft = 180;
 					Main.projectile[proj].localAI[0] = 1f;
+					Main.projectile[proj].netUpdate = true;
 					Main.projectile[proj].velocity = perturbedSpeed;
 					IdgProjectile.Sync(proj);
 

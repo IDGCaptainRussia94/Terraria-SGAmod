@@ -23,6 +23,10 @@ namespace SGAmod.Items.Armors
 			item.rare = 2;
 			item.defense=3;
 		}
+		public override bool DrawHead()
+		{
+			return false;
+		}
 		public override void UpdateEquip(Player player)
 		{
 			player.SGAPly().techdamage += 0.05f;

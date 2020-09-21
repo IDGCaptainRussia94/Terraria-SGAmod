@@ -13,7 +13,41 @@ using AAAAUThrowing;
 
 namespace SGAmod.Items.Accessories
 {
+	public class RestorationFlower : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Restoration Flower");
+			Tooltip.SetDefault("Restoration Potions (and Strange Brew) restore 50% more Health & Mana\nIn Hardmode, Potion Sickness improves passive life regen");
+		}
 
+		public override void SetDefaults()
+		{
+			item.CloneDefaults(ItemID.ManaFlower);
+			item.width = 24;
+			item.height = 24;
+			item.faceSlot = 6;
+			item.rare += 1;
+			item.value = Item.sellPrice(0, 2, 50, 0); ;
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.restorationFlower = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.JungleRose, 1);
+			recipe.AddIngredient(ItemID.RestorationPotion, 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
 	public class LifeFlower : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -28,7 +62,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.faceSlot = 6;
-			item.rare+=1;
+			item.rare += 1;
 			item.value = Item.sellPrice(0, 2, 50, 0); ;
 			item.accessory = true;
 		}
@@ -156,13 +190,13 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			base.UpdateAccessory(player,hideVisual);
+			base.UpdateAccessory(player, hideVisual);
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.Dankset = 3;
 		}
 		public override void AddRecipes()
 		{
-				ModRecipe recipe = new ModRecipe(mod);
+			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
 			recipe.AddIngredient(mod.ItemType("DankCore"), 2);
 			recipe.AddIngredient(mod.ItemType("DankWoodHelm"), 1);
@@ -290,7 +324,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Soul of Secrets");
-			Tooltip.SetDefault("While worn, it will unlock the true nature of so called 'vanity' Dev Armors in your inventory...\nCombines the effects of:\n-Blood Charm Pendant\n-Lifeforce Quintessence\n-Havoc's Fragmented Remains\n-Portable Hive\ntoggle visiblity to disable bee spawning of Portable Hive");
+			Tooltip.SetDefault("While worn, it will unlock the true nature of so called 'Vanity' Dev Armors in your inventory...\nCombines the effects of:\n-Blood Charm Pendant\n-Lifeforce Quintessence\n-Havoc's Fragmented Remains\n-Portable Hive\ntoggle visiblity to disable bee spawning of Portable Hive");
 		}
 
 		public override void SetDefaults()
@@ -403,7 +437,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Geyser In A Bottle");
-			Tooltip.SetDefault("Creates an eruption midair when you jump!\nNo damage taken from Geysers\nGrants a small ammount of lava immunity");
+			Tooltip.SetDefault("Creates an eruption midair when you jump!\nNo damage taken from Geysers\nGrants a small amount of lava immunity");
 		}
 
 		public override void SetDefaults()
@@ -448,7 +482,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Idol Of Midas");
-			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin\ndefensive/movement buffs while on the left side of your world, offensive buffs on the right, gold and platinum coins give you both\nIncreased damage with the more coins you have in your inventory (this caps at 25% at 10 platinum)\n15% increased damage against enemies inflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are consumed in the process"));
+			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin\ndefensive/movement buffs while facing left, offensive buffs while facing right, gold and platinum coins give you both\nIncreased damage with the more coins you have in your inventory (this caps at 25% at 10 platinum)\n15% increased damage against enemies inflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are consumed in the process"));
 		}
 
 		public override void SetDefaults()
@@ -463,6 +497,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			bool left = player.direction < 0;//player.Center.X > (Main.maxTilesX * 16) / 2f;
 			int coincount = player.CountItem(ItemID.CopperCoin) + (player.CountItem(ItemID.SilverCoin) * 100) + (player.CountItem(ItemID.GoldCoin) * 10000) + (player.CountItem(ItemID.PlatinumCoin) * 1000000);
 			float howmuch = Math.Min(0.25f, (coincount / 10000000f) / 4f);
 			player.magicDamage += howmuch;
@@ -471,10 +506,10 @@ namespace SGAmod.Items.Accessories
 			player.minionDamage += howmuch;
 			player.meleeDamage += howmuch;
 			SGAmod.BoostModdedDamage(player, howmuch, 0);
-			if (GetType()==typeof(CorperateEpiphany))
-			player.GetModPlayer<SGAPlayer>().MidasIdol = hideVisual ? 3 : player.Center.X > (Main.maxTilesX * 16) / 2f ? 2 : 1;
+			if (GetType() == typeof(CorperateEpiphany))
+				player.GetModPlayer<SGAPlayer>().MidasIdol = hideVisual ? 3 : left ? 1 : 2;
 			else
-			player.GetModPlayer<SGAPlayer>().MidasIdol = player.Center.X>(Main.maxTilesX*16)/2f ? 2 : 1;
+				player.GetModPlayer<SGAPlayer>().MidasIdol = left ? 1 : 2;
 		}
 
 	}
@@ -498,7 +533,7 @@ namespace SGAmod.Items.Accessories
 
 		public override Color? GetAlpha(Color lightColor)
 		{
-			return Main.hslToRgb((Main.GlobalTime*1.443f)%1f,0.8f,0.75f);
+			return Main.hslToRgb((Main.GlobalTime * 1.443f) % 1f, 0.8f, 0.75f);
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -548,7 +583,7 @@ namespace SGAmod.Items.Accessories
 	}
 
 
-public class BlinkTechGear : ModItem
+	public class BlinkTechGear : ModItem
 	{
 
 		public override void SetStaticDefaults()
@@ -587,7 +622,7 @@ public class BlinkTechGear : ModItem
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LunarBar, 8);
-			recipe.AddRecipeGroup("SGAmod:HardmodeEvilAccessory",1);
+			recipe.AddRecipeGroup("SGAmod:HardmodeEvilAccessory", 1);
 			recipe.AddIngredient(mod.ItemType("PlasmaPack"), 1);
 			recipe.AddIngredient(mod.ItemType("PrismalCore"), 1);
 			recipe.AddIngredient(mod.ItemType("HandlingGloves"), 1);
@@ -642,7 +677,7 @@ public class BlinkTechGear : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bundle of Jab-lin Spear Heads");
-			Tooltip.SetDefault("The ammount of javelins you can stick into a target increases by 1\nJavelin damage increased by 15%");
+			Tooltip.SetDefault("The amount of javelins you can stick into a target increases by 1\nJavelin damage increased by 15%");
 		}
 
 		public override void SetDefaults()
@@ -680,7 +715,7 @@ public class BlinkTechGear : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bundle of Jab-lin Parts");
-			Tooltip.SetDefault("'Worthless money-wise, but won't discount your life'\nThe ammount of javelins you can stick into a target increases by 1\nImproves the damage over time of javelins by 25%\nJavelin damage increased by 25%\nDoesn't stack with component parts");
+			Tooltip.SetDefault("'Worthless money-wise, but won't discount your life'\nThe amount of javelins you can stick into a target increases by 1\nImproves the damage over time of javelins by 25%\nJavelin damage increased by 25%\nDoesn't stack with component parts");
 		}
 
 		public override void SetDefaults()
@@ -717,7 +752,7 @@ public class BlinkTechGear : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fiery Heart");
-			Tooltip.SetDefault("All attacks inflict a short ammount of Daybroken");
+			Tooltip.SetDefault("All attacks inflict a short amount of Daybroken");
 			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(8, 4));
 		}
 		public override void SetDefaults()
@@ -788,7 +823,7 @@ public class BlinkTechGear : ModItem
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			for (int i = 0; i < player.GetModPlayer<SGAPlayer>().apocalypticalChance.Length; i += 1)
-			player.GetModPlayer<SGAPlayer>().apocalypticalChance[i] += 2.0;
+				player.GetModPlayer<SGAPlayer>().apocalypticalChance[i] += 2.0;
 			player.GetModPlayer<SGAPlayer>().OmegaSigil = true;
 		}
 
@@ -1101,7 +1136,7 @@ public class BlinkTechGear : ModItem
 		{
 			player.GetModPlayer<SGAPlayer>().HoE = true;
 			for (int i = 0; i < player.GetModPlayer<SGAPlayer>().apocalypticalChance.Length; i += 1)
-			player.GetModPlayer<SGAPlayer>().apocalypticalChance[i] += 1.0;
+				player.GetModPlayer<SGAPlayer>().apocalypticalChance[i] += 1.0;
 		}
 
 		/*public override string Texture
@@ -1132,13 +1167,13 @@ public class BlinkTechGear : ModItem
 			recipe.AddRecipe();
 		}
 
-	}	
+	}
 	public class DemonSteppers : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Demon Steppers");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lavawaders improved\nJump Height significantly boosted, no Fall Damage suffered, and Double Jump ability\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead");
+			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered, and Double Jump ability\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -1151,10 +1186,8 @@ public class BlinkTechGear : ModItem
 				player.rocketBoots += 2;
 				if (!player.GetModPlayer<SGAPlayer>().Walkmode)
 				{
-					player.moveSpeed += 0.25f;
-					player.maxRunSpeed += 0.5f;
-					player.runAcceleration += 0.25f;
-					player.accRunSpeed += 6;
+					player.accRunSpeed += 5f;
+					player.runAcceleration += 0.05f;
 				}
 				player.iceSkate = true;
 				player.lavaMax += 500;
@@ -1168,8 +1201,8 @@ public class BlinkTechGear : ModItem
 				player.doubleJumpCloud = true;
 			}
 
-				ModContent.GetInstance<PrimordialSkull>().UpdateAccessory(player, hideVisual);
-				ModContent.GetInstance<AmberGlowSkull>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<PrimordialSkull>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<AmberGlowSkull>().UpdateAccessory(player, hideVisual);
 
 		}
 
@@ -1409,13 +1442,13 @@ public class BlinkTechGear : ModItem
 
 		public override void OnWear(SGAPlayer player)
 		{
-			if (Main.rand.Next(0,300)==1)
-			player.player.AddBuff(BuffID.Bleeding, 200);
+			if (Main.rand.Next(0, 300) == 1)
+				player.player.AddBuff(BuffID.Bleeding, 200);
 			player.apocalypticalChance[2] += 4.0;
 		}
 	}
 
-		public class DarkApocalypse : ModItem
+	public class DarkApocalypse : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -1443,8 +1476,8 @@ public class BlinkTechGear : ModItem
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			if (GetType()==typeof(DarkApocalypse))
-			Tooltipsfunc(tooltips);
+			if (GetType() == typeof(DarkApocalypse))
+				Tooltipsfunc(tooltips);
 
 			tooltips.Add(new TooltipLine(mod, "saddletext", Idglib.ColorText(Color.Red, "Limited to 1 saddle at a time")));
 			tooltips.Add(new TooltipLine(mod, "saddletext", SGAGlobalItem.apocalypticaltext));
@@ -1518,7 +1551,8 @@ public class BlinkTechGear : ModItem
 
 			Item itz = new Item();
 			bool defined = false;
-			if (Main.LocalPlayer.HeldItem != null) {
+			if (Main.LocalPlayer.HeldItem != null)
+			{
 				if (Main.LocalPlayer.HeldItem.damage > 0)
 				{
 					itz.SetDefaults(ModContent.ItemType<GreenApocalypse>());
@@ -1557,7 +1591,7 @@ public class BlinkTechGear : ModItem
 
 			Item itz = new Item();
 			bool defined = false;
-			if (!Main.LocalPlayer.HeldItem.IsAir && Main.LocalPlayer.HeldItem.damage>0 && SGAWorld.modtimer>120)
+			if (!Main.LocalPlayer.HeldItem.IsAir && Main.LocalPlayer.HeldItem.damage > 0 && SGAWorld.modtimer > 120)
 			{
 				if (Main.LocalPlayer.HeldItem.ranged)
 				{
@@ -1576,7 +1610,7 @@ public class BlinkTechGear : ModItem
 				}
 				if (Main.LocalPlayer.HeldItem.Throwing() != null)
 				{
-					if (!Main.LocalPlayer.HeldItem.IsAir && ((Main.LocalPlayer.HeldItem.modItem!=null && Main.LocalPlayer.HeldItem.Throwing().thrown) || Main.LocalPlayer.HeldItem.thrown))
+					if (!Main.LocalPlayer.HeldItem.IsAir && ((Main.LocalPlayer.HeldItem.modItem != null && Main.LocalPlayer.HeldItem.Throwing().thrown) || Main.LocalPlayer.HeldItem.thrown))
 					{
 						itz.SetDefaults(ModContent.ItemType<GreenApocalypse>());
 						defined = true;
@@ -1644,7 +1678,7 @@ public class BlinkTechGear : ModItem
 			sgaply.MVMBoost = true;
 		}
 
-	}	
+	}
 	public class ThrowerPouch : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -1665,9 +1699,9 @@ public class BlinkTechGear : ModItem
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-				player.Throwing().thrownDamage += 0.05f;
-				player.Throwing().thrownCrit += 3;
-				sgaply.Thrownsavingchance += 0.05f;
+			player.Throwing().thrownDamage += 0.05f;
+			player.Throwing().thrownCrit += 3;
+			sgaply.Thrownsavingchance += 0.05f;
 			player.Throwing().thrownVelocity += 0.10f;
 		}
 		public override void AddRecipes()
@@ -1705,11 +1739,11 @@ public class BlinkTechGear : ModItem
 			player.breathMax += 200;
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			int defensegiven = 8;
-				defensegiven += SGAWorld.downedWraiths*2;
+			defensegiven += SGAWorld.downedWraiths * 2;
 			if (SGAWorld.downedSpiderQueen)
 				defensegiven += 3;
-			if (SGAWorld.downedMurk>1)
-				defensegiven += SGAWorld.GennedVirulent ? 6 :3;
+			if (SGAWorld.downedMurk > 1)
+				defensegiven += SGAWorld.GennedVirulent ? 6 : 3;
 			if (SGAWorld.downedSharkvern)
 				defensegiven += 3;
 			if (SGAWorld.downedCratrosity)
@@ -1723,7 +1757,7 @@ public class BlinkTechGear : ModItem
 			if (SGAWorld.downedSPinky)
 				defensegiven += 3;
 
-			player.statDefense+= (int)((1f-((float)player.breath/ (float)player.breathMax))*defensegiven);
+			player.statDefense += (int)((1f - ((float)player.breath / (float)player.breathMax)) * defensegiven);
 
 		}
 
@@ -1749,7 +1783,7 @@ public class BlinkTechGear : ModItem
 
 		public override string Texture
 		{
-			get { return ("Terraria/Item_"+ItemID.GuideVoodooDoll); }
+			get { return ("Terraria/Item_" + ItemID.GuideVoodooDoll); }
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -1763,7 +1797,7 @@ public class BlinkTechGear : ModItem
 			{
 				Texture2D texture = Main.itemTexture[ItemID.GuideVoodooDoll];
 				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
-				spriteBatch.Draw(texture,  item.Center+ new Vector2(-6, 0)-Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(texture, item.Center + new Vector2(-6, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
 				spriteBatch.Draw(Main.itemTexture[ItemID.ClothierVoodooDoll], item.Center + new Vector2(6, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.FlipHorizontally, 0f);
 			}
 			return false;
@@ -1777,8 +1811,8 @@ public class BlinkTechGear : ModItem
 				position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
 				Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
 				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
-				spriteBatch.Draw(texture, drawPos+new Vector2(-6,0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
-				spriteBatch.Draw(Main.itemTexture[ItemID.ClothierVoodooDoll], drawPos + new Vector2(6,0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(texture, drawPos + new Vector2(-6, 0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
+				spriteBatch.Draw(Main.itemTexture[ItemID.ClothierVoodooDoll], drawPos + new Vector2(6, 0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.FlipHorizontally, 0f);
 			}
 			return false;
 		}
@@ -1964,7 +1998,7 @@ public class BlinkTechGear : ModItem
 
 	}
 	[AutoloadEquip(EquipType.Waist)]
-			public class GunsmithsBeltofTools : ModItem
+	public class GunsmithsBeltofTools : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -2021,7 +2055,7 @@ public class BlinkTechGear : ModItem
 
 		public override void HoldItem(Player player)
 		{
-			if (item.value==Item.buyPrice(0, 10, 0, 0))
+			if (item.value == Item.buyPrice(0, 10, 0, 0))
 				Item.sellPrice(0, 2, 50, 0);
 		}
 
@@ -2030,9 +2064,9 @@ public class BlinkTechGear : ModItem
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.Duster = true;
 			if (player.townNPCs > 0 && !IdgNPC.bossAlive)
-				player.lifeRegen += (int)Math.Min(player.townNPCs,10);
-			if (player.itemAnimation < 1 && player.ownedProjectileCounts[mod.ProjectileType("ClipWeaponReloading")]>0)
-			sgaply.damagetaken/=1.20f;
+				player.lifeRegen += (int)Math.Min(player.townNPCs, 10);
+			if (player.itemAnimation < 1 && player.ownedProjectileCounts[mod.ProjectileType("ClipWeaponReloading")] > 0)
+				sgaply.damagetaken /= 1.20f;
 		}
 
 	}
@@ -2060,7 +2094,7 @@ public class BlinkTechGear : ModItem
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 
-			if (sgaply.IsRevolver(player.HeldItem)>0)
+			if (sgaply.IsRevolver(player.HeldItem) > 0)
 			{
 				if (player.itemAnimation > 0)
 				{
@@ -2082,7 +2116,7 @@ public class BlinkTechGear : ModItem
 						posX = player.position.X + (player.direction) + 16;
 					}
 					Vector2 pos = new Vector2(posX, player.position.Y + 36);
-					int dust = Dust.NewDust(pos-new Vector2(12,6), 24, 12, DustID.Sandstorm, (player.velocity.X) + Math.Sign(player.direction) * -12f, player.velocity.Y -5f, 0, Color.Yellow, 2f);
+					int dust = Dust.NewDust(pos - new Vector2(12, 6), 24, 12, DustID.Sandstorm, (player.velocity.X) + Math.Sign(player.direction) * -12f, player.velocity.Y - 5f, 0, Color.Yellow, 2f);
 					int slot = -1;
 					for (int l = 3; l < 8 + player.extraAccessorySlots; l++)
 					{
@@ -2116,24 +2150,24 @@ public class BlinkTechGear : ModItem
 
 	[AutoloadEquip(EquipType.Face)]
 	public class HighNoon : ModItem
-{
-	public override void SetStaticDefaults()
 	{
-		DisplayName.SetDefault("High Noon");
-		Tooltip.SetDefault("Damage is increased during the day\nBase damage increase reaches its peak of 5% increased damage at noon\nAdditional 5% bullet damage at noon");
-	}
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("High Noon");
+			Tooltip.SetDefault("Damage is increased during the day\nBase damage increase reaches its peak of 5% increased damage at noon\nAdditional 5% bullet damage at noon");
+		}
 
-	public override void SetDefaults()
-	{
-		item.width = 18;
-		item.height = 24;
-		item.rare = 3;
-		item.value = Item.sellPrice(0, 2, 0, 0);
-		item.accessory = true;
-	}
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 3;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
 
-	public override void UpdateAccessory(Player player, bool hideVisual)
-	{
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
 			if (Main.dayTime)
 			{
 				float scale = (GetType() == typeof(HighNoon) ? 15000f : 25000f);
@@ -2143,43 +2177,43 @@ public class BlinkTechGear : ModItem
 				SGAmod.BoostModdedDamage(player, 0.05f * peak, 0);
 				player.bulletDamage += 0.05f * peak;
 			}
-	}
-	public override void AddRecipes()
-	{
-		ModRecipe recipe = new ModRecipe(mod);
-		recipe.AddIngredient(ItemID.Sunglasses, 1);
-		recipe.AddRecipeGroup("SGAmod:Tier5Bars", 8);
-		recipe.AddTile(TileID.TinkerersWorkbench);
-		recipe.SetResult(this);
-		recipe.AddRecipe();
-	}
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Sunglasses, 1);
+			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 8);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
 
-}
+	}
 
 	[AutoloadEquip(EquipType.Face)]
 	public class DuelingDeity : HighNoon
 	{
-	public override void SetStaticDefaults()
-	{
-		DisplayName.SetDefault("Dueling Deity's Shades");
-		Tooltip.SetDefault("Scoring an Apocalyptical summons 2 bullets to strike your opponent\nThese projectiles are consumed from your ammo slots and do 50% more damage but cannot crit\nThey do not count as ranged damage either\nEffects of High Noon, span of day improved");
-	}
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Dueling Deity's Shades");
+			Tooltip.SetDefault("Scoring an Apocalyptical summons 2 bullets to strike your opponent\nThese projectiles are consumed from your ammo slots and do 50% more damage but cannot crit\nThey do not count as ranged damage either\nEffects of High Noon, span of day improved");
+		}
 
-	public override void SetDefaults()
-	{
-		item.width = 18;
-		item.height = 24;
-		item.rare = 7;
-		item.value = Item.sellPrice(0, 2, 0, 0);
-		item.accessory = true;
-	}
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = 7;
+			item.value = Item.sellPrice(0, 2, 0, 0);
+			item.accessory = true;
+		}
 
-	public override void UpdateAccessory(Player player, bool hideVisual)
-	{
-		SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.dualityshades = true;
 			base.UpdateAccessory(player, hideVisual);
-	}
+		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
@@ -2202,33 +2236,33 @@ public class BlinkTechGear : ModItem
 	[AutoloadEquip(EquipType.Waist, EquipType.Neck)]
 	public class GunslingerLegend : SparingSpurs
 	{
-	public override void SetStaticDefaults()
-	{
-		DisplayName.SetDefault("Gunslinger of Song and Legend");
-		Tooltip.SetDefault("'Riding high, in the sky...'\n'Its that time; its high Noon'\nPress 'Gunslinger Legend' key to challenge the enemy nearest your mouse curser to a duel\nYou do 50% increased damage against this target, but 75% reduced damage to anything else\n+"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds") + "\nCombines the Effects of:\n-Sparing Spurs and Peacekeeper's Duster\n-Gunsmith's Belt of Tools and Dueling Deity's Shades");
-	}
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Gunslinger of Song and Legend");
+			Tooltip.SetDefault("'Riding high, in the sky...'\n'Its that time; its high Noon'\nPress 'Gunslinger Legend' key to challenge the enemy nearest your mouse curser to a duel\nYou do 50% increased damage against this target, but 75% reduced damage to anything else\n+" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds") + "\nCombines the Effects of:\n-Sparing Spurs and Peacekeeper's Duster\n-Gunsmith's Belt of Tools and Dueling Deity's Shades");
+		}
 
-	public override void SetDefaults()
-	{
-		item.width = 18;
-		item.height = 24;
-		item.rare = ItemRarityID.Cyan;
-		item.value = Item.sellPrice(0, 75, 0, 0);
-		item.accessory = true;
-	}
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = ItemRarityID.Cyan;
+			item.value = Item.sellPrice(0, 75, 0, 0);
+			item.accessory = true;
+		}
 
-	public override void UpdateAccessory(Player player, bool hideVisual)
-	{
-		SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-		ModContent.GetInstance<GunsmithsBeltofTools>().UpdateAccessory(player,hideVisual);
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			ModContent.GetInstance<GunsmithsBeltofTools>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<DuelingDeity>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<PeacekeepersDuster>().UpdateAccessory(player, hideVisual);
 			sgaply.gunslingerLegend = true;
 			base.UpdateAccessory(player, hideVisual);
-	}
-	public override void AddRecipes()
-	{
-		ModRecipe recipe = new ModRecipe(mod);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("PeacekeepersDuster"), 1);
 			recipe.AddIngredient(mod.ItemType("DuelingDeity"), 1);
 			recipe.AddIngredient(mod.ItemType("GunsmithsBeltofTools"), 1);
@@ -2237,80 +2271,80 @@ public class BlinkTechGear : ModItem
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 20);
 			recipe.AddIngredient(ItemID.LunarBar, 15);
 			recipe.AddTile(TileID.LunarCraftingStation);
-		recipe.SetResult(this);
-		recipe.AddRecipe();
-	}
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
 
-}
+	}
 
 
 	[AutoloadEquip(EquipType.Waist)]
 	public class NinjaSash : ModItem
-{
-public override void SetStaticDefaults()
-{
-	DisplayName.SetDefault("Ninja's Stash");
-	Tooltip.SetDefault("Scoring crits with your throwing weapons summon shurikens and throwing knives to strike hit enemies\nThese summoned attacks cannot crit or trigger Thrower damage\nFurthermore, they are consumed from the player's inventory");
-}
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Ninja's Stash");
+			Tooltip.SetDefault("Scoring crits with your throwing weapons summon shurikens and throwing knives to strike hit enemies\nThese summoned attacks cannot crit or trigger Thrower damage\nFurthermore, they are consumed from the player's inventory");
+		}
 
-public override void SetDefaults()
-{
-	item.width = 24;
-	item.height = 24;
-	item.rare = ItemRarityID.LightRed;
-	item.value = Item.sellPrice(0, 5, 0, 0);
-	item.accessory = true;
-}
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.LightRed;
+			item.value = Item.sellPrice(0, 5, 0, 0);
+			item.accessory = true;
+		}
 
-public override void UpdateAccessory(Player player, bool hideVisual)
-{
-	SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-	sgaply.ninjaSash = Math.Max(sgaply.ninjaSash,1);
-}
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.ninjaSash = Math.Max(sgaply.ninjaSash, 1);
+		}
 
-}
+	}
 
 	[AutoloadEquip(EquipType.Waist)]
 	public class ShinSash : ThrowerPouch
-{
-public override void SetStaticDefaults()
-{
-DisplayName.SetDefault("Shin Sash");
-Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nEnemies affected become far more likely to cause the player to black belt dodge contact damage\n"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each")+"\nThrowing damage and crit chance are increased by 10%\nEffects of Ninja Sash and Thrower Pouch");
-}
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Shin Sash");
+			Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nEnemies affected become far more likely to cause the player to black belt dodge contact damage\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") + "\nThrowing damage and crit chance are increased by 10%\nEffects of Ninja Sash and Thrower Pouch");
+		}
 
-public override void SetDefaults()
-{
-item.width = 24;
-item.height = 24;
-item.rare = ItemRarityID.LightPurple;
-item.value = Item.sellPrice(0, 8, 0, 0);
-item.accessory = true;
-}
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.LightPurple;
+			item.value = Item.sellPrice(0, 8, 0, 0);
+			item.accessory = true;
+		}
 
-public override void UpdateAccessory(Player player, bool hideVisual)
-{
-base.UpdateAccessory(player,hideVisual);
-SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-sgaply.ninjaSash = Math.Max(sgaply.ninjaSash, 2);
-player.Throwing().thrownDamage += 0.10f;
-player.Throwing().thrownCrit += 10;
-}
-public override void AddRecipes()
-{
-ModRecipe recipe = new ModRecipe(mod);
-recipe.AddIngredient(mod.ItemType("NinjaSash"), 1);
-recipe.AddIngredient(mod.ItemType("ThrowerPouch"), 1);
-recipe.AddIngredient(ItemID.Katana, 1);
-recipe.AddIngredient(ItemID.SmokeBomb, 100);
-recipe.AddIngredient(mod.ItemType("OmniSoul"), 15);
-recipe.AddIngredient(mod.ItemType("VirulentBar"), 8);
-recipe.AddTile(TileID.TinkerersWorkbench);
-recipe.SetResult(this);
-recipe.AddRecipe();
-}
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.ninjaSash = Math.Max(sgaply.ninjaSash, 2);
+			player.Throwing().thrownDamage += 0.10f;
+			player.Throwing().thrownCrit += 10;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("NinjaSash"), 1);
+			recipe.AddIngredient(mod.ItemType("ThrowerPouch"), 1);
+			recipe.AddIngredient(ItemID.Katana, 1);
+			recipe.AddIngredient(ItemID.SmokeBomb, 100);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 15);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 8);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
 
-}
+	}
 
 	public class ShinobiShiv : ModItem
 	{
@@ -2336,7 +2370,7 @@ recipe.AddRecipe();
 
 		public override string Texture
 		{
-			get { return ("Terraria/Item_"+ItemID.WinterCape); }
+			get { return ("Terraria/Item_" + ItemID.WinterCape); }
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -2351,24 +2385,24 @@ recipe.AddRecipe();
 	[AutoloadEquip(EquipType.Waist)]
 	public class KouSash : ShinSash
 	{
-public override void SetStaticDefaults()
-{
-DisplayName.SetDefault("Kou Sash");
-Tooltip.SetDefault("'A true assassin's attire'\nScoring an Apocalyptical imbues all your currently thrown projectiles\nImbued projectiles gain 50% increased damage and inflict Moonlight Curse\nThrowing damage increased by 20%, and crit chance is increased by 10%\nCombines the effects of:\n-Shin Sash\n-Master Ninja Gear\n-Gi\n-Shinobi's Shadow\n-Bundle of Jab-lin Parts");
-}
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Kou Sash");
+			Tooltip.SetDefault("'A true assassin's attire'\nScoring an Apocalyptical imbues all your currently thrown projectiles\nImbued projectiles gain 50% increased damage and inflict Moonlight Curse\nThrowing damage increased by 20%, and crit chance is increased by 10%\nCombines the effects of:\n-Shin Sash\n-Master Ninja Gear\n-Gi\n-Shinobi's Shadow\n-Bundle of Jab-lin Parts");
+		}
 
-public override void SetDefaults()
-{
-item.width = 24;
-item.height = 24;
-item.rare = ItemRarityID.Cyan;
-item.defense = 4;
-item.handOnSlot = 11;
-item.handOffSlot = 6;
-item.shoeSlot = 14;
-item.value = Item.sellPrice(0, 25, 0, 0);
-item.accessory = true;
-}
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.Cyan;
+			item.defense = 4;
+			item.handOnSlot = 11;
+			item.handOffSlot = 6;
+			item.shoeSlot = 14;
+			item.value = Item.sellPrice(0, 25, 0, 0);
+			item.accessory = true;
+		}
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			base.UpdateAccessory(player, hideVisual);
@@ -2384,7 +2418,7 @@ item.accessory = true;
 			player.Throwing().thrownDamage += 0.25f;//20% + 5% from Gi
 
 			player.meleeDamage += 0.05f; player.rangedDamage += 0.05f; player.magicDamage += 0.05f; player.minionDamage += 0.05f;
-			player.Throwing().thrownCrit+=5; player.rangedCrit += 5; player.magicCrit += 5; player.meleeCrit += 5;
+			player.Throwing().thrownCrit += 5; player.rangedCrit += 5; player.magicCrit += 5; player.meleeCrit += 5;
 			SGAmod.BoostModdedDamage(player, 0.05f, 5);
 
 			player.meleeSpeed += 0.10f;
@@ -2392,7 +2426,7 @@ item.accessory = true;
 		}
 
 		public override void AddRecipes()
-{
+		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("ShinSash"), 1);
 			recipe.AddIngredient(ItemID.MasterNinjaGear, 1);
@@ -2406,7 +2440,7 @@ item.accessory = true;
 			recipe.AddRecipe();
 		}
 
-}
+	}
 
 	public class NoviteCore : ModItem
 	{
@@ -2454,7 +2488,7 @@ item.accessory = true;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novus Core");
-			Tooltip.SetDefault("'Core of untapped magic, could be put to good use'\nAny item that uses Novus Bars or Fiery Shards in its crafting recipe get both the following:\n10% increased damage and emits Novus particles\n5% faster use time on all items\nAll effects of Novus set bonus");
+			Tooltip.SetDefault("'Core of untapped magic, could be put to good use'\nAny item that uses Novus Bars or Fiery Shards in its crafting recipe get both the following:\n10% increased damage and emits Novus particles\n5% faster use time on all items\nGain an additional free Cooldown Stack and all other effects of Novus set bonus");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)

@@ -56,7 +56,7 @@ namespace SGAmod.HavocGear.Items
 			item.height = 16;
 			item.maxStack = 99;
 			item.value = 100;
-			item.rare = 5;
+			item.rare = ItemRarityID.Pink;
 			item.alpha = 0;
 			item.useTurn = true;
 			item.autoReuse = true;
@@ -64,7 +64,7 @@ namespace SGAmod.HavocGear.Items
 			item.useTime = 10;
 			item.useStyle = 1;
 			item.consumable = true;
-			item.createTile = mod.TileType("VirulentOre");
+			item.createTile = mod.TileType("WatcherOre");
 		}
 		public override string Texture
 		{
@@ -76,8 +76,8 @@ namespace SGAmod.HavocGear.Items
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Biomass Bar");
-			Tooltip.SetDefault("'Hardened plant matter', in a bar");
+			DisplayName.SetDefault("Photosyte Bar");
+			Tooltip.SetDefault("A hardened bar made from parasitic biomass reacting from murky gel and moss");
 		}
 
 		public override void SetDefaults()
@@ -86,7 +86,7 @@ namespace SGAmod.HavocGear.Items
 			item.height = 14;
 			item.maxStack = 99;
 			item.value = 100;
-			item.rare = 1;
+			item.rare = ItemRarityID.Green;
 		}
 
 		public override string Texture
@@ -117,7 +117,7 @@ namespace SGAmod.HavocGear.Items
 			item.autoReuse = true;
 			item.useAnimation = 15;
 			item.useTime = 10;
-			item.useStyle = 1;
+			item.useStyle = ItemRarityID.White;
 			item.consumable = true;
 			item.createTile = mod.TileType("Biomass");
 		}
@@ -129,8 +129,8 @@ namespace SGAmod.HavocGear.Items
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Biomass");
-			Tooltip.SetDefault("'Hardened plant matter'");
+			DisplayName.SetDefault("Photosyte");
+			Tooltip.SetDefault("'Parasitic plant matter'\nIs found largely infesting clouds where it can gain the most sunlight");
 		}
 
 	}
@@ -204,7 +204,7 @@ namespace SGAmod.HavocGear.Items
 			item.width = 22;
 			item.height = 22;
 			item.maxStack = 99;
-			item.value = 1000;
+			item.value = 25;
 			item.rare = 3;
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 			ItemID.Sets.ItemIconPulse[item.type] = true;
@@ -251,7 +251,7 @@ namespace SGAmod.Items
 			item.maxStack = 999;
 			item.width = 26;
 			item.height = 14;
-			item.value = 500;
+			item.value = 0;
 			item.rare = 1;
 		}
 		public override void PostUpdate()
@@ -866,7 +866,7 @@ public class LunarRoyalGel : ModItem
 			item.maxStack = 999;
 			item.width = 14;
 			item.height = 14;
-			item.value = 50;
+			item.value = 25;
 			item.rare = ItemRarityID.Orange;
 		}
 		public override void AddRecipes()
@@ -907,7 +907,7 @@ public class LunarRoyalGel : ModItem
 			item.maxStack = 999;
 			item.width = 14;
 			item.height = 14;
-			item.value = 100;
+			item.value = 30;
 			item.rare = ItemRarityID.Green;
 		}
 	}
@@ -921,10 +921,10 @@ public class LunarRoyalGel : ModItem
 		}
 		public override void SetDefaults()
 		{
-			item.maxStack = 999;
+			item.maxStack = 99;
 			item.width = 16;
 			item.height = 16;
-			item.value = 100;
+			item.value = 25;
 			item.rare = ItemRarityID.Blue;
 			item.alpha = 0;
 			item.useTurn = true;
@@ -956,8 +956,8 @@ public class LunarRoyalGel : ModItem
         {
 		item.width = 16;
 		item.height = 16;
-		item.maxStack = 99;
-		item.value = 50;
+		item.maxStack = 999;
+		item.value = 10;
 		item.rare = ItemRarityID.Blue;
 		item.alpha = 0;
 		item.useTurn = true;
@@ -981,8 +981,8 @@ public class LunarRoyalGel : ModItem
 		{
 			item.width = 16;
 			item.height = 16;
-			item.maxStack = 99;
-			item.value = 50;
+			item.maxStack = 999;
+			item.value = 10;
 			item.rare = ItemRarityID.Blue;
 			item.alpha = 0;
 			item.useTurn = true;
@@ -1004,10 +1004,10 @@ public class LunarRoyalGel : ModItem
 		}
 		public override void SetDefaults()
 		{
-			item.maxStack = 999;
+			item.maxStack = 99;
 			item.width = 16;
 			item.height = 16;
-			item.value = 100;
+			item.value = 25;
 			item.rare = ItemRarityID.Blue;
 			item.alpha = 0;
 			item.useTurn = true;
@@ -1147,6 +1147,7 @@ public class LunarRoyalGel : ModItem
 
 	public class EntropyTransmuter : ModItem
 	{
+		static internal int MaxEntropy = 100000;
 		public override void SetDefaults()
 		{
 			item.value = 0;
@@ -1158,7 +1159,7 @@ public class LunarRoyalGel : ModItem
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "entropy", "Entropy Collected: "+Main.LocalPlayer.GetModPlayer<SGAPlayer>().entropycollected+"/100000"));
+			tooltips.Add(new TooltipLine(mod, "entropy", "Entropy Collected: "+Main.LocalPlayer.GetModPlayer<SGAPlayer>().entropyCollected + "/" + MaxEntropy));
 		}
 
 		public override void SetStaticDefaults()

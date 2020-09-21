@@ -293,8 +293,8 @@ namespace SGAmod.Items.Weapons
 		{
 
 			Texture2D sun = SGAmod.ExtraTextures[100];
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			//Main.spriteBatch.End();
+			//Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
 			float growth = ((growsize / 3f) + 1f);
 			float alpha2 = 1f;
@@ -311,19 +311,10 @@ namespace SGAmod.Items.Weapons
 			return false;
 		}
 
-		/*Viewport viewport = Main.graphics.GraphicsDevice.Viewport;
-
-BasicEffect basicEffect = new BasicEffect(Main.graphics.GraphicsDevice);
-
-basicEffect.Projection = Matrix.CreateTranslation(-0.5f, -0.5f, 0) *
-						 Matrix.CreateOrthographicOffCenter(0, viewport.Width, viewport.Height, 0, 0, 1);
-
-Main.spriteBatch.Begin(0, null, null, null, null, basicEffect);*/
-
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
-		{
-			base.PostDraw(spriteBatch, lightColor);
-		}
+		//public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		//{
+		//	base.PostDraw(spriteBatch, lightColor);
+		//}
 
 	}
 

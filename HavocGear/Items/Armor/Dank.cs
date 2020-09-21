@@ -101,9 +101,8 @@ namespace SGAmod.HavocGear.Items.Armor
 
 		public override void UpdateEquip(Player player)
 		{
-            player.maxRunSpeed += 0.2f;
-            player.accRunSpeed += 0.2f;
-            player.runAcceleration += 0.05f;
+            player.moveSpeed += 0.2f;
+            player.accRunSpeed += 0.05f;
         }
 
         public override void AddRecipes()

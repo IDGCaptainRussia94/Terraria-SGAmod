@@ -88,7 +88,7 @@ namespace SGAmod.Items.Consumable
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("VialofAcid"), 9);
-			recipe.AddIngredient(mod.ItemType("BiomassBar"), 6);
+			recipe.AddIngredient(mod.ItemType("Biomass"), 6);
 			recipe.AddIngredient(ItemID.Bunny, 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 3);
@@ -117,9 +117,6 @@ namespace SGAmod.Items.Consumable
 
 		public override void SetDefaults()
 		{
-			//WorldGen.SpawnTravelNPC();
-			//Chest.SetupTravelShop()
-			//NPC.travelNPC = true;
 			item.width = 14;
 			item.height = 24;
 			item.maxStack = 1;

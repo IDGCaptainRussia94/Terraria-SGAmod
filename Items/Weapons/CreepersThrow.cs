@@ -249,7 +249,18 @@ namespace SGAmod.Items.Weapons
 			DisplayName.SetDefault("Creeper's KaBoom");
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+			projectile.timeLeft = 3;
+			projectile.width = 200;
+			projectile.height = 200;
+			projectile.scale = 0.001f;
+			projectile.timeLeft = 2;
+			projectile.penetrate = 1;
+		}
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (target.life - damage < 0)
 			{

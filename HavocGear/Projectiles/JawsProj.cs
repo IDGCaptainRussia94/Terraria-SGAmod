@@ -33,34 +33,59 @@ namespace SGAmod.HavocGear.Projectiles
 			projectile.scale = 1f;
         }
 
-        public override void AI()
+		public override void SendExtraAI(System.IO.BinaryWriter writer)
+		{
+			for (int i = 0; i < orbitors.Length; i += 1)
+			{
+				writer.Write((ushort)orbitors[i].whoAmI);
+			}
+		}
+
+		public override void ReceiveExtraAI(System.IO.BinaryReader reader)
+		{
+			for (int i = 0; i < orbitors.Length; i += 1)
+			{
+				int theyare = (int)reader.ReadUInt16();
+				Projectile proj = Main.projectile[theyare];
+				if (proj != null && proj.active && proj.type == ModContent.ProjectileType<SnappyTooth>())
+				orbitors[i] = Main.projectile[theyare];
+			}
+		}
+
+		public override void AI()
         {
 			for (int k = 0; k < 5; k += 1)
 			{
 
-			if (spinners[k]==-6){spinners[k]=1;
-			int newb=Projectile.NewProjectile(projectile.Center,new Vector2(0f,0f),mod.ProjectileType("SnappyTooth"),60,5,Main.myPlayer, 0f, (float)Main.player[projectile.owner].whoAmI);
-			Main.projectile[newb].damage=(int)(projectile.damage*0.75);
-			Main.projectile[newb].penetrate=4;
-			Main.projectile[newb].ranged=false;
-			Main.projectile[newb].melee=true;
-			Main.projectile[newb].netUpdate=true;
-			orbitors[k]=Main.projectile[newb];
+				if (spinners[k] == -6)
+				{
+					spinners[k] = 1;
+					int newb = Projectile.NewProjectile(projectile.Center, new Vector2(0f, 0f), ModContent.ProjectileType<SnappyTooth>(), (int)(projectile.damage * 0.75), projectile.knockBack, Main.myPlayer, 0f, (float)Main.player[projectile.owner].whoAmI);
+					Main.projectile[newb].penetrate = 4;
+					Main.projectile[newb].ranged = false;
+					Main.projectile[newb].melee = true;
+					Main.projectile[newb].netUpdate = true;
+					orbitors[k] = Main.projectile[newb];
+					projectile.netUpdate = true;
+				}
+				else
+				{
+					if (orbitors[k] != null)
+					{
+						if (orbitors[k].type == mod.ProjectileType("SnappyTooth"))
+						{
+							double anglez = (k / ((double)5f));
+							double angle = ((float)(started / 5f)) + 2.0 * Math.PI * anglez;
+							Vector2 loc = new Vector2(-1f + (float)((Math.Cos(angle) * 16f)), (float)((Math.Sin(angle) * 16f)));
+							Vector2 gohere = projectile.Center + loc;
+							orbitors[k].Center = gohere + projectile.velocity;
+							orbitors[k].timeLeft = 3;
+							orbitors[k].velocity = loc * 0.05f;
 
-
-			}else{
-			if (orbitors[k]!=null){
-			if (orbitors[k].type==mod.ProjectileType("SnappyTooth")){
-			double anglez=(k / ((double)5f));
-  			double angle=((float)(started/5f))+ 2.0* Math.PI * anglez;
-  			Vector2 loc=new Vector2(-1f+(float)((Math.Cos(angle) * 16f)), (float)((Math.Sin(angle) * 16f)));
-  			Vector2 gohere=projectile.Center+loc;
-  			orbitors[k].Center=gohere+projectile.velocity;
-  			orbitors[k].timeLeft=3;
-  			orbitors[k].velocity=loc*0.05f;
-
-		}}}
-		}
+						}
+					}
+				}
+			}
 
 
 

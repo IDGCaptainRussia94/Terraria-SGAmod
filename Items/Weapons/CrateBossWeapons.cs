@@ -15,11 +15,11 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Midas Touch");
-			Tooltip.SetDefault("Attacks always crit and deal double damage VS enemies debuffed with Midas");
+			Tooltip.SetDefault("Attacks always crit and deal double damage VS enemies debuffed with Midas\nDoesn't work with a Flask of Gold");
 		}
 		public override void SetDefaults()
 		{
-			item.damage = 85;
+			item.damage = 70;
 			item.melee = true;
 			item.width = 32;
 			item.height = 32;
@@ -53,13 +53,12 @@ namespace SGAmod.Items.Weapons
 
 		public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
 		{
-			if (target.HasBuff(BuffID.Midas))
+			if (target.HasBuff(BuffID.Midas) && !player.HasBuff(BuffID.WeaponImbueGold))
 			{
 				crit = true;
 				damage *= 2;
 			}
 		}
-
 	}
 	public class CrateBossWeaponMagic : ModItem
 	{
@@ -620,6 +619,54 @@ namespace SGAmod.Items.Weapons
 				buffIndex--;
 			}
 		}
+	}
+
+	public class CrateBossWeaponMeleeOld : CrateBossWeaponMelee
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Fortune Falchion");
+			Tooltip.SetDefault("Sucks in nearby money when hold\nHitting enemies debuffed with Midas increases the money they drop by 5% of the weapon's value\nEquiping the [i:" + mod.ItemType("IdolOfMidas") + "] greatly improves this weapon's effects");
+		}
+		public override void SetDefaults()
+		{
+			item.damage = 32;
+			item.melee = true;
+			item.width = 32;
+			item.height = 32;
+			item.useTime = 15;
+			item.useAnimation = 15;
+			item.useStyle = 1;
+			item.knockBack = 3;
+			item.value = Item.sellPrice(0, 3, 0, 0);
+			item.rare = ItemRarityID.LightPurple;
+			item.UseSound = SoundID.Item1;
+			item.autoReuse = true;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.FalconBlade, 1);
+			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 10);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+		public override void HoldItem(Player player)
+		{
+			player.goldRing = true;
+		}
+
+		public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+		{
+			if (target.HasBuff(BuffID.Midas))
+			{
+				target.value += (int)(item.value * (player.SGAPly().MidasIdol>0 ? 0.20f : 0.05f));
+			}
+		}
+
 	}
 
 }

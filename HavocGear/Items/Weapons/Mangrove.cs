@@ -144,7 +144,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		{
 			item.damage = 10;
 			item.magic = true;
-			item.mana = 8;
+			item.mana = 6;
 			item.width = 38;
 			item.height = 40;
 			item.useTime = 10;
@@ -155,7 +155,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.value = 25000;
 			item.rare = 3;
 			item.noMelee = true;
-			item.shoot = mod.ProjectileType("MangroveOrb");
+			item.shoot = mod.ProjectileType("MangroveStaffOrb");
 			item.shootSpeed = 12f;
 			item.UseSound = SoundID.Item1;
 			item.autoReuse = true;

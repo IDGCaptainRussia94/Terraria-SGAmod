@@ -22,7 +22,7 @@ namespace SGAmod.Items.Tools
 		{
 			item.CloneDefaults(ItemID.MythrilPickaxe);
 		}
-
+		
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);

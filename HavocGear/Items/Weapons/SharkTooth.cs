@@ -8,10 +8,10 @@ namespace SGAmod.HavocGear.Items.Weapons
 {
     public class SharkTooth : ModItem
     {
-	public override void SetStaticDefaults()
-	{
-		DisplayName.SetDefault("Shark Tooth");
-            Tooltip.SetDefault("May be bought from the Arms Dealer if the player has a [i:" + mod.ItemType("SnappyShark") + "] in their inventory");
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Shark Tooth");
+            Tooltip.SetDefault("May be bought from the Arms Dealer if the player has a [i:" + mod.ItemType("SnappyShark") + "] in their inventory\nDrops from Sharks after Sharkvern is defeated");
         }
 
         public override void SetDefaults()

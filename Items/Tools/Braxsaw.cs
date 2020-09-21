@@ -25,7 +25,7 @@ namespace SGAmod.Items.Tools
 			item.channel = true;
 			item.noUseGraphic = true;
 			item.noMelee = true;
-			item.pick = 225;
+			item.pick = 250;
 			item.axe = 225;
 			item.tileBoost+=5;
 			item.useStyle = 5;

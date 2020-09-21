@@ -731,7 +731,7 @@ namespace SGAmod.Items.Consumable
 				{
 					if (SGAWorld.downedHellion == 0)
 					{
-						tooltips.Add(new TooltipLine(mod, "Nmxx", "'Well done " + SGAmod.userName + ". Yes, I know your real name behind that facade you call " + Main.LocalPlayer.name + ".'"));
+						tooltips.Add(new TooltipLine(mod, "Nmxx", "'Well done " + SGAmod.HellionUserName + ". Yes, I know your real name behind that facade you call " + Main.LocalPlayer.name + ".'"));
 						tooltips.Add(new TooltipLine(mod, "Nmxx", "'And thanks to your Dragon's signal, I have found my way to your world, this one tear which will let me invade your puny little " + Main.worldName + "'"));
 						tooltips.Add(new TooltipLine(mod, "Nmxx", "'Spend what little time you have left meaningful, if you were expecting to save him, I doubt it'"));
 						tooltips.Add(new TooltipLine(mod, "Nmxx", "'But let us not waste anymore time, come, face me'"));
@@ -744,7 +744,7 @@ namespace SGAmod.Items.Consumable
 				}
 				else
 				{
-					tooltips.Add(new TooltipLine(mod, "Nmxx", "'Hmp, very Well done " + SGAmod.userName + ", you've bested me, this time"));
+					tooltips.Add(new TooltipLine(mod, "Nmxx", "'Hmp, very Well done " + SGAmod.HellionUserName + ", you've bested me, this time"));
 					tooltips.Add(new TooltipLine(mod, "Nmxx", "But next time you won't be so lucky..."));
 					tooltips.Add(new TooltipLine(mod, "Nmxx", "My tears have stablized..."));
 					tooltips.Add(new TooltipLine(mod, "Nmxx", "Enjoy your fancy reward, you've earned that much..."));

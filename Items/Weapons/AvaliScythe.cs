@@ -47,8 +47,8 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 10);
-			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 8);
+			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 8);
+			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 6);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -164,13 +164,15 @@ namespace SGAmod.Items.Weapons
 			}
 
 
-			if (projectile.ai[1] < 1) {
+			if (projectile.ai[1] < 1)
+			{
 				subdamage = projectile.damage;
 				projectile.ai[0] = Math.Min(projectile.ai[0] + 0.2f, 16f);
 				basep.itemAnimation = 5;
 				basep.itemTime = 5;
 				projectile.timeLeft = 30;
-				}
+			}
+
 			if (projectile.ai[1] < 1)
 			{
 				if (projectile.owner == Main.myPlayer)
@@ -183,6 +185,7 @@ namespace SGAmod.Items.Weapons
 					projectile.netUpdate = true;
 					projectile.Center = mousePos;
 				}
+
 				basep.heldProj = projectile.whoAmI;
 
 				projectile.position -= projectile.velocity;
@@ -191,7 +194,6 @@ namespace SGAmod.Items.Weapons
 			}
 			projectile.localAI[0] += (projectile.ai[0] + 5f)*projectile.direction;
 			projectile.rotation = MathHelper.ToRadians(projectile.localAI[0]);
-			//projectile.damage = (int)(subdamage * (1+(projectile.ai[0] / 15f)));
 
 		}
 

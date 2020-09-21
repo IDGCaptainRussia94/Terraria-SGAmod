@@ -274,6 +274,34 @@ return false;
 		public int quitermode=0;
 		public int fighttversion=0;
 		public int stopmovement = 0;
+		internal static Dictionary<int, string> matchingArmors;
+
+		static LuminiteWraith()
+		{
+			FillDictionary();
+		}
+
+		static void FillDictionary()
+		{
+			matchingArmors = new Dictionary<int, string>();
+
+			matchingArmors.Add(ItemID.ShroomiteHeadgear, "(shroomite)");
+			matchingArmors.Add(ItemID.ShroomiteBreastplate, "(shroomite)");
+			matchingArmors.Add(ItemID.ShroomiteLeggings, "(shroomite)");
+
+			matchingArmors.Add(ItemID.TurtleHelmet, "(turtle)");
+			matchingArmors.Add(ItemID.TurtleScaleMail, "(turtle)");
+			matchingArmors.Add(ItemID.TurtleLeggings, "(turtle)");
+
+			matchingArmors.Add(ItemID.TikiMask, "(tiki)");
+			matchingArmors.Add(ItemID.TikiShirt, "(tiki)");
+			matchingArmors.Add(ItemID.TikiPants, "(tiki)");
+
+			matchingArmors.Add(ItemID.SpectreHood, "(spectre)");
+			matchingArmors.Add(ItemID.SpectreRobe, "(spectre)");
+			matchingArmors.Add(ItemID.SpectrePants, "(spectre)");
+		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Luminite Wraith");
@@ -630,7 +658,6 @@ return false;
 									if (guy.attachedID == npc.whoAmI)
 									{
 										guy.ForcePhaseArmor();
-										Main.NewText("yes");
 									}
 
 								}
@@ -655,12 +682,12 @@ return false;
 			if (NPC.CountNPCS(mod.NPCType("BossCopperWraith")) > 0)
 				npc.dontTakeDamage = true;
 
-			if (music == MusicID.LunarBoss)
+			if (warninglevel > maxfight && quitermode < 0)
 			{
 				for (int i = 0; i < Main.maxPlayers; i += 1)
 				{
-					if (Main.player[i].active && !Main.player[i].dead)
-						Main.player[i].AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("BossFightPurity").Type, 1);
+					//if (Main.player[i].active && !Main.player[i].dead)
+						//Main.player[i].AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("BossFightPurity").Type, 1);
 				}
 			}
 
@@ -1018,9 +1045,10 @@ return false;
 			public Vector2 whereisthetarget;
 			public float delay=0f;
 			public bool hitstate=false;
-		public int timeswentdown = 0;
+			public int timeswentdown = 0;
 			public bool droploot=false;
 		public bool premoonlord => (SGAWorld.downedWraiths<3);
+		protected virtual string armorName => "";
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
@@ -1106,16 +1134,13 @@ return false;
 				NPC myowner=Main.npc[myself.attachedID];
 				if (npc.dontTakeDamage==false){
 
-//public static List<Projectile> Shattershots(Vector2 here,Vector2 there,Vector2 widthheight,int type,int damage,float Speed,float spread,int count,bool centershot,float globalangularoffset,bool tilecollidez,int timeleft){
 			if (npc.ai[3]==ItemID.SpectreRobe){
 
 			if (npc.ai[0]%400<100 && npc.ai[0]%8==0){
-			List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.DiamondBolt,20,(float)(Main.rand.Next(180,220))*0.1f,30,1,true,0,false,400);
-			//itz[0].aiStyle=0;
+			Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.DiamondBolt,20,(float)(Main.rand.Next(180,220))*0.1f,30,1,true,0,false,400);
 			}
 			if (npc.ai[0]%500==0){
-			List<Projectile> itz=Idglib.Shattershots(npc.position,npc.position+new Vector2(0,200),new Vector2(0,0),ProjectileID.DiamondBolt,40,10,360,20,true,0,true,400);
-			//itz[0].aiStyle=0;
+			Idglib.Shattershots(npc.position,npc.position+new Vector2(0,200),new Vector2(0,0),ProjectileID.DiamondBolt,40,10,360,20,true,0,true,400);
 			}
 
 			}
@@ -1646,82 +1671,89 @@ return false;
 
 	}
 
-public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-{
-Texture2D texture = Main.itemTexture[tempappeance];
-Vector2 drawPos = npc.Center - Main.screenPosition;
-Color lights=lightColor;
-lights.A=(byte)(npc.alpha);
-Vector2 origin = new Vector2((float)texture.Width * 0.5f, (float)texture.Height * 0.5f);
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Vector2 drawPos = npc.Center - Main.screenPosition;
+			Color lights = lightColor;
+			lights.A = (byte)(npc.alpha);
 
-			Vector2 drawoffset = new Vector2((float)Math.Sin(Main.GlobalTime*1.1775f + ((float)npc.whoAmI * 3.734575f)) * 12f, (float)Math.Cos(Main.GlobalTime + ((float)npc.whoAmI * 3.734575f)) * 8f);
+			//matchingArmors
+			Vector2 drawoffset = new Vector2((float)Math.Sin(Main.GlobalTime * 1.1775f + ((float)npc.whoAmI * 3.734575f)) * 12f, (float)Math.Cos(Main.GlobalTime + ((float)npc.whoAmI * 3.734575f)) * 8f);
+			bool firstphase = armors.Count >= 400;
 
-			if (armors.Count < 401)
+			Rectangle drawrect;
+			Texture2D texture = mod.GetTexture("NPCs/Wraiths/Luminite_Wraith_resprite_Leggings");
+			Vector2 origin = new Vector2((float)texture.Width * 0.5f, -12);
+
+			if (firstphase)
 			{
-				Rectangle drawrect;
-				texture = mod.GetTexture("NPCs/Wraiths/Luminite_Wraith_resprite_Leggings");
-				origin = new Vector2((float)texture.Width * 0.5f, -12);
-				if (GetType() == typeof(LuminiteWraithChestPlate))
-				{
+				LuminiteWraith.matchingArmors.TryGetValue(tempappeance, out string armorstring);
+				texture = mod.GetTexture("NPCs/Wraiths/Luminite Wraith " + armorstring + " " + armorName);
+			}
+
+			if (GetType() == typeof(LuminiteWraithChestPlate))
+			{
+				if (!firstphase)
 					texture = mod.GetTexture("NPCs/Wraiths/Luminite_Wraith_resprite_Chestplate");
-					origin = new Vector2((float)texture.Width * 0.5f, (float)texture.Height * 0.5f);
-				}
-				if (GetType() == typeof(LuminiteWraithHead))
-				{
+				origin = new Vector2((float)texture.Width * 0.5f, (float)texture.Height * 0.5f);
+			}
+			if (GetType() == typeof(LuminiteWraithHead))
+			{
+				if (!firstphase)
 					texture = mod.GetTexture("NPCs/Wraiths/Luminite_Wraith_resprite_Helmet");
-					int offset = (int)(Math.Min(((int)((float)Main.GlobalTime * 8f)) % 15f, 5) * ((float)texture.Height / 6f));
-					drawrect = new Rectangle(0, offset, texture.Width, (int)(texture.Height / 6f));
-					origin = new Vector2((float)texture.Width * 0.5f, ((float)(texture.Height / 6f) * 0.5f) + 20f);
-				}
-				else
-				{
-					drawrect = new Rectangle(0, 0, texture.Width, texture.Height);
-				}
-				SpriteEffects effect = SpriteEffects.None;
-				if (Main.player[npc.target].active && !Main.player[npc.target].dead)
-				{
-					if (Main.player[npc.target].Center.X < npc.Center.X)
-						effect = SpriteEffects.FlipHorizontally;
-				}
+				int offset = (int)(Math.Min(((int)((float)Main.GlobalTime * 8f)) % 15f, 5) * ((float)texture.Height / 6f));
+				drawrect = new Rectangle(0, offset, texture.Width, (int)(texture.Height / 6f));
+				origin = new Vector2((float)texture.Width * 0.5f, ((float)(texture.Height / 6f) * 0.5f) + 20f);
+			}
+			else
+			{
+				drawrect = new Rectangle(0, 0, texture.Width, texture.Height);
+			}
 
-				for(float speez=npc.velocity.Length();speez>0f; speez -= 0.5f)
-				{
-					Vector2 speedz = (npc.velocity); speedz.Normalize();
-					spriteBatch.Draw(texture, drawPos+(speedz*speez*-2f)+ drawoffset, drawrect, lights*0.1f, npc.rotation, origin, new Vector2(1f, 1f), effect, 0f);
+			SpriteEffects effect = SpriteEffects.None;
+			if (Main.player[npc.target].active && !Main.player[npc.target].dead)
+			{
+				if (Main.player[npc.target].Center.X < npc.Center.X)
+					effect = SpriteEffects.FlipHorizontally;
+			}
 
-				}
+			for (float speez = npc.velocity.Length()*(firstphase ? 0.50f : 1f); speez > 0f; speez -= 0.5f)
+			{
+				Vector2 speedz = (npc.velocity); speedz.Normalize();
+				spriteBatch.Draw(texture, drawPos + (speedz * speez * -2f) + drawoffset, drawrect, lights * 0.1f, npc.rotation, origin, new Vector2(1f, 1f), effect, 0f);
 
-				spriteBatch.Draw(texture, drawPos + drawoffset, drawrect, lights, npc.rotation, origin, new Vector2(1f, 1f), effect, 0f);
+			}
 
+			spriteBatch.Draw(texture, drawPos + drawoffset, drawrect, lights, npc.rotation, origin, new Vector2(1f, 1f), effect, 0f);
+
+			if (!firstphase)
+			{
 				spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-				float opacity = MathHelper.Clamp((float)Math.Sin(Main.GlobalTime)*1.5f,0f,1f);
+				float opacity = MathHelper.Clamp((float)Math.Sin(Main.GlobalTime) * 1.5f, 0f, 1f);
 
 				ArmorShaderData shader;
 				shader = GameShaders.Armor.GetShaderFromItemId(ItemID.SolarDye);
 				if (tempappeance == ItemID.VortexBreastplate || tempappeance == ItemID.VortexHelmet || tempappeance == ItemID.VortexLeggings)
-					shader=GameShaders.Armor.GetShaderFromItemId(ItemID.VortexDye);
+					shader = GameShaders.Armor.GetShaderFromItemId(ItemID.VortexDye);
 				if (tempappeance == ItemID.NebulaBreastplate || tempappeance == ItemID.NebulaLeggings || tempappeance == ItemID.NebulaHelmet)
-					shader=GameShaders.Armor.GetShaderFromItemId(ItemID.NebulaDye);
+					shader = GameShaders.Armor.GetShaderFromItemId(ItemID.NebulaDye);
 				if (tempappeance == ItemID.StardustHelmet || tempappeance == ItemID.StardustLeggings || tempappeance == ItemID.StardustBreastplate)
-					shader=GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye);
+					shader = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye);
 
 				shader.UseOpacity(0.75f);
 				shader.UseSaturation(0.85f);
 				shader.Apply(null);
 
-				spriteBatch.Draw(texture, drawPos+ drawoffset, drawrect, Color.White* opacity, npc.rotation, origin, new Vector2(1f, 1f), effect, 0f);
+				spriteBatch.Draw(texture, drawPos + drawoffset, drawrect, Color.White * opacity, npc.rotation, origin, new Vector2(1f, 1f), effect, 0f);
 
 				spriteBatch.End();
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 			}
-			else
-			{
-				spriteBatch.Draw(texture, drawPos+(drawoffset/3f), null, lights, npc.rotation, origin, new Vector2(1f, 1f), SpriteEffects.None, 0f);
-			}
-return false;
-}
+
+			return false;
+		}
 		public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
 			//;
@@ -1734,7 +1766,7 @@ return false;
 
 	public class LuminiteWraithChestPlate: LuminiteWraithArmor
 	{
-
+		protected override string armorName => "breastplate";
 		public LuminiteWraithChestPlate()
 		{
 		//public override void SetDefaults()
@@ -1769,6 +1801,7 @@ return false;
 
 	public class LuminiteWraithPants: LuminiteWraithArmor
 	{
+		protected override string armorName => "legs";
 		public LuminiteWraithPants()
 		{
 		//public override void SetDefaults()
@@ -1802,6 +1835,7 @@ return false;
 
 	public class LuminiteWraithHead: LuminiteWraithArmor
 	{
+		protected override string armorName => "head";
 		public LuminiteWraithHead()
 		{
 		//public override void SetDefaults()

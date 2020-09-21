@@ -85,7 +85,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new StarMetalRecipes(mod);
+			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Glass, 5);
 			recipe.AddTile(TileID.Furnaces);
 			recipe.SetResult(this, 10);
@@ -116,7 +116,7 @@ namespace SGAmod.Items.Weapons
 			projectile.hostile = false;
 			projectile.friendly = true;
 			projectile.tileCollide = true;
-			projectile.magic = true;
+			projectile.melee = true;
 			aiType = ProjectileID.WoodenArrowFriendly;
 		}
 

@@ -46,18 +46,13 @@ namespace SGAmod.Items
 		public override bool CanRightClick()
 		{
 		Player ply=Main.LocalPlayer;
-		return ((!Main.dayTime && (ply.CountItem(ItemID.GoldenKey)>0 || ply.CountItem(ItemID.LightKey)>0 || ply.CountItem(ItemID.NightKey)>0 || ply.CountItem(ItemID.TempleKey)>0 || ply.CountItem(ItemID.ShadowKey)>0)) || ply.CountItem(mod.ItemType("TerrariacoCrateKey"))>0);
+			bool canclick = (ply.CountItem(ItemID.GoldenKey) > 0 || ply.CountItem(ItemID.LightKey) > 0 || ply.CountItem(ItemID.NightKey) > 0 || ply.CountItem(ItemID.TempleKey) > 0 || ply.CountItem(ItemID.ShadowKey) > 0);
+			return ((!Main.dayTime && canclick) || ply.CountItem(mod.ItemType("TerrariacoCrateKey"))>0);
 		}
 
 		public override void RightClick(Player ply)
 		{
 
-		if (ply.CountItem(ItemID.TempleKey)+ply.CountItem(ItemID.ShadowKey)>0){
-		string akeyname=ply.CountItem(ItemID.TempleKey)>0 ? "Temple Key" : "Shadow Key";
-		Main.NewText("this "+akeyname+" doesn't seem to fit the lock",244, 220, 46);
-		ply.QuickSpawnItem(item.type, 1);
-		return;
-		}
 
 		bool usedwrongkey=(ply.CountItem(ItemID.GoldenKey)>0 || ply.CountItem(ItemID.LightKey)>0 || ply.CountItem(ItemID.NightKey)>0);
 		bool usedrightkey=(ply.CountItem(mod.ItemType("TerrariacoCrateKey"))>0);
@@ -68,7 +63,14 @@ namespace SGAmod.Items
 		CrateLoot(ply);
 		}
 		if (usedwrongkey==true){
-		if (ply.CountItem(ItemID.GoldenKey)>0){whatkey=ItemID.GoldenKey;}
+
+				if (Main.dayTime)
+				{
+					Main.NewText("This gamble can only be attempted at night", 244, 220, 46);
+					return;
+				}
+
+				if (ply.CountItem(ItemID.GoldenKey)>0){whatkey=ItemID.GoldenKey;}
 		if (ply.CountItem(ItemID.LightKey)>0){whatkey=ItemID.LightKey;}
 		if (ply.CountItem(ItemID.NightKey)>0){whatkey=ItemID.NightKey;}
 		if (!NPC.AnyNPCs(mod.NPCType("Cratrosity"))){

@@ -11,6 +11,7 @@ using Terraria.Enums;
 using Idglibrary;
 using Idglibrary.Bases;
 using AAAAUThrowing;
+using CalamityMod.Dusts;
 
 namespace SGAmod.Items.Weapons.Javelins
 {
@@ -22,6 +23,7 @@ namespace SGAmod.Items.Weapons.Javelins
         //public Action<string> messageTarget;
         public Func<int, int, bool> testForEquality = (x, y) => x == y;
         public virtual int Penetrate => 5;
+        public virtual int PierceTimer => 100;
         public virtual float Stabspeed => 1.20f;
         public virtual float Throwspeed => 6f;
         public virtual float Speartype => 0;
@@ -37,9 +39,9 @@ namespace SGAmod.Items.Weapons.Javelins
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.Wood, 5);
-            recipe.AddIngredient(ItemID.StoneBlock, 20);
+            recipe.AddIngredient(ItemID.StoneBlock, 10);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 50);
+            recipe.SetResult(this, 100);
             recipe.AddRecipe();
             //messageTarget = delegate(string s) { bool thisisit = testForEquality(2,6); };
 
@@ -237,6 +239,7 @@ namespace SGAmod.Items.Weapons.Javelins
             if (player.altFunctionUse == 2)
             {
                 (Main.projectile[thisoned].modProjectile as JavelinProj).maxstick += (player.GetModPlayer<SGAPlayer>().JavelinSpearHeadBundle ? 1 : 0);
+                (Main.projectile[thisoned].modProjectile as JavelinProj).maxStickTime = PierceTimer;
             }
 
             Main.projectile[thisoned].netUpdate = true;
@@ -264,6 +267,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public Player P;
         public Vector2 offset;
         public int maxstick = 1;
+        public int maxStickTime = 100;
         bool hitboxchange = false;
         static public string[] tex =
     {"SGAmod/Items/Weapons/Javelins/StoneJavelin",
@@ -276,6 +280,7 @@ namespace SGAmod.Items.Weapons.Javelins
         "SGAmod/Items/Weapons/Javelins/ShadowJavelin",
         "SGAmod/Items/Weapons/Javelins/SanguineBident",
          "SGAmod/Items/Weapons/Javelins/TerraTrident",
+         "SGAmod/Items/Weapons/Javelins/CrimsonCatastrophe",
        };
         public override void SetStaticDefaults()
         {
@@ -288,12 +293,33 @@ namespace SGAmod.Items.Weapons.Javelins
         {
             writer.Write(stickin);
             writer.Write(maxstick);
+            writer.Write(maxStickTime);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             stickin = reader.ReadInt32();
             maxstick = reader.ReadInt32();
+            maxStickTime = reader.ReadInt32();
+        }
+        public override void SetDefaults()
+        {
+            projectile.width = 12;
+            projectile.height = 12;
+            projectile.friendly = true;
+            projectile.melee = false;
+            projectile.Throwing().thrown = true;
+            projectile.tileCollide = true;
+            projectile.penetrate = 5;
+            projectile.timeLeft = 300;
+            projectile.light = 0.25f;
+            projectile.extraUpdates = 1;
+            projectile.ignoreWater = true;
+        }
+
+        public override string Texture
+        {
+            get { return ("SGAmod/Items/Weapons/Javelins/StoneJavelin"); }
         }
 
         public override bool? CanHitNPC(NPC target)
@@ -342,8 +368,8 @@ namespace SGAmod.Items.Weapons.Javelins
 
                 }
             }
-            if (projectile.ai[1] == 8)
-            {//Sanguine Bident
+            if (projectile.ai[1] == 8)//Sanguine Bident
+            {
                 
                 if (projectile.modProjectile.GetType() == typeof(JavelinProj))
                 {
@@ -360,11 +386,11 @@ namespace SGAmod.Items.Weapons.Javelins
 
 
             }
-            if (projectile.ai[1] == 9)
+            if (projectile.ai[1] == 9)//Terra Trident
             {
                 if (projectile.modProjectile.GetType() == typeof(JavelinProj))
                 {
-                    //Terra Trident
+                    
                     Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 60, 0.6f, 0.25f);
                     Vector2 velo = projectile.velocity; velo.Normalize();
                     int prog = Projectile.NewProjectile(projectile.Center.X + (velo.X * 20f), projectile.Center.Y + (velo.Y * 20f), velo.X * 6f, velo.Y * 6f, SGAmod.Instance.ProjectileType("TerraTridentProj"), (int)(projectile.damage*0.75), projectile.knockBack / 2f, Main.myPlayer);
@@ -376,6 +402,25 @@ namespace SGAmod.Items.Weapons.Javelins
                     IdgProjectile.Sync(prog);
                     NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, prog);
                 }
+            }
+            if (projectile.ai[1] == 10)//Crimson Catastrophe
+            {
+                int bleed = SGAmod.Instance.BuffType("MassiveBleeding");
+                ModProjectile modproj = projectile.modProjectile;
+                if (modproj.GetType() == typeof(JavelinProj))
+                {
+                    foreach (NPC enemy in Main.npc.Where(enemy => enemy.active && enemy.active && enemy.life > 0 && !enemy.friendly && !enemy.dontTakeDamage && enemy.Distance(projectile.Center)<500 && (modproj as JavelinProj).stickin!= enemy.whoAmI && enemy.HasBuff(bleed)))
+                    {
+                        CrimsonCatastrophe.BloodyExplosion(enemy, projectile);
+                    }
+                }
+                else
+                {
+                    target.AddBuff(bleed, 60 * 5);
+                }
+                projectile.netUpdate = true;
+
+
             }
 
         }
@@ -415,29 +460,9 @@ namespace SGAmod.Items.Weapons.Javelins
 
         }
 
-
-        public override void SetDefaults()
-        {
-            projectile.width = 12;
-            projectile.height = 12;
-            projectile.friendly = true;
-            projectile.melee = false;
-            projectile.Throwing().thrown = true;
-            projectile.tileCollide = true;
-            projectile.penetrate = 5;
-            projectile.timeLeft = 300;
-            projectile.light = 0.25f;
-            projectile.extraUpdates = 1;
-            projectile.ignoreWater = true;
-        }
-
-        public override string Texture
-        {
-            get { return ("SGAmod/Items/Weapons/Javelins/StoneJavelin"); }
-        }
-
         public override void AI()
         {
+            projectile.localAI[0] -= 1f;
             float facingleft = projectile.velocity.X > 0 ? 1f : -1f;
             projectile.rotation = ((float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f) +(float)((Math.PI)*-0.25f);
 
@@ -467,7 +492,7 @@ namespace SGAmod.Items.Weapons.Javelins
                     if (projectile.timeLeft < 100)
                     {
                         projectile.penetrate -= 1;
-                        projectile.timeLeft = 200;
+                        projectile.timeLeft = 100+maxStickTime;
                         JavelinProj.JavelinOnHit(himz,projectile);
                         double damageperc = 0.75;
                         if (Main.player[projectile.owner].GetModPlayer<SGAPlayer>().JavelinBaseBundle)
@@ -489,12 +514,32 @@ namespace SGAmod.Items.Weapons.Javelins
             else
             {
 
-                if (Main.rand.NextBool(3))
+                if (projectile.ai[1] == 10)
                 {
-                    Dust dust = Dust.NewDustDirect(projectile.position, projectile.height, projectile.width, DustID.LunarOre,
+                    if (stickin < 0)
+                    {
+                        for (float i = 2f; i > 0.25f; i -= Main.rand.NextFloat(0.25f,1.25f))
+                        {
+                            Vector2 position = projectile.position + Vector2.Normalize(projectile.velocity)*Main.rand.NextFloat(0f,48f);
+                            position -= new Vector2(projectile.width, projectile.height) / 2f;
+                            Dust dust = Dust.NewDustDirect(position, projectile.height, projectile.width, DustID.Fire,0, 0, 200, Scale: 0.5f);
+                            dust.velocity = new Vector2((projectile.velocity.X / 3f) * i, projectile.velocity.Y * i);
+
+                            dust = Dust.NewDustDirect(position, projectile.height, projectile.width, DustID.Blood, 0, 0, 200, Scale: 0.5f);
+                            dust.velocity = new Vector2(projectile.velocity.X * i, (projectile.velocity.Y / 3f) * i);
+                        }
+                    }
+
+                }
+                else
+                {
+                    if (Main.rand.NextBool(3))
+                    {
+                        Dust dust = Dust.NewDustDirect(projectile.position, projectile.height, projectile.width, DustID.LunarOre,
                         projectile.velocity.X * .2f, projectile.velocity.Y * .2f, 200, Scale: 0.5f);
-                    dust.velocity += projectile.velocity * 0.3f;
-                    dust.velocity *= 0.2f;
+                        dust.velocity += projectile.velocity * 0.3f;
+                        dust.velocity *= 0.2f;
+                    }
                 }
 
                 if (projectile.velocity.Y<16f)
@@ -534,13 +579,62 @@ namespace SGAmod.Items.Weapons.Javelins
             Texture2D texture = ModContent.GetTexture(JavelinProj.tex[(int)projectile.ai[1]]);
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 
-            if (projectile.ai[1] == 8 && stickin<0)
+            if (projectile.ai[1] == 10 && stickin >= 0)
+                drawColor = Color.Lerp(drawColor, Color.Red, 0.50f + (float)Math.Sin(projectile.timeLeft / 15f) / 3f);
+
+            if (projectile.ai[1] == 10)
             {
+                float sticktime = (float)maxStickTime;
+                float alpha = 1;
+                if (projectile.penetrate <= 1)
+                    alpha *= MathHelper.Clamp((float)(projectile.timeLeft-100) / 10f, 0f, 1f);
+
+                drawColor *= alpha;
+
+                if (stickin >= 0)
+                {
+                    for (float k = 0; k < MathHelper.TwoPi; k += MathHelper.Pi / 2f)
+                    {
+                        float angle = (k + (float)projectile.whoAmI + Main.GlobalTime);
+                        Vector2 drawPos = projectile.Center+Vector2.Normalize(angle.ToRotationVector2())*260;
+                        Color color = drawColor * MathHelper.Clamp(projectile.localAI[0] / 10f, 0.25f, 1f);
+
+                        spriteBatch.Draw(texture, drawPos - Main.screenPosition, new Rectangle?(), color * 0.5f, angle - (3f*MathHelper.Pi/4f), origin, projectile.scale, effect, 0);
+
+                        angle = (k - (float)projectile.whoAmI - Main.GlobalTime);
+                        float timedelay = (float)(projectile.timeLeft - 100) / sticktime;
+                        float alpha2 = MathHelper.Clamp((float)Math.Sin((double)timedelay*Math.PI)*2f,0f, 1f);
+                        float distancemul = 100f / sticktime;
+                        drawPos = projectile.Center + Vector2.Normalize(angle.ToRotationVector2()) * (projectile.timeLeft-100)*(8f*distancemul);
+                        color = drawColor * alpha2;
+
+                        spriteBatch.Draw(texture, drawPos - Main.screenPosition, new Rectangle?(), color * 0.5f,MathHelper.Pi + angle - (3f * MathHelper.Pi / 4f), origin, projectile.scale, effect, 0);
+
+                    }
+                    return false;
+                }
+
                 for (int k = 0; k < projectile.oldPos.Length; k++)
                 {
-                    Vector2 drawPos = new Vector2(projectile.oldPos[k].X+ projectile.width/2, projectile.oldPos[k].Y + projectile.height / 2) - Main.screenPosition;
+                    drawColor = Color.Lerp(drawColor, Color.Red, 0.50f + (float)Math.Sin((projectile.timeLeft + k) / 15f) / 3f);
+                    Vector2 drawPos = new Vector2(projectile.oldPos[k].X + projectile.width / 2, projectile.oldPos[k].Y + projectile.height / 2) - Main.screenPosition;
                     Color color = projectile.GetAlpha(drawColor) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
-                    spriteBatch.Draw(texture, drawPos, new Rectangle?(), color * 0.5f, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f) - (((float)Math.PI / 2) * (facingleft ? 0f : -1f)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+                    spriteBatch.Draw(texture, drawPos, new Rectangle?(), color * 0.5f* alpha, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f) - (((float)Math.PI / 2) * (facingleft ? 0f : -1f)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+                }
+                return false;
+            }
+
+
+            if (projectile.ai[1] == 8)
+            {
+                if (stickin < 0)
+                {
+                    for (int k = 0; k < projectile.oldPos.Length; k++)
+                    {
+                        Vector2 drawPos = new Vector2(projectile.oldPos[k].X + projectile.width / 2, projectile.oldPos[k].Y + projectile.height / 2) - Main.screenPosition;
+                        Color color = projectile.GetAlpha(drawColor) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                        spriteBatch.Draw(texture, drawPos, new Rectangle?(), color * 0.5f, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f) - (((float)Math.PI / 2) * (facingleft ? 0f : -1f)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+                    }
                 }
             }
 
@@ -599,7 +693,16 @@ namespace SGAmod.Items.Weapons.Javelins
         {
             if (projectile.ignoreWater == false)
             {
-                if (Main.dedServ)
+                if (projectile.ai[1] == 10)
+                {
+                    projectile.extraUpdates = 1;
+                    movein = 8f;
+                    moveout = 5f;
+                    thrustspeed = 5.0f;
+                    projectile.localNPCHitCooldown = 10;
+                }
+
+                    if (Main.dedServ)
                 {
                     Texture2D texture = ModContent.GetTexture(JavelinProj.tex[(int)projectile.ai[1]] + "Spear");
                     int xx = texture.Width - (int)((projectile.width) / 1.5f);
@@ -621,8 +724,6 @@ namespace SGAmod.Items.Weapons.Javelins
                 velo *= 8f;
                 Projectile.NewProjectile(projectile.Center.X+ (velo.X*5f), projectile.Center.Y + (velo.Y * 5f), velo.X, velo.Y, mod.ProjectileType("TerraTridentProj"), (int)(projectile.damage * 0.75), projectile.knockBack, Main.myPlayer);
             }
-
-
         }
 
         public override void AI()
@@ -647,15 +748,41 @@ namespace SGAmod.Items.Weapons.Javelins
         }
         public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
         {
-
+            Player owner = Main.player[projectile.owner];
             bool facingleft = projectile.direction < 0f;
             Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.FlipHorizontally;
             Texture2D texture = ModContent.GetTexture(JavelinProj.tex[(int)projectile.ai[1]]+"Spear");
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-            if (facingleft)
-            Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor, ((projectile.rotation-(float)Math.PI/2) - (float)Math.PI / 2) + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale,effect, 0);
-            if (!facingleft)
-                Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor, (projectile.rotation - (float)Math.PI / 2) + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale,SpriteEffects.None, 0);
+            Vector2 drawpos = projectile.Center;
+
+            if (projectile.ai[1] == 10)
+            {
+                drawpos += Vector2.Normalize(projectile.Center - owner.Center) * 64f;
+                drawColor *= 0.5f;// MathHelper.Clamp((float)(projectile.timeLeft-60f) / 25f,0, 1f);
+
+                for (float i = 0; i < 1f && projectile.ai[1] == 10; i += 0.02f)
+                {
+                    Vector2 offset = (owner.Center - projectile.Center) * i;
+                    drawColor *= (1f - (i / 8f));
+
+                    if (facingleft)
+                        Main.spriteBatch.Draw(texture, (drawpos + offset) - Main.screenPosition, new Rectangle?(), drawColor, ((projectile.rotation - (float)Math.PI / 2) - (float)Math.PI / 2) + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale, effect, 0);
+                    if (!facingleft)
+                        Main.spriteBatch.Draw(texture, (drawpos + offset) - Main.screenPosition, new Rectangle?(), drawColor, (projectile.rotation - (float)Math.PI / 2) + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale, SpriteEffects.None, 0);
+                }
+
+            }
+            else
+            {
+
+                if (facingleft)
+                    Main.spriteBatch.Draw(texture, (drawpos) - Main.screenPosition, new Rectangle?(), drawColor, ((projectile.rotation - (float)Math.PI / 2) - (float)Math.PI / 2) + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale, effect, 0);
+                if (!facingleft)
+                    Main.spriteBatch.Draw(texture, (drawpos) - Main.screenPosition, new Rectangle?(), drawColor, (projectile.rotation - (float)Math.PI / 2) + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale, SpriteEffects.None, 0);
+
+            }
+
+
 
             return false;
         }

@@ -6,9 +6,403 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Utilities;
 
 namespace SGAmod.Items.Weapons
 {
+
+	public class ExplosionBoomerang : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("BOOMerang");
+			Tooltip.SetDefault("Explodes when it hits an enemy, does not explode on tiles\n'This is what happens when you let Demolitionist and Tinkerer have too much fun...'");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 16;
+			item.height = 16;
+			item.damage = 14;
+			item.melee = true;
+			item.noMelee = true;
+			item.useTurn = true;
+			item.noUseGraphic = true;
+			item.useAnimation = 30;
+			item.useStyle = 5;
+			item.noUseGraphic = true;
+			item.useTime = 30;
+			item.knockBack = 1f;
+			item.UseSound = SoundID.Item1;
+			item.autoReuse = false;
+			item.maxStack = 30;
+			item.consumable = true;
+			item.value = Item.buyPrice(silver: 15);
+			item.rare = ItemRarityID.Blue;
+			item.shoot = ModContent.ProjectileType<ExplosionBoomerangProj>();
+			item.shootSpeed = 15f;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return player.ownedProjectileCounts[item.shoot] < 1;
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			Vector2 speed = new Vector2(speedX, speedY);
+
+			Projectile.NewProjectile(position.X, position.Y, speed.X, speed.Y, type, damage, knockBack, Main.myPlayer);
+
+			return false;
+		}
+	}
+
+	public class ExplosionBoomerangProj : ModProjectile
+	{
+		bool HitEnemy = false;
+
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("BOOMerang");
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/ExplosionBoomerang"); }
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.IceBoomerang);
+			projectile.width = 18;
+			projectile.height = 18;
+			projectile.friendly = true;
+			projectile.penetrate = -1;
+			projectile.melee = true;
+			projectile.scale = 1f;
+			projectile.extraUpdates = 0;
+			projectile.tileCollide = true;
+		}
+
+		public override void AI()
+		{
+
+			int dustIndexsmoke = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, 31, 0f, 0f, 100, default(Color), 1f);
+			Main.dust[dustIndexsmoke].scale = 0.1f + (float)Main.rand.Next(5) * 0.1f;
+			Main.dust[dustIndexsmoke].fadeIn = 1.5f + (float)Main.rand.Next(5) * 0.1f;
+			Main.dust[dustIndexsmoke].noGravity = true;
+			Main.dust[dustIndexsmoke].position = projectile.Center + new Vector2(0f, (float)(-(float)projectile.height / 2)).RotatedBy((double)projectile.rotation, default(Vector2)) * 1.1f;
+			dustIndexsmoke = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, 6, 0f, 0f, 100, default(Color), 1f);
+			Main.dust[dustIndexsmoke].scale = 1f + (float)Main.rand.Next(5) * 0.1f;
+			Main.dust[dustIndexsmoke].noGravity = true;
+			Main.dust[dustIndexsmoke].position = projectile.Center + new Vector2(0f, (float)(-(float)projectile.height / 2 - 6)).RotatedBy((double)projectile.rotation, default(Vector2)) * 1.1f;
+
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			HitEnemy = true;
+			projectile.Kill();
+
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			if (HitEnemy == true)
+			{
+				int proj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, Vector2.Zero.X, Vector2.Zero.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage, projectile.knockBack, projectile.owner, 0.0f, 0f);
+				Main.projectile[proj].timeLeft = 2;
+				Main.projectile[proj].netUpdate = true;
+			}
+			else
+			{
+				Player player = Main.player[projectile.owner];
+				if ((projectile.Center - player.MountedCenter).Length() < 80)
+					player.QuickSpawnItem(ModContent.ItemType<ExplosionBoomerang>(), 1);
+
+
+			}
+
+			return true;
+		}
+
+	}
+
+	public class Specterang : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Specterang");
+			Tooltip.SetDefault("Throws a ghostly Boomarang that passes through enemies and walls\nLeaves behind ghostly images of itself that damages enemies");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 10;
+			item.height = 10;
+			item.damage = 60;
+			item.crit = 5;
+			item.melee = true;
+			item.noMelee = true;
+			item.useTurn = true;
+			item.noUseGraphic = true;
+			item.useAnimation = 10;
+			item.useStyle = 5;
+			item.noUseGraphic = true;
+			item.useTime = 10;
+			item.knockBack = 1f;
+			item.UseSound = SoundID.Item1;
+			item.autoReuse = false;
+			item.maxStack = 1;
+			item.value = Item.buyPrice(gold: 5);
+			item.rare = ItemRarityID.LightPurple;
+			item.shoot = ModContent.ProjectileType<SpecterangProj>();
+			item.shootSpeed = 20f;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return player.ownedProjectileCounts[item.shoot] < 1;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.EnchantedBoomerang, 1);
+			recipe.AddIngredient(ItemID.SoulofLight, 6);
+			recipe.AddIngredient(ItemID.SpectreBar, 8);
+			recipe.AddIngredient(ItemID.Ectoplasm, 6);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			Vector2 speed = new Vector2(speedX, speedY);
+
+			Projectile.NewProjectile(position.X, position.Y, speed.X, speed.Y, type, damage, knockBack, player.whoAmI);
+
+			return false;
+		}
+
+		public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+		{
+			/*if (!Main.gameMenu)
+			{
+				Texture2D texture = Main.itemTexture[item.type];
+				Texture2D texture2 = ModContent.GetTexture("SGAmod/Items/GlowMasks/Specterang_Glow");
+				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+				spriteBatch.Draw(texture, item.position + new Vector2(0, 0) - Main.screenPosition, null, lightColor*0.5f, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(texture, item.position + new Vector2(0, 0) - Main.screenPosition, null, lightColor*0.50f, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(texture2, item.position + new Vector2(0, 0) - Main.screenPosition, null, lightColor* 0.75f, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
+			}*/
+		}
+
+		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			if (!Main.gameMenu)
+			{
+				Texture2D texture = Main.itemTexture[item.type];
+				Texture2D texture2 = ModContent.GetTexture("SGAmod/Items/GlowMasks/Specterang_Glow");
+
+				Vector2 slotSize = new Vector2(52f, 52f);
+				position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+				Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+				spriteBatch.Draw(texture, item.Center + new Vector2(0, 0) - Main.screenPosition, null, drawColor * 0.5f, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(texture, item.Center + new Vector2(0, 0) - Main.screenPosition, null, drawColor * 0.50f, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(texture2, item.Center + new Vector2(0, 0) - Main.screenPosition, null, drawColor * 0.75f, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
+			}
+		}
+	}
+
+	public class SpecterangProj : ModProjectile,IDrawAdditive
+	{
+		protected virtual int ReturnTime => 20;
+		protected virtual int ReturnTimeNoSlow => 70;
+		protected virtual float SolidAmmount => 6f;
+		protected float startSpeed = default;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Specterang");
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Projectile_658"); }
+		}
+
+		public static void DrawSpecterang(Projectile projectile,SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D tex = Main.itemTexture[ModContent.ItemType<Specterang>()];
+			Texture2D tex2 = ModContent.GetTexture("SGAmod/Items/GlowMasks/Specterang_Glow");
+
+			float alpha = projectile.localAI[0];
+
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor * 0.50f * alpha, projectile.rotation, tex.Size() / 2f, projectile.scale, default, 0);
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.50f * alpha, projectile.rotation, tex.Size() / 2f, projectile.scale, default, 0);
+			spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, Color.White * 0.80f * alpha, projectile.rotation, tex.Size() / 2f, projectile.scale, default, 0);
+		}
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+			DrawSpecterang(projectile, spriteBatch, Lighting.GetColor((int)(projectile.Center.X/16), (int)(projectile.Center.Y / 16),Color.White));
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D tex = Main.projectileTexture[projectile.type];
+			UnifiedRandom rand = new UnifiedRandom(projectile.whoAmI);
+			for (float a = 6f; a > 0; a -= 0.25f)
+			{
+				float offset = rand.NextFloat(-MathHelper.Pi / 4f, MathHelper.Pi / 4f);
+				float scale = (1f - (a / 6f));
+				spriteBatch.Draw(tex, projectile.Center - (projectile.velocity * a) - Main.screenPosition, null, Color.White * 0.05f * scale, projectile.rotation + offset, tex.Size() / 2f, new Vector2(2f, 2f)* scale, default, 0);
+			}
+
+			return false;
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.IceBoomerang);
+			projectile.width = 24;
+			projectile.height = 24;
+			projectile.friendly = true;
+			projectile.penetrate = -1;
+			projectile.melee = true;
+			projectile.aiStyle = -1;
+			projectile.scale = 1f;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = 15;
+			projectile.extraUpdates = 0;
+			projectile.tileCollide = false;
+		}
+
+        public override bool CanDamage()
+        {
+            return false;
+        }
+
+        public override void AI()
+        {
+
+			bool solid = projectile.ai[0] >= ReturnTime && projectile.ai[0] < ReturnTimeNoSlow;
+
+			if (startSpeed == default)
+			{
+				startSpeed = projectile.velocity.Length();
+				projectile.aiStyle = (projectile.velocity.X>0 ? 1 : -1) - 20;
+			}
+
+			projectile.localAI[0] = 1f;// MathHelper.Clamp(projectile.localAI[0] += (solid ? 0.08f : -0.04f), 0.5f, 1f);
+
+			projectile.ai[0] += 1;
+
+			projectile.rotation += 0.4f * (float)(projectile.aiStyle+20f);
+
+			if (projectile.soundDelay == 0)
+			{
+				projectile.soundDelay = 10;
+				Main.PlaySound(SoundID.Item7, projectile.position);
+			}
+			if (projectile.ai[0] % 2 == 0)
+			{
+				int proj = Projectile.NewProjectile(projectile.Center, -projectile.velocity*0.25f, ModContent.ProjectileType<SpecterangProj2>(), projectile.damage, 0f, projectile.owner);
+				Main.projectile[proj].rotation = projectile.rotation;
+			}
+
+			if (projectile.ai[0] >= ReturnTime)
+			{
+				Player owner = Main.player[projectile.owner];
+
+				Vector2 distmeasure = owner.MountedCenter - projectile.Center;
+
+					projectile.velocity += Vector2.Normalize(distmeasure) * (0.70f);
+
+				if (projectile.ai[0] >= ReturnTimeNoSlow)
+				{
+					//projectile.velocity *= 0.75f;
+					float dist = Math.Min(((projectile.ai[0] - ReturnTimeNoSlow) / 4f), distmeasure.Length());
+					projectile.Center += Vector2.Normalize(distmeasure) * (0.50f) * dist;
+				}
+
+				projectile.velocity *= 0.99f;
+				if (projectile.velocity.Length() > startSpeed)
+					projectile.velocity = Vector2.Normalize(projectile.velocity) * startSpeed;
+
+				if (Main.myPlayer == projectile.owner)
+				{
+					Rectangle rectangle = new Rectangle((int)projectile.position.X, (int)projectile.position.Y, projectile.width, projectile.height);
+					Rectangle value2 = new Rectangle((int)Main.player[projectile.owner].position.X, (int)Main.player[projectile.owner].position.Y, Main.player[projectile.owner].width, Main.player[projectile.owner].height);
+					if (rectangle.Intersects(value2))
+					{
+						projectile.Kill();
+					}
+				}
+
+			}
+
+
+		}
+
+	}
+
+	public class SpecterangProj2 : ModProjectile, IDrawAdditive
+	{
+
+		protected float startSpeed = default;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Specterang Shadow");
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Specterang"); }
+		}
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			SpecterangProj.DrawSpecterang(projectile, spriteBatch, Lighting.GetColor((int)(projectile.Center.X / 16), (int)(projectile.Center.Y / 16), Color.White));
+		}
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D tex = Main.projectileTexture[ModContent.ProjectileType<SpecterangProj2>()];
+			float scale = (float)projectile.timeLeft / 20f;
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.5f* scale, projectile.rotation, tex.Size() / 2f, new Vector2(2f, 2f) * scale, default, 0);
+
+			return false;
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.IceBoomerang);
+			projectile.width = 32;
+			projectile.height = 32;
+			projectile.friendly = true;
+			projectile.penetrate = -1;
+			projectile.melee = true;
+			projectile.timeLeft = 10;
+			projectile.aiStyle = -1;
+			projectile.scale = 1f;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+			projectile.extraUpdates = 0;
+			projectile.tileCollide = false;
+		}
+
+		public override void AI()
+		{
+			projectile.localAI[0] = (float)projectile.timeLeft / 15f;
+		}
+
+	}
+
 
 	public class Fridgeflamarang : ModItem
 	{
@@ -35,14 +429,14 @@ namespace SGAmod.Items.Weapons
 			item.UseSound = SoundID.Item1;
 			item.autoReuse = false;
 			item.maxStack = 1;
-			item.value = Item.buyPrice(gold: 15);
+			item.value = Item.buyPrice(gold: 5);
 			item.rare = ItemRarityID.LightPurple;
 			item.shoot = ModContent.ProjectileType<FridgeflamarangProj>();
 			item.shootSpeed = 10f;
 		}
 		public override string Texture
 		{
-			get { return ("Terraria/Projectile_658"); }
+			get { return ("SGAmod/Invisible"); }
 		}
 
 		public override bool CanUseItem(Player player)
@@ -80,10 +474,15 @@ namespace SGAmod.Items.Weapons
 		{
 			if (!Main.gameMenu)
 			{
-				Texture2D texture = Main.itemTexture[ItemID.IceBoomerang];
+				Texture2D texture = Main.projectileTexture[ModContent.ProjectileType<SpecterangProj>()];
 				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
-				spriteBatch.Draw(texture, item.Center + new Vector2(-6, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
-				spriteBatch.Draw(Main.itemTexture[ItemID.Flamarang], item.Center + new Vector2(6, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(texture, item.Center - Main.screenPosition, null, Color.White, 0f, textureOrigin, 0.50f, SpriteEffects.FlipHorizontally, 0f);
+
+				texture = Main.itemTexture[ItemID.IceBoomerang];
+				textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+
+				spriteBatch.Draw(texture, item.Center + new Vector2(-8, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(Main.itemTexture[ItemID.Flamarang], item.Center + new Vector2(8, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.FlipHorizontally, 0f);
 			}
 		}
 
@@ -91,16 +490,21 @@ namespace SGAmod.Items.Weapons
 		{
 			if (!Main.gameMenu)
 			{
-				Texture2D texture = Main.itemTexture[ItemID.IceBoomerang];
 				Vector2 slotSize = new Vector2(52f, 52f);
-				position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
-				Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+
+				Texture2D texture = Main.projectileTexture[ModContent.ProjectileType<SpecterangProj>()];
 				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
-				spriteBatch.Draw(texture, drawPos + new Vector2(-6, 0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
-				spriteBatch.Draw(Main.itemTexture[ItemID.Flamarang], drawPos + new Vector2(6, 0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.FlipHorizontally, 0f);
+				Vector2 drawPos = (position) + (slotSize * Main.inventoryScale) *0.31f;
+				spriteBatch.Draw(texture, drawPos, null, drawColor, 0f, textureOrigin, Main.inventoryScale/2.5f, SpriteEffects.None, 0f);
+
+				texture = Main.itemTexture[ItemID.IceBoomerang];
+				position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+				drawPos = position + slotSize * Main.inventoryScale / 2f;
+				textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+				spriteBatch.Draw(texture, drawPos + new Vector2(-8, 0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
+				spriteBatch.Draw(Main.itemTexture[ItemID.Flamarang], drawPos + new Vector2(8, 0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.FlipHorizontally, 0f);
 			}
 		}
-
 	}
 
 	public class FridgeflamarangProj : CoralrangProj
@@ -188,7 +592,7 @@ namespace SGAmod.Items.Weapons
 			item.UseSound = SoundID.Item1;
 			item.autoReuse = false;
 			item.maxStack = 1;
-			item.value = Item.buyPrice(gold: 2);
+			item.value = Item.buyPrice(gold: 1);
 			item.rare = ItemRarityID.Green;
 			item.shoot = ModContent.ProjectileType<CoralrangProj>();
 			item.shootSpeed = 7f;

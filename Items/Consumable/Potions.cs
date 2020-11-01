@@ -10,6 +10,79 @@ using Idglibrary;
 
 namespace SGAmod.Items.Consumable
 {
+	public class TriggerFingerPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Trigger Finger Potion");
+			Tooltip.SetDefault("Increases the attack speed of non-autofire guns by 15%");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.Orange;
+			item.value = 1000;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = SGAmod.Instance.BuffType("TriggerFingerPotionBuff");
+			item.buffTime = 60 * 300;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.BottledWater, 5);
+			recipe.AddIngredient(ItemID.DesertFossil, 3);
+			recipe.AddIngredient(ItemID.IllegalGunParts, 1);
+			recipe.AddTile(TileID.AlchemyTable);
+			recipe.SetResult(this, 5);
+			recipe.AddRecipe();
+		}
+	}
+	public class TrueStrikePotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("True Strike Potion");
+			Tooltip.SetDefault("Boosts the damage of True Melee weapons by 20%\nThis includes held projectiles, like spears");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.Orange;
+			item.value = 500;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = SGAmod.Instance.BuffType("TrueStrikePotionBuff");
+			item.buffTime = 60 * 300;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.BottledWater, 1);
+			recipe.AddIngredient(ItemID.Ale,1);
+			recipe.AddIngredient(null, "UnmanedOre", 2);
+			recipe.AddIngredient(null, "WraithFragment3", 1);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
 	public class ClarityPotion : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -23,12 +96,11 @@ namespace SGAmod.Items.Consumable
 			item.width = 14;
 			item.height = 24;
 			item.maxStack = 30;
-			item.rare = 2;
+			item.rare = ItemRarityID.Orange;
 			item.value = 500;
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
-			item.potion = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
@@ -39,9 +111,9 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.ShinePotion);
+			recipe.AddIngredient(ItemID.BottledWater,2);
 			recipe.AddIngredient(ItemID.Sunflower, 1);
-			recipe.AddIngredient(ItemID.FallenStar,3);
+			recipe.AddIngredient(ItemID.ManaCrystal, 1);
 			recipe.AddIngredient(null, "MurkyGel", 4);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 2);
@@ -61,12 +133,11 @@ namespace SGAmod.Items.Consumable
 			item.width = 14;
 			item.height = 24;
 			item.maxStack = 30;
-			item.rare = 2;
+			item.rare = ItemRarityID.Lime;
 			item.value = 500;
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
-			item.potion = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
@@ -79,8 +150,8 @@ namespace SGAmod.Items.Consumable
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.BottledWater);
 			recipe.AddIngredient(null, "Entrophite", 10);
-			recipe.AddIngredient(null, "FieryShard", 2);
-			recipe.AddIngredient(null, "UnmanedBar", 2);
+			recipe.AddIngredient(null, "FieryShard", 1);
+			recipe.AddIngredient(null, "UnmanedOre", 2);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
@@ -99,12 +170,11 @@ namespace SGAmod.Items.Consumable
 			item.width = 14;
 			item.height = 24;
 			item.maxStack = 30;
-			item.rare = 2;
+			item.rare = ItemRarityID.Green;
 			item.value = 500;
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
-			item.potion = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
@@ -115,10 +185,10 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.HealingPotion,1);
+			recipe.AddIngredient(ItemID.BottledWater, 2);
 			recipe.AddIngredient(ItemID.StrangeBrew);
-			recipe.AddIngredient(null, "FrigidShard", 3);
-			recipe.AddIngredient(null, "NoviteBar", 2);
+			recipe.AddIngredient(ItemID.SnowCloudBlock);
+			recipe.AddIngredient(null, "FrigidShard", 2);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
@@ -143,12 +213,11 @@ namespace SGAmod.Items.Consumable
 			item.width = 14;
 			item.height = 24;
 			item.maxStack = 30;
-			item.rare = 8;
+			item.rare = ItemRarityID.Lime;
 			item.value = 1000;
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
-			item.potion = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
@@ -159,15 +228,16 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.RestorationPotion,3);
+			recipe.AddIngredient(ItemID.RestorationPotion,2);
 			recipe.AddIngredient(ItemID.StrangeBrew);
 			recipe.AddIngredient(null, "ManaBattery", 1);
 			recipe.AddIngredient(ItemID.ChlorophyteOre,5);
 			recipe.AddTile(TileID.AlchemyTable);
-			recipe.SetResult(this, 3);
+			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
 		}
 	}
+
 	public class DragonsMightPotion : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -182,12 +252,11 @@ namespace SGAmod.Items.Consumable
 			item.width = 14;
 			item.height = 24;
 			item.maxStack = 30;
-			item.rare = 8;
+			item.rare = ItemRarityID.Lime;
 			item.value = 1000;
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
-			item.potion = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
@@ -199,10 +268,9 @@ namespace SGAmod.Items.Consumable
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.RestorationPotion,2);
-			recipe.AddIngredient(ItemID.BottledHoney);
 			recipe.AddIngredient(null, "OmniSoul", 2);
 			recipe.AddIngredient(null, "Fridgeflame", 2);
-			recipe.AddIngredient(null, "MurkyGel", 4);
+			recipe.AddIngredient(null, "MurkyGel", 3);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 20);
 			recipe.AddTile(TileID.AlchemyTable);
 			recipe.SetResult(this,2);
@@ -228,7 +296,7 @@ namespace SGAmod.Items.Consumable
 			Tooltip.SetDefault("'A Potion of Ice and Fire'" +
 				"\nGrants 25% reduced Damage-over-time caused by Debuffs\nGain an extra 15% less damage while you have Frostburn or OnFire! (Both do not stack)\n25% less damage from cold sources, Obsidian Rose effect\n" + Idglib.ColorText(Color.Red, "Removes Immunity to both Frostburn and OnFire!"));
 		}
-
+		
 		public override void SetDefaults()
 		{
 			item.width = 14;
@@ -239,24 +307,22 @@ namespace SGAmod.Items.Consumable
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
-			item.potion = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
-			item.buffType = mod.BuffType("IceFirePotion");
+			item.buffType = mod.BuffType("IceFirePotionBuff");
 			item.buffTime = 60 * 300;
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.LavaBucket, 1);
-			recipe.AddIngredient(ItemID.WarmthPotion, 2);
-			recipe.AddIngredient(null, "CryostalBar", 2);
-			recipe.AddIngredient(null, "IceFairyDust", 2);
-			recipe.AddIngredient(null, "Fridgeflame", 2);
+			recipe.AddIngredient(ItemID.BottledHoney, 2);
+			recipe.AddIngredient(null, "CryostalBar", 1);
+			recipe.AddIngredient(null, "IceFairyDust", 1);
+			recipe.AddIngredient(null, "Fridgeflame", 3);
 			recipe.AddTile(TileID.AlchemyTable);
-			recipe.SetResult(this, 3);
+			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
 		}
 	}

@@ -498,9 +498,9 @@ return true;
 
 
 
-	public class CobaltWraith : CopperWraith
+	public class CobaltWraith : CopperWraith, ISGABoss
 	{
-		NPC myarmor=null;
+
 		bool madearmor=false;
 		public bool raged=false;
 		public override void SetStaticDefaults()

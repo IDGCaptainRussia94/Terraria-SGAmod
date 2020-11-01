@@ -35,7 +35,7 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AcidBurn";
+			texture = "SGAmod/Buffs/BuffTemplate";
 			return true;
 		}
 		public override void SetDefaults()
@@ -55,12 +55,6 @@ namespace SGAmod.Buffs
 
 	public class SunderedDefense : ModBuff
 	{
-
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = "SGAmod/Buffs/AcidBurn";
-			return true;
-		}
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Sundered Defense");
@@ -81,12 +75,23 @@ namespace SGAmod.Buffs
 			npc.GetGlobalNPC<SGAnpcs>().SunderedDefense = true;
 		}
 	}
+	public class TechnoCurse : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Techno Curse");
+			Description.SetDefault("Technological damage is reduced by 50%");
+			Main.pvpBuff[Type] = false;
+			Main.debuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+		}
+	}
 	public class BIPBuff : ModBuff
 	{
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AcidBurn";
+			texture = "SGAmod/Buffs/BuffTemplate";
 			return true;
 		}
 		public override void SetDefaults()
@@ -98,55 +103,12 @@ namespace SGAmod.Buffs
 			Main.buffNoSave[Type] = true;
 		}
 	}
-	public class ConsumeHellBuff : ModBuff
-	{
-
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = "Terraria/Buff_"+BuffID.OnFire;
-			return true;
-		}
-		public override void SetDefaults()
-		{
-			DisplayName.SetDefault("Consumed Hell");
-			Description.SetDefault("Seems like the underworld can access the rest of the world via your mouth");
-			Main.pvpBuff[Type] = false;
-			Main.buffNoSave[Type] = true;
-			Main.debuff[Type] = true;
-		}
-		public override void Update(Player player, ref int buffIndex)
-		{
-			player.AddBuff(BuffID.OnFire, 2);
-		}
-	}
-	public class IceFirePotion : ModBuff
-	{
-
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = "SGAmod/Buffs/MatrixBuff";
-			return true;
-		}
-		public override void SetDefaults()
-		{
-			DisplayName.SetDefault("Fridgeflame Concoction");
-			Description.SetDefault("Reduced Damage over time at a cost of losing immunities");
-			Main.pvpBuff[Type] = false;
-			Main.buffNoSave[Type] = true;
-		}
-
-		public override void Update(Player player, ref int buffIndex)
-		{
-			player.GetModPlayer<SGAPlayer>().IceFire = true;
-			player.lavaRose = true;
-		}
-	}
 	public class DankSlow : ModBuff
 	{
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AcidBurn";
+			texture = "SGAmod/Buffs/BuffTemplate";
 			return true;
 		}
 		public override void SetDefaults()

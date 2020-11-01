@@ -33,8 +33,8 @@ namespace SGAmod.Items.Weapons.Technical
 			item.rare = 1;
 			item.value = 2000;
 			item.useStyle = 1;
-			item.useAnimation = 70;
-			item.useTime = 70;
+			item.useAnimation = 50;
+			item.useTime = 50;
 			item.knockBack = 8;
 			item.autoReuse = false;
 			item.noUseGraphic = true;
@@ -69,8 +69,8 @@ namespace SGAmod.Items.Weapons.Technical
 	{
 		public override void SetDefaults()
 		{
-			projectile.width = 6;
-			projectile.height = 6;
+			projectile.width = 12;
+			projectile.height = 12;
 			projectile.aiStyle = -1;
 			projectile.friendly = true;
 			projectile.hostile = false;
@@ -111,7 +111,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override void AI()
 		{
-
+			Main.player[projectile.owner].heldProj = projectile.whoAmI;
 		}
 	}
 
@@ -184,7 +184,7 @@ namespace SGAmod.Items.Weapons.Technical
 			DisplayName.SetDefault("Nova Blaster Charging");
 		}
 
-		public override bool? CanHitNPC(NPC target) { return false; }
+		public override bool? CanHitNPC(NPC target) => false;
 
 		public override string Texture
 		{
@@ -323,9 +323,12 @@ namespace SGAmod.Items.Weapons.Technical
 
 				Vector2 perturbedSpeed = (new Vector2(direction.X, direction.Y) * speed); // Watch out for dividing by 0 if there is only 1 projectile.
 
-				int prog = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, perturbedSpeed.X, perturbedSpeed.Y, mod.ProjectileType("CBreakerBolt"), (int)((float)projectile.damage*(1f+ (perc*2f))), 3f, player.whoAmI, perc>=0.99f ? 1 : 0,perc*0.95f);
+				int prog = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, perturbedSpeed.X, perturbedSpeed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)((float)projectile.damage*(1f+ (perc*2f))), 3f, player.whoAmI, perc>=0.99f ? 1 : 0,0.50f+(perc*0.20f));
+				Main.projectile[prog].localAI[0] = (perc * 0.90f);
 				Main.projectile[prog].magic = true;
 				Main.projectile[prog].melee = false;
+				Main.projectile[prog].netUpdate = true;
+
 				IdgProjectile.Sync(prog);
 				Main.PlaySound(SoundID.Item91, player.Center);
 
@@ -346,7 +349,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override void SetDefaults()
 		{
-			item.damage = 11;
+			item.damage = 13;
 			item.summon = true;
 			item.sentry = true;
 			item.width = 24;
@@ -431,7 +434,7 @@ namespace SGAmod.Items.Weapons.Technical
 							Vector2 there = projectile.Center - new Vector2(3f, 20f);
 							Vector2 Speed = (target.Center - there);
 							Speed.Normalize(); Speed *= 2f;
-							int prog = Projectile.NewProjectile(there.X, there.Y, Speed.X, Speed.Y, mod.ProjectileType("CBreakerBolt"), projectile.damage, 1f, player.whoAmI, 0);
+							int prog = Projectile.NewProjectile(there.X, there.Y, Speed.X, Speed.Y, ModContent.ProjectileType<CBreakerBolt>(), projectile.damage, 1f, player.whoAmI, 0);
 							Main.projectile[prog].minion = true;
 							Main.projectile[prog].melee = false;
 							Main.projectile[prog].usesLocalNPCImmunity = true;

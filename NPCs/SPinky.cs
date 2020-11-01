@@ -14,8 +14,11 @@ using Idglibrary;
 namespace SGAmod.NPCs
 {
 	[AutoloadBossHead]
-	public class SPinky : ModNPC
+	public class SPinky : ModNPC, ISGABoss
 	{
+		public string Trophy() => "SupremePinkyTrophy";
+		public bool Chance() => Main.rand.Next(0, 10) == 0;
+
 	int aicounter=0;
 	int pushtimes=0;
 	int trytorun=0;

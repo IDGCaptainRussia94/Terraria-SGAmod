@@ -12,8 +12,9 @@ using Idglibrary;
 
 namespace SGAmod.NPCs.Cratrosity
 {
+	[AutoloadBossHead]
 
-	public class Cratrogeddon: Cratrosity
+	public class Cratrogeddon: Cratrosity, ISGABoss
 	{
 		private int pmlphase=0;
 		private int pmlphasetimer=0;
@@ -25,6 +26,13 @@ namespace SGAmod.NPCs.Cratrosity
 			Main.npcFrameCount[npc.type] = 1;
 			NPCID.Sets.MustAlwaysDraw[npc.type] = true;
 		}
+
+		public override string Texture
+		{
+			get { return "SGAmod/NPCs/Cratrosity/TitanCrate"; }
+		}
+
+		public override string BossHeadTexture => "SGAmod/NPCs/Cratrosity/TitanCrate";
 
 		public override void BossLoot(ref string name, ref int potionType)
 		{

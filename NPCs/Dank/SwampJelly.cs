@@ -22,7 +22,9 @@ namespace SGAmod.NPCs.Dank
 			npc.aiStyle = 18;
 			aiType = NPCID.GreenJellyfish;
 			animationType = NPCID.GreenJellyfish;
-		}
+            banner = npc.type;
+            bannerItem = mod.ItemType("SwampJellyBanner");
+        }
 
         public override void SetStaticDefaults()
         {

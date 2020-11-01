@@ -25,10 +25,11 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.UseSound = SoundID.Item1;
         }
 
-    public override void SetStaticDefaults()
-    {
-      DisplayName.SetDefault("Machete");
-    }
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Machete");
+            Tooltip.SetDefault("Dealing the killing blow will skin Leather off organic enemies");
+        }
 
     }
 }   

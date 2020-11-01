@@ -617,7 +617,7 @@ namespace SGAmod.NPCs.TrueDraken
 			Vector2 vel = (ignoreY ? new Vector2(P.velocity.X, 0) : P.velocity);
 			Vector2 predictedPos = P.MountedCenter + P.velocity + (vel * (Vector2.Distance(P.MountedCenter, origin) / speed));
 			predictedPos = P.MountedCenter + P.velocity + (vel * (Vector2.Distance(predictedPos, origin) / speed));
-			predictedPos = P.MountedCenter + P.velocity + (vel * (Vector2.Distance(predictedPos, origin) / speed));
+			//predictedPos = P.MountedCenter + P.velocity + (vel * (Vector2.Distance(predictedPos, origin) / speed));
 			return predictedPos;
 		}
 

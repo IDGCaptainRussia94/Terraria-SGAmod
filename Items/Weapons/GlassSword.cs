@@ -86,9 +86,9 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Glass, 5);
+			recipe.AddIngredient(ItemID.Glass, 4);
 			recipe.AddTile(TileID.Furnaces);
-			recipe.SetResult(this, 10);
+			recipe.SetResult(this, 15);
 			recipe.AddRecipe();
 		}
 	

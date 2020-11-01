@@ -14,7 +14,7 @@ using Idglibrary;
 namespace SGAmod.NPCs.Wraiths
 {
 
-	public class CaliburnGuardianHardmode : CaliburnGuardian
+	public class CaliburnGuardianHardmode : CaliburnGuardian, ISGABoss
 	{
 		public override void SetStaticDefaults()
 		{
@@ -41,8 +41,12 @@ namespace SGAmod.NPCs.Wraiths
 
 	}
 
-		public class CaliburnGuardian : ModNPC
+		public class CaliburnGuardian : ModNPC, ISGABoss
 	{
+		public string Trophy() => "Caliburn"+ names[(int)npc.ai[2]] +"Trophy";
+		public bool Chance() => true;
+
+		protected string[] names = {"A","B","C"};
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Spirit of Caliburn");

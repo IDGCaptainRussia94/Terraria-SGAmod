@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace SGAmod.Tiles
@@ -12,8 +13,15 @@ namespace SGAmod.Tiles
 			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = true;
 			Main.tileLighted[Type] = true;
+            Main.tileShine[Type] = 800;
+            Main.tileShine2[Type] = true;
+            Main.tileSpelunker[Type] = true;
+            Main.tileValue[Type] = 200;
+            TileID.Sets.Ore[Type] = true;
             minPick = 120;
-			drop = mod.ItemType("PrismalOre");
+            soundType = 21;
+            soundStyle = 1;
+            drop = mod.ItemType("PrismalOre");
             mineResist = 1.25f;
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Prismal Ore");

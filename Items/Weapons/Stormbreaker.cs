@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
+using AAAAUThrowing;
 
 namespace SGAmod.Items.Weapons
 {
@@ -17,7 +18,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Stormbreaker");
-			Tooltip.SetDefault("Left click to guide the Stormbreaker at enemies and deal an additional Squareroot of their max life on hit\nRight click to hold the hammer up and smite your foes, the cost is 15 mana (before mana cost reductions) per foe to be smited\nfoes must be marked via primary fire (40% chance if immune) or wet to be smited\n2 more bolts are summoned during a rainstorm, but overall are less accurate\n'atleast it's not yet another Infinity Gauntlet'");
+			Tooltip.SetDefault("Left click to guide the Stormbreaker at enemies and deal an additional Squareroot of their max life on hit\nRight click to hold the hammer up and smite your foes, Consumes 100 Electric Charge per foe to be smited\nfoes must be marked via primary fire (40% chance if immune) or wet to be smited\n2 more bolts are summoned during a rainstorm, but overall are less accurate\n'atleast it's not yet another Infinity Gauntlet'");
 		}
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -36,7 +37,7 @@ namespace SGAmod.Items.Weapons
 		{
 			item.useStyle = 1;
 			item.thrown=true;
-			item.damage = 750;
+			item.damage = 500;
 			item.shootSpeed = 45f;
 			item.shoot = mod.ProjectileType("Stormbreakerproj");
 			item.useTurn = true;
@@ -78,8 +79,6 @@ namespace SGAmod.Items.Weapons
         altfired=player.altFunctionUse == 2 ? true : false;
 
         if (altfired){
-        	if (player.statMana<(int)(30f*player.manaCost))
-        	return false;
 			item.useAnimation = 45;
 			item.useTime = 45;
 			item.useStyle = 4;
@@ -143,9 +142,9 @@ namespace SGAmod.Items.Weapons
 			projectile.hostile = false;
 			projectile.friendly = true;
 			projectile.tileCollide = false;
-			projectile.thrown = true;
+			projectile.Throwing().thrown = true;
 			projectile.timeLeft = 120;
-			projectile.penetrate = 50;
+			projectile.penetrate = 20;
 			aiType = 0;
 			drawOriginOffsetX = 8;
 			drawOriginOffsetY = -8;
@@ -222,7 +221,7 @@ namespace SGAmod.Items.Weapons
 				{
 					projectile.velocity += flytodistnorm * 8f;
 					projectile.velocity /= 1.05f;
-					float maxspeed = 38f * (1f + ((player.thrownVelocity - 1f) / 2f));
+					float maxspeed = 38f * (1f + ((player.Throwing().thrownVelocity - 1f) / 2f));
 					if (projectile.velocity.Length() > maxspeed)
 					{
 						projectile.velocity.Normalize(); projectile.velocity *= maxspeed;
@@ -289,7 +288,7 @@ namespace SGAmod.Items.Weapons
 			projectile.hostile = false;
 			projectile.friendly = true;
 			projectile.tileCollide = false;
-			projectile.thrown = true;
+			projectile.Throwing().thrown = true;
 			projectile.timeLeft = 120;
 			projectile.penetrate = 10;
 			aiType = 0;
@@ -310,12 +309,7 @@ namespace SGAmod.Items.Weapons
 			if (projectile.ai[0] < 1f && owner.direction != 1)
 				projectile.rotation *= -1f;
 
-
-				owner.manaRegenDelay = (int)(owner.maxRegenDelay * 15);
-
 			projectile.ai[0] += 1;
-
-
 
 			projectile.velocity = new Vector2(0f, owner.itemAnimation > 12 ? -16f : 0);
 			projectile.Center = owner.Center + new Vector2(-24f + (owner.direction == 1 ? 10f : -5f), -16f);
@@ -336,10 +330,10 @@ namespace SGAmod.Items.Weapons
 					{
 						if (him.GetGlobalNPC<SGAnpcs>().InfinityWarStormbreakerint > 0 || him.GetGlobalNPC<SGAnpcs>().DosedInGas || him.dripping)
 						{
-							if (owner.statMana > 0)
+							if (owner.SGAPly().ConsumeElectricCharge(250,150))
 							{
-								owner.statMana -= (int)(10f * owner.manaCost);
-								owner.manaRegenDelay = 180;
+								//owner.statMana -= (int)(15f * owner.manaCost);
+								//owner.manaRegenDelay = Math.Max(owner.manaRegenDelay,30);
 								int rainmeansmore = (Main.raining || owner.GetModPlayer<SGAPlayer>().devempowerment[1] > 0) ? 2 : 0;
 
 								for (int x = 0; x < rainmeansmore + 1; x++)
@@ -349,7 +343,7 @@ namespace SGAmod.Items.Weapons
 									Vector2 speed = new Vector2(0f, 72f);
 									Vector2 perturbedSpeed = speed.RotatedBy(MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0, 100) * 0.02f)) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
 									Vector2 starting = new Vector2(him.Center.X + ((-200 + Main.rand.Next(0, 400)) * rainmeansmore), ((-150 + Main.rand.Next(0, 200)) * rainmeansmore) + him.Center.Y - Main.rand.Next(200, 540));
-									int proj = Projectile.NewProjectile(starting.X,starting.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CultistBossLightningOrbArc, (int)((projectile.damage * 0.50f)*(1f - owner.manaSickReduction)), 15f, Main.player[projectile.owner].whoAmI, (him.Center - starting).ToRotation());
+									int proj = Projectile.NewProjectile(starting.X,starting.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CultistBossLightningOrbArc, (int)((projectile.damage * 0.75f)*(1f - owner.manaSickReduction)), 15f, Main.player[projectile.owner].whoAmI, (him.Center - starting).ToRotation());
 									Main.projectile[proj].friendly = true;
 									Main.projectile[proj].hostile = false;
 									Main.projectile[proj].penetrate = -1;

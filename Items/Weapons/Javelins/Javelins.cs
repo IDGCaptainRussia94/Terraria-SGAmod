@@ -13,6 +13,96 @@ using AAAAUThrowing;
 
 namespace SGAmod.Items.Weapons.Javelins
 {
+    public class CrimsonCatastrophe : SanguineBident
+    {
+
+        public override float Stabspeed => 5f;
+        public override float Throwspeed => 15f;
+        public override int Penetrate => 6;
+        public override float Speartype => 10;
+        public override int[] Usetimes => new int[] { 20, 20 };
+        public override string[] Normaltext => new string[] { "A twisted form of thrown bloodlust that explodes your foe's blood out from their wounds", "Throws 3 Jab-lins that inflict area damage against foes that are Massively Bleeding", "In Addition, crits against enemies afficted with Everlasting Suffering", "On proc the Bleeding and Everlasting Suffering are removed, with a delay before retrigger", "Doesn't effect the enemy the Jab-lin is stuck to", "Primary Fire flies far and fast, and inflicts Massive Bleeding", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Crimson Catastrophe");
+        }
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+            item.damage = 150;
+            item.width = 32;
+            item.height = 32;
+            item.knockBack = 5;
+            item.value = Item.buyPrice(gold: 50);
+            item.rare = ItemRarityID.Red;
+            item.consumable = false;
+            item.maxStack = 1;
+            item.UseSound = SoundID.Item1;
+        }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(mod.ItemType("SanguineBident"), 1);
+            recipe.AddIngredient(mod.ItemType("TerraTrident"), 1);
+            recipe.AddIngredient(ItemID.DayBreak, 1);
+            recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);
+            recipe.AddTile(TileID.LunarCraftingStation);
+            recipe.SetResult(this, 1);
+            recipe.AddRecipe();
+        }
+
+        public static void BloodyExplosion(NPC enemy, Projectile projectile)
+        {
+            if (enemy.GetGlobalNPC<SGAnpcs>().crimsonCatastrophe > 0)
+                return;
+
+            int bleed = SGAmod.Instance.BuffType("MassiveBleeding");
+            int els = SGAmod.Instance.BuffType("EverlastingSuffering");
+            float damazz = (Main.DamageVar((float)projectile.damage * 2f));
+            bool crit = false;
+
+            int buffindex = enemy.FindBuffIndex(bleed);
+            if (buffindex >= 0)
+                enemy.DelBuff(buffindex);
+
+            if (enemy.HasBuff(els))
+            {
+                buffindex = enemy.FindBuffIndex(els);
+                crit = true;
+                enemy.DelBuff(buffindex);
+            }
+
+            projectile.localAI[0] = 20;
+            enemy.GetGlobalNPC<SGAnpcs>().crimsonCatastrophe = 60;
+
+            for (int num315 = -40; num315 < 43; num315 = num315 + (crit ? 1 : 3))
+            {
+                int dustType = DustID.LunarOre;//Main.rand.Next(139, 143);
+                int dustIndex = Dust.NewDust(enemy.Center + new Vector2(-16, -16) + ((Main.rand.NextFloat(0, MathHelper.TwoPi)).ToRotationVector2() * num315), 32, 32, dustType);
+                Dust dust = Main.dust[dustIndex];
+                dust.velocity.X = projectile.velocity.X * (num315 * 0.02f);
+                dust.velocity.Y = projectile.velocity.Y * (num315 * 0.02f);
+                dust.velocity.RotateRandom(Math.PI / 2.0);
+                dust.scale *= 1f + Main.rand.NextFloat(0.2f, 0.5f) / (1f + (num315 / 15f)) + (crit ? 1f : 0f);
+                dust.fadeIn = 0.25f;
+                dust.noGravity = true;
+                Color mycolor = crit ? Color.CornflowerBlue : Color.OrangeRed;
+                dust.color = mycolor;
+                dust.alpha = 20;
+            }
+
+            enemy.StrikeNPC((int)damazz, 0f, 0, crit, true, true);
+
+            if (Main.netMode != 0)
+            {
+                NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, enemy.whoAmI, damazz, 16f, (float)1, 0, 0, 0);
+            }
+
+        }
+
+
+    }
 
     public class TerraTrident : SanguineBident
     {
@@ -86,7 +176,7 @@ namespace SGAmod.Items.Weapons.Javelins
         }
         public override bool PreKill(int timeLeft)
         {
-            for(int i = 0; i < 25; i += 1)
+            for (int i = 0; i < 25; i += 1)
             {
                 int dustIndex = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, DustID.AncientLight, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f, 150, default(Color), 1.5f);
                 Main.dust[dustIndex].velocity += projectile.velocity * 0.3f;
@@ -98,7 +188,7 @@ namespace SGAmod.Items.Weapons.Javelins
         }
         public override void AI()
         {
-            projectile.rotation = ((float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f)-MathHelper.ToRadians(45);
+            projectile.rotation = ((float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f) - MathHelper.ToRadians(45);
 
             if (Main.rand.Next(1) == 0)
             {
@@ -131,7 +221,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override int Penetrate => 3;
         public override float Speartype => 8;
         public override int[] Usetimes => new int[] { 25, 10 };
-        public override string[] Normaltext => new string[] {"Launch 3 projectiles on throw at foes", "Impaled targets may leach life, more likely to leach from bleeding targets","Melee strikes will make enemies bleed","Is considered a Jab-lin, but non consumable and able to have prefixes" };
+        public override string[] Normaltext => new string[] { "Launch 3 projectiles on throw at foes", "Impaled targets may leach life, more likely to leach from bleeding targets", "Melee strikes will make enemies bleed", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sanguine Bident");
@@ -148,7 +238,7 @@ namespace SGAmod.Items.Weapons.Javelins
             item.consumable = false;
             item.maxStack = 1;
         }
-        public override void OnThrow(int type,Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type2, ref int damage, ref float knockBack, JavelinProj madeproj)
+        public override void OnThrow(int type, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type2, ref int damage, ref float knockBack, JavelinProj madeproj)
         {
             if (type == 1)
             {
@@ -171,6 +261,7 @@ namespace SGAmod.Items.Weapons.Javelins
                         Main.projectile[thisoneddddd].Throwing().thrown = true;
 
                         (Main.projectile[thisoneddddd].modProjectile as JavelinProj).maxstick = madeproj.maxstick;
+                        (Main.projectile[thisoneddddd].modProjectile as JavelinProj).maxStickTime = madeproj.maxStickTime;
                         Main.projectile[thisoneddddd].penetrate = madeproj.projectile.penetrate;
                         Main.projectile[thisoneddddd].netUpdate = true;
                         IdgProjectile.Sync(thisoneddddd);
@@ -179,7 +270,45 @@ namespace SGAmod.Items.Weapons.Javelins
                 }
 
             }
-            
+        }
+
+        public override int ChoosePrefix(UnifiedRandom rand)
+        {
+            switch (rand.Next(16))
+            {
+                case 1:
+                    return PrefixID.Demonic;
+                case 2:
+                    return PrefixID.Frenzying;
+                case 3:
+                    return PrefixID.Dangerous;
+                case 4:
+                    return PrefixID.Savage;
+                case 5:
+                    return PrefixID.Furious;
+                case 6:
+                    return PrefixID.Terrible;
+                case 7:
+                    return PrefixID.Awful;
+                case 8:
+                    return PrefixID.Dull;
+                case 9:
+                    return PrefixID.Unhappy;
+                case 10:
+                    return PrefixID.Unreal;
+                case 11:
+                    return PrefixID.Shameful;
+                case 12:
+                    return PrefixID.Heavy;
+                case 13:
+                    return PrefixID.Zealous;
+                case 14:
+                    return mod.PrefixType("Tossable");
+                case 15:
+                    return mod.PrefixType("Impacting");
+                default:
+                    return mod.PrefixType("Olympian");
+            }
         }
 
         public override bool ConsumeItem(Player player)
@@ -208,7 +337,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override int Penetrate => 5;
         public override float Speartype => 7;
         public override int[] Usetimes => new int[] { 25, 12 };
-        public override string[] Normaltext => new string[] { "Made from evil Jab-lins and the dark essence emited by a shadow key, attacks may inflict shadowflame", "Javelins accelerates forward, is not affected by gravity until it hits a target" };
+        public override string[] Normaltext => new string[] { "Made from evil Jab-lins and the dark essence emited by a shadow key, attacks may inflict shadowflame","The Shadow Key is NOT consumed on craft!", "Javelins accelerates forward, is not affected by gravity until it hits a target" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Shadow Jab-lin");
@@ -261,11 +390,11 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.Pearlwood, 5);
-            recipe.AddIngredient(ItemID.CrystalShard, 2);
+            recipe.AddIngredient(ItemID.Pearlwood, 10);
+            recipe.AddIngredient(ItemID.CrystalShard, 3);
             recipe.AddIngredient(ItemID.UnicornHorn, 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 50);
+            recipe.SetResult(this, 200);
             recipe.AddRecipe();
         }
 
@@ -331,7 +460,7 @@ namespace SGAmod.Items.Weapons.Javelins
             recipe.AddIngredient(ItemID.Sandstone, 10);
             recipe.AddIngredient(ItemID.Amber, 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 50);
+            recipe.SetResult(this, 100);
             recipe.AddRecipe();
         }
 
@@ -366,7 +495,7 @@ namespace SGAmod.Items.Weapons.Javelins
             recipe.AddIngredient(ItemID.EbonstoneBlock, 10);
             recipe.AddIngredient(ItemID.DemoniteBar, 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 50);
+            recipe.SetResult(this, 100);
             recipe.AddRecipe();
         }
 
@@ -401,7 +530,7 @@ namespace SGAmod.Items.Weapons.Javelins
             recipe.AddIngredient(ItemID.CrimstoneBlock, 10);
             recipe.AddIngredient(ItemID.CrimtaneBar, 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 50);
+            recipe.SetResult(this, 100);
             recipe.AddRecipe();
         }
 
@@ -433,10 +562,10 @@ namespace SGAmod.Items.Weapons.Javelins
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.BorealWood, 5);
-            recipe.AddIngredient(ItemID.IceBlock, 20);
+            recipe.AddIngredient(ItemID.IceBlock, 10);
             recipe.AddIngredient(mod.ItemType("FrigidShard"), 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 50);
+            recipe.SetResult(this, 100);
             recipe.AddRecipe();
         }
 

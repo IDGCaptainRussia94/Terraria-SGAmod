@@ -37,7 +37,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            float speed = 8f;
+            float speed = 8f*player.ArrowSpeed();
             float rotation = MathHelper.ToRadians(2);
             position += Vector2.Normalize(new Vector2(speedX, speedY)) * 45f;
 
@@ -67,7 +67,7 @@ namespace SGAmod.HavocGear.Items.Weapons
         {
             return new Vector2(-8, -4);
         }
-        public override void AddRecipes()
+        /*public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(null, "DankWood", 25);
@@ -77,7 +77,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);
             recipe.AddRecipe();
-        }
+        }*/
 
     }
 }

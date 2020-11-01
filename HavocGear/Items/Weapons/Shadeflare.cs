@@ -94,6 +94,7 @@ return base.CanUseItem(player);
 			rotation = MathHelper.ToRadians(3);
 			speed=0.95f;
 		}
+			speed *= player.ArrowSpeed();
 
 			for (int i = 0; i < numberProjectiles; i++)
 			{

@@ -15,11 +15,31 @@ namespace SGAmod.Buffs
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = false;
+			canBeCleared = false;
 		}
 
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.GetModPlayer<SGAPlayer>().ActionCooldown = true;
+		}
+	}
+
+	public class StarStormCooldown : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Divive Shower Cooldown");
+			Description.SetDefault("Another Night...");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = false;
+			canBeCleared = false;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/ActionCooldown";
+			return true;
 		}
 	}
 	public class BossHealingCooldown : ModBuff
@@ -31,6 +51,7 @@ namespace SGAmod.Buffs
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = false;
+			canBeCleared = false;
 		}
 
 

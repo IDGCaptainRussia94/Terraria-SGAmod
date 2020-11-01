@@ -117,7 +117,8 @@ namespace SGAmod.HavocGear.Items
 			item.autoReuse = true;
 			item.useAnimation = 15;
 			item.useTime = 10;
-			item.useStyle = ItemRarityID.White;
+			item.rare = ItemRarityID.Green;
+			item.useStyle = ItemUseStyleID.SwingThrow;
 			item.consumable = true;
 			item.createTile = mod.TileType("Biomass");
 		}
@@ -405,7 +406,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mana Battery");
-			Tooltip.SetDefault("Capsulated mana to be used as a form of energy for techno weapons");
+			Tooltip.SetDefault("Encapsulated mana to be used as a form of energy for techno weapons");
 		}
 
 		public override void SetDefaults()
@@ -882,7 +883,7 @@ public class LunarRoyalGel : ModItem
 			recipe.AddIngredient(mod.ItemType("WraithFragment2"), 2);
 			recipe.AddIngredient(ItemID.CopperOre, 4);
 			recipe.AddTile(TileID.Hellforge);
-			recipe.SetResult(this);
+			recipe.SetResult(this,2);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(mod);
@@ -975,7 +976,7 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Ore");
-			Tooltip.SetDefault("Brassy metal of electronical use...");
+			Tooltip.SetDefault("Brassy scrap metal from a time along ago, might be of electronical use...");
 		}
 		public override void SetDefaults()
 		{
@@ -1196,7 +1197,7 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("EA Logo");
-			Tooltip.SetDefault("Lets you charge maximum mirco-transactions against your town NPCs\nWhile in your inventory: you can reforge unique prefixes for accessories\nYou automatically collect taxes while you have a Tax Collector\nPicking up Hearts and Mana Stars gives you money\nPress the 'Collect Taxes' hotkey to collect a gold coin from your tax collector's purse\n'EA! It's NOT in the game, that's DLC!'");
+			Tooltip.SetDefault("Lets you charge maximum micro-transactions against your town NPCs\nWhile in your inventory: you can reforge unique prefixes for accessories\nYou automatically collect taxes while you have a Tax Collector\nPicking up Hearts and Mana Stars gives you money\nPress the 'Collect Taxes' hotkey to collect a gold coin from your tax collector's purse\n'EA! It's NOT in the game, that's DLC!'");
 		}
 
 	}

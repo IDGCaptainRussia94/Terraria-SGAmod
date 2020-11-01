@@ -22,7 +22,7 @@ namespace SGAmod.Items.Weapons
 		
 		public override void SetDefaults()
 		{
-			item.damage = 20;
+			item.damage = 18;
 			item.crit = 0;
 			item.melee = true;
 			item.width = 34;    

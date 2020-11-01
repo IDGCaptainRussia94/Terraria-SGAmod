@@ -1,0 +1,559 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.Graphics.Shaders;
+using System.Threading.Tasks;
+using System.Threading;
+using SGAmod.NPCs.Hellion;
+using Terraria;
+using Terraria.ModLoader;
+using Terraria.ID;
+using Idglibrary;
+using AAAAUThrowing;
+using SGAmod.NPCs.Cratrosity;
+
+namespace SGAmod
+{
+	public partial class SGAnpcs : GlobalNPC
+	{
+
+		public void DoTheDraw(NPC npc)
+		{
+			if (Snapped < 3)
+				return;
+
+			if (SnappedDrawing == null && Snapped > 2)
+				SnappedDrawing = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
+
+			RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
+			//Main.spriteBatch.End();
+			Main.graphics.GraphicsDevice.SetRenderTarget(SnappedDrawing);
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+			drawonce = true;
+
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.CreateScale(1f, 1f, 1f));
+
+			Main.instance.DrawNPC(npc.whoAmI, true);
+
+			drawonce = false;
+
+			Texture2D texture = mod.GetTexture("NPCs/TPD");
+
+			//Main.spriteBatch.Draw(texture, npc.Center-Main.screenPosition, null, Color.White, npc.spriteDirection + (npc.ai[0] * 0.4f), new Vector2(16, 16), new Vector2(Main.rand.Next(5, 20) / 4f, Main.rand.Next(5, 20) / 4f), SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+
+			Main.graphics.GraphicsDevice.SetRenderTargets(binds);
+
+
+		}
+
+		public void OnCrit(NPC npc, Projectile projectile, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		{
+			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
+
+			if (moddedplayer.gunslingerLegendtarget > -1)
+			{
+				if (npc.whoAmI == moddedplayer.gunslingerLegendtarget)
+				{
+					damage = (int)((float)damage * 1.50f);
+				}
+				else
+				{
+					damage = (int)((float)damage * 0.25f);
+				}
+
+			}
+
+			if (crit)
+			{
+				if (moddedplayer.ninjaSash > 0 && ((item != null && item.Throwing().thrown) || (projectile != null && projectile.Throwing().thrown)))
+				{
+					int ammo = 0;
+					if (player.HasItem(ItemID.Shuriken))
+						ammo = ItemID.Shuriken;
+					if (player.HasItem(ItemID.ThrowingKnife))
+						ammo = ItemID.ThrowingKnife;
+					if (player.HasItem(ItemID.PoisonedKnife))
+						ammo = ItemID.PoisonedKnife;
+
+
+					if (ammo > 0)
+					{
+						Item itemy = new Item();
+						itemy.SetDefaults(ammo);
+						int shootype = itemy.shoot;
+
+						Vector2 anglez = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, -2000));
+						anglez.Normalize();
+
+						float i = Main.rand.NextFloat(90f, 260f);
+
+						int thisoned = Projectile.NewProjectile(npc.Center + (anglez * i), anglez * -16f, shootype, damage, 0f, Main.myPlayer);
+						Main.projectile[thisoned].ranged = false;
+						Main.projectile[thisoned].thrown = false;
+
+
+						for (float gg = 2f; gg > 0.25f; gg -= 0.6f)
+						{
+							int goreIndex = Gore.NewGore(npc.Center + (anglez * i), -anglez * gg, Main.rand.Next(61, 64), 1f);
+							Main.gore[goreIndex].scale = 1.5f;
+						}
+
+						player.ConsumeItem(ammo);
+					}
+				}
+			}
+		}
+
+		public void DoApoco(NPC npc, Projectile projectile, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		{
+			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
+			int chance = -1;
+			if (projectile != null)
+			{
+				if (projectile.melee)
+					chance = 0;
+				if (projectile.ranged)
+					chance = 1;
+				if (projectile.magic)
+					chance = 2;
+				if (projectile.thrown)
+					chance = 3;
+			}
+			if (item != null)
+			{
+				if (item.melee)
+					chance = 0;
+				if (item.ranged)
+					chance = 1;
+				if (item.magic)
+					chance = 2;
+				if (item.thrown || item.Throwing().thrown)
+					chance = 3;
+
+			}
+			if (chance > -1 && npc != null)
+			{
+				if (Main.rand.Next(0, 0) < moddedplayer.apocalypticalChance[chance] && crit)
+				{
+					if (moddedplayer.HoE && projectile != null)
+					{
+						float ammount = damage;
+						if (moddedplayer.lifestealentropy > 0)
+						{
+							projectile.vampireHeal((int)((ammount * moddedplayer.apocalypticalStrength)), npc.Center);
+							moddedplayer.lifestealentropy -= ammount;
+						}
+					}
+
+					if (moddedplayer.ninjaSash > 2)
+					{
+						for (int i = 0; i < Main.maxProjectiles; i += 1)
+						{
+							Projectile proj = Main.projectile[i];
+							if (proj.active && proj.owner == player.whoAmI)
+							{
+								if (proj.Throwing().thrown)
+									proj.SGAProj().Embue(projectile);
+
+							}
+
+						}
+
+					}
+
+					if (moddedplayer.SybariteGem)
+					{
+						float mul = moddedplayer.apocalypticalStrength * (((float)damage * 3f) / (float)npc.lifeMax);
+						int ammount = (int)((float)npc.value * mul);
+
+
+						Vector2 pos = new Vector2((int)npc.position.X, (int)npc.position.Y);
+						pos += new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height));
+						SGAUtils.SpawnCoins(pos, ammount, 10f + Math.Min(3f * mul, 20f));
+					}
+
+
+
+					if (moddedplayer.dualityshades)
+					{
+						int ammo = 0;
+						for (int i = 0; i < 4; i += 1)
+						{
+							if (moddedplayer.ammoinboxes[i] > 0)
+							{
+								int ammox = moddedplayer.ammoinboxes[i];
+								Item itemx = new Item();
+								itemx.SetDefaults(ammox);
+								if (itemx.ammo == AmmoID.Bullet)
+								{
+									ammo = ammox;
+									break;
+								}
+							}
+						}
+						if (ammo > 0)
+						{
+							Item itemy = new Item();
+							itemy.SetDefaults(ammo);
+							int shootype = itemy.shoot;
+
+							for (int i = 128; i < 260; i += 128)
+							{
+								Vector2 anglez = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000));
+								anglez.Normalize();
+
+								Main.PlaySound(SoundID.Item, (int)((npc.Center.X) + (anglez.X * i)), (int)((npc.Center.Y) + (anglez.Y * i)), 25, 0.5f, Main.rand.NextFloat(-0.9f, -0.25f));
+
+								int thisoned = Projectile.NewProjectile(npc.Center + (anglez * i), anglez * -16f, shootype, (int)(damage * 1.50f * moddedplayer.apocalypticalStrength), 0f, Main.myPlayer);
+								Main.projectile[thisoned].ranged = false;
+
+
+								for (float gg = 4f; gg > 0.25f; gg -= 0.15f)
+								{
+									int dustIndex = Dust.NewDust(npc.Center + new Vector2(-8, -8) + (anglez * i), 16, 16, DustID.AncientLight, -anglez.X * gg, -anglez.Y * gg, 150, Color.Purple, 3f);
+									Dust dust = Main.dust[dustIndex];
+									dust.noGravity = true;
+								}
+
+								player.ConsumeItem(ammo);
+							}
+						}
+
+
+					}
+
+					if (moddedplayer.CalamityRune)
+					{
+						Main.PlaySound(SoundID.Item45, npc.Center);
+						int boom = Projectile.NewProjectile(npc.Center.X, npc.Center.Y, 0f, 0f, mod.ProjectileType("BoulderBlast"), (int)((damage * 2) * moddedplayer.apocalypticalStrength), knockback * 2f, player.whoAmI, 0f, 0f);
+						Main.projectile[boom].usesLocalNPCImmunity = true;
+						Main.projectile[boom].localNPCHitCooldown = -1;
+						Main.projectile[boom].netUpdate = true;
+						IdgProjectile.AddOnHitBuff(boom, BuffID.Daybreak, (int)(60f * moddedplayer.apocalypticalStrength));
+						IdgProjectile.AddOnHitBuff(boom, mod.BuffType("EverlastingSuffering"), (int)(400f * moddedplayer.apocalypticalStrength));
+					}
+
+					damage = (int)(damage * (3f + (moddedplayer.apocalypticalStrength - 1f)));
+					RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 10f, 60, 1f);
+					CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.DarkRed, "Apocalyptical!", true, false);
+					Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/crit_hit").WithVolume(.7f).WithPitchVariance(.25f), npc.Center);
+
+
+				}
+			}
+
+		}
+
+		public void LifeSteal(NPC npc, Player player, ref int damage, ref float knockback, ref bool crit)
+		{
+			if (player != null)
+			{
+				if (player.GetModPlayer<SGAPlayer>().HasGucciGauntlet())
+				{
+					if (player.ownedLargeGems[4] && Main.rand.Next(0, (int)(50000f / Math.Max((float)damage, 40f))) == 1)
+					{
+
+						Projectile projectile = new Projectile();
+						projectile.Center = npc.Center;
+						projectile.owner = player.whoAmI;
+						projectile.vampireHeal((int)(40), npc.Center);
+					}
+				}
+			}
+
+		}
+		public void DoModifies(NPC npc, Player player, Projectile projectile, Item item, ref int damage, ref float knockback, ref bool crit)
+		{
+			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
+			damage = (int)(damage * damagemul);
+
+			if (projectile != null)
+			{
+				if (projectile.trap)
+					damage = (int)(damage * player.GetModPlayer<SGAPlayer>().TrapDamageMul);
+			}
+
+			DoApoco(npc, projectile, player, item, ref damage, ref knockback, ref crit);
+			if (acidburn)
+				damage += (int)(Math.Min(npc.defense, 5) / 2);
+			if (MoonLightCurse)
+				damage += (int)(Math.Min(npc.defense, 50) / 2);
+			if (Gourged)
+				damage += (npc.defense / 2) / 2;
+			if (Sodden)
+				damage = (int)((float)damage * 1.33f);
+
+			if (moddedplayer != null && moddedplayer.PrimordialSkull)
+				if (npc.HasBuff(BuffID.OnFire))
+					damage = (int)(damage * 1.25);
+
+			if (moddedplayer.MidasIdol > 0)
+			{
+				if (npc.HasBuff(BuffID.Midas))
+					damage = (int)(damage * 1.15f);
+			}
+
+			if (projectile != null)
+			{
+
+				SGAprojectile modeproj = projectile.GetGlobalProjectile<SGAprojectile>();
+				Player P = Main.player[projectile.owner];
+				bool trapdamage = false;
+				if (projectile.trap)
+					trapdamage = true;
+
+				if (trapdamage)
+				{
+					float totaldamage = 0f;
+					//damage += (int)((npc.defense * moddedplayer.TrapDamageAP) / 2.00);
+					totaldamage += moddedplayer.TrapDamageAP;
+					if (moddedplayer.JaggedWoodenSpike)
+					{
+						totaldamage += 0.4f;
+						//damage += (int)((npc.defense*0.4)/2.00);
+					}
+					if (moddedplayer.JuryRiggedSpikeBuckler)
+					{
+						//damage += (int)(damage * 0.1);
+						totaldamage += 0.1f;
+						//damage += (int)((npc.defense * 0.1) / 2.00);
+					}
+					totaldamage = Math.Min(totaldamage, 1f);
+					if (moddedplayer.GoldenCog)
+					{
+						npc.life = npc.life - (int)(damage * 0.10);
+						if (Main.netMode == 2)
+							NetMessage.SendData(23, -1, -1, null, npc.whoAmI, 0f, 0f, 0f, 0, 0, 0);
+					}
+					damage += (int)((npc.defense * totaldamage) / 2.00);
+				}
+
+				if (moddedplayer.beefield > 0 && (projectile.type == ProjectileID.Bee || projectile.type == ProjectileID.GiantBee))
+				{
+					damage += (int)(Math.Min(moddedplayer.beedamagemul, 10f + (moddedplayer.beedamagemul / 50f)) * 1.5f);
+				}
+
+				if (modeproj.myplayer != null)
+					P = modeproj.myplayer;
+
+				if (P != null)
+				{
+					if (moddedplayer.CirnoWings == true && projectile.coldDamage)
+					{
+						damage = (int)((double)damage * 1.20);
+					}
+				}
+
+			}
+
+			if (moddedplayer.MisterCreeperset && item != null)
+			{
+				if (item.shoot < 1 && item.melee)
+				{
+					if (player.velocity.Y > 1)
+					{
+						crit = true;
+					}
+				}
+			}
+
+			if (moddedplayer.Blazewyrmset)
+			{
+				if (npc.HasBuff(mod.BuffType("ThermalBlaze")) && item.melee)
+				{
+					damage = (int)(damage * 1.20f);
+				}
+			}
+
+			if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
+			{
+				if (item != null)
+					player.SGAPly().skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, item, null);
+				if (projectile != null)
+					player.SGAPly().skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, null, projectile);
+			}
+
+			LifeSteal(npc, player, ref damage, ref knockback, ref crit);
+			OnCrit(npc, projectile, player, item, ref damage, ref knockback, ref crit);
+
+		}
+
+		private void OnHit(NPC npc, Player player, int damage, float knockback, bool crit, Item item, Projectile projectile, bool isproj = false)
+		{
+			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
+
+			if (moddedplayer.HasGucciGauntlet())
+			{
+				if (player.ownedLargeGems[0] && Main.rand.Next(0, 10) == 0)
+					npc.AddBuff(BuffID.ShadowFlame, 60 * 15);
+
+			}
+
+			if (moddedplayer.flaskBuff != default)
+			{
+				if (Main.rand.Next(0, moddedplayer.flaskBuff.Chance) == 0)
+					npc.AddBuff(moddedplayer.flaskBuff.Debuff, moddedplayer.flaskBuff.Period);
+			}
+
+			if (item != null && npc.life - damage < 1 && npc.lifeMax > 50)
+			{
+				if (item.type == mod.ItemType("Powerjack"))
+				{
+					player.HealEffect(25, false);
+					player.statLife += 25;
+					if (player.statLife > player.statLifeMax2)
+					{
+						player.statLife = player.statLifeMax2;
+					}
+					NetMessage.SendData(66, -1, -1, null, player.whoAmI, (float)25f, 0f, 0f, 0, 0, 0);
+				}
+			}
+
+			if (isproj)
+			{
+				if (projectile.minion && moddedplayer.IDGset)
+				{
+					if (npc.immune[projectile.owner] > 0)
+					{
+						npc.immune[projectile.owner] = ((int)(npc.immune[projectile.owner] * 0.75f));
+
+					}
+
+					moddedplayer.digiStacks = Math.Min(moddedplayer.digiStacksMax, moddedplayer.digiStacks + (int)Math.Max((float)projectile.damage, (float)damage));
+				}
+
+				if (projectile.type == ProjectileID.CultistBossLightningOrbArc)
+				{
+					immunitetolightning = projectile.localNPCHitCooldown;
+				}
+
+				bool trapdamage = false;
+				if (projectile != null && projectile.trap)
+					trapdamage = true;
+
+
+				if (trapdamage)
+				{
+					if (moddedplayer.JaggedWoodenSpike)
+					{
+						if (Main.rand.Next(0, 100) < 15)
+							npc.AddBuff(mod.BuffType("MassiveBleeding"), 60 * 5);
+					}
+				}
+
+				if (moddedplayer.Mangroveset && player.ownedProjectileCounts[mod.ProjectileType("MangroveOrb")] < 4)
+				{
+					if (crit && projectile.thrown)
+					{
+						player.AddBuff(BuffID.DryadsWard, 60 * 5);
+
+						List<Projectile> itz = Idglib.Shattershots(player.Center, player.Center + (player.Center - npc.Center), new Vector2(0, 0), mod.ProjectileType("MangroveOrb"), damage, 8f, 120, 2, false, 0, false, 400);
+						//itz[0].damage = 30;
+						itz[0].owner = player.whoAmI; itz[0].friendly = true; itz[0].hostile = false;
+						itz[1].owner = player.whoAmI; itz[1].friendly = true; itz[1].hostile = false;
+						Main.projectile[itz[0].whoAmI].netUpdate = true;
+						Main.projectile[itz[1].whoAmI].netUpdate = true;
+						if (Main.netMode == 2 && itz[0].whoAmI < 200)
+						{
+							NetMessage.SendData(27, -1, -1, null, itz[0].whoAmI, 0f, 0f, 0f, 0, 0, 0);
+						}
+
+					}
+
+				}
+
+			}
+
+			SGAWorld.overalldamagedone = ((int)damage) + SGAWorld.overalldamagedone;
+			if (projectile != null)
+			{
+				if (moddedplayer.FieryheartBuff > 0 && projectile.owner == player.whoAmI)
+				{
+					npc.AddBuff(189, 1 * 30);
+				}
+				if (moddedplayer.CirnoWings == true && projectile.owner == player.whoAmI)
+				{
+					if (isproj && projectile.magic == true)
+						npc.AddBuff(BuffID.Frostburn, 5 * 60);
+				}
+			}
+
+			if (moddedplayer.Redmanastar > 0)
+			{
+				if (isproj && projectile.magic == true)
+				{
+					int[] buffids = { BuffID.OnFire, mod.BuffType("ThermalBlaze"), BuffID.Daybreak };
+					if (projectile != null && Main.rand.Next(0, 100) < 5)
+						npc.AddBuff(buffids[moddedplayer.Redmanastar - 1], 4 * 60);
+					if (projectile != null && Main.rand.Next(0, 100) < 1)
+						npc.buffImmune[buffids[moddedplayer.Redmanastar - 1]] = false;
+				}
+			}
+
+			if (moddedplayer.SerratedTooth == true)
+			{
+				if (damage > npc.defense * 5)
+					npc.AddBuff(mod.BuffType("MassiveBleeding"), Math.Min((int)(1f + ((float)damage - (float)npc.defense * 5f) * 0.02f) * 60, 60 * 5));
+			}
+
+			if (moddedplayer.Blazewyrmset)
+			{
+				if (crit && ((item != null && item.melee && item.pick + item.axe + item.hammer < 1)))
+				{
+					if (player.SGAPly().AddCooldownStack(12 * 60))
+					{
+						Main.PlaySound(SoundID.Item45, npc.Center);
+						Projectile.NewProjectile(npc.Center.X, npc.Center.Y, 0f, 0f, mod.ProjectileType("BoulderBlast"), damage * 3, knockback * 3f, player.whoAmI, 0f, 0f);
+					}
+
+				}
+			}
+
+
+
+			bool hasabuff = false;
+
+			if (npc.HasBuff(BuffID.OnFire))
+				hasabuff = true;
+			for (int i = 0; i < SGAmod.otherimmunes.Length; i++)
+			{
+				if (npc.HasBuff(SGAmod.otherimmunes[i]))
+				{
+					hasabuff = true;
+				}
+			}
+
+
+			if (DosedInGas && hasabuff)
+			{
+				Combusted = 60 * 6;
+				int buff = npc.FindBuffIndex(mod.BuffType("DosedInGas"));
+
+				if ((isproj && Main.player[projectile.owner].GetModPlayer<SGAPlayer>().MVMBoost) || (item != null && player.GetModPlayer<SGAPlayer>().MVMBoost))
+				{
+					int prog = Projectile.NewProjectile(npc.Center.X, npc.Center.Y, Vector2.Zero.X, Vector2.Zero.Y, ProjectileID.GrenadeIII, 350, 5f, player.whoAmI);
+					Main.projectile[prog].thrown = false; Main.projectile[prog].ranged = false; Main.projectile[prog].timeLeft = 2; Main.projectile[prog].netUpdate = true;
+					IdgProjectile.Sync(prog);
+
+				}
+
+
+				if (buff > -1)
+				{
+					npc.DelBuff(buff);
+					IdgNPC.AddBuffBypass(npc.whoAmI, BuffID.OnFire, 60 * 10);
+				}
+
+			}
+
+		}
+
+	}
+
+
+}

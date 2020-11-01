@@ -28,7 +28,7 @@ namespace SGAmod.Items.Weapons
 			if (sgaply.tf2emblemLevel > 1)
 				tooltips.Add(new TooltipLine(mod, "SoldierLine", "Tier 2: Damage Increased by 50%; rockets explode larger and move faster per level"));
 			if (sgaply.tf2emblemLevel > 2)
-				tooltips.Add(new TooltipLine(mod, "SoldierLine", "Tier 3: Damage Increased by 75%; Rockets slow targets, gain a firingspeed boost when you rocket jump"));
+				tooltips.Add(new TooltipLine(mod, "SoldierLine", "Tier 3: Damage Increased by 75%; Rockets slow targets, gain a firing speed boost when you rocket jump"));
 			if (sgaply.tf2emblemLevel > 3)
 				tooltips.Add(new TooltipLine(mod, "SoldierLine", "Tier 4: Damage Increased by 300%; Rocket jumping restores WingTime and slow is stronger"));
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.6f);

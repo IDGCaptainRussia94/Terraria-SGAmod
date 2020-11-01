@@ -14,7 +14,6 @@ namespace SGAmod.NPCs.Wraiths
 	public class CopperArmorPiece : ModNPC
 	{
 
-
 		public int armortype = ItemID.CopperChainmail;
 		public int attachedID = 0;
 		public int CoreID = 0;
@@ -99,9 +98,11 @@ namespace SGAmod.NPCs.Wraiths
 		public override void AI()
 		{
 			int npctype = mod.NPCType(attachedType);
-			if (NPC.CountNPCS(npctype) > 0) {
+			if (NPC.CountNPCS(npctype) > 0)
+			{
 				NPC myowner = Main.npc[NPC.FindFirstNPC(npctype)];
-			} else { npc.active = false; }
+			}
+			else { npc.active = false; }
 
 		}
 
@@ -161,9 +162,12 @@ namespace SGAmod.NPCs.Wraiths
 		{
 			CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
 			NPC myowner = Main.npc[myself.attachedID];
-			if (myowner.active == false) {
+			if (myowner.active == false)
+			{
 				myself.ArmorMalfunction();
-			} else {
+			}
+			else
+			{
 				npc.velocity = npc.velocity + (myowner.Center + new Vector2((float)npc.ai[1], (float)npc.ai[2]) - npc.Center) * (myself.speed);
 				npc.velocity = npc.velocity * myself.friction;
 				npc.rotation = (float)npc.velocity.X * 0.1f;
@@ -182,7 +186,7 @@ namespace SGAmod.NPCs.Wraiths
 			lights.A = (byte)(npc.alpha);
 			Vector2 origin = new Vector2((float)texture.Width * 0.5f, (float)texture.Height * 0.5f);
 
-			Vector2 drawoffset = new Vector2((float)Math.Sin(Main.GlobalTime * 1.61775f + ((float)npc.whoAmI * 5.734575f)) * 7f, (float)Math.Cos(Main.GlobalTime*1.246f + ((float)npc.whoAmI * 5.734575f)) * 5f);
+			Vector2 drawoffset = new Vector2((float)Math.Sin(Main.GlobalTime * 1.61775f + ((float)npc.whoAmI * 5.734575f)) * 7f, (float)Math.Cos(Main.GlobalTime * 1.246f + ((float)npc.whoAmI * 5.734575f)) * 5f);
 
 			if (GetType() == typeof(CopperArmorChainmail) || GetType() == typeof(CopperArmorGreaves) || GetType() == typeof(CopperArmorHelmet)
 				|| GetType() == typeof(CobaltArmorChainmail) || GetType() == typeof(CobaltArmorGreaves) || GetType() == typeof(CobaltArmorHelmet))
@@ -236,7 +240,7 @@ namespace SGAmod.NPCs.Wraiths
 
 	public class CopperArmorHelmet : CopperArmorChainmail
 	{
-		public int armortype=ItemID.CopperHelmet;
+		public int armortype = ItemID.CopperHelmet;
 
 		public override void SetDefaults()
 		{
@@ -256,9 +260,9 @@ namespace SGAmod.NPCs.Wraiths
 
 	}
 
-		public class CopperArmorGreaves: CopperArmorChainmail
+	public class CopperArmorGreaves : CopperArmorChainmail
 	{
-		public int armortype=ItemID.CopperGreaves;
+		public int armortype = ItemID.CopperGreaves;
 
 		public override void SetDefaults()
 		{
@@ -275,11 +279,11 @@ namespace SGAmod.NPCs.Wraiths
 			get { return "Terraria/Item_" + (ItemID.CopperGreaves); }
 		}
 
-	} 
+	}
 
-		public class CopperArmorBow: CopperArmorPiece
+	public class CopperArmorBow : CopperArmorPiece
 	{
-		public int armortype=ItemID.CopperBow;
+		public int armortype = ItemID.CopperBow;
 
 		public override void SetStaticDefaults()
 		{
@@ -315,64 +319,74 @@ namespace SGAmod.NPCs.Wraiths
 			if (SGAWorld.NightmareHardcore > 0)
 				speedmulti = 1f;
 			CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
-		int npctype=mod.NPCType(myself.attachedType);
-		NPC myowner=Main.npc[myself.attachedID];
-		if (myowner.active==false){
-		myself.ArmorMalfunction();
-		}else{
-			Player P = Main.player[npc.target];
-			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
+			int npctype = mod.NPCType(myself.attachedType);
+			NPC myowner = Main.npc[myself.attachedID];
+			if (myowner.active == false)
 			{
-				npc.TargetClosest(false);
-				P = Main.player[npc.target];
-				if (!P.active || P.dead)
+				myself.ArmorMalfunction();
+			}
+			else
+			{
+				Player P = Main.player[npc.target];
+				if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
 				{
-					npc.active=false;
-					Main.npc[(int)npc.ai[1]].active=false;
+					npc.TargetClosest(false);
+					P = Main.player[npc.target];
+					if (!P.active || P.dead)
+					{
+						npc.active = false;
+						Main.npc[(int)npc.ai[1]].active = false;
+					}
 				}
-				}else{
-		npc.ai[0]+=1;
-		Vector2 itt=(myowner.Center-npc.Center+new Vector2(npc.ai[1]*npc.spriteDirection,npc.ai[2]));
-		if (npc.ai[0]%1500>1250){
-		itt=(P.position-npc.position+new Vector2(3f*npc.ai[1]*npc.spriteDirection,npc.ai[2]*2f));
-		}
-		float locspeed=0.25f* speedmulti;
-		if (npc.ai[0]%900>550){
-		Vector2 cas=new Vector2(npc.position.X-P.position.X,npc.position.Y-P.position.Y);
-		double dist=cas.Length();
-		float rotation = (float)Math.Atan2(npc.position.Y - (P.position.Y - (new Vector2(0,(float)(dist*0.15f))).Y + (P.height * 0.5f)), npc.position.X - (P.position.X + (P.width * 0.5f)));
-		npc.rotation=rotation;//npc.rotation+((rotation-npc.rotation)*0.1f);
-		npc.velocity=npc.velocity*0.86f;
-		if (npc.ai[0]%50==0 && npc.ai[0]%900>650){
+				else
+				{
+					npc.ai[0] += 1;
+					Vector2 itt = (myowner.Center - npc.Center + new Vector2(npc.ai[1] * npc.spriteDirection, npc.ai[2]));
+					if (npc.ai[0] % 1500 > 1250)
+					{
+						itt = (P.position - npc.position + new Vector2(3f * npc.ai[1] * npc.spriteDirection, npc.ai[2] * 2f));
+					}
+					float locspeed = 0.25f * speedmulti;
+					if (npc.ai[0] % 900 > 550)
+					{
+						Vector2 cas = new Vector2(npc.position.X - P.position.X, npc.position.Y - P.position.Y);
+						double dist = cas.Length();
+						float rotation = (float)Math.Atan2(npc.position.Y - (P.position.Y - (new Vector2(0, (float)(dist * 0.15f))).Y + (P.height * 0.5f)), npc.position.X - (P.position.X + (P.width * 0.5f)));
+						npc.rotation = rotation;//npc.rotation+((rotation-npc.rotation)*0.1f);
+						npc.velocity = npc.velocity * 0.86f;
+						if (npc.ai[0] % 50 == 0 && npc.ai[0] % 900 > 650)
+						{
 
 
-		List<Projectile> one = Idglib.Shattershots(npc.Center,npc.Center+new Vector2(-15*npc.spriteDirection,0),new Vector2(0,0),Math.Abs(npc.ai[1])<18 ? ProjectileID.DD2BetsyArrow : (SGAWorld.NightmareHardcore>0 ? mod.ProjectileType("UnmanedArrow") : ProjectileID.WoodenArrowHostile), 7,12,0,1,true,(Main.rand.Next(-100,100)*0.000f)-npc.rotation,true,300);
+							List<Projectile> one = Idglib.Shattershots(npc.Center, npc.Center + new Vector2(-15 * npc.spriteDirection, 0), new Vector2(0, 0), Math.Abs(npc.ai[1]) < 18 ? ProjectileID.DD2BetsyArrow : (SGAWorld.NightmareHardcore > 0 ? mod.ProjectileType("UnmanedArrow") : ProjectileID.WoodenArrowHostile), 7, 12, 0, 1, true, (Main.rand.Next(-100, 100) * 0.000f) - npc.rotation, true, 300);
 							one[0].hostile = true;
 							one[0].friendly = false;
 							one[0].localAI[0] = P.whoAmI;
 							one[0].netUpdate = true;
 						}
-		npc.spriteDirection=1;
-		}else{
-		if (Math.Abs(npc.velocity.X)>2){ npc.spriteDirection=npc.velocity.X>0 ? -1 : 1; }
-		npc.rotation=(float)npc.velocity.X*0.09f;
-		locspeed=0.5f* speedmulti;
-		}
-		npc.velocity=npc.velocity*0.96f;
-		itt.Normalize();
-		npc.velocity=npc.velocity+(itt*locspeed);
-		npc.timeLeft=999;
+						npc.spriteDirection = 1;
+					}
+					else
+					{
+						if (Math.Abs(npc.velocity.X) > 2) { npc.spriteDirection = npc.velocity.X > 0 ? -1 : 1; }
+						npc.rotation = (float)npc.velocity.X * 0.09f;
+						locspeed = 0.5f * speedmulti;
+					}
+					npc.velocity = npc.velocity * 0.96f;
+					itt.Normalize();
+					npc.velocity = npc.velocity + (itt * locspeed);
+					npc.timeLeft = 999;
+				}
+
+			}
 		}
 
-		}
+
 	}
 
-
-	}
-
-	public class CopperArmorSword: CopperArmorPiece
+	public class CopperArmorSword : CopperArmorPiece
 	{
-		public int armortype=ItemID.CopperBroadsword;
+		public int armortype = ItemID.CopperBroadsword;
 
 		public override void SetStaticDefaults()
 		{
@@ -406,46 +420,53 @@ namespace SGAmod.NPCs.Wraiths
 			float speedmulti = 0.75f;
 			if (!Main.expertMode)
 				speedmulti = 0.5f;
-			if (SGAWorld.NightmareHardcore>0)
+			if (SGAWorld.NightmareHardcore > 0)
 				speedmulti = 1f;
 			CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
-		int npctype=mod.NPCType(myself.attachedType);
-		NPC myowner=Main.npc[myself.attachedID];
-		if (myowner.active==false){
-		myself.ArmorMalfunction();
-		}else{
-		Player P = Main.player[myowner.target];
-		npc.ai[0]+=1;
-		npc.spriteDirection=npc.velocity.X>0 ? -1 : 1;
-		Vector2 itt=(myowner.Center-npc.Center+new Vector2(npc.ai[1]*npc.spriteDirection,npc.ai[2]));
-		float locspeed=0.25f* speedmulti;
-		if (npc.ai[0]%600>350){
+			int npctype = mod.NPCType(myself.attachedType);
+			NPC myowner = Main.npc[myself.attachedID];
+			if (myowner.active == false)
+			{
+				myself.ArmorMalfunction();
+			}
+			else
+			{
+				Player P = Main.player[myowner.target];
+				npc.ai[0] += 1;
+				npc.spriteDirection = npc.velocity.X > 0 ? -1 : 1;
+				Vector2 itt = (myowner.Center - npc.Center + new Vector2(npc.ai[1] * npc.spriteDirection, npc.ai[2]));
+				float locspeed = 0.25f * speedmulti;
+				if (npc.ai[0] % 600 > 350)
+				{
 
-		npc.damage = (int)npc.defDamage*3;
-		itt=itt=(P.position-npc.position+new Vector2(npc.ai[1]*npc.spriteDirection,-8));
+					npc.damage = (int)npc.defDamage * 3;
+					itt = itt = (P.position - npc.position + new Vector2(npc.ai[1] * npc.spriteDirection, -8));
 
-					if (npc.ai[0] % 180 == 0 && SGAWorld.NightmareHardcore>0)
+					if (npc.ai[0] % 180 == 0 && SGAWorld.NightmareHardcore > 0)
 					{
 						Vector2 zxx = itt;
 						zxx += P.velocity * 3f;
 						zxx.Normalize();
-						npc.velocity += zxx*18;
+						npc.velocity += zxx * 18;
 					}
-		npc.rotation=npc.rotation+(0.65f*npc.spriteDirection);
-		}else{
-		npc.damage = (int)npc.defDamage;
-		if (npc.ai[0]%300<60){
-		locspeed=2.5f* speedmulti;
-		npc.velocity=npc.velocity*0.92f;
-		}
-		npc.rotation=(float)npc.velocity.X*0.09f;
-		locspeed=0.5f* speedmulti;
-		}
-		npc.velocity=npc.velocity*0.96f;
-		itt.Normalize();
-		npc.velocity=npc.velocity+(itt*locspeed);
-		npc.timeLeft=999;
-		}
+					npc.rotation = npc.rotation + (0.65f * npc.spriteDirection);
+				}
+				else
+				{
+					npc.damage = (int)npc.defDamage;
+					if (npc.ai[0] % 300 < 60)
+					{
+						locspeed = 2.5f * speedmulti;
+						npc.velocity = npc.velocity * 0.92f;
+					}
+					npc.rotation = (float)npc.velocity.X * 0.09f;
+					locspeed = 0.5f * speedmulti;
+				}
+				npc.velocity = npc.velocity * 0.96f;
+				itt.Normalize();
+				npc.velocity = npc.velocity + (itt * locspeed);
+				npc.timeLeft = 999;
+			}
 
 
 		}
@@ -454,7 +475,7 @@ namespace SGAmod.NPCs.Wraiths
 		{
 			if (Main.expertMode || Main.rand.Next(2) == 0)
 			{
-				player.AddBuff(BuffID.Bleeding, 60*10, true);
+				player.AddBuff(BuffID.Bleeding, 60 * 10, true);
 			}
 		}
 
@@ -485,12 +506,15 @@ namespace SGAmod.NPCs.Wraiths
 
 
 
-	public class CopperWraith : ModNPC
+	public class CopperWraith : ModNPC, ISGABoss
 	{
-		public int level=0;
-		public Vector2 OffsetPoints=new Vector2(0f,0f);
-		public float speed=0.2f;
-		public bool coreonlymode=false;
+		public string Trophy() => GetType() == typeof(CobaltWraith) ? "CopperWraithTrophy" : "CobaltWraithTrophy";
+		public bool Chance() => Main.rand.Next(0, 10) == 0;
+
+		public int level = 0;
+		public Vector2 OffsetPoints = new Vector2(0f, 0f);
+		public float speed = 0.2f;
+		public bool coreonlymode = false;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Copper Wraith");
@@ -508,20 +532,20 @@ namespace SGAmod.NPCs.Wraiths
 			npc.DeathSound = SoundID.NPCDeath6;
 			npc.knockBackResist = 0.05f;
 			npc.aiStyle = -1;
-			npc.boss=true;
+			npc.boss = true;
 			music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Copperig");
 			//music =MusicID.Boss5;
 			animationType = 0;
 			npc.noTileCollide = true;
 			npc.noGravity = true;
-			npc.value = Item.buyPrice(0,1,0,0);
+			npc.value = Item.buyPrice(0, 1, 0, 0);
 		}
-				public override string Texture
+		public override string Texture
 		{
-			get { return("SGAmod/NPCs/TPD");}
+			get { return ("SGAmod/NPCs/TPD"); }
 		}
 
-				public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
+		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
 			npc.lifeMax = (int)(npc.lifeMax * 0.625f * bossLifeScale);
 			npc.damage = (int)(npc.damage * 0.6f);
@@ -529,7 +553,7 @@ namespace SGAmod.NPCs.Wraiths
 
 		public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			if ((projectile.penetrate<1 || projectile.penetrate > 1) && projectile.damage>(GetType()==typeof(CobaltWraith) ? 20 : 30))
+			if ((projectile.penetrate < 1 || projectile.penetrate > 1) && projectile.damage > (GetType() == typeof(CobaltWraith) ? 20 : 30))
 			{
 				damage = (int)((float)damage * 0.25f);
 
@@ -538,21 +562,21 @@ namespace SGAmod.NPCs.Wraiths
 			{
 				//if (GetType() == typeof(CopperWraith))
 				//{
-					if (GetType() == typeof(CopperWraith))
-					damage = (int)(damage*1.5);
-					if (projectile.penetrate < 2 && projectile.penetrate > -1)
+				if (GetType() == typeof(CopperWraith))
+					damage = (int)(damage * 1.5);
+				if (projectile.penetrate < 2 && projectile.penetrate > -1)
 					crit = true;
 			}
 		}
 
 		public override void BossLoot(ref string name, ref int potionType)
 		{
-		potionType=ItemID.LesserHealingPotion;
+			potionType = ItemID.LesserHealingPotion;
 		}
 
 		public override void NPCLoot()
 		{
-			List<int> types=new List<int>();
+			List<int> types = new List<int>();
 
 			/*WorldGen.CopperTierOre = 7;
 			WorldGen.IronTierOre = 6;
@@ -564,6 +588,8 @@ namespace SGAmod.NPCs.Wraiths
 				SGAWorld.craftwarning = 50;
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TrueCopperWraithNotch"));
 			}
+			if (Main.expertMode)
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("WraithTargetingGamepad"));
 
 			int shardtype = mod.ItemType("WraithFragment");
 			/*if (SGAWorld.WorldIsTin)
@@ -573,34 +599,40 @@ namespace SGAmod.NPCs.Wraiths
 			}*/
 
 			types.Insert(types.Count, shardtype);
-			types.Insert(types.Count,SGAmod.WorldOres[0, SGAWorld.oretypesprehardmode[0] == TileID.Copper ? 1 : 0]); types.Insert(types.Count,SGAmod.WorldOres[0, SGAWorld.oretypesprehardmode[0] == TileID.Copper ? 1 : 0]);
-			types.Insert(types.Count,SGAmod.WorldOres[1, SGAWorld.oretypesprehardmode[1] == TileID.Iron ? 1 : 0]); types.Insert(types.Count,SGAmod.WorldOres[1, SGAWorld.oretypesprehardmode[1] == TileID.Iron ? 1 : 0]);
-			types.Insert(types.Count,SGAmod.WorldOres[2, SGAWorld.oretypesprehardmode[2] == TileID.Silver ? 1 : 0]); types.Insert(types.Count,SGAmod.WorldOres[2, SGAWorld.oretypesprehardmode[2] == TileID.Silver ? 1 : 0]);
-			types.Insert(types.Count,SGAmod.WorldOres[3, SGAWorld.oretypesprehardmode[3] == TileID.Gold ? 1 : 0]);
+			types.Insert(types.Count, SGAmod.WorldOres[0, SGAWorld.oretypesprehardmode[0] == TileID.Copper ? 1 : 0]); types.Insert(types.Count, SGAmod.WorldOres[0, SGAWorld.oretypesprehardmode[0] == TileID.Copper ? 1 : 0]);
+			types.Insert(types.Count, SGAmod.WorldOres[1, SGAWorld.oretypesprehardmode[1] == TileID.Iron ? 1 : 0]); types.Insert(types.Count, SGAmod.WorldOres[1, SGAWorld.oretypesprehardmode[1] == TileID.Iron ? 1 : 0]);
+			types.Insert(types.Count, SGAmod.WorldOres[2, SGAWorld.oretypesprehardmode[2] == TileID.Silver ? 1 : 0]); types.Insert(types.Count, SGAmod.WorldOres[2, SGAWorld.oretypesprehardmode[2] == TileID.Silver ? 1 : 0]);
+			types.Insert(types.Count, SGAmod.WorldOres[3, SGAWorld.oretypesprehardmode[3] == TileID.Gold ? 1 : 0]);
 
 
-		if (shardtype>0){
-		for (int f = 0; f < (Main.expertMode ? 40 : 25); f=f+1){
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype);
-		}}
+			if (shardtype > 0)
+			{
+				for (int f = 0; f < (Main.expertMode ? 40 : 25); f = f + 1)
+				{
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype);
+				}
+			}
 
-		for (int f = 0; f < (Main.expertMode ? 200 : 100); f=f+1){
-		Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0,types.Count)]);
+			for (int f = 0; f < (Main.expertMode ? 200 : 100); f = f + 1)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0, types.Count)]);
+			}
+
+			Achivements.SGAAchivements.UnlockAchivement("Copper Wraith", Main.LocalPlayer);
+			if (SGAWorld.downedWraiths < 1)
+			{
+				SGAWorld.downedWraiths = 1;
+				Idglib.Chat("You may now craft bars without being attacked", 150, 150, 70);
+			}
 		}
 
-		Achivements.SGAAchivements.UnlockAchivement("Copper Wraith", Main.LocalPlayer);
-		if (SGAWorld.downedWraiths<1){SGAWorld.downedWraiths=1;
-		Idglib.Chat("You may now craft bars without being attacked",150, 150, 70);
-		}
-        }
-
-        public virtual void SpawnMoreExpert()
-        {
-		int newguy=NPC.NewNPC((int)npc.position.X, (int)npc.position.Y, mod.NPCType("CopperArmorSword")); NPC newguy2=Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID=npc.whoAmI; newguy2.ai[0]=300f; newguy2.ai[1]=-64f; newguy2.ai[2]=48f; newguy2.lifeMax=(int)npc.lifeMax*1; newguy2.life=(int)(npc.lifeMax*(1)); newguy2.knockBackResist=0.9f; newguy2.netUpdate = true;
-		newguy =NPC.NewNPC((int)npc.position.X-400, (int)npc.position.Y, mod.NPCType("CopperArmorSword")); newguy2=Main.npc[newguy]; newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID=npc.whoAmI; newguy2.ai[1]=64f; newguy2.ai[2]=48f; newguy2.lifeMax=(int)npc.lifeMax*1; newguy2.life=(int)(npc.lifeMax*(1)); newguy2.knockBackResist=0.9f; newguy2.netUpdate = true;
-			newguy =NPC.NewNPC((int)npc.position.X-400, (int)npc.position.Y, mod.NPCType("CopperArmorBow")); newguy2=Main.npc[newguy]; newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID=npc.whoAmI; newguy2.ai[0]=450f; newguy2.ai[1]=16f; newguy2.ai[2]=-64f; newguy2.lifeMax=(int)npc.lifeMax*1; newguy2.life=(int)(npc.lifeMax*(1)); newguy2.knockBackResist=0.2f; newguy2.netUpdate = true;
-			newguy =NPC.NewNPC((int)npc.position.X+400, (int)npc.position.Y, mod.NPCType("CopperArmorBow")); newguy2=Main.npc[newguy]; newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID=npc.whoAmI; newguy2.ai[1]=-16f; newguy2.ai[2]=-64f; newguy2.lifeMax=(int)npc.lifeMax*1; newguy2.life=(int)(npc.lifeMax*(1)); newguy2.knockBackResist=0.2f; newguy2.netUpdate = true;
-			newguy =NPC.NewNPC((int)npc.position.X+400, (int)npc.position.Y, mod.NPCType(level>0 ? "CobaltArmorChainmail" : "CopperArmorChainmail")); newguy2=Main.npc[newguy]; newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID=npc.whoAmI; newguy2.lifeMax=(int)(npc.lifeMax*1.5f); newguy2.life=(int)(npc.lifeMax*(1.5f)); newguy2.knockBackResist=1f; newguy2.netUpdate = true;
+		public virtual void SpawnMoreExpert()
+		{
+			int newguy = NPC.NewNPC((int)npc.position.X, (int)npc.position.Y, mod.NPCType("CopperArmorSword")); NPC newguy2 = Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID = npc.whoAmI; newguy2.ai[0] = 300f; newguy2.ai[1] = -64f; newguy2.ai[2] = 48f; newguy2.lifeMax = (int)npc.lifeMax * 1; newguy2.life = (int)(npc.lifeMax * (1)); newguy2.knockBackResist = 0.9f; newguy2.netUpdate = true;
+			newguy = NPC.NewNPC((int)npc.position.X - 400, (int)npc.position.Y, mod.NPCType("CopperArmorSword")); newguy2 = Main.npc[newguy]; newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID = npc.whoAmI; newguy2.ai[1] = 64f; newguy2.ai[2] = 48f; newguy2.lifeMax = (int)npc.lifeMax * 1; newguy2.life = (int)(npc.lifeMax * (1)); newguy2.knockBackResist = 0.9f; newguy2.netUpdate = true;
+			newguy = NPC.NewNPC((int)npc.position.X - 400, (int)npc.position.Y, mod.NPCType("CopperArmorBow")); newguy2 = Main.npc[newguy]; newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID = npc.whoAmI; newguy2.ai[0] = 450f; newguy2.ai[1] = 16f; newguy2.ai[2] = -64f; newguy2.lifeMax = (int)npc.lifeMax * 1; newguy2.life = (int)(npc.lifeMax * (1)); newguy2.knockBackResist = 0.2f; newguy2.netUpdate = true;
+			newguy = NPC.NewNPC((int)npc.position.X + 400, (int)npc.position.Y, mod.NPCType("CopperArmorBow")); newguy2 = Main.npc[newguy]; newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID = npc.whoAmI; newguy2.ai[1] = -16f; newguy2.ai[2] = -64f; newguy2.lifeMax = (int)npc.lifeMax * 1; newguy2.life = (int)(npc.lifeMax * (1)); newguy2.knockBackResist = 0.2f; newguy2.netUpdate = true;
+			newguy = NPC.NewNPC((int)npc.position.X + 400, (int)npc.position.Y, mod.NPCType(level > 0 ? "CobaltArmorChainmail" : "CopperArmorChainmail")); newguy2 = Main.npc[newguy]; newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID = npc.whoAmI; newguy2.lifeMax = (int)(npc.lifeMax * 1.5f); newguy2.life = (int)(npc.lifeMax * (1.5f)); newguy2.knockBackResist = 1f; newguy2.netUpdate = true;
 		}
 		public override void AI()
 		{
@@ -633,110 +665,149 @@ namespace SGAmod.NPCs.Wraiths
 				P = Main.player[npc.target];
 				if (!P.active || P.dead)
 				{
-					npc.active=false;
-					Main.npc[(int)npc.ai[1]].active=false;
+					npc.active = false;
+					Main.npc[(int)npc.ai[1]].active = false;
 				}
-				}else{
+			}
+			else
+			{
 
-		int expert=0;
-		if(Main.expertMode){
-		expert=1;
-		}
-		npc.ai[0]+=1;
-		if (npc.type==mod.NPCType("CobaltWraith")){level=1;}
-		npc.defense=(int)(((NPC.CountNPCS(mod.NPCType("CopperArmorChainmail"))*6)+(NPC.CountNPCS(mod.NPCType("CopperArmorGreaves")))*3+(NPC.CountNPCS(mod.NPCType("CopperArmorHelmet"))*4))*((expert+1)*0.4f));
-		if (NPC.CountNPCS(mod.NPCType("CopperArmorChainmail"))+NPC.CountNPCS(mod.NPCType("CobaltArmorChainmail"))<1){ if (npc.ai[0]>50){
-		npc.ai[0]=-500;
-		}}
-		if (npc.life<npc.lifeMax*0.5f){
-		if (expert>0){
-		if (npc.ai[0]>-1500 && npc.ai[1]==0){ npc.ai[0]=-2000; npc.ai[1]=1;}
-		if (npc.ai[0]==-1850){
-		List<Projectile> itz=Idglib.Shattershots(npc.position,npc.position+new Vector2(0,200),new Vector2(0,0),ProjectileID.DD2BetsyArrow,10,5,360,20,true,0,true,150);
-		for (int f = 0; f < 20; f=f+1){
-		itz[f].aiStyle=0;
-		itz[f].rotation = -((float)Math.Atan2((double)itz[f].velocity.Y, (double)itz[f].velocity.X));
-		}
-		SpawnMoreExpert();
-		}if (npc.ai[0]==-1800){
-		npc.ai[0]=0;
-		}
-		}
-		}
-		if ((npc.ai[0]==1 || npc.ai[0]==-1) && npc.ai[1]<1){
-			float mul=(npc.ai[0]<0 ? 0.10f : 0.45f);
-		if (NPC.CountNPCS(mod.NPCType("CopperArmorChainmail"))<1){ int newguy=NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y-10, mod.NPCType(level>0 ? "CobaltArmorChainmail" : "CopperArmorChainmail")); NPC newguy2=Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID=npc.whoAmI; newguy2.lifeMax=(int)npc.lifeMax*2; newguy2.life=(int)(npc.lifeMax*(2*mul)); newguy2.knockBackResist=0.85f; newguy2.netUpdate = true; }
-		if (NPC.CountNPCS(mod.NPCType("CopperArmorSword"))<1){ int newguy=NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y-10, mod.NPCType(level>0 ? "CobaltArmorSword" : "CopperArmorSword")); NPC newguy2=Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID=npc.whoAmI; newguy2.ai[1]=-32f; newguy2.ai[2]=-16f; newguy2.lifeMax=(int)(npc.lifeMax*1f); newguy2.life=(int)(npc.lifeMax*(1f)); newguy2.knockBackResist=0.75f; newguy2.netUpdate = true; }
-		if (NPC.CountNPCS(mod.NPCType("CopperArmorHelmet"))<1){ int newguy=NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y-10, mod.NPCType(level>0 ? "CobaltArmorHelmet" : "CopperArmorHelmet")); NPC newguy2=Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID=npc.whoAmI; newguy2.ai[2]=-12f; newguy2.lifeMax=(int)(npc.lifeMax*1.5f); newguy2.life=(int)(npc.lifeMax*(1.5f*mul)); newguy2.knockBackResist=0.8f; newguy2.netUpdate = true; }
-		if (NPC.CountNPCS(mod.NPCType("CopperArmorGreaves"))<1){ int newguy=NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y-10, mod.NPCType(level>0 ? "CobaltArmorGreaves" : "CopperArmorGreaves")); NPC newguy2=Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID=npc.whoAmI; newguy2.ai[2]=12f; newguy2.lifeMax=(int)(npc.lifeMax*1.5f); newguy2.life=(int)(npc.lifeMax*(1.5f*mul)); newguy2.knockBackResist=0.8f; newguy2.netUpdate = true; }
-		if (NPC.CountNPCS(mod.NPCType("CopperArmorBow"))<1){ int newguy=NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y-10, mod.NPCType(level>0 ? "CobaltArmorSword" : "CopperArmorBow")); NPC newguy2=Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID=npc.whoAmI; newguy2.ai[1]=32f; newguy2.ai[2]=-16f; newguy2.lifeMax=(int)(npc.lifeMax*(1f)); newguy2.life=(int)(npc.lifeMax*(1f)); newguy2.knockBackResist=0.75f; newguy2.netUpdate = true; }
-		}if (npc.ai[0]>1){
+				int expert = 0;
+				if (Main.expertMode)
+				{
+					expert = 1;
+				}
+				npc.ai[0] += 1;
+				if (npc.type == mod.NPCType("CobaltWraith")) { level = 1; }
+				npc.defense = (int)(((NPC.CountNPCS(mod.NPCType("CopperArmorChainmail")) * 6) + (NPC.CountNPCS(mod.NPCType("CopperArmorGreaves"))) * 3 + (NPC.CountNPCS(mod.NPCType("CopperArmorHelmet")) * 4)) * ((expert + 1) * 0.4f));
+				if (NPC.CountNPCS(mod.NPCType("CopperArmorChainmail")) + NPC.CountNPCS(mod.NPCType("CobaltArmorChainmail")) < 1)
+				{
+					if (npc.ai[0] > 50)
+					{
+						npc.ai[0] = -500;
+					}
+				}
+				if (npc.life < npc.lifeMax * 0.5f)
+				{
+					if (expert > 0)
+					{
+						if (npc.ai[0] > -1500 && npc.ai[1] == 0) { npc.ai[0] = -2000; npc.ai[1] = 1; }
+						if (npc.ai[0] == -1850)
+						{
+							List<Projectile> itz = Idglib.Shattershots(npc.position, npc.position + new Vector2(0, 200), new Vector2(0, 0), ProjectileID.DD2BetsyArrow, 10, 5, 360, 20, true, 0, true, 150);
+							for (int f = 0; f < 20; f = f + 1)
+							{
+								itz[f].aiStyle = 0;
+								itz[f].rotation = -((float)Math.Atan2((double)itz[f].velocity.Y, (double)itz[f].velocity.X));
+							}
+							SpawnMoreExpert();
+						}
+						if (npc.ai[0] == -1800)
+						{
+							npc.ai[0] = 0;
+						}
+					}
+				}
+				if ((npc.ai[0] == 1 || npc.ai[0] == -1) && npc.ai[1] < 1)
+				{
+					float mul = (npc.ai[0] < 0 ? 0.10f : 0.45f);
+					if (NPC.CountNPCS(mod.NPCType("CopperArmorChainmail")) < 1) { int newguy = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y - 10, mod.NPCType(level > 0 ? "CobaltArmorChainmail" : "CopperArmorChainmail")); NPC newguy2 = Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID = npc.whoAmI; newguy2.lifeMax = (int)npc.lifeMax * 2; newguy2.life = (int)(npc.lifeMax * (2 * mul)); newguy2.knockBackResist = 0.85f; newguy2.netUpdate = true; }
+					if (NPC.CountNPCS(mod.NPCType("CopperArmorSword")) < 1) { int newguy = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y - 10, mod.NPCType(level > 0 ? "CobaltArmorSword" : "CopperArmorSword")); NPC newguy2 = Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID = npc.whoAmI; newguy2.ai[1] = -32f; newguy2.ai[2] = -16f; newguy2.lifeMax = (int)(npc.lifeMax * 1f); newguy2.life = (int)(npc.lifeMax * (1f)); newguy2.knockBackResist = 0.75f; newguy2.netUpdate = true; }
+					if (NPC.CountNPCS(mod.NPCType("CopperArmorHelmet")) < 1) { int newguy = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y - 10, mod.NPCType(level > 0 ? "CobaltArmorHelmet" : "CopperArmorHelmet")); NPC newguy2 = Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID = npc.whoAmI; newguy2.ai[2] = -12f; newguy2.lifeMax = (int)(npc.lifeMax * 1.5f); newguy2.life = (int)(npc.lifeMax * (1.5f * mul)); newguy2.knockBackResist = 0.8f; newguy2.netUpdate = true; }
+					if (NPC.CountNPCS(mod.NPCType("CopperArmorGreaves")) < 1) { int newguy = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y - 10, mod.NPCType(level > 0 ? "CobaltArmorGreaves" : "CopperArmorGreaves")); NPC newguy2 = Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID = npc.whoAmI; newguy2.ai[2] = 12f; newguy2.lifeMax = (int)(npc.lifeMax * 1.5f); newguy2.life = (int)(npc.lifeMax * (1.5f * mul)); newguy2.knockBackResist = 0.8f; newguy2.netUpdate = true; }
+					if (NPC.CountNPCS(mod.NPCType("CopperArmorBow")) < 1) { int newguy = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y - 10, mod.NPCType(level > 0 ? "CobaltArmorSword" : "CopperArmorBow")); NPC newguy2 = Main.npc[newguy]; CopperArmorPiece newguy3 = newguy2.modNPC as CopperArmorPiece; newguy3.attachedID = npc.whoAmI; newguy2.ai[1] = 32f; newguy2.ai[2] = -16f; newguy2.lifeMax = (int)(npc.lifeMax * (1f)); newguy2.life = (int)(npc.lifeMax * (1f)); newguy2.knockBackResist = 0.75f; newguy2.netUpdate = true; }
+				}
+				if (npc.ai[0] > 1)
+				{
 
-		if (npc.ai[0]%600<250){
-		Vector2 itt=((P.Center+OffsetPoints)-npc.position); itt.Normalize();
-		npc.velocity=npc.velocity+(itt*(speed* speedmulti));
+					if (npc.ai[0] % 600 < 250)
+					{
+						Vector2 itt = ((P.Center + OffsetPoints) - npc.position); itt.Normalize();
+						npc.velocity = npc.velocity + (itt * (speed * speedmulti));
+					}
+					npc.velocity = npc.velocity * 0.98f;
+
+				}
+				if (npc.ai[0] < 0 && npc.ai[0] > -2000)
+				{
+					if (npc.ai[0] % 110 < -95)
+					{
+						npc.velocity = new Vector2(Main.rand.Next(-20, 20), 0);
+						if (npc.ai[0] % 10 == 0)
+						{
+							Idglib.Shattershots(npc.position, P.position, new Vector2(P.width, P.height), 100, 10, 8, 0, 1, true, 0, true, 300);
+						}
+					}
+					else
+					{
+						Vector2 itt = ((P.Center + OffsetPoints + new Vector2(0, -250)) - npc.position); itt.Normalize();
+						float speedz = (float)level + 0.45f;
+						npc.velocity = npc.velocity + ((itt * speedz) * speedmulti);
+					}
+					float fric = 0.96f + ((float)level * 0.01f);
+					npc.velocity = npc.velocity * fric;
+				}
+
+
+			}
 		}
-		npc.velocity=npc.velocity*0.98f;
-
-		}if (npc.ai[0]<0 && npc.ai[0]>-2000){
-		if (npc.ai[0]%110<-95){
-		npc.velocity=new Vector2(Main.rand.Next(-20,20),0);
-		if (npc.ai[0]%10==0){
-		Idglib.Shattershots(npc.position,P.position,new Vector2(P.width,P.height),100,10,8,0,1,true,0,true,300);
-		}
-		}else{
-		Vector2 itt=((P.Center+OffsetPoints+new Vector2(0,-250))-npc.position); itt.Normalize();
-		float speedz=(float)level+0.45f;
-		npc.velocity=npc.velocity+((itt*speedz)* speedmulti);
-		}
-		float fric=0.96f+((float)level*0.01f);
-		npc.velocity=npc.velocity*fric;
-		}
-
-
-		}
-		}
 
 
 
 
-		public override bool CanHitPlayer(Player ply, ref int cooldownSlot){
+		public override bool CanHitPlayer(Player ply, ref int cooldownSlot)
+		{
 			return true;
 		}
 		public override bool? CanBeHitByItem(Player player, Item item)
 		{
-			if (CanBeHitByPlayer(player)){return false;
-			}else{
-			return base.CanBeHitByItem(player,item);}
+			if (CanBeHitByPlayer(player))
+			{
+				return false;
+			}
+			else
+			{
+				return base.CanBeHitByItem(player, item);
+			}
 		}
 		public override bool? CanBeHitByProjectile(Projectile projectile)
 		{
 			//if (Main.npc[projectile.owner]!=null){return false;}else{
 			//return CanBeHitByPlayer(Main.player[projectile.owner]);
-			if (CanBeHitByPlayer(Main.player[projectile.owner])){return false;
-			}else{
-			return base.CanBeHitByProjectile(projectile);}
+			if (CanBeHitByPlayer(Main.player[projectile.owner]))
+			{
+				return false;
+			}
+			else
+			{
+				return base.CanBeHitByProjectile(projectile);
+			}
 		}
-		private bool CanBeHitByPlayer(Player P){
-		//int npctype=mod.NPCType("CopperArmorChainmail");
-		return npc.ai[0]<-700 ? true : false;
-	}
+		private bool CanBeHitByPlayer(Player P)
+		{
+			//int npctype=mod.NPCType("CopperArmorChainmail");
+			return npc.ai[0] < -700 ? true : false;
+		}
 
 
-public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-{
-int npctype=mod.NPCType("CopperArmorChainmail");
-Vector2 drawPos = npc.Center - Main.screenPosition;
-Color glowingcolors1 = Main.hslToRgb((float)lightColor.R*0.08f,(float)lightColor.G*0.08f,(float)lightColor.B*0.08f);
-Texture2D texture = mod.GetTexture("NPCs/TPD");
-spriteBatch.Draw(texture, drawPos, null, glowingcolors1, npc.spriteDirection+(npc.ai[0]*0.4f), new Vector2(16,16),new Vector2(Main.rand.Next(1,20)/17f,Main.rand.Next(1,20)/17f), SpriteEffects.None, 0f);
-if (npc.ai[0]>0){return false;}else{
-//Vector2 drawPos = npc.Center-Main.screenPosition;
-for (int a = 0; a < 30; a=a+1){
-spriteBatch.Draw(texture, drawPos, null, glowingcolors1, npc.spriteDirection+(npc.ai[0]*(1-(a%2)*2))*0.4f, new Vector2(16,16),new Vector2(Main.rand.Next(1,100)/17f,Main.rand.Next(1,20)/17f), SpriteEffects.None, 0f);
-}
-return true;
-}}
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			int npctype = mod.NPCType("CopperArmorChainmail");
+			Vector2 drawPos = npc.Center - Main.screenPosition;
+			Color glowingcolors1 = Main.hslToRgb((float)lightColor.R * 0.08f, (float)lightColor.G * 0.08f, (float)lightColor.B * 0.08f);
+			Texture2D texture = mod.GetTexture("NPCs/TPD");
+			spriteBatch.Draw(texture, drawPos, null, glowingcolors1, npc.spriteDirection + (npc.ai[0] * 0.4f), new Vector2(16, 16), new Vector2(Main.rand.Next(1, 20) / 17f, Main.rand.Next(1, 20) / 17f), SpriteEffects.None, 0f);
+			if (npc.ai[0] > 0) { return false; }
+			else
+			{
+				//Vector2 drawPos = npc.Center-Main.screenPosition;
+				for (int a = 0; a < 30; a = a + 1)
+				{
+					spriteBatch.Draw(texture, drawPos, null, glowingcolors1, npc.spriteDirection + (npc.ai[0] * (1 - (a % 2) * 2)) * 0.4f, new Vector2(16, 16), new Vector2(Main.rand.Next(1, 100) / 17f, Main.rand.Next(1, 20) / 17f), SpriteEffects.None, 0f);
+				}
+				return true;
+			}
+		}
 
 
 	}

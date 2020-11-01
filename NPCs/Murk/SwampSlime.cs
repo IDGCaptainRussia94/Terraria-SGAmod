@@ -23,7 +23,9 @@ namespace SGAmod.NPCs.Murk
 			Main.npcFrameCount[npc.type] = Main.npcFrameCount[NPCID.BlueSlime];
 			aiType = NPCID.Crimslime;
 			animationType = NPCID.BlueSlime;
-		}
+            banner = npc.type;
+            bannerItem = mod.ItemType("DankSlimeBanner");
+        }
 
         public override void SetStaticDefaults()
         {
@@ -43,7 +45,7 @@ namespace SGAmod.NPCs.Murk
 
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
         {
-            target.AddBuff(BuffID.Poisoned,60*3);
+            target.AddBuff(ModContent.BuffType<MurkyDepths>(),60*(NPC.AnyNPCs(ModContent.NPCType<Murk>()) ? 5 : 15));
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)

@@ -145,7 +145,7 @@ namespace SGAmod.Items.Weapons.Ammo
 
 		public override string Texture
 		{
-			get { return ("SGAmod/Items/Weapons/CrateBossWeaponRanged"); }
+			get { return ("SGAmod/Items/Weapons/Ammo/RiggedJackpot"); }
 		}
 
 		public override void PickAmmo(Item weapon, Player player, ref int type, ref float speed, ref int damage, ref float knockback)

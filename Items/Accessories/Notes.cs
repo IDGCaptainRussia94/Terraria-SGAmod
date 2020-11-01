@@ -16,7 +16,8 @@ namespace SGAmod.Items.Accessories
 	{
 		public int notetype = 0;
 		public virtual int totallength=>4;
-		public virtual string[,] NoteWords => new string[,] { { ":Date 62 AC:", "This is it, I've finally made it to the forgotten lands in hopes of finding wealth and fortune!","It wouldn't be long now! I could already see the coast, eagerly awaiting it!", "With my rucksack and tools in hand, surely nothing can go wrong, right?" },
+        public override bool CloneNewInstances => true;
+        public virtual string[,] NoteWords => new string[,] { { ":Date 62 AC:", "This is it, I've finally made it to the forgotten lands in hopes of finding wealth and fortune!","It wouldn't be long now! I could already see the coast, eagerly awaiting it!", "With my rucksack and tools in hand, surely nothing can go wrong, right?" },
 		{":Date 62 AC:","I met up with the settlment on the isles, looking for a resupply before heading out, and given my desire for some booze went to the tavern","Pretty lighthearted place, a little on the shady side however, but you never know in these times, I took a seat on the first stool at the bar I could find","When the tavernkeep came over, I ordered up some wine,rented a room, and asked what jobs there are for some quick cash." },
 		{":Date 62 AC:","Monster hunting, mining, and exploring where none had gone before, pretty standard jobs they had","He also said something about Etheria, but at the same time where were people pointing out he let kids stay in a clearly adult tavern, something about defenders, I laughed it off, and went up to my room","So? This is it? The adventure I've dreamed of? Well, I guess I can consider my actions after I take a wee nap." },
 		{":Date 68 AC:","I had first run into something odd... A little girl, in the middle of the dark. Being the parent back home that I am I approuched her.","This however proved to be my folly, as her sweet and innocent apperence quickly turned twisted and... lusty","Needless to say I ran" },
@@ -170,7 +171,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 24;
 			item.height = 24;
-			item.value = Item.buyPrice(0, 0, 15, 0);
+			item.value = Item.buyPrice(0, 0, 10, 0);
 			item.rare = 0;
 			//item.accessory = true;
 		}

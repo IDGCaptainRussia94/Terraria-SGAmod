@@ -265,8 +265,11 @@ return false;
 
 
 
-	public class LuminiteWraith : ModNPC
+	public class LuminiteWraith : ModNPC, ISGABoss
 	{
+		public string Trophy() => "LuminiteWraithTrophy";
+		public bool Chance() => Main.rand.Next(0, 10) == 0;
+
 		public int level=0;
 		public Vector2 dodge=new Vector2(0f,0f);
 		public int warninglevel=0;

@@ -62,7 +62,7 @@ namespace SGAmod.Items.Pets
         public override void SetDefaults()
         {
             DisplayName.SetDefault("Heart Lantern Pet");
-            Description.SetDefault("Healing you, providing light, and keeping you confort <3");
+            Description.SetDefault("Healing you, providing light, and keeping you comfort <3");
             Main.buffNoTimeDisplay[Type] = true;
             Main.lightPet[Type] = true;
         }

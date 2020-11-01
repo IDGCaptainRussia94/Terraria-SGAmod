@@ -1205,7 +1205,7 @@ namespace SGAmod.NPCs.Hellion
 
 					int ize;
 					if (hell.rematch)
-					ize = ParadoxMirror.SummonMirror(npc.Center + where, Speedz * Main.rand.NextFloat(-0.5f, 0.5f), 60, 45, angle, mod.ProjectileType("HellionBolt"), projectilepattern, 30f, 200);
+					ize = ParadoxMirror.SummonMirror(npc.Center + where, Speedz * Main.rand.NextFloat(-0.5f, 0.5f), 60, 45, angle, mod.ProjectileType("HellionBolt"), projectilepattern, 10f, 200);
 					else
 					ize = ParadoxMirror.SummonMirror(npc.Center + where, Speedz * Main.rand.NextFloat(-0.5f, 0.5f), 60, 45, angle, ProjectileID.SkyFracture, projectilepattern, 45f + extremeness * 15f, 200);
 					Main.projectile[ize].ai[1] = (npc.ai[0] / 20f) % 1f;
@@ -1596,8 +1596,10 @@ namespace SGAmod.NPCs.Hellion
 	}
 
 
-		public class Hellion : ModNPC 
+		public class Hellion : ModNPC,ISGABoss
 	{
+		public string Trophy() => "HellionTrophy";
+		public bool Chance() => true;
 		
 		private float[] oldRot = new float[12];
 		private Vector2[] oldPos = new Vector2[12];
@@ -2460,7 +2462,7 @@ namespace SGAmod.NPCs.Hellion
 			if (auradraweffect > 0 && (!rematch || (noescapeaurasize * auradraweffect) < 1990))
 			{
 				float alphaeffect = MathHelper.Clamp(1f - (((noescapeaurasize * auradraweffect) - 1700) / 200f), 0f, 1f);
-				if (!rematch)
+				//if (!rematch)
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);

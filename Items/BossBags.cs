@@ -41,7 +41,11 @@ namespace SGAmod.HavocGear.Items
 		public override void OpenBossBag(Player player)
 		{
 
-			int random = Main.rand.Next(4);
+			int random = Main.rand.Next(5);
+			if (random == 4)
+			{
+				player.QuickSpawnItem(mod.ItemType("SwarmGrenade"), Main.rand.Next(40, 100));
+			}			
 			if (random == 3)
 			{
 				player.QuickSpawnItem(mod.ItemType("Mudmore"));

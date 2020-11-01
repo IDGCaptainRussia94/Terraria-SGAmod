@@ -16,7 +16,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override void SetDefaults()
 		{
-	item.CloneDefaults(ItemID.DayBreak);
+			item.CloneDefaults(ItemID.DayBreak);
 			item.damage = 15;
 			item.ranged = true;
 			item.width = 56;
@@ -27,6 +27,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.melee = false;
 			item.ranged = false;
 			item.magic = false;
+			item.thrown = false;
 			item.Throwing().thrown = true;
 			item.knockBack = 5;
 			item.value = 10000;

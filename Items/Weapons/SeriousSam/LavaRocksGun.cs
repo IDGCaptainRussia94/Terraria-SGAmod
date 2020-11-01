@@ -125,20 +125,18 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			get { return "Terraria/Projectile_" + ProjectileID.RocketII; }
 		}
 
-		public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
-		{
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.SolarDye);
-			//HairShaderData shader = GameShaders.Hair.GetShaderFromItemId(ItemID.LeinforsAccessory);
-			shader.Apply(null);
+		public void DrawLava()
+        {
 			bool facingleft = projectile.velocity.X > 0;
 			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
-			Texture2D texture = SGAmod.ExtraTextures[104+(int)projectile.ai[0]];
+			Texture2D texture = SGAmod.ExtraTextures[104 + (int)projectile.ai[0]];
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor* trans, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale, facingleft ? effect : SpriteEffects.None, 0);
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), Color.White * trans, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale, facingleft ? effect : SpriteEffects.None, 0);
+
+		}
+
+		public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
+		{
 			return false;
 		}
 
@@ -220,7 +218,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 
 			projectile.velocity.Y += 0.1f;
-			projectile.rotation += projectile.velocity.X*0.5f;//(float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
+			projectile.rotation += projectile.velocity.X*0.05f;//(float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
 
 			projectile.ai[1] += 1;
 		}

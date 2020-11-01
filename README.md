@@ -1,66 +1,127 @@
 # SGAmod
 IDGCaptainRussia94's content mod
 
-//Items with place holder sprites and need resprites: Heart Guard, Hellion's Cascade, Revolving West, Twines of Fate, Shark Bait, MVM Upgrade, Jagged Overgrown Spike, Joyrider, Truely Suspicious Looking Eye, Book of Jones, Hellion's Crown (Item Sprite ?), All Buff Icons
+//Items with place holder sprites and need resprites: Heart Guard, Hellion's Cascade, Twines of Fate, MVM Upgrade, Jagged Overgrown Spike, Joyrider, Truely Suspicious Looking Eye, Hellion's Crown (Item Sprite ?), All Buff Icons
 
 //Items that are NOT ok to be resprited: Stormbreaker, Wave Beam, Serpent's Redemption, Creeper's Throw, The trap related weapons for now
 
 Github was moved: previous builds of the mod can be found over here: https://github.com/IDGCaptainRussia94/SGAmod
 
--Crimson only: Jarate, Jarocket, Jarate Shurikens, Heart Guard (can be bypassed with fishing)
+-Crimson only: Jarate, Jarocket, Jarate Shurikens, Heart Guard, Sanguine Bident, Crimson Catastrophe (can be bypassed with fishing)
 -Corruption only: Gas Passer, Wraith Arrows, Dosed Arrows, Corrupted Tome, Cursed Hail, Jagged Spike Buckler (can be bypassed with fishing)
+
+-Finish Laser Marker, Make Laser Scythe Weapon, Finish Uncrafting feature for Reversal Engineering Table, Finish Dark Sector: (NPCs, and Null Watcher coding), Spectre homing bullets/projectiles, Add Jubia (in time)
+-Ideas: Banners, the Couch, Bannerlord=collection of banners
 
 Changelog:
 
-3.360-(8/30/20)-Patch #8:
+3.400-(11/1/20)-Patch #8:
 
 
 --Added:
 
--Coralrang, FridgeFlamarang, Fortune Falchion, Restoration Flower
+-BOOMerang, Coralrang, FridgeFlamarang, Specterang, Fortune Falchion, Gnat-ades, Laser Marker, Re-Router, Divine Shower Storm, Red Phasebrand, Shadeflame Staff, Crimson Catastrophe, Sybarite Gem, Restoration Flower, Wraith Targeting Gamepad, True Strike Potion, Trigger Finger Potion, Universal Music Box (is infact part of IDGlib)
+
+-The Reverse Engineering Station now has a 2nd use: uncrafting! But at a cost...
+
+-Flasks for various weapon debuffs
+
+-Proper trophies for all the bosses! For some bosses they always drop one on death.
 
 -Luminite Wraith's entire resprite collection; about time!
 
--Resprites for the Amulets
+-Resprites for the Amulets, updated Bosscheck list icons, proper sprites for Book of Jones, Revolving West, Shark Bait, Makeshift Spear Trap Gun, Several Buff icons, some other items, and other sprite updates
+
+-Music tracks for Sharkvern and Spider Queen, composed by Musicman, and music boxes for all the custom themes!
+
+-Added Obsidian Rose, Lava Charm, Shadow Key, Cobalt Shield, Flipper, and Frog Leg crafting recipes to the Reverse Engineering Table
 
 -Added a Client Config option to force Hellion to respect your privacy
 
 
 --Changed:
 
--Duke Fishron has been added to the Expertise Rewards, Expertise cap is now 22000, Mimic and Goblin Summoner rewards have been halved, Pillars reduced to 200, added Big Mimics for 100 each
+-Duke Fishron has been added to the Expertise Rewards, Expertise cap is now 22000, Mimic and Goblin Summoner rewards have been halved, Pillars reduced to 200, added Big Mimics for 100 each (Coruption OR Crimson OR Dank, not all. And Hallow Mimic)
 
--Attempting to spawn Cratrosity during the day tells you to try again at night
-
--Biomass has been rebranded as Photosyte, and spawns less often in clouds
-
--Energizer Battery now requires Photosyte instead of Photosyte Bars (has been moved earlier)
+-Murk has been revamped: new attacks, damages adjusted, enters into phase 2 at 85% instead of 75%, moves faster when the player is further, and has more HP, speed, and spawns more slimes, and faster bombers in Hardmode. Murky Depths is no longer inflicted during the Hardmode fight and Dank slimes inflict Murky Depths instead of Poison on contact (this is less during the boss fight)
 
 -Murk's flies/Killer Fly Swarm have increasing and decreasing speed caps depending on the distance to the player while charging
 
--Murk's movement speed is now dependant on player distance, he is overall faster in Hardmode
-
 -Cirno is way more aggressive and faster when chasing the player, but stops charging from a greater distance, this helps to avoid the circing cheese
+
+-Attempting to spawn Cratrosity during the day tells you to try again at night
+
+-Biomass has been rebranded as Photosyte, spawns less often in clouds, and has a new mining sound
+
+-Prismic and Prismal ammo types now have a saving chance to not consume the cycled ammo types on use (33% and 25% respectively)
+
+-Armor and mobility accessories have been overhauled (see fixes)
+
+-Worldgen chest loot: loot chances increased for Decayed Moss+Photosyte/A Machete or Fiberglass Rifle only have a 18.75% chance to show up in non-Dank Shrine chests (75% in Dank Shrines), and no longer show up in other modded chests anymore in world generation. Dragons Might and Matrix Potions are less common.
+
+-Energizer Battery now requires Photosyte instead of Photosyte Bars (has been moved earlier)
+
+-Forager's Blade has a new function, Merchant's price of Leather was greatly increased to account for this
+
+-Massacre Prototype now costs 50 life to fire, and resets life regen on use, mana cost halved
 
 -Removed the Cobalt Wraith defeat line, and changed Copper Wraith's to reflect that you can craft a furnace before fighting it
 
 -Caliburn Guardians fade in when summoned
 
+-One of Draken's lines now that Serious Sam 4 was released
+
+-Heralds of the horsemen no longer require both a Hardy Saddle and Slimy Saddle, but rather either to make them easier to craft.
+
 -Cratrosity can no longer hit the player if they are not actively moving towards them (they can still hit the playing when flying side to side thou) to prevent cheat hits
 
--Buffed Circuit Breaker Blade
+-Jab-lins are cheaper/can craft more of them
+
+-All Thrower gloves are cheaper to craft and cost only leather now instead of tattered cloth, removed the Detonator from Throwable Boulder Trap's crafting recipe
 
 -Wraith Core Fragments cost more in Mutant's shop
 
--Quasar Cannon has been added to the Former Havoc Mod item collection
+-Peacekeeper's Duster's town life regen now works during boss fights, fighting a boss in your NPC's town is a high risk factor anyways
+
+-Avali Scythe and Glass Swords are cheaper to craft
+
+-Reworked Tidal Charm: it has been given a new game-changing property, check it out!
+
+-Reworked Cosmic Grasp: Creates Shadow Tendrils instead of Shadow Beams, crafting recipe unchanged
+
+-Reworked Mangrove Shiv: Is now a throwing weapon with a new mechanic
+
+-Reworked Midas Touch: Larger Resprite, damage reduced to 70 (from 85), unique property doesn't function when under the effects of a Flask of Gold, old sprite repurposed into the Fortune Falchion
+
+-Reworked Stormbreaker: Damage nerfed, alt fire damage increased, now consumes Electric Charge instead of mana
+
+-Rebalanced Quasar Cannon: now properly uses mana, and has been added to the Former Havoc Mod item collection
 
 -Nerfed Plythe: damage has been reduced to 110 (from 125), Knockback has been reduced to 0, stacks simliar to light disks to 5, and has gotten a visual overhaul, requires Light Disks instead of Avali Scythe
 
--Avali Scythe is cheaper to craft
+-Nerfed Maldal: reduced crit bonus heavily
+
+-Nerfed Creeper's Explosive Throw, reduced damage and fixed it so 2 yoyos share the same static cooldown (like vanilla yoyos)
+
+-Nerfed Laser Lance: damage slightly lowered
+
+-Buffed Elemental Cascade: This weapon was just a bit too weak for post all 3 mechs
 
 -Buffed Rubied Blade: more knockback
 
--Reworked Midas Touch: Larger Resprite, damage reduced to 70 (from 85), unique property doesn't function when under the effects of a Flask of Gold, old sprite repurposed into the Fortune Falchion
+-Buffed Novite Knife: increased swing speed, projectile size, and now counts as True Melee
+
+-Buffed Novite Blaster: shots are, infact, accurate now
+
+-Buffed Novite Tesla Tower: damage up
+
+-Buffed Novite Armor set bonus: you gain more speed per charge
+
+-Buffed Circuit Breaker Blade: increased damage, halved Electric Charge cost and delay, bolt damage slightly reduced
+
+-Buffed Mangrove Staff (less Mana, more damage, changed sounds), Nerfed Mangrove Bow (less projectile speed)
+
+-Stone Barrier Staff and Beserker Aura Staff no longer have a damage value as they don't need one
 
 -Braxsaw mining power increased to 250
 
@@ -68,30 +129,50 @@ Changelog:
 
 -Idol Of Midas's buff condictions changed to player's direction instead of where in the world you were
 
--Removed Boss Fight Purity off Luminite Wraith
-
--Removed being unable to open a Terraria Co Supply Crate if you had a Shadow Key/Temple Key in your inventory (could be a fix depending on how you look at it)
-
 -Novite and Novus Ore have a stacksize of 999, the bars a stack size of 99
 
 -Novite Drill and Novus Pickaxe are no longer better than an Evil Prehardmode Pickaxe, novus pickaxe is now faster
 
--Demon Steppers, Luminary Wings, and dev armors have had their movement speed bonuses rebalanced
-
 -Fiery Shards drop more often, Sharks drop Sharkteeth after Sharkvern is defeated
 
--Readjusted Item Prices
+-Some visual/underlaying changes to the Lava Rocks Gun
+
+-Soul of Secret's Bee damage has been greatly reduced
+
+-Some various things to Dank Shrine enemies
+
+-Removed Boss Fight Purity off Luminite Wraith
+
+-Removed Treepeater's crafting recipe, as it drops from Dank Mimics in hardmode
+
+-Removed being unable to open a Terraria Co Supply Crate if you had a Shadow Key/Temple Key in your inventory (could be a fix depending on how you look at it)
+
+-Readjusted Item Prices, updated Crafting Recipes, and Potions are cheaper to craft
 
 
 --Fixed:
 
--Entrophite Tranmuter not working online
+-Entrophite Tranmuter not working online, also incorrect info on the Entropy Transmuter
+
+-A serious oversight bug with Cosmic Cocktail projectiles being Imbued stacking up their damage to near infinite damage bug
+
+-A bug involving the Revolving West and being able to use with other items while reloading
+
+-Stone Barrier Staff and Beserker Aura Staff missing from Strange Portal's shop in Multiplayer
+
+-Universal Throwing consumables able to have prefixes
+
+-A bug involving the slot a Dragon's Strength or Matrix Potion generating in was incrementing the wrong way (and appearing in seemingly random slots)
 
 -Hellion's Story dialog should now properly work online
 
+-An issue relating to dashing that made it impossible to blink-dash if you didn't have a dash-related accessory or buff active
+
 -Gucci Snap having a 100% chance to effect enemies
 
--Glass Sword Shards being counted as magic damage and being uncraftable
+-Glass Swords: Shards being counted as magic damage and being uncraftable
+
+-All Bows and Repeaters not receiving the speed bonus from the Archery Potion
 
 -Caliburn Guardians dealing damage if you were hit within a frame of them spawning (IE standing directly on the alter)
 
@@ -101,17 +182,37 @@ Changelog:
 
 -Player's head being visable while wearing Space Diver Armor
 
+-Doom Harbinger not scaling properly in expert mode (base HP lowered to 25000 to make up for this)
+
 -Improper speed increases accross all armors and accessories (thanks Qwerty3.14!)
 
--Mangrove Orbs not doing Magic damage from the Mangrove staff, Mangrove Staff and Mangrove Armor Set Bonus not being seperate projectiles, reduced Mangrove Staff mana costs (also Qwerty3.14)
+-Mangrove Orbs not doing Magic damage from the Mangrove staff, Mangrove Staff and Mangrove Armor Set Bonus not being seperate projectiles (also Qwerty3.14)
 
--Fixed Fiery Shards dropping above hell
+-Fiery Shards dropping above hell
 
--Incorrect info on the Entropy Transmuter
+-Avali Scythe not recieving bonuses from throwing stats when thrown
+
+-An issue with Draken's "what's next" dialog option showing wrong results due to bad math
+
+-A bug involving going over the max Electric Charge if you were on a recharge delay
+
+-And oversight that caused the player to get sent back to the overworld from a dimension if they survived a fatal blow, they now only get sent back if they die
+
+-Removed unneeded leftover code off the Corrupted Tome that might have messed up the weapon (IE an accidental alt fire ability)
+
+-An oversight where the Cosmic Grasp wasn't creating explosions in the proper locations
+
+-A few errors and missing things from the Prismal Ore tile
+
+-FIxed Photosyte not being able to be placed due to having no use style
+
+-Contagion's Item sprite facing the wrong way
+
+-Some debuffs that shouldn't be nurse "heal"able
 
 -Spelling mistakes
 
--Tiding up code, making better use of Radians, fixed netcode for a few weapons
+-Tiding up code, making better use of Radians, fixed netcode for a few weapons, and various other smaller bug fixes
 
 
 
@@ -682,7 +783,7 @@ Previous version was suppose to be 2.800, but ended up being 2.900, oh well
 
 -Nerfed Portable Hive/Soul Of Secrets Bee Damage, you could kill bosses with just the Bee gun alone faster than anything else! (Is now soft capped at 10X damage bonus of the normal bee damage)
 
--Beam Cannon has been moved to post Luminite Wraith, beam Cannon Alt Fire Spread and mana costs reduced, primary consumes small ammounts of plasma. Attempting to not out-class the Lunar Cascade
+-Beam Cannon has been moved to post Luminite Wraith, beam Cannon Alt Fire Spread and mana costs reduced, primary consumes small amounts of plasma. Attempting to not out-class the Lunar Cascade
 
 -Buffed Lunar Cascade
 
@@ -700,7 +801,7 @@ Previous version was suppose to be 2.800, but ended up being 2.900, oh well
 
 -Nerfed Hellion Core's 2nd phase, charges less often, damage of eye lasers reduced
 
--Buffed Surt/Brimflame Harbinger, the ammount of time you get OnFire! for has been greatly increased
+-Buffed Surt/Brimflame Harbinger, the amount of time you get OnFire! for has been greatly increased
 
 -Buffed Hellion Core's 3rd phase, if the player is close enough to an arm when it shoots a hellion beam, it now also summons a portal to attack the player
 
@@ -1226,7 +1327,7 @@ This version is the same as below, but I was running into a MariaDB error that k
 
 -Enhancing Charm turned out to be alot stronger than it said it was and has been nerfed accordingly
 
--Normal Difficulty now only gives you 80% of the Expertise when rewarded, while expert mode gives the full ammount
+-Normal Difficulty now only gives you 80% of the Expertise when rewarded, while expert mode gives the full amount
 
 -Removed Draken's lines that talk about him being sorry to Val, because he's not anymore
 
@@ -1316,7 +1417,7 @@ This version is the same as below, but I was running into a MariaDB error that k
 
 -Buffed F.S.R.G and has been moved a bit later in progression as to not serve as a direct sidegrade to the MegaShark
 
--Nerfed Space Diver Armor's base defense and set bonus: Taking any ammount of damage takes off a small potion of the breath meter in addition, also each pierce gives you -5% damage
+-Nerfed Space Diver Armor's base defense and set bonus: Taking any amount of damage takes off a small potion of the breath meter in addition, also each pierce gives you -5% damage
 
 -Various changes to crafting recipes, mostly to account for the new items
 
@@ -1374,3 +1475,116 @@ This version is the same as below, but I was running into a MariaDB error that k
 1.01-(2/13/20)-Changed the mod title to try to make it sound more exciting
 
 1.0-(2/13/20)- Released!
+
+
+Credits:
+
+--------------------------------------------------------------Credits (so far):--------------------------------------------------------------
+
+
+
+The current active team:
+
+[USER=104197]@IDGCaptainRussia[/USER] (me): Coder and mod owner, and a few miscellaneous sprites
+
+yes, it's literally just me, but I'm fine with this, because:
+
+
+
+Anarog/Kuronaki#9669 on discord: Made some sprites for different items, has cool ideas too.
+
+
+
+JellyBru#3929 (Donno if he has a forums account likely not), did the epic Wraith Resprites
+
+
+
+Just DudeSquid#4617 and daimgamer#6490 on discord, did some great (Calamity/"Superior") sprites, Squid also has his own mod called Volcanit, where most of his work can be found, check it out!
+
+
+
+--------------------------------------------------------------Contributions--------------------------------------------------------------
+
+
+
+[USER=61456]@PhilBill44[/USER] : Spriter, made the mod icon, suggestions and ideas, and other things (I honestly couldn't have made that icon, love ya) (I miss you very much Phil :( )
+
+
+
+[USER=75780]@Mister Creeper[/USER] : Former Havoc team Spriter, currently made alot of items including Stormbreaker's sprite. Left the team over personal reasons. Dev items are left in because I refuse to remove my hard work over his petty reasons.
+
+
+
+Freya manibrandr: Whom I had commissioned some paid sprites (oh where that come from?) of some very specific things I wanted to make in the mod, this would include all the Serious Sam weapons, and Draken
+
+
+
+Dejsprite#0880 : did some sprites
+
+
+
+[USER=161571]@El3trick_Plays[/USER] : Made some sprites for items that needed them, pretty awesome! Later dropped out of the team without a word and cut all contact with me for seemly no reason.
+
+
+
+[USER=156265]@Lonely Star[/USER] : did one sprite and kinda went missing, has shown very little activity.
+
+
+
+[USER=55315]@Kooyah[/USER] : Retired and former Havoc team Spriter, and all of sharkvern's sprites, and a good chunk of havoc item and tile sprites. (also includes backlog sprites, and he even made an improved one, awesome!)
+
+
+
+[USER=58157]@Iggysaur[/USER] : the Havoc team coder before myself, spriter as well, did most of the code for the ported items from that mod.
+
+
+
+[USER=48283]@GabeHasWon[/USER] for making Murk originally.
+
+
+
+Vasyanex - formally on the Havoc team, they need their own mention as they are the only people I don't have 100% perms to use content from, but I really don't want Vasyanex's sprites going to waste or AlexusIchimonji's Caliburn sprites, and they were meant for havoc which I have perms to use now anyways.
+
+(AlexusIchimonji's sprites have been resprited, so that's one less issue)
+
+
+
+Wicloud#1470 on discord: Made Cirno's wings sprites, Ice Fairy Sprites, and a few other things.
+
+
+
+[USER=99212]@qwerty3.14[/USER]  :  Allowing me to use his GlowMask Library from his own mod, on top of being a massive inspiration for alot of the more creative things I've made here.
+
+
+
+And [USER=56363]@TheRandomMidget[/USER] for permission to port havoc content (including Murk and... pretty much anything I could fit in).
+
+
+
+--------------------------------------------------------------And a thanks to:--------------------------------------------------------------
+
+[USER=2644]@zadum4ivii[/USER] : used and edited your stove code because I'm garbage at making multi-tiles :p
+
+
+
+[USER=210]@Kazzymodus[/USER]: Gonna be honest, I don't think most people know that Shockwave shader was yours, but the moment I found out... You get the credit!
+
+
+
+[USER=75173]@Ðark?ight[/USER] + [USER=123064]@direwolf420[/USER] + [USER=37401]@jopojelly[/USER] : you 3 have helped me so much since I started modding, I wouldn't be here without your help!
+
+
+
+And lastly: someone who pulled me back to finish what I started, they wish to leave the Terraria scene themselves and wish for their name to not be mentioned, but if your reading this, you know who you are. Thank you.
+
+
+And now finally, some used code mentions
+
+
+[USER=8638]@Joost8910[/USER] Years ago, I adapted some code from his Gigamesh boss to use in IDGLib, and ironically enough, I did it again in recent times! I still use it to this day and very heavily in SGAmod <3 (To be more specific: his fan projectile code from years ago and adapted, and his movement prediction code of recent times)
+
+[USER=75857]@ThatOneJuicyOrange_[/USER] I donno how much of this you wrote yourself, you always had trouble with code, but the blizzard code was borrowed from EA, you are credited in the version of the mod that features it
+
+[USER=52199]@Zoaklen[/USER], I know your not longer here, but if not for your bare bones sky code, I wouldn't have learned to make custom skies, thank you!
+
+[USER=16350]@blushiemagic[/USER] again, many things, mostly stuff from Bluemagic which have served as a major learning tool for me, but in this case it would be your pureium world gen code, and using a cut down version of your World Reaver code to learn the basis of overlays, thank you!

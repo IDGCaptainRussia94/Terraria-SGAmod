@@ -229,7 +229,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lesser Prismic Bullet");
-			Tooltip.SetDefault("Fires Bullets from your 2nd and 3rd ammo slots while placed in your first, will consume both ammo types\nOtherwise, it fires a weak musket bullet");
+			Tooltip.SetDefault("Fires Bullets from your 2nd and 3rd ammo slots while placed in your first, will consume both ammo types\nOtherwise, it fires a weak musket bullet\nHas a 33% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{
@@ -299,7 +299,7 @@ namespace SGAmod.Items.Weapons.Ammo
 
 		public override void OnConsumeAmmo(Player player)
 		{
-			if (ammotype!=item.type)
+			if (ammotype!=item.type && Main.rand.Next(maxvalue+1)==0)
 			player.ConsumeItem(ammotype);
 		}
 
@@ -331,7 +331,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Bullet");
-			Tooltip.SetDefault("Does greatly increased damage over it's precurser; fires Bullets from your 2nd, 3rd, and 4th ammo slots while placed in your first, will consume fired ammo types\nOtherwise, it fires a weak musket bullet");
+			Tooltip.SetDefault("Does greatly increased damage over it's precurser; fires Bullets from your 2nd, 3rd, and 4th ammo slots while placed in your first, will consume fired ammo types\nOtherwise, it fires a musket bullet\nHas a 25% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{

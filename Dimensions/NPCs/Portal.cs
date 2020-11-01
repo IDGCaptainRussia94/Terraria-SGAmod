@@ -211,6 +211,16 @@ namespace SGAmod.Dimensions.NPCs
 			shop.item[nextSlot].shopCustomPrice = 120;
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 			nextSlot++;
+
+			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("StoneBarrierStaff"));
+			shop.item[nextSlot].shopCustomPrice = 50;
+			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+			nextSlot++;
+
+			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("BeserkerAuraStaff"));
+			shop.item[nextSlot].shopCustomPrice = 75;
+			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+			nextSlot++;
 		}
 
 		public override void OnChatButtonClicked(bool firstButton, ref bool shop)

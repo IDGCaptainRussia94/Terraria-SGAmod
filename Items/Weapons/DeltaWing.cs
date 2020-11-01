@@ -16,7 +16,7 @@ namespace SGAmod.Items.Weapons
 		{
 			DisplayName.SetDefault("Delta Wing");
 			Tooltip.SetDefault("Converts arrows into Windfall arrows" +
-				"\nWindfall arrows grant back a small ammount of WingTime to the player on hit, and are nearly lighter than air");
+				"\nWindfall arrows grant back a small amount of WingTime to the player on hit, and are nearly lighter than air");
 		}
 
 		public override void SetDefaults()
@@ -51,10 +51,9 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			//if (type == ProjectileID.WoodenArrowFriendly)
-			//{
+			speedX *= player.ArrowSpeed(); speedY *= player.ArrowSpeed();
+
 			type = mod.ProjectileType("WindfallArrow");
-			//}
 			return true;
 		}
 

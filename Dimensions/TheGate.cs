@@ -46,7 +46,6 @@ namespace SGAmod.Dimensions
 
         public virtual void AGenPass(GenerationProgress prog)
         {
-
             UnifiedRandom UniRand = new UnifiedRandom(DimDungeonsProxy.DungeonSeeds);
             int lastseed = WorldGen._genRandSeed;
             WorldGen._genRandSeed = DimDungeonsProxy.DungeonSeeds;
@@ -177,7 +176,7 @@ namespace SGAmod.Dimensions
         {
             tasks = new List<GenPass>();
 
-            LimitPlayers = 0;
+            LimitPlayers = 16;
 
             tasks.Add(new SubworldGenPass(2f, progress =>
             {

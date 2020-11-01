@@ -76,6 +76,8 @@ namespace SGAmod.Dimensions
 			{
 				for (int i = 0; i < madness.Count; i += 1)
 				{
+					//Never again will I let you control me, my grief
+					//Let this not be hallow words
 					HellionInsanity pleasemakeitstop = madness[i];
 					pleasemakeitstop.timeleft--;
 					pleasemakeitstop.Update();
@@ -104,7 +106,7 @@ namespace SGAmod.Dimensions
 			{
 				if (SLWorld.currentSubworld is SGAPocketDim sub)
 				{
-					if (sub.LimitPlayers % 3 == 0 && sub.LimitPlayers>0)
+					if (sub.LimitPlayers % 16 == 0 && sub.LimitPlayers>0)
 					{
 						return;
 					}

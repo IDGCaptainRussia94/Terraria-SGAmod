@@ -59,7 +59,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public override void SetDefaults()
 		{
-			item.damage = 45;
+			item.damage = 0;
 			item.knockBack = 3f;
 			item.mana = 10;
 			item.width = 32;
@@ -201,7 +201,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/MatrixBuff";
+			texture = "SGAmod/Buffs/BuffTemplate";
 			return base.Autoload(ref name, ref texture);
 		}
 

@@ -11,8 +11,11 @@ using Idglibrary;
 namespace SGAmod.NPCs.Sharkvern
 {
     [AutoloadBossHead]
-    public class SharkvernHead : ModNPC
+    public class SharkvernHead : ModNPC, ISGABoss
     {
+
+        public string Trophy() => "SharkvernTrophy";
+        public bool Chance() => Main.rand.Next(0, 10) == 0;
 
         public int sergedout=0;
         public int rage=0;
@@ -38,6 +41,7 @@ namespace SGAmod.NPCs.Sharkvern
             npc.width = 52; 
             npc.height = 66; 
             npc.boss = true;
+            music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Shark");
             npc.lavaImmune = true;      
             npc.noGravity = true;          
             npc.noTileCollide = true;       
@@ -100,10 +104,6 @@ namespace SGAmod.NPCs.Sharkvern
             {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SharkvernMask"));
             }
-            if(Main.rand.Next(10) == 0)
-            {
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SharkvernTrophy"));
-            }
 
 
             //if (SLWorld.currentSubworld!=null)
@@ -130,7 +130,7 @@ namespace SGAmod.NPCs.Sharkvern
             npc.lifeMax = (int)(npc.lifeMax * 0.650f * bossLifeScale);
             npc.damage = (int)(npc.damage * 0.6f);
         }
-        
+
         public override bool PreAI()
         {
             if (averagey == null)
@@ -140,9 +140,9 @@ namespace SGAmod.NPCs.Sharkvern
             {
                 if (npc.ai[0] == 0)
                 {
-                   
+
                     npc.realLife = npc.whoAmI;
-                  
+
                     int latestNPC = npc.whoAmI;
 
                     int randomWormLength = Main.rand.Next(1, 1);
@@ -164,7 +164,7 @@ namespace SGAmod.NPCs.Sharkvern
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
                         latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
-                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody3"), npc.whoAmI, 0, latestNPC,ai3: npc.whoAmI);
+                        latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernBody3"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
                         Main.npc[(int)latestNPC].realLife = npc.whoAmI;
                     }
                     latestNPC = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("SharkvernTail"), npc.whoAmI, 0, latestNPC, ai3: npc.whoAmI);
@@ -175,7 +175,7 @@ namespace SGAmod.NPCs.Sharkvern
                     npc.netUpdate = true;
                 }
             }
-            touchwater=false;
+            touchwater = false;
 
             int minTilePosX = (int)(npc.position.X / 16.0) - 1;
             int maxTilePosX = (int)((npc.position.X + npc.width) / 16.0) + 2;
@@ -191,7 +191,7 @@ namespace SGAmod.NPCs.Sharkvern
                 maxTilePosY = Main.maxTilesY;
 
             bool collision = false;
-            for (int i = minTilePosX-5; i < maxTilePosX+5; ++i)
+            for (int i = minTilePosX - 5; i < maxTilePosX + 5; ++i)
             {
                 for (int j = minTilePosY - 5; j < maxTilePosY + 10; ++j)
                 {
@@ -203,7 +203,7 @@ namespace SGAmod.NPCs.Sharkvern
                         }
                     }
                 }
-             }
+            }
 
             if (ramwater == false)
             {
@@ -254,7 +254,7 @@ namespace SGAmod.NPCs.Sharkvern
                     }
                 }
             }
-           
+
             if (!collision)
             {
                 Rectangle rectangle1 = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height);
@@ -276,12 +276,12 @@ namespace SGAmod.NPCs.Sharkvern
                     collision = true;
             }
 
-            
-            float speed = 15f+(Math.Min(Math.Max(0,rage/100f),6));
 
-            float acceleration = 1f+(Math.Min(Math.Max(0,rage/300f),3));
+            float speed = 15f + (Math.Min(Math.Max(0, rage / 100f), 6));
 
-            npc.position=new Vector2(MathHelper.Clamp(npc.position.X,150f,(float)(Main.maxTilesX*16)-150f),npc.position.Y);
+            float acceleration = 1f + (Math.Min(Math.Max(0, rage / 300f), 3));
+
+            npc.position = new Vector2(MathHelper.Clamp(npc.position.X, 150f, (float)(Main.maxTilesX * 16) - 150f), npc.position.Y);
 
             Vector2 npcCenter = new Vector2(npc.position.X + npc.width * 0.5f, npc.position.Y + npc.height * 0.5f);
             float targetXPos = Main.player[npc.target].position.X + (Main.player[npc.target].width / 2);
@@ -305,21 +305,23 @@ namespace SGAmod.NPCs.Sharkvern
                 }
             }
 
-            if (npc.ai[3]>0){
+            if (npc.ai[3] > 0)
+            {
                 timer = 0;
-            targetXPos = (float)(Main.maxTilesX*0.6f);
-            if (npc.Center.X>(Main.maxTilesX/2)*16)
-            targetXPos=(float)(Main.maxTilesX*16)-(Main.maxTilesX*0.6f);
-            targetYPos = averagey[0];
-            //targetYPos=(float)SGAWorld.RaycastDownWater((int)targetXPos/16,(int)(1),50)*16;
-            Summoncenter =new Vector2(targetXPos,targetYPos-500f);
-            double angle=(npc.ai[3]/30f)+ 2.0* Math.PI;
-            targetXPos+=(float)((Math.Cos(angle) * 800f) * -1f);
-            targetYPos+=(float)((Math.Sin(angle) * 400f) * -1f)-500f;
+                targetXPos = (float)(Main.maxTilesX * 0.6f);
+                if (npc.Center.X > (Main.maxTilesX / 2) * 16)
+                    targetXPos = (float)(Main.maxTilesX * 16) - (Main.maxTilesX * 0.6f);
+                targetYPos = averagey[0];
+                //targetYPos=(float)SGAWorld.RaycastDownWater((int)targetXPos/16,(int)(1),50)*16;
+                Summoncenter = new Vector2(targetXPos, targetYPos - 500f);
+                double angle = (npc.ai[3] / 30f) + 2.0 * Math.PI;
+                targetXPos += (float)((Math.Cos(angle) * 800f) * -1f);
+                targetYPos += (float)((Math.Sin(angle) * 400f) * -1f) - 500f;
             }
 
-            if (Main.player[npc.target].dead){
-            targetYPos=100000f;
+            if (Main.player[npc.target].dead)
+            {
+                targetYPos = 100000f;
             }
 
             float targetRoundedPosX = (float)((int)(targetXPos / 16.0) * 16);
@@ -330,8 +332,8 @@ namespace SGAmod.NPCs.Sharkvern
             float dirY = targetRoundedPosY - npcCenter.Y;
 
             float length = (float)Math.Sqrt(dirX * dirX + dirY * dirY);
-            
-            if (!collision && npc.ai[3]<1)
+
+            if (!collision && npc.ai[3] < 1)
             {
                 npc.TargetClosest(true);
                 npc.velocity.Y = npc.velocity.Y + 0.11f;
@@ -359,7 +361,7 @@ namespace SGAmod.NPCs.Sharkvern
                         npc.velocity.X = npc.velocity.X - acceleration * 0.9f;
                 }
             }
-            
+
             else
             {
                 if (timer % 1000 <= 700)
@@ -434,17 +436,17 @@ namespace SGAmod.NPCs.Sharkvern
                     }
                 }
             }
-     
+
             npc.rotation = (float)Math.Atan2(npc.velocity.Y, npc.velocity.X) + 1.57f;
-            Vector2 capvelo=npc.velocity;
+            Vector2 capvelo = npc.velocity;
             capvelo.Normalize();
-            float speedmove=15f-(length/800f);
-            if (npc.ai[3]>0)
-            speedmove=speedmove/2f;
-            if (npc.velocity.Length()<capvelo.Length()*speedmove){npc.velocity=capvelo*speedmove;}
+            float speedmove = 15f - (length / 800f);
+            if (npc.ai[3] > 0)
+                speedmove = speedmove / 2f;
+            if (npc.velocity.Length() < capvelo.Length() * speedmove) { npc.velocity = capvelo * speedmove; }
 
 
-            
+
             if (collision)
             {
                 if (npc.localAI[0] != 1)
@@ -460,30 +462,31 @@ namespace SGAmod.NPCs.Sharkvern
             if ((npc.velocity.X > 0.0 && npc.oldVelocity.X < 0.0 || npc.velocity.X < 0.0 && npc.oldVelocity.X > 0.0 || (npc.velocity.Y > 0.0 && npc.oldVelocity.Y < 0.0 || npc.velocity.Y < 0.0 && npc.oldVelocity.Y > 0.0)) && !npc.justHit)
                 npc.netUpdate = true;
 
-        int num254 = (int)(npc.position.X + (float)(npc.width / 2)) / 16;
-        int num255 = (int)(npc.position.Y + (float)(npc.height / 2)) / 16;
-                /*if (Main.tile[num254, num255 - 1] == null)
-                {
-                    Main.tile[num254, num255 - 1] = new Tile();
-                }
-                 if (Main.tile[num254, num255 - 1].active())
-                 {
-                if (Main.tile[num254, num255 - 1].liquid > 128)
-                {
-                rage=0;
-                }}*/
+            int num254 = (int)(npc.position.X + (float)(npc.width / 2)) / 16;
+            int num255 = (int)(npc.position.Y + (float)(npc.height / 2)) / 16;
+            /*if (Main.tile[num254, num255 - 1] == null)
+            {
+                Main.tile[num254, num255 - 1] = new Tile();
+            }
+             if (Main.tile[num254, num255 - 1].active())
+             {
+            if (Main.tile[num254, num255 - 1].liquid > 128)
+            {
+            rage=0;
+            }}*/
 
-             rage=rage+(length<2000 && npc.ai[3]<1 ? 1 : 0);
-             if (touchwater==true){
-            rage=Math.Max(-150,rage-5);
-            if (Main.expertMode)
-            rage=((int)Math.Max(((1f-((float)npc.life/(float)npc.lifeMax))*350f)-150f,rage-4));
-             }
-             npc.damage=Math.Min(npc.defDamage,Math.Max(180,(int)rage/2));
-             sergedout=sergedout-1;
-             bool anyalive=false;
+            rage = rage + (length < 2000 && npc.ai[3] < 1 ? 1 : 0);
+            if (touchwater == true)
+            {
+                rage = Math.Max(-150, rage - 5);
+                if (Main.expertMode)
+                    rage = ((int)Math.Max(((1f - ((float)npc.life / (float)npc.lifeMax)) * 350f) - 150f, rage - 4));
+            }
+            npc.damage = Math.Min(npc.defDamage, Math.Max(180, (int)rage / 2));
+            sergedout = sergedout - 1;
+            bool anyalive = false;
 
-            if (npc.ai[3] <-399)
+            if (npc.ai[3] < -399)
             {
                 npc.ai[3] -= 1;
                 if (npc.ai[3] < -60 * 60)
@@ -497,13 +500,14 @@ namespace SGAmod.NPCs.Sharkvern
                 averagey.Add((int)npc.Center.Y);
             }
 
-            if (npc.ai[3]<1000 && npc.ai[3]>-1 && npc.life<(int)npc.lifeMax*0.50){
-            npc.ai[3]+=1;
+            if (npc.ai[3] < 1000 && npc.ai[3] > -1 && npc.life < (int)npc.lifeMax * 0.50)
+            {
+                npc.ai[3] += 1;
 
                 if (averagey.Count > 2)
                 {
                     int thereat = 0;
-                    for(int i=0;i< averagey.Count; i += 1)
+                    for (int i = 0; i < averagey.Count; i += 1)
                     {
                         thereat += averagey[i];
                     }
@@ -512,50 +516,55 @@ namespace SGAmod.NPCs.Sharkvern
                     averagey.Add(thereat);
                 }
 
-            if (npc.ai[3]>150){
-            if (npc.ai[3]%160==0 && Main.netMode!=1){
-            int him=NPC.NewNPC((int)Summoncenter.X, (int)Summoncenter.Y, mod.NPCType("SharvernMinion"));
-            Main.npc[him].ai[3]=Main.rand.Next(0,2000);
+                if (npc.ai[3] > 150)
+                {
+                    if (npc.ai[3] % 160 == 0 && Main.netMode != 1)
+                    {
+                        int him = NPC.NewNPC((int)Summoncenter.X, (int)Summoncenter.Y, mod.NPCType("SharvernMinion"));
+                        Main.npc[him].ai[3] = Main.rand.Next(0, 2000);
+                    }
+
+                    for (int i = 0; i < 5; ++i)
+                    {
+                        double devider = (i / ((double)5f));
+                        double angle = (npc.ai[3] / 15) + 2.0 * Math.PI * devider;
+                        Vector2 thecenter = new Vector2((float)((Math.Cos(angle) * 150)), (float)((Math.Sin(angle) * 80)));
+                        thecenter = thecenter.RotatedByRandom(MathHelper.ToRadians(10));
+                        int DustID2 = Dust.NewDust(Summoncenter + (thecenter * 4.5f), 0, 0, mod.DustType("TornadoDust"), thecenter.X * 0.8f, thecenter.X * 0.8f, 20, default(Color), 2.5f);
+                        Main.dust[DustID2].noGravity = true;
+                        Main.dust[DustID2].velocity = new Vector2(thecenter.X * 0.2f, thecenter.Y * 0.2f) * -1f;
+                    }
+
+                    for (int i = 0; i < 10; ++i)
+                    {
+                        double devider = (i / ((double)10f));
+                        double angle = (npc.ai[3] / 30) + 2.0 * Math.PI * devider;
+                        Vector2 thecenter = new Vector2((float)((Math.Cos(angle) * 150)), (float)((Math.Sin(angle) * 80)));
+                        int DustID2 = Dust.NewDust(Summoncenter + (thecenter * 0.5f), 0, 0, mod.DustType("TornadoDust"), thecenter.X * 0.7f, thecenter.X * 0.7f, 20, default(Color), 1.5f);
+                        Main.dust[DustID2].noGravity = true;
+                        Main.dust[DustID2].velocity = new Vector2(thecenter.X * 0.04f, thecenter.Y * 0.04f);
+                        Main.dust[DustID2].color = Color.Aqua;
+                    }
+
+                    for (int i = 0; i < 360; i += Main.rand.Next(10, 45))
+                    {
+                        double devider = (i / ((double)360f));
+                        double angle = 2.0 * Math.PI * devider;
+                        Vector2 thecenter = new Vector2((float)((Math.Cos(angle) * 150)), (float)((Math.Sin(angle) * 80)));
+                        int DustID2 = Dust.NewDust(Summoncenter + (thecenter * 0.5f), 0, 0, mod.DustType("TornadoDust"), thecenter.X * 0.7f, thecenter.X * 0.7f, 20, default(Color), 3f);
+                        Main.dust[DustID2].noGravity = true;
+                        Main.dust[DustID2].velocity = new Vector2(0, 0);
+                        Main.dust[DustID2].color = Color.Aqua;
+                    }
+                }
+
+                if (npc.ai[3] > 999)
+                    npc.ai[3] = -500;
             }
 
-             for (int i = 0; i < 5; ++i){
-                double devider=(i / ((double)5f));
-                double angle=(npc.ai[3]/15)+ 2.0* Math.PI * devider;
-               Vector2 thecenter=new Vector2((float)((Math.Cos(angle) * 150)), (float)((Math.Sin(angle) * 80)));
-               thecenter = thecenter.RotatedByRandom(MathHelper.ToRadians(10));
-           int DustID2 = Dust.NewDust(Summoncenter+(thecenter*4.5f), 0, 0, mod.DustType("TornadoDust"), thecenter.X*0.8f, thecenter.X*0.8f, 20, default(Color), 2.5f);
-            Main.dust[DustID2].noGravity = true;
-            Main.dust[DustID2].velocity = new Vector2(thecenter.X*0.2f, thecenter.Y*0.2f)*-1f;
-            }
 
-            for (int i = 0; i < 10; ++i){
-                double devider=(i / ((double)10f));
-                double angle=(npc.ai[3]/30)+ 2.0* Math.PI * devider;
-               Vector2 thecenter=new Vector2((float)((Math.Cos(angle) * 150)), (float)((Math.Sin(angle) * 80)));
-           int DustID2 = Dust.NewDust(Summoncenter+(thecenter*0.5f), 0, 0, mod.DustType("TornadoDust"), thecenter.X*0.7f, thecenter.X*0.7f, 20, default(Color), 1.5f);
-            Main.dust[DustID2].noGravity = true;
-            Main.dust[DustID2].velocity = new Vector2(thecenter.X*0.04f, thecenter.Y*0.04f);
-            Main.dust[DustID2].color=Color.Aqua;
-            }
-
-            for (int i = 0; i < 360; i+=Main.rand.Next(10,45)){
-                double devider=(i / ((double)360f));
-                double angle=2.0* Math.PI * devider;
-               Vector2 thecenter=new Vector2((float)((Math.Cos(angle) * 150)), (float)((Math.Sin(angle) * 80)));
-           int DustID2 = Dust.NewDust(Summoncenter+(thecenter*0.5f), 0, 0, mod.DustType("TornadoDust"), thecenter.X*0.7f, thecenter.X*0.7f, 20, default(Color), 3f);
-            Main.dust[DustID2].noGravity = true;
-            Main.dust[DustID2].velocity = new Vector2(0,0);
-            Main.dust[DustID2].color=Color.Aqua;
-            }
-          }
-
-            if (npc.ai[3]>999)
-            npc.ai[3]=-500;
-            }
-        
-
-             if (rage==700 && Main.netMode!=1)
-             Idglib.Chat("The Sharkvern beckens you to return it to the sea!",50, 50, 255);
+            if (rage == 700 && Main.netMode != 1)
+                Idglib.Chat("The Sharkvern beckens you to return it to the sea!", 50, 50, 255);
             for (int k = 0; k < Main.maxPlayers; k++)
             {
                 Player player = Main.player[k];
@@ -569,13 +578,13 @@ namespace SGAmod.NPCs.Sharkvern
                     }
                 }
             }
-        if (anyalive==false)
-          {
+            if (anyalive == false)
+            {
                 npc.life = 0;
                 npc.active = false;
-          }
+            }
 
-        return false;
+            return false;
         }
 
         public override void OnHitPlayer(Player player, int damage, bool crit)

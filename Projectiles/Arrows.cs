@@ -268,7 +268,7 @@ namespace SGAmod.Projectiles
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (Main.rand.Next(0,100)<20)
-			IdgNPC.AddBuffBypass(target.whoAmI, BuffID.Oiled, 60 * 5);
+			IdgNPC.AddBuffBypass(target.whoAmI, BuffID.Oiled, 60 * 10);
 			target.AddBuff(BuffID.Oiled, 60 * 20);
 		}
 

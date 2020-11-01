@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,6 +11,8 @@ using Terraria.DataStructures;
 using Idglibrary;
 using SGAmod.Items.Weapons.SeriousSam;
 using SGAmod.Projectiles;
+using AAAAUThrowing;
+using SGAmod.Buffs;
 
 namespace SGAmod.Items.Weapons.Technical
 {
@@ -249,7 +252,7 @@ namespace SGAmod.Items.Weapons.Technical
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Circuit Breaker Blade");
-			Tooltip.SetDefault("Melee hits against enemies discharge bolts of energy at nearby enemies that chain to other enemies on hit\nChains up to a max of 3 times, and each bolt may hit 2 targets max\nRequires 500 Electric Charge to discharge bolts\nCounts as a True Melee sword");
+			Tooltip.SetDefault("Melee hits against enemies discharge bolts of energy at nearby enemies that chain to other enemies on hit\nChains up to a max of 3 times, and each bolt may hit 2 targets max\nConsumes 250 Electric Charge to discharge bolts\nCounts as a True Melee sword");
 		}
 		public override void SetDefaults()
 		{
@@ -287,11 +290,11 @@ namespace SGAmod.Items.Weapons.Technical
 				NPC target2 = CircuitBreakerBlade.FindClosestTarget(player, position, new Vector2(0, 0));
 				if (target2 != null)
 				{
-					if (player.SGAPly().ConsumeElectricCharge(500, 100))
+					if (player.SGAPly().ConsumeElectricCharge(250, 50))
 					{
 					Vector2 Speed = (target2.Center - target.Center);
 					Speed.Normalize(); Speed *= 2f;
-					int prog = Projectile.NewProjectile(target.Center.X, target.Center.Y, Speed.X, Speed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)(damage * 0.80), knockBack / 2f, player.whoAmI, 3);
+					int prog = Projectile.NewProjectile(target.Center.X, target.Center.Y, Speed.X, Speed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)(damage * 0.75), knockBack / 2f, player.whoAmI, 3);
 					IdgProjectile.Sync(prog);
 					Main.PlaySound(SoundID.Item93, position);
 					}
@@ -336,6 +339,28 @@ namespace SGAmod.Items.Weapons.Technical
 		public override string Texture
 		{
 			get { return "SGAmod/HavocGear/Projectiles/BoulderBlast"; }
+		}
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+			writer.Write(projectile.localAI[0]);
+			writer.Write(projectile.localAI[1]);
+			writer.Write(projectile.minion);
+			writer.Write(projectile.melee);
+			writer.Write(projectile.magic);
+			writer.Write(projectile.usesLocalNPCImmunity);
+			writer.Write(projectile.localNPCHitCooldown);
+		}
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+			projectile.localAI[0] = reader.ReadInt32();
+			projectile.localAI[1] = reader.ReadInt32();
+			projectile.minion = reader.ReadBoolean();
+			projectile.melee = reader.ReadBoolean();
+			projectile.magic = reader.ReadBoolean();
+			projectile.usesLocalNPCImmunity = reader.ReadBoolean();
+			projectile.localNPCHitCooldown = reader.ReadInt32();
 		}
 
 		public override void SetStaticDefaults()
@@ -415,9 +440,11 @@ namespace SGAmod.Items.Weapons.Technical
 			}
 
 			float theammount = ((float)projectile.timeLeft + (float)(projectile.whoAmI*6454f)+(projectile.localAI[1]*3.137f));
+			float scale = (1f - projectile.ai[1]);
 
-			projectile.Center += ((gothere * ((float)Math.Sin((double)theammount / 7.10) * 1.97f))+ (gothere * ((float)Math.Cos((double)theammount / -13.00) * 2.95f))+ (gothere * ((float)Math.Sin((double)theammount / 4.34566334) * 2.1221f))
-				*(1f-projectile.ai[1]));
+
+			projectile.Center += ((gothere * ((float)Math.Sin((double)theammount / 7.10) * (1.97f * scale)))+ (gothere * ((float)Math.Cos((double)theammount / -13.00) * (2.95f * scale)))+ (gothere * ((float)Math.Sin((double)theammount / 4.34566334) * (2.1221f * scale)))
+				*(1f - projectile.localAI[0]));
 
 			if (projectile.localAI[1] == 0f)
 			{
@@ -487,6 +514,7 @@ namespace SGAmod.Items.Weapons.Technical
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Wire, 50);
 			recipe.AddIngredient(mod.ItemType("UnmanedStaff"), 1);
+			recipe.AddIngredient(mod.ItemType("ManaBattery"), 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 6);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
@@ -499,7 +527,7 @@ namespace SGAmod.Items.Weapons.Technical
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Massacre Prototype");
-			Tooltip.SetDefault("Fires a chain of Stardust Explosions\nFiring this weapon throws you back\n'Ansaksie would not approve'");
+			Tooltip.SetDefault("Fires a chain of Stardust Explosions at a cost of 50 HP\nFiring this weapon throws you back and resets life regen\n'Ansaksie would not approve'");
 		}
 
 		public override void SetDefaults()
@@ -513,12 +541,12 @@ namespace SGAmod.Items.Weapons.Technical
 			item.useStyle = 5;
 			item.noMelee = true;
 			item.knockBack = 5;
-			item.value = Item.sellPrice(platinum: 2);
+			item.value = Item.sellPrice(platinum: 1);
 			item.rare = 11;
 			item.UseSound = SoundID.Item122;
-			item.autoReuse = true;
+			item.autoReuse = false;
 			item.shoot = 14;
-			item.mana = 200;
+			item.mana = 100;
 			item.shootSpeed = 200f;
 		}
 
@@ -543,8 +571,32 @@ namespace SGAmod.Items.Weapons.Technical
 			recipe.AddRecipe();
 		}
 
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool CanUseItem(Player player)
 		{
+			if (player.statLife <= 50)
+			{
+				if (Main.netMode < NetmodeID.Server)
+				{
+					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.OrangeRed, "Insufficient Health", false, true);
+					Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 93, 0.75f, 0.5f);
+				}
+				return false;
+
+			}
+			return true;
+        }
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+				CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Red, 50, false, false);
+				if (Main.netMode == 1 && player.whoAmI == Main.myPlayer)
+				{
+					NetMessage.SendData(35, -1, -1, null, player.whoAmI, 50, 0f, 0f, 0, 0, 0);
+				}
+				player.statLife -= 50;
+				player.lifeRegenTime = 0;
+				player.lifeRegenCount = 0;
+
 			player.velocity += new Vector2(Math.Sign(-player.direction) * 20, (-10f-(speedY / 15f)));
 			int numberProjectiles = 4;// + Main.rand.Next(2);
 			for (int i = 0; i < numberProjectiles; i++)
@@ -1193,12 +1245,12 @@ namespace SGAmod.Items.Weapons.Technical
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "StarMetalBar", 15);
+			recipe.AddIngredient(null, "StarMetalBar", 16);
 			recipe.AddIngredient(null, "PlasmaCell", 3);
 			recipe.AddIngredient(null, "ManaBattery", 5);
 			recipe.AddIngredient(null, "AdvancedPlating", 8);
 			recipe.AddIngredient(ItemID.ChargedBlasterCannon, 1);
-			recipe.AddIngredient(ItemID.LunarBar, 10);
+			recipe.AddIngredient(ItemID.LunarBar, 8);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -1375,6 +1427,491 @@ namespace SGAmod.Items.Weapons.Technical
 
 	}
 
+
+	public class ReRouterSummon : SeriousSamWeapon
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Re-Router");
+			Tooltip.SetDefault("Throws a handheld turret device that when, shots are fired into it are rerouted to nearby enemies (or Minion targeted enemy)\nThe shots have their damage Amped by your Technological Damage bonus\nThe max velocity you can throw the device is boosted by your Throwing Velocity\nConsumes Electric Charge per reroute based on projectile damage");
+		}
+
+		public override void SetDefaults()
+		{
+			item.summon = true;
+			item.sentry = true;
+			item.width = 24;
+			item.height = 30;
+			item.useTime = 30;
+			item.useAnimation = 30;
+			item.useStyle = 1;
+			item.noMelee = true;
+			item.knockBack = 2f;
+			item.noUseGraphic = true;
+			item.value = Item.buyPrice(0, 0, 25, 0);
+			item.rare = ItemRarityID.Green;
+			item.autoReuse = false;
+			item.shootSpeed = 20f;
+			item.consumable = true;
+			item.maxStack = 30;
+			item.UseSound = SoundID.Item1;
+			item.shoot = ModContent.ProjectileType<ReRouterProjectile>();
+		}
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			if (player.altFunctionUse != 2)
+			{
+
+				Vector2 speedto = Main.MouseWorld - position;
+				Vector2 speed = Vector2.Normalize(speedto) * (Math.Min(400f*player.Throwing().thrownVelocity, speedto.Length()));
+
+				speed /= 30f;
+
+				speedX = speed.X;
+				speedY = speed.Y;
+
+				//position = Main.MouseWorld;
+				Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI, 0f, 0f);
+				player.UpdateMaxTurrets();
+			}
+			return false;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("LaserMarker"), 2);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 3);
+			recipe.AddIngredient(mod.ItemType("VialofAcid"), 2);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 1);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			recipe.SetResult(this,3);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class ReRouterProjectile : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			base.DisplayName.SetDefault("Re-Router");
+			//ProjectileID.Sets.MinionTargettingFeature[base.projectile.type] = true;
+		}
+
+        public override string Texture => "SGAmod/Items/Weapons/Technical/ReRouterSummon";
+
+        public override void SetDefaults()
+		{
+			projectile.width = 24;
+			projectile.height = 24;
+			projectile.ignoreWater = true;
+			projectile.tileCollide = true;
+			projectile.sentry = true;
+			projectile.timeLeft = Projectile.SentryLifeTime;
+			projectile.penetrate = -1;
+		}
+
+		public override void AI()
+		{
+
+			Player player = Main.player[base.projectile.owner];
+			projectile.ai[0] += 1;
+			projectile.localAI[0] += 1;
+
+			projectile.rotation += projectile.velocity.X / 24f;
+
+			if (projectile.ai[0] < 30)
+            {
+				projectile.velocity.Y += 0.30f;
+				return;
+
+            }
+			if (projectile.tileCollide)
+			{
+				Main.PlaySound(SoundID.Item, (int)projectile.Center.X,(int)projectile.Center.Y, 78,0.75f,0.75f);
+				projectile.tileCollide = false;
+			}
+			projectile.velocity /= 1.25f;
+
+			if (projectile.ai[0] % 1 == 0)
+			{
+
+				List<Point> targetthem = new List<Point>();
+
+				if (player.HasMinionAttackTargetNPC)
+				{
+					NPC target2 = Main.npc[player.MinionAttackTargetNPC];
+					if (target2 != null && target2.active && target2.life > 0)
+					{
+						targetthem.Add(new Point(target2.whoAmI, -1000));
+					}
+				}
+
+				List<NPC> closestnpcs = SGAUtils.ClosestEnemies(projectile.Center, 600f, AddedWeight: targetthem);
+
+				NPC target = closestnpcs?[0];//Closest
+
+				if (target != null && target.active && target.life > 0 && Vector2.Distance(target.Center, projectile.Center) < 600)
+				{
+
+					foreach (Projectile proj in Main.projectile)
+					{
+						bool contact = Main.projPet[proj.type];
+						if (proj.active && proj.friendly && proj.damage>0 && player.heldProj != proj.whoAmI && (!contact))
+						{
+							if (new Rectangle((int)proj.position.X, (int)proj.position.Y, proj.width, proj.height).Intersects(new Rectangle((int)projectile.position.X-8, (int)projectile.position.Y-8, projectile.width+16, projectile.height+16)))
+							{
+								SGAprojectile sgaProj = proj.GetGlobalProjectile<SGAprojectile>();
+								if (sgaProj.rerouted == false && player.SGAPly().ConsumeElectricCharge(proj.damage, 60))
+								{
+									Vector2 there = projectile.Center + new Vector2(0, 0f);
+									Vector2 Speed = (target.Center - there);
+									Speed.Normalize();
+
+									proj.Center = projectile.Center;
+									proj.velocity = Speed*(proj.velocity.Length());
+									proj.damage = (int)(proj.damage * player.SGAPly().techdamage);
+									proj.netUpdate = true;
+									sgaProj.rerouted = true;
+
+									projectile.rotation = Speed.ToRotation();
+									Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 114, 0.75f, 0.75f);
+									break;
+								}
+							}
+						}
+
+					}
+
+				}
+
+			}
+
+			for (int ii = -1; ii < 2; ii += 2)
+			{
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+				Vector2 loc = new Vector2(Main.rand.NextFloat(-12f, 12f), 8f* ii) + randomcircle * new Vector2(2f, 1f);
+				loc = loc.RotatedBy(projectile.rotation);
+				int num622 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y) + loc, 0, 0, DustID.Electric, 0f, 0f, 100, default(Color), 0.75f);
+				Main.dust[num622].scale = 0.25f;
+				Main.dust[num622].noGravity = true;
+				Main.dust[num622].velocity.X = randomcircle.RotatedBy(MathHelper.ToRadians(-90)).X * 2f;
+				Main.dust[num622].velocity.Y = randomcircle.RotatedBy(MathHelper.ToRadians(-90)).Y;
+				Main.dust[num622].velocity.Y += Main.rand.NextFloat(2f,5f);
+				Main.dust[num622].alpha = 150;
+			}
+
+		}
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D texa = Main.projectileTexture[projectile.type];
+			spriteBatch.Draw(texa, projectile.Center - Main.screenPosition, null, lightColor * MathHelper.Clamp(projectile.localAI[0] / 15f, 0f, 1f), projectile.rotation, new Vector2(texa.Width, texa.Height) / 2f, new Vector2(1, 1), SpriteEffects.None, 0f);
+			return false;
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			projectile.ai[0] = Math.Max(projectile.ai[0], 20);
+
+			if (projectile.velocity.X != oldVelocity.X)
+			{
+				projectile.velocity.X = -oldVelocity.X;
+			}
+			if (projectile.velocity.Y != oldVelocity.Y)
+			{
+				projectile.velocity.Y = -oldVelocity.Y;
+			}
+
+			projectile.velocity /= 2f;
+			return false;
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+	}
+
+	public class LaserMarker : Items.Weapons.Caliburn.CorrodedShield
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Laser Marker");
+			Tooltip.SetDefault("Point at your enemies to mark them, increasing damage they take by 10%\nCan be held out like a torch and used normally by holding shift");
+			Item.staff[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 32;
+			item.height = 12;
+			item.useTime = 70;
+			item.useAnimation = 70;
+			item.reuseDelay = 80;
+			item.useStyle = 1;
+			item.knockBack = 5;
+			item.noUseGraphic = true;
+			item.value = Item.sellPrice(0, 0, 25, 0);
+			item.rare = 2;
+			item.UseSound = SoundID.Item7;
+			item.shoot = 10;
+			item.consumable = true;
+			item.maxStack = 30;
+			item.shootSpeed = 10f;
+			item.useTurn = false;
+			item.autoReuse = false;
+			item.noMelee = true;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return false;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 1);
+			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 1);
+			recipe.AddIngredient(ItemID.Glass, 5);
+			recipe.AddIngredient(ItemID.SandBlock, 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this,3);
+			recipe.AddRecipe();
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			type = mod.ProjectileType("CorrodedShieldProjDash");
+			return true;
+		}
+
+
+	}
+
+	public class LaserMarkerProj : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("LaserMarkerProj");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.Boulder);
+			aiType = ProjectileID.Boulder;
+			projectile.friendly = true;
+			projectile.timeLeft = 10;
+			projectile.hostile = false;
+			projectile.penetrate = 10;
+			projectile.light = 0.35f;
+			projectile.width = 24;
+			projectile.height = 24;
+			projectile.tileCollide = false;
+			drawHeldProjInFrontOfHeldItemAndArms = true;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Technical/LaserMarker"); }
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+
+		int MyLaser = default;
+		public Vector2 EndPoint = default;
+
+		public override void AI()
+		{
+
+			Player player = Main.player[projectile.owner];
+			bool heldone = player.HeldItem.type != mod.ItemType("LaserMarker");
+			if (projectile.ai[0] > 0 || (player.HeldItem == null || heldone) || player.dead)
+			{
+				projectile.Kill();
+			}
+			else
+			{
+				if (projectile.timeLeft < 3)
+					projectile.timeLeft = 3;
+				Vector2 mousePos = Main.MouseWorld;
+
+				if (projectile.owner == Main.myPlayer)
+				{
+					Vector2 diff = mousePos - player.Center;
+					projectile.velocity = diff;
+					projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
+					projectile.netUpdate = true;
+					projectile.Center = mousePos;
+				}
+				int dir = projectile.direction;
+				player.ChangeDir(dir);
+
+				Vector2 direction = (projectile.velocity);
+				Vector2 directionmeasure = direction;
+
+				player.heldProj = projectile.whoAmI;
+
+				projectile.velocity.Normalize();
+
+				player.bodyFrame.Y = player.bodyFrame.Height * 3;
+				if (directionmeasure.Y - Math.Abs(directionmeasure.X) > 25)
+					player.bodyFrame.Y = player.bodyFrame.Height * 4;
+				if (directionmeasure.Y + Math.Abs(directionmeasure.X) < -25)
+					player.bodyFrame.Y = player.bodyFrame.Height * 2;
+				if (directionmeasure.Y + Math.Abs(directionmeasure.X) < -160)
+					player.bodyFrame.Y = player.bodyFrame.Height * 5;
+				player.direction = (directionmeasure.X > 0).ToDirectionInt();
+
+				projectile.Center = player.Center + (projectile.velocity * 10f);
+				projectile.velocity *= 8f;
+
+				MyLaser = Projectile.NewProjectile(projectile.Center, Vector2.Normalize(projectile.velocity) * 2f, ModContent.ProjectileType<LaserMarkerLaserProj>(), 0, 0, player.whoAmI, ai1: (int)projectile.whoAmI);
+
+			}
+		}
+
+		public void DoDraw(SpriteBatch spriteBatch, Color drawColor)
+		{
+			Vector2 origin = new Vector2(0, 2);
+			Vector2 start = projectile.Center + Vector2.Normalize(projectile.velocity) * 2f;
+
+			Vector2 diff = (EndPoint - start);
+			float length = diff.Length();
+
+
+			Main.spriteBatch.Draw(Main.blackTileTexture, start - Main.screenPosition, new Rectangle(0, 0, 4, 4), Color.Red * 0.50f, diff.ToRotation(), origin, new Vector2(length / 4f, 1f), SpriteEffects.None, 0);
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		{
+			if (EndPoint != default)
+				DoDraw(spriteBatch, drawColor);
+
+			bool facingleft = projectile.velocity.X > 0;
+			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
+			Texture2D texture = Main.projectileTexture[projectile.type];
+			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor * projectile.Opacity, projectile.velocity.ToRotation() + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+
+			return false;
+		}
+
+	}
+
+	public class LaserMarkerLaserProj : ModProjectile
+	{
+		public Vector2 EndPoint = default;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("LaserMarkerLaserProj");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.Boulder);
+			aiType = ProjectileID.Boulder;
+			projectile.friendly = true;
+			projectile.timeLeft = 1;
+			projectile.hostile = false;
+			projectile.penetrate = 1;
+			projectile.light = 0.35f;
+			projectile.width = 24;
+			projectile.height = 24;
+			projectile.tileCollide = false;
+			projectile.extraUpdates = 0;
+			drawHeldProjInFrontOfHeldItemAndArms = true;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Technical/LaserMarker"); }
+		}
+
+		//The distance charge particle from the player center
+		private const float MOVE_DISTANCE = 0f;
+
+		// The actual distance is stored in the ai0 field
+		// By making a property to handle this it makes our life easier, and the accessibility more readable
+		public float Distance
+		{
+			get => projectile.ai[0];
+			set => projectile.ai[0] = value;
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+
+		public override void AI()
+		{
+
+			//projectile.Center = Main.projectile[(int)projectile.knockBack].Center;
+
+			Player player = Main.player[projectile.owner];
+
+			NPC hitnpc = default;
+
+			SetLaserPosition(player, ref hitnpc);
+
+			if (hitnpc != default)
+			{
+				hitnpc.AddBuff(ModContent.BuffType<Marked>(), 2);
+			}
+
+			Lighting.AddLight(EndPoint, (Color.Red).ToVector3() * 0.50f);
+
+			Projectile owner = Main.projectile[(int)projectile.ai[1]];
+
+			if (owner != null)
+				(owner.modProjectile as LaserMarkerProj).EndPoint = EndPoint;
+
+			//Utils.PlotTileLine(projectile.Center, projectile.Center + projectile.velocity * (Distance - MOVE_DISTANCE), 26, new Utils.PerLinePoint(DelegateMethods.CastLight));
+
+
+		}
+
+		private void SetLaserPosition(Player player, ref NPC hitnpc)
+		{
+			for (Distance = MOVE_DISTANCE; Distance <= 2200f; Distance += 5f)
+			{
+				var start = projectile.Center + projectile.velocity * Distance;
+				EndPoint = start;
+
+				//if (Main.rand.Next(0, 10) == 0)
+				Lighting.AddLight(start, (Color.Red).ToVector3() * Main.rand.NextFloat(0.10f, 0.30f));
+
+
+				if (!Collision.CanHit(projectile.Center, 0, 0, start, 0, 0))
+				{
+					Distance -= 5f;
+					return;
+				}
+				foreach (NPC npc in Main.npc)
+				{
+					if (npc.active && !npc.dontTakeDamage && new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height).Contains(start.ToPoint()))
+					{
+						hitnpc = npc;
+						Distance -= 5f;
+						return;
+					}
+
+				}
+			}
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		{
+			return false;
+		}
+
+	}
 
 
 }

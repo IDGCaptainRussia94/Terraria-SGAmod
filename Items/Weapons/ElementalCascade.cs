@@ -24,7 +24,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 40;
+			item.damage = 50;
 			item.magic = true;
 			item.mana = 15;
 			item.width = 40;

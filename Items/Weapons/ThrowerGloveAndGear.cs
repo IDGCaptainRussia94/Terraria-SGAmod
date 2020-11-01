@@ -8,7 +8,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
 using SGAmod.NPCs.Sharkvern;
 using AAAAUThrowing;
+using SGAmod.Items.Weapons;
+using SGAmod.HavocGear.Items.Weapons;
 using Terraria.Utilities;
+using SGAmod.Items.Consumable;
 
 namespace SGAmod.Items.Weapons
 {
@@ -32,6 +35,7 @@ namespace SGAmod.Items.Weapons
 			grenadetypes.Add(ItemID.PartyGirlGrenade);
 			grenadetypes.Add(ItemID.Beenade);
 			grenadetypes.Add(mod.ItemType("AcidGrenade"));
+			grenadetypes.Add(mod.ItemType("SwarmGrenade"));
 			grenadetypes.Add(mod.ItemType("ThermalGrenade"));
 			if ((level != 2 && level>0) || level == 3)
 			{
@@ -131,8 +135,8 @@ namespace SGAmod.Items.Weapons
 			float baseumtli = (item.useTime/player.GetModPlayer<SGAPlayer>().ThrowingSpeed) /60f;
 			if (itemtype == ItemID.Beenade)
 				baseumtli = 1f;
-			player.itemAnimation = (int)(basetype2.useAnimation* baseumtli);
-			player.itemAnimationMax = (int)(basetype2.useAnimation* baseumtli);
+			player.itemAnimation = (int)(basetype2.useAnimation * baseumtli);
+			player.itemAnimationMax = (int)(basetype2.useAnimation * baseumtli);
 			player.itemTime = (int)(basetype2.useTime* baseumtli);
 			type = FindProjectile(basetype2.shoot, basetype);
 
@@ -168,18 +172,18 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Silk, 8);
-			recipe.AddIngredient(ItemID.BeeWax, 10);
-			recipe.AddIngredient(ItemID.TatteredCloth, 5);
-			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 3);
+			recipe.AddIngredient(ItemID.Silk, 5);
+			recipe.AddIngredient(ItemID.BeeWax, 4);
+			recipe.AddIngredient(ItemID.Leather, 6);
+			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 4);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 			recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Silk, 8);
-			recipe.AddIngredient(ItemID.BeeWax, 10);
-			recipe.AddIngredient(ItemID.Leather, 10);
-			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 3);
+			recipe.AddIngredient(ItemID.Silk, 5);
+			recipe.AddIngredient(ItemID.BeeWax, 4);
+			recipe.AddIngredient(ItemID.Leather, 6);
+			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 4);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -221,7 +225,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("ThrowerGlove"), 1);
 			recipe.AddIngredient(ItemID.AleThrowingGlove, 1);
 			recipe.AddIngredient(ItemID.BoneGlove, 1);
-			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 15);
+			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 12);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -260,9 +264,9 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("ThrowerGlove"), 1);
-			recipe.AddIngredient(ItemID.Dynamite, 10);
-			recipe.AddIngredient(ItemID.StickyBomb, 20);
-			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 10);
+			recipe.AddIngredient(ItemID.Dynamite, 8);
+			recipe.AddIngredient(ItemID.StickyBomb, 16);
+			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 8);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -870,7 +874,8 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			projectile.CloneDefaults(ProjectileID.Grenade);
-			projectile.thrown = true;
+			projectile.thrown = false;
+			projectile.Throwing().thrown = false;
 			projectile.timeLeft = 180;
 		}
 
@@ -1141,7 +1146,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Shark Bait");
-			Tooltip.SetDefault("'Contains many yummy snacks a Sharvern needs in their diet!'\nThrows a bag of Shark Bait, which erupts into fish\nFish may spawn hungry sharks\nProduces more fish when thrown into water\nDoubles as fishing bait");
+			Tooltip.SetDefault("'Contains many yummy snacks a Sharvern needs in their diet!'\nThrows a bucket of Shark Bait, which erupts into fish\nFish may spawn hungry sharks\nProduces more fish when thrown into water\nDoubles as fishing bait");
 		}
 
 		public override void SetDefaults()
@@ -1149,6 +1154,7 @@ namespace SGAmod.Items.Weapons
 			item.CloneDefaults(ItemID.MolotovCocktail);
 			item.useStyle = 1;
 			item.Throwing().thrown = true;
+			item.thrown = false;
 			item.damage = 50;
 			item.useTime = 40;
 			item.useAnimation = 40;
@@ -1158,11 +1164,6 @@ namespace SGAmod.Items.Weapons
 			item.shoot = mod.ProjectileType("SharkFoodProj");
 			item.value = Item.buyPrice(0, 0, 5, 0);
 			item.rare = 6;
-		}
-
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.HerbBag); }
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -1196,7 +1197,7 @@ namespace SGAmod.Items.Weapons
 
 		public override string Texture
 		{
-			get { return ("Terraria/Item_"+ItemID.HerbBag); }
+			get { return ("SGAmod/Items/Weapons/SharkBait"); }
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -1511,5 +1512,233 @@ namespace SGAmod.Items.Weapons
 
 	}
 
+
+}
+
+namespace SGAmod.HavocGear.Items.Weapons
+{
+
+
+	class SwarmGrenade : AcidGrenade
+	{
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Gnat-ade");
+			Tooltip.SetDefault("Explodes into a swarm of seeking flies");
+		}
+
+		public override void SetDefaults()
+		{
+			item.CloneDefaults(ItemID.Grenade);
+			item.useStyle = 1;
+			item.Throwing().thrown = true;
+			item.thrown = false;
+			item.damage = 35;
+			item.shootSpeed = 4f;
+			item.shoot = mod.ProjectileType("SwarmGrenadeProj");
+			item.value = Item.buyPrice(0, 0, 5, 0);
+			item.rare = 5;
+		}
+
+        public override void AddRecipes()
+        {
+            //Nil
+        }
+    }
+
+
+	class SwarmGrenadeProj : AcidGrenadeProj
+	{
+
+		bool hitonce = false;
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Swarm Grenade");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Grenade);
+			projectile.Throwing().thrown = true;
+			projectile.timeLeft = 320;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/HavocGear/Items/Weapons/SwarmGrenade"); }
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			if (!hitonce)
+			{
+				projectile.width = 160;
+				projectile.height = 160;
+				projectile.position -= new Vector2(80, 80);
+			}
+
+			for (int i = 0; i < 100; i += 1)
+			{
+				float randomfloat = Main.rand.NextFloat(1f, 6f);
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+
+				int dust = Dust.NewDust(new Vector2(projectile.Center.X - 32, projectile.Center.Y - 32), 64, 64, DustID.Buggy);
+				Main.dust[dust].scale = 0.25f;
+				Main.dust[dust].noGravity = true;
+				Main.dust[dust].velocity = (projectile.velocity * (float)(Main.rand.Next(10, 20) * 0.01f)) + (randomcircle * randomfloat);
+			}
+
+			for(int i = 0; i < 8; i += 1)
+            {
+				double angle = (i / 8.0) * (Math.PI * 2.0);
+				Vector2 velocity = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 4f;
+				Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, velocity.X, velocity.Y, ModContent.ProjectileType<FlyProjectileThrown>(), (int)((double)projectile.damage), projectile.knockBack/5f, projectile.owner, 0f, 0f);
+			}
+
+			int theproj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("Explosion"), (int)((double)projectile.damage * 0.5f), projectile.knockBack, projectile.owner, 0f, 0f);
+			Main.projectile[theproj].Throwing().thrown = true;
+			Main.projectile[theproj].netUpdate = true;
+			projectile.type = ProjectileID.Grenade;
+			return true;
+		}
+
+		public override void AI()
+		{
+			int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, DustID.Buggy);
+			Main.dust[dust].scale = 0.35f;
+			Main.dust[dust].noGravity = false;
+			Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(60, 100) * 0.01f);
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			if (!hitonce)
+			{
+				hitonce = true;
+				projectile.position -= new Vector2(64, 64);
+				projectile.width = 128;
+				projectile.height = 128;
+				projectile.timeLeft = 1;
+			}
+		}
+
+	}
+
+	public class FlyProjectileThrown : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			base.DisplayName.SetDefault("Fly");
+			//ProjectileID.Sets.MinionTargettingFeature[base.projectile.type] = true;
+		}
+
+		public override string Texture => "SGAmod/NPCs/Dank/Fly";
+
+		public override void SetDefaults()
+		{
+			projectile.width = 24;
+			projectile.height = 24;
+			projectile.ignoreWater = true;
+			projectile.tileCollide = true;
+			projectile.friendly = true;
+			projectile.Throwing().thrown = true;
+			projectile.timeLeft = 300;
+			projectile.penetrate = 5;
+			projectile.usesIDStaticNPCImmunity = true;
+			projectile.idStaticNPCHitCooldown = 8;
+		}
+
+        public override bool CanDamage()
+        {
+            return projectile.penetrate>1;
+        }
+
+        public override void AI()
+		{
+
+			if (projectile.timeLeft > 30 && projectile.penetrate < 2)
+				projectile.timeLeft = 30;
+
+			Player player = Main.player[base.projectile.owner];
+			projectile.localAI[0] += 1;
+
+
+			if (projectile.localAI[0] % 20 == 0)
+			{
+
+				List<NPC> closestnpcs = SGAUtils.ClosestEnemies(projectile.Center, 300f);
+
+				NPC target = closestnpcs?[0];//Closest
+
+				//projectile.ai[0] = 0;
+
+				if (target != null && target.active && target.life > 0 && Vector2.Distance(target.Center, projectile.Center) < 600)
+				{
+					projectile.ai[0] = target.whoAmI+1;
+						projectile.netUpdate = true;
+				}
+			}
+
+			if ((projectile.localAI[0]+(projectile.whoAmI*7)) % 60 == 0 || (int)projectile.ai[1] == 0)
+			{
+				float left = 0.40f + (1f-(projectile.timeLeft/300f))*0.20f;
+				projectile.ai[1] = Main.rand.NextFloat(-MathHelper.Pi * left, MathHelper.Pi * left);
+				projectile.netUpdate = true;
+			}
+
+			if (projectile.ai[0] > 0)
+            {
+				NPC target = Main.npc[(int)projectile.ai[0]-1];
+				if (target != null && target.active && target.life > 0)
+                {
+					Vector2 difference = target.Center - projectile.Center;
+
+					projectile.velocity += Vector2.Normalize(difference).RotatedBy(projectile.ai[1])/3f;
+					projectile.velocity /= 1.03f;
+
+					if (projectile.velocity.Length() > 16)
+                    {
+						projectile.velocity.Normalize(); projectile.velocity *= 16f;
+					}
+
+
+
+				}
+
+			}
+
+
+
+
+		}
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D texa = Main.projectileTexture[projectile.type];
+			int frame = texa.Height / 4;
+			float alpha = MathHelper.Clamp(projectile.localAI[0] / 10f, 0f, Math.Min(projectile.timeLeft/30f,1f));
+			spriteBatch.Draw(texa, projectile.Center - Main.screenPosition, new Rectangle(0,((int)((projectile.localAI[0] /3f)% 4)) * frame, texa.Width, frame), lightColor * alpha, projectile.rotation, new Vector2(texa.Width, frame) / 2f, projectile.scale, projectile.velocity.X > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+			return false;
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+
+			if (projectile.velocity.X != oldVelocity.X)
+			{
+				projectile.velocity.X = -oldVelocity.X;
+			}
+			if (projectile.velocity.Y != oldVelocity.Y)
+			{
+				projectile.velocity.Y = -oldVelocity.Y;
+			}
+
+			projectile.velocity /= 1.25f;
+			return false;
+		}
+	}
 
 }

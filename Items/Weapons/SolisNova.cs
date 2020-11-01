@@ -247,7 +247,7 @@ namespace SGAmod.Items.Weapons
 						if (projectile.ai[1] % 6 == 0)
 						{
 							player.statMana -= (int)(0.20f + (growsize / 20f) * player.manaCost);
-							if (player.statMana < 1)
+							if (player.statMana < 1 && player.manaFlower)
 								player.QuickMana();
 						}
 

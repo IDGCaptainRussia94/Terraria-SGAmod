@@ -12,8 +12,10 @@ using Idglibrary;
 namespace SGAmod.NPCs.SpiderQueen
 {
 	[AutoloadBossHead]
-	public class SpiderQueen : ModNPC
+	public class SpiderQueen : ModNPC, ISGABoss
 	{
+		public string Trophy() => "SpiderQueenTrophy";
+		public bool Chance() => Main.rand.Next(0, 10) == 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Spider Queen");
@@ -32,7 +34,7 @@ namespace SGAmod.NPCs.SpiderQueen
 			npc.knockBackResist = 0f;
 			npc.aiStyle = -1;
 			aiType = 0;
-			music = MusicID.Boss3;
+			music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/SpiderQueen");
 			animationType = 0;
 			npc.noTileCollide = true;
 			npc.noGravity = true;

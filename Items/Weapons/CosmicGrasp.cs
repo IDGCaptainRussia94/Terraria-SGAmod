@@ -19,20 +19,20 @@ namespace SGAmod.Items.Weapons
 			DisplayName.SetDefault("Cosmic Grasp");
 			Tooltip.SetDefault("'With more harmonious convergence, its power is greatly increased'\n" +
 				"Launches a piercing spear of cosmic light that creates Quasar Beam Explosions on hit" +
-				"\nShadowbeams explode from enemies killed with the spear of light and on crit"+
+				"\nShadowflame tendrils explode from enemies killed with the spear of light and on crit"+
 				"\nExplosion doesn't crit, damage falls off over distance\nFirst hit does 3X damage, No immunity frames are caused by this weapon");
 		}
 		public override void SetDefaults()
 		{
-			item.damage = 150;
+			item.damage = 100;
 			item.noMelee = true;
 			item.magic = true;
-			item.mana = 10;
+			item.mana = 20;
 			item.crit = 25;
 			item.width = 22;
 			item.height = 22;
-			item.useTime = 15;
-			item.useAnimation = 15;
+			item.useTime = 20;
+			item.useAnimation = 20;
 			item.useStyle = 5;
 			item.knockBack = 10;
 			item.value = 2000000;
@@ -68,10 +68,10 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("Cosmillash"), 1);
+			recipe.AddIngredient(mod.ItemType("ShadeflameStaff"), 1);
 			recipe.AddIngredient(ItemID.ShadowbeamStaff, 1);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 10);
 			recipe.AddIngredient(mod.ItemType("EldritchTentacle"), 15);
-			recipe.AddIngredient(ItemID.LunarBar, 12);
 			recipe.AddIngredient(ItemID.Amethyst, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);			
 			recipe.SetResult(this);
@@ -128,7 +128,7 @@ namespace SGAmod.Items.Weapons
 		{
 			for (int i = 0; i < 1; i++)
 			{
-				int proj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, Vector2.Zero.X, Vector2.Zero.Y, mod.ProjectileType("QuasarOrbLessParticles"), projectile.damage, projectile.knockBack, projectile.owner);
+				int proj = Projectile.NewProjectile(target.X, target.Y, Vector2.Zero.X, Vector2.Zero.Y, mod.ProjectileType("QuasarOrbLessParticles"), projectile.damage, projectile.knockBack, projectile.owner);
 				Main.projectile[proj].timeLeft = 2;
 				Main.projectile[proj].netUpdate = true;
 				IdgProjectile.Sync(proj);
@@ -139,11 +139,14 @@ namespace SGAmod.Items.Weapons
 
 		public static void BeamBurst(Vector2 where, int damage, int owner,int count)
 		{
+			float[] speeds = { 1.5f, 5f };
+			if (count > 5)
+				speeds = new float[] {5f,9f };
 			for (int i = 0; i < count; i++)
 			{
 				Vector2 velorand = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000));
 				velorand.Normalize();
-				int a = Projectile.NewProjectile(where.X, where.Y, velorand.X * Main.rand.NextFloat(0.5f, 3f), velorand.Y * Main.rand.NextFloat(0.5f, 3f), ProjectileID.ShadowBeamFriendly, (int)(damage * 1.25f), 0, owner);
+				int a = Projectile.NewProjectile(where.X, where.Y, velorand.X * Main.rand.NextFloat(speeds[0], speeds[1]), velorand.Y * Main.rand.NextFloat(speeds[0], speeds[1]), ProjectileID.ShadowFlame, (int)(damage * 1.25f), 0, owner);
 				Main.projectile[a].tileCollide = true;
 				Main.projectile[a].timeLeft = (int)((120 + Main.rand.Next(80)));
 				Main.projectile[a].netUpdate = true;
@@ -164,7 +167,7 @@ namespace SGAmod.Items.Weapons
 			}
 
 			if (crit)
-				CGraspSpear.BeamBurst(target.Center, projectile.damage, projectile.owner, 2);
+				CGraspSpear.BeamBurst(target.Center, projectile.damage, projectile.owner, 1);
 			if (target.life - damage < 1)
 				CGraspSpear.BeamBurst(target.Center, projectile.damage, projectile.owner, 8);
 		}

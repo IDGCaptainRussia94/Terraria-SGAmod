@@ -243,7 +243,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 
 			Texture2D tex = ModContent.GetTexture("SGAmod/Items/Weapons/SeriousSam/BeamGunProj");
-			Texture2D texGlow = ModContent.GetTexture("SGAmod/Items/Weapons/SeriousSam/BeamGunProjGlow");
+			Texture2D texGlow = ModContent.GetTexture("SGAmod/Items/GlowMasks/BeamGunProjGlow");
 			SpriteEffects effects = SpriteEffects.FlipHorizontally;
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 2) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 0f);

@@ -12,6 +12,7 @@ using Terraria.Enums;
 using SGAmod.Items.Weapons;
 using SGAmod.Projectiles;
 using Idglibrary;
+using AAAAUThrowing;
 
 namespace SGAmod.Items.Weapons
 {
@@ -67,7 +68,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
 		{
-			add += (((player.meleeDamage + player.rangedDamage + player.magicDamage + player.minionDamage + player.thrownDamage) - 5f) / 5f);
+			add += (((player.meleeDamage + player.rangedDamage + player.magicDamage + player.minionDamage + player.Throwing().thrownDamage) - 5f) / 5f);
 		}
 
 	}
@@ -596,7 +597,7 @@ namespace SGAmod.Items.Weapons
 			num6 *= num7;
 			if (Main.myPlayer != owner && Main.netMode == 2)// && (ammo == 4 || ammo == 5))
 			{
-				NetMessage.SendData(108, owner, -1, null, Damage, KnockBack, (float)x, (float)y, angle, ammo, owner);
+				NetMessage.SendData(MessageID.WiredCannonShot, owner, -1, null, Damage, KnockBack, (float)x, (float)y, angle, ammo, owner);
 				return -1;
 			}
 			if (Main.netMode == 2)

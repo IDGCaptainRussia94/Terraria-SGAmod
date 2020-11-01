@@ -22,6 +22,8 @@ namespace SGAmod.NPCs.Dank
 			npc.aiStyle = 14;
             animationType = NPCID.CaveBat;
             aiType = NPCID.CaveBat;
+            banner = npc.type;
+            bannerItem = mod.ItemType("SwampBatBanner");
         }
 
         public override void SetStaticDefaults()

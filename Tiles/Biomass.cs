@@ -18,14 +18,14 @@ namespace SGAmod.Tiles
 			Main.tileSpelunker[Type] = false;
 			Main.tileValue[Type] = 20;
 			TileID.Sets.Ore[Type] = true;
-			soundType = 21;
-			soundStyle = 1;
+			soundType = 3;
+			soundStyle = 9;
 			dustType = 128;
 			drop = mod.ItemType("Biomass");
 			minPick = 10;
 			mineResist = 1f;
 			ModTranslation name = CreateMapEntryName();
-			name.SetDefault("Biomass");
+			name.SetDefault("Photosyte");
 			AddMapEntry(new Color(40, 160, 40), name);
 		}
 	}

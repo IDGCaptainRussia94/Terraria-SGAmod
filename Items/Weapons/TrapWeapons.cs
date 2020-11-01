@@ -428,7 +428,6 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Boulder, 25);
-			recipe.AddIngredient(ItemID.Detonator, 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 25);
 			recipe.AddRecipe();
@@ -488,8 +487,8 @@ namespace SGAmod.Items.Weapons
 			Main.projectile[probg].friendly = true;
 			Main.projectile[probg].hostile = false;
 			Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(10));
-			Main.projectile[probg].velocity.X = perturbedSpeed.X*player.thrownVelocity;
-			Main.projectile[probg].velocity.Y = perturbedSpeed.Y*player.thrownVelocity;
+			Main.projectile[probg].velocity.X = perturbedSpeed.X;
+			Main.projectile[probg].velocity.Y = perturbedSpeed.Y;
 			Main.projectile[probg].owner = player.whoAmI;
 			SGAprojectile modeproj = Main.projectile[probg].GetGlobalProjectile<SGAprojectile>();
 			modeproj.myplayer = player;
@@ -777,10 +776,6 @@ namespace SGAmod.Items.Weapons
 			Tooltip.SetDefault("'Their turn to go running escaping danger'\nSummons portals above the player that rains down boulders in both directions" +
 				"\nCounts as trap damage, doesn't crit");
 		}
-		public override string Texture
-		{
-			get { return ("SGAmod/HavocGear/Items/Weapons/Landslide"); }
-		}
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			int numberProjectiles = 8;// + Main.rand.Next(2);
@@ -815,7 +810,7 @@ namespace SGAmod.Items.Weapons
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Rod of Enforcing");
+			DisplayName.SetDefault("Rocks");
 		}
 
 		public override string Texture

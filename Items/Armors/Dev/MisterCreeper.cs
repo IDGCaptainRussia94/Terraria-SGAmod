@@ -6,6 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader;
 using Idglibrary;
+using AAAAUThrowing;
 
 namespace SGAmod.Items.Armors.Dev
 {
@@ -57,15 +58,15 @@ namespace SGAmod.Items.Armors.Dev
 
 		public virtual void AddEffects(Player player)
 		{
-			player.thrownCost33 = true;
-			player.thrownDamage += 0.25f;
-			player.meleeDamage += 0.25f;
+			player.Throwing().thrownCrit += 20;
+			player.meleeCrit += 10;
+			player.Throwing().thrownCost33 = true;
 			player.meleeSpeed += 0.25f;
 			player.GetModPlayer<SGAPlayer>().ThrowingSpeed += 0.15f;
 		}
 		public virtual List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "25% increased melee and throwing damage"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "10% Increased Melee Crit, 20% increased throwing Crit"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "33% to not consume thrown items, 25% increased melee swing speed"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "15% increased throwing rate"));
 			return tooltips;
@@ -144,14 +145,14 @@ namespace SGAmod.Items.Armors.Dev
 		}
 		public override void AddEffects(Player player)
 		{
-			player.thrownCrit += 20;
-			player.meleeCrit += 10;
 			player.noKnockback = true;
 			player.endurance += 0.15f;
+			player.Throwing().thrownDamage += 0.25f;
+			player.meleeDamage += 0.25f;
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "10% Increased Melee Crit, 20% increased throwing Crit"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "25% increased melee and throwing damage"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Immunity to Knockback, greatly increased Life Regen"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Extra 15% Endurance"));
 			return tooltips;
@@ -185,7 +186,7 @@ namespace SGAmod.Items.Armors.Dev
 		{
 			player.moveSpeed += 2f;
 			player.accRunSpeed += 2f;
-			player.wingTimeMax = (int)((float)player.wingTimeMax*(1.20f));
+			player.wingTimeMax = (int)(player.wingTimeMax*1.20f);
 			player.GetModPlayer<SGAPlayer>().Noselfdamage = true;
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)

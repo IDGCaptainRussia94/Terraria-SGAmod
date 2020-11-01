@@ -31,6 +31,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.knockBack = 2;
 			item.value = Item.sellPrice(0,75,0,0);
 			item.rare = 11;
+			item.mana = 10;
 			//item.UseSound = SoundID.Item99;
 			item.autoReuse = true;
 			item.shoot = ModContent.ProjectileType<QuasarCannonCharging>();
@@ -118,6 +119,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 				projectile.netUpdate = true;
 			}
 			projectile.Center = player.Center + Vector2.Normalize(projectile.velocity) * 72;
+			if (player.statMana >= 10)
 			projectile.ai[0] += 1;
 
 			Vector2 directionmeasure = projectile.velocity;
@@ -130,12 +132,17 @@ namespace SGAmod.HavocGear.Items.Weapons
 				player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * player.direction, projectile.velocity.X * player.direction);
 			}
 
-		if (projectile.ai[0]>10){
+		if (projectile.ai[0]>10 && player.statMana >= 10)
+			{
 
 				if (projectile.ai[0]%20==0)
 				Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 94, 0.40f, -0.5f+(projectile.ai[0]/(float)chargeuptime)*1.25f);
 
 				if (projectile.ai[0]<chargeuptime){
+
+					if (projectile.ai[0] % 20 == 0)
+						player.statMana -= (int)(8f*player.manaCost);
+
 		for (num315 = 0; num315 < 2; num315 = num315 + 1)
 			{
 					Vector2 randomcircle=new Vector2(Main.rand.Next(-64,0),Main.rand.Next(-20,6)*player.direction); randomcircle =randomcircle.RotatedBy(directionmeasure.ToRotation());

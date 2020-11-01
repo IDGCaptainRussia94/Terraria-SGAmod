@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 using Terraria.ID;
+using Idglibrary;
 
 namespace SGAmod.Items.Placeable
 {
@@ -8,7 +11,7 @@ namespace SGAmod.Items.Placeable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Reverse Engineering Station");
-			Tooltip.SetDefault("Allows weaponization of unusual tidbits, breaking down some weapons into raw components, and crafting of advanced machinery\nSome formerly uncraftable items may be crafted here\nDoubles as a Tinkerer's Workbench");
+			Tooltip.SetDefault("Allows weaponization of unusual tidbits and crafting of advanced machinery\nSome formerly uncraftable items may be crafted here\nDoubles as a Tinkerer's Workbench");
 		}
 		public override void SetDefaults()
 		{
@@ -26,6 +29,20 @@ namespace SGAmod.Items.Placeable
 			item.consumable = true;
 			item.createTile = mod.TileType("ReverseEngineeringStation");
 		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			string s = "Not Binded!";
+			foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+			{
+				s = key;
+			}
+
+			tooltips.Add(new TooltipLine(mod, "uncraft", Idglib.ColorText(Color.CornflowerBlue, "Allows you to uncraft non-favorited held items on right click")));
+			tooltips.Add(new TooltipLine(mod, "uncraft", Idglib.ColorText(Color.CornflowerBlue, "Press the 'Toggle Recipe' (" + s + ") Hotkey to swap between recipes")));
+			tooltips.Add(new TooltipLine(mod, "uncraft", Idglib.ColorText(Color.CornflowerBlue, "There is a net loss in materials on uncraft, this can be reduced")));
+		}
+
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);

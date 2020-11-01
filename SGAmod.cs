@@ -5,6 +5,7 @@
 
 
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Graphics;
 using Terraria.Graphics.Effects;
@@ -22,6 +23,9 @@ using Terraria.GameContent.UI;
 using Idglibrary;
 using System.IO;
 using System.Diagnostics;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using System.Reflection;
 using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityMod.World;
@@ -41,9 +45,13 @@ using SGAmod.Items.Armors;
 using SGAmod.Items.Accessories;
 using SGAmod.Items.Consumable;
 using SGAmod.Items.Weapons.Caliburn;
+using SGAmod.Tiles;
 using SGAmod.UI;
 using Terraria.Achievements;
 using Terraria.GameContent.Achievements;
+using Terraria.GameInput;
+using SGAmod.Items.Weapons.SeriousSam;
+using SGAmod.Items.Placeable;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -77,16 +85,6 @@ namespace SGAmod
 		}
 	}*/
 
-	public class PostDrawCollection
-	{
-		public Vector3 light;
-
-		public PostDrawCollection(Vector3 light)
-		{
-			this.light = light;
-		}
-	}
-
 	public partial class SGAmod : Mod
 	{
 
@@ -104,6 +102,7 @@ namespace SGAmod
 		public static Dictionary<int, string> StuffINeedFuckingSpritesFor;
 		public static Dictionary<int, EnchantmentCraftingMaterial> EnchantmentCatalyst;
 		public static Dictionary<int, EnchantmentCraftingMaterial> EnchantmentFocusCrystal;
+		public static Dictionary<int, int> CoinsAndProjectiles;
 		public static int[] otherimmunes = new int[3];
 		public static bool Calamity = false;
 		public static bool NightmareUnlocked = false;
@@ -116,6 +115,8 @@ namespace SGAmod
 		internal static ModHotKey WalkHotKey;
 		internal static ModHotKey GunslingerLegendHotkey;
 		internal static ModHotKey NinjaSashHotkey;
+		internal static ModHotKey ToggleRecipeHotKey;
+		internal static ModHotKey ToggleGamepadKey;
 		internal static ModHotKey SkillTestKey;
 		public static bool cachedata = false;
 		public static bool updatelasers = false;
@@ -126,7 +127,11 @@ namespace SGAmod
 		public static RenderTarget2D drawnscreen;
 		public static SGACustomUIMenu CustomUIMenu;
 		public static UserInterface CustomUIMenuInterface;
+		public static Dictionary<int, int> itemToMusicReference = new Dictionary<int, int>();
+		public static Dictionary<int, int> musicToItemReference = new Dictionary<int, int>();
 		public static byte SkillRun = 1;
+		public static int RecipeIndex = 0;
+		public static float fogAlpha = 1f;
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
 
 		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
@@ -172,6 +177,73 @@ namespace SGAmod
 		}
 
 
+		private delegate bool FlyInWaterHackDelegate(bool stackbool,Player player);
+		private void FlyInWaterHack(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+			MethodInfo HackTheMethod = typeof(Collision).GetMethod("WetCollision", BindingFlags.Public | BindingFlags.Static);
+			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
+			/*c.EmitDelegate<Action>(() =>
+			{
+				Main.NewText("This is test");
+			});*/
+
+			//c.Index -= 1;
+
+			//Previously I would delete the instruction and replace it with a bool that had the 3 WetCollision values on the stack, but this, is alot simpler
+
+			FlyInWaterHackDelegate inWater = delegate (bool stackbool, Player player)
+			{
+				return stackbool || player.SGAPly().tidalCharm > 0;// Collision.WetCollision(pos, x, y);
+			};
+
+			c.Index += 1;
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<FlyInWaterHackDelegate>(inWater);
+		}
+
+		private void CurserHack(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+			MethodInfo HackTheMethod = typeof(PlayerInput).GetMethod("get_UsingGamepad", BindingFlags.Public | BindingFlags.Static);
+			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
+			c.RemoveRange(2);
+
+			HackTheMethod = typeof(LockOnHelper).GetMethod("SetActive", BindingFlags.NonPublic | BindingFlags.Static);
+			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
+			//c.Index -= 1;
+			c.Emit(OpCodes.Pop);
+			c.EmitDelegate<Func<bool>>(() =>
+			{
+				return PlayerInput.UsingGamepad || Main.LocalPlayer.SGAPly().gamePadAutoAim > 0;
+			});
+
+			c.TryGotoNext(i => i.MatchRet());
+			c.Remove();
+
+			var label = c.DefineLabel();
+
+			/*c.EmitDelegate<Func<bool>>(() =>
+			{
+				return true;
+			});*/
+
+			//c.Emit(OpCodes.Ldsfld, typeof(Main).GetField(nameof(Main.rand)));
+			//c.Emit(OpCodes.Ldc_I4_S, (sbyte)10); 			// Ldc_I4_S expects an int8, aka an sbyte. Failure to cast correctly will crash the game
+			//c.Emit(OpCodes.Call, typeof(Utils).GetMethod("NextBool", new Type[] { typeof(Terraria.Utilities.UnifiedRandom), typeof(int) }));
+
+			//End the code block if we can't normally use this, like before
+			c.EmitDelegate<Func<bool>>(() =>
+			{
+				return !PlayerInput.UsingGamepad && Main.LocalPlayer.SGAPly().gamePadAutoAim < 1;
+			});
+			c.Emit(OpCodes.Brfalse_S, label);
+			c.Emit(OpCodes.Ret);
+
+			c.MarkLabel(label);
+
+		}
+
 		private void Player_NinjaDodge(On.Terraria.Player.orig_NinjaDodge orig, Player self)
 		{
 			// 'orig' is a delegate that lets you call back into the original method.
@@ -184,6 +256,42 @@ namespace SGAmod
 			}
 			orig(self);
 
+		}
+
+		//Borrowed because I know what this code does and I'm too lazy to re-write it myself, bleh
+		private void Main_DrawAdditive(On.Terraria.Main.orig_DrawDust orig, Main self)
+		{
+			orig(self);
+			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+			for (int k = 0; k < Main.maxProjectiles; k++) //projectiles
+				if (Main.projectile[k].active && Main.projectile[k].modProjectile is IDrawAdditive)
+					(Main.projectile[k].modProjectile as IDrawAdditive).DrawAdditive(Main.spriteBatch);
+
+			Main.spriteBatch.End();
+		}
+
+		private void Main_DrawProjectiles(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
+		{
+			orig(self);
+
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.SolarDye);
+			shader.Apply(null);
+
+			for (int i = 0; i < Main.projectile.Length; i += 1)
+			{
+				Projectile projectile = Main.projectile[i];
+				if (projectile.active)
+				{
+					if (projectile.modProjectile != null && projectile.modProjectile is LavaRocks Lava)
+					{
+						Lava.DrawLava();
+					}
+				}
+			}
+			Main.spriteBatch.End();
+			//Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
 		}
 
 		public int OSDetect()
@@ -337,6 +445,26 @@ namespace SGAmod
 			fild.SetValue(modp, 1f+ (float)fild.GetValue(modp));*/
 
 			Instance = this;
+
+			SGAPlayer.ShieldTypes.Clear();
+			SGAPlayer.ShieldTypes.Add(ItemType("CapShield"), ProjectileType("CapShieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("CorrodedShield"), ProjectileType("CorrodedShieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("LaserMarker"), ProjectileType("LaserMarkerProj"));
+
+
+			AddItem("MusicBox_Boss2Remix", new SGAItemMusicBox("MusicBox_Boss2Remix", "Murk","Boss 2 Remix","Unknown"));
+			AddItem("MusicBox_Swamp", new SGAItemMusicBox("MusicBox_Swamp", "Dank Shrine", "The Swamp of Ebag sah'now", "Unknown"));
+			AddItem("MusicBox_Wraith", new SGAItemMusicBox("MusicBox_Wraith", "Wraiths", "First Night", "Musicman"));
+			AddItem("MusicBox_SpiderQueen", new SGAItemMusicBox("MusicBox_SpiderQueen", "Spider Queen", "Acidic Affray", "Musicman"));
+			AddItem("MusicBox_Sharkvern", new SGAItemMusicBox("MusicBox_Sharkvern", "Sharkvern", "Freak of Nature", "Musicman"));
+
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Murk"), ItemType("MusicBox_Boss2Remix"), TileType("MusicBox_Boss2Remix"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Swamp"), ItemType("MusicBox_Swamp"), TileType("MusicBox_Swamp"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Copperig"), ItemType("MusicBox_Wraith"), TileType("MusicBox_Wraith"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SpiderQueen"), ItemType("MusicBox_SpiderQueen"), TileType("MusicBox_SpiderQueen"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Shark"), ItemType("MusicBox_Sharkvern"), TileType("MusicBox_Sharkvern"));
+
+
 			anysubworld = false;
 			SGAmod.SkillUIActive = false;
 			SkillTree.SKillUI.SkillUITimer = 0;
@@ -347,6 +475,10 @@ namespace SGAmod
 			SGAmod.NonStationDefenses = new Dictionary<int, int>();
 			SGAmod.EnchantmentCatalyst = new Dictionary<int, EnchantmentCraftingMaterial>();
 			SGAmod.EnchantmentFocusCrystal = new Dictionary<int, EnchantmentCraftingMaterial>();
+			SGAmod.CoinsAndProjectiles = new Dictionary<int, int>();
+			CoinsAndProjectiles.Add(ProjectileID.CopperCoin, ItemID.CopperCoin); CoinsAndProjectiles.Add(ProjectileID.SilverCoin, ItemID.SilverCoin); 
+			CoinsAndProjectiles.Add(ProjectileID.GoldCoin, ItemID.GoldCoin); CoinsAndProjectiles.Add(ProjectileID.PlatinumCoin, ItemID.PlatinumCoin);
+
 			SGAmod.otherimmunes = new int[3];
 			SGAmod.otherimmunes[0] = BuffID.Daybreak;
 			SGAmod.otherimmunes[1] = this.BuffType("ThermalBlaze");
@@ -356,18 +488,26 @@ namespace SGAmod
 
 			CollectTaxesHotKey = RegisterHotKey("Collect Taxes", "X");
 			WalkHotKey = RegisterHotKey("Walk Mode", "C");
+			ToggleRecipeHotKey = RegisterHotKey("Cycle Recipes", "V");
+			ToggleGamepadKey = RegisterHotKey("Cycle Aiming Style", "V");
 			GunslingerLegendHotkey = RegisterHotKey("Gunslinger Legend Ability", "Q");
 			NinjaSashHotkey = RegisterHotKey("Shin Sash Ability", "Q");
 			//SkillTestKey = RegisterHotKey("(Debug) Skill Tree Key", "T");
 
 			OSType = OSDetect();
 			SGAmod.PostDraw = new List<PostDrawCollection>();
+			//On.Terraria.GameInput.LockOnHelper.SetActive += GameInput_LockOnHelper_SetActive;
 			On.Terraria.Player.NinjaDodge += Player_NinjaDodge;
 			On.Terraria.Player.CheckDrowning += Player_CheckDrowning;
+			On.Terraria.Main.DrawDust += Main_DrawAdditive;
+			On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
+
+			IL.Terraria.Player.Update += FlyInWaterHack;
+			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
 
 			if (!Main.dedServ)
 			{
-				SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.HdrBlendable, DepthFormat.None,1,RenderTargetUsage.DiscardContents);
+				SGAmod.MakeRenderTarget(true);
 				//RenderTarget2D ss=new RenderTarget2D()
 				DrakeniteBar.CreateTextures();
 				LoadOrUnloadTextures(true);
@@ -436,6 +576,10 @@ namespace SGAmod
 			SGAmod.EnchantmentCatalyst = null;
 			SGAmod.EnchantmentFocusCrystal = null;
 			SubworldCache.UnloadCache();
+
+			IL.Terraria.GameInput.LockOnHelper.Update -= CurserHack;
+			IL.Terraria.Player.Update -= FlyInWaterHack;
+
 			if (!Main.dedServ)
 			{
 				if (SGAmod.ParadoxMirrorTex != null)
@@ -482,19 +626,12 @@ namespace SGAmod
 				}
 			}
 
-			/*recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("IceFairyDust"), 5);
-			recipe.AddIngredient(ItemID.SoulofLight, 10);
-			recipe.AddIngredient(ItemID.CrystalShard, 15);
-			recipe.AddIngredient(ItemID.UnicornHorn, 1);
-			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
-			recipe.SetResult(ItemID.RodofDiscord);
-			recipe.AddRecipe();*/
+			int tileType = ModContent.TileType<Tiles.ReverseEngineeringStation>();
 
 			recipe = new ModRecipe(this);
 			recipe.AddIngredient(null, "SharkTooth", 5);
 			recipe.AddIngredient(ItemID.Chain, 1);
-			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.SharkToothNecklace);
 			recipe.AddRecipe();
 
@@ -502,7 +639,7 @@ namespace SGAmod
 			recipe.AddIngredient(ItemID.CloudinaBottle, 1);
 			recipe.AddIngredient(ItemID.SandBlock, 50);
 			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
-			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.SandstorminaBottle);
 			recipe.AddRecipe();
 
@@ -510,14 +647,61 @@ namespace SGAmod
 			recipe.AddIngredient(ItemID.SilkRope, 30);
 			recipe.AddIngredient(ItemID.AncientCloth, 3);
 			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
-			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.FlyingCarpet);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ItemID.Gel, 500);
+			recipe.AddIngredient(null,"DankCore", 2);
+			recipe.AddIngredient(null, "VirulentBar", 10);
+			recipe.AddIngredient(ItemID.Frog, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.FrogLeg);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ItemID.FlipperPotion, 4);
+			recipe.AddIngredient(ItemID.WaterBucket, 2);
+			recipe.AddIngredient(ItemID.RocketBoots, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.Flipper);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ItemID.Obsidian, 20);
+			recipe.AddIngredient(ItemID.Fireblossom, 3);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.ObsidianRose);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ItemID.LavaBucket, 3);
+			recipe.AddIngredient(null,"FieryShard", 10);
+			recipe.AddIngredient(ItemID.Fireblossom, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.LavaCharm);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ItemID.CobaltBar, 10);
+			recipe.AddIngredient(ItemID.SoulofLight, 5);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.CobaltShield);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(null, "Entrophite", 100);
+			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 15);
+			recipe.AddIngredient(ItemID.SoulofNight, 10);
+			recipe.AddIngredient(ItemID.GoldenKey, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.ShadowKey);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ItemID.Gel, 100);
 			recipe.AddIngredient(null, "DankWood", 15);
-			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.SlimeStaff);
 			recipe.AddRecipe();
 
@@ -525,7 +709,7 @@ namespace SGAmod
 			recipe.AddIngredient(this.ItemType("AdvancedPlating"), 5);
 			recipe.AddRecipeGroup("SGAmod:IchorOrCursed", 5);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 5);
-			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.Uzi);
 			recipe.AddRecipe();
 
@@ -534,15 +718,16 @@ namespace SGAmod
 			recipe.AddIngredient(ItemID.Aglet, 1);
 			recipe.AddIngredient(ItemID.WaterWalkingPotion, 3);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 5);
-			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.WaterWalkingBoots);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
 			recipe.AddIngredient(ItemID.TurtleShell, 1);
+			recipe.AddIngredient(ItemID.FrostCore, 1);
 			recipe.AddIngredient(this.ItemType("CryostalBar"), 8);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 6);
-			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
+			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.FrozenTurtleShell);
 			recipe.AddRecipe();
 
@@ -708,6 +893,8 @@ namespace SGAmod
 #if Dimensions
 			proxydimmod.UpdateMusic(ref music, ref priority);
 #endif
+
+			Player local = Main.LocalPlayer;
 			if (!Main.gameMenu)
 			{
 				if (SGAWorld.questvars[11] > 0)
@@ -717,15 +904,26 @@ namespace SGAmod
 					return;
 				}
 			}
-			if (Main.myPlayer == -1 || Main.gameMenu || !Main.LocalPlayer.active)
+			if (Main.myPlayer == -1 || Main.gameMenu || !local.active)
 			{
 				return;
 			}
-			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().DankShrineZone)
+			if (local.GetModPlayer<SGAPlayer>().DankShrineZone)
 			{
 				music = GetSoundSlot(SoundType.Music, "Sounds/Music/Swamp");
 				priority = MusicPriority.BiomeMedium;
 			}
+			if (local.GetModPlayer<SGAPlayer>().ShadowSectorZone>0)
+			{
+				if (!SGAmod.anysubworld)
+				{
+					for (int i = 0; i < Main.musicFade.Length; i += 1)
+					{
+						if (i == Main.curMusic) Main.musicFade[i] *= 0.98f;
+					}
+				}
+			}
+
 		}
 
 		public static void TryToggleUI(bool? state = null)
@@ -735,10 +933,29 @@ namespace SGAmod
 			SGAmod.CustomUIMenu.ToggleUI(flag);
 		}
 
+		public static void MakeRenderTarget(bool forced = false)
+        {
+			bool makeithappen = false;
+			if (drawnscreen == default || forced)
+				makeithappen = true;
+
+			if (drawnscreen != default)
+			{
+				if (drawnscreen.Width == Main.screenWidth && drawnscreen.Height == Main.screenHeight)
+					return;
+
+				makeithappen = true;
+			}
+
+				if (makeithappen)
+			drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
+		}
+
 		public override void PostUpdateEverything()
 		{
 #if Dimensions
 			proxydimmod.PostUpdateEverything();
+			MakeRenderTarget();
 #endif
 
 			SGAWorld.modtimer += 1;
@@ -772,247 +989,12 @@ namespace SGAmod
 				}
 			}
 
-		}
+			SGAmod.fogAlpha = 1f;
 
-
-	}
-
-		public static class SGAUtils
-	{
-		public static SGAPlayer SGAPly(this Player player)
-		{
-			return player.GetModPlayer<SGAPlayer>();
-		}
-		public static SGAprojectile SGAProj(this Projectile proj)
-		{
-			return proj.GetGlobalProjectile<SGAprojectile>();
-		}
-		public static bool NoInvasion(NPCSpawnInfo spawnInfo)
-		{
-			return !spawnInfo.invasion && ((!Main.pumpkinMoon && !Main.snowMoon) || spawnInfo.spawnTileY > Main.worldSurface || Main.dayTime) && (!Main.eclipse || spawnInfo.spawnTileY > Main.worldSurface || !Main.dayTime);
-		}
-
-		public static void DrawFishingLine(Vector2 start, Vector2 end, Vector2 Velocity, Vector2 offset, float reel)
-		{
-			float pPosX = start.X;
-			float pPosY = start.Y;
-
-			Vector2 value = new Vector2(pPosX, pPosY);
-			float projPosX = end.X - value.X;
-			float projPosY = end.Y - value.Y;
-			Math.Sqrt((double)(projPosX * projPosX + projPosY * projPosY));
-			float rotation2 = (float)Math.Atan2((double)projPosY, (double)projPosX) - 1.57f;
-			bool flag2 = true;
-			if (projPosX == 0f && projPosY == 0f)
-			{
-				flag2 = false;
-			}
-			else
-			{
-				float projPosXY = (float)Math.Sqrt((double)(projPosX * projPosX + projPosY * projPosY));
-				projPosXY = 12f / projPosXY;
-				projPosX *= projPosXY;
-				projPosY *= projPosXY;
-				value.X -= projPosX;
-				value.Y -= projPosY;
-				projPosX = end.X - value.X;
-				projPosY = end.Y - value.Y;
-			}
-			while (flag2)
-			{
-				float num = 12f;
-				float num2 = (float)Math.Sqrt((double)(projPosX * projPosX + projPosY * projPosY));
-				float num3 = num2;
-				if (float.IsNaN(num2) || float.IsNaN(num3))
-				{
-					flag2 = false;
-				}
-				else
-				{
-					if (num2 < 20f)
-					{
-						num = num2 - 8f;
-						flag2 = false;
-					}
-					num2 = 12f / num2;
-					projPosX *= num2;
-					projPosY *= num2;
-					value.X += projPosX;
-					value.Y += projPosY;
-					projPosX = end.X - value.X;
-					projPosY = end.Y - value.Y;
-					if (num3 > 12f)
-					{
-						float num4 = 0.3f;
-						float num5 = Math.Abs(Velocity.X) + Math.Abs(Velocity.Y);
-						if (num5 > 16f)
-						{
-							num5 = 16f;
-						}
-						num5 = 1f - num5 / 16f;
-						num4 *= num5;
-						num5 = num3 / 80f;
-						if (num5 > 1f)
-						{
-							num5 = 1f;
-						}
-						num4 *= num5;
-						if (num4 < 0f)
-						{
-							num4 = 0f;
-						}
-						num5 = 1f - reel / 100f;
-						num4 *= num5;
-						if (projPosY > 0f)
-						{
-							projPosY *= 1f + num4;
-							projPosX *= 1f - num4;
-						}
-						else
-						{
-							num5 = Math.Abs(Velocity.X) / 3f;
-							if (num5 > 1f)
-							{
-								num5 = 1f;
-							}
-							num5 -= 0.5f;
-							num4 *= num5;
-							if (num4 > 0f)
-							{
-								num4 *= 2f;
-							}
-							projPosY *= 1f + num4;
-							projPosX *= 1f - num4;
-						}
-					}
-					rotation2 = (float)Math.Atan2((double)projPosY, (double)projPosX) - 1.57f;
-					Microsoft.Xna.Framework.Color color2 = Lighting.GetColor((int)value.X / 16, (int)(value.Y / 16f), Color.AliceBlue);
-
-					Main.spriteBatch.Draw(Main.fishingLineTexture, new Vector2(value.X - Main.screenPosition.X + (float)Main.fishingLineTexture.Width * 0.5f, value.Y - Main.screenPosition.Y + (float)Main.fishingLineTexture.Height * 0.5f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, Main.fishingLineTexture.Width, (int)num)), color2, rotation2, new Vector2((float)Main.fishingLineTexture.Width * 0.5f, 0f), 1f, SpriteEffects.None, 0f);
-				}
-			}
 		}
 
 	}
 
-	public class RippleBoom : ModProjectile
-	{
-		public float rippleSize = 1f;
-		public float rippleCount = 1f;
-		public float expandRate = 25f;
-		public float opacityrate = 1f;
-		public float size = 1f;
-		int maxtime = 200;
-		public override string Texture
-		{
-			get
-			{
-				return "SGAmod/MatrixArrow";
-			}
-		}
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-		{
-			return false;
-		}
-
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.Write((double)rippleSize);
-			writer.Write((double)rippleCount);
-			writer.Write((double)expandRate);
-			writer.Write((double)size);
-			writer.Write(maxtime);
-		}
-
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			rippleSize = (float)reader.ReadDouble();
-			rippleCount = (float)reader.ReadDouble();
-			expandRate = (float)reader.ReadDouble();
-			size = (float)reader.ReadDouble();
-			maxtime = reader.ReadInt32();
-		}
-
-		public static void MakeShockwave(Vector2 position2, float rippleSize, float rippleCount, float expandRate, int timeleft = 200, float size = 1f, bool important = false)
-		{
-			if (!Main.dedServ)
-			{
-				if (!Filters.Scene["SGAmod:Shockwave"].IsActive() || important)
-				{
-					int prog = Projectile.NewProjectile(position2, Vector2.Zero, SGAmod.Instance.ProjectileType("RippleBoom"), 0, 0f);
-					Projectile proj = Main.projectile[prog];
-					RippleBoom modproj = proj.modProjectile as RippleBoom;
-					modproj.rippleSize = rippleSize;
-					modproj.rippleCount = rippleCount;
-					modproj.expandRate = expandRate;
-					modproj.size = size;
-					proj.timeLeft = timeleft - 10;
-					modproj.maxtime = timeleft;
-					proj.netUpdate = true;
-					Filters.Scene.Activate("SGAmod:Shockwave", proj.Center, new object[0]).GetShader().UseColor(rippleCount, rippleSize, expandRate).UseTargetPosition(proj.Center);
-				}
-			}
-
-		}
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Ripple Boom");
-		}
-
-		public override void SetDefaults()
-		{
-			projectile.width = 4;
-			projectile.height = 4;
-			projectile.friendly = true;
-			projectile.alpha = 0;
-			projectile.penetrate = -1;
-			projectile.timeLeft = 200;
-			projectile.tileCollide = false;
-			projectile.ignoreWater = true;
-		}
-
-		public override void AI()
-		{
-			//float progress = (maxtime - (float)projectile.timeLeft);
-			float progress = ((maxtime - (float)base.projectile.timeLeft) / 60f) * size;
-			Filters.Scene["SGAmod:Shockwave"].GetShader().UseProgress(progress).UseOpacity(100f * ((float)base.projectile.timeLeft / (float)maxtime));
-			projectile.localAI[1] += 1f;
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			Filters.Scene["SGAmod:Shockwave"].Deactivate(new object[0]);
-		}
-	}
-
-	public class ModdedDamage
-	{
-		public Player player;
-		public float damage = 0;
-		public int crit = 0;
-		public ModdedDamage(Player player,float damage, int crit)
-		{
-			this.player = player;
-			this.damage = damage;
-			this.crit = crit;
-		}
-
-	}
-
-		public class EnchantmentCraftingMaterial
-	{
-		public int value = 0;
-		public int expertisecost = 0;
-		public string text = "";
-		public EnchantmentCraftingMaterial(int value,int expertisecost,string text)
-		{
-			this.value = value;
-			this.expertisecost = expertisecost;
-			this.text = text;
-		}
-	}
 
 
 
@@ -1037,125 +1019,6 @@ namespace SGAmod
 
 			}
 		}
-
-	}
-
-}
-
-namespace SGAmod.Achivements
-{
-
-#if WebmilioCommonsPresent
-
-	public class XAchievement : ModAchievement
-	{
-		public XAchievement() : base("Achievement Name", "Achievement Description", AchievementCategory.Collector)
-		{
-		}
-
-		public override void SetDefaults()
-		{
-			AddCondition(NPCKilledCondition.Create((short)ModContent.NPCType<CopperWraith>()));
-		}
-	}
-
-#endif
-
-}
-
-namespace SGAmod.Achivements
-{
-
-	public abstract class SGAAchivements
-	{
-		public static bool AchivementsLoaded = false;
-		public static Player who;
-		public static Mod SGAchivement=null;
-
-		public static void UnlockAchivement(string achive,Player who2)
-		{
-			if (who2 != null)
-			{
-				SGAAchivements.SGAchivement = ModLoader.GetMod("SGAmodAchivements");
-				if (SGAAchivements.SGAchivement != null)
-				{
-					SGAAchivements.who = who2;
-					UnlockAchivement2 = achive;
-					SGAAchivements.who = null;
-				}
-			}
-		}
-
-		public static string UnlockAchivement2
-		{
-			set
-			{
-				if (value == "Copper Wraith")
-					SGAAchivements.SGAchivement.Call("Copper Wraith", who);
-				if (value == "Caliburn")
-					if (SGAWorld.downedCaliburnGuardians>2)
-					SGAAchivements.SGAchivement.Call("Caliburn", who);
-				if (value == "Spider Queen")
-					SGAAchivements.SGAchivement.Call("Spider Queen", who);
-				if (value == "Murk")
-				{
-					SGAAchivements.SGAchivement.Call("Murk", who);
-					if (Main.hardMode)
-					SGAAchivements.SGAchivement.Call("Murk2", who);
-				}
-				if (value == "Cobalt Wraith")
-					SGAAchivements.SGAchivement.Call("Cobalt Wraith", who);
-				if (value == "Cirno")
-					SGAAchivements.SGAchivement.Call("Cirno", who);
-				if (value == "Sharkvern")
-					SGAAchivements.SGAchivement.Call("Sharkvern", who);
-				if (value == "Cratrosity")
-					SGAAchivements.SGAchivement.Call("Cratrosity", who);
-				if (value == "TPD")
-					SGAAchivements.SGAchivement.Call("TPD", who);
-				if (value == "Harbinger")
-					SGAAchivements.SGAchivement.Call("Harbinger", who);
-				if (value == "Luminite Wraith")
-					SGAAchivements.SGAchivement.Call("Luminite Wraith", who);
-				if (value == "SPinky")
-					SGAAchivements.SGAchivement.Call("SPinky", who);
-				if (value == "Cratrogeddon")
-					SGAAchivements.SGAchivement.Call("Cratrogeddon", who);
-				if (value == "Hellion")
-					SGAAchivements.SGAchivement.Call("Hellion", who);
-				if (value == "Offender")
-				{
-					if (SGAWorld.downedWraiths>2 &&
-						SGAWorld.downedCaliburnGuardians > 3 &&
-						SGAWorld.downedSpiderQueen &&
-						SGAWorld.downedMurk>1 &&
-						SGAWorld.downedCirno &&
-						SGAWorld.downedSharkvern &&
-						SGAWorld.downedCratrosity &&
-						SGAWorld.downedHarbinger &&
-						SGAWorld.downedTPD &&
-						SGAWorld.downedSPinky && Main.expertMode)
-					SGAAchivements.SGAchivement.Call("Legendary Offender", who);
-
-					if (SGAWorld.downedWraiths > 0 &&
-						SGAWorld.downedCaliburnGuardians > 3 &&
-						SGAWorld.downedSpiderQueen &&
-						SGAWorld.downedMurk > 0 && Main.expertMode && SGAWorld.NightmareHardcore>0)
-						SGAAchivements.SGAchivement.Call("Mythical Offender", who);
-
-					if (SGAWorld.downedMurk > 1 &&
-						SGAWorld.downedWraiths > 1 &&
-						SGAWorld.downedCirno &&
-						SGAWorld.downedSharkvern &&
-						SGAWorld.downedCratrosity &&
-						SGAWorld.downedHarbinger &&
-						SGAWorld.downedTPD && Main.expertMode && SGAWorld.NightmareHardcore > 0)
-						SGAAchivements.SGAchivement.Call("Transcendent Offender", who);
-				}
-			}
-		}
-
-
 
 	}
 

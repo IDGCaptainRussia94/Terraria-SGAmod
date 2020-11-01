@@ -165,8 +165,11 @@ namespace SGAmod.Dimensions
             DeeperDungeon.pathwayrooms.Clear();
             DeeperDungeon.pathwayloothalls.Clear();
             DeeperDungeon.LootRooms.Clear();
+
             dung.PlaceRoomBlock(new UnifiedRandom(dung.enemyseed), true);
-            dung.LimitPlayers = 3;
+
+            dung.LimitPlayers = 16;
+
             dung.chooseenemies = false;
 
             dung.EnemySpawnsOverride = delegate (IDictionary<int, float> pool, NPCSpawnInfo spawnInfo, SGAPocketDim pocket)
@@ -174,9 +177,10 @@ namespace SGAmod.Dimensions
                 UnifiedRandom UniRand = new UnifiedRandom(pocket.enemyseed);
                 for (int i = 0; i < pool.Count; i += 1)
                 {
-                    pool[i] = -0f;
+                    pool[i] = 0f;
 
                 }
+
                 WeightedRandom<Vector2> rando = new WeightedRandom<Vector2>();
                 rando.Add(new Vector2(NPCID.AngryBones, 0.25f), 1f);
                 if (UniRand.Next(0, 1) == 0)

@@ -116,7 +116,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.WoodenArrow, 50);
-			recipe.AddIngredient(mod.ItemType("MurkyGel"), 5);
+			recipe.AddIngredient(mod.ItemType("MurkyGel"), 3);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this, 50);
 			recipe.AddRecipe();
@@ -241,7 +241,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lesser Prismic Arrow");
-			Tooltip.SetDefault("Fires Arrows from your 2nd and 3rd ammo slots while placed in your first, will consume both ammo types\nOtherwise, it fires a weak wooden arrow");
+			Tooltip.SetDefault("Fires Arrows from your 2nd and 3rd ammo slots while placed in your first, will consume both ammo types\nOtherwise, it fires a weak wooden arrow\nHas a 33% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{
@@ -280,7 +280,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Arrow");
-			Tooltip.SetDefault("Does greatly increased damage over it's precurser; fires Arrows from your 2nd, 3rd, and 4th ammo slots while placed in your first, will consume fired ammo types\nOtherwise, it fires a weak wooden arrow");
+			Tooltip.SetDefault("Does greatly increased damage over it's precurser; fires Arrows from your 2nd, 3rd, and 4th ammo slots while placed in your first, will consume fired ammo types\nOtherwise, it fires a wooden arrow\nHas a 25% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{

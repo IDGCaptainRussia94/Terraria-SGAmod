@@ -14,8 +14,10 @@ using Idglibrary;
 namespace SGAmod.NPCs
 {
 	[AutoloadBossHead]
-	public class TPD : ModNPC
+	public class TPD : ModNPC, ISGABoss
 	{
+		public string Trophy() => "TwinPrimeDestroyersTrophy";
+		public bool Chance() => Main.rand.Next(0, 10) == 0;
 	int aistate=0;
 	int facing=0;
 	int [] bosses={-1,-1,-1,-1,-1,-1};

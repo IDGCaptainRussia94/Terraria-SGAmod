@@ -34,7 +34,7 @@ namespace SGAmod.Items.Weapons
         {
             Item refItem = new Item();
 			refItem.SetDefaults(ItemID.TheEyeOfCthulhu);                                 
-            item.damage = 350;
+            item.damage = 250;
             item.useTime = 16;
             item.useAnimation = 16;
             item.useStyle = 5;
@@ -105,8 +105,8 @@ namespace SGAmod.Items.Weapons
 			projectile.penetrate = -1;
 			projectile.melee = true;
 			projectile.scale = 1f;
-			projectile.usesLocalNPCImmunity = true;
-			projectile.localNPCHitCooldown = 10;
+			projectile.usesIDStaticNPCImmunity = true;
+			projectile.idStaticNPCHitCooldown = 10;
 		}
 
 		public override void AI()

@@ -197,7 +197,7 @@ namespace SGAmod.Dimensions.Tiles
 
 				float brightness = Math.Max((float)light.R, Math.Max((float)light.G, (float)light.B))/255f;
 
-				float alpha = Main.rand.Next(0, 50) == 0 ? Main.rand.NextFloat(0.25f, 1f) : brightness;
+				float alpha = Main.rand.Next(0, 50) == 0 ? Main.rand.NextFloat(0.15f, 0.3f) : brightness;
 
 				if (alpha > 0f)
 					spriteBatch.Draw(LimboDim.staticeffects[Main.rand.Next(0, LimboDim.staticeffects.Length)], drawOffset- Main.screenPosition, Color.Lerp(light, basecolor, basealpha) * alpha);

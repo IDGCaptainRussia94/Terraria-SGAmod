@@ -36,6 +36,8 @@ namespace SGAmod.NPCs
 			npc.noTileCollide = true;
 			npc.noGravity = true;
 			npc.value = 300f;
+			banner = npc.type;
+			bannerItem = mod.ItemType("IceFairyBanner");
 		}
 
 				public override float SpawnChance(NPCSpawnInfo spawnInfo)

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics.PackedVector;
 using SGAmod.Projectiles;
 using Idglibrary;
 using System.Linq;
+using AAAAUThrowing;
 
 namespace SGAmod.Items.Weapons.Caliburn
 {
@@ -650,7 +651,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.useStyle = 1;
 			item.knockBack = 5;
 			item.noUseGraphic = true;
-			Item.sellPrice(0, 5, 0, 0);
+			item.value = Item.sellPrice(0, 1, 0, 0);
 			item.rare = 3;
 			item.UseSound = SoundID.Item7;
 			item.shoot = 10;
@@ -756,13 +757,13 @@ namespace SGAmod.Items.Weapons.Caliburn
 
 			}
 		}
-		public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
+		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
 			bool facingleft = projectile.velocity.X > 0;
 			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
 			Texture2D texture = Main.projectileTexture[projectile.type];
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor*projectile.Opacity, projectile.velocity.ToRotation() + (facingleft ? MathHelper.ToRadians(0) : MathHelper.ToRadians(180)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor*projectile.Opacity, projectile.velocity.ToRotation() + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
 			return false;
 		}
 
@@ -866,7 +867,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.useStyle = 1;
 			item.knockBack = 5;
 			item.noUseGraphic = true;
-			Item.sellPrice(0, 5, 0, 0);
+			item.value = Item.sellPrice(0, 5, 0, 0);
 			item.rare = 9;
 			item.UseSound = SoundID.Item7;
 			item.shoot = 10;
@@ -919,7 +920,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 				player.itemTime /= 3;
 				damage = (int)(damage);
 				type = mod.ProjectileType("CapShieldToss");
-				int thisoned = Projectile.NewProjectile(position.X, position.Y, speedX*player.thrownVelocity, speedY * player.thrownVelocity, type, damage, knockBack, Main.myPlayer);
+				int thisoned = Projectile.NewProjectile(position.X, position.Y, speedX*player.Throwing().thrownVelocity, speedY * player.Throwing().thrownVelocity, type, damage, knockBack, Main.myPlayer);
 				Main.projectile[thisoned].thrown = true;
 				Main.projectile[thisoned].melee = false;
 				Main.projectile[thisoned].netUpdate = true;
@@ -963,7 +964,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 					if (counter > 1)
 						valuez.Add(text2 + " ");
 				}
-				int thecrit = Main.GlobalTime % 3f >= 1.5f ? Main.LocalPlayer.meleeCrit : Main.LocalPlayer.thrownCrit;
+				int thecrit = Main.GlobalTime % 3f >= 1.5f ? Main.LocalPlayer.meleeCrit : Main.LocalPlayer.Throwing().thrownCrit;
 				string thecrittype = Main.GlobalTime % 3f >= 1.5f ? "Melee " : "Throwing ";
 				valuez.Insert(0, thecrit + "% " + thecrittype);
 				foreach (string text3 in valuez)
@@ -977,7 +978,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
 		{
 			add -= player.meleeDamage;
-			add += ((player.thrownDamage*1.5f) + player.meleeDamage)/2f;
+			add += ((player.Throwing().thrownDamage*1.5f) + player.meleeDamage)/2f;
 		}
 
 
@@ -1098,7 +1099,6 @@ namespace SGAmod.Items.Weapons.Caliburn
 					{
 						projectile.velocity.Y *= 0.98f;
 					}
-					player.maxFallSpeed *= 5f;
 					player.velocity.X = projectile.velocity.X*(1f + (projectile.ai[0] / 120f));
 					//player.velocity.Y = projectile.velocity.Y;
 

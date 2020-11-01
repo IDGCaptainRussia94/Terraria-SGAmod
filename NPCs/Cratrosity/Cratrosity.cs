@@ -12,8 +12,10 @@ using Idglibrary;
 namespace SGAmod.NPCs.Cratrosity
 {
 	[AutoloadBossHead]
-	public class Cratrosity : ModNPC
-	{
+	public class Cratrosity : ModNPC, ISGABoss
+    {
+	public string Trophy() => GetType() == typeof(Cratrosity) ? "CratrosityTrophy" : "CratrogeddonTrophy";
+	public bool Chance() => Main.rand.Next(0, 10) == 0;
 
 public Vector2 offsetype = new Vector2(0, 0);
 public int phase=5;

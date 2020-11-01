@@ -18,7 +18,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Restoration Flower");
-			Tooltip.SetDefault("Restoration Potions (and Strange Brew) restore 50% more Health & Mana\nIn Hardmode, Potion Sickness improves passive life regen");
+			Tooltip.SetDefault("Restoration Potions (and Strange Brew) restore 50% more Health & Mana\nRecovering over the max health/mana with a potion grants bonuses\nThese last depending on how much excess overhealing you did");
 		}
 
 		public override void SetDefaults()
@@ -90,7 +90,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lifeforce Quintessence");
-			Tooltip.SetDefault("You consume healing potions instead of dying when taking fatal damage\nUse mana potions when needed\nEffects of Obsidian Rose, 5% reduced mana costs");
+			Tooltip.SetDefault("You consume healing potions instead of dying when taking fatal damage\nUse mana potions when needed\nEffects of Obsidian Rose/Restoration Flower, 5% reduced mana costs");
 		}
 
 		public override void SetDefaults()
@@ -107,6 +107,7 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			base.UpdateAccessory(player, hideVisual);
+			player.SGAPly().restorationFlower = true;
 			player.manaFlower = true;
 			player.manaCost -= 0.05f;
 		}
@@ -115,6 +116,7 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.ManaFlower, 1);
 			recipe.AddIngredient(mod.ItemType("LifeFlower"), 1);
+			recipe.AddIngredient(mod.ItemType("RestorationFlower"), 1);
 			recipe.AddIngredient(ItemID.LifeforcePotion, 1);
 			recipe.AddIngredient(ItemID.DD2EnergyCrystal, 15);
 			recipe.AddTile(TileID.TinkerersWorkbench);
@@ -287,8 +289,6 @@ namespace SGAmod.Items.Accessories
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
-
-
 		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
 		{
 			flat = (float)((player.statDefense * 0.2) * (0.5f + ((player.minionDamage - 1f) * 8f)));
@@ -386,7 +386,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
 		{
-			flat = (float)((player.statDefense * 0.25) * (2f + (player.minionDamage - 1f) * 50f));
+			flat = (float)((player.statDefense * 0.10) * (1.1f + (player.minionDamage - 1f) * 50f));
 			base.ModifyWeaponDamage(player, ref add, ref mult, ref flat);
 		}
 
@@ -477,12 +477,46 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	public class SybariteGem : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Sybarite Gem");
+			Tooltip.SetDefault("Apply Midas to yourself for 5 seconds while at full health\nGrants 50% increased Apocalyptical Strength while afflicted with Midas\nScoring an Apocalyptical creates a Coin-splosion\nThe amount is based off their worth times damage divided by max health improved by Apocalyptical Strength\nCoin projectiles have a chance to be recovered after being expended\n'Eternally Priceless... People would pay alot for this, even their own lives.'");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 52;
+			item.rare = ItemRarityID.LightPurple;
+			item.value = Item.buyPrice(gold: 1);
+			item.accessory = true;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "accapocalypticaltext", SGAGlobalItem.apocalypticaltext));
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().SybariteGem = true;
+			player.GetModPlayer<SGAPlayer>().apocalypticalStrength += player.HasBuff(BuffID.Midas) ? 0.50f : 0.0f;
+
+		}
+
+		public override void AddRecipes()
+		{
+			//nil
+		}
+	}
 	public class IdolOfMidas : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Idol Of Midas");
-			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin\ndefensive/movement buffs while facing left, offensive buffs while facing right, gold and platinum coins give you both\nIncreased damage with the more coins you have in your inventory (this caps at 25% at 10 platinum)\n15% increased damage against enemies inflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are consumed in the process"));
+			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin\ndefensive/movement buffs while facing left, offensive buffs while facing right, gold and platinum coins give you both\nIncreased damage with the more coins you have in your inventory (this caps at 25% at 10 platinum)\n15% increased damage against enemies afflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are consumed in the process"));
 		}
 
 		public override void SetDefaults()
@@ -521,8 +555,8 @@ namespace SGAmod.Items.Accessories
 		{
 			DisplayName.SetDefault("Corporate Epiphany");
 			Tooltip.SetDefault("'Money Money Money!'\n'Must be funny? In a rich man's world?'\n" +
-				"Combined Effects of Idol of Midas and Omni-Magnet (hide to disable Idol of Midas's coin collecting)\n" +
-				"EALogo's ability while worn as an accessory");
+				"Combined Effects of Idol of Midas, Sybarite Gem, and Omni-Magnet (hide to disable Idol of Midas's coin collecting)\n" +
+				"Includes EALogo's ability. but only while worn as an accessory");
 		}
 
 		public override string Texture
@@ -562,12 +596,14 @@ namespace SGAmod.Items.Accessories
 			base.UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<OmniMagnet>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<EALogo>().UpdateInventory(player);
+			ModContent.GetInstance<SybariteGem>().UpdateInventory(player);
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("IdolOfMidas"), 1);
+			recipe.AddIngredient(mod.ItemType("SybariteGem"), 1);
 			recipe.AddIngredient(mod.ItemType("EALogo"), 1);
 			recipe.AddIngredient(mod.ItemType("OmniMagnet"), 1);
 			recipe.AddIngredient(mod.ItemType("MoneySign"), 15);
@@ -954,7 +990,7 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
-	public class CalamityRune : ModItem
+	public class CalamityRune : SybariteGem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -1523,6 +1559,12 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.SlimySaddle, 1);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 50);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.HardySaddle, 1);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 50);
 			recipe.AddTile(TileID.MythrilAnvil);
@@ -1733,11 +1775,22 @@ namespace SGAmod.Items.Accessories
 			item.value = Item.sellPrice(0, 0, 75, 0);
 			item.accessory = true;
 		}
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Allows you to 'swim' in air while it is raining (hide the accessory to disable)")));
+			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Most status effects that trigger while wet will trigger here")));
+			if (!SGAWorld.downedSharkvern)
+				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DarkBlue, "Its full potential is locked behind the Sharkvern")));
+			else
+				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Sharkvern's defeat allows this to take effect when it is not raining")));
+		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.breathMax += 200;
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			if (!hideVisual && (Main.raining || SGAWorld.downedSharkvern))
+			sgaply.tidalCharm = 2;
 			int defensegiven = 8;
 			defensegiven += SGAWorld.downedWraiths * 2;
 			if (SGAWorld.downedSpiderQueen)
@@ -1835,7 +1888,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ring Of Respite");
-			Tooltip.SetDefault("Grants an additonal free Cooldown Stack\nDoes not stack with items crafted from a Ring Of Respite");
+			Tooltip.SetDefault("Grants an additonal free Action Cooldown Stack\nDoes not stack with items crafted from a Ring Of Respite");
 		}
 
 		public override void SetDefaults()
@@ -2041,7 +2094,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Peacekeeper's Duster");
-			Tooltip.SetDefault("Take 20% less damage while reloading your revolver\nHostle bullets do 50% less damage to you\nGain bonus Life Regen while in your town (1 per npc up to 10, no bosses alive)\n'Keepin order will never be easier with this'");
+			Tooltip.SetDefault("Take 20% less damage while reloading your revolver\nHostile bullets do 50% less damage to you\nGain bonus Life Regen while in your town (1 per npc up to 10, no bosses alive)\n'Keepin order will never be easier with this'");
 		}
 
 		public override void SetDefaults()
@@ -2063,7 +2116,7 @@ namespace SGAmod.Items.Accessories
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.Duster = true;
-			if (player.townNPCs > 0 && !IdgNPC.bossAlive)
+			if (player.townNPCs > 0)
 				player.lifeRegen += (int)Math.Min(player.townNPCs, 10);
 			if (player.itemAnimation < 1 && player.ownedProjectileCounts[mod.ProjectileType("ClipWeaponReloading")] > 0)
 				sgaply.damagetaken /= 1.20f;
@@ -2078,7 +2131,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sparing Spurs");
-			Tooltip.SetDefault("Gain a movement speed buff while reloading your revolver\nGrants a Shield of Cuthulu Dash while firing your revolver\nFall Damage and fireblock immunity\n'You ready to dance pardner?'");
+			Tooltip.SetDefault("Gain a movement speed buff while reloading your revolver\nGrants a Shield of Cuthulu Dash while firing your revolver\nFall Damage and fireblock immunity\n'Ya ready to dance pardner?'");
 		}
 
 		public override void SetDefaults()
@@ -2173,9 +2226,10 @@ namespace SGAmod.Items.Accessories
 				float scale = (GetType() == typeof(HighNoon) ? 15000f : 25000f);
 				float peak = MathHelper.Clamp(1f - ((float)Math.Abs(27000.00 - Main.time) / scale), 0f, 1f);
 				SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-				player.Throwing().thrownDamage += 0.05f * peak; player.meleeDamage += 0.05f * peak; player.minionDamage += 0.05f * peak; player.rangedDamage += 0.05f * peak; player.magicDamage += 0.05f * peak;
-				SGAmod.BoostModdedDamage(player, 0.05f * peak, 0);
-				player.bulletDamage += 0.05f * peak;
+				float ammount = 0.05f * peak;
+				player.Throwing().thrownDamage += ammount; player.meleeDamage += ammount; player.minionDamage += ammount; player.rangedDamage += ammount; player.magicDamage += ammount;
+				SGAmod.BoostModdedDamage(player, ammount, 0);
+				player.bulletDamage += ammount;
 			}
 		}
 		public override void AddRecipes()
@@ -2239,7 +2293,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gunslinger of Song and Legend");
-			Tooltip.SetDefault("'Riding high, in the sky...'\n'Its that time; its high Noon'\nPress 'Gunslinger Legend' key to challenge the enemy nearest your mouse curser to a duel\nYou do 50% increased damage against this target, but 75% reduced damage to anything else\n+" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds") + "\nCombines the Effects of:\n-Sparing Spurs and Peacekeeper's Duster\n-Gunsmith's Belt of Tools and Dueling Deity's Shades");
+			Tooltip.SetDefault("'Riding high, in the sky...'\n'Its that time; its high Noon'\nPress the 'Gunslinger Legend' key to challenge the enemy nearest your mouse curser to a duel\nYou do 50% increased damage against this target, but 75% reduced damage to anything else\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds") + "\nCombines the Effects of:\n-Sparing Spurs and Peacekeeper's Duster\n-Gunsmith's Belt of Tools and Dueling Deity's Shades");
 		}
 
 		public override void SetDefaults()
@@ -2388,7 +2442,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Kou Sash");
-			Tooltip.SetDefault("'A true assassin's attire'\nScoring an Apocalyptical imbues all your currently thrown projectiles\nImbued projectiles gain 50% increased damage and inflict Moonlight Curse\nThrowing damage increased by 20%, and crit chance is increased by 10%\nCombines the effects of:\n-Shin Sash\n-Master Ninja Gear\n-Gi\n-Shinobi's Shadow\n-Bundle of Jab-lin Parts");
+			Tooltip.SetDefault("'A true Assassin's attire'\nScoring an Apocalyptical imbues all your currently thrown projectiles\nImbued projectiles gain 50% increased damage and inflict Moonlight Curse\nThrowing damage increased by 20%, and crit chance is increased by 10%\nCombines the effects of:\n-Shin Sash\n-Master Ninja Gear\n-Gi\n-Shinobi's Shadow\n-Bundle of Jab-lin Parts");
 		}
 
 		public override void SetDefaults()
@@ -2556,6 +2610,45 @@ namespace SGAmod.Items.Accessories
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
+		}
+
+	}
+	public class WraithTargetingGamepad : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Wraith Targeting Gamepad");
+			Tooltip.SetDefault("Enables Terraria Gamepad auto-aiming with keyboard controls while worn");
+		}
+
+		public override void SetDefaults()
+		{
+			item.CloneDefaults(ItemID.ManaFlower);
+			item.width = 24;
+			item.height = 24;
+			item.rare += 1;
+			item.value = Item.sellPrice(0, 0, 25, 0);
+			item.accessory = true;
+			item.expert = true;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			string s = "Not Binded!";
+			foreach (string key in SGAmod.ToggleGamepadKey.GetAssignedKeys())
+			{
+				s = key;
+			}
+
+			tooltips.Add(new TooltipLine(mod, "uncraft", Idglib.ColorText(Color.CornflowerBlue, "Press the 'Toggle Aiming Style' (" + s + ") Hotkey to toggle modes")));
+		}
+
+		public override string Texture => "Terraria/UI/HotbarRadial_2";
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.gamePadAutoAim = 2;
 		}
 
 	}

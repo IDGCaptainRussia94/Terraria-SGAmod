@@ -1,4 +1,3 @@
-
 using System.Linq;
 using System;
 using Terraria;
@@ -205,7 +204,7 @@ namespace SGAmod.NPCs.TownNPCs
 				if (Tnpc1 >= 0)
 				{
 					chat.Add("I feel aside from you, " + Main.npc[Tnpc1].GivenName + " is the only one who cares about me.");
-					chat.Add("There's a growing connection between " + Main.npc[Tnpc1].GivenName + " and I, she understands me better than the others and it gives me confort.");
+					chat.Add("There's a growing connection between " + Main.npc[Tnpc1].GivenName + " and I, she understands me better than the others and it gives me comfort.");
 				}
 				int Tnpc2 = NPC.FindFirstNPC(mod.NPCType("ContrabandMerchant"));
 				if (Tnpc2 >= 0)
@@ -234,7 +233,7 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("I am not weak...");
 				chat.Add("People are wrong about our kind...");
 				chat.Add("Where did my keys go?");
-				chat.Add("My human is still upset that Croteam hasn't released Serious Sam 4 yet.");
+				chat.Add("Croteam hasn't released Serious Sam 4, my Human thinks its alright, kinda underwelming and kept like a filler title");
 				chat.Add("Please don't point those blades at me...");
 				chat.Add("'Rawr <3'");
 				chat.Add("I cannot roar, I just make a cute whining sound.");
@@ -245,7 +244,7 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("Is there no true peace for any of us?");
 				chat.Add("Do you know what it's like to be hunted? Depite doing nothing wrong at all?");
 				chat.Add("I do not wish to be slain, please don't let anyone kill me :(");
-				chat.Add("I've heard stories of how Dragons slept on massive piles of gold, that both sounds very unconfortable and I would never steal from anyone.");
+				chat.Add("I've heard stories of how Dragons slept on massive piles of gold, that both sounds very uncomfortable and I would never steal from anyone.");
 				chat.Add("I may be a dragon, but I feel... Different. I don't understand why our most of kind is so greedy and selfish. Worse yet, I'm judged no different...");
 				chat.Add("I was often called a 'Dergon' by my former friends, I still don't get what it means.");
 				chat.Add("Please stop trying to climb me, I'm not a mount.");
@@ -375,7 +374,7 @@ namespace SGAmod.NPCs.TownNPCs
 				}
 				chat.Add("Could you help make this land a little safer? I can offer you what I found on my previous adventures.", 2.0);
 				chat.Add("Hello...", 2.0);
-				chat.Add("Held 'shift' to see your current and total Expertise, as well as see what's next on the target list.", 4.0);
+				chat.Add("Hold 'Shift' to see your current and total Expertise, as well as see what's next on the target list.", 4.0);
 			}
 			//chat.Add("This message has a weight of 5, meaning it appears 5 times more often.", 5.0);
 			//chat.Add("This message has a weight of 0.1, meaning it appears 10 times as rare.", 0.1);
@@ -474,7 +473,7 @@ namespace SGAmod.NPCs.TownNPCs
 
 				if (!SGAWorld.downedHarbinger && NPC.downedGolemBoss)
 				{
-					chat = "We're being watched, I don't know by what, but I do know the dungeon isn't ocupied by anyone, depsite what everyone else is talking about. Maybe those alien-like Probes and those Etheria monsters are behind this?";
+					chat = "We're being watched, I don't know by what, but I do know the dungeon isn't occupied by anyone, despite what everyone else is talking about. Maybe those alien-like Probes and those Etheria monsters are behind this?";
 					if (DD2Event.DownedInvasionT3 && NPC.downedMartians)
 						chat = "After dispatching those previous foes I figured it out: we're being watched, by something from outside this world and I think I know how to get rid of it. I think you could mix some ectoplasm with one of those bloody eyes to create a [i:" + mod.ItemType("TruelySusEye") + "] and see what happens";
 				}
@@ -510,7 +509,7 @@ namespace SGAmod.NPCs.TownNPCs
 				if (SGAWorld.downedMurk<2)
 					chat = "The dank structures' walls are protected by a strong, fly swaming, roiling creature in the jungle, prehaps a [i:" + mod.ItemType("RoilingSludge") + "] may attract its fly swamps, and its wrath";
 				if (SGAWorld.downedSpiderQueen)
-					chat = "A high voracious creature lurks below the surface, I fear it might eat a small dragon like me whole, go and find it please, I think an [i:" + mod.ItemType("AcidicEgg") + "] will lure it from its feasting to confront you";
+					chat = "A high voracious creature lurks below the surface, I fear it might eat a small dragon like me whole, go and find it please, I think an [i:" + mod.ItemType("AcidicEgg") + "] will lure it from its feasting to comfront you";
 				if (SGAWorld.downedCaliburnGuardians<3 && Main.rand.Next(0,3)==0 && Main.LocalPlayer.SGAPly().ExpertiseCollectedTotal>=300)
 					chat = "I've noticed 3 structures below the surface that warrent investigation, I have found a [i: " + mod.ItemType("CaliburnCompess") + "] that may help you with that.";
 
@@ -528,14 +527,14 @@ namespace SGAmod.NPCs.TownNPCs
 
 
 
-		public int[,] itemsinshop = new int[11, 2];
+		public int[,] itemsinshop = new int[14, 2];
 		public string GetNextItem()
 		{
-			itemsinshop = new [,]{
+			itemsinshop = new[,]{
 				{ SGAmod.Instance.ItemType("EmptyCharm"),50 },
 			{ SGAmod.Instance.ItemType("CaliburnCompess"),300 },
 			{ SGAmod.Instance.ItemType("GrippingGloves"),400 },
-			{ SGAmod.Instance.ItemType("RedManaStar"),500 },			
+			{ SGAmod.Instance.ItemType("RedManaStar"),500 },
 			{ ItemID.Arkhalis,1000 },
 			{ ItemID.RodofDiscord,2000 },
 			{ SGAmod.Instance.ItemType("Gong"),2500 },
@@ -551,9 +550,10 @@ namespace SGAmod.NPCs.TownNPCs
 			SGAPlayer modplayer = Main.LocalPlayer.GetModPlayer<SGAPlayer>();
 			int index = 0;
 			int expmax = modplayer.ExpertiseCollectedTotal;
-			while (expmax > 0 && index< itemsinshop.Length)
+			//int offset = 0;
+			while (index < itemsinshop.Length && expmax > itemsinshop[index, 1])
 			{
-					expmax -= itemsinshop[index, 1];
+					//expmax -= itemsinshop[index, 1];
 					index += 1;
 			}
 			int math = itemsinshop[index, 1] - modplayer.ExpertiseCollectedTotal;

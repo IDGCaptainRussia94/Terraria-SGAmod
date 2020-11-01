@@ -20,6 +20,11 @@ namespace SGAmod.Buffs
 			Main.buffNoSave[Type] = true;
 			longerExpertDebuff = true;
 		}
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/MoonLightCurse";
+			return true;
+		}
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{

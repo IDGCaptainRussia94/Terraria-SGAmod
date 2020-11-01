@@ -498,7 +498,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Caliburn Compass");
-			Tooltip.SetDefault("While held, it points to Caliburn Alters in your world\nCan be used in hardmode to fight a stronger Caliburn spirit\nNon-Consumable");
+			Tooltip.SetDefault("While held, it points to Caliburn Altars in your world\nCan be used in hardmode to fight a stronger Caliburn spirit\nNon-Consumable");
 
 		}
 		public override bool CanUseItem(Player player)

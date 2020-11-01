@@ -626,7 +626,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fortune Falchion");
-			Tooltip.SetDefault("Sucks in nearby money when hold\nHitting enemies debuffed with Midas increases the money they drop by 5% of the weapon's value\nEquiping the [i:" + mod.ItemType("IdolOfMidas") + "] greatly improves this weapon's effects");
+			Tooltip.SetDefault("Sucks in nearby money when held\nHitting enemies debuffed with Midas increases the money they drop by 5% of the weapon's value\n^This stacks for each hit\nEquiping the [i:" + mod.ItemType("IdolOfMidas") + "] greatly improves this weapon's effects");
 		}
 		public override void SetDefaults()
 		{
@@ -638,7 +638,7 @@ namespace SGAmod.Items.Weapons
 			item.useAnimation = 15;
 			item.useStyle = 1;
 			item.knockBack = 3;
-			item.value = Item.sellPrice(0, 3, 0, 0);
+			item.value = Item.buyPrice(0, 2, 0, 0);
 			item.rare = ItemRarityID.LightPurple;
 			item.UseSound = SoundID.Item1;
 			item.autoReuse = true;
@@ -652,11 +652,6 @@ namespace SGAmod.Items.Weapons
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
-		}
-
-		public override void HoldItem(Player player)
-		{
-			player.goldRing = true;
 		}
 
 		public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)

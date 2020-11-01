@@ -21,29 +21,31 @@ namespace SGAmod.NPCs
 			Main.npcFrameCount[npc.type] = 2;
 		}
 
-        	public override void SetDefaults()
-        	{
-            	npc.lifeMax = 800;
-            	npc.defense = 22;
-            	npc.damage = 58;
-            	npc.scale = 1f;
-            	npc.width = 36;
-            	npc.height = 26;
-            	animationType = 1;
-            	npc.aiStyle = 1;
-		npc.knockBackResist = 0.4f;
-		npc.buffImmune[BuffID.OnFire] = true;
-		npc.buffImmune[BuffID.CursedInferno] = true;
-		npc.buffImmune[BuffID.ShadowFlame] = true;
-		npc.buffImmune[BuffID.Poisoned] = true;
-		npc.buffImmune[BuffID.Venom] = true;
-		npc.buffImmune[mod.BuffType("ThermalBlaze")] = true;
-            	npc.npcSlots = 0.1f;
-            	npc.netAlways = true;
-            	npc.HitSound = SoundID.NPCHit1;
-            	npc.DeathSound = SoundID.NPCDeath1;
-            	npc.value = Item.buyPrice(0, 0,5);
-        	}
+		public override void SetDefaults()
+		{
+			npc.lifeMax = 800;
+			npc.defense = 22;
+			npc.damage = 58;
+			npc.scale = 1f;
+			npc.width = 36;
+			npc.height = 26;
+			animationType = 1;
+			npc.aiStyle = 1;
+			npc.knockBackResist = 0.4f;
+			npc.buffImmune[BuffID.OnFire] = true;
+			npc.buffImmune[BuffID.CursedInferno] = true;
+			npc.buffImmune[BuffID.ShadowFlame] = true;
+			npc.buffImmune[BuffID.Poisoned] = true;
+			npc.buffImmune[BuffID.Venom] = true;
+			npc.buffImmune[mod.BuffType("ThermalBlaze")] = true;
+			npc.npcSlots = 0.1f;
+			npc.netAlways = true;
+			npc.HitSound = SoundID.NPCHit1;
+			npc.DeathSound = SoundID.NPCDeath1;
+			npc.value = Item.buyPrice(0, 0, 5);
+			banner = npc.type;
+			bannerItem = mod.ItemType("SandscorchedSlimeBanner");
+		}
 
 		public override void AI()
 		{

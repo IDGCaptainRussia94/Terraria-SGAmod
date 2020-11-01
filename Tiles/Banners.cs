@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -8,6 +10,7 @@ namespace SGAmod.Tiles
 {
 	public class Banners : ModTile
 	{
+		public static Dictionary<int,string> idToItem = new Dictionary<int, string>();
 		public override void SetDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
@@ -28,21 +31,8 @@ namespace SGAmod.Tiles
 		{
 			int style = frameX / 18;
 			string item;
-			switch (style)
-			{
-				case 0:
-					item = "ChlorofrightBanner";
-					break;
-				case 1:
-					item = "MaggotBanner";
-					break;
-                case 2:
-                    item = "MaggotFlyBanner";
-                    break;
-				default:
-					return;
-			}
-			Item.NewItem(i * 16, j * 16, 16, 48, mod.ItemType(item));
+			if (idToItem.TryGetValue(style, out item))
+			Item.NewItem(i * 16, j * 16, 16, 48, mod.ItemType(item+"Banner"));
 		}
 
 		public override void NearbyEffects(int i, int j, bool closer)
@@ -52,22 +42,11 @@ namespace SGAmod.Tiles
 				Player player = Main.player[Main.myPlayer];
 				int style = Main.tile[i, j].frameX / 18;
 				string type;
-				switch (style)
+				if (idToItem.TryGetValue(style, out type))
 				{
-					case 0:
-						type = "Chlorofright";
-						break;
-					case 1:
-						type = "Maggot";
-						break;
-                    case 2:
-                        type = "MaggotFly";
-                        break;
-                    default:
-						return;
+					player.NPCBannerBuff[mod.NPCType(type)] = true;
+					player.hasBanner = true;
 				}
-				player.NPCBannerBuff[mod.NPCType(type)] = true;
-				player.hasBanner = true;
 			}
 		}
 

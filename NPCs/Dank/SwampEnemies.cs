@@ -21,6 +21,8 @@ namespace SGAmod.NPCs.Dank
             npc.aiStyle = 5;
             aiType = NPCID.Bee;
             animationType = NPCID.Bee;
+            banner = npc.type;
+            bannerItem = mod.ItemType("FlySwarmBanner");
         }
 
         public override void SetStaticDefaults()
@@ -60,6 +62,8 @@ namespace SGAmod.NPCs.Dank
             Main.npcFrameCount[npc.type] = Main.npcFrameCount[NPCID.BigMimicHallow];
             aiType = NPCID.BigMimicHallow;
             animationType = NPCID.BigMimicHallow;
+            banner = npc.type;
+            bannerItem = mod.ItemType("DankMimicBanner");
         }
 
         public override void SetStaticDefaults()
@@ -79,7 +83,7 @@ namespace SGAmod.NPCs.Dank
             int rand = Main.rand.Next(2);
             if (rand == 0)
             {
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("DankCore"),Main.rand.Next(8,16));
+                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("DankCore"),Main.rand.Next(4,11));
             }
             if (rand == 1)
             {
@@ -101,6 +105,8 @@ namespace SGAmod.NPCs.Dank
             npc.aiStyle = 3;
             aiType = NPCID.WalkingAntlion;
             animationType = NPCID.Zombie;
+            banner = npc.type;
+            bannerItem = mod.ItemType("GiantLizardBanner");
         }
 
         public override void SetStaticDefaults()
@@ -132,6 +138,8 @@ namespace SGAmod.NPCs.Dank
             npc.value = 300f;
             npc.aiStyle = 3;
             Main.npcFrameCount[npc.type] = 2;
+            banner = npc.type;
+            bannerItem = mod.ItemType("BlackLeechBanner");
         }
 
         public override void SetStaticDefaults()
@@ -224,6 +232,8 @@ namespace SGAmod.NPCs.Dank
             npc.value = 1000f;
             aiType = NPCID.Mummy;
             animationType = NPCID.Mummy;
+            banner = npc.type;
+            bannerItem = mod.ItemType("MudMummyBanner");
         }
 
         public override void SetStaticDefaults()

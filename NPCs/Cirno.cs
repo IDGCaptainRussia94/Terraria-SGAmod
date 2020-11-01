@@ -16,8 +16,11 @@ using Terraria.GameContent.Events;
 namespace SGAmod.NPCs
 {
 	[AutoloadBossHead]
-	public class Cirno : ModNPC
+	public class Cirno : ModNPC, ISGABoss
 	{
+		public string Trophy() => "CirnoTrophy";
+		public bool Chance() => Main.rand.Next(0, 10) == 0;
+
 		int aicounter = 0;
 		int frameid = 0;
 		int framevar = 0;
@@ -71,7 +74,7 @@ namespace SGAmod.NPCs
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
-			npc.lifeMax = (int)(npc.lifeMax * 0.750 * bossLifeScale);
+			npc.lifeMax = (int)(npc.lifeMax * 0.750f * bossLifeScale);
 			npc.damage = (int)(npc.damage * 0.5f);
 		}
 		public override void BossLoot(ref string name, ref int potionType)

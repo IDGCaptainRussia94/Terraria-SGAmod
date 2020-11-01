@@ -572,11 +572,6 @@ namespace SGAmod.Items.Weapons
 			SGAmod.UsesClips.Add(SGAmod.Instance.ItemType(GetType().Name), 6);
 		}
 
-		public override string Texture
-	{
-	get { return ("Terraria/Item_"+ItemID.Revolver); }
-	}
-
 		public override void SetDefaults()
 		{
 			item.CloneDefaults(ItemID.Revolver);

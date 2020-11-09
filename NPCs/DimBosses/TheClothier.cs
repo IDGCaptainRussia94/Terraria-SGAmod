@@ -20,10 +20,7 @@ namespace SGAmod.NPCs.Wraiths
 		public int aiattackstatething = 0;
 		public Vector2 previousgo;
 		public Vector2 Startloc;
-		public override bool Autoload(ref string name)
-		{
-			return false;
-		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Skeletron?");
@@ -32,8 +29,8 @@ namespace SGAmod.NPCs.Wraiths
 		}
 		public override void SetDefaults()
 		{
-			npc.width = 64;
-			npc.height = 72;
+			npc.width = 32;
+			npc.height = 32;
 			npc.damage = 10;
 			npc.defense = 0;
 			npc.lifeMax = 10000;
@@ -56,7 +53,7 @@ namespace SGAmod.NPCs.Wraiths
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
-			npc.lifeMax = (int)(npc.lifeMax * 0.625f * bossLifeScale);
+			npc.lifeMax = (int)(npc.lifeMax * 0.75f * bossLifeScale);
 			npc.damage = (int)(npc.damage * 0.6f);
 		}
 
@@ -69,7 +66,7 @@ namespace SGAmod.NPCs.Wraiths
 		{
 			//filler
 		}
-		public bool UpdateAI()
+		private bool UpdateAI()
 		{
 
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
@@ -83,6 +80,21 @@ namespace SGAmod.NPCs.Wraiths
 			}
 			return true;
 		}
+
+		private void DoAI()
+        {
+
+			Vector2 gothere = P.Center - npc.Center;
+			float gotheredist = gothere.Length();
+			gothere.Normalize();
+
+
+		}
+
+		Player P;
+		float lifePercent;
+		bool endReturn;
+
 		public override bool PreAI()
 		{
 			if (Main.netMode < 1 && Main.LocalPlayer.name != "giuy")
@@ -95,117 +107,36 @@ namespace SGAmod.NPCs.Wraiths
 				bossvaluetimer = 1;
 				Startloc = npc.Center;
 			}
-			bool endreturn = true;
+			endReturn = false;
 			//npc.netUpdate = true;
-			Player P = Main.player[npc.target];
-			float lifepercent = (float)npc.life / (float)npc.lifeMax;
+			P = Main.player[npc.target];
+			lifePercent = (float)npc.life / (float)npc.lifeMax;
 
 			if (npc.ai[0] == 0f)
 				npc.ai[0] = 1f;
 
-				npc.dontTakeDamage = NPC.CountNPCS(NPCID.SkeletronHand) > 0;
+			npc.dontTakeDamage = NPC.CountNPCS(NPCID.SkeletronHand) > 0;
 
 			if (UpdateAI())
 			{
-				Vector2 gothere = P.Center - npc.Center;
-				float gotheredist = gothere.Length();
-				gothere.Normalize();
-
-
-				if (aioverridetimer < 1)
-					aiattackstatething = 0;
-				npc.aiStyle = 11;
-				bossvaluetimer += 1;
-				aioverridetimer -= 1;
-				npc.defense = npc.defDefense;
-
-				int positivetimer = Math.Abs(aioverridetimer);
-
-				//Spin to Win dash
-				if (!npc.dontTakeDamage && phase == 1)
-				{
-					int offset = 700;
-					int timevalue = (positivetimer - offset);
-					if (positivetimer % 1600 > 0 && positivetimer % 1600 < 800)
-					{
-						endreturn = false;
-						npc.rotation += Math.Min(timevalue % 1600, 100) /500f;
-						npc.velocity /= 2f;
-
-						if (positivetimer % 1600 > 100)
-						{
-
-							if (timevalue % 100 == 0)
-								previousgo = gothere;
-
-							if (timevalue % 100 < 70)
-							{
-								npc.velocity = previousgo * 30f;
-							}
-						}
-
-					}
-				}
-
-
-				//Move to Center
-				if (aiattackstatething > 0 && aioverridetimer>0)
-				{
-					endreturn = false;
-					if (aiattackstatething < 10)
-					{
-						npc.velocity /= 1.5f;
-						npc.rotation=-npc.velocity.X/10f;
-
-						if (aioverridetimer < 150)
-						{
-							Vector2 gothere2 = Startloc - npc.Center;
-							float len = gothere2.Length();
-							gothere2.Normalize();
-							if (len>32)
-							npc.velocity += gothere2 * Math.Min(8f, len);
-						}
-
-						//Seletron arms
-						if (aiattackstatething==1 && aioverridetimer == 60)
-						{
-							int num154 = NPC.NewNPC((int)Startloc.X+400, (int)Startloc.Y - 100, 36, npc.whoAmI, 0f, 0f, 0f, 0f, 255);
-							Main.npc[num154].ai[0] = -1f;
-							Main.npc[num154].ai[1] = (float)npc.whoAmI;
-							Main.npc[num154].target = npc.target;
-							Main.npc[num154].netUpdate = true;
-							num154 = NPC.NewNPC((int)Startloc.X - 400, (int)Startloc.Y - 100, 36, npc.whoAmI, 0f, 0f, 0f, 0f, 255);
-							Main.npc[num154].ai[0] = 1f;
-							Main.npc[num154].ai[1] = (float)npc.whoAmI;
-							Main.npc[num154].ai[3] = 150f;
-							Main.npc[num154].target = npc.target;
-							Main.npc[num154].netUpdate = true;
-						}
-					}
-				}
-
-
-				if (lifepercent<0.9 && phase == 0)
-				{
-					phase = 1;
-					npc.defense = 100;
-					aiattackstatething = 1;
-					aioverridetimer = 200;
-				}
-
-
+				DoAI();
 			}
 			else
 			{
 				npc.aiStyle = 11;
 			}
-			return endreturn;
+				return endReturn;
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
+			Texture2D tex2 = Main.npcTexture[NPCID.Clothier];
 			Texture2D tex = Main.npcTexture[npc.type];
-			spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, Color.Gray, npc.rotation, tex.Size() / 2f, new Vector2(1, 1), SpriteEffects.None, 0f);
+
+			int Clothcount = Main.npcFrameCount[NPCID.Clothier];
+			spriteBatch.Draw(tex2, npc.Center - Main.screenPosition, null, Color.Gray * 0.50f, npc.rotation, tex.Size() / 2f, new Vector2(tex2.Width, tex2.Height/Clothcount)/2f, SpriteEffects.None, 0f);
+			if (endReturn)
+			spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, Color.Gray*0.50f, npc.rotation, tex.Size() / 2f, new Vector2(1, 1), SpriteEffects.None, 0f);
 			return false;
 		}
 	}

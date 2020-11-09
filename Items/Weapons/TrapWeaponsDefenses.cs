@@ -378,10 +378,14 @@ namespace SGAmod.Items.Weapons
 
 	public class NonStationarySnowballLauncherHolding : NonStationaryDefenseHolding
 	{
+		public override string Texture
+		{
+			get { return ("Terraria/Tiles_"+ TileID.SnowballLauncher); }
+		}
 		protected override Vector2 offsetholding => new Vector2(0, -16);
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D tex = Main.tileTexture[TileID.SnowballLauncher];
+			Texture2D tex = Main.projectileTexture[projectile.type];
 			int frames = 4;
 			//Texture2D texGlow = ModContent.GetTexture("SGAmod/Items/Weapons/SeriousSam/BeamGunProjGlow");
 			SpriteEffects effects = SpriteEffects.FlipHorizontally;

@@ -55,7 +55,8 @@ namespace SGAmod.Items.Accessories.Charms
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.UseTimeMulPickaxe += 0.25f;
-			sgaplayer.damagetaken += 0.20f;
+			if (!sgaplayer.tpdcpu)
+				sgaplayer.damagetaken += 0.20f;
 		}
 		public override void AddRecipes()
 		{
@@ -96,6 +97,7 @@ namespace SGAmod.Items.Accessories.Charms
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.EnhancingCharm = 4;
+			if (!sgaplayer.tpdcpu)
 			sgaplayer.potionsicknessincreaser = 10;
 		}
 		public override void AddRecipes()
@@ -264,7 +266,8 @@ namespace SGAmod.Items.Accessories.Charms
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.EnhancingCharm = 3;
-			sgaplayer.potionsicknessincreaser = 9;
+			if (!sgaplayer.tpdcpu)
+				sgaplayer.potionsicknessincreaser = 9;
 		}
 		public override void AddRecipes()
 		{
@@ -304,7 +307,8 @@ namespace SGAmod.Items.Accessories.Charms
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.EnhancingCharm = 2;
-			sgaplayer.potionsicknessincreaser = 8;
+			if (!sgaplayer.tpdcpu)
+				sgaplayer.potionsicknessincreaser = 8;
 		}
 		public override void AddRecipes()
 		{
@@ -343,7 +347,8 @@ namespace SGAmod.Items.Accessories.Charms
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.UseTimeMulPickaxe += 0.50f;
-			sgaplayer.damagetaken += 0.30f;
+			if (!sgaplayer.tpdcpu)
+				sgaplayer.damagetaken += 0.30f;
 		}
 		public override void AddRecipes()
 		{
@@ -383,7 +388,8 @@ namespace SGAmod.Items.Accessories.Charms
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.UseTimeMulPickaxe += 1f;
-			sgaplayer.damagetaken += 0.40f;
+			if (!sgaplayer.tpdcpu)
+				sgaplayer.damagetaken += 0.40f;
 		}
 		public override void AddRecipes()
 		{

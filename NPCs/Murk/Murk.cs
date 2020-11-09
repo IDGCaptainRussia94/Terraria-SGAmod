@@ -157,13 +157,17 @@ namespace SGAmod.NPCs.Murk
                 {
                     if (Main.player[i] != null && Main.player[i].active)
                     {
-                        Main.player[i].GetModPlayer<SGADimPlayer>().lightSize = 4000 - (int)((float)gasshift * (4000f / 500f));
-                        if (Main.player[i].Distance(center) > ((gasshift) * scaledSize) && gasshift > 400)
+                        if (Main.player[i].Distance(center) < 5000)
                         {
-                            Main.player[i].AddBuff(BuffID.OgreSpit, 60);
-                            Main.player[i].AddBuff(BuffID.Poisoned, 120);
-                            Main.player[i].AddBuff(BuffID.Slow, 2);
-                            Main.player[i].AddBuff(ModContent.BuffType<MurkyDepths>(), 2);                        
+                            Main.player[i].GetModPlayer<SGADimPlayer>().lightSize = 4000 - (int)((float)gasshift * (4000f / 500f));
+                            if (Main.player[i].Distance(center) > ((gasshift) * scaledSize) && gasshift > 400)
+                            {
+                                Main.player[i].AddBuff(BuffID.Dazed, 2);
+                                Main.player[i].AddBuff(BuffID.Slow, 2);
+                                Main.player[i].AddBuff(BuffID.Poisoned, 2);
+                                Main.player[i].AddBuff(BuffID.Suffocation, 2);
+                                Main.player[i].AddBuff(ModContent.BuffType<MurkyDepths>(), 2);
+                            }
                         }
                     }
                 }
@@ -313,7 +317,7 @@ namespace SGAmod.NPCs.Murk
                 bool flag71 = false;
                 bool flag81 = true;
 
-                if (npc.life < npc.lifeMax / 2 && Main.expertMode == true)
+                if (npc.life < npc.lifeMax / 3 && Main.expertMode == true)
                 {
                     npc.damage = 200;
                     npc.defense = 30;
@@ -466,6 +470,11 @@ namespace SGAmod.NPCs.Murk
                         }
                     }
 
+                    for (float gg = -4f; gg < 4.26f; gg += 0.25f)
+                    {
+                        Gore.NewGore(npc.Center + new Vector2(Main.rand.NextFloat(-32, 32), Main.rand.NextFloat(-16, 16)), new Vector2(gg,Main.rand.NextFloat(-3,3)), Main.rand.Next(61, 64), (5f- Math.Abs(gg))/4f);
+                    }
+
                 }
 
                 if (!flag65)
@@ -479,7 +488,8 @@ namespace SGAmod.NPCs.Murk
                         //npc.dontTakeDamage=true;
                         npc.defense *= 2;
 
-                        if (gasshift < 500)
+                        Player target2 = Main.player[npc.target];
+                        if (gasshift < 500 && (npc.Distance(target2.MountedCenter)<1000 || gasshift > 0))
                         {
                             npc.localAI[0] += 1;
                             gasshift += 1;

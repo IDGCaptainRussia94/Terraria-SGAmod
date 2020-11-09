@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SGAmod.Items.Weapons
 {
-	public class Enmity : ModItem
+	public class Enmity : ModItem, IHitScanItem
 	{
 		public override void SetStaticDefaults()
 		{

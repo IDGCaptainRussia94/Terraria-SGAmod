@@ -34,6 +34,51 @@ namespace SGAmod.Buffs
 			}
 		}
 	}
+	public class ToxicityPotionBuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Toxicity");
+			Description.SetDefault("Grants various buffs based around Stinky for the player\n'Things die by just by being around you when you smell, rude!'");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			Main.debuff[Type] = false;
+		}
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
+		}
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().toxicity += 1;
+			player.buffImmune[BuffID.Lovestruck] = true;
+			player.buffImmune[ModContent.BuffType<IntimacyPotionBuff>()] = true;
+
+		}
+	}
+	public class IntimacyPotionBuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Intimacy");
+			Description.SetDefault("Grants various buffs based around Lovestruct for the player\n'Enemies willing hand over their life essences to your alluring ensare'\n'Meanwhile, friends gain!'");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			Main.debuff[Type] = false;
+		}
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
+		}
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().intimacy += 1;
+			player.buffImmune[BuffID.Stinky] = true;
+			player.buffImmune[ModContent.BuffType<ToxicityPotionBuff>()] = true;
+		}
+	}
 	public class TriggerFingerPotionBuff : ModBuff
 	{
 		public override void SetDefaults()
@@ -117,7 +162,6 @@ namespace SGAmod.Buffs
 				if (player.HeldItem.thrown)
 					player.GetModPlayer<SGAPlayer>().apocalypticalChance[3] += gg;
 			}
-			player.lavaRose = true;
 		}
 	}
 	public class CondenserBuff : ModBuff

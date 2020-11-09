@@ -31,6 +31,22 @@ using SGAmod.Buffs;
 
 namespace SGAmod
 {
+	public class ActionCooldownStack
+	{
+		public int timeleft;
+		public int timerup;
+		public int maxtime;
+		public int index;
+
+		public ActionCooldownStack(int timeleft,int index)
+		{
+			this.timeleft = timeleft;
+			this.maxtime = timeleft;
+			this.index = index;
+			timerup = 0;
+		}
+	}
+
 	public partial class SGAPlayer : ModPlayer
 	{
 
@@ -102,7 +118,7 @@ namespace SGAmod
 				time = (int)((float)time * actionCooldownRate);
 
 				for (int i = 0; i < count; i += 1)
-					CooldownStacks.Add(new ActionCooldownStack(time));
+					CooldownStacks.Add(new ActionCooldownStack(time, CooldownStacks.Count));
 				return true;
 			}
 			return false;
@@ -282,6 +298,35 @@ namespace SGAmod
 				player.QuickSpawnItem(mod.ItemType("TF2Emblem"), 1);
 				gottf2 = true;
 			}
+		}
+
+		public int ActionStackOverflow(ActionCooldownStack stack,int stackIndex)
+		{
+			if (MaxCooldownStacks <= stackIndex && stack.timerup % 2 == 0)
+				return 0;
+
+				return 1;
+		}
+
+		public void DoCooldownUpdate()
+		{
+			if (Main.netMode != NetmodeID.Server)//ugh
+			{
+
+				if (CooldownStacks.Count > 0)
+				{
+					for (int stackindex = 0; stackindex < CooldownStacks.Count; stackindex += 1)
+					{
+						ActionCooldownStack stack = CooldownStacks[stackindex];
+						stack.timeleft -= ActionStackOverflow(stack, stackindex);
+						stack.timerup += 1;
+						if (stack.timeleft < 1)
+							CooldownStacks.RemoveAt(stackindex);
+					}
+				}
+				activestacks = CooldownStacks.Count;
+			}
+
 		}
 
 		public bool DashBlink()

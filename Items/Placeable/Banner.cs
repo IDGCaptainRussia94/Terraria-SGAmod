@@ -28,7 +28,7 @@ namespace SGAmod.Items.Placeable
 		public SGABanner(string internalname)
 		{
 			placeStyle = Banners.idToItem.Count;
-			Banners.idToItem.Add(Banners.idToItem.Count, internalname + "Banner");
+			Banners.idToItem.Add(Banners.idToItem.Count, internalname);
 		}
 
 		public override void SetDefaults()

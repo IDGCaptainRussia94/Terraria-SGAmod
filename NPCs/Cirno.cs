@@ -170,7 +170,7 @@ namespace SGAmod.NPCs
 						shad.UseColor(Color.Lerp(Color.Blue, Color.Turquoise, 0.5f + (float)Math.Sin(Main.GlobalTime)));
 						Main.raining = true;
 						Main.windSpeed = MathHelper.Clamp(Main.windSpeed + Math.Sign((P.Center.X - npc.Center.X)) * (-0.002f / 3f), -0.4f, 0.4f);
-						Main.maxRaining = Math.Min(Main.maxRaining + 0.002f, 1f);
+						Main.maxRaining = Math.Min(Main.maxRaining + 0.001f, 0.25f);
 						Main.rainTime = 5;
 						Main.UseStormEffects = true;
 
@@ -208,14 +208,6 @@ namespace SGAmod.NPCs
 
 				}
 
-				if (aistate == 3)
-				{
-					if (aicounter > 49)
-					{
-						aistate = 0;
-					}
-				}
-
 				if (aistate == 2)
 				{
 					spellcard(card, aicounter, P);
@@ -242,6 +234,11 @@ namespace SGAmod.NPCs
 
 				if (aistate == 3)
 				{
+					if (aicounter > 49)
+					{
+						aistate = 0;
+					}
+
 					if (aicounter > 15)
 					{
 						int dustType = 113;
@@ -272,9 +269,9 @@ namespace SGAmod.NPCs
 							npc.rotation = (float)Math.Atan2(-npc.velocity.Y, -npc.velocity.X);
 							npc.direction = -1;
 						}
-						if (dist.Length() > 320)
+						if (dist.Length() > 240)
 						{
-							aicounter = aicounter - 1;
+							aicounter = aicounter - (dist.Length() > 360 ? 1 : 2);
 						}
 						if (bobbing > 220)
 						{
@@ -772,7 +769,8 @@ namespace SGAmod.NPCs
 		itz[0].hostile=projectile.hostile;
 		itz[0].coldDamage = true;
 		itz[0].netUpdate=true;
-		itz[0].magic = true;
+		itz[0].ranged = false;
+		itz[0].minion = true;
 		}
 		}
 
@@ -814,6 +812,7 @@ return false;
 			projectile.height = 30;
 			projectile.magic = true;
 			projectile.coldDamage = true;
+			projectile.npcProj = true;
 			aiType = 0;//ProjectileID.IceBolt;
 		}
 
@@ -1044,6 +1043,8 @@ return false;
 			projectile.extraUpdates = 0;
 			projectile.aiStyle = -1;
 			projectile.timeLeft = 1000;
+			projectile.coldDamage = true;
+			projectile.npcProj = true;
 		}
 
 		public override string Texture

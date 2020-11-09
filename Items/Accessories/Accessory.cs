@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Graphics;
 using SGAmod.HavocGear.Items.Accessories;
 using Idglibrary;
 using AAAAUThrowing;
+using Terraria.Localization;
+using SGAmod.Items.Weapons;
 
 namespace SGAmod.Items.Accessories
 {
@@ -131,7 +133,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Yoyo Gauntlet");
-			Tooltip.SetDefault("15% increased melee damage and melee speed, inflict OnFire! on hit, and +5 armor penetration\nYoyo Bag Effect and fabulous rainbow strings!");
+			Tooltip.SetDefault("15% increased melee damage and melee speed, +5 armor penetration\nInflict OnFire! and Frostburn on hit and do Cold Damage\nYoyo Bag Effect and fabulous rainbow strings!");
 		}
 
 		public override void SetDefaults()
@@ -155,6 +157,7 @@ namespace SGAmod.Items.Accessories
 			player.counterWeight = 556 + Main.rand.Next(6);
 			player.yoyoGlove = true;
 			player.yoyoString = true;
+			player.SGAPly().glacialStone = true;
 
 
 		}
@@ -162,10 +165,12 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.FireGauntlet, 1);
+			recipe.AddIngredient(mod.ItemType("GlacialStone"), 1);
 			recipe.AddIngredient(ItemID.YoyoBag, 1);
 			recipe.AddIngredient(ItemID.RainbowString, 1);
 			recipe.AddIngredient(ItemID.SharkToothNecklace, 1);
 			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
+			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 8);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -437,7 +442,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Geyser In A Bottle");
-			Tooltip.SetDefault("Creates an eruption midair when you jump!\nNo damage taken from Geysers\nGrants a small amount of lava immunity");
+			Tooltip.SetDefault("Creates an eruption midair when you jump!\nNo damage taken from Geysers, counts as Trap Damage\nGrants a small amount of lava immunity");
 		}
 
 		public override void SetDefaults()
@@ -445,7 +450,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.rare = ItemRarityID.LightRed;
-			item.value = Item.sellPrice(0, 1, 50, 0); ;
+			item.value = Item.sellPrice(0, 1, 50, 0);
 			item.accessory = true;
 		}
 
@@ -995,7 +1000,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Calamity Rune");
-			Tooltip.SetDefault("'The unrelenting heat of dismay shimmers, charged within this rune'\nApocalyptical Strength increased by 25%\nYou create fiery explosions on enemies when you score an Apocalyptical\nThese hit only once her enemy and inflict Thermal Blaze, short Daybreak, and Everlasting Suffering\nEverlasting Suffering increases enemy damage over time by 250% and makes other debuffs last until it ends\nDamage done, as well as Daybreak and Everlasting Suffering duration is boosted by your Apocalyptical Strength");
+			Tooltip.SetDefault("'The unrelenting heat of dismay shimmers, charged within this rune'\nApocalyptical Strength increased by 50%\nYou create fiery explosions on enemies when you score an Apocalyptical\nThese hit only once per enemy and inflict Thermal Blaze, short Daybreak, and Everlasting Suffering\nEverlasting Suffering increases enemy damage over time by 250% and makes other debuffs last until it ends\nDamage done, as well as Daybreak and Everlasting Suffering duration is boosted by your Apocalyptical Strength");
 		}
 
 		public override string Texture
@@ -1005,7 +1010,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.GetModPlayer<SGAPlayer>().apocalypticalStrength += 0.25f;
+			player.GetModPlayer<SGAPlayer>().apocalypticalStrength += 0.50f;
 			player.GetModPlayer<SGAPlayer>().CalamityRune = true;
 		}
 
@@ -1789,7 +1794,7 @@ namespace SGAmod.Items.Accessories
 		{
 			player.breathMax += 200;
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-			if (!hideVisual && (Main.raining || SGAWorld.downedSharkvern))
+			if (!hideVisual && ((Main.raining) || SGAWorld.downedSharkvern))
 			sgaply.tidalCharm = 2;
 			int defensegiven = 8;
 			defensegiven += SGAWorld.downedWraiths * 2;
@@ -1873,7 +1878,7 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.HighTestFishingLine, 1);
+			recipe.AddIngredient(ItemID.WhiteString, 2);
 			recipe.AddIngredient(ItemID.GuideVoodooDoll, 1);
 			recipe.AddIngredient(ItemID.ClothierVoodooDoll, 1);
 			recipe.AddTile(TileID.TinkerersWorkbench);
@@ -2131,7 +2136,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sparing Spurs");
-			Tooltip.SetDefault("Gain a movement speed buff while reloading your revolver\nGrants a Shield of Cuthulu Dash while firing your revolver\nFall Damage and fireblock immunity\n'Ya ready to dance pardner?'");
+			Tooltip.SetDefault("Gain a movement speed buff while reloading your revolver\nGrants a Shield of Cthulhu Dash while firing your revolver\nFall Damage and fireblock immunity\n'Ya ready to dance pardner?'");
 		}
 
 		public override void SetDefaults()
@@ -2613,6 +2618,87 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	public class GlacialStone : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Glacial Stone");
+			Tooltip.SetDefault("Melee attacks inflict Frostburn\nYour melee projectiles become Cold Damage");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().glacialStone = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 3);
+			item.rare = ItemRarityID.LightPurple;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("CryostalBar"), 4);
+			recipe.AddIngredient(ItemID.MagmaStone, 1);
+			recipe.AddIngredient(ItemID.FrostCore, 1);
+			recipe.AddTile(ItemID.CrystalBall);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+	public class TerraDivingGear : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Terra Diving Gear");
+			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.ArcticDivingGear") +"\n"+ Language.GetTextValue("ItemName.BreathingReed")+" "+Language.GetTextValue("ItemTooltip.BreathingReed") +"\n" + Language.GetTextValue("ItemTooltip.FlipperPotion")+"\nHold DOWN to fall faster in liquids");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.Lime;
+			item.value = Item.buyPrice(0, 2, 50, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.arcticDivingGear = true;
+			player.accFlipper = true;
+			player.accDivingHelm = true;
+			player.iceSkate = true;
+			player.ignoreWater = true;
+			player.SGAPly().terraDivingGear = true;
+			if (player.controlDown)
+				ModContent.GetInstance<PocketRocks>().UpdateAccessory(player, hideVisual);
+
+			if (player.wet)
+			{
+				Lighting.AddLight((int)player.Center.X / 16, (int)player.Center.Y / 16, 0.27f, 0.85f, 0.53f);
+			}
+
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.ArcticDivingGear, 1);
+			recipe.AddIngredient(ModContent.ItemType<PocketRocks>(), 1);
+			recipe.AddIngredient(ItemID.BreathingReed, 1);
+			recipe.AddIngredient(ItemID.FlipperPotion, 5);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
 	public class WraithTargetingGamepad : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -2649,9 +2735,126 @@ namespace SGAmod.Items.Accessories
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.gamePadAutoAim = 2;
+			//Terraria.GameContent.Events.DD2Event.LaneSpawnRate = 9;
+		}
+
+	}
+	public class TPDCPU : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("T.P.D.C.P.U");
+			Tooltip.SetDefault("'Twin Prime Destroyers Coolent Processing Unit'\nReduces all new Cooldown Stacks by 25%\nRemoves the negitive effects of Enchanted Amulets");
+		}
+
+		public override void SetDefaults()
+		{
+			item.CloneDefaults(ItemID.ManaFlower);
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.Yellow;
+			item.value = Item.sellPrice(0, 5, 0, 0);
+			item.accessory = true;
+			item.expert = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.tpdcpu = true;
+			sgaplayer.actionCooldownRate -= 0.25f;
+			//Terraria.GameContent.Events.DD2Event.LaneSpawnRate = 9;
+		}
+
+	}
+	public class AversionCharm : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Aversion Charm");
+			Tooltip.SetDefault("Allows you to Ninja Dodge traps\n"+Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each"));
+		}
+
+		public override void SetDefaults()
+		{
+			item.CloneDefaults(ItemID.ManaFlower);
+			item.width = 24;
+			item.height = 24;
+			item.rare = 2;
+			item.value = Item.sellPrice(0, 0, 50, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.aversionCharm = true;
+			//Terraria.GameContent.Events.DD2Event.LaneSpawnRate = 9;
 		}
 
 	}
 
+	public class PocketRocks : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Pocket Rocks");
+			Tooltip.SetDefault("'Rocks in your pockets!'\nMakes you fall faster in liquids when worn");
+		}
+
+		public override void SetDefaults()
+		{
+			item.CloneDefaults(ItemID.ManaFlower);
+			item.width = 12;
+			item.height = 24;
+			item.rare = 1;
+			item.value = Item.buyPrice(0, 0, 50, 0);
+			item.accessory = true;
+
+			item.useStyle = 1;
+			item.Throwing().thrown = true;
+			item.damage = 4;
+			item.shootSpeed = 10f;
+			item.shoot = ModContent.ProjectileType<Weapons.RockProj>();
+			item.useTurn = true;
+			//ProjectileID.CultistBossLightningOrbArc
+			item.width = 12;
+			item.height = 24;
+			item.knockBack = 2;
+			item.UseSound = SoundID.Item1;
+			item.useAnimation = 8;
+			item.useTime = 8;
+			item.noUseGraphic = true;
+			item.noMelee = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			if (player.wet)
+			{
+				player.maxFallSpeed += 10f;
+				if (player.velocity.Y > 0)
+					player.velocity.Y += 0.2f;
+			}
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			int probg = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI);
+			Main.projectile[probg].Throwing().thrown = true;
+			Main.projectile[probg].friendly = true;
+			Main.projectile[probg].hostile = false;
+			Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(10));
+			Main.projectile[probg].velocity.X = perturbedSpeed.X;
+			Main.projectile[probg].velocity.Y = perturbedSpeed.Y;
+			Main.projectile[probg].owner = player.whoAmI;
+			SGAprojectile modeproj = Main.projectile[probg].GetGlobalProjectile<SGAprojectile>();
+			modeproj.myplayer = player;
+			Main.projectile[probg].netUpdate = true;
+			IdgProjectile.Sync(probg);
+			return false;
+		}
+
+	}
 
 }

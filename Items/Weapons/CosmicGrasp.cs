@@ -12,7 +12,7 @@ using Idglibrary;
 
 namespace SGAmod.Items.Weapons
 {
-	public class CosmicGrasp : ModItem
+	public class CosmicGrasp : ModItem, IHitScanItem
 	{
 		public override void SetStaticDefaults()
 		{

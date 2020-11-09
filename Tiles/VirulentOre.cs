@@ -27,7 +27,7 @@ namespace SGAmod.Tiles
 			mineResist = 5f;
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Virulent");
-			AddMapEntry(new Color(40, 160, 40), name);
+			AddMapEntry(Color.Lime, name);
 		}
 
 		/*public override void RandomUpdate(int i, int j)

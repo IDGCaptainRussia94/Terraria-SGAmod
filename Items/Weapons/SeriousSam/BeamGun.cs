@@ -51,7 +51,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 	}
 
 
-	public class BeamGun : SeriousSamWeapon
+	public class BeamGun : SeriousSamWeapon, IHitScanItem
 	{
 		public override void SetStaticDefaults()
 		{

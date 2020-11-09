@@ -155,7 +155,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.useAnimation = 30;
 			Item.staff[item.type] = true;
 			item.useStyle = 5;
-			item.knockBack = 0;
+			item.knockBack = 0.5f;
 			item.value = 25000;
 			item.rare = 3;
 			item.noMelee = true;

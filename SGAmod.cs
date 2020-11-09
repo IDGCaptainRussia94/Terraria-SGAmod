@@ -52,6 +52,8 @@ using Terraria.GameContent.Achievements;
 using Terraria.GameInput;
 using SGAmod.Items.Weapons.SeriousSam;
 using SGAmod.Items.Placeable;
+using Terraria.GameContent.Events;
+using Terraria.GameContent.UI.Elements;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -134,12 +136,46 @@ namespace SGAmod
 		public static float fogAlpha = 1f;
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
 
-		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
+		//Some Reflection Stuff, this first method swap came from scalie because lets be honest, who else is gonna figure this stuff out? Vanilla is a can of worms and BS at times. Credit due to him
+		private readonly FieldInfo _playerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
+		private readonly FieldInfo _player = typeof(UICharacter).GetField("_player", BindingFlags.NonPublic | BindingFlags.Instance);
+
+		private void Menu_UICharacterListItem(On.Terraria.GameContent.UI.Elements.UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
 		{
-			base.ModifyTransformMatrix(ref Transform);
+			orig(self, spriteBatch);
+			Vector2 origin = new Vector2(self.GetDimensions().X, self.GetDimensions().Y);
+
+			//hooray double reflection, fuck you vanilla-Scalie
+			//I couldn't agree more-IDG
+			UICharacter character = (UICharacter)_playerPanel.GetValue(self);
+
+			Player player = (Player)_player.GetValue(character);
+			SGAPlayer sgaPly = player.SGAPly();
+
+			if (sgaPly == null) { return; }
+			if (sgaPly.nightmareplayer)
+            {
+				Color color1 = new Color(204, 130, 204);
+				Texture2D tex = Main.inventoryBack10Texture;
+				Color acolor = Color.Lerp(color1, Color.White, 0.5f);
+				Color color3 = Color.Lerp(color1, Color.Lerp(color1, Color.DarkMagenta, 0.33f), 0.50f + (float)Math.Sin(Main.GlobalTime * 2f) / 2f);
+				spriteBatch.Draw(tex, origin + new Vector2(440, 0), new Rectangle(0,0,16, 27), acolor, 0, Vector2.Zero,1f, SpriteEffects.None,0);
+				int i;
+				for (i = 16; i < 128+16; i += 16)
+				{
+					spriteBatch.Draw(tex, origin + new Vector2(440 + i, 0), new Rectangle(16, 0, 16, 27), acolor, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+				}
+				spriteBatch.Draw(tex, origin + new Vector2(440 + i, 0), new Rectangle(32, 0, 16, 27), acolor, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+				Utils.DrawBorderString(spriteBatch, "NIGHTMARE", origin + new Vector2(454, 5), color3);
+
+				//Hmmm color hearts
+				spriteBatch.Draw(SGAmod.Instance.GetTexture("GreyHeart"), origin + new Vector2(80, 37), color3*(0.50f+(float)Math.Cos(Main.GlobalTime * 2f)/2f));
+			}
+
 		}
 
-		private void Player_CheckDrowning(On.Terraria.Player.orig_CheckDrowning orig, Player self)
+
+			private void Player_CheckDrowning(On.Terraria.Player.orig_CheckDrowning orig, Player self)
 		{
 			// 'orig' is a delegate that lets you call back into the original method.
 			// 'self' is the 'this' parameter that would have been passed to the original method.
@@ -176,73 +212,6 @@ namespace SGAmod
 					orig(self);
 		}
 
-
-		private delegate bool FlyInWaterHackDelegate(bool stackbool,Player player);
-		private void FlyInWaterHack(ILContext il)
-		{
-			ILCursor c = new ILCursor(il);
-			MethodInfo HackTheMethod = typeof(Collision).GetMethod("WetCollision", BindingFlags.Public | BindingFlags.Static);
-			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
-			/*c.EmitDelegate<Action>(() =>
-			{
-				Main.NewText("This is test");
-			});*/
-
-			//c.Index -= 1;
-
-			//Previously I would delete the instruction and replace it with a bool that had the 3 WetCollision values on the stack, but this, is alot simpler
-
-			FlyInWaterHackDelegate inWater = delegate (bool stackbool, Player player)
-			{
-				return stackbool || player.SGAPly().tidalCharm > 0;// Collision.WetCollision(pos, x, y);
-			};
-
-			c.Index += 1;
-			c.Emit(OpCodes.Ldarg_0);
-			c.EmitDelegate<FlyInWaterHackDelegate>(inWater);
-		}
-
-		private void CurserHack(ILContext il)
-		{
-			ILCursor c = new ILCursor(il);
-			MethodInfo HackTheMethod = typeof(PlayerInput).GetMethod("get_UsingGamepad", BindingFlags.Public | BindingFlags.Static);
-			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
-			c.RemoveRange(2);
-
-			HackTheMethod = typeof(LockOnHelper).GetMethod("SetActive", BindingFlags.NonPublic | BindingFlags.Static);
-			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
-			//c.Index -= 1;
-			c.Emit(OpCodes.Pop);
-			c.EmitDelegate<Func<bool>>(() =>
-			{
-				return PlayerInput.UsingGamepad || Main.LocalPlayer.SGAPly().gamePadAutoAim > 0;
-			});
-
-			c.TryGotoNext(i => i.MatchRet());
-			c.Remove();
-
-			var label = c.DefineLabel();
-
-			/*c.EmitDelegate<Func<bool>>(() =>
-			{
-				return true;
-			});*/
-
-			//c.Emit(OpCodes.Ldsfld, typeof(Main).GetField(nameof(Main.rand)));
-			//c.Emit(OpCodes.Ldc_I4_S, (sbyte)10); 			// Ldc_I4_S expects an int8, aka an sbyte. Failure to cast correctly will crash the game
-			//c.Emit(OpCodes.Call, typeof(Utils).GetMethod("NextBool", new Type[] { typeof(Terraria.Utilities.UnifiedRandom), typeof(int) }));
-
-			//End the code block if we can't normally use this, like before
-			c.EmitDelegate<Func<bool>>(() =>
-			{
-				return !PlayerInput.UsingGamepad && Main.LocalPlayer.SGAPly().gamePadAutoAim < 1;
-			});
-			c.Emit(OpCodes.Brfalse_S, label);
-			c.Emit(OpCodes.Ret);
-
-			c.MarkLabel(label);
-
-		}
 
 		private void Player_NinjaDodge(On.Terraria.Player.orig_NinjaDodge orig, Player self)
 		{
@@ -501,9 +470,14 @@ namespace SGAmod
 			On.Terraria.Player.CheckDrowning += Player_CheckDrowning;
 			On.Terraria.Main.DrawDust += Main_DrawAdditive;
 			On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
+			On.Terraria.GameContent.Events.DD2Event.SpawnMonsterFromGate += CrucibleArenaMaster.DD2PortalOverrides;
+			On.Terraria.GameContent.UI.Elements.UICharacterListItem.DrawSelf += Menu_UICharacterListItem;
 
-			IL.Terraria.Player.Update += FlyInWaterHack;
+			IL.Terraria.Player.Update += SwimInAirHack;
 			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
+			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
+			IL.Terraria.Player.CheckDrowning += BreathingHack;
+			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 
 			if (!Main.dedServ)
 			{
@@ -577,8 +551,12 @@ namespace SGAmod
 			SGAmod.EnchantmentFocusCrystal = null;
 			SubworldCache.UnloadCache();
 
+			IL.Terraria.Player.Update -= SwimInAirHack;
 			IL.Terraria.GameInput.LockOnHelper.Update -= CurserHack;
-			IL.Terraria.Player.Update -= FlyInWaterHack;
+			IL.Terraria.GameInput.LockOnHelper.SetUP -= CurserAimingHack;
+			IL.Terraria.Player.CheckDrowning -= BreathingHack;
+			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
+
 
 			if (!Main.dedServ)
 			{
@@ -598,22 +576,7 @@ namespace SGAmod
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("IceFairyDust"), 5);
-			recipe.AddIngredient(ItemID.IceBlock, 50);
-			recipe.AddTile(this.GetTile("ReverseEngineeringStation"));
-			recipe.SetResult(ItemID.IceMachine);
-			recipe.AddRecipe();
-
-			RecipeFinder finder = new RecipeFinder();
-			/*finder.SetResult(ItemID.Furnace);
-			foreach (Recipe recipe2 in finder.SearchRecipes())
-			{
-				RecipeEditor editor = new RecipeEditor(recipe2);
-				editor.AcceptRecipeGroup("SGAmod:BasicWraithShards");
-				editor.AddIngredient(SGAmod.Instance.ItemType("WraithFragment"),10);
-			}*/
-
+			RecipeFinder finder;
 			int[] stuff = { ItemID.MythrilAnvil, ItemID.OrichalcumAnvil };
 			for (int i = 0; i < 2; i += 1)
 			{
@@ -628,7 +591,25 @@ namespace SGAmod
 
 			int tileType = ModContent.TileType<Tiles.ReverseEngineeringStation>();
 
+			ModRecipe recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(this.ItemType("IceFairyDust"), 5);
+			recipe.AddIngredient(ItemID.IceBlock, 50);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.IceMachine);
+			recipe.AddRecipe();
+
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 6);
+			recipe.AddIngredient(ItemID.IceBlock, 20);
+			recipe.AddIngredient(ItemID.Snowball, 100);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.SnowballLauncher);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(null, "SharkTooth", 5);
 			recipe.AddIngredient(ItemID.Chain, 1);
 			recipe.AddTile(tileType);
@@ -636,6 +617,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(ItemID.CloudinaBottle, 1);
 			recipe.AddIngredient(ItemID.SandBlock, 50);
 			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
@@ -644,6 +626,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(ItemID.SilkRope, 30);
 			recipe.AddIngredient(ItemID.AncientCloth, 3);
 			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
@@ -652,6 +635,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(null,"DankCore", 2);
 			recipe.AddIngredient(null, "VirulentBar", 10);
 			recipe.AddIngredient(ItemID.Frog, 1);
@@ -660,14 +644,16 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ItemID.FlipperPotion, 4);
-			recipe.AddIngredient(ItemID.WaterBucket, 2);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ItemID.FlipperPotion, 2);
+			recipe.AddIngredient(ItemID.WaterBucket, 1);
 			recipe.AddIngredient(ItemID.RocketBoots, 1);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.Flipper);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(ItemID.Obsidian, 20);
 			recipe.AddIngredient(ItemID.Fireblossom, 3);
 			recipe.AddTile(tileType);
@@ -675,14 +661,16 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(ItemID.LavaBucket, 3);
 			recipe.AddIngredient(null,"FieryShard", 10);
-			recipe.AddIngredient(ItemID.Fireblossom, 1);
+			recipe.AddIngredient(ItemID.ObsidianRose, 1);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.LavaCharm);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(ItemID.CobaltBar, 10);
 			recipe.AddIngredient(ItemID.SoulofLight, 5);
 			recipe.AddTile(tileType);
@@ -690,6 +678,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(null, "Entrophite", 100);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 15);
 			recipe.AddIngredient(ItemID.SoulofNight, 10);
@@ -699,6 +688,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(ItemID.Gel, 100);
 			recipe.AddIngredient(null, "DankWood", 15);
 			recipe.AddTile(tileType);
@@ -706,6 +696,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(this.ItemType("AdvancedPlating"), 5);
 			recipe.AddRecipeGroup("SGAmod:IchorOrCursed", 5);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 5);
@@ -714,6 +705,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(ItemID.TatteredCloth, 5);
 			recipe.AddIngredient(ItemID.Aglet, 1);
 			recipe.AddIngredient(ItemID.WaterWalkingPotion, 3);
@@ -723,6 +715,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(ItemID.TurtleShell, 1);
 			recipe.AddIngredient(ItemID.FrostCore, 1);
 			recipe.AddIngredient(this.ItemType("CryostalBar"), 8);

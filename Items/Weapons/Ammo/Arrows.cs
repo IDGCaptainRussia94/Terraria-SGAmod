@@ -232,7 +232,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddIngredient(mod.ItemType("DankWood"), 15);
 			recipe.AddIngredient(mod.ItemType("DankCore"), 1);
 			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this, 50);
+			recipe.SetResult(this, 100);
 			recipe.AddRecipe();
 		}
 	}
@@ -241,7 +241,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lesser Prismic Arrow");
-			Tooltip.SetDefault("Fires Arrows from your 2nd and 3rd ammo slots while placed in your first, will consume both ammo types\nOtherwise, it fires a weak wooden arrow\nHas a 33% to not consume the fired ammo type");
+			Tooltip.SetDefault("Shots cycle through your 2nd and 3rd ammo slots while placed in your first\nDefaults to a weak wooden arrow\nHas a 33% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{
@@ -268,9 +268,9 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 1);
 			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 1);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 2);
-			recipe.AddIngredient(ItemID.WoodenArrow, 100);
+			recipe.AddIngredient(ItemID.WoodenArrow, 150);
 			recipe.AddTile(TileID.ImbuingStation);
-			recipe.SetResult(this, 100);
+			recipe.SetResult(this, 150);
 			recipe.AddRecipe();
 		}
 	}
@@ -280,7 +280,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Arrow");
-			Tooltip.SetDefault("Does greatly increased damage over it's precurser; fires Arrows from your 2nd, 3rd, and 4th ammo slots while placed in your first, will consume fired ammo types\nOtherwise, it fires a wooden arrow\nHas a 25% to not consume the fired ammo type");
+			Tooltip.SetDefault("Highly increased damage over its precursor\nCycles through your ammo slots; defaults to Wooden Arrows\nHas a 25% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{
@@ -293,7 +293,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.ranged = true;
 			item.maxStack = 999;
 			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
-			item.value = 10000;
+			item.value = 1000;
 			item.rare = 10;
 			item.shoot = ProjectileID.WoodenArrowFriendly;   //The projectile shoot when your weapon using this ammo
 			item.ammo = AmmoID.Arrow;
@@ -302,9 +302,9 @@ namespace SGAmod.Items.Weapons.Ammo
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 1);
-			recipe.AddIngredient(mod.ItemType("PrismicArrow"), 100);
+			recipe.AddIngredient(mod.ItemType("PrismicArrow"), 150);
 			recipe.AddTile(TileID.ImbuingStation);
-			recipe.SetResult(this, 100);
+			recipe.SetResult(this, 150);
 			recipe.AddRecipe();
 		}
 	}

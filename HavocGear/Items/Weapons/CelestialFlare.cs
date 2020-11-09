@@ -11,7 +11,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Celestial Flare");
-			Tooltip.SetDefault("Engulfs enemies in a devastating inferno");
+			Tooltip.SetDefault("Engulfs enemies in a devastating inferno\nSends an Explosion through the enemy on hit\nCounts as a True Melee sword");
 		}
 		
 		public override void SetDefaults()
@@ -21,7 +21,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.width = 44;
 			item.height = 52;
 			item.useTime = 30;
-			item.useAnimation = 8;
+			item.useAnimation = 10;
 			item.useStyle = 1;
 			item.knockBack = 10;
 			item.value = 1000000;
@@ -71,6 +71,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			target.AddBuff(BuffID.Daybreak, 600, true);
 			target.AddBuff(BuffID.OnFire, 600, true);
 		}
+			Projectile.NewProjectile(target.Center, Vector2.Normalize(target.Center - player.Center) * 12f, ProjectileID.SolarWhipSwordExplosion, (int)(damage*0.4), knockback/5f,player.whoAmI,0f, 0.85f + Main.rand.NextFloat() * 1.15f);
 	}
     }
 }

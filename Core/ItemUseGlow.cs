@@ -114,8 +114,8 @@ namespace SGAmod
 
 
                         DrawData value = new DrawData(texture,
-                            new Vector2((float)((int)(value2.X - Main.screenPosition.X)),
-                            (float)((int)(value2.Y - Main.screenPosition.Y))), new Rectangle?(new Rectangle(0, 0, texture.Width, texture.Height)),
+                            new Vector2((float)((int)(value2.X + (item.GetGlobalItem<ItemUseGlow>().glowOffsetX *drawPlayer.direction) - Main.screenPosition.X)),
+                            (float)((int)(value2.Y + (item.GetGlobalItem<ItemUseGlow>().glowOffsetY * drawPlayer.gravDir) - Main.screenPosition.Y))), new Rectangle?(new Rectangle(0, 0, texture.Width, texture.Height)),
                             glowcolor,
                             drawPlayer.itemRotation+ item.GetGlobalItem<ItemUseGlow>().angleAdd* drawPlayer.direction,
                              new Vector2(texture.Width * 0.5f - texture.Width * 0.5f * (float)drawPlayer.direction, drawPlayer.gravDir == -1 ? 0f : texture.Height),

@@ -46,17 +46,17 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 4);
-			recipe.AddIngredient(ItemID.VilePowder, 5);
+			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 1);
+			recipe.AddIngredient(ItemID.VilePowder, 1);
 			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this,5);
+			recipe.SetResult(this,2);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(mod);
-			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 4);
-			recipe.AddIngredient(ItemID.ViciousPowder, 5);
+			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 1);
+			recipe.AddIngredient(ItemID.ViciousPowder, 1);
 			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this, 5);
+			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
 		}
 

@@ -68,7 +68,7 @@ namespace SGAmod.Items.Consumable
 			recipe.AddIngredient(mod.ItemType("FieryShard"), 2);
 			recipe.AddIngredient(mod.ItemType("MurkyGel"), 5);
 			recipe.AddIngredient(ItemID.Bottle, 3);
-			recipe.AddIngredient(ItemID.Ichor, 3);
+			recipe.AddIngredient(ItemID.Ichor, 2);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this,3);
 			recipe.AddRecipe();

@@ -18,7 +18,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Luminary Wings");
-			Tooltip.SetDefault("A gift from the heavens for a worthy vessel, grants superior wingtime and speed!\nEffects of Demon Steppers, Cirno's Wings, and Prismal Booster (hide this accessory to disable Booster)\nYour movement speed is greatly increased and your max fall speed is doubled");
+			Tooltip.SetDefault("A gift from the heavens for a worthy vessel, grants superior wingtime and speed!\nEffects of Demon Steppers, (Most of) Cirno's Wings, and Prismal Booster\n(hide this accessory to disable Booster)\nYour movement speed is greatly increased and your max fall speed is doubled");
 		}
 
 		public override void SetDefaults()
@@ -46,7 +46,7 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			Lighting.AddLight(player.Center, Color.HotPink.ToVector3() * 2.5f * Main.essScale);
-			mod.GetItem("CirnoWings").UpdateAccessory(player, hideVisual);
+			(mod.GetItem("CirnoWings") as CirnoWings).UpdateAccessoryLocal(player, true,false);
 			if (!hideVisual)
 			player.GetModPlayer<SGAPlayer>().SpaceDiverWings += 1.5f;
 			int y_bottom_edge = (int)(player.position.Y + (float)player.height + 16f) / 16;

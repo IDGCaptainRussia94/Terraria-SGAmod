@@ -17,6 +17,7 @@ namespace SGAmod.HavocGear.Projectiles
 			DisplayName.SetDefault("Jaws");
 			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 240f;
 			ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 15f;
+			ProjectileID.Sets.YoyosLifeTimeMultiplier[projectile.type] = 3f;
 		}
        
 	    public override void SetDefaults()
@@ -60,10 +61,12 @@ namespace SGAmod.HavocGear.Projectiles
 				if (spinners[k] == -6)
 				{
 					spinners[k] = 1;
-					int newb = Projectile.NewProjectile(projectile.Center, new Vector2(0f, 0f), ModContent.ProjectileType<SnappyTooth>(), (int)(projectile.damage * 0.75), projectile.knockBack, Main.myPlayer, 0f, (float)Main.player[projectile.owner].whoAmI);
+					int newb = Projectile.NewProjectile(projectile.Center, new Vector2(0f, 0f), ModContent.ProjectileType<SnappyTooth>(), (int)(projectile.damage * 1f), projectile.knockBack, Main.myPlayer, 0f, (float)Main.player[projectile.owner].whoAmI);
 					Main.projectile[newb].penetrate = 4;
 					Main.projectile[newb].ranged = false;
 					Main.projectile[newb].melee = true;
+					Main.projectile[newb].usesIDStaticNPCImmunity = true;
+					Main.projectile[newb].idStaticNPCHitCooldown = 10;
 					Main.projectile[newb].netUpdate = true;
 					orbitors[k] = Main.projectile[newb];
 					projectile.netUpdate = true;

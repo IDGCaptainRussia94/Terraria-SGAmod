@@ -23,6 +23,7 @@ namespace SGAmod.NPCs.Sharkvern
         public Vector2 Summoncenter=new Vector2(0,0);
         public List<int> averagey;
         public int timer = 0;
+        public int timer2 = 0;
         public bool ramwater = true;
 
 
@@ -35,11 +36,11 @@ namespace SGAmod.NPCs.Sharkvern
         public override void SetDefaults()
         {
             npc.lifeMax = 50000;        
-            npc.damage = 80;    
-            npc.defense = 10;        
+            npc.damage = 75;    
+            npc.defense = 12;        
             npc.knockBackResist = 0f;
             npc.width = 52; 
-            npc.height = 66; 
+            npc.height = 52; 
             npc.boss = true;
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Shark");
             npc.lavaImmune = true;      
@@ -58,6 +59,11 @@ namespace SGAmod.NPCs.Sharkvern
         public override void BossLoot(ref string name, ref int potionType)
         {
         potionType=ItemID.GreaterHealingPotion;
+        }
+
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+            return !npc.dontTakeDamage;
         }
 
         public override void NPCLoot()
@@ -131,10 +137,49 @@ namespace SGAmod.NPCs.Sharkvern
             npc.damage = (int)(npc.damage * 0.6f);
         }
 
+        public void DoStormThings(Player player)
+        {
+            if (!Main.expertMode)
+                return;
+            //Main.player[npc.target]
+
+            Main.raining = true;
+            if (player!=null)
+            Main.windSpeed = MathHelper.Clamp(Main.windSpeed + Math.Sign((player.Center.X - npc.Center.X)) * (-0.002f / 3f), -0.4f, 0.4f);
+            if (npc.life > (int)npc.lifeMax * 0.85f || rage < 150) 
+            {
+                Main.maxRaining = Math.Min(Main.maxRaining + 0.01f, 0.02f+ MathHelper.Clamp(rage/250f,0,0.8f));
+            }
+            else 
+            {
+                if (Main.maxRaining > 0.3f)
+                {
+                    for (int k = 0; k < Main.maxPlayers; k++)
+                    {
+                        Player player2 = Main.player[k];
+                        if (player2 != null)
+                        {
+                            if (player2.active && !player2.dead)
+                            {
+                                if (Collision.CanHit(player.Center, 1, 1, player.Center - new Vector2(0, 400), 1, 1))
+                                    player2.AddBuff(ModContent.BuffType<SharkvernDrown>(), (int)(rage / 4f), true);
+                            }
+                        }
+                    }
+                }
+                Main.maxRaining = Math.Min(Main.maxRaining + 0.075f, 0.02f + MathHelper.Clamp(rage / 250f,0,0.75f));
+            }
+            Main.rainTime = 12;
+            Main.UseStormEffects = true;
+
+        }
+
         public override bool PreAI()
         {
             if (averagey == null)
                 averagey = new List<int>();
+
+            npc.Opacity = MathHelper.Clamp(npc.Opacity + (npc.dontTakeDamage ? -0.01f : 0.02f), 0.2f, 1f);
 
             if (Main.netMode != 1)
             {
@@ -195,7 +240,7 @@ namespace SGAmod.NPCs.Sharkvern
             {
                 for (int j = minTilePosY - 5; j < maxTilePosY + 10; ++j)
                 {
-                    if (Main.tile[i, j] != null)
+                    if (WorldGen.InWorld(i,j) && Main.tile[i, j] != null)
                     {
                         if ((int)Main.tile[i, j].liquid > 64)
                         {
@@ -204,6 +249,7 @@ namespace SGAmod.NPCs.Sharkvern
                     }
                 }
             }
+
 
             if (ramwater == false)
             {
@@ -240,7 +286,8 @@ namespace SGAmod.NPCs.Sharkvern
             {
                 for (int j = minTilePosY; j < maxTilePosY; ++j)
                 {
-                    if (Main.tile[i, j] != null && (Main.tile[i, j].nactive() && (Main.tileSolid[(int)Main.tile[i, j].type] || Main.tileSolidTop[(int)Main.tile[i, j].type] && (int)Main.tile[i, j].frameY == 0) || (int)Main.tile[i, j].liquid > 64))
+                    //Main.tileSolidTop[(int)Main.tile[i, j].type]
+                    if (Main.tile[i, j] != null && (Main.tile[i, j].nactive() && (Main.tileSolid[(int)Main.tile[i, j].type] && (int)Main.tile[i, j].frameY == 0) || (int)Main.tile[i, j].liquid > 64))
                     {
                         Vector2 vector2;
                         vector2.X = (float)(i * 16);
@@ -287,23 +334,48 @@ namespace SGAmod.NPCs.Sharkvern
             float targetXPos = Main.player[npc.target].position.X + (Main.player[npc.target].width / 2);
             float targetYPos = Main.player[npc.target].position.Y + (Main.player[npc.target].height / 2);
 
+            DoStormThings(Main.player[npc.target]);
+
             timer += 1;
+            timer2 += 1;
 
+            npc.dontTakeDamage = false;
 
-            if (timer % 1000 > 700)
+            if (!(npc.ai[3] < 1000 && npc.ai[3] > -1) && npc.life < npc.lifeMax / 2 && (NPC.CountNPCS(NPCID.WyvernHead)>0 || (timer2%3000>2000 && timer2%3000<3000)))
             {
-                collision = true;
                 targetYPos -= 800;
-                if (timer % 1000 == 849)
+                if (timer2 % 3000 > 2300 && timer2 % 3000 < 2900)
                 {
-                    ramwater = false;
-                    npc.netUpdate = true;
+                    NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCID.WyvernHead);
                 }
-                if (timer % 1000 > 850)
+                if (NPC.CountNPCS(NPCID.WyvernHead) > 0)
+                    timer2 = 2900;
+                else
+                    targetYPos -= 1600;
+
+                npc.dontTakeDamage = true;
+            }
+            else
+            {
+
+                if (timer % 1000 > 700)
                 {
-                    targetYPos += 4800;
+                    collision = true;
+                    targetYPos -= 800;
+                    if (timer % 1000 == 849)
+                    {
+                        ramwater = false;
+                        npc.netUpdate = true;
+                    }
+                    if (timer % 1000 > 850)
+                    {
+                        targetYPos += 4800;
+                    }
                 }
             }
+
+            if (npc.dontTakeDamage)
+                SharkvernBody.DoDust(npc);
 
             if (npc.ai[3] > 0)
             {
@@ -478,11 +550,11 @@ namespace SGAmod.NPCs.Sharkvern
             rage = rage + (length < 2000 && npc.ai[3] < 1 ? 1 : 0);
             if (touchwater == true)
             {
-                rage = Math.Max(-150, rage - 5);
+                rage = Math.Max(-250, rage - 5);
                 if (Main.expertMode)
                     rage = ((int)Math.Max(((1f - ((float)npc.life / (float)npc.lifeMax)) * 350f) - 150f, rage - 4));
             }
-            npc.damage = Math.Min(npc.defDamage, Math.Max(180, (int)rage / 2));
+            npc.damage = Math.Max(npc.defDamage, Math.Min(120, (int)rage / 4));
             sergedout = sergedout - 1;
             bool anyalive = false;
 
@@ -559,29 +631,31 @@ namespace SGAmod.NPCs.Sharkvern
                 }
 
                 if (npc.ai[3] > 999)
-                    npc.ai[3] = -500;
+                    npc.ai[3] = -1000;
             }
 
 
             if (rage == 700 && Main.netMode != 1)
                 Idglib.Chat("The Sharkvern beckens you to return it to the sea!", 50, 50, 255);
+
             for (int k = 0; k < Main.maxPlayers; k++)
             {
                 Player player = Main.player[k];
                 if (player != null)
                 {
-                    if (player.active && !player.dead)
+                    if (player.active && !player.dead && player.Distance(npc.Center)<5000)
                     {
                         anyalive = true;
-                        if (rage > 700)
-                            player.AddBuff(BuffID.PotionSickness, 30, true);
                     }
                 }
             }
+
             if (anyalive == false)
             {
-                npc.life = 0;
-                npc.active = false;
+                npc.velocity.Y += 1;
+                npc.timeLeft = Math.Min(npc.timeLeft,200);
+                //npc.life = 0;
+                //npc.active = false;
             }
 
             return false;
@@ -590,16 +664,16 @@ namespace SGAmod.NPCs.Sharkvern
         public override void OnHitPlayer(Player player, int damage, bool crit)
         {
                 if (rage>200)
-                player.AddBuff(BuffID.Bleeding, rage, true);
+                player.AddBuff(BuffID.Bleeding, Math.Min(rage, 500), true);
                 if (rage>300)
-                player.AddBuff(mod.BuffType("MassiveBleeding"), rage, true);         
+                player.AddBuff(mod.BuffType("MassiveBleeding"), Math.Min(rage,300), true);         
             }
        
        public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
         {
             Texture2D texture = Main.npcTexture[npc.type];
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-            Main.spriteBatch.Draw(texture, npc.Center - Main.screenPosition, new Rectangle?(), drawColor, npc.rotation, origin, npc.scale, npc.velocity.X>0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(texture, npc.Center - Main.screenPosition, new Rectangle?(), drawColor*npc.Opacity, npc.rotation, origin, npc.scale, npc.velocity.X>0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             return false;
         }
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
@@ -636,7 +710,7 @@ namespace SGAmod.NPCs.Sharkvern
         npc.damage=50;
         npc.noGravity = true; 
         npc.knockBackResist = 0.9f;
-        npc.lifeMax = 1500;
+        npc.lifeMax = 800;
         }
 
         public override void FindFrame(int frameHeight)
@@ -668,7 +742,7 @@ namespace SGAmod.NPCs.Sharkvern
             npc.velocity+=mix*2f;
             }else{
             if (npc.ai[3]%600==0 && Main.expertMode){
-            List<Projectile> itz=Idglib.Shattershots(npc.Center,Main.player[npc.target].Center,new Vector2(0,0),ProjectileID.SapphireBolt,50,8f,1,1,true,0,true,300);
+            //List<Projectile> itz=Idglib.Shattershots(npc.Center,Main.player[npc.target].Center,new Vector2(0,0),ProjectileID.SapphireBolt,50,8f,1,1,true,0,true,300);
             }
             npc.noTileCollide=false;
             }
@@ -756,6 +830,31 @@ namespace SGAmod.NPCs.Sharkvern
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             target.AddBuff(BuffID.Wet, 60 * 5);
+        }
+
+    }
+
+    public class SharkvernDrown : ModBuff
+    {
+        public override void SetDefaults()
+        {
+            DisplayName.SetDefault("Drowning Presence");
+            Description.SetDefault("You litterally cannot breath!");
+            Main.debuff[Type] = true;
+            Main.pvpBuff[Type] = true;
+            Main.buffNoSave[Type] = true;
+            longerExpertDebuff = true;
+        }
+
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "Terraria/Bubble";
+            return true;
+        }
+
+        public override void Update(Player player, ref int buffIndex)
+        {
+            player.GetModPlayer<SGAPlayer>().permaDrown = true;
         }
 
     }

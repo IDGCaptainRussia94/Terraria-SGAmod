@@ -22,7 +22,7 @@ namespace SGAmod.NPCs.Sharkvern
         {
             npc.width = 52;     
             npc.height = 66;    
-            npc.damage = 45;
+            npc.damage = 25;
             npc.defense = 5;
             npc.lifeMax = 27000;
             npc.knockBackResist = 0.0f;
@@ -49,9 +49,28 @@ namespace SGAmod.NPCs.Sharkvern
         {
             return !Main.npc[(int)npc.ai[3]].active;
         }
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+            return !npc.dontTakeDamage;
+        }
+
+        public static void DoDust(NPC npc)
+        {
+            float devider = Main.rand.NextFloat(0,1f);
+            float angle = MathHelper.TwoPi * devider;
+            Vector2 thecenter = new Vector2((float)((Math.Cos(angle) * 80)), (float)((Math.Sin(angle) * 80)));
+            thecenter = thecenter.RotatedByRandom(MathHelper.ToRadians(20));
+            int DustID2 = Dust.NewDust(npc.Center + (thecenter * 2.5f), 0, 0, SGAmod.Instance.DustType("TornadoDust"), thecenter.X * 0.8f, thecenter.X * 0.8f, 255-(int)(npc.Opacity*255f), default(Color), 1.5f);
+            Main.dust[DustID2].noGravity = true;
+            Main.dust[DustID2].velocity = new Vector2(thecenter.X * 0.2f, thecenter.Y * 0.2f) * -1f;
+
+        }
 
         public override bool PreAI()
         {
+
+            npc.Opacity = MathHelper.Clamp(npc.Opacity + (npc.dontTakeDamage ? -0.01f : 0.02f), 0.2f, 1f);
+
             if (npc.ai[3] > 0)
                 npc.realLife = (int)npc.ai[3];
             if (npc.target < 0 || npc.target == byte.MaxValue || Main.player[npc.target].dead)
@@ -70,6 +89,10 @@ namespace SGAmod.NPCs.Sharkvern
                     npc.active = false;
                 }
             }
+
+            npc.dontTakeDamage = Main.npc[(int)npc.ai[1]].dontTakeDamage;
+            if (npc.dontTakeDamage)
+                DoDust(npc);
 
             if (npc.ai[1] < (double)Main.npc.Length)
             {
@@ -95,7 +118,7 @@ namespace SGAmod.NPCs.Sharkvern
         {
             Texture2D texture = Main.npcTexture[npc.type];
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-            Main.spriteBatch.Draw(texture, npc.Center - Main.screenPosition, new Rectangle?(), drawColor, npc.rotation, origin, npc.scale,localdist.X>0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(texture, npc.Center - Main.screenPosition, new Rectangle?(), drawColor*npc.Opacity, npc.rotation, origin, npc.scale,localdist.X>0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             return false;
         }
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)

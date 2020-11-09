@@ -264,7 +264,7 @@ return false;
 
 
 
-
+	[AutoloadBossHead]
 	public class LuminiteWraith : ModNPC, ISGABoss
 	{
 		public string Trophy() => "LuminiteWraithTrophy";
@@ -387,6 +387,8 @@ writer.Write((short)warninglevel);
 		{
 			get { return("SGAmod/NPCs/TPD");}
 		}
+
+		public override string BossHeadTexture => "Terraria/Projectile_538";
 
 		public override bool CheckDead()
 		{

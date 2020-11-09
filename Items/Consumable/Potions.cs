@@ -6,10 +6,87 @@ using Microsoft.Xna.Framework;
 using SGAmod.Generation;
 using SGAmod;
 using Idglibrary;
+using SGAmod.HavocGear.Items;
 //using SubworldLibrary;
 
 namespace SGAmod.Items.Consumable
 {
+	public class ToxicityPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Toxicity Potion");
+			Tooltip.SetDefault("'60 IQ dialog of swearing intensifies'\nNearby enemies who are Stinky may infect other enemies when near you\nWhile you are Stinky and take damage, you spit out random swear words\nThis can rarely happen when you damage a Stinky enemy\nThese do area damage to ALL nearby NPCs\nThis is boosted by Thorns and if they are also Stinky\nFurthermore you also gain reduced aggro\nAll Town NPCs sell [i: " + ItemID.StinkPotion + "] to you while under this effect\n" + Idglib.ColorText(Color.Red, "Grants immunity to Intimacy and Lovestruct")+"\n"+Idglib.ColorText(Color.Red, "NPCs become unhappy taking to you and charge more money"));
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.LightRed;
+			item.value = 5000;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = SGAmod.Instance.BuffType("ToxicityPotionBuff");
+			item.buffTime = 60 * 600;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.StinkPotion, 1);
+			recipe.AddIngredient(ItemID.ThornsPotion, 1);
+			recipe.AddIngredient(ItemID.ShadowScale, 8);
+			recipe.AddIngredient(ItemID.VilePowder, 5);
+			recipe.AddIngredient(ModContent.ItemType<MurkyGel>(), 6);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this, 3);
+			recipe.AddRecipe();
+		}
+	}
+	public class IntimacyPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Intimacy Potion");
+			Tooltip.SetDefault("'Their hearts will be yours!'\nNearby enemies who are Lovestruct will lose health over time based on your Life Regen\nTown NPCs who are Lovestruct have reduced prices\nWhile you are Lovestruct all hearts heal 10 more health and draw more aggro\nNearby players who are Lovestruct gain 20% of your life regen to their own\nAll Town NPCs sell [i: " + ItemID.LovePotion + "] to you while under this effect\n" + Idglib.ColorText(Color.Red, "Grants immunity to Toxicity and Stinky"));
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.LightRed;
+			item.value = 5000;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = SGAmod.Instance.BuffType("IntimacyPotionBuff");
+			item.buffTime = 60 * 600;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LovePotion, 1);
+			recipe.AddIngredient(ItemID.HeartreachPotion, 1);
+			recipe.AddIngredient(ItemID.WarmthPotion, 1);
+			recipe.AddIngredient(ItemID.TissueSample, 4);
+			recipe.AddIngredient(ItemID.LifeCrystal, 1);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this, 3);
+			recipe.AddRecipe();
+		}
+	}	
 	public class TriggerFingerPotion : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -231,7 +308,7 @@ namespace SGAmod.Items.Consumable
 			recipe.AddIngredient(ItemID.RestorationPotion,2);
 			recipe.AddIngredient(ItemID.StrangeBrew);
 			recipe.AddIngredient(null, "ManaBattery", 1);
-			recipe.AddIngredient(ItemID.ChlorophyteOre,5);
+			recipe.AddIngredient(ItemID.ChlorophyteOre,4);
 			recipe.AddTile(TileID.AlchemyTable);
 			recipe.SetResult(this, 2);
 			recipe.AddRecipe();

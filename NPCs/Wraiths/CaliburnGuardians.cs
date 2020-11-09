@@ -13,7 +13,7 @@ using Idglibrary;
 
 namespace SGAmod.NPCs.Wraiths
 {
-
+	[AutoloadBossHead]
 	public class CaliburnGuardianHardmode : CaliburnGuardian, ISGABoss
 	{
 		public override void SetStaticDefaults()
@@ -41,7 +41,11 @@ namespace SGAmod.NPCs.Wraiths
 
 	}
 
-		public class CaliburnGuardian : ModNPC, ISGABoss
+
+
+
+	[AutoloadBossHead]
+	public class CaliburnGuardian : ModNPC, ISGABoss
 	{
 		public string Trophy() => "Caliburn"+ names[(int)npc.ai[2]] +"Trophy";
 		public bool Chance() => true;
@@ -123,6 +127,8 @@ namespace SGAmod.NPCs.Wraiths
 		{
 			get { return "SGAmod/Items/Weapons/Caliburn/CaliburnTypeA"; }
 		}
+
+		public override string BossHeadTexture => "Terraria/UI/PVP_2";
 		public CaliburnGuardian()
 		{
 			nohit = 60;
@@ -141,6 +147,7 @@ namespace SGAmod.NPCs.Wraiths
 			npc.value = 15000f;
 			npc.knockBackResist = 0.85f;
 			npc.aiStyle = -1;
+			music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Swamp_Remix");
 			aiType = -1;
 			animationType = 0;
 			npc.noTileCollide = true;

@@ -138,7 +138,7 @@ namespace SGAmod
 			}
 			if (chance > -1 && npc != null)
 			{
-				if (Main.rand.Next(0, 0) < moddedplayer.apocalypticalChance[chance] && crit)
+				if (Main.rand.Next(0, 100) < moddedplayer.apocalypticalChance[chance] && crit)
 				{
 					if (moddedplayer.HoE && projectile != null)
 					{
@@ -345,7 +345,7 @@ namespace SGAmod
 				{
 					if (moddedplayer.CirnoWings == true && projectile.coldDamage)
 					{
-						damage = (int)((double)damage * 1.20);
+						damage = (int)((float)damage * 1.20f);
 					}
 				}
 
@@ -476,10 +476,15 @@ namespace SGAmod
 				{
 					npc.AddBuff(189, 1 * 30);
 				}
-				if (moddedplayer.CirnoWings == true && projectile.owner == player.whoAmI)
+				if ((moddedplayer.CirnoWings) && projectile.owner == player.whoAmI)
 				{
-					if (isproj && projectile.magic == true)
-						npc.AddBuff(BuffID.Frostburn, 5 * 60);
+					if (isproj && (projectile.magic == true && Main.rand.Next(0,20)==0) || projectile.coldDamage)
+						npc.AddBuff(BuffID.Frostburn, 4 * 60);
+				}
+				if ((moddedplayer.glacialStone) && projectile.owner == player.whoAmI && projectile.melee)
+				{
+					if (isproj && projectile.melee == true)
+						npc.AddBuff(BuffID.Frostburn, Main.rand.Next(1,6) * 60);
 				}
 			}
 
@@ -550,6 +555,16 @@ namespace SGAmod
 				}
 
 			}
+
+			if (player != null && player.SGAPly().toxicity>0 && npc.HasBuff(BuffID.Stinky))
+            {
+				if (Main.rand.Next(0,50) == 0)
+				SGAPlayer.SwearExplosion(npc.Center,player,(int)(damage*0.5f));
+
+
+			}
+
+
 
 		}
 

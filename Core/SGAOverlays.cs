@@ -469,11 +469,15 @@ namespace SGAmod
 
 								perc = Math.Min(1f, (float)modply.CooldownStacks[q].timeleft / 30f);
 								float percprev = 0f;
+								Color colormode = Color.White;
+								if (modply.MaxCooldownStacks <= q)
+									colormode = Color.Lerp(Color.White,Color.Red,0.50f);
+
 								if (q - 1 >= 0)
 									percprev = Math.Min(1f, (float)modply.CooldownStacks[q - 1].timeleft / 30f);
 								float percent = (float)modply.CooldownStacks[q].timeleft / (float)modply.CooldownStacks[q].maxtime;
 								spriteBatch.Draw(texture, new Vector2(drawX - ((((maxx - 1) * (int)(texture.Width * 0.5)) / 2) / 2f) + (xoffset * percprev), drawY), null, Color.Lerp(Color.Black, Color.DarkGray, 0.25f) * MathHelper.Clamp((float)modply.CooldownStacks[q].timerup / 30f, 0f, perc), 0f, new Vector2(texture.Width / 2, texture.Height / 2), 0.5f, SpriteEffects.None, 0);
-								spriteBatch.Draw(texture, new Vector2(drawX - ((((maxx - 1) * (int)(texture.Width * 0.5)) / 2) / 2f) + (xoffset * percprev), drawY), new Rectangle(0, 0, texture.Width, (int)((float)texture.Height * percent)), Color.White * MathHelper.Clamp((float)modply.CooldownStacks[q].timerup / 30f, 0f, perc), 0f, new Vector2(texture.Width / 2, texture.Height / 2), 0.5f, SpriteEffects.None, 0);
+								spriteBatch.Draw(texture, new Vector2(drawX - ((((maxx - 1) * (int)(texture.Width * 0.5)) / 2) / 2f) + (xoffset * percprev), drawY), new Rectangle(0, 0, texture.Width, (int)((float)texture.Height * percent)), colormode * MathHelper.Clamp((float)modply.CooldownStacks[q].timerup / 30f, 0f, perc), 0f, new Vector2(texture.Width / 2, texture.Height / 2), 0.5f, SpriteEffects.None, 0);
 							}
 						}
 					}

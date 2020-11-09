@@ -1,3 +1,4 @@
+using Idglibrary;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -13,7 +14,8 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cirno's Wings");
-			Tooltip.SetDefault("Low Flight time, but very high mobility\nGain Immunity to Chilled, Frozen, and Frostburn\nTake 20% less damage from cold sources, as well as deal 20% increased cold projectile damage\nMagic attacks inflict Frostburn\nInDev Ice Fairy <3");
+			Tooltip.SetDefault("Low Flight time, but very high mobility\nGain Immunity to Chilled, Frozen, Frostburn, and Snowfrosted\nTake 20% less damage from cold sources and deal 20% increased cold projectile damage\nCold Damage projectiles inflict Frostburn\nMagic attacks rarely inflict Frostburn" +
+				"\nYou gain wing time in the snow biome, "+ Idglib.ColorText(Color.Red, "But halved in the Desert, Jungle, and Underworld due to heat") + "\nInDev Ice Fairy <3");
 		}
 
 		public override void SetDefaults()
@@ -35,12 +37,22 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			frameCounter++;
-			player.wingTimeMax = 50;
-			player.GetModPlayer<SGAPlayer>().CirnoWings=true;
-			if(!hideVisual)
-			{
+			UpdateAccessoryLocal(player, hideVisual);
+		}
 
+		public void UpdateAccessoryLocal(Player player, bool hideVisual,bool doBiomeThings=true)
+		{
+			frameCounter++;
+			player.wingTimeMax = player.ZoneSnow ? 100 : 50;
+			player.GetModPlayer<SGAPlayer>().CirnoWings = true;
+
+			if (doBiomeThings)
+			{
+				if (player.ZoneDesert || player.ZoneJungle || player.ZoneUnderworldHeight)
+				{
+					if (player.wingTime > 3)
+						player.wingTime -= 1;
+				}
 			}
 		}
 

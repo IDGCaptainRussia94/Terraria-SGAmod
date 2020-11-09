@@ -149,6 +149,8 @@ namespace SGAmod.Items.Weapons
 			if (type!=ProjectileID.Beenade)
 			damage += (int)((float)basetype2.damage * player.Throwing().thrownDamage);
 
+			damage += (int)(basetype2.type == ItemID.MolotovCocktail || basetype2.type == ItemID.AleThrowingGlove || basetype2.type == ItemID.Bone || basetype2.type == ItemID.SpikyBall ? damage * 2f : 0);
+
 
 			if (TrapDamageItems.SavingChanceMethod(player,true))
 			player.ConsumeItem(basetype);
@@ -182,7 +184,7 @@ namespace SGAmod.Items.Weapons
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Silk, 5);
 			recipe.AddIngredient(ItemID.BeeWax, 4);
-			recipe.AddIngredient(ItemID.Leather, 6);
+			recipe.AddIngredient(ItemID.TatteredCloth, 2);
 			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 4);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
@@ -199,14 +201,14 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Rioter's Glove");
-			Tooltip.SetDefault("Throws hand grenades further, and increases their damage\nUpgraded to now throw Ale, Molotovs, Spiky balls, and Bones!\n" + disc);
+			Tooltip.SetDefault("Throws hand grenades further, and increases their damage\nUpgraded to now throw Ale, Molotovs, Spiky balls, and Bones! And iamproving their damage\n" + disc);
 		}
 
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
 			item.useStyle = 1;
-			item.damage = 5;
+			item.damage = 6;
 			item.shoot = ModContent.ProjectileType<GrenadeNotAHook2>();
 			item.shootSpeed = 5.5f;
 			item.value = Item.buyPrice(0, 2, 50, 0);
@@ -227,6 +229,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ItemID.BoneGlove, 1);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 12);
 			recipe.AddTile(TileID.WorkBenches);
+			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
@@ -404,6 +407,8 @@ namespace SGAmod.Items.Weapons
 			int type = ThrowerGlove.FindProjectile(basetype2.shoot, basetype);
 			basespeed *= (basetype2.shootSpeed + speedbase);
 			int damage = (int)(basetype2.damage * player.Throwing().thrownDamage);
+
+			damage += (int)(basetype2.type == ItemID.MolotovCocktail || basetype2.type == ItemID.AleThrowingGlove || basetype2.type == ItemID.Bone || basetype2.type == ItemID.SpikyBall ? damage * 1.5f : 0);
 
 			int proj=Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, basespeed.X, basespeed.Y, type, damage, basetype2.knockBack, player.whoAmI);
 			Main.projectile[proj].friendly = true;
@@ -590,7 +595,7 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 1;
 			item.Throwing().thrown = true;
 			item.thrown = false;
-			item.damage = 65;
+			item.damage = 60;
 			item.shootSpeed = 3f;
 			item.shoot = mod.ProjectileType("AcidGrenadeProj");
 			item.value = Item.buyPrice(0, 0, 2, 0);
@@ -691,7 +696,7 @@ namespace SGAmod.Items.Weapons
 				Main.dust[dust].velocity = (projectile.velocity * (float)(Main.rand.Next(10, 20) * 0.01f)) + (randomcircle * randomfloat);
 			}
 
-			int theproj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("Explosion"), (int)((double)projectile.damage * 1f), projectile.knockBack, projectile.owner, 0f, 0f);
+			int theproj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("Explosion"), (int)((double)projectile.damage * 1.5f), projectile.knockBack, projectile.owner, 0f, 0f);
 			Main.projectile[theproj].Throwing().thrown = projectile.magic;
 			IdgProjectile.AddOnHitBuff(theproj, mod.BuffType("AcidBurn"), 120);
 
@@ -1029,7 +1034,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			for (int i = 0; i < 4; i += 1)
+			for (int i = 0; i < 5; i += 1)
 			{
 				player.ConsumeItem(mod.ItemType(GetType().Name));
 			}
@@ -1054,10 +1059,10 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Snowball, 100);
+			recipe.AddIngredient(ItemID.Snowball, 150);
 			recipe.AddIngredient(mod.ItemType("Jarate"), 1);
 			recipe.AddTile(TileID.Bottles);
-			recipe.SetResult(this, 100);
+			recipe.SetResult(this, 150);
 			recipe.AddRecipe();
 
 		}
@@ -1095,6 +1100,7 @@ namespace SGAmod.Items.Weapons
 			projectile.CloneDefaults(ProjectileID.SnowBallFriendly);
 			projectile.Throwing().thrown = true;
 			projectile.ranged = false;
+			projectile.magic = false;
 			projectile.tileCollide = true;
 			projectile.friendly = true;
 			projectile.hostile = false;
@@ -1301,7 +1307,7 @@ namespace SGAmod.Items.Weapons
 					Main.dust[dust2].noGravity = false;
 					Main.dust[dust2].velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-12f, 1f));
 				}
-				for (float xx = 5f; xx < 20f; xx += projectile.knockBack>1 ? 1f : 1.75f)
+				for (float xx = 5f; xx < 20f; xx += projectile.knockBack>1 ? 0.85f : 1.75f)
 				{
 					int proj2 = Projectile.NewProjectile(projectile.Center, new Vector2(Main.rand.NextFloat(-5f, 5f), -Main.rand.NextFloat(0, xx)), mod.ProjectileType("SharkFoodProj2"), projectile.damage, 0f,projectile.owner,255);
 					Main.projectile[proj2].friendly = false;
@@ -1426,7 +1432,7 @@ namespace SGAmod.Items.Weapons
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 
-			Texture2D tex = Main.npcTexture[NPCID.Shark];
+			Texture2D tex = Main.npcTexture[ModContent.NPCType<SharvernMinion>()];
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
 			Color color = projectile.GetAlpha(lightColor) * 1f; //* ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
@@ -1508,6 +1514,57 @@ namespace SGAmod.Items.Weapons
 			Main.dust[dust].noGravity = false;
 			Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(60, 100) * 0.01f);
 			projectile.timeLeft -= 1;
+		}
+
+	}
+	class RockProj : ModProjectile
+	{
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Rock");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Grenade);
+			projectile.Throwing().thrown = true;
+			projectile.timeLeft = 300;
+			projectile.aiStyle = -1;
+			projectile.width = 6;
+			projectile.height = 6;
+			projectile.penetrate = 1;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Projectiles/RockProj"); }
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			projectile.Kill();
+			return false;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			for (int i = 0; i < 8; i += 1)
+			{
+				int dust = Dust.NewDust(new Vector2(projectile.Center.X - 4, projectile.Center.Y - 4), 8, 8, 1);
+				Main.dust[dust].scale = 0.75f;
+				Main.dust[dust].noGravity = false;
+				Main.dust[dust].velocity = Main.rand.NextVector2Circular(2f, 2f);
+			}
+			Main.PlaySound(SoundID.Tink, (int)projectile.Center.X, (int)projectile.Center.Y).Pitch -= 0.525f;
+			return true;
+		}
+
+		public override void AI()
+		{
+			projectile.velocity.Y += 0.30f;
+			projectile.rotation += projectile.velocity.Length() * (float)(Math.Sign(projectile.velocity.X * 1000f) / 1000f) * 10f;
 		}
 
 	}

@@ -177,7 +177,7 @@ namespace SGAmod.NPCs.Wraiths
 			if ((ownerz.modNPC as CobaltWraith).raged==true){
 			laserblast=laserblast+1;
 			Player P = Main.player[ownerz.target];
-			if (laserblast%20==0 && laserblast%300>200 && laserblast>0 && P!=null && Main.expertMode && (Main.netMode!=1)){
+			if (laserblast%20==0 && laserblast%400>300 && laserblast>0 && P!=null && Main.expertMode && (Main.netMode!=1)){
 			Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.WaterBolt, 20, 30,0,1,true,0,true,100);
 			}
 			}
@@ -410,7 +410,7 @@ return true;
 			npc.HitSound = SoundID.NPCHit7;
 			npc.DeathSound = SoundID.NPCDeath7;
 			npc.value = 0f;
-			npc.knockBackResist = 0f;
+			npc.knockBackResist = -0.5f;
 			npc.aiStyle = -1;
 			aiType = -1;
 			animationType = 0;
@@ -497,7 +497,7 @@ return true;
 
 
 
-
+	[AutoloadBossHead]
 	public class CobaltWraith : CopperWraith, ISGABoss
 	{
 
@@ -531,12 +531,14 @@ return true;
 			npc.buffImmune[BuffID.Daybreak] = true;
 			npc.value = Item.buyPrice(0, 6, 0, 0);
 		}
-				public override string Texture
+		public override string Texture
 		{
-			get { return("SGAmod/NPCs/TPD");}
+			get { return ("SGAmod/NPCs/TPD"); }
 		}
 
-				public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
+		public override string BossHeadTexture => "Terraria/Item_" + ItemID.CobaltHelmet;
+
+		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
 			npc.lifeMax = (int)(npc.lifeMax * 0.625f * bossLifeScale);
 			npc.damage = (int)(npc.damage * 0.6f);
@@ -640,7 +642,7 @@ return true;
 				}
 				}else{
 				if ((P.Center - npc.Center).Length() < 700)
-					npc.timeLeft = 400;
+					npc.timeLeft = 250;
 				base.AI();
 				if (npc.ai[0]>10){npc.ai[0]++;}
 				if (npc.ai[0]==1){

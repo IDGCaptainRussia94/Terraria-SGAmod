@@ -132,8 +132,30 @@ namespace SGAmod
         public override void PostAI(Projectile projectile)
 		{
 			Player owner = Main.player[projectile.owner];
-			if (owner!=null && projectile.melee)
-				owner.SGAPly().FlaskEffects(new Rectangle((int)projectile.position.X, (int)projectile.position.Y,projectile.width,projectile.height), projectile.velocity);
+			if (owner != null)
+			{
+				if (projectile.melee)
+				{
+					SGAPlayer sgaply= owner.SGAPly();
+
+					//Main.NewText("test " + projectile.coldDamage);
+
+					if (sgaply.glacialStone)
+					{
+						if (!owner.frostBurn && projectile.friendly && !projectile.hostile && !projectile.noEnchantments && Main.rand.Next(2 * (1 + projectile.extraUpdates)) == 0)
+						{
+							int num = Dust.NewDust(projectile.position, projectile.width, projectile.height, 135, projectile.velocity.X * 0.2f + (float)(projectile.direction * 3), projectile.velocity.Y * 0.2f, 100, default(Color), 2f);
+							Main.dust[num].noGravity = true;
+							Main.dust[num].velocity *= 0.7f;
+							Main.dust[num].velocity.Y -= 0.5f;
+						}
+						projectile.coldDamage = true;
+
+					}
+
+					sgaply.FlaskEffects(new Rectangle((int)projectile.position.X, (int)projectile.position.Y, projectile.width, projectile.height), projectile.velocity);
+				}
+			}
 
 			if (embued)
 			{

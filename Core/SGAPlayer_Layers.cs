@@ -64,6 +64,32 @@ namespace SGAmod
 					Main.playerDrawData.Add(data);
 			});
 
+
+		public static readonly PlayerLayer BreathingReed = new PlayerLayer("SGAmod", "BreathingReed", PlayerLayer.MountBack, delegate (PlayerDrawInfo drawInfo)
+		{
+			Player drawPlayer = drawInfo.drawPlayer;
+			if (!drawPlayer.wet)
+				return;
+			SGAmod mod = SGAmod.Instance;
+			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
+
+			//better version, from Qwerty's Mod
+			Color color = drawInfo.bodyColor;
+
+			Texture2D texture = Main.itemTexture[ItemID.BreathingReed];
+			int drawX = (int)((drawPlayer.MountedCenter.X + drawPlayer.direction*6) - Main.screenPosition.X);
+			int drawY = 0;
+			drawY = (int)((drawPlayer.MountedCenter.Y-12*drawPlayer.gravDir) - Main.screenPosition.Y);
+			float facing = drawPlayer.velocity.X > 0 ? 1f : -1f;
+
+			float velosway = 60 / MathHelper.Pi * (float)Math.Atan(Math.Abs(drawPlayer.velocity.X/5f));
+			velosway *= -facing*0.025f;
+
+			DrawData data = new DrawData(texture, new Vector2(drawX, drawY), null, color, (float)(drawPlayer.fullRotation + velosway - (MathHelper.Pi/4f)), new Vector2(4,texture.Height-4), 1f, (SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+			data.shader = (int)drawPlayer.cWings;
+			Main.playerDrawData.Add(data);
+		});
+
 		public static void drawdigistuff(PlayerDrawInfo drawInfo,bool front)
 		{
 
@@ -243,6 +269,13 @@ namespace SGAmod
 				//layers.RemoveAt(wingsLayer);
 				AltWings.visible = true;
 				layers.Insert(wingsLayer+1, AltWings);
+			}
+
+			if (sgaplayer.terraDivingGear)
+			{
+			int armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MountBack"));
+			BreathingReed.visible = true;
+			layers.Insert(armLayer2, BreathingReed);
 			}
 
 			if (player.HeldItem.type==mod.ItemType("WaveBeam"))

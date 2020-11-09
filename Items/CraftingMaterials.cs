@@ -1071,6 +1071,32 @@ public class LunarRoyalGel : ModItem
 		}
 	}
 
+	public class AssemblyStar : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Assembly Star");
+			Tooltip.SetDefault("'Raw assembly code forged directly from Draken'\nCan be used to craft previously uncraftable items");
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/SunOrb"; }
+		}
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.Orange*MathHelper.Clamp((float)(Math.Sin(Main.GlobalTime)/2)+1f,0,1);
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 14;
+			item.height = 14;
+			item.value = 0;
+			item.rare = ItemRarityID.Quest;
+		}
+	}
+
 	public class PrismalBar: ModItem
 	{
 		public override void SetStaticDefaults()

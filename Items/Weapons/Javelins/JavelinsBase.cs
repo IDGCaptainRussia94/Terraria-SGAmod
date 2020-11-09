@@ -15,8 +15,22 @@ using CalamityMod.Dusts;
 
 namespace SGAmod.Items.Weapons.Javelins
 {
+    public enum JavelinType : byte
+    {
+        Stone,
+        Ice,
+        Corruption,
+        Crimson,
+        Amber,
+        Dynasty,
+        Hallowed,
+        Shadow,
+        SanguineBident,
+        TerraTrident,
+        CrimsonCatastrophe
+    }
 
-        public class StoneJavelin : ModItem
+    public class StoneJavelin : ModItem
     {
 
         //public delegate int PerformCalculation(int x, int y);
@@ -253,7 +267,7 @@ namespace SGAmod.Items.Weapons.Javelins
             }
             else
             {
-            OnThrow(1, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack, (Main.projectile[thisoned].modProjectile as JavelinProj));
+            OnThrow(0, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack, (Main.projectile[thisoned].modProjectile as JavelinProj));
             }
 
                 return false;
@@ -269,6 +283,10 @@ namespace SGAmod.Items.Weapons.Javelins
         public int maxstick = 1;
         public int maxStickTime = 100;
         bool hitboxchange = false;
+        public int javelinType
+        {
+            get { return (int)projectile.ai[1]; }
+        }
         static public string[] tex =
     {"SGAmod/Items/Weapons/Javelins/StoneJavelin",
         "SGAmod/Items/Weapons/Javelins/IceJavelin",
@@ -331,17 +349,12 @@ namespace SGAmod.Items.Weapons.Javelins
 
         public static void JavelinOnHit(NPC target,Projectile projectile)
         {
-        if (projectile.ai[1] == 1)
+        if (projectile.ai[1] == (int)JavelinType.Ice)//Ice
             {
                 if (Main.rand.Next(0,4)==1)
                 target.AddBuff(BuffID.Frostburn, 60 * (projectile.type==ModContent.ProjectileType<JavelinProj>() ? 2 : 3));
             }
-            if (projectile.ai[1] == 7)//Shadow
-            {
-                if (Main.rand.Next(0, 4) == 1)
-                    target.AddBuff(BuffID.ShadowFlame, 60 * (projectile.type == ModContent.ProjectileType<JavelinProj>() ? 3 : 5));
-            }
-            if (projectile.ai[1] == 5)//Dynasty
+            if (projectile.ai[1] == (int)JavelinType.Dynasty)//Dynasty
             {
                 if (projectile.penetrate > 1)
                 {
@@ -353,9 +366,9 @@ namespace SGAmod.Items.Weapons.Javelins
                 }
             }
 
-            if (projectile.ai[1] == 6)//Hallow
+            if (projectile.ai[1] == (int)JavelinType.Hallowed)//Hallow
             {
-                if (Main.rand.Next(0, projectile.modProjectile.GetType() == typeof(JavelinProjMelee) ? 3 : 0) == 0)
+                if (Main.rand.Next(0, projectile.modProjectile.GetType() == typeof(JavelinProjMelee) ? 2 : 0) == 0)
                 {
 
                     int thisoned = Projectile.NewProjectile(projectile.Center.X + Main.rand.NextFloat(-64, 64), projectile.Center.Y - 800, Main.rand.NextFloat(-2, 2), 14f, ProjectileID.HallowStar, (int)(projectile.damage/2f), projectile.knockBack, Main.player[projectile.owner].whoAmI);
@@ -368,7 +381,12 @@ namespace SGAmod.Items.Weapons.Javelins
 
                 }
             }
-            if (projectile.ai[1] == 8)//Sanguine Bident
+            if (projectile.ai[1] == (int)JavelinType.Shadow)//Shadow
+            {
+                if (Main.rand.Next(0, 4) == 1)
+                    target.AddBuff(BuffID.ShadowFlame, 60 * (projectile.type == ModContent.ProjectileType<JavelinProj>() ? 3 : 5));
+            }
+            if (projectile.ai[1] == (int)JavelinType.SanguineBident)//Sanguine Bident
             {
                 
                 if (projectile.modProjectile.GetType() == typeof(JavelinProj))
@@ -386,7 +404,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
 
             }
-            if (projectile.ai[1] == 9)//Terra Trident
+            if (projectile.ai[1] == (int)JavelinType.TerraTrident)//Terra Trident
             {
                 if (projectile.modProjectile.GetType() == typeof(JavelinProj))
                 {
@@ -403,7 +421,7 @@ namespace SGAmod.Items.Weapons.Javelins
                     NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, prog);
                 }
             }
-            if (projectile.ai[1] == 10)//Crimson Catastrophe
+            if (projectile.ai[1] == (int)JavelinType.CrimsonCatastrophe)//Crimson Catastrophe
             {
                 int bleed = SGAmod.Instance.BuffType("MassiveBleeding");
                 ModProjectile modproj = projectile.modProjectile;
@@ -514,7 +532,7 @@ namespace SGAmod.Items.Weapons.Javelins
             else
             {
 
-                if (projectile.ai[1] == 10)
+                if (projectile.ai[1] == (int)JavelinType.CrimsonCatastrophe)//Sanguine Bident
                 {
                     if (stickin < 0)
                     {
@@ -542,6 +560,12 @@ namespace SGAmod.Items.Weapons.Javelins
                     }
                 }
 
+                if (projectile.ai[1] == (int)JavelinType.CrimsonCatastrophe)
+                {
+                    projectile.velocity = projectile.velocity + new Vector2(0, (projectile.aiStyle-100)/40f);
+                    return;
+                }
+
                 if (projectile.velocity.Y<16f)
                 if (projectile.aiStyle < 1)
                 projectile.velocity = projectile.velocity + new Vector2(0, 0.1f);
@@ -551,7 +575,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
         public override bool PreKill(int timeLeft)
         {
-            if (projectile.ai[1] == 8)
+            if (projectile.ai[1] == (int)JavelinType.SanguineBident)
             {
                 for (int num315 = -40; num315 < 43; num315 = num315 + 4)
                 {
@@ -579,11 +603,12 @@ namespace SGAmod.Items.Weapons.Javelins
             Texture2D texture = ModContent.GetTexture(JavelinProj.tex[(int)projectile.ai[1]]);
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 
-            if (projectile.ai[1] == 10 && stickin >= 0)
-                drawColor = Color.Lerp(drawColor, Color.Red, 0.50f + (float)Math.Sin(projectile.timeLeft / 15f) / 3f);
 
-            if (projectile.ai[1] == 10)
+            if (projectile.ai[1] == (int)JavelinType.CrimsonCatastrophe)
             {
+                if (stickin >= 0)
+                    drawColor = Color.Lerp(drawColor, Color.Red, 0.50f + (float)Math.Sin(projectile.timeLeft / 15f) / 3f);
+
                 float sticktime = (float)maxStickTime;
                 float alpha = 1;
                 if (projectile.penetrate <= 1)
@@ -622,10 +647,10 @@ namespace SGAmod.Items.Weapons.Javelins
                     spriteBatch.Draw(texture, drawPos, new Rectangle?(), color * 0.5f* alpha, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f) - (((float)Math.PI / 2) * (facingleft ? 0f : -1f)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
                 }
                 return false;
-            }
+            }//Crimson Catastrophe
 
 
-            if (projectile.ai[1] == 8)
+            if (projectile.ai[1] == (int)JavelinType.SanguineBident)//Sanguine Bident
             {
                 if (stickin < 0)
                 {
@@ -693,7 +718,7 @@ namespace SGAmod.Items.Weapons.Javelins
         {
             if (projectile.ignoreWater == false)
             {
-                if (projectile.ai[1] == 10)
+                if (projectile.ai[1] == (int)JavelinType.CrimsonCatastrophe)
                 {
                     projectile.extraUpdates = 1;
                     movein = 8f;
@@ -755,7 +780,7 @@ namespace SGAmod.Items.Weapons.Javelins
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
             Vector2 drawpos = projectile.Center;
 
-            if (projectile.ai[1] == 10)
+            if (projectile.ai[1] == (int)JavelinType.CrimsonCatastrophe)
             {
                 drawpos += Vector2.Normalize(projectile.Center - owner.Center) * 64f;
                 drawColor *= 0.5f;// MathHelper.Clamp((float)(projectile.timeLeft-60f) / 25f,0, 1f);

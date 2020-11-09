@@ -58,7 +58,7 @@ namespace SGAmod.Items.Weapons
 			item.useAnimation = 40;
 			item.useStyle = 5;
 			item.noMelee = true; //so the item's animation doesn't do damage
-			item.knockBack = 5;
+			item.knockBack = 1;
 			item.value = 100000;
 			item.rare = 4;
 			item.autoReuse = true;
@@ -122,7 +122,7 @@ namespace SGAmod.Items.Weapons
 			item.useAnimation = 25;
 			item.useStyle = 5;
 			item.noMelee = true; //so the item's animation doesn't do damage
-			item.knockBack = 5;
+			item.knockBack = 1;
 			item.value = 100000;
 			item.rare = 4;
 			item.autoReuse = true;
@@ -160,7 +160,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Portable Spear Trap");
-			Tooltip.SetDefault("Now we're stabbing" +
+			Tooltip.SetDefault("'Now we're stabbing'" +
 				"\nVery quickly launches piercing spears at close range" +
 	"\nCounts as trap damage, pierces infinitely, but doesn't crit");
 		}
@@ -181,7 +181,7 @@ namespace SGAmod.Items.Weapons
 			item.useAnimation = 5;
 			item.useStyle = 5;
 			item.noMelee = true; //so the item's animation doesn't do damage
-			item.knockBack = 9;
+			item.knockBack = 1;
 			item.value = 100000;
 			item.rare = 9;
 			item.autoReuse = true;
@@ -223,7 +223,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Super Dart Trap 'gun'");
-			Tooltip.SetDefault("With this, you can carry their own tech against them" +
+			Tooltip.SetDefault("'With this, you can carry their own tech against them'" +
 				"\nLaunches Darts at fast speeds!\nConverts Poison Darts into Dart Trap Darts\nTrap Darts Pierce infinitely, but don't crit");
 		}
 
@@ -237,7 +237,7 @@ namespace SGAmod.Items.Weapons
 			item.useAnimation = 15;
 			item.useStyle = 5;
 			item.noMelee = true; //so the item's animation doesn't do damage
-			item.knockBack = 5;
+			item.knockBack = 2;
 			item.value = 100000;
 			item.rare = 9;
 			item.autoReuse = true;
@@ -664,7 +664,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Spike Ball Flail");
-			Tooltip.SetDefault("Atleast this... I can buy being made into a weapon" +
+			Tooltip.SetDefault("At least this... I can buy being made into a weapon" +
 				"\nCounts as trap damage, doesn't crit\nEnemies hit by the flail at high speeds may become Gourged; cutting their defense in half");
 		}
 		public override void AddRecipes()
@@ -1226,4 +1226,5 @@ namespace SGAmod.Items.Accessories
 			recipe.AddRecipe();
 		}
 	}
+
 }

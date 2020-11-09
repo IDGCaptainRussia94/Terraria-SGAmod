@@ -229,7 +229,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lesser Prismic Bullet");
-			Tooltip.SetDefault("Fires Bullets from your 2nd and 3rd ammo slots while placed in your first, will consume both ammo types\nOtherwise, it fires a weak musket bullet\nHas a 33% to not consume the fired ammo type");
+			Tooltip.SetDefault("Shots cycle through your 2nd and 3rd ammo slots while placed in your first\nDefaults to a weak musket ball\nHas a 33% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{
@@ -317,10 +317,10 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 1);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 2);
 			recipe.AddIngredient(ItemID.HallowedBar, 1);
-			recipe.AddIngredient(ItemID.SilverBullet, 50);
-			recipe.AddIngredient(ModContent.ItemType<TungstenBullet>(), 50);
+			recipe.AddIngredient(ItemID.SilverBullet, 75);
+			recipe.AddIngredient(ModContent.ItemType<TungstenBullet>(), 75);
 			recipe.AddTile(TileID.ImbuingStation);
-			recipe.SetResult(this, 100);
+			recipe.SetResult(this, 150);
 			recipe.AddRecipe();
 		}
 	}
@@ -331,7 +331,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Bullet");
-			Tooltip.SetDefault("Does greatly increased damage over it's precurser; fires Bullets from your 2nd, 3rd, and 4th ammo slots while placed in your first, will consume fired ammo types\nOtherwise, it fires a musket bullet\nHas a 25% to not consume the fired ammo type");
+			Tooltip.SetDefault("Highly increased damage over its precursor\nCycles through your ammo slots; defaults to Musket Balls\nHas a 25% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{
@@ -368,9 +368,9 @@ namespace SGAmod.Items.Weapons.Ammo
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 1);
-			recipe.AddIngredient(mod.ItemType("PrismicBullet"), 100);
+			recipe.AddIngredient(mod.ItemType("PrismicBullet"), 150);
 			recipe.AddTile(TileID.ImbuingStation);
-			recipe.SetResult(this, 100);
+			recipe.SetResult(this, 150);
 			recipe.AddRecipe();
 		}
 	}

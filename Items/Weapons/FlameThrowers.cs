@@ -32,7 +32,7 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = ItemUseStyleID.HoldingOut;
 			item.noMelee = true;
 			item.knockBack = 0.0f;
-			item.value = 10000;
+			item.value = 25000;
 			item.rare = ItemRarityID.Blue;
 			item.autoReuse = true;
 			//item.UseSound = SoundID.Item34;

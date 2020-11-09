@@ -30,24 +30,10 @@ using Terraria.Utilities;
 using SGAmod.SkillTree;
 using SGAmod.Dimensions;
 using SGAmod.Items.Accessories;
+using SGAmod.Buffs;
 
 namespace SGAmod
 {
-
-	public class ActionCooldownStack
-	{
-		public int timeleft;
-		public int timerup;
-		public int maxtime;
-
-		public ActionCooldownStack(int timeleft)
-		{
-			this.timeleft = timeleft;
-			this.maxtime = timeleft;
-			timerup = 0;
-		}
-
-	}
 
 	public partial class SGAPlayer : ModPlayer
 	{
@@ -97,10 +83,13 @@ namespace SGAmod
 		public float mspeed = 1f;
 		public int beefieldtoggle = 0;
 		public int beefieldcounter = 0;
+		public int intimacy = 0;
+		public int toxicity = 0;
 		public bool HeavyCrates = false;
 		public bool Microtransactions = false;
 		public bool MoneyMismanagement = false;
 		public bool NoFly = false;
+		public bool permaDrown = false;
 		public bool Pressured = false;
 		public bool MassiveBleeding = false;
 		public bool ELS = false;
@@ -164,6 +153,8 @@ namespace SGAmod
 		public bool playercreated = false;
 		public bool granteditems = false;
 		public bool restorationFlower = false;
+		public bool tpdcpu = false;
+		public bool aversionCharm = false;
 		public float techdamage = 1f;
 		public double[] apocalypticalChance = { 0, 0, 0, 0 };
 		public float apocalypticalStrength = 1f;
@@ -177,6 +168,8 @@ namespace SGAmod
 		public bool demonsteppers = false;
 		public bool FridgeflameCanister = false;
 		public bool IceFire = false;
+		public bool terraDivingGear = false;
+		public bool glacialStone = false;
 		public bool BIP = false;
 		public float summonweaponspeed = 0f;
 		public bool grippinggloves = false;
@@ -235,8 +228,12 @@ namespace SGAmod
 			tf2emblemLevel = 0;
 			ninjaSash = 0;
 			RevolverSpeed = 1f;
+			intimacy = 0;
+			toxicity = 0;
 			ReloadingRevolver = Math.Max(ReloadingRevolver - 1, 0);
 			twinesoffate = false;
+			glacialStone = false;
+			terraDivingGear = false;
 			Duster = false;
 			flaskBuff = default;
 			dualityshades = false;
@@ -246,12 +243,14 @@ namespace SGAmod
 			MoneyMismanagement = false;
 			Lockedin = false;
 			NoFly = false;
+			permaDrown = false;
 			trueMeleeDamage = 1f;
 			triggerFinger = 1f;
 			CirnoWings = false;
 			MassiveBleeding = false;
 			thermalblaze = false; acidburn = false; ELS = false;
 			SerratedTooth = false;
+			aversionCharm = false;
 			SybariteGem = false;
 			UseTimeMul = 1f;
 			UseTimeMulPickaxe = 1f;
@@ -286,6 +285,7 @@ namespace SGAmod
 			JaggedWoodenSpike = false; JuryRiggedSpikeBuckler = false; HeartGuard = false; GoldenCog = false;
 			MidasIdol = 0;
 			OmegaSigil = false;
+			tpdcpu = false;
 			MurkyDepths = false;
 			MatrixBuffp = false;
 			plasmaLeftInClipMax = 1000;
@@ -326,10 +326,7 @@ namespace SGAmod
 			if (!Shieldbreak)
 				electricdelay -= 1;
 
-			if (boosterdelay < 1)
-			{
-				boosterPowerLeft = Math.Min(boosterPowerLeft + boosterrechargerate, boosterPowerLeftMax);
-			}
+				boosterPowerLeft = Math.Min(boosterPowerLeft + (boosterdelay >= 1 ? boosterrechargerate : 0), boosterPowerLeftMax);
 
 				electricCharge = Math.Min(electricCharge + (electricdelay < 1 ? electricrechargerate : 0), electricChargeMax);
 
@@ -665,6 +662,20 @@ namespace SGAmod
 
 			//player.powerrun = true;
 
+			if (player.HasBuff(BuffID.Lovestruck))
+			{
+				if (intimacy>0)
+				player.aggro += 250* intimacy;
+				int maxdamage = 0;
+				foreach (Player player2 in Main.player.Where(player2 => player2.active && player.whoAmI != player2.whoAmI && player.SGAPly().intimacy > 0 && player.Distance(player.MountedCenter) < 600))
+				{
+					maxdamage = Math.Max(maxdamage, (int)(player2.lifeRegen/5));
+				}
+				player.lifeRegen += maxdamage;
+			}
+			if (toxicity>0 && player.HasBuff(BuffID.Stinky))
+			player.aggro -= 400* toxicity;
+
 			if (gunslingerLegendtarget > -1)
 			{
 				NPC them = Main.npc[gunslingerLegendtarget];
@@ -825,6 +836,8 @@ namespace SGAmod
 				if (breathingdelay % 29 == 0)
 					sufficate = (int)MathHelper.Clamp(sufficate + 1, -200, player.breathMax - 1);
 			}
+			if (beserk[0] > 0 || permaDrown)
+				sufficate = player.breath;
 
 			if (FireBreath > 0)
 			{
@@ -918,7 +931,7 @@ namespace SGAmod
 
 				player.gills = false;
 
-				bool isbreathing = true;
+				bool isbreathing = beserk[1]<=0 && !permaDrown;
 
 				//if (SGAmod.Calamity && modcheckdelay){ isbreathing=CalamityAbyss;
 				//}
@@ -1011,6 +1024,7 @@ namespace SGAmod
 				player.buffImmune[BuffID.Chilled] = true;
 				player.buffImmune[BuffID.Frozen] = true;
 				player.buffImmune[BuffID.Frostburn] = true;
+				player.buffImmune[ModContent.BuffType<NoFly>()] = true;
 			}
 
 
@@ -1175,22 +1189,8 @@ namespace SGAmod
 				}
 			}
 
+			DoCooldownUpdate();
 
-			if (Main.netMode != NetmodeID.Server)
-			{
-				if (CooldownStacks.Count > 0)
-				{
-					for (int stackindex = 0; stackindex < CooldownStacks.Count; stackindex += 1)
-					{
-						ActionCooldownStack stack = CooldownStacks[stackindex];
-						stack.timeleft -= 1;
-						stack.timerup += 1;
-						if (stack.timeleft < 1)
-							CooldownStacks.RemoveAt(stackindex);
-					}
-				}
-				activestacks = CooldownStacks.Count;
-			}
 
 			if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
 				skillMananger.PostUpdateEquips();
@@ -1236,7 +1236,7 @@ namespace SGAmod
 
 		}
 
-		public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
+        public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
 		{
 			if (PrimordialSkull)
 				damage = damage / 2;
@@ -1254,6 +1254,15 @@ namespace SGAmod
 			{
 				NPC npc = Main.npc[damageSource.SourceNPCIndex];
 				if (npc.GetGlobalNPC<SGAnpcs>().NinjaSmoked && Main.rand.Next(0, 100) < 75)
+				{
+					player.NinjaDodge();
+					return false;
+				}
+			}
+
+			if (damageSource.SourceProjectileIndex > -1)
+            {
+				if (Main.projectile[damageSource.SourceProjectileIndex].trap && aversionCharm && AddCooldownStack(60*60))
 				{
 					player.NinjaDodge();
 					return false;
@@ -1493,26 +1502,6 @@ namespace SGAmod
 				damagecheck(npc.Center, ref damage);
 			}
 
-			if (MisterCreeperset)
-			{
-				Vector2 myspeed = new Vector2(0, 0);
-				if (npc != null)
-				{
-					myspeed = npc.Center - player.Center;
-					myspeed.Normalize();
-				}
-				if (projectile != null)
-				{
-					myspeed = projectile.Center - player.Center;
-					myspeed.Normalize();
-				}
-				myspeed *= 20f;
-				int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, myspeed.X, myspeed.Y, ProjectileID.Grenade, 1000, 10f, player.whoAmI);
-				Main.projectile[prog].Throwing().thrown = true; Main.projectile[prog].ranged = false; Main.projectile[prog].netUpdate = true;
-				IdgProjectile.Sync(prog);
-
-			}
-
 			if (SpaceDiverset)
 			{
 				int lifelost = (int)(((float)damage / (float)player.statLifeMax) * 150f);
@@ -1540,6 +1529,66 @@ namespace SGAmod
 
 
 			return damage;
+		}
+
+		public override void OnHitByNPC(NPC npc, int damage, bool crit)
+		{
+			afterTheHit(npc,null,damage,crit);
+		}
+
+        public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
+        {
+			afterTheHit(null, proj, damage, crit);
+		}
+
+		public static void SwearExplosion(Vector2 location,Player player,int damage)
+        {
+			SGAPlayer sga = player.SGAPly();
+			foreach (NPC npc2 in Main.npc.Where(npc2 => npc2.active && npc2.Distance(location) < 400 * sga.toxicity))
+			{
+				float power = (sga.toxicity * 3f) + player.thorns + (npc2.HasBuff(BuffID.Stinky) ? 2 : 0);
+				npc2.StrikeNPC((int)(damage * power), power, npc2.direction);
+			}
+			string[] aBunchOfSwearWords = { "Shit", "Fuck", "Bitch", "Cunt", "Asshole" };//no, I'm not using the N-word here, I have stadards unlike the low IQ people this item mimics
+			CombatText.NewText(new Rectangle((int)location.X, (int)location.Y, 0,0), Color.Red, aBunchOfSwearWords[Main.rand.Next(aBunchOfSwearWords.Length)], true, true);
+			Microsoft.Xna.Framework.Audio.SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_BetsyScream, location);
+			if (sound != null)
+				sound.Pitch -= 0.75f;
+
+		}
+
+        public void afterTheHit(NPC npc, Projectile projectile, int damage, bool crit)
+        {
+
+			if (MisterCreeperset)
+			{
+				Vector2 myspeed = new Vector2(0, 0);
+				if (npc != null)
+				{
+					myspeed = npc.Center - player.Center;
+					myspeed.Normalize();
+				}
+				if (projectile != null)
+				{
+					myspeed = projectile.Center - player.Center;
+					myspeed.Normalize();
+				}
+				myspeed *= 20f;
+				int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, myspeed.X, myspeed.Y, ProjectileID.Grenade, 1000, 10f, player.whoAmI);
+				Main.projectile[prog].Throwing().thrown = true; Main.projectile[prog].ranged = false; Main.projectile[prog].netUpdate = true;
+				IdgProjectile.Sync(prog);
+
+			}
+
+			if (toxicity > 0)
+            {
+				if (player.HasBuff(BuffID.Stinky))
+				{
+					SwearExplosion(player.MountedCenter,player,damage);
+				}
+
+			}
+
 		}
 
 		public override void ProcessTriggers(TriggersSet triggersSet)
@@ -1661,7 +1710,7 @@ namespace SGAmod
 							dust.alpha += 25;
 						}
 						Main.dust[num52].noLight = true;
-						Main.dust[num52].noGravity = Main.rand.Next(4)!=0;
+						Main.dust[num52].noGravity = true;
 						dust = Main.dust[num52];
 						dust.velocity *= 0.2f;
 						Dust dust9 = Main.dust[num52];

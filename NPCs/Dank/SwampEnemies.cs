@@ -133,9 +133,9 @@ namespace SGAmod.NPCs.Dank
             npc.lifeMax = 5;
             npc.noTileCollide = false;
             npc.noGravity = true;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
-            npc.value = 300f;
+            npc.HitSound = SoundID.NPCHit9;
+            npc.DeathSound = SoundID.NPCDeath11;
+            npc.value = 200f;
             npc.aiStyle = 3;
             Main.npcFrameCount[npc.type] = 2;
             banner = npc.type;
@@ -219,7 +219,7 @@ namespace SGAmod.NPCs.Dank
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.water && SGAUtils.NoInvasion(spawnInfo) && spawnInfo.player.SGAPly().DankShrineZone ? 0.75f : 0f;
+            return spawnInfo.water && SGAUtils.NoInvasion(spawnInfo) && spawnInfo.player.SGAPly().DankShrineZone ? 2.5f : 0f;
         }
     }
 

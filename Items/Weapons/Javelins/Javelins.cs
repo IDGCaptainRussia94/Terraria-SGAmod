@@ -40,18 +40,6 @@ namespace SGAmod.Items.Weapons.Javelins
             item.UseSound = SoundID.Item1;
         }
 
-        public override void AddRecipes()
-        {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(mod.ItemType("SanguineBident"), 1);
-            recipe.AddIngredient(mod.ItemType("TerraTrident"), 1);
-            recipe.AddIngredient(ItemID.DayBreak, 1);
-            recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);
-            recipe.AddTile(TileID.LunarCraftingStation);
-            recipe.SetResult(this, 1);
-            recipe.AddRecipe();
-        }
-
         public static void BloodyExplosion(NPC enemy, Projectile projectile)
         {
             if (enemy.GetGlobalNPC<SGAnpcs>().crimsonCatastrophe > 0)
@@ -100,6 +88,17 @@ namespace SGAmod.Items.Weapons.Javelins
             }
 
         }
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(mod.ItemType("SanguineBident"), 1);
+            recipe.AddIngredient(mod.ItemType("TerraTrident"), 1);
+            recipe.AddIngredient(ItemID.DayBreak, 1);
+            recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);
+            recipe.AddTile(TileID.LunarCraftingStation);
+            recipe.SetResult(this, 1);
+            recipe.AddRecipe();
+        }
 
 
     }
@@ -141,6 +140,7 @@ namespace SGAmod.Items.Weapons.Javelins
             recipe.AddIngredient(mod.ItemType("ThrownTrident"), 1);
             recipe.AddIngredient(ItemID.UnholyTrident, 1);
             recipe.AddIngredient(ItemID.Gungnir, 1);
+            recipe.AddIngredient(ItemID.ChlorophyteBar, 8);
             recipe.AddIngredient(ItemID.BrokenHeroSword, 1);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);
@@ -260,7 +260,11 @@ namespace SGAmod.Items.Weapons.Javelins
                         Main.projectile[thisoneddddd].melee = false;
                         Main.projectile[thisoneddddd].Throwing().thrown = true;
 
-                        (Main.projectile[thisoneddddd].modProjectile as JavelinProj).maxstick = madeproj.maxstick;
+                        if (Speartype == (int)JavelinType.CrimsonCatastrophe)
+                            Main.projectile[thisoneddddd].aiStyle = (-100 + i);
+
+
+                       (Main.projectile[thisoneddddd].modProjectile as JavelinProj).maxstick = madeproj.maxstick;
                         (Main.projectile[thisoneddddd].modProjectile as JavelinProj).maxStickTime = madeproj.maxStickTime;
                         Main.projectile[thisoneddddd].penetrate = madeproj.projectile.penetrate;
                         Main.projectile[thisoneddddd].netUpdate = true;
@@ -336,7 +340,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override float Throwspeed => 1f;
         public override int Penetrate => 5;
         public override float Speartype => 7;
-        public override int[] Usetimes => new int[] { 25, 12 };
+        public override int[] Usetimes => new int[] { 25, 7 };
         public override string[] Normaltext => new string[] { "Made from evil Jab-lins and the dark essence emited by a shadow key, attacks may inflict shadowflame","The Shadow Key is NOT consumed on craft!", "Javelins accelerates forward, is not affected by gravity until it hits a target" };
         public override void SetStaticDefaults()
         {

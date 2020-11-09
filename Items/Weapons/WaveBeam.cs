@@ -30,7 +30,8 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 320;
+			item.damage = 250;
+			item.crit = 5;
 			item.magic = true;
 			item.width = 32;
 			item.height = 62;
@@ -39,7 +40,7 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 5;
 			item.noMelee = true;
 			item.knockBack = 2;
-			item.value = Item.sellPrice(0,75,0,0);
+			item.value = Item.buyPrice(0,50,0,0);
 			item.rare = 11;
 			//item.UseSound = SoundID.Item99;
 			item.autoReuse = true;

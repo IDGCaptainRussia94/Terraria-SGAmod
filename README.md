@@ -10,8 +10,8 @@ Github was moved: previous builds of the mod can be found over here: https://git
 -Crimson only: Jarate, Jarocket, Jarate Shurikens, Heart Guard, Sanguine Bident, Crimson Catastrophe (can be bypassed with fishing)
 -Corruption only: Gas Passer, Wraith Arrows, Dosed Arrows, Corrupted Tome, Cursed Hail, Jagged Spike Buckler (can be bypassed with fishing)
 
--Finish Laser Marker, Make Laser Scythe Weapon, Finish Uncrafting feature for Reversal Engineering Table, Finish Dark Sector: (NPCs, and Null Watcher coding), Spectre homing bullets/projectiles, Add Jubia (in time)
--Ideas: Banners, the Couch, Bannerlord=collection of banners
+-Finish Uncrafting feature for Reversal Engineering Table, Finish Dark Sector: (NPCs, and Null Watcher coding), Spectre homing bullets/projectiles, Add Jubia (in time)
+-Ideas: Banners, the Couch, Bannerlord=collection of banners, Draken Summon?!
 
 Changelog:
 
@@ -20,7 +20,7 @@ Changelog:
 
 --Added:
 
--BOOMerang, Coralrang, FridgeFlamarang, Specterang, Fortune Falchion, Gnat-ades, Laser Marker, Re-Router, Divine Shower Storm, Red Phasebrand, Shadeflame Staff, Crimson Catastrophe, Sybarite Gem, Restoration Flower, Wraith Targeting Gamepad, True Strike Potion, Trigger Finger Potion, Universal Music Box (is infact part of IDGlib)
+-BOOMerang, Coralrang, FridgeFlamarang, Specterang, Fortune Falchion, Gnat-ades, Laser Marker, Re-Router, Divine Shower Storm, Red Phasebrand, Shadeflame Staff, Crimson Catastrophe, Cyber Scythe, Sybarite Gem, Restoration Flower, Glacial Stone, Terra Diving Gear, Aversion Charm, Pocket Rocks, TPDCPU, Wraith Targeting Gamepad, True Strike Potion, Trigger Finger Potion, Toxicity Potion, Intimacy Potion, Enchanted Bubble, Universal Music Box (is infact part of IDGlib), Assembly Star, Spanner
 
 -The Reverse Engineering Station now has a 2nd use: uncrafting! But at a cost...
 
@@ -34,18 +34,22 @@ Changelog:
 
 -Music tracks for Sharkvern and Spider Queen, composed by Musicman, and music boxes for all the custom themes!
 
--Added Obsidian Rose, Lava Charm, Shadow Key, Cobalt Shield, Flipper, and Frog Leg crafting recipes to the Reverse Engineering Table
+-Added Obsidian Rose, Lava Charm, Shadow Key, Cobalt Shield, Flipper, Snowball Launcher, and Frog Leg crafting recipes to the Reverse Engineering Table. All these and previous items now require an Assembly Star (sold by Draken)
 
 -Added a Client Config option to force Hellion to respect your privacy
+
+-Nightmare mode now visibly shows next on your character in the character selection screen
 
 
 --Changed:
 
 -Duke Fishron has been added to the Expertise Rewards, Expertise cap is now 22000, Mimic and Goblin Summoner rewards have been halved, Pillars reduced to 200, added Big Mimics for 100 each (Coruption OR Crimson OR Dank, not all. And Hallow Mimic)
 
--Murk has been revamped: new attacks, damages adjusted, enters into phase 2 at 85% instead of 75%, moves faster when the player is further, and has more HP, speed, and spawns more slimes, and faster bombers in Hardmode. Murky Depths is no longer inflicted during the Hardmode fight and Dank slimes inflict Murky Depths instead of Poison on contact (this is less during the boss fight)
+-Murk has been revamped: new attacks, damages adjusted, enters into phase 2 at 85% instead of 75%, moves faster when the player is further (making kiting him harder), and has more HP, speed, and spawns more slimes, and faster bombers in Hardmode. Murky Depths is no longer inflicted during the Hardmode fight and Dank slimes inflict Murky Depths instead of Poison on contact (this is less during the boss fight)
 
 -Murk's flies/Killer Fly Swarm have increasing and decreasing speed caps depending on the distance to the player while charging
+
+-Sharkvern has a new attack and readjusted stats and fight; shark minions no longer shoot Sapphire Bolts
 
 -Cirno is way more aggressive and faster when chasing the player, but stops charging from a greater distance, this helps to avoid the circing cheese
 
@@ -53,11 +57,15 @@ Changelog:
 
 -Biomass has been rebranded as Photosyte, spawns less often in clouds, and has a new mining sound
 
+-Action Cooldown Stacks now turn red when your stack count exceeds your max allowed stacks, and decay at only half their normal rate
+
 -Prismic and Prismal ammo types now have a saving chance to not consume the cycled ammo types on use (33% and 25% respectively)
 
 -Armor and mobility accessories have been overhauled (see fixes)
 
 -Worldgen chest loot: loot chances increased for Decayed Moss+Photosyte/A Machete or Fiberglass Rifle only have a 18.75% chance to show up in non-Dank Shrine chests (75% in Dank Shrines), and no longer show up in other modded chests anymore in world generation. Dragons Might and Matrix Potions are less common.
+
+-Dank Cores are a bit more common in Dank Shrines, and you can now find more than 1 in expert rarely
 
 -Energizer Battery now requires Photosyte instead of Photosyte Bars (has been moved earlier)
 
@@ -69,21 +77,29 @@ Changelog:
 
 -Caliburn Guardians fade in when summoned
 
+-Redid the visuals on True Moonlight's projectiles, enjoy fancy 1.4 style trails!
+
 -One of Draken's lines now that Serious Sam 4 was released
+
+-Dank Crates now give Bars and crafting materials seperately (you get more look now, also added Transmutation Powder to the drops)
 
 -Heralds of the horsemen no longer require both a Hardy Saddle and Slimy Saddle, but rather either to make them easier to craft.
 
 -Cratrosity can no longer hit the player if they are not actively moving towards them (they can still hit the playing when flying side to side thou) to prevent cheat hits
 
--Jab-lins are cheaper/can craft more of them
+-Cobalt Wraith's Swords are more vulnerable to knockback and their Waterbolt attack has an extra 100 frames of cooldown
 
--All Thrower gloves are cheaper to craft and cost only leather now instead of tattered cloth, removed the Detonator from Throwable Boulder Trap's crafting recipe
+-Jab-lins/Transmutation Powder are cheaper/can craft more of them
+
+-All Thrower gloves are cheaper to craft and cost only leather now instead of tattered cloth, removed the Detonator from Throwable Boulder Trap's crafting recipe, Rioter's Glove buffed by 1 damage and has been moved to hardmode; Ale, Bones, Molotovs, and Spiky Balls do more damage from it
 
 -Wraith Core Fragments cost more in Mutant's shop
 
 -Peacekeeper's Duster's town life regen now works during boss fights, fighting a boss in your NPC's town is a high risk factor anyways
 
 -Avali Scythe and Glass Swords are cheaper to craft
+
+-Rebalanced Terra Trident: it has been moved to post all mech bosses
 
 -Reworked Tidal Charm: it has been given a new game-changing property, check it out!
 
@@ -95,7 +111,13 @@ Changelog:
 
 -Reworked Stormbreaker: Damage nerfed, alt fire damage increased, now consumes Electric Charge instead of mana
 
--Rebalanced Quasar Cannon: now properly uses mana, and has been added to the Former Havoc Mod item collection
+-Reworked Cirno's Wings: Magic Attacks only sometimes do Frostburn, the originally functionality belongs to Cold Damage attacks now, now has unlimited flight in the Snow Biome, but greatly reduced in the Jungle, Desert, and Underworld, also provides immunity to Snowfrosted
+
+-Reworked Quasar Cannon: now properly uses mana, and has been added to the Former Havoc Mod item collection
+
+-Reworked Manglove Armor: each piece now provides 1% Apocalyptical Chance, has less defense, the legging's speed was adjusted a little
+
+-Reworked Celestial Flare: Slower swing speed, hits create moving explosions
 
 -Nerfed Plythe: damage has been reduced to 110 (from 125), Knockback has been reduced to 0, stacks simliar to light disks to 5, and has gotten a visual overhaul, requires Light Disks instead of Avali Scythe
 
@@ -104,6 +126,22 @@ Changelog:
 -Nerfed Creeper's Explosive Throw, reduced damage and fixed it so 2 yoyos share the same static cooldown (like vanilla yoyos)
 
 -Nerfed Laser Lance: damage slightly lowered
+
+-Nerfed Spear/Dart trap guns: their knockback was WAY too high
+
+-Nerfed Snowfall Cloud/Cursed Hail, snowballs/ice shards are now treated as summon damage (no more crits)
+
+-Nerfed Novite Helmet: reduced Electic Charge cost reduction to 20% (from 25%)
+
+-Nerfed Wave Beam: Damage lowered quite a bit, crit chance increased by 5
+
+-Buffed Acid Scepter: Does 2 more damage, the debuff it inflicts is much longer lasting than most sources of acid burn are (this weapon was extra hard to properly use, so I made it worth using)
+
+-Buffed Glass Sword: Now ignores enemy defense
+
+-Buffed Brimflame Harbinger: The explosions do more damage
+
+-Buffed Yoyo Guantlet: Has the effects of the Glacial Stone and slight sprite edit
 
 -Buffed Elemental Cascade: This weapon was just a bit too weak for post all 3 mechs
 
@@ -117,13 +155,23 @@ Changelog:
 
 -Buffed Novite Armor set bonus: you gain more speed per charge
 
+-Buffed Space Diver Armor: All pieces now give bonuses to Electric Charge
+
 -Buffed Circuit Breaker Blade: increased damage, halved Electric Charge cost and delay, bolt damage slightly reduced
 
--Buffed Mangrove Staff (less Mana, more damage, changed sounds), Nerfed Mangrove Bow (less projectile speed)
+-Buffed Shark Bait: more fish are spawned when thrown in water
+
+-Buffed Jaws: Teeth don't mess with immunity frames and do the weapon's full damage now, limited yoyo's lifespan
+
+-Buffed Mangrove Staff (less Mana, more damage, has knockback, changed sounds), Nerfed Mangrove Bow (less projectile speed)
+
+-Buffed Calamity Rune: Grants 25% more Apocalyptical Strength (new total of 50%)
 
 -Stone Barrier Staff and Beserker Aura Staff no longer have a damage value as they don't need one
 
 -Braxsaw mining power increased to 250
+
+-The new hardcap for NPC discounts prices is now 95%, before it was 90%
 
 -Trap and Thrower prefixes now have only 1X chance of being picked (VS 3X chance from before)
 
@@ -140,6 +188,10 @@ Changelog:
 -Soul of Secret's Bee damage has been greatly reduced
 
 -Some various things to Dank Shrine enemies
+
+-Virulent ore has a different map color to seperate it from Photosyte
+
+-Replaced the High Test Fishing Line with White String in Twins of Fate's crafting recipe (what was I even thinking?)
 
 -Removed Boss Fight Purity off Luminite Wraith
 
@@ -188,7 +240,13 @@ Changelog:
 
 -Mangrove Orbs not doing Magic damage from the Mangrove staff, Mangrove Staff and Mangrove Armor Set Bonus not being seperate projectiles (also Qwerty3.14)
 
+-A bug involving Space Diver Armor and Beserk Aura Staff conflicting with the Breath Meter (may stuff confict with other mods thou)
+
 -Fiery Shards dropping above hell
+
+-Softlocking issue with the Non-Stationary Snowball Launcher
+
+-An issue possible in Multiplayer where players could summon more than one Traveling merchant if players all used Eastern Gongs at once
 
 -Avali Scythe not recieving bonuses from throwing stats when thrown
 
@@ -196,19 +254,31 @@ Changelog:
 
 -A bug involving going over the max Electric Charge if you were on a recharge delay
 
--And oversight that caused the player to get sent back to the overworld from a dimension if they survived a fatal blow, they now only get sent back if they die
+-Jarate Shurikens only using 5 at a time instead of 5
+
+-An oversight that caused the player to get sent back to the overworld from a dimension if they survived a fatal blow, they now only get sent back if they die
 
 -Removed unneeded leftover code off the Corrupted Tome that might have messed up the weapon (IE an accidental alt fire ability)
+
+-Removed Obsidian Rose code from the Ragnarok Potion (this was unintended left over code)
 
 -An oversight where the Cosmic Grasp wasn't creating explosions in the proper locations
 
 -A few errors and missing things from the Prismal Ore tile
 
--FIxed Photosyte not being able to be placed due to having no use style
+-An oversight on the Dank Crate that prevented Novus Ore from being obtained
+
+-Photosyte not being able to be placed due to having no use style
+
+-A bug relating to Nightmare Mode not dropping extra loot
 
 -Contagion's Item sprite facing the wrong way
 
+-Pickaxes and Drills having wrong balance (Virulent Pickaxe was so slow!), Virulent Drill having knockback
+
 -Some debuffs that shouldn't be nurse "heal"able
+
+-The Strange Portal 'turning' to face the player
 
 -Spelling mistakes
 
@@ -1098,7 +1168,7 @@ Previous version was suppose to be 2.800, but ended up being 2.900, oh well
 
 
 
-2.40-(4/1/2020)-Hellion's Wraith:
+2.40-(4/1/2020)-Hellion's Wrath:
 
 --Added
 

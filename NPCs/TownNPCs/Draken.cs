@@ -261,6 +261,33 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("You think I look nice? Well from what i heard: my 'sprites' were a paid commission, and they wern't cheap. Thank you eitherway!");
 				chat.Add("Often I feel timid but then I talk about things that I can only relate as Meta, it's very strange.");
 				chat.Add("I remember a time, when all everyone would say, the sounds would echo: 'Button 2'");
+				chat.Add("I often look at my claws; I was clearly meant to hurt and kill, but I don't want to be like the stories...");
+				chat.Add("My human would like to thank you for 100,000 downloads, you have no idea how much it means to them [i: " + ItemID.LifeFruit + "]");
+				if (BirthdayParty.PartyIsUp)
+                {
+					chat.Add("I still don't have a party hat :(",3);
+					chat.Add("The cake is sweet, thank you for these feelings.",3);
+					chat.Add("The last time I heard of a party, it was in celebration at one of my kind's deaths...",3);
+					chat.Add("No, your not going to play 'pin the tail on my tail'", 3);
+					int index = BirthdayParty.CelebratingNPCs.FirstOrDefault(type => type == npc.type);
+					if (index != default)
+					{
+						List<int> guys = new List<int>();
+						guys.AddRange(BirthdayParty.CelebratingNPCs);
+						guys.RemoveAt(index);
+
+						chat.Add("They're throwing a party... for me, a monster?",5);
+						if (guys.Count > 0)
+						{
+							NPC him = new NPC();
+							him.SetDefaults(guys[0]);
+							chat.Add("I don't trust the "+ him+"; they're clearly planning something...", 5);
+							chat.Add(him + " is scareing me.", 5);
+						}
+					}
+
+
+				}
 				if (!npc.homeless)
 				{
 					chat.Add("The dwelling you made is far better than being forced to sleep outside.");
@@ -432,7 +459,7 @@ namespace SGAmod.NPCs.TownNPCs
 						{
 							adder = " The very next target is a(n) " + him2.FullName+". "+ GetNextItem();
 							if (modplayer.ExpertisePointsFromBosses[0]==NPCID.CultistArcherWhite)
-								adder = "You got them all!! " + GetNextItem();
+								adder = " You got them all!! " + GetNextItem();
 						}
 						else
 						{
@@ -527,11 +554,12 @@ namespace SGAmod.NPCs.TownNPCs
 
 
 
-		public int[,] itemsinshop = new int[14, 2];
+		public int[,] itemsinshop = new int[15, 2];
 		public string GetNextItem()
 		{
 			itemsinshop = new[,]{
 				{ SGAmod.Instance.ItemType("EmptyCharm"),50 },
+			{ SGAmod.Instance.ItemType("AssemblyStar"),200 },
 			{ SGAmod.Instance.ItemType("CaliburnCompess"),300 },
 			{ SGAmod.Instance.ItemType("GrippingGloves"),400 },
 			{ SGAmod.Instance.ItemType("RedManaStar"),500 },
@@ -607,11 +635,17 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}
-			
 			if (modplayer.ExpertiseCollectedTotal >= 50)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("EmptyCharm"));
 				shop.item[nextSlot].shopCustomPrice = 10;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}
+			if (modplayer.ExpertiseCollectedTotal >= 200)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("AssemblyStar"));
+				shop.item[nextSlot].shopCustomPrice = 15;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}
@@ -642,8 +676,7 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopCustomPrice = 75;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
-			}
-				
+			}				
 			if (modplayer.ExpertiseCollectedTotal >= 2000)
 			{
 				shop.item[nextSlot].SetDefaults(ItemID.RodofDiscord);
@@ -756,7 +789,7 @@ namespace SGAmod.NPCs.TownNPCs
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Some SGAmod bosses gain new abilities")));
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Your Expertise gain is increased by 25%")));
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Enemy money dropped is increased by 50%")));
-					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "There is a 10% chance for enemies to drop double loot")));
+					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "There is a 10% chance for enemies to drop double loot, and that loot to drop more loot!")));
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.DimGray, "Does not properly support online play, yet")));
 					//tooltips.Add(new TooltipLine(mod, "Nm1", "Using this item will enable Nightmare Hardcore, which ups the challenge even further for more Expertise"));
 

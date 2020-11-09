@@ -86,12 +86,72 @@ namespace SGAmod.Items.Consumable
 		}
 	}
 
+	public class EnchantedBubble : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Enchanted Bubble");
+			Tooltip.SetDefault("'A breath of fresh air sealed within this magic bubble!'\n'Biting into this bubble restores your lungs'\nRecovers up to 100 Breath (the vanilla default)\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 90 seconds each"));
+			ItemID.Sets.ItemIconPulse[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.maxStack = 30;
+			item.rare = 1;
+			item.value = Item.buyPrice(silver: 50);
+			item.useStyle = 2;
+			item.useAnimation = 30;
+			item.useTime = 30;
+			item.useTurn = true;
+			//item.UseSound = SoundID.Drown;
+			item.consumable = true;
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Bubble"); }
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb((((Main.GlobalTime) * 0.116f)+(item.whoAmI * 0.179f)) % 1f, 0.8f, 0.75f);
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			foreach (TooltipLine line in tooltips)
+			{
+				if (line.mod == "Terraria" && line.Name == "ItemName")
+				{
+					line.overrideColor = Color.Lerp(Color.Aqua, Color.Blue, 0.5f + (float)Math.Sin(Main.GlobalTime * 1.5f));
+				}
+			}
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return player.SGAPly().CooldownStacks.Count < player.SGAPly().MaxCooldownStacks;
+		}
+		public override bool UseItem(Player player)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
+			Main.PlaySound(SoundID.Drown, (int)player.Center.X, (int)player.Center.Y, 0, 1f, 0.50f);
+			sgaplayer.AddCooldownStack(60 * 90, 1);
+			player.breath = (int)MathHelper.Clamp(player.breath+200,0, player.breathMax);
+			sgaplayer.sufficate = player.breath;
+			return true;
+		}
+	}
+
 	public class DivineShower : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Divine Shower Storm");
-			Tooltip.SetDefault("'The heavens favor you'\nCauses all fallen stars on the ground to rain down on all active enemies; whichever is limited first\nThe entirety of 1 stack will fall over 1 enemy, but spread out the larger the stack is\nIs limited to once per night, per a long cooldown");
+			Tooltip.SetDefault("'The heavens favor you'\nCauses all fallen stars on the ground to rain down on all active enemies; whichever is limited first\nThe entirety of 1 stack will fall over 1 enemy, but spread out the larger the stack is\nHowever this caps out at 5 per stack\nIs limited to once per night, per a long cooldown");
 		}
 
 		public override void SetDefaults()
@@ -148,7 +208,7 @@ namespace SGAmod.Items.Consumable
 			List<Item> itemslist = new List<Item>();
 			for(int i = 0; i < Main.item.Length; i += 1)
             {
-				if (Main.item[i]!=null && Main.item[i].active && Main.item[i].type==ItemID.FallenStar)
+				if (Main.item[i]!=null && Main.item[i].active && Main.item[i].type==ItemID.FallenStar && Main.item[i].stack<=5)
 				itemslist.Add(Main.item[i]);
 			}
 
@@ -190,7 +250,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("True Wraith Notch");
-			Tooltip.SetDefault("'Reward for beating the Copper Wraith without angering it first" +
+			Tooltip.SetDefault("'Reward for beating the Copper Wraith without angering it first'" +
 				"\nUnlocks IDG's Starter Bags in Draken's shop when consumed\n-Permanent Upgrade-");
 		}
 
@@ -398,7 +458,7 @@ namespace SGAmod.Items.Consumable
 
 		public override bool CanUseItem(Player player)
 		{
-			return player.SGAPly().CooldownStacks.Count + 1 < player.SGAPly().MaxCooldownStacks && !NPC.travelNPC && NPC.CountNPCS(NPCID.TravellingMerchant)<1 && Main.dayTime && !Main.eclipse;
+			return player.SGAPly().CooldownStacks.Count + 1 < player.SGAPly().MaxCooldownStacks && !NPC.travelNPC && NPC.CountNPCS(NPCID.TravellingMerchant)<1 && Main.dayTime && !Main.eclipse && Main.projectile.FirstOrDefault(type2 => type2.type == ModContent.ProjectileType<GongSummon>()) == default;
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)

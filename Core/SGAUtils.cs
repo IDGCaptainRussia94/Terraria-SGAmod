@@ -182,6 +182,10 @@ namespace SGAmod
 		{
 			return listToClone.Select(item => (T)item.Clone()).ToList();
 		}
+		public static Vector3 ToVector3(this Vector2 vector)
+		{
+			return new Vector3(vector.X, vector.Y,0);
+		}
 		public static SGAPlayer SGAPly(this Player player)
 		{
 			return player.GetModPlayer<SGAPlayer>();

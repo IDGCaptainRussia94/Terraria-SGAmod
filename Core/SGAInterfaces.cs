@@ -11,6 +11,9 @@ namespace SGAmod
 	{
 		void DrawAdditive(SpriteBatch spriteBatch);
 	}
+	interface IHitScanItem
+	{
+	}
 	interface ISGABoss
 	{
 		string Trophy();

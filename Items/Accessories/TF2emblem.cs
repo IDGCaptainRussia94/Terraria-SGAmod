@@ -47,7 +47,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = Item.sellPrice(0, 50, 0, 0);;
+			item.value = Item.sellPrice(0, 5, 0, 0);
 			item.rare = 5;
 			item.accessory = true;
 		}
@@ -82,7 +82,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = Item.sellPrice(0, 50, 0, 0); ;
+			item.value = Item.sellPrice(0, 5, 0, 0);
 			item.rare = 5;
 			item.accessory = true;
 		}
@@ -116,7 +116,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = Item.sellPrice(0, 50, 0, 0); ;
+			item.value = Item.sellPrice(0, 5, 0, 0);
 			item.rare = 5;
 			item.accessory = true;
 		}
@@ -152,7 +152,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = Item.sellPrice(0, 50, 0, 0); ;
+			item.value = Item.sellPrice(0, 7, 50, 0);
 			item.rare = 7;
 			item.accessory = true;
 		}
@@ -241,7 +241,7 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = Item.sellPrice(2, 0, 0, 0); ;
+			item.value = Item.sellPrice(0, 10, 0, 0);
 			item.rare = 12;
 			item.accessory = true;
 		}

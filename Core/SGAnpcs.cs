@@ -18,7 +18,11 @@ using Terraria.ID;
 using Idglibrary;
 using AAAAUThrowing;
 using SGAmod.NPCs.Cratrosity;
+using SGAmod.Dimensions;
 using SGAmod.HavocGear.Items.Weapons;
+using System.Linq;
+using SGAmod.Buffs;
+using SGAmod.Items.Tools;
 
 namespace SGAmod
 {
@@ -63,6 +67,7 @@ namespace SGAmod
 		public bool Mircotransactions;
 		public int hellionTimer = 0;
 		public int counter = 0;
+		public int impaled = 0;
 		public byte crimsonCatastrophe = 0;
 
 		public int FindBuffIndex(NPC npc, int type)
@@ -180,6 +185,29 @@ namespace SGAmod
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
 		{
 
+			if (!npc.townNPC && !npc.friendly && npc.HasBuff(BuffID.Lovestruck))
+			{
+				int maxdamage = 0;
+				foreach (Player player in Main.player.Where(player => player.active && player.SGAPly().intimacy > 0 && npc.Distance(player.MountedCenter) < 600))
+				{
+					maxdamage = Math.Max(maxdamage, player.lifeRegen * (5 * player.SGAPly().intimacy));
+				}
+				npc.lifeRegen -= maxdamage;
+			}
+
+			if (npc.HasBuff(BuffID.Stinky))
+			{
+				foreach (Player player in Main.player.Where(player => player.active && player.SGAPly().toxicity > 0 && npc.Distance(player.MountedCenter) < 600))
+				{
+					foreach (NPC npc2 in Main.npc.Where(npc2 => npc2.active && npc2.Distance(npc.Center) < 300))
+					{
+						if (Main.rand.Next(0, 500) == 0)
+							npc2.AddBuff(BuffID.Stinky, 60 * 5);
+					}
+				}
+
+			}
+
 			if (Combusted > 0)
 			{
 				npc.lifeRegen -= 50 + (int)(Math.Pow(npc.lifeMax, 0.5) / 3.0);
@@ -278,6 +306,14 @@ namespace SGAmod
 					damage = 10;
 				}
 			}
+			if (impaled > 0)
+			{
+				if (npc.lifeRegen > 0) npc.lifeRegen = 0;
+				npc.lifeRegen -= impaled;
+				damage = Math.Max(impaled / 4, damage);
+			}
+			//ResetEffects seems to be called after projectile AI it seems, but this works, for now
+			impaled = 0;
 		}
 
 		public override void DrawEffects(NPC npc, ref Color drawColor)
@@ -543,6 +579,8 @@ namespace SGAmod
 		public override bool PreAI(NPC npc)
 		{
 
+			CrucibleArenaMaster.UpdatePortal(npc);
+
 			if ((npc.type == NPCID.CultistDevote || npc.type == NPCID.CultistArcherBlue || npc.type == NPCID.CultistTablet) && (SGAWorld.downedHarbinger == false && Main.netMode < 1))
 			{
 				npc.active = false;
@@ -595,10 +633,10 @@ namespace SGAmod
 			{
 				if (Main.netMode != 2)
 				{
-					if (counter % 150 == 0 && npc.value > Item.buyPrice(0, 1, 0, 0))
+					if (counter % 150 == 0 && npc.value > Item.buyPrice(0, 0, 50, 0))
 					{
-						npc.value -= Item.buyPrice(0, 0, 50, 0);
-						Item.NewItem(npc.position, new Vector2(npc.width, npc.height), 50, noGrabDelay: true);
+						npc.value -= Item.buyPrice(0, 0, 25, 0);
+						Item.NewItem(npc.position, new Vector2(npc.width, npc.height), 25, noGrabDelay: true);
 					}
 				}
 			}
@@ -716,16 +754,6 @@ namespace SGAmod
 					}
 					break;
 
-				case NPCID.Dryad:
-
-					if (SGAWorld.downedSpiderQueen)
-					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("StoneBarrierStaff"));
-						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 1, 50, 0);
-						nextSlot++;
-					}
-					break;
-
 				case NPCID.ArmsDealer:
 
 					if (!SGAWorld.WorldIsTin || Main.hardMode)
@@ -763,6 +791,19 @@ namespace SGAmod
 					}
 					break;
 
+				case NPCID.Mechanic:
+
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<Spanner>());
+						nextSlot++;
+					break;
+
+				case NPCID.Wizard:
+
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<EnchantedBubble>());
+						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 50, 0);
+						nextSlot++;
+					break;
+
 				case NPCID.TravellingMerchant:
 
 					if (Main.LocalPlayer.ZoneUnderworldHeight)
@@ -771,11 +812,27 @@ namespace SGAmod
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(3, 0, 0, 0);
 						nextSlot++;
 					}
-					break;	
+					break;
 
 			}
 
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+
+			if (sgaplayer.intimacy>0)
+			{
+				shop.item[nextSlot].SetDefaults(ItemID.LovePotion);
+				shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 25, 0);
+				nextSlot++;
+			}
+
+			if (sgaplayer.toxicity > 0)
+			{
+				shop.item[nextSlot].SetDefaults(ItemID.StinkPotion);
+				shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 25, 0);
+				nextSlot++;
+			}
+
+
 			if (sgaplayer.MidasIdol > 0)
 			{
 
@@ -791,8 +848,24 @@ namespace SGAmod
 				{
 					foreach (Item item in shop.item)
 					{
-						item.value = (int)(item.value * 0.85);
+						item.value = (int)(item.shopCustomPrice * 0.85);
 					}
+				}
+			}
+
+			if (sgaplayer.intimacy > 0 && Main.npc[player.talkNPC].HasBuff(BuffID.Lovestruck))
+			{
+				foreach (Item item in shop.item)
+				{
+					item.value = (int)(item.value * 0.80);
+				}
+			}
+
+			if (sgaplayer.toxicity > 0 && player.HasBuff(BuffID.Stinky))
+			{
+				foreach (Item item in shop.item)
+				{
+					item.value = (int)(item.value * 1.25);
 				}
 			}
 
@@ -802,7 +875,7 @@ namespace SGAmod
 				foreach (Item item2 in shop.item)
 				{
 					Main.NewText(sgaplayer.greedyperc);
-					item2.value = (int)(item2.value * (1f - (Math.Min(0.9f, sgaplayer.greedyperc * 1f))));
+					item2.value = (int)(item2.value * (1f - (Math.Min(0.95f, sgaplayer.greedyperc * 1f))));
 				}
 			}
 		}
@@ -864,7 +937,7 @@ namespace SGAmod
 			{
 				npc.value *= (int)(SGAWorld.NightmareHardcore * 1.50);
 				if (Main.rand.Next(0, 100) < 10)
-					NPCLoot(npc);
+					npc.NPCLoot();
 
 			}
 
@@ -1000,9 +1073,9 @@ namespace SGAmod
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SybariteGem"));
 			}
 
-			if (Main.rand.Next(100) < 50 && SGAWorld.downedSharkvern)
+			if (Main.rand.Next(100) < 50 && SGAWorld.downedSharkvern && npc.type == NPCID.Shark)
 			{
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SharkTooth"), 10 + Main.rand.Next(20));
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SharkTooth"), 10 + Main.rand.Next(21));
 			}
 
 			if (npc.type == NPCID.RedDevil)

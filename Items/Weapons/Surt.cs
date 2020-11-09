@@ -267,7 +267,7 @@ namespace SGAmod.Items.Weapons
 					}
 
 					Vector2 perturbedSpeed2 = (speedz * speed).RotatedBy(MathHelper.Lerp(-rotation/2, rotation/2f, i / (numberProjectiles - 1))); // Watch out for dividing by 0 if there is only 1 projectile.
-					int proj2 = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed2.X * 2f, perturbedSpeed2.Y * 2f, mod.ProjectileType("BoulderBlast"), (int)((float)damage * 0.75f), knockBack / 3f, player.whoAmI);
+					int proj2 = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed2.X * 2f, perturbedSpeed2.Y * 2f, mod.ProjectileType("BoulderBlast"), (int)((float)damage * 1f), knockBack / 3f, player.whoAmI);
 					Main.projectile[proj2].melee = true;
 					Main.projectile[proj2].magic = false;
 					Main.projectile[proj2].timeLeft = 15;
@@ -368,7 +368,7 @@ namespace SGAmod.Items.Weapons
 			if (projectile.ai[0] % 4 == 0 && GetType()==typeof(SurtWave3))
 			{
 				Vector2 where = new Vector2(Main.rand.Next(-60, 60), Main.rand.Next(-180, 180));
-				int proj2 = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y - 128)+ where, new Vector2(0, -8), mod.ProjectileType("BoulderBlast"), (int)((float)projectile.damage * 0.6f), projectile.knockBack / 3f, projectile.owner);
+				int proj2 = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y - 128)+ where, new Vector2(0, -8), mod.ProjectileType("BoulderBlast"), (int)((float)projectile.damage * 0.75f), projectile.knockBack / 3f, projectile.owner);
 				Main.projectile[proj2].melee = true;
 				Main.projectile[proj2].magic = false;
 				Main.projectile[proj2].usesLocalNPCImmunity = true;

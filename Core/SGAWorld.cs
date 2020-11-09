@@ -741,16 +741,45 @@ namespace SGAmod
                 }
             }
 
-            for (int i = 1; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 itemsToPlaceInOvergrownChestsSecond = new int[] {mod.ItemType("DecayedMoss"), mod.ItemType("DecayedMoss"), mod.ItemType("DecayedMoss"), mod.ItemType("DecayedMoss"), mod.ItemType("Biomass"), mod.ItemType("Biomass") };
                 itemsToPlaceInOvergrownChestsChoiceSecond = 0;
                 for (int chestIndex = 0; chestIndex < 1000; chestIndex++)
                 {
                     Chest chest = Main.chest[chestIndex];
-                    if (chest != null && (WorldGen.genRand.Next(0,100) < 15 || Main.tile[chest.x, chest.y-1].wall == mod.TileType("SwampWall")))
+                    if (i == 0 && chest != null)
                     {
-                        if (WorldGen.genRand.Next(0, 100) < 5) 
+                        if (WorldGen.genRand.Next(0, 100) < (Main.tile[chest.x, chest.y].frameX / 32 == 1 ? 20 : Main.tile[chest.x, chest.y].frameX / 32 == 0 ? 5 : 0))
+                        {
+                            for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
+                            {
+                                if (chest.item[inventoryIndex].IsAir)
+                                {
+                                    chest.item[inventoryIndex].SetDefaults(mod.ItemType("AversionCharm"));
+                                    chest.item[inventoryIndex].stack = 1;
+                                    break;
+                                }
+                            }
+                        }
+                        if (WorldGen.genRand.Next(0, 100) < (Main.tile[chest.x, chest.y].frameX / 32 == 17 ? 50 : (Main.tile[chest.x, chest.y].frameX / 32 == 1 ? 15 : Main.tile[chest.x, chest.y].frameX / 32 == 0 ? 10 : 5)))
+                        {
+                            for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
+                            {
+                                if (chest.item[inventoryIndex].IsAir)
+                                {
+                                    chest.item[inventoryIndex].SetDefaults(mod.ItemType("PocketRocks"));
+                                    chest.item[inventoryIndex].stack = 1;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                            
+                            
+                     if (chest != null && (WorldGen.genRand.Next(0,100) < 15 || Main.tile[chest.x, chest.y-1].wall == mod.TileType("SwampWall")))
+                    {
+                        if (WorldGen.genRand.Next(0, 100) < 5)
                         {
                             for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
                             {

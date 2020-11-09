@@ -174,7 +174,7 @@ namespace SGAmod.Items.Weapons
 			item.knockBack = 10;
 			item.value = 10000;
 			item.noMelee = true;
-			item.rare = 5;
+			item.rare = ItemRarityID.Lime;
 			item.shoot = 10;
 			item.shootSpeed = 10f;
 			item.UseSound = SoundID.Item60;
@@ -306,8 +306,9 @@ namespace SGAmod.Items.Weapons
 			projectile.hostile = false;
 			projectile.friendly = true;
 			projectile.penetrate = 5;
-			projectile.magic = true;
+			projectile.minion = true;
 			projectile.extraUpdates = 2;
+			projectile.coldDamage = true;
 		}
 
 		public override string Texture
@@ -656,6 +657,7 @@ namespace SGAmod.Items.Weapons
 			projectile.friendly = true;
 			projectile.penetrate = 1;
 			projectile.Throwing().thrown = true;
+			projectile.coldDamage = true;
 			projectile.extraUpdates = 0;
 			projectile.aiStyle = -1;
 		}
@@ -712,6 +714,7 @@ namespace SGAmod.Items.Weapons
 			projectile.friendly = true;
 			projectile.penetrate = 1;
 			projectile.Throwing().thrown = true;
+			projectile.coldDamage = true;
 			projectile.extraUpdates = 0;
 			projectile.aiStyle = -1;
 		}
@@ -795,6 +798,7 @@ namespace SGAmod.NPCs
 			base.SetDefaults();
 			projectile.hostile = false;
 			projectile.friendly = true;
+			projectile.coldDamage = true;
 		}
 
 		public override void AI()
@@ -808,6 +812,8 @@ namespace SGAmod.NPCs
 					int proj2 = Projectile.NewProjectile(projectile.Center, projectile.velocity + new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(0, 3f)), mod.ProjectileType("CirnoIceShardPlayerOrbit"), (int)((float)projectile.damage * 0.5f), 0f, projectile.owner);
 					Main.projectile[proj2].ai[0] = MathHelper.ToRadians(i+ rand);
 					Main.projectile[proj2].ai[1] = projectile.whoAmI;
+					Main.projectile[proj2].Throwing().thrown = true;
+					Main.projectile[proj2].magic = false;
 					Main.projectile[proj2].netUpdate = true;
 				}
 			}

@@ -21,6 +21,7 @@ namespace SGAmod.Items.Tools
 		public override void SetDefaults()
 		{
 			item.CloneDefaults(ItemID.MythrilPickaxe);
+			item.useTime = 12;
 		}
 		
 		public override void AddRecipes()
@@ -63,6 +64,7 @@ namespace SGAmod.Items.Tools
 		{
 			item.CloneDefaults(ItemID.MythrilDrill);
 			item.shoot = mod.ProjectileType("BoreicDrillProj");
+			item.useTime = 10;
 		}
 
 		public override void AddRecipes()

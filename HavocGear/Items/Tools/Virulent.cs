@@ -30,7 +30,7 @@ namespace SGAmod.HavocGear.Items.Tools
 			item.melee = true;
 			item.width = 32;
 			item.height = 32;
-			item.useTime = 25;
+			item.useTime = 9;
 			item.useAnimation = 20;
 			item.pick = 150;
 			item.useStyle = 1;
@@ -43,7 +43,7 @@ namespace SGAmod.HavocGear.Items.Tools
 
         	public override void AddRecipes()
         	{
-            		ModRecipe recipe = new ModRecipe(mod);
+			ModRecipe recipe;
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "MangrovePickaxe", 1);
 			recipe.AddIngredient(null, "VirulentBar", 5);
@@ -61,19 +61,19 @@ namespace SGAmod.HavocGear.Items.Tools
 
 		public override void SetDefaults()
 		{
-			item.damage = 26;
+			item.damage = 19;
 			item.melee = true;
 			item.width = 56;
 			item.height = 22;
-			item.useTime = 7;
+			item.useTime = 8;
 			item.useAnimation = 25;
 			item.channel = true;
 			item.noUseGraphic = true;
 			item.noMelee = true;
 			item.pick = 150;
-			item.tileBoost++;
+			item.tileBoost += 1;
 			item.useStyle = 5;
-			item.knockBack = 5;
+			item.knockBack = 0;
 			item.value = 3000;
 			item.rare = 4;
 			item.UseSound = SoundID.Item23;

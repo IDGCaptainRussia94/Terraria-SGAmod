@@ -11,6 +11,9 @@ using Terraria.ModLoader;
 using Idglibrary;
 using SGAmod.NPCs.Hellion;
 using Terraria.GameContent.Events;
+using SGAmod.Items.Weapons;
+using SGAmod.NPCs;
+using Terraria.Localization;
 
 namespace SGAmod.Items.Consumable
 {
@@ -442,17 +445,23 @@ namespace SGAmod.Items.Consumable
 			item.useStyle = 4;
 			item.noMelee = true; //so the item's animation doesn't do damage
 			item.value = 0;
+			item.noUseGraphic = true;
 			item.rare = 9;
+			item.ammo = AmmoID.Snowball;
 			item.UseSound = SoundID.Item1;
+			item.shoot = ProjectileID.SnowBallFriendly;
+			item.shootSpeed = 10f;
 		}
 
 		public override bool CanUseItem(Player player)
 		{
-			if (!NPC.AnyNPCs(mod.NPCType("Cirno")))
+			if (!NPC.AnyNPCs(mod.NPCType("Cirno")) && Main.projectile.FirstOrDefault(proj => proj.type == ModContent.ProjectileType<CirnoBall>() && proj.active) == default)
 			{
 				if (!Main.dayTime || !player.ZoneSnow)
 				{
 					item.consumable = false;
+				if (player == Main.LocalPlayer)
+					Main.NewText("It's power lies in the snow biome during the day", 50, 50, 250);				
 				}
 				else
 				{
@@ -465,17 +474,21 @@ namespace SGAmod.Items.Consumable
 				return false;
 			}
 		}
-		public override bool UseItem(Player player)
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+            type = ModContent.ProjectileType<CirnoBall>();
+			return true;
+		}
+        public override bool UseItem(Player player)
 		{
 			if (item.consumable == false)
 			{
-				if (player == Main.LocalPlayer)
-					Main.NewText("It's power lies in the snow biome during the day", 50, 50, 250);
+
 			}
 			else
 			{
-				NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("Cirno"));
-				Main.PlaySound(15, (int)player.position.X, (int)player.position.Y, 0);
+				//NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("Cirno"));
+				//Main.PlaySound(15, (int)player.position.X, (int)player.position.Y, 0);
 			}
 			return true;
 		}
@@ -483,6 +496,7 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Snowball, 1);
 			recipe.AddIngredient(ItemID.SoulofNight, 2);
 			recipe.AddIngredient(ItemID.SoulofLight, 2);
 			recipe.AddIngredient(mod.ItemType("FrigidShard"), 9);
@@ -492,13 +506,92 @@ namespace SGAmod.Items.Consumable
 			recipe.AddRecipe();
 		}
 	}
+
+	public class CirnoBall : JarateShurikensProg
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Coin");
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Consumable/Nineball"); }
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			//nil
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.SnowBallFriendly);
+			projectile.ranged = false;
+			projectile.tileCollide = true;
+			projectile.friendly = false;
+			projectile.hostile = false;
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 3;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		public override void AI()
+		{
+			projectile.localAI[1] += 1;
+			if (projectile.localAI[1] > 60)
+            {
+				projectile.aiStyle = -1;
+				projectile.velocity *= 0.90f;
+
+				if ((int)projectile.localAI[1]%30==0)
+				Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 25).Pitch+=(projectile.localAI[1]-60)/350f;
+
+				for (int num654 = 0; num654 < 1 + projectile.localAI[1]/8f; num654++)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 9.00);
+					Dust num655 = Dust.NewDustPerfect(projectile.Center+new Vector2(2,2) + ogcircle * 10f, 59, -projectile.velocity + randomcircle * 2f, 150, Color.Aqua, 1.5f);
+					num655.noGravity = true;
+					num655.noLight = true;
+				}
+
+				if (projectile.localAI[1] > 300)
+                {
+					int npc = NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y+24, ModContent.NPCType<Cirno>());
+
+					string typeName2 = Main.npc[npc].TypeName;
+					if (Main.netMode == 0)
+					{
+						Main.NewText(Language.GetTextValue("Announcement.HasAwoken", typeName2), 175, 75);
+					}
+					else if (Main.netMode == 2)
+					{
+						NetMessage.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", Main.npc[npc].GetTypeNetName()), new Color(175, 75, 255));
+					}
+
+					Main.PlaySound(15, (int)projectile.position.X, (int)projectile.position.Y, 0);
+					for (float num654 = 0; num654 < 25 + projectile.localAI[1] / 10f; num654+=0.25f)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
+						int num655 = Dust.NewDust(projectile.Center + new Vector2(2, 2) + ogcircle * 16f, 0, 0, 88, -projectile.velocity.X + randomcircle.X * 6f, -projectile.velocity.Y + randomcircle.Y * 6f, 150, Color.Aqua, 1.6f);
+						Main.dust[num655].noGravity = true;
+						Main.dust[num655].noLight = true;
+					}
+					projectile.Kill();
+
+				}
+
+			}
+
+		}
+
+	}
+
 	public class CaliburnCompess : BaseBossSummon
 	{
 		private float effect = 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Caliburn Compass");
-			Tooltip.SetDefault("While held, it points to Caliburn Altars in your world\nCan be used in hardmode to fight a stronger Caliburn spirit\nNon-Consumable");
+			Tooltip.SetDefault("When held, it points to Caliburn Altars in your world\nCan be used in hardmode to fight a stronger Caliburn spirit\nNon-Consumable");
 
 		}
 		public override bool CanUseItem(Player player)

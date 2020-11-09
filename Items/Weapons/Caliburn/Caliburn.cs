@@ -98,6 +98,14 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.shootSpeed = 20f;
 			item.useTurn = false;
 			item.autoReuse = true;
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/CaliburnBlade1");
+				item.GetGlobalItem<ItemUseGlow>().GlowColor = delegate (Item item, Player player)
+				{
+					return Color.White * 0.25f;
+				};
+			}
 		}
 
 		public static void SpectralSummon(Player player, int type, int damage,Vector2 there)
@@ -227,6 +235,14 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.shootSpeed = 20f;
 			item.useTurn = false;
 			item.autoReuse = true;
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/CaliburnBlade2");
+				item.GetGlobalItem<ItemUseGlow>().GlowColor = delegate (Item item, Player player)
+				{
+					return Color.White * 0.25f;
+				};
+			}
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -568,6 +584,14 @@ namespace SGAmod.Items.Weapons.Caliburn
 	        item.shootSpeed=20f;
 			item.useTurn = false;
 	     	item.autoReuse = true;
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/CaliburnBlade3");
+				item.GetGlobalItem<ItemUseGlow>().GlowColor = delegate (Item item, Player player)
+				{
+					return Color.White * 0.25f;
+				};
+			}
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -634,7 +658,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Corroded Shield");
-			Tooltip.SetDefault("'A treasure belonging to a former adventurer you'd rather not use but it looks useful'\nAllows you to block 25% of damage from the source by pointing the shield in the general direction\nAttack with the shield to bash-dash, gaining IFrames and hit enemies are Acid Burned\nCan only hit 5 targets, bash-dash ends prematural after the 5th\nCan be held out like a torch and used normally by holding shift");
+			Tooltip.SetDefault("'A treasure belonging to a former adventurer you'd rather not use but it looks useful'\nAllows you to block 25% of damage from the source by pointing the shield in the general direction\nAttack with the shield to bash-dash, gaining IFrames and hit enemies are Acid Burned\nCan only hit 5 targets, bash-dash ends prematurally after the 5th\nCan be held out like a torch and used normally by holding shift");
 			Item.staff[item.type] = true;
 		}
 

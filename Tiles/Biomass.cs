@@ -26,7 +26,7 @@ namespace SGAmod.Tiles
 			mineResist = 1f;
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Photosyte");
-			AddMapEntry(new Color(40, 160, 40), name);
+			AddMapEntry(new Color(40, 150, 40), name);
 		}
 	}
 }

@@ -16,13 +16,13 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Acid Scepter");
-			Tooltip.SetDefault("Hold the left mouse button to charge up to 10 Acid Venom shots\nRelease to send them flying at the mouse cursor\nHas very slight debuff splash damage");
+			Tooltip.SetDefault("Hold the left mouse button to charge up to 10 Acid Venom shots\nRelease to send them flying at the mouse cursor\nHas debuff splash damage, has higher DOT than other acid weapons");
 			Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 20;
+			item.damage = 22;
 			item.magic = true;
 			item.mana = 5;
 			item.width = 40;

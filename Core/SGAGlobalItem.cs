@@ -203,10 +203,11 @@ namespace SGAmod
             {
                 string text1 = Idglib.ColorText(Color.Red, "90% reduced breath meter regen");
                 string text2 = Idglib.ColorText(Color.Red, "You've adapted to pressurized air, removing the armor set will greatly harm you");
-                player.setBonus = "Receive Endurance and Defense based on breath left (40% Endurance and 100 Defense at full breath)\nTaking damage will drain your breath meter based on the faction of life lost\nReceive no damage when damaged with a full breath meter\nTechnological damage increased by 25%\n" + SGAGlobalItem.pboostertext + text1 + " \n" + text2;
+                player.setBonus = "Receive Endurance and Defense based on breath left (40% Endurance and 100 Defense at full breath)\nTaking damage will drain your breath meter based on the faction of life lost\nReceive no damage when damaged with a full breath meter\nTechnological damage increased and Electric Consumption reduced by 25%\n" + SGAGlobalItem.pboostertext + text1 + " \n" + text2;
                 sgaplayer.SpaceDiverset = true;
                 sgaplayer.SpaceDiverWings += 0.5f;
                 sgaplayer.techdamage += 0.25f;
+                sgaplayer.electricChargeCost *= 0.75f;
             }
             if (set == "MisterCreeper")
             {
@@ -269,6 +270,13 @@ namespace SGAmod
                     Main.dust[dust].color = new Color(180, 60, 140);
                     Main.dust[dust].alpha = 181;
                 }
+            }
+            if (!player.frostBurn && player.SGAPly().glacialStone && item.melee && !item.noMelee && !item.noUseGraphic && Main.rand.Next(2) == 0)
+            {
+                int num288 = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, 135, player.velocity.X * 0.2f + (float)(player.direction * 3), player.velocity.Y * 0.2f, 100, default(Color), 2.5f);
+                Main.dust[num288].noGravity = true;
+                Main.dust[num288].velocity *= 0.7f;
+                Main.dust[num288].velocity.Y -= 0.5f;
             }
         }
 
@@ -389,21 +397,26 @@ namespace SGAmod
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 
-                if (item.type == ItemID.Heart || item.type == ItemID.CandyApple || item.type == ItemID.CandyCane)
-                {
-                    if (player.HasItem(mod.ItemType("EALogo")))
-                        player.QuickSpawnItem(ItemID.SilverCoin, 8);
+            if (item.type == ItemID.Heart || item.type == ItemID.CandyApple || item.type == ItemID.CandyCane)
+            {
+                if (player.HasItem(mod.ItemType("EALogo")))
+                    player.QuickSpawnItem(ItemID.SilverCoin, 8);
                 if (sgaplayer.HeartGuard)
                 {
                     player.HealEffect(5);
                     player.statLife += 5;
                 }
-                }
-                if (item.type == ItemID.Star || item.type == ItemID.SugarPlum || item.type == ItemID.SoulCake)
+                if (sgaplayer.intimacy>0 && player.HasBuff(BuffID.Lovestruck))
                 {
-                    if (player.HasItem(mod.ItemType("EALogo")))
-                        player.QuickSpawnItem(ItemID.SilverCoin, 4);
+                    player.HealEffect(10);
+                    player.statLife += 10;
                 }
+            }
+            if (item.type == ItemID.Star || item.type == ItemID.SugarPlum || item.type == ItemID.SoulCake)
+            {
+                if (player.HasItem(mod.ItemType("EALogo")))
+                    player.QuickSpawnItem(ItemID.SilverCoin, 4);
+            }
             //lifesteal/gain
             //NetMessage.SendData(66, -1, -1, null, num492, (float)num497, 0f, 0f, 0, 0, 0);
 
@@ -940,7 +953,8 @@ namespace SGAmod
 
         public override void OnConsumeItem(Item item, Player player)
         {
-            if (Main.rand.Next(0, 100) < player.GetModPlayer<SGAPlayer>().anticipationLevel)
+            SGAPlayer sga = player.SGAPly();
+            if (Main.rand.Next(0, 100) < sga.anticipationLevel && !sga.tpdcpu)
                 item.stack -= 1;
         }
 

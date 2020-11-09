@@ -17,7 +17,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Glass Sword");
-			Tooltip.SetDefault("Shatters on the first hit, throwing out several glass shards\nThese shards do base damage");
+			Tooltip.SetDefault("Shatters on the first hit, throwing out several glass shards\nThis weapon ignores enemy defense");
 			Item.staff[item.type] = true; 
 		}
 
@@ -36,7 +36,12 @@ namespace SGAmod.Items.Weapons
 			return true;
 		}
 
-		public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
+        public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+        {
+			damage += target.defense/2;
+		}
+
+        public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
 		{
 			item.noMelee = true;
 			player.ConsumeItem(item.type);

@@ -55,7 +55,7 @@ namespace SGAmod.Items.Placeable
         {
 			mod.AddItem("MaggotBanner", new SGABanner("Maggot"));
 			mod.AddItem("MaggotFlyBanner", new SGABanner("MaggotFly"));
-			mod.AddItem("BlackLeachBanner", new SGABanner("BlackLeech"));
+			mod.AddItem("BlackLeechBanner", new SGABanner("BlackLeech"));
 			mod.AddItem("DankMimicBanner", new SGABanner("DankMimic"));
 			mod.AddItem("DankSlimeBanner", new SGABanner("DankSlime"));
 			mod.AddItem("FlyBanner", new SGABanner("Fly"));

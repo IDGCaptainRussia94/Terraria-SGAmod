@@ -19,6 +19,7 @@ namespace SGAmod.Items.Tools
 			item.CloneDefaults(ItemID.MythrilDrill);
 			item.shoot = mod.ProjectileType("NoviteDrillProj");
 			item.useAnimation = 40;
+			item.useTime = 12;
 			item.damage = 8;
 			item.pick = 55;
 		}

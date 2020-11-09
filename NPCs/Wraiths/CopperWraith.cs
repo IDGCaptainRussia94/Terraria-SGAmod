@@ -505,10 +505,10 @@ namespace SGAmod.NPCs.Wraiths
 
 
 
-
+	[AutoloadBossHead]
 	public class CopperWraith : ModNPC, ISGABoss
 	{
-		public string Trophy() => GetType() == typeof(CobaltWraith) ? "CopperWraithTrophy" : "CobaltWraithTrophy";
+		public string Trophy() => GetType() == typeof(CobaltWraith) ? "CobaltWraithTrophy" : "CopperWraithTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
 
 		public int level = 0;
@@ -544,6 +544,8 @@ namespace SGAmod.NPCs.Wraiths
 		{
 			get { return ("SGAmod/NPCs/TPD"); }
 		}
+
+		public override string BossHeadTexture => "Terraria/Item_" + ItemID.CopperHelmet;
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{

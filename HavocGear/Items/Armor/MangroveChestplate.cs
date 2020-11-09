@@ -13,7 +13,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Mangrove Chestplate");
-			Tooltip.SetDefault("33% to not consume thrown items\n8% increased throwing damage");
+			Tooltip.SetDefault("33% to not consume thrown items\n8% increased throwing damage\n1% increased Throwing Apocalyptical Chance");
 		}
 
 		public override void SetDefaults()
@@ -22,11 +22,12 @@ namespace SGAmod.HavocGear.Items.Armor
 			item.height = 18;
 			item.value = 50000;
 			item.rare = 4;
-			item.defense = 20;
+			item.defense = 16;
 		}
 
 		public override void UpdateEquip(Player player)
 		{
+			player.SGAPly().apocalypticalChance[3] += 1.0;
 			player.Throwing().thrownCost33 = true;
 			player.Throwing().thrownDamage += 0.08f;
 		}
@@ -68,7 +69,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Mangrove Helmet");
-			Tooltip.SetDefault("15% increased throwing velocity\n10% increased throwing damage\n10% increased throwing crit");
+			Tooltip.SetDefault("15% increased throwing velocity\n10% increased throwing damage and crit chance\n1% increased Throwing Apocalyptical Chance");
 		}
 
 		public override void SetDefaults()
@@ -77,11 +78,12 @@ namespace SGAmod.HavocGear.Items.Armor
 			item.height = 18;
 			item.value = 50000;
 			item.rare = 4;
-			item.defense = 15;
+			item.defense = 12;
 		}
 
 		public override void UpdateEquip(Player player)
 		{
+			player.SGAPly().apocalypticalChance[3] += 1.0;
 			player.Throwing().thrownVelocity += 0.15f;
 			player.Throwing().thrownDamage += 0.1f;
 			player.Throwing().thrownCrit += 10;
@@ -105,15 +107,17 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Mangrove Greaves");
-			Tooltip.SetDefault("25% faster throwing item use speed\nIncreased movement speed\n7% increased throwing damage");
+			Tooltip.SetDefault("20% faster throwing item use speed and movement speed\n7% increased throwing damage\n1% increased Throwing Apocalyptical Chance");
 		}
 
 		public override void UpdateEquip(Player player)
 		{
-			player.GetModPlayer<SGAPlayer>().ThrowingSpeed += 0.25f;
+			player.SGAPly().apocalypticalChance[3] += 1.0;
+			player.SGAPly().ThrowingSpeed += 0.20f;
+			player.SGAPly().ThrowingSpeed += 0.20f;
 			player.Throwing().thrownDamage += 0.07f;
-			player.moveSpeed += 0.5f;
-			player.accRunSpeed += 0.25f;
+			player.maxRunSpeed += 0.6f;
+			player.accRunSpeed += 0.20f;
 		}
 
 		public override void SetDefaults()
@@ -122,7 +126,7 @@ namespace SGAmod.HavocGear.Items.Armor
 			item.height = 18;
 			item.value = 50000;
 			item.rare = 4;
-			item.defense = 10;
+			item.defense = 8;
 		}
 
 		public override void AddRecipes()

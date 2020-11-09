@@ -131,7 +131,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			for (float valez = 0.1f; valez < 10f; valez += 0.2f)
 			{
-				spriteBatch.Draw(tex, drawPos, null, color*0.05f, (((npc.localAI[0] / 15f)* (6f-valez))+ (valez/3.12612f))/3f, drawOrigin, (npc.scale* valez)*0.75f, npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(tex, drawPos, null, color*0.05f, (((npc.localAI[0] / 15f)* (6f-valez))+ (valez/3.12612f))/3f, drawOrigin, (npc.scale* valez)*0.75f,SpriteEffects.FlipVertically, 0f);
 			}
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
@@ -197,6 +197,7 @@ namespace SGAmod.Dimensions.NPCs
 				button = "Enter";
 			else
 				button = "Buy Loot";
+
 		}
 
 		public override void SetupShop(Chest shop, ref int nextSlot)

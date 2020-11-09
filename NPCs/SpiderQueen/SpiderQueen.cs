@@ -639,9 +639,9 @@ namespace SGAmod.NPCs.SpiderQueen
 				for (int pro = 0; pro < Main.maxNPCs; pro += 1)
 				{
 					NPC ply = Main.npc[pro];
-					if (ply.active && !ply.friendly && (ply.Center - projectile.Center).Length() < 48)
+					if (ply.active && !ply.friendly && (ply.Center - projectile.Center).Length() < 72)
 					{
-						ply.AddBuff(mod.BuffType("AcidBurn"), 45);
+						ply.AddBuff(mod.BuffType("AcidBurn"), 60*2);
 					}
 				}
 			}
@@ -696,7 +696,7 @@ namespace SGAmod.NPCs.SpiderQueen
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (Main.rand.Next(0, 3) < 2)
-				target.AddBuff(mod.BuffType("AcidBurn"), 60 * (Main.rand.Next(0, 3) == 1 ? 2 : 1));
+				target.AddBuff(mod.BuffType("AcidBurn"), 180 * (Main.rand.Next(0, 3) == 1 ? 2 : 1));
 			projectile.Kill();
 		}
 

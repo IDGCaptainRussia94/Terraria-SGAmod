@@ -29,7 +29,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.noMelee = true;
             item.crit = 4;
             item.knockBack = 2.2f;
-            item.value = 10000;
+            item.value = 100000;
             item.rare = 5;
             item.noUseGraphic = true;
 			item.autoReuse = true;

@@ -124,7 +124,7 @@ namespace SGAmod.Dimensions
 
             }
 
-            List<TileVector> platforms = new List<TileVector>();
+            List<Point> platforms = new List<Point>();
             for(int i=0;i< gatebackdroptiles.Count; i += 1) 
             {
                 DungeonTile atilz = gatebackdroptiles[i];
@@ -149,7 +149,7 @@ namespace SGAmod.Dimensions
                             WorldGen.PlaceObject(valuexx, (int)atilz.vector.Y, TileID.Torches, false, 6);
                                 for (int iii = -5; iii < 6; iii += 1)
                                 {
-                                    platforms.Add(new TileVector(valuexx + iii, (int)atilz.vector.Y + 2));
+                                    platforms.Add(new Point(valuexx + iii, (int)atilz.vector.Y + 2));
                                 }
                         }
                     }

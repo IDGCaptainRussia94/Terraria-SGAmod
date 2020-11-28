@@ -76,8 +76,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("Gatlipiller"), 1);
 			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 5);
-			recipe.AddIngredient(mod.ItemType("OmniSoul"), 5);
-			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
 			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 8);
 			recipe.AddIngredient(ItemID.LunarBar, 5);
 			recipe.AddIngredient(ItemID.SDMG, 1);

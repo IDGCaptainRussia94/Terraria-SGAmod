@@ -55,12 +55,11 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("NoviteBlaster"), 1);
-			recipe.AddIngredient(ItemID.LunarBar, 8);
 			recipe.AddIngredient(ItemID.FragmentVortex, 6);
 			recipe.AddIngredient(ItemID.FragmentNebula, 5);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
 			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 2);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 5);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 6);
 			recipe.AddIngredient(mod.ItemType("ManaBattery"), 2);
 			recipe.AddIngredient(mod.ItemType("CosmicFragment"), 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));

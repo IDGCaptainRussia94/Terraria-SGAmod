@@ -56,7 +56,7 @@ namespace SGAmod
 
         public override bool CanUseItem(Item item, Player player)
         {
-            if ((player.ownedProjectileCounts[mod.ProjectileType("TheJacobReloading")] > 0 || player.ownedProjectileCounts[mod.ProjectileType("DragonRevolverReloading")] > 0 || player.ownedProjectileCounts[mod.ProjectileType("TheRevolverReloading")] > 0) && item.damage > 0) {
+            if ((player.SGAPly().ReloadingRevolver>0) && item.damage > 0) {
                 return false;
             } else {
                 return base.CanUseItem(item, player);
@@ -335,6 +335,10 @@ namespace SGAmod
                     grabRange = 400;
                 }
             }
+            if (player.SGAPly().graniteMagnet)
+            {
+                grabRange += 48;
+            }
         }
 
         public override bool GrabStyle(Item item,Player player)
@@ -348,6 +352,16 @@ namespace SGAmod
                     item.velocity = item.velocity + movement;
                     item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
 
+                }
+                else
+                {
+                    if (player.SGAPly().graniteMagnet)
+                    {
+                        Vector2 vectorItemToPlayer = player.Center - item.Center;
+                        Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * 0.025f;
+                        item.velocity = item.velocity + movement;
+                        item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
+                    }
                 }
             }
 
@@ -367,15 +381,16 @@ namespace SGAmod
                 }
             }
 
-            if (item.healLife > 0 && sga.restorationFlower)
+            if (item.healLife > 0)
             {
-                if (player.statLife + item.healLife >= player.statLifeMax2)
+                if (player.statLife + item.healLife >= player.statLifeMax2 && sga.restorationFlower)
                 {
                     int difference = (player.statLife + item.healLife) - player.statLifeMax2;
                     player.AddBuff(BuffID.RapidHealing, difference * 5);
                 }
 
-                    if (player.GetModPlayer<SGAPlayer>().MisterCreeperset) {
+                if (player.GetModPlayer<SGAPlayer>().MisterCreeperset)
+                {
 
                     for (int gg = 0; gg < 30; gg += 1)
                     {
@@ -558,7 +573,7 @@ namespace SGAmod
                     player.QuickSpawnItem(mod.ItemType("IDGBreastplate"), 1);
                     player.QuickSpawnItem(mod.ItemType("IDGLegs"), 1);
                 }
-                if (arg == ItemID.GolemBossBag && Main.rand.Next(100) <= 20)
+                if (arg == ItemID.GolemBossBag && Main.rand.Next(100) < 20)
                     player.QuickSpawnItem(mod.ItemType("Upheaval"), 1);
                 if (arg == ItemID.MoonLordBossBag)
                     player.QuickSpawnItem(mod.ItemType("EldritchTentacle"), Main.rand.Next(20, 40));
@@ -598,25 +613,19 @@ namespace SGAmod
         public TrapPrefixAccessory()
         {
         }
-        public TrapPrefixAccessory(float armorbreak, float damage)
+        public TrapPrefixAccessory(float armorbreak, float damage,int misc = 0)
         {
             this.armorbreak = armorbreak;
             this.damage = damage;
-        }
-
-    }
-
-    public class MiscPrefixAccessory : TrapPrefix
-    {
-
-        public override PrefixCategory Category { get { return PrefixCategory.Accessory; } }
-
-        public MiscPrefixAccessory()
-        {
-        }
-        public MiscPrefixAccessory(int misc)
-        {
             this.misc = misc;
+        }
+        public override bool CanRoll(Item item)
+        {
+            return item.accessory;
+        }
+        public override float RollChance(Item item)
+        {
+            return 1f;
         }
 
     }
@@ -797,10 +806,11 @@ namespace SGAmod
                 }
                 if (GetType() == typeof(TrapPrefixAccessory))
                 {
-                    mod.AddPrefix("Tinkering", new TrapPrefixAccessory(0f, 0.05f));
-                    mod.AddPrefix("Knowledgable", new TrapPrefixAccessory(0.08f, 0f));
-                    mod.AddPrefix("Dungeoneer's", new TrapPrefixAccessory(0.05f, 0.10f));
-                    mod.AddPrefix("Goblin Tinker's Own", new TrapPrefixAccessory(0.075f, 0.15f));
+                    mod.AddPrefix("Tinkering", new TrapPrefixAccessory(0f, 0.04f));
+                    mod.AddPrefix("Knowledgable", new TrapPrefixAccessory(0.06f, 0f));
+                    mod.AddPrefix("Dungeoneer's", new TrapPrefixAccessory(0.04f, 0.05f));
+                    mod.AddPrefix("Goblin Tinker's Own", new TrapPrefixAccessory(0.05f, 0.075f));
+                    mod.AddPrefix("Energized", new TrapPrefixAccessory(0,0,1));
                 }
                 if (GetType() == typeof(ThrowerPrefix))
                 {
@@ -834,11 +844,7 @@ namespace SGAmod
                     mod.AddPrefix("Greedy", new EAPrefixAccessory(0.025f));
                     mod.AddPrefix("Grubby", new EAPrefixAccessory(0.05f));
                     mod.AddPrefix("Share Holding", new EAPrefixAccessory(0.075f));
-                }
-                if (GetType() == typeof(MiscPrefixAccessory))
-                {
-                    mod.AddPrefix("Energized", new MiscPrefixAccessory(1));
-                }            
+                }          
             }
             return false;
         }

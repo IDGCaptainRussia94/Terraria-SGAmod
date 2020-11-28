@@ -6,10 +6,41 @@ using Terraria;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Graphics.Shaders;
+using Terraria.Graphics;
+using Idglibrary;
+using SGAmod.Items.Placeable;
 
 namespace SGAmod.HavocGear.Items
 {
+	public class BottledMud : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Bottled Mud");
+			Tooltip.SetDefault("'brown and full of sedimental value'");
+		}
 
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 14;
+			item.maxStack = 99;
+			item.value = 50;
+			item.rare = 1;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Bottle);
+			recipe.AddIngredient(ItemID.MudBlock,3);
+			recipe.needWater = true;
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
 	public class VirulentBar : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -26,6 +57,13 @@ namespace SGAmod.HavocGear.Items
 			item.value = 500;
 			item.rare = 5;
 			item.alpha = 0;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = mod.TileType("VirulentBarTile");
 		}
 
 		public override void AddRecipes()
@@ -36,10 +74,6 @@ namespace SGAmod.HavocGear.Items
 			recipe.AddTile(TileID.Hellforge);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
-		}
-		public override string Texture
-		{
-			get { return ("SGAmod/Items/VirulentBar"); }
 		}
 
 	}
@@ -66,10 +100,6 @@ namespace SGAmod.HavocGear.Items
 			item.consumable = true;
 			item.createTile = mod.TileType("WatcherOre");
 		}
-		public override string Texture
-		{
-			get { return ("SGAmod/Items/VirulentOre"); }
-		}
 
 	}
 	public class BiomassBar : ModItem
@@ -87,6 +117,13 @@ namespace SGAmod.HavocGear.Items
 			item.maxStack = 99;
 			item.value = 100;
 			item.rare = ItemRarityID.Green;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = mod.TileType("BiomassBarTile");
 		}
 
 		public override string Texture
@@ -140,10 +177,17 @@ namespace SGAmod.HavocGear.Items
 		public override void SetDefaults()
 		{
 			item.value = 50;
-			item.rare = 1;
+			item.rare = ItemRarityID.Blue;
 			item.width = 16;
 			item.height = 16;
 			item.maxStack = 999;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = ModContent.TileType<DankWoodBlock>();
 		}
 
 		public override void SetStaticDefaults()
@@ -234,7 +278,7 @@ namespace SGAmod.Items
 			item.maxStack = 999;
 			item.width = 26;
 			item.height = 14;
-			item.value = 5000;
+			item.value = 75;
 			item.rare = 5;
 		}
 	}
@@ -273,7 +317,7 @@ namespace SGAmod.Items
 			item.width = 22;
 			item.height = 22;
 			item.maxStack = 99;
-			item.value = 10000;
+			item.value = 200;
 			item.rare = 6;
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
@@ -287,8 +331,10 @@ namespace SGAmod.Items
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("FrigidShard"), 1);
 			recipe.AddIngredient(mod.ItemType("FieryShard"), 1);
+			recipe.needLava = true;
+			recipe.needWater = true;
 			recipe.AddTile(TileID.CrystalBall);
-			recipe.SetResult(this, 1);
+			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
 		}
 	}
@@ -305,7 +351,7 @@ namespace SGAmod.Items
 			item.maxStack = 999;
 			item.width = 16;
 			item.height = 16;
-			item.value = 4000;
+			item.value = 100;
 			item.rare = 2;
 		}
 	}
@@ -329,7 +375,7 @@ namespace SGAmod.Items
 			item.width = refItem.width;
 			item.height = refItem.height;
 			item.maxStack = 999;
-			item.value = 10000;
+			item.value = 1000;
 			item.rare = 6;
 		}
 
@@ -420,7 +466,6 @@ namespace SGAmod.Items
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 2);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 3);
 			recipe.AddIngredient(ItemID.ManaCrystal, 1);
 			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 3);
@@ -439,7 +484,7 @@ namespace SGAmod.Items
 
 		public override void SetDefaults()
 		{
-			item.maxStack = 999;
+			item.maxStack = 10;
 			item.width = 26;
 			item.height = 14;
 			item.value = Item.sellPrice(0,0,50,0);
@@ -473,6 +518,13 @@ namespace SGAmod.Items
 			item.height = 14;
 			item.value = Item.sellPrice(0,0,25,0);
 			item.rare = 5;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = mod.TileType("CryostalBarTile");
 		}
 	}
 	public class EldritchTentacle : ModItem
@@ -661,7 +713,13 @@ public class LunarRoyalGel : ModItem
 			item.height = 20;
 			item.value = Item.sellPrice(0, 0, 25, 0);
 			item.rare = 9;
-			item.consumable = false;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = mod.TileType("StarMetalBarTile");
 		}
 		public override void AddRecipes()
 		{
@@ -689,6 +747,13 @@ public class LunarRoyalGel : ModItem
 			item.value = Item.sellPrice(0, 1, 0, 0);
 			item.rare = 9;
 			item.consumable = false;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = mod.TileType("DrakeniteBarTile");
 		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
@@ -774,7 +839,8 @@ public class LunarRoyalGel : ModItem
 			recipe.AddIngredient(ItemID.LunarBar, 1);
 			recipe.AddIngredient(mod.ItemType("ByteSoul"), 10);
 			recipe.AddIngredient(mod.ItemType("WatchersOfNull"), 1);
-			recipe.AddIngredient(mod.ItemType("AncientFabricItem"), 5);
+			recipe.AddIngredient(mod.ItemType("AncientFabricItem"), 25);
+			recipe.AddIngredient(mod.ItemType("HopeHeart"), 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
@@ -787,7 +853,7 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Copper Wraith Notch");
-			Tooltip.SetDefault("intact remains of the Copper Wraith's animated armor");
+			Tooltip.SetDefault("Intact remains of the Copper Wraith's animated armor");
 		}
 		public override void SetDefaults()
 		{
@@ -803,7 +869,7 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cobalt Wraith Notch");
-			Tooltip.SetDefault("intact remains of the Cobalt Wraith's animated armor, stronger than before");
+			Tooltip.SetDefault("Intact remains of the Cobalt Wraith's animated armor, stronger than before");
 		}
 		public override void SetDefaults()
 		{
@@ -819,14 +885,14 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Luminite Wraith Notch");
-			Tooltip.SetDefault("intact remains of the Luminate Wraith's special armor");
+			Tooltip.SetDefault("Intact remains of the Luminate Wraith's special armor");
 		}
 		public override void SetDefaults()
 		{
 			item.maxStack = 999;
 			item.width = 14;
 			item.height = 14;
-			item.value = 100000;
+			item.value = 10000;
 			item.rare = ItemRarityID.Red;
 		}
 	}
@@ -1097,6 +1163,120 @@ public class LunarRoyalGel : ModItem
 		}
 	}
 
+	public class StygianCore : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Stygian Star");
+			Tooltip.SetDefault("'Torn from Stygian Veins with a mining tool, this star is burning fabric made manifest...'");
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+		}
+		public override void SetDefaults()
+		{
+			item.width = 32;
+			item.height = 32;
+			item.value = 50000;
+			item.maxStack = 10;
+			item.rare = ItemRarityID.Red;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Sun"; }
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.Magenta*0.50f;
+		}
+
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+
+			Texture2D inner = Main.itemTexture[ModContent.ItemType<AssemblyStar>()];
+
+			Vector2 slotSize = new Vector2(52f, 52f);
+			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
+			
+
+			for (float i = 0; i < 1f; i += 0.10f)
+			{
+				spriteBatch.Draw(inner, drawPos, null, (Color.DarkMagenta * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.5f)*0.50f, i * MathHelper.TwoPi, textureOrigin, Main.inventoryScale * (0.5f + 1.75f * (((Main.GlobalTime / 2f) + i) % 1f)), SpriteEffects.None, 0f);
+			}
+
+			return true;
+		}
+
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
+
+			Texture2D inner = Main.itemTexture[ModContent.ItemType<AssemblyStar>()];
+
+			Vector2 slotSize = new Vector2(52f, 52f);
+			Vector2 position = item.Center-Main.screenPosition;
+
+			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
+
+			for (float i = 0; i < 1f; i += 0.10f)
+			{
+				spriteBatch.Draw(inner, position, null, (Color.DarkMagenta * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.5f) * 0.50f, i * MathHelper.TwoPi, textureOrigin, 1f * (0.5f + 1.75f * (((Main.GlobalTime / 2f) + i) % 1f)), SpriteEffects.None, 0f);
+			}
+
+			spriteBatch.Draw(Main.itemTexture[item.type],position,null,alphaColor,rotation, Main.itemTexture[item.type].Size()/2f, 128f/256f, SpriteEffects.None, 0f);
+
+			return false;
+		}
+
+	}
+
+	public class HopeHeart : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Hopeful Heart");
+			Tooltip.SetDefault("'There is always hope in the darkness...'\nRestores 30 lost max HP when picked up\nCannot be picked up while a boss is alive");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.maxStack = 30;
+			item.rare = 8;
+			item.value = 1000;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Heart2"; }
+		}
+		public override bool CanPickup(Player player)
+        {
+            return !IdgNPC.bossAlive;
+        }
+        public override bool OnPickup(Player player)
+        {
+			if (Main.rand.Next(0, 10) == 0)
+            {
+				return true;
+			}
+			UseItem2(player);
+			return false;
+		}
+        public override void Update(ref float gravity, ref float maxFallSpeed)
+        {
+			Lighting.AddLight(item.Center / 16f, (Color.PaleGoldenrod * 0.5f).ToVector3());
+        }
+        public void UseItem2(Player player)
+        {
+			Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 4, 0.75f, -0.65f);
+			player.HealEffect(30*item.stack,true);
+			player.GetModPlayer<IdgPlayer>().radationAmmount = Math.Max(player.GetModPlayer<IdgPlayer>().radationAmmount - (30 * item.stack), 0);
+			item.TurnToAir();
+        }
+
+	}
+
 	public class PrismalBar: ModItem
 	{
 		public override void SetStaticDefaults()
@@ -1111,6 +1291,11 @@ public class LunarRoyalGel : ModItem
 			item.height = 20;
 			item.value = Item.sellPrice(0, 0, 40, 0);
 			item.rare = ItemRarityID.Yellow;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
 			item.consumable = true;
 			item.createTile = mod.TileType("PrismalBarTile");
 		}
@@ -1160,7 +1345,6 @@ public class LunarRoyalGel : ModItem
 			recipe.AddIngredient(mod.ItemType("UnmanedOre"), 8);
 			recipe.AddIngredient(mod.ItemType("NoviteOre"), 8);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 1);
-			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 1);
 			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 3);
 			recipe.AddIngredient(mod.ItemType("OmniSoul"), 2);
 			recipe.AddIngredient(ItemID.CrystalShard, 3);
@@ -1175,6 +1359,11 @@ public class LunarRoyalGel : ModItem
 	public class EntropyTransmuter : ModItem
 	{
 		static internal int MaxEntropy = 100000;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Entropy Transmuter");
+			Tooltip.SetDefault("As enemies die near you, the Transmuter absorbs their life essences\nWhich converts Converts Demonite or Crimtane ore in your inventory into Entrophite\nConverts a maximum of 20 per full charge");
+		}
 		public override void SetDefaults()
 		{
 			item.value = 0;
@@ -1186,13 +1375,18 @@ public class LunarRoyalGel : ModItem
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "entropy", "Entropy Collected: "+Main.LocalPlayer.GetModPlayer<SGAPlayer>().entropyCollected + "/" + MaxEntropy));
+			tooltips.Add(new TooltipLine(mod, "Entropy", "Entropy Collected: "+Main.LocalPlayer.GetModPlayer<SGAPlayer>().entropyCollected + "/" + MaxEntropy));
 		}
-
-		public override void SetStaticDefaults()
+		public override void AddRecipes()
 		{
-			DisplayName.SetDefault("Entropy Transmuter");
-			Tooltip.SetDefault("As enemies die near you, the Transmuter absorbs their life essences\nWhich converts Converts Demonite or Crimtane ore in your inventory into Entrophite\nConverts a maximum of 20 per full charge");
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 500);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 4);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 12);
+			recipe.AddIngredient(ItemID.Diamond, 1);
+			recipe.AddTile(TileID.CrystalBall);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
 		}
 
 	}

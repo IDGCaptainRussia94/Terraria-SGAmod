@@ -41,7 +41,7 @@ namespace SGAmod.Tiles
             b = 0.2f;
         }
     }
-    public class NoviteOreTile : ModTile
+    public class NoviteOreTile : UnmanedOreTile
     {
         public override void SetDefaults()
         {
@@ -64,10 +64,6 @@ namespace SGAmod.Tiles
             AddMapEntry(new Color(240, 221, 168), name);
         }
 
-        public override bool CanExplode(int i, int j)
-        {
-            return SGAWorld.downedWraiths > 0;
-        }
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             r = 0.5f;

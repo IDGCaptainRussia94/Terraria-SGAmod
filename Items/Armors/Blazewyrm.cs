@@ -18,9 +18,9 @@ namespace SGAmod.Items.Armors
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = 50000;
-			item.rare = 6;
-			item.defense=10;
+			item.value = 10000;
+			item.rare = 5;
+			item.defense = 10;
 		}
 
 		public override void UpdateVanity(Player player, EquipType type)
@@ -64,9 +64,9 @@ namespace SGAmod.Items.Armors
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = 50000;
-			item.rare = 6;
-			item.defense=12;
+			item.value = 10000;
+			item.rare = 8;
+			item.defense = 14;
 		}
 		public override void UpdateEquip(Player player)
 		{
@@ -107,9 +107,9 @@ namespace SGAmod.Items.Armors
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = 50000;
-			item.rare = 6;
-			item.defense=8;
+			item.value = 10000;
+			item.rare = 5;
+			item.defense = 8;
 		}
 
 		public override void UpdateVanity(Player player, EquipType type)

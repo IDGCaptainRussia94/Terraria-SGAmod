@@ -15,6 +15,11 @@ using Terraria.DataStructures;
 using Microsoft.Win32;
 using System.Threading;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Terraria.ID;
+using Idglibrary;
+using System.Runtime.Remoting.Messaging;
+using Microsoft.Xna.Framework.Audio;
+using SGAmod.Buffs;
 
 namespace SGAmod.Dimensions
 {
@@ -83,7 +88,7 @@ namespace SGAmod.Dimensions
                     float add1 = ((float)Math.Cos(atime / 1f + position.Y / 20f) * 25f);
                     float add2 = ((float)Math.Sin(atime / 1.25f + position.X / 30f) * 19f);
                     float alpha2 = (float)Math.Sin(((-atime2 * 0.25f)+((add1+add2) / 40f)));
-                    float alpha = MathHelper.Clamp(alpha2, 0.10f, 0.6f)/4f;
+                    float alpha = MathHelper.Clamp(alpha2, SGAWorld.darknessVision ? 0.1f : 0.25f, SGAWorld.darknessVision ? 0.35f : 0.85f)/5f;
 
                     Vector2 scale = new Vector2(1f + (float)Math.Sin(atime * 1.25f + (position.X - position.Y)/10f)*0.5f, 1f + (float)Math.Sin(atime + (position.Y + position.X) / 10f) * 0.5f);
                     Main.spriteBatch.Draw(tex, (position.ToVector2()*16)-Main.screenPosition, default, Color.White * alpha, 0, size, scale*myDarkSector.scaleSize, SpriteEffects.None, 0f);
@@ -114,11 +119,12 @@ namespace SGAmod.Dimensions
         public bool done = false;
         public Vector4 BoundingBox;
         public int scaleSize = 2;
+        private int flavortext;
         Task initTask;
 
-        public DarkSector(int x, int y, Func<DarkSector, int, int, int, bool> growthconditions = default, int seed = default,int scaleSize = 2)
+        public DarkSector(int x, int y, Func<DarkSector, int, int, int, bool> growthconditions = default, int seed = default,int scaleSize = 2,int flavortext = 1)
         {
-
+            this.flavortext = flavortext;
             sectors = new List<DarkSectorTile>();
 
             position = new Point16(x, y);
@@ -152,8 +158,9 @@ namespace SGAmod.Dimensions
         private void DarkSectorGen()
         {
 
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            Main.NewText("Beginning Dark Sector Generation");
+                System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                if (flavortext == 2)
+                    Main.NewText("Beginning Dark Sector Generation");
 
             rand = new UnifiedRandom(seed);
 
@@ -163,8 +170,19 @@ namespace SGAmod.Dimensions
 
             done = true;
             stopwatch.Stop();
-            Main.NewText("Dark Sector Generated, Completed in "+ stopwatch.ElapsedMilliseconds);
-            Main.NewText("Sector Count " + sectors.Count);
+            if (flavortext == 1)
+            {
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    Idglib.Chat("A Darkness emerges from beneath the folds existance...", 120, 15, 15);
+                }
+
+            }
+                if (flavortext == 2)
+            {
+                Main.NewText("Dark Sector Generated, Completed in " + stopwatch.ElapsedMilliseconds);
+                Main.NewText("Sector Count " + sectors.Count);
+            }
 
         }
 
@@ -184,6 +202,9 @@ namespace SGAmod.Dimensions
 
         public bool PlayerInside(Player player,int radius = 2)
         {
+            if (!done)
+                return false;
+
             if (!DarkSectorZone(player) || player.SGAPly().timer%4<3)
                 return false;
 
@@ -194,6 +215,9 @@ namespace SGAmod.Dimensions
 
         public bool PointInside(Vector2 pos, int radius = 2)
         {
+
+            if (!done)
+                return false;
 
             radius += (scaleSize - 1) * 2;
 
@@ -259,6 +283,5 @@ namespace SGAmod.Dimensions
             BoundingBox *= 16f;
         }
     }
-
 
 }

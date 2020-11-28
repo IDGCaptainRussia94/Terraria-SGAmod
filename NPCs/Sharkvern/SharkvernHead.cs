@@ -137,18 +137,42 @@ namespace SGAmod.NPCs.Sharkvern
             npc.damage = (int)(npc.damage * 0.6f);
         }
 
-        public void DoStormThings(Player player)
+        public static void DoStormThings(Player player,SharkvernHead shark)
         {
             if (!Main.expertMode)
                 return;
             //Main.player[npc.target]
 
+            if (shark == null)
+            {
+                if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && !SGAWorld.downedSharkvern && Main.raining)
+                {
+                    Main.maxRaining = 0.80f;
+
+                    for (int k = 0; k < Main.maxPlayers; k++)
+                    {
+                        Player player2 = Main.player[k];
+                        if (player2 != null)
+                        {
+                            if (player2.active && !player2.dead)
+                            {
+                                if (Collision.CanHit(player2.Center, 1, 1, player2.Center - new Vector2(0, 1200), 1, 1))
+                                    player2.AddBuff(ModContent.BuffType<SharkvernDrown>(), 2, true);
+                            }
+                        }
+                    }
+
+                    goto endhere;
+                }
+                return;
+            }
+
             Main.raining = true;
             if (player!=null)
-            Main.windSpeed = MathHelper.Clamp(Main.windSpeed + Math.Sign((player.Center.X - npc.Center.X)) * (-0.002f / 3f), -0.4f, 0.4f);
-            if (npc.life > (int)npc.lifeMax * 0.85f || rage < 150) 
+            Main.windSpeed = MathHelper.Clamp(Main.windSpeed + Math.Sign((player.Center.X - shark.npc.Center.X)) * (-0.002f / 3f), -0.4f, 0.4f);
+            if (shark.npc.life > (int)shark.npc.lifeMax * 0.85f || shark.rage < 150) 
             {
-                Main.maxRaining = Math.Min(Main.maxRaining + 0.01f, 0.02f+ MathHelper.Clamp(rage/250f,0,0.8f));
+                Main.maxRaining = Math.Min(Main.maxRaining + 0.01f, 0.02f+ MathHelper.Clamp(shark.rage/250f,0,0.8f));
             }
             else 
             {
@@ -161,15 +185,16 @@ namespace SGAmod.NPCs.Sharkvern
                         {
                             if (player2.active && !player2.dead)
                             {
-                                if (Collision.CanHit(player.Center, 1, 1, player.Center - new Vector2(0, 400), 1, 1))
-                                    player2.AddBuff(ModContent.BuffType<SharkvernDrown>(), (int)(rage / 4f), true);
+                                if (Collision.CanHit(player2.Center, 1, 1, player2.Center - new Vector2(0, 400), 1, 1))
+                                    player2.AddBuff(ModContent.BuffType<SharkvernDrown>(), (int)(shark.rage / 4f), true);
                             }
                         }
                     }
                 }
-                Main.maxRaining = Math.Min(Main.maxRaining + 0.075f, 0.02f + MathHelper.Clamp(rage / 250f,0,0.75f));
+                Main.maxRaining = Math.Min(Main.maxRaining + 0.075f, 0.02f + MathHelper.Clamp(shark.rage / 250f,0,0.75f));
             }
             Main.rainTime = 12;
+            endhere:
             Main.UseStormEffects = true;
 
         }
@@ -334,7 +359,7 @@ namespace SGAmod.NPCs.Sharkvern
             float targetXPos = Main.player[npc.target].position.X + (Main.player[npc.target].width / 2);
             float targetYPos = Main.player[npc.target].position.Y + (Main.player[npc.target].height / 2);
 
-            DoStormThings(Main.player[npc.target]);
+            DoStormThings(Main.player[npc.target],this);
 
             timer += 1;
             timer2 += 1;
@@ -839,7 +864,7 @@ namespace SGAmod.NPCs.Sharkvern
         public override void SetDefaults()
         {
             DisplayName.SetDefault("Drowning Presence");
-            Description.SetDefault("You litterally cannot breath!");
+            Description.SetDefault("You litterally cannot breath!\nYour Merman form is disabled");
             Main.debuff[Type] = true;
             Main.pvpBuff[Type] = true;
             Main.buffNoSave[Type] = true;
@@ -850,6 +875,12 @@ namespace SGAmod.NPCs.Sharkvern
         {
             texture = "Terraria/Bubble";
             return true;
+        }
+
+        public override void ModifyBuffTip(ref string tip, ref int rare)
+        {
+            if (NPC.CountNPCS(ModContent.NPCType<SharkvernHead>()) < 1 && !SGAWorld.downedSharkvern)
+                tip += "\nBeat Sharkvern to remove this effect";
         }
 
         public override void Update(Player player, ref int buffIndex)

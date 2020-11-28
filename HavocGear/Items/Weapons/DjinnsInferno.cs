@@ -11,7 +11,7 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Djinn's Inferno");
-			Tooltip.SetDefault("Spews fiery tendrils");
+			Tooltip.SetDefault("Spews fiery tendrils\nOrange tendrils spawn Spirit Flames on hit");
 		}
 	
         public override void SetDefaults()
@@ -55,7 +55,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		    value2 = value2 * 4f + value3;
 		    value2.Normalize();
 		    value2 *= item.shootSpeed;
-		    int projChoice = Main.rand.Next(7);
+		    int projChoice = Main.rand.Next(5);
 		    float num91 = (float)Main.rand.Next(10, 160) * 0.001f;
 		    if (Main.rand.Next(2) == 0)
 		    {
@@ -81,6 +81,8 @@ namespace SGAmod.HavocGear.Items.Weapons
         {
             ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.ShadowFlameHexDoll, 1);
+			recipe.AddIngredient(ItemID.SpiritFlame, 1);
+			recipe.AddIngredient(ItemID.HallowedBar, 8);
 			recipe.AddIngredient(null, "FieryShard", 10);
 			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
 			recipe.AddTile(TileID.MythrilAnvil);

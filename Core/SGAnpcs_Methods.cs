@@ -13,6 +13,7 @@ using Terraria.ID;
 using Idglibrary;
 using AAAAUThrowing;
 using SGAmod.NPCs.Cratrosity;
+using SGAmod.Buffs;
 
 namespace SGAmod
 {
@@ -239,9 +240,13 @@ namespace SGAmod
 					}
 
 					damage = (int)(damage * (3f + (moddedplayer.apocalypticalStrength - 1f)));
-					RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 10f, 60, 1f);
+
 					CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.DarkRed, "Apocalyptical!", true, false);
-					Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/crit_hit").WithVolume(.7f).WithPitchVariance(.25f), npc.Center);
+					if (SGAConfigClient.Instance.EpicApocalypticals)
+					{
+						RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 10f, 60, 1f);
+						Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/crit_hit").WithVolume(.7f).WithPitchVariance(.25f), npc.Center);
+					}
 
 
 				}
@@ -272,8 +277,11 @@ namespace SGAmod
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
 			damage = (int)(damage * damagemul);
 
+			Projectile held = null;
 			if (projectile != null)
 			{
+				if (player!=null && player.heldProj>=0)
+				held = Main.projectile[player.heldProj];
 				if (projectile.trap)
 					damage = (int)(damage * player.GetModPlayer<SGAPlayer>().TrapDamageMul);
 			}
@@ -297,6 +305,32 @@ namespace SGAmod
 				if (npc.HasBuff(BuffID.Midas))
 					damage = (int)(damage * 1.15f);
 			}
+
+			if (item != null)
+            {
+				if (item.pick + item.axe + item.hammer > 0)
+				{
+					if (player.HasBuff(ModContent.BuffType<TooltimePotionBuff>()))
+					{
+						knockback += 50f;
+					}
+				}
+            }
+
+			if (petrified)
+            {
+				if (player != null && (item?.pick > 0 || (projectile != null && player.heldProj >= 0 && player.heldProj == projectile.whoAmI && player.HeldItem.pick > 0)))
+				{
+					damage = (int)(damage * 3f);
+					crit = true;
+					Main.PlaySound(SoundID.Tink, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, 0.25f);
+				}
+                else
+                {
+					damage = (int)(damage * 0.25f);
+				}
+
+            }
 
 			if (projectile != null)
 			{
@@ -474,7 +508,8 @@ namespace SGAmod
 			{
 				if (moddedplayer.FieryheartBuff > 0 && projectile.owner == player.whoAmI)
 				{
-					npc.AddBuff(189, 1 * 30);
+					if (!npc.buffImmune[BuffID.Daybreak] || moddedplayer.FieryheartBuff > 15)
+					IdgNPC.AddBuffBypass(npc.whoAmI,189, 1 * (20+(int)(player.SGAPly().ExpertiseCollectedTotal/250f)));
 				}
 				if ((moddedplayer.CirnoWings) && projectile.owner == player.whoAmI)
 				{

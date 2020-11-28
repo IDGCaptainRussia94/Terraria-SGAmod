@@ -143,7 +143,7 @@ namespace SGAmod.NPCs.TownNPCs
 			}*/
 		}
 
-		private static bool IsNpcOnscreen(Vector2 center)
+		public static bool IsNpcOnscreen(Vector2 center)
 		{
 			int w = NPC.sWidth + NPC.safeRangeX * 2;
 			int h = NPC.sHeight + NPC.safeRangeY * 2;

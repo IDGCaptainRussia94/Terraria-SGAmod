@@ -35,7 +35,8 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.ClayBlock, 50);
+            recipe.AddIngredient(ItemID.ClayBlock, 30);
+            recipe.AddIngredient(mod.ItemType("BottledMud"), 2);
             recipe.AddIngredient(ItemID.Gel, 15);
             recipe.AddIngredient(ItemID.Vine, 2);
 	    recipe.AddTile(TileID.Anvils);

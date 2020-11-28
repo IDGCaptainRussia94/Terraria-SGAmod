@@ -12,6 +12,9 @@ using SGAmod.Items.Weapons;
 using SGAmod.HavocGear.Items.Weapons;
 using Terraria.Utilities;
 using SGAmod.Items.Consumable;
+using Terraria.DataStructures;
+using SGAmod.Buffs;
+using System.Linq;
 
 namespace SGAmod.Items.Weapons
 {
@@ -40,6 +43,7 @@ namespace SGAmod.Items.Weapons
 			if ((level != 2 && level>0) || level == 3)
 			{
 				grenadetypes.Add(mod.ItemType("CelestialCocktail"));
+				grenadetypes.Add(mod.ItemType("SludgeBomb"));
 				grenadetypes.Add(ItemID.MolotovCocktail);
 				grenadetypes.Add(ItemID.Bone);
 				grenadetypes.Add(ItemID.Ale);
@@ -619,40 +623,6 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-		class ThermalGrenade : AcidGrenade
-	{
-
-		public override void SetStaticDefaults()
-		{
-			base.SetStaticDefaults();
-			DisplayName.SetDefault("Thermal Grenade");
-			Tooltip.SetDefault("Deals Thermal Blaze to all affected");
-		}
-
-		public override void SetDefaults()
-		{
-			item.CloneDefaults(ItemID.Grenade);
-			item.useStyle = 1;
-			item.Throwing().thrown = true;
-			item.thrown = false;
-			item.damage = 72;
-			item.shootSpeed = 3f;
-			item.shoot = mod.ProjectileType("ThermalGrenadeProj");
-			item.value = Item.buyPrice(0, 0, 2, 0);
-			item.rare = 5;
-		}
-		public override void AddRecipes()
-		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Grenade, 15);
-			recipe.AddIngredient(mod.ItemType("FieryShard"), 1);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this, 15);
-			recipe.AddRecipe();
-		}
-
-	}
-
 	class AcidGrenadeProj : ModProjectile
 	{
 
@@ -697,7 +667,7 @@ namespace SGAmod.Items.Weapons
 			}
 
 			int theproj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("Explosion"), (int)((double)projectile.damage * 1.5f), projectile.knockBack, projectile.owner, 0f, 0f);
-			Main.projectile[theproj].Throwing().thrown = projectile.magic;
+			Main.projectile[theproj].Throwing().thrown = true;
 			IdgProjectile.AddOnHitBuff(theproj, mod.BuffType("AcidBurn"), 120);
 
 			projectile.velocity = default(Vector2);
@@ -727,6 +697,39 @@ namespace SGAmod.Items.Weapons
 			//projectile.Center -= new Vector2(48,48);
 
 			target.AddBuff(mod.BuffType("AcidBurn"), 120);
+		}
+
+	}
+	class ThermalGrenade : AcidGrenade
+	{
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Thermal Grenade");
+			Tooltip.SetDefault("Deals Thermal Blaze to all affected");
+		}
+
+		public override void SetDefaults()
+		{
+			item.CloneDefaults(ItemID.Grenade);
+			item.useStyle = 1;
+			item.Throwing().thrown = true;
+			item.thrown = false;
+			item.damage = 72;
+			item.shootSpeed = 3f;
+			item.shoot = mod.ProjectileType("ThermalGrenadeProj");
+			item.value = Item.buyPrice(0, 0, 2, 0);
+			item.rare = 5;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Grenade, 15);
+			recipe.AddIngredient(mod.ItemType("FieryShard"), 1);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this, 15);
+			recipe.AddRecipe();
 		}
 
 	}
@@ -775,7 +778,7 @@ namespace SGAmod.Items.Weapons
 			}
 
 			int theproj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("Explosion"), (int)((double)projectile.damage * 1f), projectile.knockBack, projectile.owner, 0f, 0f);
-			Main.projectile[theproj].Throwing().thrown = projectile.magic;
+			Main.projectile[theproj].Throwing().thrown = true;
 			IdgProjectile.AddOnHitBuff(theproj, mod.BuffType("ThermalBlaze"), 60 * 3);
 
 			projectile.velocity = default(Vector2);
@@ -809,6 +812,223 @@ namespace SGAmod.Items.Weapons
 
 
 	}
+
+	class SludgeBomb : AcidGrenade
+	{
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Sludge Bomb");
+			Tooltip.SetDefault("Explodes into sludge that sticks to walls and damage enemies\nEnemies near the sludge get Oiled, Confused, Dank Slowed\nDank Slow only applies to enemies not immune to poison");
+		}
+
+		public override void SetDefaults()
+		{
+			item.CloneDefaults(ItemID.Grenade);
+			item.useStyle = 1;
+			item.Throwing().thrown = true;
+			item.thrown = false;
+			item.damage = 80;
+			item.shootSpeed = 4f;
+			item.shoot = mod.ProjectileType("SludgeBombProj");
+			item.value = Item.buyPrice(0, 0, 2, 0);
+			item.rare = 5;
+		}
+		public override void AddRecipes()
+		{
+			//nil
+		}
+
+	}
+
+	class SludgeBombProj : AcidGrenadeProj
+	{
+
+		bool hitonce = false;
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Sludge Bomb");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Grenade);
+			projectile.Throwing().thrown = true;
+			projectile.timeLeft = 240;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/SludgeBomb"); }
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			if (!hitonce)
+			{
+				projectile.width = 160;
+				projectile.height = 160;
+				projectile.position -= new Vector2(80, 80);
+			}
+
+			for (int i = 0; i < 100; i += 1)
+			{
+				float randomfloat = Main.rand.NextFloat(1f, 6f);
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+
+				int dust = Dust.NewDust(new Vector2(projectile.Center.X - 32, projectile.Center.Y - 32), 64, 64, 184, 0, 0, 100, new Color(30, 30, 30, 20), 1f);
+				Main.dust[dust].scale = 2.5f;
+				Main.dust[dust].noGravity = true;
+				Main.dust[dust].velocity = (projectile.velocity * (float)(Main.rand.Next(10, 20) * 0.01f)) + (randomcircle * randomfloat);
+			}
+			for (int i = 0; i < 10; i += 1)
+			{
+				Projectile proj = Projectile.NewProjectileDirect(projectile.Center, Vector2.One.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(2f, 10f), ModContent.ProjectileType<SludgeProj>(), projectile.damage, projectile.knockBack, projectile.owner, Main.rand.Next(3, 30));
+			}
+
+			projectile.velocity = default(Vector2);
+			projectile.type = ProjectileID.Grenade;
+			return true;
+		}
+
+		public override void AI()
+		{
+			int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, 184,0,0,100, new Color(30, 30, 30, 20), 1f);
+			Main.dust[dust].scale = 0.75f;
+			Main.dust[dust].noGravity = false;
+			Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(60, 100) * 0.01f);
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			if (!hitonce)
+			{
+				hitonce = true;
+				projectile.position -= new Vector2(64, 64);
+				projectile.width = 128;
+				projectile.height = 128;
+				projectile.timeLeft = 1;
+			}
+		}
+	}
+
+	public class SludgeProj : ModProjectile
+	{
+
+		float scalePercent => MathHelper.Clamp(projectile.timeLeft / 60f, 0f, Math.Min(projectile.localAI[0] / 10f, 1f));
+
+		public override void SetDefaults()
+		{
+			projectile.width = 8;
+			projectile.height = 8;
+			projectile.aiStyle = -1;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.penetrate = -1;
+			projectile.tileCollide = false;
+			projectile.magic = true;
+			projectile.timeLeft = 400;
+			projectile.light = 0.1f;
+			projectile.extraUpdates = 0;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+			aiType = -1;
+			Main.projFrames[projectile.type] = 1;
+		}
+
+		public override string Texture
+		{
+			get { return "SGAmod/HavocGear/Projectiles/MudBlob"; }
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Ew Gross!");
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+
+		public override void AI()
+		{
+
+			if (projectile.localAI[1] < 10)
+			{
+				projectile.localAI[1] = Main.rand.Next(3)+100;
+			}
+			projectile.localAI[0] += 1;
+
+			Point16 point = new Point16((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16);
+
+			if (projectile.localAI[0] > projectile.ai[0] && WorldGen.InWorld(point.X, point.Y))
+			{
+				if (Main.tile[point.X, point.Y].wall > 0) 
+				{
+					if (projectile.localAI[0] < 10000)
+					{
+						projectile.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+						projectile.localAI[0] += 10000;
+					}
+
+					projectile.velocity /= 1.25f;
+					projectile.rotation += (projectile.velocity.X + projectile.velocity.Y) / 8f;
+
+					projectile.scale = Math.Min(projectile.scale + (4 - projectile.scale) / 3f, 3f);
+
+
+					foreach (NPC enemy in Main.npc.Where(npctest => npctest.active && !npctest.friendly && !npctest.immortal && !npctest.boss && !npctest.noGravity && !npctest.noTileCollide &&
+					npctest.Distance(projectile.Center)< 32 * projectile.scale))
+					{
+						if (!enemy.buffImmune[BuffID.Poisoned])
+						enemy.AddBuff(ModContent.BuffType<DankSlow>(), 20);
+						enemy.AddBuff(BuffID.Oiled, 60*1);
+						enemy.AddBuff(BuffID.Confused, 3);
+						enemy.SGANPCs().nonStackingImpaled = projectile.damage;
+					}
+
+					for (int num654 = 0; num654 < 1 + (projectile.localAI[0]<10003 ? 10 : 0); num654++)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
+						int num655 = Dust.NewDust(projectile.position + Vector2.UnitX * -20f, projectile.width + 40, projectile.height+40, 184, projectile.velocity.X + randomcircle.X * 4f, projectile.velocity.Y + randomcircle.Y * 4f, 200, new Color(30, 30, 30, 20), 1f);
+						Main.dust[num655].noGravity = true;
+					}
+
+					return;
+                }
+                else
+                {
+					if (projectile.localAI[0]>8000)
+					projectile.Kill();
+                }
+			}
+				projectile.rotation = projectile.velocity.ToRotation()+MathHelper.PiOver2;
+				projectile.velocity.Y += 0.25f;
+
+				int num126 = Dust.NewDust(projectile.position - new Vector2(2, 2), Main.rand.Next(projectile.width + 6), Main.rand.Next(projectile.height + 6), 184, 0, 0, 140, new Color(30, 30, 30, 20), 1f);
+				Main.dust[num126].noGravity = true;
+				Main.dust[num126].velocity = projectile.velocity * 0.5f;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Vector2 drawPos = projectile.Center - Main.screenPosition;
+			Texture2D tex = SGAmod.ExtraTextures[107+ (int)projectile.localAI[1]%3];
+			if (projectile.localAI[0] < 9000)
+            {
+				tex = Main.projectileTexture[projectile.type];
+				spriteBatch.Draw(tex, drawPos, new Rectangle(0,(projectile.whoAmI*(tex.Height/3))%tex.Height, tex.Width, tex.Height/3), (lightColor.MultiplyRGB(Color.Brown) * 0.75f)* scalePercent, projectile.rotation,new Vector2(tex.Width,tex.Height/3f)/2f, projectile.scale, SpriteEffects.None, 0f);
+				return false;
+			}
+			spriteBatch.Draw(tex, drawPos, null, lightColor.MultiplyRGB(Color.Brown) * 0.5f* scalePercent, projectile.rotation, tex.Size()/2f, projectile.scale, SpriteEffects.None, 0f);
+			return false;
+		}
+	}
+
 
 	class CelestialCocktail : ModItem
 	{
@@ -1558,6 +1778,10 @@ namespace SGAmod.Items.Weapons
 				Main.dust[dust].velocity = Main.rand.NextVector2Circular(2f, 2f);
 			}
 			Main.PlaySound(SoundID.Tink, (int)projectile.Center.X, (int)projectile.Center.Y).Pitch -= 0.525f;
+
+			//			SoundEffectInstance sound = Main.PlaySound(SoundID.Tink, (int)projectile.Center.X, (int)projectile.Center.Y);
+			//if (sound!=null)
+			//	sound.Pitch -= 0.525f;
 			return true;
 		}
 

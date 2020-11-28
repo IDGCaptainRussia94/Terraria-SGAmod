@@ -8,6 +8,20 @@ using Terraria.ModLoader;
 
 namespace SGAmod.UI.UIClasses
 {
+
+	internal class UIWorkbenchPanel : UIInteractableItemPanel
+	{
+		public UIWorkbenchPanel(int netID = 0, int stack = 0, Texture2D hintTexture = null, string hintText = null) : base(netID, stack, hintTexture, hintText)
+		{
+		}
+
+		public override bool CanTakeItem(Item item)
+		{
+			EnchantmentCraftingMaterial valuz;
+			bool find = item.createTile>0;
+			return find;
+		}
+	}
 	internal class UIEnchantingCatalystPanel : UIInteractableItemPanel
 	{
 		public UIEnchantingCatalystPanel(int netID = 0, int stack = 0, Texture2D hintTexture = null, string hintText = null) : base(netID, stack, hintTexture, hintText)

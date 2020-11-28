@@ -8,7 +8,7 @@ using Terraria.ObjectData;
 
 namespace SGAmod.Tiles
 {
-    public class PrismalBarTile : ModTile
+    public class BarTile : ModTile
     {
         public override void SetDefaults()
         {
@@ -22,9 +22,27 @@ namespace SGAmod.Tiles
             TileObjectData.newTile.LavaDeath = false;
             TileObjectData.addTile(Type);
             ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Prismal Bar");
+            name.SetDefault(barname);
             AddMapEntry(new Color(210, 0,100), name);
-            drop = mod.ItemType("PrismalBar");
+            drop = itemID;
         }
+
+        int itemID => SGAmod.Instance.ItemType(internalname);
+        string internalname;
+        string barname;
+        Color color;
+
+        public BarTile(string internalname2,string barname,Color color)
+        {
+            internalname = internalname2;
+            this.barname = barname;
+            this.color = color;
+        }
+
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            return false;
+        }
+
     }
 }

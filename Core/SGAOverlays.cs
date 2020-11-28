@@ -16,156 +16,10 @@ using Terraria.Graphics;
 using ReLogic.Graphics;
 using SGAmod.SkillTree;
 using SGAmod.Dimensions;
+using SGAmod.Items;
 
 namespace SGAmod
 {
-	//please don't touch
-	public class UncraftClass
-	{
-		Point16 location;
-		List<Point> possibleItems;
-		Item targetitem;
-		public int stackSize;
-		int recipeIndex = 0;
-		public bool uncraftable;
-
-		static public List<int> BlackListedItems;
-
-		static UncraftClass()
-        {
-			BlackListedItems = new List<int>();
-			BlackListedItems.Add(ItemID.FragmentNebula);
-			BlackListedItems.Add(ItemID.FragmentSolar);
-			BlackListedItems.Add(ItemID.FragmentStardust);
-			BlackListedItems.Add(ItemID.FragmentVortex);
-		}
-
-		public UncraftClass(Point16 location, Item item,int recipeIndex = 0, int offsetter = 0)
-		{
-			uncraftable = true;
-			this.location = location;
-			this.recipeIndex = recipeIndex;
-			this.possibleItems = GetUncraftData(item, offsetter);
-			targetitem = item;
-		}
-
-		public List<Point> GetUncraftData(Item item, int receipeoffsetter = 0)
-		{
-			List<Point> items = new List<Point>();
-			if (!item.IsAir)
-			{
-				RecipeFinder finder = new RecipeFinder();
-				finder.SetResult(item.type);
-				List<Recipe> reclist = finder.SearchRecipes();
-
-				if (reclist != null && reclist.Count > 0)
-				{
-					Recipe recipe = reclist[recipeIndex % reclist.Count];//Only the first recipe, for now
-
-					stackSize = recipe.createItem.stack;
-
-					if (stackSize <= item.stack && BlackListedItems.FirstOrDefault(search => search == item.type) == default)
-					{
-
-						List<List<int>> isGroup = new List<List<int>>();
-
-						if (recipe.acceptedGroups.Count > 0)
-						{
-							for (int k = 0; k < recipe.acceptedGroups.Count; k += 1)
-							{
-								List<int> recipeGroupItems = RecipeGroup.recipeGroups[recipe.acceptedGroups[k]].ValidItems;
-
-								for (int kk = 0; kk < recipeGroupItems.Count; kk += 1)
-								{
-									isGroup.Add(recipeGroupItems);
-								}
-							}
-						}
-
-						for (int k = 0; k < recipe.requiredItem.Length; k += 1)
-						{
-							if (!recipe.requiredItem[k].IsAir)
-							{
-								int chosenitem = recipe.requiredItem[k].type;
-
-								for (int kk = 0; kk < isGroup.Count; kk += 1)
-								{
-									UnifiedRandom rando = new UnifiedRandom(receipeoffsetter + kk);
-									List<int> subgroup = isGroup[kk];
-									if (subgroup.FirstOrDefault(itemx => itemx == chosenitem) != default)
-									{
-										chosenitem = subgroup[rando.Next(subgroup.Count)];
-										//Main.NewText("test " + receipeoffsetter % subgroup.Count);
-									}
-								}
-								items.Add(new Point(chosenitem, recipe.requiredItem[k].stack));
-								uncraftable = false;
-							}
-
-						}
-					}
-
-				}
-			}
-			return items;
-		}
-
-		public void Uncraft(Player player)
-		{
-			if (uncraftable)
-				return;
-
-			foreach (Point item in possibleItems)
-			{
-				player.QuickSpawnItem(item.X, item.Y);
-			}
-			targetitem.stack -= stackSize;
-			if (targetitem.stack < 1)
-				targetitem.TurnToAir();
-
-		}
-
-		public void Draw()
-        { 
-			Vector2 position = (location.ToVector2() * 16) - Main.screenPosition;
-
-			position.X -= possibleItems.Count * 16;
-			position.X += 16;
-
-			foreach (Point data in possibleItems)
-            {
-
-				Texture2D tex = Main.itemTexture[data.X];
-
-				DrawAnimation anim = Main.itemAnimations[data.X];
-				int frame = 0;
-				int height = tex.Height;
-				Vector2 size = tex.Size() / 2f;
-				if (anim != null)
-				{
-					frame = anim.Frame;
-					height = tex.Height / anim.FrameCount;
-					size = new Vector2(tex.Width, height)/2f;
-				}
-
-				Item anitem = new Item();
-				anitem.SetDefaults(data.X);
-
-				Main.spriteBatch.Draw(tex, position, new Rectangle(0, height * frame, tex.Width, height), anitem.modItem?.GetAlpha(Color.White) ?? Color.White, 0f, size, 1f, SpriteEffects.None, 0);
-				if (data.Y > 0)
-				{
-					string str = data.Y.ToString();
-					Vector2 size2 = Main.fontDeathText.MeasureString(str);
-					Main.spriteBatch.DrawString(Main.fontMouseText, str, position + new Vector2(4, 4), Color.White);
-				}
-
-				position.X += 32;
-
-			}
-
-        }
-
-	}
 
 	public abstract class SGAInterface
 	{
@@ -200,6 +54,10 @@ namespace SGAmod
 					"SGAmod: CustomUI", DrawUI,
 					InterfaceScaleType.UI)
 				);
+				layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
+				"SGAmod: CustomUI", DrawUI,
+				InterfaceScaleType.UI)
+);
 			}
 			layers.Insert(0, new LegacyGameInterfaceLayer("SGAmod: UnderHUD", DrawUnderHUD, InterfaceScaleType.Game));
 			//layers.Insert(0, new LegacyGameInterfaceLayer("SGAmod: Effects", DimDingeonsWorld.DrawSectors, InterfaceScaleType.Game));
@@ -211,6 +69,10 @@ namespace SGAmod
 			if (SGAmod.CustomUIMenu.visible) 
 			{
 				SGAmod.CustomUIMenu.Draw(Main.spriteBatch);
+			}
+			if (Main.playerInventory && Main.LocalPlayer.SGAPly().benchGodFavor)
+			{
+				SGAmod.craftBlockPanel.Draw(Main.spriteBatch);
 			}
 			return true;
 		}
@@ -287,15 +149,43 @@ namespace SGAmod
 						//spriteBatch.Draw(tex, new Vector2(150, 150), null, Color.White, Main.GlobalTime, drawOrigin, 1, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 
 					}
+
+					if (SGAWorld.darknessVision && DimDingeonsWorld.darkSectors.Count > 0)
+					{
+                        for (int i = 0; i < DimDingeonsWorld.darkSectors.Count; i += 1)
+                        {
+
+							Texture2D tex = ModContent.GetTexture("SGAmod/Items/WatchersOfNull");
+							Texture2D tex2 = Main.itemTexture[ModContent.ItemType<AssemblyStar>()];
+							Rectangle rect = new Rectangle(0, 0, tex.Width, tex.Height / 13);
+
+							Vector2 drawOrigin = new Vector2(tex.Width, tex.Height/13) / 2f;
+
+							Vector2 drawPos = (new Vector2(Main.screenWidth, Main.screenHeight) / 2f) * Main.UIScale;
+
+							DarkSector sector = DimDingeonsWorld.darkSectors[i];
+
+							Vector2 Vecd = (sector.position.ToVector2()*16) - (drawPos + Main.screenPosition);
+							float pointthere = Vecd.ToRotation();
+
+							for(int k=-1;k<3;k+=2)
+							spriteBatch.Draw(tex2, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.Black*0.4f, Main.GlobalTime * 2f*k, tex2.Size() / 2f, Main.UIScale*1.25f, SpriteEffects.FlipHorizontally, 0f);
+							spriteBatch.Draw(tex, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), rect, Color.White*Main.essScale, 0, drawOrigin, Main.UIScale,SpriteEffects.FlipHorizontally, 0f);
+
+
+						}
+					}
+
 					spriteBatch.End();
 					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
 				}
 
-
-				if (SGAmod.UsesPlasma.ContainsKey(locply.HeldItem.type))
+				if (!locply.dead)
 				{
-					if (!locply.dead)
+
+					//Plamsa Clip
+					if (SGAmod.UsesPlasma.ContainsKey(locply.HeldItem.type))
 					{
 						SGAmod mod = SGAmod.Instance;
 						SGAPlayer modply = locply.GetModPlayer<SGAPlayer>();
@@ -323,12 +213,9 @@ namespace SGAmod
 
 						}
 					}
-				}
 
-
-				if (SGAmod.UsesClips.ContainsKey(locply.HeldItem.type))
-				{
-					if (!locply.dead)
+					//Ammo Clips
+					if (SGAmod.UsesClips.ContainsKey(locply.HeldItem.type))
 					{
 						SGAmod mod = SGAmod.Instance;
 						SGAPlayer modply = locply.GetModPlayer<SGAPlayer>();
@@ -354,6 +241,7 @@ namespace SGAmod
 							}
 						}
 					}
+
 				}
 
 				//if (SGAmod.UsesClips.ContainsKey(locply.HeldItem.type))
@@ -448,7 +336,8 @@ namespace SGAmod
 						offsetY += texture.Height;
 					}
 
-					if (modply.CooldownStacks.Count > 0)
+
+					if (modply.CooldownStacks != null && modply.CooldownStacks.Count > 0)
 					{
 
 

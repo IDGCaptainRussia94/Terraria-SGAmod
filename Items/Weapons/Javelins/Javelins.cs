@@ -16,11 +16,11 @@ namespace SGAmod.Items.Weapons.Javelins
     public class CrimsonCatastrophe : SanguineBident
     {
 
-        public override float Stabspeed => 5f;
-        public override float Throwspeed => 15f;
-        public override int Penetrate => 6;
+        public override float Stabspeed => 10f;
+        public override float Throwspeed => 25f;
+        public override int Penetrate => 8;
         public override float Speartype => 10;
-        public override int[] Usetimes => new int[] { 20, 20 };
+        public override int[] Usetimes => new int[] { 25, 15 };
         public override string[] Normaltext => new string[] { "A twisted form of thrown bloodlust that explodes your foe's blood out from their wounds", "Throws 3 Jab-lins that inflict area damage against foes that are Massively Bleeding", "In Addition, crits against enemies afficted with Everlasting Suffering", "On proc the Bleeding and Everlasting Suffering are removed, with a delay before retrigger", "Doesn't effect the enemy the Jab-lin is stuck to", "Primary Fire flies far and fast, and inflicts Massive Bleeding", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
         public override void SetStaticDefaults()
         {
@@ -29,8 +29,9 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 150;
+            item.damage = 300;
             item.width = 32;
+            item.crit = 10;
             item.height = 32;
             item.knockBack = 5;
             item.value = Item.buyPrice(gold: 50);
@@ -94,6 +95,7 @@ namespace SGAmod.Items.Weapons.Javelins
             recipe.AddIngredient(mod.ItemType("SanguineBident"), 1);
             recipe.AddIngredient(mod.ItemType("TerraTrident"), 1);
             recipe.AddIngredient(ItemID.DayBreak, 1);
+            recipe.AddIngredient(mod.ItemType("StygianCore"), 2);
             recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);
             recipe.AddTile(TileID.LunarCraftingStation);
             recipe.SetResult(this, 1);
@@ -122,6 +124,7 @@ namespace SGAmod.Items.Weapons.Javelins
             item.damage = 50;
             item.width = 32;
             item.height = 32;
+            item.crit = 10;
             item.knockBack = 5;
             item.value = Item.buyPrice(gold: 5);
             item.rare = ItemRarityID.Lime;
@@ -137,10 +140,12 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(mod.ItemType("Contagion"), 1);
             recipe.AddIngredient(mod.ItemType("ThrownTrident"), 1);
             recipe.AddIngredient(ItemID.UnholyTrident, 1);
             recipe.AddIngredient(ItemID.Gungnir, 1);
-            recipe.AddIngredient(ItemID.ChlorophyteBar, 8);
+            recipe.AddIngredient(mod.ItemType("ThermalJavelin"), 300);
+            recipe.AddIngredient(mod.ItemType("OmniSoul"), 12);
             recipe.AddIngredient(ItemID.BrokenHeroSword, 1);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);
@@ -323,16 +328,90 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemID.Trident, 1);
             recipe.AddIngredient(mod.ItemType("CrimsonJavelin"), 150);
             recipe.AddIngredient(ItemID.Vertebrae, 10);
             recipe.AddIngredient(ItemID.Ectoplasm, 8);
-            recipe.AddIngredient(ItemID.Trident, 1);
+            recipe.AddIngredient(mod.ItemType("StygianCore"), 1);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);
             recipe.AddRecipe();
         }
 
     }
+
+    public class SwampSovnya: SanguineBident
+    {
+        public override float Stabspeed => 4.00f;
+        public override float Throwspeed => 10f;
+        public override int Penetrate => 5;
+        public override float Speartype => 12;
+        public override int[] Usetimes => new int[] { 25, 6 };
+        public override string[] Normaltext => new string[] {"'Hunt or be hunted'", "Thrown Jab-libs inflict Dank Slow to enemies if not immune to poison", "Jabs crit slowed targets and remove the debuff, increasing damage based on slow up to 5X","Additionally, this weapon does 25% increased direct and DOT damage to poison-immune enemies", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Swamp Sovnya");
+        }
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+            item.damage = 50;
+            item.width = 32;
+            item.height = 32;
+            item.crit = 0;
+            item.knockBack = 3;
+            item.value = Item.buyPrice(gold: 5);
+            item.rare = ItemRarityID.Lime;
+            item.consumable = false;
+            item.maxStack = 1;
+            item.UseSound = SoundID.Item1;
+        }
+        public override void OnThrow(int type, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type2, ref int damage, ref float knockBack, JavelinProj madeproj)
+        {
+            //nothing
+        }
+        public override void AddRecipes()
+        {
+            //nothing
+        }
+
+    }
+
+    public class ThermalJavelin : StoneJavelin
+    {
+
+        public override float Stabspeed => 4.00f;
+        public override float Throwspeed => 14f;
+        public override int Penetrate => 5;
+        public override float Speartype => 11;
+        public override int[] Usetimes => new int[] { 20, 6 };
+        public override string[] Normaltext => new string[] { "Applies Thermal Blaze to your enemies"};
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Thermal Jab-lin");
+        }
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+            item.damage = 40;
+            item.width = 24;
+            item.height = 24;
+            item.knockBack = 4;
+            item.value = 50;
+            item.rare = 5;
+        }
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(mod.ItemType("UnmanedBar"), 2);
+            recipe.AddIngredient(mod.ItemType("FieryShard"), 1);
+            recipe.AddTile(TileID.MythrilAnvil);
+            recipe.SetResult(this, 100);
+            recipe.AddRecipe();
+        }
+
+    }
+
     public class ShadowJavelin : StoneJavelin
     {
 
@@ -349,7 +428,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 25;
+            item.damage = 26;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -371,12 +450,12 @@ namespace SGAmod.Items.Weapons.Javelins
     public class PearlWoodJavelin : StoneJavelin
     {
 
-        public override float Stabspeed => 1.70f;
-        public override float Throwspeed => 11f;
+        public override float Stabspeed => 3.00f;
+        public override float Throwspeed => 13f;
         public override int Penetrate => 5;
         public override float Speartype => 6;
-        public override int[] Usetimes => new int[] { 25, 8 };
-        public override string[] Normaltext => new string[] { "The Hallow's wrath makes stars fall down on jabbed or impaled targets" };
+        public override int[] Usetimes => new int[] { 20, 8 };
+        public override string[] Normaltext => new string[] { "The Hallow's wrath makes stars fall down on jabbed or impaled targets","Stars scale damage with your Damage over Time boosts" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("PearlWood Jab-lin");
@@ -384,7 +463,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 32;
+            item.damage = 36;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -421,7 +500,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 17;
+            item.damage = 18;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -464,7 +543,7 @@ namespace SGAmod.Items.Weapons.Javelins
             recipe.AddIngredient(ItemID.Sandstone, 10);
             recipe.AddIngredient(ItemID.Amber, 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 100);
+            recipe.SetResult(this, 150);
             recipe.AddRecipe();
         }
 
@@ -476,6 +555,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override float Stabspeed => 1.50f;
         public override float Throwspeed => 9f;
         public override float Speartype => 3;
+        public override int Penetrate => 4;
         public override int[] Usetimes => new int[] { 30, 10 };
         public override string[] Normaltext => new string[] { "Made from corrupt materials" };
         public override void SetStaticDefaults()
@@ -499,7 +579,7 @@ namespace SGAmod.Items.Weapons.Javelins
             recipe.AddIngredient(ItemID.EbonstoneBlock, 10);
             recipe.AddIngredient(ItemID.DemoniteBar, 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 100);
+            recipe.SetResult(this, 150);
             recipe.AddRecipe();
         }
 
@@ -511,6 +591,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override float Stabspeed => 1.20f;
         public override float Throwspeed => 8f;
         public override float Speartype => 2;
+        public override int Penetrate => 4;
         public override int[] Usetimes => new int[] { 40, 15 };
         public override string[] Normaltext => new string[] { "Made from bloody materials" };
         public override void SetStaticDefaults()
@@ -534,7 +615,7 @@ namespace SGAmod.Items.Weapons.Javelins
             recipe.AddIngredient(ItemID.CrimstoneBlock, 10);
             recipe.AddIngredient(ItemID.CrimtaneBar, 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 100);
+            recipe.SetResult(this, 150);
             recipe.AddRecipe();
         }
 
@@ -569,7 +650,7 @@ namespace SGAmod.Items.Weapons.Javelins
             recipe.AddIngredient(ItemID.IceBlock, 10);
             recipe.AddIngredient(mod.ItemType("FrigidShard"), 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 100);
+            recipe.SetResult(this, 150);
             recipe.AddRecipe();
         }
 

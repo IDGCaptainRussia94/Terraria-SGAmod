@@ -39,8 +39,6 @@ namespace SGAmod.UI
 
 		internal UIText baseTitle;
 
-		internal UIImageButton closeButton;
-
 		internal UIEnchantingCatalystPanel EnchantingCataylstPanel;
 
 		internal EnchantingCataylst2Panel EnchantingCataylstPanel2;
@@ -76,10 +74,10 @@ namespace SGAmod.UI
 		public override void OnInitialize()
 		{
 
-			this.basePanel = new UIPanel();
-			this.basePanel.CopyStyle(this);
-			this.basePanel.SetPadding(10f);
-			this._UIView.Append(this.basePanel);
+			basePanel = new UIPanel();
+			basePanel.CopyStyle(this);
+			basePanel.SetPadding(10f);
+			_UIView.Append(basePanel);
 
 			bufferpanel = new UIPanel();
 			bufferpanel.SetPadding(0);

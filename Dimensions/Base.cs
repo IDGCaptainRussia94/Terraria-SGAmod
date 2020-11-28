@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.UI;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI;
+using System.Linq;
 using Idglibrary;
 using SGAmod;
 using SubworldLibrary;
@@ -25,6 +26,9 @@ using SGAmod.Effects;
 using SGAmod.NPCs.Hellion;
 using SGAmod.Items.Consumable;
 using SGAmod.NPCs.Murk;
+using SGAmod.Items;
+using Microsoft.Xna.Framework.Audio;
+using SGAmod.Dimensions.NPCs;
 
 namespace SGAmod.Dimensions
 {
@@ -33,7 +37,12 @@ namespace SGAmod.Dimensions
     {
 
         public int enterlimbo = 0;
+        public bool noLight = false;
+        public int noLightGrow = 0;
         public int lightSize = 3000;
+        public int lightGrowRate = 5;
+        public int heartBeat = 0;
+        public static int staticHeartBeat = 0;
         public override void UpdateBiomeVisuals()
         {
             //TheProgrammer
@@ -44,7 +53,7 @@ namespace SGAmod.Dimensions
         {
             if (SGAmod.anysubworld)
             {
-                if (SLWorld.currentSubworld is SGAPocketDim sub)
+                if (SLWorld.currentSubworld is SGAPocketDim)
                     DimDingeonsWorld.deathtimer = Math.Max(1, DimDingeonsWorld.deathtimer);
 
             }
@@ -52,17 +61,44 @@ namespace SGAmod.Dimensions
 
         public override void ResetEffects()
         {
+            int count = 0;
+            if (SGAPocketDim.WhereAmI == typeof(LimboDim))
+                count = (int)(player.CountItem(ModContent.ItemType<Entrophite>(), 1000) / 15f);
+            heartBeat += count;
+
+            if (heartBeat > 10000 && !player.dead)
+            {
+                SoundEffectInstance sound = Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Heartbeat").WithVolume(Math.Min(0.25f + (count / 250f), 1f)).WithPitchVariance(.05f), player.Center);
+                if (sound != null)
+                {
+                    sound.Pitch = -0.75f + (float)Math.Min(Math.Atan(count / 25f), 1.7f);
+                }
+                NullWatcher.DoAwarenessChecks(600 + count*5, false, true, player.Center);
+                heartBeat = 0;
+                staticHeartBeat = 30;
+            }
+            if (!Main.dedServ && Main.LocalPlayer == player)
+            {
+                staticHeartBeat -= 1;
+            }
+
+            noLight = false;
+            noLightGrow = Math.Max(noLightGrow - 1, 0);
             if (!(player.HasBuff(BuffID.Darkness) || player.HasBuff(BuffID.Blackout)))
-            lightSize = Math.Min(lightSize + 5,3000);// 2000+(int)(Math.Sin(Main.GlobalTime/2f)*1000);
+            lightSize = Math.Min(lightSize + (noLightGrow > 0 ? 0 : lightGrowRate), 3000);// 2000+(int)(Math.Sin(Main.GlobalTime/2f)*1000);
+            lightGrowRate = 5;
         }
 
         public override void PostUpdateRunSpeeds()
         {
+
+            if (!noLight)
             SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(player.Center.X, player.Center.Y, lightSize)));
         }
 
         public override void PreUpdate()
         {
+
             SGAmod.anysubworld = SGAPocketDim.WhereAmI != null;
             if (!Main.gameMenu && SGAPocketDim.WhereAmI != null)
             {
@@ -75,6 +111,9 @@ namespace SGAmod.Dimensions
                     }
                     player.GetModPlayer<SGAPlayer>().noModTeleport = true;
                 }
+                SLWorld.noReturn = false;
+                if (SGAPocketDim.WhereAmI == typeof(LimboDim))
+                    SLWorld.noReturn = true;
             }
 
             if (Main.netMode != 1 && !Main.dedServ && Main.LocalPlayer==player)
@@ -100,7 +139,7 @@ namespace SGAmod.Dimensions
                 if (enterlimbo == -5)
                 {
                     Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/crack"), new Vector2(-1, -1));
-                    player.Center = new Vector2(player.Center.X, 64);
+                    player.Center = new Vector2(Main.rand.Next(200,Main.maxTilesX-400)*16, 64);
                 }
                 if (enterlimbo > -2)
                 {
@@ -127,7 +166,7 @@ namespace SGAmod.Dimensions
             {
                 if (SLWorld.currentSubworld is SGAPocketDim sub)
                 {
-                    spawnRate = (int)((float)spawnRate*sub.spawnRate);
+                    spawnRate = (int)((float)spawnRate * sub.spawnRate);
                     maxSpawns = (int)((float)maxSpawns * sub.maxSpawns);
                 }
             }
@@ -358,6 +397,7 @@ namespace SGAmod.Dimensions
     public class DrawOverride : ModProjectile
     {
         static int fogeffect = 0;
+        static int swaptargets = 0;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Timer");
@@ -378,7 +418,7 @@ namespace SGAmod.Dimensions
 
             DrawOverride.fogeffect += 1;
 
-            if (DrawOverride.fogeffect < 120)
+            if (DrawOverride.fogeffect < 120 || Main.dedServ)
                 return;
 
             BlendState blind = new BlendState
@@ -395,16 +435,17 @@ namespace SGAmod.Dimensions
             {
                 int lightingtotal = Main.LocalPlayer.GetModPlayer<SGADimPlayer>().lightSize;
 
+                Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
+                RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
+
                 if (lightingtotal < 2600)
                 {
 
-                    RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
                     //Main.spriteBatch.End();
                     Main.graphics.GraphicsDevice.SetRenderTarget(SGAmod.drawnscreen);
                     Main.graphics.GraphicsDevice.Clear(Color.Black);
 
                     Texture2D pern = ModContent.GetTexture("SGAmod/Perlin");
-                    Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
                     Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
                     Main.spriteBatch.Draw(Main.blackTileTexture, new Vector2(0, 0), new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
 
@@ -418,7 +459,7 @@ namespace SGAmod.Dimensions
                         Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Main.hslToRgb((Main.GlobalTime / 3) % 1f, 1f, 0.75f) * 0.5f, Main.GlobalTime * 0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
                         Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Main.hslToRgb(((Main.GlobalTime + 1.5f) / 3) % 1f, 1f, 0.75f) * 0.5f, Main.GlobalTime * -0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
                     }
-                        Main.spriteBatch.End();
+                    Main.spriteBatch.End();
 
 
                     pern = ModContent.GetTexture("SGAmod/Extra_49");
@@ -451,11 +492,39 @@ namespace SGAmod.Dimensions
 
                     }
                     Main.spriteBatch.End();
+                }
+
+                swaptargets = (swaptargets + 1) % 2;
+                RenderTarget2D target = swaptargets == 0 ? SGAmod.postRenderEffectsTarget : SGAmod.postRenderEffectsTargetCopy;
+                RenderTarget2D targetOther = swaptargets == 1 ? SGAmod.postRenderEffectsTarget : SGAmod.postRenderEffectsTargetCopy;
+
+                Main.graphics.GraphicsDevice.SetRenderTarget(target);
+                    Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+;
+                Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1f,1f,0f));
+
+                //Main.spriteBatch.Begin(SpriteSortMode.Immediate, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+                Main.spriteBatch.Draw(targetOther, new Vector2(0, 0), null, Color.Black*0.96f, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+                foreach (Projectile proj in Main.projectile.Where(proj => proj.active && proj.modProjectile != null && proj.modProjectile is IPostEffectsDraw))
+                    {
+                        (proj.modProjectile as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch);
+                    }
+                    foreach (NPC npc in Main.npc.Where(npc => npc.active && npc.modNPC != null && npc.modNPC is IPostEffectsDraw))
+                    {
+                        (npc.modNPC as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch);
+                    }
+
+                    Main.spriteBatch.End();
 
 
                     Main.graphics.GraphicsDevice.SetRenderTargets(binds);
 
-                }
+
+
 
 
 
@@ -539,19 +608,40 @@ namespace SGAmod.Dimensions
                 DimDingeonsWorld.DrawSectors();
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+                Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
 
                 float alpha = 1f-((Main.LocalPlayer.GetModPlayer<SGADimPlayer>().lightSize - 1800f) / 600f);
+
+                Matrix Custommatrix = Matrix.CreateScale(1f, 1f, 0f);// Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
 
                 if (alpha > 0f)
                 {
                     Main.spriteBatch.End();
 
-                    Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
                     //Draw Shadow RenderTarget2D
-                    Main.spriteBatch.Draw(SGAmod.drawnscreen, new Vector2(0, 0), null, new Color(50, 50, 50) * alpha * SGAmod.fogAlpha, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
+                        Main.spriteBatch.Draw(SGAmod.drawnscreen, new Vector2(0, 0), null, new Color(50, 50, 50) * alpha * SGAmod.fogAlpha, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
                 }
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
+
+                ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.TwilightDye);
+                shader.UseOpacity(1f);
+                shader.UseSaturation(1f);
+                DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), new Vector2(Main.GlobalTime*6,0), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle((int)(Main.GlobalTime * 64f)*(DrawOverride.swaptargets == 0 ? 1 : -1), 0, 64, 64)), Microsoft.Xna.Framework.Color.White, Main.GlobalTime*30f, new Vector2(256f, 256f), 1f, SpriteEffects.None, 0);
+                shader.Apply(null, new DrawData?(value9));
+
+                Main.spriteBatch.Draw(SGAmod.postRenderEffectsTargetCopy, Main.rand.NextVector2Circular(8, 24).RotatedByRandom((double)MathHelper.TwoPi), null, Color.White*0.50f, 0, new Vector2(0, 0), new Vector2(2f, 2f), SpriteEffects.None, 0f);
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
+
+                Main.spriteBatch.Draw(SGAmod.postRenderEffectsTarget, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), new Vector2(2f, 2f), SpriteEffects.None, 0f);
+                //}
+
+
+
 
                 List<HellionInsanity> madness= DimDungeonsProxy.madness;
 
@@ -642,6 +732,16 @@ namespace SGAmod.Dimensions
 
         public override void PostUpdate()
         {
+
+            if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && !SGAmod.anysubworld && darkSectors.Count<1 && SGAWorld.modtimer>150)
+            {
+                UnifiedRandom rando = new UnifiedRandom(Main.worldName.GetHashCode());
+
+                Point randomspot = new Point(rando.Next(300, Main.maxTilesX - 600), rando.Next((int)(Main.maxTilesY * 0.25), Main.maxTilesY - 300));
+
+                new DarkSector(randomspot.X, randomspot.Y, seed: Main.worldName.GetHashCode());
+
+            }
 
             foreach (DarkSector sector in darkSectors)
             {
@@ -736,8 +836,9 @@ namespace SGAmod.Dimensions
                     spriteBatch.End();
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1f,1f,1f));
 
+                    float alpha2 = SGADimPlayer.staticHeartBeat>0 ? (float)Math.Sin((SGADimPlayer.staticHeartBeat/30f)*MathHelper.Pi) * 150f : 0;
                     //A Fade out black screen effect
-                    spriteBatch.Draw(Main.blackTileTexture, Vector2.Zero, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), (Color.Black * ((float)DimDingeonsWorld.deathtimer / 200f)), 0, Vector2.Zero, new Vector2(1f, 1f), SpriteEffects.None, 0f);
+                    spriteBatch.Draw(Main.blackTileTexture, Vector2.Zero, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black * MathHelper.Clamp(((float)(DimDingeonsWorld.deathtimer+alpha2) / 200f),0f,1f), 0, Vector2.Zero, new Vector2(1f, 1f), SpriteEffects.None, 0f);
                     spriteBatch.End();
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 

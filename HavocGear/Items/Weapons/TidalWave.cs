@@ -13,14 +13,14 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Tidal Wave");
-            Tooltip.SetDefault("Shoots a short range water ball");
+            Tooltip.SetDefault("Shoots a short range water ball\nThe water balls do not expire in water and crit wet enemies");
         }
 
         public override void SetDefaults()
         {
             item.width = 10;
             item.height = 10;
-            item.damage = 12;
+            item.damage = 15;
             item.melee = true;
             item.noMelee = true;
             item.useTurn = true;
@@ -32,7 +32,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.UseSound = SoundID.Item1;
             item.autoReuse = false;
             item.maxStack = 1;
-            item.value = 10000;
+            item.value = 800;
             item.rare = 1;
             item.shoot = mod.ProjectileType("TidalWaveProj");
             item.shootSpeed = 9f;

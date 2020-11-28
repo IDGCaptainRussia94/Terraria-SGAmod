@@ -11,6 +11,11 @@ namespace SGAmod
 	{
 		void DrawAdditive(SpriteBatch spriteBatch);
 	}
+
+	interface IPostEffectsDraw
+	{
+		void PostEffectsDraw(SpriteBatch spriteBatch);
+	}
 	interface IHitScanItem
 	{
 	}

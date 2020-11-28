@@ -107,11 +107,11 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("IceScepter"), 1);
 			recipe.AddIngredient(mod.ItemType("RubiedBlade"), 1);
 			recipe.AddIngredient(mod.ItemType("MangroveStriker"), 1);
-			recipe.AddIngredient(mod.ItemType("CryostalBar"), 10);
+			recipe.AddIngredient(mod.ItemType("CryostalBar"), 12);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 10);
-			recipe.AddIngredient(mod.ItemType("OmniSoul"), 5);
+			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 16);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 6);
 			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 10);
-			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 15);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

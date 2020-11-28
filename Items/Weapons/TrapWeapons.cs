@@ -70,7 +70,7 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
+			recipe.AddIngredient(ItemID.Blowgun, 1);
 			recipe.AddIngredient(ItemID.DartTrap, 1);
 			recipe.AddIngredient(ItemID.IllegalGunParts, 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
@@ -249,8 +249,22 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
-			recipe.AddIngredient(mod.ItemType("CryostalBar"), 10);
+			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 4);
+			recipe.AddIngredient(mod.ItemType("CryostalBar"), 8);
+			recipe.AddIngredient(ItemID.DartPistol, 1);
+			recipe.AddIngredient(ItemID.SuperDartTrap, 1);
+			recipe.AddIngredient(ItemID.LihzahrdPowerCell, 1);
+			recipe.AddIngredient(ItemID.LihzahrdPressurePlate, 1);
+			recipe.AddIngredient(ItemID.Nanites, 50);
+			recipe.AddIngredient(mod.ItemType("DartTrapGun"), 1);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 4);
+			recipe.AddIngredient(mod.ItemType("CryostalBar"), 8);
+			recipe.AddIngredient(ItemID.DartRifle, 1);
 			recipe.AddIngredient(ItemID.SuperDartTrap, 1);
 			recipe.AddIngredient(ItemID.LihzahrdPowerCell, 1);
 			recipe.AddIngredient(ItemID.LihzahrdPressurePlate, 1);
@@ -313,8 +327,8 @@ namespace SGAmod.Items.Weapons
 			item.ranged = true;
 			item.width = 40;
 			item.height = 20;
-			item.useTime = 5;
-			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useAnimation = 20;
 			item.useStyle = 5;
 			item.noMelee = true; //so the item's animation doesn't do damage
 			item.knockBack = 0.25f;
@@ -323,7 +337,7 @@ namespace SGAmod.Items.Weapons
 			item.autoReuse = true;
 			item.UseSound = SoundID.Item34;
 			item.shootSpeed = 10f;
-			item.shoot = ProjectileID.FlamethrowerTrap;
+			item.shoot = ModContent.ProjectileType<TrapFlames>();
 			item.useAmmo = AmmoID.Gel;
 		}
 		public override void AddRecipes()
@@ -366,6 +380,60 @@ namespace SGAmod.Items.Weapons
 			IdgProjectile.Sync(probg);
 			return false;
 		}
+
+	}
+
+	public class TrapFlames : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Trap Flames");
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/JarateShurikens"); }
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.FlamethrowerTrap);
+			projectile.ranged = true;
+			projectile.friendly = true;
+			projectile.magic = false;
+			projectile.tileCollide = true;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.aiStyle = -1;
+		}
+
+		public override void AI()
+		{
+			projectile.ai[0] += 1;
+			if (projectile.ai[0]%12==1)
+			{
+				Main.PlaySound(SoundID.Item34, projectile.position);
+				if (Main.myPlayer == projectile.owner)
+				{
+					Projectile proj = Projectile.NewProjectileDirect(projectile.position, projectile.velocity, 188, projectile.damage, projectile.knockBack, projectile.owner);
+					proj.friendly = true;
+					proj.hostile = false;
+					proj.usesIDStaticNPCImmunity = true;
+					proj.idStaticNPCHitCooldown = 6;
+					proj.netUpdate = true;
+
+
+				}
+			}
+			projectile.position -= projectile.velocity;
+
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			return false;
+		}
+
 
 	}
 

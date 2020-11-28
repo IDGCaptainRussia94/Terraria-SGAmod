@@ -180,7 +180,7 @@ namespace SGAmod.Items.Weapons
 			item.useAnimation = 15;
 			item.useStyle = 1;
 			item.knockBack = 5;
-			item.value=Item.sellPrice(0, 50, 0, 0);
+			item.value=Item.sellPrice(0, 25, 0, 0);
 			item.rare = 10;
 			item.UseSound = SoundID.Item1;
 			item.shoot = mod.ProjectileType("BrimflameCharging");
@@ -196,6 +196,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("FieryShard"), 5);
 			recipe.AddIngredient(mod.ItemType("CalamityRune"), 2);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 50);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 2);
 			recipe.AddIngredient(ItemID.LunarBar, 10);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);
 			recipe.AddTile(TileID.LunarCraftingStation);

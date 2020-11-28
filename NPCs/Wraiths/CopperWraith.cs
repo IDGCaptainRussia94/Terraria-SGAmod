@@ -609,11 +609,9 @@ namespace SGAmod.NPCs.Wraiths
 
 			if (shardtype > 0)
 			{
-				for (int f = 0; f < (Main.expertMode ? 40 : 25); f = f + 1)
-				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype);
-				}
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype, (Main.expertMode ? 40 : 25));
 			}
+
 
 			for (int f = 0; f < (Main.expertMode ? 200 : 100); f = f + 1)
 			{

@@ -25,6 +25,8 @@ namespace SGAmod.HavocGear.Projectiles
 			projectile.tileCollide = false;
 			projectile.ignoreWater = true;
 			projectile.penetrate = -1;
+			projectile.usesIDStaticNPCImmunity = true;
+			projectile.idStaticNPCHitCooldown = 5;
 			projectile.ownerHitCheck = true;
 			projectile.aiStyle = 19;
 			projectile.melee = true;  

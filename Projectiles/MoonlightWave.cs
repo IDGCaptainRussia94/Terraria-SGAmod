@@ -8,13 +8,14 @@ using Terraria.ID;
 using Terraria.Enums;
 using Idglibrary;
 using SGAmod.Effects;
+using System.Linq;
 
 namespace SGAmod.Projectiles
 {
     public class MoonlightWaveLv1 : ModProjectile
     {
         virtual protected int extraparticles => 0;
-        public BasicEffect basicEffect = new BasicEffect(Main.graphics.GraphicsDevice);
+        Effect effect => SGAmod.TrailEffect;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Moonlight Wave");
@@ -42,17 +43,22 @@ namespace SGAmod.Projectiles
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
 
-                VertexBuffer vertexBuffer;
+            //VertexBuffer vertexBuffer;
 
-                basicEffect.World = WVP.World();
-                basicEffect.View = WVP.View(Main.GameViewMatrix.Zoom);
-                basicEffect.Projection = WVP.Projection();
-                basicEffect.VertexColorEnabled = true;
-                basicEffect.TextureEnabled = true;
-                basicEffect.Texture = SGAmod.ExtraTextures[21];
+            /*basicEffect.World = WVP.World();
+            basicEffect.View = WVP.View(Main.GameViewMatrix.Zoom);
+            basicEffect.Projection = WVP.Projection();
+            basicEffect.VertexColorEnabled = true;
+            basicEffect.TextureEnabled = true;
+            basicEffect.Texture = SGAmod.ExtraTextures[21];*/
+            /*effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Main.GameViewMatrix.Zoom) * WVP.Projection());
+            effect.Parameters["imageTexture"].SetValue(SGAmod.ExtraTextures[21]);
+            effect.Parameters["coordOffset"].SetValue(new Vector2(0, Main.GlobalTime * -1f));
+            effect.Parameters["coordMultiplier"].SetValue(1f);
+            effect.Parameters["strength"].SetValue(1f);
+            string pass = "DefaultPass";
 
-
-                int totalcount = projectile.oldPos.Length;
+            int totalcount = projectile.oldPos.Length;
 
             for(int i=0;i< projectile.oldPos.Length; i += 1)//dumb hack to get the trails to not appear at 0,0
             {
@@ -63,7 +69,6 @@ namespace SGAmod.Projectiles
                 VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[((totalcount + 1) * 6)];
 
                 Vector3[] prevcoords = { Vector3.One, Vector3.One };
-
 
             float coordprogress = 0;
             for (int k = 1; k < totalcount; k += 1)
@@ -119,11 +124,27 @@ namespace SGAmod.Projectiles
                 rasterizerState.CullMode = CullMode.None;
                 Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
 
-                foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
+
+
+                effect.CurrentTechnique.Passes[pass].Apply();
                     Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, ((totalcount + 1) * 2));
-                }
+
+            */
+
+            for (int i = 0; i < projectile.oldPos.Length; i += 1)//dumb hack to get the trails to not appear at 0,0
+            {
+                if (projectile.oldPos[i] == default)
+                    projectile.oldPos[i] = projectile.position;
+            }
+
+            TrailHelper trail = new TrailHelper("BasicEffectPass", SGAmod.ExtraTextures[21]);
+            trail.projsize = projectile.Hitbox.Size() / 2f;
+            trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
+            trail.trailThickness = 13;
+            trail.trailThicknessIncrease = 15;
+            trail.DrawTrail(projectile.oldPos.ToList(),projectile.Center);
+
+
 
             Texture2D texture = Main.projectileTexture[mod.ProjectileType(this.GetType().Name)];
             Vector2 origin = new Vector2((float)texture.Width * 0.5f, (float)texture.Height * 0.5f);
@@ -272,7 +293,7 @@ namespace SGAmod.Projectiles
             projectile.tileCollide = false;
             projectile.penetrate = -1;
             projectile.alpha = 40;
-            projectile.timeLeft = 500;
+            projectile.timeLeft = 600;
             projectile.light = 1.5f;
             projectile.extraUpdates = 1;
             projectile.ignoreWater = true;

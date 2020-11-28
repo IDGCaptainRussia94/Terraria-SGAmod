@@ -58,7 +58,7 @@ namespace SGAmod
 		public int MaxCooldownStacks = 1;
 		public float RevolverSpeed = 1f;
 		public bool Duster = false;
-		public bool Drakenshopunlock = false;
+		public bool Drakenshopunlock = false;		public bool benchGodFavor = false;
 		public int DefenseFrame = 0;
 		public int ReloadingRevolver = 0;
 		public int CustomWings = 0;
@@ -86,8 +86,10 @@ namespace SGAmod
 		public int intimacy = 0;
 		public int toxicity = 0;
 		public bool HeavyCrates = false;
+		public int uncraftBoost = 0;
 		public bool Microtransactions = false;
 		public bool MoneyMismanagement = false;
+		public bool lavaBurn = false;
 		public bool NoFly = false;
 		public bool permaDrown = false;
 		public bool Pressured = false;
@@ -111,6 +113,7 @@ namespace SGAmod
 		public bool SunderedDefense = false;
 		public int gamePadAutoAim = 0;
 		public int tidalCharm = 0;
+		public int watcherDebuff = 0;
 
 		public bool Lockedin = false;
 		public bool CirnoWings = false;
@@ -131,6 +134,7 @@ namespace SGAmod
 		public int electricCharge = 0; public int electricChargeMax = 0; public float electricChargeCost = 1f; public float electricChargeReducedDelay = 1f;
 		public int ammoLeftInClip = 6; public int plasmaLeftInClip = 1000;
 		public int ammoLeftInClipMax = 6; public int plasmaLeftInClipMax = 1000;
+		public const int plasmaLeftInClipMaxConst = 1000; public const int boosterPowerLeftMaxConst = 10000;
 		public int boosterPowerLeft = 10000; public int boosterPowerLeftMax = 10000; public float boosterdelay = -500; public float electricdelay = -500; public int boosterrechargerate = 15; public int electricrechargerate = 1;
 		public int digiStacks = 0; public int digiStacksMax = 0;
 		public int digiStacksCount = 16;
@@ -165,15 +169,18 @@ namespace SGAmod
 		public int maxblink = 0;
 		public int potionsicknessincreaser = 0;
 		public bool EALogo = false;
+		public bool graniteMagnet = false;
 		public bool demonsteppers = false;
 		public bool FridgeflameCanister = false;
 		public bool IceFire = false;
 		public bool terraDivingGear = false;
 		public bool glacialStone = false;
+		public bool novusStackBoost = false;
 		public bool BIP = false;
 		public float summonweaponspeed = 0f;
 		public bool grippinggloves = false;
 		public bool mudbuff = false;
+		public bool dragonFriend = false;
 		public string[] armorglowmasks = new string[4];
 		public int[] devempowerment = { 0, 0, 0, 0 };
 		public Func<Player, int, Color>[] armorglowcolor = {delegate (Player player,int index)
@@ -206,6 +213,7 @@ namespace SGAmod
 
 		public override void ResetEffects()
 		{
+			watcherDebuff = 0;
 			MVMBoost = false;
 			gunslingerLegend = false;
 			if (!player.HasBuff(mod.BuffType("ConsumeHellBuff")))
@@ -221,6 +229,7 @@ namespace SGAmod
 			if (gamePadAutoAim > 0)
 				gamePadAutoAim -= 1;
 
+			uncraftBoost = Math.Max(uncraftBoost - 1, 0);
 			surprised = Math.Max(surprised - 1, 0);
 			tidalCharm = Math.Max(tidalCharm - 1, 0);
 			shinobj -= 1;
@@ -248,6 +257,7 @@ namespace SGAmod
 			triggerFinger = 1f;
 			CirnoWings = false;
 			MassiveBleeding = false;
+			lavaBurn = false;
 			thermalblaze = false; acidburn = false; ELS = false;
 			SerratedTooth = false;
 			aversionCharm = false;
@@ -260,8 +270,10 @@ namespace SGAmod
 			Blazewyrmset = false;
 			Mangroveset = false;
 			IDGset = false;
+			novusStackBoost = false;
 			Pressured = false;
 			Havoc = 0;
+			graniteMagnet = false;
 			SunderedDefense = false;
 			lockoneffect = Math.Min(lockoneffect + 1, 5000);
 
@@ -326,7 +338,7 @@ namespace SGAmod
 			if (!Shieldbreak)
 				electricdelay -= 1;
 
-				boosterPowerLeft = Math.Min(boosterPowerLeft + (boosterdelay >= 1 ? boosterrechargerate : 0), boosterPowerLeftMax);
+				boosterPowerLeft = Math.Min(boosterPowerLeft + (boosterdelay < 1 ? boosterrechargerate : 0), boosterPowerLeftMax);
 
 				electricCharge = Math.Min(electricCharge + (electricdelay < 1 ? electricrechargerate : 0), electricChargeMax);
 
@@ -349,9 +361,10 @@ namespace SGAmod
 				{
 					return Color.White;
 				};
-				digiStacksMax = 0;
-				player.breathMax = 200;
 			}
+
+			digiStacksMax = 0;
+			player.breathMax = 200;
 			MaxCooldownStacks = 1;
 			noactionstackringofrespite = false;
 			actionCooldownRate = 1f;
@@ -368,7 +381,9 @@ namespace SGAmod
 				{
 					ShadowSectorZone = 5;
 					SGADimPlayer dimplayer = player.GetModPlayer<SGADimPlayer>();
+					dimplayer.noLightGrow = 180;
 					dimplayer.lightSize += (int)((400f - (float)dimplayer.lightSize) / 600f);
+					if (dimplayer.lightSize<600)
 					player.AddBuff(BuffID.Blackout, 120);
 					break;
 				}
@@ -428,6 +443,7 @@ namespace SGAmod
 			sgaplayer.DefenseFrame = DefenseFrame;
 			sgaplayer.gunslingerLegendtarget = gunslingerLegendtarget;
 			sgaplayer.activestacks = activestacks;
+			sgaplayer.dragonFriend = dragonFriend;
 
 			for (int i = 54; i < 58; i++)
 			{
@@ -451,7 +467,7 @@ namespace SGAmod
 			}
 			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots || sgaplayer.entropyCollected != entropyCollected || sgaplayer.DefenseFrame != DefenseFrame
 			|| sgaplayer.plasmaLeftInClip != plasmaLeftInClip || sgaplayer.Redmanastar != Redmanastar || sgaplayer.ExpertiseCollected != ExpertiseCollected || sgaplayer.ExpertiseCollectedTotal != ExpertiseCollectedTotal
-			 || sgaplayer.gunslingerLegendtarget != gunslingerLegendtarget || sgaplayer.activestacks != activestacks)
+			 || sgaplayer.gunslingerLegendtarget != gunslingerLegendtarget || sgaplayer.activestacks != activestacks || sgaplayer.dragonFriend != dragonFriend)
 				mismatch = true;
 
 
@@ -481,6 +497,7 @@ namespace SGAmod
 				packet.Write((short)DefenseFrame);
 				packet.Write((short)gunslingerLegendtarget);
 				packet.Write((short)activestacks);
+				packet.Write(dragonFriend);
 				for (int i = 54; i < 58; i++)
 				{
 					packet.Write(ammoinboxes[i - 54]);
@@ -584,7 +601,6 @@ namespace SGAmod
 
 		public override void PostUpdateRunSpeeds()
 		{
-
 			if (Noviteset > 0 && electricChargeMax > 0)
 			{
 
@@ -623,6 +639,39 @@ namespace SGAmod
 
 		public override void PreUpdate()
 		{
+			if (Main.netMode != NetmodeID.Server)
+			{
+				Filter manshad = Filters.Scene["SGAmod:ScreenWave"];
+				if (player.HeldItem.type == ModContent.ItemType<Debug1>())
+				{
+					if (timer%60==0)
+						Main.NewText("Test!");
+
+					if (!manshad.IsActive())
+					{
+						Filters.Scene.Activate("SGAmod:ScreenWave", player.Center, new object[0]);
+						Main.NewText("Turn on! Test!");
+
+					}
+					else
+					{
+						ScreenShaderData shader = manshad.GetShader();
+						shader.UseIntensity(26f).UseProgress((Main.GlobalTime * 0.1f) % 1f).UseOpacity(1f).UseColor(0.02f,0.02f,0f).UseTargetPosition(player.Center);
+
+
+					}
+
+				}
+				else
+				{
+					if (manshad.IsActive())
+					{
+						Main.NewText("Turn off! Test!");
+						manshad.Deactivate();
+					}
+				}
+			}
+
 			if (CooldownStacks == null)
 				CooldownStacks = new List<ActionCooldownStack>();
 			if (skillMananger == null)
@@ -1325,7 +1374,12 @@ namespace SGAmod
 			if (beefield > 0)
 			{
 				if (Main.rand.Next(0, 10) < 5)
-					player.AddBuff(BuffID.Honey, 60 * 5);
+				{
+					player.honeyWet = true;
+					player.wet = true;
+					foreach(Player player2 in Main.player.Where(playertest => playertest.active && !playertest.dead && playertest.team == player.team && playertest.Distance(player.Center)<160))
+						player2.AddBuff(BuffID.Honey, 60 * 5);
+				}
 			}
 
 			if (BIP)
@@ -1781,6 +1835,7 @@ namespace SGAmod
 				int dust = Dust.NewDust(new Vector2(player.position.X, player.position.Y) + randomcircle * (1.2f * (float)player.width), player.width + 4, player.height + 4, mod.DustType("TornadoDust"), player.velocity.X * 0.4f, (player.velocity.Y - 7f) * 0.4f, 30, default(Color) * 1f, 0.5f);
 				Main.dust[dust].noGravity = true;
 				Main.dust[dust].color = Main.hslToRgb(0f, 0.5f, 0.35f);
+				Main.playerDrawDust.Add(dust);
 			}
 
 			if (thermalblaze)
@@ -1833,6 +1888,7 @@ namespace SGAmod
 		{
 			BitsByte newbim = new BitsByte();
 			newbim[0] = DankShrineZone;
+			newbim[1] = ShadowSectorZone>0;
 			writer.Write(newbim);
 		}
 
@@ -1840,6 +1896,7 @@ namespace SGAmod
 		{
 			BitsByte flags = reader.ReadByte();
 			DankShrineZone = flags[0];
+			ShadowSectorZone = flags[1] ? (byte)5 : (byte)0;
 		}
 
 		public override void UpdateBiomeVisuals()
@@ -1885,6 +1942,8 @@ namespace SGAmod
 			tag["nightmareplayer"] = nightmareplayer;
 			tag["entropycollected"] = entropyCollected;
 			tag["Drakenshopunlock"] = Drakenshopunlock;
+			tag["benchGodFavor"] = Drakenshopunlock;
+			tag["dragonFriend"] = dragonFriend;
 
 			SaveExpertise(ref tag);
 
@@ -1920,6 +1979,12 @@ namespace SGAmod
 			if (tag.ContainsKey("entropycollected"))
 				entropyCollected = tag.GetInt("entropycollected");
 
+			if (tag.ContainsKey("dragonFriend"))
+				dragonFriend = tag.GetBool("dragonFriend");
+
+			if (tag.ContainsKey("benchGodFavor"))
+				benchGodFavor = tag.GetBool("benchGodFavor");
+
 			LoadExpertise(tag);
 
 		}
@@ -1937,11 +2002,11 @@ namespace SGAmod
 			if (DankShrineZone)
 			{
 
-				if (questFish == mod.ItemType("Vinefish") && Main.rand.Next(2) == 0 && DankShrineZone)
+				if (questFish == mod.ItemType("Vinefish") && Main.rand.Next(2) == 0)
 				{
 					caughtType = mod.ItemType("Vinefish");
 				}
-				if (questFish == mod.ItemType("Rootfish") && Main.rand.Next(2) == 0 && DankShrineZone)
+				if (questFish == mod.ItemType("Rootfish") && Main.rand.Next(2) == 0)
 				{
 					caughtType = mod.ItemType("Rootfish");
 				}

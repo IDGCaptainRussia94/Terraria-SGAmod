@@ -211,6 +211,7 @@ namespace SGAmod
 				int DefenseFrame = reader.ReadInt16();
 				int gunslingerLegendtarget = reader.ReadInt16();
 				int activestacks = reader.ReadInt16();
+				bool dragonFriend = reader.ReadBoolean();
 				Logger.Debug("DEBUG both: Clone Client 10");
 
 
@@ -226,6 +227,7 @@ namespace SGAmod
 				sgaplayer.DefenseFrame = DefenseFrame;
 				sgaplayer.gunslingerLegendtarget = (int)gunslingerLegendtarget;
 				sgaplayer.activestacks = (int)activestacks;
+				sgaplayer.dragonFriend = dragonFriend;
 				for (int i = 54; i < 58; i++)
 				{
 					sgaplayer.ammoinboxes[i - 54] = reader.ReadInt32();

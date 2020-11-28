@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using Idglibrary;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -21,12 +23,12 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.width = 44;
 			item.height = 52;
 			item.useTime = 30;
-			item.useAnimation = 10;
+			item.useAnimation = 12;
 			item.useStyle = 1;
 			item.knockBack = 10;
-			item.value = 1000000;
+			item.value = 500000;
 			item.rare = 10;
-	        item.UseSound = SoundID.Item1;		
+	        item.UseSound = SoundID.Item1;
 			item.autoReuse = true;
 			item.useTurn = false;
 			if (!Main.dedServ)
@@ -39,14 +41,16 @@ namespace SGAmod.HavocGear.Items.Weapons
         {
             ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("ClayMore"), 1);
-            recipe.AddIngredient(ItemID.FragmentSolar, 12);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 20);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 8);
-			recipe.AddIngredient(ItemID.SoulofLight, 8);
+			recipe.AddIngredient(mod.ItemType("ThermalBlade"), 1);
+			recipe.AddIngredient(ItemID.FragmentSolar, 8);
+ 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 6);
+			recipe.AddIngredient(ItemID.SoulofLight, 6);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
             recipe.AddRecipe();
-        }
+
+		}
 
 	public override void MeleeEffects(Player player, Rectangle hitbox)
 	{
@@ -65,7 +69,8 @@ namespace SGAmod.HavocGear.Items.Weapons
 	
 	public override void OnHitNPC(Player player, NPC target, int damage, float knockback, bool crit)
 	{
-		if(!(Main.rand.Next(5) == 0))
+
+		if (!(Main.rand.Next(5) == 0))
 		{
 			target.AddBuff(mod.BuffType("ThermalBlaze"), 600, false);
 			target.AddBuff(BuffID.Daybreak, 600, true);

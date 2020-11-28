@@ -45,9 +45,10 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemID.Shotgun, 1);
             recipe.AddIngredient(null, "FieryShard", 10);
 		    recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
-	        recipe.AddTile(TileID.MythrilAnvil);
+            recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this);
       		recipe.AddRecipe();
         }

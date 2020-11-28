@@ -23,7 +23,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		{
 			item.damage = 32;
 			item.magic = true;
-			item.mana = 8;
+			item.mana = 4;
 			item.width = 34;      
             item.height = 24;
 			item.useTime = 10;

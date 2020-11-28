@@ -852,7 +852,7 @@ namespace SGAmod.Dimensions
                 List<int> loot = new List<int> { 2344, 2345, 2346, 2347, 2348, 2349, 2350, 2351, 2352, 2353, 2354, 2355, 2356, 2359, 301, 302, 303, 304, 305, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 226, 188, 189, 110, 28 };
 
                 List<int> lootmain = new List<int> { unirand.NextBool() ? SGAmod.Instance.ItemType("UnmanedBar") : SGAmod.Instance.ItemType("NoviteBar"), SGAmod.Instance.ItemType("WraithFragment3"), ItemID.SilverCoin, ItemID.RestorationPotion,ItemID.ManaPotion, ItemID.StrangeBrew,ItemID.Bomb };
-                List<int> lootrare = new List<int> { SGAmod.Instance.ItemType("DankCore"), SGAmod.Instance.ItemType("CondenserPotion"), SGAmod.Instance.ItemType("RagnarokBrew"), SGAmod.Instance.ItemType("DankCrate"),ItemID.GreaterHealingPotion,ItemID.GoldCoin,ItemID.Dynamite };
+                List<int> lootrare = new List<int> { SGAmod.Instance.ItemType("DankCore"), SGAmod.Instance.ItemType("CondenserPotion"),SGAmod.Instance.ItemType("TinkerPotion"), SGAmod.Instance.ItemType("RagnarokBrew"), SGAmod.Instance.ItemType("DankCrate"),ItemID.GreaterHealingPotion,ItemID.GoldCoin,ItemID.Dynamite };
                 int e = 0;
 
                 if (SGAWorld.downedSpiderQueen)
@@ -860,7 +860,7 @@ namespace SGAmod.Dimensions
                 if (SGAWorld.downedMurk > 1)
                     lootmain.Add(SGAmod.Instance.ItemType("MurkyGel"));
 
-                if (loottype < 2)
+                if (loottype < 2)//Not Shadow Chest
                 {
                     if (unirand.Next(0, 100) < 10 + (SGAWorld.dungeonlevel * 5))
                     {
@@ -871,7 +871,7 @@ namespace SGAmod.Dimensions
                     } 
                     if (unirand.Next(0, 100) < 3 + (SGAWorld.dungeonlevel * 1))
                     {
-                        Main.chest[chestid].item[e].SetDefaults(SGAmod.Instance.ItemType("PortalEssence"));
+                        Main.chest[chestid].item[e].SetDefaults(unirand.NextBool() ? SGAmod.Instance.ItemType("BenchGodsFavor") : SGAmod.Instance.ItemType("PortalEssence"));
                         Main.chest[chestid].item[e].stack = 1;
                         e += 1;
                     }                    
@@ -890,7 +890,7 @@ namespace SGAmod.Dimensions
                         e += 1;
                     }
 
-                    if (loottype == 1)
+                    if (loottype == 1)//Locked GoldChest
                     {
                         lootrare = new List<int> { ItemID.Muramasa, ItemID.MagicMissile, ItemID.CobaltShield, ItemID.AquaScepter, ItemID.BlueMoon, ItemID.Handgun, ItemID.Valor };
 
@@ -909,7 +909,7 @@ namespace SGAmod.Dimensions
                     e += 1;
                 }
 
-                if (loottype == 2)
+                if (loottype == 2)//Shadow Chest
                     {
 
                             lootrare = new List<int> { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire,ItemID.HellwingBow, SGAmod.Instance.ItemType("BeserkerAuraStaff")};

@@ -42,7 +42,7 @@ namespace SGAmod.Items.Weapons
 			item.shoot = mod.ProjectileType("Stormbreakerproj");
 			item.useTurn = true;
 			//ProjectileID.CultistBossLightningOrbArc
-			item.width = 8;
+			item.width = 20;
 			item.height = 28;
 			item.maxStack = 1;
 			item.knockBack = 9;
@@ -330,7 +330,7 @@ namespace SGAmod.Items.Weapons
 					{
 						if (him.GetGlobalNPC<SGAnpcs>().InfinityWarStormbreakerint > 0 || him.GetGlobalNPC<SGAnpcs>().DosedInGas || him.dripping)
 						{
-							if (owner.SGAPly().ConsumeElectricCharge(250,150))
+							if (owner.SGAPly().ConsumeElectricCharge(100,150))
 							{
 								//owner.statMana -= (int)(15f * owner.manaCost);
 								//owner.manaRegenDelay = Math.Max(owner.manaRegenDelay,30);

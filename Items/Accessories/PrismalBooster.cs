@@ -60,12 +60,12 @@ namespace SGAmod.Items.Accessories
 			}
 			else
 			{
-					if (player.wingTime > 0)
-						player.wingFrame = 1 + (int)(frameCounter / 2) % 3;
-					else
-						player.wingFrame = 1 + (int)(frameCounter / 4) % 3;
+				if (player.wingTime > 0)
+					player.wingFrame = 1 + (int)(frameCounter / 2) % 3;
+				else
+					player.wingFrame = 1 + (int)(frameCounter / 4) % 3;
 
-					return true;
+				return true;
 			}
 			return true;
 		}

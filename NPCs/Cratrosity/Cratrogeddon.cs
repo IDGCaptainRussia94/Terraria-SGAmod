@@ -51,7 +51,7 @@ namespace SGAmod.NPCs.Cratrosity
 			npc.defense = 50;
 			npc.lifeMax = 40000;
 			npc.value = Item.buyPrice(1, 0, 0, 0);
-			music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Evoland 2 OST - Track 46 (Ceres Battle)");
+			//music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Evoland 2 OST - Track 46 (Ceres Battle)");
 			animationType = 0;
 			npc.noTileCollide = true;
 			npc.noGravity = true;

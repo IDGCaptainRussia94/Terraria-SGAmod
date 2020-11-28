@@ -9,7 +9,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.World.Generation;
 using Idglibrary;
-
+using SGAmod.Dimensions;
+using SGAmod.Dimensions.NPCs;
 
 namespace SGAmod.NPCs.Wraiths
 {
@@ -36,6 +37,9 @@ namespace SGAmod.NPCs.Wraiths
 			SGAWorld.downedCaliburnGuardianHardmode = true;
 			int[] types = { mod.ItemType("CaliburnTypeA"), mod.ItemType("CaliburnTypeB"), mod.ItemType("CaliburnTypeC") };
 				npc.DropItemInstanced(npc.Center, new Vector2(npc.width,npc.height), types[(int)npc.ai[2]]);
+
+				SpookyDarkSectorEye.Release(npc.Center,true,new Vector2(20,20));
+
 		}
 		protected override int caliburnlevel => 3;
 

@@ -18,8 +18,8 @@ namespace SGAmod.Items.Tools
 			item.melee = true;
 			item.width = 40;
 			item.height = 40;
-			item.useTime = 6;
-			item.useAnimation = 10;
+			item.useAnimation = 12;
+			item.useTime = 12;
 			item.pick = 55;
 			item.useStyle = 1;
 			item.knockBack = 6;

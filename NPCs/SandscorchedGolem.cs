@@ -48,6 +48,19 @@ namespace SGAmod.NPCs
 			bannerItem = mod.ItemType("SandscorchedGolemBanner");
 		}
 
+		public override void HitEffect(int hitDirection, double damage)
+		{
+			if (npc.life < 1)
+			{
+				Gore.NewGore(npc.Center + new Vector2(npc.spriteDirection * -4, 6), npc.velocity, mod.GetGoreSlot("Gores/SandscorchedGolem_leg_gib"), 1f);
+				Gore.NewGore(npc.Center + new Vector2(npc.spriteDirection * -4, -2), npc.velocity, mod.GetGoreSlot("Gores/SandscorchedGolem_arm_gib"), 1f);
+				Gore.NewGore(npc.Center + new Vector2(npc.spriteDirection * 4, -2), npc.velocity, mod.GetGoreSlot("Gores/SandscorchedGolem_arm_gib"), 1f);
+				Gore.NewGore(npc.Center + new Vector2(npc.spriteDirection * 4, 6), npc.velocity, mod.GetGoreSlot("Gores/SandscorchedGolem_leg_gib"), 1f);
+				Gore.NewGore(npc.Center, npc.velocity, mod.GetGoreSlot("Gores/SandscorchedGolem_chest_gib"), 1f);
+				Gore.NewGore(npc.Center + new Vector2(0, -18), npc.velocity, mod.GetGoreSlot("Gores/SandscorchedGolem_head_gib"), 1f);
+			}
+		}
+
 		public override void AI()
 		{
 			npc.TargetClosest(false);
@@ -78,7 +91,7 @@ namespace SGAmod.NPCs
 
 		public override void NPCLoot()
 		{
-			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(1, 2));
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(1, 4));
 		}
 
 		public override void OnHitPlayer(Player player, int damage, bool crit)

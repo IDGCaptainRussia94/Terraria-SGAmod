@@ -45,6 +45,17 @@ namespace SGAmod.NPCs
 			npc.netUpdate = true;
 			banner = npc.type;
 			bannerItem = mod.ItemType("TidalElementalBanner");
+			npc.rarity = 1;
+		}
+
+		public override void HitEffect(int hitDirection, double damage)
+		{
+			if (npc.life < 1)
+			{
+				Gore.NewGore(npc.Center + new Vector2(-npc.spriteDirection*16,24), npc.velocity, mod.GetGoreSlot("Gores/TidalElemental_tail_gib"), 1f);
+				Gore.NewGore(npc.Center + new Vector2(0, -16), npc.velocity, mod.GetGoreSlot("Gores/TidalElemental_head_gib"), 1f);
+				Gore.NewGore(npc.Center, npc.velocity, mod.GetGoreSlot("Gores/TidalElemental_arm_gib"), 1f);
+			}
 		}
 
 		public override void AI()

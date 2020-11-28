@@ -56,12 +56,16 @@ namespace SGAmod.NPCs.Dank
 					}
 				}
 			}
+			if (Main.rand.Next(4) == 0 && SGAWorld.downedMurk > 1)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("DankWood"), Main.rand.Next(1,16));
+			}
 		}
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
 			int spawn = Main.rand.Next(1,3);
-			return spawn == 2 && SGAUtils.NoInvasion(spawnInfo) && spawnInfo.spawnTileType==mod.TileType("MoistStone") && spawnInfo.player.SGAPly().DankShrineZone ? 0.50f : 0f;
+			return spawn == 2 && SGAUtils.NoInvasion(spawnInfo) && spawnInfo.spawnTileType==mod.TileType("MoistStone") && spawnInfo.player.SGAPly().DankShrineZone ? 1.60f : 0f;
 		}
 	}
 }

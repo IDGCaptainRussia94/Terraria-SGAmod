@@ -21,10 +21,10 @@ namespace SGAmod.Items.Weapons
 		
 		public override void SetDefaults()
 		{
-			item.damage = 70;
+			item.damage = 50;
 			item.magic = true;
 			item.width = 34;    
-			item.mana = 20;
+			item.mana = 25;
             item.height = 24;
 			item.useTime = 12;
 			item.useAnimation = 12;

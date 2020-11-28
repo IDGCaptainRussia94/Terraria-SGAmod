@@ -17,7 +17,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 95;
+			item.damage = 100;
 			item.ranged = true;
 			item.width = 32;
 			item.height = 62;
@@ -42,14 +42,15 @@ namespace SGAmod.HavocGear.Items.Weapons
         	public override void AddRecipes()
         	{
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(mod.ItemType("StarMetalBar"), 20);
-			recipe.AddIngredient(ItemID.SoulofNight, 8);
 			recipe.AddIngredient(ItemID.ShadowFlameBow, 1);
-			recipe.AddIngredient(ItemID.FragmentVortex, 10);
+			recipe.AddIngredient(ItemID.DarkShard, 1);
+			recipe.AddIngredient(ItemID.FragmentVortex, 8);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
+			recipe.AddIngredient(ItemID.SoulofNight, 8);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
-            		recipe.AddRecipe();
-        	}
+            recipe.AddRecipe();
+		}
 
 	/*public override bool CanUseItem(Player player)
 		{
@@ -99,7 +100,10 @@ return base.CanUseItem(player);
 			for (int i = 0; i < numberProjectiles; i++)
 			{
 				Vector2 perturbedSpeed = (new Vector2(speedX, speedY)*speed).RotatedBy(MathHelper.Lerp(-rotation, rotation, i / (numberProjectiles - 1))) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
-				Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.ShadowFlameArrow, damage, knockBack, player.whoAmI);
+				Projectile shadow = Projectile.NewProjectileDirect(position, perturbedSpeed, ProjectileID.ShadowFlameArrow, damage, knockBack, player.whoAmI);
+				shadow.usesLocalNPCImmunity = true;
+				shadow.localNPCHitCooldown = -1;
+				shadow.netUpdate = true;
 			}
 
 			if (type == ProjectileID.WoodenArrowFriendly)

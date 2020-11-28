@@ -22,7 +22,7 @@ using SGAmod.Dimensions;
 using SGAmod;
 using SGAmod.NPCs.Hellion;
 using ReLogic.Graphics;
-
+using SGAmod.Dimensions.NPCs;
 
 namespace SGAmod.Dimensions
 {
@@ -69,6 +69,8 @@ namespace SGAmod.Dimensions
 		{
 			DrawOverride.DrawFog();
 			SGAmod.PostDraw.Clear();
+			NullWatcher.DoAwarenessChecks(NullWatcher.SeeDistance, true, false);
+			//Main.NewText("test1");
 
 			List<HellionInsanity> madness = DimDungeonsProxy.madness;
 

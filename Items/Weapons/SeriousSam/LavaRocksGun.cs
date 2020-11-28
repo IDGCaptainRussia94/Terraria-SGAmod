@@ -8,6 +8,8 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.Enums;
 using Idglibrary;
+using Terraria.DataStructures;
+using SGAmod.Buffs;
 
 namespace SGAmod.Items.Weapons.SeriousSam
 {
@@ -16,38 +18,37 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lava Rocks Gun");
-			Tooltip.SetDefault("Launches Molten rocks that split apart when hitting a target");
+			Tooltip.SetDefault("Launches Molten rocks that split apart when hitting a target\nA direct hit with the large rock does 3X damage\nSplash damage engulfs enemies in lava for 5 seconds");
 		}
 		
 		public override void SetDefaults()
 		{
+			item.damage = 60;
 			item.useStyle = 5;
 			item.autoReuse = true;
 			item.useAnimation = 20;
 			item.useTime = 20;
 			item.width = 50;
 			item.height = 20;
-			item.shoot = 338;
+			item.shoot = mod.ProjectileType("LavaRocks");
 			item.UseSound = SoundID.Item11;
-			item.damage = 75;
-			item.crit = 10;
 			item.shootSpeed = 8f;
 			item.noMelee = true;
 			item.value = Item.sellPrice(0, 20, 0, 0);
 			item.knockBack = 7f;
 			item.rare = 7;
 			item.magic = true;
-			item.mana = 8;
+			item.mana = 10;
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.MeteoriteBar, 15);
+			recipe.AddIngredient(ItemID.JackOLanternLauncher, 1);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 8);
 			recipe.AddIngredient(ItemID.LihzahrdPowerCell, 2);
 			recipe.AddIngredient(mod.ItemType("ManaBattery"), 3);
 			recipe.AddIngredient(mod.ItemType("FieryShard"), 5);
-			recipe.AddIngredient(ItemID.JackOLanternLauncher, 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
@@ -62,14 +63,14 @@ namespace SGAmod.Items.Weapons.SeriousSam
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
 			float speed=8f;
-			float numberProjectiles = 3;
+			float numberProjectiles = 1;
 			float rotation = MathHelper.ToRadians(7);
 			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 45f;
 
 			for (int i = 0; i < numberProjectiles; i++)
 			{
 				Vector2 perturbedSpeed = (new Vector2(speedX, speedY)*speed).RotatedBy(MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0,100)/100f)) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
-				int proj=Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, mod.ProjectileType("LavaRocks"), damage, knockBack, player.whoAmI,Main.rand.Next(0,3));
+				int proj=Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, player.whoAmI,Main.rand.Next(0,3));
 				Main.projectile[proj].friendly=true;
 				Main.projectile[proj].hostile=false;
 				Main.projectile[proj].timeLeft=600;
@@ -117,6 +118,8 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			projectile.friendly = true;
 			projectile.tileCollide = true;
 			projectile.magic = true;
+			projectile.penetrate = 1;
+			projectile.usesLocalNPCImmunity = true;
 			aiType = ProjectileID.WoodenArrowFriendly;
 		}
 
@@ -137,15 +140,24 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 		public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
 		{
+			if (!SGAConfigClient.Instance.LavaBlending)
+			DrawLava();
 			return false;
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			target.immune[projectile.owner] = 15;
+			//target.immune[projectile.owner] = 15;
 		}
 
-		public override bool PreKill(int timeLeft)
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+			if (projectile.width > 16)
+				damage *= 3;
+
+		}
+
+        public override bool PreKill(int timeLeft)
 		{
 			projectile.type = ProjectileID.Fireball;
 			Main.PlaySound(2, (int)projectile.position.X, (int)projectile.position.Y, 10);
@@ -175,8 +187,13 @@ namespace SGAmod.Items.Weapons.SeriousSam
 				}
 			}
 
-			int theproj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("Explosion"), (int)((double)projectile.damage * 0.15f), projectile.knockBack, projectile.owner, 0f, 0f);
+			int theproj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("Explosion"), (int)((double)projectile.damage * 0.25f), projectile.knockBack, projectile.owner, 0f, 0f);
 			Main.projectile[theproj].magic = projectile.magic;
+			Main.projectile[theproj].usesLocalNPCImmunity = true;
+			Main.projectile[theproj].localNPCHitCooldown = -1;
+			Main.projectile[theproj].penetrate = -1;
+			IdgProjectile.AddOnHitBuff(theproj, ModContent.BuffType<LavaBurn>(),60*5);
+			Main.projectile[theproj].netUpdate = true;
 
 			return true;
 		}
@@ -199,10 +216,14 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void AI()
 		{
 
-			Tile tile = Main.tile[(int)projectile.Center.X / 16, (int)projectile.Center.Y / 16];
-			if (tile!=null)
-			if (tile.liquid > 64)
-			projectile.Kill();
+			Point16 loc = new Point16((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16);
+			if (WorldGen.InWorld(loc.X, loc.Y))
+			{
+				Tile tile = Main.tile[loc.X, loc.Y];
+				if (tile != null)
+					if (tile.liquid > 64)
+						projectile.Kill();
+			}
 
 			projectile.scale = ((float)projectile.width / 24f);
 			for (int i = 0; i < projectile.scale + 0.5; i++)

@@ -23,6 +23,9 @@ using SGAmod.HavocGear.Items.Weapons;
 using System.Linq;
 using SGAmod.Buffs;
 using SGAmod.Items.Tools;
+using SubworldLibrary;
+using Terraria.DataStructures;
+using Terraria.Graphics;
 
 namespace SGAmod
 {
@@ -61,6 +64,8 @@ namespace SGAmod
 		public bool Sodden = false;
 		public bool ELS = false;
 		public bool marked = false;
+		public bool petrified = false;
+		public bool lavaBurn = false;
 		public bool TimeSlowImmune = false;
 		bool fireimmunestate = false;
 		bool[] otherimmunesfill = new bool[3];
@@ -69,6 +74,18 @@ namespace SGAmod
 		public int counter = 0;
 		public int impaled = 0;
 		public byte crimsonCatastrophe = 0;
+		private int nonStackingImpaled_;
+		public int nonStackingImpaled
+		{
+            get
+            {
+				return nonStackingImpaled_;
+            }
+            set
+            {
+				nonStackingImpaled_ = Math.Max(value, nonStackingImpaled_);
+            }
+		}
 
 		public int FindBuffIndex(NPC npc, int type)
 		{
@@ -108,7 +125,9 @@ namespace SGAmod
 			MoonLightCurse = false;
 			InfinityWarStormbreaker = false;
 			Napalm = false;
+			petrified = false;
 			Sodden = false;
+			lavaBurn = false;
 			SunderedDefense = false;
 			DankSlow = false;
 			ELS = false;
@@ -133,6 +152,27 @@ namespace SGAmod
 		{
 			if (Snapped > 0 && Snapped < 5)
 				return false;
+
+			if (petrified)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+				ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.SilverAndBlackDye);
+				shader.UseOpacity(1f);
+				shader.UseSaturation(1f);
+				shader.UseColor(1f,1f,1f);
+				shader.UseSecondaryColor(0f, 0f, 0f);
+				DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), new Vector2(Main.GlobalTime * 6, 0), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle((int)(Main.GlobalTime * 4f), 0, 64, 64)), Microsoft.Xna.Framework.Color.White, Main.GlobalTime * 30f, new Vector2(256f, 256f), 1f, SpriteEffects.None, 0);
+				shader.Apply(null, new DrawData?(value9));
+
+			}
+
+			if (npc.HasBuff(BuffID.Invisibility))
+			{
+				return false;
+			}
+
 			if (drawonce)
 				return base.PreDraw(npc, spriteBatch, drawColor);
 
@@ -163,7 +203,17 @@ namespace SGAmod
 			return base.PreDraw(npc, spriteBatch, drawColor);
 		}
 
-		public override bool CheckActive(NPC npc)
+        public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
+        {
+			if (petrified)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+			}
+			//blank
+		}
+
+        public override bool CheckActive(NPC npc)
 		{
 			if (HellionArmy)
 			{
@@ -306,14 +356,20 @@ namespace SGAmod
 					damage = 10;
 				}
 			}
-			if (impaled > 0)
+			if (!npc.dontTakeDamage)
 			{
-				if (npc.lifeRegen > 0) npc.lifeRegen = 0;
-				npc.lifeRegen -= impaled;
-				damage = Math.Max(impaled / 4, damage);
+				impaled += nonStackingImpaled;
+				if (impaled > 0)
+				{
+					if (npc.lifeRegen > 0) npc.lifeRegen = 0;
+					npc.lifeRegen -= impaled;
+					damage = Math.Max(impaled / 4, damage);
+				}
 			}
 			//ResetEffects seems to be called after projectile AI it seems, but this works, for now
 			impaled = 0;
+			nonStackingImpaled_ = 0;
+			nonStackingImpaled = 0;
 		}
 
 		public override void DrawEffects(NPC npc, ref Color drawColor)
@@ -581,7 +637,14 @@ namespace SGAmod
 
 			CrucibleArenaMaster.UpdatePortal(npc);
 
-			if ((npc.type == NPCID.CultistDevote || npc.type == NPCID.CultistArcherBlue || npc.type == NPCID.CultistTablet) && (SGAWorld.downedHarbinger == false && Main.netMode < 1))
+			if (petrified)
+			{
+				npc.velocity.Y += 0.4f;
+				npc.velocity.X *= 0.85f;
+				return false;
+			}
+
+				if ((npc.type == NPCID.CultistDevote || npc.type == NPCID.CultistArcherBlue || npc.type == NPCID.CultistTablet) && (SGAWorld.downedHarbinger == false && Main.netMode < 1))
 			{
 				npc.active = false;
 				return false;
@@ -1044,12 +1107,12 @@ namespace SGAmod
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateBase"));
 			}
-			if (npc.type == NPCID.WyvernHead && NPC.downedGolemBoss && Main.rand.Next(100) <= 5)
+			if (npc.type == NPCID.WyvernHead && NPC.downedGolemBoss && Main.rand.Next(100) < 5)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Tornado"));
 			}
 
-			if (npc.type == NPCID.Golem && Main.rand.Next(100) <= 20 && !Main.expertMode)
+			if (npc.type == NPCID.Golem && Main.rand.Next(100) < 20 && !Main.expertMode)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Upheaval"));
 			}
@@ -1080,12 +1143,11 @@ namespace SGAmod
 
 			if (npc.type == NPCID.RedDevil)
 			{
-				if (Main.rand.Next(2) <= 1)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(2, 4));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(3, 5));
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("ConsumeHell"), Main.rand.Next(1, 3));
 			}
 
-			if (npc.type == NPCID.Lavabat && Main.rand.Next(4) <= 1 && Main.hardMode)
+			if ((npc.type == NPCID.Lavabat || npc.type == NPCID.Hellbat) && Main.rand.Next(4) < 1 && Main.hardMode)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(1, 2));
 			}

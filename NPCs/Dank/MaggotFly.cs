@@ -12,10 +12,11 @@ namespace SGAmod.NPCs.Dank
             npc.CloneDefaults(NPCID.BeeSmall);
             npc.width = 40;
             npc.height = 30;
-            npc.damage = 34;
-            npc.defense = 8;
-            npc.lifeMax = 20;
-            npc.value = 0f;
+            npc.damage = 84;
+            npc.defense = 25;
+            npc.lifeMax = 500;
+            npc.knockBackResist = 0f;
+            npc.value = 1500f;
             npc.HitSound = SoundID.NPCHit1;
             npc.DeathSound = SoundID.NPCDeath1;
             npc.noGravity = true;
@@ -26,9 +27,17 @@ namespace SGAmod.NPCs.Dank
             bannerItem = mod.ItemType("MaggotFlyBanner");
         }
 
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            if (npc.life < 1)
+            {
+                Gore.NewGore(npc.Center + new Vector2(npc.spriteDirection * 4, 0), npc.velocity, mod.GetGoreSlot("Gores/MaggotFly_gib"), 1f);
+            }
+        }
+
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Fly");
+            DisplayName.SetDefault("Maggot Fly");
             Main.npcFrameCount[npc.type] = Main.npcFrameCount[NPCID.BeeSmall];
         }
     }

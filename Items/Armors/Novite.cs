@@ -21,7 +21,7 @@ namespace SGAmod.Items.Armors
 			item.height = 18;
 			item.value = 10000;
 			item.rare = 2;
-			item.defense=3;
+			item.defense = 3;
 		}
 		public override bool DrawHead()
 		{
@@ -57,7 +57,7 @@ namespace SGAmod.Items.Armors
 			item.height = 18;
 			item.value = 10000;
 			item.rare = 2;
-			item.defense=5;
+			item.defense = 5;
 		}
 		public override void UpdateEquip(Player player)
 		{
@@ -90,7 +90,7 @@ namespace SGAmod.Items.Armors
 			item.height = 18;
 			item.value = 10000;
 			item.rare = 2;
-			item.defense=2;
+			item.defense = 2;
 		}
 		public override void UpdateEquip(Player player)
 		{

@@ -41,7 +41,11 @@ namespace SGAmod.HavocGear.Items
 		public override void OpenBossBag(Player player)
 		{
 
-			int random = Main.rand.Next(5);
+			int random = Main.rand.Next(6);
+			if (random == 5)
+			{
+				player.QuickSpawnItem(mod.ItemType("GnatStaff"), 1);
+			}			
 			if (random == 4)
 			{
 				player.QuickSpawnItem(mod.ItemType("SwarmGrenade"), Main.rand.Next(40, 100));
@@ -214,7 +218,7 @@ namespace SGAmod.Items
 		player.TryGettingDevArmor();
 
 			string[] dropitems = { "Starburster", "Snowfall", "IceScepter", "RubiedBlade", "IcicleFall" };
-			player.QuickSpawnItem(mod.ItemType(dropitems[Main.rand.Next(0, dropitems.Length)]));
+			player.QuickSpawnItem(mod.ItemType(dropitems[Main.rand.Next(dropitems.Length)]));
 			player.QuickSpawnItem(mod.ItemType("CryostalBar"),Main.rand.Next(25, 40));
 			player.QuickSpawnItem(mod.ItemType("CirnoWings"), 1);
 		}

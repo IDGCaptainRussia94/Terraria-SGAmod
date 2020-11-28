@@ -57,10 +57,11 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("FieryMoon"), 1);
-			recipe.AddIngredient(ItemID.LunarBar, 12);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 2);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
 			recipe.AddIngredient(ItemID.SpellTome, 1);
-			recipe.AddIngredient(ItemID.FragmentSolar, 8);
-			recipe.AddIngredient(ItemID.FragmentNebula, 10);
+			recipe.AddIngredient(ItemID.FragmentSolar, 6);
+			recipe.AddIngredient(ItemID.FragmentNebula, 8);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

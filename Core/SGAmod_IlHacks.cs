@@ -21,6 +21,50 @@ namespace SGAmod
 	public partial class SGAmod : Mod
 	{
 
+		protected void ForcedNPCLavaCollisionHack(ILContext il)//Burn Baby Burn
+		{
+			ILCursor c = new ILCursor(il);
+
+			c.Index = il.Instrs.Count - 1;
+
+			MethodInfo HackTheMethod = typeof(Collision).GetMethod("LavaCollision", BindingFlags.Public | BindingFlags.Static);
+			c.TryGotoPrev(MoveType.After, i => i.MatchCall(HackTheMethod));
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<Func<bool, NPC, bool>>((bool flag, NPC npc) =>
+			{
+				if (npc.GetGlobalNPC<SGAnpcs>().lavaBurn)
+				flag = true;
+
+				return flag;
+			});
+		}
+
+		protected void ForcedAdjTilesHack(ILContext il)//Bench God's blessing allows you to craft with this station at any time!
+		{
+			ILCursor c = new ILCursor(il);
+
+			c.Index = il.Instrs.Count-1;
+
+			//MethodInfo HackTheMethod = typeof(Recipe).GetMethod("FindRecipes", BindingFlags.Public | BindingFlags.Static);
+			c.TryGotoPrev(MoveType.After, i => i.MatchLdcI4(1),i => i.MatchStloc(4));
+			c.Index += 1;
+			c.Emit(OpCodes.Ldarg_0);
+			c.Emit(OpCodes.Ldloc,4);
+			c.EmitDelegate<Func<Player,bool,bool>>((Player player,bool flag) =>
+			{
+				if (Main.netMode != NetmodeID.Server)
+                {
+					if (!SGAmod.craftBlockPanel.ItemPanel.item.IsAir)
+					{
+						player.adjTile[SGAmod.craftBlockPanel.ItemPanel.item.createTile] = true;
+						player.oldAdjTile[SGAmod.craftBlockPanel.ItemPanel.item.createTile] = true;
+						flag = true;
+					}
+                }
+				return flag;
+			});
+			c.Emit(OpCodes.Stloc,4);//Force it!
+		}
 
 		private delegate bool SwimInAirHackDelegate(bool stackbool, Player player);
 		protected void SwimInAirHack(ILContext il)//Control water physics on the player

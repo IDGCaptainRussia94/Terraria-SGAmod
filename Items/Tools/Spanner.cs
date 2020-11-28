@@ -48,13 +48,13 @@ namespace SGAmod.Items.Tools
             return new Vector2(18,6);
         }
 
-        public override bool UseItem(Player player)
+		public override bool UseItem(Player player)
         {
 			if (Main.netMode != NetmodeID.Server)
 			{
-				if (player.Distance(Main.MouseWorld) < (Math.Sqrt(Player.tileRangeX * Player.tileRangeY)+player.blockRange) * 16)
+				Point16 there = new Point16(Player.tileTargetX, Player.tileTargetY);
+				if (player.Distance(there.ToVector2()*16) < (Math.Sqrt(Player.tileRangeX * Player.tileRangeY)+player.blockRange) * 16)
 				{
-					Point16 there = new Point16((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 					if (WorldGen.InWorld(there.X, there.Y))
 					{
 						Wiring.blockPlayerTeleportationForOneIteration = true;

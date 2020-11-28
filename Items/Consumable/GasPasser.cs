@@ -70,6 +70,7 @@ namespace SGAmod.Items.Consumable
 			recipe.AddIngredient(ItemID.Explosives);
 			recipe.AddIngredient(mod.ItemType("IceFairyDust"), 2);
 			recipe.AddIngredient(mod.ItemType("WraithFragment4"),4);
+			recipe.AddIngredient(mod.ItemType("BottledMud"), 2);
 			recipe.AddIngredient(mod.ItemType("MurkyGel"), 8);
 			recipe.AddIngredient(ItemID.CursedFlame, 2);
 			recipe.AddTile(TileID.WorkBenches);

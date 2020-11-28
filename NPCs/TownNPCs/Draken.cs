@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
+using System.IO;
+using SGAmod.Dimensions;
 
 namespace SGAmod.NPCs.TownNPCs
 {
@@ -18,6 +20,8 @@ namespace SGAmod.NPCs.TownNPCs
 	{
 
 		float walkframe = 0f;
+		int confort = 0;
+		public int partyVictum => BirthdayParty.CelebratingNPCs.FirstOrDefault(type => type == npc.whoAmI);
 
 		public override bool Autoload(ref string name)
 		{
@@ -56,6 +60,16 @@ namespace SGAmod.NPCs.TownNPCs
 			npc.homeless = true;
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 2) % 1f, 0.5f, 0.35f);
 
+		}
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(confort);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+			confort = reader.ReadInt32();
 		}
 
 		public override void HitEffect(int hitDirection, double damage)
@@ -170,7 +184,6 @@ namespace SGAmod.NPCs.TownNPCs
 				walkframe += Math.Abs(npc.velocity.X) * 0.15f;
 		}
 
-
 		// Consider using this alternate approach to choosing a random thing. Very useful for a variety of use cases.
 		// The WeightedRandom class needs "using Terraria.Utilities;" to use
 		public override string GetChat()
@@ -179,6 +192,18 @@ namespace SGAmod.NPCs.TownNPCs
 
 			SGAPlayer modplayer = Main.LocalPlayer.GetModPlayer<SGAPlayer>();
 			int expgathered = Main.LocalPlayer.GetModPlayer<SGAPlayer>().ExpertiseCollectedTotal;
+
+			if (SGAPocketDim.WhereAmI == typeof(LimboDim))
+            {
+				chat.Add("Rk erb, hqfubswhg whaw!");
+				chat.Add("VGhpcyBpcyBvbmx5IGhhbGYgdGhlIHN0ZXBzIHJlcXVpcmVk");
+				chat.Add("WmtiIGR1aCBicngga2h1aD8=");
+				chat.Add("EaIwnlOKMJWgnJkfnJ8fVUEbLKDtMzSaM290VUImMKZtpTIipTkyVTkyMaDtLJ5xVUWcM2u0");
+				chat.Add("dWdnY2Y6Ly92enRoZS5wYnovbi8wZzdnaFFz");
+				chat.Add("Vg lzw eslz, xaymjw gml eq qwsj gx tajlz");				
+				chat.Add("emxsaGs6Ly9oc2tsd3RhZi51Z2UvMGxvNDdLdUg=");
+				return chat.Get();
+			}
 
 
 			if (npc.life < npc.lifeMax * 0.5)
@@ -220,6 +245,19 @@ namespace SGAmod.NPCs.TownNPCs
 					}
 				}*/
 
+				if (NPC.AnyNPCs(ModContent.NPCType<Goat>()))
+				{
+					chat.Add("Jubia! They're here! Thank you [i: " + ItemID.LifeCrystal + "]",2);
+					chat.Add("Jubia! I [i: " + ItemID.LifeFruit + "] the Goat",2);
+					chat.Add("Jubia is the only person who ever truely helped me... Except for you of course", 2);
+					chat.Add("I want to [i: " + ItemID.BetsyWings + "] Hug my goat", 2);
+                }
+                else
+                {
+					chat.Add("Where's my lovely Goat? :(");
+				}
+
+
 				chat.Add("When I overheard the last group of people talking about a bounty, I ran away, and kept flying as far as I could.");
 				chat.Add("The last group of people I thought were my friends were going to sell me off as a bounty, I escaped when they were distracted. I just want to be treated like anyone else.");
 				chat.Add("I'm not sure what to think about all this...");
@@ -238,7 +276,6 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("'Rawr <3'");
 				chat.Add("I cannot roar, I just make a cute whining sound.");
 				chat.Add("I have uneasy thoughts about my flesh desolving down gullets.");
-				chat.Add("Where's my lovely Goat? :(");
 				chat.Add("What is it?");
 				chat.Add("My glowing flank? Even I don't know how I came to have this, I've had it for as long as I can remember.");
 				chat.Add("Is there no true peace for any of us?");
@@ -262,27 +299,42 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("Often I feel timid but then I talk about things that I can only relate as Meta, it's very strange.");
 				chat.Add("I remember a time, when all everyone would say, the sounds would echo: 'Button 2'");
 				chat.Add("I often look at my claws; I was clearly meant to hurt and kill, but I don't want to be like the stories...");
-				chat.Add("My human would like to thank you for 100,000 downloads, you have no idea how much it means to them [i: " + ItemID.LifeFruit + "]");
+				chat.Add("My human would like to thank you for 100,000 downloads, you have no idea how much it means to them, literally the world [i: " + ItemID.LifeFruit + "]");
+				chat.Add("Do you have any idea what it's like, to put your faith in people and then just... Have it mean nothing to them? I guess I would know what it feels like to have the Universe against me, sigh.");
 				if (BirthdayParty.PartyIsUp)
                 {
 					chat.Add("I still don't have a party hat :(",3);
 					chat.Add("The cake is sweet, thank you for these feelings.",3);
 					chat.Add("The last time I heard of a party, it was in celebration at one of my kind's deaths...",3);
 					chat.Add("No, your not going to play 'pin the tail on my tail'", 3);
-					int index = BirthdayParty.CelebratingNPCs.FirstOrDefault(type => type == npc.type);
-					if (index != default)
+
+					int index = partyVictum;
+					if (index != default && !Main.LocalPlayer.SGAPly().dragonFriend)
 					{
 						List<int> guys = new List<int>();
 						guys.AddRange(BirthdayParty.CelebratingNPCs);
-						guys.RemoveAt(index);
+						guys.Remove(index);
 
-						chat.Add("They're throwing a party... for me, a monster?",5);
+						chat.Add("They're throwing a party... for me, a monster?",500);
+						chat.Add("I'm scared "+Main.LocalPlayer.name, 500);
+						chat.Add("Don't let them hurt me, please :(", 500);
+						chat.Add("It's going to happen, isn't it?", 500);
+						chat.Add("They're going to slay me!", 500);
+
 						if (guys.Count > 0)
 						{
 							NPC him = new NPC();
-							him.SetDefaults(guys[0]);
-							chat.Add("I don't trust the "+ him+"; they're clearly planning something...", 5);
-							chat.Add(him + " is scareing me.", 5);
+							him.SetDefaults(Main.npc[guys[0]].type);
+							chat.Add("I don't trust the "+ him.GetGivenOrTypeNetName()+ "; they're clearly planning something...", 500);
+							chat.Add(him.GetGivenOrTypeNetName() + " is scareing me.", 5);
+							chat.Add("It's going to take a good deal of convincing that this isn't some kind of setup to corner me", 500);
+
+							if (guys.Count > 1)
+							{
+								NPC him2 = new NPC();
+								him.SetDefaults(Main.npc[guys[1]].type);
+								chat.Add("I want you to come to my party, not because of fun, but because I'm afraid "+him.GetGivenOrTypeNetName() + " and " + him2.GetGivenOrTypeNetName() +" are planning to slay me in public...", 500);
+							}
 						}
 					}
 
@@ -433,11 +485,80 @@ namespace SGAmod.NPCs.TownNPCs
 			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)) {
 				button = "Check Expertise";
 			}
+			if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && partyVictum != default && !Main.LocalPlayer.SGAPly().dragonFriend)
+			{
+				switch (confort)
+				{
+					case 0:
+						button2 = "What's Wrong?";
+						break;
+					case 1:
+						button2 = "But that isn't true";
+						break;
+					case 2:
+						button2 = "Why?";
+						break;
+					case 3:
+						button2 = "(try to confort him)";
+						break;
+					case 4:
+						button2 = "You are not weak";
+						break;
+					case 5:
+						button2 = "We will";
+						break;
+					case 6:
+						button2 = "Enjoy the party";
+						break;
+				}
+				return;
+			}
 			button2 = "What's Next?";
 		}
 
 		public override void OnChatButtonClicked(bool firstButton, ref bool shop)
 		{
+			if (!firstButton)
+            {
+				if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && partyVictum != default && !Main.LocalPlayer.SGAPly().dragonFriend)
+                {
+					switch (confort)
+					{
+						case 0:
+							Main.npcChatText = "I've had... Nightmares. Terrible nightmares, I can remember being in this lab, I remember hearing voices. They talked about how they were making a weapon, to kill people. Even after I escaped I learned of the cruelity our kind had brought to these worlds, we killed innocent lives, we were no different than the monsters you slay...";
+							confort = 1;
+							break;
+						case 1:
+							Main.npcChatText = "Is it? I've had a few people try to take my life, just to claim they slain a dragon, a monster, and became heroes because our kind is destined to die. How else is am I not suppose to think I'm some kind of monster when your own town wants to kill me, hang my head in the town hall, and then tanner my scalied hide!";
+							confort = 2;
+							break;
+						case 2:
+							Main.npcChatText = "I.. I don't know ok? I'm just, afraid ok?? I'm afraid of dying without ever finding out the truth, the party, the balloons, all of it... It just brings back memories of... of people cheering while a dragon is barely grasping for life, bleeding out and fading from existance; worse yet, they did nothing wrong. We died because we existed. I can't trust them, not after having already been betrayed by people I thought were my friends!";
+							confort = 3;
+							break;
+						case 3:
+							Main.npcChatText = "Thank you, I appericate the hug, but I'm still afraid. People think we're big, strong, and can take on armies, but I'm just too weak...";
+							confort = 4;
+							break;
+						case 4:
+							Main.npcChatText = "I don't want to test that, I don't want to fight or harm anyone, I can't even hunt my own dinner... I Just want to survive and find out what happened to my parents.";
+							confort = 5;
+							break;
+						case 5:
+							Main.npcChatText = "Hmmm, thank you for the hope, thank you for being a real friend, for everything.";
+							confort = 6;
+							break;
+						case 6:
+							Main.npcChatText = "I think I will now... Thank you so much for helping me overcome my paranoia "+Main.LocalPlayer.name;
+                            confort = 7;
+							Main.LocalPlayer.SGAPly().dragonFriend = true;
+							npc.AddBuff(BuffID.Lovestruck, 120);
+							break;
+					}
+					return;
+                }
+			}
+
 			if (firstButton)
 			{
 				if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
@@ -531,7 +652,7 @@ namespace SGAmod.NPCs.TownNPCs
 				if (!SGAWorld.GennedVirulent && Main.rand.Next(0, 2) == 0 && Main.hardMode)
 					chat = "Murk has returned, more powerful than ever, but at the same time that very power is seeping out of his gelatin body. Prehaps it could be released into the jungle... Take a [i:" + mod.ItemType("RoilingSludge") + "] to the jnugle and find out";
 				if (!SGAWorld.downedCirno && Main.rand.Next(0, 2) == 0 && Main.hardMode)
-					chat = "The snowy lands are colder than usually and I can feel iceflakes forming on my own wings, let alone yours, a strong being of ice is hampering our ability to fly, craft a core of its power, a [i:" + mod.ItemType("Nineball") + "] with Ice Fairy dusts and souls and take it to the frostly plains during the day";
+					chat = "The snowy lands are colder than usually and I can feel iceflakes forming on my own wings, let alone yours, a strong being of ice is hampering our ability to fly, craft a core of its power, a [i:" + mod.ItemType("Nineball") + "] with Ice Fairy dusts and souls and take it to the frosty plains during the day";
 
 				if (SGAWorld.downedMurk<2)
 					chat = "The dank structures' walls are protected by a strong, fly swaming, roiling creature in the jungle, prehaps a [i:" + mod.ItemType("RoilingSludge") + "] may attract its fly swamps, and its wrath";
@@ -554,7 +675,7 @@ namespace SGAmod.NPCs.TownNPCs
 
 
 
-		public int[,] itemsinshop = new int[15, 2];
+		public int[,] itemsinshop = new int[14, 2];
 		public string GetNextItem()
 		{
 			itemsinshop = new[,]{
@@ -566,7 +687,7 @@ namespace SGAmod.NPCs.TownNPCs
 			{ ItemID.Arkhalis,1000 },
 			{ ItemID.RodofDiscord,2000 },
 			{ SGAmod.Instance.ItemType("Gong"),2500 },
-			{ SGAmod.Instance.ItemType("EntropyTransmuter"),4000 },
+			//{ SGAmod.Instance.ItemType("EntropyTransmuter"),4000 },
 			{ SGAmod.Instance.ItemType("PrimordialSkull"),5000 },
 			{ SGAmod.Instance.ItemType("MVMUpgrade"),6000 },
 			{ ItemID.AviatorSunglasses,10000 },
@@ -669,14 +790,14 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopCustomPrice = 50;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
-			}		
+			}					
 			if (modplayer.ExpertiseCollectedTotal >= 1000)
 			{
 				shop.item[nextSlot].SetDefaults(ItemID.Arkhalis);
 				shop.item[nextSlot].shopCustomPrice = 75;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
-			}				
+			}
 			if (modplayer.ExpertiseCollectedTotal >= 2000)
 			{
 				shop.item[nextSlot].SetDefaults(ItemID.RodofDiscord);
@@ -684,17 +805,17 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}
+			if (modplayer.dragonFriend)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("Fieryheart"));
+				shop.item[nextSlot].shopCustomPrice = 125;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}
 			if (modplayer.ExpertiseCollectedTotal >= 2500)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("Gong"));
 				shop.item[nextSlot].shopCustomPrice = 150;
-				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
-				nextSlot++;
-			}			
-			if (modplayer.ExpertiseCollectedTotal >= 4000)
-			{
-				shop.item[nextSlot].SetDefaults(mod.ItemType("EntropyTransmuter"));
-				shop.item[nextSlot].shopCustomPrice = 75;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}			

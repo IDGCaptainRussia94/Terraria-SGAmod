@@ -197,6 +197,90 @@ namespace SGAmod.Items.Consumable
 			recipe.AddRecipe();
 		}
 	}
+	public class TinkerPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Tinker Potion");
+			Tooltip.SetDefault("Greatly reduces the loss from uncrafting");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.Orange;
+			item.value = 250;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = SGAmod.Instance.BuffType("TinkerPotionBuff");
+			item.buffTime = 60 * 300;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(null, "BottledMud", 1);
+			recipe.AddIngredient(null, "VirulentOre", 1);
+			recipe.AddIngredient(null, "DankWood", 5);
+			recipe.AddIngredient(null, "VialofAcid", 2);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+	public class TooltimePotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Tooltime Potion");
+			Tooltip.SetDefault("Greatly increases the knockback of tools");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.Blue;
+			item.value = 75;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = SGAmod.Instance.BuffType("TooltimePotionBuff");
+			item.buffTime = 60 * 300;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(null, "BottledMud", 1);
+			recipe.AddRecipeGroup("Wood", 3);
+			recipe.AddIngredient(ItemID.Acorn, 1);
+			recipe.AddIngredient(ItemID.TungstenOre, 1);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(null, "BottledMud", 1);
+			recipe.AddRecipeGroup("Wood", 3);
+			recipe.AddIngredient(ItemID.Acorn, 1);
+			recipe.AddIngredient(ItemID.SilverOre, 1);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
 	public class RagnarokBrew : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -225,15 +309,54 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.BottledWater);
+			recipe.AddIngredient(ItemID.BottledWater,2);
 			recipe.AddIngredient(null, "Entrophite", 10);
+			recipe.AddIngredient(null, "StygianCore", 1);
 			recipe.AddIngredient(null, "FieryShard", 1);
-			recipe.AddIngredient(null, "UnmanedOre", 2);
+			recipe.AddIngredient(null, "UnmanedOre", 3);
 			recipe.AddTile(TileID.Bottles);
-			recipe.SetResult(this, 1);
+			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
 		}
 	}
+	public class EnergyPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Energy Potion");
+			Tooltip.SetDefault("'A bottled transformer for the road'\n+1 passive Electric Charge Rate\nYour Electric Charge Recharge Delay is halved");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.Green;
+			item.value = 500;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = SGAmod.Instance.BuffType("EnergyPotionBuff");
+			item.buffTime = 60 * 300;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.BottledWater, 1);
+			recipe.AddIngredient(ItemID.Sunflower);
+			recipe.AddIngredient(null, "NoviteOre", 1);
+			recipe.AddIngredient(ItemID.Meteorite);
+			recipe.AddIngredient(ItemID.RainCloud);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}	
 	public class CondenserPotion : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -255,7 +378,7 @@ namespace SGAmod.Items.Consumable
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
-			item.buffType = SGAmod.Instance.BuffType("CondenserBuff");
+			item.buffType = SGAmod.Instance.BuffType("CondenserPotionBuff");
 			item.buffTime = 60 * 300;
 		}
 

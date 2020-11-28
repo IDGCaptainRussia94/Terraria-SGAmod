@@ -56,6 +56,7 @@ namespace SGAmod.Dimensions.NPCs
 			//npc.immortal = true;
 			animationType = NPCID.Guide;
 			npc.homeless = true;
+			npc.rarity = 1;
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 2) % 1f, 0.5f, 0.35f);
 
 		}
@@ -77,7 +78,12 @@ namespace SGAmod.Dimensions.NPCs
 			return false;
 		}
 
-		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
+        public override bool? CanHitNPC(NPC target)
+        {
+            return false;
+        }
+
+        public override bool CanTownNPCSpawn(int numTownNPCs, int money)
 		{
 			return false;
 		}
@@ -133,8 +139,8 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				spriteBatch.Draw(tex, drawPos, null, color*0.05f, (((npc.localAI[0] / 15f)* (6f-valez))+ (valez/3.12612f))/3f, drawOrigin, (npc.scale* valez)*0.75f,SpriteEffects.FlipVertically, 0f);
 			}
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+			//Main.spriteBatch.End();
+			//Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
 
 			if (BirthdayParty.PartyIsUp)
 			{
@@ -166,6 +172,7 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override bool PreAI()
 		{
+			npc.dontTakeDamage = true;
 			npc.localAI[0] += 1f;
 			npc.ai[0] = 0;
 			npc.ai[1] = 0;
@@ -222,6 +229,13 @@ namespace SGAmod.Dimensions.NPCs
 			shop.item[nextSlot].shopCustomPrice = 75;
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 			nextSlot++;
+			if (Main.LocalPlayer.SGAPly().ExpertiseCollectedTotal >= 4000)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("EntropyTransmuter"));
+				shop.item[nextSlot].shopCustomPrice = 150;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}
 		}
 
 		public override void OnChatButtonClicked(bool firstButton, ref bool shop)

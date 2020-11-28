@@ -19,7 +19,6 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.useTime = 16;
 			item.useAnimation = 16;
 			item.useStyle = 5;
-			Item.staff[item.type] = true;
 			item.noMelee = true;
 			item.knockBack = 3;
 			item.value = 10000;
@@ -34,7 +33,8 @@ namespace SGAmod.HavocGear.Items.Weapons
     {
       DisplayName.SetDefault("Dank Wave Staff");
       Tooltip.SetDefault("Shoots a short piercing wave");
-    }
+		Item.staff[item.type] = true;
+	}
 
 		public override void AddRecipes()
 		{

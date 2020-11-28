@@ -216,8 +216,8 @@ namespace SGAmod
 			Idglib.AbsentItemDisc.Add(this.ItemType("Tornado"), "5% to drop from Wyverns after Golem");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Upheaval"), "20% to drop from Golem");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Powerjack"), "10% to drop from Wall of Flesh");
-			Idglib.AbsentItemDisc.Add(this.ItemType("SwordofTheBlueMoon"), "10% (20% in expert mod) drop from Moonlord");
-			Idglib.AbsentItemDisc.Add(this.ItemType("Fieryheart"), "This item is not obtainable yet");
+			Idglib.AbsentItemDisc.Add(this.ItemType("SwordofTheBlueMoon"), "10% (20% in expert mod) drop from Moon Lord");
+			Idglib.AbsentItemDisc.Add(this.ItemType("Fieryheart"), "This item is a secret...");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Sunbringer"), "This item is not obtainable yet");
 			Idglib.AbsentItemDisc.Add(this.ItemType("StoneBarrierStaff"), "Sold by the Dryad after defeating Spider Queen");
 			Idglib.AbsentItemDisc.Add(this.ItemType("PeacekeepersDuster"), "Sold by the Traveling Merchant in Hardmode");
@@ -234,7 +234,7 @@ namespace SGAmod
 			Idglib.AbsentItemDisc.Add(this.ItemType("SybariteGem"), "Drops from enemies worth 3 or more gold rarely, some greed infused enemies are more likely to drop it");
 			Idglib.AbsentItemDisc.Add(this.ItemType("EntropyTransmuter"), "Sold By Draken");
 
-			Idglib.AbsentItemDisc.Add(this.ItemType("FieryShard"), "Drops from Hell bats and Red Devils");
+			Idglib.AbsentItemDisc.Add(this.ItemType("FieryShard"), "Drops from Hell/Lava bats and Red Devils");
 			Idglib.AbsentItemDisc.Add(this.ItemType("FrigidShard"), "Drops from icicle blocks");
 			Idglib.AbsentItemDisc.Add(this.ItemType("VialofAcid"), "Drops from Spider Queen");
 			Idglib.AbsentItemDisc.Add(this.ItemType("MurkyGel"), "Drops from Murk and Dank Slimes");

@@ -37,6 +37,12 @@ namespace SGAmod.Items.Weapons
 			item.shootSpeed = 4f;
 		}
 
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 10f;
+			return true;
+		}
+
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);

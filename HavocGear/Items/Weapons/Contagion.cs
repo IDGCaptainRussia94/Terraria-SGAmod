@@ -20,7 +20,7 @@ namespace SGAmod.HavocGear.Items.Weapons
         {
             item.width = 10;
             item.height = 10;
-            item.damage = 32;
+            item.damage = 40;
             item.melee = true;
             item.noMelee = true;
             item.useTurn = true;
@@ -28,7 +28,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.useAnimation = 20;
             item.useStyle = 5;
             item.useTime = 20;
-            item.knockBack = 6f;
+            item.knockBack = 3f;
             item.UseSound = SoundID.Item1;
             item.autoReuse = false;
             item.maxStack = 1;
@@ -42,6 +42,8 @@ namespace SGAmod.HavocGear.Items.Weapons
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(null, "VialofAcid",5);
             recipe.AddIngredient(null, "VirulentBar", 10);
+            recipe.AddIngredient(null, "Mossthorn", 1);
+            recipe.AddIngredient(null, "TidalWave", 1);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);
             recipe.AddRecipe();

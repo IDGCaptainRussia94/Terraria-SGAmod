@@ -183,7 +183,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Assassin Emblem");
-			Tooltip.SetDefault("10% increased crit chance, 15% increased damage, 35% increased throwing velocity\n75 increased Max HP\n100 Increased Max Mana and 7.5% mana cost reduction\n10% extra throwing damage");
+			Tooltip.SetDefault("10% increased crit chance and damage, 35% increased throwing velocity\n75 increased Max HP\n100 Increased Max Mana and 7.5% mana cost reduction\n10% extra throwing damage");
 		}
 
 		public override void SetDefaults()
@@ -201,12 +201,12 @@ namespace SGAmod.Items.Accessories
 			player.rangedCrit += 5;
 			player.meleeCrit += 5;
 			player.magicCrit += 5;
-			player.magicDamage += 0.10f;
-			player.rangedDamage += 0.10f;
-			player.meleeDamage += 0.10f;
-			player.minionDamage += 0.10f;
-			SGAmod.BoostModdedDamage(player, 0.10f, 5);
-			player.Throwing().thrownDamage += 0.15f;
+			player.magicDamage += 0.05f;
+			player.rangedDamage += 0.05f;
+			player.meleeDamage += 0.05f;
+			player.minionDamage += 0.05f;
+			SGAmod.BoostModdedDamage(player, 0.05f, 5);
+			player.Throwing().thrownDamage += 0.05f;
 			player.Throwing().thrownVelocity += 0.1f;
 			player.manaCost -= 0.025f;
 			player.statLifeMax2 += 25;
@@ -219,8 +219,8 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("TF2EmblemCommando"), 1);
 			recipe.AddIngredient(ItemID.DestroyerEmblem, 1);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 6);
 			recipe.AddIngredient(ItemID.CrystalBall, 1);
-			recipe.AddIngredient(ItemID.LifeCrystal, 5);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -234,7 +234,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Elite Emblem");
-			Tooltip.SetDefault("10% increased crit chance, 20% increased damage, 50% increased throwing velocity\n100 increased Max HP\n120 Increased Max Mana and 10% mana cost reduction\n15% extra throwing damage\nEffects of MVM Upgrade");
+			Tooltip.SetDefault("10% increased crit chance, 15% increased damage, 50% increased throwing velocity\n100 increased Max HP\n120 Increased Max Mana and 10% mana cost reduction\n20% extra throwing damage\nEffects of MVM Upgrade");
 		}
 
 		public override void SetDefaults()
@@ -270,7 +270,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("TF2EmblemAssassin"), 1);
 			recipe.AddIngredient(mod.ItemType("MVMUpgrade"), 1);
 			recipe.AddIngredient(ItemID.ManaCrystal, 3);
-			recipe.AddIngredient(ItemID.LifeFruit, 5);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 15);
 			recipe.AddIngredient(mod.ItemType("MoneySign"), 10);
 			recipe.AddTile(TileID.TinkerersWorkbench);

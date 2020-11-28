@@ -91,7 +91,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enchanted Bubble");
-			Tooltip.SetDefault("'A breath of fresh air sealed within this magic bubble!'\n'Biting into this bubble restores your lungs'\nRecovers up to 100 Breath (the vanilla default)\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 90 seconds each"));
+			Tooltip.SetDefault("'A breath of fresh air sealed within this magic bubble!'\n'Biting into this bubble restores your lungs'\nRecovers up to 200 Breath (the vanilla default)\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 90 seconds each"));
 			ItemID.Sets.ItemIconPulse[item.type] = true;
 		}
 
@@ -245,6 +245,47 @@ namespace SGAmod.Items.Consumable
 		}
 	}
 
+	public class BenchGodsFavor : TrueCopperWraithNotch
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Bench God's Favor");
+			Tooltip.SetDefault("Unlocks a UI slot in your inventory\nAny work station placed into this slot will be always active when crafting\n-Permanent Upgrade-");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.maxStack = 30;
+			item.rare = 1;
+			item.value = Item.sellPrice(gold: 1);
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item9;
+			item.consumable = true;
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_"+ItemID.WorkBench); }
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
+			return !sgaplayer.benchGodFavor;
+		}
+		public override bool UseItem(Player player)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
+			sgaplayer.benchGodFavor = true;
+			return true;
+		}
+	}
+
 	public class TrueCopperWraithNotch : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -308,7 +349,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Portal Essence");
-			Tooltip.SetDefault("Allows the Strange Portal to 'move in' into free housing in your town");
+			Tooltip.SetDefault("Allows the Strange Portal to 'move in' to free housing in your town");
 		}
 
 		public override void SetDefaults()
@@ -439,7 +480,8 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("VialofAcid"), 9);
+			recipe.AddIngredient(mod.ItemType("VialofAcid"), 8);
+			recipe.AddIngredient(mod.ItemType("BottledMud"), 3);
 			recipe.AddIngredient(mod.ItemType("Biomass"), 6);
 			recipe.AddIngredient(ItemID.Bunny, 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));

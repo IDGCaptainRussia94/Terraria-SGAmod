@@ -353,7 +353,7 @@ namespace SGAmod.Items.Weapons
 
 		public override Vector2? HoldoutOffset()
 		{
-			return new Vector2(-18, -6);
+			return new Vector2(-18, -0);
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -394,7 +394,8 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new StarMetalRecipes(mod);
 			recipe.AddIngredient(ItemID.RocketLauncher, 1);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
+			recipe.AddIngredient(ItemID.GrenadeLauncher, 1);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
 			recipe.AddTile(mod.TileType("PrismalStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

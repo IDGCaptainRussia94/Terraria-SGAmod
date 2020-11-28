@@ -49,8 +49,7 @@ namespace SGAmod.NPCs.Dank
 		{
             int x = spawnInfo.spawnTileX;
             int y = spawnInfo.spawnTileY;
-            int tile = (int)Main.tile[x, y].type;
-			return SGAUtils.NoInvasion(spawnInfo) && spawnInfo.water && spawnInfo.player.SGAPly().DankShrineZone ? 1f : 0f;
+			return SGAUtils.NoInvasion(spawnInfo) && spawnInfo.water && spawnInfo.player.SGAPly().DankShrineZone ? 2f : 0f;
 		}
 	}
 }

@@ -12,6 +12,7 @@ using Idglibrary;
 using Idglibrary.Bases;
 using AAAAUThrowing;
 using CalamityMod.Dusts;
+using SGAmod.Buffs;
 
 namespace SGAmod.Items.Weapons.Javelins
 {
@@ -27,7 +28,9 @@ namespace SGAmod.Items.Weapons.Javelins
         Shadow,
         SanguineBident,
         TerraTrident,
-        CrimsonCatastrophe
+        CrimsonCatastrophe,
+        Thermal,
+        SwampSovnya
     }
 
     public class StoneJavelin : ModItem
@@ -36,7 +39,7 @@ namespace SGAmod.Items.Weapons.Javelins
         //public delegate int PerformCalculation(int x, int y);
         //public Action<string> messageTarget;
         public Func<int, int, bool> testForEquality = (x, y) => x == y;
-        public virtual int Penetrate => 5;
+        public virtual int Penetrate => 3;
         public virtual int PierceTimer => 100;
         public virtual float Stabspeed => 1.20f;
         public virtual float Throwspeed => 6f;
@@ -159,7 +162,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             item.CloneDefaults(ItemID.DayBreak);
-            item.damage = 6;
+            item.damage = 8;
             item.width = 24;
             item.height = 24;
             item.useTime = 25;
@@ -182,9 +185,9 @@ namespace SGAmod.Items.Weapons.Javelins
         }
         public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
         {
+            mult *= (player.Throwing().thrownDamage + player.meleeDamage) / 2f;
             add += player.GetModPlayer<SGAPlayer>().JavelinBaseBundle ? 0.10f : 0f;
             add += player.GetModPlayer<SGAPlayer>().JavelinSpearHeadBundle ? 0.15f : 0f;
-            add += (player.Throwing().thrownDamage + player.meleeDamage) - 2;
         }
         public override bool AltFunctionUse(Player player)
         {
@@ -282,7 +285,6 @@ namespace SGAmod.Items.Weapons.Javelins
         public Vector2 offset;
         public int maxstick = 1;
         public int maxStickTime = 100;
-        bool hitboxchange = false;
         public int javelinType
         {
             get { return (int)projectile.ai[1]; }
@@ -299,6 +301,8 @@ namespace SGAmod.Items.Weapons.Javelins
         "SGAmod/Items/Weapons/Javelins/SanguineBident",
          "SGAmod/Items/Weapons/Javelins/TerraTrident",
          "SGAmod/Items/Weapons/Javelins/CrimsonCatastrophe",
+         "SGAmod/Items/Weapons/Javelins/ThermalJavelin",
+         "SGAmod/Items/Weapons/Javelins/SwampSovnya",
        };
         public override void SetStaticDefaults()
         {
@@ -347,7 +351,7 @@ namespace SGAmod.Items.Weapons.Javelins
             return base.CanHitNPC(target);
         }
 
-        public static void JavelinOnHit(NPC target,Projectile projectile)
+        public static void JavelinOnHit(NPC target, Projectile projectile, ref double damage)
         {
         if (projectile.ai[1] == (int)JavelinType.Ice)//Ice
             {
@@ -371,7 +375,7 @@ namespace SGAmod.Items.Weapons.Javelins
                 if (Main.rand.Next(0, projectile.modProjectile.GetType() == typeof(JavelinProjMelee) ? 2 : 0) == 0)
                 {
 
-                    int thisoned = Projectile.NewProjectile(projectile.Center.X + Main.rand.NextFloat(-64, 64), projectile.Center.Y - 800, Main.rand.NextFloat(-2, 2), 14f, ProjectileID.HallowStar, (int)(projectile.damage/2f), projectile.knockBack, Main.player[projectile.owner].whoAmI);
+                    int thisoned = Projectile.NewProjectile(projectile.Center.X + Main.rand.NextFloat(-64, 64), projectile.Center.Y - 800, Main.rand.NextFloat(-2, 2), 14f, ProjectileID.HallowStar, (int)(projectile.damage * damage), projectile.knockBack, Main.player[projectile.owner].whoAmI);
                     Main.projectile[thisoned].ai[1] = projectile.ai[1];
                     Main.projectile[thisoned].Throwing().thrown = true;
                     Main.projectile[thisoned].penetrate = 2;
@@ -427,6 +431,7 @@ namespace SGAmod.Items.Weapons.Javelins
                 ModProjectile modproj = projectile.modProjectile;
                 if (modproj.GetType() == typeof(JavelinProj))
                 {
+                    (modproj as JavelinProj).maxStickTime = (int)((modproj as JavelinProj).maxStickTime/1.25);
                     foreach (NPC enemy in Main.npc.Where(enemy => enemy.active && enemy.active && enemy.life > 0 && !enemy.friendly && !enemy.dontTakeDamage && enemy.Distance(projectile.Center)<500 && (modproj as JavelinProj).stickin!= enemy.whoAmI && enemy.HasBuff(bleed)))
                     {
                         CrimsonCatastrophe.BloodyExplosion(enemy, projectile);
@@ -440,12 +445,43 @@ namespace SGAmod.Items.Weapons.Javelins
 
 
             }
-
+            if (projectile.ai[1] == (int)JavelinType.Thermal)//Thermal
+            {
+                target.AddBuff(ModContent.BuffType<ThermalBlaze>(), 60 * (projectile.type == ModContent.ProjectileType<JavelinProj>() ? 2 : 5));
+            }
+            if (projectile.ai[1] == (int)JavelinType.SwampSovnya)//Swamp Sovnya
+            {
+                if (!target.buffImmune[BuffID.Poisoned])
+                {
+                    ModProjectile modproj = projectile.modProjectile;
+                    if (modproj.GetType() == typeof(JavelinProj))
+                    {
+                        if (Main.rand.Next(0, 100) < 50 && !target.boss)
+                            target.AddBuff(ModContent.BuffType<DankSlow>(), (int)(60 * 3f));
+                    }
+                }
+                else
+                {
+                    damage += 0.25f;
+                }
+            }
+        }
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            if (projectile.ai[1] == (int)JavelinType.SwampSovnya)//Swamp Sovnya
+            {
+                if (target.buffImmune[BuffID.Poisoned])
+                {
+                    damage = (int)(damage * 1.25f);
+                }
+            }
         }
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             projectile.aiStyle = -1;
-            JavelinProj.JavelinOnHit(target,projectile);
+            double mul = 1.00;
+            JavelinProj.JavelinOnHit(target,projectile,ref mul);
+            damage = (int)(damage * mul);
 
             int foundsticker = 0;
 
@@ -511,10 +547,13 @@ namespace SGAmod.Items.Weapons.Javelins
                     {
                         projectile.penetrate -= 1;
                         projectile.timeLeft = 100+maxStickTime;
-                        JavelinProj.JavelinOnHit(himz,projectile);
                         double damageperc = 0.75;
+
                         if (Main.player[projectile.owner].GetModPlayer<SGAPlayer>().JavelinBaseBundle)
-                        damageperc += 0.25;
+                            damageperc += 0.25;
+
+                        JavelinProj.JavelinOnHit(himz,projectile,ref damageperc);
+
                         himz.StrikeNPC((int)(projectile.damage*damageperc),0,1);
 
                         if (Main.netMode != NetmodeID.SinglePlayer)
@@ -562,7 +601,11 @@ namespace SGAmod.Items.Weapons.Javelins
 
                 if (projectile.ai[1] == (int)JavelinType.CrimsonCatastrophe)
                 {
-                    projectile.velocity = projectile.velocity + new Vector2(0, (projectile.aiStyle-100)/40f);
+                    if (projectile.aiStyle != 0)
+                    {
+                        float rotvalue = projectile.timeLeft/300f;
+                        projectile.velocity = projectile.velocity.RotatedBy(((projectile.aiStyle + 100f) / 1200f) * -rotvalue);
+                    }
                     return;
                 }
 
@@ -650,17 +693,22 @@ namespace SGAmod.Items.Weapons.Javelins
             }//Crimson Catastrophe
 
 
-            if (projectile.ai[1] == (int)JavelinType.SanguineBident)//Sanguine Bident
-            {
-                if (stickin < 0)
+            if (projectile.ai[1] == (int)JavelinType.SanguineBident || projectile.ai[1] == (int)JavelinType.Thermal)//Sanguine Bident
+            {           
+                Texture2D glow = null;
+                if (projectile.ai[1] == (int)JavelinType.Thermal)
                 {
-                    for (int k = 0; k < projectile.oldPos.Length; k++)
+                    glow = ModContent.GetTexture("SGAmod/Items/GlowMasks/ThermalJavelin_Glow");
+                }
+                    for (int k = 0; k < (stickin < 0 ? projectile.oldPos.Length : 1); k++)
                     {
                         Vector2 drawPos = new Vector2(projectile.oldPos[k].X + projectile.width / 2, projectile.oldPos[k].Y + projectile.height / 2) - Main.screenPosition;
                         Color color = projectile.GetAlpha(drawColor) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                         spriteBatch.Draw(texture, drawPos, new Rectangle?(), color * 0.5f, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f) - (((float)Math.PI / 2) * (facingleft ? 0f : -1f)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+                    if (glow != null)
+                        spriteBatch.Draw(glow, drawPos, new Rectangle?(), color * 0.5f, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f) - (((float)Math.PI / 2) * (facingleft ? 0f : -1f)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+
                     }
-                }
             }
 
 
@@ -686,7 +734,29 @@ namespace SGAmod.Items.Weapons.Javelins
         }
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            JavelinProj.JavelinOnHit(target, projectile);
+            double blank = 0;
+            JavelinProj.JavelinOnHit(target, projectile,ref blank);
+        }
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            if (projectile.ai[1] == (int)JavelinType.SwampSovnya)//Swamp Sovnya
+            {
+                if (projectile.ai[1] == (int)JavelinType.SwampSovnya)//Swamp Sovnya
+                {
+                    if (target.buffImmune[BuffID.Poisoned])
+                    {
+                        damage = (int)(damage * 1.25f);
+                    }
+                }
+                if (target.HasBuff(ModContent.BuffType<DankSlow>()))
+                {
+                    crit = true;
+                    int index = target.FindBuffIndex(ModContent.BuffType<DankSlow>());
+                    damage = (int)(damage * Math.Min(1 + (target.buffTime[index] / 180f),5f));
+                    target.DelBuff(index);
+                }
+            }
         }
 
         public override void SetDefaults()
@@ -724,7 +794,7 @@ namespace SGAmod.Items.Weapons.Javelins
                     movein = 8f;
                     moveout = 5f;
                     thrustspeed = 5.0f;
-                    projectile.localNPCHitCooldown = 10;
+                    projectile.localNPCHitCooldown = 1;
                 }
 
                     if (Main.dedServ)
@@ -742,7 +812,7 @@ namespace SGAmod.Items.Weapons.Javelins
         }
         public override void MakeProjectile()
         {
-            if (projectile.ai[1] == 9)
+            if (projectile.ai[1] == (int)JavelinType.TerraTrident)
             {
                 Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 60, 0.6f, 0.25f);
                 Vector2 velo = projectile.velocity;velo.Normalize();

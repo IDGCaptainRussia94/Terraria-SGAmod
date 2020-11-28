@@ -58,7 +58,7 @@ namespace SGAmod.Items.Weapons
 				break;
 			}}}}*/
 
-			SGAPlayer.LimitProjectiles(player, 1, new ushort[] { (ushort)mod.ProjectileType("SnowfallCloud"), (ushort)mod.ProjectileType("SnowCloud") });
+			SGAPlayer.LimitProjectiles(player, 1, new ushort[] { (ushort)mod.ProjectileType("SnowfallCloud"), (ushort)mod.ProjectileType("SnowCloud"), (ushort)mod.ProjectileType("CursedHailCloud"), (ushort)mod.ProjectileType("CursedHailCloud") });
 
 			int theproj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, mod.ProjectileType("SnowfallCloud"), damage, knockBack, player.whoAmI);
 			float num12 = (float)Main.mouseX + Main.screenPosition.X;
@@ -186,7 +186,7 @@ namespace SGAmod.Items.Weapons
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 
-			SGAPlayer.LimitProjectiles(player, 1, new ushort[] { (ushort)mod.ProjectileType("CursedHailProj"), (ushort)mod.ProjectileType("CursedHailCloud") });
+			SGAPlayer.LimitProjectiles(player, 1, new ushort[] { (ushort)mod.ProjectileType("SnowfallCloud"), (ushort)mod.ProjectileType("SnowCloud"), (ushort)mod.ProjectileType("CursedHailCloud"), (ushort)mod.ProjectileType("CursedHailCloud") });
 
 			int theproj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, mod.ProjectileType("CursedHailProj"), damage, knockBack, player.whoAmI);
 			float num12 = (float)Main.mouseX + Main.screenPosition.X;
@@ -623,7 +623,7 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 1;
 			item.Throwing().thrown = true;
 			item.damage = 20;
-			item.crit = 8;
+			item.crit = 0;
 			item.knockBack = 0f;
 			item.useTime = 25;
 			item.useAnimation = 25;
@@ -633,7 +633,7 @@ namespace SGAmod.Items.Weapons
 			item.maxStack = 1;
 			item.shootSpeed = 12f;
 			item.shoot = mod.ProjectileType("CirnoIceShardPlayerCore");
-			item.value = Item.buyPrice(0, 0, 5, 0);
+			item.value = Item.buyPrice(0, 2, 5, 0);
 			item.rare = 6;
 		}
 
@@ -812,8 +812,8 @@ namespace SGAmod.NPCs
 					int proj2 = Projectile.NewProjectile(projectile.Center, projectile.velocity + new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(0, 3f)), mod.ProjectileType("CirnoIceShardPlayerOrbit"), (int)((float)projectile.damage * 0.5f), 0f, projectile.owner);
 					Main.projectile[proj2].ai[0] = MathHelper.ToRadians(i+ rand);
 					Main.projectile[proj2].ai[1] = projectile.whoAmI;
-					Main.projectile[proj2].Throwing().thrown = true;
-					Main.projectile[proj2].magic = false;
+					Main.projectile[proj2].Throwing().thrown = false;
+					Main.projectile[proj2].magic = projectile.magic;
 					Main.projectile[proj2].netUpdate = true;
 				}
 			}

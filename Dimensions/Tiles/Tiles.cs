@@ -88,6 +88,45 @@ namespace SGAmod.Dimensions.Tiles
 		}
 	}
 
+	public class HopeOre : Fabric
+	{
+		public override void SetDefaults()
+		{
+			Main.tileSolid[Type] = true;
+			Main.tileMergeDirt[Type] = true;
+			Main.tileBlockLight[Type] = true;
+			Main.tileLighted[Type] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("Fabric")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("AnicentFabric")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("EntrophicOre")] = true;
+			minPick = 100;
+			soundType = SoundID.NPCHit;
+			soundStyle = 5;
+			mineResist = 2f;
+			dustType = DustID.GoldCoin;
+			TileID.Sets.CanBeClearedDuringGeneration[Type] = true;
+			drop = ModContent.ItemType<HopeHeart>();
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("Hope...");
+			AddMapEntry(Color.LightGoldenrodYellow, name);
+		}
+
+		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+		{
+			if (Main.tile[i, j].active())
+			{
+				r = Color.Goldenrod.R * 0.02f;
+				g = Color.Goldenrod.G * 0.02f;
+				b = Color.Goldenrod.B * 0.02f;
+			}
+		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+	}
+
 	public class EntrophicOre : Fabric
 	{
 		public override void SetDefaults()
@@ -97,6 +136,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileBlockLight[Type] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("Fabric")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("AnicentFabric")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("HopeOre")] = true;
 			minPick = 200;
 			soundType = 7;
 			mineResist = 3f;
@@ -122,6 +162,8 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("Fabric")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("AnicentFabric")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("HopeOre")] = true;
 			minPick = 240;
 			soundType = 7;
 			mineResist = 5f;
@@ -154,6 +196,8 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("AncientFabric")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("EntrophicOre")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("HopeOre")] = true;
 			minPick = 0;
 			soundType = 7;
 			mineResist = 0.5f;
@@ -177,19 +221,35 @@ namespace SGAmod.Dimensions.Tiles
 
 				Color basecolor = Color.White;
 				float basealpha = 1f;
+				float alphamin = 0.15f;
+				float alphamax = 0.3f;
+				int glowchance = 50;
 				if (GetType() == typeof(AncientFabric))
 				{
 					basecolor = Color.Red;
-					basealpha = 0.5f;
-					chance = 50;
+					basealpha = 1f;
+					chance = 40;
+					alphamin = 0.75f;
+					alphamax = 1f;
 				}
 				if (GetType() == typeof(EntrophicOre))
 				{
 					basecolor = Color.Purple;
-					basealpha = 0.5f;
-					chance = 50;
+					basealpha = 1f;
+					chance = 1;
+					alphamin = 0.9f;
+					alphamax = 1f;
+					glowchance = 1;
 				}
-
+				if (GetType() == typeof(HopeOre))
+				{
+					basecolor = Color.Goldenrod;
+					basealpha = 1f;
+					chance = 2;
+					alphamin = 0.5f;
+					alphamax = 1f;
+					glowchance = 2;
+				}
 				if (Main.rand.Next(0, 100) < chance)
 					return;
 
@@ -197,7 +257,7 @@ namespace SGAmod.Dimensions.Tiles
 
 				float brightness = Math.Max((float)light.R, Math.Max((float)light.G, (float)light.B))/255f;
 
-				float alpha = Main.rand.Next(0, 50) == 0 ? Main.rand.NextFloat(0.15f, 0.3f) : brightness;
+				float alpha = Main.rand.Next(0, glowchance) == 0 ? Main.rand.NextFloat(alphamin, alphamax) : brightness;
 
 				if (alpha > 0f)
 					spriteBatch.Draw(LimboDim.staticeffects[Main.rand.Next(0, LimboDim.staticeffects.Length)], drawOffset- Main.screenPosition, Color.Lerp(light, basecolor, basealpha) * alpha);

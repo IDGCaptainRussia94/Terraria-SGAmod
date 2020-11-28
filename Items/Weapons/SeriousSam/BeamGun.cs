@@ -62,7 +62,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
         public override void SetDefaults()
         {
-            item.damage = 90;
+            item.damage = 80;
             item.magic = true;
             item.width = 48;
             item.height = 28;
@@ -97,7 +97,8 @@ namespace SGAmod.Items.Weapons.SeriousSam
         {
             ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "CryostalBar", 15);
-			recipe.AddIngredient(null, "PlasmaCell", 10);
+			recipe.AddIngredient(null, "PlasmaCell", 6);
+			recipe.AddIngredient(null, "PrismalBar", 12);
 			recipe.AddIngredient(null, "AdvancedPlating", 15);
 			recipe.AddIngredient(ItemID.HeatRay, 1);
 			recipe.AddIngredient(mod.ItemType("OmegaSigil"), 1);
@@ -211,8 +212,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 					projectile.rotation = player.itemRotation-MathHelper.ToRadians(90);
 					projectile.Center = (player.Center+new Vector2(dir*6, 0))+ (projectile.velocity*10f);
 
-
-					modply.plasmaLeftInClip -= 1;
+					modply.plasmaLeftInClip -= (projectile.localAI[0] % 2 == 0) ? 2 : 1;
 
 
 					projectile.position -= projectile.velocity;
@@ -392,7 +392,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			Main.projectile[prog].ai[1] = projectile.localAI[1];
 			Main.projectile[prog].netUpdate = true;
 
-			List<int> them = GetAllActive();
+			//List<int> them = GetAllActive();
 
 			if (lasthit!=null) {
 			projectile.Center = lasthit;
@@ -400,7 +400,15 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 				for (int i = 0; i < 5; i += 1)
 				{
-					NPC him = FindClosestTarget(lastpos, new Vector2(0, 0), them);
+					List<Point> weights = new List<Point>();
+					foreach (int id in bouncetargets)
+						weights.Add(new Point(id, 1000000));
+
+					List<NPC> them2 = SGAUtils.ClosestEnemies(lastpos,300,AddedWeight: weights) ?? null;
+					NPC him = null;
+					if (them2 != null && them2.Count>0)
+						him = them2[0];
+
 					if (him != null)
 					{
 						int prog2 = Projectile.NewProjectile(him.Center.X, him.Center.Y, 0, 0, mod.ProjectileType("BeamGunProjectileVisual"), 0, 0, Main.player[projectile.owner].whoAmI);

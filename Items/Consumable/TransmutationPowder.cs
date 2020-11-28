@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using System.Collections.Generic;
 using static Terraria.ModLoader.ModContent;
 using Idglibrary;
+using Terraria.DataStructures;
 
 namespace SGAmod.Items.Consumable
 {
@@ -47,16 +48,18 @@ namespace SGAmod.Items.Consumable
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 1);
+			recipe.AddIngredient(mod.ItemType("BottledMud"), 1);
 			recipe.AddIngredient(ItemID.VilePowder, 1);
 			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this,2);
+			recipe.SetResult(this,3);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(mod);
 			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 1);
+			recipe.AddIngredient(mod.ItemType("BottledMud"), 1);
 			recipe.AddIngredient(ItemID.ViciousPowder, 1);
 			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this, 2);
+			recipe.SetResult(this, 3);
 			recipe.AddRecipe();
 		}
 
@@ -69,7 +72,7 @@ namespace SGAmod.Items.Consumable
 
 	public class TransmutationPowderSpray : ModProjectile
 	{
-		public List<TileVector> whatconverted;
+		public List<Point16> whatconverted;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Transmutation Powder");
@@ -87,10 +90,10 @@ namespace SGAmod.Items.Consumable
 
 		public TransmutationPowderSpray()
 		{
-			whatconverted = new List<TileVector>();
-			whatconverted.Add(new TileVector(0, 0));
-			whatconverted.Add(new TileVector(0, 0));
-			whatconverted.Add(new TileVector(0, 0));
+			whatconverted = new List<Point16>();
+			whatconverted.Add(new Point16(0, 0));
+			whatconverted.Add(new Point16(0, 0));
+			whatconverted.Add(new Point16(0, 0));
 		}
 
 		public override void SetDefaults()
@@ -165,7 +168,7 @@ namespace SGAmod.Items.Consumable
 						{
 							if (type == mod.TileType("UnmanedOreTile") || type == mod.TileType("NoviteOreTile"))
 							{
-								if (whatconverted.Find(typ2e => new TileVector(k,l).X == typ2e.X && new TileVector(k, l).Y == typ2e.Y).X<1)
+								if (whatconverted.Find(typ2e => new Point16(k,l).X == typ2e.X && new Point16(k, l).Y == typ2e.Y).X<1)
 								{
 									Main.tile[k, l].type = (type == mod.TileType("NoviteOreTile") ? (ushort)mod.TileType("UnmanedOreTile") : (ushort)mod.TileType("NoviteOreTile"));
 									WorldGen.SquareTileFrame(k, l, true);
@@ -173,7 +176,7 @@ namespace SGAmod.Items.Consumable
 
 									int dustType = DustType<TornadoDust>();
 
-									whatconverted.Add(new TileVector(k, l));
+									whatconverted.Add(new Point16(k, l));
 
 									for (int a = 0; a < 6; a++)
 									{

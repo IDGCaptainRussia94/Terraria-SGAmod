@@ -21,7 +21,7 @@ namespace SGAmod.Items.Tools
 		public override void SetDefaults()
 		{
 			item.CloneDefaults(ItemID.MythrilPickaxe);
-			item.useTime = 12;
+			item.useTime = 10;
 		}
 		
 		public override void AddRecipes()

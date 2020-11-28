@@ -7,6 +7,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using SGAmod.Buffs;
 
 namespace SGAmod.Tiles
 {
@@ -60,7 +61,7 @@ namespace SGAmod.Tiles
 
                 UncraftClass craft = new UncraftClass(new Terraria.DataStructures.Point16(i, j - (Main.tile[i, j].frameY / 16) - 3), item, SGAmod.RecipeIndex, i + j * 3);
                 SGAInterface.Uncrafts = craft;
-                    craft.Uncraft(Main.LocalPlayer);
+                    craft.Uncraft(Main.LocalPlayer,75+(Main.LocalPlayer.SGAPly().uncraftBoost>0 ? 15 : 0));
             }
 
             return true;

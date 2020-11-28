@@ -24,7 +24,9 @@ namespace SGAmod.HavocGear.Projectiles
             projectile.melee = true;        
             projectile.tileCollide = true;   
             projectile.penetrate = 3;
-	    projectile.alpha = 200;     
+            projectile.usesIDStaticNPCImmunity = true;
+            projectile.idStaticNPCHitCooldown = 8;
+	        projectile.alpha = 200;     
             projectile.timeLeft = 2000;  
             projectile.light = 0.75f;   
             projectile.extraUpdates = 1;

@@ -11,7 +11,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sword of the Blue Moon");
-			Tooltip.SetDefault("Born from a great white being?\nI'm sure Moonlord fits that description");
+			Tooltip.SetDefault("Born from a great white being?\nI'm sure Moon Lord fits that description");
 		}
 		
 		public override void SetDefaults()

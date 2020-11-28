@@ -62,7 +62,7 @@ namespace SGAmod.Items.Weapons
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("shadowflame");
+			DisplayName.SetDefault("Shadowflame");
 		}
 
 		public override void SetDefaults()

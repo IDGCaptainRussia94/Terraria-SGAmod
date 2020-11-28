@@ -16,6 +16,7 @@ using Terraria.UI;
 using Terraria.Utilities;
 using Idglibrary;
 using SubworldLibrary;
+using SGAmod.Dimensions.NPCs;
 
 namespace SGAmod.Dimensions
 {
@@ -30,6 +31,8 @@ namespace SGAmod.Dimensions
         public override UserInterface loadingUI => base.loadingUI;
 
         public static Texture2D[] staticeffects=new Texture2D[20];
+        public override float maxSpawns => 5f;
+        public override float spawnRate => 0.15f;
 
         public override int? Music
         {
@@ -58,6 +61,21 @@ namespace SGAmod.Dimensions
             int tileheight = UniRand.Next(250, 400);
             List<int> surfacelevel = new List<int>();
             int updown= UniRand.Next(0, 2)==0 ? 1 : -1;
+
+            EnemySpawnsOverride = delegate (IDictionary<int, float> pool, NPCSpawnInfo spawnInfo, SGAPocketDim pocket)
+            {
+                UnifiedRandom UniRand2 = new UnifiedRandom(pocket.enemyseed);
+                for (int i = 0; i < pool.Count; i += 1)
+                {
+                    pool[i] = 0f;
+
+                }
+                pool[ModContent.NPCType<NullWatcher>()] = 1f;
+
+
+                pocket.chooseenemies = true;
+                return 1;
+            };
 
             //Base Terrain
             for (int x = 0; x < Main.maxTilesX; x += 1)
@@ -94,13 +112,19 @@ namespace SGAmod.Dimensions
                 IDGWorldGen.TileRunner(randomx, randomy, (double)UniRand.Next(5, 15), UniRand.Next(5, 15), SGAmod.Instance.TileType("EntrophicOre"), false, 0f, 0f, false, true);
                 }
 
-
                 for (int i = 0; i < 300; i += 1)
                 {
                 int randomx = UniRand.Next(Main.maxTilesX);
                  int randomy = UniRand.Next(surfacelevel[randomx]+(i%20==0 ? -10 : 60), Main.maxTilesY);
                 IDGWorldGen.TileRunner(randomx, randomy, (double)UniRand.Next(10, 50), UniRand.Next(15, 45)+i, -2, false, 0f, 0f, false, true);
                 }
+
+            for (int i = 0; i < 150; i += 1)
+            {
+                int randomx = UniRand.Next(Main.maxTilesX);
+                int randomy = UniRand.Next(surfacelevel[randomx] + UniRand.Next(20, 160), Main.maxTilesY);
+                IDGWorldGen.TileRunner(randomx, randomy, (double)UniRand.Next(3, 6), UniRand.Next(2, 4), SGAmod.Instance.TileType("HopeOre"), false, 0f, 0f, false, true);
+            }
 
             surfacelevel.Clear();
 

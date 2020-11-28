@@ -44,11 +44,6 @@ namespace SGAmod.Buffs
 			Main.buffNoSave[Type] = true;
 			Main.debuff[Type] = false;
 		}
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = "SGAmod/Buffs/BuffTemplate";
-			return true;
-		}
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.SGAPly().toxicity += 1;
@@ -67,11 +62,6 @@ namespace SGAmod.Buffs
 			Main.buffNoSave[Type] = true;
 			Main.debuff[Type] = false;
 		}
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = "SGAmod/Buffs/BuffTemplate";
-			return true;
-		}
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.SGAPly().intimacy += 1;
@@ -89,11 +79,6 @@ namespace SGAmod.Buffs
 			Main.buffNoSave[Type] = true;
 			Main.debuff[Type] = false;
 		}
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = "SGAmod/Buffs/BuffTemplate";
-			return true;
-		}
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.SGAPly().triggerFinger += 0.15f;
@@ -108,11 +93,6 @@ namespace SGAmod.Buffs
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
 			Main.debuff[Type] = false;
-		}
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = "SGAmod/Buffs/BuffTemplate";
-			return true;
 		}
 		public override void Update(Player player, ref int buffIndex)
 		{
@@ -135,6 +115,36 @@ namespace SGAmod.Buffs
 			player.manaCost -= 0.03f;
 			if (player.manaSick)
 				player.manaCost -= 0.07f;
+		}
+	}
+	public class TooltimePotionBuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Tooltime!");
+			Description.SetDefault("Your tools have greatly increased knockback!");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			Main.debuff[Type] = false;
+		}
+		public override void Update(Player player, ref int buffIndex)
+		{
+			//null
+		}
+	}
+	public class TinkerPotionBuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Tinker");
+			Description.SetDefault("Your uncrafting net less is reduced");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			Main.debuff[Type] = false;
+		}
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().uncraftBoost = 10;
 		}
 	}
 	public class RagnarokBrewBuff : ModBuff
@@ -164,7 +174,7 @@ namespace SGAmod.Buffs
 			}
 		}
 	}
-	public class CondenserBuff : ModBuff
+	public class CondenserPotionBuff : ModBuff
 	{
 		public override void SetDefaults()
 		{
@@ -181,6 +191,23 @@ namespace SGAmod.Buffs
 			player.SGAPly().actionCooldownRate += 0.15f;
 		}
 	}
+	public class EnergyPotionBuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Energy");
+			Description.SetDefault("+1 passive Electric Charge Rate, Recharge delay is halved");
+			Main.debuff[Type] = false;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = false;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().electricrechargerate += 1;
+			player.SGAPly().electricChargeReducedDelay *= 0.5f;
+		}
+	}	
 	public class ConsumeHellBuff : ModBuff
 	{
 

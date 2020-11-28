@@ -74,14 +74,14 @@ namespace SGAmod.HavocGear.Projectiles
 			if (projectile.scale < 1f)
 			{
 				int num897 = 0;
-				while ((float)num897 < projectile.scale * 10f)
+				while ((float)num897 < projectile.scale * 1f)
 				{
-					int num898 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, 244, 0f, 0f, 100, default(Color), 2f);
+					int num898 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("HotDust"), 0f, 0f, 150, Color.Orange, 1.15f);
 					Main.dust[num898].position = (Main.dust[num898].position + projectile.Center) / 2f;
 					Main.dust[num898].noGravity = true;
 					Main.dust[num898].velocity *= 0.1f;
 					Main.dust[num898].velocity -= projectile.velocity * (1.3f - projectile.scale);
-					Main.dust[num898].fadeIn = (float)(100 + projectile.owner);
+					//Main.dust[num898].fadeIn = (float)(100 + projectile.owner);
 					Main.dust[num898].scale += projectile.scale * 0.75f;
 					num897++;
 				}
@@ -94,6 +94,10 @@ namespace SGAmod.HavocGear.Projectiles
         	Player player = Main.player[projectile.owner];
 		target.immune[projectile.owner] = 2;
 		target.AddBuff(mod.BuffType("ThermalBlaze"), 180);
-    	}
+			Projectile proj = Projectile.NewProjectileDirect(projectile.Center+Main.rand.NextVector2CircularEdge(200f,200f),Vector2.Zero,ProjectileID.SpiritFlame,projectile.damage, 0f, projectile.owner,-300f);
+			proj.localAI[0] = 60f;
+			proj.netUpdate = true;
+
+		}
     }
 }

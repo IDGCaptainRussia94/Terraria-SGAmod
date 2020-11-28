@@ -11,7 +11,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sword of a Thousand Truths");
-			Tooltip.SetDefault("Strikes apply Truth Be Told, a stacking debuff that makes this weapon deal damage through defense\n4% is added per strike and up to 100% defense penetration can be applied\nAt max Truth Be Told, you inflict immunity-bypassing Sundered Defense; this causes enemies to lose many of their immunity frames to all attacks\nGotta start somewhere you know-This was IDGCaptainRussia's first modded item");
+			Tooltip.SetDefault("Strikes apply Truth Be Told, a stacking debuff that makes this weapon deal damage through defense\n4% is added per strike and up to 100% defense penetration can be applied\nAt max Truth Be Told, you inflict immunity-bypassing Sundered Defense\nThis causes enemies to lose many of their immunity frames to all attacks\nGotta start somewhere you know-This was IDGCaptainRussia's first modded item");
 		}
 		public override void SetDefaults()
 		{

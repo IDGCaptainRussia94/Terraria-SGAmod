@@ -205,6 +205,7 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("MudAbsorber"), 1);
+			recipe.AddIngredient(mod.ItemType("BottledMud"), 15);
 			recipe.AddIngredient(mod.ItemType("DankCore"), 2);
 			recipe.AddIngredient(mod.ItemType("DankWoodHelm"), 1);
 			recipe.AddIngredient(mod.ItemType("DankWoodChest"), 1);
@@ -262,7 +263,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Portable Hive");
-			Tooltip.SetDefault("Bees become enhanced and very aggressive\nSummons up to five enhanced bees to attack foes\nDamage is based on defense and summoner values\nToggle visibity to enable/disable the agressive bee movement\nEffects of Hive Pack, Honey Comb, and all bees do more damage\nGetting hit may give you the Honeyed Buff");
+			Tooltip.SetDefault("Bees become enhanced and very aggressive\nSummons up to five enhanced bees to attack foes\nDamage is based on defense and summoner values\nToggle visibity to enable/disable the agressive bee movement\nEffects of Hive Pack, Honey Comb, and all bees do more damage, increases Summon damage by 10%\nGetting hit may splash all nearby players with the Honeyed Buff");
 		}
 		public override void SetDefaults()
 		{
@@ -272,7 +273,6 @@ namespace SGAmod.Items.Accessories
 			item.rare = -12;
 			item.expert = true;
 			item.accessory = true;
-			item.defense = 5;
 			item.damage = 1;
 			item.summon = true;
 			item.shieldSlot = 5;
@@ -304,6 +304,8 @@ namespace SGAmod.Items.Accessories
 			player.GetModPlayer<SGAPlayer>().beefield = 5;
 			if (!hideVisual)
 				player.GetModPlayer<SGAPlayer>().beefieldtoggle = 5;
+
+			player.minionDamage += 0.1f;
 
 			player.strongBees = true;
 			//Item shield = new Item();
@@ -420,7 +422,6 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("LifeforceQuintessence"), 1);
 			recipe.AddIngredient(mod.ItemType("Havoc"), 1);
 			recipe.AddIngredient(mod.ItemType("PortableHive"), 1);
-
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 25);
 			recipe.AddIngredient(mod.ItemType("MoneySign"), 15);
 			recipe.AddIngredient(mod.ItemType("ByteSoul"), 50);
@@ -429,8 +430,8 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 30);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 30);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 30);
-			recipe.AddIngredient(mod.ItemType("Entrophite"), 100);
-			recipe.AddIngredient(mod.ItemType("EldritchTentacle"), 15);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 250);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 4);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -487,7 +488,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sybarite Gem");
-			Tooltip.SetDefault("Apply Midas to yourself for 5 seconds while at full health\nGrants 50% increased Apocalyptical Strength while afflicted with Midas\nScoring an Apocalyptical creates a Coin-splosion\nThe amount is based off their worth times damage divided by max health improved by Apocalyptical Strength\nCoin projectiles have a chance to be recovered after being expended\n'Eternally Priceless... People would pay alot for this, even their own lives.'");
+			Tooltip.SetDefault("Apply Midas to yourself for 5 seconds while at full health\nGrants 50% increased Apocalyptical Strength while afflicted with Midas\nScoring an Apocalyptical creates a Coin-splosion\nThe amount is based off their worth times damage divided by max health times Apocalyptical Strength\nCoin projectiles have a chance to be recovered after being expended\n'Eternally Priceless... People would pay alot for this, even their own lives.'");
 		}
 
 		public override void SetDefaults()
@@ -613,6 +614,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("OmniMagnet"), 1);
 			recipe.AddIngredient(mod.ItemType("MoneySign"), 15);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 200);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 3);
 			recipe.AddIngredient(mod.ItemType("CalamityRune"), 2);
 			recipe.AddIngredient(ItemID.GoldDust, 200);
 			recipe.AddIngredient(ItemID.PlatinumCoin, 10);
@@ -630,7 +632,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tech Master's Gear");
-			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\n+3 Booster Recharge Rate, 20% increased plasma capacity, and 15% increased Booster Capacity\nGrants the effects of:\n-Prismal Core and Fridgeflame Canister\n-Handling Gloves and Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
+			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\nGrants the effects of:\n-Prismal Core, Plasma Pack, and Fridgeflame Canister\n-Handling Gloves and Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
 		}
 
 		public override void SetDefaults()
@@ -650,9 +652,14 @@ namespace SGAmod.Items.Accessories
 			SGAmod.BoostModdedDamage(player, 0.05f, 5);
 			player.meleeCrit += 5; player.magicCrit += 5; player.rangedCrit += 5; player.Throwing().thrownCrit += 5;
 			sgaply.maxblink += hideVisual ? 0 : 60 * 6;
-			sgaply.boosterPowerLeftMax += (int)(10000f * 0.15f);
-			sgaply.boosterrechargerate += 3;
-			sgaply.plasmaLeftInClipMax = (int)((float)sgaply.plasmaLeftInClipMax * 1.20f);
+			player.aggro -= 400;
+			//sgaply.boosterPowerLeftMax += (int)(10000f * 0.15f);
+			//sgaply.boosterrechargerate += 3;
+			//sgaply.electricChargeMax += 1500;
+			//sgaply.electricrechargerate += 1;
+			//sgaply.plasmaLeftInClipMax += (int)((float)SGAPlayer.plasmaLeftInClipMaxConst * 0.20f);
+			//sgaply.techdamage += 0.05f;
+			ModContent.GetInstance<PlasmaPack>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<FridgeFlamesCanister>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<HandlingGloves>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<PrismalCore>().UpdateAccessory(player, hideVisual);
@@ -662,14 +669,15 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.LunarBar, 8);
+			recipe.AddIngredient(ItemID.LunarBar, 6);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 30);
 			recipe.AddRecipeGroup("SGAmod:HardmodeEvilAccessory", 1);
-			recipe.AddIngredient(mod.ItemType("PlasmaPack"), 1);
+			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
 			recipe.AddIngredient(mod.ItemType("PrismalCore"), 1);
+			recipe.AddIngredient(mod.ItemType("PlasmaPack"), 1);
 			recipe.AddIngredient(mod.ItemType("HandlingGloves"), 1);
 			recipe.AddIngredient(mod.ItemType("JindoshBuckler"), 1);
 			recipe.AddIngredient(mod.ItemType("FridgeFlamesCanister"), 1);
-			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -793,7 +801,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fiery Heart");
-			Tooltip.SetDefault("All attacks inflict a short amount of Daybroken");
+			Tooltip.SetDefault("'The best friendships burn the brightest...'\nAll attacks inflict a short amount of Daybroken\nAs you gain more Total Expertise, this increases even further\nYou gain max life based on Total Expertise");
 			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(8, 4));
 		}
 		public override void SetDefaults()
@@ -812,9 +820,71 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.GetModPlayer<SGAPlayer>().FieryheartBuff = 5;
+			player.GetModPlayer<SGAPlayer>().FieryheartBuff = Math.Max(player.GetModPlayer<SGAPlayer>().FieryheartBuff,5);
+			player.statLifeMax2 += (int)(player.SGAPly().ExpertiseCollectedTotal / (GetType() == typeof(Blazingheart) ? 150f : 200f));
 		}
 	}
+	public class Blazingheart : Fieryheart
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Blazing Heart");
+			Tooltip.SetDefault("'Nothing will extinish the fire in our hearts!'\nAll effects of the Fiery Heart\nBut your daybreak attacks now bypass enemy immunities\nAlso, max life is improved");
+		}
+		public override void SetDefaults()
+		{
+			item.width = 40;
+			item.height = 40;
+			item.value = 500000;
+			item.rare = -12;
+			item.expert = true;
+			item.accessory = true;
+			item.defense = 5;
+			//item.damage = 1;
+			item.summon = true;
+			item.knockBack = 1f;
+		}
+
+		public override string Texture => "Terraria/Heart2";
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			player.GetModPlayer<SGAPlayer>().FieryheartBuff = 30;
+		}
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+
+			Texture2D inner = Main.itemTexture[ModContent.ItemType<AssemblyStar>()];
+
+			//Main.spriteBatch.End();
+			//Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			Vector2 slotSize = new Vector2(52f, 52f);
+			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
+
+			for (float i = 0; i < 1f; i += 0.20f)
+			{
+				spriteBatch.Draw(inner, drawPos, null, Color.White * (1f-((i+(Main.GlobalTime/2f)) % 1f))*0.75f, i*MathHelper.TwoPi, textureOrigin, Main.inventoryScale * (0.5f + 1.75f*(((Main.GlobalTime/2f)+ i) % 1f)), SpriteEffects.None, 0f);
+			}
+			//Main.spriteBatch.End();
+			//Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			return true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("Fieryheart"), 1);
+			recipe.AddIngredient(mod.ItemType("HopeHeart"), 10);
+			recipe.AddIngredient(ItemID.LihzahrdDoor);
+			recipe.AddTile(TileID.LihzahrdAltar);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}	
 	public class LunarSlimeHeart : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -1028,8 +1098,9 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.FragmentSolar, 3);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 25);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 1);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 4);
 			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 5);
-			recipe.AddIngredient(mod.ItemType("EldritchTentacle"), 3);
 			recipe.AddIngredient(ItemID.HellstoneBar, 2);
 			recipe.AddIngredient(ItemID.CrystalBall, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
@@ -1044,13 +1115,19 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fridgeflame Canister");
-			Tooltip.SetDefault("Flamethrowers shoot Frostflames alongside normal flames\nThis also applies to any weapon that uses gel as its ammo\nFrostflames do not cause immunity frames and do 75% of the weapon's base damage\n5% increased Technological Damage");
+			Tooltip.SetDefault("Flamethrowers shoot Frostflames alongside normal flames\nThis also applies to any weapon that uses gel as its ammo\nFrostflames do not cause immunity frames and do 75% of the weapon's base damage\n5% increased Technological Damage\n+1 passive Electric Charge Rate in Underworld/Ice Biome\n+2 passive Electric Charge Rate While afflicted with OnFire! or Frostburn");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.GetModPlayer<SGAPlayer>().FridgeflameCanister = true;
 			player.GetModPlayer<SGAPlayer>().techdamage += 0.05f;
+			if (player.ZoneSnow || player.ZoneUnderworldHeight)
+            {
+				player.GetModPlayer<SGAPlayer>().electricrechargerate += 1;
+			}
+			if (player.HasBuff(BuffID.OnFire) || player.HasBuff(BuffID.Frostburn))
+				player.GetModPlayer<SGAPlayer>().electricrechargerate += 2;
 		}
 
 		public override void SetDefaults()
@@ -1123,14 +1200,14 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blink Tech Canister");
-			Tooltip.SetDefault("Enables a short ranged blink teleport\nHold UP and press left or right to teleport in the direction\ngives chaos state for 2 seconds, blinking not possible while you have chaos state\n5% increased Technological Damage\n+2000 Max Electric Charge, +1 passive Electric Charge Rate");
+			Tooltip.SetDefault("Enables a short ranged blink teleport\nHold UP and press left or right to teleport in the direction\ngives chaos state for 2 seconds, blinking not possible while you have chaos state\n5% increased Technological Damage\n+1500 Max Electric Charge, +1 passive Electric Charge Rate");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.SGAPly().maxblink += 3;
 			player.SGAPly().techdamage += 0.05f;
-			player.SGAPly().electricChargeMax += 2000;
+			player.SGAPly().electricChargeMax += 1500;
 			player.SGAPly().electricrechargerate += 1;
 		}
 
@@ -1203,6 +1280,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("OmniSoul"), 5);
 			recipe.AddIngredient(ItemID.SoulofNight, 15);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 75);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 2);
 			recipe.AddTile(TileID.CrystalBall);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -1267,6 +1345,8 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.FrogLeg, 1);
 			recipe.AddIngredient(mod.ItemType("AmberGlowSkull"), 1);
 			recipe.AddIngredient(mod.ItemType("PrimordialSkull"), 1);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 100);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 3);
 			recipe.AddIngredient(ItemID.HellstoneBar, 10);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
@@ -1356,11 +1436,12 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Omni Magnet");
-			Tooltip.SetDefault("Increased grab range for Nebula Boosters, Coins, Hearts, and Mana Stars\nEnemies drop coins on hit and NPCs offer you a discount\n'Suck it all up!'");
+			Tooltip.SetDefault("Increased grab range for Nebula Boosters, Coins, Hearts, Mana Stars, and slightly for anything else\nEnemies drop coins on hit and NPCs offer you a discount\n'Suck it all up!'");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			player.SGAPly().graniteMagnet = true;
 			player.GetModPlayer<SGAPlayer>().BoosterMagnet = true;
 			player.manaMagnet = true;
 			player.lifeMagnet = true;
@@ -1381,9 +1462,9 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
-			recipe.AddIngredient(ItemID.CelestialMagnet, 1);
-			recipe.AddIngredient(mod.ItemType("BoosterMagnet"), 1);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
+			recipe.AddIngredient(mod.ItemType("CobaltMagnet"), 1);
+			recipe.AddIngredient(mod.ItemType("BoosterMagnet"), 1);			
 			recipe.AddIngredient(mod.ItemType("HeartreachMagnet"), 1);
 			recipe.AddIngredient(ItemID.GreedyRing, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
@@ -1691,6 +1772,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ModContent.ItemType<GreenApocalypse>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<WhiteApocalypse>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<MoneySign>(), 15);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 3);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 200);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
@@ -1893,7 +1975,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ring Of Respite");
-			Tooltip.SetDefault("Grants an additonal free Action Cooldown Stack\nDoes not stack with items crafted from a Ring Of Respite");
+			Tooltip.SetDefault("Grants an additional free Action Cooldown Stack\nDoes not stack with items crafted from a Ring Of Respite");
 		}
 
 		public override void SetDefaults()
@@ -1921,7 +2003,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Necklace O' Nerve");
-			Tooltip.SetDefault("Increases: life regen, and grants an additonal free Cooldown Stack\nIncreases mana by 20 (Corruption Worlds)\nIncreased movement speed when struck (Crimson Worlds)");
+			Tooltip.SetDefault("Increases: life regen, and grants an additional free Cooldown Stack\nIncreases mana by 20 (Corruption Worlds)\nIncreased movement speed when struck (Crimson Worlds)");
 		}
 
 		public override void SetDefaults()
@@ -1969,7 +2051,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Plasma Pack");
-			Tooltip.SetDefault("20% increased Plasma capacity\n+3 Booster recharge rate\n+3000 Max Electric Charge, +1 passive Electric Charge Rate\nEffects of Blink Tech Canister");
+			Tooltip.SetDefault("20% increased Plasma capacity\n+3 Booster recharge rate\n+3000 Max Electric Charge, +2 passive Electric Charge Rate\nEffects of Blink Tech Canister");
 		}
 
 		public override void SetDefaults()
@@ -1985,7 +2067,7 @@ namespace SGAmod.Items.Accessories
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.boosterrechargerate += 3;
-			sgaply.plasmaLeftInClipMax += 200;
+			sgaply.plasmaLeftInClipMax += (int)((float)SGAPlayer.plasmaLeftInClipMaxConst * 0.20f);
 			sgaply.electricChargeMax += 3000;
 			player.SGAPly().electricrechargerate += 2;
 			ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
@@ -2099,7 +2181,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Peacekeeper's Duster");
-			Tooltip.SetDefault("Take 20% less damage while reloading your revolver\nHostile bullets do 50% less damage to you\nGain bonus Life Regen while in your town (1 per npc up to 10, no bosses alive)\n'Keepin order will never be easier with this'");
+			Tooltip.SetDefault("Take 20% less damage while reloading your revolver\nHostile bullets do 50% less damage to you\nGain bonus Life Regen while in your town (1 per npc up to 10 max)\n'Keepin order will never be easier with this'");
 		}
 
 		public override void SetDefaults()
@@ -2123,7 +2205,7 @@ namespace SGAmod.Items.Accessories
 			sgaply.Duster = true;
 			if (player.townNPCs > 0)
 				player.lifeRegen += (int)Math.Min(player.townNPCs, 10);
-			if (player.itemAnimation < 1 && player.ownedProjectileCounts[mod.ProjectileType("ClipWeaponReloading")] > 0)
+			if (player.itemAnimation < 1 && sgaply.ReloadingRevolver > 0)
 				sgaply.damagetaken /= 1.20f;
 		}
 
@@ -2279,6 +2361,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("HighNoon"), 1);
 			recipe.AddRecipeGroup("SGAmod:IchorOrCursed", 12);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 50);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 2);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -2410,7 +2493,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shinobi's Shadow");
-			Tooltip.SetDefault("When you Ninja Dodge an attack, you turn invisble and gain Striking moment for 4 seconds");
+			Tooltip.SetDefault("When you Ninja Dodge an attack, you turn invisible and gain Striking moment for 4 seconds");
 		}
 
 		public override void SetDefaults()
@@ -2492,8 +2575,8 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.Gi, 1);
 			recipe.AddIngredient(mod.ItemType("ShinobiShiv"), 1);
 			recipe.AddIngredient(mod.ItemType("JavelinBaseBundle"), 1);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 15);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -2506,16 +2589,17 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Core");
-			Tooltip.SetDefault("'Core of modern technology, could be put to good use'\n10% increased Technological damage, 5% increased Trap damage\nCharge is built up by running around at high speeds (600/Second)\n20% reduced Electric Consumption, +2500 Max Electric Charge, +2 passive Electric Charge Rate");
+			Tooltip.SetDefault("'Core of modern technology, could be put to good use'\n10% increased Technological and Trap damage\nCharge is built up by running around at high speeds (600/Second)\n20% reduced Electric Consumption, +2500 Max Electric Charge, +2 passive Electric Charge Rate");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.SGAPly().techdamage += 0.10f;
-			player.SGAPly().TrapDamageMul += 0.05f;
+			player.SGAPly().TrapDamageMul += 0.10f;
 			player.SGAPly().electricChargeMax += 2500;
 			player.SGAPly().electricrechargerate += 2;
 			player.SGAPly().electricChargeCost *= 0.80f;
+
 			player.SGAPly().Noviteset = Math.Max(player.SGAPly().Noviteset, 1);
 		}
 
@@ -2531,7 +2615,7 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("NoviteBar"), 15);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 12);
 			recipe.AddIngredient(mod.ItemType("NoviteHelmet"), 1);
 			recipe.AddIngredient(mod.ItemType("NoviteChestplate"), 1);
 			recipe.AddIngredient(mod.ItemType("NoviteLeggings"), 1);
@@ -2547,13 +2631,17 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novus Core");
-			Tooltip.SetDefault("'Core of untapped magic, could be put to good use'\nAny item that uses Novus Bars or Fiery Shards in its crafting recipe get both the following:\n10% increased damage and emits Novus particles\n5% faster use time on all items\nGain an additional free Cooldown Stack and all other effects of Novus set bonus");
+            Tooltip.SetDefault("'Core of untapped magic, could be put to good use'\nAny item that uses Novus Bars or Fiery Shards in its crafting recipe get both the following:\n10% increased damage and emits Novus particles\n5% faster use time on all items\nIncludes all other effects of Novus set bonus\nGain an additional free Cooldown Stack (only one from crafting tree)");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.SGAPly().Novusset = 5;
-			player.SGAPly().MaxCooldownStacks += 1;
+			if (!player.SGAPly().novusStackBoost)
+			{
+				player.SGAPly().MaxCooldownStacks += 1;
+				player.SGAPly().novusStackBoost = true;
+			}
 			player.SGAPly().UseTimeMul += 0.05f;
 		}
 
@@ -2569,7 +2657,7 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 15);
+			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 12);
 			recipe.AddIngredient(mod.ItemType("UnmanedHood"), 1);
 			recipe.AddIngredient(mod.ItemType("UnmanedBreastplate"), 1);
 			recipe.AddIngredient(mod.ItemType("UnmanedLeggings"), 1);
@@ -2580,7 +2668,107 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	public class NoviteChip : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Command Chip");
+			Tooltip.SetDefault("Increases your max number of sentries");
+		}
 
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.maxTurrets += 1;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(silver: 50);
+			item.rare = ItemRarityID.Blue;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+	public class NovusSummoning : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novus Summoning Orb");
+			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace"));
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.maxMinions += 1;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(silver: 50);
+			item.rare = ItemRarityID.Blue;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+	public class PrismalNecklace : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Prismal Necklace");
+			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace") + " (by 2)\nIncreases your max number of sentries\n"+Language.GetTextValue("ItemTooltip.HerculesBeetle"));
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.maxMinions += 2;
+			player.maxTurrets += 1;
+			player.minionDamage += 0.15f;
+			player.minionKB += 2f;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(silver: 50);
+			item.rare = ItemRarityID.Cyan;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("NovusSummoning"), 1);
+			recipe.AddIngredient(mod.ItemType("NoviteChip"), 1);
+			recipe.AddIngredient(ItemID.HerculesBeetle, 1);
+			recipe.AddIngredient(ItemID.PygmyNecklace, 1);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
 	public class PrismalCore : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -2609,7 +2797,7 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 16);
 			recipe.AddIngredient(mod.ItemType("NoviteCore"), 1);
 			recipe.AddIngredient(mod.ItemType("NovusCore"), 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
@@ -2709,7 +2897,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void SetDefaults()
 		{
-			item.CloneDefaults(ItemID.ManaFlower);
+			//item.CloneDefaults(ItemID.ManaFlower);
 			item.width = 24;
 			item.height = 24;
 			item.rare += 1;
@@ -2749,7 +2937,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void SetDefaults()
 		{
-			item.CloneDefaults(ItemID.ManaFlower);
+			//item.CloneDefaults(ItemID.ManaFlower);
 			item.width = 24;
 			item.height = 24;
 			item.rare = ItemRarityID.Yellow;
@@ -2777,7 +2965,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void SetDefaults()
 		{
-			item.CloneDefaults(ItemID.ManaFlower);
+			//item.CloneDefaults(ItemID.ManaFlower);
 			item.width = 24;
 			item.height = 24;
 			item.rare = 2;
@@ -2804,7 +2992,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void SetDefaults()
 		{
-			item.CloneDefaults(ItemID.ManaFlower);
+			//item.CloneDefaults(ItemID.ManaFlower);
 			item.width = 12;
 			item.height = 24;
 			item.rare = 1;
@@ -2852,6 +3040,194 @@ namespace SGAmod.Items.Accessories
 			modeproj.myplayer = player;
 			Main.projectile[probg].netUpdate = true;
 			IdgProjectile.Sync(probg);
+			return false;
+		}
+
+	}
+
+	public class GraniteMagnet : Items.Weapons.Caliburn.CorrodedShield, IHitScanItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Granite Magnet");
+			Tooltip.SetDefault("Point at grounded items to attact them from a larger distance\nCan be held out like a torch and used normally by holding shift\nCan be worn to provide a minor increase to item grab radius and grab speed");
+			Item.staff[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 32;
+			item.height = 12;
+			item.noUseGraphic = true;
+			item.value = Item.buyPrice(0, 0, 75, 0);
+			item.rare = ItemRarityID.Blue;
+			item.maxStack = 1;
+			item.accessory = true;
+			item.useTurn = false;
+			item.autoReuse = false;
+			item.noMelee = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().graniteMagnet = true;
+		}
+
+	}
+
+	public class CobaltMagnet : Items.Weapons.Caliburn.CorrodedShield, IHitScanItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Cobalt Magnet");
+			Tooltip.SetDefault("Point at grounded items to quickly attact them from a larger distance\nCan be held out like a torch and used normally by holding shift\nwhile worn:\n-minor increase to item grab radius and grab speed\n-Effects of Celestial Magnet");
+			Item.staff[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 32;
+			item.height = 12;
+			item.noUseGraphic = true;
+			item.value = Item.buyPrice(0, 2, 5, 0);
+			item.rare = ItemRarityID.Pink;
+			item.maxStack = 1;
+			item.accessory = true;
+			item.useTurn = false;
+			item.autoReuse = false;
+			item.noMelee = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().graniteMagnet = true;
+			player.manaMagnet = true;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.CelestialMagnet, 1);
+			recipe.AddIngredient(ModContent.ItemType<GraniteMagnet>(), 1);
+			recipe.AddIngredient(ItemID.CobaltBar, 5);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 8);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+
+	}
+
+	public class CobaltMagnetProj : GraniteMagnetProj
+	{
+		protected override int itemID => ModContent.ItemType<CobaltMagnet>();
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("CobaltMagnetProj");
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Accessories/CobaltMagnet"); }
+		}
+
+	}
+
+	public class GraniteMagnetProj : Weapons.Technical.LaserMarkerProj
+    {
+		protected virtual int itemID => ModContent.ItemType<GraniteMagnet>();
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("GraniteMagnetProj");
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.light = 0.0f;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Accessories/GraniteMagnet"); }
+		}
+
+		public override void AI()
+		{
+
+			Player player = Main.player[projectile.owner];
+			bool heldone = player.HeldItem.type != itemID;
+			if (projectile.ai[0] > 0 || (player.HeldItem == null || heldone) || player.itemAnimation > 0 || player.dead)
+			{
+				projectile.Kill();
+				return;
+			}
+			else
+			{
+				if (projectile.timeLeft < 3)
+					projectile.timeLeft = 3;
+				Vector2 mousePos = Main.MouseWorld;
+
+				if (projectile.owner == Main.myPlayer)
+				{
+					Vector2 diff = mousePos - player.Center;
+					projectile.velocity = diff;
+					projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
+					projectile.netUpdate = true;
+					projectile.Center = mousePos;
+				}
+				int dir = projectile.direction;
+				player.ChangeDir(dir);
+
+				Vector2 direction = (projectile.velocity);
+				Vector2 directionmeasure = direction;
+
+				player.heldProj = projectile.whoAmI;
+
+				projectile.velocity.Normalize();
+				projectile.rotation = projectile.velocity.ToRotation()-(MathHelper.Pi/2f)* dir;
+
+				player.bodyFrame.Y = player.bodyFrame.Height * 3;
+				if (directionmeasure.Y - Math.Abs(directionmeasure.X) > 25)
+					player.bodyFrame.Y = player.bodyFrame.Height * 4;
+				if (directionmeasure.Y + Math.Abs(directionmeasure.X) < -25)
+					player.bodyFrame.Y = player.bodyFrame.Height * 2;
+				if (directionmeasure.Y + Math.Abs(directionmeasure.X) < -160)
+					player.bodyFrame.Y = player.bodyFrame.Height * 5;
+				player.direction = (directionmeasure.X > 0).ToDirectionInt();
+
+				projectile.Center = player.Center + (projectile.velocity * 10f);
+				projectile.velocity *= 8f;
+
+				Vector2 magnetHere = projectile.Center + Vector2.Normalize(projectile.velocity) * 48f;
+
+				foreach (Item item in Main.item)
+				{
+
+					Vector2 vectorItemToPlayer = magnetHere - item.Center;
+					Vector2 vectorItemToPlayer2 = projectile.Center - item.Center;
+					if (vectorItemToPlayer2.Length() < 600 && Vector2.Dot(Vector2.Normalize(vectorItemToPlayer2), Vector2.Normalize(projectile.velocity)) < -0.9f && Collision.CanHit(magnetHere, 1, 1, item.Center, 1, 1))
+					{
+						Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * (GetType() == typeof(CobaltMagnetProj) ? 1f : 0.45f);
+						item.velocity = item.velocity + movement;
+						item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
+					}
+				}
+
+
+			}
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		{
+
+			bool facingleft = projectile.velocity.X > 0;
+			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
+			Texture2D texture = Main.projectileTexture[projectile.type];
+			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor * projectile.Opacity, projectile.rotation + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+
 			return false;
 		}
 

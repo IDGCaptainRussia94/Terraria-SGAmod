@@ -86,6 +86,21 @@ namespace SGAmod.Buffs
 			Main.buffNoSave[Type] = true;
 		}
 	}
+	public class MiningFatigue : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Mining Fatigue");
+			Description.SetDefault("Mining speed is reduced!");
+			Main.pvpBuff[Type] = false;
+			Main.debuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+		}
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.GetModPlayer<SGAPlayer>().UseTimeMulPickaxe /= 2f;
+		}
+	}
 	public class BIPBuff : ModBuff
 	{
 
@@ -137,5 +152,4 @@ namespace SGAmod.Buffs
 			npc.GetGlobalNPC<SGAnpcs>().DankSlow = true;
 		}
 	}
-
 }

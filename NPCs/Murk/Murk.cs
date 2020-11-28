@@ -105,7 +105,7 @@ namespace SGAmod.NPCs.Murk
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("MurkyGel"));
                     }
 
-                    int choice = Main.rand.Next(5);
+                    int choice = Main.rand.Next(6);
                     if (choice == 0)
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("MurkFlail"));
                     else if (choice == 1)
@@ -116,6 +116,8 @@ namespace SGAmod.NPCs.Murk
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Mudmore"));
                     else if (choice == 4)
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SwarmGrenade"), Main.rand.Next(40, 100));
+                    else if (choice == 5)
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("GnatStaff"));
                 }
             }
             Achivements.SGAAchivements.UnlockAchivement("Murk", Main.LocalPlayer);
@@ -479,7 +481,8 @@ namespace SGAmod.NPCs.Murk
 
                 if (!flag65)
                 {
-                    if (npc.life < (npc.lifeMax * 0.85) && npc.localAI[0] > -600 && NPC.CountNPCS(mod.NPCType("BossFlyMiniboss1")) < 1)
+                    Player target2 = Main.player[npc.target];
+                    if (npc.life < (npc.lifeMax * 0.85) && npc.localAI[0] > -600 && NPC.CountNPCS(mod.NPCType("BossFlyMiniboss1")) < 1 && (npc.Distance(target2.MountedCenter) < 1000 || gasshift > 0))
                     {
                         npc.ai[0] = -100f;
                         npc.ai[2] = 0f;
@@ -488,8 +491,7 @@ namespace SGAmod.NPCs.Murk
                         //npc.dontTakeDamage=true;
                         npc.defense *= 2;
 
-                        Player target2 = Main.player[npc.target];
-                        if (gasshift < 500 && (npc.Distance(target2.MountedCenter)<1000 || gasshift > 0))
+                        if (gasshift < 500)
                         {
                             npc.localAI[0] += 1;
                             gasshift += 1;

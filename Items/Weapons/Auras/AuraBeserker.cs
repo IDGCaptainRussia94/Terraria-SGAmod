@@ -15,7 +15,7 @@ namespace SGAmod.Items.Weapons.Auras
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Beserker Aura Staff");
+			DisplayName.SetDefault("Berserker Aura Staff");
 			Tooltip.SetDefault("Summons Beserker Gauntlets around the player to boost their attack power\nBut in your rage, you forget to breath");
 			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;

@@ -425,7 +425,7 @@ namespace SGAmod.Items.Weapons
 			projectile.width = 16;
 			projectile.height = 16;
 			projectile.tileCollide = false;
-			projectile.friendly = false;
+			projectile.friendly = true;
 			projectile.minion = true;
 			// Amount of slots this minion occupies from the total minion slots available to the player (more on that later)
 			projectile.minionSlots = 1f;
@@ -605,6 +605,12 @@ namespace SGAmod.Items.Weapons
 			Description.SetDefault("Portals to planes of wealth will fight for you");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
 		}
 
 		public override void Update(Player player, ref int buffIndex)

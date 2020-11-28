@@ -6,7 +6,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
-
+using System.Linq;
+using SGAmod.Effects;
 
 namespace SGAmod.Projectiles
 {
@@ -45,20 +46,42 @@ namespace SGAmod.Projectiles
             if (projectile.ai[1] > 0)
                 return false;
 
+            Player owner = Main.player[projectile.owner];
+
             Texture2D tex = mod.GetTexture("Items/LunarRoyalGel");
             Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 10) / 2f;
 
             //oldPos.Length - 1
-            for (int k = oldPos.Length - 1; k >= 0; k -= 2)
-            {
+            //for (int k = oldPos.Length - 1; k >= 0; k -= 2)
+            int k = 0;
 
                 Vector2 drawPos = ((oldPos[k] - Main.screenPosition)) + new Vector2(0f, 4f);
                 Color color = (Main.hslToRgb((projectile.ai[0] / 8f) % 1f, 1f, 0.9f)) * (1f - (float)(k + 1) / (float)(oldPos.Length + 2));
                 int timing = (int)(projectile.localAI[0] / 8f);
                 timing %= 10;
                 timing *= ((tex.Height) / 10);
-                spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 10), color, projectile.velocity.X * 0.04f, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+
+            List<Vector2> list = oldPos.ToList();
+            //list.Insert(0, projectile.Center);
+
+            for (int z = 0; z < list.Count; z += 1)
+            {
+                float percent = (z / (float)list.Count) * (0f+(float)Math.Sin((owner.SGAPly().timer/20f)-(z/5f))*0.5f);
+                list[z] += (owner.Center - list[z]) * percent;
             }
+
+            TrailHelper trail = new TrailHelper("DefaultPass", SGAmod.ExtraTextures[21]);
+            trail.color = delegate (float percent)
+            {
+                return Color.Pink;
+            };
+            trail.projsize = Vector2.Zero;
+            trail.trailThickness = 2;
+            trail.trailThicknessIncrease = 6;
+            trail.DrawTrail(list, projectile.Center);
+
+            spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 10), color, projectile.velocity.X * 0.04f, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+
             return false;
         }
 
@@ -101,6 +124,12 @@ namespace SGAmod.Projectiles
 
         public override void AI()
         {
+
+            for (int i = 0; i < oldPos.Length; i += 1)//dumb hack to get the trails to not appear at 0,0
+            {
+                if (oldPos[i] == default)
+                    oldPos[i] = projectile.Center;
+            }
 
             if (projectile.ai[1] < 1)
             {

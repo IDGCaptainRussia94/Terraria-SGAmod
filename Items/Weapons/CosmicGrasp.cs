@@ -39,7 +39,7 @@ namespace SGAmod.Items.Weapons
 			item.rare = 12;
 			item.UseSound = SoundID.Item72;
 			item.autoReuse = true;
-			item.shoot = 10;
+			item.shoot = mod.ProjectileType("CGraspSpear");
 			item.shootSpeed = 10;
 			Item.staff[item.type] = true;
 			if (!Main.dedServ)
@@ -68,10 +68,10 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("Cosmillash"), 1);
-			recipe.AddIngredient(mod.ItemType("ShadeflameStaff"), 1);
 			recipe.AddIngredient(ItemID.ShadowbeamStaff, 1);
-			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 10);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("EldritchTentacle"), 15);
+			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 12);
 			recipe.AddIngredient(ItemID.Amethyst, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);			
 			recipe.SetResult(this);

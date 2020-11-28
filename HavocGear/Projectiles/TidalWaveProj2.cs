@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -31,9 +32,26 @@ namespace SGAmod.HavocGear.Projectiles
             projectile.timeLeft = 60;
         }
 
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            if (target.wet)
+                crit = true;
+        }
+
         public override void AI()
         {
-        if (Main.rand.Next(0,30)<20){
+
+            Point16 loc = new Point16((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16);
+            if (WorldGen.InWorld(loc.X, loc.Y))
+            {
+                Tile tile = Main.tile[loc.X, loc.Y];
+                if (tile != null)
+                    if (tile.liquid > 64)
+                        projectile.timeLeft += 1;
+            }
+
+
+            if (Main.rand.Next(0,30)<20){
         int dust = Dust.NewDust(projectile.position, projectile.width, projectile.height, 33);
         Main.dust[dust].scale = 0.8f;
         Main.dust[dust].noGravity = false;

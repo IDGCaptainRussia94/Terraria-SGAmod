@@ -13,8 +13,8 @@ namespace SGAmod.NPCs.Dank
 			npc.width = 20;
 			npc.height = 20;
 			npc.damage = 0;
-			npc.defense = 0;
-			npc.lifeMax = 5;
+			npc.defense = 100;
+			npc.lifeMax = 25;
             npc.HitSound = SoundID.NPCHit1;
             npc.DeathSound = SoundID.NPCDeath1;
             npc.value = 0f;
@@ -50,8 +50,8 @@ namespace SGAmod.NPCs.Dank
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            int spawn = Main.rand.Next(100);
-            return Main.hardMode && spawnInfo.spawnTileY < Main.rockLayer && (SGAUtils.NoInvasion(spawnInfo) && spawn == 24 || (spawnInfo.spawnTileType==mod.TileType("MoistStone") && spawn<4)) ? 1f : 0f;
+            int spawn = Main.rand.Next(30);
+            return Main.hardMode && (spawnInfo.spawnTileType==mod.TileType("MoistStone") && spawn<15) ? 1f : 0f;
         }
     }
 }

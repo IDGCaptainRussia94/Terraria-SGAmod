@@ -43,7 +43,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/Cosmillash_Glow");
 			}
 		}
-		public override bool Shoot (Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			type = mod.ProjectileType("QuasarOrb");
 			float numberProjectiles = 3; // 3, 4, or 5 shots
@@ -63,11 +63,12 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.FragmentNebula, 12);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 20);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 8);
-			recipe.AddIngredient(ItemID.SoulofNight, 8);			
-			recipe.AddTile(TileID.LunarCraftingStation);			
+			recipe.AddIngredient(mod.ItemType("ShadeflameStaff"), 1);
+			recipe.AddIngredient(ItemID.FragmentNebula, 8);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 6);
+			recipe.AddIngredient(ItemID.SoulofNight, 6);
+			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}

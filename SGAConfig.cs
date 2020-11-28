@@ -44,6 +44,21 @@ namespace SGAmod
 		[DefaultValue(false)]
 		public bool HellionPrivacy { get; set; }
 
+		[Label("Extra Blending Details")]
+		[Tooltip("Enables/Disables Additive Blending; may improve performance")]
+		[DefaultValue(true)]
+		public bool SpecialBlending { get; set; }
+
+		[Label("Lava Rocks Gun Shader")]
+		[Tooltip("Enables/Disables The Solar Dye on the rocks shot by the Lava Rocks Gun, may improve performance")]
+		[DefaultValue(false)]
+		public bool LavaBlending { get; set; }
+
+		[Label("Epic Apocalypticals")]
+		[Tooltip("Enables/Disables The TF2 Crit sound and shockwave effect on Apocalypticals; when off, it only displays the text")]
+		[DefaultValue(true)]
+		public bool EpicApocalypticals { get; set; }
+
 	}
 
 

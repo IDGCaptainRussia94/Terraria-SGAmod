@@ -26,26 +26,9 @@ using System.Diagnostics;
 using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityMod.World;
-using SGAmod.NPCs;
-using SGAmod.NPCs.Wraiths;
-using SGAmod.NPCs.Hellion;
-using SGAmod.NPCs.SpiderQueen;
-using SGAmod.NPCs.Murk;
-using SGAmod.NPCs.Sharkvern;
-using SGAmod.NPCs.Cratrosity;
-using SGAmod.HavocGear.Items;
-using SGAmod.HavocGear.Items.Weapons;
-using SGAmod.HavocGear.Items.Accessories;
-using SGAmod.Items;
-using SGAmod.Items.Weapons;
-using SGAmod.Items.Armors;
-using SGAmod.Items.Accessories;
-using SGAmod.Items.Consumable;
-using SGAmod.Items.Weapons.Caliburn;
-using SGAmod.UI;
-using Terraria.Achievements;
-using Terraria.GameContent.Achievements;
 using SGAmod.Items.Weapons.SeriousSam;
+using ReLogic.Graphics;
+using Terraria.Utilities;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -78,6 +61,161 @@ namespace SGAmod
 			Main.worldRate = 0;
 		}
 	}*/
+
+	//please don't touch
+	public class UncraftClass
+	{
+		Point16 location;
+		List<Point> possibleItems;
+		Item targetitem;
+		public int stackSize;
+		int recipeIndex = 0;
+		public bool uncraftable;
+
+		static public List<int> BlackListedItems;
+
+		static UncraftClass()
+		{
+			BlackListedItems = new List<int>();
+			BlackListedItems.Add(ItemID.FragmentNebula);
+			BlackListedItems.Add(ItemID.FragmentSolar);
+			BlackListedItems.Add(ItemID.FragmentStardust);
+			BlackListedItems.Add(ItemID.FragmentVortex);
+			BlackListedItems.Add(SGAmod.Instance.ItemType("StarMetalBar"));
+		}
+
+		public UncraftClass(Point16 location, Item item, int recipeIndex = 0, int offsetter = 0)
+		{
+			uncraftable = true;
+			this.location = location;
+			this.recipeIndex = recipeIndex;
+			this.possibleItems = GetUncraftData(item, offsetter);
+			targetitem = item;
+		}
+
+		public List<Point> GetUncraftData(Item item, int receipeoffsetter = 0)
+		{
+			List<Point> items = new List<Point>();
+			if (!item.IsAir)
+			{
+				RecipeFinder finder = new RecipeFinder();
+				finder.SetResult(item.type);
+				List<Recipe> reclist = finder.SearchRecipes();
+
+				if (reclist != null && reclist.Count > 0)
+				{
+					Recipe recipe = reclist[recipeIndex % reclist.Count];//Only the first recipe, for now
+
+					stackSize = recipe.createItem.stack;
+
+					if (stackSize <= item.stack && BlackListedItems.FirstOrDefault(search => search == item.type) == default)
+					{
+
+						List<List<int>> isGroup = new List<List<int>>();
+
+						if (recipe.acceptedGroups.Count > 0)
+						{
+							for (int k = 0; k < recipe.acceptedGroups.Count; k += 1)
+							{
+								List<int> recipeGroupItems = RecipeGroup.recipeGroups[recipe.acceptedGroups[k]].ValidItems;
+
+								for (int kk = 0; kk < recipeGroupItems.Count; kk += 1)
+								{
+									isGroup.Add(recipeGroupItems);
+								}
+							}
+						}
+
+						for (int k = 0; k < recipe.requiredItem.Length; k += 1)
+						{
+							if (!recipe.requiredItem[k].IsAir)
+							{
+								int chosenitem = recipe.requiredItem[k].type;
+
+								for (int kk = 0; kk < isGroup.Count; kk += 1)
+								{
+									UnifiedRandom rando = new UnifiedRandom(receipeoffsetter + kk);
+									List<int> subgroup = isGroup[kk];
+									if (subgroup.FirstOrDefault(itemx => itemx == chosenitem) != default)
+									{
+										chosenitem = subgroup[rando.Next(subgroup.Count)];
+										//Main.NewText("test " + receipeoffsetter % subgroup.Count);
+									}
+								}
+								items.Add(new Point(chosenitem, recipe.requiredItem[k].stack));
+								uncraftable = false;
+							}
+
+						}
+					}
+
+				}
+			}
+			return items;
+		}
+
+		public void Uncraft(Player player, int uncraftChance = 75)
+		{
+			if (uncraftable)
+				return;
+
+			foreach (Point item in possibleItems)
+			{
+				int ammount = 1;
+				if (item.Y > 1)
+					ammount = Main.rand.Next((int)(item.Y * (uncraftChance / 100f)), item.Y + 1);
+
+				if (Main.rand.Next(0, 100) < uncraftChance)
+					player.QuickSpawnItem(item.X, ammount);
+			}
+			targetitem.stack -= stackSize;
+			if (targetitem.stack < 1)
+				targetitem.TurnToAir();
+
+		}
+
+		public void Draw()
+		{
+			Vector2 position = (location.ToVector2() * 16) - Main.screenPosition;
+
+			position.X -= possibleItems.Count * 16;
+			position.X += 16;
+
+			foreach (Point data in possibleItems)
+			{
+
+				Texture2D tex = Main.itemTexture[data.X];
+
+				DrawAnimation anim = Main.itemAnimations[data.X];
+				int frame = 0;
+				int height = tex.Height;
+				Vector2 size = tex.Size() / 2f;
+				if (anim != null)
+				{
+					frame = anim.Frame;
+					height = tex.Height / anim.FrameCount;
+					size = new Vector2(tex.Width, height) / 2f;
+				}
+
+				Item anitem = new Item();
+				anitem.SetDefaults(data.X);
+
+				Main.spriteBatch.Draw(tex, position, new Rectangle(0, height * frame, tex.Width, height), anitem.modItem?.GetAlpha(Color.White) ?? Color.White, 0f, size, 1f, SpriteEffects.None, 0);
+				if (data.Y > 0)
+				{
+					string str = data.Y.ToString();
+					Vector2 size2 = Main.fontDeathText.MeasureString(str);
+					Main.spriteBatch.DrawString(Main.fontMouseText, str, position + new Vector2(4, 4), Color.White);
+				}
+
+				position.X += 32;
+
+			}
+
+		}
+
+	}
+
 	public class PostDrawCollection
 	{
 		public Vector3 light;
@@ -125,40 +263,53 @@ namespace SGAmod
 				return -1;
 			}
 		}
-
-		public static List<NPC> ClosestEnemies(Vector2 Center,float maxdist,Vector2 Center2=default,List<Point>AddedWeight=default)
+		
+		//Fancy closest enemy method with weights system
+		public static List<NPC> ClosestEnemies(Vector2 Center,float maxdist,Vector2 Center2=default,List<Point>AddedWeight=default,bool checkWalls = true)
 		{
-
+			maxdist *= maxdist;
 			if (Center2 == default)
 				Center2 = Center;
 
 			if (AddedWeight == default)
 				AddedWeight = new List<Point>();
 
+			//List<NPC> closestnpcs = Main.npc.Where(testnpc => testnpc.active && testnpc.friendly && !testnpc.townNPC && !testnpc.dontTakeDamage && testnpc.CanBeChasedBy() &&
+			//Collision.CheckAABBvLineCollision(testnpc.position, new Vector2(testnpc.width, testnpc.height), testnpc.Center, Center) && (testnpc.Center - Center2).Length() < maxdist).ToList();
+
 			List<NPC> closestnpcs = new List<NPC>();
 			for (int i = 0; i < Main.maxNPCs; i += 1)
 			{
-
+				NPC npc = Main.npc[i];
+				float distvectX = (Center2.X - npc.Center.X)*(Center2.X - npc.Center.X);
+				float distvectY = (Center2.Y - npc.Center.Y) * (Center2.Y - npc.Center.Y);
+				float squaredDist = Math.Abs((distvectX + distvectY));
 				if (Main.npc[i].active)
 				{
-					bool colcheck = Collision.CheckAABBvLineCollision(Main.npc[i].position, new Vector2(Main.npc[i].width, Main.npc[i].height), Main.npc[i].Center, Center)
-	&& Collision.CanHit(Main.npc[i].Center, 0, 0, Center, 0, 0);
+					bool colcheck = !checkWalls || (Collision.CheckAABBvLineCollision(Main.npc[i].position, new Vector2(Main.npc[i].width, Main.npc[i].height), Main.npc[i].Center, Center)
+	&& Collision.CanHit(Main.npc[i].Center, 0, 0, Center, 0, 0));
 					if (!Main.npc[i].friendly && !Main.npc[i].townNPC && !Main.npc[i].dontTakeDamage && Main.npc[i].CanBeChasedBy() && colcheck
-					&& (Main.npc[i].Center - Center2).Length() < maxdist)
+					&& squaredDist < maxdist)
 					{
 						closestnpcs.Add(Main.npc[i]);
 					}
 				}
 			}
 
+			//Sorter delegate based on distance, weights are accounted for
 			Func<NPC, float> sortbydistance = delegate (NPC npc)
 			 {
-				 float score = (Center - npc.Center).Length();
-				 Point weightedscore = AddedWeight.FirstOrDefault(npcid => npcid.X == npc.whoAmI);
-				 score += weightedscore != default ? weightedscore.Y : 0;
+				 float distvectX = (Center2.X - npc.Center.X) * (Center2.X - npc.Center.X);
+				 float distvectY = (Center2.Y - npc.Center.Y) * (Center2.Y - npc.Center.Y);
+				 float squaredDist = Math.Abs((distvectX + distvectY));
 
+				 float score = squaredDist;
+				 Point weightedscore = AddedWeight.FirstOrDefault(npcid => npcid.X == npc.whoAmI);
+				 score += weightedscore != default ? weightedscore.Y * Math.Abs(weightedscore.Y) : 0;
+
+				 //Values of weight over 1000000 are simply "removed" from the sorter as invalid
 				 if (weightedscore != default && weightedscore.Y >= 1000000)
-					 score = 1000000;
+					 score = 100000000;
 
 				 return score;
 
@@ -172,7 +323,7 @@ namespace SGAmod
 			{
 				closestnpcs = closestnpcs.ToArray().OrderBy(sortbydistance).ToList();//Closest
 				if (AddedWeight != default)
-					 closestnpcs.RemoveAll(npc => (int)sortbydistance(npc) == 1000000);//Dups be gone
+					 closestnpcs.RemoveAll(npc => (int)sortbydistance(npc) == 100000000);//Dups be gone
 
 				return closestnpcs;
 			}
@@ -194,6 +345,11 @@ namespace SGAmod
 		{
 			return proj.GetGlobalProjectile<SGAprojectile>();
 		}
+		public static SGAnpcs SGANPCs(this NPC npc)
+		{
+			return npc.GetGlobalNPC<SGAnpcs>();
+		}
+
 		public static bool NoInvasion(NPCSpawnInfo spawnInfo)
 		{
 			return !spawnInfo.invasion && ((!Main.pumpkinMoon && !Main.snowMoon) || spawnInfo.spawnTileY > Main.worldSurface || Main.dayTime) && (!Main.eclipse || spawnInfo.spawnTileY > Main.worldSurface || !Main.dayTime);

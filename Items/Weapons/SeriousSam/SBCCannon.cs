@@ -583,11 +583,10 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "SBCCannon", 1);
-			recipe.AddIngredient(ItemID.ActuationAccessory, 1);
 			recipe.AddIngredient(ItemID.PressureTrack, 5);
 			recipe.AddIngredient(ItemID.Chain, 25);
 			recipe.AddIngredient(ItemID.LihzahrdPressurePlate, 2);
-			recipe.AddIngredient(null, "StarMetalBar", 10);
+			recipe.AddIngredient(null, "StarMetalBar", 12);
 			recipe.AddIngredient(null, "DrakeniteBar", 15);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);

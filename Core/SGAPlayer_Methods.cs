@@ -227,7 +227,7 @@ namespace SGAmod
 				if (player.HasItem(mod.ItemType("PlasmaCell")))
 				{
 					player.ConsumeItem(mod.ItemType("PlasmaCell"));
-					plasmaLeftInClip = Math.Min(plasmaLeftInClip + 1000, plasmaLeftInClipMax);
+					plasmaLeftInClip = plasmaLeftInClipMax;//Math.Min(plasmaLeftInClip + 1000, plasmaLeftInClipMax);
 					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.LawnGreen, "Plasma Recharged!", false, false);
 					if (plasmaLeftInClip < plasmaLeftInClipMax && checkagain)
 					{
@@ -380,9 +380,9 @@ namespace SGAmod
 		{
 			if (Noviteset > 0 && electricChargeMax > 0)
 			{
-				if (Math.Abs(player.velocity.X) > 4f && player.velocity.Y == 0.0 && !player.mount.Active && !player.mount.Cart && electricdelay < 1)
+				if (Math.Abs(player.velocity.X) > 4f && player.velocity.Y == 0.0 && !player.mount.Active && !player.mount.Cart)
 				{
-					electricCharge += 10;
+					electricrechargerate += 10;
 				}
 			}
 		}

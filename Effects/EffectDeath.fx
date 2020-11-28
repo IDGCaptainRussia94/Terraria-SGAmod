@@ -38,11 +38,6 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 
 	color.rgba *= valz;
 
-	/*if(color1.r > readRed){
-		color.rgba = 0;
-	}else if(color1.r > uOpacity ){
-		color =  float4(1, 105.0/255, 180.0/255, 1);
-	}*/
 	return color;
 }
 

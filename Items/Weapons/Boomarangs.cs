@@ -7,6 +7,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
+using Terraria.DataStructures;
+using System.IO;
 
 namespace SGAmod.Items.Weapons
 {
@@ -403,6 +405,142 @@ namespace SGAmod.Items.Weapons
 
 	}
 
+	public class Wirang : ModItem
+	{
+		int wireType=0;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Wirang");
+			Tooltip.SetDefault("Throws multi-color Boomerang-Shaped wire bundles\nThese activate their respective wires when they pass over them\nThrows up to 4 at once");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 10;
+			item.height = 10;
+			item.damage = 32;
+			item.melee = true;
+			item.noMelee = true;
+			item.useTurn = true;
+			item.noUseGraphic = true;
+			item.useAnimation = 10;
+			item.useStyle = 5;
+			item.noUseGraphic = true;
+			item.useTime = 10;
+			item.knockBack = 0f;
+			item.UseSound = SoundID.Item1;
+			item.autoReuse = false;
+			item.maxStack = 1;
+			item.value = Item.buyPrice(gold: 5);
+			item.rare = ItemRarityID.LightPurple;
+			item.shoot = ModContent.ProjectileType<WirangProj>();
+			item.shootSpeed = 10f;
+			item.mech = true;
+		}
+		public override string Texture
+		{
+			get { return ("Terraria/UI/Wires_2"); }
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return player.ownedProjectileCounts[item.shoot] < 4;
+		}
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			Vector2 speed = new Vector2(speedX, speedY);
+			speed.RotatedByRandom(MathHelper.Pi / 8f);
+
+			int prog = Projectile.NewProjectile(position.X, position.Y, speed.X, speed.Y, type, damage, knockBack, Main.myPlayer);
+			Main.projectile[prog].localAI[1] = wireType;
+			Main.projectile[prog].netUpdate = true;
+			wireType = (wireType + 1) % 4;
+
+			return false;
+		}
+
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+
+			Texture2D inner = Main.wireUITexture[2 + ((int)(Main.GlobalTime)%4)];
+
+			Vector2 slotSize = new Vector2(52f, 52f);
+			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
+
+			spriteBatch.Draw(inner, drawPos, null, Color.White, 0, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
+
+			return false;
+		}
+	}
+
+	public class WirangProj : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Wirang");
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/UI/Wires_2"); }
+		}
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+			writer.Write((int)projectile.localAI[1]);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+			projectile.localAI[1] = reader.ReadInt16();
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D tex = Main.wireUITexture[2+(int)projectile.localAI[1]];
+			spriteBatch.Draw(tex, projectile.Center - projectile.velocity - Main.screenPosition, null, lightColor, projectile.rotation, tex.Size() / 2f, projectile.scale, default, 0);
+			return false;
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.WoodenBoomerang);
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.friendly = true;
+			projectile.penetrate = -1;
+			projectile.melee = true;
+			projectile.scale = 1f;
+			projectile.extraUpdates = 0;
+		}
+
+        public override void AI()
+        {
+			Point16 here = new Point16((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16);
+			if (WorldGen.InWorld(here.X, here.Y))
+			{
+				Tile tile = Main.tile[here.X, here.Y];
+				if ((tile.wire() && projectile.localAI[1] == 0) ||
+				(tile.wire3() && projectile.localAI[1] == 1) ||
+				(tile.wire2() && projectile.localAI[1] == 2) ||
+				(tile.wire4() && projectile.localAI[1] == 3))
+				{
+					Wiring.TripWire(here.X, here.Y, 1, 1);
+					if (projectile.extraUpdates<1)
+					projectile.extraUpdates = 1;
+				}
+			}
+        }
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+			knockback /= 2f;
+		}
+
+	}
 
 	public class Fridgeflamarang : ModItem
 	{

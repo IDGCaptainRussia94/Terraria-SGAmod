@@ -19,7 +19,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
         public override void SetDefaults()
         {
-            item.damage = 25;
+            item.damage = 22;
             item.ranged = true;
             item.width = 48;
             item.height = 28;
@@ -112,7 +112,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			aiType = ProjectileID.WoodenArrowFriendly;
 			projectile.scale = 0.5f;
 			projectile.usesIDStaticNPCImmunity = true;
-			projectile.idStaticNPCHitCooldown = 5;
+			projectile.idStaticNPCHitCooldown = 4;
 		}
 
 		public override string Texture
@@ -123,7 +123,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			//target.immune[projectile.owner] = 5;
-			IdgNPC.AddBuffBypass(target.whoAmI, ModContent.BuffType<NapalmBurn>(), 60 * 8);
+			IdgNPC.AddBuffBypass(target.whoAmI, ModContent.BuffType<NapalmBurn>(), 60 * (target.buffImmune[ModContent.BuffType<NapalmBurn>()] ? 4 : 8));
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -221,10 +221,6 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
-			if (npc.buffImmune[Type])
-			{
-			npc.buffTime[buffIndex] -= 1;
-			}
 			npc.GetGlobalNPC<SGAnpcs>().Napalm = true;
 		}
 	}

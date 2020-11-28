@@ -29,8 +29,8 @@ namespace SGAmod.Items.Weapons
 			item.mana = 15;
 			item.width = 40;
 			item.height = 40;
-			item.useTime = 50;
-			item.useAnimation = 50;
+			item.useTime = 45;
+			item.useAnimation = 45;
 			item.useStyle = 5;
 			item.noMelee = true; //so the item's animation doesn't do damage
 			item.knockBack = 5;
@@ -124,8 +124,9 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("ElementalCascade"), 1);
-			recipe.AddRecipeGroup("Fragment", 10);
-			recipe.AddIngredient(ItemID.LunarBar, 10);
+			recipe.AddRecipeGroup("Fragment", 6);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
+			recipe.AddIngredient(ItemID.LunarBar, 6);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -160,7 +161,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class HelionCascade : LunarCascade
+	public class HellionCascade : LunarCascade
 	{
 		int projectiletype = 0;
 		public override void SetStaticDefaults()
@@ -201,11 +202,6 @@ namespace SGAmod.Items.Weapons
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
-		}
-
-		public override string Texture
-		{
-			get { return ("Terraria/Item_"+ItemID.SpellTome); }
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)

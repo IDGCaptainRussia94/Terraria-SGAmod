@@ -22,12 +22,12 @@ namespace SGAmod.HavocGear.Projectiles
         public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
         {
             bool facingleft = projectile.Center.X < Main.player[projectile.owner].Center.X;
-            Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
+            Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
             Texture2D texture = Main.projectileTexture[projectile.type];
             Texture2D glow = mod.GetTexture("Items/GlowMasks/ThermalPike_Glow");
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-            Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale, facingleft ? effect : SpriteEffects.None, 0);
-            Main.spriteBatch.Draw(glow, projectile.Center - Main.screenPosition, new Rectangle?(), Color.White, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f), origin, projectile.scale, facingleft ? effect : SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor, projectile.rotation + (0.50f * MathHelper.Pi) + (facingleft ? (1.5f * MathHelper.Pi) : 0), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipVertically, 0);
+            Main.spriteBatch.Draw(glow, projectile.Center - Main.screenPosition, new Rectangle?(), Color.White, projectile.rotation  + (0.50f * MathHelper.Pi) + (facingleft ? (1.5f * MathHelper.Pi) : 0), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipVertically, 0);
             return false;
         }
 
@@ -64,6 +64,11 @@ namespace SGAmod.HavocGear.Projectiles
         }
 		Lighting.AddLight(projectile.position, 0.6f, 0.5f, 0f);
 	}
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            damage += (target.defense / 4);
+        }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {

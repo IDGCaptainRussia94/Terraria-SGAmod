@@ -178,7 +178,11 @@ namespace SGAmod.Items.Weapons.Technical
 	public class NovaBlasterCharging : ModProjectile
 	{
 
-		int chargeuptime = 100;
+		public virtual int chargeuptime => 100;
+		public virtual float velocity => 32f;
+		public virtual float spacing => 24f;
+		public virtual int fireRate => 5;
+		protected Player player;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Nova Blaster Charging");
@@ -209,99 +213,50 @@ namespace SGAmod.Items.Weapons.Technical
 			return false;
 		}
 
-		public override void AI()
+		public virtual void ChargeUpEffects()
 		{
-			Player player = Main.player[projectile.owner];
 
-			if (player == null)
-				projectile.Kill();
-			if (player.dead)
-				projectile.Kill();
-			projectile.timeLeft = 2;
-			player.itemTime = 6;
-			player.itemAnimation = 6;
-			Vector2 direction = (Main.MouseWorld - player.Center);
-			Vector2 directionmeasure = direction;
-			direction.Normalize();
-
-			if (projectile.ai[0]< chargeuptime+1)
+			if (projectile.ai[0] < chargeuptime)
 			{
-				if (player.SGAPly().ConsumeElectricCharge(2, 60))
-				projectile.ai[0] += 1;
-			}
-
-
-			bool channeling = ((player.channel || projectile.ai[0] < 5) && !player.noItems && !player.CCed);
-			projectile.Center = player.Center + direction * 16;
-
-				Vector2 mousePos = Main.MouseWorld;
-				if (channeling)
+				for (int num315 = 0; num315 < 2; num315 = num315 + 1)
 				{
-					if (projectile.owner == Main.myPlayer)
+					if (Main.rand.Next(0, 5) == 0)
 					{
-						Vector2 diff = mousePos - player.Center;
-						diff.Normalize();
-						projectile.velocity = diff;
-						projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
-						projectile.netUpdate = true;
-						projectile.Center = mousePos;
-					}
-					int dir = projectile.direction;
-					player.ChangeDir(dir);
-					player.itemTime = 40;
-					player.itemAnimation = 40;
-				
-				player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * dir, projectile.velocity.X * dir);
-				projectile.Center = player.Center+ projectile.velocity*32f;
-				}
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y) + randomcircle * 20, 0, 0, DustID.Electric, 0f, 0f, 100, default(Color), 0.75f);
 
-			int num315;
-			if (projectile.ai[0] > 10)
-			{
-
-
-
-				if (projectile.ai[0] < chargeuptime)
-				{
-					for (num315 = 0; num315 < 2; num315 = num315 + 1)
-					{
-						if (Main.rand.Next(0, 5) == 0)
-						{
-							Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-							int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y) + randomcircle * 20, 0, 0, DustID.Electric, 0f, 0f, 100, default(Color), 0.75f);
-
-							Main.dust[num622].scale = 1f;
-							Main.dust[num622].noGravity = true;
-							//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
-							Main.dust[num622].velocity.X = -randomcircle.X;
-							Main.dust[num622].velocity.Y = -randomcircle.Y;
-							Main.dust[num622].alpha = 150;
-						}
-					}
-				}
-				else
-				{
-					for (num315 = 0; num315 < 2; num315 = num315 + 1)
-					{
-						if (Main.rand.Next(0, 5) == 0)
-						{
-							Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-							int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, DustID.Electric, 0f, 0f, 100, default(Color), 0.75f);
-
-							Main.dust[num622].scale = 1.5f;
-							Main.dust[num622].noGravity = true;
-							//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
-							Main.dust[num622].velocity.X = randomcircle.X * 2;
-							Main.dust[num622].velocity.Y = randomcircle.Y * 2;
-							Main.dust[num622].alpha = 100;
-						}
+						Main.dust[num622].scale = 1f;
+						Main.dust[num622].noGravity = true;
+						//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+						Main.dust[num622].velocity.X = -randomcircle.X;
+						Main.dust[num622].velocity.Y = -randomcircle.Y;
+						Main.dust[num622].alpha = 150;
 					}
 				}
 			}
+			else
+			{
+				for (int num315 = 0; num315 < 2; num315 = num315 + 1)
+				{
+					if (Main.rand.Next(0, 5) == 0)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, DustID.Electric, 0f, 0f, 100, default(Color), 0.75f);
+
+						Main.dust[num622].scale = 1.5f;
+						Main.dust[num622].noGravity = true;
+						//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+						Main.dust[num622].velocity.X = randomcircle.X * 2;
+						Main.dust[num622].velocity.Y = randomcircle.Y * 2;
+						Main.dust[num622].alpha = 100;
+					}
+				}
+			}
+
 
 			if (projectile.ai[0] == chargeuptime)
 			{
-				for (num315 = 0; num315 < 15; num315 = num315 + 1)
+				for (int num315 = 0; num315 < 15; num315 = num315 + 1)
 				{
 					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
 					int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, DustID.Electric, 0f, 0f, 100, default(Color), 0.5f);
@@ -315,26 +270,95 @@ namespace SGAmod.Items.Weapons.Technical
 				}
 			}
 
-			if (!channeling)
-			{
-				float perc = MathHelper.Clamp(projectile.ai[0] / (float)chargeuptime, 0f, 1f);
+		}
 
-				float speed = 3f + perc * 3f;
+		public virtual void FireWeapon(Vector2 direction)
+        {
+			float perc = MathHelper.Clamp(projectile.ai[0] / (float)chargeuptime, 0f, 1f);
 
-				Vector2 perturbedSpeed = (new Vector2(direction.X, direction.Y) * speed); // Watch out for dividing by 0 if there is only 1 projectile.
+			float speed = 3f + perc * 3f;
 
-				int prog = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, perturbedSpeed.X, perturbedSpeed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)((float)projectile.damage*(1f+ (perc*2f))), 3f, player.whoAmI, perc>=0.99f ? 1 : 0,0.50f+(perc*0.20f));
-				Main.projectile[prog].localAI[0] = (perc * 0.90f);
-				Main.projectile[prog].magic = true;
-				Main.projectile[prog].melee = false;
-				Main.projectile[prog].netUpdate = true;
+			Vector2 perturbedSpeed = (new Vector2(direction.X, direction.Y) * speed); // Watch out for dividing by 0 if there is only 1 projectile.
 
-				IdgProjectile.Sync(prog);
-				Main.PlaySound(SoundID.Item91, player.Center);
+			projectile.Center += projectile.velocity;
 
+			int prog = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, perturbedSpeed.X, perturbedSpeed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)((float)projectile.damage * (1f + (perc * 2f))), 3f, player.whoAmI, perc >= 0.99f ? 1 : 0, 0.50f + (perc * 0.20f));
+			Main.projectile[prog].localAI[0] = (perc * 0.90f);
+			Main.projectile[prog].magic = true;
+			Main.projectile[prog].melee = false;
+			Main.projectile[prog].netUpdate = true;
+
+			IdgProjectile.Sync(prog);
+			Main.PlaySound(SoundID.Item91, player.Center);
+
+			projectile.Kill();
+		}
+
+		public virtual bool DoChargeUp()
+        {
+			return player.SGAPly().ConsumeElectricCharge(2, 60);
+        }
+
+		public override void AI()
+		{
+			player = Main.player[projectile.owner];
+
+			if (player == null)
 				projectile.Kill();
+			if (player.dead)
+				projectile.Kill();
+			projectile.timeLeft = 2;
+			player.itemTime = 6;
+			player.itemAnimation = 6;
+			Vector2 direction = (Main.MouseWorld - player.MountedCenter);
+			Vector2 directionmeasure = direction;
+			direction.Normalize();
+
+			if (projectile.ai[0] < chargeuptime + 1)
+			{
+				if (DoChargeUp())
+					projectile.ai[0] += 1;
 			}
 
+
+			bool channeling = ((player.channel || projectile.ai[0] < 5) && !player.noItems && !player.CCed);
+			projectile.Center = player.MountedCenter + direction * spacing;
+
+			Vector2 mousePos = Main.MouseWorld;
+			if (channeling)
+			{
+				if (projectile.owner == Main.myPlayer)
+				{
+					Vector2 diff = mousePos - player.MountedCenter;
+					diff.Normalize();
+					projectile.velocity = diff;
+					projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
+					projectile.netUpdate = true;
+					projectile.Center = mousePos;
+				}
+				int dir = projectile.direction;
+				player.ChangeDir(dir);
+				player.itemTime = fireRate;
+				player.itemAnimation = fireRate;
+
+				player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * dir, projectile.velocity.X * dir);
+				projectile.Center = player.MountedCenter + projectile.velocity * velocity;
+			}
+
+
+			if (projectile.ai[0] > 10)
+			{
+
+				ChargeUpEffects();
+
+				if (!channeling)
+				{
+					player.itemTime = fireRate;
+					player.itemAnimation = fireRate;
+					FireWeapon(direction);
+				}
+
+			}
 		}
 
 	}

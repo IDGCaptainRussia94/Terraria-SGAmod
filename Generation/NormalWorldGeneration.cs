@@ -312,7 +312,7 @@ namespace SGAmod.Generation
             Main.tile[(int)placementspot.X + 1, (int)placementspot.Y + buffersizey - 2].active(true);
             Main.tile[(int)placementspot.X + 2, (int)placementspot.Y + buffersizey - 2].active(true);
 
-            TileVector offset = new TileVector(0, -3);
+            Point offset = new Point(0, -3);
             int altertype = type == 0 ? SGAmod.Instance.TileType("CaliburnAltar") : (type == 1 ? SGAmod.Instance.TileType("CaliburnAltarB") : SGAmod.Instance.TileType("CaliburnAltarC"));
             WorldGen.PlaceObject((int)placementspot.X + offset.X, (int)placementspot.Y + buffersizey + offset.Y, altertype, false, 0);
             SGAWorld.CaliburnAlterCoordsX[type] = (int)placementspot.X * 16;

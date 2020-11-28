@@ -116,6 +116,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.WoodenArrow, 50);
+			recipe.AddIngredient(mod.ItemType("BottledMud"), 1);
 			recipe.AddIngredient(mod.ItemType("MurkyGel"), 3);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this, 50);

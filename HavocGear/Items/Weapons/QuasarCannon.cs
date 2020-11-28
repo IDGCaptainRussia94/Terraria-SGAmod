@@ -46,7 +46,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 8);
 			recipe.AddIngredient(ItemID.FragmentVortex, 6);
 			recipe.AddIngredient(ItemID.FragmentNebula, 5);
-			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
+			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 8);
 			recipe.AddIngredient(mod.ItemType("ManaBattery"), 2);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);

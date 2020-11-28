@@ -315,7 +315,7 @@ namespace SGAmod.Items.Consumable
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 5);
-			recipe.AddIngredient(ItemID.MudBlock, 10);
+			recipe.AddIngredient(mod.ItemType("BottledMud"), 5);
 			recipe.AddIngredient(ItemID.Gel, 30);
 			recipe.AddIngredient(ItemID.Bone, 5);
 			recipe.AddTile(TileID.Furnaces);
@@ -412,6 +412,7 @@ namespace SGAmod.Items.Consumable
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LunarBar, 3);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 3);
 			recipe.AddIngredient(3111, 10); //pink gel
 			recipe.AddTile(220); //Soldifier
 			recipe.SetResult(this);
@@ -419,8 +420,8 @@ namespace SGAmod.Items.Consumable
 
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LunarBar, 5);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 3); //pink gel
-			recipe.AddIngredient(mod.ItemType("MurkyGel"), 20); //pink gel
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 3);
+			recipe.AddIngredient(mod.ItemType("MurkyGel"), 20);
 			recipe.AddTile(220); //Soldifier
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -592,8 +593,17 @@ namespace SGAmod.Items.Consumable
 		{
 			DisplayName.SetDefault("Caliburn Compass");
 			Tooltip.SetDefault("When held, it points to Caliburn Altars in your world\nCan be used in hardmode to fight a stronger Caliburn spirit\nNon-Consumable");
-
 		}
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = 2;
+			item.useTime = 30;
+			item.useAnimation = 30;
+			item.useStyle = 4;
+		}
+
 		public override bool CanUseItem(Player player)
 		{
 			if (!NPC.AnyNPCs(mod.NPCType("CaliburnGuardianHardmode")) && player.GetModPlayer<SGAPlayer>().DankShrineZone && Main.hardMode)
@@ -618,15 +628,15 @@ namespace SGAmod.Items.Consumable
 			return true;
 		}
 
-		public override void SetDefaults()
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			item.width = 24;
-			item.height = 24;
-			item.rare = 2;
-			item.useTime = 30;
-			item.useAnimation = 30;
-			item.useStyle = 4;
+			if (SGAWorld.darknessVision)
+			{
+				tooltips.Add(new TooltipLine(mod, "CaliburnCompessUpgrade", Idglib.ColorText(Color.MediumPurple, "Upgraded to also point to Dark Sectors in the world")));
+				tooltips.Add(new TooltipLine(mod, "CaliburnCompessUpgrade", Idglib.ColorText(Color.MediumPurple, "Furthermore, darkness in Dark Sectors is reduced")));
+			}
 		}
+
 	}
 	public class Mechacluskerf : BaseBossSummon
 	{

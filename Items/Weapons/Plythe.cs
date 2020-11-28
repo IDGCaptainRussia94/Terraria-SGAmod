@@ -63,9 +63,9 @@ namespace SGAmod.Items.Weapons
 		{
             ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LightDisc, 1);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
-            recipe.AddIngredient(mod.ItemType("CryostalBar"), 6);            
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 4);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 6);
+			recipe.AddIngredient(mod.ItemType("CryostalBar"), 4);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 2);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this,1);
             recipe.AddRecipe();

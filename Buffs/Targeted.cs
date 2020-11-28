@@ -26,6 +26,27 @@ namespace SGAmod.Buffs
 		}
 	}
 
+	public class Petrified : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Petrified");
+			Description.SetDefault("You are coated in a highly flammable substance");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+		}
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+			npc.SGANPCs().petrified = true;
+		}
+	}
+
 	public class Marked : ModBuff
 	{
 		public override bool Autoload(ref string name, ref string texture)
@@ -35,7 +56,7 @@ namespace SGAmod.Buffs
 		}
 		public override void SetDefaults()
 		{
-			DisplayName.SetDefault("Doused In Gas");
+			DisplayName.SetDefault("Marked");
 			Description.SetDefault("You are coated in a highly flammable substance");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;

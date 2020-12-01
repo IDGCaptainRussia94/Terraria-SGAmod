@@ -772,7 +772,7 @@ namespace SGAmod
                     Chest chest = Main.chest[chestIndex];
                     if (i == 0 && chest != null)
                     {
-                        if (WorldGen.genRand.Next(0, 100) < (Main.tile[chest.x, chest.y].frameX / 32 == 1 ? 20 : Main.tile[chest.x, chest.y].frameX / 32 == 0 ? 5 : 0))
+                        if (WorldGen.genRand.Next(0, 100) < (Main.tile[chest.x, chest.y].frameX / 36 == 1 ? 20 : Main.tile[chest.x, chest.y].frameX / 36 == 0 ? 5 : 0))
                         {
                             for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
                             {
@@ -784,7 +784,7 @@ namespace SGAmod
                                 }
                             }
                         }
-                        if (WorldGen.genRand.Next(0, 100) < (Main.tile[chest.x, chest.y].frameX / 32 == 17 ? 50 : (Main.tile[chest.x, chest.y].frameX / 32 == 1 ? 15 : Main.tile[chest.x, chest.y].frameX / 32 == 0 ? 10 : 5)))
+                        if (WorldGen.genRand.Next(0, 100) < (Main.tile[chest.x, chest.y].frameX / 36 == 17 ? 50 : (Main.tile[chest.x, chest.y].frameX / 36 == 1 ? 15 : Main.tile[chest.x, chest.y].frameX / 36 == 0 ? 10 : 5)))
                         {
                             for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
                             {
@@ -796,13 +796,13 @@ namespace SGAmod
                                 }
                             }
                         }
-                        if (Main.tile[chest.x, chest.y].frameX / 32 == 50 || Main.tile[chest.x, chest.y].frameX / 32 == 51)
+                        if (Main.tile[chest.x, chest.y].frameX / 36 == 50 || Main.tile[chest.x, chest.y].frameX / 36 == 51)
                         {
                             for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
                             {
                                 if (chest.item[inventoryIndex].IsAir)
                                 {
-                                    chest.item[inventoryIndex].SetDefaults(Main.tile[chest.x, chest.y].frameX / 32 == 51 ? mod.ItemType("CrackedMirror") : mod.ItemType("GraniteMagnet"));
+                                    chest.item[inventoryIndex].SetDefaults(Main.tile[chest.x, chest.y].frameX / 36 == 51 ? mod.ItemType("CrackedMirror") : mod.ItemType("GraniteMagnet"));
                                     chest.item[inventoryIndex].stack = 1;
                                     break;
                                 }

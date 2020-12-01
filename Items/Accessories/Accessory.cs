@@ -564,18 +564,6 @@ namespace SGAmod.Items.Accessories
 				"Combined Effects of Idol of Midas, Sybarite Gem, and Omni-Magnet (hide to disable Idol of Midas's coin collecting)\n" +
 				"Includes EALogo's ability. but only while worn as an accessory");
 		}
-
-		public override string Texture
-		{
-			get { return ("SGAmod/Items/EALogo"); }
-		}
-
-
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return Main.hslToRgb((Main.GlobalTime * 1.443f) % 1f, 0.8f, 0.75f);
-		}
-
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			foreach (TooltipLine line in tooltips)
@@ -586,7 +574,6 @@ namespace SGAmod.Items.Accessories
 				}
 			}
 		}
-
 		public override void SetDefaults()
 		{
 			item.value = 3000000;
@@ -604,7 +591,6 @@ namespace SGAmod.Items.Accessories
 			ModContent.GetInstance<EALogo>().UpdateInventory(player);
 			ModContent.GetInstance<SybariteGem>().UpdateInventory(player);
 		}
-
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
@@ -1029,7 +1015,6 @@ namespace SGAmod.Items.Accessories
 		{
 			item.maxStack = 1;
 			item.width = 26;
-			item.defense = 5;
 			item.accessory = true;
 			item.height = 14;
 			item.value = 500000;
@@ -1794,11 +1779,6 @@ namespace SGAmod.Items.Accessories
 			item.rare = ItemRarityID.Yellow;
 			item.value = Item.sellPrice(0, 1, 0, 0);
 			item.accessory = true;
-		}
-
-		public override string Texture
-		{
-			get { return ("Terraria/Gore_289"); }
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -2960,7 +2940,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Aversion Charm");
-			Tooltip.SetDefault("Allows you to Ninja Dodge traps\n"+Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each"));
+			Tooltip.SetDefault("Allows you to Ninja Dodge traps\n"+Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds each"));
 		}
 
 		public override void SetDefaults()
@@ -2977,7 +2957,6 @@ namespace SGAmod.Items.Accessories
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.aversionCharm = true;
-			//Terraria.GameContent.Events.DD2Event.LaneSpawnRate = 9;
 		}
 
 	}

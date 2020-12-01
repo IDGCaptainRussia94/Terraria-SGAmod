@@ -12,6 +12,7 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners, Draken Summon?! Potions: Tooltime (tools gain massive knockback), Tinker (reduced loss from Uncrafting), Spectre homing bullets/projectiles
+Cruciatus, Charon's Ferry, Overwatch (Null Watcher)
 
 Changelog:
 
@@ -22,7 +23,7 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 --Added:
 
--BOOMerang, Coralrang, FridgeFlamarang, Wirang, Specterang, Fortune Falchion, Gnat-ades, Sludge Bomb, Laser Marker, Re-Router, Divine Shower Storm, Cracked Mirror, Red Phasebrand, Cyber Scythe, Shadeflame Staff, Volcanic Space Blaster, Crystal Comet, Thermal Jab-lin, Swamp Sovnya, Crimson Catastrophe, Gnat and Horsefly Staff, Sybarite Gem, Blazing Heart, Restoration Flower, Glacial Stone, Terra Diving Gear, Aversion Charm, Pocket Rocks, Granite Magnet, Cobalt Magnet, TPDCPU, Wraith Targeting Gamepad, Novus Summoning Orb, Novite Command Chip, Prismal Necklace, Enchanted Bubble, Universal Music Box (is infact part of IDGlib), Assembly Star, Bottled Mud, Stygian Star, Dank Key, Spanner, Bench God's Favor
+-BOOMerang, Coralrang, FridgeFlamarang, Wirang, Specterang, Fortune Falchion, Gnat-ades, Sludge Bomb, Laser Marker, Re-Router, Divine Shower Storm, Cracked Mirror, Red Phasebrand, Cyber Scythe, Shadeflame Staff, Volcanic Space Blaster, Crystal Comet, Thermal Jab-lin, Swamp Sovnya, Crimson Catastrophe, Dragon Commander, Gnat and Horsefly Staff, Sybarite Gem, Blazing Heart, Restoration Flower, Glacial Stone, Terra Diving Gear, Aversion Charm, Pocket Rocks, Granite Magnet, Cobalt Magnet, TPDCPU, Wraith Targeting Gamepad, Novus Summoning Orb, Novite Command Chip, Prismal Necklace, Enchanted Bubble, Universal Music Box (is infact part of IDGlib), Assembly Star, Bottled Mud, Stygian Star, Dank Key, Spanner, Bench God's Favor
 
 -New Potions: Energy, True Strike, Trigger Finger, Toxicity, Intimacy, Tooltime, Tinker
 
@@ -38,9 +39,9 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 -Luminite Wraith's entire resprite collection; about time!
 
--Resprites for the Amulets, updated Bosscheck list icons, proper sprites for Book of Jones, Revolving West, Shark Bait, Makeshift Spear Trap Gun, Several Buff icons, some other items, and many other sprite updates and resprites
+-Resprites for the Amulets, updated Bosscheck list icons, proper sprites for Book of Jones, Revolving West, Shark Bait, Makeshift Spear Trap Gun, EA Logo, Corporate Epiphany, Several Buff icons, some other items, and many other sprite updates and resprites
 
--Music tracks for Sharkvern and Spider Queen, composed by Musicman, and music boxes for all the custom themes!
+-Music tracks for Sharkvern and Spider Queen, composed by Musicman, And the Caliburns composed by Rijam, and music boxes for all (except 1) of the custom themes!
 
 -Added Obsidian Rose, Lava Charm, Shadow Key, Cobalt Shield, Flipper, Snowball Launcher, Sky Mill, and Frog Leg crafting recipes to the Reverse Engineering Table. All these and previous items now require an Assembly Star (sold by Draken)
 
@@ -161,6 +162,8 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 -Reworked Shadeflare: Arrows no longer cause immunity frames, but hit only once per lifespan
 
+-Reworked Hellion's Cascade: now uses Static immunity VS local immunity, meaning overlapping beams no longer do extra damage, this time has been reduced to 30 frames however, mana cost increased
+
 -Nerfed Laser Lance: damage slightly lowered, hitbox largely increased due to the new sprite
 
 -Nerfed Plythe: damage has been reduced to 110 (from 125), Knockback has been reduced to 0, stacks simliar to light disks to 5, and has gotten a visual overhaul, requires Light Disks instead of Avali Scythe
@@ -181,7 +184,9 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 -Nerfed Beam Gun: reduced damage to 80 and Requires 50% more Plasma to fire, Plasma Cells now only stack to 10
 
--Nerfed Mangrove Bow (less projectile speed)
+-Nerfed Mangrove Bow: less projectile speed
+
+-Nerfed Primordial Skull: removed defense
 
 -Nerfed Trap Accessory prefixes: less damage and armor pierce
 
@@ -193,7 +198,7 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 -Nerfed Fiery Moon: Reduced Damage and increased mana cost
 
--Nerfed Assassin Emblem and Elite Emblem: Assassin Emblem gives less damage (10% intead of 15%), also fixed a bug that gave WAY too much throwing damage boosts
+-Nerfed Assassin Emblem and Elite Emblem: Assassin Emblem gives less damage (10% instead of 15%), Elite (15% instead of 10%), also fixed a bug that gave WAY too much throwing damage boosts
 
 -Buffed Novite Core: now gives 10% trap damage boost instead of 5%
 
@@ -213,13 +218,15 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 -Buffed Brimflame Harbinger: The explosions do more damage
 
+-Buffed Gucci Gauntlet: has a 10% crit chance increase
+
 -Buffed Yoyo Guantlet: Has the effects of the Glacial Stone and slight sprite edit
 
 -Buffed Elemental Cascade: This weapon was just a bit too weak for post all 3 mechs
 
 -Buffed Rubied Blade: more knockback
 
--Buffed True Moonlight: the level 3 slash wave stays out longer and does 3X damage now (VS 2.5X), also redid the visuals on True Moonlight's projectiles, enjoy fancy 1.4 style trails!
+-Buffed True Moonlight: Gained 5 bonus crit, the level 3 slash wave stays out longer and does 4X damage now (VS 2.5X), Lv2 slash does 3X damage (VS 2.0X), also redid the visuals on True Moonlight's projectiles, enjoy fancy 1.4 style trails!
 
 -Buffed Novite Knife: increased swing speed, projectile size, and now counts as True Melee
 
@@ -278,6 +285,8 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 -Removed Treepeater's crafting recipe, as it drops from Dank Mimics in hardmode
 
 -Removed being unable to open a Terraria Co Supply Crate if you had a Shadow Key/Temple Key in your inventory (could be a fix depending on how you look at it)
+
+-Removed Dank Core drops from the Dank Mimic
 
 -Readjusted Item Prices, updated alot of Crafting Recipes, some enemies drop more items, and Potions are cheaper to craft, and other various cosmetic changes
 

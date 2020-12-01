@@ -43,6 +43,7 @@ namespace SGAmod.Dimensions
         public int lightGrowRate = 5;
         public int heartBeat = 0;
         public static int staticHeartBeat = 0;
+        public static float staticHeartRate = 0;
         public override void UpdateBiomeVisuals()
         {
             //TheProgrammer
@@ -76,6 +77,7 @@ namespace SGAmod.Dimensions
                 NullWatcher.DoAwarenessChecks(600 + count*5, false, true, player.Center);
                 heartBeat = 0;
                 staticHeartBeat = 30;
+                staticHeartRate = Math.Min(count/500f,0.04f);
             }
             if (!Main.dedServ && Main.LocalPlayer == player)
             {

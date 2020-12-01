@@ -78,7 +78,7 @@ namespace SGAmod.Items.Armors
 		public override void UpdateEquip(Player player)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod,typeof(SGAPlayer).Name) as SGAPlayer;
-            player.arcticDivingGear=true;
+            player.arcticDivingGear = true;
             player.accFlipper = true;
 			player.accDivingHelm = true;
 			player.iceSkate = true;

@@ -522,7 +522,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/HorseflyStaffBuff";
 			return true;
 		}
 
@@ -650,7 +650,6 @@ namespace SGAmod.Items.Weapons
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Horse Fly Swarm");
 		}
-
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
@@ -697,7 +696,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/GnatStaffBuff";
 			return true;
 		}
 

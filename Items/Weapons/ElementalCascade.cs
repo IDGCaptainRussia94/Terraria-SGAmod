@@ -175,7 +175,7 @@ namespace SGAmod.Items.Weapons
 		{
 			item.damage = 70;
 			item.magic = true;
-			item.mana = 80;
+			item.mana = 100;
 			item.width = 40;
 			item.height = 40;
 			item.useTime = 90;
@@ -293,8 +293,8 @@ namespace SGAmod.Items.Weapons
 			projectile.extraUpdates = 3;
 			projectile.magic = true;
 			projectile.tileCollide = false;
-			projectile.usesLocalNPCImmunity = true;
-			projectile.localNPCHitCooldown = 40;
+			projectile.usesIDStaticNPCImmunity = true;
+			projectile.idStaticNPCHitCooldown = 30;
 			buffs = new int[4] { BuffID.Daybreak, mod.BuffType("EverlastingSuffering"), mod.BuffType("AcidBurn"), mod.BuffType("MoonLightCurse") };
 		}
 

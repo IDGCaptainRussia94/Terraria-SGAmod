@@ -16,7 +16,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Toxicity Potion");
-			Tooltip.SetDefault("'60 IQ dialog of swearing intensifies'\nNearby enemies who are Stinky may infect other enemies when near you\nWhile you are Stinky and take damage, you spit out random swear words\nThis can rarely happen when you damage a Stinky enemy\nThese do area damage to ALL nearby NPCs\nThis is boosted by Thorns and if they are also Stinky\nFurthermore you also gain reduced aggro\nAll Town NPCs sell [i: " + ItemID.StinkPotion + "] to you while under this effect\n" + Idglib.ColorText(Color.Red, "Grants immunity to Intimacy and Lovestruct")+"\n"+Idglib.ColorText(Color.Red, "NPCs become unhappy taking to you and charge more money"));
+			Tooltip.SetDefault("'60 IQ dialog of swearing intensifies'\nNearby enemies who are Stinky may infect other enemies when near you\nWhile you are Stinky and take damage, you spit out random swear words\nThis can rarely happen when you damage a Stinky enemy\nThese do area damage to ALL nearby NPCs\nThis is boosted by Thorns and if they are also Stinky\nFurthermore you also gain reduced aggro\nAll Town NPCs sell [i: " + ItemID.StinkPotion + "] to you while under this effect\n" + Idglib.ColorText(Color.Red, "Grants immunity to Intimacy and Lovestruct")+"\n"+Idglib.ColorText(Color.Red, "NPCs become unhappy talking to you and charge more money"));
 		}
 
 		public override void SetDefaults()
@@ -228,6 +228,7 @@ namespace SGAmod.Items.Consumable
 			recipe.AddIngredient(null, "BottledMud", 1);
 			recipe.AddIngredient(null, "VirulentOre", 1);
 			recipe.AddIngredient(null, "DankWood", 5);
+			recipe.AddIngredient(null, "DankCore", 1);
 			recipe.AddIngredient(null, "VialofAcid", 2);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
@@ -248,7 +249,7 @@ namespace SGAmod.Items.Consumable
 			item.height = 24;
 			item.maxStack = 30;
 			item.rare = ItemRarityID.Blue;
-			item.value = 75;
+			item.value = 50;
 			item.useStyle = 2;
 			item.useAnimation = 17;
 			item.useTime = 17;
@@ -263,8 +264,8 @@ namespace SGAmod.Items.Consumable
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "BottledMud", 1);
-			recipe.AddRecipeGroup("Wood", 3);
-			recipe.AddIngredient(ItemID.Acorn, 1);
+			recipe.AddRecipeGroup("Wood", 5);
+			recipe.AddIngredient(ItemID.Acorn, 2);
 			recipe.AddIngredient(ItemID.TungstenOre, 1);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 1);

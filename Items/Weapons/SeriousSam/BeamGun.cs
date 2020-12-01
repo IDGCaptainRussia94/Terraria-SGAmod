@@ -404,7 +404,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 					foreach (int id in bouncetargets)
 						weights.Add(new Point(id, 1000000));
 
-					List<NPC> them2 = SGAUtils.ClosestEnemies(lastpos,300,AddedWeight: weights) ?? null;
+					List<NPC> them2 = SGAUtils.ClosestEnemies(lastpos,300,AddedWeight: weights, checkCanChase: false) ?? null;
 					NPC him = null;
 					if (them2 != null && them2.Count>0)
 						him = them2[0];

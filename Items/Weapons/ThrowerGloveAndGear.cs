@@ -301,6 +301,7 @@ namespace SGAmod.Items.Weapons
 			item.shoot = ModContent.ProjectileType<GrenadeNotAHook4>();
 			item.shootSpeed = 5.75f;
 			item.useAnimation = 50;
+			item.crit = 10;
 			item.useTime = 50;
 			item.value = Item.buyPrice(1, 0, 0, 0);
 			item.rare = ItemRarityID.Quest;
@@ -820,7 +821,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Sludge Bomb");
-			Tooltip.SetDefault("Explodes into sludge that sticks to walls and damage enemies\nEnemies near the sludge get Oiled, Confused, Dank Slowed\nDank Slow only applies to enemies not immune to poison");
+			Tooltip.SetDefault("Explodes into sludge that sticks to walls and damage enemies\nEnemies near the sludge get Oiled, Confused, and Dank Slowed\nDank Slow only applies to enemies not immune to poison");
 		}
 
 		public override void SetDefaults()

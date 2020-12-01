@@ -79,7 +79,7 @@ namespace SGAmod.Items.Consumable
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/FlaskofAcidBuff";
 			return base.Autoload(ref name, ref texture);
 		}
 
@@ -128,6 +128,11 @@ namespace SGAmod.Items.Consumable
 	public class FlaskOfAcidBuff : FlaskOfBlazeBuff
 	{
 		public override FlaskOfBlaze FlaskType => ModContent.GetModItem(ModContent.ItemType<FlaskOfAcid>()) as FlaskOfBlaze;
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/FlaskofAcidBuff";
+			return base.Autoload(ref name, ref texture);
+		}
 		public override void SetDefaults()
 		{
 			base.SetDefaults();

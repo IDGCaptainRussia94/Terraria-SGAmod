@@ -1,5 +1,7 @@
 ﻿matrix WorldViewProjection;
 
+//Shader largly by Boffin and used and modified with permission!
+
 struct VertexShaderInput
 {
 	float2 TextureCoordinates : TEXCOORD0;
@@ -42,15 +44,23 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 BasicEffect(VertexShaderOutput input) : COLOR
 {
-	float4 pixel = tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color;
+	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
 	pixel = saturate(pixel);
 	return pixel;
+}
+
+float4 BasicEffectFaded(VertexShaderOutput input) : COLOR
+{
+	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
+	pixel = saturate(pixel);
+	return pixel* sin(input.TextureCoordinates.x * 3.14159265);
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	return input.Color * sin(input.TextureCoordinates.x * 3.14159265) * strength;
 }
+
 
 float4 BasicImage(VertexShaderOutput input) : COLOR
 {
@@ -65,6 +75,11 @@ technique BasicColorDrawing
 		VertexShader = compile vs_2_0 MainVS();
 		PixelShader = compile ps_2_0 BasicEffect();
 	}	
+		pass FadedBasicEffectPass
+	{
+		VertexShader = compile vs_2_0 MainVS();
+		PixelShader = compile ps_2_0 BasicEffectFaded();
+	}
 	pass DefaultPass
 	{
 		VertexShader = compile vs_2_0 MainVS();

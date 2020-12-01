@@ -25,6 +25,11 @@ namespace SGAmod
         {
             return Color.White;
         };
+
+        public Action<Item, PlayerDrawInfo, Vector2,float, Color> CustomDraw = delegate (Item item, PlayerDrawInfo drawInfo,Vector2 position,float angle,Color glowcolor)
+        {
+
+        };
     }
     public class PlayerUseGlow : ModPlayer
     {
@@ -39,6 +44,7 @@ namespace SGAmod
                 Item item = drawPlayer.HeldItem;
                 Texture2D texture = item.GetGlobalItem<ItemUseGlow>().glowTexture;
                 Color glowcolor = item.GetGlobalItem<ItemUseGlow>().GlowColor(item, drawPlayer);
+                Action<Item, PlayerDrawInfo, Vector2, float, Color> costomDraw = item.GetGlobalItem<ItemUseGlow>().CustomDraw;
                 Vector2 zero2 = Vector2.Zero;
 
 
@@ -75,8 +81,10 @@ namespace SGAmod
                                 num105 -= Main.itemTexture[item.type].Width;
                             }
 
-
-                            DrawData value = new DrawData(texture, new Vector2((float)((int)(value2.X - Main.screenPosition.X + zero3.X + (float)num105)), (float)((int)(value2.Y - Main.screenPosition.Y + (float)num106))), new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, Main.itemTexture[item.type].Width, Main.itemTexture[item.type].Height)), glowcolor, num104 + item.GetGlobalItem<ItemUseGlow>().angleAdd * drawPlayer.direction, zero3, item.scale, drawInfo.spriteEffects, 0);
+                            Vector2 drawPos = new Vector2((float)((int)(value2.X - Main.screenPosition.X + zero3.X + (float)num105)), (float)((int)(value2.Y - Main.screenPosition.Y + (float)num106)));
+                            float drawAngle = num104 + item.GetGlobalItem<ItemUseGlow>().angleAdd * drawPlayer.direction;
+                            DrawData value = new DrawData(texture, drawPos, new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, Main.itemTexture[item.type].Width, Main.itemTexture[item.type].Height)), glowcolor, drawAngle, zero3, item.scale, drawInfo.spriteEffects, 0);
+                            costomDraw(item, drawInfo, drawPos, drawAngle, glowcolor);
                             Main.playerDrawData.Add(value);
 
                         }
@@ -102,8 +110,10 @@ namespace SGAmod
                             //value = new DrawData(Main.itemTexture[item.type], new Vector2((float)((int)(value2.X - Main.screenPosition.X + vector10.X)), (float)((int)(value2.Y - Main.screenPosition.Y + vector10.Y))), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, Main.itemTexture[item.type].Width, Main.itemTexture[item.type].Height)), item.GetAlpha(color37), drawPlayer.itemRotation, origin5, item.scale, effect, 0);
                             //Main.playerDrawData.Add(value);
 
-
-                            DrawData value = new DrawData(texture, new Vector2((float)((int)(value2.X - Main.screenPosition.X + vector10.X)), (float)((int)(value2.Y - Main.screenPosition.Y + vector10.Y))), new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, Main.itemTexture[item.type].Width, Main.itemTexture[item.type].Height)), glowcolor, drawPlayer.itemRotation+ item.GetGlobalItem<ItemUseGlow>().angleAdd* drawPlayer.direction, origin5, item.scale, drawInfo.spriteEffects, 0);
+                            Vector2 drawPos = new Vector2((float)((int)(value2.X - Main.screenPosition.X + vector10.X)), (float)((int)(value2.Y - Main.screenPosition.Y + vector10.Y)));
+                            float drawAngle = drawPlayer.itemRotation + item.GetGlobalItem<ItemUseGlow>().angleAdd * drawPlayer.direction;
+                            DrawData value = new DrawData(texture, drawPos, new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, Main.itemTexture[item.type].Width, Main.itemTexture[item.type].Height)), glowcolor, drawAngle, origin5, item.scale, drawInfo.spriteEffects, 0);
+                            costomDraw(item, drawInfo, drawPos, drawAngle, glowcolor);
                             Main.playerDrawData.Add(value);
 
 

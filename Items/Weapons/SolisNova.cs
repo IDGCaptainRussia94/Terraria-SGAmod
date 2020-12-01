@@ -85,7 +85,7 @@ namespace SGAmod.Items.Weapons
 		bool largeenough = false;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Rod of Enforcing");
+			DisplayName.SetDefault("Solis Nova");
 		}
 
 		public override string Texture

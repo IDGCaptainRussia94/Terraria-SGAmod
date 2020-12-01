@@ -14,6 +14,7 @@ float2 uImageSize0;
 float2 uImageSize1;
 
 // This is a shader. You are on your own with shaders. Compile shaders in an XNB project.
+//Shader by IDGCaptainRussia94 (first)
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {

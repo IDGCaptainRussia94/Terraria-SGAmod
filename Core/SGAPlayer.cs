@@ -722,6 +722,7 @@ namespace SGAmod
 				}
 				player.lifeRegen += maxdamage;
 			}
+
 			if (toxicity>0 && player.HasBuff(BuffID.Stinky))
 			player.aggro -= 400* toxicity;
 
@@ -1194,6 +1195,10 @@ namespace SGAmod
 				int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, mod.ProjectileType("TimeEffect"), 1, 0, player.whoAmI);
 			}
 
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<DrakenSummonProj>()] < 1 && player.HeldItem.type == ModContent.ItemType<DragonCommanderStaff>())
+			{
+				int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, ModContent.ProjectileType<DrakenSummonProj>(), 1, 0, player.whoAmI);
+			}
 
 			if (player.statLife > player.statLifeMax2 - 1)
 			{
@@ -1311,7 +1316,7 @@ namespace SGAmod
 
 			if (damageSource.SourceProjectileIndex > -1)
             {
-				if (Main.projectile[damageSource.SourceProjectileIndex].trap && aversionCharm && AddCooldownStack(60*60))
+				if (Main.projectile[damageSource.SourceProjectileIndex].trap && aversionCharm && AddCooldownStack(60*30))
 				{
 					player.NinjaDodge();
 					return false;

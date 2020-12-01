@@ -85,24 +85,20 @@ namespace SGAmod.NPCs.Dank
 
         public override void NPCLoot()
         {
-            int rand = Main.rand.Next(5);
+            int rand = Main.rand.Next(4);
             if (rand == 0)
-            {
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("DankCore"),Main.rand.Next(3,11));
-            }
-            if (rand == 1)
             {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Treepeater"));
             }
-            if (rand == 2)
+            if (rand == 1)
             {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SwampSovnya"));
             }        
-            if (rand == 3)
+            if (rand == 2)
             {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SludgeBomb"), Main.rand.Next(40, 120));
             }        
-            if (rand == 4)
+            if (rand == 3)
             {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("HorseFlyStaff"));
             }         

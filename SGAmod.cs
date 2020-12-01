@@ -406,6 +406,7 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 569));//107
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 570));//108
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 571));//109
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 711));//110
 
 
 			}
@@ -1004,7 +1005,7 @@ namespace SGAmod
 				float zoom2 = 0;
 				if (SGADimPlayer.staticHeartBeat>15)
 				zoom2 = Math.Max(0, (float)Math.Sin(MathHelper.Pi * ((SGADimPlayer.staticHeartBeat-15) / 15f)));
-				Transform.Zoom += Vector2.One * (zoom1*2f+ (zoom2*1f)) * 0.04f;
+				Transform.Zoom += Vector2.One * (zoom1*2f+ (zoom2*1f)) * SGADimPlayer.staticHeartRate;
 			}
         }
 

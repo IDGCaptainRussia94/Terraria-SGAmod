@@ -194,13 +194,14 @@ namespace SGAmod.NPCs.TownNPCs
 			int expgathered = Main.LocalPlayer.GetModPlayer<SGAPlayer>().ExpertiseCollectedTotal;
 
 			if (SGAPocketDim.WhereAmI == typeof(LimboDim))
-            {
+			{
 				chat.Add("Rk erb, hqfubswhg whaw!");
 				chat.Add("VGhpcyBpcyBvbmx5IGhhbGYgdGhlIHN0ZXBzIHJlcXVpcmVk");
 				chat.Add("WmtiIGR1aCBicngga2h1aD8=");
 				chat.Add("EaIwnlOKMJWgnJkfnJ8fVUEbLKDtMzSaM290VUImMKZtpTIipTkyVTkyMaDtLJ5xVUWcM2u0");
 				chat.Add("dWdnY2Y6Ly92enRoZS5wYnovbi8wZzdnaFFz");
-				chat.Add("Vg lzw eslz, xaymjw gml eq qwsj gx tajlz");				
+				chat.Add("N Lrne bs Vaqrcraqrapr Qnl");
+				chat.Add("Vg lzw eslz, xaymjw gml eq qwsj gx tajlz");
 				chat.Add("emxsaGs6Ly9oc2tsd3RhZi51Z2UvMGxvNDdLdUg=");
 				return chat.Get();
 			}
@@ -300,7 +301,7 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("I remember a time, when all everyone would say, the sounds would echo: 'Button 2'");
 				chat.Add("I often look at my claws; I was clearly meant to hurt and kill, but I don't want to be like the stories...");
 				chat.Add("My human would like to thank you for 100,000 downloads, you have no idea how much it means to them, literally the world [i: " + ItemID.LifeFruit + "]");
-				chat.Add("Do you have any idea what it's like, to put your faith in people and then just... Have it mean nothing to them? I guess I would know what it feels like to have the Universe against me, sigh.");
+				chat.Add("Do you have any idea what it's like, to put your faith in people and then just... Have it mean nothing to them? I guess I would know what it feels like to have the world against me, sigh.");
 				if (BirthdayParty.PartyIsUp)
                 {
 					chat.Add("I still don't have a party hat :(",3);
@@ -847,6 +848,13 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}
+			if (modplayer.ExpertiseCollectedTotal >= 12000 && SGAWorld.downedHellion>1)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("DragonCommanderStaff"));
+				shop.item[nextSlot].shopCustomPrice = 500;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}		
 		}
 
 		public override void NPCLoot()

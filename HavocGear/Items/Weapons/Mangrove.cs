@@ -198,7 +198,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.useAnimation = 12;
 			item.useStyle = 1;
 			item.knockBack = 1;
-			item.value = 50;
+			item.value = 25;
 			item.consumable = true;
 			item.maxStack = 999;
 			item.rare = 3;
@@ -224,9 +224,9 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "BiomassBar", 15);
+			recipe.AddIngredient(null, "BiomassBar", 1);
 			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this,20);
+			recipe.SetResult(this,50);
 			recipe.AddRecipe();
 		}
 
@@ -265,7 +265,7 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
 			listOfPoints.Add(new Point(target.whoAmI,1000000));
-			List<NPC> closestnpcs = SGAUtils.ClosestEnemies(projectile.Center, 200,AddedWeight: listOfPoints);
+			List<NPC> closestnpcs = SGAUtils.ClosestEnemies(projectile.Center, 200,AddedWeight: listOfPoints,checkCanChase: false);
 
 			if (target.HasBuff(BuffID.DryadsWardDebuff))
 				projectile.penetrate += 1;

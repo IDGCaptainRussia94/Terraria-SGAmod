@@ -11,6 +11,7 @@ namespace SGAmod.Tiles
 	{
 		public override void SetDefaults()
 		{
+			TileID.Sets.Ore[Type] = true;
 			Main.tileSolid[Type] = true;
 			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = true;

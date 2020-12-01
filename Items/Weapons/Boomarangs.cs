@@ -407,7 +407,7 @@ namespace SGAmod.Items.Weapons
 
 	public class Wirang : ModItem
 	{
-		int wireType=0;
+		static int wireType=0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Wirang");
@@ -416,8 +416,8 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.width = 10;
-			item.height = 10;
+			item.width = 12;
+			item.height = 12;
 			item.damage = 32;
 			item.melee = true;
 			item.noMelee = true;

@@ -20,6 +20,8 @@ float uSaturation;
 float4 uSourceRect; // Doesn't seem to be used, but included for parity.
 float2 uZoom;
 
+//Shader by IDGCaptainRussia94
+
 static const float tau = 6.283185307;
 
 static const float pi = 3.14159265359;

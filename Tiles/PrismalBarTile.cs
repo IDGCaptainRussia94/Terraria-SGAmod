@@ -12,6 +12,7 @@ namespace SGAmod.Tiles
     {
         public override void SetDefaults()
         {
+            TileID.Sets.Ore[Type] = true;
             Main.tileShine[Type] = 2100;
             Main.tileSolid[Type] = true;
             Main.tileSolidTop[Type] = true;

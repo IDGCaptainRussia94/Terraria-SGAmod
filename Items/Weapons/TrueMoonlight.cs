@@ -22,6 +22,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			item.damage = 175;
+			item.crit = 5;
 			item.melee = true;
 			item.width = 44;
 			item.height = 52;
@@ -317,12 +318,12 @@ namespace SGAmod.Items.Weapons
 				if (projectile.ai[1] > 50)
 				{
 					slashwaveprojtype = mod.ProjectileType("MoonlightWaveLv2");
-					damagemul = 2.0;
+					damagemul = 2.50;
 				}
 				if (projectile.ai[1] > 149)
 				{
 					slashwaveprojtype = mod.ProjectileType("MoonlightWaveLv3");
-					damagemul = 3.00;
+					damagemul = 4.00;
 				}
 
 				float numberProjectiles = 1;

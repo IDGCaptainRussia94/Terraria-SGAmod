@@ -19,6 +19,7 @@ namespace SGAmod.Dimensions.Tiles
 	{
 		public override void SetDefaults()
 		{
+			TileID.Sets.Ore[Type] = true;
 			Main.tileSolid[Type] = true;
 			Main.tileBrick[Type] = false;
 			Main.tileFrameImportant[Type] = true;
@@ -92,6 +93,7 @@ namespace SGAmod.Dimensions.Tiles
 	{
 		public override void SetDefaults()
 		{
+			TileID.Sets.Ore[Type] = true;
 			Main.tileSolid[Type] = true;
 			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = true;
@@ -131,6 +133,7 @@ namespace SGAmod.Dimensions.Tiles
 	{
 		public override void SetDefaults()
 		{
+			TileID.Sets.Ore[Type] = true;
 			Main.tileSolid[Type] = true;
 			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = true;

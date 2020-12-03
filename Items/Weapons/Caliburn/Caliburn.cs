@@ -658,7 +658,9 @@ namespace SGAmod.Items.Weapons.Caliburn
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Corroded Shield");
-			Tooltip.SetDefault("'A treasure belonging to a former adventurer you'd rather not use but it looks useful'\nAllows you to block 25% of damage from the source by pointing the shield in the general direction\nAttack with the shield to bash-dash, gaining IFrames and hit enemies are Acid Burned\nCan only hit 5 targets, bash-dash ends prematurally after the 5th\nCan be held out like a torch and used normally by holding shift");
+			Tooltip.SetDefault("'A treasure belonging to a former adventurer you'd rather not use but it looks useful'\nAllows you to block 25% of damage from the source by pointing the shield in the general direction" + "\nBlock at the last second to 'Just Block', taking no damage\n"
+				+Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 3 seconds each")+
+				"\nAttack with the shield to bash-dash, gaining IFrames and hit enemies are Acid Burned\nCan only hit 5 targets, bash-dash ends prematurally after the 5th\nCan be held out like a torch and used normally by holding shift");
 			Item.staff[item.type] = true;
 		}
 
@@ -669,9 +671,9 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.melee = true;
 			item.width = 54;
 			item.height = 32;
-			item.useTime = 70;
+			item.useTime = 60;
 			item.useAnimation = 60;
-			item.reuseDelay = 80;
+			//item.reuseDelay = 120;
 			item.useStyle = 1;
 			item.knockBack = 5;
 			item.noUseGraphic = true;
@@ -705,8 +707,9 @@ namespace SGAmod.Items.Weapons.Caliburn
 
 	}
 
-	public class CorrodedShieldProj : ModProjectile
+	public class CorrodedShieldProj : ModProjectile, IDrawAdditive
 	{
+		public int blocktimer = 1;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("CorrodedShieldProj");
@@ -734,9 +737,15 @@ namespace SGAmod.Items.Weapons.Caliburn
 			return false;
 		}
 
-		public override void AI()
-		{
+        public override bool PreAI()
+        {
+			blocktimer += 1;
+			return true;
+        }
 
+        public override void AI()
+		{
+			blocktimer += 1;
 			Player player = Main.player[projectile.owner];
 			bool heldone = player.HeldItem.type != mod.ItemType("CorrodedShield") && player.HeldItem.type != mod.ItemType("CapShield");
 			if (projectile.ai[0] > 0 || (player.HeldItem == null || heldone) || player.dead || player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] > 0)
@@ -781,13 +790,28 @@ namespace SGAmod.Items.Weapons.Caliburn
 
 			}
 		}
+		protected virtual void DrawAdd()
+        {
+			bool facingleft = projectile.velocity.X > 0;
+			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
+			Texture2D texture = Main.projectileTexture[projectile.type];
+			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+
+			if (blocktimer < 30 && blocktimer > 1)
+				Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f)*MathHelper.Clamp((30-blocktimer)/8f, 0f,1f), projectile.velocity.ToRotation() + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale + 0.25f, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+
+		}
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			DrawAdd();
+		}
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
 			bool facingleft = projectile.velocity.X > 0;
 			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
 			Texture2D texture = Main.projectileTexture[projectile.type];
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor*projectile.Opacity, projectile.velocity.ToRotation() + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor * projectile.Opacity, projectile.velocity.ToRotation() + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
 			return false;
 		}
 
@@ -874,7 +898,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Captain America's Shield");
-			Tooltip.SetDefault("Functions similarly to Corroded Shield, however:\nCharge up to enable a powerful dash!\nThis dash may be cancelled early by unequiping the shield\nAlt Fire lets you throw the shield, which will bounce between nearby enemies\nYou cannot use your shield while it is thrown, gains +1 bounces per 30 defense\nAllows you to block 50% of damage from the source by pointing the shield in the general direction\n'Stars and Stripes!'");
+			Tooltip.SetDefault("Functions similarly to Corroded Shield, however allowing you to block 50% of damage instead\nCharge up to enable a powerful dash!\nThis dash may be cancelled early by unequiping the shield\nAlt Fire lets you throw the shield, which will bounce between nearby enemies\nYou cannot use your shield while it is thrown, gains +1 bounces per 30 defense\n'Stars and Stripes!'");
 			Item.staff[item.type] = true;
 		}
 
@@ -1008,7 +1032,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 
 	}
 
-	public class CapShieldProj : CorrodedShieldProj
+	public class CapShieldProj : CorrodedShieldProj, IDrawAdditive
 	{
 		public override void SetStaticDefaults()
 		{

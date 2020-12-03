@@ -32,12 +32,21 @@ namespace SGAmod.NPCs.Sharkvern
             npc.noGravity = true;
             npc.dontCountMe = true;
             npc.HitSound = SoundID.NPCHit1;
+            npc.chaseable = true;
         }
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             if (projectile.penetrate!=1)
             damage = (int)(damage * 0.50f);
+        }
+
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            if (npc.life < 1)
+            {
+                Gore.NewGore(npc.Center + new Vector2(0, 0), npc.velocity / 2f, mod.GetGoreSlot("Gores/Sharkvern_tail_gib"), 1f);
+            }
         }
 
         public virtual void KeepUpright(float dirX, float dirY)
@@ -139,7 +148,7 @@ namespace SGAmod.NPCs.Sharkvern
         {
             get { return("SGAmod/NPCs/Sharkvern/SharkvernBody2"); }
         }
-        
+
         public override void SetDefaults()
         {
             npc.width = 52;             
@@ -154,6 +163,7 @@ namespace SGAmod.NPCs.Sharkvern
             npc.noGravity = true;
             npc.dontCountMe = true;
             npc.HitSound = SoundID.NPCHit1;
+            npc.chaseable = false;
         }
 
                 public override bool PreAI()
@@ -164,6 +174,20 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override void HitEffect(int hitDirection, double damage)
         {
+            if (npc.life < 1)
+            {
+                if (GetType() == typeof(SharkvernBody))
+                    Gore.NewGore(npc.Center + new Vector2(0, 0), npc.velocity / 2f, mod.GetGoreSlot("Gores/Sharkvern_body_gib"), 1f);
+
+                if (GetType() == typeof(SharkvernNeck))
+                {
+                    Gore.NewGore(npc.Center + new Vector2(16, 0).RotatedBy(npc.rotation), npc.velocity / 2f, mod.GetGoreSlot("Gores/Sharkvern_body_gib"), 1f);
+                    Gore.NewGore(npc.Center + new Vector2(16, 0).RotatedBy(npc.rotation), npc.velocity / 2f, mod.GetGoreSlot("Gores/Sharkvern_fin_gib"), 1f);
+                }
+                if (GetType() == typeof(SharkvernBody) || GetType() == typeof(SharkvernBody3))
+                    Gore.NewGore(npc.Center + new Vector2(0, 0), npc.velocity / 2f, mod.GetGoreSlot("Gores/Sharkvern_body_gib"), 1f);
+            }
+
             if (npc.life > 0 && Main.netMode != 1 && Main.rand.Next(1) == 0)
             {
                 SharkvernHead jawsbrain = Main.npc[(int)npc.ai[3]].modNPC as SharkvernHead;
@@ -195,18 +219,12 @@ namespace SGAmod.NPCs.Sharkvern
         
         public override void SetDefaults()
         {
+            base.SetDefaults();
             npc.width = 52;             
             npc.height = 54;           
             npc.damage = 36;
             npc.defense = 45;
             npc.lifeMax = 27000;
-            npc.knockBackResist = 0.0f;
-            npc.behindTiles = true;
-            npc.noTileCollide = true;
-            npc.netAlways = true;
-            npc.noGravity = true;
-            npc.dontCountMe = true;
-            npc.HitSound = SoundID.NPCHit1;
         }
 
     }
@@ -221,18 +239,12 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override void SetDefaults()
         {
+            base.SetDefaults();
             npc.width = 52;             
             npc.height = 52;           
             npc.damage = 36;
             npc.defense = 45;
             npc.lifeMax = 27000;
-            npc.knockBackResist = 0.0f;
-            npc.behindTiles = true;
-            npc.noTileCollide = true;
-            npc.netAlways = true;
-            npc.noGravity = true;
-            npc.dontCountMe = true;
-            npc.HitSound = SoundID.NPCHit1;
         }
 
     }
@@ -252,18 +264,12 @@ namespace SGAmod.NPCs.Sharkvern
         
         public override void SetDefaults()
         {
+            base.SetDefaults();
             npc.width = 52;             
             npc.height = 56;           
             npc.damage = 36;
             npc.defense = 45;
             npc.lifeMax = 27000;
-            npc.knockBackResist = 0.0f;
-            npc.behindTiles = true;
-            npc.noTileCollide = true;
-            npc.netAlways = true;
-            npc.noGravity = true;
-            npc.dontCountMe = true;
-            npc.HitSound = SoundID.NPCHit1;
         }
 
         public override bool PreAI()

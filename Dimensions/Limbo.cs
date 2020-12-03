@@ -17,6 +17,8 @@ using Terraria.Utilities;
 using Idglibrary;
 using SubworldLibrary;
 using SGAmod.Dimensions.NPCs;
+using SGAmod.Effects;
+using SGAmod.Items;
 
 namespace SGAmod.Dimensions
 {
@@ -235,9 +237,10 @@ namespace SGAmod.Dimensions
 		private bool _isActive;
 		private float[] xoffset = new float[200];
 		private Color acolor = Color.Gray;
+        Effect effect => SGAmod.TrailEffect;
 
 
-		public override void OnLoad()
+        public override void OnLoad()
 		{
 		}
 
@@ -253,26 +256,94 @@ namespace SGAmod.Dimensions
 
 		public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth)
 		{
-			double thevalue = Main.GlobalTime * 2.0;
-			double movespeed = Main.GlobalTime * 0.2;
 
-			if (maxDepth >= 0 && minDepth < 0)
-			{
-				spriteBatch.Draw(Main.blackTileTexture, Vector2.Zero, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), (Color.Black * 1f), 0, Vector2.Zero, new Vector2(1f, 1f), SpriteEffects.None, 0f);
-			}
+            /*basicEffect.World = WVP.World();
+            basicEffect.View = WVP.View(Main.GameViewMatrix.Zoom);
+            basicEffect.Projection = WVP.Projection();
+            basicEffect.VertexColorEnabled = true;
+            basicEffect.TextureEnabled = true;
+            basicEffect.Texture = SGAmod.ExtraTextures[21];*/
+
+            VertexBuffer vertexBuffer;
+            Vector2 parallex = new Vector2(Main.screenPosition.X / 9000f, -Main.GlobalTime * 0.1f);
+            Color skycolor = Color.Red*0.75f;
+
+            effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Main.GameViewMatrix.Zoom) * WVP.Projection());
+            effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("Space"));
+            effect.Parameters["coordOffset"].SetValue(parallex);
+            effect.Parameters["coordMultiplier"].SetValue(4f);
+            effect.Parameters["strength"].SetValue(1f);
+
+            VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[12];
+
+            Vector3 screenPos = new Vector3(-16, 0, 0);
+            float skymove = ((Math.Max(Main.screenPosition.Y - 8000, 0)) / (Main.maxTilesY * 16f));
+
+            Vector3 screenPosParallex = screenPos+new Vector3(0, -Main.screenHeight * (skymove) /2f, 0);
+
+            vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-16, 0, 0), Color.Black, new Vector2(0, 0));
+            vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), Color.Black, new Vector2(0, 0));
+            vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), Color.Black, new Vector2(0, 0));
+
+            vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight, 0), Color.Black, new Vector2(0, 0));
+            vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), Color.Black, new Vector2(0, 0));
+            vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), Color.Black, new Vector2(0, 0));
+
+            vertices[6] = new VertexPositionColorTexture(screenPosParallex + new Vector3(-16, 0, 0), skycolor, new Vector2(0, 0));
+            vertices[7] = new VertexPositionColorTexture(screenPosParallex + new Vector3(-16, Main.screenHeight / 2f, 0), Color.Transparent, new Vector2(0, 0.5f));
+            vertices[8] = new VertexPositionColorTexture(screenPosParallex + new Vector3(Main.screenWidth+16, 0, 0), skycolor, new Vector2(1, 0));
+
+            vertices[9] = new VertexPositionColorTexture(screenPosParallex + new Vector3(Main.screenWidth + 16, Main.screenHeight/2f, 0), Color.Transparent, new Vector2(1, 0.5f));
+            vertices[10] = new VertexPositionColorTexture(screenPosParallex + new Vector3(-16, Main.screenHeight/2f, 0), Color.Transparent, new Vector2(0, 0.5f));
+            vertices[11] = new VertexPositionColorTexture(screenPosParallex + new Vector3(Main.screenWidth + 16, 0, 0), skycolor, new Vector2(1, 0));
 
 
-			//if (maxDepth >= 0 && minDepth < 0)
-			//{
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1f));
-				ArmorShaderData shader2 = GameShaders.Armor.GetShaderFromItemId(ItemID.ShadowDye); shader2.Apply(null);
-				Texture2D sun = SGAmod.ExtraTextures[100];
-				spriteBatch.Draw(sun, new Vector2(Main.screenWidth / 2, Main.screenHeight / 8), null, Color.DarkGray, 0, new Vector2(sun.Width / 2f, sun.Height / 2f), new Vector2(5f, 5f), SpriteEffects.None, 0f);
-            //}
+            vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+            vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+            Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+            RasterizerState rasterizerState = new RasterizerState();
+            rasterizerState.CullMode = CullMode.None;
+            Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+
+            effect.CurrentTechnique.Passes["BasicEffectPass"].Apply();
+            Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+
+            effect.CurrentTechnique.Passes["FadedBasicEffectPass"].Apply();
+            Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 6, 2);
+
+            if (maxDepth >= 0 && minDepth < 0)
+            {
+                //spriteBatch.Draw(Main.blackTileTexture, Vector2.Zero, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), (Color.Black * 0.8f), 0, Vector2.Zero, new Vector2(1f, 1f), SpriteEffects.None, 0f);
+            }
+
+
+            if (maxDepth >= 0 && minDepth < 0)
+            {
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+                ArmorShaderData shader2 = GameShaders.Armor.GetShaderFromItemId(ItemID.VoidDye); shader2.Apply(null);
+                Texture2D sun = SGAmod.ExtraTextures[100];
+
+                Texture2D inner = Main.itemTexture[ModContent.ItemType<AssemblyStar>()];
+
+                Vector2 position = new Vector2((Main.screenWidth / 2), (Main.screenHeight / 8)-((Main.screenHeight*16)*skymove*0.04f));
+
+                Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
+
+                for (float i = 0; i < 1f; i += 0.10f)
+                {
+                    spriteBatch.Draw(inner, position, null, (Color.DarkMagenta * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.5f) * 0.50f, i * MathHelper.TwoPi, textureOrigin, 16f * (0.5f + 1.25f * (((Main.GlobalTime / 2f) + i) % 1f)), SpriteEffects.None, 0f);
+                }
+
+                spriteBatch.Draw(sun, position, null, Color.DarkRed, 0, sun.Size() / 2f, 3f, SpriteEffects.None, 0f);
+
+                //spriteBatch.Draw(sun, new Vector2(Main.screenWidth / 2, Main.screenHeight / 8), null, Color.Red, 0, new Vector2(sun.Width / 2f, sun.Height / 2f), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+            }
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+            Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
 
             UnifiedRandom alwaysthesame = new UnifiedRandom(DimDungeonsProxy.DungeonSeeds);
 

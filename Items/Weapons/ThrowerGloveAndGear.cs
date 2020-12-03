@@ -1473,7 +1473,7 @@ namespace SGAmod.Items.Weapons
 			projectile.timeLeft -= 1;
 			projectile.velocity.Y += 0.25f;
 			projectile.velocity.X *= 0.98f;
-			projectile.rotation += projectile.velocity.Length() * (float)(Math.Sign(projectile.velocity.X*1000f)/1000f)*10f;
+			projectile.rotation += projectile.velocity.Length() * (float)(Math.Sign(projectile.velocity.X))*0.01f;
 		}
 
 	}

@@ -16,6 +16,7 @@ namespace SGAmod.NPCs.Cratrosity
 		public int counter=0;
 		public int cratetype=ItemID.WoodenCrate;
 		public Vector2 apointzz=new Vector2(0,0);
+		protected virtual int CrateIndex => ItemID.WoodenCrate;
 
 		public override void SetStaticDefaults()
 		{
@@ -24,8 +25,9 @@ namespace SGAmod.NPCs.Cratrosity
 		}
 		public override void NPCLoot()
 		{
-			if (Main.rand.Next(0,4)<1 || npc.value>2999){
-	Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, (int)npc.value);
+			if (Main.rand.Next(0,4)<1 || cratetype > 2999)
+			{
+	Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, CrateIndex);
 }
         }
 		public override string Texture

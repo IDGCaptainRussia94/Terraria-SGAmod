@@ -435,7 +435,7 @@ namespace SGAmod
 #if Dimensions
 			proxydimmod.Load();
 #endif
-			SteamID = (string)(typeof(ModLoader).GetProperty("SteamID64", BindingFlags.Static | BindingFlags.NonPublic)).GetValue(null);
+			SteamID = Main.dedServ || Main.netMode == NetmodeID.Server ? "" : (string)(typeof(ModLoader).GetProperty("SteamID64", BindingFlags.Static | BindingFlags.NonPublic)).GetValue(null);
 			/*FieldInfo fild= typeof(CalamityPlayer).GetField("throwingDamage", BindingFlags.Instance | BindingFlags.Public);
 
 			object modp = Main.LocalPlayer.GetModPlayer(ModLoader.GetMod("CalamityMod"), "CalamityPlayer");
@@ -474,6 +474,8 @@ namespace SGAmod
 			AddTile("CryostalBarTile", new BarTile("CryostalBar", "Cryostal Bar", new Color(21, 60, 100)), "SGAmod/Tiles/CryostalBarTile");
 			AddTile("DrakeniteBarTile", new BarTile("DrakeniteBar", "Drakenite Bar", new Color(0, 240, 0)), "SGAmod/Tiles/DrakeniteBarTile");
 			AddTile("StarMetalBarTile", new BarTile("StarMetalBar", "Star Metal Bar", new Color(0, 240, 0)), "SGAmod/Tiles/StarMetalBarTile");
+
+			//AddGore("SGAmod/Gores/CirnoHeadGore",new CirnoHeadGore);
 
 			SGAPlacablePainting.SetupPaintings();
 			ClipWeaponReloading.SetupRevolverHoldingTypes();

@@ -211,10 +211,10 @@ namespace SGAmod.Items.Weapons
 		}
 
 		public override int projectilerate => 25;
-		public override int manacost => 9;
+		public override int manacost => 6;
 		public override int portalprojectile => mod.ProjectileType("CirnoBoltPlayer");
 		public override int takeeffectdelay =>  Main.player[projectile.owner].HeldItem.useTime;
-		public override float damagescale => 0.30f * Main.player[projectile.owner].magicDamage;
+		public override float damagescale => 0.50f * Main.player[projectile.owner].magicDamage;
 		public override int penetrate => 1;
 		public override int startrate => 60;
 		public override int drainrate => 5;
@@ -241,7 +241,7 @@ namespace SGAmod.Items.Weapons
 					Vector2 perturbedSpeed = new Vector2(gotohere.X, gotohere.Y).RotatedByRandom(MathHelper.ToRadians(15)) * projectile.velocity.Length();
 					if (everyother == 1)
 					{
-						int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y)*2f, (int)projectile.ai[0], (int)(projectile.damage*0.50f* damagescale), projectile.knockBack / 10f, owner.whoAmI);
+						int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y)*2f, (int)projectile.ai[0], (int)(projectile.damage*1f* damagescale), projectile.knockBack / 10f, owner.whoAmI);
 						Main.projectile[proj].magic = true;
 						Main.projectile[proj].timeLeft = 300;
 						Main.projectile[proj].penetrate = penetrate;
@@ -255,7 +255,7 @@ namespace SGAmod.Items.Weapons
 					gohere *= 28f;
 					gohere = gohere.RotatedByRandom(MathHelper.ToRadians(20));
 
-					int proj2 = Projectile.NewProjectile(backthere, gohere, mod.ProjectileType("ProjectilePortalRealityShaperHit"), (int)(projectile.damage * damagescale), projectile.knockBack / 6f, owner.whoAmI, mod.ProjectileType("HotRound"));
+					int proj2 = Projectile.NewProjectile(backthere, gohere, mod.ProjectileType("ProjectilePortalRealityShaperHit"), (int)(projectile.damage*1.25 * damagescale), projectile.knockBack / 6f, owner.whoAmI, mod.ProjectileType("HotRound"));
 					IdgProjectile.Sync(proj2);
 
 				}

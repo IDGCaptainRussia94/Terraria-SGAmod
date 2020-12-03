@@ -1,3 +1,4 @@
+using SGAmod.HavocGear.Items;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -16,7 +17,7 @@ namespace SGAmod.Items
 
 		public override string Texture
 		{
-			get { return("SGAmod/Items/TerrariacoCrateBase");}
+			get { return ("SGAmod/Items/TerrariacoCrateBase"); }
 		}
 
 		public override void SetDefaults()
@@ -29,14 +30,15 @@ namespace SGAmod.Items
 		}
 		//player.CountItem(mod.ItemType("ModItem"))
 
-		public virtual void CrateLoot(Player ply){
-				string [] dropitems={"CrateBossWeaponMagic","CrateBossWeaponMelee","CrateBossWeaponRanged","CrateBossWeaponThrown","CrateBossWeaponSummon" };
-				ply.QuickSpawnItem(mod.ItemType(dropitems[Main.rand.Next(0,dropitems.Length)]),1);
+		public virtual void CrateLoot(Player ply)
+		{
+			string[] dropitems = { "CrateBossWeaponMagic", "CrateBossWeaponMelee", "CrateBossWeaponRanged", "CrateBossWeaponThrown", "CrateBossWeaponSummon" };
+			ply.QuickSpawnItem(mod.ItemType(dropitems[Main.rand.Next(0, dropitems.Length)]), 1);
 			if (Main.expertMode)
 			{
 				ply.QuickSpawnItem(mod.ItemType("IdolOfMidas"), 1);
 			}
-			int[] typeofloot = {ItemID.GoldRing,ItemID.LuckyCoin,ItemID.DiscountCard};
+			int[] typeofloot = { ItemID.GoldRing, ItemID.LuckyCoin, ItemID.DiscountCard };
 			if (Main.rand.Next(0, 3) == 1)
 				ply.QuickSpawnItem(mod.ItemType("TF2Emblem"), 1);
 			if (Main.rand.Next(0, 3) == 1)
@@ -45,42 +47,46 @@ namespace SGAmod.Items
 
 		public override bool CanRightClick()
 		{
-		Player ply=Main.LocalPlayer;
-			bool canclick = (ply.CountItem(ItemID.GoldenKey) > 0 || ply.CountItem(ItemID.LightKey) > 0 || ply.CountItem(ItemID.NightKey) > 0 || ply.CountItem(ItemID.TempleKey) > 0 || ply.CountItem(ItemID.ShadowKey) > 0);
-			return ((!Main.dayTime && canclick) || ply.CountItem(mod.ItemType("TerrariacoCrateKey"))>0);
+			Player ply = Main.LocalPlayer;
+			bool canclick = (ply.CountItem(ItemID.GoldenKey) > 0 || ply.CountItem(ItemID.LightKey) > 0 || ply.CountItem(ItemID.NightKey) > 0 || ply.CountItem(ModContent.ItemType<SwampChestKey>()) > 0 || ply.CountItem(ItemID.TempleKey) > 0 || ply.CountItem(ItemID.ShadowKey) > 0);
+
+			if (Main.dayTime && (int)(Main.GlobalTime * 6000) % 30 == 0 && ply.CountItem(mod.ItemType("TerrariacoCrateKey"))<1)
+			{
+				Main.NewText("This gamble can only be attempted at night", 244, 220, 46);
+				return false;
+			}
+
+			return ((!Main.dayTime && canclick) || ply.CountItem(mod.ItemType("TerrariacoCrateKey")) > 0);
 		}
 
 		public override void RightClick(Player ply)
 		{
 
 
-		bool usedwrongkey=(ply.CountItem(ItemID.GoldenKey)>0 || ply.CountItem(ItemID.LightKey)>0 || ply.CountItem(ItemID.NightKey)>0);
-		bool usedrightkey=(ply.CountItem(mod.ItemType("TerrariacoCrateKey"))>0);
-		int whatkey=0;
-		if (usedrightkey==true){
-		usedwrongkey=false;
-		whatkey=mod.ItemType("TerrariacoCrateKey");
-		CrateLoot(ply);
-		}
-		if (usedwrongkey==true){
+			bool usedwrongkey = (ply.CountItem(ItemID.GoldenKey) > 0 || ply.CountItem(ItemID.LightKey) > 0 || ply.CountItem(ItemID.NightKey) > 0 || ply.CountItem(ModContent.ItemType<SwampChestKey>()) > 0);
+			bool usedrightkey = (ply.CountItem(mod.ItemType("TerrariacoCrateKey")) > 0);
+			int whatkey = 0;
+			if (usedrightkey == true)
+			{
+				CrateLoot(ply);
+				return;
+			}
+			if (usedwrongkey == true)
+			{
 
-				if (Main.dayTime)
+				if (ply.CountItem(ItemID.GoldenKey) > 0) { whatkey = ItemID.GoldenKey; }
+				if (ply.CountItem(ItemID.LightKey) > 0) { whatkey = ItemID.LightKey; }
+				if (ply.CountItem(ItemID.NightKey) > 0) { whatkey = ItemID.NightKey; }
+				if (ply.CountItem(ModContent.ItemType<SwampChestKey>()) > 0) { whatkey = ModContent.ItemType<SwampChestKey>(); }
+				if (!NPC.AnyNPCs(mod.NPCType("Cratrosity")))
 				{
-					Main.NewText("This gamble can only be attempted at night", 244, 220, 46);
-					return;
-				}
-
-				if (ply.CountItem(ItemID.GoldenKey)>0){whatkey=ItemID.GoldenKey;}
-		if (ply.CountItem(ItemID.LightKey)>0){whatkey=ItemID.LightKey;}
-		if (ply.CountItem(ItemID.NightKey)>0){whatkey=ItemID.NightKey;}
-		if (!NPC.AnyNPCs(mod.NPCType("Cratrosity"))){
 
 					if (Main.netMode > 0)
 					{
 						mod.Logger.Debug("Crate: Net Spawn");
 						ModPacket packet = mod.GetPacket();
 						packet.Write(75);
-						packet.Write(mod.NPCType(whatkey == ItemID.LightKey ? "CratrosityLight" : (whatkey == ItemID.NightKey ? "CratrosityNight" : "Cratrosity")));
+						packet.Write(mod.NPCType(whatkey == ModContent.ItemType<SwampChestKey>() ? "CratrosityDank" : (whatkey == ItemID.LightKey ? "CratrosityLight" : (whatkey == ItemID.NightKey ? "CratrosityNight" : "Cratrosity"))));
 						packet.Write(-9999);
 						packet.Write(-9999);
 						packet.Write(ply.whoAmI);
@@ -90,13 +96,13 @@ namespace SGAmod.Items
 					else
 					{
 						mod.Logger.Debug("Crate: SP Spawn");
-						NPC.SpawnOnPlayer(ply.whoAmI, mod.NPCType(whatkey == ItemID.LightKey ? "CratrosityLight" : (whatkey == ItemID.NightKey ? "CratrosityNight" : "Cratrosity")));
+						NPC.SpawnOnPlayer(ply.whoAmI, mod.NPCType(whatkey == ModContent.ItemType<SwampChestKey>() ? "CratrosityDank" : (whatkey == ItemID.LightKey ? "CratrosityLight" : (whatkey == ItemID.NightKey ? "CratrosityNight" : "Cratrosity"))));
 
 					}
-		Main.PlaySound(15, (int)ply.position.X, (int)ply.position.Y, 0);
-		}
-		}
-		ply.ConsumeItem(whatkey);
+					Main.PlaySound(15, (int)ply.position.X, (int)ply.position.Y, 0);
+				}
+			}
+			ply.ConsumeItem(whatkey);
 			//player.QuickSpawnItem(ItemID.LifeCrystal, 15);
 			//player.QuickSpawnItem(ItemID.LifeFruit, 20);
 			//player.QuickSpawnItem(ItemID.ManaCrystal, 9);

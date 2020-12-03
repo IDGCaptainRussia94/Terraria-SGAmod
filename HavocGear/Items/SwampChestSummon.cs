@@ -110,7 +110,7 @@ namespace SGAmod.HavocGear.Items
 			item.rare = 5;
 			item.useStyle = 1;
 			item.useAnimation = 0;
-			item.maxStack = 1;
+			item.maxStack = 30;
 			item.useTime = 0;
 		}
 

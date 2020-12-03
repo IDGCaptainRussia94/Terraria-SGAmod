@@ -19,7 +19,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 125;
+			item.damage = 150;
 			item.melee = true;
 			item.width = 44;
 			item.height = 52;
@@ -176,7 +176,7 @@ namespace SGAmod.Items.Weapons
 		}
 
 		public override int projectilerate => 40;
-		public override int manacost => 20;
+		public override int manacost => 15;
 		public override int portalprojectile => mod.ProjectileType("CirnoBoltPlayer");
 		public override int takeeffectdelay =>  Main.player[projectile.owner].HeldItem.useTime;
 		public override float damagescale => 0.50f * Main.player[projectile.owner].magicDamage;

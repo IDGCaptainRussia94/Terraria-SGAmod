@@ -24,7 +24,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dragon Commander");
-			Tooltip.SetDefault("Controls a very powerful familiar of Draken that scales with Total Expertise\nLeft click to use minion slots to summon orders\nClicking near an enemy commands your oldest order to follow that enemy\nHold CTRL and click to cancel all current orders\nDraken will rapid fly between these orders\nWhen not given orders, Draken does the following:\nWhen deselecting this weapon, give Draken a large aura before despawning\nWhen following you, Draken increases your life regen and endurance\n'Jetpacks not included'");
+			Tooltip.SetDefault("Controls a very powerful familiar of Draken that scales with Total Expertise\nLeft click to use minion slots to summon orders\nClicking near an enemy commands your oldest order to follow that enemy\nHold CTRL and click to cancel all current orders\nDraken will rapid fly between these orders\nWhen not given orders, Draken does the following:\nWhen deselecting this weapon, give Draken a large aura before despawning\nWhen following you, Draken increases your life regen and damage resist\n'Jetpacks not included'");
 		}
 
         public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
@@ -563,7 +563,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Draken Defense");
-			Description.SetDefault("+25% Endurance and massively boosted life regen");
+			Description.SetDefault("damage reduced to damage^0.90\nand massively boosted life regen");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
 			Main.debuff[Type] = true;
@@ -577,7 +577,6 @@ namespace SGAmod.Items.Weapons
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.endurance += 0.25f;
 			player.lifeRegen += 10;
 
 		}

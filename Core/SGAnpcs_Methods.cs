@@ -110,8 +110,12 @@ namespace SGAmod
 			}
 		}
 
-		public void DoApoco(NPC npc, Projectile projectile, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		public void DoApoco(NPC npc, Projectile projectile, Player player, Item item, ref int damage, ref float knockback, ref bool crit,int bitBoldedEffects=7,bool always=false)
 		{
+			bool effectSound = (bitBoldedEffects & (1 << 1 - 1)) != 0;
+			bool effectText = (bitBoldedEffects & (1 << 2 - 1)) != 0;
+			bool effectShockwave = (bitBoldedEffects & (1 << 3 - 1)) != 0;
+
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
 			int chance = -1;
 			if (projectile != null)
@@ -137,9 +141,9 @@ namespace SGAmod
 					chance = 3;
 
 			}
-			if (chance > -1 && npc != null)
+			if (npc != null && (always || chance > -1))
 			{
-				if (Main.rand.Next(0, 100) < moddedplayer.apocalypticalChance[chance] && crit)
+				if (always || Main.rand.Next(0, 100) < moddedplayer.apocalypticalChance[chance] && crit)
 				{
 					if (moddedplayer.HoE && projectile != null)
 					{
@@ -241,11 +245,14 @@ namespace SGAmod
 
 					damage = (int)(damage * (3f + (moddedplayer.apocalypticalStrength - 1f)));
 
+					if (effectText)
 					CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.DarkRed, "Apocalyptical!", true, false);
 					if (SGAConfigClient.Instance.EpicApocalypticals)
 					{
+						if (effectShockwave)
 						RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 10f, 60, 1f);
-						Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/crit_hit").WithVolume(.7f).WithPitchVariance(.25f), npc.Center);
+						if (effectSound)
+							Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/crit_hit").WithVolume(.7f).WithPitchVariance(.25f), npc.Center);
 					}
 
 

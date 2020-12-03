@@ -42,8 +42,10 @@ namespace SGAmod
 		public bool noactionstackringofrespite = false;
 		public int tf2emblemLevel = 0;
 		public int ninjaSash = 0;
+		public float damageReduce = 1f;
 		public int shinobj = 0;
 		public int surprised = 0;
+		public bool diesIraeStone = false;
 		public float[] beserk = { 0, 0 };
 		public float actionCooldownRate = 1f;
 		public int previoustf2emblemLevel = 0;
@@ -233,6 +235,8 @@ namespace SGAmod
 			surprised = Math.Max(surprised - 1, 0);
 			tidalCharm = Math.Max(tidalCharm - 1, 0);
 			shinobj -= 1;
+			diesIraeStone = false;
+			damageReduce = 1f;
 			previoustf2emblemLevel = tf2emblemLevel;
 			tf2emblemLevel = 0;
 			ninjaSash = 0;
@@ -1041,6 +1045,7 @@ namespace SGAmod
 				counter += (player.CountItem(ItemID.CorruptFishingCrate));
 				counter += (player.CountItem(ItemID.HallowedFishingCrate));
 				counter += (player.CountItem(ItemID.FloatingIslandFishingCrate));
+				counter += (player.CountItem(ModContent.ItemType<HavocGear.Items.DankCrate>()));
 				if (counter > 0)
 				{
 					player.AddBuff(mod.BuffType("HeavyCrates"), 2, true);
@@ -1304,14 +1309,23 @@ namespace SGAmod
 
 		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
+			if (damageSource.SourceCustomReason == (player.name + " went Kamikaze, but failed to blow up enemies"))
+				return true;
+
+			if (realIFrames > 0)
+				return false;
+
 			if (damageSource.SourceNPCIndex > -1)
 			{
+
 				NPC npc = Main.npc[damageSource.SourceNPCIndex];
 				if (npc.GetGlobalNPC<SGAnpcs>().NinjaSmoked && Main.rand.Next(0, 100) < 75)
 				{
 					player.NinjaDodge();
 					return false;
 				}
+				if (ShieldDamageCheck(npc.Center, ref damage,npc.whoAmI+1))
+					return false;
 			}
 
 			if (damageSource.SourceProjectileIndex > -1)
@@ -1321,13 +1335,9 @@ namespace SGAmod
 					player.NinjaDodge();
 					return false;
 				}
-			}
-
-			if (damageSource.SourceCustomReason == (player.name + " went Kamikaze, but failed to blow up enemies"))
-				return true;
-
-			if (realIFrames > 0)
+				if (ShieldDamageCheck(Main.projectile[damageSource.SourceProjectileIndex].Center, ref damage, -(damageSource.SourceProjectileIndex-1)))
 				return false;
+			}
 
 			if (OmegaSigil && player.statLife - damage < 1 && Main.rand.Next(100) <= 10)
 			{
@@ -1336,6 +1346,13 @@ namespace SGAmod
 				return false;
 			}
 			damage = (int)(damage * damagetaken);
+
+			if (player.HasBuff(ModContent.BuffType<DrakenDefenseBuff>()))
+            {
+				damage = (int)Math.Pow(damage,0.90);
+
+            }
+
 			if (anticipation > 0)
 			{
 				anticipation = (int)(anticipation / 2);
@@ -1393,104 +1410,9 @@ namespace SGAmod
 			return true;
 		}
 
-		private void damagecheck(Vector2 where, ref int damage)
-		{
-			Vector2 itavect = where - player.Center;
-			itavect.Normalize();
-
-
-			if (player.HeldItem != null && player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1)
-			{
-
-				if (SGAPlayer.ShieldTypes.ContainsKey(player.HeldItem.type))
-				{
-					int foundhim = -1;
-
-					int xxxz = 0;
-					int thetype;
-					SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out thetype);
-					for (xxxz = 0; xxxz < Main.maxProjectiles; xxxz++)
-					{
-						if (Main.projectile[xxxz].active && Main.projectile[xxxz].type == thetype && Main.projectile[xxxz].owner == player.whoAmI)
-						{
-							foundhim = xxxz;
-							break;
-
-						}
-					}
-					if (foundhim > -1)
-					{
-						if (thetype == mod.ProjectileType("LaserMarkerProj"))
-							return;
-
-						Vector2 itavect2 = Main.projectile[foundhim].Center - player.Center;
-						itavect2.Normalize();
-						float ang1 = itavect.ToRotation();
-						float ang2 = itavect2.ToRotation();
-						float diff = ang1.AngleLerp(ang2, MathHelper.ToRadians(60));
-
-						float len = ((itavect) - (itavect2)).Length();
-
-						if (len < 0.7f)
-						{
-							float damageval = 0.75f;
-							if (thetype == mod.ProjectileType("CapShieldProj"))
-								damageval = 0.50f;
-							damage = (int)(damage * damageval);
-							Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
-							return;
-						}
-
-					}
-
-				}
-
-			}
-
-		}
-
-		public bool ChainBolt()
-		{
-			WeightedRandom<int> rando = new WeightedRandom<int>();
-
-			if (ConsumeElectricCharge(750, 120))
-			{
-
-				for (int i = 0; i < Main.maxNPCs; i += 1)
-				{
-					if (Main.npc[i].active && !Main.npc[i].townNPC && !Main.npc[i].friendly)
-					{
-						if (Main.npc[i].CanBeChasedBy() && !Main.npc[i].dontTakeDamage)
-						{
-							float dist = Main.npc[i].Distance(player.Center);
-							if (dist < 250)
-							{
-								rando.Add(i, 250.00 - (double)dist);
-							}
-						}
-					}
-				}
-
-				if (rando.elements.Count > 0)
-				{
-					NPC luckyguy = Main.npc[rando.Get()];
-
-					Vector2 Speed = (luckyguy.Center - player.Center);
-					Speed.Normalize(); Speed *= 2f;
-					int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, Speed.X, Speed.Y, mod.ProjectileType("CBreakerBolt"), 30 + ((int)((float)(player.statDefense * techdamage))), 3f, player.whoAmI, 3);
-					IdgProjectile.Sync(prog);
-					Main.PlaySound(SoundID.Item93, player.Center);
-					return true;
-				}
-			}
-
-
-
-			return false;
-		}
-
 		private int OnHit(ref int damage, ref bool crit, NPC npc, Projectile projectile)
 		{
+			damage = (int)(damage * damageReduce);
 			if (Hellion.GetHellion() != null)
 			{
 				Hellion hell = Hellion.GetHellion();
@@ -1554,12 +1476,12 @@ namespace SGAmod
 					if (projectile.type == ProjectileID.Bullet || projectile.type == ProjectileID.BulletDeadeye || projectile.type == ProjectileID.BulletSnowman || projectile.type == ProjectileID.SniperBullet)
 						damage = (int)((float)damage * 0.50f);
 
-				damagecheck(projectile.Center - projectile.velocity, ref damage);
+				//damagecheck(projectile.Center - projectile.velocity, ref damage);
 			}
-			if (npc != null)
+			/*if (npc != null)
 			{
 				damagecheck(npc.Center, ref damage);
-			}
+			}*/
 
 			if (SpaceDiverset)
 			{

@@ -1650,7 +1650,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cataclysmic Catalyst");
-			Tooltip.SetDefault("'You wield power not even The Council could ever have...'\n2% increased Apocalyptical Chance\nWhile you have max HP, gain an extra 3% Apocalyptical Chance\n10% chance to dodge attacks that would kill you\n50% increased Apocalyptical Strength");
+			Tooltip.SetDefault("'You wield power not even The Council could ever have...'\n2% (5% at max health) increased Apocalyptical Chance, 50% increased Apocalyptical Strength\n10% chance to dodge attacks that would kill you\nJust Blocks against contact damage trigger Apocalypticals");
 			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(8, 20));
 		}
 
@@ -1699,7 +1699,8 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.GetModPlayer<SGAPlayer>().apocalypticalStrength += 0.50f;
+			player.SGAPly().apocalypticalStrength += 0.50f;
+			player.SGAPly().diesIraeStone = true;
 			base.UpdateAccessory(player, hideVisual);
 
 			Item itz = new Item();
@@ -1756,6 +1757,8 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ModContent.ItemType<FireApocalypse>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<GreenApocalypse>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<WhiteApocalypse>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<DiesIraeStone>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<OmegaSigil>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<MoneySign>(), 15);
 			recipe.AddIngredient(mod.ItemType("StygianCore"), 3);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 200);
@@ -1974,6 +1977,40 @@ namespace SGAmod.Items.Accessories
 				player.SGAPly().MaxCooldownStacks += 1;
 				player.SGAPly().noactionstackringofrespite = true;
 			}
+		}
+
+	}
+
+
+	public class DiesIraeStone : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Dies Irae Stone");
+			Tooltip.SetDefault("'Judgement is at hand this day...'\nJust Blocking enemy contact damage with SGAmod Shields triggers Apocalypticals");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.Orange;
+			item.value = Item.buyPrice(0, 1, 0, 0);
+			item.accessory = true;
+		}
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb((Main.GlobalTime / 3f) % 1f, 0.85f, 0.50f);
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_" + ItemID.JourneymanBait); }
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().diesIraeStone = true;
 		}
 
 	}
@@ -2980,7 +3017,7 @@ namespace SGAmod.Items.Accessories
 
 			item.useStyle = 1;
 			item.Throwing().thrown = true;
-			item.damage = 4;
+			item.damage = 5;
 			item.shootSpeed = 10f;
 			item.shoot = ModContent.ProjectileType<Weapons.RockProj>();
 			item.useTurn = true;

@@ -85,7 +85,7 @@ namespace SGAmod.Dimensions
                 {
                     float atime = (float)SGAWorld.modtimer/90f;
                     float atime2 = (float)(SGAWorld.modtimer-900f) / 70f;
-                    float add1 = ((float)Math.Cos(atime / 1f + position.Y / 20f) * 25f);
+                    float add1 = ((float)Math.Cos(atime + position.Y / 20f) * 25f);
                     float add2 = ((float)Math.Sin(atime / 1.25f + position.X / 30f) * 19f);
                     float alpha2 = (float)Math.Sin(((-atime2 * 0.25f)+((add1+add2) / 40f)));
                     float alpha = MathHelper.Clamp(alpha2, SGAWorld.darknessVision ? 0.1f : 0.25f, SGAWorld.darknessVision ? 0.35f : 0.85f)/5f;

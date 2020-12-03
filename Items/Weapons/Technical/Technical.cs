@@ -1716,8 +1716,11 @@ namespace SGAmod.Items.Weapons.Technical
 
 	}
 
-	public class LaserMarkerProj : ModProjectile
-	{
+	public class LaserMarkerProj : Caliburn.CorrodedShieldProj
+    {
+		protected int MyLaser = default;
+		public Vector2 EndPoint = default;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("LaserMarkerProj");
@@ -1744,13 +1747,10 @@ namespace SGAmod.Items.Weapons.Technical
 			get { return ("SGAmod/Items/Weapons/Technical/LaserMarker"); }
 		}
 
-		public override bool CanDamage()
+		public override bool PreAI()
 		{
-			return false;
+			return true;
 		}
-
-		protected int MyLaser = default;
-		public Vector2 EndPoint = default;
 
 		public override void AI()
 		{

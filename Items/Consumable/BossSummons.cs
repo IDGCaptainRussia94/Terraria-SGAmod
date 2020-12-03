@@ -462,11 +462,13 @@ namespace SGAmod.Items.Consumable
 				{
 					item.consumable = false;
 				if (player == Main.LocalPlayer)
-					Main.NewText("It's power lies in the snow biome during the day", 50, 50, 250);				
+					Main.NewText("It's power lies in the snow biome during the day", 50, 50, 250);
+					return false;
 				}
 				else
 				{
 					item.consumable = true;
+					return true;
 				}
 				return base.CanUseItem(player);
 			}

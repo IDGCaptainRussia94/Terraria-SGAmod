@@ -38,15 +38,24 @@ namespace SGAmod.NPCs.Hellion
 					Directory.CreateDirectory(SGAmod.filePath);
 
 				}
-				File.WriteAllLines(SGAmod.filePath + "/It's not over yet.txt", new string[]
-				{"Congrats, you beat me, and this world, and prevented me from getting the Dragon... At only a fraction of my power, interesting...","But you'd be a complete fool to think this is over, I had under estimated the strength of your avatar "+Main.LocalPlayer.name+", but now I know who I'm really fighting against.",
-				"If you really want to save him and yourself, you'll find the key on a new character by holding SHIFT before clicking create but only AFTER you have gotten this message. Yes, I could just 'delete' "+Main.LocalPlayer.name+" if I wanted to, but I won't, because I know what the TML devs would do if I did and that wouldn't help either of us, would it?",
-				"Come now, lets see if your up for a REAL challenge and if you are really a worthy savior. I doubt it thou, the Escaped Expertiment will be mine again in due time.",
-				"See you soon, I'll be waiting "+SGAmod.HellionUserName,
-				"#Helen 'Helion' Weygold"
+				List<String> helltext = new List<String>();
+				helltext.Add("Congrats, you beat me, and this world, and prevented me from getting the Dragon... At only a fraction of my power, interesting...");
+				helltext.Add("But you'd be a complete fool to think this is over, I had under estimated the strength of your avatar " + Main.LocalPlayer.name + ", but now I know who I'm really fighting against.");
+				if (!SGAConfigClient.Instance.HellionPrivacy) 
+				{
+					helltext.Add("If you really want to save him and yourself, you'll find the key on a new character by holding SHIFT before clicking create but only AFTER you have gotten this message. Yes, I could just 'delete' " + Main.LocalPlayer.name + " if I wanted to, but I won't, because I know what the TML devs would do if I did and that wouldn't help either of us, would it?");
+					helltext.Add("Come now, lets see if your up for a REAL challenge and if you are really a worthy savior. I doubt it thou, the Escaped Expertiment will be mine again in due time.");
+					helltext.Add("See you soon, I'll be waiting " + SGAmod.HellionUserName);
+				}
+				else
+				{
+					helltext.Add("But since you didn't want to even tell me your 'real' name, I don't feel a need to tell you what happens next...");
+					helltext.Add("Delete this file directory, and fight me again, with the privacy setting off, until then, I'll be waiting to face "+ Main.LocalPlayer.name+ " again.");
+				}
 
+				helltext.Add("#Helen 'Helion' Weygold");
+				File.WriteAllLines(SGAmod.filePath + "/It's not over yet.txt",helltext.ToArray());
 
-			});
 				Process.Start(@"" + SGAmod.filePath + "");
 			}
 

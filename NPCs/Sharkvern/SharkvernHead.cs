@@ -119,6 +119,14 @@ namespace SGAmod.NPCs.Sharkvern
             SGAWorld.downedSharkvern = true;
         }
 
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            if (npc.life < 1)
+            {
+                Gore.NewGore(npc.Center + new Vector2(0,0), npc.velocity/2f, mod.GetGoreSlot("Gores/Sharkvern_head_gib"), 1f);
+            }
+        }
+
         public override void SendExtraAI(BinaryWriter writer)
         {
             writer.Write(ramwater);

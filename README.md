@@ -12,18 +12,73 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners, Draken Summon?! Potions: Tooltime (tools gain massive knockback), Tinker (reduced loss from Uncrafting), Spectre homing bullets/projectiles
-Cruciatus, Charon's Ferry, Overwatch (Null Watcher)
+Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Just Block mechanic
 
 Changelog:
 
-3.400-(11/1/20)-Century's Millennium:
+3.420-(12/2/20)-Patch 8:
+
+-This patch aims to add content and features that were missing from 3.400 and fix bugs, but wern't able to get into the mod before the planned release date
+
+
+--Added:
+
+-Dies Irae Stone
+
+-'Just Block', a new mechanic with shields where blocking an attack at the last second negates it and grants the player 30 IFrames
+
+
+--Changed:
+
+-Draken has a few more 'forth wall breaking' lines
+
+-Added a Dank Varient of Cratrosity that uses Dank crates in place of hallowed/evil ones - use a Dank key while opening a Terraria Co Supply Crate to summon it
+
+-Limbo has gained a more menacing, less empty sky...
+
+-Added some missing unused gores from 3.400
+
+-Cirno now has a death sequence, lol
+
+-Hellion now has something different to say after the fight if you choose to not diverge your privacy
+
+-Sharkvern's body segments are no longer chasable
+
+-Buffed Pocket Rocks: Damage increased by 1 (5)
+
+-Buffed Big Bang: Damage increased, mana cost reduced
+
+-Buffed Reality Shaper: Damage of projectiles increased, mana cost reduced
+
+-Buffed Dragon Commander: The damage resist is no longer based on endurance, and is now exponential
+
+-Nerfed Corroded Shield: Your hands remained tied the entire time during the dash (to make up for the added Just Block mechanic)
+
+
+--Fixed:
+
+-An oversight that Steamworks doesn't exist on the server end (the more you know! Also, I don't test this mod enough in netplay!)
+
+-A bug that let you block damage by using a Granite/Cobalt Magnet like a shield
+
+-The way shields handle blocking: This code was honestly trash and didn't work half the time, and has been upgraded into proper dot product code
+
+-Cirno's summoning item being able to be used outside the Snow biome
+
+-Cataclysmic Catalyst missing the Omega Sigil in its crafting recipe
+
+-Dank Keys not stacking
+
+
+
+3.400-(12/1/20)-Century's Millennium:
 
 THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no idea <3<3<3
 
 
 --Added:
 
--BOOMerang, Coralrang, FridgeFlamarang, Wirang, Specterang, Fortune Falchion, Gnat-ades, Sludge Bomb, Laser Marker, Re-Router, Divine Shower Storm, Cracked Mirror, Red Phasebrand, Cyber Scythe, Shadeflame Staff, Volcanic Space Blaster, Crystal Comet, Thermal Jab-lin, Swamp Sovnya, Crimson Catastrophe, Dragon Commander, Gnat and Horsefly Staff, Sybarite Gem, Blazing Heart, Restoration Flower, Glacial Stone, Terra Diving Gear, Aversion Charm, Pocket Rocks, Granite Magnet, Cobalt Magnet, TPDCPU, Wraith Targeting Gamepad, Novus Summoning Orb, Novite Command Chip, Prismal Necklace, Enchanted Bubble, Universal Music Box (is infact part of IDGlib), Assembly Star, Bottled Mud, Stygian Star, Dank Key, Spanner, Bench God's Favor
+-BOOMerang, Coralrang, FridgeFlamarang, Wirang, Specterang, Fortune Falchion, Gnat-ades, Sludge Bomb, Laser Marker, Re-Router, Divine Shower Storm, Cracked Mirror, Red Phasebrand, Cyber Scythe, Shadeflame Staff, Volcanic Space Blaster, Crystal Comet, Thermal Jab-lin, Swamp Sovnya, Crimson Catastrophe, Dragon Commander, Gnat and Horsefly Staff, Sybarite Gem, Blazing Heart, Restoration Flower, Glacial Stone, Terra Diving Gear, Aversion Charm, Pocket Rocks, Granite Magnet, Cobalt Magnet, TPDCPU, Wraith Targeting Gamepad, Novus Summoning Orb, Novite Command Chip, Prismal Necklace, Enchanted Bubble, Universal Music Box (is infact part of IDGlib), Assembly Star, Bottled Mud, Stygian Star, Dank Key, Hopeful Heart, Spanner, Bench God's Favor
 
 -New Potions: Energy, True Strike, Trigger Finger, Toxicity, Intimacy, Tooltime, Tinker
 
@@ -60,7 +115,7 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 -Murk's flies/Killer Fly Swarm have increasing and decreasing speed caps depending on the distance to the player while charging
 
--Sharkvern has a new attack and readjusted stats and fight; Has a new drowning mechanic during the fight and before it; shark minions no longer shoot Sapphire Bolts
+-Sharkvern has a new attack and readjusted stats and fight; Has a new drowning mechanic during the fight and before it; shark minions no longer shoot Sapphire Bolts, Sharkvern triggers an effect after the mech bosses til he's beaten akin to Cirno
 
 -Cirno is way more aggressive and faster when chasing the player, but stops charging from a greater distance, this helps to avoid the circing cheese. Also changed the way she is summoned with more flair
 
@@ -74,7 +129,7 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 -Armor and mobility accessories have been overhauled (see fixes)
 
--The Entropy Transmuter is no longer sold by Draken (it has been moved to the Strange Portal's shop in mutliplayer) and has been made craftable, Entrophite is now obtained in Limbo. 
+-The Entropy Transmuter is no longer sold by Draken (it has been moved to the Strange Portal's shop in multiplayer) and has been made craftable, Entrophite is now obtained in Limbo. 
 
 -The Fiery Heart is now obtainable and reworked to be stronger
 
@@ -268,7 +323,7 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 -Novite and Novus Ore have a stacksize of 999, the bars a stack size of 99
 
--Novite Drill and Novus Pickaxe are no longer better than an Evil Prehardmode Pickaxe, novus pickaxe is now faster
+-Novite Drill and Novus Pickaxe are no longer better than an Evil Prehardmode Pickaxe, novus pickaxe is now only slightly faster
 
 -Fiery Shards drop more often, Sharks drop Sharkteeth after Sharkvern is defeated
 

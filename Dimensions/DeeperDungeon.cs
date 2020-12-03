@@ -860,11 +860,11 @@ namespace SGAmod.Dimensions
                 if (SGAWorld.downedMurk > 1)
                     lootmain.Add(SGAmod.Instance.ItemType("MurkyGel"));
 
-                if (loottype < 2)//Not Shadow Chest
+                if (loottype < 2)//Not Shadow Chest/Unlocked Gold Chest
                 {
                     if (unirand.Next(0, 100) < 10 + (SGAWorld.dungeonlevel * 5))
                     {
-                        int[] theitem = { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash") };
+                        int[] theitem = { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone") };
                         Main.chest[chestid].item[e].SetDefaults(theitem[Main.rand.Next(0, theitem.Length)]);
                         Main.chest[chestid].item[e].stack = 1;
                         e += 1;

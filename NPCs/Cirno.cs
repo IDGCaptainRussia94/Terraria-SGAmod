@@ -11,7 +11,7 @@ using Terraria.Graphics.Effects;
 using Idglibrary;
 using Terraria.Graphics.Shaders;
 using Terraria.GameContent.Events;
-
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.NPCs
 {
@@ -108,8 +108,67 @@ namespace SGAmod.NPCs
 			}
 		}
 
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+			writer.Write((int)npc.localAI[3]);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+			npc.localAI[3] = reader.ReadInt32();
+        }
+
+        public override bool CheckDead()
+		{
+			if (npc.localAI[3] < 360)
+			{
+				npc.active = true;
+				npc.life = 5;
+				npc.localAI[3] = Math.Min(npc.localAI[3] + 1, 5);
+				npc.netUpdate = true;
+			}
+			return npc.localAI[3]>320;
+		}
+
 		public override void AI()
 		{
+			if (npc.localAI[3]>0)
+            {
+
+				if (npc.localAI[3] == 360)
+				{
+					Gore.NewGore(npc.Center + new Vector2(0, -24), new Vector2(0, -18), mod.GetGoreSlot("Gores/CirnoHeadGore"));
+					Gore.NewGore(npc.Center + new Vector2(0, -24), new Vector2(0, -18), mod.GetGoreSlot("Gores/Cirno_bow_gib"), 1f);
+					Gore.NewGore(npc.Center + new Vector2(0, 8), new Vector2(-1, -0), mod.GetGoreSlot("Gores/Cirno_leg_gib"), 1f);
+					Gore.NewGore(npc.Center + new Vector2(0, 8), new Vector2(1, -0), mod.GetGoreSlot("Gores/Cirno_leg_gib"), 1f);
+					Gore.NewGore(npc.Center, new Vector2(-2, -1), mod.GetGoreSlot("Gores/Cirno_arm_gib"), 1f);
+					Gore.NewGore(npc.Center, new Vector2(2, -1), mod.GetGoreSlot("Gores/Cirno_arm_gib"), 1f);
+					npc.localAI[3] = 2000;
+					npc.StrikeNPCNoInteraction(100000, 0, 0);
+					Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 117, 1f,-0.75f);
+				}
+
+				if (npc.localAI[3] % (int)(40 / (1 + ((npc.localAI[3] / 120f))))==0 || npc.localAI[3] == 360)
+				{
+					SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 100,0.75f);
+					npc.velocity += Main.rand.NextVector2Circular(4f, 4f);
+					if (sound != null && npc.localAI[3]<400)
+						sound.Pitch = -0.80f + (npc.localAI[3] / 200f);
+
+					for (int num654 = 0; num654 < 1 + npc.localAI[3] / 8f; num654++)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						Dust num655 = Dust.NewDustPerfect(npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height)), 59, randomcircle * (12f + (npc.localAI[3] > 350 ? Main.rand.NextFloat(8f,15f) : 0f)), 150, Color.Aqua, 2f+(npc.localAI[3]>350 ? 2f : 0f));
+						num655.noGravity = true;
+						num655.noLight = true;
+					}
+				}
+
+				npc.localAI[3] += 1;
+					npc.velocity /= 1.15f;
+				npc.dontTakeDamage = true;
+				return;
+            }
 			Player P = Main.player[npc.target];
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active || (!Main.dayTime && GetType() == typeof(Cirno)))
 			{
@@ -605,14 +664,6 @@ namespace SGAmod.NPCs
 			//npc.spriteDirection = (int)npc.ai[1]*14;
 			if (frameid == 2) { frameid = 3; }
 			npc.frame.Y = frameid * 80;
-		}
-
-
-
-
-		public override bool CheckDead()
-		{
-			return true;
 		}
 
 

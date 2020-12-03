@@ -12,8 +12,18 @@ using Idglibrary;
 
 namespace SGAmod.NPCs.Cratrosity
 {
+	public class CratrosityCrateDankCrate : CratrosityCrate
+	{
+		protected override int CrateIndex => ModContent.ItemType<HavocGear.Items.DankCrate>();
+		public override string Texture
+		{
+			get { return "SGAmod/HavocGear/Items/DankCrate"; }
+		}
+
+	}
 	public class CratrosityCrate2334: CratrosityCrate
 	{
+		protected override int CrateIndex => ItemID.WoodenCrate;
 		public override string Texture
 		{
 			get { return "Terraria/Item_" + 2334; }
@@ -22,6 +32,7 @@ namespace SGAmod.NPCs.Cratrosity
 	}
 	public class CratrosityCrate2335: CratrosityCrate
 	{
+		protected override int CrateIndex => ItemID.IronCrate;
 		public override string Texture
 		{
 			get { return "Terraria/Item_" + 2335; }
@@ -30,6 +41,7 @@ namespace SGAmod.NPCs.Cratrosity
 	}
 	public class CratrosityCrate2336: CratrosityCrate
 	{
+		protected override int CrateIndex => ItemID.GoldenCrate;
 		public override string Texture
 		{
 			get { return "Terraria/Item_" + 2336; }
@@ -38,6 +50,7 @@ namespace SGAmod.NPCs.Cratrosity
 	}
 	public class CratrosityCrate3203: CratrosityCrate
 	{
+		protected override int CrateIndex => ItemID.CorruptFishingCrate;
 		public override string Texture
 		{
 			get { return "Terraria/Item_" + 3203; }
@@ -46,6 +59,7 @@ namespace SGAmod.NPCs.Cratrosity
 	}
 	public class CratrosityCrate3204: CratrosityCrate
 	{
+		protected override int CrateIndex => ItemID.CrimsonFishingCrate;
 		public override string Texture
 		{
 			get { return "Terraria/Item_" + 3204; }
@@ -54,6 +68,7 @@ namespace SGAmod.NPCs.Cratrosity
 	}
 	public class CratrosityCrate3205: CratrosityCrate
 	{
+		protected override int CrateIndex => ItemID.DungeonFishingCrate;
 		public override string Texture
 		{
 			get { return "Terraria/Item_" + 3205; }
@@ -62,6 +77,7 @@ namespace SGAmod.NPCs.Cratrosity
 	}
 	public class CratrosityCrate3206: CratrosityCrate
 	{
+		protected override int CrateIndex => ItemID.FloatingIslandFishingCrate;
 		public override string Texture
 		{
 			get { return "Terraria/Item_" + 3206; }
@@ -87,6 +103,7 @@ namespace SGAmod.NPCs.Cratrosity
 
 	public class CratrosityCrate3207: CratrosityCrate
 	{
+		protected override int CrateIndex => ItemID.HallowedFishingCrate;
 		public override string Texture
 		{
 			get { return "Terraria/Item_" + 3207; }
@@ -95,13 +112,36 @@ namespace SGAmod.NPCs.Cratrosity
 	}
 	public class CratrosityCrate3208: CratrosityCrate
 	{
+		protected override int CrateIndex => ItemID.IronCrate;
 		public override string Texture
 		{
 			get { return "Terraria/Item_" + 3208; }
 		}
 
 	}
-		public class CratrosityLight: ModNPC
+	public class CratrosityDank : ModNPC
+	{
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Cratrosity");
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Item_" + 3208; }
+		}
+
+		public override void AI()
+		{
+			int spawnedint = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, mod.NPCType("Cratrosity"));
+			NPC spawned = Main.npc[spawnedint];
+			spawned.ai[3] = 300001;
+			npc.active = false;
+		}
+
+
+	}
+	public class CratrosityLight: ModNPC
 	{
 
 		public override void SetStaticDefaults()

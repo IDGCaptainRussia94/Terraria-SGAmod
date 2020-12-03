@@ -329,6 +329,136 @@ namespace SGAmod
 
 		}
 
+		private bool ShieldJustBlock(int blocktime,Projectile shield, Vector2 where, ref int damage, int damageSourceIndex)
+        {
+			if (blocktime < 30 && AddCooldownStack(60 * 3))
+			{
+				for (float i = 0; i < MathHelper.TwoPi; i += MathHelper.Pi / 10f)
+				{
+					Vector2 randomcircle = Main.rand.NextVector2CircularEdge(2f, 4f).RotatedBy(shield.velocity.ToRotation());
+					int dust = Dust.NewDust(shield.Center, 0, 0, 27);
+					Main.dust[dust].scale = 1.5f;
+					Main.dust[dust].velocity = randomcircle * 3f;
+					Main.dust[dust].noGravity = true;
+					Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(ItemID.AcidDye);
+				}
+				player.GetModPlayer<SGAPlayer>().realIFrames = 30;
+				Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 1f, -0.5f);
+
+				if (diesIraeStone && damageSourceIndex > 0)
+                {
+					float empty = 5f;
+					bool emptyCrit = true;
+					Main.npc[damageSourceIndex - 1].SGANPCs().DoApoco(Main.npc[damageSourceIndex - 1],shield,player,null,ref damage,ref empty, ref emptyCrit, 4,true);
+                }
+
+				return true;
+			}
+			return false;
+
+		}
+
+		protected bool ShieldDamageCheck(Vector2 where, ref int damage,int damageSourceIndex)
+		{
+			Vector2 itavect = where - player.Center;
+			itavect.Normalize();
+
+
+			if (player.HeldItem != null && player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1)
+			{
+
+				if (SGAPlayer.ShieldTypes.ContainsKey(player.HeldItem.type))
+				{
+					int foundhim = -1;
+
+					int xxxz = 0;
+					int thetype;
+					SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out thetype);
+					Projectile proj = null;
+					for (xxxz = 0; xxxz < Main.maxProjectiles; xxxz++)
+					{
+						if (Main.projectile[xxxz].active && Main.projectile[xxxz].type == thetype && Main.projectile[xxxz].owner == player.whoAmI)
+						{
+							foundhim = xxxz;
+							proj = Main.projectile[xxxz];
+							break;
+						}
+					}
+					if (foundhim > -1)
+					{
+						int blocktime = (proj.modProjectile as Items.Weapons.Caliburn.CorrodedShieldProj).blocktimer;
+						if (proj == null || blocktime < 2)
+							return false;
+
+
+
+						Vector2 itavect2 = Main.projectile[foundhim].Center - player.Center;
+						itavect2.Normalize();
+						Vector2 ang1 = Vector2.Normalize(proj.velocity);
+						float diff = Vector2.Dot(itavect, ang1);
+
+
+						if (diff > 0.75f)
+						{
+							if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
+								return true;
+
+
+							float damageval = 0.75f;
+							if (thetype == mod.ProjectileType("CapShieldProj"))
+								damageval = 0.50f;
+							damage = (int)(damage * damageval);
+							Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
+							return false;
+						}
+					}
+
+				}
+
+			}
+			return false;
+		}
+
+		public bool ChainBolt()
+		{
+			WeightedRandom<int> rando = new WeightedRandom<int>();
+
+			if (ConsumeElectricCharge(750, 120))
+			{
+
+				for (int i = 0; i < Main.maxNPCs; i += 1)
+				{
+					if (Main.npc[i].active && !Main.npc[i].townNPC && !Main.npc[i].friendly)
+					{
+						if (Main.npc[i].CanBeChasedBy() && !Main.npc[i].dontTakeDamage)
+						{
+							float dist = Main.npc[i].Distance(player.Center);
+							if (dist < 250)
+							{
+								rando.Add(i, 250.00 - (double)dist);
+							}
+						}
+					}
+				}
+
+				if (rando.elements.Count > 0)
+				{
+					NPC luckyguy = Main.npc[rando.Get()];
+
+					Vector2 Speed = (luckyguy.Center - player.Center);
+					Speed.Normalize(); Speed *= 2f;
+					int prog = Projectile.NewProjectile(player.Center.X, player.Center.Y, Speed.X, Speed.Y, mod.ProjectileType("CBreakerBolt"), 30 + ((int)((float)(player.statDefense * techdamage))), 3f, player.whoAmI, 3);
+					IdgProjectile.Sync(prog);
+					Main.PlaySound(SoundID.Item93, player.Center);
+					return true;
+				}
+			}
+
+
+
+			return false;
+		}
+
 		public bool DashBlink()
 		{
 			if (noModTeleport || maxblink < 1)

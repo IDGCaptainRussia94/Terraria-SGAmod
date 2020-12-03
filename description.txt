@@ -18,6 +18,60 @@ And finally, alot of content in this mod is placeholder sprites due to a lack of
 
 Changelog:
 
+3.420-(12/2/20)-Patch 8:
+
+-This patch aims to add content and features that were missing from 3.400 and fix bugs, but wern't able to get into the mod before the planned release date
+
+--Added:
+
+-Dies Irae Stone
+
+-'Just Block', a new mechanic with shields where blocking an attack at the last second negates it and grants the player 30 IFrames
+
+
+--Changed:
+
+-Draken has a few more 'forth wall breaking' lines
+
+-Added a Dank Varient of Cratrosity that uses Dank crates in place of hallowed/evil ones - use a Dank key while opening a Terraria Co Supply Crate to summon it
+
+-Limbo has gained a more menacing, less empty sky...
+
+-Added some missing unused gores from 3.400
+
+-Cirno now has a death sequence, lol
+
+-Hellion now has something different to say after the fight if you choose to not diverge your privacy
+
+-Sharkvern's body segments are no longer chasable
+
+-Buffed Pocket Rocks: Damage increased by 1 (5)
+
+-Buffed Big Bang: Damage increased, mana cost reduced
+
+-Buffed Reality Shaper: Damage of projectiles increased, mana cost reduced
+
+-Buffed Dragon Commander: The damage resist is no longer based on endurance, and is now exponential
+
+-Nerfed Corroded Shield: Your hands remained tied the entire time during the dash (to make up for the added Just Block mechanic)
+
+
+--Fixed:
+
+-An oversight that Steamworks doesn't exist on the server end (the more you know! Also, I don't test this mod enough in netplay!)
+
+-A bug that let you block damage by using a Granite/Cobalt Magnet like a shield
+
+-The way shields handle blocking: This code was honestly trash and didn't work half the time, and has been upgraded into proper dot product code
+
+-Cirno's summoning item being able to be used outside the Snow biome
+
+-Cataclysmic Catalyst missing the Omega Sigil in its crafting recipe
+
+-Dank Keys not stacking
+
+
+
 3.400-(12/1/20)-Century's Millennium:
 
 THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no idea <3<3<3

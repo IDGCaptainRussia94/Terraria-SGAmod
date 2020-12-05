@@ -332,8 +332,6 @@ namespace SGAmod.Items.Weapons
 						{
 							if (owner.SGAPly().ConsumeElectricCharge(100,150))
 							{
-								//owner.statMana -= (int)(15f * owner.manaCost);
-								//owner.manaRegenDelay = Math.Max(owner.manaRegenDelay,30);
 								int rainmeansmore = (Main.raining || owner.GetModPlayer<SGAPlayer>().devempowerment[1] > 0) ? 2 : 0;
 
 								for (int x = 0; x < rainmeansmore + 1; x++)

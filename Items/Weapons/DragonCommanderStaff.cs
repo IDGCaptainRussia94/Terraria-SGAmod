@@ -19,7 +19,7 @@ using Terraria.Utilities;
 namespace SGAmod.Items.Weapons
 {
 
-	public class DragonCommanderStaff : ModItem
+	public class DragonCommanderStaff : ModItem, IHitScanItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -112,19 +112,6 @@ namespace SGAmod.Items.Weapons
 		{
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
 			tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, "IDGCaptainRussia94's other dev weapon")));
-		}
-        public override void AddRecipes()
-		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("CrystalComet"), 1);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 20);
-			recipe.AddIngredient(mod.ItemType("DrakeniteBar"), 15);
-			recipe.AddIngredient(mod.ItemType("StygianCore"), 2);
-			recipe.AddIngredient(ItemID.FragmentSolar, 8);
-			recipe.AddIngredient(ItemID.ManaCrystal, 3);
-			recipe.AddTile(TileID.LunarCraftingStation);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
 		}
 	}
 

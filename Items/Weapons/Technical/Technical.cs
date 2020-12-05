@@ -14,6 +14,7 @@ using SGAmod.Projectiles;
 using AAAAUThrowing;
 using SGAmod.Buffs;
 using SGAmod.Effects;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Weapons.Technical
 {
@@ -1273,7 +1274,7 @@ namespace SGAmod.Items.Weapons.Technical
 			if (player.altFunctionUse == 2)
 			{
 				modply.plasmaLeftInClip -= 50;
-				player.statMana -= (int)(40f * player.manaCost);
+				player.CheckMana(40, true);
 				player.itemTime *= 5;
 				player.itemAnimation *= 5;
 				Main.PlaySound(SoundID.Item, player.Center, 122);
@@ -1865,7 +1866,10 @@ namespace SGAmod.Items.Weapons.Technical
 				Main.dust[dust].noGravity = false;
 				Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
 			}
-			Main.PlaySound(SoundID.NPCHit, (int)projectile.Center.X, (int)projectile.Center.Y, 53).Pitch -= 0.5f;
+			SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)projectile.Center.X, (int)projectile.Center.Y, 53);
+			if (sound!=null)
+				sound.Pitch -= 0.5f;
+
 			return true;
 		}
 

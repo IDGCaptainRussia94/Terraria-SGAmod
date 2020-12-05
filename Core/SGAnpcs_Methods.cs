@@ -550,7 +550,7 @@ namespace SGAmod
 
 			if (moddedplayer.Blazewyrmset)
 			{
-				if (crit && ((item != null && item.melee && item.pick + item.axe + item.hammer < 1)))
+				if (crit && ((item != null && item.melee && item.pick + item.axe + item.hammer < 1)) || (projectile != null && projectile.melee && player.heldProj == projectile.whoAmI))
 				{
 					if (player.SGAPly().AddCooldownStack(12 * 60))
 					{

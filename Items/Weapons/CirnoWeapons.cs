@@ -581,7 +581,7 @@ namespace SGAmod.Items.Weapons
 						player.itemTime = 90;
 
 					}
-					player.statMana -= (int)(60f * player.manaCost);
+					player.CheckMana(60,true);
 					player.manaRegenDelay = 1200;
 				}
 

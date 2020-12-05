@@ -18,10 +18,81 @@ using Terraria.GameInput;
 
 namespace SGAmod
 {
-	public partial class SGAmod : Mod
+	public class SGAILHacks
 	{
 
-		protected void ForcedNPCLavaCollisionHack(ILContext il)//Burn Baby Burn
+		internal static void Patch()
+        {
+			IL.Terraria.Player.AdjTiles += ForcedAdjTilesHack;
+			IL.Terraria.Player.Update += SwimInAirHack;
+			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
+			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
+			IL.Terraria.Player.CheckDrowning += BreathingHack;
+			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
+			//IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
+			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
+		}
+		internal static void Unpatch()
+		{
+			IL.Terraria.Player.AdjTiles -= ForcedAdjTilesHack;
+			IL.Terraria.Player.Update -= SwimInAirHack;
+			IL.Terraria.GameInput.LockOnHelper.Update -= CurserHack;
+			IL.Terraria.GameInput.LockOnHelper.SetUP -= CurserAimingHack;
+			IL.Terraria.Player.CheckDrowning -= BreathingHack;
+			IL.Terraria.NPC.Collision_LavaCollision -= ForcedNPCLavaCollisionHack;
+			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
+		}
+
+		private delegate bool PlayerDelegate(Player player);
+		static internal void NoMovementManaRegen(ILContext il)//Like Better Mana Regen but without deleting instructions
+		{
+			PlayerDelegate manaRegen = delegate (Player player)
+			{
+				return player.SGAPly().magusSlippers;
+			};
+
+			ILCursor c = new ILCursor(il);
+			ILLabel output = c.DefineLabel();
+			ILLabel output2 = c.DefineLabel();
+
+			if (!c.TryGotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("manaRegenBuff"), i => i.MatchBrfalse(out _)))
+					goto Failed;
+
+			c.MarkLabel(output);
+			c.Index -= 3;
+
+			c.Emit(OpCodes.Ldarg_0);
+				c.EmitDelegate(manaRegen);
+				c.Emit(OpCodes.Brtrue_S, output);
+
+			c.Index = c.Instrs.Count-2;
+
+				if (!c.TryGotoPrev(MoveType.Before, i => i.MatchLdfld<Player>("manaRegenBuff"), i => i.MatchBrfalse(out _)))
+					goto Failed2;
+			c.Index -= 1;
+
+			if (!c.TryGotoPrev(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("manaRegenBuff"), i => i.MatchBrfalse(out _)))
+				goto Failed3;
+
+			c.MarkLabel(output2);
+			c.Index -= 3;
+
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate(manaRegen);
+			c.Emit(OpCodes.Brtrue_S, output2);
+
+			return;
+		Failed:
+			throw new Exception("IL Error Test");
+		Failed2:
+			throw new Exception("IL Error Test 2");
+		Failed3:
+			throw new Exception("IL Error Test 3");
+
+
+		}
+
+		static internal void ForcedNPCLavaCollisionHack(ILContext il)//Burn Baby Burn
 		{
 			ILCursor c = new ILCursor(il);
 
@@ -39,7 +110,7 @@ namespace SGAmod
 			});
 		}
 
-		protected void ForcedAdjTilesHack(ILContext il)//Bench God's blessing allows you to craft with this station at any time!
+			static internal void ForcedAdjTilesHack(ILContext il)//Bench God's blessing allows you to craft with this station at any time!
 		{
 			ILCursor c = new ILCursor(il);
 
@@ -67,7 +138,7 @@ namespace SGAmod
 		}
 
 		private delegate bool SwimInAirHackDelegate(bool stackbool, Player player);
-		protected void SwimInAirHack(ILContext il)//Control water physics on the player
+		static internal void SwimInAirHack(ILContext il)//Control water physics on the player
 		{
 			ILCursor c = new ILCursor(il);
 			MethodInfo HackTheMethod = typeof(Collision).GetMethod("WetCollision", BindingFlags.Public | BindingFlags.Static);
@@ -91,7 +162,7 @@ namespace SGAmod
 			c.EmitDelegate<SwimInAirHackDelegate>(inWater);
 		}
 
-		protected void CurserHack(ILContext il)//Hack the autoaim on the gamepad to function with keyboard and mouse!
+		static internal void CurserHack(ILContext il)//Hack the autoaim on the gamepad to function with keyboard and mouse!
 		{
 			ILCursor c = new ILCursor(il);
 			MethodInfo HackTheMethod = typeof(PlayerInput).GetMethod("get_UsingGamepad", BindingFlags.Public | BindingFlags.Static);
@@ -138,7 +209,7 @@ namespace SGAmod
 
 		}
 
-		protected void CurserAimingHack(ILContext il)//Remove aim prediction with Hitscan items
+		static internal void CurserAimingHack(ILContext il)//Remove aim prediction with Hitscan items
 		{
 			ILCursor c = new ILCursor(il);
 			MethodInfo HackTheMethod = typeof(LockOnHelper).GetMethod("get_PredictedPosition", BindingFlags.Public | BindingFlags.Static);
@@ -149,7 +220,7 @@ namespace SGAmod
 
 		private delegate Vector2 AutoAimOverrideDelegate(Vector2 predictedLocation);
 
-		private AutoAimOverrideDelegate AutoAimOverride = delegate (Vector2 predictedLocation)
+		static private AutoAimOverrideDelegate AutoAimOverride = delegate (Vector2 predictedLocation)
 		{
 			if (Main.LocalPlayer.HeldItem?.modItem is IHitScanItem)
 			{
@@ -159,7 +230,7 @@ namespace SGAmod
 			return predictedLocation;
 		};
 
-		protected void TileInteractionHack(ILContext il)//Shoot modded Snowballs out of the Snowball Launcher!
+		static internal void TileInteractionHack(ILContext il)//Shoot modded Snowballs out of the Snowball Launcher! (Currently disabled)
 		{
 			ILCursor c = new ILCursor(il);
 			if (c.TryGotoNext(n => n.MatchLdcI4(949))) //Snowball
@@ -182,7 +253,7 @@ namespace SGAmod
 			}
 		}
 
-		protected void BreathingHack(ILContext il)//Aqua Aquarian totally carried this one, but thanks! Enables breathing reed ability on accessory, drawing is handled elsewhere
+		static internal void BreathingHack(ILContext il)//Aqua Aquarian totally carried this one, but thanks! Enables breathing reed ability on accessory, drawing is handled elsewhere
 		{
 			ILCursor c = new ILCursor(il);
 

@@ -294,21 +294,13 @@ namespace SGAmod.Items.Weapons
 					if (diff.Length() > 1800 || projectile.ai[1]>1200)
 					{
 
-						player.statMana -= (int)(15 * player.manaCost);
-						if (player.statMana < 1)
+						if (!player.CheckMana(15, true))
 						{
-							if (player.manaFlower)
-							{
-								player.QuickMana();
-
-							}
-							else
-							{
-								projectile.ai[0] = -10000;
-								projectile.netUpdate = true;
-								return;
-							}
+							projectile.ai[0] = -10000;
+							projectile.netUpdate = true;
+							return;
 						}
+						
 
 						diff.Normalize();
 						projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;

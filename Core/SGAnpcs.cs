@@ -67,6 +67,7 @@ namespace SGAmod
 		public bool petrified = false;
 		public bool lavaBurn = false;
 		public bool TimeSlowImmune = false;
+		public bool dotImmune = false;
 		bool fireimmunestate = false;
 		bool[] otherimmunesfill = new bool[3];
 		public bool Mircotransactions;
@@ -234,6 +235,8 @@ namespace SGAmod
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
 		{
+			if (dotImmune)
+				goto Endjump;
 
 			if (!npc.townNPC && !npc.friendly && npc.HasBuff(BuffID.Lovestruck))
 			{
@@ -366,6 +369,7 @@ namespace SGAmod
 					damage = Math.Max(impaled / 4, damage);
 				}
 			}
+			Endjump:
 			//ResetEffects seems to be called after projectile AI it seems, but this works, for now
 			impaled = 0;
 			nonStackingImpaled_ = 0;

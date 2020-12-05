@@ -862,7 +862,7 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}
-			if (modplayer.ExpertiseCollectedTotal >= 12000 && SGAWorld.downedHellion>1)
+			if (modplayer.ExpertiseCollectedTotal >= 12000 && SGAWorld.downedHellion>1 && Main.LocalPlayer.HasItem(ModContent.ItemType<Items.CosmicFragment>()))
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("DragonCommanderStaff"));
 				shop.item[nextSlot].shopCustomPrice = 500;

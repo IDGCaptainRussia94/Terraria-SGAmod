@@ -14,6 +14,7 @@ using Terraria.GameContent.Events;
 using SGAmod.Items.Weapons;
 using SGAmod.NPCs;
 using Terraria.Localization;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Consumable
 {
@@ -545,8 +546,12 @@ namespace SGAmod.Items.Consumable
 				projectile.aiStyle = -1;
 				projectile.velocity *= 0.90f;
 
-				if ((int)projectile.localAI[1]%30==0)
-				Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 25).Pitch+=(projectile.localAI[1]-60)/350f;
+				if ((int)projectile.localAI[1] % 30 == 0)
+				{
+					SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 25);
+					if (sound!=null)
+						sound.Pitch += (projectile.localAI[1] - 60) / 350f;
+				}
 
 				for (int num654 = 0; num654 < 1 + projectile.localAI[1]/8f; num654++)
 				{

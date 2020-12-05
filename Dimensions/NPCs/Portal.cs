@@ -32,7 +32,7 @@ namespace SGAmod.Dimensions.NPCs
 			Main.npcFrameCount[npc.type] = 1;
 			NPCID.Sets.ExtraFramesCount[npc.type] = 1;
 			NPCID.Sets.AttackFrameCount[npc.type] = 1;
-			NPCID.Sets.DangerDetectRange[npc.type] = 700;
+			NPCID.Sets.DangerDetectRange[npc.type] = 0;
 			NPCID.Sets.AttackType[npc.type] = 0;
 			NPCID.Sets.AttackTime[npc.type] = 90;
 			NPCID.Sets.AttackAverageChance[npc.type] = 30;
@@ -227,6 +227,10 @@ namespace SGAmod.Dimensions.NPCs
 
 			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("BeserkerAuraStaff"));
 			shop.item[nextSlot].shopCustomPrice = 75;
+			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+			nextSlot++;
+			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("DiesIraeStone"));
+			shop.item[nextSlot].shopCustomPrice = 50;
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 			nextSlot++;
 			if (Main.LocalPlayer.SGAPly().ExpertiseCollectedTotal >= 4000)

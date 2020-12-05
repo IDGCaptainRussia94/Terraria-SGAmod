@@ -40,10 +40,10 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(null, "VialofAcid",5);
-            recipe.AddIngredient(null, "VirulentBar", 10);
             recipe.AddIngredient(null, "Mossthorn", 1);
             recipe.AddIngredient(null, "TidalWave", 1);
+            recipe.AddIngredient(null, "VialofAcid", 5);
+            recipe.AddIngredient(null, "VirulentBar", 10);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);
             recipe.AddRecipe();

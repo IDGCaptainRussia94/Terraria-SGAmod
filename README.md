@@ -11,10 +11,60 @@ Github was moved: previous builds of the mod can be found over here: https://git
 -Corruption only: Gas Passer, Wraith Arrows, Dosed Arrows, Corrupted Tome, Cursed Hail, Jagged Spike Buckler (can be bypassed with fishing)
 
 
--Ideas: Banners, the Couch, Bannerlord=collection of banners, Draken Summon?! Potions: Tooltime (tools gain massive knockback), Tinker (reduced loss from Uncrafting), Spectre homing bullets/projectiles
-Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Just Block mechanic
+-Ideas: Banners, the Couch, Bannerlord=collection of banners, Spectre homing bullets/projectiles
+Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon
 
 Changelog:
+
+3.455-(12/5/20)-Hot Fix #13:
+
+
+--Changed:
+
+-A Cosmic Fragment is now required in your inventory to buy the Dragon Commander
+
+-Stygian Veins have been made more common and can very rarely spawn in Limbo now, but their spawning distance has been increased, Null Watchers spawn rates reduced
+
+-Luminite Wraith's Targets no longer shoot any projectiles as giving it thought, it was causing cheap hits, I'll figure out another use for them later
+
+-Luminite Wraith can no longer do contact damage when not trying to ram the player
+
+-Reworked Captain America's Shield: blocks damage from a wider angle, Just Block grants striking moment, crit chance reduced to 15% (from 25%)
+
+-Buffed Assassin and Elite Emblem: Assassin gives +1 minions, Elite gives +2
+
+-Buffed Mister Creeper's Crowning Attire: Defense increased to 40 (from 35)
+
+-Omega Sigil, Prismal Bar, and Portable Hive Resprite, Portable Hive has an equip sprite now (much appericated JellyBru!)
+
+
+--Fixed:
+
+-Not receiving the upgraded Caliburn compass after defeating Wrath of Caliburn
+
+-Blazewyrm set bonus not triggering on 'True melee' projectile weapons like Yoyos and Spears
+
+
+
+3.440-(12/3/20)-Hot Fix #12:
+
+
+--Changed:
+
+-Strange Portal no longer tries to slowly fly away from enemies
+
+-Moist Stone (Dank Shrine walls) can now be mined before beating murk as to help with the generation locking players out, but it takes longer and inflicts debuffs on you, it is still only explodable after Murk thou
+
+
+--Fixed:
+
+-Fixed trying to access sound instances server-side (IE you can hopefully summon Cirno now)
+
+-Removed Dragon Commander's crafting recipe (it was not suppose to have one), also was missing the Hit Scan Item property for the Wraith Targeting Gamepad
+
+-Dies Irae Stone missing from the Strange Portal's shop in multiplayer
+
+
 
 3.420-(12/2/20)-Patch 8:
 

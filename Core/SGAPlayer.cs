@@ -45,7 +45,7 @@ namespace SGAmod
 		public float damageReduce = 1f;
 		public int shinobj = 0;
 		public int surprised = 0;
-		public bool diesIraeStone = false;
+		public bool diesIraeStone = false; public bool magusSlippers = false;
 		public float[] beserk = { 0, 0 };
 		public float actionCooldownRate = 1f;
 		public int previoustf2emblemLevel = 0;
@@ -236,6 +236,7 @@ namespace SGAmod
 			tidalCharm = Math.Max(tidalCharm - 1, 0);
 			shinobj -= 1;
 			diesIraeStone = false;
+			magusSlippers = false;
 			damageReduce = 1f;
 			previoustf2emblemLevel = tf2emblemLevel;
 			tf2emblemLevel = 0;

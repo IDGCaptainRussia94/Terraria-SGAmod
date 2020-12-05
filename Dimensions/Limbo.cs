@@ -73,7 +73,7 @@ namespace SGAmod.Dimensions
 
                 }
                 pool[ModContent.NPCType<NullWatcher>()] = 1f;
-
+                pool[ModContent.NPCType<StygianVein>()] = 0.02f;
 
                 pocket.chooseenemies = true;
                 return 1;

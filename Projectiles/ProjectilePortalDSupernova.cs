@@ -107,9 +107,7 @@ namespace SGAmod.Projectiles
                         Main.PlaySound(SoundID.Item20, player.Center);
                         projectile.timeLeft = Math.Max(startrate - (int)counterfire * drainrate, projectilerate);
                         counterfire += 1;
-                        player.statMana -= (int)(manacost * player.manaCost);
-                        if (player.manaFlower && player.statMana < manacost)
-                            player.QuickMana();
+                        player.CheckMana((int)(manacost),true);
 
                     }
                 }

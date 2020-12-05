@@ -124,7 +124,7 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.statManaMax2 += 100;
-			player.manaCost -=0.05f;
+			player.manaCost -= 0.05f;
 			base.UpdateAccessory(player, hideVisual);
 		}
 
@@ -183,7 +183,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Assassin Emblem");
-			Tooltip.SetDefault("10% increased crit chance and damage, 35% increased throwing velocity\n75 increased Max HP\n100 Increased Max Mana and 7.5% mana cost reduction\n10% extra throwing damage");
+			Tooltip.SetDefault("10% increased crit chance and damage, 35% increased throwing velocity\n75 increased Max HP and +1 Max Minions\n100 Increased Max Mana and 7.5% mana cost reduction\n10% extra throwing damage");
 		}
 
 		public override void SetDefaults()
@@ -209,6 +209,7 @@ namespace SGAmod.Items.Accessories
 			player.Throwing().thrownDamage += 0.05f;
 			player.Throwing().thrownVelocity += 0.1f;
 			player.manaCost -= 0.025f;
+			player.maxMinions += 1;
 			player.statLifeMax2 += 25;
 			base.UpdateAccessory(player, hideVisual);
 			player.SGAPly().tf2emblemLevel = 3;
@@ -234,7 +235,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Elite Emblem");
-			Tooltip.SetDefault("10% increased crit chance, 15% increased damage, 50% increased throwing velocity\n100 increased Max HP\n120 Increased Max Mana and 10% mana cost reduction\n20% extra throwing damage\nEffects of MVM Upgrade");
+			Tooltip.SetDefault("10% increased crit chance, 15% increased damage, 50% increased throwing velocity\n100 increased Max HP and +2 Max Minions\n120 Increased Max Mana and 10% mana cost reduction\n20% extra throwing damage\nEffects of MVM Upgrade");
 		}
 
 		public override void SetDefaults()
@@ -258,6 +259,7 @@ namespace SGAmod.Items.Accessories
 			player.statManaMax2 += 20;
 			player.statLifeMax2 += 25;
 			player.manaCost -= 0.025f;
+			player.maxMinions += 1;
 			//mod.GetItem("LifeforceQuintessence").UpdateAccessory(player, hideVisual);
 			base.UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<MVMUpgrade>().UpdateAccessory(player, hideVisual);

@@ -345,6 +345,8 @@ namespace SGAmod
 				player.GetModPlayer<SGAPlayer>().realIFrames = 30;
 				Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 1f, -0.5f);
 
+				(shield.modProjectile as Items.Weapons.Caliburn.CorrodedShieldProj).JustBlock(blocktime, where, ref damage, damageSourceIndex);
+
 				if (diesIraeStone && damageSourceIndex > 0)
                 {
 					float empty = 5f;
@@ -398,7 +400,7 @@ namespace SGAmod
 						float diff = Vector2.Dot(itavect, ang1);
 
 
-						if (diff > 0.75f)
+						if (diff > (proj.modProjectile as Items.Weapons.Caliburn.CorrodedShieldProj).blockAngle)
 						{
 							if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
 								return true;

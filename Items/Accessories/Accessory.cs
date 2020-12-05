@@ -258,6 +258,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	[AutoloadEquip(EquipType.Back)]
 	public class PortableHive : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -922,11 +923,6 @@ namespace SGAmod.Items.Accessories
 			for (int i = 0; i < player.GetModPlayer<SGAPlayer>().apocalypticalChance.Length; i += 1)
 				player.GetModPlayer<SGAPlayer>().apocalypticalChance[i] += 2.0;
 			player.GetModPlayer<SGAPlayer>().OmegaSigil = true;
-		}
-
-		public override string Texture
-		{
-			get { return ("SGAmod/Items/OmegaSigil"); }
 		}
 
 		public override void SetDefaults()
@@ -3056,6 +3052,55 @@ namespace SGAmod.Items.Accessories
 			modeproj.myplayer = player;
 			Main.projectile[probg].netUpdate = true;
 			IdgProjectile.Sync(probg);
+			return false;
+		}
+
+	}
+
+	public class FluidDisplacer : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Fluid Displacer");
+			Tooltip.SetDefault("WIP");
+		}
+		public override void SetDefaults()
+		{
+			item.width = 32;
+			item.height = 32;
+			item.value = 50000;
+			item.maxStack = 10;
+			item.rare = ItemRarityID.Orange;
+		}
+
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+
+			Texture2D inner = ModContent.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
+
+			Vector2 slotSize = new Vector2(52f, 52f);
+			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
+
+			spriteBatch.Draw(inner, drawPos, null, Color.White,0, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
+
+
+			return true;
+		}
+
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+
+			Texture2D inner = ModContent.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
+
+			Vector2 position = item.Center - Main.screenPosition;
+
+			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
+
+			spriteBatch.Draw(inner, position, null, alphaColor, rotation, textureOrigin, scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.itemTexture[item.type], position, null, alphaColor, rotation, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
+
 			return false;
 		}
 

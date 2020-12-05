@@ -75,6 +75,8 @@ namespace SGAmod.Dimensions.NPCs
             npc.noTileCollide = true;
             npc.aiStyle = -1;
             npc.alpha = 0;
+            npc.SGANPCs().dotImmune = true;
+            npc.SGANPCs().TimeSlowImmune = true;
         }
 
         public static void SoundChecks(Vector2 where)
@@ -311,7 +313,7 @@ namespace SGAmod.Dimensions.NPCs
                 foreach (DarkSector sector in DimDingeonsWorld.darkSectors)
                 {
                     if (sector.PointInside(new Vector2(spawnInfo.spawnTileX * 16, spawnInfo.spawnTileY * 16), 8))
-                        chance += 15f;
+                        chance += 12f;
                 }
             }
             chance += spawnInfo.player.SGAPly().watcherDebuff > 0 ? 0.5f : 0;
@@ -359,7 +361,9 @@ namespace SGAmod.Dimensions.NPCs
                 if (caliburn)
                     Idglib.Chat("The Darkness grows restless...", 180, 25, 25);
 
-                Projectile.NewProjectile(center, Vector2.One.RotatedByRandom(Math.PI) * speed, ModContent.ProjectileType<SpookyDarkSectorEye>(), 1, 0,ai1: caliburn ? 1 : 0);
+                int proj = Projectile.NewProjectile(center, Vector2.One.RotatedByRandom(Math.PI) * speed, ModContent.ProjectileType<SpookyDarkSectorEye>(), 1, 0,ai1: caliburn ? 1 : 0);
+                Main.projectile[proj].ai[1] = caliburn ? 1 : 0;
+                Main.projectile[proj].netUpdate = true;
             }
         }
 
@@ -451,7 +455,7 @@ namespace SGAmod.Dimensions.NPCs
                     projectile.Kill();
                 }
 
-                if (Main.netMode != 1 && (int)projectile.ai[1] == 1)
+                if ((int)projectile.ai[1] == 1)
                 {
                     if (SGAWorld.darknessVision != true)
                     {

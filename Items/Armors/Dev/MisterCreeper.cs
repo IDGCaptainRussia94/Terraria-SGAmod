@@ -20,7 +20,7 @@ namespace SGAmod.Items.Armors.Dev
 		}
 		public virtual void InitEffects()
 		{
-			item.defense = 35;
+			item.defense = 40;
 			item.rare = 10;
 		}
 		public override TagCompound Save()

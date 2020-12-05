@@ -176,10 +176,7 @@ namespace SGAmod.Items.Weapons
                             int thisoned = Projectile.NewProjectile(player.Center.X, player.Center.Y-12, Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1f, 1f), mod.ProjectileType("AcidScepterVenom"), projectile.damage, projectile.knockBack, Main.myPlayer);
                             IdgProjectile.Sync(thisoned);
                             Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 9, 0.25f, -0.25f);
-
-                            player.statMana -= (int)(5 * player.manaCost);
-                            if (player.manaFlower && player.statMana < 5)
-                                player.QuickMana();
+                            player.CheckMana(5, true);
 
                         }
 

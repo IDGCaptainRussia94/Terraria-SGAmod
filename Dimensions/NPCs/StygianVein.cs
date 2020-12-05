@@ -38,7 +38,9 @@ namespace SGAmod.Dimensions.NPCs
             npc.noTileCollide = true;
             npc.aiStyle = -1;
             npc.alpha = 0;
-            for(int buff=0;buff<npc.buffImmune.Length;buff++)
+            npc.SGANPCs().dotImmune = true;
+            npc.SGANPCs().TimeSlowImmune = true;
+            for (int buff=0;buff<npc.buffImmune.Length;buff++)
             {
                 npc.buffImmune[buff] = true;
             }
@@ -124,20 +126,19 @@ namespace SGAmod.Dimensions.NPCs
         {
             Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY];
 
-
-                    if (DimDingeonsWorld.darkSectors.Count < 1)
+            if (DimDingeonsWorld.darkSectors.Count < 1)
                 return 0f;
 
             float chance = 0f;
 
-            if (Main.rand.Next(8) == 0)
+            if (Main.rand.Next(7) == 0)
             {
                 Vector2 spawnPos = new Vector2(spawnInfo.spawnTileX * 16, spawnInfo.spawnTileY * 16);
                 foreach (DarkSector sector in DimDingeonsWorld.darkSectors)
                 {
-                    if (!Main.npc.Any(npc => npc.active && npc.type == ModContent.NPCType<StygianVein>() && Vector2.Distance(npc.Center, spawnPos) <= 640)
+                    if (!Main.npc.Any(npc => npc.active && npc.type == ModContent.NPCType<StygianVein>() && Vector2.Distance(npc.Center, spawnPos) <= 720)
                     && (sector.PointInside(new Vector2(spawnInfo.spawnTileX * 16, spawnInfo.spawnTileY * 16), 8)))
-                        chance = 8f;
+                        chance = 10f;
                 }
             }
                 return chance;

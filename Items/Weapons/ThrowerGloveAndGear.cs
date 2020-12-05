@@ -15,6 +15,7 @@ using SGAmod.Items.Consumable;
 using Terraria.DataStructures;
 using SGAmod.Buffs;
 using System.Linq;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Weapons
 {
@@ -1778,7 +1779,9 @@ namespace SGAmod.Items.Weapons
 				Main.dust[dust].noGravity = false;
 				Main.dust[dust].velocity = Main.rand.NextVector2Circular(2f, 2f);
 			}
-			Main.PlaySound(SoundID.Tink, (int)projectile.Center.X, (int)projectile.Center.Y).Pitch -= 0.525f;
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Tink, (int)projectile.Center.X, (int)projectile.Center.Y);
+				if (sound!=null)
+				sound.Pitch -= 0.525f;
 
 			//			SoundEffectInstance sound = Main.PlaySound(SoundID.Tink, (int)projectile.Center.X, (int)projectile.Center.Y);
 			//if (sound!=null)

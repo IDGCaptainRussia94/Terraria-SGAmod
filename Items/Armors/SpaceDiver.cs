@@ -114,7 +114,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Diver Leggings");
-			Tooltip.SetDefault("5% increased Booster Capacity and +2 Booster Recharge Rate\n+5 passive Electric Charge Rate while wet\n20% faster movement speed and increases by another 20% when in water\n" + Idglib.ColorText(Color.Red, "10% less damage"));
+			Tooltip.SetDefault("5% increased Booster Capacity and +2 Booster Recharge Rate\n+5 passive Electric Charge Rate while wet\n20% faster movement speed (40% when in water)\n" + Idglib.ColorText(Color.Red, "10% less damage"));
 		}
 		public override void SetDefaults()
 		{

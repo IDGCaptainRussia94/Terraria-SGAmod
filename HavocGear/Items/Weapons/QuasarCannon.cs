@@ -132,16 +132,17 @@ namespace SGAmod.HavocGear.Items.Weapons
 				player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * player.direction, projectile.velocity.X * player.direction);
 			}
 
-		if (projectile.ai[0]>10 && player.statMana >= 10)
+		if (projectile.ai[0]>10 && player.CheckMana(10,false,true))
 			{
 
 				if (projectile.ai[0]%20==0)
 				Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 94, 0.40f, -0.5f+(projectile.ai[0]/(float)chargeuptime)*1.25f);
 
-				if (projectile.ai[0]<chargeuptime){
+				if (projectile.ai[0]<chargeuptime)
+				{
 
 					if (projectile.ai[0] % 20 == 0)
-						player.statMana -= (int)(8f*player.manaCost);
+						player.CheckMana(8,true,false);
 
 		for (num315 = 0; num315 < 2; num315 = num315 + 1)
 			{

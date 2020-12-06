@@ -34,11 +34,13 @@ namespace SGAmod.NPCs.Wraiths
 		}
 		public override void NPCLoot()
 		{
-			SGAWorld.downedCaliburnGuardianHardmode = true;
 			int[] types = { mod.ItemType("CaliburnTypeA"), mod.ItemType("CaliburnTypeB"), mod.ItemType("CaliburnTypeC") };
-				npc.DropItemInstanced(npc.Center, new Vector2(npc.width,npc.height), types[(int)npc.ai[2]]);
-
-				SpookyDarkSectorEye.Release(npc.Center,true,new Vector2(20,20));
+			npc.DropItemInstanced(npc.Center, new Vector2(npc.width, npc.height), types[(int)npc.ai[2]]);
+			if (npc.SGANPCs().OnlyOnce())
+			{
+				SGAWorld.downedCaliburnGuardianHardmode = true;
+				SpookyDarkSectorEye.Release(npc.Center, true, new Vector2(20, 20));
+			}
 
 		}
 		protected override int caliburnlevel => 3;
@@ -186,25 +188,28 @@ namespace SGAmod.NPCs.Wraiths
 		}
 		public override void NPCLoot()
 		{
+			if (npc.SGANPCs().OnlyOnce())
+			{			
 			SGAWorld.downedCaliburnGuardians = Math.Min(3, SGAWorld.downedCaliburnGuardians+1);
 
-			if (Main.netMode == NetmodeID.Server)
-			{
-				NetMessage.SendData(MessageID.WorldData);
-				SGAWorld.downedCaliburnGuardiansPoints += 1;
+				if (Main.netMode == NetmodeID.Server)
+				{
+					NetMessage.SendData(MessageID.WorldData);
+					SGAWorld.downedCaliburnGuardiansPoints += 1;
 
-				ModPacket packet = SGAmod.Instance.GetPacket();
-				packet.Write((int)996);
-				packet.Write(SGAWorld.downedCaliburnGuardians);
-				packet.Write(SGAWorld.downedCaliburnGuardiansPoints);
-				packet.Send();
+					ModPacket packet = SGAmod.Instance.GetPacket();
+					packet.Write((int)996);
+					packet.Write(SGAWorld.downedCaliburnGuardians);
+					packet.Write(SGAWorld.downedCaliburnGuardiansPoints);
+					packet.Send();
+				}
+
+				if (Main.netMode == NetmodeID.SinglePlayer)
+					SGAWorld.downedCaliburnGuardiansPoints += 1;
+
+
+				Achivements.SGAAchivements.UnlockAchivement("Caliburn", Main.LocalPlayer);
 			}
-
-			if (Main.netMode==NetmodeID.SinglePlayer)
-			SGAWorld.downedCaliburnGuardiansPoints += 1;
-
-
-			Achivements.SGAAchivements.UnlockAchivement("Caliburn", Main.LocalPlayer);
 		}
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{

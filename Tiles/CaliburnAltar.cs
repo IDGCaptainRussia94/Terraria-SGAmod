@@ -78,9 +78,9 @@ namespace SGAmod.Tiles
                                 else
                                 {
                                     ModPacket packet = mod.GetPacket();
-                                    packet.Write((int)999);
-                                    packet.Write((int)i * 16);
-                                    packet.Write((int)j * 16);
+                                    packet.Write((ushort)999);
+                                    packet.Write((int)(i * 16));
+                                    packet.Write((int)(j * 16));
                                     packet.Write(ModContent.NPCType<NPCs.Wraiths.CaliburnGuardian>());
                                     packet.Write(0);
                                     packet.Write(0);

@@ -67,7 +67,7 @@ namespace SGAmod.Items
 					if (Main.netMode > 0)
 					{
 						ModPacket packet = mod.GetPacket();
-							packet.Write((int)75);
+							packet.Write((ushort)75);
 							packet.Write(mod.NPCType("CratrosityPML"));
 							packet.Write((int)(ply.Center.X	- 1600));
 							packet.Write(3200);

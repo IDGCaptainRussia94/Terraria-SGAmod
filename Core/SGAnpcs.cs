@@ -41,6 +41,7 @@ namespace SGAmod
 		}
 
 		public int Snapped = 0;
+		public bool onlyOnce = false;
 		public bool NinjaSmoked = false;
 		public bool Snapfading = false;
 		public float truthbetold = 0;
@@ -112,6 +113,16 @@ namespace SGAmod
 
 		public RenderTarget2D SnappedDrawing;
 		public bool drawonce = false;
+		public bool OnlyOnce()
+		{
+			if (!onlyOnce)
+			{
+				onlyOnce = true;
+				return true;
+			}
+
+			return false;
+		}
 
 		public override void ResetEffects(NPC npc)
 		{

@@ -640,7 +640,7 @@ namespace SGAmod.Items.Consumable
 			if (SGAWorld.darknessVision)
 			{
 				tooltips.Add(new TooltipLine(mod, "CaliburnCompessUpgrade", Idglib.ColorText(Color.MediumPurple, "Upgraded to also point to Dark Sectors in the world")));
-				tooltips.Add(new TooltipLine(mod, "CaliburnCompessUpgrade", Idglib.ColorText(Color.MediumPurple, "Furthermore, darkness in Dark Sectors is reduced")));
+				tooltips.Add(new TooltipLine(mod, "CaliburnCompessUpgrade", Idglib.ColorText(Color.MediumPurple, "Darkness from Dark Sectors is reduced while in your inventory")));
 			}
 		}
 

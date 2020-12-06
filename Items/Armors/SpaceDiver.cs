@@ -96,7 +96,10 @@ namespace SGAmod.Items.Armors
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			if (!Main.dedServ)
+			{
 				sgaplayer.armorglowmasks[1] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
+				sgaplayer.armorglowmasks[2] = "SGAmod/Items/GlowMasks/" + Name + "_ArmsGlow";
+			}
 		}
 		public override void AddRecipes()
 		{
@@ -140,6 +143,14 @@ namespace SGAmod.Items.Armors
 			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.Throwing().thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
 			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.05f);
 			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 2;
+		}
+		public override void UpdateVanity(Player player, EquipType type)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			if (!Main.dedServ)
+			{
+				sgaplayer.armorglowmasks[3] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
+			}
 		}
 		public override void AddRecipes()
 		{

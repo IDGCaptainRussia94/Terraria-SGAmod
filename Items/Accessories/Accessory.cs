@@ -274,7 +274,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = -12;
 			item.expert = true;
 			item.accessory = true;
-			item.damage = 10;
+			item.damage = 1;
 			item.summon = true;
 			item.shieldSlot = 5;
 			item.backSlot = 9;
@@ -1830,7 +1830,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tidal Charm");
-			Tooltip.SetDefault("Doubles your max breath meter\nHaving less breath boosts your defense\nThis boost increases through progression as you beat SGAmod bosses");
+			Tooltip.SetDefault("Increases yout max Breath by 5 bubbles\nHaving less breath boosts your defense\nThis boost increases through progression as you beat SGAmod bosses");
 		}
 
 		public override void SetDefaults()
@@ -1853,7 +1853,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.breathMax += 200;
+			player.breathMax += 100;
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			if (!hideVisual && ((Main.raining) || SGAWorld.downedSharkvern))
 			sgaply.tidalCharm = 2;
@@ -2855,10 +2855,12 @@ namespace SGAmod.Items.Accessories
 	}
 	public class TerraDivingGear : ModItem
 	{
+		protected string allText => Language.GetTextValue("ItemTooltip.ArcticDivingGear") + "\n" + Language.GetTextValue("ItemName.BreathingReed") + " " + Language.GetTextValue("ItemTooltip.BreathingReed") + "\n" +
+			((GetType() == typeof(PrismalDivingGear)) ? Language.GetTextValue("ItemTooltip.FlipperPotion")+"\n" : "") + "Hold DOWN to fall faster in liquids";
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Terra Diving Gear");
-			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.ArcticDivingGear") +"\n"+ Language.GetTextValue("ItemName.BreathingReed")+" "+Language.GetTextValue("ItemTooltip.BreathingReed") +"\n" + Language.GetTextValue("ItemTooltip.FlipperPotion")+"\nHold DOWN to fall faster in liquids");
+			Tooltip.SetDefault(allText);
 		}
 
 		public override void SetDefaults()
@@ -2876,13 +2878,15 @@ namespace SGAmod.Items.Accessories
 			player.accFlipper = true;
 			player.accDivingHelm = true;
 			player.iceSkate = true;
-			player.ignoreWater = true;
 			player.SGAPly().terraDivingGear = true;
 			if (player.controlDown)
 				ModContent.GetInstance<PocketRocks>().UpdateAccessory(player, hideVisual);
 
 			if (player.wet)
 			{
+				if (GetType() == typeof(PrismalDivingGear))
+					Lighting.AddLight((int)player.Center.X / 16, (int)player.Center.Y / 16, 0.75f, 0.2f, 0.95f);
+				else
 				Lighting.AddLight((int)player.Center.X / 16, (int)player.Center.Y / 16, 0.27f, 0.85f, 0.53f);
 			}
 
@@ -2893,13 +2897,103 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.ArcticDivingGear, 1);
 			recipe.AddIngredient(ModContent.ItemType<PocketRocks>(), 1);
 			recipe.AddIngredient(ItemID.BreathingReed, 1);
-			recipe.AddIngredient(ItemID.FlipperPotion, 5);
+			recipe.AddIngredient(ItemID.SoulofLight, 4);
+			recipe.AddIngredient(ItemID.SoulofNight, 4);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
 
 	}
+
+	[AutoloadEquip(EquipType.Back)]
+	public class PrismalAirTank : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Prismal Air Tank");
+			Tooltip.SetDefault("+5 max Breath Bubbles, "+ Language.GetTextValue("ItemTooltip.FlipperPotion")+"\nImproved Life and Mana regen while wet");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = ItemRarityID.Lime;
+			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			if (player.SGAPly().AirTank)
+				return;
+
+			player.SGAPly().AirTank = true;
+			player.breathMax += 100;
+			player.ignoreWater = true;
+			if (player.wet)
+			{
+				player.manaRegen += 2;
+				player.lifeRegen += 1;
+			}
+			//ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			//recipe.AddIngredient(mod.ItemType("BlinkTech"), 1);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
+			recipe.AddIngredient(ItemID.FlipperPotion, 5);
+			recipe.AddTile(mod.GetTile("PrismalStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	[AutoloadEquip(EquipType.Face)]
+	public class PrismalDivingGear : TerraDivingGear
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Prismal Diving Gear");
+			Tooltip.SetDefault(allText+ "\n+5 max Breath Bubbles\nImproved Life and Mana regen while wet");
+		}
+
+        public override bool DrawHead()
+        {
+			return false;
+        }
+
+        public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = ItemRarityID.Yellow;
+			item.value = Item.sellPrice(0, 5, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<PrismalAirTank>().UpdateAccessory(player, hideVisual);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("TerraDivingGear"), 1);
+			recipe.AddIngredient(mod.ItemType("PrismalAirTank"), 1);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
 	public class WraithTargetingGamepad : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -3062,18 +3156,37 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fluid Displacer");
-			Tooltip.SetDefault("WIP");
+			Tooltip.SetDefault("Displaces fluids around you, allowing you move through them freely\nConsumes Electric Charge to prevent the player from submerging\nConsumes far more to prevent lava submerging\nTriggers a shield break when Electric Charge runs out\n"+Idglib.ColorText(Color.Red,"Removing this accessory during Shield Break will cause great damage!"));
 		}
 		public override void SetDefaults()
 		{
 			item.width = 32;
 			item.height = 32;
 			item.value = 50000;
-			item.maxStack = 10;
+			item.maxStack = 1;
+			item.accessory = true;
 			item.rare = ItemRarityID.Orange;
 		}
 
-		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().tidalCharm = -10;
+			player.SGAPly().ShieldTypeDelay = 5;
+			player.SGAPly().ShieldType = 1;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 8);
+			recipe.AddIngredient(mod.ItemType("LaserMarker"), 4);
+			recipe.AddIngredient(ItemID.WireBulb, 1);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+		/*public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 
 			Texture2D inner = ModContent.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
@@ -3087,7 +3200,7 @@ namespace SGAmod.Items.Accessories
 
 
 			return true;
-		}
+		}*/
 
 		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{

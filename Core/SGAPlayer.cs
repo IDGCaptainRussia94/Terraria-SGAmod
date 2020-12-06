@@ -45,7 +45,7 @@ namespace SGAmod
 		public float damageReduce = 1f;
 		public int shinobj = 0;
 		public int surprised = 0;
-		public bool diesIraeStone = false; public bool magusSlippers = false;
+		public bool diesIraeStone = false; public bool magusSlippers = false; public bool AirTank = false;
 		public float[] beserk = { 0, 0 };
 		public float actionCooldownRate = 1f;
 		public int previoustf2emblemLevel = 0;
@@ -70,6 +70,7 @@ namespace SGAmod
 		public bool MVMBoost = false;
 		public bool Shieldbreak = false;
 		public int ShieldType = 0;
+		public int ShieldTypeDelay = 0;
 		public bool SybariteGem = false;
 		public int realIFrames = 0;
 		public int myammo = 0;
@@ -233,7 +234,7 @@ namespace SGAmod
 
 			uncraftBoost = Math.Max(uncraftBoost - 1, 0);
 			surprised = Math.Max(surprised - 1, 0);
-			tidalCharm = Math.Max(tidalCharm - 1, 0);
+			tidalCharm = (int)MathHelper.Clamp(tidalCharm - Math.Sign(tidalCharm), -1000,1000);
 			shinobj -= 1;
 			diesIraeStone = false;
 			magusSlippers = false;
@@ -257,6 +258,7 @@ namespace SGAmod
 			MoneyMismanagement = false;
 			Lockedin = false;
 			NoFly = false;
+			AirTank = false;
 			permaDrown = false;
 			trueMeleeDamage = 1f;
 			triggerFinger = 1f;
@@ -354,6 +356,10 @@ namespace SGAmod
 			boosterrechargerate = 15;
 			boosterPowerLeftMax = 10000;
 			Shieldbreak = false;
+
+			if (ShieldTypeDelay>0)
+			ShieldTypeDelay -= 1;
+			else
 			ShieldType = 0;
 
 			for (int a = 0; a < devempowerment.Length; a++)

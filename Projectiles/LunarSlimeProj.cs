@@ -48,8 +48,8 @@ namespace SGAmod.Projectiles
 
             Player owner = Main.player[projectile.owner];
 
-            Texture2D tex = mod.GetTexture("Items/LunarRoyalGel");
-            Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 10) / 2f;
+            Texture2D tex = Main.projectileTexture[projectile.type];
+            Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 6) / 2f;
 
             //oldPos.Length - 1
             //for (int k = oldPos.Length - 1; k >= 0; k -= 2)
@@ -58,8 +58,8 @@ namespace SGAmod.Projectiles
                 Vector2 drawPos = ((oldPos[k] - Main.screenPosition)) + new Vector2(0f, 4f);
                 Color color = (Main.hslToRgb((projectile.ai[0] / 8f) % 1f, 1f, 0.9f)) * (1f - (float)(k + 1) / (float)(oldPos.Length + 2));
                 int timing = (int)(projectile.localAI[0] / 8f);
-                timing %= 10;
-                timing *= ((tex.Height) / 10);
+                timing %= 6;
+                timing *= ((tex.Height) / 6);
 
             List<Vector2> list = oldPos.ToList();
             //list.Insert(0, projectile.Center);
@@ -80,7 +80,9 @@ namespace SGAmod.Projectiles
             trail.trailThicknessIncrease = 6;
             trail.DrawTrail(list, projectile.Center);
 
-            spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 10), color, projectile.velocity.X * 0.04f, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+            float angle = (float)(((1f + projectile.ai[0] / 8f)) + 2.0 * Math.PI * (projectile.ai[0] / ((double)8f)));
+
+            spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 10), color, angle/5f, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
 
             return false;
         }

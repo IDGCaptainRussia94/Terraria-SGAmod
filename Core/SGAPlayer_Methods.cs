@@ -28,6 +28,7 @@ using Terraria.Utilities;
 using SGAmod.SkillTree;
 using CalamityMod.Projectiles.Ranged;
 using SGAmod.Buffs;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod
 {
@@ -122,27 +123,54 @@ namespace SGAmod
 				return true;
 			}
 			return false;
-
+			
 		}
 
 		public bool ConsumeElectricCharge(int requiredcharge, int delay, bool damage = false)
 		{
-			if (electricCharge > requiredcharge)
+			float newcharge = (requiredcharge * electricChargeCost);
+			if (electricCharge > newcharge)
 			{
 				electricdelay = Math.Max(delay * electricChargeReducedDelay, electricdelay);
-				electricCharge -= (int)((float)requiredcharge * electricChargeCost);
+				electricCharge -= (int)newcharge;
 				return true;
 			}
-
-			if (damage && ShieldType > 0 && electricCharge > 0 && electricCharge - requiredcharge < 0)
+			else
 			{
-				electricCharge = 0;
-				electricdelay = 30;
-				player.AddBuff(mod.BuffType("Shieldbreak"), 60 * 5);
-				CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Aquamarine, "Shield Break!", true, false);
+				if (damage && ShieldType > 0 && electricCharge > 0)
+				{
+					electricCharge = 0;
+					electricdelay = 30;
+					player.AddBuff(ModContent.BuffType<ShieldBreak>(), 60 * 5);
+					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Aquamarine, "Shield Break!", true, false);
+					SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)player.Center.X, (int)player.Center.Y, 53);
+					if (sound != null)
+						sound.Pitch -= 0.5f;
+
+					for (int i = 0; i < 20; i += 1)
+					{
+						int dust = Dust.NewDust(new Vector2(player.Center.X - 4, player.Center.Y - 8), 8, 16, 269);
+						Main.dust[dust].scale = 0.50f;
+						Main.dust[dust].noGravity = false;
+						Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
+					}
+
+
+				}
 			}
 
 			return false;
+		}
+
+		public bool HandleFluidDisplacer(int tier)
+        {
+			if (tidalCharm < 0 && ConsumeElectricCharge(tier, 60* tier, true))
+				return true;
+
+
+			return false;
+
+
 		}
 		public void StackAttack(ref int damage, Projectile proj)
 		{

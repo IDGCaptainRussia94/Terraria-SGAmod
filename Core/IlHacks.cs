@@ -141,19 +141,30 @@ namespace SGAmod
 		static internal void SwimInAirHack(ILContext il)//Control water physics on the player
 		{
 			ILCursor c = new ILCursor(il);
-			MethodInfo HackTheMethod = typeof(Collision).GetMethod("WetCollision", BindingFlags.Public | BindingFlags.Static);
+			MethodInfo HackTheMethod = typeof(Collision).GetMethod("LavaCollision", BindingFlags.Public | BindingFlags.Static);
 			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
-			/*c.EmitDelegate<Action>(() =>
+
+			SwimInAirHackDelegate inLava = delegate (bool stackbool, Player player)
 			{
-				Main.NewText("This is test");
-			});*/
+				if (stackbool && player.SGAPly().HandleFluidDisplacer(3))
+					return false;
 
-			//c.Index -= 1;
+				return stackbool;
+			};
 
-			//Previously I would delete the instruction and replace it with a bool that had the 3 WetCollision values on the stack, but this, is alot simpler
+			c.Index += 1;
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<SwimInAirHackDelegate>(inLava);
+
+			HackTheMethod = typeof(Collision).GetMethod("WetCollision", BindingFlags.Public | BindingFlags.Static);
+			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
+
 
 			SwimInAirHackDelegate inWater = delegate (bool stackbool, Player player)
 			{
+				if (stackbool && player.SGAPly().HandleFluidDisplacer(1))
+					return false;
+
 				return stackbool || player.SGAPly().tidalCharm > 0;// Collision.WetCollision(pos, x, y);
 			};
 

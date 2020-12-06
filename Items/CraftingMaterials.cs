@@ -572,7 +572,7 @@ public class LunarRoyalGel : ModItem
 		{
 			DisplayName.SetDefault("Lunar Royal Gel");
 			Tooltip.SetDefault("From the moon-infused Pinky");
-			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(7, 10));
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 6));
 		}
 		public override void SetDefaults()
 		{

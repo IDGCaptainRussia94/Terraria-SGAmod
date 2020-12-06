@@ -56,7 +56,7 @@ namespace SGAmod
 				//better version, from Qwerty's Mod
 				Color color = drawInfo.bodyColor;
 
-				Texture2D texture = mod.GetTexture("Items/Armors/SpaceDiverTank");
+				Texture2D texture = mod.GetTexture("Items/Accessories/PrismalAirTank_Back");
 					int drawX = (int)((drawInfo.position.X+drawPlayer.bodyPosition.X+10) - Main.screenPosition.X);
 					int drawY = (int)(((drawPlayer.bodyPosition.Y-4)+drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
 					DrawData data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0,drawPlayer.bodyFrame.Y,drawPlayer.bodyFrame.Width,drawPlayer.bodyFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width/2,drawPlayer.bodyFrame.Height/2), 1f, (drawPlayer.direction==-1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir>0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
@@ -255,12 +255,12 @@ namespace SGAmod
 
 			if (sgaplayer.SpaceDiverset && CustomWings<1)
 			{
-			int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
+			/*int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
 			int backacclayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("BackAcc"));
 			if (SpaceDiverWings < 0.6f)
 			layers.RemoveAt(wingsLayer);
 			SpaceDiverTank.visible = true;
-			layers.Insert(backacclayer, SpaceDiverTank);
+			layers.Insert(backacclayer, SpaceDiverTank);*/
 			}
 
 			if (sgaplayer.CustomWings>0)

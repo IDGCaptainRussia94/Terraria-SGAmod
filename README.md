@@ -16,13 +16,23 @@ Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon
 
 Changelog:
 
-3.460-(12/5/20)-Patch 9:
+3.460-(12/5/20)-Patch 9-Shield-N-Spells:
 
 
 --Added:
 
+-Prismal Air Tank, Prismal Diving Gear, Fluid Displacer
+
 
 --Changed:
+
+-Space Diver Armor visual overhaul!
+
+-Terra Diving Gear has been moved later into progression
+
+-Nerfed Tidal Charm: only gives half as much breath now
+
+-Owning the Caliburn Compass in your inventory is now required to lesson the darkness of the Dark Sector
 
 
 --Fixed:

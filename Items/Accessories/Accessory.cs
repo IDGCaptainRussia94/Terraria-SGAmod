@@ -274,7 +274,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = -12;
 			item.expert = true;
 			item.accessory = true;
-			item.damage = 10;
+			item.damage = 1;
 			item.summon = true;
 			item.shieldSlot = 5;
 			item.backSlot = 9;

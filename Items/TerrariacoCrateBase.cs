@@ -62,7 +62,6 @@ namespace SGAmod.Items
 		public override void RightClick(Player ply)
 		{
 
-
 			bool usedwrongkey = (ply.CountItem(ItemID.GoldenKey) > 0 || ply.CountItem(ItemID.LightKey) > 0 || ply.CountItem(ItemID.NightKey) > 0 || ply.CountItem(ModContent.ItemType<SwampChestKey>()) > 0);
 			bool usedrightkey = (ply.CountItem(mod.ItemType("TerrariacoCrateKey")) > 0);
 			int whatkey = 0;

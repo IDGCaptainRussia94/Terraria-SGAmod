@@ -1273,7 +1273,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Demon Steppers");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered, and Double Jump ability\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead");
+			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -1298,7 +1298,9 @@ namespace SGAmod.Items.Accessories
 				player.autoJump = true;
 				player.jumpSpeedBoost += 2.4f;
 				player.extraFall += 15;
+				if (!hideVisual)
 				player.doubleJumpCloud = true;
+
 			}
 
 			ModContent.GetInstance<PrimordialSkull>().UpdateAccessory(player, hideVisual);
@@ -2853,6 +2855,30 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	public class NormalQuiver : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Normal Quiver");
+			Tooltip.SetDefault("'What? Expecting a MAGIC one?'\n15% increased Arrow Damage");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.arrowDamage += 0.15f;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 2);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+
+	}
 	public class TerraDivingGear : ModItem
 	{
 		protected string allText => Language.GetTextValue("ItemTooltip.ArcticDivingGear") + "\n" + Language.GetTextValue("ItemName.BreathingReed") + " " + Language.GetTextValue("ItemTooltip.BreathingReed") + "\n" +
@@ -3219,7 +3245,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
-	public class GraniteMagnet : Items.Weapons.Caliburn.CorrodedShield, IHitScanItem
+	public class GraniteMagnet : Weapons.Shields.CorrodedShield, IHitScanItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -3249,7 +3275,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
-	public class CobaltMagnet : Items.Weapons.Caliburn.CorrodedShield, IHitScanItem
+	public class CobaltMagnet : GraniteMagnet, IHitScanItem
 	{
 		public override void SetStaticDefaults()
 		{

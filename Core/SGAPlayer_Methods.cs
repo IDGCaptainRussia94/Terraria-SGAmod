@@ -29,6 +29,7 @@ using SGAmod.SkillTree;
 using CalamityMod.Projectiles.Ranged;
 using SGAmod.Buffs;
 using Microsoft.Xna.Framework.Audio;
+using SGAmod.Items.Weapons.Shields;
 
 namespace SGAmod
 {
@@ -373,7 +374,7 @@ namespace SGAmod
 				player.GetModPlayer<SGAPlayer>().realIFrames = 30;
 				Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 1f, -0.5f);
 
-				(shield.modProjectile as Items.Weapons.Caliburn.CorrodedShieldProj).JustBlock(blocktime, where, ref damage, damageSourceIndex);
+				(shield.modProjectile as Items.Weapons.Shields.CorrodedShieldProj).JustBlock(blocktime, where, ref damage, damageSourceIndex);
 
 				if (diesIraeStone && damageSourceIndex > 0)
                 {
@@ -416,8 +417,10 @@ namespace SGAmod
 					}
 					if (foundhim > -1)
 					{
-						int blocktime = (proj.modProjectile as Items.Weapons.Caliburn.CorrodedShieldProj).blocktimer;
-						if (proj == null || blocktime < 2)
+						CorrodedShieldProj modShieldProj = proj.modProjectile as CorrodedShieldProj;
+						int blocktime = modShieldProj.blocktimer;
+						bool blocking = modShieldProj.Blocking;
+						if (proj == null || blocktime < 2 || !blocking)
 							return false;
 
 
@@ -428,15 +431,12 @@ namespace SGAmod
 						float diff = Vector2.Dot(itavect, ang1);
 
 
-						if (diff > (proj.modProjectile as Items.Weapons.Caliburn.CorrodedShieldProj).blockAngle)
+						if (diff > (proj.modProjectile as Items.Weapons.Shields.CorrodedShieldProj).BlockAngle)
 						{
 							if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
 								return true;
 
-
-							float damageval = 0.75f;
-							if (thetype == mod.ProjectileType("CapShieldProj"))
-								damageval = 0.50f;
+							float damageval = 1f- modShieldProj.BlockDamage;
 							damage = (int)(damage * damageval);
 							Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
 							return false;

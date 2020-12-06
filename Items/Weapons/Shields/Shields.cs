@@ -12,7 +12,7 @@ using Idglibrary;
 using System.Linq;
 using AAAAUThrowing;
 
-namespace SGAmod.Items.Weapons.Caliburn
+namespace SGAmod.Items.Weapons.Shields
 {
 
 	public class CorrodedShield : ModItem
@@ -40,9 +40,9 @@ namespace SGAmod.Items.Weapons.Caliburn
 			item.knockBack = 5;
 			item.noUseGraphic = true;
 			item.value = Item.sellPrice(0, 1, 0, 0);
-			item.rare = 3;
+			item.rare = ItemRarityID.Green;
 			item.UseSound = SoundID.Item7;
-			item.shoot = 10;
+			item.shoot = mod.ProjectileType("CorrodedShieldProjDash");
 			item.shootSpeed = 10f;
 			item.useTurn = false;
 			item.autoReuse = false;
@@ -57,12 +57,11 @@ namespace SGAmod.Items.Weapons.Caliburn
 
 		public override bool CanUseItem(Player player)
 		{
-			return player.ownedProjectileCounts[mod.ProjectileType("CorrodedShieldProjDash")] < 1;
+			return player.ownedProjectileCounts[item.shoot] < 1;
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			type = mod.ProjectileType("CorrodedShieldProjDash");
 			return true;
 		}
 
@@ -72,7 +71,9 @@ namespace SGAmod.Items.Weapons.Caliburn
 	public class CorrodedShieldProj : ModProjectile, IDrawAdditive
 	{
 		public int blocktimer = 1;
-		public virtual float blockAngle => 0.75f;
+		public virtual float BlockAngle => 0.75f;
+		public virtual float BlockDamage=> 0.25f;
+		public virtual bool Blocking => true;
 		public Player player => Main.player[projectile.owner];
 		public override void SetStaticDefaults()
 		{
@@ -228,8 +229,6 @@ namespace SGAmod.Items.Weapons.Caliburn
 			}
 			else
 			{
-				Vector2 mousePos = Main.MouseWorld;
-
 				if (projectile.ai[1] < 1)
 				{
 				int dir = projectile.direction;
@@ -252,7 +251,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 		}
 		public override string Texture
 		{
-			get { return "SGAmod/Items/Weapons/Caliburn/CaliburnTypeB"; }
+			get { return "SGAmod/Invisible"; }
 		}
 
 		public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
@@ -402,7 +401,8 @@ namespace SGAmod.Items.Weapons.Caliburn
 
 	public class CapShieldProj : CorrodedShieldProj, IDrawAdditive
 	{
-		public override float blockAngle => 0.4f;
+		public override float BlockAngle => 0.4f;
+		public override float BlockDamage => 0.5f;
 		public override void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex)
 		{
 			player.AddBuff(BuffID.ParryDamageBuff, 60 * 3);
@@ -550,7 +550,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 		}
 		public override string Texture
 		{
-			get { return "SGAmod/Items/Weapons/Caliburn/CaliburnTypeB"; }
+			get { return "SGAmod/Invisible"; }
 		}
 
 		public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
@@ -703,12 +703,12 @@ namespace SGAmod.Items.Weapons.Caliburn
 
 		public override string Texture
 		{
-			get { return "SGAmod/Items/Weapons/Caliburn/CapShield"; }
+			get { return "SGAmod/Items/Weapons/Shields/CapShield"; }
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D texture = mod.GetTexture("Items/Weapons/Caliburn/CapShield");
+			Texture2D texture = mod.GetTexture("Items/Weapons/Shields/CapShield");
 			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1), SpriteEffects.None, 0f);
 			return false;
 		}

@@ -1638,7 +1638,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-	public class LaserMarker : Items.Weapons.Caliburn.CorrodedShield, IHitScanItem
+	public class LaserMarker : Shields.CorrodedShield, IHitScanItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -1717,10 +1717,11 @@ namespace SGAmod.Items.Weapons.Technical
 
 	}
 
-	public class LaserMarkerProj : Caliburn.CorrodedShieldProj
+	public class LaserMarkerProj : Shields.CorrodedShieldProj
     {
 		protected int MyLaser = default;
 		public Vector2 EndPoint = default;
+		public override bool Blocking => false;
 
 		public override void SetStaticDefaults()
 		{

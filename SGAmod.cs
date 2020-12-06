@@ -535,6 +535,15 @@ namespace SGAmod
 
 			recipe = new ModRecipe(this);
 			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(null, "NormalQuiver", 1);
+			recipe.AddIngredient(ItemID.SoulofLight, 3);
+			recipe.AddIngredient(ItemID.SoulofNight, 3);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.MagicQuiver);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(ItemID.CloudinaBottle, 1);
 			recipe.AddIngredient(ItemID.SandBlock, 50);
 			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);

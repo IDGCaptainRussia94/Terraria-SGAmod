@@ -30,6 +30,10 @@ Changelog:
 
 -Terra Diving Gear has been moved later into progression
 
+-Demonsteppers can be hidden on your player to disable the doube jump
+
+
+
 -Nerfed Tidal Charm: only gives half as much breath now
 
 -Owning the Caliburn Compass in your inventory is now required to lesson the darkness of the Dark Sector

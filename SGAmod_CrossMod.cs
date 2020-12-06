@@ -45,6 +45,7 @@ using SGAmod.UI;
 using Terraria.Achievements;
 using Terraria.GameContent.Achievements;
 using System.Reflection;
+using SGAmod.Items.Weapons.Shields;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif

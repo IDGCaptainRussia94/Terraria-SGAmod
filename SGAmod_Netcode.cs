@@ -127,8 +127,9 @@ namespace SGAmod
 				int ai3 = reader.ReadInt32();
 				int ai4 = reader.ReadInt32();
 
-				Player ply = Main.player[reader.ReadInt32()];
+				//NPC.NewNPC(wherex, wherey, ModContent.NPCType<CaliburnGuardian>(), 0, ai1, ai2, ai3, ai4);
 				NPC.NewNPC(wherex, wherey, npc, 0, ai1, ai2, ai3, ai4);
+				Player ply = Main.player[reader.ReadInt32()];
 				return;
 
 

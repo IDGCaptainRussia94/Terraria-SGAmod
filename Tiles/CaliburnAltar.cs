@@ -81,7 +81,7 @@ namespace SGAmod.Tiles
                                     packet.Write((int)999);
                                     packet.Write((int)i * 16);
                                     packet.Write((int)j * 16);
-                                    packet.Write(mod.NPCType("CaliburnGuardian"));
+                                    packet.Write(ModContent.NPCType<NPCs.Wraiths.CaliburnGuardian>());
                                     packet.Write(0);
                                     packet.Write(0);
                                     packet.Write(summontype);

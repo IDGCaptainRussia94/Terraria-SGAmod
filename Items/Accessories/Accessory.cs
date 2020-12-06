@@ -3073,7 +3073,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = ItemRarityID.Orange;
 		}
 
-		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		/*public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 
 			Texture2D inner = ModContent.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
@@ -3087,7 +3087,7 @@ namespace SGAmod.Items.Accessories
 
 
 			return true;
-		}
+		}*/
 
 		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{

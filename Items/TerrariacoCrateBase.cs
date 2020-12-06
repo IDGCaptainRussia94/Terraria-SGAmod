@@ -85,7 +85,7 @@ namespace SGAmod.Items
 					{
 						mod.Logger.Debug("Crate: Net Spawn");
 						ModPacket packet = mod.GetPacket();
-						packet.Write(75);
+						packet.Write((ushort)75);
 						packet.Write(mod.NPCType(whatkey == ModContent.ItemType<SwampChestKey>() ? "CratrosityDank" : (whatkey == ItemID.LightKey ? "CratrosityLight" : (whatkey == ItemID.NightKey ? "CratrosityNight" : "Cratrosity"))));
 						packet.Write(-9999);
 						packet.Write(-9999);

@@ -44,6 +44,8 @@ Changelog:
 
 -Blazewyrm set bonus not triggering on 'True melee' projectile weapons like Yoyos and Spears
 
+-Nightmare Mode Triggering 1 drops
+
 
 
 3.440-(12/3/20)-Hot Fix #12:

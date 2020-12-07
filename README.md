@@ -46,6 +46,10 @@ Changelog:
 
 -Nightmare Mode Triggering 1 drops
 
+-Bench God's Favor being granted by defeating Copper Wraith and reloading your character (whoops!)
+
+-Stone Aura Staff hurting friend NPCs
+
 
 
 3.440-(12/3/20)-Hot Fix #12:

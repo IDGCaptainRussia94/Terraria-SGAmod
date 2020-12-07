@@ -1870,7 +1870,7 @@ namespace SGAmod
 			tag["nightmareplayer"] = nightmareplayer;
 			tag["entropycollected"] = entropyCollected;
 			tag["Drakenshopunlock"] = Drakenshopunlock;
-			tag["benchGodFavor"] = Drakenshopunlock;
+			tag["benchGodFavor"] = benchGodFavor;
 			tag["dragonFriend"] = dragonFriend;
 
 			SaveExpertise(ref tag);

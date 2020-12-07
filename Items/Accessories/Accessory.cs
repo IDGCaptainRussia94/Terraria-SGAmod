@@ -2860,12 +2860,12 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Normal Quiver");
-			Tooltip.SetDefault("'What? Expecting a MAGIC one?'\n15% increased Arrow Damage");
+			Tooltip.SetDefault("'What? Expecting a MAGIC one?'\n10% increased Arrow Damage");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.arrowDamage += 0.15f;
+			player.arrowDamage += 0.10f;
 		}
 
 		public override void SetDefaults()

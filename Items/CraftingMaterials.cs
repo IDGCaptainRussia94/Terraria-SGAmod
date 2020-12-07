@@ -54,7 +54,7 @@ namespace SGAmod.HavocGear.Items
 			item.width = 18;
 			item.height = 14;
 			item.maxStack = 99;
-			item.value = 500;
+			item.value = 1000;
 			item.rare = 5;
 			item.alpha = 0;
 			item.useTurn = true;
@@ -516,7 +516,7 @@ namespace SGAmod.Items
 			item.maxStack = 999;
 			item.width = 26;
 			item.height = 14;
-			item.value = Item.sellPrice(0,0,25,0);
+			item.value = 1000;
 			item.rare = 5;
 			item.useTurn = true;
 			item.autoReuse = true;

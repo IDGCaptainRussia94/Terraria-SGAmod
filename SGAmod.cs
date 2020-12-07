@@ -445,7 +445,7 @@ namespace SGAmod
 
 		}*/
 
-        public override uint ExtraPlayerBuffSlots => 14;
+        public override uint ExtraPlayerBuffSlots => 40;
 
 		public override void Unload()
 		{

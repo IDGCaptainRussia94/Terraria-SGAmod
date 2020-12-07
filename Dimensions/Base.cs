@@ -192,7 +192,7 @@ namespace SGAmod.Dimensions
             if (npc.type == NPCID.SkeletonArcher && SGAPocketDim.WhereAmI == typeof(DeeperDungeon))
             {
                 NPCLoader.blockLoot.Add(ItemID.MagicQuiver);
-                if (Main.rand.Next(1) == 50)
+                if (Main.rand.Next(50) == 0)
                     Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("NormalQuiver"));
             }
 

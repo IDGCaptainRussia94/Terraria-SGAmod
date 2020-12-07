@@ -910,32 +910,32 @@ namespace SGAmod.Dimensions
                 }
 
                 if (loottype == 2)//Shadow Chest
-                    {
+                {
 
-                            lootrare = new List<int> { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire,ItemID.HellwingBow, SGAmod.Instance.ItemType("BeserkerAuraStaff")};
+                    lootrare = new List<int> { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow, SGAmod.Instance.ItemType("BeserkerAuraStaff") };
 
-                            int index = unirand.Next(0, lootrare.Count);
-                            Main.chest[chestid].item[e].SetDefaults(lootrare[index]);
-                            Main.chest[chestid].item[e].stack = 1;
-                            e += 1;
+                    int index = unirand.Next(0, lootrare.Count);
+                    Main.chest[chestid].item[e].SetDefaults(lootrare[index]);
+                    Main.chest[chestid].item[e].stack = 1;
+                    e += 1;
 
-                        lootmain = new List<int> {SGAmod.Instance.ItemType("DragonsMightPotion"),SGAmod.Instance.ItemType("TimePotion"), SGAmod.Instance.ItemType("WraithFragment3"), ItemID.GoldCoin, ItemID.LesserRestorationPotion, ItemID.LifeforcePotion,
+                    lootmain = new List<int> {SGAmod.Instance.ItemType("DragonsMightPotion"),SGAmod.Instance.ItemType("TimePotion"), SGAmod.Instance.ItemType("WraithFragment3"), ItemID.GoldCoin, ItemID.LesserRestorationPotion, ItemID.LifeforcePotion,
                          SGAmod.Instance.ItemType("BiomassBar"), SGAmod.Instance.ItemType("WraithFragment3"), ItemID.Dynamite, ItemID.LesserRestorationPotion, ItemID.LifeforcePotion, ItemID.GoldBar
                         ,ItemID.PlatinumBar,ItemID.PinkGel};
 
-                        for (int kk = 0; kk < 3 + (Main.expertMode ? 6 : 3); kk += 1)
+                    for (int kk = 0; kk < 3 + (Main.expertMode ? 6 : 3); kk += 1)
+                    {
+                        if (unirand.Next(0, 100) < 25 + (SGAWorld.dungeonlevel * 5))
                         {
-                            if (unirand.Next(0, 100) < 25+ (SGAWorld.dungeonlevel*5))
-                            {
-                                index = unirand.Next(0, lootmain.Count);
-                                Main.chest[chestid].item[e].SetDefaults(lootmain[index]);
-                                Main.chest[chestid].item[e].stack = unirand.Next(2, unirand.Next(4,Main.expertMode ? 8 : 5));
-                            e += 1;         
-                        }
-
+                            index = unirand.Next(0, lootmain.Count);
+                            Main.chest[chestid].item[e].SetDefaults(lootmain[index]);
+                            Main.chest[chestid].item[e].stack = unirand.Next(2, unirand.Next(4, Main.expertMode ? 8 : 5));
+                            e += 1;
                         }
 
                     }
+
+                }
 
 
                 if (chestid > 0)

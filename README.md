@@ -13,6 +13,7 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners, Spectre homing bullets/projectiles
 Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon
+-Add Hellion Army progress Bar, Add config options to lower effects, Add lower-end murk fog
 
 Changelog:
 
@@ -21,7 +22,7 @@ Changelog:
 
 --Added:
 
--Prismal Air Tank, Prismal Diving Gear, Fluid Displacer
+-Prismal Air Tank, Prismal Diving Gear, Fluid Displacer, Normal Quiver
 
 
 --Changed:
@@ -32,14 +33,14 @@ Changelog:
 
 -Demonsteppers can be hidden on your player to disable the doube jump
 
-
-
 -Nerfed Tidal Charm: only gives half as much breath now
 
 -Owning the Caliburn Compass in your inventory is now required to lesson the darkness of the Dark Sector
 
 
 --Fixed:
+
+-Stone Aura Staff hurting friendly NPCs
 
 
 

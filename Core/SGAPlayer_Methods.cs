@@ -129,11 +129,11 @@ namespace SGAmod
 
 		public bool ConsumeElectricCharge(int requiredcharge, int delay, bool damage = false)
 		{
-			float newcharge = (requiredcharge * electricChargeCost);
+			int newcharge = (int)Math.Max(requiredcharge * electricChargeCost,1);
 			if (electricCharge > newcharge)
 			{
 				electricdelay = Math.Max(delay * electricChargeReducedDelay, electricdelay);
-				electricCharge -= (int)newcharge;
+				electricCharge -= newcharge;
 				return true;
 			}
 			else

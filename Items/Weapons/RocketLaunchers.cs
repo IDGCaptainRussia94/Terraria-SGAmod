@@ -349,11 +349,16 @@ namespace SGAmod.Items.Weapons
 			item.shootSpeed = 14f;
 			item.noMelee = true;
 			item.useAmmo = AmmoID.Rocket;
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/PrismalLauncher_Glow");
+				item.GetGlobalItem<ItemUseGlow>().glowOffsetX = -8;
+			}
 		}
 
 		public override Vector2? HoldoutOffset()
 		{
-			return new Vector2(-18, -0);
+			return new Vector2(-8, -0);
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)

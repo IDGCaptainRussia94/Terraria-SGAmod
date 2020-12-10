@@ -46,18 +46,17 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			Lighting.AddLight(player.Center, Color.HotPink.ToVector3() * 2.5f * Main.essScale);
-			(mod.GetItem("CirnoWings") as CirnoWings).UpdateAccessoryLocal(player, true,false);
+			(mod.GetItem("CirnoWings") as CirnoWings).UpdateAccessoryLocal(player, true, false);
 			if (!hideVisual)
-			player.GetModPlayer<SGAPlayer>().SpaceDiverWings += 1.5f;
+				player.GetModPlayer<SGAPlayer>().SpaceDiverWings += 1.5f;
 			int y_bottom_edge = (int)(player.position.Y + (float)player.height + 16f) / 16;
 			int x_edge = (int)(player.Center.X) / 16;
 
 			Tile mytile = Framing.GetTileSafely(x_edge, y_bottom_edge);
 
-			ModContent.GetInstance<DemonSteppers>().UpdateAccessory(player, hideVisual);
-			player.doubleJumpCloud = false;
+			ModContent.GetInstance<DemonSteppers>().UpdateAccessory(player, false);
 
-			if (mytile.active() || player.velocity.Y==0)
+			if (mytile.active() || player.velocity.Y == 0)
 			{
 				if (!player.GetModPlayer<SGAPlayer>().Walkmode)
 				{
@@ -81,7 +80,7 @@ namespace SGAmod.Items.Accessories
 
 			Tile mytile = Framing.GetTileSafely(x_edge, y_bottom_edge);
 
-			if (!mytile.active() && Math.Abs(player.velocity.Y)>0)
+			if (!mytile.active() && Math.Abs(player.velocity.Y) > 0)
 			{
 
 				if (player.wingFrameCounter > 0)

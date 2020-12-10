@@ -31,19 +31,26 @@ namespace SGAmod.Tiles
 		{
 			return SGAWorld.downedMurk > 1;
 		}
+        public override bool CanKillTile(int i, int j, ref bool blockDamaged)
+        {
+			return SGAWorld.downedMurk > 1;
+		}
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
-            if (effectOnly || fail)
+			/*if ((effectOnly || fail) && SGAWorld.downedMurk < 2)
             {
 				foreach(Player player in Main.player.Where(playertest => playertest.active && playertest.DistanceSQ(new Vector2(i, j) * 16) < 256 * 256))
                 {
+					if (player.HeldItem.IsAir || player.HeldItem.pick < 1)
+						continue;
+
 					player.AddBuff(ModContent.BuffType<Buffs.MiningFatigue>(), 300);
 					player.AddBuff(BuffID.OgreSpit, 300);
 					player.AddBuff(BuffID.Poisoned, 180);
 				}
 
-			}
-        }
+			}*/
+		}
     }
 }

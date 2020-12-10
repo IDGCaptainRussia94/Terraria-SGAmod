@@ -17,12 +17,13 @@ namespace SGAmod.Items.Weapons.Shields
 
 	public class CorrodedShield : ModItem
 	{
+		public virtual string DamagePercent => "Blocks 25% of damage at a narrow angle";
+		public virtual bool CanBlock => true;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Corroded Shield");
-			Tooltip.SetDefault("'A treasure belonging to a former adventurer you'd rather not use but it looks useful'\nAllows you to block 25% of damage from the source by pointing the shield in the general direction" + "\nBlock at the last second to 'Just Block', taking no damage\n"
-				+Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 3 seconds each")+
-				"\nAttack with the shield to bash-dash, gaining IFrames and hit enemies are Acid Burned\nCan only hit 5 targets, bash-dash ends prematurally after the 5th\nCan be held out like a torch and used normally by holding shift");
+			Tooltip.SetDefault("'A treasure belonging to a former adventurer you'd rather not use but it looks useful'" +
+				"\nAttack with the shield to bash-dash, gaining IFrames and hit enemies are Acid Burned\nCan only hit 5 targets, bash-dash ends prematurally after the 5th");
 			Item.staff[item.type] = true;
 		}
 
@@ -64,27 +65,33 @@ namespace SGAmod.Items.Weapons.Shields
 		{
 			return true;
 		}
-
-
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			if (CanBlock)
+			{
+				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, DamagePercent)));
+				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, "Block at the last second to 'Just Block', taking no damage")));
+				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 3 seconds each")));
+				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, "Can be held out like a torch and used normally by holding shift")));
+			}
+		}
 	}
 
 	public class CorrodedShieldProj : ModProjectile, IDrawAdditive
 	{
 		public int blocktimer = 1;
 		public virtual float BlockAngle => 0.75f;
-		public virtual float BlockDamage=> 0.25f;
+		public virtual float BlockDamage => 0.25f;
 		public virtual bool Blocking => true;
 		public Player player => Main.player[projectile.owner];
+		public string ItemName => Name.Replace("Proj", "");
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("CorrodedShieldProj");
 		}
 
-		public virtual void JustBlock(int blocktime,Vector2 where, ref int damage, int damageSourceIndex)
-        {
-
-
-        }
+		public virtual void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex) { }
+		public virtual void WhileHeld(Player player) { }
 
 		public override void SetDefaults()
 		{
@@ -108,17 +115,17 @@ namespace SGAmod.Items.Weapons.Shields
 			return false;
 		}
 
-        public override bool PreAI()
-        {
-			blocktimer += 1;
-			return true;
-        }
-
-        public override void AI()
+		public override bool PreAI()
 		{
 			blocktimer += 1;
-			bool heldone = player.HeldItem.type != mod.ItemType("CorrodedShield") && player.HeldItem.type != mod.ItemType("CapShield");
-			if (projectile.ai[0] > 0 || (player.HeldItem == null || heldone) || player.dead || player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] > 0)
+			return true;
+		}
+
+		public override void AI()
+		{
+			blocktimer += 1;
+			bool heldone = player.HeldItem.type != mod.ItemType(ItemName);
+			if (projectile.ai[0] > 0 || ((player.HeldItem == null || heldone) && projectile.timeLeft <= 10) || player.dead || (player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] > 0 && GetType() == typeof(CapShieldProj)))
 			{
 				projectile.Kill();
 			}
@@ -161,14 +168,14 @@ namespace SGAmod.Items.Weapons.Shields
 			}
 		}
 		protected virtual void DrawAdd()
-        {
+		{
 			bool facingleft = projectile.velocity.X > 0;
 			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
 			Texture2D texture = Main.projectileTexture[projectile.type];
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 
 			if (blocktimer < 30 && blocktimer > 1)
-				Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f)*MathHelper.Clamp((30-blocktimer)/8f, 0f,1f), projectile.velocity.ToRotation() + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale + 0.25f, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+				Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f) * MathHelper.Clamp((30 - blocktimer) / 8f, 0f, 1f), projectile.velocity.ToRotation() + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale + 0.25f, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
 
 		}
 		public void DrawAdditive(SpriteBatch spriteBatch)
@@ -222,7 +229,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 			Player player = Main.player[projectile.owner];
 
-			bool heldone= player.HeldItem.type != mod.ItemType("CorrodedShield");
+			bool heldone = player.HeldItem.type != mod.ItemType("CorrodedShield");
 			if (projectile.ai[0] > 0 || (player.HeldItem == null || heldone) || player.dead)
 			{
 				projectile.Kill();
@@ -231,8 +238,8 @@ namespace SGAmod.Items.Weapons.Shields
 			{
 				if (projectile.ai[1] < 1)
 				{
-				int dir = projectile.direction;
-				player.ChangeDir(dir);
+					int dir = projectile.direction;
+					player.ChangeDir(dir);
 					player.velocity = projectile.velocity;
 					player.velocity.Y /= 2f;
 					player.immune = true;
@@ -261,12 +268,106 @@ namespace SGAmod.Items.Weapons.Shields
 
 	}
 
-	public class CapShield : CorrodedShield
+	public class DankWoodShield : CorrodedShield
 	{
 		public override void SetStaticDefaults()
 		{
+			DisplayName.SetDefault("Dank Wood Shield");
+			Tooltip.SetDefault("");
+			Item.staff[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.width = 24;
+			item.height = 32;
+			item.useTime = 70;
+			item.damage = 0;
+			item.crit = 0;
+			item.value = Item.sellPrice(0, 0, 25, 0);
+			item.expert = false;
+			item.rare = ItemRarityID.Blue;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("DankWood"), 30);
+			recipe.AddRecipeGroup("IronBar", 6);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class DankWoodShieldProj : CorrodedShieldProj, IDrawAdditive
+	{
+		public override float BlockDamage => 0.25f;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("DankWoodShield");
+		}
+
+	}
+
+	public class RiotShield : DankWoodShield
+	{
+		public virtual string DamagePercent => "Blocks 25% of damage at a large angle";
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Riot Shield");
+			Tooltip.SetDefault("Performing a Just Block keeps the shield active for several seconds with other weapons\nSlows the player when active");
+			Item.staff[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.width = 24;
+			item.height = 32;
+			item.useTime = 70;
+			item.value = Item.sellPrice(0, 1, 50, 0);
+			item.rare = ItemRarityID.Lime;
+		}
+
+	}
+
+	public class RiotShieldProj : DankWoodShieldProj, IDrawAdditive
+	{
+		public override float BlockDamage => 0.25f;
+        public override float BlockAngle => 0.25f;
+        public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("RiotShieldProj");
+		}
+        public override void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex)
+        {
+			projectile.timeLeft = 450;
+			projectile.netUpdate = true;
+
+		}
+        public override void WhileHeld(Player player)
+        {
+			player.runAcceleration /= 3f;
+			player.maxRunSpeed = Math.Max(2, player.maxRunSpeed -5);
+		}
+
+    }
+
+	public class CapShield : CorrodedShield
+	{
+		public override string DamagePercent => "Blocks 50% of damage at a decent angle";
+		public override void SetStaticDefaults()
+		{
 			DisplayName.SetDefault("Captain America's Shield");
-			Tooltip.SetDefault("Functions similarly to Corroded Shield, however allowing you to block 50% of damage instead at a larger angle\nPerforming a Just Block grants a fews seconds of Striking Moment\nCharge up to enable a powerful dash!\nThis dash may be cancelled early by unequiping the shield\nAlt Fire lets you throw the shield, which will bounce between nearby enemies\nYou cannot use your shield while it is thrown, gains +1 bounces per 30 defense\n'Stars and Stripes!'");
+			Tooltip.SetDefault("Performing a Just Block grants a fews seconds of Striking Moment\nCharge up to enable a powerful dash!\nThis dash may be cancelled early by unequiping the shield\nAlt Fire lets you throw the shield, which will bounce between nearby enemies\nYou cannot use your shield while it is thrown, gains +1 bounces per 30 defense\n'Stars and Stripes!'");
 			Item.staff[item.type] = true;
 		}
 
@@ -294,20 +395,6 @@ namespace SGAmod.Items.Weapons.Shields
 			item.channel = true;
 			item.noMelee = true;
 		}
-		public override void AddRecipes()
-		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("CorrodedShield"), 1);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
-			recipe.AddRecipeGroup("Fragment", 15);
-			recipe.AddIngredient(ItemID.LunarBar, 5);
-			recipe.AddIngredient(ItemID.RedDye, 1);
-			recipe.AddIngredient(ItemID.SilverDye, 1);
-			recipe.AddIngredient(ItemID.BlueDye, 1);
-			recipe.AddTile(TileID.LunarCraftingStation);
-			recipe.SetResult(this, 1);
-			recipe.AddRecipe();
-		}
 
 		public override bool CanUseItem(Player player)
 		{
@@ -319,7 +406,7 @@ namespace SGAmod.Items.Weapons.Shields
 			{
 				item.channel = true;
 			}
-				return player.ownedProjectileCounts[mod.ProjectileType("CapShieldProjDash")] < 1 && player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1;
+			return player.ownedProjectileCounts[mod.ProjectileType("CapShieldProjDash")] < 1 && player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1;
 		}
 
 		public override bool AltFunctionUse(Player player)
@@ -335,7 +422,7 @@ namespace SGAmod.Items.Weapons.Shields
 				player.itemTime /= 3;
 				damage = (int)(damage);
 				type = mod.ProjectileType("CapShieldToss");
-				int thisoned = Projectile.NewProjectile(position.X, position.Y, speedX*player.Throwing().thrownVelocity, speedY * player.Throwing().thrownVelocity, type, damage, knockBack, Main.myPlayer);
+				int thisoned = Projectile.NewProjectile(position.X, position.Y, speedX * player.Throwing().thrownVelocity, speedY * player.Throwing().thrownVelocity, type, damage, knockBack, Main.myPlayer);
 				Main.projectile[thisoned].thrown = true;
 				Main.projectile[thisoned].melee = false;
 				Main.projectile[thisoned].netUpdate = true;
@@ -390,14 +477,28 @@ namespace SGAmod.Items.Weapons.Shields
 			}
 		}
 
+
 		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
 		{
 			add -= player.meleeDamage;
-			add += ((player.Throwing().thrownDamage*1.5f) + player.meleeDamage)/2f;
+			add += ((player.Throwing().thrownDamage * 1.5f) + player.meleeDamage) / 2f;
 		}
-
-
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("CorrodedShield"), 1);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
+			recipe.AddRecipeGroup("Fragment", 15);
+			recipe.AddIngredient(ItemID.LunarBar, 5);
+			recipe.AddIngredient(ItemID.RedDye, 1);
+			recipe.AddIngredient(ItemID.SilverDye, 1);
+			recipe.AddIngredient(ItemID.BlueDye, 1);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
 	}
+
 
 	public class CapShieldProj : CorrodedShieldProj, IDrawAdditive
 	{

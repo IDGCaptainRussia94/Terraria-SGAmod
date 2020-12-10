@@ -285,7 +285,7 @@ namespace SGAmod.Items.Consumable
 			;
 			if (underground && !NPC.AnyNPCs(mod.NPCType("SpiderQueen")))
 			{
-				return base.CanUseItem(player);
+				return true;
 			}
 			else
 			{
@@ -434,7 +434,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Nineball");
-			Tooltip.SetDefault("Summons the strongest ice fairy");
+			Tooltip.SetDefault("Summons the strongest ice fairy\nMake sure you don't hit a wall and aim up");
 		}
 		public override void SetDefaults()
 		{

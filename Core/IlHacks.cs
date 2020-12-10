@@ -321,7 +321,8 @@ namespace SGAmod
 			c.Instrs[c2].Operand = label3;//Set the output to our 2nd if statement instead of after it
 
 			if (!c.TryGotoPrev(MoveType.Before, i => i.MatchLdfld<Player>("merman")))//Breathing override, before the merman check
-				c.Index -= 1;
+				goto Failed;
+
 			c.Emit(OpCodes.Ldarg_0);
 			c.Emit(OpCodes.Ldloc_0);//Drowning Flag push
 			c.EmitDelegate<Func<Player,bool, bool>>((Player player,bool prevvalue) => //Drown for me, DROWN!!!
@@ -334,6 +335,18 @@ namespace SGAmod
 				return prevvalue;
 			});
 			c.Emit(OpCodes.Stloc_0);//Force it!
+
+			if (!c.TryGotoNext(MoveType.Before, i => i.MatchStfld<Player>("statLife")))//Drown Speed controller!
+				goto Failed;
+			if (!c.TryGotoPrev(MoveType.After, i => i.MatchStfld<Player>("breath")))//Drown Speed controller!
+				goto Failed;
+
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<Action<Player>>((Player player) =>
+			{
+				SGAPlayer sgaply = player.SGAPly();
+				player.statLife -= sgaply.drownRate + (int)sgaply.drowningIncrementer.Y;
+			});
 
 
 

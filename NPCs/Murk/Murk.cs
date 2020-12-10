@@ -1388,7 +1388,7 @@ namespace SGAmod.NPCs.Murk
 
         public override void AI()
         {
-
+            //Main.NewText(npc.Center);
             if (npc.ai[2]<5)
             {
                 int prev=npc.whoAmI;

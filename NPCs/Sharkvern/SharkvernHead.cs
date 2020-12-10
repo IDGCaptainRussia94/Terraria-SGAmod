@@ -894,6 +894,7 @@ namespace SGAmod.NPCs.Sharkvern
         public override void Update(Player player, ref int buffIndex)
         {
             player.GetModPlayer<SGAPlayer>().permaDrown = true;
+            player.GetModPlayer<SGAPlayer>().drownRate += 2;
         }
 
     }

@@ -169,6 +169,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.YoyoBag, 1);
 			recipe.AddIngredient(ItemID.RainbowString, 1);
 			recipe.AddIngredient(ItemID.SharkToothNecklace, 1);
+			recipe.AddIngredient(ItemID.DestroyerEmblem, 1);
 			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
 			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 8);
 			recipe.AddTile(TileID.TinkerersWorkbench);
@@ -888,7 +889,6 @@ namespace SGAmod.Items.Accessories
 			item.rare = -12;
 			item.expert = true;
 			item.accessory = true;
-			item.defense = 10;
 			item.damage = 1;
 			item.knockBack = 1f;
 		}
@@ -2158,7 +2158,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gunsmith's Belt of Tools");
-			Tooltip.SetDefault("Grants 2 extra bullets per clip while using Revolvers\nRevolvers reload faster\n10% increased Bullet Damage");
+			Tooltip.SetDefault("Grants 2 extra bullets per clip while using Revolvers\nRevolvers reload 20% faster\n10% increased Bullet Damage");
 		}
 
 		public override void SetDefaults()
@@ -2173,7 +2173,7 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-			sgaply.RevolverSpeed += 0.25f;
+			sgaply.RevolverSpeed += 0.20f;
 			sgaply.ammoLeftInClipMax += 2;
 			player.bulletDamage += 0.10f;
 		}
@@ -2571,11 +2571,11 @@ namespace SGAmod.Items.Accessories
 			ModContent.GetInstance<JavelinBundle>().UpdateAccessory(player, hideVisual);
 			sgaply.ninjaSash = Math.Max(sgaply.ninjaSash, 3);
 
-			player.Throwing().thrownCrit += 10;
+			player.Throwing().thrownCrit += 15;//+ 5% from Gi
 			player.Throwing().thrownDamage += 0.25f;//20% + 5% from Gi
 
 			player.meleeDamage += 0.05f; player.rangedDamage += 0.05f; player.magicDamage += 0.05f; player.minionDamage += 0.05f;
-			player.Throwing().thrownCrit += 5; player.rangedCrit += 5; player.magicCrit += 5; player.meleeCrit += 5;
+			player.rangedCrit += 5; player.magicCrit += 5; player.meleeCrit += 5;
 			SGAmod.BoostModdedDamage(player, 0.05f, 5);
 
 			player.meleeSpeed += 0.10f;
@@ -2589,7 +2589,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.MasterNinjaGear, 1);
 			recipe.AddIngredient(ItemID.Gi, 1);
 			recipe.AddIngredient(mod.ItemType("ShinobiShiv"), 1);
-			recipe.AddIngredient(mod.ItemType("JavelinBaseBundle"), 1);
+			recipe.AddIngredient(mod.ItemType("JavelinBundle"), 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
 			recipe.AddTile(TileID.LunarCraftingStation);
@@ -2879,6 +2879,88 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	public class MurkyCharm : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Murky Charm");
+			Tooltip.SetDefault("Reduces the life lost from drowning\nGrants immunity to Murky Depths");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.SGAPly();
+			if (!sgaply.murkyCharm)
+			{
+				sgaply.murkyCharm = true;
+				sgaply.drownRate -= 1;
+				player.buffImmune[ModContent.BuffType<NPCs.Murk.MurkyDepths>()] = true;
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(silver: 25);
+			item.rare = ItemRarityID.Green;
+			item.accessory = true;
+		}
+
+	}
+	public class MagusSlippers : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Magus Slippers");
+			Tooltip.SetDefault("Removes the movement penality from mana regeneration\n'So magical cozy! No wonder mages can focus!'");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.SGAPly();
+			sgaply.magusSlippers = true;
+			//placeholder
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.buyPrice(gold: 2);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+
+	}
+
+	public class StarCollector : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Star Collector");
+			Tooltip.SetDefault("Picking up Mana stars reduces Mana Sickness by 1 second");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.SGAPly();
+			sgaply.starCollector = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.buyPrice(silver: 30);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+	}
+
 	public class TerraDivingGear : ModItem
 	{
 		protected string allText => Language.GetTextValue("ItemTooltip.ArcticDivingGear") + "\n" + Language.GetTextValue("ItemName.BreathingReed") + " " + Language.GetTextValue("ItemTooltip.BreathingReed") + "\n" +
@@ -2935,10 +3017,12 @@ namespace SGAmod.Items.Accessories
 	[AutoloadEquip(EquipType.Back)]
 	public class PrismalAirTank : ModItem
 	{
+		internal static sbyte backItem = 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Air Tank");
-			Tooltip.SetDefault("+5 max Breath Bubbles, "+ Language.GetTextValue("ItemTooltip.FlipperPotion")+"\nImproved Life and Mana regen while wet");
+			Tooltip.SetDefault("+5 max Breath Bubbles, "+ Language.GetTextValue("ItemTooltip.FlipperPotion")+ "\nImproved Life and Mana regen while wet\nGrants an additional free Action Cooldown Stack while wet");
+			backItem = item.backSlot;
 		}
 
 		public override void SetDefaults()
@@ -2946,20 +3030,21 @@ namespace SGAmod.Items.Accessories
 			item.width = 18;
 			item.height = 24;
 			item.rare = ItemRarityID.Lime;
-			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.value = Item.sellPrice(0, 1, 50, 0);
 			item.accessory = true;
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			if (player.SGAPly().AirTank)
+			if (player.SGAPly().airTank)
 				return;
 
-			player.SGAPly().AirTank = true;
+			player.SGAPly().airTank = true;
 			player.breathMax += 100;
 			player.ignoreWater = true;
 			if (player.wet)
 			{
+				player.SGAPly().MaxCooldownStacks += 1;
 				player.manaRegen += 2;
 				player.lifeRegen += 1;
 			}
@@ -2984,7 +3069,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Diving Gear");
-			Tooltip.SetDefault(allText+ "\n+5 max Breath Bubbles\nImproved Life and Mana regen while wet");
+			Tooltip.SetDefault(allText+ "\nEffects of Murky Charm and Prismal Air Tank");
 		}
 
         public override bool DrawHead()
@@ -2994,6 +3079,7 @@ namespace SGAmod.Items.Accessories
 
         public override void SetDefaults()
 		{
+			item.backSlot = PrismalAirTank.backItem;
 			item.width = 18;
 			item.height = 24;
 			item.rare = ItemRarityID.Yellow;
@@ -3005,14 +3091,15 @@ namespace SGAmod.Items.Accessories
 		{
 			base.UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<PrismalAirTank>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<MurkyCharm>().UpdateAccessory(player, hideVisual);
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("TerraDivingGear"), 1);
 			recipe.AddIngredient(mod.ItemType("PrismalAirTank"), 1);
+			recipe.AddIngredient(mod.ItemType("MurkyCharm"), 1);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -3212,33 +3299,41 @@ namespace SGAmod.Items.Accessories
 			recipe.AddRecipe();
 		}
 
-		/*public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
-
-			Texture2D inner = ModContent.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
+			Texture2D inner = mod.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
 
 			Vector2 slotSize = new Vector2(52f, 52f);
 			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
 			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
 			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
 
-			spriteBatch.Draw(inner, drawPos, null, Color.White,0, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			spriteBatch.Draw(inner, drawPos, null, Color.White, 0, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, default, default, default, default, null, Main.UIScaleMatrix);
 
-
-			return true;
-		}*/
+			return false;
+		}
 
 		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
 
-			Texture2D inner = ModContent.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
-
 			Vector2 position = item.Center - Main.screenPosition;
+			spriteBatch.Draw(Main.itemTexture[item.type], position, null, alphaColor, rotation, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Texture2D inner = mod.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
+
 
 			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
 
-			spriteBatch.Draw(inner, position, null, alphaColor, rotation, textureOrigin, scale, SpriteEffects.None, 0f);
-			spriteBatch.Draw(Main.itemTexture[item.type], position, null, alphaColor, rotation, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(inner, position, null, Color.White, rotation, textureOrigin, scale*Main.essScale, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
 			return false;
 		}
@@ -3321,7 +3416,6 @@ namespace SGAmod.Items.Accessories
 
 	public class CobaltMagnetProj : GraniteMagnetProj
 	{
-		protected override int itemID => ModContent.ItemType<CobaltMagnet>();
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("CobaltMagnetProj");
@@ -3336,7 +3430,6 @@ namespace SGAmod.Items.Accessories
 
 	public class GraniteMagnetProj : Weapons.Technical.LaserMarkerProj
     {
-		protected virtual int itemID => ModContent.ItemType<GraniteMagnet>();
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("GraniteMagnetProj");
@@ -3357,7 +3450,7 @@ namespace SGAmod.Items.Accessories
 		{
 
 			Player player = Main.player[projectile.owner];
-			bool heldone = player.HeldItem.type != itemID;
+			bool heldone = player.HeldItem.type != mod.ItemType(ItemName);
 			if (projectile.ai[0] > 0 || (player.HeldItem == null || heldone) || player.itemAnimation > 0 || player.dead)
 			{
 				projectile.Kill();

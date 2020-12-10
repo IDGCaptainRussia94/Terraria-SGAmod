@@ -864,7 +864,7 @@ namespace SGAmod.Dimensions
                 {
                     if (unirand.Next(0, 100) < 10 + (SGAWorld.dungeonlevel * 5))
                     {
-                        int[] theitem = { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone") };
+                        int[] theitem = { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone"), SGAmod.Instance.ItemType("MagusSlippers") };
                         Main.chest[chestid].item[e].SetDefaults(theitem[Main.rand.Next(0, theitem.Length)]);
                         Main.chest[chestid].item[e].stack = 1;
                         e += 1;

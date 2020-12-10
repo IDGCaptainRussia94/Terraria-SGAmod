@@ -547,11 +547,16 @@ namespace SGAmod.Items.Weapons.Technical
 			item.shoot = 14;
 			item.mana = 100;
 			item.shootSpeed = 200f;
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/Massacre_Glow");
+				item.GetGlobalItem<ItemUseGlow>().glowOffsetX = -18;
+			}
 		}
 
 		public override Vector2? HoldoutOffset()
 		{
-			return new Vector2(-6, -4);
+			return new Vector2(-18, -0);
 		}
 
 		public override void AddRecipes()
@@ -1640,6 +1645,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class LaserMarker : Shields.CorrodedShield, IHitScanItem
 	{
+		public override bool CanBlock => false;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Laser Marker");
@@ -1758,7 +1764,7 @@ namespace SGAmod.Items.Weapons.Technical
 		{
 
 			Player player = Main.player[projectile.owner];
-			bool heldone = player.HeldItem.type != mod.ItemType("LaserMarker");
+			bool heldone = player.HeldItem.type != mod.ItemType(ItemName);
 			if (projectile.ai[0] > 0 || (player.HeldItem == null || heldone) || player.itemAnimation>0 || player.dead)
 			{
 				projectile.Kill();

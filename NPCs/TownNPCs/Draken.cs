@@ -286,7 +286,7 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("I am not weak...");
 				chat.Add("People are wrong about our kind...");
 				chat.Add("Where did my keys go?");
-				chat.Add("Croteam hasn't released Serious Sam 4, my Human thinks its alright, kinda underwelming and kept like a filler title");
+				chat.Add("Croteam has released Serious Sam 4, my Human thinks its alright, kinda underwelming and kept like a filler title");
 				chat.Add("Please don't point those blades at me...");
 				chat.Add("'Rawr <3'");
 				chat.Add("I cannot roar, I just make a cute whining sound.");

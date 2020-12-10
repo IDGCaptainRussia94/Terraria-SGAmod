@@ -431,6 +431,13 @@ namespace SGAmod
             {
                 if (player.HasItem(mod.ItemType("EALogo")))
                     player.QuickSpawnItem(ItemID.SilverCoin, 4);
+
+                if (player.SGAPly().starCollector && player.HasBuff(BuffID.ManaSickness))
+                {
+                    int index = player.FindBuffIndex(BuffID.ManaSickness);
+                    if (index >= 0)
+                        player.buffTime[index] -= 60;
+                }
             }
             //lifesteal/gain
             //NetMessage.SendData(66, -1, -1, null, num492, (float)num497, 0f, 0f, 0, 0, 0);

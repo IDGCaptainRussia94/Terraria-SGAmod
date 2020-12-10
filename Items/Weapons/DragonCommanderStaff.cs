@@ -31,7 +31,6 @@ namespace SGAmod.Items.Weapons
         {
 			SGAPlayer sga = player.SGAPly();
 			mult = 0.25f+((sga.ExpertiseCollectedTotal/20000f)*0.75f);
-
 		}
 
         public override void SetDefaults()
@@ -153,14 +152,14 @@ namespace SGAmod.Items.Weapons
 			projectile.timeLeft = 300;
 			projectile.minion = true;
 			projectile.extraUpdates = 2;
-			projectile.usesLocalNPCImmunity = true;
-			projectile.localNPCHitCooldown = 2;
+			//projectile.usesLocalNPCImmunity = false;
+			//projectile.localNPCHitCooldown = 2;
 		}
 
-        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            //nil
-        }
+			target.immune[projectile.owner] = 2;
+		}
 
         public override void AI()
 		{

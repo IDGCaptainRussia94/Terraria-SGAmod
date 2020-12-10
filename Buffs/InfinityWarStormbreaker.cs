@@ -98,7 +98,7 @@ namespace SGAmod.Buffs
 		}
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.GetModPlayer<SGAPlayer>().UseTimeMulPickaxe /= 2f;
+			player.GetModPlayer<SGAPlayer>().UseTimeMulPickaxe /= 4f;
 		}
 	}
 	public class BIPBuff : ModBuff

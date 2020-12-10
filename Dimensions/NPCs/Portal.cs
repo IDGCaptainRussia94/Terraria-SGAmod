@@ -233,6 +233,10 @@ namespace SGAmod.Dimensions.NPCs
 			shop.item[nextSlot].shopCustomPrice = 50;
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 			nextSlot++;
+			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("MagusSlippers"));
+			shop.item[nextSlot].shopCustomPrice = 60;
+			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+			nextSlot++;			
 			if (Main.LocalPlayer.SGAPly().ExpertiseCollectedTotal >= 4000)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("EntropyTransmuter"));

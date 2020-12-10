@@ -199,7 +199,8 @@ namespace SGAmod
 				}
 				packet.Send();*/
 
-			if (atype == (ushort)MessageType.CloneClient) {
+			if (atype == (ushort)MessageType.CloneClient)
+			{
 				Logger.Debug("DEBUG both: Clone Client");
 				int player = reader.ReadInt32();
 				int ammoLeftInClip = reader.ReadInt16();
@@ -215,26 +216,33 @@ namespace SGAmod
 				int activestacks = reader.ReadInt16();
 				bool dragonFriend = reader.ReadBoolean();
 				Logger.Debug("DEBUG both: Clone Client 10");
+				int[] ammos = { reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32() };
 
-
-				SGAPlayer sgaplayer = Main.player[player].GetModPlayer(this, typeof(SGAPlayer).Name) as SGAPlayer;
-				sgaplayer.ammoLeftInClip = ammoLeftInClip;
-				sgaplayer.sufficate = sufficate;
-				sgaplayer.PrismalShots = PrismalShots;
-				sgaplayer.plasmaLeftInClip = plasmaLeftInClip;
-				sgaplayer.Redmanastar = Redmanastar;
-				sgaplayer.ExpertiseCollected = ExpertiseCollected;
-				sgaplayer.ExpertiseCollectedTotal = ExpertiseCollectedTotal;
-				sgaplayer.entropyCollected = Entrophite;
-				sgaplayer.DefenseFrame = DefenseFrame;
-				sgaplayer.gunslingerLegendtarget = (int)gunslingerLegendtarget;
-				sgaplayer.activestacks = (int)activestacks;
-				sgaplayer.dragonFriend = dragonFriend;
-				for (int i = 54; i < 58; i++)
+				if (player >= 0 && player < Main.maxPlayers)
 				{
-					sgaplayer.ammoinboxes[i - 54] = reader.ReadInt32();
+					SGAPlayer sgaplayer = Main.player[player].GetModPlayer(this, typeof(SGAPlayer).Name) as SGAPlayer;
+					sgaplayer.ammoLeftInClip = ammoLeftInClip;
+					sgaplayer.sufficate = sufficate;
+					sgaplayer.PrismalShots = PrismalShots;
+					sgaplayer.plasmaLeftInClip = plasmaLeftInClip;
+					sgaplayer.Redmanastar = Redmanastar;
+					sgaplayer.ExpertiseCollected = ExpertiseCollected;
+					sgaplayer.ExpertiseCollectedTotal = ExpertiseCollectedTotal;
+					sgaplayer.entropyCollected = Entrophite;
+					sgaplayer.DefenseFrame = DefenseFrame;
+					sgaplayer.gunslingerLegendtarget = (int)gunslingerLegendtarget;
+					sgaplayer.activestacks = (int)activestacks;
+					sgaplayer.dragonFriend = dragonFriend;
+
+					for (int i = 0; i < 4; i++)
+					{
+						sgaplayer.ammoinboxes[i] = ammos[i];
+					}
+
+					Logger.Debug("DEBUG both: Clone Client End");
+					return;
 				}
-				Logger.Debug("DEBUG both: Clone Client End");
+				Logger.Debug("DEBUG both: Clone Client Invalid Player");
 				return;
 			}
 

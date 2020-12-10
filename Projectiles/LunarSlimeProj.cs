@@ -82,7 +82,7 @@ namespace SGAmod.Projectiles
 
             float angle = (float)(((1f + projectile.ai[0] / 8f)) + 2.0 * Math.PI * (projectile.ai[0] / ((double)8f)));
 
-            spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 10), color, angle/5f, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 6), color, (float)Math.Sin(-angle), drawOrigin, projectile.scale, SpriteEffects.None, 0f);
 
             return false;
         }

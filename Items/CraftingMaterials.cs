@@ -407,7 +407,7 @@ namespace SGAmod.Items
 	{
 		public override void SetDefaults()
 		{
-			item.value = 5000;
+			item.value = 100;
 			item.rare = 7;
 			item.width = 16;
 			item.height = 16;
@@ -1322,7 +1322,7 @@ public class LunarRoyalGel : ModItem
 		item.width = 16;
 		item.height = 16;
 		item.maxStack = 99;
-		item.value = 5000;
+		item.value = 7500;
 		item.rare = ItemRarityID.Yellow;
 		item.alpha = 0;
 		item.useTurn = true;

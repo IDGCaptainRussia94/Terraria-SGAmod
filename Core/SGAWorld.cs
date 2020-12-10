@@ -745,6 +745,22 @@ namespace SGAmod
 
             int[] itemsToPlaceInOvergrownChestsSecond = new int[] { mod.ItemType("ForagersBlade"), mod.ItemType("GuerrillaPistol") };
             int itemsToPlaceInOvergrownChestsChoiceSecond = 0;
+
+                List<Chest> Chests = Main.chest.Where(checkfor => checkfor != null).ToList();
+
+            Chests = Chests.OrderBy(orderBy => WorldGen.genRand.Next(0, 100)+(Main.tile[orderBy.x, orderBy.y].frameX / 36 == 13 ? 0 : 10000)).ToList();
+            for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
+            {
+                if (Chests[0].item[inventoryIndex].IsAir)
+                {
+                    Chests[0].item[inventoryIndex].SetDefaults(mod.ItemType("StarCollector"));
+                    Chests[0].item[inventoryIndex].stack = 1;
+                    break;
+                }
+            }
+            Chests.RemoveAt(0);
+
+
             for (int chestIndexx = 0; chestIndexx < 1000; chestIndexx++)
             {
                 Chest chest = Main.chest[chestIndexx];

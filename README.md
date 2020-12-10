@@ -13,7 +13,8 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners, Spectre homing bullets/projectiles
 Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon
--Add Hellion Army progress Bar, Add config options to lower effects, Add lower-end murk fog
+
+-Add Hellion Army progress Bar, Add config options to lower effects, Add lower-end murk fog, rework cobalt wraith water bolts
 
 Changelog:
 
@@ -22,25 +23,59 @@ Changelog:
 
 --Added:
 
--Prismal Air Tank, Prismal Diving Gear, Fluid Displacer, Normal Quiver
+-Prismal Air Tank, Prismal Diving Gear, Fluid Displacer, Normal Quiver, Magus Slippers, Star Collector, Murky Charm
+
+-Shields have been expanded into a full sub-set of weapons with these new additions: Dank Wood Shield, Riot Shield
+
+-Changes to the vanilla drowing mechanic: drowning for more than 5 seconds causes the damage to start increasing gradually
 
 
 --Changed:
 
 -Space Diver Armor visual overhaul!
 
+-Cobalt Wraith has undergone some changes to try to make the fight more fair and less running away
+
+-Finally fixed the Dank Shrines, there should now always be atleast one narrow entry point at highest top
+
 -Terra Diving Gear has been moved later into progression
 
--Demonsteppers can be hidden on your player to disable the doube jump
+-Added Bone Throwing Knives to the list of items the Ninja Stash can summon on attacks
+
+-Demonsteppers can be hidden on your player to disable the double jump
+
+-Owning the Caliburn Compass in your inventory is now required to lesson the darkness of the Dark Sector
+
+-Yoyo Gauntlet has been moved to post golem, it was honestly too strong for pre-plantera
+
+-Reworked Shooting Star: Less Damage, less overall mana usage, speeds up as you hold it down for longer causing more accurate hits, scales with mana sickness now.
+
+-Buffed Joyrider: Grants far more flight time per bullet damage, base flight time reduced, is no longer restricted to basic bullets
+
+-Nerfed Dragon Commander: now does cause immunity frames to make cross-weapon damage stacking less viable
 
 -Nerfed Tidal Charm: only gives half as much breath now
 
--Owning the Caliburn Compass in your inventory is now required to lesson the darkness of the Dark Sector
+-Nerfed Lunar Slime Heart: no longer grants any listed defense (having buffs/debuffs still gives defense)
+
+-Nerfed Gunsmith's Belt of Tools: had a hidden 25% reload bonus, is now 20% and mentioned
+
+-Removed Moist Stone's slowing debuffs when mined, reverted to previous state
+
+-Adjusted item prices
 
 
 --Fixed:
 
--Stone Aura Staff hurting friendly NPCs
+-Lunar Slime Heart giving twice as much defense than what was listed
+
+-Kou Sash using the wrong Jab-lin accessory in its crafting recipe
+
+-Various issues relating to Dank Wood Doors
+
+-Shooting the moist walls triggering the slowdown effect; it now only triggers if your holding a mining tool
+
+-Serious Sam 4 line with Draken not saying what I inteded it to
 
 
 
@@ -73,6 +108,12 @@ Changelog:
 -Not receiving the upgraded Caliburn compass after defeating Wrath of Caliburn
 
 -Blazewyrm set bonus not triggering on 'True melee' projectile weapons like Yoyos and Spears
+
+-Nightmare Mode Triggering events more than once on specific boss drops
+
+-Bench God's Favor being granted by defeating Copper Wraith and reloading your character (whoops!)
+
+-Stone Aura Staff hurting friend NPCs
 
 
 

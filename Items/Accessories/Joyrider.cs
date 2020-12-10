@@ -10,7 +10,6 @@ namespace SGAmod.Items.Accessories
 	[AutoloadEquip(EquipType.Wings)]
 	public class Joyrider : ModItem
 	{
-		int frameCounter = 0;
 
 		public override void SetStaticDefaults()
 		{

@@ -253,55 +253,68 @@ namespace SGAmod
 
 			#region MiscVisuals
 
-			if (sgaplayer.SpaceDiverset && CustomWings<1)
+			if (sgaplayer.SpaceDiverset && CustomWings < 1)
 			{
-			int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
-			int backacclayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("BackAcc"));
-			if (SpaceDiverWings < 0.6f)
-			layers.RemoveAt(wingsLayer);
-			SpaceDiverTank.visible = true;
-			layers.Insert(backacclayer, SpaceDiverTank);
+				/*int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
+				int backacclayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("BackAcc"));
+				if (SpaceDiverWings < 0.6f)
+				layers.RemoveAt(wingsLayer);
+				SpaceDiverTank.visible = true;
+				layers.Insert(backacclayer, SpaceDiverTank);*/
 			}
 
-			if (sgaplayer.CustomWings>0)
+			if (sgaplayer.CustomWings > 0)
 			{
 				int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
-				//layers.RemoveAt(wingsLayer);
-				AltWings.visible = true;
-				layers.Insert(wingsLayer+1, AltWings);
+				if (wingsLayer >= 0)
+				{
+					layers.RemoveAt(wingsLayer);
+					AltWings.visible = true;
+					layers.Insert(wingsLayer + 1, AltWings);
+				}
 			}
 
 			if (sgaplayer.terraDivingGear)
 			{
-			int armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MountBack"));
-			BreathingReed.visible = true;
-			layers.Insert(armLayer2, BreathingReed);
+				int armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MountBack"));
+				if (armLayer2 >= 0)
+				{
+					BreathingReed.visible = true;
+					layers.Insert(armLayer2, BreathingReed);
+				}
 			}
 
-			if (player.HeldItem.type==mod.ItemType("WaveBeam"))
+			if (player.HeldItem.type == mod.ItemType("WaveBeam"))
 			{
-			int armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("HandOnAcc"));
-			WaveBeamArm.visible = true;
-			layers.Insert(armLayer2, WaveBeamArm);
+				int armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("HandOnAcc"));
+				if (armLayer2 >= 0)
+				{
+					WaveBeamArm.visible = true;
+					layers.Insert(armLayer2, WaveBeamArm);
+				}
 			}
 
 			if (IDGset)
 			{
-			int armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsFront"));
-			DigiEffect.visible = true;
-			layers.Insert(armLayer2, DigiEffect);
-				armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsBack"));
-				DigiEffectBack.visible = true;
-				layers.Insert(armLayer2, DigiEffectBack);
-
-
+				int armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsFront"));
+				if (armLayer2 >= 0)
+				{
+					DigiEffect.visible = true;
+					layers.Insert(armLayer2, DigiEffect);
+					armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsBack"));
+					if (armLayer2 >= 0)
+					{
+						DigiEffectBack.visible = true;
+						layers.Insert(armLayer2, DigiEffectBack);
+					}
+				}
 			}
 
-            #endregion
+			#endregion
 
-            #region armor glowmasks
+			#region armor glowmasks
 
-            string[] stringsz = { "Head", "Body", "Arms", "Legs"};
+			string[] stringsz = { "Head", "Body", "Arms", "Legs"};
 			PlayerLayer[] thelayer = { PlayerLayer.Head, PlayerLayer.Body, PlayerLayer.Arms, PlayerLayer.Legs };
 
 			for (int intc = 0; intc < 4; intc += 1)

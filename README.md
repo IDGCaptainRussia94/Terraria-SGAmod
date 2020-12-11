@@ -16,7 +16,7 @@ Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon
 
 Changelog:
 
-3.455-(12/5/20)-Hot Fix #13:
+3.455-3.460-(12/5/20)-Hot Fix #13:
 
 
 --Changed:
@@ -39,6 +39,8 @@ Changelog:
 
 
 --Fixed:
+
+-Fixed a big involving player layers crashing the game
 
 -Not receiving the upgraded Caliburn compass after defeating Wrath of Caliburn
 

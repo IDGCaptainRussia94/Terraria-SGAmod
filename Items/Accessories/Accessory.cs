@@ -3045,7 +3045,8 @@ namespace SGAmod.Items.Accessories
 			if (player.wet)
 			{
 				player.SGAPly().MaxCooldownStacks += 1;
-				player.manaRegen += 2;
+				player.manaRegenBonus += 25;
+				player.manaRegenDelayBonus++;
 				player.lifeRegen += 1;
 			}
 			//ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
@@ -3053,8 +3054,18 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			//recipe.AddIngredient(mod.ItemType("BlinkTech"), 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
+			recipe.AddIngredient(ItemID.BandofRegeneration, 1);
+			recipe.AddIngredient(ItemID.ManaRegenerationBand, 1);
+			recipe.AddIngredient(ItemID.FlipperPotion, 5);
+			recipe.AddTile(mod.GetTile("PrismalStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
+			recipe.AddIngredient(ItemID.BandofRegeneration, 1);
+			recipe.AddIngredient(ItemID.ManaCrystal, 5);
 			recipe.AddIngredient(ItemID.FlipperPotion, 5);
 			recipe.AddTile(mod.GetTile("PrismalStation"));
 			recipe.SetResult(this);

@@ -445,7 +445,7 @@ namespace SGAmod.Items.Consumable
 		{
 			DisplayName.SetDefault("Dragon's Might Potion");
 			Tooltip.SetDefault("50% increase to all damage types except Summon damage" +
-				"\nLasts 20 seconds, inflicts Weakness after it ends\nThis cannot be stopped by being immune");
+				"\nLasts 20 seconds, inflicts Weakness after it ends\nThis cannot be stopped by being immune\nCannot be used while Weakened");
 		}
 
 		public override void SetDefaults()
@@ -478,7 +478,12 @@ namespace SGAmod.Items.Consumable
 			recipe.AddRecipe();
 		}
 
-		public override void OnConsumeItem(Player player)
+        public override bool CanUseItem(Player player)
+        {
+			return !player.HasBuff(BuffID.Weak);
+        }
+
+        public override void OnConsumeItem(Player player)
 		{
 			//SLWorld.EnterSubworld("SGAmod_Blank");
 			//RippleBoom.MakeShockwave(player.Center,8f,1f,10f,60,1f);

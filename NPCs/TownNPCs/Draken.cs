@@ -468,7 +468,7 @@ namespace SGAmod.NPCs.TownNPCs
 				}
 				chat.Add("Could you help make this land a little safer? I can offer you what I found on my previous adventures.", 2.0);
 				chat.Add("Hello...", 2.0);
-				chat.Add("Hold 'Shift' to see your current and total Expertise, as well as see what's next on the target list.", 4.0);
+				chat.Add("Hold 'Shift' to see your current and total Expertise, as well as see what's next on the target list.", 6.00);
 			}
 			//chat.Add("This message has a weight of 5, meaning it appears 5 times more often.", 5.0);
 			//chat.Add("This message has a weight of 0.1, meaning it appears 10 times as rare.", 0.1);

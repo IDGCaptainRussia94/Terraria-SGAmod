@@ -65,6 +65,8 @@ namespace SGAmod
 		public float SlowDownDefense = 0f;
 		public float SlowDownResist = 1f;
 		public int SlowDownReset = 0;
+		public int heldShield = -1;
+		public int heldShieldReset = 0;
 
 		//Potion related
 		public float trueMeleeDamage = 1f;
@@ -252,6 +254,11 @@ namespace SGAmod
 			surprised = Math.Max(surprised - 1, 0);
 			tidalCharm = (int)MathHelper.Clamp(tidalCharm - Math.Sign(tidalCharm), -1000,1000);
 			shinobj -= 1;
+
+			heldShieldReset -= 1;
+			if (heldShieldReset<1)
+			heldShield = -1;
+
 			diesIraeStone = false;
 			starCollector = false;
 			magusSlippers = false;
@@ -852,6 +859,8 @@ namespace SGAmod
 
 
 			CharmingAmuletCode();
+			if (player.manaRegenBuff)
+				player.statManaMax2 = Math.Max(player.statManaMax2-50,0);
 
 			if (creeperexplosion > 9700)
 			{
@@ -1262,24 +1271,31 @@ namespace SGAmod
 						Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, projtype, player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
 				}
 
-
-				if (player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1 && player.HeldItem.modItem != null)
+				int index = player.SGAPly().heldShield;
+				if (index >= 0)
+				{
+					if (Main.projectile[index].active)
+					{
+						Items.Weapons.Shields.CorrodedShieldProj myShield = (Main.projectile[player.SGAPly().heldShield].modProjectile as Items.Weapons.Shields.CorrodedShieldProj);
+						if (myShield != null)
+						myShield.WhileHeld(player);
+					}
+				}
+				else
 				{
 
-					int projtype = -1;
-					if (SGAPlayer.ShieldTypes.ContainsKey(player.HeldItem.type))
+					if (player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1 && player.HeldItem.modItem != null)
 					{
-						SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out projtype);
-						if (projtype > 0)
+						int projtype = -1;
+						if (SGAPlayer.ShieldTypes.ContainsKey(player.HeldItem.type))
 						{
-							if (player.ownedProjectileCounts[projtype] < 1)
+							SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out projtype);
+							if (projtype > 0)
 							{
-								Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, projtype, player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
-                            }
-                            else
-                            {
-								Items.Weapons.Shields.CorrodedShieldProj myShield = (Main.projectile.First(projtype2 => projtype2.active && projtype2.owner == player.whoAmI && projtype2.type == projtype).modProjectile as Items.Weapons.Shields.CorrodedShieldProj);
-								myShield.WhileHeld(player);
+								if (player.ownedProjectileCounts[projtype] < 1)
+								{
+									Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, projtype, player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
+								}
 							}
 						}
 					}

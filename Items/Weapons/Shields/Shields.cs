@@ -17,7 +17,36 @@ namespace SGAmod.Items.Weapons.Shields
 
 	public class CorrodedShield : ModItem
 	{
-		public virtual string DamagePercent => "Blocks 25% of damage at a narrow angle";
+		public string ShowPercentText
+        {
+            get
+            {
+				int typez = mod.ProjectileType(Name + "Proj");
+				Projectile proj = null;
+				if (Main.LocalPlayer.ownedProjectileCounts[typez] > 0)
+				{
+					Projectile[] proj3 = Main.projectile.Where(testprog => testprog.active && testprog.owner == Main.LocalPlayer.whoAmI && testprog.type == typez).ToArray();
+					if (proj3 != null && proj3.Length > 0)
+						proj = proj3[0];
+				}
+				else
+				{
+					proj = new Projectile();
+					proj.SetDefaults(typez);
+				}
+				if (proj != null)
+				{
+					CorrodedShieldProj proj2 = proj.modProjectile as CorrodedShieldProj;
+					if (proj2 != null)
+					{
+						return "Blocks " + (proj2.BlockDamagePublic)*100 + "% of damage ";
+					}
+				}
+
+				return "Blocks unknown % damage ";
+			}
+        }
+		public virtual string DamagePercent => "at a narrow angle";
 		public virtual bool CanBlock => true;
 		public override void SetStaticDefaults()
 		{
@@ -69,7 +98,7 @@ namespace SGAmod.Items.Weapons.Shields
 		{
 			if (CanBlock)
 			{
-				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, DamagePercent)));
+				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, ShowPercentText+DamagePercent)));
 				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, "Block at the last second to 'Just Block', taking no damage")));
 				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 3 seconds each")));
 				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, "Can be held out like a torch and used normally by holding shift")));
@@ -80,10 +109,32 @@ namespace SGAmod.Items.Weapons.Shields
 	public class CorrodedShieldProj : ModProjectile, IDrawAdditive
 	{
 		public int blocktimer = 1;
-		public virtual float BlockAngle => 0.75f;
-		public virtual float BlockDamage => 0.25f;
+		protected virtual float BlockAngle => 0.75f;
+		protected virtual float BlockDamage => 0.25f;
+		public virtual float BlockDamagePublic
+        {
+            get
+            {
+				return BlockDamage;
+			}
+        }
+		public virtual float BlockAnglePublic
+		{
+			get
+			{
+				return BlockAngle;
+			}
+		}
 		public virtual bool Blocking => true;
-		public Player player => Main.player[projectile.owner];
+		public Player player
+		{
+			get
+			{
+				if (projectile.owner >= 255)
+					return Main.LocalPlayer;
+				return Main.player[projectile.owner];
+			}
+		}
 		public string ItemName => Name.Replace("Proj", "");
 		public override void SetStaticDefaults()
 		{
@@ -92,6 +143,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 		public virtual void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex) { }
 		public virtual void WhileHeld(Player player) { }
+		public virtual bool HandleBlock(ref int damage,Player player) { return true; }
 
 		public override void SetDefaults()
 		{
@@ -131,6 +183,10 @@ namespace SGAmod.Items.Weapons.Shields
 			}
 			else
 			{
+				SGAPlayer sgaply = player.SGAPly();
+				player.SGAPly().heldShield = projectile.whoAmI;
+				sgaply.heldShieldReset = 3;
+
 				if (projectile.timeLeft < 3)
 					projectile.timeLeft = 3;
 				Vector2 mousePos = Main.MouseWorld;
@@ -297,19 +353,22 @@ namespace SGAmod.Items.Weapons.Shields
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("DankWood"), 30);
-			recipe.AddRecipeGroup("IronBar", 6);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this, 1);
-			recipe.AddRecipe();
+			if (GetType() == typeof(DankWoodShield))
+			{
+				ModRecipe recipe = new ModRecipe(mod);
+				recipe.AddIngredient(mod.ItemType("DankWood"), 30);
+				recipe.AddRecipeGroup("IronBar", 6);
+				recipe.AddTile(TileID.WorkBenches);
+				recipe.SetResult(this, 1);
+				recipe.AddRecipe();
+			}
 		}
 
 	}
 
 	public class DankWoodShieldProj : CorrodedShieldProj, IDrawAdditive
 	{
-		public override float BlockDamage => 0.25f;
+		protected override float BlockDamage => 0.25f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("DankWoodShield");
@@ -319,7 +378,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 	public class RiotShield : DankWoodShield
 	{
-		public virtual string DamagePercent => "Blocks 25% of damage at a large angle";
+		public override string DamagePercent => "at a large angle";
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Riot Shield");
@@ -336,13 +395,12 @@ namespace SGAmod.Items.Weapons.Shields
 			item.value = Item.sellPrice(0, 1, 50, 0);
 			item.rare = ItemRarityID.Lime;
 		}
-
 	}
 
 	public class RiotShieldProj : DankWoodShieldProj, IDrawAdditive
 	{
-		public override float BlockDamage => 0.25f;
-        public override float BlockAngle => 0.25f;
+		protected override float BlockDamage => 0.25f;
+		protected override float BlockAngle => 0.25f;
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("RiotShieldProj");
@@ -355,15 +413,69 @@ namespace SGAmod.Items.Weapons.Shields
 		}
         public override void WhileHeld(Player player)
         {
-			player.runAcceleration /= 3f;
-			player.maxRunSpeed = Math.Max(2, player.maxRunSpeed -5);
+			player.maxRunSpeed = Math.Max(1, player.maxRunSpeed - 20);
+		}
+    }
+
+	public class Magishield : DankWoodShield
+	{
+		public override string DamagePercent => "at a small angle";
+		//		public override string DamagePercent => "Blocks "+ (100-(100f/((Main.LocalPlayer.magicDamage*2f)-1f))) + "% of damage at a small angle";
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Magishield");
+			Tooltip.SetDefault("Use your mana as a shield, consuming mana instead\nDamage taken is reduced by Mana Costs and Magic Damage\nDoesn't work when Mana Sick or with a Mana Regen Potion\nYou do not regen mana while holding the shield out\nPerforming a Just Block spawns a Mana regenerating Nebula Booster");
+			Item.staff[item.type] = true;
 		}
 
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.width = 24;
+			item.height = 32;
+			item.useTime = 70;
+			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.rare = ItemRarityID.Pink;
+		}
+	}
+
+	public class MagishieldProj : DankWoodShieldProj, IDrawAdditive
+	{
+		protected override float BlockDamage => 1f-(1f / ((player.magicDamage * 2) - 1f));
+		protected override float BlockAngle => 0.30f;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("MagishieldProj");
+		}
+		public override void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex)
+		{
+			Item.NewItem(where, Vector2.Zero, ItemID.NebulaPickup3);
+		}
+		public override bool HandleBlock(ref int damage, Player player)
+		{
+			if (player.manaCost == 0.0f)
+				player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " tried to block with unlimited mana and divided by 0"), 1337, 0);
+			//damage = (int)(damage / (player.magicDamage*2)-1f);
+			if (!player.manaSick && !player.manaRegenBuff && player.CheckMana(damage, true, false))
+			{
+				damage -= player.statMana;
+				player.immune = true;
+				player.immuneTime = 10;
+				Main.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 9, 0.6f, 0.5f);
+				player.manaRegenDelay = Math.Max(player.manaRegenDelay, 180);
+				return false;
+			}
+			return true;
+		}
+        public override void WhileHeld(Player player)
+        {
+			player.manaRegenDelay = Math.Max(player.manaRegenDelay, 60);
+        }
     }
 
 	public class CapShield : CorrodedShield
 	{
-		public override string DamagePercent => "Blocks 50% of damage at a decent angle";
+		public override string DamagePercent => "at a decent angle";
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Captain America's Shield");
@@ -434,6 +546,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
+			base.ModifyTooltips(tooltips);
 			TooltipLine tt = tooltips.FirstOrDefault(x => x.Name == "Damage" && x.mod == "Terraria");
 			if (tt != null)
 			{
@@ -502,8 +615,8 @@ namespace SGAmod.Items.Weapons.Shields
 
 	public class CapShieldProj : CorrodedShieldProj, IDrawAdditive
 	{
-		public override float BlockAngle => 0.4f;
-		public override float BlockDamage => 0.5f;
+		protected override float BlockAngle => 0.4f;
+		protected override float BlockDamage => 0.5f;
 		public override void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex)
 		{
 			player.AddBuff(BuffID.ParryDamageBuff, 60 * 3);

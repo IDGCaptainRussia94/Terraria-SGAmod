@@ -17,7 +17,7 @@ namespace SGAmod.Items.Placeable.Paintings
 			SGAmod.Instance.AddItem("CalmnessPainting", new SGAPlacablePainting(0, ModContent.TileType<SGAPaintings6X4>(), "Calmness", "Julia 'Jarts' Goldfox"));
 			SGAmod.Instance.AddItem("MeetingTheSunPainting", new SGAPlacablePainting(1, ModContent.TileType<SGAPaintings6X4>(), "Meeting The Sun", "Julia 'Jarts' Goldfox"));
 			SGAmod.Instance.AddItem("SerenityPainting", new SGAPlacablePainting(0, ModContent.TileType<SGAPaintings12X7>(), "Serenity", "Fridaflame and XennaDemonorph"));
-			SGAmod.Instance.AddItem("AdventurePainting", new SGAPlacablePainting(1, ModContent.TileType<SGAPaintings12X7>(), "Onwards, Adventure!", "DWS7"));
+			SGAmod.Instance.AddItem("AdventurePainting", new SGAPlacablePainting(1, ModContent.TileType<SGAPaintings12X7>(), "Onwards, Adventure!", "DSW7"));
 			SGAmod.Instance.AddItem("UnderTheWaterfallPainting", new SGAPlacablePainting(0, ModContent.TileType<SGAPaintings12X8>(), "Under The Waterfall", "Dreamers of the Blue"));
 
 

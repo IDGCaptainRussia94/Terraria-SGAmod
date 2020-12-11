@@ -73,8 +73,10 @@ namespace SGAmod
                 }
             }
 
-            if (item.modItem != null) {
-                if (item.owner > -1) {
+            if (item.modItem != null)
+            {
+                if (item.owner > -1)
+                {
                     SGAPlayer sgaply = (Main.player[item.owner].GetModPlayer<SGAPlayer>());
                     pboostertextboost = "\nCurrent boost: " + sgaply.SpaceDiverWings;
                     pboostertext = pboostertextbase2 + pboostertextboost;
@@ -84,7 +86,8 @@ namespace SGAmod
                 string asastring = (string)n;
                 //int ishavocitem = (asastring.Split('.').Length - 1);
                 int ishavocitem = asastring.Length - asastring.Replace("HavocGear.", "").Length;
-                if (ishavocitem > 0) {
+                if (ishavocitem > 0)
+                {
                     Color c = Main.hslToRgb(0.9f, 0.5f, 0.35f);
                     tooltips.Add(new TooltipLine(mod, "Havoc Item", Idglib.ColorText(c, "Former Havoc mod item")));
 
@@ -99,13 +102,21 @@ namespace SGAmod
                 {
                     string tt = "This is a placeholder sprite";
                     Color c = Main.hslToRgb(0f, 0.75f, 0.7f);
-                    tooltips.Add(new TooltipLine(mod, "Plasma Item", SGAmod.StuffINeedFuckingSpritesFor.TryGetValue(item.type,out tt) ? tt : tt));
+                    tooltips.Add(new TooltipLine(mod, "Plasma Item", SGAmod.StuffINeedFuckingSpritesFor.TryGetValue(item.type, out tt) ? tt : tt));
                 }
 
                 int ammoclip = Main.LocalPlayer.SGAPly().IsRevolver(item);
-                if (ammoclip>0) { Color c = Main.hslToRgb(0.7f, 0.15f, 0.7f);
+                if (ammoclip > 0)
+                {
+                    Color c = Main.hslToRgb(0.7f, 0.15f, 0.7f);
                     tooltips.Add(new TooltipLine(mod, "Clip Item", Idglib.ColorText(c, ammoclip == 2 ? "Counts as a revolver: Automatically Reloads itself when held" : "This weapon has a clip and requires manual reloading")));
                 }
+            }
+
+            if (item.type == ItemID.ManaRegenerationPotion)
+            {
+                tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Mana Sickness decays very slowly")));
+                tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Max Mana is reduced by 60")));
             }
 
             if (SGAWorld.downedWraiths < 1)

@@ -743,7 +743,7 @@ namespace SGAmod
             oretypeshardmode[2] = WorldGen.oreTier3;
 
 
-            int[] itemsToPlaceInOvergrownChestsSecond = new int[] { mod.ItemType("ForagersBlade"), mod.ItemType("GuerrillaPistol") };
+            int[] itemsToPlaceInOvergrownChestsSecond = new int[] { mod.ItemType("ForagersBlade"), mod.ItemType("GuerrillaPistol"),mod.ItemType("AversionCharm") };
             int itemsToPlaceInOvergrownChestsChoiceSecond = 0;
 
                 List<Chest> Chests = Main.chest.Where(checkfor => checkfor != null).ToList();
@@ -788,18 +788,6 @@ namespace SGAmod
                     Chest chest = Main.chest[chestIndex];
                     if (i == 0 && chest != null)
                     {
-                        if (WorldGen.genRand.Next(0, 100) < (Main.tile[chest.x, chest.y].frameX / 36 == 1 ? 20 : Main.tile[chest.x, chest.y].frameX / 36 == 0 ? 5 : 0))
-                        {
-                            for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
-                            {
-                                if (chest.item[inventoryIndex].IsAir)
-                                {
-                                    chest.item[inventoryIndex].SetDefaults(mod.ItemType("AversionCharm"));
-                                    chest.item[inventoryIndex].stack = 1;
-                                    break;
-                                }
-                            }
-                        }
                         if (WorldGen.genRand.Next(0, 100) < (Main.tile[chest.x, chest.y].frameX / 36 == 17 ? 50 : (Main.tile[chest.x, chest.y].frameX / 36 == 1 ? 15 : Main.tile[chest.x, chest.y].frameX / 36 == 0 ? 10 : 5)))
                         {
                             for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)

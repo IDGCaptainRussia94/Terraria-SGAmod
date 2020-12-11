@@ -395,16 +395,17 @@ namespace SGAmod
 			itavect.Normalize();
 
 
-			if (player.HeldItem != null && player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1)
+			if (player.SGAPly().heldShield>=0 && player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1)
 			{
+				int heldShield = player.SGAPly().heldShield;
 
-				if (SGAPlayer.ShieldTypes.ContainsKey(player.HeldItem.type))
-				{
+				//if (SGAPlayer.ShieldTypes.ContainsKey(player.HeldItem.type))
+				//{
 					int foundhim = -1;
 
 					int xxxz = 0;
 					int thetype;
-					SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out thetype);
+					/*SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out thetype);
 					Projectile proj = null;
 					for (xxxz = 0; xxxz < Main.maxProjectiles; xxxz++)
 					{
@@ -414,35 +415,42 @@ namespace SGAmod
 							proj = Main.projectile[xxxz];
 							break;
 						}
-					}
-					if (foundhim > -1)
+					}*/
+					Projectile proj = Main.projectile[heldShield];
+					if (proj.active)
+					foundhim = heldShield;
+
+				if (foundhim > -1)
+				{
+					CorrodedShieldProj modShieldProj = proj.modProjectile as CorrodedShieldProj;
+					int blocktime = modShieldProj.blocktimer;
+					bool blocking = modShieldProj.Blocking;
+					if (proj == null || blocktime < 2 || !blocking)
+						return false;
+
+
+
+					Vector2 itavect2 = Main.projectile[foundhim].Center - player.Center;
+					itavect2.Normalize();
+					Vector2 ang1 = Vector2.Normalize(proj.velocity);
+					float diff = Vector2.Dot(itavect, ang1);
+
+
+					if (diff > (proj.modProjectile as CorrodedShieldProj).BlockAnglePublic)
 					{
-						CorrodedShieldProj modShieldProj = proj.modProjectile as CorrodedShieldProj;
-						int blocktime = modShieldProj.blocktimer;
-						bool blocking = modShieldProj.Blocking;
-						if (proj == null || blocktime < 2 || !blocking)
-							return false;
+						if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
+							return true;
 
+						float damageval = 1f - modShieldProj.BlockDamagePublic;
+						damage = (int)(damage * damageval);
 
+						Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
 
-						Vector2 itavect2 = Main.projectile[foundhim].Center - player.Center;
-						itavect2.Normalize();
-						Vector2 ang1 = Vector2.Normalize(proj.velocity);
-						float diff = Vector2.Dot(itavect, ang1);
+						if (!(proj.modProjectile as CorrodedShieldProj).HandleBlock(ref damage, player))
+							return true;
 
-
-						if (diff > (proj.modProjectile as Items.Weapons.Shields.CorrodedShieldProj).BlockAngle)
-						{
-							if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
-								return true;
-
-							float damageval = 1f- modShieldProj.BlockDamage;
-							damage = (int)(damage * damageval);
-							Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
-							return false;
-						}
+						return false;
 					}
-
 				}
 
 			}
@@ -549,32 +557,45 @@ namespace SGAmod
 
 		public void CharmingAmuletCode()
 		{
-			if (EnhancingCharm > 0)
+			if (EnhancingCharm > 0 || player.manaRegenBuff)
 			{
 				for (int g = 0; g < Player.MaxBuffs; g += 1)
 				{
-					if (potionsicknessincreaser > 0)
+					if (player.manaRegenBuff)
 					{
-						if (player.buffType[g] == BuffID.PotionSickness && player.buffTime[g] > 10)
+						if (player.buffType[g] == BuffID.ManaSickness && player.buffTime[g] > 3)
 						{
-							if (timer % potionsicknessincreaser == 0)
+							if (timer % 4 > 0)
 								player.buffTime[g] += 1;
 						}
 					}
-				}
-
-				if (timer % (EnhancingCharm) == 0)
-				{
-					//longerExpertDebuff
-					for (int i = 0; i < Player.MaxBuffs; i += 1)
+					if (EnhancingCharm>0)
 					{
-						if (player.buffType[i] != BuffID.PotionSickness && player.buffType[i] != mod.BuffType("MatrixBuff") && player.buffType[i] != mod.BuffType("DragonsMight"))
+						if (potionsicknessincreaser > 0)
 						{
-							ModBuff buff = ModContent.GetModBuff(player.buffType[i]);
-							bool isdebuff = Main.debuff[player.buffType[i]];
-							if (player.buffTime[i] > 10 && ((buff != null && ((isdebuff) || !isdebuff)) || buff == null))
+							if (player.buffType[g] == BuffID.PotionSickness && player.buffTime[g] > 10)
 							{
-								player.buffTime[i] += isdebuff ? -1 : 1;
+								if (timer % potionsicknessincreaser == 0)
+									player.buffTime[g] += 1;
+							}
+						}
+					}
+				}
+				if (EnhancingCharm>0)
+				{
+					if (timer % (EnhancingCharm) == 0)
+					{
+						//longerExpertDebuff
+						for (int i = 0; i < Player.MaxBuffs; i += 1)
+						{
+							if (player.buffType[i] != BuffID.PotionSickness && player.buffType[i] != mod.BuffType("MatrixBuff") && player.buffType[i] != mod.BuffType("DragonsMight"))
+							{
+								ModBuff buff = ModContent.GetModBuff(player.buffType[i]);
+								bool isdebuff = Main.debuff[player.buffType[i]];
+								if (player.buffTime[i] > 10 && ((buff != null && ((isdebuff) || !isdebuff)) || buff == null))
+								{
+									player.buffTime[i] += isdebuff ? -1 : 1;
+								}
 							}
 						}
 					}

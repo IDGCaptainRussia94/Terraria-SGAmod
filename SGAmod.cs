@@ -308,7 +308,10 @@ namespace SGAmod
 			SGAPlayer.ShieldTypes.Clear();
 			SGAPlayer.ShieldTypes.Add(ItemType("CorrodedShield"), ProjectileType("CorrodedShieldProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("DankWoodShield"), ProjectileType("DankWoodShieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("Magishield"), ProjectileType("MagishieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("RiotShield"), ProjectileType("RiotShieldProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("CapShield"), ProjectileType("CapShieldProj"));
+
 			SGAPlayer.ShieldTypes.Add(ItemType("LaserMarker"), ProjectileType("LaserMarkerProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("GraniteMagnet"), ProjectileType("GraniteMagnetProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("CobaltMagnet"), ProjectileType("CobaltMagnetProj"));
@@ -515,6 +518,13 @@ namespace SGAmod
 			recipe.AddIngredient(ItemID.Cloud, 50);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.SkyMill);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ItemID.Silk, 30);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.HandWarmer);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);

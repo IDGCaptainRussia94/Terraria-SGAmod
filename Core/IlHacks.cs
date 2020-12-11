@@ -29,7 +29,7 @@ namespace SGAmod
 			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
-			//IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
+			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 		internal static void Unpatch()
@@ -40,6 +40,7 @@ namespace SGAmod
 			IL.Terraria.GameInput.LockOnHelper.SetUP -= CurserAimingHack;
 			IL.Terraria.Player.CheckDrowning -= BreathingHack;
 			IL.Terraria.NPC.Collision_LavaCollision -= ForcedNPCLavaCollisionHack;
+			IL.Terraria.Player.UpdateManaRegen -= NoMovementManaRegen;
 			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
 		}
 

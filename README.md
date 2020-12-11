@@ -25,16 +25,24 @@ Changelog:
 
 -Prismal Air Tank, Prismal Diving Gear, Fluid Displacer, Normal Quiver, Magus Slippers, Star Collector, Murky Charm
 
--Shields have been expanded into a full sub-set of weapons with these new additions: Dank Wood Shield, Riot Shield
+-Shields have been expanded into a full sub-set of weapons with these new additions: Dank Wood Shield, Riot Shield, Magishield
 
--Changes to the vanilla drowing mechanic: drowning for more than 5 seconds causes the damage to start increasing gradually
+-Added Hand Warmer crafting recipes to the Reverse Engineering Station.
+
+-Some new vanity, including the Masterfully Crafted Hat Of The Dragon Gods
 
 
 --Changed:
 
--Space Diver Armor visual overhaul!
+-Changes to the vanilla drowing mechanic: drowning for more than 5 seconds causes the damage to start increasing gradually
 
--Cobalt Wraith has undergone some changes to try to make the fight more fair and less running away
+-Changes to the vanilla Mana Regen Potion: it now has downsides to make it not completely outclass mage's other mana options
+
+-Space Diver Armor visual overhaul! The old set has been repurposed into a Vanity set, sold by the Goat
+
+-Cobalt Wraith has undergone some changes to try to make the fight more fair and less running away, Cobalt Chainsaws can no longer hit while retracting
+
+-Many of Cirno's attacks and mechanics have been changed to make the fight more fair
 
 -Finally fixed the Dank Shrines, there should now always be atleast one narrow entry point at highest top
 
@@ -47,6 +55,8 @@ Changelog:
 -Owning the Caliburn Compass in your inventory is now required to lesson the darkness of the Dark Sector
 
 -Yoyo Gauntlet has been moved to post golem, it was honestly too strong for pre-plantera
+
+-Aversion Charm now shares the same generation process with the Guerrilla Pistol and Machete (this means they are more common to find in Dank Chests, but harder to find elsewhere, and do not show up in modded chests)
 
 -Reworked Shooting Star: Less Damage, less overall mana usage, speeds up as you hold it down for longer causing more accurate hits, scales with mana sickness now.
 
@@ -219,7 +229,7 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 -Music tracks for Sharkvern and Spider Queen, composed by Musicman, And the Caliburns composed by Rijam, and music boxes for all (except 1) of the custom themes!
 
--Added Obsidian Rose, Lava Charm, Shadow Key, Cobalt Shield, Flipper, Snowball Launcher, Sky Mill, and Frog Leg crafting recipes to the Reverse Engineering Table. All these and previous items now require an Assembly Star (sold by Draken)
+-Added Obsidian Rose, Lava Charm, Shadow Key, Cobalt Shield, Flipper, Snowball Launcher, Sky Mill, and Frog Leg crafting recipes to the Reverse Engineering Station. All these and previous items now require an Assembly Star (sold by Draken)
 
 -Added a Client Config option to force Hellion to respect your privacy and disable the extra effects of Apocalypticals
 

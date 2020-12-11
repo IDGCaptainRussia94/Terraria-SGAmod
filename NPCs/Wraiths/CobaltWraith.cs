@@ -369,7 +369,12 @@ namespace SGAmod.NPCs.Wraiths
 			npc.noTileCollide = true;
 			npc.noGravity = true;
 		}
-		public override void AI()
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+			return npc.ai[0] % 300 > 150;
+
+		}
+        public override void AI()
 		{
 			CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
 			int npctype = mod.NPCType(myself.attachedType);

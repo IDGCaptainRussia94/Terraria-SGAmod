@@ -216,7 +216,7 @@ namespace SGAmod.Dimensions.NPCs
 		nextSlot++;
 
 			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("NinjaSash"));
-			shop.item[nextSlot].shopCustomPrice = 120;
+			shop.item[nextSlot].shopCustomPrice = 100;
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 			nextSlot++;
 
@@ -225,18 +225,26 @@ namespace SGAmod.Dimensions.NPCs
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 			nextSlot++;
 
-			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("BeserkerAuraStaff"));
-			shop.item[nextSlot].shopCustomPrice = 75;
-			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
-			nextSlot++;
 			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("DiesIraeStone"));
 			shop.item[nextSlot].shopCustomPrice = 50;
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 			nextSlot++;
+
 			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("MagusSlippers"));
 			shop.item[nextSlot].shopCustomPrice = 60;
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
-			nextSlot++;			
+			nextSlot++;
+
+			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("BeserkerAuraStaff"));
+			shop.item[nextSlot].shopCustomPrice = 75;
+			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+			nextSlot++;
+
+			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("EnchantedFury"));
+			shop.item[nextSlot].shopCustomPrice = 100;
+			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+			nextSlot++;
+
 			if (Main.LocalPlayer.SGAPly().ExpertiseCollectedTotal >= 4000)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("EntropyTransmuter"));

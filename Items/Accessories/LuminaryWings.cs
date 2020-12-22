@@ -11,7 +11,7 @@ using Terraria.GameContent.Generation;
 namespace SGAmod.Items.Accessories
 {
 	[AutoloadEquip(EquipType.Wings)]
-	public class LuminaryWings : ModItem
+	public class LuminaryWings : DemonSteppers
 	{
 		int frameCounter = 0;
 
@@ -45,6 +45,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			base.UpdateAccessory(player, true);
 			Lighting.AddLight(player.Center, Color.HotPink.ToVector3() * 2.5f * Main.essScale);
 			(mod.GetItem("CirnoWings") as CirnoWings).UpdateAccessoryLocal(player, true, false);
 			if (!hideVisual)
@@ -54,7 +55,7 @@ namespace SGAmod.Items.Accessories
 
 			Tile mytile = Framing.GetTileSafely(x_edge, y_bottom_edge);
 
-			ModContent.GetInstance<DemonSteppers>().UpdateAccessory(player, false);
+			//ModContent.GetInstance<DemonSteppers>().UpdateAccessory(player, false);
 
 			if (mytile.active() || player.velocity.Y == 0)
 			{

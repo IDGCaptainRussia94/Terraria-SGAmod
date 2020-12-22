@@ -25,7 +25,7 @@ namespace SGAmod.Items
 			item.width = 34;
 			item.height = 34;
 			item.rare = 0;
-			item.maxStack = 1;
+			item.maxStack = SGAWorld.downedCratrosity ? 30 : 1;
 			item.consumable = false;
 		}
 		//player.CountItem(mod.ItemType("ModItem"))
@@ -68,7 +68,8 @@ namespace SGAmod.Items
 			if (usedrightkey == true)
 			{
 				CrateLoot(ply);
-				return;
+				whatkey = mod.ItemType("TerrariacoCrateKey");
+				goto endhere;
 			}
 			if (usedwrongkey == true)
 			{
@@ -101,6 +102,7 @@ namespace SGAmod.Items
 					Main.PlaySound(15, (int)ply.position.X, (int)ply.position.Y, 0);
 				}
 			}
+			endhere:
 			ply.ConsumeItem(whatkey);
 			//player.QuickSpawnItem(ItemID.LifeCrystal, 15);
 			//player.QuickSpawnItem(ItemID.LifeFruit, 20);

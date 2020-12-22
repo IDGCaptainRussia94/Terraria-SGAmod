@@ -11,10 +11,10 @@ Github was moved: previous builds of the mod can be found over here: https://git
 -Corruption only: Gas Passer, Wraith Arrows, Dosed Arrows, Corrupted Tome, Cursed Hail, Jagged Spike Buckler (can be bypassed with fishing)
 
 
--Ideas: Banners, the Couch, Bannerlord=collection of banners, Spectre homing bullets/projectiles
-Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon
+-Ideas: Banners, the Couch, Bannerlord=collection of banners, Spectre homing bullets/projectiles, Fist of Moonlord, Tech weapons have an "overclock" mechanic that changes up their gameplay while active, spider queen can melt normal generated blocks (dirt and so)
+Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat
 
--Add Hellion Army progress Bar, Add config options to lower effects, Add lower-end murk fog, rework cobalt wraith water bolts
+-Add Hellion Army progress Bar, Add config options to lower effects (lite mode), Add lower-end murk fog
 
 Changelog:
 
@@ -23,59 +23,103 @@ Changelog:
 
 --Added:
 
--Prismal Air Tank, Prismal Diving Gear, Fluid Displacer, Normal Quiver, Magus Slippers, Star Collector, Murky Charm
+-Enchanted Fury, Prismal Air Tank, Prismal Diving Gear, Fluid Displacer, Normal Quiver, Magus Slippers, Druidic Sneakers, Enchanted Shield Polish, Star Collector, Murky Charm, Bottled Liquid Essence, Alkalescent Heart, Bone Bucket
 
--Shields have been expanded into a full sub-set of weapons with these new additions: Dank Wood Shield, Riot Shield, Magishield
+-Shields have been expanded into a full sub-set of weapons with these new additions: Dank Wood, Riot, Magishield, Solar, Earthbreaker
 
 -Added Hand Warmer crafting recipes to the Reverse Engineering Station.
 
--Some new vanity, including the Masterfully Crafted Hat Of The Dragon Gods
+-Config options to help with performance issues
+
+-Some new vanity, including the Masterfully Crafted Hat Of The Dragon Gods, and additional resprites
+
+-Music box for the Creepy theme
+
+-Even more resprites, Avali Scythe got a great one! Thanks again JellyBlu!
 
 
 --Changed:
 
--Changes to the vanilla drowing mechanic: drowning for more than 5 seconds causes the damage to start increasing gradually
+-The vanilla drowning mechanic: drowning for more than 5 seconds causes the damage to start increasing gradually
 
--Changes to the vanilla Mana Regen Potion: it now has downsides to make it not completely outclass mage's other mana options
+-The vanilla Mana Regen Potion: it now has downsides to make it not completely outclass mage's other mana options
 
 -Space Diver Armor visual overhaul! The old set has been repurposed into a Vanity set, sold by the Goat
 
+-Spider Queen has a new expert drop: the Alkalescent Heart, the Corroded Shield is now a bonus drop with a 1/3 chance alongside the skull
+
 -Cobalt Wraith has undergone some changes to try to make the fight more fair and less running away, Cobalt Chainsaws can no longer hit while retracting
 
--Many of Cirno's attacks and mechanics have been changed to make the fight more fair
+-Supreme Pinky has some changes, her dopplegangers take a bit more damage
 
--Finally fixed the Dank Shrines, there should now always be atleast one narrow entry point at highest top
+-Sharkvern spawns wyverns above themselves so they should always appear offscreen, and should no longer fly off the beach on larger worlds
+
+-Many of Cirno's attacks and mechanics have been changed to make the fight more fair, 2rd and 3rd Strongest Ice Fairies don't have contact damage
+
+-Likewise, some of Luminite Wraith's attacks and mechanics have been changed to make the fight more fair
+
+-Murk's fight has also been adjusted: bomber flies and swarmer flies are more tame during the fog phases, Murk is slower during the fly phases and has a new final phase attack, and plays a sound when entering phase 2
 
 -Terra Diving Gear has been moved later into progression
 
--Added Bone Throwing Knives to the list of items the Ninja Stash can summon on attacks
+-Shadeflame Staff drop chance halved (to 5% from 10%)
+
+-Wraith Core Fragment is more pricy and both Copper and Cobalt Wraith drop much less
+
+-Horse Fly Staff is now dropped by Hardmode Murk instead of the Gnat Staff, rather than by the Dank Mimic
+
+-Mining Amulet and Anticipation Amulet downsides have been swapped
+
+-Added Bone Throwing Knives and Frost Daggerfish to the list of items the Ninja Stash can summon on attacks
 
 -Demonsteppers can be hidden on your player to disable the double jump
 
+-Gnat Staff and Horse Fly Staff now summon an extra fly on the 1st summon to make up for the missing slot, now auto-swing and faster use times
+
 -Owning the Caliburn Compass in your inventory is now required to lesson the darkness of the Dark Sector
+
+-All shield bash-dashes now count as true melee
+
+-Beating Cratrosity allows Terraria Co Supply Crates to stack (up to 30) in your inventory
 
 -Yoyo Gauntlet has been moved to post golem, it was honestly too strong for pre-plantera
 
 -Aversion Charm now shares the same generation process with the Guerrilla Pistol and Machete (this means they are more common to find in Dank Chests, but harder to find elsewhere, and do not show up in modded chests)
 
+-Restoration Flower grants a different mana regen buff
+
 -Reworked Shooting Star: Less Damage, less overall mana usage, speeds up as you hold it down for longer causing more accurate hits, scales with mana sickness now.
+
+-Reworked Beserker Staff: Now can be affected by breath mechanic related items to reduce breath loss, and stacks with the vanilla breath loss, base breath per level lose is now higher
 
 -Buffed Joyrider: Grants far more flight time per bullet damage, base flight time reduced, is no longer restricted to basic bullets
 
+-Buffed Blazewyrm Helm: Melee Speed bonus has increased to 20% (from 16%)
+
+-Nerfed Fiery Heart and Blazing Heart: no longer gives defense
+
 -Nerfed Dragon Commander: now does cause immunity frames to make cross-weapon damage stacking less viable
 
+-Nerfed Flail-O-Nades: there is now a limit to the number of sticky grenades and landmines this weapon is allowed to spawn
+
 -Nerfed Tidal Charm: only gives half as much breath now
+
+-Nerfed Corrupted Tome: Has been moved later in progression
 
 -Nerfed Lunar Slime Heart: no longer grants any listed defense (having buffs/debuffs still gives defense)
 
 -Nerfed Gunsmith's Belt of Tools: had a hidden 25% reload bonus, is now 20% and mentioned
 
--Removed Moist Stone's slowing debuffs when mined, reverted to previous state
+-Eyes should not longer appear from the defeated Wrath of Caliburn after the compass has been upgraded
+
+-Removed Moist Stone's slowing debuffs when mined, reverted to previous state, can now be broken after the 3 Caliburn spirits or murk are defeated (which ever comes first)
 
 -Adjusted item prices
 
 
---Fixed:
+--Fixed;
+
+-Finally fixed the Dank Shrines, there should now always be atleast one narrow entry point at highest top
 
 -Lunar Slime Heart giving twice as much defense than what was listed
 
@@ -83,15 +127,29 @@ Changelog:
 
 -Various issues relating to Dank Wood Doors
 
--Shooting the moist walls triggering the slowdown effect; it now only triggers if your holding a mining tool
+-Terraria Co Supply Crate Key not being consumed when used to open a Terraria Co Supply Crate
+
+-Fixed a bug where Draken would always mention Spider Queen instead of the next boss to fight after defeating her
+
+-Murk sometimes running off in the wrong direction
+
+-Bugs that allowed blinking with the Tech Master's Gear when you shouldn't be able to
+
+-Supreme Pinky's dopplegangers dropping trophies, also fixed a crash involving mounts during this fight
+
+-Stygian Veins being able to be homed in on by homing projectiles
+
+-Null Watchers and Stygian Veins causing a crash/not drawing on retro/trippy
 
 -Serious Sam 4 line with Draken not saying what I inteded it to
+
+-Moist Stone can now be broken message not showing up 
 
 
 
 Changelog:
 
-3.455-(12/5/20)-Hot Fix #13:
+3.455-3.460-(12/9/20)-Hot Fix #13:
 
 
 --Changed:
@@ -115,11 +173,13 @@ Changelog:
 
 --Fixed:
 
+-Fixed a bug involving player layers crashing the game
+
 -Not receiving the upgraded Caliburn compass after defeating Wrath of Caliburn
 
 -Blazewyrm set bonus not triggering on 'True melee' projectile weapons like Yoyos and Spears
 
--Nightmare Mode Triggering events more than once on specific boss drops
+-Nightmare Mode Triggering 1 drops
 
 -Bench God's Favor being granted by defeating Copper Wraith and reloading your character (whoops!)
 

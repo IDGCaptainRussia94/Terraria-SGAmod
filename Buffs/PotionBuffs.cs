@@ -240,4 +240,27 @@ namespace SGAmod.Buffs
 			player.lavaRose = true;
 		}
 	}
+	public class ManaRegenFake : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Buff_"+BuffID.ManaRegeneration;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Mana Regen");
+			Description.SetDefault("Mana Regeneration is greatly improved!");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			Main.debuff[Type] = true;
+			canBeCleared = false;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.manaRegenBonus += 25;
+			player.manaRegenDelayBonus++;
+		}
+	}
 }

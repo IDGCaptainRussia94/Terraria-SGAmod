@@ -239,7 +239,7 @@ namespace SGAmod.Dimensions
             if (!done)
                 return;
 
-            hasCompass = Main.LocalPlayer.HasItem(ModContent.ItemType<Items.Consumable.CaliburnCompess>()) && SGAWorld.darknessVision;
+            hasCompass = (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Consumable.CaliburnCompess>() || Main.LocalPlayer.HasItem(ModContent.ItemType<Items.Consumable.CaliburnCompess>())) && SGAWorld.darknessVision;
 
             if (DarkSectorZone(Main.LocalPlayer))
             {

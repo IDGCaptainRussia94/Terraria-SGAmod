@@ -74,6 +74,12 @@ namespace SGAmod
 			}
 		}
 
+        public override void SetDefaults(Projectile projectile)
+        {
+			if (Main.gameMenu)
+				return;
+        }
+
         public override void ModifyHitNPC(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
 			if (projectile.friendly)
@@ -81,7 +87,7 @@ namespace SGAmod
 				Player owner = Main.player[projectile.owner];
 				if (owner != null)
 				{
-					if (projectile.melee && owner.heldProj == projectile.whoAmI)
+					if (projectile.melee && owner.heldProj == projectile.whoAmI || (projectile.modProjectile!=null && projectile.modProjectile is IShieldBashProjectile))
 						damage = (int)((float)damage * owner.SGAPly().trueMeleeDamage);
 				}
 			}
@@ -198,6 +204,21 @@ namespace SGAmod
 		public override bool PreAI(Projectile projectile)
 		{
 		SGAprojectile modeproj=projectile.GetGlobalProjectile<SGAprojectile>();
+
+			if (modeproj.inttime == false)
+			{
+				if (projectile.friendly)
+				{
+					Player owner = Main.player[projectile.owner];
+					if (owner != null && owner.SGAPly().enchantedShieldPolish)
+					{
+						if (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile)
+						{
+							projectile.magic = true;
+						}
+					}
+				}
+			}
 
 
 

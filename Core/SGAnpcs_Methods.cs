@@ -14,6 +14,7 @@ using Idglibrary;
 using AAAAUThrowing;
 using SGAmod.NPCs.Cratrosity;
 using SGAmod.Buffs;
+using System.Linq;
 
 namespace SGAmod
 {
@@ -82,6 +83,9 @@ namespace SGAmod
 						ammo = ItemID.PoisonedKnife;
 					if (player.HasItem(ItemID.BoneDagger))
 						ammo = ItemID.BoneDagger;
+					if (player.HasItem(ItemID.FrostDaggerfish))
+						ammo = ItemID.FrostDaggerfish;
+
 
 
 					if (ammo > 0)
@@ -291,15 +295,13 @@ namespace SGAmod
 			{
 				if (player!=null && player.heldProj>=0)
 				held = Main.projectile[player.heldProj];
+
 				if (projectile.trap)
 					damage = (int)(damage * player.GetModPlayer<SGAPlayer>().TrapDamageMul);
 			}
 
 			DoApoco(npc, projectile, player, item, ref damage, ref knockback, ref crit);
-			if (acidburn)
-				damage += (int)(Math.Min(npc.defense, 5) / 2);
-			if (MoonLightCurse)
-				damage += (int)(Math.Min(npc.defense, 50) / 2);
+				damage += (int)(Math.Min(npc.defense, reducedDefense) / 2);
 			if (Gourged)
 				damage += (npc.defense / 2) / 2;
 			if (Sodden)
@@ -412,6 +414,12 @@ namespace SGAmod
 					damage = (int)(damage * 1.20f);
 				}
 			}
+
+			if (moddedplayer.alkalescentHeart)
+			{
+				damage = (int)(damage*(1f+(npc.HasBuff(ModContent.BuffType<AcidBurn>()) ? 0.15f : (npc.HasBuff(BuffID.Venom) ? 0.10f : (npc.HasBuff(BuffID.Poisoned) ? 0.05f : 0)))));
+			}
+
 
 			if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
 			{
@@ -552,7 +560,7 @@ namespace SGAmod
 
 			if (moddedplayer.Blazewyrmset)
 			{
-				if (crit && ((item != null && item.melee && item.pick + item.axe + item.hammer < 1)) || (projectile != null && projectile.melee && player.heldProj == projectile.whoAmI))
+				if (crit && ((item != null && item.melee && item.pick + item.axe + item.hammer < 1)) || (projectile != null && projectile.melee && (player.heldProj == projectile.whoAmI || (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile))))
 				{
 					if (player.SGAPly().AddCooldownStack(12 * 60))
 					{
@@ -563,7 +571,26 @@ namespace SGAmod
 				}
 			}
 
+			if (moddedplayer.alkalescentHeart)
+			{
+				int[] maxcrit = { player.meleeCrit, player.rangedCrit, player.magicCrit, player.Throwing().thrownCrit };
+				Array.Sort(maxcrit);
+				Array.Reverse(maxcrit);
+				if (crit || (projectile!=null && projectile.minion && Main.rand.Next(0,100)< maxcrit[0]))
+				{
+					Point point = new Point(0, 0);
+					point.X = (!npc.HasBuff(BuffID.Poisoned) ? BuffID.Poisoned : (!npc.HasBuff(BuffID.Venom) ? BuffID.Venom : (!npc.HasBuff(ModContent.BuffType<AcidBurn>()) ? ModContent.BuffType<AcidBurn>() : -1)));
+					if (point.X > -1)
+					{
+						point.Y = (point.X == ModContent.BuffType<AcidBurn>() ? 45 : point.X == BuffID.Venom ? 200 : point.X == BuffID.Poisoned ? 300 : 0);
+						npc.AddBuff(point.X, point.Y);
+						//if (Main.rand.Next(0, 10) == 0)
+						//	player.AddBuff(point.X, point.Y/2);
+					}
 
+				}
+
+			}
 
 			bool hasabuff = false;
 

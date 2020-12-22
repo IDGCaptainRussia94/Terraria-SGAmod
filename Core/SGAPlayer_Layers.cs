@@ -268,9 +268,9 @@ namespace SGAmod
 				int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
 				if (wingsLayer >= 0)
 				{
-					layers.RemoveAt(wingsLayer);
 					AltWings.visible = true;
 					layers.Insert(wingsLayer + 1, AltWings);
+					layers.RemoveAt(wingsLayer);
 				}
 			}
 

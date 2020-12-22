@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
 using Terraria.ModLoader.IO;
 using System.Security.AccessControl;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Consumable
 {
@@ -614,4 +615,100 @@ namespace SGAmod.Items.Consumable
 			}
 		}
 	}
+	public class BoneBucket : Gong
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Bone Bucket");
+			Tooltip.SetDefault("'Full of spare bone parts! Someone might want these...'\nOpens a portal to bring the Skeleton Merchant to your location where you used it\nOnly usable if the Merchant Merchant is already in the world or the sun is shining\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 300 seconds each"));
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return player.SGAPly().CooldownStacks.Count + 1 < player.SGAPly().MaxCooldownStacks && !NPC.travelNPC && NPC.CountNPCS(NPCID.SkeletonMerchant) < 1 && (!Main.dayTime || Main.eclipse) && Main.projectile.FirstOrDefault(type2 => type2.type == ModContent.ProjectileType<BoneBucketSummon>()) == default;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.shoot = mod.ProjectileType("BoneBucketSummon");
+		}
+	}
+
+	public class BoneBucketSummon : GongSummon
+	{
+
+		int chargeuptime = 100;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("BoneBucketSummon!");
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Consumable/BoneBucket"); }
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Vector2 gohere = new Vector2(0, -160 + (160 / ((projectile.ai[0] / 25f) + 1)));
+
+			Texture2D tex = ModContent.GetTexture("SGAmod/Extra_49");
+
+			float scaleeffect = MathHelper.Clamp(((float)150f - projectile.timeLeft) / 80f, 0f, Math.Min((float)projectile.timeLeft / 30f, 1f));
+
+			for (float valez = 0.1f; valez < 10f; valez += 0.5f)
+			{
+				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.25f, (Main.GlobalTime + valez * 3f) * 2f, tex.Size() / 2f, (0.5f + (valez / 15f)) * scaleeffect, SpriteEffects.FlipVertically, 0f);
+			}
+
+			scaleeffect = MathHelper.Clamp(((float)120f - projectile.timeLeft) / 30f, 0f, Math.Min((float)projectile.timeLeft / 30f, 1f));
+			tex = Main.extraTexture[34];
+
+			for (float valez = 0.1f; valez < 10f; valez += 0.2f)
+			{
+				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Main.hslToRgb(((Main.GlobalTime + valez * 3f) * 2f) % 1f, 0.8f, 0.75f) * 0.05f, (Main.GlobalTime + valez * 3f) * 2f, tex.Size() / 2f, (0.25f + (valez / 10f)) * scaleeffect, SpriteEffects.FlipVertically, 0f);
+			}
+
+			Vector2 drawOffset = new Vector2(Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height*1.5f)/2f;
+			spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center + gohere - Main.screenPosition, null, Color.White * Math.Min((float)projectile.timeLeft / 80f, 1f), -((projectile.timeLeft-70)/150f), drawOffset, new Vector2(1, 1), SpriteEffects.None, 0f);
+			return false;
+		}
+
+		public override void AI()
+		{
+			Player player = Main.player[projectile.owner];
+
+			if (player == null)
+				projectile.Kill();
+			if (player.dead)
+				projectile.Kill();
+			player.itemTime = 6;
+			player.itemAnimation = 6;
+			projectile.ai[0] += 1;
+
+			Vector2 gohere = new Vector2(0, -160 + (160 / ((projectile.ai[0] / 25f) + 1)));
+
+			if (projectile.timeLeft == 150)
+			{
+				RippleBoom.MakeShockwave(projectile.Center + gohere, 8f, 2f, 20f, 100, 0.5f, true);
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageHurt, (int)projectile.Center.X, (int)projectile.Center.Y);
+				if (sound != null)
+				{
+					sound.Pitch += 0.50f;
+				}
+
+			}
+
+			if (projectile.timeLeft == 50)
+			{
+
+				if (NPC.CountNPCS(NPCID.SkeletonMerchant) < 1)
+					NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y, NPCID.SkeletonMerchant);
+				else
+					Main.npc[(NPC.FindFirstNPC(NPCID.TravellingMerchant))].Center = projectile.Center;
+			}
+		}
+	}
+
 }

@@ -80,18 +80,22 @@ namespace SGAmod
 		{
 			// 'orig' is a delegate that lets you call back into the original method.
 			// 'self' is the 'this' parameter that would have been passed to the original method.
-			if (self.SGAPly().beserk[1] > 0)
+			SGAPlayer sgaply = self.SGAPly();
+			if (sgaply.beserk[1] > 0)
 			{
-				self.breathCD += (int)(self.SGAPly().beserk[1] * 20f);
-				if (self.breathCD > 300)
-				{
-					self.breathCD = 0;
-					self.breath = (int)MathHelper.Clamp(self.breath - 1, 0, self.breathMax);
+				sgaply.permaDrown = true;
+				if (sgaply.timer % 2 == 0)
+				self.breathCD += (int)(sgaply.beserk[1] * 1.25f)-1;
+				//if (self.breathCD > 300)
+				//{
+					//self.breathCD = 0;
+					//self.breath = (int)MathHelper.Clamp(self.breath - 1, 0, self.breathMax);
 
-					if (self.breath < 1)
+					if (self.breath < 1 && sgaply.timer%5==0)
 					{
-						self.statLife -= 5;
-						CombatText.NewText(new Rectangle((int)self.position.X, (int)self.position.Y, self.width, self.height), CombatText.LifeRegen, 4, false, true);
+					int lifeLost = Math.Max(2+(int)sgaply.beserk[1]+sgaply.drownRate,1);
+						self.statLife -= lifeLost;
+						CombatText.NewText(new Rectangle((int)self.position.X, (int)self.position.Y, self.width, self.height), CombatText.LifeRegen, lifeLost, false, true);
 
 						if (self.statLife <= 0)
 						{
@@ -100,7 +104,7 @@ namespace SGAmod
 						}
 
 					}
-				}
+				//}
 
 				if (self.breath < 1)
 				{
@@ -108,7 +112,6 @@ namespace SGAmod
 					self.breath = 0;
 				}
 
-				return;
 			}
 			orig(self);
 		}

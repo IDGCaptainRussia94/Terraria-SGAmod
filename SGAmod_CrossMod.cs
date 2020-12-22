@@ -125,6 +125,9 @@ namespace SGAmod
 
 			Calamity = ModLoader.GetMod("CalamityMod") != null;
 
+			overpoweredMod = 0;// (ModLoader.GetMod("AFKPETS") != null ? 0.5f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0) +(ModLoader.GetMod("Luiafk") != null ? 2f : 0) +(ModLoader.GetMod("FargowiltasSouls") != null ? 2.5f : 0);
+							   //Why do people still use Luiafk in legit playthroughs? I donno...
+
 			Mod fargos = ModLoader.GetMod("Fargowiltas");
 			if (fargos != null)
 			{
@@ -164,6 +167,7 @@ namespace SGAmod
 				bossList.Call("AddBoss", 11.25f, ModContent.NPCType<TPD>(), this, "Twin Prime Destroyers", (Func<bool>)(() => SGAWorld.downedTPD), new List<int>() { ModContent.ItemType<Mechacluskerf>() }, new List<int>() { }, new List<int>() { ItemID.ChlorophyteBar, ItemID.ShroomiteBar, ItemID.SpectreBar, ItemID.Ectoplasm, ModContent.ItemType<StarMetalMold>() }, "Use a [i:" + ItemType("Mechacluskerf") + "] anywhere at night");
 				bossList.Call("AddBoss", 11.85f, ModContent.NPCType<Harbinger>(), this, "Doom Harbinger", (Func<bool>)(() => SGAWorld.downedHarbinger), new List<int>() { ModContent.ItemType<TruelySusEye>() }, new List<int>() { }, new List<int>() { }, "Can spawn randomly at the start of night after golem is beaten, the Old One's Army event is finished on tier 3, and the Martians are beaten, or use a [i:" + ItemType("TruelySusEye") + "]. Defeating him will allow the cultists to spawn (Single Player Only)");
 				bossList.Call("AddBoss", 12.5f, ModContent.NPCType<LuminiteWraith>(), this, "Luminite Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() { ItemID.LunarCraftingStation }, "Use a [i:" + ItemType("WraithCoreFragment3") + "], defeat this boss to get the Ancient Manipulator.", "", "SGAmod/NPCs/Wraiths/LWraithLog");
+				bossList.Call("AddMiniBoss", 14.5f, ModContent.NPCType<PrismBanshee>(), this, "Prismatic Banshee", (Func<bool>)(() => SGAWorld.downedPrismBanshee), new List<int>() { }, new List<int>() { }, new List<int>() { ModContent.ItemType<IlluminantEssence>() }, "Find it underground in the Hallow after Moonlord's defeat", "Banshee has left");
 				bossList.Call("AddBoss", 14.8f, ModContent.NPCType<LuminiteWraith>(), this, "Luminite Wraith (Rematch)", (Func<bool>)(() => (SGAWorld.downedWraiths > 3)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CosmicFragment>(), ItemID.FragmentNebula, ItemID.FragmentVortex, ItemID.FragmentStardust, ItemID.FragmentSolar, ItemID.LunarBar, ItemID.LunarOre }, "Use a [i:" + ItemType("WraithCoreFragment3") + "] after the first fight when Moonlord is defeated to issue a rematch; the true battle begins...", "", "SGAmod/NPCs/Wraiths/LWraithLog2");
 				bossList.Call("AddBoss", 15f, ModContent.NPCType<Cratrogeddon>(), this, "Cratrogeddon", (Func<bool>)(() => SGAWorld.downedCratrosityPML), new List<int>() { ModContent.ItemType<SalvagedCrate>(), ItemID.TempleKey }, new List<int>() { }, new List<int>() { ModContent.ItemType<TerrariacoCrateKeyUber>(), ModContent.ItemType<MoneySign>() }, "Right Click a [i:" + ItemType("SalvagedCrate") + "] while you have a [i:" + ItemID.TempleKey + "] in your inventory at night", "All players have paid up their lives to microtransactions, again", "SGAmod/NPCs/Cratrosity/CratrosityLog");
 				bossList.Call("AddBoss", 16f, ModContent.NPCType<SPinky>(), this, "Supreme Pinky", (Func<bool>)(() => SGAWorld.downedSPinky), new List<int>() { ModContent.ItemType<Prettygel>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<LunarSlimeHeart>(), ModContent.ItemType<LunarRoyalGel>() }, "Use a [i:" + ItemType("Prettygel") + "] at night", "Supreme Pinky is content with the justice they have dealt");
@@ -198,6 +202,7 @@ namespace SGAmod
 				yabhb.Call("hbFinishMultiple", NPCType("SPinkyClone"), NPCType("SPinkyClone"));
 				yabhb.Call("hbStart");
 				yabhb.Call("hbFinishMultiple", NPCType("Harbinger"), NPCType("Harbinger"));
+				yabhb.Call("RegisterHealthBarMini", NPCType("PrismBanshee"));
 				yabhb.Call("RegisterHealthBarMini", NPCType("CirnoHellion"));
 			}
 

@@ -121,7 +121,7 @@ namespace SGAmod.Items.Accessories
 				"Extremely cruel and cunning, has no problems with scorching entire planets when they refuse to meet her demands",
 				"But this power is nothing compared to what the DRAKEN experiment will be, far, far more",
 				"Hellion has deemed it necessary to elimanate the Terrarian herself, and take the experiment back",
-				"We have no dount that the mission will succeed, sighing off",""},
+				"We have no doubt that the mission will succeed, sighing off",""},
 
 
 		};

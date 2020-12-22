@@ -40,7 +40,6 @@ namespace SGAmod.NPCs
 			npc.buffImmune[BuffID.CursedInferno] = true;
 			npc.buffImmune[mod.BuffType("ThermalBlaze")] = true;
 			npc.npcSlots = 0.1f;
-			npc.netAlways = true;
 			npc.HitSound = SoundID.NPCHit7;
 			npc.DeathSound = SoundID.NPCDeath6;
 			npc.value = Item.buyPrice(0, 0, 50);

@@ -220,8 +220,9 @@ namespace SGAmod.Items.Weapons
 			item.mana = 10;
 			item.width = 32;
 			item.height = 32;
-			item.useTime = 36;
-			item.useAnimation = 36;
+			item.useTime = 24;
+			item.useAnimation = 24;
+			item.autoReuse = true;
 			item.useStyle = 1;
 			item.value = Item.buyPrice(0, 1, 0, 0);
 			item.rare = 4;
@@ -248,9 +249,9 @@ namespace SGAmod.Items.Weapons
             {
 				Projectile flies = Main.projectile.FirstOrDefault(projtype => projtype.type == item.shoot && projtype.owner == player.whoAmI);
 				SGAPlayer sgaply = player.SGAPly();
-				if (((float)player.maxMinions - sgaply.GetMinionSlots) >= 0.50f)
+				if (((float)player.maxMinions - sgaply.GetMinionSlots) > minionSlot)
                 {
-					flies.minionSlots += 0.5f;
+					flies.minionSlots += minionSlot;
 					flies.netUpdate = true;
 				}
 
@@ -365,7 +366,7 @@ namespace SGAmod.Items.Weapons
 	public class FlySwarmMinion : ModProjectile
 	{
 		protected List<FakeFlyProjectile> flies = new List<FakeFlyProjectile>();
-		protected int maxMinions => 1+(int)(projectile.minionSlots*2);
+		protected int maxMinions => 2+(int)(projectile.minionSlots*2);
 		public virtual float flySpeed => 0.35f;
 		public virtual float flyFriction => 0.96f;
 
@@ -563,8 +564,9 @@ namespace SGAmod.Items.Weapons
 			item.mana = 12;
 			item.width = 32;
 			item.height = 32;
-			item.useTime = 36;
-			item.useAnimation = 36;
+			item.useTime = 24;
+			item.useAnimation = 24;
+			item.autoReuse = true;
 			item.useStyle = 1;
 			item.value = Item.buyPrice(0, 2, 50, 0);
 			item.rare = ItemRarityID.LightPurple;

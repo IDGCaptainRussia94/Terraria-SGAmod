@@ -800,7 +800,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = -12;
 			item.expert = true;
 			item.accessory = true;
-			item.defense = 4;
+			item.defense = 0;
 			//item.damage = 1;
 			item.summon = true;
 			item.knockBack = 1f;
@@ -827,7 +827,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = -12;
 			item.expert = true;
 			item.accessory = true;
-			item.defense = 5;
+			item.defense = 0;
 			//item.damage = 1;
 			item.summon = true;
 			item.knockBack = 1f;
@@ -1045,7 +1045,33 @@ namespace SGAmod.Items.Accessories
 			item.expert = false;
 		}
 	}
+	public class AlkalescentHeart : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Alkalescent Heart");
+			Tooltip.SetDefault("'The Spider Queen's toxic blood pumps through you!'\nDealing crits debuff enemies, doing more damage while debuffed as follows:\nWhile not poisoned, poison enemies\nWhile poisoned, do 5% more damage and next crit Venoms\n" +
+				"While Venomed, do 10% more damage and next crit Acid Burns\nWhile Acid Burned, do 15% more damage" +
+				"\nThese damage boosts do not stack; highest takes priority\nMinions may infict this based off your highest crit chance");
+		}
 
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().alkalescentHeart = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 26;
+			item.defense = 0;
+			item.accessory = true;
+			item.height = 14;
+			item.value = Item.buyPrice(0,2,0,0);
+			item.rare = ItemRarityID.Green;
+			item.expert = true;
+		}
+	}
 	public class CalamityRune : SybariteGem
 	{
 		public override void SetStaticDefaults()
@@ -1181,11 +1207,12 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blink Tech Canister");
-			Tooltip.SetDefault("Enables a short ranged blink teleport\nHold UP and press left or right to teleport in the direction\ngives chaos state for 2 seconds, blinking not possible while you have chaos state\n5% increased Technological Damage\n+1500 Max Electric Charge, +1 passive Electric Charge Rate");
+			Tooltip.SetDefault("Enables a short ranged blink teleport, hide to disable blinking\nHold UP and press left or right to teleport in the direction\ngives chaos state for 2 seconds, blinking not possible while you have chaos state\n5% increased Technological Damage\n+1500 Max Electric Charge, +1 passive Electric Charge Rate");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			if (!hideVisual)
 			player.SGAPly().maxblink += 3;
 			player.SGAPly().techdamage += 0.05f;
 			player.SGAPly().electricChargeMax += 1500;
@@ -2930,6 +2957,161 @@ namespace SGAmod.Items.Accessories
 			item.width = 16;
 			item.height = 16;
 			item.value = Item.buyPrice(gold: 2);
+			item.rare = ItemRarityID.Pink;
+			item.accessory = true;
+		}
+	}
+
+	public class DruidicSneakers : MagusSlippers
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Druidic Sneakers");
+			Tooltip.SetDefault("Mana herbs sometimes grow on grass where you walk\nHarvesting them yields Mana Stars\nEffects of Magus Slippers\n'Eco Friendly!");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.SGAPly();
+			base.UpdateAccessory(player, hideVisual);
+			//Just a bit chunk of vanilla code, urgh
+			if (player.velocity.Y == 0f && player.grappling[0] == -1)
+			{
+				int num2 = (int)player.Center.X / 16;
+				int num3 = (int)(player.position.Y + (float)player.height - 1f) / 16;
+				if (Main.tile[num2, num3] == null)
+				{
+					Main.tile[num2, num3] = new Tile();
+				}
+				if (!Main.tile[num2, num3].active() && Main.tile[num2, num3].liquid == 0 && Main.tile[num2, num3 + 1] != null && WorldGen.SolidTile(num2, num3 + 1))
+				{
+					Main.tile[num2, num3].frameY = 0;
+					Main.tile[num2, num3].slope(0);
+					Main.tile[num2, num3].halfBrick(halfBrick: false);
+					if (Main.tile[num2, num3 + 1].type == 2)
+					{
+						if (Main.rand.Next(2) == 0)
+						{
+							Main.tile[num2, num3].active(active: true);
+							Main.tile[num2, num3].type = 3;
+							Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(6, 11));
+							while (Main.tile[num2, num3].frameX == 144)
+							{
+								Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(6, 11));
+							}
+						}
+						else if (Main.rand.Next(6) == 0)
+						{
+							Main.tile[num2, num3].active(active: true);
+							Main.tile[num2, num3].type = (ushort)mod.TileType("ManaHerb");
+							Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(9, 14));
+						}
+						else
+						{
+							Main.tile[num2, num3].active(active: true);
+							Main.tile[num2, num3].type = 73;
+							Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(6, 21));
+							while (Main.tile[num2, num3].frameX == 144)
+							{
+								Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(6, 21));
+							}
+						}
+						if (Main.netMode == 1)
+						{
+							NetMessage.SendTileSquare(-1, num2, num3, 1);
+						}
+					}
+					/*else if (Main.tile[num2, num3 + 1].type == 109)
+					{
+						if (Main.rand.Next(2) == 0)
+						{
+							Main.tile[num2, num3].active(active: true);
+							Main.tile[num2, num3].type = 110;
+							Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(4, 7));
+							while (Main.tile[num2, num3].frameX == 90)
+							{
+								Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(4, 7));
+							}
+						}
+						else
+						{
+							Main.tile[num2, num3].active(active: true);
+							Main.tile[num2, num3].type = 113;
+							Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(2, 8));
+							while (Main.tile[num2, num3].frameX == 90)
+							{
+								Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(2, 8));
+							}
+						}
+						if (Main.netMode == 1)
+						{
+							NetMessage.SendTileSquare(-1, num2, num3, 1);
+						}
+					}
+					else if (Main.tile[num2, num3 + 1].type == 60)
+					{
+						Main.tile[num2, num3].active(active: true);
+						Main.tile[num2, num3].type = 74;
+						Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(9, 17));
+						if (Main.netMode == 1)
+						{
+							NetMessage.SendTileSquare(-1, num2, num3, 1);
+						}
+					}*/
+				}
+
+				//placeholder
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.buyPrice(gold: 2);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.FlowerBoots, 1);
+			recipe.AddIngredient(ModContent.ItemType<MagusSlippers>(), 1);
+			recipe.AddIngredient(ItemID.ManaCrystal, 1);
+			recipe.AddIngredient(ItemID.LightShard, 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class EnchantedShieldPolish : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Enchanted Shield Polish");
+			Tooltip.SetDefault("Scoring a Just Block with a shield restores some mana\nThe amount of damage shields reduce is increased by 5%\nYour shields gain 10% more damage and Bashes gain additional Magic damage");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.SGAPly();
+			sgaply.shieldDamageReduce += 0.05f;
+			sgaply.shieldDamageBoost += 0.10f;
+
+			sgaply.enchantedShieldPolish = true;
+			//placeholder
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.buyPrice(gold: 2);
 			item.rare = ItemRarityID.Orange;
 			item.accessory = true;
 		}
@@ -3013,6 +3195,44 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	public class BottledLiquidEssence : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Bottled Liquid Essence");
+			Tooltip.SetDefault("Improved Life and Mana regen while wet");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = ItemRarityID.Blue;
+			item.value = Item.sellPrice(0, 0, 50, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			if (player.wet)
+			{
+				player.manaRegenBonus += 30;
+				player.lifeRegen += 1;
+			}
+			//ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
+		}
+		public override void AddRecipes()
+		{
+			/*ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
+			recipe.AddIngredient(ItemID.BandofRegeneration, 1);
+			recipe.AddIngredient(ItemID.ManaRegenerationBand, 1);
+			recipe.AddIngredient(ItemID.FlipperPotion, 5);
+			recipe.AddTile(mod.GetTile("PrismalStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();*/
+		}
+	}
 
 	[AutoloadEquip(EquipType.Back)]
 	public class PrismalAirTank : ModItem
@@ -3045,8 +3265,7 @@ namespace SGAmod.Items.Accessories
 			if (player.wet)
 			{
 				player.SGAPly().MaxCooldownStacks += 1;
-				player.manaRegenBonus += 25;
-				player.manaRegenDelayBonus++;
+				player.manaRegenBonus += 30;
 				player.lifeRegen += 1;
 			}
 			//ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
@@ -3054,24 +3273,14 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
-			recipe.AddIngredient(ItemID.BandofRegeneration, 1);
-			recipe.AddIngredient(ItemID.ManaRegenerationBand, 1);
-			recipe.AddIngredient(ItemID.FlipperPotion, 5);
-			recipe.AddTile(mod.GetTile("PrismalStation"));
-			recipe.SetResult(this);
-			recipe.AddRecipe();
-
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
-			recipe.AddIngredient(ItemID.BandofRegeneration, 1);
-			recipe.AddIngredient(ItemID.ManaCrystal, 5);
+			recipe.AddIngredient(mod.ItemType("BottledLiquidEssence"), 1);
 			recipe.AddIngredient(ItemID.FlipperPotion, 5);
 			recipe.AddTile(mod.GetTile("PrismalStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
-
 	}
 
 	[AutoloadEquip(EquipType.Face)]

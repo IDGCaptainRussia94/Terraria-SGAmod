@@ -12,6 +12,9 @@ using SGAmod;
 using SGAmod.Items;
 using IL.Terraria.DataStructures;
 using Idglibrary;
+using Terraria.Graphics;
+using Terraria.Graphics.Shaders;
+using Terraria.DataStructures;
 
 namespace SGAmod.Dimensions.Tiles
 {
@@ -36,9 +39,12 @@ namespace SGAmod.Dimensions.Tiles
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
+
 			Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
 			Vector2 location = (new Vector2(i, j) * 16) + zerooroffset;
+
 			spriteBatch.Draw(Main.tileTexture[Main.tile[i, j].type], location - Main.screenPosition, new Rectangle(Main.tile[i, j].frameX, Main.tile[i, j].frameY, 16, 16), Lighting.GetColor(i, j), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
 
 			return true;
 		}

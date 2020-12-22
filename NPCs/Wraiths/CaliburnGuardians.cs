@@ -41,6 +41,7 @@ namespace SGAmod.NPCs.Wraiths
 			{
 				SGAWorld.downedCaliburnGuardianHardmode = true;
 
+				if (!SGAWorld.darknessVision)
 				SpookyDarkSectorEye.Release(npc.Center, true, new Vector2(20, 20));
 			}
 
@@ -208,6 +209,9 @@ namespace SGAmod.NPCs.Wraiths
 
 				if (Main.netMode == NetmodeID.SinglePlayer)
 					SGAWorld.downedCaliburnGuardiansPoints += 1;
+
+				if (SGAWorld.downedMurk < 2 && SGAWorld.downedCaliburnGuardians < 3)
+					Idglib.Chat("The Moist Stone around Dank Shrines has weakened and can be broken.", 75, 225, 75);
 
 				Achivements.SGAAchivements.UnlockAchivement("Caliburn", Main.LocalPlayer);
 			}

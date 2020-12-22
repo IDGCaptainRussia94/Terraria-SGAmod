@@ -379,7 +379,7 @@ namespace SGAmod.NPCs.Sharkvern
                 targetYPos -= 800;
                 if (timer2 % 3000 > 2300 && timer2 % 3000 < 2900)
                 {
-                    NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCID.WyvernHead);
+                    NPC.NewNPC((int)npc.Center.X, (int)Math.Min(npc.Center.Y, Main.player[npc.target].Center.Y-1000), NPCID.WyvernHead);
                 }
                 if (NPC.CountNPCS(NPCID.WyvernHead) > 0)
                     timer2 = 2900;
@@ -413,9 +413,9 @@ namespace SGAmod.NPCs.Sharkvern
             if (npc.ai[3] > 0)
             {
                 timer = 0;
-                targetXPos = (float)(Main.maxTilesX * 0.6f);
+                targetXPos = 3000f;
                 if (npc.Center.X > (Main.maxTilesX / 2) * 16)
-                    targetXPos = (float)(Main.maxTilesX * 16) - (Main.maxTilesX * 0.6f);
+                    targetXPos = (float)(Main.maxTilesX * 16) - (3000f);
                 targetYPos = averagey[0];
                 //targetYPos=(float)SGAWorld.RaycastDownWater((int)targetXPos/16,(int)(1),50)*16;
                 Summoncenter = new Vector2(targetXPos, targetYPos - 500f);

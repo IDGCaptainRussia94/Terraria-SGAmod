@@ -310,7 +310,8 @@ namespace SGAmod.NPCs.Wraiths
 						if (npc.ai[0] % 20 == 0 && npc.ai[0] % 900 > 650)
 						{
 							NPC findthem = Main.npc[NPC.FindFirstNPC(mod.NPCType("CobaltWraith"))];
-							int arrowType = SGAWorld.NightmareHardcore > 0 && !(findthem.modNPC as CobaltWraith).raged ? mod.ProjectileType("UnmanedArrow2") : ProjectileID.WoodenArrowHostile;
+							//int arrowType = SGAWorld.NightmareHardcore > 0 && !(findthem.modNPC as CobaltWraith).raged ? mod.ProjectileType("UnmanedArrow2") : ProjectileID.WoodenArrowHostile;
+							int arrowType = ProjectileID.WoodenArrowHostile;
 							List<Projectile> one = Idglib.Shattershots(npc.Center, npc.Center + new Vector2(-15 * npc.spriteDirection, 0), new Vector2(0, 0), arrowType, 20, 20, 0, 1, true, (Main.rand.Next(-100, 100) * 0.000f) - npc.rotation, true, 300);
 							one[0].hostile = true;
 							one[0].friendly = false;
@@ -604,7 +605,7 @@ return true;
 			CopperWraith myself = npc.modNPC as CopperWraith;
 			myself.level = 1;
 			npc.buffImmune[BuffID.Daybreak] = true;
-			npc.value = Item.buyPrice(0, 6, 0, 0);
+			npc.value = Item.buyPrice(0, 1, 0, 0);
 		}
 		public override string Texture
 		{
@@ -648,7 +649,7 @@ return true;
 			int ammount = 0;
 			for (ammount = 0; ammount < 1; ammount += 1)
 				types.Insert(types.Count, ItemID.Hellstone);
-			for (ammount = 0; ammount < 3; ammount += 1)
+			for (ammount = 0; ammount < 2; ammount += 1)
 				types.Insert(types.Count, SGAmod.WorldOres[4, SGAWorld.oretypeshardmode[0] == TileID.Cobalt ? 1 : 0]);
 			for (ammount = 0; ammount < 2; ammount += 1)
 				types.Insert(types.Count, SGAmod.WorldOres[5, SGAWorld.oretypeshardmode[1] == TileID.Mythril ? 1 : 0]);
@@ -659,15 +660,12 @@ return true;
 			for (ammount = 0; ammount < 1; ammount += 1)
 				types.Insert(types.Count, ItemID.SoulofNight);
 
-			for (int f = 0; f < (Main.expertMode ? 200 : 100); f = f + 1)
+			for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0, types.Count)]);
 			}
 
-			for (int f = 0; f < (Main.expertMode ? 25 : 10); f = f + 1)
-			{
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("WraithFragment4"));
-			}
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("WraithFragment4"), Main.expertMode ? 25 : 10);
 
 			Achivements.SGAAchivements.UnlockAchivement("Cobalt Wraith", Main.LocalPlayer);
 			if (SGAWorld.downedWraiths < 2)

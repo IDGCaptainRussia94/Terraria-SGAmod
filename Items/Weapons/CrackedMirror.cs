@@ -47,14 +47,14 @@ namespace SGAmod.Items.Weapons
 			return player.SGAPly().CooldownStacks.Count < player.SGAPly().MaxCooldownStacks;
 		}
 
-		public override bool Shoot (Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			player.SGAPly().AddCooldownStack(60 * 60);
 			float numberProjectiles = 10; // 3, 4, or 5 shots
 			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 40f;
 			for (int i = 0; i < numberProjectiles; i++)
 			{
-				Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedBy((i/(float)numberProjectiles)*MathHelper.TwoPi);
+				Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedBy((i / (float)numberProjectiles) * MathHelper.TwoPi);
 				Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, 1, knockBack, player.whoAmI);
 			}
 			return false;
@@ -65,7 +65,7 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
-		public class CrackedMirrorProj : ModProjectile
+	public class CrackedMirrorProj : ModProjectile
 	{
 
 		float scalePercent => MathHelper.Clamp(projectile.timeLeft / 60f, 0f, Math.Min(projectile.localAI[0] / 25f, 0.75f));
@@ -101,29 +101,34 @@ namespace SGAmod.Items.Weapons
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
 		}
 
-        public override bool CanDamage()
-        {
-            return false;
-        }
+		public override bool CanDamage()
+		{
+			return false;
+		}
 
-        public override void AI()
+		public static bool AffectNPC(NPC npctest)
+        {
+			return npctest.active && !npctest.friendly && !npctest.immortal && !npctest.boss && !npctest.noGravity && !npctest.noTileCollide;
+		}
+
+		public override void AI()
 		{
 			if (startingloc == default)
-            {
+			{
 				startingloc = projectile.Center;
 			}
 
 			//projectile.velocity = Collision.TileCollision(projectile.position, projectile.velocity, projectile.width, projectile.height, true);
 			projectile.velocity = projectile.velocity.RotatedBy(projectile.localAI[0] / 10000f, Vector2.Zero);
 
-			foreach (NPC enemy in Main.npc.Where(npctest => npctest.active && !npctest.friendly && !npctest.immortal && !npctest.boss && !npctest.noGravity && !npctest.noTileCollide &&
+			foreach (NPC enemy in Main.npc.Where(npctest => AffectNPC(npctest) &&
 			npctest.Hitbox.Intersects(projectile.Hitbox)))
-            {
+			{
 				enemy.AddBuff(ModContent.BuffType<Petrified>(), 600);
-            }
+			}
 
 			projectile.localAI[0] += 1;
-			int num126 = Dust.NewDust(projectile.position-new Vector2(2,2), Main.rand.Next(projectile.width+6), Main.rand.Next(projectile.height+6), DustID.t_Marble, 0,0, 240, Color.White, scalePercent);
+			int num126 = Dust.NewDust(projectile.position - new Vector2(2, 2), Main.rand.Next(projectile.width + 6), Main.rand.Next(projectile.height + 6), DustID.t_Marble, 0, 0, 240, Color.White, scalePercent);
 			Main.dust[num126].noGravity = true;
 			Main.dust[num126].velocity = projectile.velocity * 0.5f;
 		}

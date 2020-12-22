@@ -538,7 +538,7 @@ namespace SGAmod.NPCs.Wraiths
 			animationType = 0;
 			npc.noTileCollide = true;
 			npc.noGravity = true;
-			npc.value = Item.buyPrice(0, 1, 0, 0);
+			npc.value = Item.buyPrice(0, 0, 25, 0);
 		}
 		public override string Texture
 		{
@@ -609,11 +609,11 @@ namespace SGAmod.NPCs.Wraiths
 
 			if (shardtype > 0)
 			{
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype, (Main.expertMode ? 40 : 25));
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype, (Main.expertMode ? 30 : 15));
 			}
 
 
-			for (int f = 0; f < (Main.expertMode ? 200 : 100); f = f + 1)
+			for (int f = 0; f < (Main.expertMode ? 50 : 30); f += 1)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0, types.Count)]);
 			}

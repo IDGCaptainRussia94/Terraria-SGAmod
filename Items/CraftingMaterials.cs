@@ -1118,15 +1118,18 @@ public class LunarRoyalGel : ModItem
 		{
 			DisplayName.SetDefault("Soul of Byte");
 			Tooltip.SetDefault("'remains of the Hellion Core'");
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 4));
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+			ItemID.Sets.ItemIconPulse[item.type] = true;
 		}
-		public override string Texture
+		/*public override string Texture
 		{
 			get { return ("Terraria/Item_"+Main.rand.Next(0,2000)); }
 		}
 		public override Color? GetAlpha(Color lightColor)
 		{
 			return Main.hslToRgb(Main.rand.NextFloat(0f, 1f), 0.75f, 0.65f);
-		}
+		}*/
 		public override void SetDefaults()
 		{
 			item.maxStack = 999;

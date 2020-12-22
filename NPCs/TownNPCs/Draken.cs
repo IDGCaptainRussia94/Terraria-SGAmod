@@ -671,8 +671,8 @@ namespace SGAmod.NPCs.TownNPCs
 
 				if (SGAWorld.downedMurk<2)
 					chat = "The dank structures' walls are protected by a strong, fly swaming, roiling creature in the jungle, prehaps a [i:" + mod.ItemType("RoilingSludge") + "] may attract its fly swamps, and its wrath";
-				if (SGAWorld.downedSpiderQueen)
-					chat = "A high voracious creature lurks below the surface, I fear it might eat a small dragon like me whole, go and find it please, I think an [i:" + mod.ItemType("AcidicEgg") + "] will lure it from its feasting to comfront you";
+				if (!SGAWorld.downedSpiderQueen)
+					chat = "A highly voracious creature lurks below the surface, I fear it might eat a small dragon like me whole, go and find it please, I think an [i:" + mod.ItemType("AcidicEgg") + "] will lure it from its feasting to comfront you";
 				if (SGAWorld.downedCaliburnGuardians<3 && Main.rand.Next(0,3)==0 && Main.LocalPlayer.SGAPly().ExpertiseCollectedTotal>=300)
 					chat = "I've noticed 3 structures below the surface that warrent investigation, I have found a [i: " + mod.ItemType("CaliburnCompess") + "] that may help you with that.";
 
@@ -829,7 +829,7 @@ namespace SGAmod.NPCs.TownNPCs
 			}
 			if (modplayer.ExpertiseCollectedTotal >= 2500)
 			{
-				shop.item[nextSlot].SetDefaults(mod.ItemType("Gong"));
+				shop.item[nextSlot].SetDefaults(Main.dayTime ? mod.ItemType("Gong") : mod.ItemType("BoneBucket"));
 				shop.item[nextSlot].shopCustomPrice = 150;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;

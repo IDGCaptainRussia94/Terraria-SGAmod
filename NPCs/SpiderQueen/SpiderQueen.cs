@@ -58,6 +58,8 @@ namespace SGAmod.NPCs.SpiderQueen
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("VialofAcid"));
 				}
 				if (Main.rand.Next(0, 3) == 0)
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CorrodedShield"));
+				if (Main.rand.Next(0, 3) == 0)
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AmberGlowSkull"));
 			}
 

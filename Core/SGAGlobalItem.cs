@@ -15,6 +15,7 @@ using SGAmod.Items.Accessories;
 using Idglibrary;
 using AAAAUThrowing;
 using Terraria.Utilities;
+using SGAmod.Buffs;
 
 namespace SGAmod
 {
@@ -388,7 +389,7 @@ namespace SGAmod
                 if (player.statMana + item.healMana >= player.statManaMax2)
                 {
                     int difference = (player.statMana + item.healMana) - player.statManaMax2;
-                    player.AddBuff(BuffID.ManaRegeneration, difference * 2);
+                    player.AddBuff(ModContent.BuffType<ManaRegenFake>(), difference * 2);
                 }
             }
 
@@ -602,10 +603,20 @@ namespace SGAmod
             }
         }
 
-        public override bool WingUpdate(int wings, Player player, bool inUse)
+        public override void RightClick(Item item, Player player)
         {
-            SGAPlayer modply = player.GetModPlayer<SGAPlayer>();
-            return modply.SpaceDiverset;
+            if (item.type == ItemID.FloatingIslandFishingCrate && Main.rand.Next(5) == 0)
+            {
+                player.QuickSpawnItem(ModContent.ItemType<StarCollector>());
+            }
+        }
+
+        public override void UpdateInventory(Item item,Player player)
+        {
+            if (item.buffType > 0 && SGAmod.overpoweredMod>1f)
+            {
+                item.maxStack = 29;
+            }
         }
 
     }
@@ -978,7 +989,7 @@ namespace SGAmod
         public override void OnConsumeItem(Item item, Player player)
         {
             SGAPlayer sga = player.SGAPly();
-            if (Main.rand.Next(0, 100) < sga.anticipationLevel && !sga.tpdcpu)
+            if (Main.rand.Next(0, 100) < sga.consumeCurse && !sga.tpdcpu)
                 item.stack -= 1;
         }
 

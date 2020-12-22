@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 using SGAmod.Dimensions;
 using Idglibrary;
 using System.IO;
+using System.Linq;
 
 namespace SGAmod.NPCs.Murk
 {
@@ -18,9 +19,10 @@ namespace SGAmod.NPCs.Murk
         public bool Chance() => Main.rand.Next(0, 10) == 0;
 
         int counter = 0;
-        int gasshift = 0;
-        int gastimer = 0;
+        public int gasshift = 0;
+        public int gastimer = 0;
         int smackdown = 0;
+        int attacktype = 0;
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
@@ -28,6 +30,7 @@ namespace SGAmod.NPCs.Murk
             gasshift=reader.ReadInt32();
             gastimer=reader.ReadInt32();
             smackdown = reader.ReadInt32();
+            attacktype = reader.ReadInt32();
         }
         public override void SendExtraAI(BinaryWriter writer)
         {
@@ -35,6 +38,7 @@ namespace SGAmod.NPCs.Murk
             writer.Write(gasshift);
             writer.Write(gastimer);
             writer.Write(smackdown);
+            writer.Write(attacktype);
         }
         public override void SetDefaults()
         {
@@ -91,6 +95,10 @@ namespace SGAmod.NPCs.Murk
 
         public override void NPCLoot()
         {
+
+            SGAWorld.downedMurk = Main.hardMode ? 2 : 2;
+            SGAWorld.GenVirulent();
+
             for (int i = 0; i < (Main.hardMode ? 2 : 1); i += 1)
             {
                 if (Main.expertMode)
@@ -117,14 +125,12 @@ namespace SGAmod.NPCs.Murk
                     else if (choice == 4)
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SwarmGrenade"), Main.rand.Next(40, 100));
                     else if (choice == 5)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("GnatStaff"));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(SGAWorld.GennedVirulent ? "HorseFlyStaff" : "GnatStaff"));
                 }
             }
             Achivements.SGAAchivements.UnlockAchivement("Murk", Main.LocalPlayer);
-            if (SGAWorld.downedMurk == 0)
+            if (SGAWorld.downedMurk < 2 && SGAWorld.downedCaliburnGuardians<3)
                 Idglib.Chat("The Moist Stone around Dank Shrines has weakened and can be broken.", 75, 225, 75);
-            SGAWorld.downedMurk = Main.hardMode ? 2 : 2;
-            SGAWorld.GenVirulent();
         }
 
 
@@ -134,6 +140,8 @@ namespace SGAmod.NPCs.Murk
             bool flag65 = false;
             bool flag66 = false;
             bool touchingground = false;
+            bool nightmare = SGAWorld.NightmareHardcore > 0;
+            float lifePercent = nightmare ? 1.01f : 0.85f;
             gastimer -= 1;
             smackdown += 1;
             if (gastimer < 1)
@@ -173,6 +181,18 @@ namespace SGAmod.NPCs.Murk
                         }
                     }
                 }
+                if (SGAConfigClient.Instance.Murklite)
+                {
+                    float randomrot = Main.rand.NextFloat(MathHelper.TwoPi);
+                    for (float num654 = 0; num654 < MathHelper.TwoPi; num654 += 0.02f)
+                    {
+                        Vector2 there = (Vector2.One * ((gasshift) * scaledSize)).RotatedBy(randomrot);
+                        int num655 = Dust.NewDust(npc.position + there, 0, 0, dustype, 0, 0, dustype, new Color(30, 30, 30, 20), 2f);
+                        Main.dust[num655].noGravity = true;
+                        Main.dust[num655].velocity = there;
+                    }
+                }
+
                 SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(center.X, center.Y, gasshift * (scaledSize*2f))));
             }
 
@@ -221,9 +241,9 @@ namespace SGAmod.NPCs.Murk
             }
             else
             {
-                npc.timeLeft = 100;
+            npc.timeLeft = 100;
             }
-
+            
             if (!Main.player[npc.target].dead && npc.ai[2] >= 300f && npc.ai[1] < 5f && npc.velocity.Y == 0f)
             {
                 npc.ai[2] = 0f;
@@ -443,6 +463,18 @@ namespace SGAmod.NPCs.Murk
             if (npc.velocity.Y == 0f)
             {
                 touchingground = true;
+                if (!Main.player[npc.target].dead)
+                {
+                    if (Main.player[npc.target].Center.X < npc.Center.X)
+                    {
+                        npc.direction = -1;
+                    }
+                    else
+                    {
+                        npc.direction = 1;
+                    }
+                }
+
                 npc.localAI[3] = 1f;
 
                 npc.velocity.X = npc.velocity.X * 0.8f;
@@ -482,7 +514,7 @@ namespace SGAmod.NPCs.Murk
                 if (!flag65)
                 {
                     Player target2 = Main.player[npc.target];
-                    if (npc.life < (npc.lifeMax * 0.85) && npc.localAI[0] > -600 && NPC.CountNPCS(mod.NPCType("BossFlyMiniboss1")) < 1 && (npc.Distance(target2.MountedCenter) < 1000 || gasshift > 0))
+                    if (npc.life < (npc.lifeMax * lifePercent) && npc.localAI[0] > -600 && NPC.CountNPCS(mod.NPCType("BossFlyMiniboss1")) < 1 && (npc.Distance(target2.MountedCenter) < 1000 || gasshift > 0))
                     {
                         npc.ai[0] = -100f;
                         npc.ai[2] = 0f;
@@ -495,24 +527,89 @@ namespace SGAmod.NPCs.Murk
                         {
                             npc.localAI[0] += 1;
                             gasshift += 1;
-                            gastimer = 120+(int)((1f-((float)npc.life/(float)npc.lifeMax))*(Main.hardMode ? 800f : 500f));
+                            gastimer = 120 + (int)((1f - ((float)npc.life / (float)npc.lifeMax)) * (Main.hardMode ? 800f : 500f));
+                            if (gasshift == 3)
+                            {
+                                attacktype = npc.life < npc.lifeMax * 0.35 && Main.hardMode ? 1 : 0;
+                            }
                         }
                         else
                         {
-                            if ((-npc.localAI[0]) % 15 == 0)
+                            if (attacktype == 0) 
                             {
-                                npc.TargetClosest(true);
-                                npc.netUpdate = true;
-                                Player target = Main.player[npc.target];
-                                List<Projectile> itz2 = Idglib.Shattershots(npc.Center, target.position, new Vector2(target.width / 2, target.height / 2), ProjectileID.HornetStinger, Main.hardMode ? 25 : 15, 15f, 0, 1, true, 0f, false, 300);
-                                Main.PlaySound(SoundID.Item42, npc.Center);
-
-                                for (int num656 = 0; num656 < 15; num656++)
+                                if ((-npc.localAI[0]) % 15 == 0)
                                 {
-                                    int num657 = Dust.NewDust(npc.position + Vector2.UnitX * -20f, npc.width + 40, npc.height, 184, itz2[0].velocity.X, itz2[0].velocity.Y, 100, new Color(80, 80, 80, 100), 1.5f);
-                                    Main.dust[num657].noGravity = true;
+                                    npc.TargetClosest(true);
+                                    npc.netUpdate = true;
+                                    Player target = Main.player[npc.target];
+                                    List<Projectile> itz2 = Idglib.Shattershots(npc.Center, target.position, new Vector2(target.width / 2, target.height / 2), ProjectileID.PoisonFang, Main.hardMode ? 25 : 15, 15f, 0, 1, true, 0f, false, 300);
+                                    IdgProjectile.AddOnHitBuff(itz2[0].whoAmI, BuffID.Poisoned, 60 * 5);
+                                    var sound = Main.PlaySound(SoundID.Item111, npc.Center);
 
-                                    Main.dust[num657].velocity = (new Vector2(itz2[0].velocity.X, itz2[0].velocity.Y) * 2) * ((float)num656 / 15);
+                                    for (int num656 = 0; num656 < 15; num656++)
+                                    {
+                                        int num657 = Dust.NewDust(npc.position + Vector2.UnitX * -20f, npc.width + 40, npc.height, 184, itz2[0].velocity.X, itz2[0].velocity.Y, 100, new Color(80, 80, 80, 100), 1.5f);
+                                        Main.dust[num657].noGravity = true;
+
+                                        Main.dust[num657].velocity = (new Vector2(itz2[0].velocity.X, itz2[0].velocity.Y) * 2) * ((float)num656 / 15);
+                                    }
+                                }
+                            }
+                            if (attacktype > 0)
+                            {
+                                attacktype += 1;
+                                bool boolz = false;// (attacktype + 9) % Math.Max(10, (60 - (int)(attacktype / 5))) == 0;
+                                int input = Math.Max(10, (60 - (int)(attacktype / 5)));
+                                if (((attacktype-10) % input == 0 || boolz) && npc.localAI[0] > -500 && attacktype>10)
+                                {
+                                    npc.TargetClosest(true);
+                                    npc.netUpdate = true;
+                                    Player target = Main.player[npc.target];
+                                    if (!boolz || input<12)
+                                    {
+                                        var sound = Main.PlaySound(SoundID.Item111, npc.Center);
+                                        if (sound != null)
+                                        {
+                                            sound.Pitch += 0.50f;
+                                        }
+                                    }
+
+                                    float adder = Math.Max(0, attacktype-200);
+                                    float angle = ((adder + (boolz ? 19 : 0)) / (837f / MathHelper.TwoPi));
+
+                                    for (float f = 0f; f < MathHelper.TwoPi; f += MathHelper.PiOver4)
+                                    {
+
+                                        Vector2 shootthere = Vector2.One.RotatedBy(f+angle);
+                                        if (boolz && input>12)
+                                        {
+                                            for (int xx = 0; xx < 640; xx += 8)
+                                            {
+                                                int num657 = Dust.NewDust(npc.Center+ shootthere*xx, 0,0, mod.DustType("MangroveDust"), -shootthere.X, -shootthere.Y, 150, new Color(30, 30, 30, 20), 1f);
+                                                Main.dust[num657].noGravity = true;
+                                                Main.dust[num657].velocity *= 2f;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (!boolz)
+                                            {
+                                                List<Projectile> itz2 = Idglib.Shattershots(npc.Center, npc.Center + shootthere, Vector2.Zero, ProjectileID.PoisonFang, Main.hardMode ? 25 : 15, 1f, 0, 1, true, 0f, false, 200);
+                                                IdgProjectile.AddOnHitBuff(itz2[0].whoAmI, BuffID.Poisoned, 60 * 5);
+
+                                                Vector2 vectoing = Vector2.TransformNormal(itz2[0].velocity, Matrix.CreateScale(1f, 1f, 1f));
+                                                itz2[0].velocity = vectoing * 12f;
+
+                                                for (int num656 = 0; num656 < 15; num656++)
+                                                {
+                                                    int num657 = Dust.NewDust(npc.position + Vector2.UnitX * -20f, npc.width + 40, npc.height, 184, vectoing.X * 1f, vectoing.Y * 1f, 100, new Color(80, 80, 80, 100), 1.5f);
+                                                    Main.dust[num657].noGravity = true;
+
+                                                    Main.dust[num657].velocity = (new Vector2(itz2[0].velocity.X, itz2[0].velocity.Y) * 2) * ((float)num656 / 15);
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
 
@@ -528,26 +625,31 @@ namespace SGAmod.NPCs.Murk
                     }
 
                     npc.ai[0] += 2f;
-                    if ((double)npc.life < (double)npc.lifeMax * 0.8 || Main.hardMode || Main.expertMode)
+                    if ((double)npc.life < (double)npc.lifeMax * 0.8 || Main.hardMode || Main.expertMode || nightmare)
                     {
                         npc.ai[0] += 1f;
                     }
-                    if ((double)npc.life < (double)npc.lifeMax * 0.6 || Main.hardMode)
+                        if ((double)npc.life < (double)npc.lifeMax * 0.6 || Main.hardMode || nightmare)
+                        {
+                            npc.ai[0] += 1f;
+                        }
+                    if (NPC.CountNPCS(mod.NPCType("BossFlyMiniboss1")) < 1 || nightmare)
                     {
-                        npc.ai[0] += 1f;
+                        if ((double)npc.life < (double)npc.lifeMax * 0.4 || Main.hardMode || nightmare)
+                        {
+                            npc.ai[0] += 2f;
+                        }
+                        if ((double)npc.life < (double)npc.lifeMax * 0.2 || nightmare)
+                        {
+                            npc.ai[0] += 3f;
+                        }
                     }
-                    if ((double)npc.life < (double)npc.lifeMax * 0.4 || Main.hardMode)
-                    {
-                        npc.ai[0] += 2f;
-                    }
-                    if ((double)npc.life < (double)npc.lifeMax * 0.2)
-                    {
-                        npc.ai[0] += 3f;
-                    }
-                    if ((double)npc.life < (double)npc.lifeMax * 0.1)
+
+                    if ((double)npc.life < (double)npc.lifeMax * 0.1 || nightmare)
                     {
                         npc.ai[0] += 4f;
                     }
+                    
                     if (npc.ai[0] >= 0f)
                     {
                         float mathit = Math.Abs((Main.player[npc.target].Center.X + (Main.player[npc.target].velocity.X * 3f)) - npc.Center.X);
@@ -871,12 +973,24 @@ namespace SGAmod.NPCs.Murk
                 }
                 npc.netUpdate = true;
             }
-            if (npc.ai[3]>60*(Main.expertMode ? 10 : 25))
+            if (npc.ai[3] > 20)
             {
-                Player target = Main.player[npc.target];
-                List<Projectile> itz2 = Idglib.Shattershots(npc.Center, target.position, new Vector2(target.width / 2, target.height / 2), ProjectileID.HornetStinger, (int)((float)npc.damage / (Main.hardMode ? 9f : 3f)), 16f, 0, 1, true, 0f, false, 300);
-                Main.PlaySound(SoundID.Item42, npc.Center);
-                npc.active = false;
+                Murk master = Main.npc.FirstOrDefault(testnpc => testnpc.active && testnpc.type == ModContent.NPCType<Murk>())?.modNPC as Murk ?? null;
+                if (master!=null)
+                {
+                    if (master.gastimer > 200)
+                    {
+                        npc.ai[3] -= 1;
+                    }
+                }
+
+                if (npc.ai[3] > 60 * (Main.expertMode ? 10 : 25))
+                {
+                    Player target = Main.player[npc.target];
+                    List<Projectile> itz2 = Idglib.Shattershots(npc.Center, target.position, new Vector2(target.width / 2, target.height / 2), ProjectileID.HornetStinger, (int)((float)npc.damage / (Main.hardMode ? 9f : 3f)), 16f, 0, 1, true, 0f, false, 300);
+                    Main.PlaySound(SoundID.Item42, npc.Center);
+                    npc.active = false;
+                }
             }
             return true;
         }
@@ -903,13 +1017,13 @@ namespace SGAmod.NPCs.Murk
             npc.noGravity = true;
             npc.aiStyle = -1;
             npc.noTileCollide = true;
-            npc.dontTakeDamage=true;
-            npc.immortal=true;
+            npc.dontTakeDamage = true;
+            npc.immortal = true;
         }
 
         public override string Texture
         {
-            get { return("SGAmod/NPCs/Murk/Fly");}
+            get { return ("SGAmod/NPCs/Murk/Fly"); }
         }
 
         public override void SetStaticDefaults()
@@ -920,37 +1034,38 @@ namespace SGAmod.NPCs.Murk
 
         public override bool CheckActive()
         {
-        NPC master=Main.npc[(int)npc.ai[1]];
-        return (!master.active || npc.ai[1]<1);
+            NPC master = Main.npc[(int)npc.ai[1]];
+            return (!master.active || npc.ai[1] < 1);
         }
 
         public override void AI()
         {
 
-        npc.ai[0]+=1;
-        double angle=((double)(npc.ai[0]/13f))+ 2.0* Math.PI;
-        NPC Master = Main.npc[(int)npc.ai[1]];
-        if (!Master.active || npc.ai[1]<1)
-        npc.active=false;
-        npc.Center=Master.Center;
-            
-        if (Master.life < Master.lifeMax * 0.35 && npc.ai[2]==0)
+            npc.ai[0] += 1;
+            double angle = ((double)(npc.ai[0] / 13f)) + 2.0 * Math.PI;
+            NPC Master = Main.npc[(int)npc.ai[1]];
+            if (!Master.active || npc.ai[1] < 1)
+                npc.active = false;
+            npc.Center = Master.Center;
+
+            if (Master.life < Master.lifeMax * 0.35 && npc.ai[2] == 0)
             {
                 if (Main.netMode != 1)
                 {
                     Idglib.Chat("Murk calls for backup with a killer fly swarm!", 103, 128, 79);
+                    Main.PlaySound(SoundID.Roar, npc.Center);
                     int x = (int)(Master.position.X + (float)Main.rand.Next(Master.width - 32));
                     int y = (int)(Master.position.Y + (float)Main.rand.Next(Master.height - 32));
                     int num663 = mod.NPCType("BossFlyMiniboss1");
 
                     int num664 = NPC.NewNPC(x, y, num663, 0, 0f, 0f, 0f, 0f, 255);
                     Main.npc[num664].ai[1] = Master.whoAmI;
-                    Main.npc[num664].life = (int)((double)(Master.lifeMax* (Main.hardMode ? 1.5 : 0.5)));
+                    Main.npc[num664].life = (int)((double)(Master.lifeMax * (Main.hardMode ? 1.5 : 0.5)));
                     Main.npc[num664].lifeMax = Main.npc[num664].life;
                     Main.npc[num664].damage = Main.hardMode ? (Main.expertMode ? 80 : 50) : 25;
                     Main.npc[num664].netUpdate = true;
                     if (!Main.hardMode)
-                    Main.npc[num664].dontTakeDamage = true;
+                        Main.npc[num664].dontTakeDamage = true;
                     if (Main.netMode == 2 && num664 < 200)
                     {
                         NetMessage.SendData(23, -1, -1, null, num664, 0f, 0f, 0f, 0, 0, 0);
@@ -992,19 +1107,22 @@ namespace SGAmod.NPCs.Murk
 
 
 
-            if (Main.netMode != 1 && npc.ai[0]%300==0 && NPC.CountNPCS(ModContent.NPCType<BossFly2>()) <(Main.expertMode ? 2 : 1) && Master.localAI[0]<0)
+            if (Main.netMode != 1 && npc.ai[0] % 300 == 0 && NPC.CountNPCS(ModContent.NPCType<BossFly2>()) < (Main.expertMode ? 2 : 1) && Master.localAI[0] < 0)
             {
-            int x = (int)(Master.position.X + (float)Main.rand.Next(Master.width - 32));
-            int y = (int)(Master.position.Y + (float)Main.rand.Next(Master.height - 32));
-            int num663 = ModContent.NPCType<BossFly2>();
+                if ((Master.modNPC as Murk).gastimer<1)
+                {
+                    int x = (int)(Master.position.X + (float)Main.rand.Next(Master.width - 32));
+                    int y = (int)(Master.position.Y + (float)Main.rand.Next(Master.height - 32));
+                    int num663 = ModContent.NPCType<BossFly2>();
 
-            int num664 = NPC.NewNPC(x, y, num663, 0, 0f, 0f, 0f, 0f, 255);
-            Main.npc[num664].ai[1]=Master.whoAmI;
-                Main.npc[num664].netUpdate = true;
-                if (Main.netMode == 2 && num664 < 200)
-                            {
-                                NetMessage.SendData(23, -1, -1, null, num664, 0f, 0f, 0f, 0, 0, 0);
-                            }
+                    int num664 = NPC.NewNPC(x, y, num663, 0, 0f, 0f, 0f, 0f, 255);
+                    Main.npc[num664].ai[1] = Master.whoAmI;
+                    Main.npc[num664].netUpdate = true;
+                    if (Main.netMode == 2 && num664 < 200)
+                    {
+                        NetMessage.SendData(23, -1, -1, null, num664, 0f, 0f, 0f, 0, 0, 0);
+                    }
+                }
             }
 
 
@@ -1128,7 +1246,7 @@ namespace SGAmod.NPCs.Murk
 
         public override string Texture
         {
-            get { return("SGAmod/NPCs/Murk/Fly");}
+            get { return ("SGAmod/NPCs/Murk/Fly"); }
         }
 
         public override void SetStaticDefaults()
@@ -1139,61 +1257,73 @@ namespace SGAmod.NPCs.Murk
 
         public override void FindFrame(int frameHeight)
         {
-        npc.frame.Y=((int)(npc.ai[0]/3));
-        npc.frame.Y%=4;
-        npc.frame.Y*=frameHeight;
+            npc.frame.Y = ((int)(npc.ai[0] / 3));
+            npc.frame.Y %= 4;
+            npc.frame.Y *= frameHeight;
         }
 
         private void ResetBomb()
         {
-        npc.ai[0]=Main.rand.Next(50,200);
-        npc.ai[3] = Projectile.NewProjectile(npc.Center.X+Main.rand.Next(-8,8), npc.Center.Y-40f, 0f,0f, ProjectileID.DD2OgreSpit, 15, 0f,0);
-        Main.projectile[(int)npc.ai[3]].damage=15;
-        npc.velocity.Y/=3f;
-        npc.netUpdate=true;
+            npc.ai[0] = Main.rand.Next(50, 200);
+            npc.ai[3] = Projectile.NewProjectile(npc.Center.X + Main.rand.Next(-8, 8), npc.Center.Y - 40f, 0f, 0f, ProjectileID.DD2OgreSpit, 15, 0f, 0);
+            Main.projectile[(int)npc.ai[3]].damage = 15;
+            npc.velocity.Y /= 3f;
+            npc.netUpdate = true;
         }
 
         public override void AI()
         {
 
-        npc.ai[0]+=1;
-        NPC Master = Main.npc[(int)npc.ai[1]];
-        if (!Master.active || npc.ai[1]+1<1)
-        npc.active=false;
+            npc.ai[0] += 1;
+            NPC Master = Main.npc[(int)npc.ai[1]];
+            if (!Master.active || npc.ai[1] + 1 < 1)
+            {
+                npc.active = false;
+                return;
+            }
 
-        npc.TargetClosest(true);
-
-        Vector2 masterloc=(new Vector2(Master.position.X+(Master.width/2),Master.position.Y+(Master.height/2)));
-        Vector2 distomaster=masterloc-npc.Center;
-
-        if (npc.ai[3]<1 && (npc.ai[0]==2 || (distomaster.Length()<64f && npc.ai[0]>500))){ResetBomb();}
-        Projectile carryproj=Main.projectile[(int)npc.ai[3]];
-        Player target=Main.player[npc.target];
-
-        if (carryproj!=null && npc.ai[3]>0){
-        if (carryproj.type==ProjectileID.DD2OgreSpit && carryproj.active){
-        carryproj.timeLeft=200;
-        carryproj.position=new Vector2(npc.position.X,npc.position.Y+(npc.height));
-        carryproj.velocity.X=npc.velocity.X/2f;
-        carryproj.velocity.Y=npc.velocity.Y/1.5f;
-        masterloc=(Main.player[npc.target].position)+new Vector2(target.width/2,-260);
-        npc.velocity.Y-=0.05f;
-        if (Math.Abs(masterloc.X-npc.Center.X)<64 && distomaster.Y>100){
-        npc.ai[3]=0;
-        npc.netUpdate=true;
-        }
-        }else{npc.ai[3]=0; npc.netUpdate=true;}
-        }else{npc.ai[3]=0; npc.netUpdate=true;}
-
-
-        Vector2 masterdist=(masterloc-npc.Center);
-        Vector2 masternormal=masterdist; masternormal.Normalize();
-
-        npc.velocity+=masternormal*(Main.hardMode ? 0.45f : 0.25f);
-            npc.velocity /= 1.01f;
+            npc.TargetClosest(true);
             float maxSpeed = Main.hardMode ? 15f : 8f;
-        npc.direction=(npc.velocity.X>0f).ToDirectionInt();
-        if (npc.velocity.Length()> maxSpeed) {npc.velocity.Normalize(); npc.velocity*= maxSpeed; }
+
+            Vector2 masterloc = (new Vector2(Master.position.X + (Master.width / 2), Master.position.Y + (Master.height / 2)));
+            Vector2 distomaster = masterloc - npc.Center;
+
+            if (npc.ai[3] < 1 && (npc.ai[0] == 2 || (distomaster.Length() < 64f && npc.ai[0] > 500))) { ResetBomb(); }
+            Projectile carryproj = Main.projectile[(int)npc.ai[3]];
+            Player target = Main.player[npc.target];
+
+            if (carryproj != null && npc.ai[3] > 0)
+            {
+                if (carryproj.type == ProjectileID.DD2OgreSpit && carryproj.active)
+                {
+                    carryproj.timeLeft = 200;
+                    carryproj.position = new Vector2(npc.position.X, npc.position.Y + (npc.height));
+                    carryproj.velocity.X = npc.velocity.X / 2f;
+                    carryproj.velocity.Y = npc.velocity.Y / 1.5f;
+                    masterloc = (Main.player[npc.target].position) + new Vector2(target.width / 2, -260);
+                    npc.velocity.Y -= 0.05f;
+                    if (Math.Abs(masterloc.X - npc.Center.X) < 64 && distomaster.Y > 100)
+                    {
+                        npc.ai[3] = 0;
+                        npc.netUpdate = true;
+                    }
+                }
+                else { npc.ai[3] = 0; npc.netUpdate = true; }
+            }
+            else { npc.ai[3] = 0; npc.netUpdate = true; }
+            if (Master.modNPC is Murk murky)
+            {
+                if (murky.gastimer > 5)
+                    masterloc = (new Vector2(Master.position.X + (Master.width / 2), Master.position.Y + (Master.height / 2)))+Vector2.One.RotatedBy((npc.whoAmI*3974.3797f) + (npc.ai[0]/50f)*(maxSpeed/8f))*240f;
+            }
+
+            Vector2 masterdist = (masterloc - npc.Center);
+            Vector2 masternormal = masterdist; masternormal.Normalize();
+
+            npc.velocity += masternormal * (Main.hardMode ? 0.45f : 0.25f);
+            npc.velocity /= 1.01f;
+            npc.direction = (npc.velocity.X > 0f).ToDirectionInt();
+            if (npc.velocity.Length() > maxSpeed) { npc.velocity.Normalize(); npc.velocity *= maxSpeed; }
 
         }
 

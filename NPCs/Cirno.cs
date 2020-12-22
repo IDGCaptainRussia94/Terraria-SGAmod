@@ -985,7 +985,7 @@ return false;
 		{
 			npc.width = 40;
 			npc.height = 40;
-			npc.damage = 40;
+			npc.damage = 0;
 			npc.defense = 4;
 			npc.lifeMax = 1800;
 			npc.HitSound = SoundID.NPCHit1;
@@ -1067,7 +1067,7 @@ return false;
 		{
 			npc.width = 40;
 			npc.height = 40;
-			npc.damage = 40;
+			npc.damage = 0;
 			npc.defense = 20;
 			npc.lifeMax = 1000;
 			npc.HitSound = SoundID.NPCHit1;
@@ -1120,7 +1120,7 @@ return false;
 			return true;
 		}
 
-		public override void AI()
+		public virtual void Moving()
 		{
 			if (Main.rand.Next(0, 2) == 1)
 			{
@@ -1130,6 +1130,11 @@ return false;
 				Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.NextFloat(0.1f, 0.25f));
 			}
 			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
+		}
+
+		public override void AI()
+		{
+			Moving();
 		}
 
 		public override void OnHitPlayer(Player target, int damage, bool crit)
@@ -1163,7 +1168,9 @@ return false;
 		public Vector2 bezspot2 = default;
 		public Vector2 CirnoStart = default;
 		public Vector2[] oldPos = new Vector2[10];
-		private Vector2 VectorEffect = default;
+		public float speedIncrease = 60f;
+		public float homeInTime = 100;
+		protected Vector2 VectorEffect = default;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Stay Frosty!");
@@ -1171,7 +1178,7 @@ return false;
 
 		public override bool CanDamage()
 		{
-			return projectile.localAI[1]>=100;
+			return projectile.localAI[1] >= 100;
 		}
 
 		public override void SetDefaults()
@@ -1183,16 +1190,16 @@ return false;
 		public override void AI()
 		{
 			projectile.localAI[1] += 1;
-			if (projectile.localAI[1] >= 120)
+			if (projectile.localAI[1] >= homeInTime+10)
 			{
 				base.AI();
             }
             else
             {
-				projectile.rotation = MathHelper.Lerp((projectile.Center-VectorEffect).ToRotation()+MathHelper.PiOver2,projectile.velocity.ToRotation()+MathHelper.PiOver2, projectile.localAI[1]/100f);
+				projectile.rotation = MathHelper.Lerp((projectile.Center-VectorEffect).ToRotation()+MathHelper.PiOver2,projectile.velocity.ToRotation()+MathHelper.PiOver2, projectile.localAI[1]/ homeInTime);
 			}
 			projectile.Opacity = ((projectile.localAI[1]-30)/70f);
-			projectile.position -= projectile.velocity * MathHelper.Clamp(1f-((projectile.localAI[1] - 100) / 60f),0f, 1f);
+			projectile.position -= projectile.velocity * MathHelper.Clamp(1f-((projectile.localAI[1] - homeInTime) / 60f),0f, 1f);
 
 
 			if (projectile.localAI[1] == 1)
@@ -1205,7 +1212,7 @@ return false;
 				}
 			}
 
-			VectorEffect = IdgExtensions.BezierCurve(CirnoStart, CirnoStart, bezspot1, bezspot2, projectile.Center, Math.Min(projectile.localAI[1] / 100f, 1f));
+			VectorEffect = IdgExtensions.BezierCurve(CirnoStart, CirnoStart, bezspot1, bezspot2, projectile.Center, Math.Min(projectile.localAI[1] / homeInTime, 1f));
 			for (int k = oldPos.Length - 1; k > 0; k--)
 			{
 				oldPos[k] = oldPos[k - 1];
@@ -1215,6 +1222,11 @@ return false;
 		}
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
+			for (int k = oldPos.Length - 1; k > 0; k--)
+			{
+				if (oldPos[k] == default)
+				oldPos[k] = VectorEffect;
+			}
 
 			if (strength > 0)
 			{
@@ -1239,7 +1251,7 @@ return false;
 				Texture2D tex = SGAmod.HellionTextures[5];
 				Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 5) / 2f;
 				Vector2 drawPos = ((VectorEffect - Main.screenPosition)) + new Vector2(0f, 4f);
-				int timing = (int)(projectile.localAI[0] - 100);
+				int timing = (int)(projectile.localAI[0] - homeInTime);
 				timing %= 5;
 				timing *= ((tex.Height) / 5);
 				spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 5), lightColor * projectile.Opacity, MathHelper.ToRadians(0) + projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);

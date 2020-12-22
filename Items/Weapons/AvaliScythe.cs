@@ -48,6 +48,34 @@ namespace SGAmod.Items.Weapons
 			item.channel = true;
 		}
 
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+			if (GetType() == typeof(AvaliScythe))
+			if (!Main.gameMenu)
+			{
+				Texture2D texGlow = ModContent.GetTexture("SGAmod/Items/GlowMasks/AvaliScythe_Glow");
+				Texture2D tex = Main.itemTexture[item.type];
+				Vector2 textureOrigin = new Vector2(texGlow.Width / 2, texGlow.Height / 2);
+				spriteBatch.Draw(tex, item.position+new Vector2(16,-12) - Main.screenPosition, null, lightColor, rotation, textureOrigin, scale, SpriteEffects.None, 0f);
+				spriteBatch.Draw(texGlow, item.position + new Vector2(16, -12) - Main.screenPosition, null, Color.White, rotation, textureOrigin, scale, SpriteEffects.None, 0f);
+					return false;
+                }
+			return true;
+		}
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			/*if (!Main.gameMenu)
+			{
+				Texture2D texGlow = ModContent.GetTexture("SGAmod/Items/GlowMasks/AvaliScythe_Glow");
+				Vector2 slotSize = new Vector2(52f, 52f);
+				position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+				Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+				Vector2 textureOrigin = new Vector2(texGlow.Width / 2, texGlow.Height / 2);
+				spriteBatch.Draw(texGlow, drawPos, null, drawColor, 0f, textureOrigin, Main.inventoryScale* scale, SpriteEffects.None, 0f);
+			}*/
+			return true;
+		}
+
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
@@ -104,6 +132,7 @@ namespace SGAmod.Items.Weapons
 		{
 
 			Texture2D tex = ModContent.GetTexture("SGAmod/Items/Weapons/AvaliScythe");
+			Texture2D texGlow = ModContent.GetTexture("SGAmod/Items/GlowMasks/AvaliScythe_Glow");
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
 
 			//oldPos.Length - 1
@@ -113,6 +142,7 @@ namespace SGAmod.Items.Weapons
 				//Color color = Color.Lerp(Color.Lime, lightColor, (float)k / (oldPos.Length + 1));
 				float alphaz = (1f - (float)(k + 1) / (float)(oldRot.Length + 2)) * 1f;
 				spriteBatch.Draw(tex, drawPos, null, lightColor * alphaz, oldRot[k], drawOrigin, projectile.scale, projectile.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+				spriteBatch.Draw(texGlow, drawPos, null, Color.White * alphaz, oldRot[k], drawOrigin, projectile.scale, projectile.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 			}
 			return false;
 		}

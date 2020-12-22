@@ -376,6 +376,12 @@ namespace SGAmod
 
 				(shield.modProjectile as Items.Weapons.Shields.CorrodedShieldProj).JustBlock(blocktime, where, ref damage, damageSourceIndex);
 
+				if (enchantedShieldPolish)
+                {
+					player.statMana = Math.Min(player.statMana + damage, player.statManaMax2);
+					player.ManaEffect(damage);
+				}
+
 				if (diesIraeStone && damageSourceIndex > 0)
                 {
 					float empty = 5f;
@@ -423,6 +429,8 @@ namespace SGAmod
 				if (foundhim > -1)
 				{
 					CorrodedShieldProj modShieldProj = proj.modProjectile as CorrodedShieldProj;
+					if (modShieldProj == null)
+						return false;
 					int blocktime = modShieldProj.blocktimer;
 					bool blocking = modShieldProj.Blocking;
 					if (proj == null || blocktime < 2 || !blocking)

@@ -14,7 +14,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Joyrider");
-			Tooltip.SetDefault("'Minigun powered flight!'\nRapidly Fire bullets below you as you fly!\nRequires Ammo to fly, uses the last ammo type you fired, and always shoots basic bullets\nDamage and Flight Time are improved by Ammo Damage");
+			Tooltip.SetDefault("'Minigun powered flight!'\nRapidly Fire bullets below you as you fly!\nRequires Ammo to fly, uses the last ammo type you fired\nDamage and Flight Time are improved by Ammo Damage");
 		}
 
 		public override void SetDefaults()
@@ -28,7 +28,7 @@ namespace SGAmod.Items.Accessories
 			item.wingSlot = wingslo;
 		}
 
-		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		/*public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
 			if (!Main.gameMenu)
 			{
@@ -50,7 +50,7 @@ namespace SGAmod.Items.Accessories
 				spriteBatch.Draw(texture, drawPos, null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
 			}
 			return false;
-		}
+		}*/
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
@@ -75,7 +75,7 @@ namespace SGAmod.Items.Accessories
 
 						player.ConsumeItem(ammo2.type);
 						sgaplayer.JoyrideShake = 6;
-						int thisoned = Projectile.NewProjectile(player.Center.X + player.direction * -12, player.Center.Y, velo.X, velo.Y, ammo2.shoot, (int)((float)(ammo2.damage * 1.5f) * player.rangedDamage * player.bulletDamage), ammo2.knockBack, Main.myPlayer);
+						int thisoned = Projectile.NewProjectile(player.Center.X + player.direction * -12, player.Center.Y, velo.X, velo.Y, ammo2.shoot, (int)((float)(ammo2.damage * 1.5) * player.rangedDamage * player.bulletDamage), ammo2.knockBack, Main.myPlayer);
 					}
 				}
 

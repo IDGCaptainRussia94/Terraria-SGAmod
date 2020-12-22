@@ -29,11 +29,11 @@ namespace SGAmod.Tiles
 
 		public override bool CanExplode(int i, int j)
 		{
-			return SGAWorld.downedMurk > 1;
+			return SGAWorld.downedMurk > 1 || SGAWorld.downedCaliburnGuardians > 2;
 		}
         public override bool CanKillTile(int i, int j, ref bool blockDamaged)
         {
-			return SGAWorld.downedMurk > 1;
+			return SGAWorld.downedMurk > 1 || SGAWorld.downedCaliburnGuardians > 2;
 		}
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)

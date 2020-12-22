@@ -107,7 +107,7 @@ namespace SGAmod
 		public bool CirnoWings = false;
 		public bool SerratedTooth = false;
 		public bool grippinggloves = false;
-		public bool mudbuff = false;
+		public bool mudbuff = false; public bool alkalescentHeart = false;
 		public int Havoc = 0;
 		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false;
 		public float SpaceDiverWings = 0f;
@@ -118,7 +118,7 @@ namespace SGAmod
 		public bool MatrixBuffp = false; public bool BoosterMagnet = false; public bool HoE = false; public bool CalamityRune = false;
 		public int EnhancingCharm = 0;
 		public bool noactionstackringofrespite = false;
-		public bool diesIraeStone = false; public bool magusSlippers = false; public bool airTank = false; public bool murkyCharm = false;
+		public bool enchantedShieldPolish = false; public bool diesIraeStone = false; public bool magusSlippers = false; public bool airTank = false; public bool murkyCharm = false;
 		public int tf2emblemLevel = 0;
 		public int ninjaSash = 0;
 		public int shinobj = 0;
@@ -155,6 +155,9 @@ namespace SGAmod
 		public int MaxCooldownStacks = 1;
 		public float RevolverSpeed = 1f;
 		public float damagetaken = 1f;
+		public int consumeCurse = 0;
+		public float shieldDamageReduce = 0f;
+		public float shieldDamageBoost = 0f;
 		public float actionCooldownRate = 1f;
 		public bool Noselfdamage = false;
 		public float UseTimeMulPickaxe = 1f;
@@ -259,6 +262,9 @@ namespace SGAmod
 			if (heldShieldReset<1)
 			heldShield = -1;
 
+			shieldDamageReduce = 0f;
+			shieldDamageBoost = 0f;
+			enchantedShieldPolish = false;
 			diesIraeStone = false;
 			starCollector = false;
 			magusSlippers = false;
@@ -268,6 +274,7 @@ namespace SGAmod
 			RevolverSpeed = 1f;
 			intimacy = 0;
 			toxicity = 0;
+			consumeCurse = 0;
 			ReloadingRevolver = Math.Max(ReloadingRevolver - 1, 0);
 			twinesoffate = false;
 			glacialStone = false;
@@ -315,6 +322,7 @@ namespace SGAmod
 			SpaceDiverWings = 0f;
 			ActionCooldown = false;
 			lunarSlimeHeart = false;
+			alkalescentHeart = false;
 			TrapDamageMul = 1f; TrapDamageAP = 0f;
 			Thrownsavingchance = 0f;
 			LifeFlower = false; GeyserInABottleActive = false; JavelinBaseBundle = false; JavelinSpearHeadBundle = false; restorationFlower = false;
@@ -413,7 +421,6 @@ namespace SGAmod
 			drowningIncrementer.Y = Math.Max(0, (drowningIncrementer.X - 300) / 60);
 		}
 
-
 		public override void UpdateBiomes()
 		{
 			ShadowSectorZone = (byte)Math.Max(ShadowSectorZone-1,0);
@@ -429,8 +436,6 @@ namespace SGAmod
 					player.AddBuff(BuffID.Blackout, 120);
 					break;
 				}
-
-
 			}
 
 			DankShrineZone = (SGAWorld.MoistStonecount > 15 && Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall == mod.WallType("SwampWall"));
@@ -1466,6 +1471,12 @@ namespace SGAmod
 
 		private int OnHit(ref int damage, ref bool crit, NPC npc, Projectile projectile)
 		{
+			if (SGAmod.overpoweredMod > 0)
+            {
+				crit = true;
+				damage = damage + (int)(damage * SGAmod.overpoweredMod);
+
+            }
 			if (Hellion.GetHellion() != null)
 			{
 				Hellion hell = Hellion.GetHellion();
@@ -1996,12 +2007,12 @@ namespace SGAmod
 					caughtType = mod.ItemType("DankCrate");
 
 			}
-			if (player.ZoneSkyHeight)
+			/*if (player.ZoneSkyHeight)
 			{
 				int chance = 2 + (int)Math.Min(20, power/5);
 				if (Main.rand.Next(0, 100) < chance)
 					caughtType = mod.ItemType("StarCollector");
-			}
+			}*/
 			
 		}
 	}

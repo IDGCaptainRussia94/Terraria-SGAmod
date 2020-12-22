@@ -125,9 +125,9 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(null, "WraithCoreFragment", 1);
 			recipe.AddRecipeGroup("SGAmod:Tier1HardmodeOre", 10);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 5);
-			recipe.AddIngredient(null, "WraithCoreFragment", 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -189,8 +189,8 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddRecipeGroup("SGAmod:Tier1Ore", 10);
-			recipe.AddIngredient(ItemID.FallenStar, 1);
+			recipe.AddRecipeGroup("SGAmod:Tier1Ore", 15);
+			recipe.AddIngredient(ItemID.FallenStar, 2);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

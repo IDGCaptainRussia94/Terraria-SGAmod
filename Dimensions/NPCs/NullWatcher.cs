@@ -266,7 +266,7 @@ namespace SGAmod.Dimensions.NPCs
             return false;
         }
 
-        public void PostEffectsDraw(SpriteBatch spriteBatch)
+        public void PostEffectsDraw(SpriteBatch spriteBatch,float drawScale = 2)
         {
             float alpha = visableEffect;
             if (alpha <= 0)
@@ -279,10 +279,10 @@ namespace SGAmod.Dimensions.NPCs
             Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 7) / 2f;
 
 
-            Vector2 drawPos = (npc.Center - Main.screenPosition)/2f;
+            Vector2 drawPos = (npc.Center - Main.screenPosition)/ drawScale;
 
 
-            float scale = 1f;
+            float scale = (2f / drawScale);
 
 
             spriteBatch.Draw(tex, drawPos, rect, Color.White * alpha, 0, drawOrigin, npc.scale * scale, SpriteEffects.None, 0f);
@@ -390,7 +390,7 @@ namespace SGAmod.Dimensions.NPCs
             return false;
         }
 
-        public void PostEffectsDraw(SpriteBatch spriteBatch)
+        public void PostEffectsDraw(SpriteBatch spriteBatch,float drawScale = 2f)
         {
 
             float alpha = 1f;
@@ -410,13 +410,13 @@ namespace SGAmod.Dimensions.NPCs
 
             for (int k = 0; k < projectile.oldPos.Length; k++)
             {
-                Vector2 drawPos = (projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, projectile.gfxOffY))/2f;
+                Vector2 drawPos = (projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, projectile.gfxOffY))/ drawScale;
                 float coloralpha = ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
 
-                float scale = 1f + (projectile.ai[0] < 0 ? -projectile.ai[0] / 2f : 0);
+                float scale = (1f + (projectile.ai[0] < 0 ? -projectile.ai[0] / drawScale : 0)) * (2f / drawScale);
 
                 spriteBatch.Draw(tex, drawPos, rect, Color.GreenYellow * coloralpha * 0.75f * alpha, projectile.rotation, drawOrigin, projectile.scale * 1f * scale, SpriteEffects.None, 0f);
-                spriteBatch.Draw(tex, drawPos + (P == null ? Vector2.Zero : (Vector2.Normalize(P.Center - projectile.Center) * 4)), recteye, Color.White * coloralpha * alpha, projectile.rotation, drawOrigin, projectile.scale * 1f * scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, drawPos + (P == null ? Vector2.Zero : (Vector2.Normalize(P.Center - projectile.Center) * 4)), recteye, Color.White * coloralpha * alpha, projectile.rotation, drawOrigin, projectile.scale * scale, SpriteEffects.None, 0f);
             }
         }
 

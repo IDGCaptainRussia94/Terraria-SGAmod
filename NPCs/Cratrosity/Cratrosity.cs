@@ -8,6 +8,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
+using SGAmod.Items.Weapons;
 
 namespace SGAmod.NPCs.Cratrosity
 {
@@ -191,15 +192,15 @@ namespace SGAmod.NPCs.Cratrosity
 							npc.velocity = new Vector2(-theammount * ((GetType() == typeof(Cratrogeddon)) ? 15 : 10), 0);
 							if (npc.ai[0] % 15 == 0)
 							{
-								List<Projectile> itz = Idglib.Shattershots(npc.Center, P.Center + new Vector2(0, P.Center.Y > npc.Center.Y ? 600 : -600), new Vector2(0, 0), ProjectileID.CopperCoin, (int)(npc.damage * (20.00 / defaultdamage)), 10, 0, 1, true, 0, true, 100);
+								List<Projectile> itz = Idglib.Shattershots(npc.Center, P.Center + new Vector2(0, P.Center.Y > npc.Center.Y ? 600 : -600), new Vector2(0, 0), ModContent.ProjectileType<GlowingCopperCoin>(), (int)(npc.damage * (20.00 / defaultdamage)), 10, 0, 1, true, 0, true, 100);
 							}
 							if (npc.ai[0] % 40 == 0)
 							{
-								List<Projectile> itz = Idglib.Shattershots(theclostestcrate, P.Center, new Vector2(0, 0), ProjectileID.GoldCoin, (int)(npc.damage * (30.00 / defaultdamage)), 10, 0, 1, true, 0, true, 200);
+								List<Projectile> itz = Idglib.Shattershots(theclostestcrate, P.Center, new Vector2(0, 0), ModContent.ProjectileType<GlowingGoldCoin>(), (int)(npc.damage * (30.00 / defaultdamage)), 10, 0, 1, true, 0, true, 200);
 							}
 							if (((npc.ai[0] + 20) % 40 == 0) && Main.expertMode)
 							{
-								List<Projectile> itz = Idglib.Shattershots(theclostestcrate, P.Center + new Vector2(0, P.Center.Y > theclostestcrate.Y ? 600 : -600), new Vector2(0, 0), ProjectileID.SilverCoin, (int)(npc.damage * (25.00 / defaultdamage)), 10, 0, 1, true, 0, true, 200);
+								List<Projectile> itz = Idglib.Shattershots(theclostestcrate, P.Center + new Vector2(0, P.Center.Y > theclostestcrate.Y ? 600 : -600), new Vector2(0, 0), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (25.00 / defaultdamage)), 10, 0, 1, true, 0, true, 200);
 								SGAprojectile modeproj = itz[0].GetGlobalProjectile<SGAprojectile>();
 								modeproj.splittingcoins = true;
 								modeproj.splithere = P.Center;
@@ -208,7 +209,7 @@ namespace SGAmod.NPCs.Cratrosity
 							{
 								if (npc.ai[0] % 8 == 0)
 								{
-									Idglib.Shattershots(npc.Center, npc.Center + new Vector2(-npc.velocity.X, 0), new Vector2(0, 0), ProjectileID.SilverCoin, (int)(npc.damage * (25.00 / defaultdamage)), 25, 0, 1, true, 0, false, 40);
+									Idglib.Shattershots(npc.Center, npc.Center + new Vector2(-npc.velocity.X, 0), new Vector2(0, 0), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (25.00 / defaultdamage)), 25, 0, 1, true, 0, false, 40);
 								}
 							}
 							themode = 300;
@@ -264,7 +265,7 @@ namespace SGAmod.NPCs.Cratrosity
 								{
 									if (npc.ai[0] % 30 == 0)
 									{
-										Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ProjectileID.CopperCoin, (int)(npc.damage * (20.00 / defaultdamage)), 10, 0, 1, true, 0, true, 150);
+										Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ModContent.ProjectileType<GlowingCopperCoin>(), (int)(npc.damage * (20.00 / defaultdamage)), 10, 0, 1, true, 0, true, 150);
 									}
 									break;
 								}
@@ -272,7 +273,7 @@ namespace SGAmod.NPCs.Cratrosity
 								{
 									if (npc.ai[0] % 10 == 0)
 									{
-										Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ProjectileID.SilverCoin, (int)(npc.damage * (25.00 / defaultdamage)), 14, 0, 1, true, 0, true, 100);
+										Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (25.00 / defaultdamage)), 14, 0, 1, true, 0, true, 100);
 									}
 									break;
 								}
@@ -280,22 +281,21 @@ namespace SGAmod.NPCs.Cratrosity
 								{
 									if (npc.ai[0] % 3 == 0 && npc.ai[0] % 50 > 38)
 									{
-										Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ProjectileID.GoldCoin, (int)(npc.damage * (30 / defaultdamage)), 16, 0, 1, true, 0, true, 90);
+										Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ModContent.ProjectileType<GlowingGoldCoin>(), (int)(npc.damage * (30 / defaultdamage)), 16, 0, 1, true, 0, true, 90);
 									}
 									if (npc.ai[0] % 8 == 0 && Main.expertMode)
 									{
-										List<Projectile> itz = Idglib.Shattershots(npc.Center, npc.Center + new Vector2(0, -5), new Vector2(0, 0), ProjectileID.SilverCoin, (int)(npc.damage * (25 / defaultdamage)), 7, 360, 2, true, npc.ai[0] / 20, true, 300);
+										List<Projectile> itz = Idglib.Shattershots(npc.Center, npc.Center + new Vector2(0, -5), new Vector2(0, 0), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (25 / defaultdamage)), 7, 360, 2, true, npc.ai[0] / 20, true, 300);
 									}
 									break;
 								}
 							case 2:
 								{
 
-									if (npc.ai[0] % 50 == 0)
+									if (npc.ai[0] % 5 == 0)
 									{
-										Idglib.Shattershots(npc.Center, P.position + new Vector2(P.velocity.X, P.velocity.Y), new Vector2(P.width, P.height), ProjectileID.GoldCoin, (int)(npc.damage * (30.00 / defaultdamage)), (int)(npc.damage * (20.00 / defaultdamage)), 0, 1, true, 0, true, 100);
-										Idglib.Shattershots(npc.Center, P.position + new Vector2(P.velocity.X * 3, P.velocity.Y * 3), new Vector2(P.width, P.height), ProjectileID.SilverCoin, (int)(npc.damage * (20.00 / defaultdamage)), (int)(npc.damage * (20.00 / defaultdamage)), 0, 1, true, 0, true, 100);
-										Idglib.Shattershots(npc.Center, P.position + new Vector2(P.velocity.X * 6, P.velocity.Y * 6), new Vector2(P.width, P.height), ProjectileID.CopperCoin, (int)(npc.damage * (10.00 / defaultdamage)), (int)(npc.damage * (20.00 / defaultdamage)), 0, 1, true, 0, true, 100);
+
+										Idglib.Shattershots(npc.Center, npc.Center + new Vector2((P.velocity.X*4f)+Main.rand.NextFloat(-24f,24f), -96f), Vector2.Zero, ModContent.ProjectileType<GlowingGoldCoinHoming>(), (int)(npc.damage * (30.00 / defaultdamage)), Main.rand.NextFloat(6f,10f), 0, 1, true, 0, true, 600);
 									}
 								}
 								break;
@@ -370,7 +370,7 @@ namespace SGAmod.NPCs.Cratrosity
 					float sinner2 = (float)(10f + (Math.Sin(sinner / 30f) * 7f));
 					if (compressvar > 1.01)
 					{
-						int[] projtype = { ProjectileID.PlatinumCoin, ProjectileID.PlatinumCoin, ProjectileID.PlatinumCoin, ProjectileID.GoldCoin, ProjectileID.SilverCoin, ProjectileID.CopperCoin };
+						int[] projtype = { ModContent.ProjectileType<GlowingPlatinumCoin>(), ModContent.ProjectileType<GlowingPlatinumCoin>(), ModContent.ProjectileType<GlowingPlatinumCoin>(), ModContent.ProjectileType<GlowingGoldCoin>(), ModContent.ProjectileType<GlowingSilverCoin>(), ModContent.ProjectileType<GlowingCopperCoin>() };
 						int[] projdamage = { 25, 30, 30, 50, 60, 60 };
 						float[] projspeed = { 1f, 1f, 1f, 9f, 8f, 7f };
 						if (a == phase - 1)
@@ -378,7 +378,7 @@ namespace SGAmod.NPCs.Cratrosity
 							if (sinner2 < 4 && (npc.ai[0] + (i * 4)) % 30 == 0)
 							{
 								List<Projectile> itz = Idglib.Shattershots(Cratesvector[a, i], P.position, new Vector2(P.width, P.height), projtype[a + 1], (int)((double)npc.damage * ((double)projdamage[a + 1] / (double)defaultdamage)), projspeed[a + 1], 0, 1, true, 0, false, 110);
-								if (projtype[a + 1] == ProjectileID.PlatinumCoin) { itz[0].aiStyle = 18; IdgProjectile.AddOnHitBuff(itz[0].whoAmI, BuffID.ShadowFlame, 60 * 10); }
+								if (projtype[a + 1] == ModContent.ProjectileType<GlowingPlatinumCoin>()) { itz[0].aiStyle = 18; IdgProjectile.AddOnHitBuff(itz[0].whoAmI, BuffID.ShadowFlame, 60 * 10); }
 							}
 						}
 
@@ -539,5 +539,137 @@ namespace SGAmod.NPCs.Cratrosity
 		}
 
 
+	}
+	public class GlowingCopperCoin : ModProjectile,IDrawAdditive
+	{
+		protected virtual int FakeID2 => ProjectileID.CopperCoin;
+		protected virtual Color GlowColor => new Color(184, 115, 51);
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Copper Coin");
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 0; }
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(FakeID2);
+			projectile.hostile = true;
+			projectile.friendly = false;
+			projectile.aiStyle = -1;
+			projectile.timeLeft = 600;
+		}
+
+        public override bool PreKill(int timeLeft)
+		{
+			projectile.type = FakeID2;
+			return true;
+		}
+
+		public override void AI()
+		{
+			projectile.localAI[0] += 1;
+			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
+		}
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+
+			Texture2D tex = Main.projectileTexture[projectile.type];
+			Vector2 drawPos = projectile.Center - Main.screenPosition;
+			int texHeight = tex.Height / 8;
+			Vector2 offset = new Vector2(tex.Width, texHeight / 8) / 2f;
+			int index = (int)(projectile.localAI[0] / 6f) % 8;
+
+			spriteBatch.Draw(tex, drawPos, new Rectangle(0, texHeight * index, tex.Width, texHeight), Color.Lerp(GlowColor, Color.White, 0.50f)*0.50f, projectile.rotation, offset, projectile.scale+0.25f, SpriteEffects.None, 0f);
+		}
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+			Texture2D tex = Main.projectileTexture[projectile.type];
+			Vector2 drawPos = projectile.Center-Main.screenPosition;
+			int texHeight = tex.Height / 8;
+			Vector2 offset = new Vector2(tex.Width, texHeight / 8) / 2f;
+			int index = (int)(projectile.localAI[0]/6f)%8;
+
+			spriteBatch.Draw(tex, drawPos, new Rectangle(0, texHeight*index, tex.Width, texHeight), Color.Lerp(lightColor,Color.White,0.50f), projectile.rotation, offset, projectile.scale, SpriteEffects.None, 0f);
+			Texture2D tex2 = Main.projectileTexture[ModContent.ProjectileType<SpecterangProj>()];
+			spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, GlowColor * 0.75f, projectile.rotation+MathHelper.Pi, tex2.Size() / 2f, projectile.scale / 1.5f, default, 0);
+			return false;
+        }
+    }
+	public class GlowingSilverCoin : GlowingCopperCoin, IDrawAdditive
+	{
+		protected override int FakeID2 => ProjectileID.SilverCoin;
+		protected override Color GlowColor => Color.Silver;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Silver Coin");
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 1; }
+		}
+	}
+	public class GlowingGoldCoin : GlowingCopperCoin, IDrawAdditive
+	{
+		protected override int FakeID2 => ProjectileID.GoldCoin;
+		protected override Color GlowColor => Color.Gold;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Gold Coin");
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 2; }
+		}
+	}
+	public class GlowingGoldCoinHoming : GlowingGoldCoin, IDrawAdditive
+	{
+		public override void AI()
+        {
+			base.AI();
+			if (projectile.localAI[0] >= 0f)
+				projectile.localAI[0] += 1;
+			if (projectile.ai[1] < 1000)
+            {
+				projectile.ai[0] = Main.rand.Next(60, 200);
+				projectile.ai[1] = 1000+(int)Player.FindClosest(projectile.Center, 0, 0);
+				projectile.netUpdate = true;
+
+			}
+            else
+            {
+				Player player = Main.player[(int)projectile.ai[1]-1000];
+				if (projectile.localAI[0] > projectile.ai[0] && projectile.localAI[0] >= 0)
+                {
+					Vector2 dotter = player.Center - projectile.Center;
+					float speed = projectile.velocity.Length();
+					projectile.velocity = (projectile.velocity.ToRotation().AngleLerp(dotter.ToRotation(), 0.05f)).ToRotationVector2()*speed;
+					if (Vector2.Dot(Vector2.Normalize(dotter), Vector2.Normalize(projectile.velocity)) > 0.650f)
+                    {
+						projectile.localAI[0] = -10000;
+					}
+
+                }
+
+            }
+
+        }
+	}
+	public class GlowingPlatinumCoin : GlowingCopperCoin, IDrawAdditive
+	{
+		protected override int FakeID2 => ProjectileID.PlatinumCoin;
+		protected override Color GlowColor => new Color(229, 228, 226);
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Platinum Coin");
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 3; }
+		}
 	}
 }

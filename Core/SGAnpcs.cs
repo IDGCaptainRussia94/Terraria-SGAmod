@@ -26,6 +26,7 @@ using SGAmod.Items.Tools;
 using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.Graphics;
+using SGAmod.NPCs;
 
 namespace SGAmod
 {
@@ -66,9 +67,11 @@ namespace SGAmod
 		public bool ELS = false;
 		public bool marked = false;
 		public bool petrified = false;
+		public int noMovement = 0;
 		public bool lavaBurn = false;
 		public bool TimeSlowImmune = false;
 		public bool dotImmune = false;
+		public int reducedDefense = 0;
 		bool fireimmunestate = false;
 		bool[] otherimmunesfill = new bool[3];
 		public bool Mircotransactions;
@@ -138,6 +141,7 @@ namespace SGAmod
 			InfinityWarStormbreaker = false;
 			Napalm = false;
 			petrified = false;
+			noMovement = Math.Max(noMovement-1,0);
 			Sodden = false;
 			lavaBurn = false;
 			SunderedDefense = false;
@@ -145,6 +149,7 @@ namespace SGAmod
 			ELS = false;
 			marked = false;
 			drawonce = true;
+			reducedDefense = 0;
 			crimsonCatastrophe = (byte)Math.Max(crimsonCatastrophe - 1, 0);
 			if (Snapped > 0)
 			{
@@ -242,6 +247,20 @@ namespace SGAmod
 			float spawnrate2 = player.GetModPlayer<SGAPlayer>().morespawns;
 			spawnRate = (int)(spawnRate / spawnrate2);
 			maxSpawns += (int)((spawnrate2 - 1) * 10f);
+		}
+
+		public override void SetDefaults(NPC npc)
+		{
+			if (SGAmod.overpoweredMod>0)
+			{
+				if (!npc.friendly)
+				{
+					npc.life += (int)(npc.life * (1f + SGAmod.overpoweredMod));
+					npc.lifeMax += (int)(npc.lifeMax * (1f + SGAmod.overpoweredMod));
+					npc.damage = npc.damage +(int)(1f + SGAmod.overpoweredMod);
+				}
+
+			}
 		}
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
@@ -658,6 +677,11 @@ namespace SGAmod
 				npc.velocity.X *= 0.85f;
 				return false;
 			}
+			if (noMovement>0)
+            {
+				npc.velocity *= 0.85f;
+				return false;
+			}
 
 				if ((npc.type == NPCID.CultistDevote || npc.type == NPCID.CultistArcherBlue || npc.type == NPCID.CultistTablet) && (SGAWorld.downedHarbinger == false && Main.netMode < 1))
 			{
@@ -891,7 +915,15 @@ namespace SGAmod
 						nextSlot++;
 					}
 					break;
+				case NPCID.SkeletonMerchant:
 
+					if (Main.LocalPlayer.inventory.Any(testitem => testitem.modItem != null && testitem.modItem is IShieldItem))
+					{
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<EnchantedShieldPolish>());
+						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 5, 0, 0);
+						nextSlot++;
+					}
+					break;
 			}
 
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
@@ -990,18 +1022,43 @@ namespace SGAmod
 			}
 		}
 
-
 		public override bool PreNPCLoot(NPC npc)
 		{
 
-			if (HellionArmy)
+			//if (onlyOnce)
+			//{
+			if (!npc.boss && npc.lifeMax > 25 && npc.lifeMax < 10000 && !npc.dontTakeDamage && npc.type != ModContent.NPCType<PrismSpirit>() && !npc.SpawnedFromStatue && NPC.AnyNPCs(ModContent.NPCType<PrismBanshee>()))
 			{
-				if (Hellion.GetHellion() != null)
+				List<NPC> banshee = Main.npc.Where(testnpc => testnpc.active && testnpc.type == ModContent.NPCType<PrismBanshee>()).ToList();
+				if (banshee.Count > 0)
 				{
-					if (Hellion.GetHellion().armyspawned > 5)
-						Hellion.GetHellion().armyspawned -= 2;
+					banshee = banshee.OrderBy(ordertest => ordertest.DistanceSQ(npc.Center)).ToList();
+					NPC myguy = banshee[0];
+					if (myguy.DistanceSQ(npc.Center) < 1000 * 1000)
+					{
+						int npcnew = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismSpirit>());
+						Main.npc[npcnew].ai[1] = myguy.whoAmI;
+						Main.npc[npcnew].ai[2] = npc.type;
+						Main.npc[npcnew].netUpdate = true;
+					}
+
+
+
 				}
+
+
 			}
+
+
+				if (HellionArmy)
+				{
+					if (Hellion.GetHellion() != null)
+					{
+						if (Hellion.GetHellion().armyspawned > 5)
+							Hellion.GetHellion().armyspawned -= 2;
+					}
+				}
+			//}
 
 
 			if (npc.type == NPCID.CultistBoss && SGAWorld.downedWraiths < 3)
@@ -1141,9 +1198,14 @@ namespace SGAmod
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
 			}
 
-			if (npc.type == NPCID.GoblinSorcerer && Main.rand.Next(100) <= 10)
+			if (npc.type == NPCID.GoblinSorcerer && Main.rand.Next(100) <= 5)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("ShadeflameStaff"));
+			}
+
+			if (npc.type == NPCID.TacticalSkeleton && Main.rand.Next(100) <= 25)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("RiotShield"));
 			}
 
 			if (npc.value >= Item.buyPrice(gold: 3) && Main.rand.Next(0, 100) < ((npc.type == NPCID.PirateCaptain || npc.type == NPCID.PirateShip || npc.type == ModContent.NPCType<Cratrosity>() || npc.type == ModContent.NPCType<Cratrogeddon>()) ? 3 : 2))
@@ -1180,20 +1242,24 @@ namespace SGAmod
 			if (!NPC.downedMoonlord)
 				return;
 
+			if (SGAWorld.downedPrismBanshee) 
+			{
+
 			if ((npc.type == NPCID.EnchantedSword || npc.type == NPCID.IlluminantBat || npc.type == NPCID.IlluminantSlime || npc.type == NPCID.ChaosElemental) && Main.rand.Next(2) <= 1)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, 3));
 			}
 
-			if (npc.aiStyle != 107 && npc.aiStyle != 108 && npc.aiStyle != 109 && npc.aiStyle != 110 && npc.aiStyle != 111)
-			{
-				if (Main.player[npc.target] != null)
+				if (npc.aiStyle != 107 && npc.aiStyle != 108 && npc.aiStyle != 109 && npc.aiStyle != 110 && npc.aiStyle != 111)
 				{
-					if (Main.player[npc.target].ZoneHoly && npc.position.Y > Main.rockLayer)
+					if (Main.player[npc.target] != null)
 					{
-						if (Main.rand.Next(100) <= 1)
+						if (Main.player[npc.target].ZoneHoly && npc.position.Y > Main.rockLayer)
 						{
-							Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, 3));
+							if (Main.rand.Next(100) <= 1)
+							{
+								Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, 3));
+							}
 						}
 					}
 				}
@@ -1331,7 +1397,7 @@ namespace SGAmod
 						"What do you mean the dragon isn't for sale? I'll offer you top dollar for it!"};
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
-					break;
+					break;			
 				case NPCID.TaxCollector:
 					if (Main.rand.Next(0, 3) == 0 && NPC.CountNPCS(mod.NPCType("Dergon")) > 0)
 					{

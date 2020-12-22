@@ -19,6 +19,7 @@ using SGAmod.Tiles;
 using SGAmod.NPCs.Hellion;
 using Idglibrary;
 using SGAmod.NPCs.Sharkvern;
+using SGAmod.NPCs;
 
 namespace SGAmod
 {
@@ -36,6 +37,7 @@ namespace SGAmod
         public static bool downedCratrosityPML = false;
         public static bool downedSharkvern = false;
         public static bool downedCirno = false;
+        public static bool downedPrismBanshee = false;
         public static int downedMurk = 0;
         public static int downedHellion = 0;
         public static int downedCaliburnGuardians = 0;
@@ -325,6 +327,7 @@ namespace SGAmod
             tag["bossprgressor"] = bossprgressor;
             tag["portalcanmovein"] = portalcanmovein;
             tag["GennedVirulent"] = GennedVirulent;
+            tag["downedPrismBanshee"] = downedPrismBanshee; 
             tag["downedSpiderQueen"] = downedSpiderQueen;
             tag["downedCratrosityPML"] = downedCratrosityPML;
             tag["downedCaliburnGuardians"] = downedCaliburnGuardians;
@@ -390,6 +393,7 @@ namespace SGAmod
             if (tag.ContainsKey("tf2quest")) { tf2quest = 0; }//tag.GetInt("tf2quest");}
             if (tag.ContainsKey("bossprgressor")) { bossprgressor = tag.GetInt("bossprgressor"); }
             if (tag.ContainsKey("GennedVirulent")) { GennedVirulent = tag.GetBool("GennedVirulent"); }
+            if (tag.ContainsKey("downedPrismBanshee")) { downedPrismBanshee = tag.GetBool("downedPrismBanshee"); }
 
 
             if (tag.ContainsKey("overalldamagedone")) { overalldamagedone = tag.GetInt("overalldamagedone"); }
@@ -438,7 +442,7 @@ namespace SGAmod
             BitsByte flags = new BitsByte(); flags[0] = downedCustomInvasion; flags[1] = downedSPinky; flags[2] = downedTPD; flags[3] = downedCratrosity; flags[4] = downedCirno; flags[5] = downedSharkvern; flags[6] = downedHarbinger; flags[7] = GennedVirulent;
             writer.Write(flags);
             BitsByte flags2 = new BitsByte(); flags[0] = downedSpiderQueen; flags[1] = downedCratrosityPML; flags[2] = downedCaliburnGuardianHardmode;
-            flags[3] = darknessVision; flags[4] = portalcanmovein; flags[5] = true; flags[6] = true; flags[7] = true;
+            flags[3] = darknessVision; flags[4] = portalcanmovein; flags[5] = downedPrismBanshee; flags[6] = true; flags[7] = true;
             writer.Write(flags2);
 
             writer.Write((short)downedWraiths);
@@ -480,9 +484,9 @@ namespace SGAmod
             tf2cratedrops = reader.ReadBoolean();
             BitsByte flags = reader.ReadByte(); downedCustomInvasion = flags[0]; downedSPinky = flags[1]; downedTPD = flags[2]; downedCratrosity = flags[3]; downedCirno = flags[4]; downedSharkvern = flags[5]; downedHarbinger = flags[6]; GennedVirulent = flags[7];
             BitsByte flags2 = reader.ReadByte(); downedSpiderQueen = flags2[0]; downedCratrosityPML = flags2[1]; downedCaliburnGuardianHardmode = flags2[2];
-            darknessVision = flags2[3]; portalcanmovein = flags2[4];
+            darknessVision = flags2[3]; portalcanmovein = flags2[4]; downedPrismBanshee = flags2[5];
 
-            downedWraiths = reader.ReadInt16();
+             downedWraiths = reader.ReadInt16();
             downedMurk = reader.ReadInt16();
             downedHellion = reader.ReadInt16();
             downedCaliburnGuardians = reader.ReadInt16();
@@ -725,11 +729,10 @@ namespace SGAmod
             }
             */
 
-            /*if (NPC.CountNPCS(mod.NPCType("Cirno")) < 1)
+            if (Filters.Scene["SGAmod:ShockwaveBanshee"].IsActive() && !NPC.AnyNPCs(ModContent.NPCType<PrismBanshee>()))
             {
-                Overlays.Scene["SGAmod:CirnoBlizzard"].Deactivate();
-                Filters.Scene["SGAmod:CirnoBlizzard"].Deactivate();
-            }*/
+                Filters.Scene.Deactivate("SGAmod:ShockwaveBanshee", new object[0]);
+            }
         }
         public override void PostWorldGen()
         {
@@ -760,6 +763,19 @@ namespace SGAmod
             }
             Chests.RemoveAt(0);
 
+            Chests = Chests.OrderBy(orderBy => WorldGen.genRand.Next(0, 100)+(Main.tile[orderBy.x, orderBy.y].frameX / 36 == 17 ? 0 : 10000)).ToList();
+            for (int i = 0; i < WorldGen.genRand.Next(3,6); i += 1)
+            {
+                for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
+                {
+                    if (Chests[0].item[inventoryIndex].IsAir && Main.tile[Chests[0].x, Chests[0].y].frameX/36 == 17)
+                    {
+                        Chests[0].item[inventoryIndex].SetDefaults(mod.ItemType("BottledLiquidEssence"));
+                        Chests[0].item[inventoryIndex].stack = 1;
+                        break;
+                    }
+                }
+            }
 
             for (int chestIndexx = 0; chestIndexx < 1000; chestIndexx++)
             {

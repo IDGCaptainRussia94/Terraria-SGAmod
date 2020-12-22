@@ -912,7 +912,7 @@ namespace SGAmod.Dimensions
                 if (loottype == 2)//Shadow Chest
                 {
 
-                    lootrare = new List<int> { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow, SGAmod.Instance.ItemType("BeserkerAuraStaff") };
+                    lootrare = new List<int> { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow, SGAmod.Instance.ItemType("BeserkerAuraStaff"), SGAmod.Instance.ItemType("EnchantedFury") };
 
                     int index = unirand.Next(0, lootrare.Count);
                     Main.chest[chestid].item[e].SetDefaults(lootrare[index]);

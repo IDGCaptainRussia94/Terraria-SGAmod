@@ -16,7 +16,7 @@ namespace SGAmod.Items.Accessories.Charms
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mining Amulet Tier 1");
-			Tooltip.SetDefault("25% increased mining/hammering/chopping speed\n"+Idglib.ColorText(Color.Red,"Damage you take is increased by 20%"));
+			Tooltip.SetDefault("25% increased mining/hammering/chopping speed\n"+Idglib.ColorText(Color.Red, "There is a very rare chance to consume an extra item whenever items are consumed"));
 		}
 
 		public override void SetDefaults()
@@ -56,7 +56,8 @@ namespace SGAmod.Items.Accessories.Charms
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.UseTimeMulPickaxe += 0.25f;
 			if (!sgaplayer.tpdcpu)
-				sgaplayer.damagetaken += 0.20f;
+				sgaplayer.consumeCurse += 2;
+
 		}
 		public override void AddRecipes()
 		{
@@ -126,7 +127,7 @@ namespace SGAmod.Items.Accessories.Charms
 			DisplayName.SetDefault("Anticipation Amulet Tier 1");
 			Tooltip.SetDefault("When a boss fight starts, you are healed by 100 HP, but only every 2 minutes and while " + Idglib.ColorText(Color.Green, "Anticipation") + " is low" +
 				"\nDuring a boss fight, you build up " + Idglib.ColorText(Color.Green, "Anticipation") + ", which causes your held weapon to do more damage, this caps at a 25% increase\n" +
-	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\n" + Idglib.ColorText(Color.Red, "There is a very rare chance to consume an extra item whenever items are consumed"));
+	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\n"+Idglib.ColorText(Color.Red, "Damage you take is increased by 20%"));
 		}
 
 		public override void SetDefaults()
@@ -143,6 +144,8 @@ namespace SGAmod.Items.Accessories.Charms
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.anticipationLevel = 1;
+			if (!sgaplayer.tpdcpu)
+				sgaplayer.damagetaken += 0.20f;
 		}
 		public override void AddRecipes()
 		{
@@ -169,7 +172,7 @@ namespace SGAmod.Items.Accessories.Charms
 			DisplayName.SetDefault("Anticipation Amulet Tier 2");
 			Tooltip.SetDefault("When a boss fight starts, you are healed by 200 HP, but only every 2 minutes and while " + Idglib.ColorText(Color.Green, "Anticipation") + " is low" +
 				"\nDuring a boss fight, you build up " + Idglib.ColorText(Color.Green, "Anticipation") + ", which causes your held weapon to do more damage, this caps at a 50% increase\n" +
-	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\n" + Idglib.ColorText(Color.Red, "There is a rare chance to consume an extra item whenever items are consumed"));
+	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\n" + Idglib.ColorText(Color.Red, "Damage you take is increased by 30%"));
 		}
 
 		public override void SetDefaults()
@@ -186,6 +189,8 @@ namespace SGAmod.Items.Accessories.Charms
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.anticipationLevel = 2;
+			if (!sgaplayer.tpdcpu)
+				sgaplayer.damagetaken += 0.30f;
 		}
 		public override void AddRecipes()
 		{
@@ -210,7 +215,7 @@ namespace SGAmod.Items.Accessories.Charms
 			DisplayName.SetDefault("Anticipation Amulet Tier 3");
 			Tooltip.SetDefault("When a boss fight starts, you are healed by 300 HP, but only every 2 minutes and while " + Idglib.ColorText(Color.Green, "Anticipation") + " is low" +
 				"\nDuring a boss fight, you build up " + Idglib.ColorText(Color.Green, "Anticipation") + ", which causes your held weapon to do more damage, this caps at a near 100% increase\n" +
-	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\n" + Idglib.ColorText(Color.Red, "There is a semi-rare chance to consume an extra item whenever items are consumed"));
+	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\n" + Idglib.ColorText(Color.Red, "Damage you take is increased by 40%"));
 		}
 
 		public override void SetDefaults()
@@ -228,6 +233,8 @@ namespace SGAmod.Items.Accessories.Charms
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.anticipationLevel = 3;
+			if (!sgaplayer.tpdcpu)
+				sgaplayer.damagetaken += 0.40f;
 		}
 		public override void AddRecipes()
 		{
@@ -235,7 +242,7 @@ namespace SGAmod.Items.Accessories.Charms
 			recipe.AddIngredient(mod.ItemType("AnticipationCharmlv2"), 1);
 			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 2);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 10);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
 			recipe.AddIngredient(ItemID.MinecartMech, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
@@ -316,7 +323,7 @@ namespace SGAmod.Items.Accessories.Charms
 			recipe.AddIngredient(mod.ItemType("EnhancingCharmlv2"), 1);
 			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 2);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 10);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
 			recipe.AddIngredient(ItemID.MinecartMech, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
@@ -330,7 +337,7 @@ namespace SGAmod.Items.Accessories.Charms
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mining Amulet Tier 2");
-			Tooltip.SetDefault("50% increased mining/hammering/chopping speed\n" + Idglib.ColorText(Color.Red, "Damage you take is increased by 30%"));
+			Tooltip.SetDefault("50% increased mining/hammering/chopping speed\n" + Idglib.ColorText(Color.Red, "There is a semi-rare chance to consume an extra item whenever items are consumed"));
 		}
 
 		public override void SetDefaults()
@@ -348,7 +355,7 @@ namespace SGAmod.Items.Accessories.Charms
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.UseTimeMulPickaxe += 0.50f;
 			if (!sgaplayer.tpdcpu)
-				sgaplayer.damagetaken += 0.30f;
+				sgaplayer.consumeCurse += 3;
 		}
 		public override void AddRecipes()
 		{
@@ -370,7 +377,7 @@ namespace SGAmod.Items.Accessories.Charms
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mining Amulet Tier 3");
-			Tooltip.SetDefault("100% increased mining/hammering/chopping speed\n" + Idglib.ColorText(Color.Red, "Damage you take is increased by 40%"));
+			Tooltip.SetDefault("100% increased mining/hammering/chopping speed\n" + Idglib.ColorText(Color.Red, "There is an uncommon chance to consume an extra item whenever items are consumed"));
 		}
 
 		public override void SetDefaults()
@@ -389,7 +396,7 @@ namespace SGAmod.Items.Accessories.Charms
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.UseTimeMulPickaxe += 1f;
 			if (!sgaplayer.tpdcpu)
-				sgaplayer.damagetaken += 0.40f;
+				sgaplayer.consumeCurse += 4;
 		}
 		public override void AddRecipes()
 		{
@@ -397,7 +404,7 @@ namespace SGAmod.Items.Accessories.Charms
 			recipe.AddIngredient(mod.ItemType("MiningCharmlv2"), 1);
 			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 2);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 10);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
 			recipe.AddIngredient(ItemID.MinecartMech, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);

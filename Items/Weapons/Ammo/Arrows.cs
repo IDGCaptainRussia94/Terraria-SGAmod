@@ -281,7 +281,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Arrow");
-			Tooltip.SetDefault("Highly increased damage over its precursor\nCycles through your ammo slots; defaults to Wooden Arrows\nHas a 25% to not consume the fired ammo type");
+			Tooltip.SetDefault("Highly increased damage over its precursor\nCycles through your ammo slots when placed in your first; defaults to Wooden Arrows\nHas a 25% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{

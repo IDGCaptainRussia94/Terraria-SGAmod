@@ -25,7 +25,7 @@ namespace SGAmod.Items
 			item.width = 34;
 			item.height = 34;
 			item.rare = 0;
-			item.maxStack = 1;
+			item.maxStack = SGAWorld.downedCratrosity ? 30 : 1;
 			item.consumable = false;
 		}
 		//player.CountItem(mod.ItemType("ModItem"))
@@ -62,14 +62,14 @@ namespace SGAmod.Items
 		public override void RightClick(Player ply)
 		{
 
-
 			bool usedwrongkey = (ply.CountItem(ItemID.GoldenKey) > 0 || ply.CountItem(ItemID.LightKey) > 0 || ply.CountItem(ItemID.NightKey) > 0 || ply.CountItem(ModContent.ItemType<SwampChestKey>()) > 0);
 			bool usedrightkey = (ply.CountItem(mod.ItemType("TerrariacoCrateKey")) > 0);
 			int whatkey = 0;
 			if (usedrightkey == true)
 			{
 				CrateLoot(ply);
-				return;
+				whatkey = mod.ItemType("TerrariacoCrateKey");
+				goto endhere;
 			}
 			if (usedwrongkey == true)
 			{
@@ -102,6 +102,7 @@ namespace SGAmod.Items
 					Main.PlaySound(15, (int)ply.position.X, (int)ply.position.Y, 0);
 				}
 			}
+			endhere:
 			ply.ConsumeItem(whatkey);
 			//player.QuickSpawnItem(ItemID.LifeCrystal, 15);
 			//player.QuickSpawnItem(ItemID.LifeFruit, 20);

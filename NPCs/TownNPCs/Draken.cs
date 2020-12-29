@@ -286,7 +286,7 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("I am not weak...");
 				chat.Add("People are wrong about our kind...");
 				chat.Add("Where did my keys go?");
-				chat.Add("Croteam hasn't released Serious Sam 4, my Human thinks its alright, kinda underwelming and kept like a filler title");
+				chat.Add("Croteam has released Serious Sam 4, my Human thinks its alright, kinda underwelming and kept like a filler title");
 				chat.Add("Please don't point those blades at me...");
 				chat.Add("'Rawr <3'");
 				chat.Add("I cannot roar, I just make a cute whining sound.");
@@ -468,7 +468,7 @@ namespace SGAmod.NPCs.TownNPCs
 				}
 				chat.Add("Could you help make this land a little safer? I can offer you what I found on my previous adventures.", 2.0);
 				chat.Add("Hello...", 2.0);
-				chat.Add("Hold 'Shift' to see your current and total Expertise, as well as see what's next on the target list.", 4.0);
+				chat.Add("Hold 'Shift' to see your current and total Expertise, as well as see what's next on the target list.", 6.00);
 			}
 			//chat.Add("This message has a weight of 5, meaning it appears 5 times more often.", 5.0);
 			//chat.Add("This message has a weight of 0.1, meaning it appears 10 times as rare.", 0.1);
@@ -671,8 +671,8 @@ namespace SGAmod.NPCs.TownNPCs
 
 				if (SGAWorld.downedMurk<2)
 					chat = "The dank structures' walls are protected by a strong, fly swaming, roiling creature in the jungle, prehaps a [i:" + mod.ItemType("RoilingSludge") + "] may attract its fly swamps, and its wrath";
-				if (SGAWorld.downedSpiderQueen)
-					chat = "A high voracious creature lurks below the surface, I fear it might eat a small dragon like me whole, go and find it please, I think an [i:" + mod.ItemType("AcidicEgg") + "] will lure it from its feasting to comfront you";
+				if (!SGAWorld.downedSpiderQueen)
+					chat = "A highly voracious creature lurks below the surface, I fear it might eat a small dragon like me whole, go and find it please, I think an [i:" + mod.ItemType("AcidicEgg") + "] will lure it from its feasting to comfront you";
 				if (SGAWorld.downedCaliburnGuardians<3 && Main.rand.Next(0,3)==0 && Main.LocalPlayer.SGAPly().ExpertiseCollectedTotal>=300)
 					chat = "I've noticed 3 structures below the surface that warrent investigation, I have found a [i: " + mod.ItemType("CaliburnCompess") + "] that may help you with that.";
 
@@ -829,7 +829,7 @@ namespace SGAmod.NPCs.TownNPCs
 			}
 			if (modplayer.ExpertiseCollectedTotal >= 2500)
 			{
-				shop.item[nextSlot].SetDefaults(mod.ItemType("Gong"));
+				shop.item[nextSlot].SetDefaults(Main.dayTime ? mod.ItemType("Gong") : mod.ItemType("BoneBucket"));
 				shop.item[nextSlot].shopCustomPrice = 150;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;

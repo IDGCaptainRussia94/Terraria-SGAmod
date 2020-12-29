@@ -39,69 +39,58 @@ namespace SGAmod
 	{
 		public List<ActionCooldownStack> CooldownStacks;
 		public SkillManager skillMananger;
-		public bool noactionstackringofrespite = false;
-		public int tf2emblemLevel = 0;
-		public int ninjaSash = 0;
-		public float damageReduce = 1f;
-		public int shinobj = 0;
 		public int surprised = 0;
-		public bool diesIraeStone = false; public bool magusSlippers = false;
 		public float[] beserk = { 0, 0 };
-		public float actionCooldownRate = 1f;
 		public int previoustf2emblemLevel = 0;
 		public int lockoneffect = 0;
-		public int soldierboost = 0;
-		public FlaskOfBlaze flaskBuff = default;
-		public bool dualityshades = false;
-		public bool gunslingerLegend = false;
 		public int gunslingerLegendtarget = -1;
 		public int gunslingerLegendtargettype = 0;
-		public ushort FireBreath = 0;
-		public int MaxCooldownStacks = 1;
-		public float RevolverSpeed = 1f;
 		public bool Duster = false;
 		public bool Drakenshopunlock = false;		public bool benchGodFavor = false;
 		public int DefenseFrame = 0;
 		public int ReloadingRevolver = 0;
 		public int CustomWings = 0;
 		public int JoyrideShake = 0;
-		public bool twinesoffate = false;
 		public bool Walkmode = false;
-		public bool MVMBoost = false;
 		public bool Shieldbreak = false;
 		public int ShieldType = 0;
-		public bool SybariteGem = false;
+		public int ShieldTypeDelay = 0;
 		public int realIFrames = 0;
 		public int myammo = 0;
 		public int timer = 0;
 		public int beefield = 0;
 		public float morespawns = 1f;
-		public float trueMeleeDamage = 1f;
-		public float triggerFinger = 1f;
+
+		//For holding Trap Weapons
 		public float SlowDownDefense = 0f;
 		public float SlowDownResist = 1f;
 		public int SlowDownReset = 0;
-		public float damagetaken = 1f;
+		public int heldShield = -1;
+		public int heldShieldReset = 0;
+
+		//Potion related
+		public float trueMeleeDamage = 1f;
+		public float triggerFinger = 1f;
+		public int intimacy = 0;
+		public int toxicity = 0;
+		public bool IceFire = false;
+
 		public float mspeed = 1f;
 		public int beefieldtoggle = 0;
 		public int beefieldcounter = 0;
-		public int intimacy = 0;
-		public int toxicity = 0;
 		public bool HeavyCrates = false;
 		public int uncraftBoost = 0;
 		public bool Microtransactions = false;
 		public bool MoneyMismanagement = false;
 		public bool lavaBurn = false;
 		public bool NoFly = false;
+		public Vector2 drowningIncrementer = Vector2.Zero;
 		public bool permaDrown = false;
 		public bool Pressured = false;
 		public bool MassiveBleeding = false;
 		public bool ELS = false;
 		public bool ActionCooldown = false;
 		public bool thermalblaze = false; public bool acidburn = false;
-		public bool LifeFlower = false; public bool GeyserInABottle = false; public bool GeyserInABottleActive = false; public bool JavelinBaseBundle = false; public bool JavelinSpearHeadBundle = false; public bool PrimordialSkull = false;
-		public bool MatrixBuffp = false; public bool BoosterMagnet = false; public bool HoE = false; public bool CalamityRune = false;
-		public int EnhancingCharm = 0;
 		public int FieryheartBuff = 0;
 		public int creeperexplosion = 0;
 		public bool DankShrineZone = false;
@@ -109,27 +98,70 @@ namespace SGAmod
 		public bool noModTeleport = false;
 		private Projectile[] projectileslunarslime = new Projectile[15];
 		public static Dictionary<int, int> ShieldTypes = new Dictionary<int, int>();
-		public bool lunarSlimeHeart = false;
 		public int lunarSlimeHeartdamage = 1;
 		public int lunarSlimeCounter = 0;
 		public bool SunderedDefense = false;
-		public int gamePadAutoAim = 0;
-		public int tidalCharm = 0;
 		public int watcherDebuff = 0;
 
-		public bool Lockedin = false;
+		//Accessory related
 		public bool CirnoWings = false;
 		public bool SerratedTooth = false;
-		private int lockedelay = 0;
+		public bool grippinggloves = false;
+		public bool mudbuff = false; public bool alkalescentHeart = false;
+		public int Havoc = 0;
 		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false;
 		public float SpaceDiverWings = 0f;
-		public int Havoc = 0;
+		public int gamePadAutoAim = 0;
+		public int tidalCharm = 0;
+		public bool lunarSlimeHeart = false;
+		public bool LifeFlower = false; public bool GeyserInABottle = false; public bool GeyserInABottleActive = false; public bool JavelinBaseBundle = false; public bool JavelinSpearHeadBundle = false; public bool PrimordialSkull = false;
+		public bool MatrixBuffp = false; public bool BoosterMagnet = false; public bool HoE = false; public bool CalamityRune = false;
+		public int EnhancingCharm = 0;
+		public bool noactionstackringofrespite = false;
+		public bool enchantedShieldPolish = false; public bool diesIraeStone = false; public bool magusSlippers = false; public bool airTank = false; public bool murkyCharm = false;
+		public int tf2emblemLevel = 0;
+		public int ninjaSash = 0;
+		public int shinobj = 0;
+		public int soldierboost = 0;
+		public FlaskOfBlaze flaskBuff = default;
+		public bool dualityshades = false;
+		public bool gunslingerLegend = false;
+		public bool twinesoffate = false;
+		public bool MVMBoost = false;
+		public bool SybariteGem = false;
+		public bool restorationFlower = false;
+		public bool tpdcpu = false;
+		public bool aversionCharm = false;
+		public int devpower = 0;
+		public bool EALogo = false;
+		public bool graniteMagnet = false;
+		public bool demonsteppers = false;
+		public bool FridgeflameCanister = false;
+		public bool terraDivingGear = false;
+		public bool glacialStone = false;
+		public bool novusStackBoost = false;
+		public bool BIP = false;
+
+		public bool Lockedin = false;
+		private int lockedelay = 0;
 		public int NoFireBurn = 0;
 		public int breathingdelay = 0;
 		public int sufficate = 200;
+
+		//Stat Related
 		public float UseTimeMul = 1f;
+		public int drownRate = 0;
+		public ushort FireBreath = 0;
+		public int MaxCooldownStacks = 1;
+		public float RevolverSpeed = 1f;
+		public float damagetaken = 1f;
+		public int consumeCurse = 0;
+		public float shieldDamageReduce = 0f;
+		public float shieldDamageBoost = 0f;
+		public float actionCooldownRate = 1f;
 		public bool Noselfdamage = false;
 		public float UseTimeMulPickaxe = 1f;
+		public float summonweaponspeed = 0f;
 		public float TrapDamageMul = 1f; public float TrapDamageAP = 0f;
 		public float ThrowingSpeed = 1f; public float Thrownsavingchance = 0f;
 		public Vector2 Locked = new Vector2(100, 300);
@@ -144,11 +176,10 @@ namespace SGAmod
 		public bool gottf2 = false; public bool gothellion = false;
 		public int floatyeffect = 0;
 		public int PrismalShots = 0;
-		public int devpower = 0;
 		public float beedamagemul = 1f;
 		public bool JaggedWoodenSpike = false; public bool JuryRiggedSpikeBuckler = false; public bool HeartGuard = false; public bool GoldenCog = false;
 		public bool devpowerbool = false; public int Redmanastar = 0; public int Electicpermboost = 0;
-		public int MidasIdol = 0; public bool OmegaSigil = false;
+		public int MidasIdol = 0; public bool OmegaSigil = false; public bool starCollector = false;
 		public bool MurkyDepths = false;
 		public int[] ammoinboxes = new int[4];
 		public int anticipation = 0; public int anticipationLevel = 0;
@@ -158,30 +189,21 @@ namespace SGAmod
 		public bool nightmareplayer = false;
 		public bool playercreated = false;
 		public bool granteditems = false;
-		public bool restorationFlower = false;
-		public bool tpdcpu = false;
-		public bool aversionCharm = false;
+
+		//tech damage
 		public float techdamage = 1f;
+
+		//apocalyptical related
 		public double[] apocalypticalChance = { 0, 0, 0, 0 };
 		public float apocalypticalStrength = 1f;
+		public float lifestealentropy = 0f;
+
 		public int entropyCollected = 0;
 		public int activestacks = 0;
 		public float greedyperc = 0f;
-		public float lifestealentropy = 0f;
 		public int maxblink = 0;
 		public int potionsicknessincreaser = 0;
-		public bool EALogo = false;
-		public bool graniteMagnet = false;
-		public bool demonsteppers = false;
-		public bool FridgeflameCanister = false;
-		public bool IceFire = false;
-		public bool terraDivingGear = false;
-		public bool glacialStone = false;
-		public bool novusStackBoost = false;
-		public bool BIP = false;
-		public float summonweaponspeed = 0f;
-		public bool grippinggloves = false;
-		public bool mudbuff = false;
+
 		public bool dragonFriend = false;
 		public string[] armorglowmasks = new string[4];
 		public int[] devempowerment = { 0, 0, 0, 0 };
@@ -233,17 +255,26 @@ namespace SGAmod
 
 			uncraftBoost = Math.Max(uncraftBoost - 1, 0);
 			surprised = Math.Max(surprised - 1, 0);
-			tidalCharm = Math.Max(tidalCharm - 1, 0);
+			tidalCharm = (int)MathHelper.Clamp(tidalCharm - Math.Sign(tidalCharm), -1000,1000);
 			shinobj -= 1;
+
+			heldShieldReset -= 1;
+			if (heldShieldReset<1)
+			heldShield = -1;
+
+			shieldDamageReduce = 0f;
+			shieldDamageBoost = 0f;
+			enchantedShieldPolish = false;
 			diesIraeStone = false;
+			starCollector = false;
 			magusSlippers = false;
-			damageReduce = 1f;
 			previoustf2emblemLevel = tf2emblemLevel;
 			tf2emblemLevel = 0;
 			ninjaSash = 0;
 			RevolverSpeed = 1f;
 			intimacy = 0;
 			toxicity = 0;
+			consumeCurse = 0;
 			ReloadingRevolver = Math.Max(ReloadingRevolver - 1, 0);
 			twinesoffate = false;
 			glacialStone = false;
@@ -257,6 +288,8 @@ namespace SGAmod
 			MoneyMismanagement = false;
 			Lockedin = false;
 			NoFly = false;
+			airTank = false;
+			murkyCharm = false;
 			permaDrown = false;
 			trueMeleeDamage = 1f;
 			triggerFinger = 1f;
@@ -289,6 +322,7 @@ namespace SGAmod
 			SpaceDiverWings = 0f;
 			ActionCooldown = false;
 			lunarSlimeHeart = false;
+			alkalescentHeart = false;
 			TrapDamageMul = 1f; TrapDamageAP = 0f;
 			Thrownsavingchance = 0f;
 			LifeFlower = false; GeyserInABottleActive = false; JavelinBaseBundle = false; JavelinSpearHeadBundle = false; restorationFlower = false;
@@ -330,6 +364,7 @@ namespace SGAmod
 			BIP = false;
 			morespawns = 1f;
 			damagetaken = 1f;
+			drownRate = 0;
 			summonweaponspeed = 0f;
 			SlowDownReset -= 1;
 			grippinggloves = false;
@@ -354,6 +389,10 @@ namespace SGAmod
 			boosterrechargerate = 15;
 			boosterPowerLeftMax = 10000;
 			Shieldbreak = false;
+
+			if (ShieldTypeDelay>0)
+			ShieldTypeDelay -= 1;
+			else
 			ShieldType = 0;
 
 			for (int a = 0; a < devempowerment.Length; a++)
@@ -374,8 +413,13 @@ namespace SGAmod
 			noactionstackringofrespite = false;
 			actionCooldownRate = 1f;
 			Noviteset = 0;
-		}
+			if (player.breath >= player.breathMax || !SGAConfig.Instance.DrowningChange)
+				drowningIncrementer.X = 0;
+			else if (player.breath < 1)
+				drowningIncrementer.X += 1;
 
+			drowningIncrementer.Y = Math.Max(0, (drowningIncrementer.X - 300) / 60);
+		}
 
 		public override void UpdateBiomes()
 		{
@@ -392,8 +436,6 @@ namespace SGAmod
 					player.AddBuff(BuffID.Blackout, 120);
 					break;
 				}
-
-
 			}
 
 			DankShrineZone = (SGAWorld.MoistStonecount > 15 && Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall == mod.WallType("SwampWall"));
@@ -822,6 +864,8 @@ namespace SGAmod
 
 
 			CharmingAmuletCode();
+			if (player.manaRegenBuff && SGAConfig.Instance.ManaPotionChange)
+				player.statManaMax2 = Math.Max(player.statManaMax2-50,0);
 
 			if (creeperexplosion > 9700)
 			{
@@ -1161,7 +1205,7 @@ namespace SGAmod
 						Buffscounter += Main.debuff[player.buffType[z]] ? 4 : 1;
 
 				}
-				player.statDefense += Buffscounter * 2;
+				player.statDefense += Buffscounter * 1;
 
 				lunarSlimeHeartdamage = (int)((float)(player.statDefense * (player.minionDamage + player.rangedDamage + player.meleeDamage + player.Throwing().thrownDamage + player.magicDamage)));
 
@@ -1232,18 +1276,32 @@ namespace SGAmod
 						Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, projtype, player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
 				}
 
-
-				if (player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1 && player.HeldItem.modItem != null)
+				int index = player.SGAPly().heldShield;
+				if (index >= 0)
+				{
+					if (Main.projectile[index].active)
+					{
+						Items.Weapons.Shields.CorrodedShieldProj myShield = (Main.projectile[player.SGAPly().heldShield].modProjectile as Items.Weapons.Shields.CorrodedShieldProj);
+						if (myShield != null)
+						myShield.WhileHeld(player);
+					}
+				}
+				else
 				{
 
-					int projtype = -1;
-					if (SGAPlayer.ShieldTypes.ContainsKey(player.HeldItem.type))
+					if (player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1 && player.HeldItem.modItem != null)
 					{
-						SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out projtype);
-						if (projtype > 0)
+						int projtype = -1;
+						if (SGAPlayer.ShieldTypes.ContainsKey(player.HeldItem.type))
 						{
-							if (player.ownedProjectileCounts[projtype] < 1)
-								Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, projtype, player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
+							SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out projtype);
+							if (projtype > 0)
+							{
+								if (player.ownedProjectileCounts[projtype] < 1)
+								{
+									Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, projtype, player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
+								}
+							}
 						}
 					}
 				}
@@ -1413,7 +1471,12 @@ namespace SGAmod
 
 		private int OnHit(ref int damage, ref bool crit, NPC npc, Projectile projectile)
 		{
-			damage = (int)(damage * damageReduce);
+			if (SGAmod.overpoweredMod > 0)
+            {
+				crit = true;
+				damage = damage + (int)(damage * SGAmod.overpoweredMod);
+
+            }
 			if (Hellion.GetHellion() != null)
 			{
 				Hellion hell = Hellion.GetHellion();
@@ -1827,6 +1890,16 @@ namespace SGAmod
 			ShadowSectorZone = flags[1] ? (byte)5 : (byte)0;
 		}
 
+
+		public override Texture2D GetMapBackgroundImage()
+		{
+			if (DankShrineZone)
+			{
+				return mod.GetTexture("swamp_map_background");
+			}
+			return null;
+		}
+
 		public override void UpdateBiomeVisuals()
 		{
 			//TheProgrammer
@@ -1942,7 +2015,15 @@ namespace SGAmod
 				int chance = 10 + (player.cratePotion ? 15 : 0) + (int)Math.Min(50, power);
 				if (Main.rand.Next(0, 100) < chance)
 					caughtType = mod.ItemType("DankCrate");
+
 			}
+			/*if (player.ZoneSkyHeight)
+			{
+				int chance = 2 + (int)Math.Min(20, power/5);
+				if (Main.rand.Next(0, 100) < chance)
+					caughtType = mod.ItemType("StarCollector");
+			}*/
+			
 		}
 	}
 

@@ -54,7 +54,7 @@ namespace SGAmod.HavocGear.Items
 			item.width = 18;
 			item.height = 14;
 			item.maxStack = 99;
-			item.value = 500;
+			item.value = 1000;
 			item.rare = 5;
 			item.alpha = 0;
 			item.useTurn = true;
@@ -407,7 +407,7 @@ namespace SGAmod.Items
 	{
 		public override void SetDefaults()
 		{
-			item.value = 5000;
+			item.value = 100;
 			item.rare = 7;
 			item.width = 16;
 			item.height = 16;
@@ -516,7 +516,7 @@ namespace SGAmod.Items
 			item.maxStack = 999;
 			item.width = 26;
 			item.height = 14;
-			item.value = Item.sellPrice(0,0,25,0);
+			item.value = 1000;
 			item.rare = 5;
 			item.useTurn = true;
 			item.autoReuse = true;
@@ -549,12 +549,32 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Illuminant Essence");
-			Tooltip.SetDefault("Shards of Heaven\nSometimes drops from specific hallow enemies after Moonlord is defeated");
+			Tooltip.SetDefault("'Shards of Heaven'");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 		public override void PostUpdate()
 		{
 			Lighting.AddLight(item.Center, Color.HotPink.ToVector3() * 0.55f * Main.essScale);
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 26;
+			item.height = 14;
+			item.value = Item.sellPrice(0, 0, 50, 0);
+			item.rare = 11;
+		}
+	}	
+	public class AuroraTear : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Aurora Tear");
+			Tooltip.SetDefault("'Auroric Energy from the Banshee, it seems to be inert...'");
+		}
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.Lerp(Color.BlueViolet, Color.HotPink, (float)Math.Sin((Main.essScale-0.70f)/0.30f)).ToVector3() * 0.75f * Main.essScale);
 		}
 		public override void SetDefaults()
 		{
@@ -572,7 +592,7 @@ public class LunarRoyalGel : ModItem
 		{
 			DisplayName.SetDefault("Lunar Royal Gel");
 			Tooltip.SetDefault("From the moon-infused Pinky");
-			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(7, 10));
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 6));
 		}
 		public override void SetDefaults()
 		{
@@ -1118,15 +1138,18 @@ public class LunarRoyalGel : ModItem
 		{
 			DisplayName.SetDefault("Soul of Byte");
 			Tooltip.SetDefault("'remains of the Hellion Core'");
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 4));
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+			ItemID.Sets.ItemIconPulse[item.type] = true;
 		}
-		public override string Texture
+		/*public override string Texture
 		{
 			get { return ("Terraria/Item_"+Main.rand.Next(0,2000)); }
 		}
 		public override Color? GetAlpha(Color lightColor)
 		{
 			return Main.hslToRgb(Main.rand.NextFloat(0f, 1f), 0.75f, 0.65f);
-		}
+		}*/
 		public override void SetDefaults()
 		{
 			item.maxStack = 999;
@@ -1322,7 +1345,7 @@ public class LunarRoyalGel : ModItem
 		item.width = 16;
 		item.height = 16;
 		item.maxStack = 99;
-		item.value = 5000;
+		item.value = 7500;
 		item.rare = ItemRarityID.Yellow;
 		item.alpha = 0;
 		item.useTurn = true;

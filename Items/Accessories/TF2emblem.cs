@@ -207,6 +207,7 @@ namespace SGAmod.Items.Accessories
 			player.minionDamage += 0.05f;
 			SGAmod.BoostModdedDamage(player, 0.05f, 5);
 			player.Throwing().thrownDamage += 0.05f;
+
 			player.Throwing().thrownVelocity += 0.1f;
 			player.manaCost -= 0.025f;
 			player.maxMinions += 1;

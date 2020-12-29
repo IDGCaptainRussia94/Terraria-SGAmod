@@ -38,6 +38,7 @@ namespace SGAmod.Dimensions.NPCs
             npc.noTileCollide = true;
             npc.aiStyle = -1;
             npc.alpha = 0;
+            npc.chaseable = false;
             npc.SGANPCs().dotImmune = true;
             npc.SGANPCs().TimeSlowImmune = true;
             for (int buff=0;buff<npc.buffImmune.Length;buff++)
@@ -89,15 +90,16 @@ namespace SGAmod.Dimensions.NPCs
             return false;
         }
 
-        public void PostEffectsDraw(SpriteBatch spriteBatch)
+        public void PostEffectsDraw(SpriteBatch spriteBatch,float drawScale=2f)
         {
 
             Texture2D inner = Main.npcTexture[npc.type];
 
-            Vector2 drawOrigin = inner.Size()/2f;
+            Vector2 drawOrigin = inner.Size()/ 2f;
 
 
-            Vector2 drawPos = (npc.Center - Main.screenPosition)/2f;
+            Vector2 drawPos = (npc.Center - Main.screenPosition)/ drawScale;
+            float drawscale2 = 2f / drawScale;
 
 
             for (float i = 0; i < 1f; i += 0.10f)
@@ -107,9 +109,9 @@ namespace SGAmod.Dimensions.NPCs
 
                 float percent = (((Main.GlobalTime / 2f) + i) % 1f);
 
-                Vector2 drawpos2 = new Vector2((float)Math.Sin((percent*MathHelper.Pi) - Main.GlobalTime*1.25f) *percent*26f, percent * -64f);
+                Vector2 drawpos2 = new Vector2((float)Math.Sin((percent*MathHelper.Pi) - Main.GlobalTime*1.25f) *percent*26f, percent * -64f)* drawscale2;
 
-                spriteBatch.Draw(inner, drawPos + drawpos2, null, color, i * MathHelper.TwoPi, drawOrigin, new Vector2(1f,1f) * scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(inner, drawPos + drawpos2, null, color, i * MathHelper.TwoPi, drawOrigin, drawscale2 * scale, SpriteEffects.None, 0f);
             }
 
             for (float i = 0; i < 1f; i += 0.10f)
@@ -117,7 +119,7 @@ namespace SGAmod.Dimensions.NPCs
                 float scale = (1f - 0.25f * (((Main.GlobalTime / 2f) + i) % 1f));
                 Color color = Color.Magenta * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.75f;
 
-                spriteBatch.Draw(inner, drawPos, null, color, i * MathHelper.TwoPi, drawOrigin, new Vector2(1f, 1f) * scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(inner, drawPos, null, color, i * MathHelper.TwoPi, drawOrigin, drawscale2 * scale, SpriteEffects.None, 0f);
             }
 
         }

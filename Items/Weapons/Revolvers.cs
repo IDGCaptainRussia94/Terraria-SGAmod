@@ -7,6 +7,11 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
 using SGAmod.Items.Weapons;
+using AAAAUThrowing;
+using System.IO;
+using Microsoft.Xna.Framework.Audio;
+using System.Linq;
+using SGAmod.HavocGear.Items.Weapons;
 
 namespace SGAmod.Items.Weapons
 {
@@ -26,7 +31,7 @@ namespace SGAmod.Items.Weapons
 			if (player.GetModPlayer<SGAPlayer>().ReloadingRevolver > 0)
 				return false;
 
-			if (player.SGAPly().ammoLeftInClip < 1) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }
+			if (!player.SGAPly().ConsumeAmmoClip(false)) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }
 			return true;
         }
 
@@ -97,7 +102,8 @@ namespace SGAmod.Items.Weapons
 			forcedreload = false;
 			item.noUseGraphic = false;
 
-			if (altfired && sgaplayer.ammoLeftInClip > 0) {
+			if (altfired && sgaplayer.ConsumeAmmoClip(false))
+			{
 				item.useAnimation = 5;
 				item.useTime = 5;
 				item.useStyle = 5;
@@ -112,7 +118,7 @@ namespace SGAmod.Items.Weapons
 				item.UseSound = SoundID.Item38;
 				item.channel = false;
 				item.shoot = 10;
-				if (sgaplayer.ammoLeftInClip < 1) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }
+				if (!sgaplayer.ConsumeAmmoClip(false)) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }
 			}
 			return true;
 		}
@@ -132,9 +138,9 @@ namespace SGAmod.Items.Weapons
 			//base.Shoot(player,ref position,ref speedX,ref speedY,ref type,ref damage,ref knockBack);
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 
-			if (!altfired && sgaplayer.ammoLeftInClip > 0)
+			if (!altfired && sgaplayer.ConsumeAmmoClip(false))
 			{
-				sgaplayer.ammoLeftInClip -= 1;
+				sgaplayer.ConsumeAmmoClip(true);
 				Projectile proj = new Projectile();
 				proj.SetDefaults(type);
 
@@ -148,7 +154,8 @@ namespace SGAmod.Items.Weapons
 				}
 			}
 
-			if (sgaplayer.ammoLeftInClip == 0 || forcedreload) {
+			if (!sgaplayer.ConsumeAmmoClip(false) || forcedreload)
+			{
 				player.itemTime = 50;
 				player.itemAnimation = 50;
 				if (forcedreload) {
@@ -170,7 +177,7 @@ namespace SGAmod.Items.Weapons
 			//if (sgaplayer.ammoLeftInClip > 0)
 			//{
 			//}
-			return (sgaplayer.ammoLeftInClip > 0);
+			return (sgaplayer.ConsumeAmmoClip(false));
 		}
 
 
@@ -227,7 +234,7 @@ namespace SGAmod.Items.Weapons
 			Player player = Main.player[projectile.owner];
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			int ownedproj = player.ownedProjectileCounts[mod.ProjectileType("RevolverTarget")];
-			if (!target.HasBuff(mod.BuffType("Targeted")) && !target.friendly && sgaplayer.ammoLeftInClip > 0 && ownedproj < 6 && projectile.ai[0] < 1 && (Collision.CanHitLine(new Vector2(target.Center.X, target.Center.Y), 1, 1, new Vector2(player.Center.X, player.Center.Y), 1, 1))) {
+			if (!target.HasBuff(mod.BuffType("Targeted")) && !target.friendly && sgaplayer.ConsumeAmmoClip(false) && ownedproj < 6 && projectile.ai[0] < 1 && (Collision.CanHitLine(new Vector2(target.Center.X, target.Center.Y), 1, 1, new Vector2(player.Center.X, player.Center.Y), 1, 1))) {
 				return true;
 			}
 			return false;
@@ -243,7 +250,7 @@ namespace SGAmod.Items.Weapons
 			int thisone = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, mod.ProjectileType("RevolverTarget"), 0, 0f, projectile.owner, 0.0f, 0f);
 			Main.projectile[thisone].ai[0] = target.whoAmI;
 			Main.projectile[thisone].netUpdate = true;
-			sgaplayer.ammoLeftInClip -= 1;
+			sgaplayer.ConsumeAmmoClip();
 			//Main.PlaySound(mod.GetSoundSlot(SoundType.Custom, "Sounds/Custom/Wide_Beam_Shot"),(int)Main.player[projectile.owner].position.X,(int)Main.player[projectile.owner].position.Y,1,1.15f,((float)ownedproj)/4f);
 			//Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Wide_Beam_Shot").WithVolume(1.1f).WithPitchVariance(.25f));
 			Main.PlaySound(SoundLoader.customSoundType, (int)Main.player[projectile.owner].position.X, (int)Main.player[projectile.owner].position.Y, mod.GetSoundSlot(SoundType.Custom, "Sounds/Custom/Wide_Beam_Shot"), 1.15f, ((float)-0.4 + (ownedproj) / 6f));
@@ -451,7 +458,7 @@ namespace SGAmod.Items.Weapons
 			forcedreload = false;
 			item.noUseGraphic = false;
 
-			if (altfired && sgaplayer.ammoLeftInClip > 0)
+			if (altfired && sgaplayer.ConsumeAmmoClip(false))
 			{
 				item.useAnimation = 2000;
 				item.useTime = 10;
@@ -462,7 +469,7 @@ namespace SGAmod.Items.Weapons
 				item.useTime = 40;
 				item.useAnimation = 40;
 				item.UseSound = SoundID.Item38;
-				if (sgaplayer.ammoLeftInClip < 1) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }
+				if (!sgaplayer.ConsumeAmmoClip(false)) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }
 			}
 			return true;
 		}
@@ -484,7 +491,7 @@ namespace SGAmod.Items.Weapons
 				speedY = perturbedSpeed.Y;
 				Main.PlaySound(SoundID.Item38, player.Center);
 			}
-			if (sgaplayer.ammoLeftInClip == 0 || forcedreload)
+			if (!sgaplayer.ConsumeAmmoClip(false) || forcedreload)
 			{
 				player.itemTime = 40;
 				player.itemAnimation = 40;
@@ -493,7 +500,7 @@ namespace SGAmod.Items.Weapons
 				//Main.projectile[thisone].rotation=(new Vector2(speedX,speedY)).ToRotation();
 				return !forcedreload;
 			}
-			return (sgaplayer.ammoLeftInClip > 0);
+			return (sgaplayer.ConsumeAmmoClip(false));
 		}
 
 
@@ -575,7 +582,7 @@ namespace SGAmod.Items.Weapons
 				item.useAnimation = 30;
 				item.UseSound = SoundID.Item38;
 			}
-			if (sgaplayer.ammoLeftInClip < 1) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }
+			if (!sgaplayer.ConsumeAmmoClip(false)) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }
 			return true;
 		}
 
@@ -588,7 +595,7 @@ namespace SGAmod.Items.Weapons
 		{
 			//base.Shoot(player,ref position,ref speedX,ref speedY,ref type,ref damage,ref knockBack);
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-			sgaplayer.ammoLeftInClip -= 1;
+			sgaplayer.ConsumeAmmoClip();
 			if (player.altFunctionUse == 2)
 			{
 				damage = (int)(damage * 0.5f);
@@ -607,14 +614,14 @@ namespace SGAmod.Items.Weapons
 				Main.PlaySound(SoundID.Item38, player.Center);
 				int thisoned = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, Main.myPlayer);
 			}
-			if (sgaplayer.ammoLeftInClip == 0 || forcedreload)
+			if (!sgaplayer.ConsumeAmmoClip(false) || forcedreload)
 			{
 				player.itemTime = 40;
 				player.itemAnimation = 40;
 				int thisone = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, RevolverID, 0, knockBack, Main.myPlayer, 0.0f, 0f);
 				return !forcedreload;
 			}
-			return (sgaplayer.ammoLeftInClip > 0);
+			return (sgaplayer.ConsumeAmmoClip(false));
 		}
 
 
@@ -745,7 +752,11 @@ namespace SGAmod.Items.Weapons
 			this.tex = tex;
 			this.timeLeft = timeLeft;
 		}
-		public override bool CloneNewInstances => true;
+        public override bool CanDamage()
+        {
+            return false;
+        }
+        public override bool CloneNewInstances => true;
 
 		public static void SetupRevolverHoldingTypes()
         {
@@ -753,6 +764,8 @@ namespace SGAmod.Items.Weapons
 			SGAmod.Instance.AddProjectile("TheJacobReloading", new ClipWeaponReloading("SGAmod/Items/Weapons/TheJacob",150));
 			SGAmod.Instance.AddProjectile("DragonRevolverReloading", new ClipWeaponReloading("SGAmod/Items/Weapons/DragonRevolver",200));
 			SGAmod.Instance.AddProjectile("GuerrillaPistolReloading", new ClipWeaponReloading("SGAmod/HavocGear/Items/Weapons/GuerrillaPistol"));
+			SGAmod.Instance.AddProjectile("GunarangReloading", new ClipWeaponReloading("SGAmod/Items/Weapons/Gunarang"));
+
 		}
 
 		public override bool Autoload(ref string name)
@@ -848,6 +861,262 @@ namespace SGAmod.Items.Weapons
 
 
 	}
+
+		public class Gunarang : RevolverBase
+	{
+		public override int RevolverID => mod.ProjectileType("GunarangReloading");
+		public override void SetStaticDefaults()
+		{
+			Tooltip.SetDefault("Throws the gun, bounces off walls once, shoots at enemies it hits\n'When the gun just gets a little loose...'");
+			DisplayName.SetDefault("Gunarang");
+			SGAmod.UsesClips.Add(item.type, 6);
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 10;
+			item.height = 10;
+			item.damage = 60;
+			item.ranged = true;
+			item.noMelee = true;
+			item.useTurn = true;
+			item.noUseGraphic = true;
+			item.useAnimation = 15;
+			item.useTime = 15;
+			item.useStyle = 1;
+			item.knockBack = 1f;
+			item.UseSound = SoundID.Item1;
+			item.autoReuse = false;
+			item.maxStack = 1;
+			item.value = Item.buyPrice(gold: 5);
+			item.rare = ItemRarityID.LightPurple;
+			item.shoot = ModContent.ProjectileType<SpecterangProj>();
+			item.shootSpeed = 10f;
+			item.useAmmo = AmmoID.Bullet;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<GunarangProj>()] > 0)
+				return false;
+
+			item.UseSound = SoundID.Item1;
+			item.useTime = 15;
+			item.useAnimation = 15;
+			item.noUseGraphic = true;
+
+			return base.CanUseItem(player);
+		}
+
+		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
+		{
+			add -= player.rangedDamage;
+			add += (player.meleeDamage + player.rangedDamage) / 2f;
+			base.ModifyWeaponDamage(player, ref add, ref mult, ref flat);
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			base.ModifyTooltips(tooltips);
+			TooltipLine tt = tooltips.FirstOrDefault(x => x.Name == "Damage" && x.mod == "Terraria");
+			if (tt != null)
+			{
+				string[] thetext = tt.text.Split(' ');
+				string newline = "";
+				List<string> valuez = new List<string>();
+				foreach (string text2 in thetext)
+				{
+					valuez.Add(text2 + " ");
+				}
+				valuez.RemoveAt(1);
+				valuez.Insert(1, "Melee/Ranged ");
+				foreach (string text3 in valuez)
+				{
+					newline += text3;
+				}
+				tt.text = newline;
+			}
+
+			tt = tooltips.FirstOrDefault(x => x.Name == "CritChance" && x.mod == "Terraria");
+			if (tt != null)
+			{
+				string[] thetext = tt.text.Split(' ');
+				string newline = "";
+				List<string> valuez = new List<string>();
+				int counter = 0;
+				foreach (string text2 in thetext)
+				{
+					counter += 1;
+					if (counter > 1)
+						valuez.Add(text2 + " ");
+				}
+				int thecrit = Main.GlobalTime % 3f >= 1.5f ? Main.LocalPlayer.meleeCrit : Main.LocalPlayer.rangedCrit;
+				string thecrittype = Main.GlobalTime % 3f >= 1.5f ? "Melee " : "Ranged ";
+				valuez.Insert(0, thecrit + "% " + thecrittype);
+				foreach (string text3 in valuez)
+				{
+					newline += text3;
+				}
+				tt.text = newline;
+			}
+		}
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			SGAPlayer sgaplayer = player.SGAPly();
+
+			if (!sgaplayer.ConsumeAmmoClip(false) || forcedreload)
+			{
+				Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, RevolverID, 0, knockBack, Main.myPlayer, 0.0f, 0f);
+				return !forcedreload;
+			}
+			if (sgaplayer.ConsumeAmmoClip(false))
+			{
+				int thisone = Projectile.NewProjectile(position.X, position.Y, speedX / player.meleeSpeed, speedY / player.meleeSpeed, ModContent.ProjectileType<GunarangProj>(), damage, knockBack, Main.myPlayer);
+				(Main.projectile[thisone].modProjectile as GunarangProj).ammoType = type;
+				Main.projectile[thisone].netUpdate = true;
+			}
+			return false;
+		}
+
+	}
+
+	public class GunarangProj : SpecterangProj
+	{
+		protected override int ReturnTime => 30;
+		protected override int ReturnTimeNoSlow => 70;
+		protected override float SolidAmmount => 6f;
+		public int ammoType = -1;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Gunarang");
+		}
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+			ammoType = reader.ReadInt32();
+		}
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+			writer.Write(ammoType);
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Gunarang"); }
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.width = 24;
+			projectile.height = 24;
+			projectile.penetrate = -1;
+			projectile.melee = true;
+			projectile.scale = 1f;
+			projectile.extraUpdates = 0;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+			projectile.tileCollide = true;
+		}
+
+		public override void AI()
+        {
+            base.AI();
+
+			Player owner = Main.player[projectile.owner];
+
+			if (owner != null && owner.active)
+			{
+				if (projectile.ai[1] > 0)
+				{
+					NPC target = Main.npc[(int)projectile.ai[1] - 1];
+					if (target != null && target.active)
+					{
+						if (projectile.ai[0] % 15 == 0)
+						{
+
+							int ammotype = (int)owner.GetModPlayer<SGAPlayer>().myammo;
+							if (ammotype > 0 && owner.HasItem(ammotype))
+							{
+								Item ammo2 = new Item();
+								ammo2.SetDefaults(ammotype);
+								int ammo = ammo2.shoot;
+								int damageproj = projectile.damage;
+								float knockbackproj = projectile.knockBack;
+								float sppez = 16f;
+								if (ammo2.modItem != null)
+									ammo2.modItem.PickAmmo(owner.HeldItem, owner, ref ammo, ref sppez, ref projectile.damage, ref projectile.knockBack);
+								int type = ammo;
+
+								if (owner.SGAPly().ConsumeAmmoClip())
+								{
+									Projectile.NewProjectile(projectile.Center, Vector2.Normalize(target.Center - projectile.Center) * 16f, type, projectile.damage, projectile.knockBack,projectile.owner);
+
+									SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 41);
+									if (sound != null)
+										sound.Pitch += 0.50f;
+								}
+							}
+
+						}
+                    }
+                    else
+                    {
+						if (projectile.ai[1] > 0)
+						projectile.ai[1] = 0;
+                    }
+
+				}
+			}
+		}
+
+        public override bool CanDamage()
+		{
+			return true;
+		}
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+			projectile.ai[1] = target.whoAmI+1;
+
+			Vector2 angledif = Vector2.Normalize(target.Center - projectile.Center);
+
+			float leftOrRight = 1;
+
+			if (angledif.ToRotation() - projectile.velocity.ToRotation() > 0)
+				leftOrRight = -1;
+
+			projectile.velocity = projectile.velocity.RotatedBy(Main.rand.NextFloat(-MathHelper.Pi / 10f, MathHelper.Pi / 10f) +leftOrRight*MathHelper.PiOver2) *1f;
+			projectile.netUpdate = true;
+		}
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+			Main.PlaySound(SoundID.Item10, projectile.Center);
+			if (projectile.velocity.X != oldVelocity.X)
+			{
+				projectile.velocity.X = -oldVelocity.X;
+			}
+			if (projectile.velocity.Y != oldVelocity.Y)
+			{
+				projectile.velocity.Y = -oldVelocity.Y;
+			}
+			projectile.tileCollide = false;
+			projectile.netUpdate = true;
+			return false;
+        }
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D tex = Main.projectileTexture[projectile.type];
+			Texture2D tex2 = ModContent.GetTexture("SGAmod/Items/GlowMasks/Gunarang_Glow");
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, tex.Size() / 2f, new Vector2(1f, 1f) * projectile.scale, default, 0);
+			spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, Color.White * 1f, projectile.rotation, tex.Size() / 2f, new Vector2(1f, 1f) * projectile.scale, default, 0);
+
+			return false;
+		}
+
+	}
+
 }
 namespace SGAmod.HavocGear.Items.Weapons
 {

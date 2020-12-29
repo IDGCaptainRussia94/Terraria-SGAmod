@@ -12,7 +12,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blazewyrm Helm");
-			Tooltip.SetDefault("1% increased Melee Apocalyptical Chance\n16% faster melee speed and melee damage");
+			Tooltip.SetDefault("1% increased Melee Apocalyptical Chance\n20% faster melee speed and 16% more melee damage");
 		}
 		public override void SetDefaults()
 		{
@@ -32,7 +32,7 @@ namespace SGAmod.Items.Armors
 		public override void UpdateEquip(Player player)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod,typeof(SGAPlayer).Name) as SGAPlayer;
-			player.meleeSpeed += 0.16f;
+			player.meleeSpeed += 0.20f;
 			player.meleeDamage += 0.16f;
 			sgaplayer.apocalypticalChance[0] += 1.0;
 		}

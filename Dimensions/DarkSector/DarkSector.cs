@@ -23,7 +23,6 @@ using SGAmod.Buffs;
 
 namespace SGAmod.Dimensions
 {
-
     public abstract class AbstractCloneable : ICloneable
     {
         public object Clone()
@@ -88,7 +87,7 @@ namespace SGAmod.Dimensions
                     float add1 = ((float)Math.Cos(atime + position.Y / 20f) * 25f);
                     float add2 = ((float)Math.Sin(atime / 1.25f + position.X / 30f) * 19f);
                     float alpha2 = (float)Math.Sin(((-atime2 * 0.25f)+((add1+add2) / 40f)));
-                    float alpha = MathHelper.Clamp(alpha2, SGAWorld.darknessVision ? 0.1f : 0.25f, SGAWorld.darknessVision ? 0.35f : 0.85f)/5f;
+                    float alpha = MathHelper.Clamp(alpha2, myDarkSector.hasCompass ? 0.1f : 0.25f, myDarkSector.hasCompass ? 0.35f : 0.85f)/5f;
 
                     Vector2 scale = new Vector2(1f + (float)Math.Sin(atime * 1.25f + (position.X - position.Y)/10f)*0.5f, 1f + (float)Math.Sin(atime + (position.Y + position.X) / 10f) * 0.5f);
                     Main.spriteBatch.Draw(tex, (position.ToVector2()*16)-Main.screenPosition, default, Color.White * alpha, 0, size, scale*myDarkSector.scaleSize, SpriteEffects.None, 0f);
@@ -120,6 +119,7 @@ namespace SGAmod.Dimensions
         public Vector4 BoundingBox;
         public int scaleSize = 2;
         private int flavortext;
+        public bool hasCompass = false;
         Task initTask;
 
         public DarkSector(int x, int y, Func<DarkSector, int, int, int, bool> growthconditions = default, int seed = default,int scaleSize = 2,int flavortext = 1)
@@ -157,7 +157,6 @@ namespace SGAmod.Dimensions
 
         private void DarkSectorGen()
         {
-
                 System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
                 if (flavortext == 2)
                     Main.NewText("Beginning Dark Sector Generation");
@@ -174,7 +173,7 @@ namespace SGAmod.Dimensions
             {
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    Idglib.Chat("A Darkness emerges from beneath the folds existance...", 120, 15, 15);
+                    Idglib.Chat("A Darkness emerges from beneath the folds existence...", 120, 15, 15);
                 }
 
             }
@@ -239,6 +238,8 @@ namespace SGAmod.Dimensions
         {
             if (!done)
                 return;
+
+            hasCompass = (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Consumable.CaliburnCompess>() || Main.LocalPlayer.HasItem(ModContent.ItemType<Items.Consumable.CaliburnCompess>())) && SGAWorld.darknessVision;
 
             if (DarkSectorZone(Main.LocalPlayer))
             {

@@ -233,7 +233,7 @@ namespace SGAmod.Items.Pets
                     {
                         //Main.player[i].AddBuff(BuffID.HeartLamp, 2);
                         if (!Main.player[i].HasBuff(BuffID.StarInBottle))
-                            Main.player[i].manaRegenBonus += 2;
+                            Main.player[i].manaRegenBonus += 25;
                     }
                 }
             }

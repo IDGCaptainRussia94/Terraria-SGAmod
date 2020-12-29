@@ -19,30 +19,66 @@ using Terraria.UI;
 
 namespace SGAmod
 {
+	[Label("SGA Server Options")]
 	public class SGAConfig : ModConfig
 	{
 		public static SGAConfig Instance;
 		// You MUST specify a ConfigScope.
 		public override ConfigScope Mode => ConfigScope.ServerSide;
 
+		[Header("Vanilla Changes")]
 		[Label("Improved Golem")]
 		[Tooltip("Enables/Disables the changed Golem fight, this is presented as an option in the case of other mods who alter golem, to avoid issues")]
 		[ReloadRequired]
 		[DefaultValue(true)]
 		public bool GolemImprovement { get; set; }
 
+		[Label("Lethal Drowning")]
+		[Tooltip("Enables/Disables the gradually increased damage taken after 5 seconds of drowning, which only resets when your breath fully recovers")]
+		[ReloadRequired]
+		[DefaultValue(true)]
+		public bool DrowningChange { get; set; }
+
+		[Label("Nerfed Mana Regen Potion")]
+		[Tooltip("Enables/Disables the nerfed Mana Regen")]
+		[ReloadRequired]
+		[DefaultValue(true)]
+		public bool ManaPotionChange { get; set; }
 	}
 
+	[Label("SGA Client Options")]
 	public class SGAConfigClient : ModConfig
 	{
 		public static SGAConfigClient Instance;
 		// You MUST specify a ConfigScope.
 		public override ConfigScope Mode => ConfigScope.ClientSide;
 
+
+		//[Header("$Mods.BossChecklist.Configs.Header.BossLogUI")]
+
 		[Label("Hellion Privacy")]
 		[Tooltip("Enables/Disables Hellion refering to the player by their computer login name (will refer to local player name when on)")]
 		[DefaultValue(false)]
 		public bool HellionPrivacy { get; set; }
+
+		[Label("Epic Apocalypticals")]
+		[Tooltip("Enables/Disables The TF2 Crit sound and shockwave effect on Apocalypticals; when off, it only displays the text")]
+		[DefaultValue(true)]
+		public bool EpicApocalypticals { get; set; }
+
+		[Header("Performance")]
+		[Label("Fog Detail")]
+		[Tooltip("More is more detailed, but also more demanding")]
+		[Increment(1)]
+		[Range(5, 100)]
+		[DefaultValue(30)]
+		[Slider]
+		public int FogDetail { get; set; }
+
+		[Label("Murk-lite")]
+		[Tooltip("Disables the fog from drawing during Murk's fight, and uses a dust indicator instead")]
+		[DefaultValue(true)]
+		public bool Murklite { get; set; }
 
 		[Label("Extra Blending Details")]
 		[Tooltip("Enables/Disables Additive Blending; may improve performance")]
@@ -53,11 +89,6 @@ namespace SGAmod
 		[Tooltip("Enables/Disables The Solar Dye on the rocks shot by the Lava Rocks Gun, may improve performance")]
 		[DefaultValue(false)]
 		public bool LavaBlending { get; set; }
-
-		[Label("Epic Apocalypticals")]
-		[Tooltip("Enables/Disables The TF2 Crit sound and shockwave effect on Apocalypticals; when off, it only displays the text")]
-		[DefaultValue(true)]
-		public bool EpicApocalypticals { get; set; }
 
 	}
 

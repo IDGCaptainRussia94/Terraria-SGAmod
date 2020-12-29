@@ -10,6 +10,8 @@ using Terraria.ModLoader;
 using Idglibrary;
 using SGAmod.Projectiles;
 using Terraria.Graphics.Shaders;
+using SGAmod.Effects;
+using System.Linq;
 
 namespace SGAmod.NPCs.Wraiths
 {
@@ -409,11 +411,23 @@ namespace SGAmod.NPCs.Wraiths
 
 		public override string BossHeadTexture => "Terraria/Projectile_538";
 
-		public override bool CheckDead()
+        public override bool CheckActive()
+        {
+            return npc.life>0;
+        }
+
+        public override bool CheckDead()
 		{
 			if (warninglevel < 70)
+            {
+				npc.life = 1;
+				npc.active = true;
+				return false;
+            }
+			return true;
+			/*if (warninglevel < 70)
 				Idglib.Chat("I don't appericate being 1-shotted. Piss off.", 25, 25, 80);
-			return (warninglevel > 69);
+			return (warninglevel > 69);*/
 		}
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -1240,63 +1254,45 @@ namespace SGAmod.NPCs.Wraiths
 			}
 
 
-			if (npc.ai[3]==ItemID.VortexBreastplate){
+					if (npc.ai[3] == ItemID.VortexBreastplate)
+					{
 
-						if (npc.ai[0] % 800 == 600 && npc.ai[0] > 400)
+						if (npc.ai[0] % 900 == 600 && npc.ai[0] > 400)
 						{
-							(myowner.modNPC as LuminiteWraith).stopmovement = 280;
+							(myowner.modNPC as LuminiteWraith).stopmovement = 380;
 							myowner.netUpdate = true;
 						}
 
-						if (npc.ai[0]%800>600 && npc.ai[0]%4==0){
-				for (int a = 0; a < 60; a++){
-				Vector2 randomcircle=new Vector2(Main.rand.Next(-8000,8000),Main.rand.Next(-8000,8000)); randomcircle.Normalize();
-				Vector2 vecr=randomcircle*2500;
-				vecr*=(1f-(800f/(npc.ai[0]%800)));
+						if (npc.ai[0] % 900 > 600 && npc.ai[0] % 4 == 0)
+						{
+							for (int a = 0; a < 60; a++)
+							{
+								Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+								Vector2 vecr = randomcircle * 2500;
+								vecr *= (1f - (900f / (npc.ai[0] % 900)));
 
-					int num622 = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y)+vecr, 0, 0, 185, 0f, 0f, 100, default(Color), 1f);
-					Main.dust[num622].velocity *= 1f;
+								int num622 = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y) + vecr, 0, 0, 185, 0f, 0f, 100, default(Color), 1f);
+								Main.dust[num622].velocity *= 1f;
 
-					Main.dust[num622].noGravity = true;
-					Main.dust[num622].color=Main.hslToRgb((float)(Main.GlobalTime/5)%1, 0.9f, 1f);
-					Main.dust[num622].color.A=10;
-					Main.dust[num622].velocity.X = npc.velocity.X/3 + (Main.rand.Next(-50, 51) * 0.005f);
-					Main.dust[num622].velocity.Y = npc.velocity.Y/3 + (Main.rand.Next(-50, 51) * 0.005f);
-					Main.dust[num622].alpha = 100;;
-				}
-			}
-			if (npc.ai[0]%800==799){
+								Main.dust[num622].noGravity = true;
+								Main.dust[num622].color = Main.hslToRgb((float)(Main.GlobalTime / 5) % 1, 0.9f, 1f);
+								Main.dust[num622].color.A = 10;
+								Main.dust[num622].velocity.X = npc.velocity.X / 3 + (Main.rand.Next(-50, 51) * 0.005f);
+								Main.dust[num622].velocity.Y = npc.velocity.Y / 3 + (Main.rand.Next(-50, 51) * 0.005f);
+								Main.dust[num622].alpha = 100; ;
+							}
+						}
+						if (npc.ai[0] % 900 == 600)
+						{
+							//SoundEffectInstance sound;
+							Main.PlaySound(SoundID.DD2_BookStaffCast, (int)P.Center.X, (int)P.Center.Y);
 
-							Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 122, 1f, 0f);
+							Projectile.NewProjectile(P.Center, Vector2.Zero, ModContent.ProjectileType<ProjectileLWraithGravity>(), 200, 0);
+						}
+					}
 
-							for (int i = 0; i < Main.maxPlayers; i++)
-			{
-			Player ply=Main.player[i];
-								if (ply != null && ply.active && !ply.dead)
-								{
-									ply.AddBuff(BuffID.VortexDebuff, 60 * 5);
-
-									for (int a = 0; a < 60; a++)
-									{
-										Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-
-										int num622 = Dust.NewDust(new Vector2(ply.Center.X, ply.Center.Y), 0, 0, 226, randomcircle.X * 8f, randomcircle.Y * 8f, 100, default(Color), 2f);
-										Main.dust[num622].velocity *= 1f;
-
-										Main.dust[num622].scale = 1.5f;
-										Main.dust[num622].noGravity = true;
-										Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
-									}
-								}
-
-			}
-
-			}
-
-
-			}
-
-			if (npc.ai[3]==ItemID.SolarFlareBreastplate){
+					if (npc.ai[3] == ItemID.SolarFlareBreastplate)
+					{
 
 						if (npc.ai[0] % 900 == 600 && npc.ai[0] > 400)
 						{
@@ -1304,55 +1300,68 @@ namespace SGAmod.NPCs.Wraiths
 							myowner.netUpdate = true;
 						}
 
-						if (npc.ai[0]%900>600 && npc.ai[0]%4==0){
+						if (npc.ai[0] % 900 > 600 && npc.ai[0] % 4 == 0)
+						{
 							for (int a = 0; a < 40; a++)
 							{
 								Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
 								Vector2 vecr = randomcircle * 6000;
-								vecr *=(1f-(900f/(npc.ai[0]%900)));
+								vecr *= (1f - (900f / (npc.ai[0] % 900)));
 
-					int num622 = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y)+vecr, 0, 0, 6, 0f, 0f, 100, default(Color), 2.5f);
-					Main.dust[num622].velocity *= 1f;
+								int num622 = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y) + vecr, 0, 0, 6, 0f, 0f, 100, default(Color), 2.5f);
+								Main.dust[num622].velocity *= 1f;
 
-					Main.dust[num622].noGravity = true;
-				}
-			}
+								Main.dust[num622].noGravity = true;
+							}
+						}
 
-			if (npc.ai[0]%900<160 && npc.ai[0]%4==0 && npc.ai[0]>450){
-			List<Projectile> itz=Idglib.Shattershots(new Vector2(npc.Center.X,npc.Center.Y),P.position,new Vector2(P.width,P.height),mod.ProjectileType("HeatWave"),70,25f,30,1,true,0,false,200);
-			itz[0].friendly=false; itz[0].hostile=true;
-			itz[0].alpha = 50;
-			itz[0].tileCollide = false;
-			//itz[0].aiStyle=0;
-			}
+						if (npc.ai[0] % 900 < 160 && npc.ai[0] % 4 == 0 && npc.ai[0] > 450)
+						{
+							List<Projectile> itz = Idglib.Shattershots(new Vector2(npc.Center.X, npc.Center.Y), P.position, new Vector2(P.width, P.height), mod.ProjectileType("HeatWave"), 70, 25f, 30, 1, true, 0, false, 200);
+							itz[0].friendly = false; itz[0].hostile = true;
+							itz[0].alpha = 50;
+							itz[0].tileCollide = false;
+							//itz[0].aiStyle=0;
+						}
 
-			if (npc.ai[0]%900==899){
+						if (npc.ai[0] % 900 == 899)
+						{
 
 							Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 74, 1f, 0f);
-							for (int a = 0; a < 60; a++){
-				Vector2 randomcircle=new Vector2(Main.rand.Next(-8000,8000),Main.rand.Next(-8000,8000)); randomcircle.Normalize();
+							for (int a = 0; a < 60; a++)
+							{
+								Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
 
-					int num622 = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y), 0, 0, mod.DustType("HotDust"), randomcircle.X*8f, randomcircle.Y*8f, 100, default(Color), 3f);
-								Main.dust[num622].velocity = randomcircle*20f;
+								int num622 = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y), 0, 0, mod.DustType("HotDust"), randomcircle.X * 8f, randomcircle.Y * 8f, 100, default(Color), 3f);
+								Main.dust[num622].velocity = randomcircle * 20f;
 
-						Main.dust[num622].scale = 2f;
-						Main.dust[num622].noGravity=true;
-				}
+								Main.dust[num622].scale = 2f;
+								Main.dust[num622].noGravity = true;
+							}
 
-			}
+						}
 
 
-			}
-					if (npc.ai[3] == ItemID.NebulaBreastplate)
+					}
+					if (true)//npc.ai[3] == ItemID.NebulaBreastplate)
 					{
 
-						if (NPC.CountNPCS(NPCID.NebulaBrain)<1 && npc.ai[0] % 40 == 0)
+						if (NPC.CountNPCS(NPCID.DesertDjinn)<2 && npc.ai[0] % (60+NPC.CountNPCS(NPCID.DesertDjinn)*240) == 0)
 						{
-							int newguy = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCID.NebulaBrain);
+							int newguy = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCID.DesertDjinn);
 							NPC newguy2 = Main.npc[newguy];
 							newguy2.knockBackResist = 0f;
 							newguy2.noTileCollide = true;
+							newguy2.noGravity = true;
 							//itz[0].aiStyle=0;
+						}
+						if (npc.ai[0] % 150 == 0)
+                        {
+							List<Projectile> itz = Idglib.Shattershots(new Vector2(npc.Center.X, npc.Center.Y), P.position, new Vector2(P.width, P.height), ProjectileID.NebulaSphere, 40, 16f, 30, 1, true, 0, false, 200);
+							itz[0].friendly = false; itz[0].hostile = true;
+							itz[0].alpha = 50;
+							itz[0].tileCollide = false;
+
 						}
 
 					}
@@ -1934,12 +1943,115 @@ namespace SGAmod.NPCs.Wraiths
 		}
 }
 
+	public class ProjectileLWraithGravity : ProjectilePortal
+	{
+		public float range = 10000f;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Big Auric Gravity");
+		}
 
-	public class ProjectilePortalLWraith : ProjectilePortal
+		public override string Texture
+		{
+			get { return "Terraria/Projectile_" + 658; }
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 32;
+			projectile.height = 32;
+			//projectile.aiStyle = 1;
+			projectile.friendly = true;
+			//projectile.magic = true;
+			//projectile.penetrate = 1;
+			projectile.timeLeft = 300;
+			projectile.tileCollide = false;
+			aiType = -1;
+		}
+        public override bool CanDamage()
+        {
+			return false;
+        }
+
+        public override bool PreKill(int timeLeft)
+        {
+
+			for (int a = 0; a < 150; a++)
+			{
+				Vector2 randomcircle = (Vector2.UnitX.RotatedBy(Main.rand.NextFloat(MathHelper.TwoPi))) * Main.rand.NextFloat(range);
+				Vector2 randomnorm = Vector2.Normalize(randomcircle);
+
+				int num622 = Dust.NewDust(projectile.Center + randomcircle, 0, 0, 226, randomnorm.X * 8f, randomnorm.Y * 8f, 100, default(Color), 1f);
+				Main.dust[num622].velocity *= 1f;
+
+				Main.dust[num622].scale = 1.5f;
+				Main.dust[num622].noGravity = true;
+				Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+			}
+
+			foreach (Player player in Main.player.Where(testplayer => testplayer.active && (testplayer.Center- projectile.Center).Length()<range))
+            {
+				//SoundEffectInstance soun
+				Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 122, 1f, 0f);
+				player.AddBuff(BuffID.VortexDebuff, 60 * 5);
+
+				for (int a = 0; a < 60; a++)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+
+					int num622 = Dust.NewDust(new Vector2(player.Center.X, player.Center.Y), 0, 0, 226, randomcircle.X * 8f, randomcircle.Y * 8f, 100, default(Color), 2f);
+					Main.dust[num622].velocity *= 1f;
+
+					Main.dust[num622].scale = 1.5f;
+					Main.dust[num622].noGravity = true;
+					Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+				}
+
+			}
+
+            return true;
+        }
+
+        public override void AI()
+		{
+			range *= 0.995f;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			List<Vector2>[] trailspots = { new List<Vector2>(), new List<Vector2>() };
+
+			float adder = MathHelper.TwoPi / 64f;
+			for (float fa=0; fa < MathHelper.TwoPi+ adder; fa += adder)
+			{
+				trailspots[0].Add(((Vector2.UnitX.RotatedBy(fa)) * range) + projectile.Center);
+				trailspots[1].Add(((Vector2.UnitX.RotatedBy(fa)) * (range*(1f-(projectile.timeLeft/300f)))) + projectile.Center);
+			}
+			for (int i = 0; i < 2; i += 1) {
+				TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
+				trail.color = delegate (float percent)
+				{
+					return Color.Aquamarine;
+				};
+				trail.projsize = Vector2.Zero;
+				trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
+				trail.trailThickness = (projectile.timeLeft / 200f) * 20f;
+				trail.trailThicknessIncrease = 0;
+				trail.doFade = false;
+				trail.strength = 1f;
+				trail.DrawTrail(trailspots[i], projectile.Center);
+			}
+			return false;
+		}
+	}
+
+
+		public class ProjectilePortalLWraith : ProjectilePortal
 	{
 		public float scale = 0f;
 		public int counter = 0;
 		private int counter2 = 0;
+		Vector2 vectordir=default;
 		public override int takeeffectdelay => 0;
 		public override float damagescale => 1f;
 		public override int penetrate => 1;
@@ -1949,7 +2061,7 @@ namespace SGAmod.NPCs.Wraiths
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Spawner");
+			DisplayName.SetDefault("Big Auric Lightning");
 		}
 
 		public override string Texture
@@ -1973,22 +2085,26 @@ namespace SGAmod.NPCs.Wraiths
 		public override void AI()
 		{
 			Player ply = Main.player[(int)projectile.ai[1]];
-			Vector2 vectordir = ply.Center-projectile.Center;
-			vectordir.Normalize();
+
 			projectile.rotation += 0.1f;
 			counter += 1;
 
-			if (projectile.ai[0] < 9000 ) {
-				projectile.ai[0] = 10000+Main.rand.Next(-300, 300);
+			if (projectile.ai[0] < 9000)
+			{
+				projectile.ai[0] = 10000 + Main.rand.Next(-300, 300);
 				projectile.netUpdate = true;
 			}
 
-			if (projectile.timeLeft > 100 && ply.active) {
+			if (projectile.timeLeft > 100 && ply.active)
+			{
 
-				Vector2 there = (ply.Center + new Vector2(projectile.ai[0]-10000, -200).RotatedByRandom(1.5f))-projectile.Center;
+				Vector2 there = (ply.Center + new Vector2(projectile.ai[0] - 10000, -200).RotatedByRandom(1.5f)) - projectile.Center;
 				there.Normalize();
-				projectile.velocity += there*1f;
+				projectile.velocity += there * 1f;
 				projectile.velocity *= 0.95f;
+
+				vectordir = ply.Center - projectile.Center;
+				vectordir.Normalize();
 			}
 			else
 			{
@@ -1999,24 +2115,24 @@ namespace SGAmod.NPCs.Wraiths
 
 			if (scale > 0)
 			{
-					int dustType = DustID.AncientLight;
-				Vector2 loc = new Vector2(Main.rand.NextFloat(-1,1), Main.rand.NextFloat(-1,1));
+				int dustType = DustID.AncientLight;
+				Vector2 loc = new Vector2(Main.rand.NextFloat(-1, 1), Main.rand.NextFloat(-1, 1));
 				loc.Normalize();
-					int dustIndex = Dust.NewDust(projectile.Center+ loc*16f, 0, 0, dustType);
-					Dust dust = Main.dust[dustIndex];
-					dust.velocity.X = dust.velocity.X + Main.rand.Next(-50, 51) * 0.01f;
-					dust.velocity.Y = dust.velocity.Y + Main.rand.Next(-50, 51) * 0.01f;
-					dust.scale *= (0.75f + Main.rand.Next(-30, 31) * 0.01f) * scale;
-					dust.fadeIn = 0f;
-					dust.noGravity = true;
-					dust.color = Color.Turquoise;
+				int dustIndex = Dust.NewDust(projectile.Center + loc * 16f, 0, 0, dustType);
+				Dust dust = Main.dust[dustIndex];
+				dust.velocity.X = dust.velocity.X + Main.rand.Next(-50, 51) * 0.01f;
+				dust.velocity.Y = dust.velocity.Y + Main.rand.Next(-50, 51) * 0.01f;
+				dust.scale *= (0.75f + Main.rand.Next(-30, 31) * 0.01f) * scale;
+				dust.fadeIn = 0f;
+				dust.noGravity = true;
+				dust.color = Color.Turquoise;
 
 				if (projectile.timeLeft == timeleftfirerate && projectile.ai[0] > 0)
 				{
 					projectile.netUpdate = true;
 					float ai2 = (float)Main.rand.Next(80);
 					float rtoa = vectordir.ToRotation();
-					Projectile.NewProjectile(projectile.Center.X - vectordir.X, projectile.Center.Y - vectordir.Y, vectordir.X*12, vectordir.Y*12, 580, 35, 1f, Main.myPlayer, vectordir.ToRotation(), ai2);
+					Projectile.NewProjectile(projectile.Center.X - vectordir.X, projectile.Center.Y - vectordir.Y, vectordir.X * 12, vectordir.Y * 12, 580, 35, 1f, Main.myPlayer, rtoa, ai2);
 
 					//Player.FindClosest(base.Center, 0, 0);
 
@@ -2040,7 +2156,6 @@ namespace SGAmod.NPCs.Wraiths
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-
 			if (scale > 0)
 			{
 				Texture2D inner = SGAmod.ExtraTextures[98];
@@ -2052,8 +2167,5 @@ namespace SGAmod.NPCs.Wraiths
 			}
 			return false;
 		}
-
 	}
-
 }
-

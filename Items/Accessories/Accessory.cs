@@ -169,6 +169,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.YoyoBag, 1);
 			recipe.AddIngredient(ItemID.RainbowString, 1);
 			recipe.AddIngredient(ItemID.SharkToothNecklace, 1);
+			recipe.AddIngredient(ItemID.DestroyerEmblem, 1);
 			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
 			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 8);
 			recipe.AddTile(TileID.TinkerersWorkbench);
@@ -799,7 +800,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = -12;
 			item.expert = true;
 			item.accessory = true;
-			item.defense = 4;
+			item.defense = 0;
 			//item.damage = 1;
 			item.summon = true;
 			item.knockBack = 1f;
@@ -826,7 +827,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = -12;
 			item.expert = true;
 			item.accessory = true;
-			item.defense = 5;
+			item.defense = 0;
 			//item.damage = 1;
 			item.summon = true;
 			item.knockBack = 1f;
@@ -888,7 +889,6 @@ namespace SGAmod.Items.Accessories
 			item.rare = -12;
 			item.expert = true;
 			item.accessory = true;
-			item.defense = 10;
 			item.damage = 1;
 			item.knockBack = 1f;
 		}
@@ -1045,7 +1045,33 @@ namespace SGAmod.Items.Accessories
 			item.expert = false;
 		}
 	}
+	public class AlkalescentHeart : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Alkalescent Heart");
+			Tooltip.SetDefault("'The Spider Queen's toxic blood pumps through you!'\nDealing crits debuff enemies, doing more damage while debuffed as follows:\nWhile not poisoned, poison enemies\nWhile poisoned, do 5% more damage and next crit Venoms\n" +
+				"While Venomed, do 10% more damage and next crit Acid Burns\nWhile Acid Burned, do 15% more damage" +
+				"\nThese damage boosts do not stack; highest takes priority\nMinions may infict this based off your highest crit chance");
+		}
 
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().alkalescentHeart = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 26;
+			item.defense = 0;
+			item.accessory = true;
+			item.height = 14;
+			item.value = Item.buyPrice(0,2,0,0);
+			item.rare = ItemRarityID.Green;
+			item.expert = true;
+		}
+	}
 	public class CalamityRune : SybariteGem
 	{
 		public override void SetStaticDefaults()
@@ -1181,11 +1207,12 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blink Tech Canister");
-			Tooltip.SetDefault("Enables a short ranged blink teleport\nHold UP and press left or right to teleport in the direction\ngives chaos state for 2 seconds, blinking not possible while you have chaos state\n5% increased Technological Damage\n+1500 Max Electric Charge, +1 passive Electric Charge Rate");
+			Tooltip.SetDefault("Enables a short ranged blink teleport, hide to disable blinking\nHold UP and press left or right to teleport in the direction\ngives chaos state for 2 seconds, blinking not possible while you have chaos state\n5% increased Technological Damage\n+1500 Max Electric Charge, +1 passive Electric Charge Rate");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			if (!hideVisual)
 			player.SGAPly().maxblink += 3;
 			player.SGAPly().techdamage += 0.05f;
 			player.SGAPly().electricChargeMax += 1500;
@@ -1273,7 +1300,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Demon Steppers");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered, and Double Jump ability\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead");
+			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -1298,7 +1325,9 @@ namespace SGAmod.Items.Accessories
 				player.autoJump = true;
 				player.jumpSpeedBoost += 2.4f;
 				player.extraFall += 15;
+				if (!hideVisual)
 				player.doubleJumpCloud = true;
+
 			}
 
 			ModContent.GetInstance<PrimordialSkull>().UpdateAccessory(player, hideVisual);
@@ -1830,7 +1859,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tidal Charm");
-			Tooltip.SetDefault("Doubles your max breath meter\nHaving less breath boosts your defense\nThis boost increases through progression as you beat SGAmod bosses");
+			Tooltip.SetDefault("Increases yout max Breath by 5 bubbles\nHaving less breath boosts your defense\nThis boost increases through progression as you beat SGAmod bosses");
 		}
 
 		public override void SetDefaults()
@@ -1853,7 +1882,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.breathMax += 200;
+			player.breathMax += 100;
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			if (!hideVisual && ((Main.raining) || SGAWorld.downedSharkvern))
 			sgaply.tidalCharm = 2;
@@ -2156,7 +2185,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gunsmith's Belt of Tools");
-			Tooltip.SetDefault("Grants 2 extra bullets per clip while using Revolvers\nRevolvers reload faster\n10% increased Bullet Damage");
+			Tooltip.SetDefault("Grants 2 extra bullets per clip while using Revolvers\nRevolvers reload 20% faster\n10% increased Bullet Damage");
 		}
 
 		public override void SetDefaults()
@@ -2171,7 +2200,7 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-			sgaply.RevolverSpeed += 0.25f;
+			sgaply.RevolverSpeed += 0.20f;
 			sgaply.ammoLeftInClipMax += 2;
 			player.bulletDamage += 0.10f;
 		}
@@ -2569,11 +2598,11 @@ namespace SGAmod.Items.Accessories
 			ModContent.GetInstance<JavelinBundle>().UpdateAccessory(player, hideVisual);
 			sgaply.ninjaSash = Math.Max(sgaply.ninjaSash, 3);
 
-			player.Throwing().thrownCrit += 10;
+			player.Throwing().thrownCrit += 15;//+ 5% from Gi
 			player.Throwing().thrownDamage += 0.25f;//20% + 5% from Gi
 
 			player.meleeDamage += 0.05f; player.rangedDamage += 0.05f; player.magicDamage += 0.05f; player.minionDamage += 0.05f;
-			player.Throwing().thrownCrit += 5; player.rangedCrit += 5; player.magicCrit += 5; player.meleeCrit += 5;
+			player.rangedCrit += 5; player.magicCrit += 5; player.meleeCrit += 5;
 			SGAmod.BoostModdedDamage(player, 0.05f, 5);
 
 			player.meleeSpeed += 0.10f;
@@ -2587,7 +2616,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.MasterNinjaGear, 1);
 			recipe.AddIngredient(ItemID.Gi, 1);
 			recipe.AddIngredient(mod.ItemType("ShinobiShiv"), 1);
-			recipe.AddIngredient(mod.ItemType("JavelinBaseBundle"), 1);
+			recipe.AddIngredient(mod.ItemType("JavelinBundle"), 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
 			recipe.AddTile(TileID.LunarCraftingStation);
@@ -2843,22 +2872,285 @@ namespace SGAmod.Items.Accessories
 		}
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
+			/*ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 4);
 			recipe.AddIngredient(ItemID.MagmaStone, 1);
 			recipe.AddIngredient(ItemID.FrostCore, 1);
 			recipe.AddTile(ItemID.CrystalBall);
 			recipe.SetResult(this, 1);
+			recipe.AddRecipe();*/
+		}
+
+	}
+	public class NormalQuiver : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Normal Quiver");
+			Tooltip.SetDefault("'What? Expecting a MAGIC one?'\n10% increased Arrow Damage");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.arrowDamage += 0.10f;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 2);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+
+	}
+	public class MurkyCharm : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Murky Charm");
+			Tooltip.SetDefault("Reduces the life lost from drowning\nGrants immunity to Murky Depths");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.SGAPly();
+			if (!sgaply.murkyCharm)
+			{
+				sgaply.murkyCharm = true;
+				sgaply.drownRate -= 1;
+				player.buffImmune[ModContent.BuffType<NPCs.Murk.MurkyDepths>()] = true;
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(silver: 25);
+			item.rare = ItemRarityID.Green;
+			item.accessory = true;
+		}
+
+	}
+	public class MagusSlippers : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Magus Slippers");
+			Tooltip.SetDefault("Removes the movement penality from mana regeneration\n'So magical cozy! No wonder mages can focus!'");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.SGAPly();
+			sgaply.magusSlippers = true;
+			//placeholder
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.buyPrice(gold: 2);
+			item.rare = ItemRarityID.Pink;
+			item.accessory = true;
+		}
+	}
+
+	public class DruidicSneakers : MagusSlippers
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Druidic Sneakers");
+			Tooltip.SetDefault("Mana herbs sometimes grow on grass where you walk\nHarvesting them yields Mana Stars\nEffects of Magus Slippers\n'Eco Friendly!");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.SGAPly();
+			base.UpdateAccessory(player, hideVisual);
+			//Just a bit chunk of vanilla code, urgh
+			if (player.velocity.Y == 0f && player.grappling[0] == -1)
+			{
+				int num2 = (int)player.Center.X / 16;
+				int num3 = (int)(player.position.Y + (float)player.height - 1f) / 16;
+				if (Main.tile[num2, num3] == null)
+				{
+					Main.tile[num2, num3] = new Tile();
+				}
+				if (!Main.tile[num2, num3].active() && Main.tile[num2, num3].liquid == 0 && Main.tile[num2, num3 + 1] != null && WorldGen.SolidTile(num2, num3 + 1))
+				{
+					Main.tile[num2, num3].frameY = 0;
+					Main.tile[num2, num3].slope(0);
+					Main.tile[num2, num3].halfBrick(halfBrick: false);
+					if (Main.tile[num2, num3 + 1].type == 2)
+					{
+						if (Main.rand.Next(2) == 0)
+						{
+							Main.tile[num2, num3].active(active: true);
+							Main.tile[num2, num3].type = 3;
+							Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(6, 11));
+							while (Main.tile[num2, num3].frameX == 144)
+							{
+								Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(6, 11));
+							}
+						}
+						else if (Main.rand.Next(6) == 0)
+						{
+							Main.tile[num2, num3].active(active: true);
+							Main.tile[num2, num3].type = (ushort)mod.TileType("ManaHerb");
+							Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(9, 14));
+						}
+						else
+						{
+							Main.tile[num2, num3].active(active: true);
+							Main.tile[num2, num3].type = 73;
+							Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(6, 21));
+							while (Main.tile[num2, num3].frameX == 144)
+							{
+								Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(6, 21));
+							}
+						}
+						if (Main.netMode == 1)
+						{
+							NetMessage.SendTileSquare(-1, num2, num3, 1);
+						}
+					}
+					/*else if (Main.tile[num2, num3 + 1].type == 109)
+					{
+						if (Main.rand.Next(2) == 0)
+						{
+							Main.tile[num2, num3].active(active: true);
+							Main.tile[num2, num3].type = 110;
+							Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(4, 7));
+							while (Main.tile[num2, num3].frameX == 90)
+							{
+								Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(4, 7));
+							}
+						}
+						else
+						{
+							Main.tile[num2, num3].active(active: true);
+							Main.tile[num2, num3].type = 113;
+							Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(2, 8));
+							while (Main.tile[num2, num3].frameX == 90)
+							{
+								Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(2, 8));
+							}
+						}
+						if (Main.netMode == 1)
+						{
+							NetMessage.SendTileSquare(-1, num2, num3, 1);
+						}
+					}
+					else if (Main.tile[num2, num3 + 1].type == 60)
+					{
+						Main.tile[num2, num3].active(active: true);
+						Main.tile[num2, num3].type = 74;
+						Main.tile[num2, num3].frameX = (short)(18 * Main.rand.Next(9, 17));
+						if (Main.netMode == 1)
+						{
+							NetMessage.SendTileSquare(-1, num2, num3, 1);
+						}
+					}*/
+				}
+
+				//placeholder
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.buyPrice(gold: 2);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.FlowerBoots, 1);
+			recipe.AddIngredient(ModContent.ItemType<MagusSlippers>(), 1);
+			recipe.AddIngredient(ItemID.ManaCrystal, 1);
+			recipe.AddIngredient(ItemID.LightShard, 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
 
 	}
-	public class TerraDivingGear : ModItem
+
+	public class EnchantedShieldPolish : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
+			DisplayName.SetDefault("Enchanted Shield Polish");
+			Tooltip.SetDefault("Scoring a Just Block with a shield restores some mana\nThe amount of damage shields reduce is increased by 5%\nYour shields gain 10% more damage and Bashes gain additional Magic damage");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.SGAPly();
+			sgaply.shieldDamageReduce += 0.05f;
+			sgaply.shieldDamageBoost += 0.10f;
+
+			sgaply.enchantedShieldPolish = true;
+			//placeholder
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.buyPrice(gold: 2);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+
+	}
+
+	public class StarCollector : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Star Collector");
+			Tooltip.SetDefault("Picking up Mana stars reduces Mana Sickness by 1 second");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.SGAPly();
+			sgaply.starCollector = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.buyPrice(silver: 30);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+	}
+
+	public class TerraDivingGear : ModItem
+	{
+		protected string allText => Language.GetTextValue("ItemTooltip.ArcticDivingGear") + "\n" + Language.GetTextValue("ItemName.BreathingReed") + " " + Language.GetTextValue("ItemTooltip.BreathingReed") + "\n" +
+			((GetType() == typeof(PrismalDivingGear)) ? Language.GetTextValue("ItemTooltip.FlipperPotion")+"\n" : "") + "Hold DOWN to fall faster in liquids";
+		public override void SetStaticDefaults()
+		{
 			DisplayName.SetDefault("Terra Diving Gear");
-			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.ArcticDivingGear") +"\n"+ Language.GetTextValue("ItemName.BreathingReed")+" "+Language.GetTextValue("ItemTooltip.BreathingReed") +"\n" + Language.GetTextValue("ItemTooltip.FlipperPotion")+"\nHold DOWN to fall faster in liquids");
+			Tooltip.SetDefault(allText);
 		}
 
 		public override void SetDefaults()
@@ -2876,13 +3168,15 @@ namespace SGAmod.Items.Accessories
 			player.accFlipper = true;
 			player.accDivingHelm = true;
 			player.iceSkate = true;
-			player.ignoreWater = true;
 			player.SGAPly().terraDivingGear = true;
 			if (player.controlDown)
 				ModContent.GetInstance<PocketRocks>().UpdateAccessory(player, hideVisual);
 
 			if (player.wet)
 			{
+				if (GetType() == typeof(PrismalDivingGear))
+					Lighting.AddLight((int)player.Center.X / 16, (int)player.Center.Y / 16, 0.75f, 0.2f, 0.95f);
+				else
 				Lighting.AddLight((int)player.Center.X / 16, (int)player.Center.Y / 16, 0.27f, 0.85f, 0.53f);
 			}
 
@@ -2893,13 +3187,145 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.ArcticDivingGear, 1);
 			recipe.AddIngredient(ModContent.ItemType<PocketRocks>(), 1);
 			recipe.AddIngredient(ItemID.BreathingReed, 1);
-			recipe.AddIngredient(ItemID.FlipperPotion, 5);
+			recipe.AddIngredient(ItemID.SoulofLight, 4);
+			recipe.AddIngredient(ItemID.SoulofNight, 4);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
 
 	}
+	public class BottledLiquidEssence : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Bottled Liquid Essence");
+			Tooltip.SetDefault("Improved Life and Mana regen while wet");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = ItemRarityID.Blue;
+			item.value = Item.sellPrice(0, 0, 50, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			if (player.wet)
+			{
+				player.manaRegenBonus += 30;
+				player.lifeRegen += 1;
+			}
+			//ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("BottledMud"), 50);
+			recipe.needLava = true;
+			recipe.needWater = true;
+			recipe.needHoney = true;
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
+	[AutoloadEquip(EquipType.Back)]
+	public class PrismalAirTank : ModItem
+	{
+		internal static sbyte backItem = 0;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Prismal Air Tank");
+			Tooltip.SetDefault("+5 max Breath Bubbles, "+ Language.GetTextValue("ItemTooltip.FlipperPotion")+ "\nImproved Life and Mana regen while wet\nGrants an additional free Action Cooldown Stack while wet");
+			backItem = item.backSlot;
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = ItemRarityID.Lime;
+			item.value = Item.sellPrice(0, 1, 50, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			if (player.SGAPly().airTank)
+				return;
+
+			player.SGAPly().airTank = true;
+			player.breathMax += 100;
+			player.ignoreWater = true;
+			if (player.wet)
+			{
+				player.SGAPly().MaxCooldownStacks += 1;
+				player.manaRegenBonus += 30;
+				player.lifeRegen += 1;
+			}
+			//ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
+			recipe.AddIngredient(mod.ItemType("BottledLiquidEssence"), 1);
+			recipe.AddIngredient(ItemID.FlipperPotion, 5);
+			recipe.AddTile(mod.GetTile("PrismalStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
+
+	[AutoloadEquip(EquipType.Face)]
+	public class PrismalDivingGear : TerraDivingGear
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Prismal Diving Gear");
+			Tooltip.SetDefault(allText+ "\nEffects of Murky Charm and Prismal Air Tank");
+		}
+
+        public override bool DrawHead()
+        {
+			return false;
+        }
+
+        public override void SetDefaults()
+		{
+			item.backSlot = PrismalAirTank.backItem;
+			item.width = 18;
+			item.height = 24;
+			item.rare = ItemRarityID.Yellow;
+			item.value = Item.sellPrice(0, 5, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<PrismalAirTank>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<MurkyCharm>().UpdateAccessory(player, hideVisual);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("TerraDivingGear"), 1);
+			recipe.AddIngredient(mod.ItemType("PrismalAirTank"), 1);
+			recipe.AddIngredient(mod.ItemType("MurkyCharm"), 1);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
 	public class WraithTargetingGamepad : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -3062,51 +3488,78 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fluid Displacer");
-			Tooltip.SetDefault("WIP");
+			Tooltip.SetDefault("Displaces fluids around you, allowing you move through them freely\nConsumes Electric Charge to prevent the player from submerging\nConsumes far more to prevent lava submerging\nTriggers a shield break when Electric Charge runs out\n"+Idglib.ColorText(Color.Red,"Removing this accessory during Shield Break will cause great damage!"));
 		}
 		public override void SetDefaults()
 		{
 			item.width = 32;
 			item.height = 32;
 			item.value = 50000;
-			item.maxStack = 10;
+			item.maxStack = 1;
+			item.accessory = true;
 			item.rare = ItemRarityID.Orange;
 		}
 
-		/*public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			player.SGAPly().tidalCharm = -10;
+			player.SGAPly().ShieldTypeDelay = 5;
+			player.SGAPly().ShieldType = 1;
+		}
 
-			Texture2D inner = ModContent.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 8);
+			recipe.AddIngredient(mod.ItemType("LaserMarker"), 4);
+			recipe.AddIngredient(ItemID.WireBulb, 1);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			Texture2D inner = mod.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
 
 			Vector2 slotSize = new Vector2(52f, 52f);
 			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
 			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
 			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
 
-			spriteBatch.Draw(inner, drawPos, null, Color.White,0, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			spriteBatch.Draw(inner, drawPos, null, Color.White, 0, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, default, default, default, default, null, Main.UIScaleMatrix);
 
-
-			return true;
-		}*/
+			return false;
+		}
 
 		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
 
-			Texture2D inner = ModContent.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
-
 			Vector2 position = item.Center - Main.screenPosition;
+			spriteBatch.Draw(Main.itemTexture[item.type], position, null, alphaColor, rotation, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Texture2D inner = mod.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
+
 
 			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
 
-			spriteBatch.Draw(inner, position, null, alphaColor, rotation, textureOrigin, scale, SpriteEffects.None, 0f);
-			spriteBatch.Draw(Main.itemTexture[item.type], position, null, alphaColor, rotation, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(inner, position, null, Color.White, rotation, textureOrigin, scale*Main.essScale, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
 			return false;
 		}
 
 	}
 
-	public class GraniteMagnet : Items.Weapons.Caliburn.CorrodedShield, IHitScanItem
+	public class GraniteMagnet : Weapons.Shields.CorrodedShield, IHitScanItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -3136,12 +3589,12 @@ namespace SGAmod.Items.Accessories
 
 	}
 
-	public class CobaltMagnet : Items.Weapons.Caliburn.CorrodedShield, IHitScanItem
+	public class CobaltMagnet : GraniteMagnet, IHitScanItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cobalt Magnet");
-			Tooltip.SetDefault("Point at grounded items to quickly attact them from a larger distance\nCan be held out like a torch and used normally by holding shift\nwhile worn:\n-minor increase to item grab radius and grab speed\n-Effects of Celestial Magnet");
+			Tooltip.SetDefault("Point at grounded items to quickly attract them from a larger distance\nCan be held out like a torch and used normally by holding shift\nwhile worn:\n-minor increase to item grab radius and grab speed\n-Effects of Celestial Magnet");
 			Item.staff[item.type] = true;
 		}
 
@@ -3182,7 +3635,6 @@ namespace SGAmod.Items.Accessories
 
 	public class CobaltMagnetProj : GraniteMagnetProj
 	{
-		protected override int itemID => ModContent.ItemType<CobaltMagnet>();
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("CobaltMagnetProj");
@@ -3197,7 +3649,6 @@ namespace SGAmod.Items.Accessories
 
 	public class GraniteMagnetProj : Weapons.Technical.LaserMarkerProj
     {
-		protected virtual int itemID => ModContent.ItemType<GraniteMagnet>();
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("GraniteMagnetProj");
@@ -3218,7 +3669,7 @@ namespace SGAmod.Items.Accessories
 		{
 
 			Player player = Main.player[projectile.owner];
-			bool heldone = player.HeldItem.type != itemID;
+			bool heldone = player.HeldItem.type != mod.ItemType(ItemName);
 			if (projectile.ai[0] > 0 || (player.HeldItem == null || heldone) || player.itemAnimation > 0 || player.dead)
 			{
 				projectile.Kill();

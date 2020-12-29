@@ -187,7 +187,7 @@ namespace SGAmod.Items.Weapons
 			else
 			{
 
-				player.manaRegenDelay = (int)(player.maxRegenDelay * 30);
+				player.manaRegenDelay = (int)Math.Max(player.manaRegenDelay,player.maxRegenDelay * 30);
 
 				if (growsize >= 64f)
 				{
@@ -221,7 +221,7 @@ namespace SGAmod.Items.Weapons
 					}
 				}
 
-				if (((projectile.ai[0] > 0 || player.statMana < 1) || !player.channel) && projectile.ai[1]>1)
+				if (((projectile.ai[0] > 0 || !player.CheckMana(10)) || !player.channel) && projectile.ai[1]>1)
 				{
 					projectile.ai[0] += 1;
 					if (projectile.ai[0] == 1)
@@ -238,8 +238,6 @@ namespace SGAmod.Items.Weapons
 						growsize += 5f;
 					}
 				}
-
-
 				else
 				{
 					if (projectile.ai[0] < 1)

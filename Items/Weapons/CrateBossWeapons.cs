@@ -251,8 +251,8 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class AvariceCoin : ModProjectile
-	{
+	public class AvariceCoin : NPCs.Cratrosity.GlowingGoldCoin
+    {
 
 		int fakeid = ProjectileID.GoldCoin;
 		public int guyihit = -10;
@@ -260,6 +260,19 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Avarice Coin");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.aiStyle = 18;
+			projectile.Throwing().thrown = true;
+			projectile.timeLeft = 300;
+			projectile.penetrate = 3;
+			projectile.tileCollide = true;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			guyihit = -1;
+			cooldown = -1;
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -302,25 +315,6 @@ namespace SGAmod.Items.Weapons
 			projectile.netUpdate = true;
 		}
 
-
-		public override string Texture
-		{
-			get { return "Terraria/Projectile_" + fakeid; }
-		}
-
-		public override void SetDefaults()
-		{
-			projectile.aiStyle = 18;
-			projectile.Throwing().thrown = true;
-			projectile.timeLeft = 300;
-			projectile.penetrate = 3;
-			projectile.tileCollide = true;
-			projectile.friendly = true;
-			projectile.hostile = false;
-			guyihit = -1;
-			cooldown = -1;
-		}
-
 		public override bool PreKill(int timeLeft)
 		{
 			projectile.type = fakeid;
@@ -329,6 +323,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void AI()
 		{
+			projectile.localAI[0] += 1;
 			cooldown -= 1;
 			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
 			if (guyihit > -1)

@@ -125,9 +125,9 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(null, "WraithCoreFragment", 1);
 			recipe.AddRecipeGroup("SGAmod:Tier1HardmodeOre", 10);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 5);
-			recipe.AddIngredient(null, "WraithCoreFragment", 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -189,8 +189,8 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddRecipeGroup("SGAmod:Tier1Ore", 10);
-			recipe.AddIngredient(ItemID.FallenStar, 1);
+			recipe.AddRecipeGroup("SGAmod:Tier1Ore", 15);
+			recipe.AddIngredient(ItemID.FallenStar, 2);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -285,7 +285,7 @@ namespace SGAmod.Items.Consumable
 			;
 			if (underground && !NPC.AnyNPCs(mod.NPCType("SpiderQueen")))
 			{
-				return base.CanUseItem(player);
+				return true;
 			}
 			else
 			{
@@ -434,7 +434,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Nineball");
-			Tooltip.SetDefault("Summons the strongest ice fairy");
+			Tooltip.SetDefault("Summons the strongest ice fairy\nMake sure you don't hit a wall and aim up");
 		}
 		public override void SetDefaults()
 		{
@@ -640,7 +640,7 @@ namespace SGAmod.Items.Consumable
 			if (SGAWorld.darknessVision)
 			{
 				tooltips.Add(new TooltipLine(mod, "CaliburnCompessUpgrade", Idglib.ColorText(Color.MediumPurple, "Upgraded to also point to Dark Sectors in the world")));
-				tooltips.Add(new TooltipLine(mod, "CaliburnCompessUpgrade", Idglib.ColorText(Color.MediumPurple, "Furthermore, darkness in Dark Sectors is reduced")));
+				tooltips.Add(new TooltipLine(mod, "CaliburnCompessUpgrade", Idglib.ColorText(Color.MediumPurple, "Darkness from Dark Sectors is reduced while in your inventory")));
 			}
 		}
 
@@ -781,17 +781,6 @@ namespace SGAmod.Items.Consumable
 		item.noMelee = true; //so the item's animation doesn't do damage
 		item.value = 0;
 		item.UseSound = SoundID.Item8;
-	}
-
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return Color.Aqua;
-
-		}
-
-	public override string Texture
-	{
-		get { return ("Terraria/Item_"+ItemID.SuspiciousLookingEye); }
 	}
 
 

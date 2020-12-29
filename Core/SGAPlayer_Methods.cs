@@ -28,6 +28,8 @@ using Terraria.Utilities;
 using SGAmod.SkillTree;
 using CalamityMod.Projectiles.Ranged;
 using SGAmod.Buffs;
+using Microsoft.Xna.Framework.Audio;
+using SGAmod.Items.Weapons.Shields;
 
 namespace SGAmod
 {
@@ -122,28 +124,67 @@ namespace SGAmod
 				return true;
 			}
 			return false;
-
+			
 		}
 
 		public bool ConsumeElectricCharge(int requiredcharge, int delay, bool damage = false)
 		{
-			if (electricCharge > requiredcharge)
+			int newcharge = (int)Math.Max(requiredcharge * electricChargeCost,1);
+			if (electricCharge > newcharge)
 			{
 				electricdelay = Math.Max(delay * electricChargeReducedDelay, electricdelay);
-				electricCharge -= (int)((float)requiredcharge * electricChargeCost);
+				electricCharge -= newcharge;
 				return true;
 			}
-
-			if (damage && ShieldType > 0 && electricCharge > 0 && electricCharge - requiredcharge < 0)
+			else
 			{
-				electricCharge = 0;
-				electricdelay = 30;
-				player.AddBuff(mod.BuffType("Shieldbreak"), 60 * 5);
-				CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Aquamarine, "Shield Break!", true, false);
+				if (damage && ShieldType > 0 && electricCharge > 0)
+				{
+					electricCharge = 0;
+					electricdelay = 30;
+					player.AddBuff(ModContent.BuffType<ShieldBreak>(), 60 * 5);
+					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Aquamarine, "Shield Break!", true, false);
+					SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)player.Center.X, (int)player.Center.Y, 53);
+					if (sound != null)
+						sound.Pitch -= 0.5f;
+
+					for (int i = 0; i < 20; i += 1)
+					{
+						int dust = Dust.NewDust(new Vector2(player.Center.X - 4, player.Center.Y - 8), 8, 16, 269);
+						Main.dust[dust].scale = 0.50f;
+						Main.dust[dust].noGravity = false;
+						Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
+					}
+
+
+				}
 			}
 
 			return false;
 		}
+
+		public bool HandleFluidDisplacer(int tier)
+        {
+			if (tidalCharm < 0 && ConsumeElectricCharge(tier, 60* tier, true))
+				return true;
+
+
+			return false;
+
+
+		}
+		public bool ConsumeAmmoClip(bool doConsume = true,int ammoCheck = 1)
+        {
+			if (ammoLeftInClip >= ammoCheck)
+			{
+				if (doConsume)
+				ammoLeftInClip -= ammoCheck;
+
+				return true;
+			}
+			return false;
+
+        }
 		public void StackAttack(ref int damage, Projectile proj)
 		{
 
@@ -345,7 +386,13 @@ namespace SGAmod
 				player.GetModPlayer<SGAPlayer>().realIFrames = 30;
 				Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 1f, -0.5f);
 
-				(shield.modProjectile as Items.Weapons.Caliburn.CorrodedShieldProj).JustBlock(blocktime, where, ref damage, damageSourceIndex);
+				(shield.modProjectile as Items.Weapons.Shields.CorrodedShieldProj).JustBlock(blocktime, where, ref damage, damageSourceIndex);
+
+				if (enchantedShieldPolish)
+                {
+					player.statMana = Math.Min(player.statMana + damage, player.statManaMax2);
+					player.ManaEffect(damage);
+				}
 
 				if (diesIraeStone && damageSourceIndex > 0)
                 {
@@ -366,16 +413,17 @@ namespace SGAmod
 			itavect.Normalize();
 
 
-			if (player.HeldItem != null && player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1)
+			if (player.SGAPly().heldShield>=0 && player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1)
 			{
+				int heldShield = player.SGAPly().heldShield;
 
-				if (SGAPlayer.ShieldTypes.ContainsKey(player.HeldItem.type))
-				{
+				//if (SGAPlayer.ShieldTypes.ContainsKey(player.HeldItem.type))
+				//{
 					int foundhim = -1;
 
 					int xxxz = 0;
 					int thetype;
-					SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out thetype);
+					/*SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out thetype);
 					Projectile proj = null;
 					for (xxxz = 0; xxxz < Main.maxProjectiles; xxxz++)
 					{
@@ -385,36 +433,44 @@ namespace SGAmod
 							proj = Main.projectile[xxxz];
 							break;
 						}
-					}
-					if (foundhim > -1)
+					}*/
+					Projectile proj = Main.projectile[heldShield];
+					if (proj.active)
+					foundhim = heldShield;
+
+				if (foundhim > -1)
+				{
+					CorrodedShieldProj modShieldProj = proj.modProjectile as CorrodedShieldProj;
+					if (modShieldProj == null)
+						return false;
+					int blocktime = modShieldProj.blocktimer;
+					bool blocking = modShieldProj.Blocking;
+					if (proj == null || blocktime < 2 || !blocking)
+						return false;
+
+
+
+					Vector2 itavect2 = Main.projectile[foundhim].Center - player.Center;
+					itavect2.Normalize();
+					Vector2 ang1 = Vector2.Normalize(proj.velocity);
+					float diff = Vector2.Dot(itavect, ang1);
+
+
+					if (diff > (proj.modProjectile as CorrodedShieldProj).BlockAnglePublic)
 					{
-						int blocktime = (proj.modProjectile as Items.Weapons.Caliburn.CorrodedShieldProj).blocktimer;
-						if (proj == null || blocktime < 2)
-							return false;
+						if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
+							return true;
 
+						float damageval = 1f - modShieldProj.BlockDamagePublic;
+						damage = (int)(damage * damageval);
 
+						Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
 
-						Vector2 itavect2 = Main.projectile[foundhim].Center - player.Center;
-						itavect2.Normalize();
-						Vector2 ang1 = Vector2.Normalize(proj.velocity);
-						float diff = Vector2.Dot(itavect, ang1);
+						if (!(proj.modProjectile as CorrodedShieldProj).HandleBlock(ref damage, player))
+							return true;
 
-
-						if (diff > (proj.modProjectile as Items.Weapons.Caliburn.CorrodedShieldProj).blockAngle)
-						{
-							if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
-								return true;
-
-
-							float damageval = 0.75f;
-							if (thetype == mod.ProjectileType("CapShieldProj"))
-								damageval = 0.50f;
-							damage = (int)(damage * damageval);
-							Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
-							return false;
-						}
+						return false;
 					}
-
 				}
 
 			}
@@ -521,32 +577,45 @@ namespace SGAmod
 
 		public void CharmingAmuletCode()
 		{
-			if (EnhancingCharm > 0)
+			if (EnhancingCharm > 0 || player.manaRegenBuff)
 			{
 				for (int g = 0; g < Player.MaxBuffs; g += 1)
 				{
-					if (potionsicknessincreaser > 0)
+					if (player.manaRegenBuff && SGAConfig.Instance.ManaPotionChange)
 					{
-						if (player.buffType[g] == BuffID.PotionSickness && player.buffTime[g] > 10)
+						if (player.buffType[g] == BuffID.ManaSickness && player.buffTime[g] > 3)
 						{
-							if (timer % potionsicknessincreaser == 0)
+							if (timer % 4 > 0)
 								player.buffTime[g] += 1;
 						}
 					}
-				}
-
-				if (timer % (EnhancingCharm) == 0)
-				{
-					//longerExpertDebuff
-					for (int i = 0; i < Player.MaxBuffs; i += 1)
+					if (EnhancingCharm>0)
 					{
-						if (player.buffType[i] != BuffID.PotionSickness && player.buffType[i] != mod.BuffType("MatrixBuff") && player.buffType[i] != mod.BuffType("DragonsMight"))
+						if (potionsicknessincreaser > 0)
 						{
-							ModBuff buff = ModContent.GetModBuff(player.buffType[i]);
-							bool isdebuff = Main.debuff[player.buffType[i]];
-							if (player.buffTime[i] > 10 && ((buff != null && ((isdebuff) || !isdebuff)) || buff == null))
+							if (player.buffType[g] == BuffID.PotionSickness && player.buffTime[g] > 10)
 							{
-								player.buffTime[i] += isdebuff ? -1 : 1;
+								if (timer % potionsicknessincreaser == 0)
+									player.buffTime[g] += 1;
+							}
+						}
+					}
+				}
+				if (EnhancingCharm>0)
+				{
+					if (timer % (EnhancingCharm) == 0)
+					{
+						//longerExpertDebuff
+						for (int i = 0; i < Player.MaxBuffs; i += 1)
+						{
+							if (player.buffType[i] != BuffID.PotionSickness && player.buffType[i] != mod.BuffType("MatrixBuff") && player.buffType[i] != mod.BuffType("DragonsMight"))
+							{
+								ModBuff buff = ModContent.GetModBuff(player.buffType[i]);
+								bool isdebuff = Main.debuff[player.buffType[i]];
+								if (player.buffTime[i] > 10 && ((buff != null && ((isdebuff) || !isdebuff)) || buff == null))
+								{
+									player.buffTime[i] += isdebuff ? -1 : 1;
+								}
 							}
 						}
 					}

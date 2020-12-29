@@ -21,16 +21,6 @@ namespace SGAmod.Items.Weapons.Auras
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}
 
-		public override string Texture
-		{
-			get { return ("Terraria/Item_"+ItemID.Flamelash); }
-		}
-
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return Color.DarkRed;
-		}
-
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			base.ModifyTooltips(tooltips);

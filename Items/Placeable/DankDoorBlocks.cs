@@ -20,6 +20,9 @@ namespace SGAmod.Items.Placeable
 			Main.tileSolid[Type] = true;
 			Main.tileNoAttach[Type] = true;
 			Main.tileLavaDeath[Type] = true;
+			TileID.Sets.NotReallySolid[Type] = true;
+			TileID.Sets.DrawsWalls[Type] = true;
+			TileID.Sets.HasOutlines[Type] = true;
 			TileObjectData.newTile.Width = 1;
 			TileObjectData.newTile.Height = 3;
 			TileObjectData.newTile.Origin = new Point16(0, 0);
@@ -51,6 +54,10 @@ namespace SGAmod.Items.Placeable
 		public override void NumDust(int i, int j, bool fail, ref int num)
 		{
 			num = 1;
+		}
+		public override bool HasSmartInteract()
+		{
+			return true;
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -118,6 +125,7 @@ namespace SGAmod.Items.Placeable
 			TileObjectData.addTile(Type);
 			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 			TileID.Sets.HousingWalls[Type] = true; //needed for non-solid blocks to count as walls
+			TileID.Sets.HasOutlines[Type] = true;
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Dank Door");
 			AddMapEntry(new Color(20, 120, 20));

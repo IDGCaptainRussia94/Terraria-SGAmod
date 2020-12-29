@@ -38,6 +38,9 @@ namespace SGAmod.HavocGear.Items
 		else
             player.QuickSpawnItem(ItemID.GoldCoin, Main.rand.Next(1, 3));
 
+        if (Main.rand.Next(15) == 0)
+                player.QuickSpawnItem(mod.ItemType("MurkyCharm"));
+
             if (pick == 0)
                 player.QuickSpawnItem(Main.hardMode ? ItemID.CobaltBar : ItemID.IronBar, Main.rand.Next(3, 9));
             else if (pick == 1)
@@ -52,8 +55,8 @@ namespace SGAmod.HavocGear.Items
                 player.QuickSpawnItem(Main.hardMode ? ItemID.TitaniumBar : ItemID.GoldBar, Main.rand.Next(3, 9));
             else if (pick == 6)
                 player.QuickSpawnItem(SGAWorld.WorldIsNovus ? mod.ItemType("UnmanedBar") : mod.ItemType("NoviteBar"), Main.rand.Next(3, 9));
-            else if (pick == 6)
-                player.QuickSpawnItem(mod.ItemType("TransmutationPowder"), Main.rand.Next(4, 9));
+            else if (pick == 7)
+                player.QuickSpawnItem(mod.ItemType("TransmutationPowder"), Main.rand.Next(4, 11));
 
             pick = Main.rand.Next(5);
             if (pick == 0)

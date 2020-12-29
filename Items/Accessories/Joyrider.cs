@@ -10,12 +10,11 @@ namespace SGAmod.Items.Accessories
 	[AutoloadEquip(EquipType.Wings)]
 	public class Joyrider : ModItem
 	{
-		int frameCounter = 0;
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Joyrider");
-			Tooltip.SetDefault("'Minigun powered flight!'\nRapidly Fire bullets below you as you fly!\nRequires Ammo to fly, uses the last ammo type you fired, and always shoots basic bullets\nDamage and Flight Time are improved by Ammo Damage");
+			Tooltip.SetDefault("'Minigun powered flight!'\nRapidly Fire bullets below you as you fly!\nRequires Ammo to fly, uses the last ammo type you fired\nDamage and Flight Time are improved by Ammo Damage");
 		}
 
 		public override void SetDefaults()
@@ -29,7 +28,7 @@ namespace SGAmod.Items.Accessories
 			item.wingSlot = wingslo;
 		}
 
-		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		/*public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
 			if (!Main.gameMenu)
 			{
@@ -51,7 +50,7 @@ namespace SGAmod.Items.Accessories
 				spriteBatch.Draw(texture, drawPos, null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
 			}
 			return false;
-		}
+		}*/
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
@@ -64,7 +63,7 @@ namespace SGAmod.Items.Accessories
 				ammo2.SetDefaults(ammotype);
 				if (player.CountItem(ammotype) > 0)
 				{
-					player.wingTimeMax = 100 + ammo2.damage;
+					player.wingTimeMax = 80 + ammo2.damage*5;
 
 					Vector2 velo = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(10f, 12f));
 
@@ -76,7 +75,7 @@ namespace SGAmod.Items.Accessories
 
 						player.ConsumeItem(ammo2.type);
 						sgaplayer.JoyrideShake = 6;
-						int thisoned = Projectile.NewProjectile(player.Center.X + player.direction * -12, player.Center.Y, velo.X, velo.Y, ProjectileID.Bullet, (int)((float)(ammo2.damage * 1.5f) * player.rangedDamage * player.bulletDamage), ammo2.knockBack, Main.myPlayer);
+						int thisoned = Projectile.NewProjectile(player.Center.X + player.direction * -12, player.Center.Y, velo.X, velo.Y, ammo2.shoot, (int)((float)(ammo2.damage * 1.5) * player.rangedDamage * player.bulletDamage), ammo2.knockBack, Main.myPlayer);
 					}
 				}
 
@@ -84,13 +83,17 @@ namespace SGAmod.Items.Accessories
 			else
 			{
 				player.wingTimeMax = 0;
-				player.wings=0;
+				player.wings = 0;
 				player.wingTime = 0;
 			}
+		}
+
+        public override void UpdateVanity(Player player, EquipType type)
+        {
 			player.GetModPlayer<SGAPlayer>().CustomWings = 1;
 		}
 
-		public override void AddRecipes()
+        public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Megashark, 1);

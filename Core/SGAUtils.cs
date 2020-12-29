@@ -82,6 +82,7 @@ namespace SGAmod
 			BlackListedItems.Add(ItemID.FragmentStardust);
 			BlackListedItems.Add(ItemID.FragmentVortex);
 			BlackListedItems.Add(SGAmod.Instance.ItemType("StarMetalBar"));
+			BlackListedItems.Add(SGAmod.Instance.ItemType("WraithArrow"));
 		}
 
 		public UncraftClass(Point16 location, Item item, int recipeIndex = 0, int offsetter = 0)
@@ -225,6 +226,25 @@ namespace SGAmod
 			this.light = light;
 		}
 	}
+	public static class TextureExtension
+	{
+		//https://stackoverflow.com/questions/44760512/xna-make-a-new-texture2d-out-of-another-texture2d
+		/// <summary>
+		/// Creates a new texture from an area of the texture.
+		/// </summary>
+		/// <param name="graphics">The current GraphicsDevice</param>
+		/// <param name="rect">The dimension you want to have</param>
+		/// <returns>The partial Texture.</returns>
+		public static Texture2D CreateTexture(this Texture2D src, GraphicsDevice graphics, Rectangle rect)
+		{
+			Texture2D tex = new Texture2D(graphics, rect.Width, rect.Height);
+			int count = rect.Width * rect.Height;
+			Color[] data = new Color[count];
+			src.GetData(0, rect, data, 0, count);
+			tex.SetData(data);
+			return tex;
+		}
+	}
 
 	public static class SGAUtils
 	{
@@ -263,9 +283,9 @@ namespace SGAmod
 				return -1;
 			}
 		}
-		
+
 		//Fancy closest enemy method with weights system
-		public static List<NPC> ClosestEnemies(Vector2 Center,float maxdist,Vector2 Center2=default,List<Point>AddedWeight=default,bool checkWalls = true,bool checkCanChase=true)
+		public static List<NPC> ClosestEnemies(Vector2 Center, float maxdist, Vector2 Center2 = default, List<Point> AddedWeight = default, bool checkWalls = true, bool checkCanChase = true)
 		{
 			maxdist *= maxdist;
 			if (Center2 == default)
@@ -281,7 +301,7 @@ namespace SGAmod
 			for (int i = 0; i < Main.maxNPCs; i += 1)
 			{
 				NPC npc = Main.npc[i];
-				float distvectX = (Center2.X - npc.Center.X)*(Center2.X - npc.Center.X);
+				float distvectX = (Center2.X - npc.Center.X) * (Center2.X - npc.Center.X);
 				float distvectY = (Center2.Y - npc.Center.Y) * (Center2.Y - npc.Center.Y);
 				float squaredDist = Math.Abs((distvectX + distvectY));
 				if (Main.npc[i].active)
@@ -323,19 +343,19 @@ namespace SGAmod
 			{
 				closestnpcs = closestnpcs.ToArray().OrderBy(sortbydistance).ToList();//Closest
 				if (AddedWeight != default)
-					 closestnpcs.RemoveAll(npc => (int)sortbydistance(npc) == 100000000);//Dups be gone
+					closestnpcs.RemoveAll(npc => (int)sortbydistance(npc) == 100000000);//Dups be gone
 
 				return closestnpcs;
 			}
 		}
 
-	public static IList<T> Clone<T>(this IList<T> listToClone) where T : ICloneable
+		public static IList<T> Clone<T>(this IList<T> listToClone) where T : ICloneable
 		{
 			return listToClone.Select(item => (T)item.Clone()).ToList();
 		}
 		public static Vector3 ToVector3(this Vector2 vector)
 		{
-			return new Vector3(vector.X, vector.Y,0);
+			return new Vector3(vector.X, vector.Y, 0);
 		}
 		public static SGAPlayer SGAPly(this Player player)
 		{
@@ -675,6 +695,50 @@ namespace SGAmod
 
 			return predictedAimingPosition;
 		}
+
+		public static void DrawMoonlordHand(Vector2 drawHere, Vector2 drawThere)
+		{
+			SpriteEffects spriteEffects = SpriteEffects.None;
+			SpriteBatch spriteBatch = Main.spriteBatch;
+			int facing = -1;
+
+
+
+			float angleoffset = MathHelper.PiOver2;
+			Texture2D armTex = Main.extraTexture[15];
+			Texture2D TestTex = Main.extraTexture[19];
+
+			Vector2 origin = new Vector2(armTex.Width / 2f, armTex.Height);
+
+			float scale = 1;
+			float armLength = armTex.Height;
+			Vector2 dist = drawThere - drawHere;
+			Vector2 normal = Vector2.Normalize(dist);
+			Vector2 hand2loc = drawHere+normal*Math.Min(dist.Length(), (armLength*2)-1);
+
+			Vector2 CirclePoint1, CirclePoint2;
+			if (Idglib.FindCircleCircleIntersections(drawHere, armLength, hand2loc, armLength, out CirclePoint1, out CirclePoint2) > 0)
+			{
+
+				Vector2 elbowloc = CirclePoint1;
+				Vector2 normal2 = elbowloc - drawHere;
+				Vector2 normal3 = drawThere - elbowloc;
+
+				spriteBatch.Draw(armTex, drawHere - Main.screenPosition, null, Color.White, normal2.ToRotation() + angleoffset, origin, scale, spriteEffects, 0f);
+				spriteBatch.Draw(armTex, CirclePoint1 - Main.screenPosition, null, Color.White, normal3.ToRotation() + angleoffset, origin, scale, spriteEffects, 0f);
+
+				//spriteBatch.Draw(TestTex, drawHere - Main.screenPosition, null, Color.White, 0, TestTex.Size() / 2f, scale, spriteEffects, 0f);
+				//spriteBatch.Draw(TestTex, drawHere + dist1Tracker - Main.screenPosition, null, Color.White, 0, TestTex.Size() / 2f, scale, spriteEffects, 0f);
+				//spriteBatch.Draw(TestTex, drawHere + dist1Tracker + dist2Tracker - Main.screenPosition, null, Color.White, 0, TestTex.Size() / 2f, scale, spriteEffects, 0f);
+			}
+
+			//spriteBatch.Draw(armTex, drawHere - Main.screenPosition, null, Color.White, angle + angleoffset, origin, scale, spriteEffects, 0f);
+
+			//spriteBatch.Draw(armTex, arm2pos - Main.screenPosition, null, Color.White, angle2, origin, scale, spriteEffects, 0f);
+
+			return;
+		}
+
 
 	}
 

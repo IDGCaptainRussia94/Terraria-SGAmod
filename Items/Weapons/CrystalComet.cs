@@ -157,17 +157,17 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shooting Star");
-			Tooltip.SetDefault("Controls a very inspirational Star\nReleases a nova of stars when hitting past your mouse curser\n'The more you know!'");
+			Tooltip.SetDefault("Controls a very inspirational Star\nReleases a nova of stars when hitting past your mouse curser\nSpeeds up the longer you use the item\n'The more you know!'");
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 750;
+			item.damage = 600;
 			item.magic = true;
 			item.width = 24;
 			item.height = 24;
 			item.useTime = 40;
-			item.mana = 20;
+			item.mana = 50;
 			item.crit = 20;
 			item.useAnimation = 1;
 			item.useTurn = false;
@@ -238,7 +238,13 @@ namespace SGAmod.Items.Weapons
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
 		}
 
-		public override void SetDefaults()
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+			damage = (int)(damage * (1f-Main.player[projectile.owner].manaSickReduction));
+
+		}
+
+        public override void SetDefaults()
 		{
 			projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
 			projectile.tileCollide = false;
@@ -270,6 +276,7 @@ namespace SGAmod.Items.Weapons
 		{
 			projectile.ai[0] += 1;
 			projectile.ai[1] += 1;
+			projectile.localAI[0] += 1;
 
 			if (projectile.ai[0] < -1000)
             {
@@ -294,20 +301,25 @@ namespace SGAmod.Items.Weapons
 					if (diff.Length() > 1800 || projectile.ai[1]>1200)
 					{
 
-						if (!player.CheckMana(15, true))
+						if (!player.CheckMana(8, true))
 						{
 							projectile.ai[0] = -10000;
 							projectile.netUpdate = true;
 							return;
 						}
-						
 
+
+
+						if (projectile.localAI[0] > 1000)
+						{
+							projectile.extraUpdates = (int)MathHelper.Clamp(projectile.extraUpdates + 1, 10, 40);
+							projectile.numUpdates = projectile.extraUpdates;
+						}
 						diff.Normalize();
 						projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
 						Vector2 randAng = Main.rand.NextVector2CircularEdge(1500f, 1500f);
 						projectile.Center = mousePos + randAng;
 						projectile.velocity = Vector2.Normalize(mousePos-projectile.Center)*(projectile.velocity.Length());
-						projectile.netUpdate = true;
 						there = Main.MouseWorld;
 						projectile.ai[1] = 0;
 
@@ -319,6 +331,7 @@ namespace SGAmod.Items.Weapons
 						{
 							projectile.oldPos[i] = projectile.position;
 						}
+						projectile.netUpdate = true;
 
 					}
 				}
@@ -333,11 +346,11 @@ namespace SGAmod.Items.Weapons
 						NoiseGenerator noise = new NoiseGenerator(projectile.whoAmI);
 						noise.Amplitude = 5;
 						noise.Frequency = 0.5;
-						for (float i = 0; i < 1f; i += 1f / 15f)
+						for (float i = 0; i < 1f; i += 1f / 5f)
 						{
 							Vector2 there2 = (projectile.velocity); there.Normalize(); there2 = there2.RotatedBy(i * MathHelper.TwoPi);
-							int prog = Projectile.NewProjectile(projectile.Center, Vector2.Normalize(there2) * (2f + (float)noise.Noise((int)(i * 80), (int)projectile.ai[0])) * 5f, ProjectileID.HallowStar, (int)(projectile.damage / 3f), projectile.knockBack / 10f, projectile.owner);
-							Main.projectile[prog].timeLeft = 20 + (int)(noise.Noise((int)(i * 40), (int)projectile.ai[0] + 800) * 50);
+							int prog = Projectile.NewProjectile(projectile.Center, Vector2.Normalize(there2) * (2f + (float)noise.Noise((int)(i * 80), (int)projectile.ai[0])) * 5f, ProjectileID.HallowStar, (int)((1f - Main.player[projectile.owner].manaSickReduction) / 5f), projectile.knockBack / 10f, projectile.owner);
+							Main.projectile[prog].timeLeft = 20 + (int)(noise.Noise((int)(i * 40), (int)projectile.ai[0] + 800) * 40);
 							Main.projectile[prog].alpha = 150;
 							Main.projectile[prog].localNPCHitCooldown = -1;
 							Main.projectile[prog].penetrate = 2;

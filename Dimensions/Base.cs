@@ -29,6 +29,7 @@ using SGAmod.NPCs.Murk;
 using SGAmod.Items;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Dimensions.NPCs;
+using SGAmod.NPCs;
 
 namespace SGAmod.Dimensions
 {
@@ -118,7 +119,7 @@ namespace SGAmod.Dimensions
                     SLWorld.noReturn = true;
             }
 
-            if (Main.netMode != 1 && !Main.dedServ && Main.LocalPlayer==player)
+            if (Main.netMode != NetmodeID.Server && !Main.dedServ && Main.LocalPlayer==player)
             {
                 Projectile.NewProjectile(Main.screenPosition+new Vector2(Main.screenWidth,Main.screenHeight)/2, Vector2.Zero, mod.ProjectileType("DrawOverride"), 0, 0f);
             }
@@ -184,6 +185,20 @@ namespace SGAmod.Dimensions
                     sub.EnemySpawnsOverride(pool, spawnInfo, sub);
                 }
             }
+        }
+
+        public override bool PreNPCLoot(NPC npc)
+        {
+
+            if (npc.type == NPCID.SkeletonArcher && SGAPocketDim.WhereAmI == typeof(DeeperDungeon))
+            {
+                NPCLoader.blockLoot.Add(ItemID.MagicQuiver);
+                if (Main.rand.Next(50) == 0)
+                    Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("NormalQuiver"));
+            }
+
+
+            return true;
         }
 
 
@@ -419,6 +434,7 @@ namespace SGAmod.Dimensions
         {
 
             DrawOverride.fogeffect += 1;
+            bool isMurk = NPC.CountNPCS(ModContent.NPCType<Murk>()) > 0;
 
             if (DrawOverride.fogeffect < 120 || Main.dedServ)
                 return;
@@ -433,6 +449,8 @@ namespace SGAmod.Dimensions
                 AlphaDestinationBlend = Blend.InverseSourceColor
 
             };
+
+
             if (!Main.dedServ)
             {
                 int lightingtotal = Main.LocalPlayer.GetModPlayer<SGADimPlayer>().lightSize;
@@ -440,8 +458,10 @@ namespace SGAmod.Dimensions
                 Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
                 RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
 
-                if (lightingtotal < 2600)
+                if (lightingtotal < 2600 && (!isMurk || (!SGAConfigClient.Instance.Murklite && isMurk)))
                 {
+                    int fogDetail = SGAConfigClient.Instance.FogDetail;
+                    float fogAlpha = 0.05f * (30f / (float)fogDetail);
 
                     //Main.spriteBatch.End();
                     Main.graphics.GraphicsDevice.SetRenderTarget(SGAmod.drawnscreen);
@@ -451,7 +471,7 @@ namespace SGAmod.Dimensions
                     Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
                     Main.spriteBatch.Draw(Main.blackTileTexture, new Vector2(0, 0), new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
 
-                    if (NPC.CountNPCS(ModContent.NPCType<Murk>()) > 0)
+                    if (isMurk)
                     {
                         Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 1f, Main.GlobalTime * 0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
                         Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.DarkOliveGreen * 1f, Main.GlobalTime * 0.14f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
@@ -472,8 +492,8 @@ namespace SGAmod.Dimensions
                         Vector3 vecx = postdraw.light;
                         float size = vecx.Z / pern.Width;
 
-                        for (int i = 0; i < 360; i += 360 / 30)
-                            Main.spriteBatch.Draw(pern, new Vector2(vecx.X, vecx.Y) - Main.screenPosition, null, Color.White * 0.05f, MathHelper.ToRadians(i), new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(1.5f, 1.5f) * size, SpriteEffects.None, 0f);
+                        for (int i = 0; i < 360; i += 360 / fogDetail)
+                            Main.spriteBatch.Draw(pern, new Vector2(vecx.X, vecx.Y) - Main.screenPosition, null, Color.White * fogAlpha, MathHelper.ToRadians(i), new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(1.5f, 1.5f) * size, SpriteEffects.None, 0f);
 
                         /*for (int i = 0; i < Main.maxNPCs; i += 1)
                         {
@@ -501,29 +521,29 @@ namespace SGAmod.Dimensions
                 RenderTarget2D targetOther = swaptargets == 1 ? SGAmod.postRenderEffectsTarget : SGAmod.postRenderEffectsTargetCopy;
 
                 Main.graphics.GraphicsDevice.SetRenderTarget(target);
-                    Main.graphics.GraphicsDevice.Clear(Color.Transparent);
-;
-                Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1f,1f,0f));
+                Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+                ;
+                Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1f, 1f, 0f));
 
                 //Main.spriteBatch.Begin(SpriteSortMode.Immediate, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
-                Main.spriteBatch.Draw(targetOther, new Vector2(0, 0), null, Color.Black*0.96f, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(targetOther, new Vector2(0, 0), null, Color.Black * 0.96f, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
                 foreach (Projectile proj in Main.projectile.Where(proj => proj.active && proj.modProjectile != null && proj.modProjectile is IPostEffectsDraw))
-                    {
-                        (proj.modProjectile as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch);
-                    }
-                    foreach (NPC npc in Main.npc.Where(npc => npc.active && npc.modNPC != null && npc.modNPC is IPostEffectsDraw))
-                    {
-                        (npc.modNPC as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch);
-                    }
+                {
+                    (proj.modProjectile as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch, 2f);
+                }
+                foreach (NPC npc in Main.npc.Where(npc => npc.active && npc.modNPC != null && npc.modNPC is IPostEffectsDraw))
+                {
+                    (npc.modNPC as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch, 2f);
+                }
 
-                    Main.spriteBatch.End();
+                Main.spriteBatch.End();
 
 
-                    Main.graphics.GraphicsDevice.SetRenderTargets(binds);
+                Main.graphics.GraphicsDevice.SetRenderTargets(binds);
 
 
 
@@ -531,9 +551,19 @@ namespace SGAmod.Dimensions
 
 
             }
-
-
         }
+
+            public static void DrawPostEffectNPCs(float scale = 2f)
+            {
+                foreach (Projectile proj in Main.projectile.Where(proj => proj.active && proj.modProjectile != null && proj.modProjectile is IPostEffectsDraw))
+                {
+                    (proj.modProjectile as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch, scale);
+                }
+                foreach (NPC npc in Main.npc.Where(npc => npc.active && npc.modNPC != null && npc.modNPC is IPostEffectsDraw))
+                {
+                    (npc.modNPC as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch, scale);
+                }
+            }
 
         public static VertexBuffer vertexBuffer;
 
@@ -604,6 +634,8 @@ namespace SGAmod.Dimensions
                     Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
                 }*/
 
+                PrismShardHinted.Draw(spriteBatch, lightColor);
+
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
@@ -616,30 +648,39 @@ namespace SGAmod.Dimensions
 
                 Matrix Custommatrix = Matrix.CreateScale(1f, 1f, 0f);// Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
 
-                if (alpha > 0f)
+                if (Lighting.lightMode < 2)
                 {
-                    Main.spriteBatch.End();
 
-                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
-                    //Draw Shadow RenderTarget2D
+                    if (alpha > 0f)
+                    {
+                        bool isMurk = NPC.CountNPCS(ModContent.NPCType<Murk>()) > 0;
+                        Main.spriteBatch.End();
+
+                        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
+                        //Draw Shadow RenderTarget2D
+                        if (!isMurk || (isMurk && !SGAConfigClient.Instance.Murklite))
                         Main.spriteBatch.Draw(SGAmod.drawnscreen, new Vector2(0, 0), null, new Color(50, 50, 50) * alpha * SGAmod.fogAlpha, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
+                    }
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
+
+                    ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.TwilightDye);
+                    shader.UseOpacity(1f);
+                    shader.UseSaturation(1f);
+                    DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), new Vector2(Main.GlobalTime * 6, 0), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle((int)(Main.GlobalTime * 64f) * (DrawOverride.swaptargets == 0 ? 1 : -1), 0, 64, 64)), Microsoft.Xna.Framework.Color.White, Main.GlobalTime * 30f, new Vector2(256f, 256f), 1f, SpriteEffects.None, 0);
+                    shader.Apply(null, new DrawData?(value9));
+
+                    Main.spriteBatch.Draw(SGAmod.postRenderEffectsTargetCopy, Main.rand.NextVector2Circular(8, 24).RotatedByRandom((double)MathHelper.TwoPi), null, Color.White * 0.50f, 0, new Vector2(0, 0), new Vector2(2f, 2f), SpriteEffects.None, 0f);
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
+
+                    Main.spriteBatch.Draw(SGAmod.postRenderEffectsTarget, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), new Vector2(2f, 2f), SpriteEffects.None, 0f);
                 }
-
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
-
-                ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.TwilightDye);
-                shader.UseOpacity(1f);
-                shader.UseSaturation(1f);
-                DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), new Vector2(Main.GlobalTime*6,0), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle((int)(Main.GlobalTime * 64f)*(DrawOverride.swaptargets == 0 ? 1 : -1), 0, 64, 64)), Microsoft.Xna.Framework.Color.White, Main.GlobalTime*30f, new Vector2(256f, 256f), 1f, SpriteEffects.None, 0);
-                shader.Apply(null, new DrawData?(value9));
-
-                Main.spriteBatch.Draw(SGAmod.postRenderEffectsTargetCopy, Main.rand.NextVector2Circular(8, 24).RotatedByRandom((double)MathHelper.TwoPi), null, Color.White*0.50f, 0, new Vector2(0, 0), new Vector2(2f, 2f), SpriteEffects.None, 0f);
-
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
-
-                Main.spriteBatch.Draw(SGAmod.postRenderEffectsTarget, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), new Vector2(2f, 2f), SpriteEffects.None, 0f);
+                else
+                {
+                    DrawPostEffectNPCs(1f);
+                }
                 //}
 
 

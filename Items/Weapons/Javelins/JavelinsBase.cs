@@ -341,7 +341,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
         public override string Texture
         {
-            get { return ("SGAmod/Items/Weapons/Javelins/StoneJavelin"); }
+            get { return ("Terraria/Projectile_"+ ProjectileID.HallowStar); }
         }
 
         public override bool? CanHitNPC(NPC target)

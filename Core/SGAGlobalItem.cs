@@ -15,6 +15,7 @@ using SGAmod.Items.Accessories;
 using Idglibrary;
 using AAAAUThrowing;
 using Terraria.Utilities;
+using SGAmod.Buffs;
 
 namespace SGAmod
 {
@@ -73,8 +74,10 @@ namespace SGAmod
                 }
             }
 
-            if (item.modItem != null) {
-                if (item.owner > -1) {
+            if (item.modItem != null)
+            {
+                if (item.owner > -1)
+                {
                     SGAPlayer sgaply = (Main.player[item.owner].GetModPlayer<SGAPlayer>());
                     pboostertextboost = "\nCurrent boost: " + sgaply.SpaceDiverWings;
                     pboostertext = pboostertextbase2 + pboostertextboost;
@@ -84,7 +87,8 @@ namespace SGAmod
                 string asastring = (string)n;
                 //int ishavocitem = (asastring.Split('.').Length - 1);
                 int ishavocitem = asastring.Length - asastring.Replace("HavocGear.", "").Length;
-                if (ishavocitem > 0) {
+                if (ishavocitem > 0)
+                {
                     Color c = Main.hslToRgb(0.9f, 0.5f, 0.35f);
                     tooltips.Add(new TooltipLine(mod, "Havoc Item", Idglib.ColorText(c, "Former Havoc mod item")));
 
@@ -99,13 +103,21 @@ namespace SGAmod
                 {
                     string tt = "This is a placeholder sprite";
                     Color c = Main.hslToRgb(0f, 0.75f, 0.7f);
-                    tooltips.Add(new TooltipLine(mod, "Plasma Item", SGAmod.StuffINeedFuckingSpritesFor.TryGetValue(item.type,out tt) ? tt : tt));
+                    tooltips.Add(new TooltipLine(mod, "Plasma Item", SGAmod.StuffINeedFuckingSpritesFor.TryGetValue(item.type, out tt) ? tt : tt));
                 }
 
                 int ammoclip = Main.LocalPlayer.SGAPly().IsRevolver(item);
-                if (ammoclip>0) { Color c = Main.hslToRgb(0.7f, 0.15f, 0.7f);
+                if (ammoclip > 0)
+                {
+                    Color c = Main.hslToRgb(0.7f, 0.15f, 0.7f);
                     tooltips.Add(new TooltipLine(mod, "Clip Item", Idglib.ColorText(c, ammoclip == 2 ? "Counts as a revolver: Automatically Reloads itself when held" : "This weapon has a clip and requires manual reloading")));
                 }
+            }
+
+            if (item.type == ItemID.ManaRegenerationPotion && SGAConfig.Instance.ManaPotionChange)
+            {
+                tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Mana Sickness decays very slowly")));
+                tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Max Mana is reduced by 60")));
             }
 
             if (SGAWorld.downedWraiths < 1)
@@ -377,7 +389,7 @@ namespace SGAmod
                 if (player.statMana + item.healMana >= player.statManaMax2)
                 {
                     int difference = (player.statMana + item.healMana) - player.statManaMax2;
-                    player.AddBuff(BuffID.ManaRegeneration, difference * 2);
+                    player.AddBuff(ModContent.BuffType<ManaRegenFake>(), difference * 2);
                 }
             }
 
@@ -431,6 +443,13 @@ namespace SGAmod
             {
                 if (player.HasItem(mod.ItemType("EALogo")))
                     player.QuickSpawnItem(ItemID.SilverCoin, 4);
+
+                if (player.SGAPly().starCollector && player.HasBuff(BuffID.ManaSickness))
+                {
+                    int index = player.FindBuffIndex(BuffID.ManaSickness);
+                    if (index >= 0)
+                        player.buffTime[index] -= 60;
+                }
             }
             //lifesteal/gain
             //NetMessage.SendData(66, -1, -1, null, num492, (float)num497, 0f, 0f, 0, 0, 0);
@@ -584,10 +603,20 @@ namespace SGAmod
             }
         }
 
-        public override bool WingUpdate(int wings, Player player, bool inUse)
+        public override void RightClick(Item item, Player player)
         {
-            SGAPlayer modply = player.GetModPlayer<SGAPlayer>();
-            return modply.SpaceDiverset;
+            if (item.type == ItemID.FloatingIslandFishingCrate && Main.rand.Next(5) == 0)
+            {
+                player.QuickSpawnItem(ModContent.ItemType<StarCollector>());
+            }   
+        }
+
+        public override void UpdateInventory(Item item,Player player)
+        {
+            if (item.buffType > 0 && SGAmod.overpoweredMod>1f)
+            {
+                item.maxStack = 29;
+            }
         }
 
     }
@@ -784,6 +813,19 @@ namespace SGAmod
         public float apocochancestrength = 0f;
         public int misc = 0;
 
+        public static byte? GetBustedPrefix
+        {
+            get
+            {
+                List<ModPrefix> modz = ModPrefix.GetPrefixesInCategory(PrefixCategory.AnyWeapon).Where(thisprefix => thisprefix is TrapPrefix && (thisprefix as TrapPrefix).misc == 2).ToList();
+                if (modz != null && modz.Count > 0)
+                {
+                    return modz[0].Type;
+                }
+                return null;
+            }
+        }
+
         public override PrefixCategory Category { get { return PrefixCategory.AnyWeapon; } }
         public TrapPrefix()
         {
@@ -803,6 +845,7 @@ namespace SGAmod
                     mod.AddPrefix("Sundering", new TrapPrefix(0.08f, 0.10f));
                     mod.AddPrefix("Undercut", new TrapPrefix(0.12f, 0.10f));
                     mod.AddPrefix("Razor Sharp", new TrapPrefix(0.2f, 0.15f));
+                    mod.AddPrefix("Busted", new TrapPrefixAccessory(0,0,2));
                 }
                 if (GetType() == typeof(TrapPrefixAccessory))
                 {
@@ -960,7 +1003,7 @@ namespace SGAmod
         public override void OnConsumeItem(Item item, Player player)
         {
             SGAPlayer sga = player.SGAPly();
-            if (Main.rand.Next(0, 100) < sga.anticipationLevel && !sga.tpdcpu)
+            if (Main.rand.Next(0, 100) < sga.consumeCurse && !sga.tpdcpu)
                 item.stack -= 1;
         }
 
@@ -974,6 +1017,14 @@ namespace SGAmod
             {
                 return true;
             }
+        }
+
+        public override bool CanUseItem(Item item, Player player)
+        {
+            if (misc != 2)
+                return base.CanUseItem(item, player);
+            else
+                return false;
         }
 
         public override void UpdateAccessory(Item item, Player player, bool hideVisual)
@@ -1071,6 +1122,13 @@ namespace SGAmod
             if (misc == 1)
             {
                 string line2 = "+1 passive Electric Charge Rate";
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+            }
+            if (misc == 2)
+            {
+                string line2 = Idglib.ColorText(Color.Red,"This item is busted and needs to be reforged to be used");
                 TooltipLine line = new TooltipLine(mod, "SGAPrefixline", line2);
                 line.isModifier = true;
                 tooltips.Add(line);

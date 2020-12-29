@@ -56,7 +56,7 @@ namespace SGAmod
 				//better version, from Qwerty's Mod
 				Color color = drawInfo.bodyColor;
 
-				Texture2D texture = mod.GetTexture("Items/Armors/SpaceDiverTank");
+				Texture2D texture = mod.GetTexture("Items/Accessories/PrismalAirTank_Back");
 					int drawX = (int)((drawInfo.position.X+drawPlayer.bodyPosition.X+10) - Main.screenPosition.X);
 					int drawY = (int)(((drawPlayer.bodyPosition.Y-4)+drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
 					DrawData data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0,drawPlayer.bodyFrame.Y,drawPlayer.bodyFrame.Width,drawPlayer.bodyFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width/2,drawPlayer.bodyFrame.Height/2), 1f, (drawPlayer.direction==-1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir>0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
@@ -159,8 +159,8 @@ namespace SGAmod
 			//better version, from Qwerty's Mod
 			Color color = drawInfo.bodyColor;
 
-			if (modply.CustomWings == 1)
-			{
+			//if (modply.CustomWings == 1)
+			//{
 
 				float angle = MathHelper.ToRadians(90f + (drawPlayer.velocity.X * 2f));
 
@@ -205,7 +205,7 @@ namespace SGAmod
 				data.shader = (int)drawPlayer.cWings;
 				Main.playerDrawData.Add(data);
 
-			}
+			//}
 
 		});
 
@@ -253,24 +253,24 @@ namespace SGAmod
 
 			#region MiscVisuals
 
-			if (sgaplayer.SpaceDiverset && CustomWings < 1)
+			if (sgaplayer.SpaceDiverset && CustomWings<1)
 			{
-				/*int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
-				int backacclayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("BackAcc"));
-				if (SpaceDiverWings < 0.6f)
-				layers.RemoveAt(wingsLayer);
-				SpaceDiverTank.visible = true;
-				layers.Insert(backacclayer, SpaceDiverTank);*/
+			/*int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
+			int backacclayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("BackAcc"));
+			if (SpaceDiverWings < 0.6f)
+			layers.RemoveAt(wingsLayer);
+			SpaceDiverTank.visible = true;
+			layers.Insert(backacclayer, SpaceDiverTank);*/
 			}
 
-			if (sgaplayer.CustomWings > 0)
+			if (sgaplayer.CustomWings>0)
 			{
 				int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
 				if (wingsLayer >= 0)
 				{
-					layers.RemoveAt(wingsLayer);
 					AltWings.visible = true;
-					layers.Insert(wingsLayer + 1, AltWings);
+					//layers.RemoveAt(wingsLayer);
+					layers.Insert(wingsLayer, AltWings);
 				}
 			}
 
@@ -310,11 +310,11 @@ namespace SGAmod
 				}
 			}
 
-			#endregion
+            #endregion
 
-			#region armor glowmasks
+            #region armor glowmasks
 
-			string[] stringsz = { "Head", "Body", "Arms", "Legs"};
+            string[] stringsz = { "Head", "Body", "Arms", "Legs"};
 			PlayerLayer[] thelayer = { PlayerLayer.Head, PlayerLayer.Body, PlayerLayer.Arms, PlayerLayer.Legs };
 
 			for (int intc = 0; intc < 4; intc += 1)

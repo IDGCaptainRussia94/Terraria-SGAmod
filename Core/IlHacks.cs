@@ -29,7 +29,7 @@ namespace SGAmod
 			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
-			//IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
+			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 		internal static void Unpatch()
@@ -40,6 +40,7 @@ namespace SGAmod
 			IL.Terraria.GameInput.LockOnHelper.SetUP -= CurserAimingHack;
 			IL.Terraria.Player.CheckDrowning -= BreathingHack;
 			IL.Terraria.NPC.Collision_LavaCollision -= ForcedNPCLavaCollisionHack;
+			IL.Terraria.Player.UpdateManaRegen -= NoMovementManaRegen;
 			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
 		}
 
@@ -141,19 +142,30 @@ namespace SGAmod
 		static internal void SwimInAirHack(ILContext il)//Control water physics on the player
 		{
 			ILCursor c = new ILCursor(il);
-			MethodInfo HackTheMethod = typeof(Collision).GetMethod("WetCollision", BindingFlags.Public | BindingFlags.Static);
+			MethodInfo HackTheMethod = typeof(Collision).GetMethod("LavaCollision", BindingFlags.Public | BindingFlags.Static);
 			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
-			/*c.EmitDelegate<Action>(() =>
+
+			SwimInAirHackDelegate inLava = delegate (bool stackbool, Player player)
 			{
-				Main.NewText("This is test");
-			});*/
+				if (stackbool && player.SGAPly().HandleFluidDisplacer(3))
+					return false;
 
-			//c.Index -= 1;
+				return stackbool;
+			};
 
-			//Previously I would delete the instruction and replace it with a bool that had the 3 WetCollision values on the stack, but this, is alot simpler
+			c.Index += 1;
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<SwimInAirHackDelegate>(inLava);
+
+			HackTheMethod = typeof(Collision).GetMethod("WetCollision", BindingFlags.Public | BindingFlags.Static);
+			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
+
 
 			SwimInAirHackDelegate inWater = delegate (bool stackbool, Player player)
 			{
+				if (stackbool && player.SGAPly().HandleFluidDisplacer(1))
+					return false;
+
 				return stackbool || player.SGAPly().tidalCharm > 0;// Collision.WetCollision(pos, x, y);
 			};
 
@@ -310,7 +322,8 @@ namespace SGAmod
 			c.Instrs[c2].Operand = label3;//Set the output to our 2nd if statement instead of after it
 
 			if (!c.TryGotoPrev(MoveType.Before, i => i.MatchLdfld<Player>("merman")))//Breathing override, before the merman check
-				c.Index -= 1;
+				goto Failed;
+
 			c.Emit(OpCodes.Ldarg_0);
 			c.Emit(OpCodes.Ldloc_0);//Drowning Flag push
 			c.EmitDelegate<Func<Player,bool, bool>>((Player player,bool prevvalue) => //Drown for me, DROWN!!!
@@ -323,6 +336,18 @@ namespace SGAmod
 				return prevvalue;
 			});
 			c.Emit(OpCodes.Stloc_0);//Force it!
+
+			if (!c.TryGotoNext(MoveType.Before, i => i.MatchStfld<Player>("statLife")))//Drown Speed controller!
+				goto Failed;
+			if (!c.TryGotoPrev(MoveType.After, i => i.MatchStfld<Player>("breath")))//Drown Speed controller!
+				goto Failed;
+
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<Action<Player>>((Player player) =>
+			{
+				SGAPlayer sgaply = player.SGAPly();
+				player.statLife -= sgaply.drownRate + (int)sgaply.drowningIncrementer.Y;
+			});
 
 
 

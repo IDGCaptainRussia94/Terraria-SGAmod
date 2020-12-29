@@ -94,7 +94,7 @@ namespace SGAmod.Items.Weapons
 		public override bool CanUseItem(Player player)
 		{
 			SGAPlayer sply = player.SGAPly();
-			return sply.ammoLeftInClip>0;
+			return sply.ConsumeAmmoClip(false);
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -106,7 +106,7 @@ namespace SGAmod.Items.Weapons
 
 			position = player.Center;
 
-			player.SGAPly().ammoLeftInClip -= 1;
+			player.SGAPly().ConsumeAmmoClip();
 
 			knockBack = player.SGAPly().tf2emblemLevel;
 			//position += Vector2.Normalize(new Vector2(speedX, speedY)) * 45f;
@@ -349,11 +349,16 @@ namespace SGAmod.Items.Weapons
 			item.shootSpeed = 14f;
 			item.noMelee = true;
 			item.useAmmo = AmmoID.Rocket;
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/PrismalLauncher_Glow");
+				item.GetGlobalItem<ItemUseGlow>().glowOffsetX = -8;
+			}
 		}
 
 		public override Vector2? HoldoutOffset()
 		{
-			return new Vector2(-18, -0);
+			return new Vector2(-8, -0);
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)

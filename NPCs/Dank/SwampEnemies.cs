@@ -100,7 +100,7 @@ namespace SGAmod.NPCs.Dank
             }        
             if (rand == 3)
             {
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("HorseFlyStaff"));
+                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("EarthbreakerShield"));
             }         
         }
     }

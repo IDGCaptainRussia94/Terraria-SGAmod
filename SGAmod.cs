@@ -117,6 +117,7 @@ namespace SGAmod
 		public static string filePath = "C:/Users/" + userName + "/Documents/My Games/Terraria/ModLoader/SGAmod";
 		public static Texture2D hellionLaserTex;
 		public static Texture2D ParadoxMirrorTex;
+		public static Texture2D PrismBansheeTex;
 		public static int OSType;
 		internal static ModHotKey CollectTaxesHotKey;
 		internal static ModHotKey WalkHotKey;
@@ -129,6 +130,7 @@ namespace SGAmod
 		public static bool updatelasers = false;
 		public static bool updateportals = false;
 		public static bool anysubworld = false;
+		public static float overpoweredMod = 0f;
 		private int localtimer = 0;
 		public static List<PostDrawCollection> PostDraw;
 		public static RenderTarget2D drawnscreen;
@@ -147,6 +149,7 @@ namespace SGAmod
 		public static int RecipeIndex = 0;
 		public static float fogAlpha = 1f;
 		public static Effect TrailEffect;
+		public static Effect HallowedEffect;
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
 
 		public int OSDetect()
@@ -269,8 +272,11 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 571));//109
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 711));//110
 
-
+				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
+				int height = queenTex.Height;
+				PrismBansheeTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, height-(height / 6), queenTex.Width, height / 6));
 			}
+
 			else
 			{
 
@@ -278,16 +284,17 @@ namespace SGAmod
 				{
 					ExtraTextures[i].Dispose();
 				}
-					for (int i = 0; i < HellionTextures.Count; i += 1)
+				for (int i = 0; i < HellionTextures.Count; i += 1)
 				{
 					HellionTextures[i].Dispose();
 				}
 
-					HellionTextures = null;
-					HellionGores = null;
-					ExtraTextures = null;
+				HellionTextures = null;
+				HellionGores = null;
+				ExtraTextures = null;
+				PrismBansheeTex.Dispose();
 
-				}
+			}
 
 			}
 
@@ -304,21 +311,30 @@ namespace SGAmod
 			fild.SetValue(modp, 1f+ (float)fild.GetValue(modp));*/
 
 			Instance = this;
+			overpoweredMod = 0;
 
 			SGAPlayer.ShieldTypes.Clear();
-			SGAPlayer.ShieldTypes.Add(ItemType("CapShield"), ProjectileType("CapShieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("DankWoodShield"), ProjectileType("DankWoodShieldProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("CorrodedShield"), ProjectileType("CorrodedShieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("EarthbreakerShield"), ProjectileType("EarthbreakerShieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("Magishield"), ProjectileType("MagishieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("DiscordShield"), ProjectileType("DiscordShieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("RiotShield"), ProjectileType("RiotShieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("SolarShield"), ProjectileType("SolarShieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("CapShield"), ProjectileType("CapShieldProj"));
+
 			SGAPlayer.ShieldTypes.Add(ItemType("LaserMarker"), ProjectileType("LaserMarkerProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("GraniteMagnet"), ProjectileType("GraniteMagnetProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("CobaltMagnet"), ProjectileType("CobaltMagnetProj"));
 
 
 			AddItem("MusicBox_Boss2Remix", new SGAItemMusicBox("MusicBox_Boss2Remix", "Murk","Boss 2 Remix","Unknown"));
-			AddItem("MusicBox_Swamp", new SGAItemMusicBox("MusicBox_Swamp", "Dank Shrine", "The Swamp of Ebag sah'now", "Unknown"));
+			AddItem("MusicBox_Swamp", new SGAItemMusicBox("MusicBox_Swamp", "Dank Shrine", "The Swamp of Ebag sah'now", "Skyre Ventes"));
 			AddItem("MusicBox_Caliburn", new SGAItemMusicBox("MusicBox_Caliburn", "Caliburn Guardians", "Guardians Down Below", "Rijam"));
 			AddItem("MusicBox_Wraith", new SGAItemMusicBox("MusicBox_Wraith", "Wraiths", "First Night", "Musicman"));
 			AddItem("MusicBox_SpiderQueen", new SGAItemMusicBox("MusicBox_SpiderQueen", "Spider Queen", "Acidic Affray", "Musicman"));
 			AddItem("MusicBox_Sharkvern", new SGAItemMusicBox("MusicBox_Sharkvern", "Sharkvern", "Freak of Nature", "Musicman"));
+			AddItem("MusicBox_Creepy", new SGAItemMusicBox("MusicBox_Creepy", "Creepy", "???", "Unknown"));
 
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Murk"), ItemType("MusicBox_Boss2Remix"), TileType("MusicBox_Boss2Remix"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Swamp"), ItemType("MusicBox_Swamp"), TileType("MusicBox_Swamp"));
@@ -326,6 +342,7 @@ namespace SGAmod
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Copperig"), ItemType("MusicBox_Wraith"), TileType("MusicBox_Wraith"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SpiderQueen"), ItemType("MusicBox_SpiderQueen"), TileType("MusicBox_SpiderQueen"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Shark"), ItemType("MusicBox_Sharkvern"), TileType("MusicBox_Sharkvern"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/creepy"), ItemType("MusicBox_Creepy"), TileType("MusicBox_Creepy"));
 
 			AddTile("PrismalBarTile", new BarTile("PrismalBar", "Prismal Bar", new Color(210, 0, 100)), "SGAmod/Tiles/PrismalBarTile");
 			AddTile("UnmanedBarTile", new BarTile("UnmanedBar", "Unmaned Bar", new Color(70, 0, 40)), "SGAmod/Tiles/UnmanedBarTile");
@@ -421,10 +438,12 @@ namespace SGAmod
 			{
 				Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/Shockwave"));
 				Filters.Scene["SGAmod:Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
+				Filters.Scene["SGAmod:ShockwaveBanshee"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
 				Ref<Effect> screenRef2 = new Ref<Effect>(GetEffect("Effects/ScreenWave"));
 				Filters.Scene["SGAmod:ScreenWave"] = new Filter(new ScreenShaderData(screenRef2, "ScreenWave"), EffectPriority.VeryHigh);
 
 				TrailEffect = SGAmod.Instance.GetEffect("Effects/trailShaders");
+				HallowedEffect = SGAmod.Instance.GetEffect("Effects/Hallowed");
 
 				GameShaders.Misc["SGAmod:DeathAnimation"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/EffectDeath")), "DeathAnimation").UseImage("Images/Misc/Perlin");
 				GameShaders.Misc["SGAmod:ShaderOutline"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/ShaderOutline")), "ShaderOutline").UseImage("Images/Misc/Perlin");
@@ -445,7 +464,7 @@ namespace SGAmod
 
 		}*/
 
-        public override uint ExtraPlayerBuffSlots => 14;
+        public override uint ExtraPlayerBuffSlots => 40;
 
 		public override void Unload()
 		{
@@ -518,6 +537,13 @@ namespace SGAmod
 
 			recipe = new ModRecipe(this);
 			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ItemID.Silk, 30);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.HandWarmer);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 3);
 			recipe.AddIngredient(ItemID.IceBlock, 20);
 			recipe.AddIngredient(ItemID.Snowball, 100);
@@ -531,6 +557,15 @@ namespace SGAmod
 			recipe.AddIngredient(ItemID.Chain, 1);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.SharkToothNecklace);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(null, "NormalQuiver", 1);
+			recipe.AddIngredient(ItemID.SoulofLight, 3);
+			recipe.AddIngredient(ItemID.SoulofNight, 3);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.MagicQuiver);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
@@ -908,6 +943,7 @@ namespace SGAmod
 #endif
 
 			SGAWorld.modtimer += 1;
+			PrismShardHinted.ApplyPrismOnce = false;
 
 			SkillTree.SKillUI.SkillUITimer = SGAmod.SkillUIActive ? SkillTree.SKillUI.SkillUITimer +1 : 0;
 

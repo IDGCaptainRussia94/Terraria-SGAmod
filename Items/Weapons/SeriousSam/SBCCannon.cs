@@ -218,7 +218,8 @@ namespace SGAmod.Items.Weapons.SeriousSam
 							offset *= 16f;
 							offset += projectile.velocity;
 
-							float damagescale = (projectile.damage * (1f + (projectile.ai[0] / 30f)));
+							float scalar = GetType() == typeof(SBCCannonHoldingMK2) ? 30f : 30f;
+							float damagescale = (projectile.damage * (1f + (projectile.ai[0] / scalar)));
 
 							Vector2 perturbedSpeed = projectile.velocity.RotatedByRandom(MathHelper.ToRadians(0));
 							Vector2 perturbedSpeed2 = perturbedSpeed;

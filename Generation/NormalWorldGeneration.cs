@@ -13,6 +13,7 @@ using Terraria.ModLoader.IO;
 using Terraria.World.Generation;
 using SGAmod.Tiles;
 using Idglibrary;
+using SGAmod.Items.Accessories;
 
 namespace SGAmod.Generation
 {
@@ -167,6 +168,7 @@ namespace SGAmod.Generation
         public static void PlaceCaiburnShrine(Vector2 placementspot, int type)
         {
             Tile tstart = Framing.GetTileSafely(placementspot);
+            int heighestTile = Main.maxTilesY;
 
             List<Vector2> deways = new List<Vector2>();
             List<Vector2> dewaysMainroom = new List<Vector2>();
@@ -198,7 +200,33 @@ namespace SGAmod.Generation
 
             for (int aaa = 0; aaa < deways.Count; aaa++)
             {
+                if ((int)deways[aaa].Y < heighestTile)
+                    heighestTile = (int)deways[aaa].Y;
+
                 Tile tile = Framing.GetTileSafely((int)deways[aaa].X, (int)deways[aaa].Y);
+                tile.active(false);
+            }
+
+            HashSet<Point16> removes = new HashSet<Point16>();
+            foreach (Vector2 point in deways.Where(testby => testby.Y < heighestTile + 3))
+            {
+                Point16 point2 = point.ToPoint16();
+                if (WorldGen.InWorld(point2.X - 4, point2.Y-2) && WorldGen.InWorld(point2.X + 4, point2.Y-2))
+                {
+                    if (Main.tile[point2.X - 4, point2.Y-2].type == ModContent.TileType<MoistStone>() && Main.tile[point2.X + 4, point2.Y-2].type == ModContent.TileType<MoistStone>() &&
+                        Main.tile[point2.X - 4, point2.Y].active() && Main.tile[point2.X - 4, point2.Y].type == ModContent.TileType<MoistStone>() && Main.tile[point2.X + 4, point2.Y].active() && Main.tile[point2.X + 4, point2.Y].type == ModContent.TileType<MoistStone>())
+                    {
+                        removes.Add(new Point16(point2.X, point2.Y - 1));
+                        removes.Add(new Point16(point2.X, point2.Y-2));
+                        removes.Add(new Point16(point2.X, point2.Y - 3));
+                    }
+                }
+            }
+
+            foreach (Point16 point2 in removes)
+            {
+                Tile tile = Framing.GetTileSafely(point2.X, point2.Y);
+                tile.type = (ushort)ModContent.TileType<Biomass>();
                 tile.active(false);
             }
 
@@ -240,7 +268,8 @@ namespace SGAmod.Generation
 
                             List<int> lootmain = new List<int> { SGAWorld.WorldIsNovus ? SGAmod.Instance.ItemType("UnmanedOre") : SGAmod.Instance.ItemType("NoviteOre"), SGAmod.Instance.ItemType("DankWood"), SGAmod.Instance.ItemType("DankWood"), SGAmod.Instance.ItemType("Biomass"), SGAmod.Instance.ItemType("DankWood"), ItemID.SilverCoin, ItemID.LesserManaPotion };
                             List<int> lootrare = new List<int> { SGAmod.Instance.ItemType("DankCore"), SGAmod.Instance.ItemType("DankCore") };
-                            int e = 0;
+                            List<int> dankrare = new List<int> { SGAmod.Instance.ItemType("DankWoodShield"), SGAmod.Instance.ItemType("MurkyCharm") };
+                           int e = 0;
 
                             for (int kk = 0; kk < 2 + (Main.expertMode ? 1 : 0); kk += 1)
                             {
@@ -260,6 +289,14 @@ namespace SGAmod.Generation
                                 //}
                                 e += 1;
                             }
+                            if (WorldGen.genRand.Next(0, 20) == 0)
+                            {
+                                int index = WorldGen.genRand.Next(0, dankrare.Count);
+                                Main.chest[thechest].item[e].SetDefaults(dankrare[index]);
+                                Main.chest[thechest].item[e].stack = 1;
+                                //}
+                                e += 1;
+                            }                            
                             for (int kk = 0; kk < 3 + (Main.expertMode ? 1 : 0); kk += 1)
                             {
                                 //for (int i = 0; i < WorldGen.genRand.Next(15, Main.expertMode ? 25 : 30); i += 1)

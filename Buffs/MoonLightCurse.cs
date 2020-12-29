@@ -35,7 +35,7 @@ namespace SGAmod.Buffs
 		{
 			npc.GetGlobalNPC<SGAnpcs>().lavaBurn = true;
 		}
-	}	
+	}
 	public class MoonLightCurse : ModBuff
 	{
 		public override void SetDefaults()
@@ -55,7 +55,28 @@ namespace SGAmod.Buffs
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
-			npc.GetGlobalNPC<SGAnpcs>().MoonLightCurse = true;
+			npc.SGANPCs().MoonLightCurse = true;
+			npc.SGANPCs().reducedDefense += 50;
+		}
+	}
+	public class PiercedVulnerable : MoonLightCurse
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Pierced N Vulnerable");
+			Description.SetDefault("Defense is reduced");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = true;
+		}
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.statDefense -= 10;
+		}
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+			npc.SGANPCs().reducedDefense += 10;
 		}
 	}
 	public class SnapFade : ModBuff

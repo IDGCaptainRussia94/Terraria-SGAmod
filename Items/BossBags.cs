@@ -44,7 +44,7 @@ namespace SGAmod.HavocGear.Items
 			int random = Main.rand.Next(6);
 			if (random == 5)
 			{
-				player.QuickSpawnItem(mod.ItemType("GnatStaff"), 1);
+				player.QuickSpawnItem(mod.ItemType(SGAWorld.GennedVirulent ? "HorseFlyStaff" : "GnatStaff"), 1);
 			}			
 			if (random == 4)
 			{
@@ -176,7 +176,9 @@ namespace SGAmod.Items
 		public override void OpenBossBag(Player player)
 		{
 			player.QuickSpawnItem(mod.ItemType("VialofAcid"), Main.rand.Next(35, 60));
-			player.QuickSpawnItem(mod.ItemType("CorrodedShield"), 1);
+			player.QuickSpawnItem(mod.ItemType("AlkalescentHeart"), 1);
+			if (Main.rand.Next(0, 3) == 0)
+				player.QuickSpawnItem(mod.ItemType("CorrodedShield"), 1);
 			if (Main.rand.Next(0, 3) == 0)
 			player.QuickSpawnItem(mod.ItemType("AmberGlowSkull"), 1);
 		}
@@ -217,10 +219,12 @@ namespace SGAmod.Items
 		{
 		player.TryGettingDevArmor();
 
-			string[] dropitems = { "Starburster", "Snowfall", "IceScepter", "RubiedBlade", "IcicleFall" };
+			string[] dropitems = { "Starburster", "Snowfall", "IceScepter", "RubiedBlade", "IcicleFall", "Magishield" };
 			player.QuickSpawnItem(mod.ItemType(dropitems[Main.rand.Next(dropitems.Length)]));
 			player.QuickSpawnItem(mod.ItemType("CryostalBar"),Main.rand.Next(25, 40));
 			player.QuickSpawnItem(mod.ItemType("CirnoWings"), 1);
+			if (Main.rand.Next(3) == 0)
+				player.QuickSpawnItem(mod.ItemType("GlacialStone"), 1);
 		}
 
 }

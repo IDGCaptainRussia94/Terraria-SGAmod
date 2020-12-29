@@ -183,7 +183,7 @@ namespace SGAmod.Items.Weapons
 			item.noMelee = true; //so the item's animation doesn't do damage
 			item.knockBack = 0.20f;
 			item.value = 100000;
-			item.rare = ItemRarityID.Yellow;
+			item.rare = ItemRarityID.Lime;
 			item.autoReuse = true;
 			item.UseSound = SoundID.Item34;
 			item.shootSpeed = 8f;
@@ -194,7 +194,7 @@ namespace SGAmod.Items.Weapons
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.CursedFlames, 1);
 			recipe.AddIngredient(ItemID.Flamethrower, 1);
-			recipe.AddIngredient(ItemID.HallowedBar, 10);
+			recipe.AddIngredient(ItemID.SpectreBar, 8);
 			recipe.AddIngredient(ItemID.CursedFlame, 10);
 			recipe.AddIngredient(ItemID.SoulofSight, 10);
 			recipe.AddIngredient(ItemID.SpellTome, 1);

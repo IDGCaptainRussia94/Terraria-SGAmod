@@ -12,6 +12,9 @@ using SGAmod;
 using SGAmod.Items;
 using IL.Terraria.DataStructures;
 using Idglibrary;
+using Terraria.Graphics;
+using Terraria.Graphics.Shaders;
+using Terraria.DataStructures;
 
 namespace SGAmod.Dimensions.Tiles
 {
@@ -36,9 +39,12 @@ namespace SGAmod.Dimensions.Tiles
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
+
 			Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
 			Vector2 location = (new Vector2(i, j) * 16) + zerooroffset;
+
 			spriteBatch.Draw(Main.tileTexture[Main.tile[i, j].type], location - Main.screenPosition, new Rectangle(Main.tile[i, j].frameX, Main.tile[i, j].frameY, 16, 16), Lighting.GetColor(i, j), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
 
 			return true;
 		}
@@ -140,6 +146,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMerge[Type][(ushort)mod.TileType("Fabric")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("AnicentFabric")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("HopeOre")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("HardenedFabric")] = true;
 			minPick = 200;
 			soundType = 7;
 			mineResist = 3f;
@@ -148,15 +155,55 @@ namespace SGAmod.Dimensions.Tiles
 			drop = ModContent.ItemType<Entrophite>();
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Entrophite");
-			AddMapEntry(new Color(20, 0, 15), name);
+			AddMapEntry(new Color(30, 0, 25), name);
 		}
 		public override bool CanExplode(int i, int j)
 		{
 			return false;
 		}
 	}
+	public class HardenedFabric : Fabric
+	{
+        public override bool Autoload(ref string name, ref string texture)
+        {
+			texture = "SGAmod/Dimensions/Tiles/Fabric";
+			return true;
+        }
+        public override void SetDefaults()
+		{
+			Main.tileSolid[Type] = true;
+			Main.tileMergeDirt[Type] = true;
+			Main.tileBlockLight[Type] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("Fabric")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("EntrophicOre")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("HopeOre")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("AnicentFabric")] = true;
+			minPick = 240;
+			soundType = 7;
+			mineResist = 5f;
+			dustType = DustID.Smoke;
+			TileID.Sets.CanBeClearedDuringGeneration[Type] = true;
+			//drop = mod.ItemType("Moist Stone");
+			AddMapEntry(new Color(5, 5, 5));
+		}
 
+		/*public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
+			Vector2 location = (new Vector2(i, j) * 16) + zerooroffset;
+			spriteBatch.Draw(Main.tileTexture[Main.tile[i, j].type], location - Main.screenPosition, new Rectangle(Main.tile[i, j].frameX, Main.tile[i, j].frameY, 16, 16), Color.Lerp(Lighting.GetColor(i, j),Color.Black,0.75f), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+			return true;
+		}*/
 
+		public override bool CanKillTile(int i, int j, ref bool blockDamaged)
+		{
+			return false;
+		}
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+	}
 	public class AncientFabric : Fabric
 	{
 		public override void SetDefaults()
@@ -165,8 +212,9 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("Fabric")] = true;
-			Main.tileMerge[Type][(ushort)mod.TileType("AnicentFabric")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("HopeOre")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("EntrophicOre")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("HardenedFabric")] = true;
 			minPick = 240;
 			soundType = 7;
 			mineResist = 5f;
@@ -176,7 +224,6 @@ namespace SGAmod.Dimensions.Tiles
 			//drop = mod.ItemType("Moist Stone");
 			AddMapEntry(new Color(80, 0, 0));
 		}
-
 		public override bool CanKillTile(int i, int j, ref bool blockDamaged)
 		{
 			return false;
@@ -201,6 +248,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMerge[Type][(ushort)mod.TileType("AncientFabric")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("EntrophicOre")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("HopeOre")] = true;
+			Main.tileMerge[Type][(ushort)mod.TileType("HardenedFabric")] = true;
 			minPick = 0;
 			soundType = 7;
 			mineResist = 0.5f;
@@ -227,6 +275,14 @@ namespace SGAmod.Dimensions.Tiles
 				float alphamin = 0.15f;
 				float alphamax = 0.3f;
 				int glowchance = 50;
+				if (GetType() == typeof(HardenedFabric))
+				{
+					basecolor = new Color(55,55,55);
+					basealpha = 1f;
+					chance = 15;
+					alphamin = 0.25f;
+					alphamax = 0.5f;
+				}
 				if (GetType() == typeof(AncientFabric))
 				{
 					basecolor = Color.Red;
@@ -234,7 +290,7 @@ namespace SGAmod.Dimensions.Tiles
 					chance = 40;
 					alphamin = 0.75f;
 					alphamax = 1f;
-				}
+				}				
 				if (GetType() == typeof(EntrophicOre))
 				{
 					basecolor = Color.Purple;

@@ -42,7 +42,7 @@ namespace SGAmod.NPCs.Wraiths
 				SGAWorld.downedCaliburnGuardianHardmode = true;
 
 				if (!SGAWorld.darknessVision)
-				SpookyDarkSectorEye.Release(npc.Center, true, new Vector2(20, 20));
+					SpookyDarkSectorEye.Release(npc.Center, true, new Vector2(20, 20));
 			}
 
 		}
@@ -56,10 +56,10 @@ namespace SGAmod.NPCs.Wraiths
 	[AutoloadBossHead]
 	public class CaliburnGuardian : ModNPC, ISGABoss
 	{
-		public string Trophy() => "Caliburn"+ names[(int)npc.ai[2]] +"Trophy";
+		public string Trophy() => "Caliburn" + names[(int)npc.ai[2]] + "Trophy";
 		public bool Chance() => true;
 
-		protected string[] names = {"A","B","C"};
+		protected string[] names = { "A", "B", "C" };
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Spirit of Caliburn");
@@ -87,12 +87,12 @@ namespace SGAmod.NPCs.Wraiths
 					int typr = mod.DustType("TornadoDust");
 
 					int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, typr);
-					Main.dust[dust].scale = (0.75f * appear)+(npc.velocity.Length()/50f);
+					Main.dust[dust].scale = (0.75f * appear) + (npc.velocity.Length() / 50f);
 					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
 					Vector2 normvel = npc.velocity;
 					normvel.Normalize(); normvel *= 2f;
 
-					Main.dust[dust].velocity = ((randomcircle / 1f) + (-normvel))-npc.velocity;
+					Main.dust[dust].velocity = ((randomcircle / 1f) + (-normvel)) - npc.velocity;
 					Main.dust[dust].noGravity = true;
 
 				}
@@ -121,12 +121,12 @@ namespace SGAmod.NPCs.Wraiths
 
 				//Color color = Color.Lerp(Color.Lime, lightColor, (float)k / (oldPos.Length + 1));
 				float alphaz = (1f - (float)(k + 1) / (float)(oldRot.Length + 2)) * 1f;
-				float alphaz2 = Math.Max((0.5f - (float)(k + 1) / (float)(oldRot.Length + 2)) * 1f,0f);
-				float fadein = MathHelper.Clamp(nohit+10f/60, 0f, 0.2f);
+				float alphaz2 = Math.Max((0.5f - (float)(k + 1) / (float)(oldRot.Length + 2)) * 1f, 0f);
+				float fadein = MathHelper.Clamp(nohit + 10f / 60, 0f, 0.2f);
 				for (float xx = 0; xx < 1f; xx += 0.20f)
 				{
 					Vector2 drawPos = ((oldPos[k] - Main.screenPosition)) + (npc.velocity * xx);
-					spriteBatch.Draw(tex, drawPos, null, ((Color.Lerp(lightColor,Color.White, alphaz2) * alphaz) * (appear)) * 0.2f, oldRot[k], drawOrigin, npc.scale, npc.spriteDirection < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+					spriteBatch.Draw(tex, drawPos, null, ((Color.Lerp(lightColor, Color.White, alphaz2) * alphaz) * (appear)) * 0.2f, oldRot[k], drawOrigin, npc.scale, npc.spriteDirection < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 				}
 			}
 			return false;
@@ -225,7 +225,7 @@ namespace SGAmod.NPCs.Wraiths
 		public void DropBolders()
 		{
 			Player P = Main.player[npc.target];
-			Vector2 theside = new Vector2((P.Center.X - npc.Center.X > 0 ? -300f : 300f)*(0.5f+(float)Math.Sin((double)npc.ai[0]/120f)*0.7f), -200);
+			Vector2 theside = new Vector2((P.Center.X - npc.Center.X > 0 ? -300f : 300f) * (0.5f + (float)Math.Sin((double)npc.ai[0] / 120f) * 0.7f), -200);
 
 			Vector2 itt = ((P.Center + theside) - npc.Center);
 			float locspeed = 0.25f;
@@ -235,26 +235,26 @@ namespace SGAmod.NPCs.Wraiths
 			itt.Normalize();
 			npc.velocity = npc.velocity + (itt * locspeed);
 
-			npc.rotation = ((float)Math.Cos((double)npc.ai[0] / 6f)*1f)+Math.Max(0f,MathHelper.ToRadians(npc.localAI[0]*8f));
+			npc.rotation = ((float)Math.Cos((double)npc.ai[0] / 6f) * 1f) + Math.Max(0f, MathHelper.ToRadians(npc.localAI[0] * 8f));
 
 			if (npc.localAI[0] > 0)
 			{
 				npc.ai[0] -= 1;
 
 				int typr = mod.DustType("TornadoDust");
-				double angle = npc.rotation+MathHelper.ToRadians(-45);
-				Vector2 here = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle))*new Vector2(npc.spriteDirection < 0 ? 1f : 1f, 1f);
+				double angle = npc.rotation + MathHelper.ToRadians(-45);
+				Vector2 here = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * new Vector2(npc.spriteDirection < 0 ? 1f : 1f, 1f);
 
-				int dust = Dust.NewDust((npc.Center-new Vector2(6,6)) + here * 8f, 12, 12, typr);
+				int dust = Dust.NewDust((npc.Center - new Vector2(6, 6)) + here * 8f, 12, 12, typr);
 				Main.dust[dust].scale = 0.75f;
 				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-				Main.dust[dust].velocity = npc.velocity+ here*3f;
+				Main.dust[dust].velocity = npc.velocity + here * 3f;
 
 			}
 
-			if (npc.ai[0] % 90 == 0 && npc.localAI[0]<1)
+			if (npc.ai[0] % 90 == 0 && npc.localAI[0] < 1)
 			{
-				Idglib.Shattershots(npc.Center, P.Center + new Vector2((P.Center.X - npc.Center.X) > 0 ? 600 : -600, 0), new Vector2(P.width, P.height), ProjectileID.Boulder, 50, 3, caliburnlevel * 50, 1+ caliburnlevel, true, 0, true, 300);
+				Idglib.Shattershots(npc.Center, P.Center + new Vector2((P.Center.X - npc.Center.X) > 0 ? 600 : -600, 0), new Vector2(P.width, P.height), ProjectileID.Boulder, 50, 3, caliburnlevel * 50, 1 + caliburnlevel, true, 0, true, 300);
 
 			}
 
@@ -267,21 +267,21 @@ namespace SGAmod.NPCs.Wraiths
 			Player P = Main.player[npc.target];
 			Vector2 theside = new Vector2((P.Center.X - npc.Center.X > 0 ? -300f : 300f) * (0.5f + (float)Math.Sin((double)npc.ai[0] / 120f) * 0.7f), -200);
 			npc.ai[1] += 1;
-			for (int f = 0; f < (npc.ai[1]*(360f/50f))%360; f = f + 1)
+			for (int f = 0; f < (npc.ai[1] * (360f / 50f)) % 360; f = f + 1)
 			{
 				int typr = mod.DustType("TornadoDust");
 				double angle = MathHelper.ToRadians(f);
 				Vector2 here = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
 
-				int dust = Dust.NewDust(npc.Center + here*24f, 0,0, typr);
+				int dust = Dust.NewDust(npc.Center + here * 24f, 0, 0, typr);
 				Main.dust[dust].scale = (0.5f * appear) + (npc.velocity.Length() / 50f);
 				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
 				Vector2 normvel = npc.velocity;
 				normvel.Normalize(); normvel *= 2f;
 
-				npc.rotation = npc.rotation.AngleLerp((P.Center-npc.Center).ToRotation()-MathHelper.ToRadians(-45f*npc.spriteDirection), 0.1f);
+				npc.rotation = npc.rotation.AngleLerp((P.Center - npc.Center).ToRotation() - MathHelper.ToRadians(-45f * npc.spriteDirection), 0.1f);
 
-				Main.dust[dust].velocity = (here*3f);
+				Main.dust[dust].velocity = (here * 3f);
 				Main.dust[dust].noGravity = true;
 			}
 
@@ -296,7 +296,7 @@ namespace SGAmod.NPCs.Wraiths
 			{
 				List<Vector2> heremaybe = new List<Vector2>();
 
-				for (int zz = -1; zz < 2+ caliburnlevel; zz = zz + 1)
+				for (int zz = -1; zz < 2 + caliburnlevel; zz = zz + 1)
 				{
 					for (int f = -10; f < 10; f = f + 1)
 					{
@@ -306,12 +306,12 @@ namespace SGAmod.NPCs.Wraiths
 						}
 					}
 				}
-					if (heremaybe.Count > 0)
-					{
-					for (int f = 0; f < 1+ caliburnlevel; f = f + 1)
+				if (heremaybe.Count > 0)
+				{
+					for (int f = 0; f < 1 + caliburnlevel; f = f + 1)
 					{
 						Vector2 there = heremaybe[Main.rand.Next(heremaybe.Count)];
-						WorldGen.placeTrap((int)there.X, (int)there.Y, (caliburnlevel > 0 && f>0) ? 3 : 0);
+						WorldGen.placeTrap((int)there.X, (int)there.Y, (caliburnlevel > 0 && f > 0) ? 3 : 0);
 					}
 
 					if (Main.netMode == 2)
@@ -333,7 +333,7 @@ namespace SGAmod.NPCs.Wraiths
 		public override void AI()
 		{
 			npc.localAI[0] -= 1;
-			appear = Math.Max(appear - 0.03f, Math.Min(appear+0.025f,0.50f));
+			appear = Math.Max(appear - 0.03f, Math.Min(appear + 0.025f, 0.50f));
 			trailingeffect();
 			npc.knockBackResist = 0.85f;
 			nohit += 1;
@@ -354,11 +354,11 @@ namespace SGAmod.NPCs.Wraiths
 				if (!P.GetModPlayer<SGAPlayer>().DankShrineZone)
 					npc.dontTakeDamage = true;
 
-					if (npc.ai[1] < 1)
-					{
-						npc.spriteDirection = npc.velocity.X > 0 ? -1 : 1;
-						npc.ai[0] += 1;
-					}
+				if (npc.ai[1] < 1)
+				{
+					npc.spriteDirection = npc.velocity.X > 0 ? -1 : 1;
+					npc.ai[0] += 1;
+				}
 
 				float floattime = (90 - (caliburnlevel * 10));
 
@@ -390,7 +390,7 @@ namespace SGAmod.NPCs.Wraiths
 					{
 						nohit = -10;
 						if (Main.expertMode)
-						npc.knockBackResist = 0f;
+							npc.knockBackResist = 0f;
 						npc.damage = (int)npc.defDamage * 3;
 						itt = itt = (P.Center - npc.Center + new Vector2(0, -8));
 						npc.rotation = npc.rotation + (0.65f * npc.spriteDirection);
@@ -398,9 +398,9 @@ namespace SGAmod.NPCs.Wraiths
 						if (npc.ai[0] % (70) == 0)
 						{
 							if (caliburnlevel > 0)
-							Idglib.Shattershots(npc.Center, npc.Center-npc.velocity*26f, new Vector2(P.width, P.height), ProjectileID.CrystalShard, 10, caliburnlevel * 8f, caliburnlevel * 60, 8 + caliburnlevel * 8, true, 0, false, 200);
+								Idglib.Shattershots(npc.Center, npc.Center - npc.velocity * 26f, new Vector2(P.width, P.height), ProjectileID.CrystalShard, 10, caliburnlevel * 8f, caliburnlevel * 60, 8 + caliburnlevel * 8, true, 0, false, 200);
 							if (caliburnlevel > 0)
-							Idglib.Shattershots(npc.Center, npc.Center + npc.velocity * 26f, new Vector2(P.width, P.height), ProjectileID.EnchantedBeam, 20, 6f, 30, caliburnlevel, true, 0, false, 200);
+								Idglib.Shattershots(npc.Center, npc.Center + npc.velocity * 26f, new Vector2(P.width, P.height), ProjectileID.EnchantedBeam, 20, 6f, 30, caliburnlevel, true, 0, false, 200);
 
 							npc.velocity = npc.velocity * 0.96f;
 							npc.velocity = npc.velocity + (itt * locspeed);
@@ -422,11 +422,11 @@ namespace SGAmod.NPCs.Wraiths
 						else
 						{
 							if (npc.ai[0] > 1600 && Main.expertMode)
-							npc.ai[1] = 1;
+								npc.ai[1] = 1;
 							npc.velocity = npc.velocity * 0.96f;
 
-							if (npc.ai[0] % 90- (caliburnlevel * 10) == 0)
-							Idglib.Shattershots(npc.Center, P.Center + new Vector2((P.Center.X - npc.Center.X) > 0 ? 200 : -200, 0), new Vector2(P.width, P.height), ProjectileID.DiamondBolt, 15, 5, caliburnlevel * 5, 1+ caliburnlevel, true, 0, false, 200);
+							if (npc.ai[0] % 90 - (caliburnlevel * 10) == 0)
+								Idglib.Shattershots(npc.Center, P.Center + new Vector2((P.Center.X - npc.Center.X) > 0 ? 200 : -200, 0), new Vector2(P.width, P.height), ProjectileID.DiamondBolt, 15, 5, caliburnlevel * 5, 1 + caliburnlevel, true, 0, false, 200);
 
 
 						}
@@ -450,14 +450,14 @@ namespace SGAmod.NPCs.Wraiths
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
-			return nohit<1;
+			return nohit < 1;
 		}
 
 		public override void OnHitPlayer(Player player, int damage, bool crit)
 		{
 			if (Main.expertMode || Main.rand.Next(2) == 0)
 			{
-				player.AddBuff(BuffID.Bleeding, 60*10, true);
+				player.AddBuff(BuffID.Bleeding, 60 * 10, true);
 			}
 		}
 

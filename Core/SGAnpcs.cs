@@ -41,6 +41,7 @@ namespace SGAmod
 			}
 		}
 
+		public bool onlyOnce = false;
 		public int Snapped = 0;
 		public bool onlyOnce = false;
 		public bool NinjaSmoked = false;
@@ -118,6 +119,17 @@ namespace SGAmod
 		public bool drawonce = false;
 		public bool OnlyOnce()
 		{
+			if (!onlyOnce)
+			{
+				onlyOnce = true;
+				return true;
+			}
+
+			return false;
+		}
+
+		public bool OnlyOnce()
+        {
 			if (!onlyOnce)
 			{
 				onlyOnce = true;

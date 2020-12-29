@@ -623,8 +623,8 @@ namespace SGAmod
 
 			recipe = new ModRecipe(this);
 			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
-			recipe.AddIngredient(ItemID.CobaltBar, 10);
-			recipe.AddIngredient(ItemID.SoulofLight, 5);
+			recipe.AddIngredient(this.ItemType("RustedBulwark"), 1);
+			recipe.AddIngredient(ItemID.CobaltBar, 6);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.CobaltShield);
 			recipe.AddRecipe();

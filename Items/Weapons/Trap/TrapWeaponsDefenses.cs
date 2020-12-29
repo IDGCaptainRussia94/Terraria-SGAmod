@@ -9,15 +9,13 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.Enums;
-using SGAmod.Items.Weapons;
+using SGAmod.Items.Weapons.Trap;
 using SGAmod.Projectiles;
 using Idglibrary;
 using AAAAUThrowing;
 
 namespace SGAmod.Items.Weapons
 {
-
-
 	public class DefenseTrapWeapon : TrapWeapon
 	{
 

@@ -9,15 +9,13 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.Enums;
-using SGAmod.Items.Weapons;
+using SGAmod.Items.Weapons.Trap;
 using SGAmod.Projectiles;
 using Idglibrary;
 using AAAAUThrowing;
 
-namespace SGAmod.Items.Weapons
+namespace SGAmod.Items.Weapons.Trap
 {
-	
-
 
 	public class TrapWeapon : ModItem
 	{
@@ -108,7 +106,7 @@ namespace SGAmod.Items.Weapons
 
 		public override string Texture
 		{
-			get { return ("SGAmod/Items/Weapons/DartTrapGun"); }
+			get { return ("SGAmod/Items/Weapons/Trap/DartTrapGun"); }
 		}
 
 
@@ -167,7 +165,7 @@ namespace SGAmod.Items.Weapons
 
 		public override string Texture
 		{
-			get { return ("SGAmod/Items/Weapons/PortableSpearTrap"); }
+			get { return ("SGAmod/Items/Weapons/Trap/PortableSpearTrap"); }
 		}
 
 
@@ -1144,7 +1142,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Heart Guard");
-			Tooltip.SetDefault("Trap Damage increased by 10%\n+20 Max HP and hearts give +5 Health");
+			Tooltip.SetDefault("Trap Damage increased by 10%\n+20 Max HP and hearts give +5 Health\nEffect of Rusted Bulwark");
 		}
 
 		public override void SetDefaults()
@@ -1160,6 +1158,7 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			base.UpdateAccessory(player, hideVisual);
+			mod.GetItem("RustedBulwark").UpdateAccessory(player, hideVisual);
 			player.GetModPlayer<SGAPlayer>().HeartGuard = true;
 			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.1f;
 			player.statLifeMax2 += 20;
@@ -1167,8 +1166,8 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("RustedBulwark"), 1);
 			recipe.AddIngredient(ItemID.LifeCrystal, 1);
-			recipe.AddIngredient(ItemID.CrimsonHeart, 1);
 			recipe.AddIngredient(ItemID.HeartreachPotion, 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
@@ -1181,7 +1180,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("'JuryRigged' Spike Buckler");
-			Tooltip.SetDefault("Trap Damage increased by 10% and ignores 10% of enemy defense\nYou reflect 2 times the damage you take back to melee attackers");
+			Tooltip.SetDefault("Trap Damage increased by 10% and ignores 10% of enemy defense\nYou reflect 2 times the damage you take back to melee attackers\nEffect of Rusted Bulwark");
 		}
 
 		public override void SetDefaults()
@@ -1197,6 +1196,7 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			base.UpdateAccessory(player, hideVisual);
+			mod.GetItem("RustedBulwark").UpdateAccessory(player, hideVisual);
 			player.GetModPlayer<SGAPlayer>().JuryRiggedSpikeBuckler = true;
 			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.1f;
 			player.thorns += 2f;
@@ -1204,6 +1204,7 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("RustedBulwark"), 1);
 			recipe.AddIngredient(ItemID.Spike, 40);
 			recipe.AddIngredient(ItemID.ThornsPotion, 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));

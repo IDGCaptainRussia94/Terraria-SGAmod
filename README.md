@@ -12,11 +12,50 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners, Spectre homing bullets/projectiles, Fist of Moonlord, Tech weapons have an "overclock" mechanic that changes up their gameplay while active, spider queen can melt normal generated blocks (dirt and so)
-Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Gunnarang, Prism Banishee drops and Aurora drops, Aura Borealis
+Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Gunnarang, Prism Banishee drops and Aurora drops, Aura Borealis, Power Tools?
 
 -Add Hellion Army progress Bar
 
 Changelog:
+
+3.500-(12/29/20)-Patch 10:
+
+
+--Added:
+
+-Rusty Gear: Rusted Bulwark, Rusty Rifle
+
+
+--Changed:
+
+-With the introduction of 4-clip revolver weapons, the system has changed: swapping to a weapon with a different clip size forces a reload before you can use it
+
+-Flail-O-Nades is now a trap weapon
+
+-The Gunarang now properly eats your ammo as it shoots it (and throwing the gun does not)
+
+-Luminite Wraith's Desert Spirits should no longer do contact damage
+
+-A speed cap on Jab-lin stab rate
+
+-Reworked Sword of a Thousand Truths: larger sprite hitbox, 10 less damage
+
+-Buffed Glass Sword: increased damage by 1
+
+-Nerfed Guerrilla Pistol: Knockback reduced
+
+-Nerfed Magishield: Blocking with the shield now throws the player back if they consume the damage with their mana, even if they are knockback immune
+
+-Refactored and improved a bit more of the code
+
+
+--Fixed:
+
+-Jab-lin effects doing no damage on melee
+
+-Revolvers bugging out and seemingly jamming, I hope
+
+
 
 3.510-(12/29/20)-Hot Fix #14:
 
@@ -39,6 +78,8 @@ Changelog:
 
 --Fixed:
 
+-Shadow Jablins being uncrafted to get a Shadow Key
+
 -Horsefly and Gnat Staffs had swapped buff icons
 
 -Reloading your revolver breaking grass
@@ -46,7 +87,6 @@ Changelog:
 -Typeos
 
 
-Changelog:
 
 3.500-(12/27/20)-Patch 9-Shield-N-Spells:
 

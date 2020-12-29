@@ -492,6 +492,7 @@ namespace SGAmod.Items.Weapons.Shields
 				player.immuneTime = 10;
 				Main.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 9, 0.6f, 0.5f);
 				player.manaRegenDelay = Math.Max(player.manaRegenDelay, 180);
+				player.velocity -= Vector2.UnitX * player.direction * 2f;
 				return false;
 			}
 			return true;

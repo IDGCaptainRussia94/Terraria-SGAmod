@@ -1353,6 +1353,8 @@ namespace SGAmod.NPCs.Wraiths
 							newguy2.knockBackResist = 0f;
 							newguy2.noTileCollide = true;
 							newguy2.noGravity = true;
+							newguy2.damage = 0;
+							newguy2.netUpdate = true;
 							//itz[0].aiStyle=0;
 						}
 						if (npc.ai[0] % 150 == 0)

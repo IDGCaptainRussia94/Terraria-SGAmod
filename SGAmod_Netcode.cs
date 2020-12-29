@@ -203,7 +203,12 @@ namespace SGAmod
 			{
 				Logger.Debug("DEBUG both: Clone Client");
 				int player = reader.ReadInt32();
-				int ammoLeftInClip = reader.ReadInt16();
+				int ammoLeftInClip = (int)reader.ReadByte();
+				int ammoLeftInClipMax = (int)reader.ReadByte();
+				int ammoLeftInClipMaxLastHeld = (int)reader.ReadByte();
+				int ammoLeftInClipMaxAddedAmmo = (int)reader.ReadByte();
+
+
 				int sufficate = reader.ReadInt32();
 				int PrismalShots = reader.ReadInt32();
 				int plasmaLeftInClip = reader.ReadInt32();
@@ -222,6 +227,9 @@ namespace SGAmod
 				{
 					SGAPlayer sgaplayer = Main.player[player].GetModPlayer(this, typeof(SGAPlayer).Name) as SGAPlayer;
 					sgaplayer.ammoLeftInClip = ammoLeftInClip;
+					sgaplayer.ammoLeftInClipMax = ammoLeftInClipMax;
+					sgaplayer.ammoLeftInClipMaxLastHeld = ammoLeftInClipMaxLastHeld;
+					sgaplayer.ammoLeftInClipMaxAddedAmmo = ammoLeftInClipMaxAddedAmmo;
 					sgaplayer.sufficate = sufficate;
 					sgaplayer.PrismalShots = PrismalShots;
 					sgaplayer.plasmaLeftInClip = plasmaLeftInClip;

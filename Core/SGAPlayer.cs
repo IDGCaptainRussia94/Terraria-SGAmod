@@ -107,7 +107,7 @@ namespace SGAmod
 		public bool CirnoWings = false;
 		public bool SerratedTooth = false;
 		public bool grippinggloves = false;
-		public bool mudbuff = false; public bool alkalescentHeart = false;
+		public bool mudbuff = false; public bool alkalescentHeart = false; public bool jabALot = false;
 		public int Havoc = 0;
 		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false;
 		public float SpaceDiverWings = 0f;
@@ -155,6 +155,7 @@ namespace SGAmod
 		public int MaxCooldownStacks = 1;
 		public float RevolverSpeed = 1f;
 		public float damagetaken = 1f;
+		public float knockbackTaken = 1f;
 		public int consumeCurse = 0;
 		public float shieldDamageReduce = 0f;
 		public float shieldDamageBoost = 0f;
@@ -167,7 +168,12 @@ namespace SGAmod
 		public Vector2 Locked = new Vector2(100, 300);
 		public int electricCharge = 0; public int electricChargeMax = 0; public float electricChargeCost = 1f; public float electricChargeReducedDelay = 1f;
 		public int ammoLeftInClip = 6; public int plasmaLeftInClip = 1000;
-		public int ammoLeftInClipMax = 6; public int plasmaLeftInClipMax = 1000;
+		public int ammoLeftInClipMaxLastHeld = 0;
+		public int ammoLeftInClipMaxStack = 0;
+		public int ammoLeftInClipMaxAddedAmmo = 0;
+		public int ammoLeftInClipMax = 6;
+
+		public int plasmaLeftInClipMax = 1000;
 		public const int plasmaLeftInClipMaxConst = 1000; public const int boosterPowerLeftMaxConst = 10000;
 		public int boosterPowerLeft = 10000; public int boosterPowerLeftMax = 10000; public float boosterdelay = -500; public float electricdelay = -500; public int boosterrechargerate = 15; public int electricrechargerate = 1;
 		public int digiStacks = 0; public int digiStacksMax = 0;
@@ -277,6 +283,9 @@ namespace SGAmod
 			consumeCurse = 0;
 			ReloadingRevolver = Math.Max(ReloadingRevolver - 1, 0);
 			twinesoffate = false;
+
+			jabALot = true;
+
 			glacialStone = false;
 			terraDivingGear = false;
 			Duster = false;
@@ -292,6 +301,7 @@ namespace SGAmod
 			murkyCharm = false;
 			permaDrown = false;
 			trueMeleeDamage = 1f;
+			knockbackTaken = 1f;
 			triggerFinger = 1f;
 			CirnoWings = false;
 			MassiveBleeding = false;
@@ -318,7 +328,7 @@ namespace SGAmod
 			if (ammoLeftInClip > ammoLeftInClipMax)
 				ammoLeftInClip = ammoLeftInClipMax;
 
-			ammoLeftInClipMax = 6;
+			ammoLeftInClipMaxStack = 0;
 			SpaceDiverWings = 0f;
 			ActionCooldown = false;
 			lunarSlimeHeart = false;
@@ -480,6 +490,9 @@ namespace SGAmod
 		{
 			SGAPlayer sgaplayer = clientClone as SGAPlayer;
 			sgaplayer.ammoLeftInClip = ammoLeftInClip;
+			sgaplayer.ammoLeftInClipMax = ammoLeftInClipMax;
+			sgaplayer.ammoLeftInClipMaxLastHeld = ammoLeftInClipMaxLastHeld;
+			sgaplayer.ammoLeftInClipMaxAddedAmmo = ammoLeftInClipMaxAddedAmmo;
 			sgaplayer.sufficate = sufficate;
 			sgaplayer.PrismalShots = PrismalShots;
 			sgaplayer.plasmaLeftInClip = plasmaLeftInClip;
@@ -512,6 +525,10 @@ namespace SGAmod
 					break;
 				}
 			}
+			if (sgaplayer.ammoLeftInClipMax != ammoLeftInClipMax ||
+			sgaplayer.ammoLeftInClipMaxLastHeld != ammoLeftInClipMaxLastHeld ||
+			sgaplayer.ammoLeftInClipMaxAddedAmmo != ammoLeftInClipMaxAddedAmmo)
+				mismatch = true;
 			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots || sgaplayer.entropyCollected != entropyCollected || sgaplayer.DefenseFrame != DefenseFrame
 			|| sgaplayer.plasmaLeftInClip != plasmaLeftInClip || sgaplayer.Redmanastar != Redmanastar || sgaplayer.ExpertiseCollected != ExpertiseCollected || sgaplayer.ExpertiseCollectedTotal != ExpertiseCollectedTotal
 			 || sgaplayer.gunslingerLegendtarget != gunslingerLegendtarget || sgaplayer.activestacks != activestacks || sgaplayer.dragonFriend != dragonFriend)
@@ -533,7 +550,11 @@ namespace SGAmod
 				ModPacket packet = SGAmod.Instance.GetPacket();
 				packet.Write(500);
 				packet.Write(player.whoAmI);
-				packet.Write((short)ammoLeftInClip);
+				packet.Write((byte)ammoLeftInClip);
+				packet.Write((byte)ammoLeftInClipMax);
+				packet.Write((byte)ammoLeftInClipMaxLastHeld);
+				packet.Write((byte)ammoLeftInClipMaxAddedAmmo);
+
 				packet.Write(sufficate);
 				packet.Write(PrismalShots);
 				packet.Write(plasmaLeftInClip);

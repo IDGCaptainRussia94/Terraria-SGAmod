@@ -2175,7 +2175,7 @@ namespace SGAmod.Items.Accessories
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			player.bulletDamage += 0.06f;
-			sgaply.ammoLeftInClipMax += 2;
+			sgaply.ammoLeftInClipMaxStack += 2;
 		}
 
 	}
@@ -2201,7 +2201,7 @@ namespace SGAmod.Items.Accessories
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.RevolverSpeed += 0.20f;
-			sgaply.ammoLeftInClipMax += 2;
+			sgaply.ammoLeftInClipMaxStack += 2;
 			player.bulletDamage += 0.10f;
 		}
 		public override void AddRecipes()
@@ -3363,6 +3363,65 @@ namespace SGAmod.Items.Accessories
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.gamePadAutoAim = 2;
 			//Terraria.GameContent.Events.DD2Event.LaneSpawnRate = 9;
+		}
+
+	}
+	public class RustedBulwark : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Rusted Bulwark");
+			Tooltip.SetDefault("Halves Knockback taken\nGrants 1 defense when below half health\n'Has seen better days...'");
+		}
+
+		public override void SetDefaults()
+		{
+			//item.CloneDefaults(ItemID.ManaFlower);
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.White;
+			item.value = Item.buyPrice(0, 0, 20, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			if (player.statLife < player.statLifeMax2 / 2)
+			{
+				player.statDefense += 1;
+			}
+			sgaplayer.knockbackTaken *= 0.5f;
+		}
+
+	}
+	public class Jabbawacky : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Jabb-a-wacky");
+			Tooltip.SetDefault("Increases Jab-lin jabbing speed by 20% and grants autofire\n"+ Idglib.ColorText(Color.Red, "Your precision gets a little off thou..."));
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_" + ItemID.Jackelier); }
+		}
+
+		public override void SetDefaults()
+		{
+			//item.CloneDefaults(ItemID.ManaFlower);
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.White;
+			item.value = Item.buyPrice(0, 0, 20, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.jabALot = true;
 		}
 
 	}

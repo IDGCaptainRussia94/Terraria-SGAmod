@@ -746,7 +746,7 @@ namespace SGAmod
             oretypeshardmode[2] = WorldGen.oreTier3;
 
 
-            int[] itemsToPlaceInOvergrownChestsSecond = new int[] { mod.ItemType("ForagersBlade"), mod.ItemType("GuerrillaPistol"),mod.ItemType("AversionCharm") };
+            int[] itemsToPlaceInOvergrownChestsSecond = new int[] { mod.ItemType("ForagersBlade"), mod.ItemType(WorldGen.crimson ? "GuerrillaPistol" : "RustyRifle"),mod.ItemType("AversionCharm"), mod.ItemType("RustedBulwark") };
             int itemsToPlaceInOvergrownChestsChoiceSecond = 0;
 
                 List<Chest> Chests = Main.chest.Where(checkfor => checkfor != null).ToList();

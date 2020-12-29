@@ -1299,7 +1299,7 @@ namespace SGAmod.Items.Weapons
 		public int cooldown = -10;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Avarice Coin");
+			DisplayName.SetDefault("Jarate Shuriken");
 		}
 		public override string Texture
 		{

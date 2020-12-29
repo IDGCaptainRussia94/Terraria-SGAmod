@@ -40,6 +40,8 @@ Changelog:
 
 --Fixed:
 
+-Shadow Jablins being uncrafted to get a Shadow Key
+
 -Horsefly and Gnat Staffs had swapped buff icons
 
 -Reloading your revolver breaking grass

@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.GameContent.UI;
 using System.Reflection;
-using SGAmod.Items.Weapons;
+using SGAmod.Items.Weapons.Trap;
 using SGAmod.Items.Accessories;
 using Idglibrary;
 using AAAAUThrowing;

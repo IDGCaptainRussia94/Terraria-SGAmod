@@ -8,14 +8,14 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
 
-namespace SGAmod.Items.Weapons
+namespace SGAmod.Items.Weapons.Trap
 {
-    public class NadeFlail : ModItem
+    public class NadeFlail : SpikeballFlail
     {
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Flail-O-Nades");
-            Tooltip.SetDefault("Unleashes long lasting Sticky Grenades pretty much whenever it hits a wall\nFaster speeds release more grenades\nHigh velocity impacts spawn a Proxy Mine\n'This is a REALLY great idea!'");
+            Tooltip.SetDefault("Unleashes long lasting Sticky Grenades pretty much whenever it hits a wall\nFaster speeds release more grenades\nHigh velocity impacts spawn a Proxy Mine\nCounts as trap damage, doesn't crit\n'This is a REALLY great idea!'");
         }
         public override void SetDefaults()
         {
@@ -83,6 +83,7 @@ namespace SGAmod.Items.Weapons
                         int thisone = Projectile.NewProjectile(projectile.Center.X - projectile.velocity.X, projectile.Center.Y - projectile.velocity.Y, randomcircle.X * velincrease, randomcircle.Y * velincrease, ProjectileID.StickyGrenade, (int)(projectile.damage * 2.50), 0f, projectile.owner, 0.0f, 0f);
                         Main.projectile[thisone].melee = true;
                         Main.projectile[thisone].thrown = false;
+                        Main.projectile[thisone].trap = true;
                         Main.projectile[thisone].ranged = false;
                         Main.projectile[thisone].timeLeft = 60 * 20;
                         Main.projectile[thisone].netUpdate = true;
@@ -102,6 +103,7 @@ namespace SGAmod.Items.Weapons
                         int thisone = Projectile.NewProjectile(projectile.Center.X - projectile.velocity.X, projectile.Center.Y - projectile.velocity.Y, randomcircle.X * velincrease, randomcircle.Y * velincrease, ProjectileID.ProximityMineIII, (int)(projectile.damage * 5.00), 0f, projectile.owner, 0.0f, 0f);
                         Main.projectile[thisone].melee = true;
                         Main.projectile[thisone].thrown = false;
+                        Main.projectile[thisone].trap = true;
                         Main.projectile[thisone].ranged = false;
                         Main.projectile[thisone].netUpdate = true;
                         IdgProjectile.Sync(thisone);

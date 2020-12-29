@@ -18,6 +18,22 @@ Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge ba
 
 Changelog:
 
+3.515-(12/29/20)-Hot Fix #15:
+
+-Missed a thing, -Happy New Years everyone #2!
+
+
+--Changed:
+
+-Luminite Wraith's Djinns no longer do contact damage
+
+
+--Fixed:
+
+-Luminite Wraith's Djinns ALWAYS Spawning
+
+
+
 3.510-(12/29/20)-Hot Fix #14:
 
 -Happy New Years everyone!
@@ -46,7 +62,6 @@ Changelog:
 -Typeos
 
 
-Changelog:
 
 3.500-(12/27/20)-Patch 9-Shield-N-Spells:
 

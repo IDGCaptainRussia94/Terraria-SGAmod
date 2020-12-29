@@ -1343,7 +1343,7 @@ namespace SGAmod.NPCs.Wraiths
 
 
 					}
-					if (true)//npc.ai[3] == ItemID.NebulaBreastplate)
+					if (npc.ai[3] == ItemID.NebulaBreastplate)
 					{
 
 						if (NPC.CountNPCS(NPCID.DesertDjinn)<2 && npc.ai[0] % (60+NPC.CountNPCS(NPCID.DesertDjinn)*240) == 0)
@@ -1353,6 +1353,7 @@ namespace SGAmod.NPCs.Wraiths
 							newguy2.knockBackResist = 0f;
 							newguy2.noTileCollide = true;
 							newguy2.noGravity = true;
+							newguy2.damage = 0;
 							//itz[0].aiStyle=0;
 						}
 						if (npc.ai[0] % 150 == 0)

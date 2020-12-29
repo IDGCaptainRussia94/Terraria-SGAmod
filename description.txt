@@ -19,6 +19,22 @@ And finally, alot of content in this mod is placeholder sprites due to a lack of
 
 Changelog:
 
+3.515-(12/29/20)-Hot Fix #15:
+
+-Missed a thing, -Happy New Years everyone #2!
+
+
+--Changed:
+
+-Luminite Wraith's Djinns no longer do contact damage
+
+
+--Fixed:
+
+-Luminite Wraith's Djinns ALWAYS Spawning
+
+
+
 3.510-(12/29/20)-Hot Fix #14:
 
 -Happy New Years everyone!

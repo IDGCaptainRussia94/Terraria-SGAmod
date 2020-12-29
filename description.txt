@@ -259,8 +259,6 @@ Changelog:
 
 -Blazewyrm set bonus not triggering on 'True melee' projectile weapons like Yoyos and Spears
 
--Hopeful fixed the player layer problem by having extra checks in place
-
 
 
 3.440-(12/3/20)-Hot Fix #12:

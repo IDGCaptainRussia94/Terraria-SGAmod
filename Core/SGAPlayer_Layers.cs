@@ -253,17 +253,17 @@ namespace SGAmod
 
 			#region MiscVisuals
 
-			if (sgaplayer.SpaceDiverset && CustomWings < 1)
+			if (sgaplayer.SpaceDiverset && CustomWings<1)
 			{
-				/*int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
-				int backacclayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("BackAcc"));
-				if (SpaceDiverWings < 0.6f)
-				layers.RemoveAt(wingsLayer);
-				SpaceDiverTank.visible = true;
-				layers.Insert(backacclayer, SpaceDiverTank);*/
+			/*int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
+			int backacclayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("BackAcc"));
+			if (SpaceDiverWings < 0.6f)
+			layers.RemoveAt(wingsLayer);
+			SpaceDiverTank.visible = true;
+			layers.Insert(backacclayer, SpaceDiverTank);*/
 			}
 
-			if (sgaplayer.CustomWings > 0)
+			if (sgaplayer.CustomWings>0)
 			{
 				int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
 				if (wingsLayer >= 0)
@@ -310,11 +310,11 @@ namespace SGAmod
 				}
 			}
 
-			#endregion
+            #endregion
 
-			#region armor glowmasks
+            #region armor glowmasks
 
-			string[] stringsz = { "Head", "Body", "Arms", "Legs"};
+            string[] stringsz = { "Head", "Body", "Arms", "Legs"};
 			PlayerLayer[] thelayer = { PlayerLayer.Head, PlayerLayer.Body, PlayerLayer.Arms, PlayerLayer.Legs };
 
 			for (int intc = 0; intc < 4; intc += 1)

@@ -1000,11 +1000,12 @@ namespace SGAmod
 
 			bool rocket = false;
 
-			if (Main.rand.Next(0, 5) == 1 && Main.hardMode)
+			if (Main.rand.Next(0, 4) == 1 && Main.hardMode)
 			{
-				shop[nextSlot] = ModContent.ItemType<SoldierRocketLauncher>();
+				rocket = Main.rand.NextBool();
+				shop[nextSlot] = rocket ? ModContent.ItemType<SoldierRocketLauncher>() : ModContent.ItemType<Gunarang>();
 				nextSlot++;
-				rocket = true;
+
 			}
 			if (Main.LocalPlayer.HasItem(ModContent.ItemType<SoldierRocketLauncher>()))
 				rocket = true;

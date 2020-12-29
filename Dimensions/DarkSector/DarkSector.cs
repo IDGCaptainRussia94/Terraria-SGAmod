@@ -173,7 +173,7 @@ namespace SGAmod.Dimensions
             {
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    Idglib.Chat("A Darkness emerges from beneath the folds existance...", 120, 15, 15);
+                    Idglib.Chat("A Darkness emerges from beneath the folds existence...", 120, 15, 15);
                 }
 
             }

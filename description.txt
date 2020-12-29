@@ -19,6 +19,35 @@ And finally, alot of content in this mod is placeholder sprites due to a lack of
 
 Changelog:
 
+3.510-(12/29/20)-Hot Fix #14:
+
+-Happy New Years everyone!
+
+
+--Added:
+
+-Gunarang
+
+-Truely Sus Eye resprite
+
+
+--Changed:
+
+-Traveling Merchant sells Soldier's Rocket Launcher a bit more often since the slot is now shared with the Gunarang
+
+-Increments on the Fog Detail Slider are now 1 (instead of five), and lowest setting is 3
+
+
+--Fixed:
+
+-Horsefly and Gnat Staffs had swapped buff icons
+
+-Reloading your revolver breaking grass
+
+-Typeos
+
+
+
 3.500-(12/27/20)-Patch 9-Shield-N-Spells:
 
 

@@ -18,7 +18,9 @@ Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge ba
 
 Changelog:
 
-3.510-(12/27/20)-Hot Fix #14:
+3.510-(12/29/20)-Hot Fix #14:
+
+-Happy New Years everyone!
 
 
 --Added:
@@ -30,6 +32,8 @@ Changelog:
 
 --Changed:
 
+-Traveling Merchant sells Soldier's Rocket Launcher a bit more often since the slot is now shared with the Gunarang
+
 -Increments on the Fog Detail Slider are now 1 (instead of five), and lowest setting is 3
 
 
@@ -38,6 +42,8 @@ Changelog:
 -Horsefly and Gnat Staffs had swapped buff icons
 
 -Reloading your revolver breaking grass
+
+-Typeos
 
 
 Changelog:

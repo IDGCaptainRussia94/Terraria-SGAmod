@@ -3594,7 +3594,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cobalt Magnet");
-			Tooltip.SetDefault("Point at grounded items to quickly attact them from a larger distance\nCan be held out like a torch and used normally by holding shift\nwhile worn:\n-minor increase to item grab radius and grab speed\n-Effects of Celestial Magnet");
+			Tooltip.SetDefault("Point at grounded items to quickly attract them from a larger distance\nCan be held out like a torch and used normally by holding shift\nwhile worn:\n-minor increase to item grab radius and grab speed\n-Effects of Celestial Magnet");
 			Item.staff[item.type] = true;
 		}
 

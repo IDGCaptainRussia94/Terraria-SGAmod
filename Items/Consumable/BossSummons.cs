@@ -783,17 +783,6 @@ namespace SGAmod.Items.Consumable
 		item.UseSound = SoundID.Item8;
 	}
 
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return Color.Aqua;
-
-		}
-
-	public override string Texture
-	{
-		get { return ("Terraria/Item_"+ItemID.SuspiciousLookingEye); }
-	}
-
 
 }
 

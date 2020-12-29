@@ -523,7 +523,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/HorseflyStaffBuff";
+			texture = "SGAmod/Buffs/GnatStaffBuff";
 			return true;
 		}
 
@@ -698,7 +698,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/GnatStaffBuff";
+			texture = "SGAmod/Buffs/HorseflyStaffBuff";
 			return true;
 		}
 

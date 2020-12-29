@@ -268,31 +268,84 @@ namespace SGAmod.NPCs
 					if (divider > 1)
 					{
 						shooting = shooting + 1;
+						float shoottype = 0;
 						if (divider < 4)
 						{
-							if (shooting % 160 > 120 && shooting % 8 == 0)
+							if (shooting % 1200 < 700)
 							{
-								Idglib.Shattershots(npc.position, P.position + P.velocity * (1f + (shooting - 120 % 160) / 150f), new Vector2(P.width, P.height), 88, 25, 8, 0, 1, true, 0, false, 450);
-							}
-
-							if ((shooting + 90) % 180 == 0 && Main.expertMode)
-							{
-								if (Main.npc[bosses[1]].active && Main.npc[bosses[1]].type == NPCID.SkeletronPrime)
+								if (shooting % 1200 > 100)
 								{
-									Vector2 Centerhere = (P.position - Main.npc[bosses[1]].Center);
-									List<Projectile> itz = Idglib.Shattershots(Main.npc[bosses[1]].Center, P.position, new Vector2(P.width, P.height), ProjectileID.SaucerMissile, 25, 10, 80, 2, false, 0, false, 450);
-									itz[0].localAI[1] = -30;
-									itz[1].localAI[1] = -30;
+									shoottype = 1;
+								if (shooting % 200 == 0 && shooting % 8 == 0)
+									{
+										for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.Pi / 10f)
+										{
+											float angle = (shooting / 60f) + f;
+											int proj = Projectile.NewProjectile(npc.Center, angle.ToRotationVector2() * 24f, mod.ProjectileType("HellionBolt"), 30, 15f);
+											Main.projectile[proj].timeLeft = 200;
+											Main.projectile[proj].netUpdate = true;
+											//Idglib.Shattershots(npc.position, P.position + P.velocity * (1f + (shooting - 120 % 160) / 150f), new Vector2(P.width, P.height), 88, 25, 8, 0, 1, true, 0, false, 450);
+										}
+									}
 								}
 							}
-							if (shooting % 180 == 0 && Main.expertMode)
+							else
 							{
-								if (Main.npc[bosses[3]].active && Main.npc[bosses[3]].type == NPCID.SkeletronPrime)
+								if (shooting % 1200 > 850)
 								{
-									Vector2 Centerhere = (P.position - Main.npc[bosses[3]].Center);
-									List<Projectile> itz = Idglib.Shattershots(Main.npc[bosses[3]].Center, P.position, new Vector2(P.width, P.height), ProjectileID.SaucerMissile, 25, 10, 80, 2, false, 0, false, 450);
-									itz[0].localAI[1] = -30;
-									itz[1].localAI[1] = -30;
+									shoottype = 2;
+									if (shooting % 10 == 0)
+									{
+										for (float f = -1; f < 2; f += 2f)
+										{
+											float angle = (shooting / 20f) * f;
+											int proj = Projectile.NewProjectile(npc.Center, angle.ToRotationVector2() * 18f, mod.ProjectileType("HellionBolt"), 30, 15f);
+											Main.projectile[proj].timeLeft = 200;
+											Main.projectile[proj].netUpdate = true;
+										}
+									}
+								}
+							}
+
+							if (shoottype == 1)
+							{
+								if ((shooting + 90) % 180 == 0 && Main.expertMode)
+								{
+									if (Main.npc[bosses[1]].active && Main.npc[bosses[1]].type == NPCID.SkeletronPrime)
+									{
+										Vector2 Centerhere = (P.position - Main.npc[bosses[1]].Center);
+										List<Projectile> itz = Idglib.Shattershots(Main.npc[bosses[1]].Center, P.position, new Vector2(P.width, P.height), ProjectileID.SaucerMissile, 25, 10, 80, 2, false, 0, false, 450);
+										itz[0].localAI[1] = -30;
+										itz[1].localAI[1] = -30;
+									}
+								}
+								if (shooting % 180 == 0 && Main.expertMode)
+								{
+									if (Main.npc[bosses[3]].active && Main.npc[bosses[3]].type == NPCID.SkeletronPrime)
+									{
+										Vector2 Centerhere = (P.position - Main.npc[bosses[3]].Center);
+										List<Projectile> itz = Idglib.Shattershots(Main.npc[bosses[3]].Center, P.position, new Vector2(P.width, P.height), ProjectileID.SaucerMissile, 25, 10, 80, 2, false, 0, false, 450);
+										itz[0].localAI[1] = -30;
+										itz[1].localAI[1] = -30;
+									}
+								}
+							}
+
+							if (shoottype == 2)
+							{
+								if (true)
+								{
+									if (Main.npc[bosses[1]].active && Main.npc[bosses[1]].type == NPCID.SkeletronPrime)
+									{
+										Main.npc[bosses[1]].position.X -= 12.15f;
+									}
+								}
+								if (true)
+								{
+									if (Main.npc[bosses[3]].active && Main.npc[bosses[3]].type == NPCID.SkeletronPrime)
+									{
+										Main.npc[bosses[3]].position.X += 12.15f;
+									}
 								}
 							}
 

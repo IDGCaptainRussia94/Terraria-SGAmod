@@ -19,7 +19,6 @@ using Terraria.DataStructures;
 
 namespace SGAmod.NPCs
 {
-
 	public class PrismBanshee : ModNPC
 	{
 		public int bansheeState = 0;
@@ -78,6 +77,7 @@ namespace SGAmod.NPCs
 
         public override void NPCLoot()
         {
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AuroraTear"), Main.expertMode ? 2 : 1);
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(12, Main.expertMode ? 30 : 20));
 			SGAWorld.downedPrismBanshee = true;
 		}
@@ -190,12 +190,14 @@ namespace SGAmod.NPCs
 				Main.npc[hand].netUpdate = true;
 			}
 
+			bool underground = (int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+
 			Player P = Main.player[npc.target];
-			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
+			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active || !underground)
 			{
 				npc.TargetClosest(false);
 				P = Main.player[npc.target];
-				if (!P.active || P.dead || !Main.dayTime)
+				if (!P.active || P.dead || !Main.dayTime || !underground)
 				{
 					npc.velocity = new Vector2(npc.velocity.X, npc.velocity.Y + 1f);
 				}
@@ -244,27 +246,35 @@ namespace SGAmod.NPCs
 			}
 		}
 
+		public static void DrawPrismCore(SpriteBatch spriteBatch, Color drawColor,Vector2 drawWhere,float rotter,float scale = 1,float scaleup=96)
+        {
+			Vector2 drawPos = drawWhere - Main.screenPosition;
+			Texture2D tex2 = Main.projectileTexture[SGAmod.Instance.ProjectileType("JavelinProj")];
+			for (int i = 24; i < scaleup; i += 6)
+			{
+				float peralpha = MathHelper.Clamp(scaleup-(float)i,0f,6f)/6f;
+				for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi * 0.1f)
+				{
+					float rotAngle = f + ((rotter + (i / 8f)) / ((-i * 2) + 16f)) * (((i - 24) % 12 == 0) ? 1f : -1f);
+					Vector2 vecAngle = Vector2.UnitX.RotatedBy(rotAngle)*scale;
+					spriteBatch.Draw(tex2, drawPos + vecAngle * i, null, Color.Magenta * peralpha * (1f - (i / 84f)),rotAngle + MathHelper.PiOver2, (tex2.Size() / 2f), scale, SpriteEffects.None, 0f);
+				}
+			}
+
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
 			Vector2 drawPos = npc.Center - Main.screenPosition;
 			Texture2D texture = SGAmod.PrismBansheeTex;
 			Texture2D tex = Main.npcTexture[npc.type];
-			Texture2D tex2 = Main.projectileTexture[mod.ProjectileType("JavelinProj")];
 			//Texture2D tex3 = Main.projectileTexture[ProjectileID.CultistBossIceMist];
 
 			List<NPC> NPCHands = Main.npc.Where(handtest => handtest.active && handtest.type == ModContent.NPCType<PrismBansheeHand>() && (int)handtest.ai[1] == npc.whoAmI).ToList();
 
 			float inrc = Main.GlobalTime / 30f;
 
-			for (int i = 24; i < 96; i += 6)
-			{
-				for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi * 0.1f)
-				{
-					float rotAngle = f + ((npc.localAI[0] + (i / 8f)) / ((-i * 2) + 16f)) * (((i - 24) % 12 == 0) ? 1f : -1f);
-					Vector2 vecAngle = Vector2.UnitX.RotatedBy(rotAngle);
-					spriteBatch.Draw(tex2, drawPos + vecAngle * i, null, Color.Magenta * (1f - (i / 84f)), npc.rotation + rotAngle + MathHelper.PiOver2, (tex2.Size() / 2f), npc.scale, SpriteEffects.None, 0f);
-				}
-			}
+			DrawPrismCore(spriteBatch,drawColor,npc.Center,npc.localAI[0],npc.scale);
 
 			float strength = 1f;
 
@@ -523,10 +533,16 @@ namespace SGAmod.NPCs
 			{
 				//if ((P.Center.X - npc.Center.X < 0 && ArmOffset.X > 0) || (P.Center.X - npc.Center.X < 0 && ArmOffset.X < 0))
 				//{
-				if (npc.ai[0] < 504)
+				if (npc.ai[0] < 501)
 				{
 					npc.ai[3] = (P.MountedCenter - npc.Center).ToRotation();
 					npc.netUpdate = true;
+
+					SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageAttack, npc.Center);
+					if (sound != null)
+					{
+						sound.Pitch = -0.25f;
+					}
 
 					for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 12f)
 					{
@@ -640,8 +656,8 @@ namespace SGAmod.NPCs
 			npc.noGravity = true;
 			npc.value = Item.buyPrice(0, 1);
 			npc.noTileCollide = true;
-			npc.HitSound = SoundID.NPCHit7;
-			npc.DeathSound = SoundID.NPCDeath6;
+			npc.HitSound = SoundID.NPCHit36;
+			npc.DeathSound = SoundID.NPCDeath39;
 			npc.Opacity = 0f;
 		}
 		public override string Texture
@@ -661,7 +677,12 @@ namespace SGAmod.NPCs
 			return false;
 		}
 
-		private void FindLocation(Player target, int tries = 10)
+        public override void NPCLoot()
+        {
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), 1);
+		}
+
+        private void FindLocation(Player target, int tries = 10)
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 				return;
@@ -896,6 +917,92 @@ Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerS
 */
 		}
 
+	}
+
+	public class PrismEgg : ModNPC
+	{
+		int counter, counter2 = 0;
+		public override void SetDefaults()
+		{
+			npc.width = 20;
+			npc.height = 20;
+			npc.damage = 0;
+			npc.defense = 100;
+			npc.lifeMax = 1500;
+			npc.HitSound = SoundID.NPCHit1;
+			npc.DeathSound = SoundID.NPCDeath1;
+			npc.value = 0f;
+			npc.noTileCollide = false;
+			npc.knockBackResist = 0.25f;
+			npc.aiStyle = 66;
+			npc.chaseable = false;
+			aiType = NPCID.Worm;
+			animationType = NPCID.Worm;
+			banner = npc.type;
+			npc.rarity = 2;
+			npc.scale = 0.50f;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Prism Seed");
+		}
+
+		public override bool PreAI()
+		{
+			npc.timeLeft = 30;
+			if (counter == 3)
+            {
+				Idglib.Chat("A prism seed has appeared!" ,Color.Magenta.R, Color.Magenta.G, Color.Magenta.B);
+            }
+			if (counter % 80 == 0)
+			{
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageCastHeal, npc.Center);
+				if (sound != null)
+				{
+					sound.Pitch = -0.65f + (counter / 1000f);
+				}
+			}
+			if (counter++ == 1500)
+			{
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageHealImpact, npc.Center);
+				if (sound != null)
+				{
+					sound.Pitch = 0.50f;
+				}
+				npc.Transform(mod.NPCType("PrismBanshee"));
+				counter = 0;
+			}
+			if (counter2++ == 15)
+			{
+				npc.scale += 0.005f;
+				counter2 = 0;
+			}
+			return true;
+		}
+		public override string Texture
+		{
+			get { return ("Terraria/Projectile_" + ProjectileID.Starfury); }
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        {
+			PrismBanshee.DrawPrismCore(spriteBatch, drawColor, npc.Center, counter, npc.scale, 96f*(counter/1500f));
+			Texture2D tex = Main.npcTexture[npc.type];
+			spriteBatch.Draw(tex, npc.Center-Main.screenPosition, null, Color.White, npc.rotation, (tex.Size() / 2f), npc.scale * Main.essScale, SpriteEffects.None, 0f);
+			return false;
+        }
+
+        public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			Player player = spawnInfo.player;
+			if (!NPC.downedMoonlord || (NPC.CountNPCS(ModContent.NPCType<PrismEgg>())+NPC.CountNPCS(ModContent.NPCType<PrismBanshee>()))>0)
+				return 0;
+
+			bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+
+			return (player.ZoneHoly && underground) ? (SGAWorld.downedPrismBanshee ? 0.020f : 0.15f) : 0f;
+		}
 	}
 
 

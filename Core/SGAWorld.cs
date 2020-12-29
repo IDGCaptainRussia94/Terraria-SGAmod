@@ -752,35 +752,45 @@ namespace SGAmod
                 List<Chest> Chests = Main.chest.Where(checkfor => checkfor != null).ToList();
 
             Chests = Chests.OrderBy(orderBy => WorldGen.genRand.Next(0, 100)+(Main.tile[orderBy.x, orderBy.y].frameX / 36 == 13 ? 0 : 10000)).ToList();
-            for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
+            for (int i = 0; i < WorldGen.genRand.Next(2, 4); i += 1)
             {
-                if (Chests[0].item[inventoryIndex].IsAir)
+                if (Chests.Count > 0)
                 {
-                    Chests[0].item[inventoryIndex].SetDefaults(mod.ItemType("StarCollector"));
-                    Chests[0].item[inventoryIndex].stack = 1;
-                    break;
+                    for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
+                    {
+                        if (Chests[0].item[inventoryIndex].IsAir)
+                        {
+                            Chests[0].item[inventoryIndex].SetDefaults(mod.ItemType("StarCollector"));
+                            Chests[0].item[inventoryIndex].stack = 1;
+                            break;
+                        }
+                    }
+                    Chests.RemoveAt(0);
                 }
             }
-            Chests.RemoveAt(0);
 
             Chests = Chests.OrderBy(orderBy => WorldGen.genRand.Next(0, 100)+(Main.tile[orderBy.x, orderBy.y].frameX / 36 == 17 ? 0 : 10000)).ToList();
             for (int i = 0; i < WorldGen.genRand.Next(3,6); i += 1)
             {
-                for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
+                if (Chests.Count > 0)
                 {
-                    if (Chests[0].item[inventoryIndex].IsAir && Main.tile[Chests[0].x, Chests[0].y].frameX/36 == 17)
+                    for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
                     {
-                        Chests[0].item[inventoryIndex].SetDefaults(mod.ItemType("BottledLiquidEssence"));
-                        Chests[0].item[inventoryIndex].stack = 1;
-                        break;
+                        if (Chests[0].item[inventoryIndex].IsAir && Main.tile[Chests[0].x, Chests[0].y].frameX / 36 == 17)
+                        {
+                            Chests[0].item[inventoryIndex].SetDefaults(mod.ItemType("BottledLiquidEssence"));
+                            Chests[0].item[inventoryIndex].stack = 1;
+                            break;
+                        }
                     }
+                    Chests.RemoveAt(0);
                 }
             }
 
             for (int chestIndexx = 0; chestIndexx < 1000; chestIndexx++)
             {
                 Chest chest = Main.chest[chestIndexx];
-                if ((chest != null && WorldGen.genRand.Next(0, 100) < 25) && ((WorldGen.genRand.Next(0, 100) < 25 && TileLoader.GetTile(Main.tile[chest.x, chest.y].type) == null) || Main.tile[chest.x, chest.y].wall == mod.TileType("SwampWall")))
+                if (chest != null && (WorldGen.genRand.Next(0, 100) < 25) && ((WorldGen.genRand.Next(0, 100) < 25 && TileLoader.GetTile(Main.tile[chest.x, chest.y].type) == null) || Main.tile[chest.x, chest.y].wall == mod.WallType("SwampWall")))
                 {
                     for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
                     {

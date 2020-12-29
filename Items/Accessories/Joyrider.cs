@@ -86,10 +86,14 @@ namespace SGAmod.Items.Accessories
 				player.wings = 0;
 				player.wingTime = 0;
 			}
+		}
+
+        public override void UpdateVanity(Player player, EquipType type)
+        {
 			player.GetModPlayer<SGAPlayer>().CustomWings = 1;
 		}
 
-		public override void AddRecipes()
+        public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Megashark, 1);

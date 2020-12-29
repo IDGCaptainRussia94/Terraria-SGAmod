@@ -159,8 +159,8 @@ namespace SGAmod
 			//better version, from Qwerty's Mod
 			Color color = drawInfo.bodyColor;
 
-			if (modply.CustomWings == 1)
-			{
+			//if (modply.CustomWings == 1)
+			//{
 
 				float angle = MathHelper.ToRadians(90f + (drawPlayer.velocity.X * 2f));
 
@@ -205,7 +205,7 @@ namespace SGAmod
 				data.shader = (int)drawPlayer.cWings;
 				Main.playerDrawData.Add(data);
 
-			}
+			//}
 
 		});
 
@@ -269,8 +269,8 @@ namespace SGAmod
 				if (wingsLayer >= 0)
 				{
 					AltWings.visible = true;
-					layers.Insert(wingsLayer + 1, AltWings);
-					layers.RemoveAt(wingsLayer);
+					//layers.RemoveAt(wingsLayer);
+					layers.Insert(wingsLayer, AltWings);
 				}
 			}
 

@@ -173,6 +173,18 @@ namespace SGAmod
 
 
 		}
+		public bool ConsumeAmmoClip(bool doConsume = true,int ammoCheck = 1)
+        {
+			if (ammoLeftInClip >= ammoCheck)
+			{
+				if (doConsume)
+				ammoLeftInClip -= ammoCheck;
+
+				return true;
+			}
+			return false;
+
+        }
 		public void StackAttack(ref int damage, Projectile proj)
 		{
 
@@ -569,7 +581,7 @@ namespace SGAmod
 			{
 				for (int g = 0; g < Player.MaxBuffs; g += 1)
 				{
-					if (player.manaRegenBuff)
+					if (player.manaRegenBuff && SGAConfig.Instance.ManaPotionChange)
 					{
 						if (player.buffType[g] == BuffID.ManaSickness && player.buffTime[g] > 3)
 						{

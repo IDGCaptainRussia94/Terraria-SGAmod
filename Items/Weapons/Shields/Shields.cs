@@ -410,7 +410,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Riot Shield");
-			Tooltip.SetDefault("Performing a Just Block keeps the shield active for several seconds with other weapons\nSlows the player when active");
+			Tooltip.SetDefault("Performing a Just Block keeps the shield active for several seconds with other weapons\nSlows the player and grants knockback immunity when active");
 			Item.staff[item.type] = true;
 		}
 
@@ -441,6 +441,7 @@ namespace SGAmod.Items.Weapons.Shields
 		}
 		public override void WhileHeld(Player player)
 		{
+			player.noKnockback = true;
 			player.maxRunSpeed = Math.Max(1, player.maxRunSpeed - 20);
 		}
 	}
@@ -501,6 +502,112 @@ namespace SGAmod.Items.Weapons.Shields
 		}
 	}
 
+	public class DiscordShield : CorrodedShield, IShieldItem
+	{
+
+		//public override string DamagePercent => "Blocks "+ (100-(100f/((Main.LocalPlayer.magicDamage*2f)-1f))) + "% of damage at a small angle";
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Shield of Discord");
+			Tooltip.SetDefault("Left Click to teleport, same Rod of Discord rules apply\nPerforming a Just Block removes chaos state from the player");
+			Item.staff[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.width = 24;
+			item.height = 32;
+			item.useTime = 70;
+			item.useTime = 20;
+            item.useAnimation = 20;
+			item.damage = 0;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.value = Item.sellPrice(0, 2, 50, 0);
+			item.UseSound = SoundID.Item7;
+			item.rare = ItemRarityID.LightPurple;
+			item.shoot = ProjectileID.TruffleSpore;
+			item.shootSpeed = 12f;
+
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = Main.itemTexture[ItemID.RodofDiscord];
+				item.GetGlobalItem<ItemUseGlow>().GlowColor = delegate (Item item, Player player)
+				{
+					return Main.hslToRgb((Main.GlobalTime * 0.5f) % 1f, 0.5f, 0.65f);
+				};
+			}
+		}
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+			Vector2 vector27 = default(Vector2);
+			vector27.X = (float)Main.mouseX + Main.screenPosition.X;
+			//Just RoD stuff
+			if (player.gravDir == 1f)
+			{
+				vector27.Y = (float)Main.mouseY + Main.screenPosition.Y - (float)player.height;
+			}
+			else
+			{
+				vector27.Y = Main.screenPosition.Y + (float)Main.screenHeight - (float)Main.mouseY;
+			}
+
+
+			player.Teleport(vector27, 1);
+			NetMessage.SendData(MessageID.Teleport, -1, -1, null, 0, player.whoAmI, vector27.X, vector27.Y, 1);
+
+			//More RoD stuff
+			if (player.chaosState)
+			{
+				player.statLife -= player.statLifeMax2 / 7;
+				PlayerDeathReason damageSource = PlayerDeathReason.ByOther(13);
+				if (Main.rand.Next(2) == 0)
+				{
+					damageSource = PlayerDeathReason.ByOther(player.Male ? 14 : 15);
+				}
+				if (player.statLife <= 0)
+				{
+					player.KillMe(damageSource, 1.0, 0);
+				}
+				player.lifeRegenCount = 0;
+				player.lifeRegenTime = 0;
+			}
+
+			player.AddBuff(BuffID.ChaosState, 360);
+			return false;
+        }
+
+        public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.RodofDiscord, 1);
+			recipe.AddIngredient(ItemID.CrystalShard, 15);
+			recipe.AddIngredient(ItemID.HallowedBar, 8);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 1);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class DiscordShieldProj : DankWoodShieldProj, IDrawAdditive
+	{
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("DiscordShieldProj");
+		}
+
+		public override void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex)
+		{
+			Player player = Main.player[projectile.owner];
+			if (player != null && player.HasBuff(BuffID.ChaosState))
+				player.DelBuff(player.FindBuffIndex(BuffID.ChaosState));
+		}
+
+	}
+
 	public class EarthbreakerShield : CorrodedShield, IShieldItem
 	{
 		private SolarShieldProj SolarShieldGet => GetShieldProj?.modProjectile as SolarShieldProj;
@@ -509,7 +616,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Earthbreaker Shield");
-			Tooltip.SetDefault("Bulwark of Gaia, defense of her wrath!\nBash-Dash throws the player down for a ground slam, impaling 5 nearby enemies\nImpaled enemies are immobile and lose 10 defence for 15 seconds\nEnemies can not be impaled again til they recover their defence\nPerforming a Just Block impales 3 nearby enemies");
+			Tooltip.SetDefault("Bulwark of Gaia, defence of her wrath!\nBash-Dash throws the player down for a ground slam, impaling 5 nearby enemies\nImpaled enemies are immobile and lose 10 defence for 15 seconds\nEnemies can not be impaled again til they recover their defence\nPerforming a Just Block impales 3 nearby enemies");
 			Item.staff[item.type] = true;
 		}
 

@@ -620,7 +620,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bone Bucket");
-			Tooltip.SetDefault("'Full of spare bone parts! Someone might want these...'\nOpens a portal to bring the Skeleton Merchant to your location where you used it\nOnly usable if the Merchant Merchant is already in the world or the sun is shining\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 300 seconds each"));
+			Tooltip.SetDefault("'Full of spare bone parts! Someone might want these...'\nOpens a portal to bring the Skeleton Merchant to your location where you used it\nNot usable if the Merchant Merchant is already in the world or the sun is shining\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 300 seconds each"));
 		}
 
 		public override bool CanUseItem(Player player)

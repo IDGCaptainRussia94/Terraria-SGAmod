@@ -181,15 +181,15 @@ namespace SGAmod.NPCs.Murk
                         }
                     }
                 }
-                if (SGAConfigClient.Instance.Murklite)
+                if (SGAConfigClient.Instance.Murklite && gasshift > 300)
                 {
                     float randomrot = Main.rand.NextFloat(MathHelper.TwoPi);
-                    for (float num654 = 0; num654 < MathHelper.TwoPi; num654 += 0.02f)
+                    for (float num654 = 0; num654 < MathHelper.TwoPi; num654 += MathHelper.TwoPi/10f)
                     {
-                        Vector2 there = (Vector2.One * ((gasshift) * scaledSize)).RotatedBy(randomrot);
+                        Vector2 there = (Vector2.UnitX * ((gasshift) * scaledSize)).RotatedByRandom(MathHelper.TwoPi);
                         int num655 = Dust.NewDust(npc.position + there, 0, 0, dustype, 0, 0, dustype, new Color(30, 30, 30, 20), 2f);
                         Main.dust[num655].noGravity = true;
-                        Main.dust[num655].velocity = there;
+                        Main.dust[num655].velocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
                     }
                 }
 

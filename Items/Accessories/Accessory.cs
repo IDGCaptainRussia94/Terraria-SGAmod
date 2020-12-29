@@ -2872,13 +2872,13 @@ namespace SGAmod.Items.Accessories
 		}
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
+			/*ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 4);
 			recipe.AddIngredient(ItemID.MagmaStone, 1);
 			recipe.AddIngredient(ItemID.FrostCore, 1);
 			recipe.AddTile(ItemID.CrystalBall);
 			recipe.SetResult(this, 1);
-			recipe.AddRecipe();
+			recipe.AddRecipe();*/
 		}
 
 	}
@@ -3223,14 +3223,13 @@ namespace SGAmod.Items.Accessories
 		}
 		public override void AddRecipes()
 		{
-			/*ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
-			recipe.AddIngredient(ItemID.BandofRegeneration, 1);
-			recipe.AddIngredient(ItemID.ManaRegenerationBand, 1);
-			recipe.AddIngredient(ItemID.FlipperPotion, 5);
-			recipe.AddTile(mod.GetTile("PrismalStation"));
-			recipe.SetResult(this);
-			recipe.AddRecipe();*/
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("BottledMud"), 50);
+			recipe.needLava = true;
+			recipe.needWater = true;
+			recipe.needHoney = true;
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
 		}
 	}
 

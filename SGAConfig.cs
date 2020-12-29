@@ -26,12 +26,24 @@ namespace SGAmod
 		// You MUST specify a ConfigScope.
 		public override ConfigScope Mode => ConfigScope.ServerSide;
 
+		[Header("Vanilla Changes")]
 		[Label("Improved Golem")]
 		[Tooltip("Enables/Disables the changed Golem fight, this is presented as an option in the case of other mods who alter golem, to avoid issues")]
 		[ReloadRequired]
 		[DefaultValue(true)]
 		public bool GolemImprovement { get; set; }
 
+		[Label("Lethal Drowning")]
+		[Tooltip("Enables/Disables the gradually increased damage taken after 5 seconds of drowning, which only resets when your breath fully recovers")]
+		[ReloadRequired]
+		[DefaultValue(true)]
+		public bool DrowningChange { get; set; }
+
+		[Label("Nerfed Mana Regen Potion")]
+		[Tooltip("Enables/Disables the nerfed Mana Regen")]
+		[ReloadRequired]
+		[DefaultValue(true)]
+		public bool ManaPotionChange { get; set; }
 	}
 
 	[Label("SGA Client Options")]
@@ -57,7 +69,7 @@ namespace SGAmod
 		[Header("Performance")]
 		[Label("Fog Detail")]
 		[Tooltip("More is more detailed, but also more demanding")]
-		[Increment(5)]
+		[Increment(1)]
 		[Range(5, 100)]
 		[DefaultValue(30)]
 		[Slider]
@@ -68,7 +80,6 @@ namespace SGAmod
 		[DefaultValue(true)]
 		public bool Murklite { get; set; }
 
-		[Header("Performance")]
 		[Label("Extra Blending Details")]
 		[Tooltip("Enables/Disables Additive Blending; may improve performance")]
 		[DefaultValue(true)]

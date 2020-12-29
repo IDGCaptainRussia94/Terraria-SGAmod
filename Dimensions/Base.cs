@@ -119,7 +119,7 @@ namespace SGAmod.Dimensions
                     SLWorld.noReturn = true;
             }
 
-            if (Main.netMode != 1 && !Main.dedServ && Main.LocalPlayer==player)
+            if (Main.netMode != NetmodeID.Server && !Main.dedServ && Main.LocalPlayer==player)
             {
                 Projectile.NewProjectile(Main.screenPosition+new Vector2(Main.screenWidth,Main.screenHeight)/2, Vector2.Zero, mod.ProjectileType("DrawOverride"), 0, 0f);
             }
@@ -653,10 +653,12 @@ namespace SGAmod.Dimensions
 
                     if (alpha > 0f)
                     {
+                        bool isMurk = NPC.CountNPCS(ModContent.NPCType<Murk>()) > 0;
                         Main.spriteBatch.End();
 
                         Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
                         //Draw Shadow RenderTarget2D
+                        if (!isMurk || (isMurk && !SGAConfigClient.Instance.Murklite))
                         Main.spriteBatch.Draw(SGAmod.drawnscreen, new Vector2(0, 0), null, new Color(50, 50, 50) * alpha * SGAmod.fogAlpha, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
                     }
                     Main.spriteBatch.End();

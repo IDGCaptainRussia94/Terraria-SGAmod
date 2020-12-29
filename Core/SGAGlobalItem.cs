@@ -114,7 +114,7 @@ namespace SGAmod
                 }
             }
 
-            if (item.type == ItemID.ManaRegenerationPotion)
+            if (item.type == ItemID.ManaRegenerationPotion && SGAConfig.Instance.ManaPotionChange)
             {
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Mana Sickness decays very slowly")));
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Max Mana is reduced by 60")));
@@ -608,7 +608,7 @@ namespace SGAmod
             if (item.type == ItemID.FloatingIslandFishingCrate && Main.rand.Next(5) == 0)
             {
                 player.QuickSpawnItem(ModContent.ItemType<StarCollector>());
-            }
+            }   
         }
 
         public override void UpdateInventory(Item item,Player player)
@@ -813,6 +813,19 @@ namespace SGAmod
         public float apocochancestrength = 0f;
         public int misc = 0;
 
+        public static byte? GetBustedPrefix
+        {
+            get
+            {
+                List<ModPrefix> modz = ModPrefix.GetPrefixesInCategory(PrefixCategory.AnyWeapon).Where(thisprefix => thisprefix is TrapPrefix && (thisprefix as TrapPrefix).misc == 2).ToList();
+                if (modz != null && modz.Count > 0)
+                {
+                    return modz[0].Type;
+                }
+                return null;
+            }
+        }
+
         public override PrefixCategory Category { get { return PrefixCategory.AnyWeapon; } }
         public TrapPrefix()
         {
@@ -832,6 +845,7 @@ namespace SGAmod
                     mod.AddPrefix("Sundering", new TrapPrefix(0.08f, 0.10f));
                     mod.AddPrefix("Undercut", new TrapPrefix(0.12f, 0.10f));
                     mod.AddPrefix("Razor Sharp", new TrapPrefix(0.2f, 0.15f));
+                    mod.AddPrefix("Busted", new TrapPrefixAccessory(0,0,2));
                 }
                 if (GetType() == typeof(TrapPrefixAccessory))
                 {
@@ -1005,6 +1019,14 @@ namespace SGAmod
             }
         }
 
+        public override bool CanUseItem(Item item, Player player)
+        {
+            if (misc != 2)
+                return base.CanUseItem(item, player);
+            else
+                return false;
+        }
+
         public override void UpdateAccessory(Item item, Player player, bool hideVisual)
         {
             player.GetModPlayer<SGAPlayer>().TrapDamageAP += armorbreak;
@@ -1100,6 +1122,13 @@ namespace SGAmod
             if (misc == 1)
             {
                 string line2 = "+1 passive Electric Charge Rate";
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+            }
+            if (misc == 2)
+            {
+                string line2 = Idglib.ColorText(Color.Red,"This item is busted and needs to be reforged to be used");
                 TooltipLine line = new TooltipLine(mod, "SGAPrefixline", line2);
                 line.isModifier = true;
                 tooltips.Add(line);

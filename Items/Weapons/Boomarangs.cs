@@ -251,6 +251,7 @@ namespace SGAmod.Items.Weapons
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
         {
+			if (GetType() == typeof(SpecterangProj))
 			DrawSpecterang(projectile, spriteBatch, Lighting.GetColor((int)(projectile.Center.X/16), (int)(projectile.Center.Y / 16),Color.White));
 
 		}
@@ -307,47 +308,52 @@ namespace SGAmod.Items.Weapons
 
 			projectile.rotation += 0.4f * (float)(projectile.aiStyle+20f);
 
-			if (projectile.soundDelay == 0)
+			if (GetType() == typeof(SpecterangProj))
 			{
-				projectile.soundDelay = 10;
-				Main.PlaySound(SoundID.Item7, projectile.position);
-			}
-			if (projectile.ai[0] % 2 == 0)
-			{
-				int proj = Projectile.NewProjectile(projectile.Center, -projectile.velocity*0.25f, ModContent.ProjectileType<SpecterangProj2>(), projectile.damage, 0f, projectile.owner);
-				Main.projectile[proj].rotation = projectile.rotation;
+
+				if (projectile.soundDelay == 0)
+				{
+					projectile.soundDelay = 10;
+					Main.PlaySound(SoundID.Item7, projectile.position);
+				}
+				if (projectile.ai[0] % 2 == 0)
+				{
+					int proj = Projectile.NewProjectile(projectile.Center, -projectile.velocity * 0.25f, ModContent.ProjectileType<SpecterangProj2>(), projectile.damage, 0f, projectile.owner);
+					Main.projectile[proj].rotation = projectile.rotation;
+				}
 			}
 
-			if (projectile.ai[0] >= ReturnTime)
-			{
-				Player owner = Main.player[projectile.owner];
+				if (projectile.ai[0] >= ReturnTime)
+				{
+					Player owner = Main.player[projectile.owner];
 
-				Vector2 distmeasure = owner.MountedCenter - projectile.Center;
+					Vector2 distmeasure = owner.MountedCenter - projectile.Center;
 
 					projectile.velocity += Vector2.Normalize(distmeasure) * (0.70f);
 
-				if (projectile.ai[0] >= ReturnTimeNoSlow)
-				{
-					//projectile.velocity *= 0.75f;
-					float dist = Math.Min(((projectile.ai[0] - ReturnTimeNoSlow) / 4f), distmeasure.Length());
-					projectile.Center += Vector2.Normalize(distmeasure) * (0.50f) * dist;
-				}
-
-				projectile.velocity *= 0.99f;
-				if (projectile.velocity.Length() > startSpeed)
-					projectile.velocity = Vector2.Normalize(projectile.velocity) * startSpeed;
-
-				if (Main.myPlayer == projectile.owner)
-				{
-					Rectangle rectangle = new Rectangle((int)projectile.position.X, (int)projectile.position.Y, projectile.width, projectile.height);
-					Rectangle value2 = new Rectangle((int)Main.player[projectile.owner].position.X, (int)Main.player[projectile.owner].position.Y, Main.player[projectile.owner].width, Main.player[projectile.owner].height);
-					if (rectangle.Intersects(value2))
+					if (projectile.ai[0] >= ReturnTimeNoSlow)
 					{
-						projectile.Kill();
+						//projectile.velocity *= 0.75f;
+						float dist = Math.Min(((projectile.ai[0] - ReturnTimeNoSlow) / 4f), distmeasure.Length());
+						projectile.Center += Vector2.Normalize(distmeasure) * (0.50f) * dist;
 					}
-				}
 
-			}
+					projectile.velocity *= 0.99f;
+					if (projectile.velocity.Length() > startSpeed)
+						projectile.velocity = Vector2.Normalize(projectile.velocity) * startSpeed;
+
+					if (Main.myPlayer == projectile.owner)
+					{
+						Rectangle rectangle = new Rectangle((int)projectile.position.X, (int)projectile.position.Y, projectile.width, projectile.height);
+						Rectangle value2 = new Rectangle((int)Main.player[projectile.owner].position.X, (int)Main.player[projectile.owner].position.Y, Main.player[projectile.owner].width, Main.player[projectile.owner].height);
+						if (rectangle.Intersects(value2))
+						{
+							projectile.Kill();
+						}
+					}
+
+				}
+			
 
 
 		}

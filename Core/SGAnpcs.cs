@@ -1027,19 +1027,21 @@ namespace SGAmod
 
 			//if (onlyOnce)
 			//{
+			if (Main.expertMode) {
 			if (!npc.boss && npc.lifeMax > 25 && npc.lifeMax < 10000 && !npc.dontTakeDamage && npc.type != ModContent.NPCType<PrismSpirit>() && !npc.SpawnedFromStatue && NPC.AnyNPCs(ModContent.NPCType<PrismBanshee>()))
 			{
 				List<NPC> banshee = Main.npc.Where(testnpc => testnpc.active && testnpc.type == ModContent.NPCType<PrismBanshee>()).ToList();
-				if (banshee.Count > 0)
-				{
-					banshee = banshee.OrderBy(ordertest => ordertest.DistanceSQ(npc.Center)).ToList();
-					NPC myguy = banshee[0];
-					if (myguy.DistanceSQ(npc.Center) < 1000 * 1000)
+					if (banshee.Count > 0)
 					{
-						int npcnew = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismSpirit>());
-						Main.npc[npcnew].ai[1] = myguy.whoAmI;
-						Main.npc[npcnew].ai[2] = npc.type;
-						Main.npc[npcnew].netUpdate = true;
+						banshee = banshee.OrderBy(ordertest => ordertest.DistanceSQ(npc.Center)).ToList();
+						NPC myguy = banshee[0];
+						if (myguy.DistanceSQ(npc.Center) < 1000 * 1000)
+						{
+							int npcnew = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismSpirit>());
+							Main.npc[npcnew].ai[1] = myguy.whoAmI;
+							Main.npc[npcnew].ai[2] = npc.type;
+							Main.npc[npcnew].netUpdate = true;
+						}
 					}
 
 
@@ -1170,10 +1172,10 @@ namespace SGAmod
 
 			//if (!NPC.BusyWithAnyInvasionOfSorts())
 			//{
-			if (lastHitByItem==ModContent.ItemType<ForagersBlade>())
+			if (lastHitByItem == ModContent.ItemType<ForagersBlade>())
 			{
-				if (npc.HitSound==SoundID.NPCHit1)
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.Leather);
+				if (npc.HitSound == SoundID.NPCHit1)
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.Leather);
 			}
 			if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (SGAWorld.downedCratrosity == false && Main.rand.Next(0, 30) < 1)))
 			{
@@ -1220,7 +1222,7 @@ namespace SGAmod
 
 			if (npc.type == NPCID.RedDevil)
 			{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(3, 5));
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(3, 5));
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("ConsumeHell"), Main.rand.Next(1, 3));
 			}
 
@@ -1229,7 +1231,7 @@ namespace SGAmod
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(1, 2));
 			}
 
-			if (npc.Center.Y > ((Main.maxTilesY*0.90f) * 16) && Main.rand.Next(100) < 2 && Main.hardMode)
+			if (npc.Center.Y > ((Main.maxTilesY * 0.90f) * 16) && Main.rand.Next(100) < 2 && Main.hardMode)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"));
 			}
@@ -1242,13 +1244,13 @@ namespace SGAmod
 			if (!NPC.downedMoonlord)
 				return;
 
-			if (SGAWorld.downedPrismBanshee) 
+			if (SGAWorld.downedPrismBanshee)
 			{
 
-			if ((npc.type == NPCID.EnchantedSword || npc.type == NPCID.IlluminantBat || npc.type == NPCID.IlluminantSlime || npc.type == NPCID.ChaosElemental) && Main.rand.Next(2) <= 1)
-			{
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, 3));
-			}
+				if ((npc.type == NPCID.EnchantedSword || npc.type == NPCID.IlluminantBat || npc.type == NPCID.IlluminantSlime || npc.type == NPCID.ChaosElemental) && Main.rand.Next(3) <= 1)
+				{
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, Main.rand.Next(1,3)));
+				}
 
 				if (npc.aiStyle != 107 && npc.aiStyle != 108 && npc.aiStyle != 109 && npc.aiStyle != 110 && npc.aiStyle != 111)
 				{
@@ -1258,7 +1260,7 @@ namespace SGAmod
 						{
 							if (Main.rand.Next(100) <= 1)
 							{
-								Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, 3));
+								Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), 1);
 							}
 						}
 					}

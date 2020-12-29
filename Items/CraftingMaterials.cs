@@ -549,12 +549,32 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Illuminant Essence");
-			Tooltip.SetDefault("Shards of Heaven\nSometimes drops from specific hallow enemies after Moonlord is defeated");
+			Tooltip.SetDefault("'Shards of Heaven'");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 		public override void PostUpdate()
 		{
 			Lighting.AddLight(item.Center, Color.HotPink.ToVector3() * 0.55f * Main.essScale);
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 26;
+			item.height = 14;
+			item.value = Item.sellPrice(0, 0, 50, 0);
+			item.rare = 11;
+		}
+	}	
+	public class AuroraTear : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Aurora Tear");
+			Tooltip.SetDefault("'Auroric Energy from the Banshee, it seems to be inert...'");
+		}
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.Lerp(Color.BlueViolet, Color.HotPink, (float)Math.Sin((Main.essScale-0.70f)/0.30f)).ToVector3() * 0.75f * Main.essScale);
 		}
 		public override void SetDefaults()
 		{

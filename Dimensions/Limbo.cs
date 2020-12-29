@@ -121,12 +121,14 @@ namespace SGAmod.Dimensions
                 IDGWorldGen.TileRunner(randomx, randomy, (double)UniRand.Next(10, 50), UniRand.Next(15, 45)+i, -2, false, 0f, 0f, false, true);
                 }
 
-            for (int i = 0; i < 150; i += 1)
-            {
+                for (int i = 0; i < 150; i += 1)
+                {
                 int randomx = UniRand.Next(Main.maxTilesX);
                 int randomy = UniRand.Next(surfacelevel[randomx] + UniRand.Next(20, 160), Main.maxTilesY);
                 IDGWorldGen.TileRunner(randomx, randomy, (double)UniRand.Next(3, 6), UniRand.Next(2, 4), SGAmod.Instance.TileType("HopeOre"), false, 0f, 0f, false, true);
-            }
+                }
+
+            //Noisegen.Frequency
 
             surfacelevel.Clear();
 
@@ -153,6 +155,42 @@ namespace SGAmod.Dimensions
                         updown = (UniRand.Next(0, 2) == 0 || tileheight > Main.maxTilesY-300) ? -1 : 1;
                 }
             }
+
+            NoiseGenerator Noisegen = new NoiseGenerator(DimDungeonsProxy.DungeonSeeds);
+
+            Noisegen.Amplitude = 1;
+            Noisegen.Octaves = 4;
+            Noisegen.Persistence = 0.750;
+            Noisegen.Frequency *= 1.25;
+
+
+            for (int y = 0; y < Main.maxTilesY; y += 1)
+            {
+                for (int x = 0; x < Main.maxTilesX; x += 1)
+                {
+                    float tilerate = -0.25f + (1f - (y / (float)Main.maxTilesY)) * 1f;
+                    Tile tile = Main.tile[x, y];
+                    if (tile.active() && tile.type == (ushort)SGAmod.Instance.TileType("Fabric"))
+                    {
+                        float nousey = MathHelper.Clamp((float)Noisegen.Noise(x, y), -1.00f, 1.00f);
+                        if (nousey > tilerate)
+                        {
+                            Main.tile[x, y].type = (ushort)SGAmod.Instance.TileType("HardenedFabric");
+                            Main.tile[x, y].color((byte)FakeOverworld.Paints.Shadow);
+                        }
+                        else
+                        {
+                            if (nousey > tilerate - 0.20f)
+                            {
+                                Main.tile[x, y].color((byte)FakeOverworld.Paints.Gray);
+                            }
+                        }
+                    }
+
+                }
+            }
+
+
             WorldGen._genRandSeed = lastseed;
 
         }

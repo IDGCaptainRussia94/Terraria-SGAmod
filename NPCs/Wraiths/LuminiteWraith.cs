@@ -420,7 +420,7 @@ namespace SGAmod.NPCs.Wraiths
 		{
 			if (warninglevel < 70)
             {
-				npc.life = npc.lifeMax;
+				npc.life = 1;
 				npc.active = true;
 				return false;
             }

@@ -101,6 +101,8 @@ namespace SGAmod.NPCs
 					string[] dropitems = { "Starburster", "Snowfall", "IceScepter", "RubiedBlade", "IcicleFall", "Magishield" };
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(dropitems[Main.rand.Next(0, dropitems.Length)]));
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CryostalBar"), Main.rand.Next(15, 25));
+					if (Main.rand.Next(3)==0)
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("GlacialStone"));
 				}
 			}
 			Achivements.SGAAchivements.UnlockAchivement("Cirno", Main.LocalPlayer);

@@ -640,7 +640,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Laser Lance");
-			Tooltip.SetDefault("Spin a Space Lance around yourself to damage enemies\nwhen it hits an enemy it shoots a piercing laser in their direction, doing half the damage");
+			Tooltip.SetDefault("Spin a Space Lance around yourself to damage enemies\nWhen it hits an enemy it shoots a piercing laser in their direction, doing half the damage");
 		}
 
 		public override void SetDefaults()

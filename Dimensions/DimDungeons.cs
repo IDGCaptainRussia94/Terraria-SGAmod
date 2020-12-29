@@ -113,6 +113,8 @@ namespace SGAmod.Dimensions
 						return;
 					}
 				}
+				if (SGAPocketDim.WhereAmI == typeof(LimboDim))
+					self.AddBuff(BuffID.ChaosState, 60 * 10);
 			}
 			orig(self, newPos, Style, extraInfo);
 

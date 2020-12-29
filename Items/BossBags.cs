@@ -223,6 +223,8 @@ namespace SGAmod.Items
 			player.QuickSpawnItem(mod.ItemType(dropitems[Main.rand.Next(dropitems.Length)]));
 			player.QuickSpawnItem(mod.ItemType("CryostalBar"),Main.rand.Next(25, 40));
 			player.QuickSpawnItem(mod.ItemType("CirnoWings"), 1);
+			if (Main.rand.Next(3) == 0)
+				player.QuickSpawnItem(mod.ItemType("GlacialStone"), 1);
 		}
 
 }

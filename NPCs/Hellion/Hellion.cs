@@ -3387,8 +3387,8 @@ namespace SGAmod.NPCs.Hellion
 			projectile.width = 16;
 			projectile.height = 16;
 			projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
-			projectile.hostile = false;
-			projectile.friendly = true;
+			projectile.hostile = true;
+			projectile.friendly = false;
 			projectile.tileCollide = true;
 			projectile.timeLeft = 200;
 			projectile.extraUpdates = 1;

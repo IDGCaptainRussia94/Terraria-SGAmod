@@ -413,7 +413,7 @@ namespace SGAmod
 			noactionstackringofrespite = false;
 			actionCooldownRate = 1f;
 			Noviteset = 0;
-			if (player.breath >= player.breathMax)
+			if (player.breath >= player.breathMax || !SGAConfig.Instance.DrowningChange)
 				drowningIncrementer.X = 0;
 			else if (player.breath < 1)
 				drowningIncrementer.X += 1;
@@ -864,7 +864,7 @@ namespace SGAmod
 
 
 			CharmingAmuletCode();
-			if (player.manaRegenBuff)
+			if (player.manaRegenBuff && SGAConfig.Instance.ManaPotionChange)
 				player.statManaMax2 = Math.Max(player.statManaMax2-50,0);
 
 			if (creeperexplosion > 9700)
@@ -1888,6 +1888,16 @@ namespace SGAmod
 			BitsByte flags = reader.ReadByte();
 			DankShrineZone = flags[0];
 			ShadowSectorZone = flags[1] ? (byte)5 : (byte)0;
+		}
+
+
+		public override Texture2D GetMapBackgroundImage()
+		{
+			if (DankShrineZone)
+			{
+				return mod.GetTexture("swamp_map_background");
+			}
+			return null;
 		}
 
 		public override void UpdateBiomeVisuals()

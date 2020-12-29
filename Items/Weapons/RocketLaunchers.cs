@@ -94,7 +94,7 @@ namespace SGAmod.Items.Weapons
 		public override bool CanUseItem(Player player)
 		{
 			SGAPlayer sply = player.SGAPly();
-			return sply.ammoLeftInClip>0;
+			return sply.ConsumeAmmoClip(false);
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -106,7 +106,7 @@ namespace SGAmod.Items.Weapons
 
 			position = player.Center;
 
-			player.SGAPly().ammoLeftInClip -= 1;
+			player.SGAPly().ConsumeAmmoClip();
 
 			knockBack = player.SGAPly().tf2emblemLevel;
 			//position += Vector2.Normalize(new Vector2(speedX, speedY)) * 45f;

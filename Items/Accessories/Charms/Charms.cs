@@ -8,9 +8,85 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SGAmod.HavocGear.Items.Accessories;
 using Idglibrary;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Accessories.Charms
 {
+	public class NoHitCharmlv1 : MiningCharmlv1
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Amulet of Diehard Cataclysm");
+			Tooltip.SetDefault("'Embrace the suffering, indulge on the reward'\n'truely, only for the worthy... And the british'\n25% more Expertise is earned and respawn instantly outside of boss fights\n" + Idglib.ColorText(Color.Red, "You die in one hit, IFrames cause great damage over time\nMost if not all methods of death prevention are disabled")+"\nAn exception to the formentioned rule are Just Blocks\nThis item doesn't take effect til 3 seconds after spawning to prevent soft-locks");
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(10, 7));
+		}
+
+		public override string Texture => "SGAmod/Items/Accessories/Charms/EmptyCharm";
+
+        public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.rare = ItemRarityID.Green;
+			item.accessory = true;
+			item.mountType = 6;
+			item.rare = ItemRarityID.Quest;
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb((Main.GlobalTime / 2f) % 1f, 0.25f, 0.50f);
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			if (sgaplayer.NoHitCharmTimer > 180)
+			{
+				if (sgaplayer.NoHitCharmTimer<100000)
+				{
+					sgaplayer.NoHitCharmTimer = 1000000;
+					SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_PhantomPhoenixShot, player.MountedCenter);
+					if (sound != null)
+					{
+						sound.Pitch = 0.5f;
+					}
+
+					sound = Main.PlaySound(29, (int)player.MountedCenter.X, (int)player.MountedCenter.Y, 105, 1f, -0.6f);
+					if (sound != null)
+					{
+						sound.Pitch = 0.75f;
+					}
+
+					for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 12f)
+					{
+						Vector2 offset = f.ToRotationVector2();
+						int dust = Dust.NewDust(player.MountedCenter + (offset * 16f), 0, 0, DustID.Vortex);
+						Main.dust[dust].scale = 1.5f;
+						Main.dust[dust].noGravity = true;
+						Main.dust[dust].velocity = f.ToRotationVector2() * 6f;
+					}
+				}
+					sgaplayer.NoHitCharm = true;
+			}
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
+			recipe.AddIngredient(ItemID.Minecart, 1);
+			recipe.AddIngredient(ItemID.Gel, 10);
+			recipe.AddRecipeGroup("SGAmod:Tier1Pickaxe", 1);
+			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 2);
+			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 15);
+			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
 	public class MiningCharmlv1 : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -65,7 +141,7 @@ namespace SGAmod.Items.Accessories.Charms
 			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
 			recipe.AddIngredient(ItemID.Minecart, 1);
 			recipe.AddIngredient(ItemID.Gel, 10);
-			recipe.AddIngredient(ItemID.CopperPickaxe, 1);
+			recipe.AddRecipeGroup("SGAmod:Tier1Pickaxe", 1);
 			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 2);
 			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 15);
 			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 5);

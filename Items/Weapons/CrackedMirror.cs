@@ -20,7 +20,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cracked Mirror");
-			Tooltip.SetDefault("'You can almost hear a petrifying scream coming from the mirror'\nReleases petrifying apparitions around the player on use that petrify enemies\nThese petrified enemies take far more damage to pickaxes\nHowever, far less damage to anything else\nOnly affects specific enemy types\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds"));
+			Tooltip.SetDefault("'You can almost hear a petrifying scream coming from the mirror'\nReleases petrifying apparitions around the player on use that petrify enemies\nThese petrified enemies take far more damage to mining tools\nHowever, far less damage to anything else\nOnly affects specific enemy types\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds"));
 		}
 		public override void SetDefaults()
 		{

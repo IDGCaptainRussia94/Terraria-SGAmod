@@ -190,6 +190,12 @@ namespace SGAmod.NPCs.TownNPCs
 			nextSlot += 1;
 			shop.item[nextSlot].SetDefaults(mod.ItemType("MasterfullyCraftedHatOfTheDragonGods"));
 			nextSlot += 1;
+			shop.item[nextSlot].SetDefaults(mod.ItemType("NoHitCharmlv1"));
+			shop.item[nextSlot].shopCustomPrice = Item.buyPrice(1, 0, 0, 0);
+			nextSlot += 1;
+			shop.item[nextSlot].SetDefaults(mod.ItemType("TheWholeExperience"));
+			shop.item[nextSlot].shopCustomPrice = Item.buyPrice(1, 0, 0, 0);
+			nextSlot += 1;
 		}
 
 		public override void TownNPCAttackStrength(ref int damage, ref float knockback)

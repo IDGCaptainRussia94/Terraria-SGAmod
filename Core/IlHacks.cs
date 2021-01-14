@@ -30,6 +30,8 @@ namespace SGAmod
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
 			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
+			//IL.Terraria.Lighting.AddLight_int_int_float_float_float += AddLightHack;
+			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 		internal static void Unpatch()
@@ -41,7 +43,97 @@ namespace SGAmod
 			IL.Terraria.Player.CheckDrowning -= BreathingHack;
 			IL.Terraria.NPC.Collision_LavaCollision -= ForcedNPCLavaCollisionHack;
 			IL.Terraria.Player.UpdateManaRegen -= NoMovementManaRegen;
+			//IL.Terraria.Player.PickTile -= PickPowerOverride;
 			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
+		}
+		private struct ColorTriplet
+		{
+			public float r;
+
+			public float g;
+
+			public float b;
+
+			public ColorTriplet(float R, float G, float B)
+			{
+				r = R;
+				g = G;
+				b = B;
+			}
+
+			public ColorTriplet(float averageColor)
+			{
+				r = (g = (b = averageColor));
+			}
+		}
+
+
+		private delegate void LightTest(ref ColorTriplet obj);
+		static internal void AddLightHack(ILContext il)//Experimental BS
+		{
+
+			ILCursor c = new ILCursor(il);
+
+			//MethodInfo HackTheMethod = typeof(TileLoader).GetMethod("MineDamage", BindingFlags.Public | BindingFlags.Static);
+			if (!c.TryGotoNext(MoveType.Before, i => i.MatchLdloc(0),i => i.MatchLdloc(1)))
+				goto Failed;
+
+			c.Index -= 1;
+			//c.Index -= 3;
+			c.Emit(OpCodes.Ldloca, 1);//ColorTriplet instance thing
+			c.EmitDelegate<LightTest>((ref ColorTriplet obj) =>
+			{
+
+				obj.r = 0.05f;
+				obj.g = 0.05f;
+				obj.b = 0.05f;
+
+			});
+
+			return;
+
+		Failed:
+			throw new Exception("IL Error Test");
+
+		}
+
+		private delegate void PickPower(Player player,ref int damage);
+		static internal void PickPowerOverride(ILContext il)//I'd prefer slower pickaxes that CAN mine stronger materials, thank you very much! (doesn't seem to work, harder blocks still get mined fast!
+		{
+
+			ILCursor c = new ILCursor(il);
+
+			MethodInfo HackTheMethod = typeof(TileLoader).GetMethod("MineDamage", BindingFlags.Public | BindingFlags.Static);
+			if (!c.TryGotoNext(MoveType.After,i => i.MatchCall(HackTheMethod)))
+				goto Failed;
+
+			//c.Index -= 3;
+			c.Emit(OpCodes.Ldarg, 0);//player
+			c.Emit(OpCodes.Ldloca, 0);//damage local var, passed as 'ref'
+            c.EmitDelegate<PickPower>((Player player,ref int damage) =>
+			{
+				Main.NewText("IL Test! " + damage);
+				damage = Math.Min(damage,player.SGAPly().forcedMiningSpeed);
+			});
+
+			if (!c.TryGotoNext(MoveType.After,i => i.MatchLdarg(3),i => i.MatchAdd(),i => i.MatchStloc(0)))
+				goto Failed2;
+
+			//c.Index -= 3;
+			c.Emit(OpCodes.Ldarg, 0);//player
+			c.Emit(OpCodes.Ldloca, 0);//damage local var, passed as 'ref'
+            c.EmitDelegate<PickPower>((Player player,ref int damage) =>
+			{
+				Main.NewText("IL Test! " + damage);
+				damage = Math.Min(damage,player.SGAPly().forcedMiningSpeed);
+			});
+			return;
+
+			Failed:
+			throw new Exception("IL Error Test");
+			Failed2:
+			throw new Exception("IL Error Test 2");
+
 		}
 
 		private delegate bool PlayerDelegate(Player player);

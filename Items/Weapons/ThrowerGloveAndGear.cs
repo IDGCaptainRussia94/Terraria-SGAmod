@@ -478,7 +478,7 @@ namespace SGAmod.Items.Weapons
 					if (Main.dedServ)
 					{
 						ModPacket packet = SGAmod.Instance.GetPacket();
-						packet.Write((ushort)SGAmod.MessageType.Snapped);
+						packet.Write((ushort)MessageType.Snapped);
 						packet.Write(60 * 300);
 						packet.Send();
 					}

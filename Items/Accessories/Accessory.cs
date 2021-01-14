@@ -12,6 +12,7 @@ using Idglibrary;
 using AAAAUThrowing;
 using Terraria.Localization;
 using SGAmod.Items.Weapons;
+using SGAmod.Buffs;
 
 namespace SGAmod.Items.Accessories
 {
@@ -426,7 +427,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("PortableHive"), 1);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 25);
 			recipe.AddIngredient(mod.ItemType("MoneySign"), 15);
-			recipe.AddIngredient(mod.ItemType("ByteSoul"), 50);
+			recipe.AddIngredient(mod.ItemType("AncientFabricItem"), 100);
 			recipe.AddIngredient(ItemID.ShroomiteBar, 30);
 			recipe.AddIngredient(ItemID.SpectreBar, 30);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 30);
@@ -523,7 +524,7 @@ namespace SGAmod.Items.Accessories
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Idol Of Midas");
+			DisplayName.SetDefault("Midas Insignia");
 			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin\ndefensive/movement buffs while facing left, offensive buffs while facing right, gold and platinum coins give you both\nIncreased damage with the more coins you have in your inventory (this caps at 25% at 10 platinum)\n15% increased damage against enemies afflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are consumed in the process"));
 		}
 
@@ -752,7 +753,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bundle of Jab-lin Parts");
-			Tooltip.SetDefault("'Worthless money-wise, but won't discount your life'\nThe amount of javelins you can stick into a target increases by 1\nImproves the damage over time of javelins by 25%\nJavelin damage increased by 25%\nDoesn't stack with component parts");
+			Tooltip.SetDefault("'Worthless money-wise, but won't discount your life'\nThe amount of javelins you can stick into a target increases by 1\nImproves the damage over time of javelins by 25%\nJavelin damage increased by 25%\nEffects of Jabb-a-wacky (hide to disable)\nDoesn't stack with component parts");
 		}
 
 		public override void SetDefaults()
@@ -760,7 +761,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.rare = ItemRarityID.LightPurple;
-			item.value = Item.sellPrice(0, 0, 4, 0); ;
+			item.value = Item.buyPrice(0, 0, 20, 0);
 			item.accessory = true;
 		}
 
@@ -768,6 +769,8 @@ namespace SGAmod.Items.Accessories
 		{
 			player.GetModPlayer<SGAPlayer>().JavelinSpearHeadBundle = true;
 			player.GetModPlayer<SGAPlayer>().JavelinBaseBundle = true;
+			if (!hideVisual)
+			ModContent.GetInstance<Jabbawacky>().UpdateAccessory(player, hideVisual);
 		}
 
 		public override void AddRecipes()
@@ -775,6 +778,7 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("JavelinSpearHeadBundle"), 1);
 			recipe.AddIngredient(mod.ItemType("JavelinBaseBundle"), 1);
+			recipe.AddIngredient(mod.ItemType("Jabbawacky"), 1);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 10);
 			recipe.AddIngredient(ItemID.RopeCoil, 1);
 			recipe.AddTile(TileID.TinkerersWorkbench);
@@ -832,8 +836,6 @@ namespace SGAmod.Items.Accessories
 			item.summon = true;
 			item.knockBack = 1f;
 		}
-
-		public override string Texture => "Terraria/Heart2";
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
@@ -3371,7 +3373,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rusted Bulwark");
-			Tooltip.SetDefault("Halves Knockback taken\nGrants 1 defense when below half health\n'Has seen better days...'");
+			Tooltip.SetDefault("Halves Knockback taken\nwhen below half health, grants:\n+1 defense\n+4% increased blocking damage with shields\nScoring a Just Block will Rustburn the attacking enemy\n'Has seen better days...'");
 		}
 
 		public override void SetDefaults()
@@ -3384,14 +3386,21 @@ namespace SGAmod.Items.Accessories
 			item.accessory = true;
 		}
 
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "RustBurnText", RustBurn.RustText));
+		}
+
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			if (player.statLife < player.statLifeMax2 / 2)
 			{
 				player.statDefense += 1;
+				sgaplayer.shieldDamageReduce += 0.04f;
 			}
 			sgaplayer.knockbackTaken *= 0.5f;
+			sgaplayer.rustedBulwark = true;
 		}
 
 	}
@@ -3405,7 +3414,7 @@ namespace SGAmod.Items.Accessories
 
 		public override string Texture
 		{
-			get { return ("Terraria/Item_" + ItemID.Jackelier); }
+			get { return ("Terraria/Item_" + ItemID.Hook); }
 		}
 
 		public override void SetDefaults()
@@ -3413,9 +3422,13 @@ namespace SGAmod.Items.Accessories
 			//item.CloneDefaults(ItemID.ManaFlower);
 			item.width = 24;
 			item.height = 24;
-			item.rare = ItemRarityID.White;
-			item.value = Item.buyPrice(0, 0, 20, 0);
+			item.rare = ItemRarityID.Green;
+			item.value = Item.buyPrice(0, 1, 50, 0);
 			item.accessory = true;
+		}
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb((Main.GlobalTime / 4f) % 1f, 0.25f, 0.50f);
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)

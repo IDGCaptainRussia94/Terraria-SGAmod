@@ -1171,7 +1171,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.knockBack = 7;
 			item.value = 10000;
 			item.rare = 1;
-			item.UseSound = SoundID.Item11;
+			item.UseSound = SoundID.Item40;
 			item.autoReuse = true;
 			item.shoot = 10;
 			item.shootSpeed = 16f;

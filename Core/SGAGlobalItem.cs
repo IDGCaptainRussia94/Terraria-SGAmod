@@ -312,14 +312,17 @@ namespace SGAmod
             if (NovusCoreCheck(player,item))
                 basemul += 0.1f;
 
-            if (item.modItem != null) {
+            if (item.modItem != null)
+            {
                 var myType = (item.modItem).GetType();
                 var n = myType.Namespace;
                 string asastring = (string)n;
                 int ishavocitem = asastring.Length - asastring.Replace("HavocGear.", "").Length;
-                if (ishavocitem > 0 && sgaplayer.Havoc > 0) {
-                    damage = (int)(damage * 1.25);
-                } }
+                if (ishavocitem > 0 && sgaplayer.Havoc > 0)
+                {
+                    damage = (int)(damage * 1.15);
+                }
+            }
 
             if (sgaplayer.Dankset>0)
             {
@@ -622,6 +625,31 @@ namespace SGAmod
     }
 
 
+    public class SGAUpgradableItemInstance : GlobalItem
+    {
+
+        public int toolType = 0;
+        public override bool InstancePerEntity => true;
+
+        public override bool NeedsSaving(Item item)
+        {
+            if (toolType > 0)
+                return true;
+            return false;
+        }
+        public override TagCompound Save(Item item)
+        {
+            TagCompound tag = new TagCompound();
+            tag["toolType"] = item.GetGlobalItem<SGAUpgradableItemInstance>().toolType;
+            return tag;
+        }
+        public override void Load(Item item, TagCompound tag)
+        {
+            SGAUpgradableItemInstance upgrades = item.GetGlobalItem<SGAUpgradableItemInstance>();
+            base.Load(item, tag);
+        }
+
+    }
 
 
 
@@ -633,8 +661,7 @@ namespace SGAmod
 
 
 
-
-    public class TrapPrefixAccessory : TrapPrefix
+        public class TrapPrefixAccessory : TrapPrefix
     {
 
         public override PrefixCategory Category { get { return PrefixCategory.Accessory; } }
@@ -850,7 +877,7 @@ namespace SGAmod
                 if (GetType() == typeof(TrapPrefixAccessory))
                 {
                     mod.AddPrefix("Tinkering", new TrapPrefixAccessory(0f, 0.04f));
-                    mod.AddPrefix("Knowledgable", new TrapPrefixAccessory(0.06f, 0f));
+                    mod.AddPrefix("Knowledgeable", new TrapPrefixAccessory(0.06f, 0f));
                     mod.AddPrefix("Dungeoneer's", new TrapPrefixAccessory(0.04f, 0.05f));
                     mod.AddPrefix("Goblin Tinker's Own", new TrapPrefixAccessory(0.05f, 0.075f));
                     mod.AddPrefix("Energized", new TrapPrefixAccessory(0,0,1));
@@ -867,7 +894,7 @@ namespace SGAmod
                     mod.AddPrefix("Slinger's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.02f,0.01f,0,0));
                     mod.AddPrefix("Pocketed", new ThrowerPrefixAccessory(0f, 0f, 0.02f, 0.03f, 0.015f,0,0));
                     mod.AddPrefix("Conserving", new ThrowerPrefixAccessory(0f, 0f, 0.0f, 0.0f,0.05f,0,0));
-                    mod.AddPrefix("Rougish", new ThrowerPrefixAccessory(0f, 0f, 0.06f, 0.05f,0.02f,0,0));
+                    mod.AddPrefix("Roguish", new ThrowerPrefixAccessory(0f, 0f, 0.06f, 0.05f,0.02f,0,0));
 
                     mod.AddPrefix("Doomsayer", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 0.5f,0.05f));
                     mod.AddPrefix("Horseman's", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 1f,0.075f));

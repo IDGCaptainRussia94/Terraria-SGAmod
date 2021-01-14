@@ -80,6 +80,7 @@ namespace SGAmod
 		public int impaled = 0;
 		public byte crimsonCatastrophe = 0;
 		private int nonStackingImpaled_;
+		public int PinkyMinion = 0;
 		public int nonStackingImpaled
 		{
             get
@@ -239,6 +240,13 @@ namespace SGAmod
 				return false;
 
 			}
+			if (PinkyMinion>0 && NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()))
+			{
+				if (npc.timeLeft < 3)
+					npc.StrikeNPCNoInteraction(9999999, 1, 1);
+				return false;
+
+			}
 			return true;
 		}
 
@@ -247,6 +255,11 @@ namespace SGAmod
 			float spawnrate2 = player.GetModPlayer<SGAPlayer>().morespawns;
 			spawnRate = (int)(spawnRate / spawnrate2);
 			maxSpawns += (int)((spawnrate2 - 1) * 10f);
+			if (NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()))
+			{
+				//spawnRate = (int)(spawnRate / 25f);
+				//maxSpawns += 20;
+			}
 		}
 
 		public override void SetDefaults(NPC npc)
@@ -315,7 +328,10 @@ namespace SGAmod
 
 			if (acidburn)
 			{
-				npc.lifeRegen -= 20 + Math.Min(300, npc.defense * 2);
+				int tier = 2;
+				if (npc.HasBuff(ModContent.BuffType<RustBurn>()))
+					tier = 3;
+				npc.lifeRegen -= 20 + Math.Min(tier*150, npc.defense * tier);
 				if (damage < 5)
 					damage = 5;
 			}
@@ -671,6 +687,12 @@ namespace SGAmod
 
 			CrucibleArenaMaster.UpdatePortal(npc);
 
+			if (PinkyMinion<1 && NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()) && (npc.type == NPCID.BlueSlime || npc.type == NPCID.GreenSlime || npc.type == NPCID.PurpleSlime || npc.type == NPCID.YellowSlime || npc.type == NPCID.RedSlime || npc.type == NPCID.BlackSlime))
+			{
+				PinkyMinion = 1;
+				npc.aiStyle=-1;
+			}
+
 			if (petrified)
 			{
 				npc.velocity.Y += 0.4f;
@@ -814,6 +836,11 @@ namespace SGAmod
 
 			}
 
+			if (PinkyMinion > 0 && !NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()))
+			{
+				npc.StrikeNPCNoInteraction(9999999, 1, 1);
+			}
+
 
 			if (SunderedDefense)
 			{
@@ -916,6 +943,17 @@ namespace SGAmod
 					}
 					break;
 				case NPCID.SkeletonMerchant:
+
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<RustedBulwark>());
+						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 2, 50, 0);
+						nextSlot++;
+
+					if (NPC.downedBoss2)
+					{
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<Jabbawacky>());
+						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 5, 0, 0);
+						nextSlot++;
+					}
 
 					if (Main.LocalPlayer.inventory.Any(testitem => testitem.modItem != null && testitem.modItem is IShieldItem))
 					{
@@ -1099,7 +1137,7 @@ namespace SGAmod
 						if ((ply.Center - npc.Center).Length() < 1400)
 						{
 							ModPacket packet = mod.GetPacket();
-							packet.Write((ushort)SGAmod.MessageType.GrantExpertise);
+							packet.Write((ushort)MessageType.GrantExpertise);
 							packet.Write(npc.type);
 							packet.Send(ply.whoAmI);
 						}
@@ -1113,7 +1151,7 @@ namespace SGAmod
 							if (Main.dedServ)
 							{
 								ModPacket packet = mod.GetPacket();
-								packet.Write((ushort)SGAmod.MessageType.GrantEntrophite);
+								packet.Write((ushort)MessageType.GrantEntrophite);
 								packet.Write(npc.lifeMax);
 								packet.Send(ply.whoAmI);
 							}
@@ -1144,6 +1182,8 @@ namespace SGAmod
 
 			if (npc.type == NPCID.MoonLordCore)
 			{
+				if (Main.rand.Next(20) < 1)
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FistOfMoonlord"));
 				if (Main.rand.Next(10) < (Main.expertMode ? 2 : 1))
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SwordofTheBlueMoon"));
 				if (SGAWorld.downedCratrosity)

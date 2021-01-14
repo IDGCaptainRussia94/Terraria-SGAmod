@@ -454,8 +454,12 @@ namespace SGAmod.Dimensions
 
             //Add the chests and deco to loot rooms
 
+
+            prog.Value = 0.70f;
+            prog.Message = "Lootin it up";
+
             int choice2 = UniRand.Next(0, DeeperDungeon.LootRooms.Count);
-            for (int thisone = 0; thisone < DeeperDungeon.LootRooms.Count; thisone += 1)
+            for (int thisone = 0; thisone < DeeperDungeon.LootRooms.Count; thisone += 1) 
             {
                 int choice = thisone;
                 int size = (int)DeeperDungeon.LootRooms[choice].size.X;
@@ -466,10 +470,22 @@ namespace SGAmod.Dimensions
 
                 WorldGen.PlaceObject((int)DeeperDungeon.LootRooms[choice].vector.X, (int)(DeeperDungeon.LootRooms[choice].vector.Y - ((int)DeeperDungeon.LootRooms[choice].size.Y) / 2), TileID.Chandeliers, false, 20);
 
+                List<int> barTypes = new List<int>();
+                barTypes.Add(4); barTypes.Add(5); barTypes.Add(6); barTypes.Add(7); barTypes.Add(9); barTypes.Add(10); barTypes.Add(SGAmod.Instance.TileType("UnmanedBarTile")); barTypes.Add(SGAmod.Instance.TileType("NoviteBarTile")); barTypes.Add(SGAmod.Instance.TileType("BiomassBarTile"));
+
                 for (int thisone22 = -4; thisone22 < 5; thisone22 += 8)
                 {
-                    WorldGen.PlaceObject((int)DeeperDungeon.LootRooms[choice].vector.X + thisone22, (int)(DeeperDungeon.LootRooms[choice].vector.Y - ((int)DeeperDungeon.LootRooms[choice].size.Y) / 2), TileID.Banners, false, 6);
+                    WorldGen.PlaceObject((int)DeeperDungeon.LootRooms[choice].vector.X + thisone22, (int)(DeeperDungeon.LootRooms[choice].vector.Y - ((int)DeeperDungeon.LootRooms[choice].size.Y) / 2), TileID.Banners, false, WorldGen.genRand.Next(10));
 
+                    int offset = WorldGen.genRand.Next(-8,0) + 4;
+                    int barType = barTypes[WorldGen.genRand.Next(barTypes.Count)];
+                    for (int xx = WorldGen.genRand.Next(-2,0)-1; xx < WorldGen.genRand.Next(2)+2; xx += 1)
+                    {
+                        for (int yy = 0; yy < (WorldGen.genRand.Next(3) + 2) - Math.Abs(xx); yy += 1)
+                        {
+                            WorldGen.PlaceObject((int)DeeperDungeon.LootRooms[choice].vector.X + xx + thisone22, (int)(DeeperDungeon.LootRooms[choice].vector.Y + ((int)DeeperDungeon.LootRooms[choice].size.Y) / 2) - yy, barType > 100 ? barType : TileID.MetalBars, false, barType > 100 ? 0 : barType);
+                        }
+                    }
                 }
             }
 
@@ -483,8 +499,8 @@ namespace SGAmod.Dimensions
 
             AddLights(UniRand, ref allareas);
 
-            AddPaintnings(UniRand, ref allareas)
-                ;
+            AddPaintnings(UniRand, ref allareas);
+
             WorldGen._genRandSeed = lastseed;
 
         }
@@ -609,7 +625,7 @@ namespace SGAmod.Dimensions
                         if (UniRand.Next(0, DeeperDungeon.Spikeclusterchance[i]) == 1)
                         {
                             Tile thetile = Framing.GetTileSafely((int)(allareas[x].vector.X + where[i].X), (int)(allareas[x].vector.Y + where[i].Y));
-                            if (thetile.active() && !DeeperDungeon.instance.IsSpike(thetile.type))
+                            if (thetile.active() && !DeeperDungeon.instance.IsSpike(thetile.type, 0))
                             {
                                 ushort type = DeeperDungeon.SpikeType;
                                 float[] sizer = DeeperDungeon.Spikeclustersizemul;
@@ -737,7 +753,7 @@ namespace SGAmod.Dimensions
                             for (int zz = 0; zz < DeeperDungeon.platformmaxsize; zz += 1)
                             {
                                 Tile thetile = Framing.GetTileSafely((int)(shuffledareas[z].vector.X + (zz * zzz * expandto)), (int)(shuffledareas[z].vector.Y));
-                                if (thetile.active() && !DeeperDungeon.instance.IsSpike(thetile.type))
+                                if (thetile.active() && !DeeperDungeon.instance.IsSpike(thetile.type,0))
                                 {
                                     DeeperDungeon.instance.PlatformBlockType(thetile, ref platformtype);
                                     touchingoneend = true;
@@ -782,7 +798,7 @@ namespace SGAmod.Dimensions
                             Tile thetile2 = Framing.GetTileSafely((int)(allareas[x].vector.X + where[i].X + 1), (int)(allareas[x].vector.Y + where[i].Y));
                             Tile thetile3 = Framing.GetTileSafely((int)(allareas[x].vector.X + where[i].X - 1), (int)(allareas[x].vector.Y + where[i].Y));
                             if (thetile.active() && thetile2.active() && thetile3.active()
-                              && !DeeperDungeon.instance.IsSpike(thetile.type) && !DeeperDungeon.instance.IsSpike(thetile2.type) && !DeeperDungeon.instance.IsSpike(thetile3.type))
+                              && !DeeperDungeon.instance.IsSpike(thetile.type, 0) && !DeeperDungeon.instance.IsSpike(thetile2.type, 0) && !DeeperDungeon.instance.IsSpike(thetile3.type, 0))
                             {
                                 if (i == 0)
                                 {

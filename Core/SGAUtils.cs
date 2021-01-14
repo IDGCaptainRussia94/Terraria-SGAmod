@@ -29,6 +29,7 @@ using CalamityMod.World;
 using SGAmod.Items.Weapons.SeriousSam;
 using ReLogic.Graphics;
 using Terraria.Utilities;
+using System.Reflection;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -248,6 +249,56 @@ namespace SGAmod
 
 	public static class SGAUtils
 	{
+		/*static private readonly FieldInfo _firstTileX = typeof(Lighting).GetField("firstTileX", BindingFlags.NonPublic | BindingFlags.Instance);
+		static private readonly FieldInfo _firstTileY = typeof(Lighting).GetField("firstTileY", BindingFlags.NonPublic | BindingFlags.Instance);
+		static private readonly FieldInfo _offScreenTiles = typeof(Lighting).GetField("offScreenTiles", BindingFlags.NonPublic | BindingFlags.Instance);
+		public static void AddLight(int i, int j, float R, float G, float B)
+		{
+			int firstTileX = (int)_firstTileX.GetValue(null);
+			int firstTileY = (int)_firstTileY.GetValue(null);
+			int offScreenTiles = (int)_offScreenTiles.GetValue(null);
+			Dictionary<Point16, ColorTriplet> tempLights = 
+
+			if (Main.gamePaused || Main.netMode == 2 || i - firstTileX + offScreenTiles < 0 || i - firstTileX + offScreenTiles >= Main.screenWidth / 16 + offScreenTiles * 2 + 10 || j - firstTileY + offScreenTiles < 0 || j - firstTileY + offScreenTiles >= Main.screenHeight / 16 + offScreenTiles * 2 + 10 || tempLights.Count == maxTempLights)
+			{
+				return;
+			}
+			Point16 key = new Point16(i, j);
+			if (tempLights.TryGetValue(key, out var value))
+			{
+				if (RGB)
+				{
+					if (value.r < R)
+					{
+						value.r = R;
+					}
+					if (value.g < G)
+					{
+						value.g = G;
+					}
+					if (value.b < B)
+					{
+						value.b = B;
+					}
+					tempLights[key] = value;
+				}
+				else
+				{
+					float num = (R + G + B) / 3f;
+					if (value.r < num)
+					{
+						tempLights[key] = new ColorTriplet(num);
+					}
+				}
+			}
+			else
+			{
+				value = (RGB ? new ColorTriplet(R, G, B) : new ColorTriplet((R + G + B) / 3f));
+				tempLights.Add(key, value);
+			}
+		}*/
+
+
 		//Again, from Joost, thanks man
 		public static Vector2 PredictiveAim(float speed, Vector2 origin, Vector2 target, Vector2 targetVelocity, bool ignoreY)
 		{

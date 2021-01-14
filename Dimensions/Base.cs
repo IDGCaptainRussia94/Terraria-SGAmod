@@ -48,7 +48,7 @@ namespace SGAmod.Dimensions
         public override void UpdateBiomeVisuals()
         {
             //TheProgrammer
-            player.ManageSpecialBiomeVisuals("SGAmod:LimboSky", SGAPocketDim.WhereAmI == typeof(LimboDim) ? true : false, player.Center);
+            player.ManageSpecialBiomeVisuals("SGAmod:LimboSky", (SGAPocketDim.WhereAmI == typeof(LimboDim) || SGAPocketDim.WhereAmI == typeof(Limborinth)) ? true : false, player.Center);
         }
 
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
@@ -147,7 +147,7 @@ namespace SGAmod.Dimensions
                 if (enterlimbo > -2)
                 {
                     enterlimbo = -2;
-                    if (Framing.GetTileSafely((int)(player.Center.X / 16f), (int)(player.Center.Y / 16f)).wall == mod.WallType("NullWall"))
+                    if (Framing.GetTileSafely((int)(player.Center.X / 16f), (int)(player.Center.Y / 16f)).wall == mod.WallType("NullWall") && DimDingeonsWorld.ancientLockedFabric)
                     {
                         enterlimbo = -6;
 
@@ -213,7 +213,7 @@ namespace SGAmod.Dimensions
                 if (SLWorld.currentSubworld is SGAPocketDim sub)
                 {
                     int limit = sub.LimitPlayers;
-                    if (limit % 16 == 0 && limit > 0 && (item.pick > 0 || item.hammer > 0 || item.axe > 0 || item.createTile > -1 || item.createWall > -1))
+                    if (limit % 16 == 0 && limit > 0 && (item.pick > 99999 || item.hammer > 0 || item.axe > 0 || item.createTile > -1 || item.createWall > -1))
                     {
                         return false;
                     }
@@ -234,7 +234,7 @@ namespace SGAmod.Dimensions
                 int dimmusic = sub.LimitPlayers;
                 if (dimmusic > 0 && dimmusic % 16 == 0)
                 {
-                    if (DeeperDungeon.instance.IsSpike(type))
+                    if (DeeperDungeon.instance.IsSpike(type,1))
                         return true;
 
                     return false;
@@ -250,10 +250,15 @@ namespace SGAmod.Dimensions
                 int dimmusic = sub.LimitPlayers;
                 if (dimmusic > 0 && dimmusic % 16 == 0)
                 {
-                    if (DeeperDungeon.instance.IsSpike(type))
+                    if (DeeperDungeon.instance.IsSpike(type,0))
                     {
                         fail = false;
                         effectOnly = false;
+                    }
+                    else
+                    {
+                        fail = true;
+                        effectOnly = true;
                     }
 
                 }
@@ -317,7 +322,6 @@ namespace SGAmod.Dimensions
 
         public int LimitPlayers = 0;
 
-
         public virtual string DimName => "NoName";
         public virtual int? Music
         {
@@ -328,9 +332,10 @@ namespace SGAmod.Dimensions
             }
 
         }
-        public virtual bool IsSpike(int it)
+        public virtual bool IsSpike(int it,int type = 0)
         {
-            return it == TileID.Spikes || it == TileID.WoodenSpikes || it == TileID.Cobweb || it==TileID.BreakableIce;
+            bool match = (it == SGAmod.Instance.TileType("UnmanedBarTile") || it == SGAmod.Instance.TileType("NoviteBarTile") || it == SGAmod.Instance.TileType("BiomassBarTile"));
+            return ((it == TileID.Spikes || it == TileID.WoodenSpikes) && type == 1) || it == TileID.Cobweb || it==TileID.BreakableIce || it == TileID.MagicalIceBlock || it == TileID.MetalBars || match;
         }
 
         public virtual bool IsDirt(int it)
@@ -733,6 +738,7 @@ namespace SGAmod.Dimensions
         public static int deathtimer = 0;
         public static ModWorld Instance;
         public static List<DarkSector> darkSectors = new List<DarkSector>();
+        public static bool ancientLockedFabric = true;
 
         public override void Load(TagCompound tag)
         {
@@ -740,6 +746,7 @@ namespace SGAmod.Dimensions
         }
         public override void Initialize()
         {
+            ancientLockedFabric = true;
             darkSectors.Clear();
         }
 

@@ -217,7 +217,7 @@ namespace SGAmod.Generation
                         Main.tile[point2.X - 4, point2.Y].active() && Main.tile[point2.X - 4, point2.Y].type == ModContent.TileType<MoistStone>() && Main.tile[point2.X + 4, point2.Y].active() && Main.tile[point2.X + 4, point2.Y].type == ModContent.TileType<MoistStone>())
                     {
                         removes.Add(new Point16(point2.X, point2.Y - 1));
-                        removes.Add(new Point16(point2.X, point2.Y-2));
+                        removes.Add(new Point16(point2.X, point2.Y - 2));
                         removes.Add(new Point16(point2.X, point2.Y - 3));
                     }
                 }
@@ -227,7 +227,6 @@ namespace SGAmod.Generation
             {
                 Tile tile = Framing.GetTileSafely(point2.X, point2.Y);
                 tile.type = (ushort)ModContent.TileType<Biomass>();
-                tile.active(false);
             }
 
             for (int aaa = 0; aaa < deways.Count; aaa++)
@@ -327,6 +326,8 @@ namespace SGAmod.Generation
                 tile.active(false);
             }
 
+
+            //Place Sword
             for (int kk = 3; kk < 6; kk += 1)
             {
                 Main.tile[(int)placementspot.X, (int)placementspot.Y + buffersizey - kk].active(false);

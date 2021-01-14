@@ -10,15 +10,15 @@ using Idglibrary;
 namespace SGAmod.Items.Weapons
 {
 	public class CreepersThrow : ModItem
-    {
-        public override void SetStaticDefaults()
+	{
+		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mister Creeper's Explosive Throw");
 			Tooltip.SetDefault("Controls a yoyo shaped creeper that lights a fuse when near enemies and explodes violently shortly after\nHowever, watch out as you can hurt yourself from the creeper's explosion");
 		}
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
 			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[1] > 0)
 			{
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Enpowerment bonus ---"));
@@ -26,31 +26,31 @@ namespace SGAmod.Items.Weapons
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Creates smaller explosions leading up to the larger one"));
 			}
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
-            //string potion="[i:" + ItemID.RedPotion + "]";
-            tooltips.Add(new TooltipLine(mod, "IDG Debug Item", Idglib.ColorText(c, "Mister Creeper's other (Legecy) Dev Weapon")));
-        }
+			//string potion="[i:" + ItemID.RedPotion + "]";
+			tooltips.Add(new TooltipLine(mod, "IDG Debug Item", Idglib.ColorText(c, "Mister Creeper's other (Legecy) Dev Weapon")));
+		}
 
-        public override void SetDefaults()
-        {
-            Item refItem = new Item();
-			refItem.SetDefaults(ItemID.TheEyeOfCthulhu);                                 
-            item.damage = 250;
-            item.useTime = 16;
-            item.useAnimation = 16;
-            item.useStyle = 5;
+		public override void SetDefaults()
+		{
+			Item refItem = new Item();
+			refItem.SetDefaults(ItemID.TheEyeOfCthulhu);
+			item.damage = 250;
+			item.useTime = 16;
+			item.useAnimation = 16;
+			item.useStyle = 5;
 			item.crit = 10;
-            item.channel = true;
-            item.melee = true;
+			item.channel = true;
+			item.melee = true;
 			item.noMelee = true;
-            item.knockBack = 2.5f;
+			item.knockBack = 2.5f;
 			item.value = Item.sellPrice(0, 75, 0, 0);
 			item.rare = 11;
 			item.expert = true;
-            item.noUseGraphic = true;
+			item.noUseGraphic = true;
 			item.autoReuse = true;
-            item.UseSound = SoundID.Item19;
-            item.shoot = mod.ProjectileType("CreepersThrowProj");
-        }
+			item.UseSound = SoundID.Item19;
+			item.shoot = mod.ProjectileType("CreepersThrowProj");
+		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
@@ -69,14 +69,14 @@ namespace SGAmod.Items.Weapons
 		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
 		{
 			if (player.GetModPlayer<SGAPlayer>().devempowerment[1] > 0)
-			add += 0.40f;
+				add += 0.40f;
 		}
 		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
-        {
-            Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, (int)((double)damage), knockBack, player.whoAmI, 0.0f, 0.0f);
-		    return false;
-	    }
-    }
+		{
+			Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, (int)((double)damage), knockBack, player.whoAmI, 0.0f, 0.0f);
+			return false;
+		}
+	}
 
 	public class CreepersThrowProj : ModProjectile
 	{
@@ -142,16 +142,16 @@ namespace SGAmod.Items.Weapons
 					Main.dust[dustIndexsmoke].noGravity = true;
 					Main.dust[dustIndexsmoke].position = projectile.Center + new Vector2(0f, (float)(-(float)projectile.height / 2 - 6)).RotatedBy((double)projectile.rotation, default(Vector2)) * 1.1f;
 
-					if (projectile.localAI[1] >40 && projectile.localAI[1]<120 && projectile.localAI[1]%25==0 && owner.GetModPlayer<SGAPlayer>().devempowerment[1]>0)
+					if (projectile.localAI[1] > 40 && projectile.localAI[1] < 120 && projectile.localAI[1] % 25 == 0 && owner.GetModPlayer<SGAPlayer>().devempowerment[1] > 0)
 					{
 
-							int thisone = Projectile.NewProjectile(projectile.Center.X - 100, projectile.Center.Y - 100, Vector2.Zero.X, Vector2.Zero.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage * 2, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
-							Main.projectile[thisone].timeLeft = 2;
-							Main.projectile[thisone].width = 200;
-							Main.projectile[thisone].penetrate = 1;
-							Main.projectile[thisone].height = 200;
-							Main.projectile[thisone].scale = 0.001f;
-							Main.projectile[thisone].netUpdate = true;
+						int thisone = Projectile.NewProjectile(projectile.Center.X - 100, projectile.Center.Y - 100, Vector2.Zero.X, Vector2.Zero.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage * 2, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
+						Main.projectile[thisone].timeLeft = 2;
+						Main.projectile[thisone].width = 200;
+						Main.projectile[thisone].penetrate = 1;
+						Main.projectile[thisone].height = 200;
+						Main.projectile[thisone].scale = 0.001f;
+						Main.projectile[thisone].netUpdate = true;
 
 					}
 
@@ -164,7 +164,7 @@ namespace SGAmod.Items.Weapons
 							float randomx = 64f;//Main.rand.NextFloat(54f, 96f);
 							Vector2 here = new Vector2((float)Math.Cos(angles), (float)Math.Sin(angles));
 
-							int thisone = Projectile.NewProjectile(projectile.Center.X + (here.X * randomx) - 100, projectile.Center.Y + (here.Y * randomx) - 100, here.X, here.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage*1, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
+							int thisone = Projectile.NewProjectile(projectile.Center.X + (here.X * randomx) - 100, projectile.Center.Y + (here.Y * randomx) - 100, here.X, here.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage * 1, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
 							Main.projectile[thisone].timeLeft = 2;
 							Main.projectile[thisone].width = 200;
 							Main.projectile[thisone].height = 200;
@@ -182,7 +182,7 @@ namespace SGAmod.Items.Weapons
 							float randomx = 48f;//Main.rand.NextFloat(54f, 96f);
 							Vector2 here = new Vector2((float)Math.Cos(angles), (float)Math.Sin(angles));
 
-							int thisone = Projectile.NewProjectile(projectile.Center.X + (here.X * randomx) - 100, projectile.Center.Y + (here.Y * randomx) - 100, here.X, here.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage*1, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
+							int thisone = Projectile.NewProjectile(projectile.Center.X + (here.X * randomx) - 100, projectile.Center.Y + (here.Y * randomx) - 100, here.X, here.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage * 1, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
 							Main.projectile[thisone].timeLeft = 2;
 							Main.projectile[thisone].width = 200;
 							Main.projectile[thisone].penetrate = 1;
@@ -201,13 +201,13 @@ namespace SGAmod.Items.Weapons
 		}
 
 	}
-		
-		public class CreepersThrowBoom : ModProjectile
+
+	public class CreepersThrowBoom : ModProjectile
+	{
+		public override void SetStaticDefaults()
 		{
-			public override void SetStaticDefaults()
-			{
-				DisplayName.SetDefault("Creeper's KaBoom");
-			}
+			DisplayName.SetDefault("Creeper's KaBoom");
+		}
 
 		public override string Texture
 		{
@@ -222,13 +222,13 @@ namespace SGAmod.Items.Weapons
 		}
 
 		public override void SetDefaults()
-			{
+		{
 			projectile.CloneDefaults(ProjectileID.GrenadeIII);
 			projectile.scale = 0.001f;
 			projectile.melee = true;
 			//projectile.penetrate = 1;
 			aiType = ProjectileID.GrenadeIII;
-			}
+		}
 
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
@@ -236,10 +236,10 @@ namespace SGAmod.Items.Weapons
 		}
 
 		public override bool PreKill(int timeLeft)
-			{
-				projectile.type = ProjectileID.GrenadeIII;
-				return true;
-			}
+		{
+			projectile.type = ProjectileID.GrenadeIII;
+			return true;
+		}
 	}
 
 	public class CreepersThrowBoom2 : CreepersThrowBoom
@@ -249,9 +249,9 @@ namespace SGAmod.Items.Weapons
 			DisplayName.SetDefault("Creeper's KaBoom");
 		}
 
-        public override void SetDefaults()
-        {
-            base.SetDefaults();
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
 			projectile.timeLeft = 3;
 			projectile.width = 200;
 			projectile.height = 200;
@@ -260,7 +260,7 @@ namespace SGAmod.Items.Weapons
 			projectile.penetrate = 1;
 		}
 
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (target.life - damage < 0)
 			{

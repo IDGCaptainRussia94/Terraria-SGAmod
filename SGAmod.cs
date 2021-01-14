@@ -271,6 +271,7 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 570));//108
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 571));//109
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 711));//110
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + 1));//111
 
 				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 				int height = queenTex.Height;
@@ -335,6 +336,7 @@ namespace SGAmod
 			AddItem("MusicBox_SpiderQueen", new SGAItemMusicBox("MusicBox_SpiderQueen", "Spider Queen", "Acidic Affray", "Musicman"));
 			AddItem("MusicBox_Sharkvern", new SGAItemMusicBox("MusicBox_Sharkvern", "Sharkvern", "Freak of Nature", "Musicman"));
 			AddItem("MusicBox_Creepy", new SGAItemMusicBox("MusicBox_Creepy", "Creepy", "???", "Unknown"));
+			AddItem("MusicBox_Cirno", new SGAItemMusicBox("MusicBox_Cirno", "Cirno", "Algid Action", "Rijam"));
 
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Murk"), ItemType("MusicBox_Boss2Remix"), TileType("MusicBox_Boss2Remix"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Swamp"), ItemType("MusicBox_Swamp"), TileType("MusicBox_Swamp"));
@@ -343,6 +345,7 @@ namespace SGAmod
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SpiderQueen"), ItemType("MusicBox_SpiderQueen"), TileType("MusicBox_SpiderQueen"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Shark"), ItemType("MusicBox_Sharkvern"), TileType("MusicBox_Sharkvern"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/creepy"), ItemType("MusicBox_Creepy"), TileType("MusicBox_Creepy"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cirno_v2"), ItemType("MusicBox_Cirno"), TileType("MusicBox_Cirno"));
 
 			AddTile("PrismalBarTile", new BarTile("PrismalBar", "Prismal Bar", new Color(210, 0, 100)), "SGAmod/Tiles/PrismalBarTile");
 			AddTile("UnmanedBarTile", new BarTile("UnmanedBar", "Unmaned Bar", new Color(70, 0, 40)), "SGAmod/Tiles/UnmanedBarTile");
@@ -795,6 +798,48 @@ namespace SGAmod
 });
 			RecipeGroup.RegisterGroup("SGAmod:HardmodeEvilAccessory", group6);
 
+			RecipeGroup pickaxe = new RecipeGroup(() => "Copper or Tin Pickaxe", new int[]
+{
+			ItemID.CopperPickaxe,
+			ItemID.TinPickaxe
+});
+			RecipeGroup.RegisterGroup("SGAmod:Tier1Pickaxe", pickaxe);
+			pickaxe = new RecipeGroup(() => "Iron or Lead Pickaxe", new int[]
+{
+			ItemID.IronPickaxe,
+			ItemID.LeadPickaxe
+});
+			RecipeGroup.RegisterGroup("SGAmod:Tier2Pickaxe", pickaxe);
+			pickaxe = new RecipeGroup(() => "Silver or Tungsten Pickaxe", new int[]
+{
+			ItemID.SilverPickaxe,
+			ItemID.TungstenPickaxe
+});
+			RecipeGroup.RegisterGroup("SGAmod:Tier3Pickaxe", pickaxe);
+			pickaxe = new RecipeGroup(() => "Gold or Platinum Pickaxe", new int[]
+{
+			ItemID.GoldPickaxe,
+			ItemID.PlatinumPickaxe
+});
+			RecipeGroup.RegisterGroup("SGAmod:Tier4Pickaxe", pickaxe);
+			pickaxe = new RecipeGroup(() => "Gold or Platinum Pickaxe", new int[]
+{
+			ItemID.CobaltPickaxe,
+			ItemID.PalladiumPickaxe
+});
+			RecipeGroup.RegisterGroup("SGAmod:Tier5Pickaxe", pickaxe);
+			pickaxe = new RecipeGroup(() => "Gold or Platinum Pickaxe", new int[]
+{
+			ItemID.GoldPickaxe,
+			ItemID.OrichalcumPickaxe
+});
+			RecipeGroup.RegisterGroup("SGAmod:Tier6Pickaxe", pickaxe);
+			pickaxe = new RecipeGroup(() => "Gold or Platinum Pickaxe", new int[]
+{
+			ItemID.AdamantitePickaxe,
+			ItemID.TitaniumPickaxe
+});
+			RecipeGroup.RegisterGroup("SGAmod:Tier7Pickaxe", pickaxe);
 
 
 			if (RecipeGroup.recipeGroupIDs.ContainsKey("IronBar"))
@@ -805,6 +850,13 @@ namespace SGAmod
 			}
 
 		}
+
+		/*			using (Stream stream = (Stream)new FileStream(SGAmod.filePath, FileMode.Create))
+			{
+
+
+			}
+		*/
 
 		public override void UpdateUI(GameTime gameTime)
 		{

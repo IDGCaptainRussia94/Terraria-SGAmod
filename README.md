@@ -12,48 +12,128 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners, Spectre homing bullets/projectiles, Fist of Moonlord, Tech weapons have an "overclock" mechanic that changes up their gameplay while active, spider queen can melt normal generated blocks (dirt and so)
-Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Gunnarang, Prism Banishee drops and Aurora drops, Aura Borealis, Power Tools?
+Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, Power Tools? Yoyo Pickaxes!
 
 -Add Hellion Army progress Bar
 
 Changelog:
 
-3.500-(12/29/20)-Patch 10:
+3.520-(12/29/20)-Patch 11-Scraps of the Past:
 
 
 --Added:
 
--Rusty Gear: Rusted Bulwark, Rusty Rifle
+-Fist Of Moonlord, Jabb-a-wacky, The Excavator, Geyodo
+
+-'The Whole Experience' and Amulet of Diehard Cataclysm, for a specific brit, sold by the Goat
+
+-Rusty Gear: Rusted Bulwark, Rusty Rifle, Rustwork Blade
+
+-Supreme Pinky has a new 2nd phase...
+
+-New theme for Cirno
+
+-Resprites for several things by DeJuiceTD,, JellyBlu, Some new guys, as well as some contributed spritework by Ajax (thx guys! Really alot!)
+
 
 
 --Changed:
 
 -With the introduction of 4-clip revolver weapons, the system has changed: swapping to a weapon with a different clip size forces a reload before you can use it
 
+-Cratrosity will now stop in place before dashing at the player, their crates can no longer hit the player shortly after spawning
+
+-Various changes to the original Supreme Pinky
+
+-Cratogeddon has had a few of their moves reworked in an effort to make them a better boss
+
+-Deeper Dungeons has gotten a few changes: You can now use pickaxes, thou you are only able to mine a select few block types, and loot rooms have bars in them
+
+-Idol Of Midas renamed to Midas Insignia
+
+-The very top of a Dank shrine is replaced with biomass; allowing you to dig into it
+
+-Corroded Shield and Captain America's Shield no longer cause true immunity frames on their bashes; this feature is now exclusive to Just Blocks
+
+-Ancient Fabric is now obtainable, but serves no purpose outside of crafting the Soul of Secrets now, yet (hint: Braxsaw's tooltip')
+
+-Prismic Banshee has recived quite a buff to hopefully bring it up to par with current gear (blocks with hands, hands reduce incoming damage, takes less damage when attacking)
+
 -Flail-O-Nades is now a trap weapon
+
+-Aversion Charm has been added to Heart Guard and 'JuryRigged' Spike Buckler
 
 -The Gunarang now properly eats your ammo as it shoots it (and throwing the gun does not)
 
--Luminite Wraith's Desert Spirits should no longer do contact damage
+-Forager's Blade and Guerrilla Pistol are now found only on corruption and crimson world respectively
 
 -A speed cap on Jab-lin stab rate
+
+-Entropy Transmuter has been made cheaper
+
+-Stygian Veins have been made more common in Limbo
+
+-Dragon's Might's weakness no longer can be bypassed with a bandage
+
+-Mining Amulet Tier 1 can now be made with a tin pickaxe
+
+-Cracked Mirror's text was altered to not imply only pickaxes, but any mining tools with a pickaxe power
 
 -Reworked Sword of a Thousand Truths: larger sprite hitbox, 10 less damage
 
 -Buffed Glass Sword: increased damage by 1
 
+-Buffed Prismic Arrow/Bullet: Chance to not consume secondary ammo has increased to 66% from 33%
+
+-Buffed Prismal Arrow/Bullet: Chance to not consume secondary ammo has increased to 75% from 25%
+
+-Nerfed Havoc's Fragmented Remains: Bonus damage with Havoc items reduced to 15% from 25%
+
+-Nerfed Big Dakka: removed the bonus crit chance, is now a Havoc Item (should have been)
+
 -Nerfed Guerrilla Pistol: Knockback reduced
+
+-Nerfed 'JuryRigged' Spike Buckler and Heart Guard: 1 less defense
+
+-Nerfed Machete: Use time is slightly longer; renamed to Forager's Blade
 
 -Nerfed Magishield: Blocking with the shield now throws the player back if they consume the damage with their mana, even if they are knockback immune
 
--Refactored and improved a bit more of the code
+-Refactored and improved a bit more of the code, Soul of Byte emits light and other things
 
 
 --Fixed:
 
+-Prismic Banshee should no longer have despawning arms, and is now properly named Prismic instead of Prismatic
+
 -Jab-lin effects doing no damage on melee
 
+-Novus Ore having improperly colored dirt
+
+-Shield of Discord having no teleport restrictions
+
 -Revolvers bugging out and seemingly jamming, I hope
+
+-Flask of Blaze using Flask of Acid's icon
+
+-Typeos
+
+
+Changelog:
+
+3.515-(12/29/20)-Hot Fix #15:
+
+-Missed a thing, Happy New Years everyone #2!
+
+
+--Changed:
+
+-Luminite Wraith's Djinns no longer do contact damage
+
+
+--Fixed:
+
+-Luminite Wraith's Djinns ALWAYS Spawning
 
 
 
@@ -472,7 +552,7 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 -Reworked Stormbreaker: Damage nerfed, alt fire damage increased, now consumes Electric Charge instead of mana
 
--Reworked Cirno's Wings: Magic Attacks only sometimes do Frostburn, the originally functionality belongs to Cold Damage attacks now, now has unlimited flight in the Snow Biome, but greatly reduced in the Jungle, Desert, and Underworld, also provides immunity to Snowfrosted
+-Reworked Cirno's Wings: Magic Attacks only sometimes do Frostburn, the originally functionality belongs to Cold Damage attacks now, now has double flight in the Snow Biome, but greatly reduced in the Jungle, Desert, and Underworld, also provides immunity to Snowfrosted
 
 -Reworked Quasar Cannon: now properly uses mana, and has been added to the Former Havoc Mod item collection
 

@@ -27,10 +27,9 @@ namespace SGAmod.Dimensions
         public override int width => 2400;
         public override int height => 1400;
         public override bool saveSubworld => false;
-
         public override string DimName => "Limbo";
-
         public override UserInterface loadingUI => base.loadingUI;
+        public override UIState loadingUIState => base.loadingUIState;
 
         public static Texture2D[] staticeffects=new Texture2D[20];
         public override float maxSpawns => 5f;
@@ -73,7 +72,7 @@ namespace SGAmod.Dimensions
 
                 }
                 pool[ModContent.NPCType<NullWatcher>()] = 1f;
-                pool[ModContent.NPCType<StygianVein>()] = 0.02f;
+                pool[ModContent.NPCType<StygianVein>()] = 0.05f;
 
                 pocket.chooseenemies = true;
                 return 1;
@@ -111,21 +110,21 @@ namespace SGAmod.Dimensions
                 {
                 int randomx = UniRand.Next(Main.maxTilesX);
                  int randomy = UniRand.Next(surfacelevel[randomx]+ UniRand.Next(50,100), Main.maxTilesY);
-                IDGWorldGen.TileRunner(randomx, randomy, (double)UniRand.Next(5, 15), UniRand.Next(5, 15), SGAmod.Instance.TileType("EntrophicOre"), false, 0f, 0f, false, true);
+                IDGWorldGen.TileRunner(randomx, randomy, (double)UniRand.Next(5, 15), UniRand.Next(5, 15), SGAmod.Instance.TileType("EntrophicOre"), false, 0f, 0f, false, true, UniRand);
                 }
 
                 for (int i = 0; i < 300; i += 1)
                 {
                 int randomx = UniRand.Next(Main.maxTilesX);
                  int randomy = UniRand.Next(surfacelevel[randomx]+(i%20==0 ? -10 : 60), Main.maxTilesY);
-                IDGWorldGen.TileRunner(randomx, randomy, (double)UniRand.Next(10, 50), UniRand.Next(15, 45)+i, -2, false, 0f, 0f, false, true);
+                IDGWorldGen.TileRunner(randomx, randomy, (double)UniRand.Next(10, 50), UniRand.Next(15, 45)+i, -2, false, 0f, 0f, false, true, UniRand);
                 }
 
                 for (int i = 0; i < 150; i += 1)
                 {
                 int randomx = UniRand.Next(Main.maxTilesX);
                 int randomy = UniRand.Next(surfacelevel[randomx] + UniRand.Next(20, 160), Main.maxTilesY);
-                IDGWorldGen.TileRunner(randomx, randomy, (double)UniRand.Next(3, 6), UniRand.Next(2, 4), SGAmod.Instance.TileType("HopeOre"), false, 0f, 0f, false, true);
+                IDGWorldGen.TileRunner(randomx, randomy, (double)UniRand.Next(3, 6), UniRand.Next(2, 4), SGAmod.Instance.TileType("HopeOre"), false, 0f, 0f, false, true, UniRand);
                 }
 
             //Noisegen.Frequency
@@ -139,7 +138,7 @@ namespace SGAmod.Dimensions
             for (int x = Main.maxTilesX-1; x > 0; x -= 1)
             {
                 Tile thetile = Framing.GetTileSafely(x, tileheight);
-                IDGWorldGen.TileRunner(x, tileheight, (double)UniRand.Next(5, 10), UniRand.Next(2, 4), SGAmod.Instance.TileType("AncientFabric"), true, 0f, 0f, false, true);
+                IDGWorldGen.TileRunner(x, tileheight, (double)UniRand.Next(5, 10), UniRand.Next(2, 4), SGAmod.Instance.TileType("AncientFabric"), true, 0f, 0f, false, true, UniRand);
                 thetile.active(true);
                 thetile.type = (ushort)SGAmod.Instance.TileType("AncientFabric");
 
@@ -385,6 +384,8 @@ namespace SGAmod.Dimensions
 
             UnifiedRandom alwaysthesame = new UnifiedRandom(DimDungeonsProxy.DungeonSeeds);
 
+            Texture2D texx = ModContent.GetTexture("SGAmod/Items/WatchersOfNull");
+
             for (float i = 0.04f; i < 0.35f; i += 0.005f)
             {
                 for (int x = -alwaysthesame.Next(900, 3200); x < ((Main.maxTilesX * 16)*i)+Main.screenWidth; x += alwaysthesame.Next(900, 3200))
@@ -394,7 +395,6 @@ namespace SGAmod.Dimensions
                         Vector2 loc = ((-Main.screenPosition * i)+ new Vector2(x, y));
                         if (loc.X>-64 && loc.Y > -64 && loc.X < Main.screenWidth+ 64 && loc.Y < Main.screenHeight + 64)
                         {
-                            Texture2D texx = ModContent.GetTexture("SGAmod/Items/WatchersOfNull");
                             spriteBatch.Draw(texx, loc, new Rectangle(0, 0, texx.Width, texx.Height / 13), (Color.White * MathHelper.Clamp(i,0f,1f)), 0, Vector2.Zero, new Vector2(1f, 1f), SpriteEffects.None, 0f);
                         }
 

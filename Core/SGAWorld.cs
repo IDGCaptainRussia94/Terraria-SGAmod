@@ -162,7 +162,7 @@ namespace SGAmod
             {
                 SGAmod.Instance.Logger.Debug("DEBUG server: Story Advanced");
                 ModPacket packet = SGAmod.Instance.GetPacket();
-                packet.Write((ushort)SGAmod.MessageType.HellionStory);
+                packet.Write((ushort)MessageType.HellionStory);
                 packet.Write(questvars[10]);
                 packet.Send(-1);
             }
@@ -746,7 +746,7 @@ namespace SGAmod
             oretypeshardmode[2] = WorldGen.oreTier3;
 
 
-            int[] itemsToPlaceInOvergrownChestsSecond = new int[] { mod.ItemType("ForagersBlade"), mod.ItemType(WorldGen.crimson ? "GuerrillaPistol" : "RustyRifle"),mod.ItemType("AversionCharm"), mod.ItemType("RustedBulwark") };
+            int[] itemsToPlaceInOvergrownChestsSecond = new int[] { mod.ItemType(WorldGen.crimson ? "ForagersBlade" : "RustworkBlade"), mod.ItemType(WorldGen.crimson ? "GuerrillaPistol" : "RustyRifle"),mod.ItemType("AversionCharm"), mod.ItemType("RustedBulwark") };
             int itemsToPlaceInOvergrownChestsChoiceSecond = 0;
 
                 List<Chest> Chests = Main.chest.Where(checkfor => checkfor != null).ToList();

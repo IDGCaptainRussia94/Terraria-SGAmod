@@ -1,6 +1,7 @@
 using Terraria;
 using Terraria.ModLoader;
 using SGAmod.NPCs;
+using Terraria.ID;
 
 namespace SGAmod.Buffs
 {
@@ -42,6 +43,49 @@ namespace SGAmod.Buffs
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.GetModPlayer<SGAPlayer>().Shieldbreak = true;
+		}
+	}
+	public class BIPBuff : ModBuff
+	{
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Broken Immortality");
+			Description.SetDefault("You've lost your godly defense!");
+			Main.pvpBuff[Type] = false;
+			Main.debuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+		}
+	}
+	public class WorseWeakness : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Buff_" + BuffID.Weak;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Consumed Weakness");
+			Description.SetDefault("That potion has left you massively drained...");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			Main.debuff[Type] = true;
+			canBeCleared = false;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.meleeSpeed -= 0.051f;
+			player.statDefense -= 15;
+			player.moveSpeed -= 0.2f;
+			player.SGAPly().UseTimeMul -= 0.25f;
+
 		}
 	}
 }

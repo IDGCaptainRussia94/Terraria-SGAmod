@@ -242,7 +242,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lesser Prismic Arrow");
-			Tooltip.SetDefault("Shots cycle through your 2nd and 3rd ammo slots while placed in your first\nDefaults to a weak wooden arrow\nHas a 33% to not consume the fired ammo type");
+			Tooltip.SetDefault("Shots cycle through your 2nd and 3rd ammo slots while placed in your first\nDefaults to a weak wooden arrow\nHas a 66% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{
@@ -281,7 +281,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Arrow");
-			Tooltip.SetDefault("Highly increased damage over its precursor\nCycles through your ammo slots when placed in your first; defaults to Wooden Arrows\nHas a 25% to not consume the fired ammo type");
+			Tooltip.SetDefault("Highly increased damage over its precursor\nCycles through your ammo slots when placed in your first; defaults to Wooden Arrows\nHas a 75% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{

@@ -11,9 +11,63 @@ using Idglibrary;
 using Terraria.ModLoader.IO;
 using System.Security.AccessControl;
 using Microsoft.Xna.Framework.Audio;
+using System.Security.Cryptography;
+using System.IO;
 
 namespace SGAmod.Items.Consumable
 {
+
+	public class PowerToolUpgrade : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Power Tools Upgrade");
+			Tooltip.SetDefault("Upgrades motorized tools, but consume Electric Charge equivalent to their power\nRight Click while holding a drill to apply");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = 2;
+			item.value = 1000;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item2;
+		}
+
+		public override bool CanRightClick()
+        {
+			Item helditem = Main.LocalPlayer.HeldItem;
+			if (helditem.shoot>0)
+            {
+				Projectile them = new Projectile();
+				them.SetDefaults(helditem.shoot);
+				if (them.aiStyle == 20)
+					return true;
+
+			}
+            return false;
+        }
+        public override void RightClick(Player player)
+        {
+            //powertool code here
+        }
+        public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("LaserMarker"), 8);
+			recipe.AddIngredient(mod.ItemType("EnergizerBattery"), 3);
+			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 6);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 4);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 3);
+			recipe.AddRecipe();
+		}
+	}
 	public class RedManaStar : ModItem
 	{
 		public override void SetStaticDefaults()

@@ -394,12 +394,20 @@ namespace SGAmod
 					player.ManaEffect(damage);
 				}
 
-				if (diesIraeStone && damageSourceIndex > 0)
-                {
-					float empty = 5f;
-					bool emptyCrit = true;
-					Main.npc[damageSourceIndex - 1].SGANPCs().DoApoco(Main.npc[damageSourceIndex - 1],shield,player,null,ref damage,ref empty, ref emptyCrit, 4,true);
-                }
+				if (damageSourceIndex > 0)
+				{
+					if (rustedBulwark)
+					{
+						RustBurn.ApplyRust(Main.npc[damageSourceIndex - 1], (2 + damage) * 20);
+					}
+
+					if (diesIraeStone)
+					{
+						float empty = 5f;
+						bool emptyCrit = true;
+						Main.npc[damageSourceIndex - 1].SGANPCs().DoApoco(Main.npc[damageSourceIndex - 1], shield, player, null, ref damage, ref empty, ref emptyCrit, 4, true);
+					}
+				}
 
 				return true;
 			}
@@ -466,7 +474,7 @@ namespace SGAmod
 
 						Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
 
-						if (!(proj.modProjectile as CorrodedShieldProj).HandleBlock(ref damage, player))
+						if (!NoHitCharm && !(proj.modProjectile as CorrodedShieldProj).HandleBlock(ref damage, player))
 							return true;
 
 						return false;

@@ -341,11 +341,11 @@ namespace SGAmod.Items.Weapons.Trap
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Flamethrower, 1);
+			recipe.AddIngredient(ItemID.FlameTrap, 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 5);
 			recipe.AddIngredient(ItemID.Nanites, 50);
-			recipe.AddIngredient(ItemID.FlameTrap, 1);
-			recipe.AddIngredient(ItemID.Flamethrower, 1);
 			recipe.AddIngredient(ItemID.LihzahrdPowerCell, 1);
 			recipe.AddIngredient(ItemID.LihzahrdPressurePlate, 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
@@ -1142,7 +1142,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Heart Guard");
-			Tooltip.SetDefault("Trap Damage increased by 10%\n+20 Max HP and hearts give +5 Health\nEffect of Rusted Bulwark");
+			Tooltip.SetDefault("Trap Damage increased by 10%\n+20 Max HP and hearts give +5 Health\nEffect of Rusted Bulwark and Aversion Charm");
 		}
 
 		public override void SetDefaults()
@@ -1151,7 +1151,7 @@ namespace SGAmod.Items.Accessories
 			item.height = 18;
 			item.value = Item.sellPrice(0, 0, 50, 0);
 			item.rare = 4;
-			item.defense = 5;
+			item.defense = 4;
 			item.accessory = true;
 		}
 
@@ -1159,14 +1159,17 @@ namespace SGAmod.Items.Accessories
 		{
 			base.UpdateAccessory(player, hideVisual);
 			mod.GetItem("RustedBulwark").UpdateAccessory(player, hideVisual);
-			player.GetModPlayer<SGAPlayer>().HeartGuard = true;
-			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.1f;
+			SGAPlayer sgaply = player.SGAPly();
+			sgaply.aversionCharm = true;
+			sgaply.HeartGuard = true;
+			sgaply.TrapDamageMul += 0.1f;
 			player.statLifeMax2 += 20;
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("RustedBulwark"), 1);
+			recipe.AddIngredient(mod.ItemType("AversionCharm"), 1);
 			recipe.AddIngredient(ItemID.LifeCrystal, 1);
 			recipe.AddIngredient(ItemID.HeartreachPotion, 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
@@ -1180,7 +1183,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("'JuryRigged' Spike Buckler");
-			Tooltip.SetDefault("Trap Damage increased by 10% and ignores 10% of enemy defense\nYou reflect 2 times the damage you take back to melee attackers\nEffect of Rusted Bulwark");
+			Tooltip.SetDefault("Trap Damage increased by 10% and ignores 10% of enemy defense\nYou reflect 2 times the damage you take back to melee attackers\nEffect of Rusted Bulwark and Aversion Charm");
 		}
 
 		public override void SetDefaults()
@@ -1189,7 +1192,7 @@ namespace SGAmod.Items.Accessories
 			item.height = 18;
 			item.value = Item.sellPrice(0, 0, 50, 0);
 			item.rare = 4;
-			item.defense = 5;
+			item.defense = 4;
 			item.accessory = true;
 		}
 
@@ -1197,14 +1200,17 @@ namespace SGAmod.Items.Accessories
 		{
 			base.UpdateAccessory(player, hideVisual);
 			mod.GetItem("RustedBulwark").UpdateAccessory(player, hideVisual);
-			player.GetModPlayer<SGAPlayer>().JuryRiggedSpikeBuckler = true;
-			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.1f;
+			SGAPlayer sgaply = player.SGAPly();
+			sgaply.aversionCharm = true;
+			sgaply.JuryRiggedSpikeBuckler = true;
+			sgaply.TrapDamageMul += 0.1f;
 			player.thorns += 2f;
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("RustedBulwark"), 1);
+			recipe.AddIngredient(mod.ItemType("AversionCharm"), 1);
 			recipe.AddIngredient(ItemID.Spike, 40);
 			recipe.AddIngredient(ItemID.ThornsPotion, 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));

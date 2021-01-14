@@ -79,7 +79,7 @@ namespace SGAmod.Items.Consumable
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/FlaskofAcidBuff";
+			texture = "SGAmod/Buffs/FlaskofBlazeBuff";
 			return base.Autoload(ref name, ref texture);
 		}
 

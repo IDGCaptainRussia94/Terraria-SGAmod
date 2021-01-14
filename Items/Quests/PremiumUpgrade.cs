@@ -12,12 +12,6 @@ namespace SGAmod.Items.Quests
 			Tooltip.SetDefault("Activating this will grant it's owner the TF2 Emblem and allow Crate Drops\nThe crates will drop per world on activation, however only new characters will receive the TF2 Emblem");
 
 		}
-
-		public override string Texture
-		{
-			get { return("SGAmod/Items/TerrariacoCrateBase");}
-		}
-
 		public override void SetDefaults()
 		{
 			item.maxStack = 1;

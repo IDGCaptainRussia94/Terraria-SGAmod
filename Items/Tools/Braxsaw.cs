@@ -11,7 +11,7 @@ namespace SGAmod.Items.Tools
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Braxsaw");
-			Tooltip.SetDefault("Mine through the universe!");
+			Tooltip.SetDefault("Mine through the oldest fabric of the universe!");
 		}
 
 		public override void SetDefaults()

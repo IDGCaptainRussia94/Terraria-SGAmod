@@ -54,25 +54,25 @@ using SGAmod.Dimensions;
 namespace SGAmod
 {
 
+	internal enum MessageType : ushort
+	{
+		HellionCrap = 25,
+		HellionStory = 26,
+		SummonCratrosity = 75,
+		Snapped = 105,
+		GrantExpertise = 250,
+		GrantEntrophite = 251,
+		LockPlayer = 499,
+		CloneClient = 500,
+		CraftWarning = 995,
+		CaliburnPoints = 996,
+		SummonNPC = 999,
+		ClientSendInfo
+	}
 
 	public partial class SGAmod : Mod
 	{
 
-		internal enum MessageType : ushort
-		{
-			HellionCrap = 25,
-			HellionStory = 26,
-			SummonCratrosity = 75,
-			Snapped = 105,
-			GrantExpertise = 250,
-			GrantEntrophite = 251,
-			LockPlayer = 499,
-			CloneClient = 500,
-			CraftWarning = 995,
-			CaliburnPoints = 996,
-			SummonNPC = 999,
-			ClientSendInfo
-		}
 
 		public override void HandlePacket(BinaryReader reader, int whoAmI)
 		{

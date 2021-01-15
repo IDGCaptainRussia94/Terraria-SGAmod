@@ -857,6 +857,11 @@ namespace SGAmod.NPCs
 						npc2.damage = 200;
 						npc2.defDamage = 200;
 
+					for (int i = 0; i < npc2.buffImmune.Length; i += 1)
+					{
+						npc2.buffImmune[i] = true;
+					}
+
 					npc2.netUpdate = true;
 						SupremeArmy.Add(npc2);
 					//}
@@ -1014,7 +1019,7 @@ namespace SGAmod.NPCs
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-
+			
 			if (npc.ai[0] > 295)
 			{
 				float sizer = 32f * MathHelper.Clamp((npc.ai[0] - 295) / 20f, 0f, 1f);
@@ -1074,13 +1079,12 @@ namespace SGAmod.NPCs
 					hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
 					hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
-					spriteBatch.Draw(tex2, npc.Center - Main.screenPosition, null, Color.White, ((i*MathHelper.Pi)+Main.GlobalTime) / 5f, tex2.Size() / 2f, new Vector2(1f, 1f) * Math.Min((npc.ai[0] - 5000f) / 300f, 10f), SpriteEffects.None, 0f);
+					spriteBatch.Draw(tex2, npc.Center - Main.screenPosition, null, Color.White, (i*MathHelper.PiOver2), tex2.Size() / 2f, new Vector2(1f, 1f) * Math.Min((npc.ai[0] - 5000f) / 300f, 10f), SpriteEffects.None, 0f);
 				}
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 			}
-
 
 			spriteBatch.Draw(texture, npc.Center - Main.screenPosition, null, Color.Magenta * 0.8f * floater, npc.rotation, new Vector2(texture.Width / 2f, texture.Height / 2f), new Vector2(2f, 2f) * floater, SpriteEffects.None, 0f);
 

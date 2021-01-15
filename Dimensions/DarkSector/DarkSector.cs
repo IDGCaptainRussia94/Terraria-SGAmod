@@ -78,9 +78,12 @@ namespace SGAmod.Dimensions
         public void DrawTile(Vector2 size,Texture2D tex)
         {
             int scalecheck = 64 * myDarkSector.scaleSize;
-            if (position.X*16 < Main.screenPosition.X + Main.screenWidth + scalecheck && position.X * 16 > Main.screenPosition.X  - scalecheck)
+            int posx4x = position.X >> 4;
+
+            if (posx4x < Main.screenPosition.X + Main.screenWidth + scalecheck && posx4x * 16 > Main.screenPosition.X  - scalecheck)
             {
-                if (position.Y * 16 < Main.screenPosition.Y + Main.screenHeight + scalecheck && position.Y * 16 > Main.screenPosition.Y - scalecheck)
+                int posy4x = position.Y >> 4;
+                if (posy4x * 16 < Main.screenPosition.Y + Main.screenHeight + scalecheck && posy4x * 16 > Main.screenPosition.Y - scalecheck)
                 {
                     float atime = (float)SGAWorld.modtimer/90f;
                     float atime2 = (float)(SGAWorld.modtimer-900f) / 70f;

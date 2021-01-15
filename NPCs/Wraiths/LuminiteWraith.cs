@@ -2034,7 +2034,7 @@ namespace SGAmod.NPCs.Wraiths
 			List<Vector2>[] trailspots = { new List<Vector2>(), new List<Vector2>() };
 
 			float adder = MathHelper.TwoPi / 64f;
-			for (float fa=0; fa < MathHelper.TwoPi+ adder; fa += adder)
+			for (float fa=0; fa < MathHelper.TwoPi; fa += adder)
 			{
 				trailspots[0].Add(((Vector2.UnitX.RotatedBy(fa)) * range) + projectile.Center);
 				trailspots[1].Add(((Vector2.UnitX.RotatedBy(fa)) * (range*(1f-(projectile.timeLeft/300f)))) + projectile.Center);
@@ -2050,6 +2050,7 @@ namespace SGAmod.NPCs.Wraiths
 				trail.trailThickness = (projectile.timeLeft / 200f) * 20f;
 				trail.trailThicknessIncrease = 0;
 				trail.doFade = false;
+				trail.connectEnds = true;
 				trail.strength = 1f;
 				trail.DrawTrail(trailspots[i], projectile.Center);
 			}

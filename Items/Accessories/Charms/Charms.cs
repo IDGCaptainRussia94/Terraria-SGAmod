@@ -17,11 +17,11 @@ namespace SGAmod.Items.Accessories.Charms
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Amulet of Diehard Cataclysm");
-			Tooltip.SetDefault("'Embrace the suffering, indulge on the reward'\n'truely, only for the worthy... And the british'\n25% more Expertise is earned and respawn instantly outside of boss fights\n" + Idglib.ColorText(Color.Red, "You die in one hit, IFrames cause great damage over time\nMost if not all methods of death prevention are disabled")+"\nAn exception to the formentioned rule are Just Blocks\nThis item doesn't take effect til 3 seconds after spawning to prevent soft-locks");
-			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(10, 7));
+			Tooltip.SetDefault("'Embrace the suffering, indulge on the reward'\n'truely, only for the worthy... And the british'\n25% more Expertise is earned and respawn instantly outside of boss fights\n" + Idglib.ColorText(Color.Red, "You die in one hit, IFrames cause great damage over time") +"\n" + Idglib.ColorText(Color.Red, "Most if not all methods of death prevention are disabled") +"\nAn exception to the formentioned rule are Just Blocks\nThis item doesn't take effect til 3 seconds after spawning to prevent soft-locks");
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 10));
 		}
 
-		public override string Texture => "SGAmod/Items/Accessories/Charms/EmptyCharm";
+		public override string Texture => "SGAmod/Items/Accessories/Charms/NoHitCharmlv1";
 
         public override void SetDefaults()
 		{
@@ -36,7 +36,7 @@ namespace SGAmod.Items.Accessories.Charms
 
 		public override Color? GetAlpha(Color lightColor)
 		{
-			return Main.hslToRgb((Main.GlobalTime / 2f) % 1f, 0.25f, 0.50f);
+			return lightColor;
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)

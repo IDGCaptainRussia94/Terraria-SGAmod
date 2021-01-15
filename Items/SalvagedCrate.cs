@@ -60,6 +60,15 @@ namespace SGAmod.Items
 				}
 			}
 		}
+		/*public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("Prettygel"), 1);
+			recipe.AddIngredient(mod.ItemType("SPinkyBag"), 1);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this, 3);
+			recipe.AddRecipe();
+		}*/
 	}
 
 	public class SalvagedCrate : ModItem

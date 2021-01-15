@@ -228,7 +228,7 @@ namespace SGAmod.NPCs
 				Main.npc[hand].netUpdate = true;
 			}
 
-			bool underground = true;//(int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+			bool underground = (int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
 
 			Player P = Main.player[npc.target];
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active || !underground)
@@ -519,7 +519,7 @@ namespace SGAmod.NPCs
 
 		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
-			projectile.damage = projectile.damage << 2;
+			projectile.damage = projectile.damage >> 2;
 		}
 
         private void ArmOutState(ref Vector2 gohere)

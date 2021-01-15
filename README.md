@@ -29,7 +29,9 @@ Changelog:
 
 -Rusty Gear: Rusted Bulwark, Rusty Rifle, Rustwork Blade
 
--Supreme Pinky has a new 2nd phase...
+-The first upgrade item: Upgrade: Power Tools, which you can apply to drills and other motor tools to increase their power at a cost of Electric Charge
+
+-Supreme Pinky has a new 2nd phase... phase one has been weakened to an extent.
 
 -New theme for Cirno
 
@@ -81,7 +83,11 @@ Changelog:
 
 -Reworked Sword of a Thousand Truths: larger sprite hitbox, 10 less damage
 
+-Reworked Braxsaw: axe power greatly reduced, so it doesn't consume as much Electric Charge with the Power Tools upgrade
+
 -Buffed Glass Sword: increased damage by 1
+
+-Buffed Novite Drill: was extremely slow, is now on par with the Novus Pickaxe
 
 -Buffed Prismic Arrow/Bullet: Chance to not consume secondary ammo has increased to 66% from 33%
 
@@ -92,6 +98,8 @@ Changelog:
 -Nerfed Big Dakka: removed the bonus crit chance, is now a Havoc Item (should have been)
 
 -Nerfed Guerrilla Pistol: Knockback reduced
+
+-Nerfed Novus Pickaxe: Swing speed is greatly reduced. mining speed is the same
 
 -Nerfed 'JuryRigged' Spike Buckler and Heart Guard: 1 less defense
 
@@ -115,6 +123,8 @@ Changelog:
 -Revolvers bugging out and seemingly jamming, I hope
 
 -Flask of Blaze using Flask of Acid's icon
+
+-Luminite Wraith should no longer have a broken smooth circle on their vortex attack
 
 -Typeos
 

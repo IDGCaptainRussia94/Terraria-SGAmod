@@ -219,7 +219,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMerge[Type][(ushort)mod.TileType("HardenedFabric")] = true;
 			minPick = 240;
 			soundType = 7;
-			mineResist = 250f;
+			mineResist = 25f;
 			dustType = DustID.Smoke;
 			drop = ModContent.ItemType<AncientFabricItem>();
 			TileID.Sets.CanBeClearedDuringGeneration[Type] = false;

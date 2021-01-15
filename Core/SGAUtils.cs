@@ -84,6 +84,8 @@ namespace SGAmod
 			BlackListedItems.Add(ItemID.FragmentVortex);
 			BlackListedItems.Add(SGAmod.Instance.ItemType("StarMetalBar"));
 			BlackListedItems.Add(SGAmod.Instance.ItemType("WraithArrow"));
+			BlackListedItems.Add(SGAmod.Instance.ItemType("ShadowJavelin"));
+			BlackListedItems.Add(SGAmod.Instance.ItemType("SPinkyBagFake"));
 		}
 
 		public UncraftClass(Point16 location, Item item, int recipeIndex = 0, int offsetter = 0)

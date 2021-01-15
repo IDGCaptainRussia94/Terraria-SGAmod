@@ -21,20 +21,17 @@ namespace SGAmod.Items.Consumable
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Power Tools Upgrade");
-			Tooltip.SetDefault("Upgrades motorized tools, but consume Electric Charge equivalent to their power\nRight Click while holding a drill to apply");
+			DisplayName.SetDefault("Upgrade: Power Tools");
+			Tooltip.SetDefault("Upgrades motorized tools, improving their speed by 25%\n"+Idglib.ColorText(Color.Red,"Consume Electric Charge equivalent to their highest tool power")+ "\nRight Click while holding a motorized tool to apply\nOnly one upgrade may be applied at a time");
 		}
 
 		public override void SetDefaults()
 		{
-			item.width = 14;
-			item.height = 24;
+			item.width = 16;
+			item.height = 16;
 			item.maxStack = 30;
-			item.rare = 2;
-			item.value = 1000;
-			item.useStyle = 2;
-			item.useAnimation = 17;
-			item.useTime = 17;
+			item.rare = ItemRarityID.Orange;
+			item.value = 5000;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item2;
 		}
@@ -42,7 +39,7 @@ namespace SGAmod.Items.Consumable
 		public override bool CanRightClick()
         {
 			Item helditem = Main.LocalPlayer.HeldItem;
-			if (helditem.shoot>0)
+			if (helditem.shoot>0 && helditem.GetGlobalItem<SGAUpgradableItemInstance>().toolType<1)
             {
 				Projectile them = new Projectile();
 				them.SetDefaults(helditem.shoot);
@@ -54,8 +51,10 @@ namespace SGAmod.Items.Consumable
         }
         public override void RightClick(Player player)
         {
-            //powertool code here
-        }
+			Item helditem = Main.LocalPlayer.HeldItem;
+			helditem.GetGlobalItem<SGAUpgradableItemInstance>().toolType = 1;
+			//powertool code here
+		}
         public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
@@ -64,7 +63,7 @@ namespace SGAmod.Items.Consumable
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 6);
 			recipe.AddIngredient(ItemID.MeteoriteBar, 4);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
-			recipe.SetResult(this, 3);
+			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
 	}

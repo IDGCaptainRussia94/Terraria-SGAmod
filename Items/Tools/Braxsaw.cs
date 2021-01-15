@@ -26,8 +26,8 @@ namespace SGAmod.Items.Tools
 			item.noUseGraphic = true;
 			item.noMelee = true;
 			item.pick = 250;
-			item.axe = 225;
-			item.tileBoost+=5;
+			item.axe = 150;
+			item.tileBoost += 5;
 			item.useStyle = 5;
 			item.knockBack = 5;
 			item.value = 3000000;

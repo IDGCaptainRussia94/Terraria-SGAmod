@@ -631,24 +631,78 @@ namespace SGAmod
         public int toolType = 0;
         public override bool InstancePerEntity => true;
 
+        public override bool CanUseItem(Item item, Player player)
+        {
+            if (item.GetGlobalItem<SGAUpgradableItemInstance>().toolType == 1)
+            {
+                return player.SGAPly().ConsumeElectricCharge(Math.Max(item.pick, Math.Max(item.hammer, item.axe)), 120,false,true);
+            }
+            return true;
+        }
+
+        public override void HoldItem(Item item, Player player)
+        {
+            if (player.SGAPly().timer%30==0 && item.GetGlobalItem<SGAUpgradableItemInstance>().toolType == 1)
+            {
+                Projectile finder;
+                finder = Main.projectile.FirstOrDefault(testby => testby.active && testby.owner == player.whoAmI && testby.aiStyle == 20);
+                if (finder != default)
+                {
+                    if (!player.SGAPly().ConsumeElectricCharge(Math.Max(item.pick, Math.Max(item.hammer, item.axe)), 120))
+                        finder.Kill();
+                }
+            }
+        }
+
+        public override float UseTimeMultiplier(Item item, Player player)
+        {
+            if (item.GetGlobalItem<SGAUpgradableItemInstance>().toolType == 1)
+            {
+                return 1.25f;
+            }
+            return 1f;
+        }
+
         public override bool NeedsSaving(Item item)
         {
-            if (toolType > 0)
+            if (item.GetGlobalItem<SGAUpgradableItemInstance>().toolType > 0)
                 return true;
             return false;
         }
+        public override void NetSend(Item item, BinaryWriter writer)
+        {
+            writer.Write((byte)item.GetGlobalItem<SGAUpgradableItemInstance>().toolType);
+        }
+        public override void NetReceive(Item item, BinaryReader reader)
+        {
+            item.GetGlobalItem<SGAUpgradableItemInstance>().toolType = (int)reader.ReadByte();
+        }
         public override TagCompound Save(Item item)
         {
-            TagCompound tag = new TagCompound();
-            tag["toolType"] = item.GetGlobalItem<SGAUpgradableItemInstance>().toolType;
+            TagCompound tag = new TagCompound
+            {
+                ["toolType"] = item.GetGlobalItem<SGAUpgradableItemInstance>().toolType
+            };
             return tag;
         }
         public override void Load(Item item, TagCompound tag)
         {
             SGAUpgradableItemInstance upgrades = item.GetGlobalItem<SGAUpgradableItemInstance>();
-            base.Load(item, tag);
+            if (tag.ContainsKey("toolType"))
+                upgrades.toolType = tag.GetInt("toolType");
+        }
+        public override GlobalItem Clone(Item item, Item itemClone)
+        {
+            SGAUpgradableItemInstance myClone = (SGAUpgradableItemInstance)base.Clone(item, itemClone);
+            myClone.toolType = toolType;
+            return myClone;
         }
 
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        {
+            if (item.GetGlobalItem<SGAUpgradableItemInstance>().toolType == 1)
+                tooltips.Add(new TooltipLine(mod, "PowerToolTip", Idglib.ColorText(Color.SkyBlue,"Power Tools Upgrade Applied")));
+        }
     }
 
 

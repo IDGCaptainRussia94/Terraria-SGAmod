@@ -23,7 +23,7 @@ namespace SGAmod.Items.Weapons
 		public override string Texture => "Terraria/NPC_" + NPCID.MoonLordHand;
 		public override void SetDefaults()
 		{
-			item.damage = 100;
+			item.damage = 200;
 			item.noMelee = true;
 			item.noUseGraphic = true;
 			item.melee = true;
@@ -104,9 +104,11 @@ namespace SGAmod.Items.Weapons
 			if (hitDirection == 0)
 				hitDirection = 1;
 
-			knockback *= (projectile.velocity.Length() / 12f);
+			knockback *= (projectile.velocity.Length() / 120f);
 			projectile.ai[1] /= 5f;
-			damage = (int)(damage*(Owner.channel ? MathHelper.Clamp(projectile.ai[1] / (150f / Owner.meleeSpeed), 0.25f,1f) : 1f) *projectile.velocity.Length());
+			damage = (int)(damage*(Owner.channel ? MathHelper.Clamp(projectile.ai[1] / (120f / Owner.meleeSpeed), 0.33f,1f) : 1f) *projectile.velocity.Length());
+			if (projectile.ai[1] < 30)
+				damage = (int)(damage * 0.50);
 
 		}
 
@@ -138,7 +140,7 @@ namespace SGAmod.Items.Weapons
             }
             else
             {
-				projectile.ai[1] = 0;
+				projectile.ai[1] /= 1.2f;
 			}
 
 			projectile.Opacity = MathHelper.Clamp(projectile.Opacity + (projectile.ai[0] > -60 ? 0.005f : -0.005f),0.0f,1f);
@@ -148,7 +150,7 @@ namespace SGAmod.Items.Weapons
 				Vector2 toThere = Main.MouseWorld - projectile.Center;
 				if (projectile.ai[0]>0)
 				{
-					float maxspeed = MathHelper.Clamp(projectile.ai[1] / (150f / Owner.meleeSpeed), 0f, 1.0f);
+					float maxspeed = MathHelper.Clamp(projectile.ai[1] / (120f / Owner.meleeSpeed), 0f, 1.0f);
 					if (toThere.LengthSquared() > 32 + (projectile.velocity.LengthSquared() * 5f))
 						projectile.velocity += Vector2.Normalize(toThere) * ((maxspeed / Owner.meleeSpeed) / Owner.meleeSpeed);
 					else

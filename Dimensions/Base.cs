@@ -213,7 +213,16 @@ namespace SGAmod.Dimensions
                 if (SLWorld.currentSubworld is SGAPocketDim sub)
                 {
                     int limit = sub.LimitPlayers;
-                    if (limit % 16 == 0 && limit > 0 && (item.pick > 99999 || item.hammer > 0 || item.axe > 0 || item.createTile > -1 || item.createWall > -1))
+                    bool powertool = false;
+                    if (!player.HeldItem.IsAir)
+                    {
+                        Projectile them = new Projectile();
+                        them.SetDefaults(player.HeldItem.shoot);
+                        if (them.aiStyle == 20)
+                            powertool = true;
+                    }
+
+                        if (limit % 16 == 0 && limit > 0 && ((item.pick > 99999 && !powertool) || item.hammer > 0 || item.axe > 0 || item.createTile > -1 || item.createWall > -1))
                     {
                         return false;
                     }

@@ -12,6 +12,7 @@ using SGAmod.Projectiles;
 using Terraria.Graphics.Shaders;
 using SGAmod.Effects;
 using System.Linq;
+using SGAmod.Items;
 
 namespace SGAmod.NPCs.Wraiths
 {
@@ -383,7 +384,7 @@ namespace SGAmod.NPCs.Wraiths
 			npc.defense = 0;
 			npc.lifeMax = 20000;
 			npc.defense = 25;
-			if (SGAWorld.downedWraiths < 3)
+			if (SGAWorld.downedWraiths < 3 || TheWholeExperience.Check())
 			{
 				npc.damage = 100;
 				npc.lifeMax = 25000;

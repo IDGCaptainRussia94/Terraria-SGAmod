@@ -80,10 +80,10 @@ namespace SGAmod.Dimensions
             int scalecheck = 64 * myDarkSector.scaleSize;
             int posx4x = position.X >> 4;
 
-            if (posx4x < Main.screenPosition.X + Main.screenWidth + scalecheck && posx4x * 16 > Main.screenPosition.X  - scalecheck)
+            if (posx4x < Main.screenPosition.X + Main.screenWidth + scalecheck && posx4x > Main.screenPosition.X  - scalecheck)
             {
                 int posy4x = position.Y >> 4;
-                if (posy4x * 16 < Main.screenPosition.Y + Main.screenHeight + scalecheck && posy4x * 16 > Main.screenPosition.Y - scalecheck)
+                if (posy4x < Main.screenPosition.Y + Main.screenHeight + scalecheck && posy4x > Main.screenPosition.Y - scalecheck)
                 {
                     float atime = (float)SGAWorld.modtimer/90f;
                     float atime2 = (float)(SGAWorld.modtimer-900f) / 70f;
@@ -93,19 +93,19 @@ namespace SGAmod.Dimensions
                     float alpha = MathHelper.Clamp(alpha2, myDarkSector.hasCompass ? 0.1f : 0.25f, myDarkSector.hasCompass ? 0.35f : 0.85f)/5f;
 
                     Vector2 scale = new Vector2(1f + (float)Math.Sin(atime * 1.25f + (position.X - position.Y)/10f)*0.5f, 1f + (float)Math.Sin(atime + (position.Y + position.X) / 10f) * 0.5f);
-                    Main.spriteBatch.Draw(tex, (position.ToVector2()*16)-Main.screenPosition, default, Color.White * alpha, 0, size, scale*myDarkSector.scaleSize, SpriteEffects.None, 0f);
+                    Main.spriteBatch.Draw(tex, (new Vector2(posx4x, posy4x))-Main.screenPosition, default, Color.White * alpha, 0, size, scale*myDarkSector.scaleSize, SpriteEffects.None, 0f);
 
                 }
             }
 
         }
 
-        public void TestParticle()
+        /*public void TestParticle()
         {
 
             //if (Main.rand.Next(0,20)<1)
             //Dust.NewDustPerfect(position.ToVector2()*16, 173, Vector2.Zero, 0, Color.Blue, 1f);
-        }
+        }*/
 
     }
 
@@ -259,13 +259,13 @@ namespace SGAmod.Dimensions
             if (!done)
                 return;
 
-            if (DarkSectorZone(Main.LocalPlayer))
+            /*if (DarkSectorZone(Main.LocalPlayer))
             {
                 foreach (DarkSectorTile sectortile in sectors)
                 {
                     sectortile.TestParticle();
                 }
-            }
+            }*/
 
         }
 

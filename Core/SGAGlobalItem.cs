@@ -880,7 +880,28 @@ namespace SGAmod
 
     }
 
-    public class TrapPrefix : ModPrefix
+    public class ShieldPrefix : TrapPrefix
+    {
+
+        public ShieldPrefix(int misc)
+        {
+            this.misc = misc;
+        }
+
+        public override bool CanRoll(Item item)
+        {
+            if (item.modItem != null)
+            {
+                if (item.modItem is IShieldItem)
+                    return true;
+            }
+
+            return false;
+        }
+
+    }
+
+        public class TrapPrefix : ModPrefix
     {
         public float armorbreak = 0f;
         public float damage = 0f;
@@ -920,6 +941,10 @@ namespace SGAmod
         {
             if (base.Autoload(ref name))
             {
+                if (GetType() == typeof(ShieldPrefix))
+                {
+                    mod.AddPrefix("Defensive", new ShieldPrefix(3));
+                }
                 if (GetType() == typeof(TrapPrefix))
                 {
                     mod.AddPrefix("Edged", new TrapPrefix(0.05f, 0.05f));
@@ -1210,6 +1235,13 @@ namespace SGAmod
             if (misc == 2)
             {
                 string line2 = Idglib.ColorText(Color.Red,"This item is busted and needs to be reforged to be used");
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+            }
+            if (misc == 3)
+            {
+                string line2 = Idglib.ColorText(Color.Red, "+5% Shield Block");
                 TooltipLine line = new TooltipLine(mod, "SGAPrefixline", line2);
                 line.isModifier = true;
                 tooltips.Add(line);

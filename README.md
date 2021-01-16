@@ -12,7 +12,7 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners, Spectre homing bullets/projectiles, Fist of Moonlord, Tech weapons have an "overclock" mechanic that changes up their gameplay while active, spider queen can melt normal generated blocks (dirt and so)
-Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, Power Tools? Yoyo Pickaxes!
+Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes!
 
 -Add Hellion Army progress Bar
 
@@ -33,9 +33,9 @@ Changelog:
 
 -Supreme Pinky has a new 2nd phase... phase one has been weakened to an extent.
 
--New theme for Cirno
+-New theme for Cirno, new prefix for Shields
 
--Resprites for several things by DeJuiceTD,, JellyBlu, Some new guys, as well as some contributed spritework by Ajax (thx guys! Really alot!)
+-Resprites for several things by DeJuiceTD, JellyBlu, Some new guys, as well as some contributed spritework by Ajax (thx guys! Really alot!)
 
 
 
@@ -49,7 +49,7 @@ Changelog:
 
 -Cratogeddon has had a few of their moves reworked in an effort to make them a better boss
 
--Deeper Dungeons has gotten a few changes: You can now use pickaxes, thou you are only able to mine a select few block types, and loot rooms have bars in them
+-Deeper Dungeons has gotten a few changes: You can now use pickaxes, thou you are only able to mine a select few block types, you still need bombs to break spikes, also loot rooms have bars in them
 
 -Idol Of Midas renamed to Midas Insignia
 

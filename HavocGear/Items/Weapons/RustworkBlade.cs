@@ -18,7 +18,7 @@ namespace SGAmod.HavocGear.Items.Weapons
         {
             base.SetDefaults();
 
-            item.damage = 6;
+            item.damage = 5;
             item.width = 19;
             item.height = 22;
             item.melee = true;

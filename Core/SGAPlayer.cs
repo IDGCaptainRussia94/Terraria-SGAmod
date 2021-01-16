@@ -796,6 +796,15 @@ namespace SGAmod
 
 			//player.powerrun = true;
 
+			if (!player.HeldItem.IsAir)
+            {
+				TrapDamageItems stuff = player.HeldItem.GetGlobalItem<TrapDamageItems>();
+				if (stuff.misc == 3)
+                {
+					shieldDamageReduce += 5;
+                }
+			}
+
 			if (player.HasBuff(BuffID.Lovestruck))
 			{
 				if (intimacy>0)

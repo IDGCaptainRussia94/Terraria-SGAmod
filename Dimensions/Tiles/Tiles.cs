@@ -228,7 +228,7 @@ namespace SGAmod.Dimensions.Tiles
 		}
 		public override bool CanKillTile(int i, int j, ref bool blockDamaged)
 		{
-			bool canbreak = Main.player.Where(testby => testby.DistanceSQ(new Vector2(i * 16, j*16))<160*160 && testby.HeldItem.type == ModContent.ItemType<Braxsaw>()).ToList().Count>0;
+			bool canbreak = Main.player.Where(testby => testby.DistanceSQ(new Vector2(i * 16, j*16))<160*160 && !testby.HeldItem.IsAir && testby.HeldItem.type == ModContent.ItemType<Braxsaw>()).ToList().Count>0;
 			return canbreak;
 		}
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)

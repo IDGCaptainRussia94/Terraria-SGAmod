@@ -27,7 +27,10 @@ namespace SGAmod.NPCs
 		float slimecalleffect = 0;
 		float dashaim = 0;
 		float roter = 0;
+		float effectScale = 0f;
+		int attackPhaseTime = 1200;//1200;
 		SoundEffectInstance soundz;
+		SoundEffectInstance soundfinish;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Pink Singularity");
@@ -56,6 +59,7 @@ namespace SGAmod.NPCs
 			bossBag = mod.ItemType("SPinkyBag");
 			npc.value = Item.buyPrice(0, 1, 0, 0);
 			phase = 0;
+			attackPhaseTime = 1200;
 		}
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
@@ -71,7 +75,21 @@ namespace SGAmod.NPCs
 			//Netcode here
         }
 
-		private bool IntroDeal()
+        public override bool CheckDead()
+        {
+			if (npc.ai[0] < 1000300)
+			{
+				npc.life = 1337;
+				npc.active = true;
+				npc.ai[1] = 20;
+				stopmoving = 1000000;
+				npc.netUpdate = true;
+				return false;
+			}
+			return true;
+        }
+
+        private bool IntroDeal()
 		{
 			realcounter = (int)(npc.ai[0]) - 400;
 			getHitEffect -= 1f;
@@ -218,6 +236,7 @@ namespace SGAmod.NPCs
 			{
 
 				int num7 = NPC.NewNPC((int)npc.Center.X+Main.rand.Next(-800,800), (int)Main.screenPosition.Y-100,1);
+				Main.npc[num7].ai[0] = 1;
 				if (Main.rand.Next(200) == 0)
 				{
 					Main.npc[num7].SetDefaults(-4);
@@ -268,11 +287,6 @@ namespace SGAmod.NPCs
 
 					soundz = Main.PlaySound(SoundID.Roar, (int)npc.Center.X, (int)npc.Center.Y, 2);
 
-					SoundEffectInstance sound3 = Main.PlaySound(SoundID.DD2_WinScene, npc.Center);
-					if (sound3 != null)
-					{
-						sound3.Pitch = -0.75f;
-					}
 				}
 				npc.netUpdate = true;
 			}
@@ -361,6 +375,166 @@ namespace SGAmod.NPCs
 
 		}
 
+		public void SlimeKamakaze(int type = 0)
+		{
+			goThere = circleLoc;
+			speed = new Vector2(0.25f, 0.25f);
+
+			if (npc.Distance(circleLoc) < 32 && npc.ai[0]<6050)
+				npc.ai[0] = 6050;
+
+			if (npc.ai[0] > 6050)
+			{
+				stopmoving = 120;
+			}
+			if (stopmoving > 0)
+				friction /= 2f;
+
+			if (npc.ai[0] == 6060 || npc.ai[0] == 6310)
+			{
+
+				RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 10f, 60, 3f, true);
+				soundz = Main.PlaySound(SoundID.Roar, (int)npc.Center.X, (int)npc.Center.Y, 0);
+
+				if (npc.ai[0] == 6060)
+				{
+					List<NPC> armycommand = SupremeArmy.Where(testby => testby.ai[0] == 0).ToList();
+
+					float index = 0;
+					foreach (NPC npc2 in armycommand)
+					{
+						npc2.ai[0] = 4;
+						npc2.localAI[1] = 0;
+						npc2.localAI[2] = (index / armycommand.Count) * MathHelper.TwoPi;
+						npc2.localAI[3] = 30;
+						UpdateSlime(npc2);
+						npc2.netUpdate = true;
+						index += 1f;
+					}
+				}
+			}
+
+			//Teleport slimes
+			if (npc.ai[0] > 6300)
+			{
+				List<NPC> armycommand = SupremeArmy.OrderBy(testby => Main.rand.Next(100)).Where(testby => testby.ai[0] == 4).ToList();
+
+				if (armycommand.Count>0)
+				{
+					foreach (NPC npc2 in armycommand)
+					{
+						float sizer = (32f * armycommand.Count);
+						Vector2 bex = P.Center + ((Vector2.UnitX * Main.rand.NextFloat(128f+sizer, 640f+sizer)).RotatedByRandom(MathHelper.TwoPi));
+
+						npc2.ai[0] = 5;
+						npc2.localAI[1] = bex.X;
+						npc2.localAI[2] = bex.Y;
+						npc2.localAI[3] = 30;
+
+						UpdateSlime(npc2);
+						npc2.netUpdate = true;
+
+						Vector2 there = (bex - npc2.Center);
+
+						Projectile.NewProjectile(npc2.Center, Vector2.Normalize(there)*1f, ProjectileID.DemonScythe, 50, 0f);
+						Projectile.NewProjectile(npc2.Center + Vector2.Normalize(there)*64f, Vector2.Normalize(there), ModContent.ProjectileType<PinkyWarning>(), 5, 0f);
+
+						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_BetsysWrathShot, bex);
+						if (sound != null)
+						{
+							sound.Pitch = -0.25f;
+						}
+
+						for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 12f)
+						{
+							Vector2 offset = f.ToRotationVector2();
+							int dust = Dust.NewDust(bex + (offset * 32f), 0, 0, DustID.PinkCrystalShard);
+							Main.dust[dust].scale = 1.5f;
+							Main.dust[dust].noGravity = true;
+							Main.dust[dust].velocity = f.ToRotationVector2() * 4f;
+						}
+
+						npc.ai[0] = 6296;
+						break;
+					}
+
+				}
+			}
+
+			//Slimes go BOOM! Laser light show!
+			if (npc.ai[0] > 6360)
+			{
+				List<NPC> armycommand = SupremeArmy.OrderBy(testby => Main.rand.Next(10000)).Where(testby => testby.ai[0] == 5).ToList();
+
+				if (armycommand.Count > 0)
+				{
+					foreach (NPC npc2 in armycommand)
+					{
+						Vector2 bex = new Vector2(npc2.localAI[1],npc2.localAI[2]);
+						Vector2 wasHere = npc.Center;
+						npc2.Center = bex;
+
+						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_BallistaTowerShot, npc2.Center);
+						if (sound != null)
+						{
+							sound.Pitch = -0.25f;
+						}
+
+						for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 12f)
+						{
+							Vector2 offset = f.ToRotationVector2();
+							int dust = Dust.NewDust(bex + (offset * 32f), 0, 0, DustID.PinkCrystalShard);
+							Main.dust[dust].scale = 1.5f;
+							Main.dust[dust].noGravity = true;
+							Main.dust[dust].velocity = f.ToRotationVector2() * 16f;
+
+							float angle = (generalcounter / 60f) + f;
+							Vector2 rotter = angle.ToRotationVector2();
+						}
+
+						npc.Center = npc2.Center;
+
+						int proj=Projectile.NewProjectile(npc.Center, Vector2.Normalize(wasHere-npc.Center) * ((wasHere - npc.Center).Length()/2200f), SGAmod.Instance.ProjectileType("HellionBeam"), 100, 15f);
+
+						Main.projectile[proj].timeLeft = 250;
+
+						npc2.StrikeNPC(100000, 0, 0, noEffect: true);
+
+						npc.ai[0] = 6355;
+						break;
+					}
+
+				}
+			}
+
+			//for (int i = 0; i < callCount; i += 1)
+			//NPC.SlimeRainSpawns(P.whoAmI);
+
+			if (npc.ai[0] == 6370)
+            {
+				soundz = Main.PlaySound(29, (int)npc.Center.X, (int)npc.Center.Y, 105);
+			}
+
+			if (npc.ai[0] > 6400)
+			{
+
+				stopmoving = 60;
+				if (SupremeArmy.Count > 8)
+				{
+					npc.ai[0] = Main.rand.Next(905, 1100);
+					npc.ai[1] = 0;
+				}
+				else
+				{
+					npc.ai[0] = Main.rand.Next(405, 600);
+					npc.ai[1] = 0;
+				}
+
+				npc.netUpdate = true;
+			}
+
+		}
+
 		public void PhaseShift()
 		{
 			int maxxer = 4000;
@@ -401,15 +575,79 @@ namespace SGAmod.NPCs
 
 		}
 
-		public void FinalAttack()
+		public void Dying()
+		{
+			npc.dontTakeDamage = true;
+			if (npc.ai[0] < 1000000)
+            {
+				npc.ai[0] = 1000000;
+				if (soundfinish != null)
+				soundfinish.Stop();
+
+				Projectile.NewProjectile(npc.Center,Vector2.Zero, ModContent.ProjectileType<PinkyExplode>(), 50, 0f);
+
+				soundfinish = Main.PlaySound(SoundID.DD2_WinScene, npc.Center);
+				npc.netUpdate = true;
+			}
+			if (soundfinish != null)
+			{
+				soundfinish.Pitch = (npc.ai[0]-1000200)/300f;
+			}
+			if (npc.ai[0] % 10 == 0)
+			{
+				SoundEffectInstance sound3 = Main.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy, npc.Center);
+				if (sound3 != null)
+				{
+					sound3.Pitch = (npc.ai[0] - 1000200) / 300f;
+					sound3.Volume = 0.15f;
+				}
+			}
+
+			effectScale /= 1.005f;
+
+			for (int i = 0; i < 10; i += 1)
+			{
+				if (Main.rand.Next(200) < npc.ai[0] - 1000000 && npc.ai[0]<1000420)
+				{
+					Vector2 offset = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
+					int dust = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y) + offset * Main.rand.NextFloat(32f, 64f+(npc.ai[0]-1000000)*2f), 0, 0, DustID.PurpleCrystalShard);
+					Main.dust[dust].scale = 1.5f;
+					Main.dust[dust].velocity = Vector2.Normalize(-offset) * (float)(Main.rand.NextFloat(0.50f, 2.50f));
+					Main.dust[dust].noGravity = true;
+				}
+			}
+
+			if (npc.ai[0] == 1000500)
+			{
+				RippleBoom.MakeShockwave(npc.Center, 12f, 3f, 20f, 200, 2f, true);
+				npc.StrikeNPCNoInteraction(100000, 0, 0, true, true);
+			}
+
+		}
+
+			public void FinalAttack()
 		{
 			stopmoving = 10000;
+			effectScale = Math.Min(effectScale+1,3000);
 			if (npc.ai[0] % 90 == 0)
             {
 				RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 10f, 60, 3f, true);
 			}
 			circlesize += (1600f - circlesize) / 1000f;
 			circleLoc += (npc.Center - circleLoc) / 400f;
+
+			if (soundfinish == null || soundfinish.State == SoundState.Stopped)
+            {
+				soundfinish = Main.PlaySound(SoundID.DD2_BookStaffTwisterLoop, npc.Center);
+				if (soundfinish != null)
+				{
+
+					soundfinish.Volume = 0.99f;
+				}
+            }
+
+				if (soundfinish != null)
+				soundfinish.Pitch = Math.Min((effectScale/3000f)-0.75f, 0.75f);
 
 			for (int i = 0; i < 1+Math.Min((npc.ai[0] - 5000)/2500f,3); i += 1)
 			{
@@ -436,7 +674,7 @@ namespace SGAmod.NPCs
 				foreach(Player player in Main.player.Where(testby => testby.active))
             {
 				Vector2 pull = npc.Center - player.MountedCenter;
-				player.position += Collision.TileCollision(player.position, Vector2.Normalize(pull)*1f, player.width, player.height);
+				player.position += Collision.TileCollision(player.position, Vector2.Normalize(pull)*Math.Min((effectScale / 600f), 5f), player.width, player.height);
 				if (player.Distance(npc.Center) < Math.Min(npc.ai[0]/10f,256f))
                 {
 					player.Hurt(PlayerDeathReason.ByCustomReason("Became one with the Pink"), 100, 0,cooldownCounter: 1);
@@ -448,7 +686,7 @@ namespace SGAmod.NPCs
 				{
 					float ff = f+npc.ai[0]/400f;
 					Projectile.NewProjectile(npc.Center, ff.ToRotationVector2() * 1f, ProjectileID.DemonScythe, 50, 0f);
-					Projectile.NewProjectile(npc.Center+(ff.ToRotationVector2() * 32f), ff.ToRotationVector2() * 1f, ModContent.ProjectileType<PinkyWarning>(), 50, 0f);
+					Projectile.NewProjectile(npc.Center+(ff.ToRotationVector2() * 32f), ff.ToRotationVector2() * 1f, ModContent.ProjectileType<PinkyWarning>(), 1, 0f);
 				}
 
 				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_BetsySummon,npc.Center);
@@ -609,7 +847,29 @@ namespace SGAmod.NPCs
 		}
 
 		public void PickAttack()
-        {
+		{
+			bool critical = false;
+			if (aicounter != 0 && aicounter != 5 && SupremeArmy.Count > 6+phase*2)
+			{
+				int HPtest = 0;
+				foreach (NPC npc in SupremeArmy)
+				{
+					HPtest += npc.life;
+				}
+
+				if (Main.rand.NextFloat((npc.lifeMax * 0.04f) * (15f+(phase*5f))) > HPtest)
+				{
+					critical = true;
+					if (Main.rand.NextBool())
+					{
+						npc.ai[0] = 5600;
+						npc.ai[1] = 4;
+						npc.netUpdate = true;
+						return;
+					}
+				}
+			}
+
 			if (SupremeArmy.Count < 10 || aicounter == 0 || aicounter == 5)
 			{
 				if (aicounter==0)
@@ -627,7 +887,7 @@ namespace SGAmod.NPCs
 			}
             else
             {
-				if (SupremeArmy.Where(testby => testby.ai[0] == 0 && testby.localAI[3] < 0).ToList().Count > 10)
+				if (SupremeArmy.Where(testby => testby.ai[0] == 0 && testby.localAI[3] < 0).ToList().Count > 10 || critical)
 				{
 					npc.ai[0] = 2660;
 					npc.ai[1] = 2;
@@ -796,7 +1056,80 @@ namespace SGAmod.NPCs
 							continue;
 						}
 
-						npc2.localAI[3] = MathHelper.Clamp(npc2.localAI[3] - 1, -1000, 10000);
+						//Teleport to Boss, fly out, than do attack
+						if (npc2.ai[0] == 4)
+						{
+							npc2.localAI[1] = (int)npc2.localAI[1] + 1;
+
+							if (npc2.localAI[1] < 30)
+								npc2.velocity *= 0.85f;
+
+							if (npc2.localAI[1] == 30)
+							{
+								SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_BetsysWrathShot, npc2.Center);
+								if (sound != null)
+								{
+									sound.Pitch = -0.25f;
+								}
+
+								for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 12f)
+								{
+									Vector2 offset = f.ToRotationVector2();
+									int dust = Dust.NewDust(npc2.Center + (offset * 32f), 0, 0, DustID.PinkCrystalShard);
+									Main.dust[dust].scale = 1.5f;
+									Main.dust[dust].noGravity = true;
+									Main.dust[dust].velocity = f.ToRotationVector2() * 4f;
+								}
+
+								npc2.Center = npc.Center;
+								npc2.velocity = Vector2.Zero;
+								npc2.netUpdate = true;
+							}
+							Vector2 angletoshootat = npc2.localAI[2].ToRotationVector2();
+
+							if (npc2.localAI[1] == 80)
+							{
+								Idglib.Shattershots(npc2.Center, npc2.Center + angletoshootat, new Vector2(0, 0), ModContent.ProjectileType<PinkyWarning>(), 1, 2f, 0, 1, true, 0, true, 150);
+								SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)npc2.Center.X, (int)npc2.Center.Y, 71);
+								if (sound != null)
+									sound.Pitch += 0.75f;
+							}
+							if (npc2.localAI[1] < 80 || npc2.Distance(circleLoc) > circlesize)
+							{
+								npc2.velocity = npc2.velocity * 0.75f;
+							}
+							else
+							{
+								npc2.velocity += angletoshootat * MathHelper.Clamp((npc2.localAI[1] - 80) / 80f, 0f, 2f);
+								npc2.velocity *= 0.95f;
+
+							}
+
+							//npc2.ai[0] = 0;
+							//npc2.localAI[1] = 0;
+							//npc2.localAI[2] = 0;
+							//npc2.localAI[3] = 120;
+							//UpdateSlime(npc2);
+							//npc2.netUpdate = true;
+
+							continue;
+						}
+
+						//Teleport to the player, and explode (handled on the boss's end)
+						if (npc2.ai[0] == 5)
+						{
+							Vector2 vecta = new Vector2(npc2.localAI[1], npc2.localAI[2]);
+
+							int dust = Dust.NewDust(vecta-new Vector2(npc2.width,npc2.height)/2f, npc2.width, npc2.height, DustID.PurpleCrystalShard);
+							Main.dust[dust].scale = 3.5f;
+							Main.dust[dust].noGravity = true;
+							Main.dust[dust].velocity = Main.rand.NextVector2Circular(2f,6f);
+							continue;
+
+						}
+
+
+							npc2.localAI[3] = MathHelper.Clamp(npc2.localAI[3] - 1, -1000, 10000);
 						float dister = rando.NextFloat(180f, 320f) * (npc.ai[3] > 0 && npc.ai[1] == 0 ? 0.1f : 1f);
 						Vector2 gothere = Vector2.UnitX.RotatedBy(sganpc.PinkyMinion * rando.NextFloat(0.025f, 0.12f) * (rando.NextBool() ? 1f : -1f)) * dister;
 						gothere += npc.Center + npc.velocity;
@@ -843,28 +1176,37 @@ namespace SGAmod.NPCs
 				Main.slimeRainKillCount = 0;
 
 				//Recruiter!
-				foreach (NPC npc2 in Main.npc.Where(testby => testby.active && testby.life>0 && testby.SGANPCs().PinkyMinion > 0 && testby.SGANPCs().PinkyMinion < 2))
+				if (npc.ai[1] != 4)
 				{
-					//if (SupremeArmy.FirstOrDefault(testby2 => testby2.type == npc2.type) == default)
-					//{
-						npc2.life = (int)(npc.lifeMax*0.025f);
-						npc2.lifeMax = (int)(npc.lifeMax * 0.025f);
+					foreach (NPC npc2 in Main.npc.Where(testby => testby.active && testby.life > 0 && testby.SGANPCs().PinkyMinion > 0 && testby.SGANPCs().PinkyMinion < 2))
+					{
+						//if (SupremeArmy.FirstOrDefault(testby2 => testby2.type == npc2.type) == default)
+						//{
+						npc2.life = (int)(npc.lifeMax * 0.04f);
+						npc2.lifeMax = (int)(npc.lifeMax * 0.04f);
 						npc2.knockBackResist = 0f;
+						if (npc2.ai[0] != 1)
+                        {
+							npc2.Center = npc.Center;
+                        }
+						npc2.ai[0] = 0;
 						//npc2.realLife = npc.whoAmI;
 						npc2.noGravity = true;
 						npc2.noTileCollide = true;
 						npc2.timeLeft = 900;
+						npc2.defense = 50;
 						npc2.damage = 200;
 						npc2.defDamage = 200;
 
-					for (int i = 0; i < npc2.buffImmune.Length; i += 1)
-					{
-						npc2.buffImmune[i] = true;
-					}
+						for (int i = 0; i < npc2.buffImmune.Length; i += 1)
+						{
+							npc2.buffImmune[i] = true;
+						}
 
-					npc2.netUpdate = true;
+						npc2.netUpdate = true;
 						SupremeArmy.Add(npc2);
-					//}
+						//}
+					}
 				}
 				if (aicounter == 0 || aicounter == 5)
 				{
@@ -885,6 +1227,11 @@ namespace SGAmod.NPCs
 				speed = new Vector2(0.45f, 0.45f);
 				center = npc.Center;
 
+				if (npc.ai[1] == 20)
+				{
+					Dying();
+					goto labeljump;
+				}
 
 				if (npc.ai[1] == 10)
 				{
@@ -892,6 +1239,11 @@ namespace SGAmod.NPCs
 					goto labeljump;
 				}
 
+				if (npc.ai[1] == 4)
+				{
+					SlimeKamakaze();
+					goto labeljump;
+				}
 				if (npc.ai[1] == 3)
 				{
 					PhaseShift();
@@ -932,7 +1284,7 @@ namespace SGAmod.NPCs
 
 					if (npc.ai[3]<1)//Not dashing
                     {
-						if (realcounter > 1200 && npc.ai[3]<500) 
+						if (realcounter > attackPhaseTime && npc.ai[3]<500) 
 						{
 							PickAttack();
 						}
@@ -978,7 +1330,7 @@ namespace SGAmod.NPCs
 			foreach (Projectile proj in Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<SlimeProjectile>()))
             {
 				UnifiedRandom rando = new UnifiedRandom(proj.whoAmI * 753);
-				float alpha2 = 1f;
+				float alpha2 = Math.Min(proj.ai[0]/30f,1f);
 				hallowed.Parameters["prismColor"].SetValue((proj.modProjectile as SlimeProjectile).color.ToVector3());
 				spriteBatch.Draw(inner, proj.Center - Main.screenPosition,
 					new Rectangle(0, 0, inner.Width, inner.Height / 2),
@@ -1039,7 +1391,6 @@ namespace SGAmod.NPCs
 				}
 			}
 
-
 			if (generalcounter > 0)
 			{
 				float sizer = 64f * MathHelper.Clamp((npc.ai[0] - 295) / 20f, 0f, 1f);
@@ -1079,7 +1430,7 @@ namespace SGAmod.NPCs
 					hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
 					hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
-					spriteBatch.Draw(tex2, npc.Center - Main.screenPosition, null, Color.White, (i*MathHelper.PiOver2), tex2.Size() / 2f, new Vector2(1f, 1f) * Math.Min((npc.ai[0] - 5000f) / 300f, 10f), SpriteEffects.None, 0f);
+					spriteBatch.Draw(tex2, npc.Center - Main.screenPosition, null, Color.White, (i*MathHelper.PiOver2), tex2.Size() / 2f, new Vector2(1f, 1f) * Math.Min((effectScale) / 300f, 10f), SpriteEffects.None, 0f);
 				}
 
 				Main.spriteBatch.End();
@@ -1305,7 +1656,14 @@ namespace SGAmod.NPCs
 			{
 				if (Main.expertMode)
 				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SPinkyBagFake"));
+					if (!SGAWorld.downedSPinky || TheWholeExperience.Check())
+					{
+						Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SPinkyBagFake"));
+                    }
+                    else
+                    {
+						NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<SPinkyTrue>());
+                    }
 					return;
 				}
 				else
@@ -1370,6 +1728,8 @@ namespace SGAmod.NPCs
 					if (P.mount.Type != 4)
 						P.mount.Dismount(P);
 					P.mount.SetMount(4, P, false);
+					P.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationThree").Type, 30);
+
 					if (trytorun == 0)
 					{
 						trytorun = 1;
@@ -2356,7 +2716,7 @@ namespace SGAmod.NPCs
 			projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
 			projectile.hostile = true;
 			projectile.friendly = false;
-			projectile.tileCollide = true;
+			projectile.tileCollide = false;
 			projectile.timeLeft = 150;
 			projectile.extraUpdates = 1;
 			aiType = -1;
@@ -2364,14 +2724,125 @@ namespace SGAmod.NPCs
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-        {
+		{
 			float there = projectile.velocity.ToRotation() - MathHelper.ToRadians(-90);
 			//if (projectile.ai[0] < 120)
 			//{
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-			spriteBatch.Draw(SGAmod.ExtraTextures[60], startpos - Main.screenPosition, null, Color.Purple * MathHelper.Clamp(projectile.timeLeft / (float)timeleft, 0f, 0.75f), there, (SGAmod.ExtraTextures[60].Size() / 2f) + new Vector2(0, 12), new Vector2(0.75f, projectile.ai[0] / 1f), SpriteEffects.None, 0f);
+			spriteBatch.Draw(SGAmod.ExtraTextures[60], startpos - Main.screenPosition, null, Color.Purple * MathHelper.Clamp(projectile.timeLeft / (float)timeleft, 0f, 0.75f), there, (SGAmod.ExtraTextures[60].Size() / 2f) + new Vector2(0, 12), new Vector2(0.75f, projectile.ai[0]* projectile.damage), SpriteEffects.None, 0f);
+			//}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+
+			return false;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			return true;
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+	}
+
+	public class PinkyExplode : ModProjectile
+	{
+		protected float timeleft = 150f;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Pinky is dying animation");
+		}
+		public override string Texture
+		{
+			get { return "SGAmod/Items/Weapons/Ammo/AcidRocket"; }
+		}
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = false;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 560;
+			projectile.extraUpdates = 0;
+			aiType = -1;
+			projectile.aiStyle = -1;
+		}
+
+        public override void AI()
+        {
+			projectile.ai[0] += 1;
+			if (projectile.timeLeft < 60)
+				projectile.ai[0] += 50;
+
+		}
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+			Texture2D texture2 = Main.itemTexture[ModContent.ItemType<StygianCore>()];
+			Texture2D texture = SGAmod.ExtraTextures[96];
+			//if (projectile.ai[0] < 120)
+			//{
+
+			/*for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi/16f)
+			{
+				float there = f-Main.GlobalTime/10f;
+				spriteBatch.Draw(texture2, projectile.Center - Main.screenPosition, null, (Color.Pink* 0.25f) * MathHelper.Clamp((projectile.timeLeft-60) / 60f, 0f, projectile.ai[0] / 800f), there, texture2.Size() / 2f, new Vector2(4f, 4f)+ (new Vector2(32f, 32f)/(1+(projectile.ai[0] / 300f))), SpriteEffects.None, 0f);
+			}*/
+
+			VertexBuffer vertexBuffer;
+			Effect effect = SGAmod.TrailEffect;
+
+			effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Main.GameViewMatrix.Zoom) * WVP.Projection());
+			effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("Space"));
+			effect.Parameters["coordOffset"].SetValue(0);
+			effect.Parameters["coordMultiplier"].SetValue(4f);
+			effect.Parameters["strength"].SetValue(MathHelper.Clamp((projectile.timeLeft - 60) / 120f, 0f, projectile.ai[0] / 800f));
+
+			VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
+
+			Vector3 screenPos = (projectile.Center-Main.screenPosition).ToVector3();
+			float skymove = ((Math.Max(Main.screenPosition.Y - 8000, 0)) / (Main.maxTilesY * 16f));
+			float size = 640f + (640f/(1 + (projectile.ai[0] / 300f)));
+
+			vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-size, -size, 0), Color.DeepPink, new Vector2(0, 0));
+			vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-size, size, 0), Color.DeepPink, new Vector2(0, 1));
+			vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(size, -size, 0), Color.DeepPink, new Vector2(1, 0));
+
+			vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(size, size, 0), Color.DeepPink, new Vector2(1, 1));
+			vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-size, size, 0), Color.DeepPink, new Vector2(0, 1));
+			vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(size, -size, 0), Color.DeepPink, new Vector2(1, 0));
+
+			vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+			vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+			Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+			RasterizerState rasterizerState = new RasterizerState();
+			rasterizerState.CullMode = CullMode.None;
+			Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+
+			effect.CurrentTechnique.Passes["DefaultPassSinShade"].Apply();
+
+			Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 5f)
+			{
+				float there = f+Main.GlobalTime/10f;
+				spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, (Color.White* 0.20f) * MathHelper.Clamp(projectile.timeLeft / 30f, 0f, 1f), there, texture.Size() / 2f, new Vector2(0.95f, 1f) * (projectile.ai[0] / 150f), SpriteEffects.None, 0f);
+			}
+
 			//}
 
 			Main.spriteBatch.End();

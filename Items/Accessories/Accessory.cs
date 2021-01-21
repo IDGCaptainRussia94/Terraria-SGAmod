@@ -874,7 +874,97 @@ namespace SGAmod.Items.Accessories
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
-	}	
+	}
+	public class Rainbowheart : Blazingheart
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("True Rainbow Heart");
+			Tooltip.SetDefault("'Our fires burn hotter than the golden sun'\nAll effects of the Blazing Heart and Alkalescent Heart");
+		}
+        public override string Texture => "SGAmod/GreyHeart";
+        public override void SetDefaults()
+		{
+			item.width = 40;
+			item.height = 40;
+			item.value = 1500000;
+			item.rare = -12;
+			item.expert = true;
+			item.accessory = true;
+			item.defense = 0;
+			//item.damage = 1;
+			item.summon = true;
+			item.knockBack = 1f;
+		}
+        public override Color? GetAlpha(Color lightColor)
+        {
+            return Main.hslToRgb(Main.GlobalTime % 1f, 1f, 0.75f);
+        }
+
+        public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			player.SGAPly().FieryheartBuff = 30;
+			player.SGAPly().alkalescentHeart = true;
+		}
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+
+			Texture2D inner = Main.itemTexture[ModContent.ItemType<AssemblyStar>()];
+			Texture2D inner2 = Main.itemTexture[item.type];
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			Effect hallowed = SGAmod.HallowedEffect;
+
+			hallowed.Parameters["prismAlpha"].SetValue(1f);
+			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));
+			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, Main.GlobalTime / 1f, Main.GlobalTime / 2f));
+			hallowed.Parameters["overlayAlpha"].SetValue(1f);
+			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2.5f,2.5f,0f));
+			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+
+			Vector2 slotSize = new Vector2(52f, 52f);
+			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
+
+			for (float i = 0; i < 1f; i += 0.20f)
+			{
+				spriteBatch.Draw(inner, drawPos, null, Color.White * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.75f, i * MathHelper.TwoPi, textureOrigin, Main.inventoryScale * (0.5f + 1.75f * (((Main.GlobalTime / 2f) + i) % 1f)), SpriteEffects.None, 0f);
+				hallowed.Parameters["prismColor"].SetValue(Main.hslToRgb(i % 1f, 1f, 0.75f).ToVector3());
+				hallowed.Parameters["alpha"].SetValue((1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.75f);
+				hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+			}
+
+			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));
+			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(Main.GlobalTime / 4f, 0, Main.GlobalTime / 4f));
+			hallowed.Parameters["overlayAlpha"].SetValue(0.5f);
+			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(-2.5f, 0f, 0f));
+			hallowed.Parameters["prismColor"].SetValue(((Color)GetAlpha(itemColor)).ToVector3());
+			hallowed.Parameters["alpha"].SetValue(1f);
+			hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+			spriteBatch.Draw(inner2, drawPos, null, Color.White,0, inner2.Size()/2f, Main.inventoryScale*1, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			return false;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("Blazingheart"), 1);
+			recipe.AddIngredient(mod.ItemType("AlkalescentHeart"), 1);
+			recipe.AddIngredient(mod.ItemType("AncientFabricItem"), 15);
+			recipe.AddTile(TileID.LihzahrdAltar);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
 	public class LunarSlimeHeart : ModItem
 	{
 		public override void SetStaticDefaults()

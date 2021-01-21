@@ -2189,7 +2189,7 @@ namespace SGAmod.NPCs.Hellion
 				Vector2 itt = ((P.Center + (flytopos)) - npc.Center) - new Vector2(0, 1);
 				if (!itt.HasNaNs())
 				{
-
+					if (itt.LengthSquared()>0)
 					itt.Normalize();
 					if (manualmovement < 1)
 						npc.velocity = npc.velocity + (itt * flyspeed);

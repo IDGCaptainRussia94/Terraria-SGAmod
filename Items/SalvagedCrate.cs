@@ -83,7 +83,7 @@ namespace SGAmod.Items
 
 		public override string Texture
 		{
-			get { return ("SGAmod/Items/TerrariacoCrateBase"); }
+			get { return ("SGAmod/Items/TerrariacoCrateBaseSalaved"); }
 		}
 
 		public override void SetDefaults()

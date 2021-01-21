@@ -17,13 +17,13 @@ namespace SGAmod.Items.Weapons
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Fist Of Moonlord");
+			DisplayName.SetDefault("Fist Of Moon Lord");
 			Tooltip.SetDefault("'Punches shit into next week'\nHold attack to direct Moonlord's arm, release to let go\nThe fist does more damage when let go");
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(15, 2));
 		}
-		public override string Texture => "Terraria/NPC_" + NPCID.MoonLordHand;
 		public override void SetDefaults()
 		{
-			item.damage = 200;
+			item.damage = 1000;
 			item.noMelee = true;
 			item.noUseGraphic = true;
 			item.melee = true;
@@ -41,10 +41,6 @@ namespace SGAmod.Items.Weapons
 			item.shoot = mod.ProjectileType("FistOfMoonlordProjectile2");
 			item.shootSpeed = 10;
 			Item.staff[item.type] = true;
-			if (!Main.dedServ)
-			{
-				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/CosmicGrasp_Glow");
-			}
 		}
 		public override bool CanUseItem(Player player)
 		{
@@ -109,6 +105,7 @@ namespace SGAmod.Items.Weapons
 			damage = (int)(damage*(Owner.channel ? MathHelper.Clamp(projectile.ai[1] / (120f / Owner.meleeSpeed), 0.33f,1f) : 1f) *projectile.velocity.Length());
 			if (projectile.ai[1] < 30)
 				damage = (int)(damage * 0.50);
+			damage = (int)(damage*0.25f);
 
 		}
 
@@ -147,7 +144,13 @@ namespace SGAmod.Items.Weapons
 
 			if (Main.netMode != NetmodeID.Server)
 			{
-				Vector2 toThere = Main.MouseWorld - projectile.Center;
+				Vector2 iWantToGoThere = Main.MouseWorld;
+				if ((iWantToGoThere-Owner.MountedCenter).LengthSquared() > totallength* totallength)
+                {
+					iWantToGoThere = Owner.MountedCenter+Vector2.Normalize(iWantToGoThere - Owner.MountedCenter) * (totallength-1);
+				}
+
+				Vector2 toThere = iWantToGoThere - projectile.Center;
 				if (projectile.ai[0]>0)
 				{
 					float maxspeed = MathHelper.Clamp(projectile.ai[1] / (120f / Owner.meleeSpeed), 0f, 1.0f);

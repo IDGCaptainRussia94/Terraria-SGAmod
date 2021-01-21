@@ -59,6 +59,7 @@ namespace SGAmod
 		HellionCrap = 25,
 		HellionStory = 26,
 		SummonCratrosity = 75,
+		UpdateLocalVars = 100,
 		Snapped = 105,
 		GrantExpertise = 250,
 		GrantEntrophite = 251,
@@ -79,6 +80,17 @@ namespace SGAmod
 			Logger.Debug("--HandlePacket:--");
 			ushort atype = reader.ReadUInt16();
 
+			if (atype == (ushort)MessageType.UpdateLocalVars)
+			{
+				Logger.Debug("DEBUG server: update local vars for NPC");
+				int npc = reader.ReadInt32();
+				Vector2 ai1 = reader.ReadVector2();
+				Vector2 ai2 = reader.ReadVector2();
+				Main.npc[npc].localAI[0] = ai1.X;
+				Main.npc[npc].localAI[1] = ai1.Y;
+				Main.npc[npc].localAI[2] = ai2.X;
+				Main.npc[npc].localAI[3] = ai2.Y;
+			}
 			if (atype == (ushort)MessageType.HellionCrap)
 			{
 				Logger.Debug("DEBUG client: Hellion Crap");

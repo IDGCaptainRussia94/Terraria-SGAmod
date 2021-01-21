@@ -33,7 +33,7 @@ namespace SGAmod.NPCs
 		SoundEffectInstance soundfinish;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Pink Singularity");
+			DisplayName.SetDefault("Pink 'Singularit'Y");
 			Main.npcFrameCount[npc.type] = 5;
 			NPCID.Sets.MustAlwaysDraw[npc.type] = true;
 		}
@@ -72,8 +72,16 @@ namespace SGAmod.NPCs
 
 		public void UpdateSlime(NPC npc)
         {
-			//Netcode here
-        }
+			if (Main.netMode > 0)
+			{
+				ModPacket packet = mod.GetPacket();
+				packet.Write((ushort)MessageType.UpdateLocalVars);
+				packet.Write(npc.whoAmI);
+				packet.WriteVector2(new Vector2(npc.localAI[0], npc.localAI[1]));
+				packet.WriteVector2(new Vector2(npc.localAI[2], npc.localAI[3]));
+				packet.Send();
+			}
+		}
 
         public override bool CheckDead()
         {
@@ -1160,6 +1168,11 @@ namespace SGAmod.NPCs
 
 		public override void AI()
 		{
+			if (Main.dayTime)
+            {
+				Main.dayTime = false;
+            }
+
 			slimecalleffect = Math.Max(slimecalleffect-0.75f,0f);
 			if (IntroDeal())
 			{

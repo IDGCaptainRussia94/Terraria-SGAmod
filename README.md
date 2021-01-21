@@ -11,15 +11,30 @@ Github was moved: previous builds of the mod can be found over here: https://git
 -Corruption only: Gas Passer, Wraith Arrows, Dosed Arrows, Corrupted Tome, Cursed Hail, Jagged Spike Buckler (can be bypassed with fishing)
 
 
--Ideas: Banners, the Couch, Bannerlord=collection of banners, Spectre homing bullets/projectiles, Fist of Moonlord, Tech weapons have an "overclock" mechanic that changes up their gameplay while active, spider queen can melt normal generated blocks (dirt and so)
+-Ideas: Banners, the Couch, Bannerlord=collection of banners, Spectre homing bullets/projectiles, Tech weapons have an "overclock" mechanic that changes up their gameplay while active, spider queen can melt normal generated blocks (dirt and so)
 Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes!
 
 -Add Hellion Army progress Bar
 
 Changelog:
 
-3.520-(12/29/20)-Patch 11-Scraps of the Past:
+3.530-(0/0/0)-Patch 11;
 
+--Added:
+
+-New respites! (Salvaged Crate)
+
+
+--Changed:
+
+-Buffed F.S.R.G: now has an 80% to not consume ammo
+
+
+--Fixed:
+
+
+
+3.520-(1/18/21)-Patch 10-Scraps of the Past:
 
 --Added:
 
@@ -38,7 +53,6 @@ Changelog:
 -Resprites for several things by DeJuiceTD, JellyBlu, Some new guys, as well as some contributed spritework by Ajax (thx guys! Really alot!)
 
 
-
 --Changed:
 
 -With the introduction of 4-clip revolver weapons, the system has changed: swapping to a weapon with a different clip size forces a reload before you can use it
@@ -52,6 +66,8 @@ Changelog:
 -Deeper Dungeons has gotten a few changes: You can now use pickaxes, thou you are only able to mine a select few block types, you still need bombs to break spikes, also loot rooms have bars in them
 
 -Idol Of Midas renamed to Midas Insignia
+
+-Updated Draken's Dialog to better explain how to check Expertise, and added 'something else'
 
 -The very top of a Dank shrine is replaced with biomass; allowing you to dig into it
 
@@ -112,6 +128,8 @@ Changelog:
 
 --Fixed:
 
+-Vanilla endless quivers and pouches from being consumed, hopefully this works for modded items too
+
 -Prismic Banshee should no longer have despawning arms, and is now properly named Prismic instead of Prismatic
 
 -Jab-lin effects doing no damage on melee
@@ -126,10 +144,9 @@ Changelog:
 
 -Luminite Wraith should no longer have a broken smooth circle on their vortex attack
 
--Typeos
+-Typeos and various minor fixes
 
 
-Changelog:
 
 3.515-(12/29/20)-Hot Fix #15:
 

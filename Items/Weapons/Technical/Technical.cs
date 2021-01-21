@@ -2222,8 +2222,8 @@ namespace SGAmod.HavocGear.Items.Weapons
 									newloc -= normal * 8f;
 									newloc += (normal.RotatedBy(MathHelper.ToRadians(90)) * num315) * (10 + new1);
 									int proj = Projectile.NewProjectile(newloc.X, newloc.Y, newspeed.X * 1.5f, newspeed.Y * 1.5f, type, damageproj, knockbackproj, player.whoAmI);
-									if (Main.rand.Next(100) < 25 && (ammo2.modItem != null && ammo2.modItem.ConsumeAmmo(player)) && ammo2.maxStack > 1)
-										player.ConsumeItem(ammotype);
+									if (Main.rand.Next(100) < 75 && (ammo2.modItem != null && ammo2.modItem.ConsumeAmmo(player)) && ammo2.maxStack > 1)
+										player.ConsumeItemRespectInfiniteAmmoTypes(ammotype);
 								}
 
 							}

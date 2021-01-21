@@ -73,7 +73,7 @@ namespace SGAmod.Items.Accessories
 					if ((sgaplayer.timer % (player.wingTime > 0 ? 3 : 8) == 0 || sgaplayer.timer % (player.wingTime > 0 ? 6 : 11) == 0) && player.controlJump)
 					{
 
-						player.ConsumeItem(ammo2.type);
+						player.ConsumeItemRespectInfiniteAmmoTypes(ammo2.type);
 						sgaplayer.JoyrideShake = 6;
 						int thisoned = Projectile.NewProjectile(player.Center.X + player.direction * -12, player.Center.Y, velo.X, velo.Y, ammo2.shoot, (int)((float)(ammo2.damage * 1.5) * player.rangedDamage * player.bulletDamage), ammo2.knockBack, Main.myPlayer);
 					}

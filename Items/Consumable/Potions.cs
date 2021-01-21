@@ -389,7 +389,7 @@ namespace SGAmod.Items.Consumable
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.BottledWater, 2);
 			recipe.AddIngredient(ItemID.StrangeBrew);
-			recipe.AddIngredient(ItemID.SnowCloudBlock);
+			recipe.AddIngredient(ItemID.CookedMarshmallow);
 			recipe.AddIngredient(null, "FrigidShard", 2);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 2);

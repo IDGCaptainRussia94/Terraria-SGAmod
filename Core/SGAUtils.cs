@@ -433,6 +433,14 @@ namespace SGAmod
 			return player.HasBuff(BuffID.Archery) ? 1.20f : 1f;
 		}
 
+		public static bool ConsumeItemRespectInfiniteAmmoTypes(this Player player,int item,bool reverseOrder = false)
+		{
+			if (item == ItemID.EndlessMusketPouch || item == ItemID.EndlessQuiver)
+				return false;
+
+			return player.ConsumeItem(item, reverseOrder);
+		}
+
 		public static void SpawnCoins(Vector2 where, int ammount2, float explodespeed = 0f)
 		{
 			int ammount = ammount2;

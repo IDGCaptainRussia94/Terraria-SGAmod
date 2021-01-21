@@ -497,8 +497,12 @@ namespace SGAmod.NPCs.TownNPCs
 		{
 			//button = Language.GetTextValue("LegacyInterface.28");
 			button = "Spend Expertise";
-			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)) {
+			button2 = "What's Next?";
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
+			{
 				button = "Check Expertise";
+				if (Main.LocalPlayer.SGAPly().dragonFriend)
+					button2 = "Hug";
 			}
 			if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && partyVictum != default && !Main.LocalPlayer.SGAPly().dragonFriend)
 			{
@@ -528,7 +532,6 @@ namespace SGAmod.NPCs.TownNPCs
 				}
 				return;
 			}
-			button2 = "What's Next?";
 		}
 
 		public override void OnChatButtonClicked(bool firstButton, ref bool shop)
@@ -544,7 +547,7 @@ namespace SGAmod.NPCs.TownNPCs
 							confort = 1;
 							break;
 						case 1:
-							Main.npcChatText = "Is it? I've had a few people try to take my life, just to claim they slain a dragon, a monster, and became heroes because our kind is destined to die. How else is am I not suppose to think I'm some kind of monster when your own town wants to kill me, hang my head in the town hall, and then tanner my scalied hide!";
+							Main.npcChatText = "Is it? I've had a few people try to take my life, just to claim they slain a dragon, a monster, and became heroes because our kind is destined to die. How else am I not suppose to think I'm some kind of monster when your own town wants to kill me, hang my head in the town hall, and then tanner my scalied hide!";
 							confort = 2;
 							break;
 						case 2:
@@ -602,14 +605,39 @@ namespace SGAmod.NPCs.TownNPCs
 							adder = " The very next target is... ugh.... (ERROR) 0_0";
 						}
 					}
-					Main.npcChatText = "You have " + modplayer.ExpertiseCollected + " Expertise, out of a total of " + modplayer.ExpertiseCollectedTotal + "." + adder;
+					Main.npcChatText = "You have " + modplayer.ExpertiseCollected + " Expertise, out of a total of " + modplayer.ExpertiseCollectedTotal + "." + adder+ " You can Hold 'Shift' and click 'Check Expertise' to see your current and total Expertise, as well as see what's next on the target list.";
 
 				}
 				else
 				{
 					shop = true;
 				}
-			} else {
+			} 
+			else 
+			{
+
+				if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
+				{
+					if (Main.LocalPlayer.SGAPly().dragonFriend)
+					{
+						if (!npc.HasBuff(BuffID.RapidHealing))
+						{
+							Main.npcChatText = "Rawr! <3 Thank you, (wing hugs you back)";
+							Main.LocalPlayer.AddBuff(BuffID.Lovestruck, 60 * 2);
+							Main.LocalPlayer.AddBuff(BuffID.SoulDrain, 60 * 100, false);
+
+							npc.AddBuff(BuffID.Lovestruck, 60 * 2);
+							npc.AddBuff(BuffID.RapidHealing, 60 * 300, false);
+                        }
+                        else
+                        {
+							Main.npcChatText = "(Draken is full of love, and currently cannot accept more)";
+						}
+						return;
+					}
+				}
+
+
 				string chat = "There is still more trouble out there, please, protect us";
 				if (Main.rand.Next(0, 2) == 0)
 					chat = "More trouble looms from overhead, and below. Keep up the good work " + Main.LocalPlayer.name + "!";

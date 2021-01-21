@@ -300,7 +300,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void OnConsumeAmmo(Player player)
 		{
 			if (ammotype!=item.type && Main.rand.Next(maxvalue+1)<1)
-			player.ConsumeItem(ammotype);
+			player.ConsumeItemRespectInfiniteAmmoTypes(ammotype);
 		}
 
 		public override void PickAmmo(Item weapon, Player player, ref int type, ref float speed, ref int damage, ref float knockback)

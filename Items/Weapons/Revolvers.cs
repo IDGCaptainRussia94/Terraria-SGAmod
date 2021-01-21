@@ -1077,7 +1077,7 @@ namespace SGAmod.Items.Weapons
 
 								if (owner.SGAPly().ConsumeAmmoClip())
 								{
-									owner.ConsumeItem(ammo2.type);
+									owner.ConsumeItemRespectInfiniteAmmoTypes(ammo2.type);
 									Projectile.NewProjectile(projectile.Center, Vector2.Normalize(target.Center - projectile.Center) * 16f, type, projectile.damage, projectile.knockBack,projectile.owner);
 
 									SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 41);

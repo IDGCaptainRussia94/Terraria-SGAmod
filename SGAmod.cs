@@ -822,19 +822,19 @@ namespace SGAmod
 			ItemID.PlatinumPickaxe
 });
 			RecipeGroup.RegisterGroup("SGAmod:Tier4Pickaxe", pickaxe);
-			pickaxe = new RecipeGroup(() => "Gold or Platinum Pickaxe", new int[]
+			pickaxe = new RecipeGroup(() => "Cobalt or Palladium Pickaxe", new int[]
 {
 			ItemID.CobaltPickaxe,
 			ItemID.PalladiumPickaxe
 });
 			RecipeGroup.RegisterGroup("SGAmod:Tier5Pickaxe", pickaxe);
-			pickaxe = new RecipeGroup(() => "Gold or Platinum Pickaxe", new int[]
+			pickaxe = new RecipeGroup(() => "Mythril or Orichalcum Pickaxe", new int[]
 {
-			ItemID.GoldPickaxe,
+			ItemID.MythrilPickaxe,
 			ItemID.OrichalcumPickaxe
 });
 			RecipeGroup.RegisterGroup("SGAmod:Tier6Pickaxe", pickaxe);
-			pickaxe = new RecipeGroup(() => "Gold or Platinum Pickaxe", new int[]
+			pickaxe = new RecipeGroup(() => "Adamantite or Titanium Pickaxe", new int[]
 {
 			ItemID.AdamantitePickaxe,
 			ItemID.TitaniumPickaxe

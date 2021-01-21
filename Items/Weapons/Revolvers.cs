@@ -27,13 +27,30 @@ namespace SGAmod.Items.Weapons
         public override bool CanUseItem(Player player)
         {
 			forcedreload = false;
+			item.autoReuse = false;
 
-			if (player.GetModPlayer<SGAPlayer>().ReloadingRevolver > 0)
+			if (player.GetModPlayer<SGAPlayer>().ReloadingRevolver > 0 || forcedreload)
 				return false;
 
 			if (!player.SGAPly().ConsumeAmmoClip(false)) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }
 			return true;
         }
+
+        public override void HoldItem(Player player)
+        {
+			if (player.itemAnimation < 1)
+			{
+				SGAPlayer sgaply = player.SGAPly();
+				int val = 6;
+				SGAmod.UsesClips.TryGetValue(player.HeldItem.type, out val);
+				if (sgaply.ammoLeftInClipMax != val+sgaply.ammoLeftInClipMaxAddedAmmo)
+				{
+					sgaply.ammoLeftInClip = 0;
+				}
+
+				sgaply.ammoLeftInClipMaxLastHeld = sgaply.ammoLeftInClipMax;
+			}
+		}
 
     }
 	public class DragonRevolver : RevolverBase
@@ -509,15 +526,16 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("GuerrillaPistol"), 1);
 			recipe.AddIngredient(mod.ItemType("RevolverUpgrade"), 1);
-			recipe.AddIngredient(ItemID.SoulofSight, 15);
+			recipe.AddIngredient(ItemID.HallowedBar, 8);
+			recipe.AddIngredient(ItemID.SoulofSight, 20);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
+
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("GuerrillaPistol"), 1);
-			recipe.AddIngredient(ItemID.HallowedBar, 8);
+			recipe.AddIngredient(ItemID.HallowedBar, 10);
 			recipe.AddIngredient(ItemID.SoulofSight, 20);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
@@ -741,16 +759,18 @@ namespace SGAmod.Items.Weapons
 	{
 		private string tex;
 		private int timeLeft;
+		public int ammoMax;
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("You should not see this");
 		}
 
-		public ClipWeaponReloading(string tex,int timeLeft=100)
+		public ClipWeaponReloading(string tex,int timeLeft=100,int ammoMax = 6)
         {
 			this.tex = tex;
 			this.timeLeft = timeLeft;
+			this.ammoMax = ammoMax;
 		}
         public override bool CanDamage()
         {
@@ -760,11 +780,13 @@ namespace SGAmod.Items.Weapons
 
 		public static void SetupRevolverHoldingTypes()
         {
-			SGAmod.Instance.AddProjectile("TheRevolverReloading", new ClipWeaponReloading("SGAmod/Items/Weapons/RevolverUpgrade"));
-			SGAmod.Instance.AddProjectile("TheJacobReloading", new ClipWeaponReloading("SGAmod/Items/Weapons/TheJacob",150));
-			SGAmod.Instance.AddProjectile("DragonRevolverReloading", new ClipWeaponReloading("SGAmod/Items/Weapons/DragonRevolver",200));
-			SGAmod.Instance.AddProjectile("GuerrillaPistolReloading", new ClipWeaponReloading("SGAmod/HavocGear/Items/Weapons/GuerrillaPistol"));
-			SGAmod.Instance.AddProjectile("GunarangReloading", new ClipWeaponReloading("SGAmod/Items/Weapons/Gunarang"));
+			SGAmod.Instance.AddProjectile("TheRevolverReloading", new ClipWeaponReloading("SGAmod/Items/Weapons/RevolverUpgrade",ammoMax: 6));
+			SGAmod.Instance.AddProjectile("TheJacobReloading", new ClipWeaponReloading("SGAmod/Items/Weapons/TheJacob",150, ammoMax: 6));
+			SGAmod.Instance.AddProjectile("DragonRevolverReloading", new ClipWeaponReloading("SGAmod/Items/Weapons/DragonRevolver",200, ammoMax: 6));
+			SGAmod.Instance.AddProjectile("GuerrillaPistolReloading", new ClipWeaponReloading("SGAmod/HavocGear/Items/Weapons/GuerrillaPistol", ammoMax: 6));
+			SGAmod.Instance.AddProjectile("GunarangReloading", new ClipWeaponReloading("SGAmod/Items/Weapons/Gunarang", ammoMax: 6));
+
+			SGAmod.Instance.AddProjectile("RustyRifleReloading", new ClipWeaponReloading("SGAmod/HavocGear/Items/Weapons/RustyRifle", 150, ammoMax: 4));
 
 		}
 
@@ -845,7 +867,9 @@ namespace SGAmod.Items.Weapons
 				if (projectile.timeLeft == 18)
 				{
 					SGAPlayer sgaplayer = owner.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-					sgaplayer.ammoLeftInClip = sgaplayer.ammoLeftInClipMax;
+					sgaplayer.ammoLeftInClip = ammoMax+sgaplayer.ammoLeftInClipMaxStack;
+					sgaplayer.ammoLeftInClipMax = sgaplayer.ammoLeftInClip;
+					sgaplayer.ammoLeftInClipMaxAddedAmmo = sgaplayer.ammoLeftInClipMaxStack;
 					Main.PlaySound(SoundID.Item65, owner.Center);
 				}
 
@@ -894,8 +918,11 @@ namespace SGAmod.Items.Weapons
 			item.shootSpeed = 10f;
 			item.useAmmo = AmmoID.Bullet;
 		}
-
-		public override bool CanUseItem(Player player)
+        public override bool ConsumeAmmo(Player player)
+        {
+            return false;
+        }
+        public override bool CanUseItem(Player player)
 		{
 			if (player.ownedProjectileCounts[ModContent.ProjectileType<GunarangProj>()] > 0)
 				return false;
@@ -907,7 +934,6 @@ namespace SGAmod.Items.Weapons
 
 			return base.CanUseItem(player);
 		}
-
 		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
 		{
 			add -= player.rangedDamage;
@@ -1051,6 +1077,7 @@ namespace SGAmod.Items.Weapons
 
 								if (owner.SGAPly().ConsumeAmmoClip())
 								{
+									owner.ConsumeItemRespectInfiniteAmmoTypes(ammo2.type);
 									Projectile.NewProjectile(projectile.Center, Vector2.Normalize(target.Center - projectile.Center) * 16f, type, projectile.damage, projectile.knockBack,projectile.owner);
 
 									SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 41);
@@ -1121,6 +1148,66 @@ namespace SGAmod.Items.Weapons
 namespace SGAmod.HavocGear.Items.Weapons
 {
 
+	public class RustyRifle : RevolverBase
+	{
+		public override int RevolverID => mod.ProjectileType("RustyRifleReloading");
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Rusty Rifle");
+			Tooltip.SetDefault("Consumes all bullets in the clip to increase damage");
+			SGAmod.UsesClips.Add(item.type, 4);
+		}
+
+		public override void SetDefaults()
+		{
+			item.damage = 8;
+			item.ranged = true;
+			item.width = 40;
+			item.height = 20;
+			item.useTime = 30;
+			item.useAnimation = 30;
+			item.useStyle = 5;
+			item.noMelee = true;
+			item.knockBack = 7;
+			item.value = 10000;
+			item.rare = 1;
+			item.UseSound = SoundID.Item40;
+			item.autoReuse = true;
+			item.shoot = 10;
+			item.shootSpeed = 16f;
+			item.useAmmo = AmmoID.Bullet;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			item.noUseGraphic = false;
+			item.UseSound = SoundID.Item11;
+			item.useTime = 30;
+			item.useAnimation = 30;
+			return base.CanUseItem(player);
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			SGAPlayer sgaplayer = player.SGAPly();
+			int clipsize = sgaplayer.ammoLeftInClip;
+			sgaplayer.ConsumeAmmoClip(true, clipsize);
+			damage *= clipsize;
+
+			if (!sgaplayer.ConsumeAmmoClip(false) || forcedreload)
+			{
+				int thisone = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, RevolverID, 0, knockBack, Main.myPlayer, 0.0f, 0f);
+				return !forcedreload;
+			}
+			return (sgaplayer.ConsumeAmmoClip(false));
+		}
+
+		public override Vector2? HoldoutOffset()
+		{
+			return new Vector2(-2, 0);
+		}
+	}
+
 	public class GuerrillaPistol : RevolverBase
 	{
 		public override int RevolverID => mod.ProjectileType("GuerrillaPistolReloading");
@@ -1141,7 +1228,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.useAnimation = 30;
 			item.useStyle = 5;
 			item.noMelee = true;
-			item.knockBack = 5;
+			item.knockBack = 4;
 			item.value = 10000;
 			item.rare = 1;
 			item.UseSound = SoundID.Item11;
@@ -1167,14 +1254,14 @@ namespace SGAmod.HavocGear.Items.Weapons
 				type = ProjectileID.BulletHighVelocity;
 			}
 			SGAPlayer sgaplayer = player.SGAPly();
-			sgaplayer.ammoLeftInClip -= 1;
+			sgaplayer.ConsumeAmmoClip();
 
-			if (sgaplayer.ammoLeftInClip == 0 || forcedreload)
+			if (!sgaplayer.ConsumeAmmoClip(false) || forcedreload)
 			{
 				int thisone = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, RevolverID, 0, knockBack, Main.myPlayer, 0.0f, 0f);
 				return !forcedreload;
 			}
-			return (sgaplayer.ammoLeftInClip > 0);
+			return (sgaplayer.ConsumeAmmoClip(false));
 		}
 
 		public override Vector2? HoldoutOffset()

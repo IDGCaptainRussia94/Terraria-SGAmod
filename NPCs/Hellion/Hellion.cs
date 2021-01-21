@@ -2189,7 +2189,7 @@ namespace SGAmod.NPCs.Hellion
 				Vector2 itt = ((P.Center + (flytopos)) - npc.Center) - new Vector2(0, 1);
 				if (!itt.HasNaNs())
 				{
-
+					if (itt.LengthSquared()>0)
 					itt.Normalize();
 					if (manualmovement < 1)
 						npc.velocity = npc.velocity + (itt * flyspeed);
@@ -3380,7 +3380,6 @@ namespace SGAmod.NPCs.Hellion
 			DisplayName.SetDefault("Hellion Bolt");
 		}
 
-
 		public override void SetDefaults()
 		{
 			//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
@@ -3455,39 +3454,44 @@ namespace SGAmod.NPCs.Hellion
 				Vector2 speedzc = speedz; speedzc.Normalize();
 				projectile.velocity = speedzc / 50f;
 			}
-			if (projectile.ai[0]==0)
+
+			if (projectile.ai[0] == 0)
 				startpos = projectile.Center;
 
 			projectile.ai[0] = projectile.ai[0] + 1;
 
 			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
 
-			if (projectile.ai[0] > 40 && projectile.velocity.Length()<maxspeed)
+			if (GetType() == typeof(HellionBolt))
 			{
-				Vector2 speedz = projectile.velocity;
-				Vector2 speedzc = speedz; speedzc.Normalize();
-				projectile.velocity = speedzc * (speedz.Length() + (projectile.ai[0]>60 ? 1f : 0.25f));
 
-				if (projectile.ai[0] % 2 == 0)
+				if (projectile.ai[0] > 40 && projectile.velocity.Length() < maxspeed)
+				{
+					Vector2 speedz = projectile.velocity;
+					Vector2 speedzc = speedz; speedzc.Normalize();
+					projectile.velocity = speedzc * (speedz.Length() + (projectile.ai[0] > 60 ? 1f : 0.25f));
+
+					if (projectile.ai[0] % 2 == 0)
+						projectile.timeLeft += 1;
+
+				}
+				else
+				{
 					projectile.timeLeft += 1;
+				}
 
-			}
-			else
-			{
-				projectile.timeLeft += 1;
-			}
+				for (int i = 0; i < 1; i += 1)
+				{
+					float randomfloat = Main.rand.NextFloat(0f, 2f);
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
 
-			for (int i = 0; i < 1; i += 1)
-			{
-				float randomfloat = Main.rand.NextFloat(0f, 2f);
-				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-
-				int dust = Dust.NewDust(new Vector2(projectile.Center.X - 4, projectile.Center.Y - 4), 8, 8, DustID.AmberBolt);
-				Main.dust[dust].scale = 2.5f;
-				Main.dust[dust].noGravity = true;
-				Main.dust[dust].velocity = (projectile.velocity * (float)(Main.rand.Next(10, 80) * 0.01f)) + (randomcircle * randomfloat);
+					int dust = Dust.NewDust(new Vector2(projectile.Center.X - 4, projectile.Center.Y - 4), 8, 8, DustID.AmberBolt);
+					Main.dust[dust].scale = 2.5f;
+					Main.dust[dust].noGravity = true;
+					Main.dust[dust].velocity = (projectile.velocity * (float)(Main.rand.Next(10, 80) * 0.01f)) + (randomcircle * randomfloat);
+				}
+				projectile.timeLeft -= 1;
 			}
-			projectile.timeLeft -= 1;
 		}
 
 

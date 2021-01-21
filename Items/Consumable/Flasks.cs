@@ -79,8 +79,8 @@ namespace SGAmod.Items.Consumable
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/FlaskofAcidBuff";
-			return base.Autoload(ref name, ref texture);
+			texture = "SGAmod/Buffs/FlaskofBlazeBuff";
+			return true;
 		}
 
 		public override void Update(Player player, ref int buffIndex)
@@ -131,7 +131,7 @@ namespace SGAmod.Items.Consumable
 		public override bool Autoload(ref string name, ref string texture)
 		{
 			texture = "SGAmod/Buffs/FlaskofAcidBuff";
-			return base.Autoload(ref name, ref texture);
+			return true;
 		}
 		public override void SetDefaults()
 		{

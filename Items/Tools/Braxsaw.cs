@@ -11,7 +11,7 @@ namespace SGAmod.Items.Tools
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Braxsaw");
-			Tooltip.SetDefault("Mine through the universe!");
+			Tooltip.SetDefault("Mine through the oldest fabric of the universe!");
 		}
 
 		public override void SetDefaults()
@@ -26,8 +26,8 @@ namespace SGAmod.Items.Tools
 			item.noUseGraphic = true;
 			item.noMelee = true;
 			item.pick = 250;
-			item.axe = 225;
-			item.tileBoost+=5;
+			item.axe = 150;
+			item.tileBoost += 5;
 			item.useStyle = 5;
 			item.knockBack = 5;
 			item.value = 3000000;

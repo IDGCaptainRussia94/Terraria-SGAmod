@@ -57,7 +57,7 @@ namespace SGAmod.Dimensions
             prog.Message = "Once was nothing...";
             int tileheight = UniRand.Next(250, 400);
             List<int> surfacelevel = new List<int>();
-            int updown= UniRand.Next(0, 2)==0 ? 1 : -1;
+            int updown = UniRand.Next(0, 2) == 0 ? 1 : -1;
 
 
 
@@ -67,7 +67,7 @@ namespace SGAmod.Dimensions
             NoiseGenerator Noisegen = new NoiseGenerator(DimDungeonsProxy.DungeonSeeds);
 
 
-                Noisegen.Amplitude = 1;
+            Noisegen.Amplitude = 1;
             Noisegen.Frequency *= 0.50;
 
             int[] tilesz = { TileID.Obsidian, TileID.Ash, TileID.TinBrick, TileID.AmberGemsparkOff, TileID.AmethystGemsparkOff, TileID.DiamondGemsparkOff, TileID.SnowBlock, TileID.SnowBrick };
@@ -78,36 +78,37 @@ namespace SGAmod.Dimensions
             {
                 for (int y = tileheight; y < Main.maxTilesY; y += 1)
                 {
-                    double nousey = (double)MathHelper.Clamp((float)Noisegen.Noise(x, y)+0.40f,-1.00f,1.00f);
+                    double nousey = (double)MathHelper.Clamp((float)Noisegen.Noise(x, y) + 0.40f, -1.00f, 1.00f);
                     Main.tile[x, y].type = TileID.Stone;
                     //if (Noisegen.Noise(x,y) > -0.8)
                     //Main.tile[x, y].active(true);
                     //else
                     //Main.tile[x, y].active(false);
 
-                    int index = (int)MathHelper.Clamp((float)(0.50 + nousey / 2.0) * tilesz.Length,0f,tilesz.Length-1);
+                    int index = (int)MathHelper.Clamp((float)(0.50 + nousey / 2.0) * tilesz.Length, 0f, tilesz.Length - 1);
                     //Main.tile[x,y].color((byte)2);
                     Main.tile[x, y].type = (ushort)tilesz[index];
                     Main.tile[x, y].active(true);
-                    if (nousey<0)
-                    Main.tile[x, y].active(false);
+                    if (nousey < 0)
+                        Main.tile[x, y].active(false);
                 }
 
 
             }
 
 
-                //Celular Crap
+            //Celular Crap
 
-            for(int passes = 0; passes < 5; passes += 1) {
+            for (int passes = 0; passes < 5; passes += 1)
+            {
                 for (int x = 0; x < Main.maxTilesX; x += 1)
                 {
                     for (int y = 0; y < Main.maxTilesY; y += 1)
                     {
-                        if (GetTilesAround(x,y,1)>4)
-                        Main.tile[x, y].active(true);
+                        if (GetTilesAround(x, y, 1) > 4)
+                            Main.tile[x, y].active(true);
                         else
-                        Main.tile[x, y].active(false);
+                            Main.tile[x, y].active(false);
                     }
                 }
             }
@@ -161,7 +162,7 @@ namespace SGAmod.Dimensions
                 }
             }
 
-                WorldGen._genRandSeed = lastseed;
+            WorldGen._genRandSeed = lastseed;
 
         }
 
@@ -170,14 +171,14 @@ namespace SGAmod.Dimensions
             return x >= 0 && y >= 0 && x < Main.maxTilesX && y < Main.maxTilesY;
         }
 
-        public int GetTilesAround(int xx, int yy,int buffer = 1)
+        public int GetTilesAround(int xx, int yy, int buffer = 1)
         {
             int tilecount = 0;
-            for (int x = xx- buffer; x <= xx+ buffer; x += 1)
+            for (int x = xx - buffer; x <= xx + buffer; x += 1)
             {
                 for (int y = yy - buffer; y <= yy + buffer; y += 1)
                 {
-                    if (InsideMap(x,y))
+                    if (InsideMap(x, y))
                     {
                         if (Main.tile[x, y].active())
                         {
@@ -251,6 +252,6 @@ namespace SGAmod.Dimensions
         }
 
 
-	}
-   
+    }
+
 }

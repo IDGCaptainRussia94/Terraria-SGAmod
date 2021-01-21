@@ -196,7 +196,6 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ItemID.Flamethrower, 1);
 			recipe.AddIngredient(ItemID.SpectreBar, 8);
 			recipe.AddIngredient(ItemID.CursedFlame, 10);
-			recipe.AddIngredient(ItemID.SoulofSight, 10);
 			recipe.AddIngredient(ItemID.SpellTome, 1);
 			recipe.AddTile(TileID.CrystalBall);
 			recipe.SetResult(this);

@@ -1150,6 +1150,10 @@ public class LunarRoyalGel : ModItem
 		{
 			return Main.hslToRgb(Main.rand.NextFloat(0f, 1f), 0.75f, 0.65f);
 		}*/
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Main.hslToRgb((-Main.GlobalTime+(item.whoAmI*7.4231f))%1f,0.92f,0.85f).ToVector3() * 0.5f);
+		}
 		public override void SetDefaults()
 		{
 			item.maxStack = 999;
@@ -1403,9 +1407,9 @@ public class LunarRoyalGel : ModItem
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("Entrophite"), 500);
-			recipe.AddIngredient(mod.ItemType("StygianCore"), 4);
-			recipe.AddIngredient(mod.ItemType("OmniSoul"), 12);
+			recipe.AddIngredient(mod.ItemType("Entrophite"), 250);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 1);
+			recipe.AddIngredient(mod.ItemType("OmniSoul"), 15);
 			recipe.AddIngredient(ItemID.Diamond, 1);
 			recipe.AddTile(TileID.CrystalBall);
 			recipe.SetResult(this, 1);
@@ -1444,6 +1448,38 @@ public class LunarRoyalGel : ModItem
 		}
 
 	}
+
+	public class TheWholeExperience : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("'The Whole Experience'");
+			Tooltip.SetDefault("While in your inventory, specific cutscenes and events will reply\nLuminite Wraith will be summoned in his pre-Moonlord stage");
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+		}
+		public static bool Check()
+        {
+			foreach(Player player in Main.player)
+            {
+				if (player.HasItem(ModContent.ItemType<TheWholeExperience>()))
+					return true;
+            }
+			return false;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/UI/Camera_7"; }
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 14;
+			item.height = 14;
+			item.value = 0;
+			item.rare = ItemRarityID.Quest;
+		}
+	}
+
 
 }
 

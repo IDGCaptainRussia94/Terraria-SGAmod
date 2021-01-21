@@ -54,10 +54,10 @@ namespace SGAmod
 					"SGAmod: CustomUI", DrawUI,
 					InterfaceScaleType.UI)
 				);
-				layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
+				/*layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
 				"SGAmod: CustomUI", DrawUI,
 				InterfaceScaleType.UI)
-);
+);*/
 			}
 			layers.Insert(0, new LegacyGameInterfaceLayer("SGAmod: UnderHUD", DrawUnderHUD, InterfaceScaleType.Game));
 			//layers.Insert(0, new LegacyGameInterfaceLayer("SGAmod: Effects", DimDingeonsWorld.DrawSectors, InterfaceScaleType.Game));

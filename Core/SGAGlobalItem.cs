@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.GameContent.UI;
 using System.Reflection;
-using SGAmod.Items.Weapons;
+using SGAmod.Items.Weapons.Trap;
 using SGAmod.Items.Accessories;
 using Idglibrary;
 using AAAAUThrowing;
@@ -312,14 +312,17 @@ namespace SGAmod
             if (NovusCoreCheck(player,item))
                 basemul += 0.1f;
 
-            if (item.modItem != null) {
+            if (item.modItem != null)
+            {
                 var myType = (item.modItem).GetType();
                 var n = myType.Namespace;
                 string asastring = (string)n;
                 int ishavocitem = asastring.Length - asastring.Replace("HavocGear.", "").Length;
-                if (ishavocitem > 0 && sgaplayer.Havoc > 0) {
-                    damage = (int)(damage * 1.25);
-                } }
+                if (ishavocitem > 0 && sgaplayer.Havoc > 0)
+                {
+                    damage = (int)(damage * 1.15);
+                }
+            }
 
             if (sgaplayer.Dankset>0)
             {
@@ -622,6 +625,85 @@ namespace SGAmod
     }
 
 
+    public class SGAUpgradableItemInstance : GlobalItem
+    {
+
+        public int toolType = 0;
+        public override bool InstancePerEntity => true;
+
+        public override bool CanUseItem(Item item, Player player)
+        {
+            if (item.GetGlobalItem<SGAUpgradableItemInstance>().toolType == 1)
+            {
+                return player.SGAPly().ConsumeElectricCharge(Math.Max(item.pick, Math.Max(item.hammer, item.axe)), 120,false,true);
+            }
+            return true;
+        }
+
+        public override void HoldItem(Item item, Player player)
+        {
+            if (player.SGAPly().timer%30==0 && item.GetGlobalItem<SGAUpgradableItemInstance>().toolType == 1)
+            {
+                Projectile finder;
+                finder = Main.projectile.FirstOrDefault(testby => testby.active && testby.owner == player.whoAmI && testby.aiStyle == 20);
+                if (finder != default)
+                {
+                    if (!player.SGAPly().ConsumeElectricCharge(Math.Max(item.pick, Math.Max(item.hammer, item.axe)), 120))
+                        finder.Kill();
+                }
+            }
+        }
+
+        public override float UseTimeMultiplier(Item item, Player player)
+        {
+            if (item.GetGlobalItem<SGAUpgradableItemInstance>().toolType == 1)
+            {
+                return 1.25f;
+            }
+            return 1f;
+        }
+
+        public override bool NeedsSaving(Item item)
+        {
+            if (item.GetGlobalItem<SGAUpgradableItemInstance>().toolType > 0)
+                return true;
+            return false;
+        }
+        public override void NetSend(Item item, BinaryWriter writer)
+        {
+            writer.Write((byte)item.GetGlobalItem<SGAUpgradableItemInstance>().toolType);
+        }
+        public override void NetReceive(Item item, BinaryReader reader)
+        {
+            item.GetGlobalItem<SGAUpgradableItemInstance>().toolType = (int)reader.ReadByte();
+        }
+        public override TagCompound Save(Item item)
+        {
+            TagCompound tag = new TagCompound
+            {
+                ["toolType"] = item.GetGlobalItem<SGAUpgradableItemInstance>().toolType
+            };
+            return tag;
+        }
+        public override void Load(Item item, TagCompound tag)
+        {
+            SGAUpgradableItemInstance upgrades = item.GetGlobalItem<SGAUpgradableItemInstance>();
+            if (tag.ContainsKey("toolType"))
+                upgrades.toolType = tag.GetInt("toolType");
+        }
+        public override GlobalItem Clone(Item item, Item itemClone)
+        {
+            SGAUpgradableItemInstance myClone = (SGAUpgradableItemInstance)base.Clone(item, itemClone);
+            myClone.toolType = toolType;
+            return myClone;
+        }
+
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        {
+            if (item.GetGlobalItem<SGAUpgradableItemInstance>().toolType == 1)
+                tooltips.Add(new TooltipLine(mod, "PowerToolTip", Idglib.ColorText(Color.SkyBlue,"Power Tools Upgrade Applied")));
+        }
+    }
 
 
 
@@ -633,8 +715,7 @@ namespace SGAmod
 
 
 
-
-    public class TrapPrefixAccessory : TrapPrefix
+        public class TrapPrefixAccessory : TrapPrefix
     {
 
         public override PrefixCategory Category { get { return PrefixCategory.Accessory; } }
@@ -799,7 +880,28 @@ namespace SGAmod
 
     }
 
-    public class TrapPrefix : ModPrefix
+    public class ShieldPrefix : TrapPrefix
+    {
+
+        public ShieldPrefix(int misc)
+        {
+            this.misc = misc;
+        }
+
+        public override bool CanRoll(Item item)
+        {
+            if (item.modItem != null)
+            {
+                if (item.modItem is IShieldItem)
+                    return true;
+            }
+
+            return false;
+        }
+
+    }
+
+        public class TrapPrefix : ModPrefix
     {
         public float armorbreak = 0f;
         public float damage = 0f;
@@ -839,6 +941,10 @@ namespace SGAmod
         {
             if (base.Autoload(ref name))
             {
+                if (GetType() == typeof(ShieldPrefix))
+                {
+                    mod.AddPrefix("Defensive", new ShieldPrefix(3));
+                }
                 if (GetType() == typeof(TrapPrefix))
                 {
                     mod.AddPrefix("Edged", new TrapPrefix(0.05f, 0.05f));
@@ -850,7 +956,7 @@ namespace SGAmod
                 if (GetType() == typeof(TrapPrefixAccessory))
                 {
                     mod.AddPrefix("Tinkering", new TrapPrefixAccessory(0f, 0.04f));
-                    mod.AddPrefix("Knowledgable", new TrapPrefixAccessory(0.06f, 0f));
+                    mod.AddPrefix("Knowledgeable", new TrapPrefixAccessory(0.06f, 0f));
                     mod.AddPrefix("Dungeoneer's", new TrapPrefixAccessory(0.04f, 0.05f));
                     mod.AddPrefix("Goblin Tinker's Own", new TrapPrefixAccessory(0.05f, 0.075f));
                     mod.AddPrefix("Energized", new TrapPrefixAccessory(0,0,1));
@@ -867,7 +973,7 @@ namespace SGAmod
                     mod.AddPrefix("Slinger's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.02f,0.01f,0,0));
                     mod.AddPrefix("Pocketed", new ThrowerPrefixAccessory(0f, 0f, 0.02f, 0.03f, 0.015f,0,0));
                     mod.AddPrefix("Conserving", new ThrowerPrefixAccessory(0f, 0f, 0.0f, 0.0f,0.05f,0,0));
-                    mod.AddPrefix("Rougish", new ThrowerPrefixAccessory(0f, 0f, 0.06f, 0.05f,0.02f,0,0));
+                    mod.AddPrefix("Roguish", new ThrowerPrefixAccessory(0f, 0f, 0.06f, 0.05f,0.02f,0,0));
 
                     mod.AddPrefix("Doomsayer", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 0.5f,0.05f));
                     mod.AddPrefix("Horseman's", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 1f,0.075f));
@@ -1129,6 +1235,13 @@ namespace SGAmod
             if (misc == 2)
             {
                 string line2 = Idglib.ColorText(Color.Red,"This item is busted and needs to be reforged to be used");
+                TooltipLine line = new TooltipLine(mod, "SGAPrefixline", line2);
+                line.isModifier = true;
+                tooltips.Add(line);
+            }
+            if (misc == 3)
+            {
+                string line2 = Idglib.ColorText(Color.Red, "+5% Shield Block");
                 TooltipLine line = new TooltipLine(mod, "SGAPrefixline", line2);
                 line.isModifier = true;
                 tooltips.Add(line);

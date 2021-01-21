@@ -25,7 +25,7 @@ namespace SGAmod.NPCs
 		public int maxattacktime = 300;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Prismatic Banshee");
+			DisplayName.SetDefault("Prismic Banshee");
 			Main.npcFrameCount[npc.type] = 1;
 			NPCID.Sets.MustAlwaysDraw[npc.type] = true;
 		}
@@ -48,10 +48,48 @@ namespace SGAmod.NPCs
 			maxattacktime = reader.ReadInt32();
 		}
 
+		public void ChangeHit(ref int damage, ref bool crit,int player,Projectile proj)
+        {
+			if (npc.ai[0] < 900)
+			{
+				damage = (int)(damage * 0.25f);
+				crit = false;
+			}
+			bool pickedone = false;
+			foreach(NPC giveMeAHandWouldYa in Main.npc.Where(myhands => myhands.active && myhands.type == ModContent.NPCType<PrismBansheeHand>() && (int)myhands.ai[1] == npc.whoAmI && (myhands.modNPC as PrismBansheeHand).blockTime<1))
+            {
+				PrismBansheeHand moddedHand = (giveMeAHandWouldYa.modNPC as PrismBansheeHand);
+                bool blockDirection = !(proj != null && Main.rand.Next(2)==0);
+				Vector2 angleVect;
+
+				if (blockDirection)
+				{
+					angleVect = Vector2.Normalize(Main.player[player].MountedCenter - giveMeAHandWouldYa.Center);
+				}
+				else
+				{
+					angleVect = Vector2.Normalize(proj.Center - giveMeAHandWouldYa.Center);
+				}
+
+				moddedHand.blockTime = 60;
+				moddedHand.blockAngle = angleVect.ToRotation();
+				giveMeAHandWouldYa.netUpdate = true;
+			}
+		}
+
+        public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+        {
+			ChangeHit(ref damage, ref crit,player.whoAmI,null);
+		}
+        public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+			ChangeHit(ref damage, ref crit, projectile.owner, projectile);
+		}
+
         public override void SetDefaults()
 		{
-			npc.lifeMax = 50000;
-			npc.defense = 50;
+			npc.lifeMax = 80000;
+			npc.defense = 75;
 			npc.damage = 0;
 			npc.scale = 1f;
 			npc.width = 48;
@@ -396,17 +434,14 @@ namespace SGAmod.NPCs
 			return false;
 		}
 
-		public override void OnHitPlayer(Player player, int damage, bool crit)
-		{
-			player.AddBuff(mod.BuffType("ThermalBlaze"), 200, true);
-		}
-
 
 	}
 
 	public class PrismBansheeHand : ModNPC
 	{
 		int bansheesmoothness = 0;
+		public float blockAngle = 0;
+		public int blockTime = 0;
 		public NPC Owner
 		{
 			get
@@ -424,32 +459,35 @@ namespace SGAmod.NPCs
 			DisplayName.SetDefault("Prismatic Spikefist");
 			Main.npcFrameCount[npc.type] = 1;
 		}
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.Write(bansheesmoothness);
-			writer.Write(npc.localAI[3]);
-		}
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			bansheesmoothness = reader.ReadInt32();
-			npc.localAI[3] = reader.ReadInt32();
-		}
 
-		public override void SetDefaults()
+		public override bool CheckActive()
 		{
-			npc.lifeMax = 100;
-			npc.defense = 0;
+			return Owner == null;
+		}
+        public override bool CheckDead()
+        {
+			if (Owner != null)
+			{
+				npc.life = npc.lifeMax;
+				return false;
+			}
+			return true;
+        }
+
+        public override void SetDefaults()
+		{
+			npc.lifeMax = 1000;
+			npc.defense = 10000;
 			npc.damage = 120;
 			npc.width = 48;
 			npc.height = 48;
 			animationType = -1;
 			npc.aiStyle = -1;
-			npc.knockBackResist = 0f;
+			npc.knockBackResist = 0.25f;//0.5f;
 			npc.npcSlots = 0.1f;
 			npc.noGravity = true;
 			npc.noTileCollide = true;
 			npc.netAlways = true;
-			npc.dontTakeDamage = true;
 			npc.HitSound = SoundID.NPCHit7;
 			npc.DeathSound = SoundID.NPCDeath6;
 			npc.Opacity = 0f;
@@ -459,13 +497,46 @@ namespace SGAmod.NPCs
 			get { return ("Terraria/Projectile_" + ProjectileID.CultistBossIceMist); }
 		}
 
-		private void BlockState(ref Vector2 gohere)
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+        {
+            return false;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write((double)blockAngle);
+			writer.Write(blockTime);
+			writer.Write(bansheesmoothness);
+			writer.Write(npc.localAI[3]);
+		}
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			blockAngle = (float)reader.ReadDouble();
+			blockTime = reader.ReadInt32();
+			bansheesmoothness = reader.ReadInt32();
+			npc.localAI[3] = reader.ReadInt32();
+		}
+
+		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
+        {
+			projectile.damage = projectile.damage >> 2;
+		}
+
+        private void ArmOutState(ref Vector2 gohere)
 		{
 			gohere = Owner.Center + new Vector2(ArmOffset.X * 2f, 20f);
 		}
 		public void NormalMovement(Vector2 gohere)
 		{
 			Vector2 distvector = gohere - npc.Center;
+
+			if (blockTime > 0)
+			{
+				gohere = Owner.Center + (Vector2.UnitX * Math.Abs(ArmOffset.X)).RotatedBy(blockAngle);
+				distvector = (gohere - npc.Center) * 1.5f;
+
+			}
+
 			if (distvector.LengthSquared() > 64)
 				npc.velocity += Vector2.Normalize(distvector) * Math.Min(25f, distvector.Length() / 32f) * MathHelper.Clamp(1f - ((npc.localAI[3]) / 100f), 0f, 1f);
 			else
@@ -527,7 +598,7 @@ namespace SGAmod.NPCs
 		}
 		public bool SlamAttack()
 		{
-
+			blockTime -= 1;
 			Player P = Main.player[npc.target];
 			if (npc.ai[0] >= 500)
 			{
@@ -595,7 +666,7 @@ namespace SGAmod.NPCs
 					{
 
 						if (npc.ai[0] > 400)
-							BlockState(ref gohere);
+							ArmOutState(ref gohere);
 
 						NormalMovement(gohere);
 						npc.velocity *= 0.75f + (MathHelper.Clamp(npc.localAI[3] / 200f, 0f, 1f) * 0.25f);
@@ -639,12 +710,12 @@ namespace SGAmod.NPCs
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Prismatic Spirit");
+			DisplayName.SetDefault("Prismic Spirit");
 			Main.npcFrameCount[npc.type] = 1;
 		}
 		public override void SetDefaults()
 		{
-			npc.lifeMax = 3000;
+			npc.lifeMax = 4000;
 			npc.defense = 0;
 			npc.damage = 0;
 			npc.width = 32;

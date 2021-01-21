@@ -231,7 +231,7 @@ namespace SGAmod
 									dust.noGravity = true;
 								}
 
-								player.ConsumeItem(ammo);
+								player.ConsumeItemRespectInfiniteAmmoTypes(ammo);
 							}
 						}
 

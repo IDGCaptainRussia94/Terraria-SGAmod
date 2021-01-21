@@ -214,7 +214,6 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
 			return base.Autoload(ref name, ref texture);
 		}
 

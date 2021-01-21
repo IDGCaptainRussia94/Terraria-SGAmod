@@ -21,6 +21,7 @@ namespace SGAmod.Effects
         public string pass;
         public float strength;
         public bool doFade = true;
+        public bool connectEnds = false;
         public Vector2 coordOffset;
         public Vector2 capsize;
         public Func<float, Color> color;
@@ -66,12 +67,16 @@ namespace SGAmod.Effects
 
             Vector3[] prevcoords = { Vector3.One, Vector3.One };
 
-            VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[((totalcount + 1) * 6)+(caps * 3)];
             int k = 1;
+            Vector3[] firstloc = { Vector3.Zero, Vector3.Zero };
+            int fractiontotal = totalcount + (connectEnds ? 1 : 0);
+
+            VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[((fractiontotal + 1) * 6)+(caps * 3)];
+
             for (k = 1; k < totalcount; k += 1)
             {
-                float fraction = (float)k / (float)totalcount;
-                float fractionPlus = (float)(k + 1) / (float)totalcount;
+                float fraction = (float)k / (float)fractiontotal;
+                float fractionPlus = (float)(k + 1) / (float)fractiontotal;
 
                 Vector2 trailloc = drawPoses[k] + projsize;
                 Vector2 prev2 = drawPoses[k - 1] + projsize;
@@ -89,10 +94,25 @@ namespace SGAmod.Effects
                 Vector3 drawtop = (trailloc - Main.screenPosition).ToVector3();
                 Vector3 drawbottom = (prev2 - Main.screenPosition).ToVector3();
 
+                if (k == 1)
+                {
+                    //firstloc[0] = drawbottom+left;
+                    //firstloc[1] = drawbottom + right;
+                }
+
                 if (prevcoords[0] == Vector3.One)
                 {
                     prevcoords = new Vector3[2] { drawbottom + left, drawbottom + right };
+                    firstloc[0] = drawbottom + left;
+                    firstloc[1] = drawbottom + right;
                 }
+
+                bool repeat = (k == totalcount - 1);
+
+                Vector3 drawtopleft = drawtop + left;
+                Vector3 drawtopright = drawtop + right;
+
+            repeater:
 
                 Color valuecol1 = color(fraction);
                 Color valuecol2 = color(fractionPlus);
@@ -102,14 +122,24 @@ namespace SGAmod.Effects
                 Color colortemp2 = Color.Lerp(valuecol2, valuecol2 * fadeTo, fractionPlus);
 
                 vertices[0 + (k * 6)] = new VertexPositionColorTexture(prevcoords[0], colortemp, new Vector2(0, fractionPlus));
-                vertices[1 + (k * 6)] = new VertexPositionColorTexture(drawtop + right, colortemp2, new Vector2(1, fraction));
-                vertices[2 + (k * 6)] = new VertexPositionColorTexture(drawtop + left, colortemp2, new Vector2(0, fraction));
+                vertices[1 + (k * 6)] = new VertexPositionColorTexture(drawtopright, colortemp2, new Vector2(1, fraction));
+                vertices[2 + (k * 6)] = new VertexPositionColorTexture(drawtopleft, colortemp2, new Vector2(0, fraction));
 
                 vertices[3 + (k * 6)] = new VertexPositionColorTexture(prevcoords[0], colortemp, new Vector2(0, fractionPlus));
                 vertices[4 + (k * 6)] = new VertexPositionColorTexture(prevcoords[1], colortemp, new Vector2(1, fractionPlus));
-                vertices[5 + (k * 6)] = new VertexPositionColorTexture(drawtop + right, colortemp2, new Vector2(1, fraction));
+                vertices[5 + (k * 6)] = new VertexPositionColorTexture(drawtopright, colortemp2, new Vector2(1, fraction));
 
                 prevcoords = new Vector3[2] { drawtop + left, drawtop + right };
+
+                if (connectEnds && repeat)
+                {
+                    repeat = false;
+                    drawtopleft = firstloc[0];
+                    drawtopright = firstloc[1];
+                    prevcoords = new Vector3[2] { drawtop + left, drawtop + right };
+                    k += 1;
+                    goto repeater;
+                }
 
                 //Idglib.DrawTether(SGAmod.ExtraTextures[21], prev2, goto2, 1f, 0.25f, 1f, Color.Magenta);
 

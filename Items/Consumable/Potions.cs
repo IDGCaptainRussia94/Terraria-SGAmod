@@ -7,6 +7,7 @@ using SGAmod.Generation;
 using SGAmod;
 using Idglibrary;
 using SGAmod.HavocGear.Items;
+using SGAmod.Buffs;
 //using SubworldLibrary;
 
 namespace SGAmod.Items.Consumable
@@ -388,7 +389,7 @@ namespace SGAmod.Items.Consumable
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.BottledWater, 2);
 			recipe.AddIngredient(ItemID.StrangeBrew);
-			recipe.AddIngredient(ItemID.SnowCloudBlock);
+			recipe.AddIngredient(ItemID.CookedMarshmallow);
 			recipe.AddIngredient(null, "FrigidShard", 2);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 2);
@@ -480,7 +481,7 @@ namespace SGAmod.Items.Consumable
 
         public override bool CanUseItem(Player player)
         {
-			return !player.HasBuff(BuffID.Weak);
+			return !player.HasBuff(ModContent.BuffType<WorseWeakness>());
         }
 
         public override void OnConsumeItem(Player player)

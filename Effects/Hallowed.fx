@@ -49,7 +49,6 @@ float4 PrismFunction(float2 coords : TEXCOORD0) : COLOR0
 		return color;
 
         float sinOffset = sin(((overlayStrength.z)+coords.y)*pi)*overlayStrength.y;
-    float4 colorOverlay = tex2D(overlaytexsampler, coords+float2((overlayProgress.x+sinOffset)%1.0,(overlayProgress.y)%1.0));
 
     float luminosity = (color.r + color.g + color.b) / 3;
     float4 white = float4(1, 1, 1,1);
@@ -59,13 +58,17 @@ float4 PrismFunction(float2 coords : TEXCOORD0) : COLOR0
     color.rgb = lerp(unshadedColor,blendedColor,prismAlpha);
     float3 shadedColor = color.rgb;
 
-    if (colorOverlay.r > overlayMinAlpha)
+    if (overlayAlpha>0)
     {
-    colorOverlay.rgb = colorOverlay.rgb*overlayStrength.x;
-    float saturation=1;
-    float value = 1;
-    float3 rainbowColor = HSVtoRGB(float3(coords.x%1,saturation,value));
-    color.rgb = lerp(shadedColor,colorOverlay.rgb*float3(rainbowColor.r,rainbowColor.g,rainbowColor.b),(colorOverlay.g-overlayMinAlpha)*(overlayAlpha+overlayMinAlpha));
+        float4 colorOverlay = tex2D(overlaytexsampler, coords+float2((overlayProgress.x+sinOffset)%1.0,(overlayProgress.y)%1.0));
+        if (colorOverlay.r > overlayMinAlpha)
+        {
+        colorOverlay.rgb = colorOverlay.rgb*overlayStrength.x;
+        float saturation=1;
+        float value = 1;
+        float3 rainbowColor = HSVtoRGB(float3(coords.x%1,saturation,value));
+        color.rgb = lerp(shadedColor,colorOverlay.rgb*float3(rainbowColor.r,rainbowColor.g,rainbowColor.b),(colorOverlay.g-overlayMinAlpha)*(overlayAlpha+overlayMinAlpha));
+        }
     }
 
     color.rgb *= luminosity;

@@ -18,7 +18,7 @@ namespace SGAmod.Items.Tools
 			item.melee = true;
 			item.width = 40;
 			item.height = 40;
-			item.useAnimation = 12;
+			item.useAnimation = 26;
 			item.useTime = 12;
 			item.pick = 55;
 			item.useStyle = 1;

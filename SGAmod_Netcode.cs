@@ -54,31 +54,43 @@ using SGAmod.Dimensions;
 namespace SGAmod
 {
 
+	internal enum MessageType : ushort
+	{
+		HellionCrap = 25,
+		HellionStory = 26,
+		SummonCratrosity = 75,
+		UpdateLocalVars = 100,
+		Snapped = 105,
+		GrantExpertise = 250,
+		GrantEntrophite = 251,
+		LockPlayer = 499,
+		CloneClient = 500,
+		CraftWarning = 995,
+		CaliburnPoints = 996,
+		SummonNPC = 999,
+		ClientSendInfo
+	}
 
 	public partial class SGAmod : Mod
 	{
 
-		internal enum MessageType : ushort
-		{
-			HellionCrap = 25,
-			HellionStory = 26,
-			SummonCratrosity = 75,
-			Snapped = 105,
-			GrantExpertise = 250,
-			GrantEntrophite = 251,
-			LockPlayer = 499,
-			CloneClient = 500,
-			CraftWarning = 995,
-			CaliburnPoints = 996,
-			SummonNPC = 999,
-			ClientSendInfo
-		}
 
 		public override void HandlePacket(BinaryReader reader, int whoAmI)
 		{
 			Logger.Debug("--HandlePacket:--");
 			ushort atype = reader.ReadUInt16();
 
+			if (atype == (ushort)MessageType.UpdateLocalVars)
+			{
+				Logger.Debug("DEBUG server: update local vars for NPC");
+				int npc = reader.ReadInt32();
+				Vector2 ai1 = reader.ReadVector2();
+				Vector2 ai2 = reader.ReadVector2();
+				Main.npc[npc].localAI[0] = ai1.X;
+				Main.npc[npc].localAI[1] = ai1.Y;
+				Main.npc[npc].localAI[2] = ai2.X;
+				Main.npc[npc].localAI[3] = ai2.Y;
+			}
 			if (atype == (ushort)MessageType.HellionCrap)
 			{
 				Logger.Debug("DEBUG client: Hellion Crap");
@@ -203,7 +215,12 @@ namespace SGAmod
 			{
 				Logger.Debug("DEBUG both: Clone Client");
 				int player = reader.ReadInt32();
-				int ammoLeftInClip = reader.ReadInt16();
+				int ammoLeftInClip = (int)reader.ReadByte();
+				int ammoLeftInClipMax = (int)reader.ReadByte();
+				int ammoLeftInClipMaxLastHeld = (int)reader.ReadByte();
+				int ammoLeftInClipMaxAddedAmmo = (int)reader.ReadByte();
+
+
 				int sufficate = reader.ReadInt32();
 				int PrismalShots = reader.ReadInt32();
 				int plasmaLeftInClip = reader.ReadInt32();
@@ -222,6 +239,9 @@ namespace SGAmod
 				{
 					SGAPlayer sgaplayer = Main.player[player].GetModPlayer(this, typeof(SGAPlayer).Name) as SGAPlayer;
 					sgaplayer.ammoLeftInClip = ammoLeftInClip;
+					sgaplayer.ammoLeftInClipMax = ammoLeftInClipMax;
+					sgaplayer.ammoLeftInClipMaxLastHeld = ammoLeftInClipMaxLastHeld;
+					sgaplayer.ammoLeftInClipMaxAddedAmmo = ammoLeftInClipMaxAddedAmmo;
 					sgaplayer.sufficate = sufficate;
 					sgaplayer.PrismalShots = PrismalShots;
 					sgaplayer.plasmaLeftInClip = plasmaLeftInClip;

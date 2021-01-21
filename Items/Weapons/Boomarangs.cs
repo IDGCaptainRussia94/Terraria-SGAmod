@@ -578,10 +578,6 @@ namespace SGAmod.Items.Weapons
 			item.shoot = ModContent.ProjectileType<FridgeflamarangProj>();
 			item.shootSpeed = 10f;
 		}
-		public override string Texture
-		{
-			get { return ("SGAmod/Invisible"); }
-		}
 
 		public override bool CanUseItem(Player player)
 		{
@@ -622,11 +618,11 @@ namespace SGAmod.Items.Weapons
 				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
 				spriteBatch.Draw(texture, item.Center - Main.screenPosition, null, Color.White, 0f, textureOrigin, 0.50f, SpriteEffects.FlipHorizontally, 0f);
 
-				texture = Main.itemTexture[ItemID.IceBoomerang];
+				/*texture = Main.itemTexture[ItemID.IceBoomerang];
 				textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
 
 				spriteBatch.Draw(texture, item.Center + new Vector2(-8, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
-				spriteBatch.Draw(Main.itemTexture[ItemID.Flamarang], item.Center + new Vector2(8, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(Main.itemTexture[ItemID.Flamarang], item.Center + new Vector2(8, 0) - Main.screenPosition, null, lightColor, 0f, textureOrigin, 1f, SpriteEffects.FlipHorizontally, 0f);*/
 			}
 		}
 
@@ -641,12 +637,12 @@ namespace SGAmod.Items.Weapons
 				Vector2 drawPos = (position) + (slotSize * Main.inventoryScale) *0.31f;
 				spriteBatch.Draw(texture, drawPos, null, drawColor, 0f, textureOrigin, Main.inventoryScale/2.5f, SpriteEffects.None, 0f);
 
-				texture = Main.itemTexture[ItemID.IceBoomerang];
+				/*texture = Main.itemTexture[ItemID.IceBoomerang];
 				position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
 				drawPos = position + slotSize * Main.inventoryScale / 2f;
 				textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
 				spriteBatch.Draw(texture, drawPos + new Vector2(-8, 0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.None, 0f);
-				spriteBatch.Draw(Main.itemTexture[ItemID.Flamarang], drawPos + new Vector2(8, 0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(Main.itemTexture[ItemID.Flamarang], drawPos + new Vector2(8, 0), null, drawColor, 0f, textureOrigin, Main.inventoryScale, SpriteEffects.FlipHorizontally, 0f);*/
 			}
 		}
 	}

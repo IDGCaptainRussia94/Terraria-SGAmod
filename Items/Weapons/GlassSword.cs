@@ -68,7 +68,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 5;
+			item.damage = 6;
 			item.maxStack = 99;
 			item.crit = 0;
 			item.melee = true;
@@ -102,7 +102,6 @@ namespace SGAmod.Items.Weapons
 	public class BrokenGlass : ModProjectile
 	{
 
-		bool hittile = false;
 		public virtual bool hitwhilefalling => false;
 		public virtual float trans => 1f;
 		public Player P;
@@ -160,7 +159,6 @@ namespace SGAmod.Items.Weapons
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			hittile = true;
 			return true;
 		}
 

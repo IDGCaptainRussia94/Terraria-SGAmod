@@ -135,27 +135,33 @@ namespace SGAmod.Dimensions
 
 
 
-	public class DimDebug4 : ModItem
+	public class DimDebug5 : DimDebug1
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug-Go to Limborinth");
+		}
+
+		public override bool UseItem(Player player)
+		{
+			//SLWorld.EnterSubworld("SGAmod_Blank");
+			SGAPocketDim.EnterSubworld(mod.GetType().Name + "_Limborinth");
+			return true;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Item_" + ItemID.DarkBlueSolution; }
+		}
+
+	}
+
+	public class DimDebug4 : DimDebug1
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug-Go to The Gate");
 		}
 
-		public override void SetDefaults()
-		{
-			item.width = 14;
-			item.height = 14;
-			item.maxStack = 30;
-			item.rare = 8;
-			item.value = 1000;
-			item.useStyle = 2;
-			item.useAnimation = 17;
-			item.useTime = 17;
-			item.useTurn = true;
-			item.UseSound = SoundID.Item9;
-			item.consumable = true;
-		}
 		public override bool UseItem(Player player)
 		{
 			//SLWorld.EnterSubworld("SGAmod_Blank");
@@ -169,26 +175,11 @@ namespace SGAmod.Dimensions
 
 	}
 
-	public class DimDebug3 : ModItem
+	public class DimDebug3 : DimDebug1
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug-Go to Test Dim");
-		}
-
-		public override void SetDefaults()
-		{
-			item.width = 14;
-			item.height = 14;
-			item.maxStack = 30;
-			item.rare = 8;
-			item.value = 1000;
-			item.useStyle = 2;
-			item.useAnimation = 17;
-			item.useTime = 17;
-			item.useTurn = true;
-			item.UseSound = SoundID.Item9;
-			item.consumable = true;
 		}
 		public override bool UseItem(Player player)
 		{
@@ -203,26 +194,11 @@ namespace SGAmod.Dimensions
 
 	}
 
-	public class DimDebug2 : ModItem
+	public class DimDebug2 : DimDebug1
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug-Go to Deeper Dungeons");
-		}
-
-		public override void SetDefaults()
-		{
-			item.width = 14;
-			item.height = 14;
-			item.maxStack = 30;
-			item.rare = 8;
-			item.value = 1000;
-			item.useStyle = 2;
-			item.useAnimation = 17;
-			item.useTime = 17;
-			item.useTurn = true;
-			item.UseSound = SoundID.Item9;
-			item.consumable = true;
 		}
 		public override bool UseItem(Player player)
 		{
@@ -232,7 +208,7 @@ namespace SGAmod.Dimensions
 		}
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + ItemID.DarkBlueSolution; }
+			get { return "Terraria/Item_" + ItemID.BlueSolution; }
 		}
 
 	}

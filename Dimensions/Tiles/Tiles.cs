@@ -15,6 +15,8 @@ using Idglibrary;
 using Terraria.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.DataStructures;
+using System.Linq;
+using SGAmod.Items.Tools;
 
 namespace SGAmod.Dimensions.Tiles
 {
@@ -217,7 +219,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMerge[Type][(ushort)mod.TileType("HardenedFabric")] = true;
 			minPick = 240;
 			soundType = 7;
-			mineResist = 5f;
+			mineResist = 25f;
 			dustType = DustID.Smoke;
 			drop = ModContent.ItemType<AncientFabricItem>();
 			TileID.Sets.CanBeClearedDuringGeneration[Type] = false;
@@ -226,14 +228,23 @@ namespace SGAmod.Dimensions.Tiles
 		}
 		public override bool CanKillTile(int i, int j, ref bool blockDamaged)
 		{
-			return false;
+			bool canbreak = Main.player.Where(testby => testby.DistanceSQ(new Vector2(i * 16, j*16))<160*160 && !testby.HeldItem.IsAir && testby.HeldItem.type == ModContent.ItemType<Braxsaw>()).ToList().Count>0;
+			return canbreak;
 		}
-		public override bool CanExplode(int i, int j)
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+        {
+            if (!fail && !effectOnly)
+            {
+				DimDingeonsWorld.ancientLockedFabric = false;
+			}
+        }
+        public override bool CanExplode(int i, int j)
 		{
 			return false;
 		}
 		public override void FloorVisuals(Player player)
 		{
+			if (player.HeldItem.type != ModContent.ItemType<Braxsaw>())
 			SGAPocketDim.ExitSubworld();
 		}
 	}

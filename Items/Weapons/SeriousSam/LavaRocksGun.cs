@@ -216,7 +216,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void AI()
 		{
 
-			Point16 loc = new Point16((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16);
+			Point16 loc = new Point16((int)projectile.Center.X >> 4, (int)projectile.Center.Y >> 4);
 			if (WorldGen.InWorld(loc.X, loc.Y))
 			{
 				Tile tile = Main.tile[loc.X, loc.Y];

@@ -604,7 +604,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/MidasMinionBuff";
 			return true;
 		}
 

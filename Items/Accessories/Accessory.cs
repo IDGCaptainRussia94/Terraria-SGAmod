@@ -12,6 +12,7 @@ using Idglibrary;
 using AAAAUThrowing;
 using Terraria.Localization;
 using SGAmod.Items.Weapons;
+using SGAmod.Buffs;
 
 namespace SGAmod.Items.Accessories
 {
@@ -426,7 +427,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("PortableHive"), 1);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 25);
 			recipe.AddIngredient(mod.ItemType("MoneySign"), 15);
-			recipe.AddIngredient(mod.ItemType("ByteSoul"), 50);
+			recipe.AddIngredient(mod.ItemType("AncientFabricItem"), 100);
 			recipe.AddIngredient(ItemID.ShroomiteBar, 30);
 			recipe.AddIngredient(ItemID.SpectreBar, 30);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 30);
@@ -523,7 +524,7 @@ namespace SGAmod.Items.Accessories
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Idol Of Midas");
+			DisplayName.SetDefault("Midas Insignia");
 			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin\ndefensive/movement buffs while facing left, offensive buffs while facing right, gold and platinum coins give you both\nIncreased damage with the more coins you have in your inventory (this caps at 25% at 10 platinum)\n15% increased damage against enemies afflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are consumed in the process"));
 		}
 
@@ -620,7 +621,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tech Master's Gear");
-			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\nGrants the effects of:\n-Prismal Core, Plasma Pack, and Fridgeflame Canister\n-Handling Gloves and Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Kunckles (only one needed to craft)");
+			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\nGrants the effects of:\n-Prismal Core, Plasma Pack, and Fridgeflame Canister\n-Handling Gloves and Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Knuckles (only one needed to craft)\n-Rusted Bulwark's effects are doubled");
 		}
 
 		public override void SetDefaults()
@@ -752,7 +753,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bundle of Jab-lin Parts");
-			Tooltip.SetDefault("'Worthless money-wise, but won't discount your life'\nThe amount of javelins you can stick into a target increases by 1\nImproves the damage over time of javelins by 25%\nJavelin damage increased by 25%\nDoesn't stack with component parts");
+			Tooltip.SetDefault("'Worthless money-wise, but won't discount your life'\nThe amount of javelins you can stick into a target increases by 1\nImproves the damage over time of javelins by 25%\nJavelin damage increased by 25%\nEffects of Jabb-a-wacky (hide to disable)\nDoesn't stack with component parts");
 		}
 
 		public override void SetDefaults()
@@ -760,7 +761,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.rare = ItemRarityID.LightPurple;
-			item.value = Item.sellPrice(0, 0, 4, 0); ;
+			item.value = Item.buyPrice(0, 0, 20, 0);
 			item.accessory = true;
 		}
 
@@ -768,6 +769,8 @@ namespace SGAmod.Items.Accessories
 		{
 			player.GetModPlayer<SGAPlayer>().JavelinSpearHeadBundle = true;
 			player.GetModPlayer<SGAPlayer>().JavelinBaseBundle = true;
+			if (!hideVisual)
+			ModContent.GetInstance<Jabbawacky>().UpdateAccessory(player, hideVisual);
 		}
 
 		public override void AddRecipes()
@@ -775,6 +778,7 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("JavelinSpearHeadBundle"), 1);
 			recipe.AddIngredient(mod.ItemType("JavelinBaseBundle"), 1);
+			recipe.AddIngredient(mod.ItemType("Jabbawacky"), 1);
 			recipe.AddIngredient(mod.ItemType("VirulentBar"), 10);
 			recipe.AddIngredient(ItemID.RopeCoil, 1);
 			recipe.AddTile(TileID.TinkerersWorkbench);
@@ -833,8 +837,6 @@ namespace SGAmod.Items.Accessories
 			item.knockBack = 1f;
 		}
 
-		public override string Texture => "Terraria/Heart2";
-
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			base.UpdateAccessory(player, hideVisual);
@@ -872,7 +874,97 @@ namespace SGAmod.Items.Accessories
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
-	}	
+	}
+	public class Rainbowheart : Blazingheart
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("True Rainbow Heart");
+			Tooltip.SetDefault("'Our fires burn hotter than the golden sun'\nAll effects of the Blazing Heart and Alkalescent Heart");
+		}
+        public override string Texture => "SGAmod/GreyHeart";
+        public override void SetDefaults()
+		{
+			item.width = 40;
+			item.height = 40;
+			item.value = 1500000;
+			item.rare = -12;
+			item.expert = true;
+			item.accessory = true;
+			item.defense = 0;
+			//item.damage = 1;
+			item.summon = true;
+			item.knockBack = 1f;
+		}
+        public override Color? GetAlpha(Color lightColor)
+        {
+            return Main.hslToRgb(Main.GlobalTime % 1f, 1f, 0.75f);
+        }
+
+        public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			player.SGAPly().FieryheartBuff = 30;
+			player.SGAPly().alkalescentHeart = true;
+		}
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+
+			Texture2D inner = Main.itemTexture[ModContent.ItemType<AssemblyStar>()];
+			Texture2D inner2 = Main.itemTexture[item.type];
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			Effect hallowed = SGAmod.HallowedEffect;
+
+			hallowed.Parameters["prismAlpha"].SetValue(1f);
+			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));
+			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, Main.GlobalTime / 1f, Main.GlobalTime / 2f));
+			hallowed.Parameters["overlayAlpha"].SetValue(1f);
+			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2.5f,2.5f,0f));
+			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+
+			Vector2 slotSize = new Vector2(52f, 52f);
+			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
+
+			for (float i = 0; i < 1f; i += 0.20f)
+			{
+				spriteBatch.Draw(inner, drawPos, null, Color.White * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.75f, i * MathHelper.TwoPi, textureOrigin, Main.inventoryScale * (0.5f + 1.75f * (((Main.GlobalTime / 2f) + i) % 1f)), SpriteEffects.None, 0f);
+				hallowed.Parameters["prismColor"].SetValue(Main.hslToRgb(i % 1f, 1f, 0.75f).ToVector3());
+				hallowed.Parameters["alpha"].SetValue((1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.75f);
+				hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+			}
+
+			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));
+			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(Main.GlobalTime / 4f, 0, Main.GlobalTime / 4f));
+			hallowed.Parameters["overlayAlpha"].SetValue(0.5f);
+			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(-2.5f, 0f, 0f));
+			hallowed.Parameters["prismColor"].SetValue(((Color)GetAlpha(itemColor)).ToVector3());
+			hallowed.Parameters["alpha"].SetValue(1f);
+			hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+			spriteBatch.Draw(inner2, drawPos, null, Color.White,0, inner2.Size()/2f, Main.inventoryScale*1, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			return false;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("Blazingheart"), 1);
+			recipe.AddIngredient(mod.ItemType("AlkalescentHeart"), 1);
+			recipe.AddIngredient(mod.ItemType("AncientFabricItem"), 15);
+			recipe.AddTile(TileID.LihzahrdAltar);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
 	public class LunarSlimeHeart : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -2175,7 +2267,7 @@ namespace SGAmod.Items.Accessories
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			player.bulletDamage += 0.06f;
-			sgaply.ammoLeftInClipMax += 2;
+			sgaply.ammoLeftInClipMaxStack += 2;
 		}
 
 	}
@@ -2201,7 +2293,7 @@ namespace SGAmod.Items.Accessories
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.RevolverSpeed += 0.20f;
-			sgaply.ammoLeftInClipMax += 2;
+			sgaply.ammoLeftInClipMaxStack += 2;
 			player.bulletDamage += 0.10f;
 		}
 		public override void AddRecipes()
@@ -2967,7 +3059,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Druidic Sneakers");
-			Tooltip.SetDefault("Mana herbs sometimes grow on grass where you walk\nHarvesting them yields Mana Stars\nEffects of Magus Slippers\n'Eco Friendly!");
+			Tooltip.SetDefault("Mana herbs sometimes grow on grass where you walk\nHarvesting them yields Mana Stars\nEffects of Magus Slippers\n'Eco Friendly!'");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3363,6 +3455,76 @@ namespace SGAmod.Items.Accessories
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.gamePadAutoAim = 2;
 			//Terraria.GameContent.Events.DD2Event.LaneSpawnRate = 9;
+		}
+
+	}
+	public class RustedBulwark : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Rusted Bulwark");
+			Tooltip.SetDefault("Halves Knockback taken\nwhen below half health, grants:\n+1 defense\n+4% increased blocking damage with shields\nScoring a Just Block will Rustburn the attacking enemy\n'Has seen better days...'");
+		}
+
+		public override void SetDefaults()
+		{
+			//item.CloneDefaults(ItemID.ManaFlower);
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.White;
+			item.value = Item.buyPrice(0, 0, 20, 0);
+			item.accessory = true;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "RustBurnText", RustBurn.RustText));
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			if (player.statLife < player.statLifeMax2 / 2)
+			{
+				player.statDefense += 1;
+				sgaplayer.shieldDamageReduce += 0.04f;
+			}
+			sgaplayer.knockbackTaken *= 0.5f;
+			sgaplayer.rustedBulwark = true;
+		}
+
+	}
+	public class Jabbawacky : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Jabb-a-wacky");
+			Tooltip.SetDefault("Increases Jab-lin jabbing speed by 20% and grants autofire\n"+ Idglib.ColorText(Color.Red, "Your precision gets a little off thou..."));
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_" + ItemID.Hook); }
+		}
+
+		public override void SetDefaults()
+		{
+			//item.CloneDefaults(ItemID.ManaFlower);
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.Green;
+			item.value = Item.buyPrice(0, 1, 50, 0);
+			item.accessory = true;
+		}
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb((Main.GlobalTime / 4f) % 1f, 0.25f, 0.50f);
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			sgaplayer.jabALot = true;
 		}
 
 	}

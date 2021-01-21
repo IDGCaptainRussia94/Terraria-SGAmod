@@ -18,6 +18,7 @@ using Idglibrary;
 namespace SGAmod.NPCs.Hellion
 {
     using System;
+    using global::SGAmod.Items;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Terraria;
@@ -922,7 +923,7 @@ namespace SGAmod.NPCs.Hellion
         public override void NPCLoot()
         {
 
-            int num154 = NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)npc.position.Y + npc.height / 2, mod.NPCType("HellionMonolog"), npc.whoAmI, SGAWorld.downedHellion < 1 ? 0f : 1698f, 0f, 0f, 0f, 255);
+            int num154 = NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)npc.position.Y + npc.height / 2, mod.NPCType("HellionMonolog"), npc.whoAmI, SGAWorld.downedHellion < 1 || TheWholeExperience.Check() ? 0f : 1698f, 0f, 0f, 0f, 255);
 
             if (SGAWorld.downedHellion < 1)
             {

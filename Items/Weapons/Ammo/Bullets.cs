@@ -229,7 +229,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lesser Prismic Bullet");
-			Tooltip.SetDefault("Shots cycle through your 2nd and 3rd ammo slots while placed in your first\nDefaults to a weak musket ball\nHas a 33% to not consume the fired ammo type");
+			Tooltip.SetDefault("Shots cycle through your 2nd and 3rd ammo slots while placed in your first\nDefaults to a weak musket ball\nHas a 66% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{
@@ -299,8 +299,8 @@ namespace SGAmod.Items.Weapons.Ammo
 
 		public override void OnConsumeAmmo(Player player)
 		{
-			if (ammotype!=item.type && Main.rand.Next(maxvalue+1)==0)
-			player.ConsumeItem(ammotype);
+			if (ammotype!=item.type && Main.rand.Next(maxvalue+1)<1)
+			player.ConsumeItemRespectInfiniteAmmoTypes(ammotype);
 		}
 
 		public override void PickAmmo(Item weapon, Player player, ref int type, ref float speed, ref int damage, ref float knockback)
@@ -331,7 +331,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Bullet");
-			Tooltip.SetDefault("Highly increased damage over its precursor\nCycles through your ammo slots when placed in your first; defaults to Musket Balls\nHas a 25% to not consume the fired ammo type");
+			Tooltip.SetDefault("Highly increased damage over its precursor\nCycles through all your ammo slots when placed in your first; defaults to Musket Balls\nHas a 75% to not consume the fired ammo type");
 		}
 		public override string Texture
 		{

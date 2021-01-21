@@ -27,4 +27,35 @@ namespace SGAmod.Dimensions.Walls
 			fail = true;
 		}
 	}
+
+	public class CrimsonFakeWall : NullWall
+	{
+		public override void SetDefaults()
+		{
+			Main.wallHouse[Type] = false;
+			dustType = DustID.Smoke;
+			AddMapEntry(new Color(100, 0, 0));
+		}
+        public override bool Autoload(ref string name, ref string texture)
+        {
+			texture = "Terraria/Wall_" + WallID.CrimsonUnsafe4;
+			return true;
+        }
+    }
+
+	public class CorruptionFakeWall : NullWall
+	{
+		public override void SetDefaults()
+		{
+			Main.wallHouse[Type] = false;
+			dustType = DustID.Smoke;
+			AddMapEntry(new Color(100, 0, 100));
+		}
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Wall_" + WallID.CorruptionUnsafe4;
+			return true;
+		}
+	}
+
 }

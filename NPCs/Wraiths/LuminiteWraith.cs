@@ -12,6 +12,7 @@ using SGAmod.Projectiles;
 using Terraria.Graphics.Shaders;
 using SGAmod.Effects;
 using System.Linq;
+using SGAmod.Items;
 
 namespace SGAmod.NPCs.Wraiths
 {
@@ -383,7 +384,7 @@ namespace SGAmod.NPCs.Wraiths
 			npc.defense = 0;
 			npc.lifeMax = 20000;
 			npc.defense = 25;
-			if (SGAWorld.downedWraiths < 3)
+			if (SGAWorld.downedWraiths < 3 || TheWholeExperience.Check())
 			{
 				npc.damage = 100;
 				npc.lifeMax = 25000;
@@ -1017,9 +1018,9 @@ namespace SGAmod.NPCs.Wraiths
 	}
 
 
-		public class WraithPhantasm: LuminiteWraithArms
+	public class WraithPhantasm : LuminiteWraithArms
 	{
-		public new int armortype=ItemID.Phantasm;
+		public new int armortype = ItemID.Phantasm;
 
 		public override void SetStaticDefaults()
 		{
@@ -1050,58 +1051,68 @@ namespace SGAmod.NPCs.Wraiths
 		}
 		public override void AI()
 		{
-		CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
-		int npctype=mod.NPCType(myself.attachedType);
-		NPC myowner=Main.npc[myself.attachedID];
-		if (myowner.active==false){
-		myself.ArmorMalfunction();
-		}else{
-		npc.dontTakeDamage=myowner.dontTakeDamage;
-			Player P = Main.player[npc.target];
-			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
+			CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
+			int npctype = mod.NPCType(myself.attachedType);
+			NPC myowner = Main.npc[myself.attachedID];
+			if (myowner.active == false)
 			{
-				npc.TargetClosest(false);
-				P = Main.player[npc.target];
-				if (!P.active || P.dead)
+				myself.ArmorMalfunction();
+			}
+			else
+			{
+				npc.dontTakeDamage = myowner.dontTakeDamage;
+				Player P = Main.player[npc.target];
+				if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
 				{
-					npc.active=false;
-					Main.npc[(int)npc.ai[1]].active=false;
+					npc.TargetClosest(false);
+					P = Main.player[npc.target];
+					if (!P.active || P.dead)
+					{
+						npc.active = false;
+						Main.npc[(int)npc.ai[1]].active = false;
+					}
 				}
-				}else{
-		npc.localAI[0]+=0.02f;
-		double angle=((double)(npc.localAI[0]))+ 2.0* Math.PI;
-		if (!myowner.dontTakeDamage)
-		npc.ai[0]+=1;
-		Vector2 itt=(myowner.Center-npc.Center+new Vector2((float)Math.Cos((float)angle)*npc.ai[1],(float)Math.Sin((float)angle)*npc.ai[1]));
-		if (npc.ai[0]%1800>1250){
-		itt=(P.Center-npc.Center+new Vector2((float)Math.Cos((float)angle)*npc.ai[1],(float)Math.Sin((float)angle)*npc.ai[1]));;
-		}
-		float locspeed=0.25f;
-		if (npc.ai[0]%1400>950){
-		Vector2 cas=new Vector2(npc.position.X-P.position.X,npc.position.Y-P.position.Y);
-		double dist=cas.Length();
-		float rotation = (float)Math.Atan2(npc.position.Y - (P.position.Y - (new Vector2(0,(float)(dist*0.04f))).Y + (P.height * 0.5f)), npc.position.X - (P.position.X + (P.width * 0.5f)));
-		npc.rotation=rotation;//npc.rotation+((rotation-npc.rotation)*0.1f);
-		npc.velocity=npc.velocity*0.92f;
-		if (npc.ai[0]%10==0 && npc.ai[0]%1400>1150){
-		Idglib.Shattershots(npc.Center,npc.Center+new Vector2(-15*npc.spriteDirection,0),new Vector2(0,0),ProjectileID.MoonlordArrowTrail,35,20,0,1,true,(Main.rand.Next(-100,100)*0.000f)-npc.rotation,true,300);
-		}
-		npc.spriteDirection=1;
-		}else{
-		if (Math.Abs(npc.velocity.X)>2){ npc.spriteDirection=npc.velocity.X>0 ? -1 : 1; }
-		npc.rotation=(float)npc.velocity.X*0.09f;
-		locspeed=2.5f;
-		}
-		npc.velocity=npc.velocity*0.96f;
-		itt.Normalize();
-		npc.velocity=npc.velocity+(itt*locspeed);
-		npc.timeLeft=999;
+				else
+				{
+					npc.localAI[0] += 0.02f;
+					double angle = ((double)(npc.localAI[0])) + 2.0 * Math.PI;
+					if (!myowner.dontTakeDamage)
+						npc.ai[0] += 1;
+					Vector2 itt = (myowner.Center - npc.Center + new Vector2((float)Math.Cos((float)angle) * npc.ai[1], (float)Math.Sin((float)angle) * npc.ai[1]));
+					if (npc.ai[0] % 1800 > 1250)
+					{
+						itt = (P.Center - npc.Center + new Vector2((float)Math.Cos((float)angle) * npc.ai[1], (float)Math.Sin((float)angle) * npc.ai[1])); ;
+					}
+					float locspeed = 0.25f;
+					if (npc.ai[0] % 1400 > 950)
+					{
+						Vector2 cas = new Vector2(npc.position.X - P.position.X, npc.position.Y - P.position.Y);
+						double dist = cas.Length();
+						float rotation = (float)Math.Atan2(npc.position.Y - (P.position.Y - (new Vector2(0, (float)(dist * 0.04f))).Y + (P.height * 0.5f)), npc.position.X - (P.position.X + (P.width * 0.5f)));
+						npc.rotation = rotation;//npc.rotation+((rotation-npc.rotation)*0.1f);
+						npc.velocity = npc.velocity * 0.92f;
+						if (npc.ai[0] % 10 == 0 && npc.ai[0] % 1400 > 1150)
+						{
+							Idglib.Shattershots(npc.Center, npc.Center + new Vector2(-15 * npc.spriteDirection, 0), new Vector2(0, 0), ProjectileID.MoonlordArrowTrail, 35, 20, 0, 1, true, (Main.rand.Next(-100, 100) * 0.000f) - npc.rotation, true, 300);
+						}
+						npc.spriteDirection = 1;
+					}
+					else
+					{
+						if (Math.Abs(npc.velocity.X) > 2) { npc.spriteDirection = npc.velocity.X > 0 ? -1 : 1; }
+						npc.rotation = (float)npc.velocity.X * 0.09f;
+						locspeed = 2.5f;
+					}
+					npc.velocity = npc.velocity * 0.96f;
+					itt.Normalize();
+					npc.velocity = npc.velocity + (itt * locspeed);
+					npc.timeLeft = 999;
+				}
+
+			}
 		}
 
-		}
 	}
-
-}
 
 
 
@@ -1354,6 +1365,7 @@ namespace SGAmod.NPCs.Wraiths
 							newguy2.noTileCollide = true;
 							newguy2.noGravity = true;
 							newguy2.damage = 0;
+							newguy2.netUpdate = true;
 							//itz[0].aiStyle=0;
 						}
 						if (npc.ai[0] % 150 == 0)
@@ -2023,7 +2035,7 @@ namespace SGAmod.NPCs.Wraiths
 			List<Vector2>[] trailspots = { new List<Vector2>(), new List<Vector2>() };
 
 			float adder = MathHelper.TwoPi / 64f;
-			for (float fa=0; fa < MathHelper.TwoPi+ adder; fa += adder)
+			for (float fa=0; fa < MathHelper.TwoPi; fa += adder)
 			{
 				trailspots[0].Add(((Vector2.UnitX.RotatedBy(fa)) * range) + projectile.Center);
 				trailspots[1].Add(((Vector2.UnitX.RotatedBy(fa)) * (range*(1f-(projectile.timeLeft/300f)))) + projectile.Center);
@@ -2039,6 +2051,7 @@ namespace SGAmod.NPCs.Wraiths
 				trail.trailThickness = (projectile.timeLeft / 200f) * 20f;
 				trail.trailThicknessIncrease = 0;
 				trail.doFade = false;
+				trail.connectEnds = true;
 				trail.strength = 1f;
 				trail.DrawTrail(trailspots[i], projectile.Center);
 			}

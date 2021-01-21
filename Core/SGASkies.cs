@@ -199,17 +199,17 @@ namespace SGAmod
 		public override void Update(GameTime gameTime)
 		{
 			acolor = Main.hslToRgb((Main.GlobalTime / 10f) % 1, 0.81f, 0.5f);
-			SGAmod.ProgramSkyAlpha = MathHelper.Clamp(NPC.CountNPCS((SGAmod.Instance).NPCType("SPinky")) > 0 ? SGAmod.ProgramSkyAlpha + 0.005f : SGAmod.ProgramSkyAlpha - 0.005f, 0f, 1f);
+			SGAmod.ProgramSkyAlpha = MathHelper.Clamp(NPC.CountNPCS((SGAmod.Instance).NPCType("SPinkyTrue")) > 0 && SGAmod.ProgramSkyAlpha>0 ? SGAmod.ProgramSkyAlpha + 0.005f : SGAmod.ProgramSkyAlpha - 0.005f, 0f, 1f);
 		}
 
 		private float GetIntensity()
 		{
-			return SGAmod.ProgramSkyAlpha;
+			return Math.Max(0.05f,SGAmod.ProgramSkyAlpha);
 		}
 
 		public override Color OnTileColor(Color inColor)
 		{
-			return acolor;
+			return acolor*GetIntensity();
 		}
 
 		public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth)

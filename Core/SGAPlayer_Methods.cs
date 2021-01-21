@@ -127,13 +127,16 @@ namespace SGAmod
 			
 		}
 
-		public bool ConsumeElectricCharge(int requiredcharge, int delay, bool damage = false)
+		public bool ConsumeElectricCharge(int requiredcharge, int delay, bool damage = false,bool consume = true)
 		{
 			int newcharge = (int)Math.Max(requiredcharge * electricChargeCost,1);
 			if (electricCharge > newcharge)
 			{
-				electricdelay = Math.Max(delay * electricChargeReducedDelay, electricdelay);
-				electricCharge -= newcharge;
+				if (consume)
+				{
+					electricdelay = Math.Max(delay * electricChargeReducedDelay, electricdelay);
+					electricCharge -= newcharge;
+				}
 				return true;
 			}
 			else
@@ -394,12 +397,20 @@ namespace SGAmod
 					player.ManaEffect(damage);
 				}
 
-				if (diesIraeStone && damageSourceIndex > 0)
-                {
-					float empty = 5f;
-					bool emptyCrit = true;
-					Main.npc[damageSourceIndex - 1].SGANPCs().DoApoco(Main.npc[damageSourceIndex - 1],shield,player,null,ref damage,ref empty, ref emptyCrit, 4,true);
-                }
+				if (damageSourceIndex > 0)
+				{
+					if (rustedBulwark)
+					{
+						RustBurn.ApplyRust(Main.npc[damageSourceIndex - 1], (2 + damage) * 20);
+					}
+
+					if (diesIraeStone)
+					{
+						float empty = 5f;
+						bool emptyCrit = true;
+						Main.npc[damageSourceIndex - 1].SGANPCs().DoApoco(Main.npc[damageSourceIndex - 1], shield, player, null, ref damage, ref empty, ref emptyCrit, 4, true);
+					}
+				}
 
 				return true;
 			}
@@ -466,7 +477,7 @@ namespace SGAmod
 
 						Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
 
-						if (!(proj.modProjectile as CorrodedShieldProj).HandleBlock(ref damage, player))
+						if (!NoHitCharm && !(proj.modProjectile as CorrodedShieldProj).HandleBlock(ref damage, player))
 							return true;
 
 						return false;

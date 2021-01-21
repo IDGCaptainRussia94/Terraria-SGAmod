@@ -478,7 +478,7 @@ namespace SGAmod.Items.Weapons
 					if (Main.dedServ)
 					{
 						ModPacket packet = SGAmod.Instance.GetPacket();
-						packet.Write((ushort)SGAmod.MessageType.Snapped);
+						packet.Write((ushort)MessageType.Snapped);
 						packet.Write(60 * 300);
 						packet.Send();
 					}
@@ -1299,7 +1299,7 @@ namespace SGAmod.Items.Weapons
 		public int cooldown = -10;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Avarice Coin");
+			DisplayName.SetDefault("Jarate Shuriken");
 		}
 		public override string Texture
 		{

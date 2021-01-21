@@ -59,6 +59,10 @@ namespace SGAmod
 			int maybeExpertiseCollected = tag.GetInt("ZZZExpertiseCollectedTotalZZZ");
 			ExpertiseCollectedTotal = maybeExpertiseCollected;
 
+			ExpertisePointsFromBosses = new List<int>();
+			ExpertisePointsFromBossesPoints = new List<int>();
+			ExpertisePointsFromBossesModded = new List<string>();
+
 			if (maybeExpertiseCollected < 1 || (!tag.ContainsKey("resetver")))
 			{
 				GenerateNewBossList();
@@ -72,10 +76,6 @@ namespace SGAmod
 				}
 				else
 				{
-					ExpertisePointsFromBosses = new List<int>();
-					ExpertisePointsFromBossesPoints = new List<int>();
-					ExpertisePointsFromBossesModded = new List<string>();
-
 					for (int i = 0; i < maxx; i += 1)
 					{
 						int v1 = tag.GetInt("enemyvalues" + ((string)i.ToString()));
@@ -178,7 +178,7 @@ namespace SGAmod
 				if (Main.expertMode)
 				{
 					if (SGAWorld.NightmareHardcore > 0)
-						collected = (int)(collected * (SGAWorld.NightmareHardcore == 1 ? 1.25f : 1.40f));
+						collected = (int)(collected * ((SGAWorld.NightmareHardcore == 1 ? 1.25f : 1.40f) + (NoHitCharm ? 1.25f : 0)));
 				}
 				else
 				{
@@ -225,9 +225,6 @@ namespace SGAmod
 
 		public void GenerateNewBossList()
 		{
-			ExpertisePointsFromBosses = new List<int>();
-			ExpertisePointsFromBossesPoints = new List<int>();
-			ExpertisePointsFromBossesModded = new List<string>();
 
 			//Prehardmode Bosses (+2500 total)
 

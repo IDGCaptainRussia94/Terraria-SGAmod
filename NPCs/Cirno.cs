@@ -57,7 +57,7 @@ namespace SGAmod.NPCs
 			animationType = 0;
 			npc.noTileCollide = true;
 			npc.noGravity = true;
-			music = MusicID.Boss2;
+			music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cirno_v2");
 			bossBag = mod.ItemType("CirnoBag");
 			npc.coldDamage = true;
 			npc.value = Item.buyPrice(0, 15, 0, 0);

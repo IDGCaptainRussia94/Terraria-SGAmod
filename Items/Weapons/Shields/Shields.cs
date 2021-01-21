@@ -328,7 +328,7 @@ namespace SGAmod.Items.Weapons.Shields
 					player.velocity.Y /= 2f;
 					player.immune = true;
 					player.immuneTime = 30;
-					player.GetModPlayer<SGAPlayer>().realIFrames = 30;
+					//player.GetModPlayer<SGAPlayer>().realIFrames = 30;
 
 				}
 				player.velocity.X = projectile.velocity.X;
@@ -492,6 +492,7 @@ namespace SGAmod.Items.Weapons.Shields
 				player.immuneTime = 10;
 				Main.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 9, 0.6f, 0.5f);
 				player.manaRegenDelay = Math.Max(player.manaRegenDelay, 180);
+				player.velocity -= Vector2.UnitX * player.direction * 8f;
 				return false;
 			}
 			return true;
@@ -539,7 +540,33 @@ namespace SGAmod.Items.Weapons.Shields
 			}
 		}
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool CanUseItem(Player player)
+		{
+			Vector2 vector27 = default(Vector2);
+			vector27.X = (float)Main.mouseX + Main.screenPosition.X;
+			if (player.gravDir == 1f)
+			{
+				vector27.Y = (float)Main.mouseY + Main.screenPosition.Y - (float)player.height;
+			}
+			else
+			{
+				vector27.Y = Main.screenPosition.Y + (float)Main.screenHeight - (float)Main.mouseY;
+			}
+			vector27.X -= player.width / 2;
+			if (vector27.X > 50f && vector27.X < (float)(Main.maxTilesX * 16 - 50) && vector27.Y > 50f && vector27.Y < (float)(Main.maxTilesY * 16 - 50))
+			{
+				int num263 = (int)(vector27.X / 16f);
+				int num264 = (int)(vector27.Y / 16f);
+				if ((Main.tile[num263, num264].wall != 87 || !((double)num264 > Main.worldSurface) || NPC.downedPlantBoss) && !Collision.SolidCollision(vector27, player.width, player.height))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
 			Vector2 vector27 = default(Vector2);
 			vector27.X = (float)Main.mouseX + Main.screenPosition.X;
@@ -1234,7 +1261,7 @@ namespace SGAmod.Items.Weapons.Shields
 							//player.velocity.Y /= 2f;
 							player.immune = true;
 							player.immuneTime = 30;
-							player.GetModPlayer<SGAPlayer>().realIFrames = 30;
+							//player.GetModPlayer<SGAPlayer>().realIFrames = 30;
 						}
 					}
 					else

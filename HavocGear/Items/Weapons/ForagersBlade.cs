@@ -18,16 +18,16 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.useTurn = true;
             item.rare = 0;
             item.useStyle = 1;
-            item.useAnimation = 22;
+            item.useAnimation = 24;
            	item.knockBack = 5;
-            item.useTime = 18;
+            item.useTime = 20;
             item.consumable = false;
             item.UseSound = SoundID.Item1;
         }
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Machete");
+            DisplayName.SetDefault("Forager's Blade");
             Tooltip.SetDefault("Dealing the killing blow will skin Leather off organic enemies");
         }
 

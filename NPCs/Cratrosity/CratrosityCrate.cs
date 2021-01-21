@@ -11,11 +11,12 @@ using Terraria.ModLoader;
 
 namespace SGAmod.NPCs.Cratrosity
 {
-	public class CratrosityCrate: ModNPC
+	public class CratrosityCrate : ModNPC
 	{
-		public int counter=0;
-		public int cratetype=ItemID.WoodenCrate;
-		public Vector2 apointzz=new Vector2(0,0);
+		public int counter = 0;
+		private int realcounter = 0;
+		public int cratetype = ItemID.WoodenCrate;
+		public Vector2 apointzz = new Vector2(0, 0);
 		protected virtual int CrateIndex => ItemID.WoodenCrate;
 
 		public override void SetStaticDefaults()
@@ -25,11 +26,11 @@ namespace SGAmod.NPCs.Cratrosity
 		}
 		public override void NPCLoot()
 		{
-			if (Main.rand.Next(0,4)<1 || cratetype > 2999)
+			if (Main.rand.Next(0, 4) < 1 || cratetype > 2999)
 			{
-	Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, CrateIndex);
-}
-        }
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, CrateIndex);
+			}
+		}
 		public override string Texture
 		{
 			get { return "Terraria/Item_" + cratetype; }
@@ -54,27 +55,36 @@ namespace SGAmod.NPCs.Cratrosity
 		}
 		public override void AI()
 		{
-		npc.timeLeft=900;
-		if (apointzz==new Vector2(0,0)){
-		apointzz=new Vector2(Main.rand.Next(-100,100),Main.rand.Next(-100,100));
-		}
-		counter=counter+Main.rand.Next(-3,15);
-		int npctype=mod.NPCType("Cratrosity");
-		int npctype2=mod.NPCType("Cratrogeddon");
-		int npctype3 = mod.NPCType("Hellion");
-			if (NPC.CountNPCS(npctype2)>0){npctype=mod.NPCType("Cratrogeddon");}
+			npc.timeLeft = 900;
+			realcounter += 1;
+			if (apointzz == new Vector2(0, 0))
+			{
+				apointzz = new Vector2(Main.rand.Next(-100, 100), Main.rand.Next(-100, 100));
+			}
+			counter = counter + Main.rand.Next(-3, 15);
+			int npctype = mod.NPCType("Cratrosity");
+			int npctype2 = mod.NPCType("Cratrogeddon");
+			int npctype3 = mod.NPCType("Hellion");
+			if (NPC.CountNPCS(npctype2) > 0) { npctype = mod.NPCType("Cratrogeddon"); }
 			if (Hellion.Hellion.GetHellion() != null) { npctype = Hellion.Hellion.GetHellion().npc.type; }
-			if (NPC.CountNPCS(npctype)>0){
-		NPC myowner=Main.npc[NPC.FindFirstNPC(npctype)];
-		if (counter%600<450){
-		npc.velocity=(npc.velocity+((myowner.Center+apointzz-(npc.position))*0.02f)*0.035f)*0.99f;
-	}
+			if (NPC.CountNPCS(npctype) > 0)
+			{
+				NPC myowner = Main.npc[NPC.FindFirstNPC(npctype)];
+				if (counter % 600 < 450)
+				{
+					npc.velocity = (npc.velocity + ((myowner.Center + apointzz - (npc.position)) * 0.02f) * 0.035f) * 0.99f;
+				}
 
-	}else{npc.active=false;}
+			}
+			else { npc.active = false; }
 
-	}
+		}
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+            return realcounter>100;
+        }
 
-		public override void OnHitPlayer(Player player, int damage, bool crit)
+        public override void OnHitPlayer(Player player, int damage, bool crit)
 		{
 			player.AddBuff(mod.BuffType("Microtransactions"), 200, true);
 		}

@@ -210,9 +210,13 @@ namespace SGAmod.Items.Weapons.Javelins
             }
             else
             {
+                if (player.ownedProjectileCounts[mod.ProjectileType("JavelinProjMelee")] > 0)
+                    return false;
                 SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-                item.useTime = (int)((Usetimes[1] * (player.meleeSpeed)));
-                item.useAnimation = (int)((Usetimes[1] * (player.meleeSpeed)));
+                item.autoReuse = sgaply.jabALot;
+                float speedz = (player.meleeSpeed)*(sgaply.jabALot ? 0.80f : 1f);
+                item.useTime = Math.Max(6,(int)((Usetimes[1] * speedz)));
+                item.useAnimation = Math.Max(6, (int)((Usetimes[1] * speedz)));
                 item.shootSpeed = (1f / player.meleeSpeed)*sgaply.UseTimeMultiplier(this.item);
             }
                 return true;
@@ -243,6 +247,9 @@ namespace SGAmod.Items.Weapons.Javelins
                 float scale = 1f - (Main.rand.NextFloat() * .01f);
                 perturbedSpeed = perturbedSpeed * scale;
                 item.useStyle = 5;
+                if (player.SGAPly().jabALot)
+                    normalizedspeed = normalizedspeed.RotatedByRandom(MathHelper.Pi * 0.25f);
+
                 speedX = normalizedspeed.X; speedY = normalizedspeed.Y;
                 type = mod.ProjectileType("JavelinProjMelee");
             }
@@ -375,8 +382,7 @@ namespace SGAmod.Items.Weapons.Javelins
                 if (Main.rand.Next(0, projectile.modProjectile.GetType() == typeof(JavelinProjMelee) ? 2 : 0) == 0)
                 {
 
-                    int thisoned = Projectile.NewProjectile(projectile.Center.X + Main.rand.NextFloat(-64, 64), projectile.Center.Y - 800, Main.rand.NextFloat(-2, 2), 14f, ProjectileID.HallowStar, (int)(projectile.damage * damage), projectile.knockBack, Main.player[projectile.owner].whoAmI);
-                    Main.projectile[thisoned].ai[1] = projectile.ai[1];
+                    int thisoned = Projectile.NewProjectile(projectile.Center.X + Main.rand.NextFloat(-64, 64), projectile.Center.Y - 800, Main.rand.NextFloat(-2, 2), 14f, ProjectileID.HallowStar, (int)(projectile.damage * damage), projectile.knockBack, projectile.owner);
                     Main.projectile[thisoned].Throwing().thrown = true;
                     Main.projectile[thisoned].penetrate = 2;
                     Main.projectile[thisoned].netUpdate = true;
@@ -734,7 +740,7 @@ namespace SGAmod.Items.Weapons.Javelins
         }
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            double blank = 0;
+            double blank = 1.0;
             JavelinProj.JavelinOnHit(target, projectile,ref blank);
         }
 
@@ -825,13 +831,17 @@ namespace SGAmod.Items.Weapons.Javelins
         {
             base.AI();
 
-            if (projectile.owner == Main.myPlayer)
+            if (Main.player[projectile.owner] != null)
             {
-                mousecurser = (Main.MouseScreen.X - projectile.Center.X)>0;
-                projectile.direction = mousecurser.ToDirectionInt();
-                projectile.netUpdate = true;
+                Main.player[projectile.owner].heldProj = projectile.whoAmI;
+                if (projectile.owner == Main.myPlayer)
+                {
+                    mousecurser = (Main.MouseScreen.X - projectile.Center.X) > 0;
+                    projectile.direction = mousecurser.ToDirectionInt();
+                    projectile.netUpdate = true;
 
 
+                }
             }
 
         }

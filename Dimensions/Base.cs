@@ -536,7 +536,7 @@ namespace SGAmod.Dimensions
 
                 Main.graphics.GraphicsDevice.SetRenderTarget(target);
                 Main.graphics.GraphicsDevice.Clear(Color.Transparent);
-                ;
+
                 Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1f, 1f, 0f));
 
                 //Main.spriteBatch.Begin(SpriteSortMode.Immediate, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);

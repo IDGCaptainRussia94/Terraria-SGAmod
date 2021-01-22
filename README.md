@@ -18,19 +18,37 @@ Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge ba
 
 Changelog:
 
+
 3.530-(0/0/0)-Patch 11;
 
 --Added:
 
 -New respites! (Salvaged Crate)
 
+-
+
 
 --Changed:
 
 -Buffed F.S.R.G: now has an 80% to not consume ammo
 
+-
+
 
 --Fixed:
+
+-Supreme Pinky should no longer unlock Expertise from phase 1 in expert mode
+
+-Bench God's Favor's slotted item not saving properly (or at all basically)
+
+
+
+3.521-(1/21/21)-Hotfix #12:
+
+
+--Fixed:
+
+-a major bug that stopped liquids and npcs from working in mutliplayer (once again, trying to access client content server end)
 
 
 

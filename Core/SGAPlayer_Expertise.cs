@@ -91,27 +91,35 @@ namespace SGAmod
 			}
 
 		}
-	
-		public int? FindBossEXP(int npcid,NPC npc)
+
+		public int? FindBossEXP(int npcid, NPC npc)
 		{
 			int? found = -1;
 			int? foundpre = -1;
 
 			int modnpc = 0;
-			if (npc != null) {
+			if (npc != null)
+			{
 				if (npc.modNPC != null)
 				{
-					foundpre = ExpertisePointsFromBossesModded.FindIndex(x => (x == npc.modNPC.GetType().Name));
+					string thisName = npc.modNPC.GetType().Name;
+
+					if (npc.modNPC.GetType() == typeof(SPinkyTrue))
+						thisName = typeof(SPinky).Name;
+
+					foundpre = ExpertisePointsFromBossesModded.FindIndex(x => (x == thisName));
 					//Main.NewText(foundpre);
 					//Main.NewText(npc.modNPC.GetType().Name);
 					if (foundpre != null && foundpre > -1)
 					{
-						return foundpre;
+						bool condition = (npc.modNPC.GetType() != typeof(SPinky) || !Main.expertMode);
+						if (condition)
+						{
+							return foundpre;
+						}
 					}
 				}
-					
 			}
-			
 
 
 			if (npcid == NPCID.EaterofWorldsHead || npcid == NPCID.EaterofWorldsBody || npcid == NPCID.EaterofWorldsTail)

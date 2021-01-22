@@ -728,10 +728,12 @@ namespace SGAmod
                 
             }
             */
-
-            if (Filters.Scene["SGAmod:ShockwaveBanshee"].IsActive() && !NPC.AnyNPCs(ModContent.NPCType<PrismBanshee>()))
+            if (Main.netMode != NetmodeID.Server)
             {
-                Filters.Scene.Deactivate("SGAmod:ShockwaveBanshee", new object[0]);
+                if (Filters.Scene["SGAmod:ShockwaveBanshee"].IsActive() && !NPC.AnyNPCs(ModContent.NPCType<PrismBanshee>()))
+                {
+                    Filters.Scene.Deactivate("SGAmod:ShockwaveBanshee", new object[0]);
+                }
             }
         }
         public override void PostWorldGen()

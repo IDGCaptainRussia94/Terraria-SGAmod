@@ -18,7 +18,8 @@ Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge ba
 
 Changelog:
 
-3.530-(0/0/0)-Patch 11;
+
+3.521-(1/21/21)-Hotfix #12:
 
 --Added:
 
@@ -32,6 +33,9 @@ Changelog:
 
 --Fixed:
 
+-Supreme Pinky should no longer unlock Expertise from phase 1 in expert mode
+
+-Bench God's Favor's slotted item not saving properly (or at all basically)
 
 
 3.520-(1/18/21)-Patch 10-Scraps of the Past:

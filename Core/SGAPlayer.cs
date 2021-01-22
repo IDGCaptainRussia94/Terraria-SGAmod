@@ -213,6 +213,7 @@ namespace SGAmod
 		public int potionsicknessincreaser = 0;
 
 		public bool dragonFriend = false;
+		public Point benchGodItem = new Point(-1,-1);
 		public string[] armorglowmasks = new string[4];
 		public int[] devempowerment = { 0, 0, 0, 0 };
 		public Func<Player, int, Color>[] armorglowcolor = {delegate (Player player,int index)
@@ -726,6 +727,16 @@ namespace SGAmod
 		{
 			if (Main.netMode != NetmodeID.Server)
 			{
+				if (benchGodItem.X > -100)
+				SGAmod.craftBlockPanel.ItemPanel.item = new Item();
+
+				if (benchGodItem.X > -1)
+				{
+					SGAmod.craftBlockPanel.ItemPanel.item.SetDefaults(benchGodItem.X);
+					SGAmod.craftBlockPanel.ItemPanel.item.stack = benchGodItem.Y;
+				}
+				benchGodItem.X = -100;
+
 				Filter manshad = Filters.Scene["SGAmod:ScreenWave"];
 				if (player.HeldItem.type == ModContent.ItemType<Debug1>())
 				{
@@ -2027,6 +2038,11 @@ namespace SGAmod
 			tag["Drakenshopunlock"] = Drakenshopunlock;
 			tag["benchGodFavor"] = benchGodFavor;
 			tag["dragonFriend"] = dragonFriend;
+			if (!SGAmod.craftBlockPanel.ItemPanel.item.IsAir && benchGodFavor)
+			{
+				tag["BenchGodItemX"] = SGAmod.craftBlockPanel.ItemPanel.item.type;
+				tag["BenchGodItemY"] = SGAmod.craftBlockPanel.ItemPanel.item.stack;
+			}
 
 			SaveExpertise(ref tag);
 
@@ -2065,8 +2081,17 @@ namespace SGAmod
 			if (tag.ContainsKey("dragonFriend"))
 				dragonFriend = tag.GetBool("dragonFriend");
 
+			//SGAmod.craftBlockPanel.ItemPanel.item.TurnToAir();
+
+			benchGodItem.X = -1;
 			if (tag.ContainsKey("benchGodFavor"))
 				benchGodFavor = tag.GetBool("benchGodFavor");
+
+			if (benchGodFavor && tag.ContainsKey("BenchGodItemX"))
+			{
+				benchGodItem.X = tag.GetInt("BenchGodItemX");
+				benchGodItem.Y = tag.GetInt("BenchGodItemY");
+			}
 
 			LoadExpertise(tag);
 

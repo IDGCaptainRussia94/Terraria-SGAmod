@@ -108,7 +108,7 @@ namespace SGAmod
 				int vec2 = reader.ReadInt32();
 				Player ply = Main.player[reader.ReadInt32()];
 				NPC.SpawnOnPlayer(ply.whoAmI, crate);
-				if (crate == NPCType("CratrosityPML")) 
+				if (crate == NPCType("CratrosityPML"))
 				{
 					//SgaLib.Chat("Test1",255,255,255);
 
@@ -158,7 +158,7 @@ namespace SGAmod
 			if (atype == (ushort)MessageType.Snapped)
 			{
 				Logger.Debug("DEBUG server: Snapped");
-				SGAWorld.SnapCooldown= reader.ReadInt32();
+				SGAWorld.SnapCooldown = reader.ReadInt32();
 				return;
 			}
 
@@ -178,7 +178,7 @@ namespace SGAmod
 				return;
 			}
 
-			if (atype == (ushort)MessageType.GrantEntrophite) 
+			if (atype == (ushort)MessageType.GrantEntrophite)
 			{
 				Logger.Debug("DEBUG client: Grant Entrophite");
 				Main.player[Main.myPlayer].GetModPlayer<SGAPlayer>().AddEntropy(reader.ReadInt32());
@@ -266,7 +266,8 @@ namespace SGAmod
 				return;
 			}
 
-			if (atype == (ushort)MessageType.LockPlayer) {
+			if (atype == (ushort)MessageType.LockPlayer)
+			{
 				Logger.Debug("DEBUG both: Lock Player");
 				//Main.NewText("Test2",255,255,255);
 				Vector2 Vect = new Vector2(reader.ReadInt32(), reader.ReadInt32());
@@ -276,7 +277,8 @@ namespace SGAmod
 				modplayer.Locked = Vect;
 				//Main.NewText("Testloc: "+modplayer.Locked.X+" "+modplayer.Locked.Y,255,255,255);
 
-				for (int num172 = 0; num172 < 100; num172 = num172 + 1) {
+				for (int num172 = 0; num172 < 100; num172 = num172 + 1)
+				{
 					Player ply = Main.player[num172];
 					modplayer = ply.GetModPlayer<SGAPlayer>();
 					modplayer.Locked = Vect;

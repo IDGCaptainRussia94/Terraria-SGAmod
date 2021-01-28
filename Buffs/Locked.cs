@@ -9,7 +9,7 @@ namespace SGAmod.Buffs
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Locked");
-			Description.SetDefault("There is no excape");
+			Description.SetDefault("There is no escape");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;

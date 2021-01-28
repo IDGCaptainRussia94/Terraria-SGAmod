@@ -14,7 +14,7 @@ using SGAmod.Projectiles;
 
 namespace SGAmod.Items.Weapons.Technical
 {
-	public class NoviteKnife : SeriousSamWeapon
+	public class NoviteKnife : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -115,7 +115,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-	public class NoviteBlaster : SeriousSamWeapon
+	public class NoviteBlaster : SeriousSamWeapon, ITechItem
 	{
 		private bool altfired = false;
 		public override void SetStaticDefaults()
@@ -363,7 +363,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	}
 
-	public class NoviteTowerSummon : SeriousSamWeapon
+	public class NoviteTowerSummon : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{

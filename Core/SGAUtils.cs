@@ -178,6 +178,35 @@ namespace SGAmod
 
 		}
 
+		public static void DrawItem(SpriteBatch spriteBatch,int itemType,Vector2 position,int stackNumber=0)
+        {
+			Texture2D tex = Main.itemTexture[itemType];
+
+			DrawAnimation anim = Main.itemAnimations[itemType];
+			int frame = 0;
+			int height = tex.Height;
+			Vector2 size = tex.Size() / 2f;
+
+			if (anim != null)
+			{
+				frame = anim.Frame;
+				height = tex.Height / anim.FrameCount;
+				size = new Vector2(tex.Width, height) / 2f;
+			}
+
+			Item anitem = new Item();
+			anitem.SetDefaults(itemType);
+
+			spriteBatch.Draw(tex, position, new Rectangle(0, height * frame, tex.Width, height), anitem.modItem?.GetAlpha(Color.White) ?? Color.White, 0f, size, 1f, SpriteEffects.None, 0);
+			if (stackNumber > 0)
+			{
+				string str = stackNumber.ToString();
+				Vector2 size2 = Main.fontDeathText.MeasureString(str);
+				spriteBatch.DrawString(Main.fontMouseText, str, position + new Vector2(4, 4), Color.White);
+			}
+
+		}
+
 		public void Draw()
 		{
 			Vector2 position = (location.ToVector2() * 16) - Main.screenPosition;
@@ -187,33 +216,8 @@ namespace SGAmod
 
 			foreach (Point data in possibleItems)
 			{
-
-				Texture2D tex = Main.itemTexture[data.X];
-
-				DrawAnimation anim = Main.itemAnimations[data.X];
-				int frame = 0;
-				int height = tex.Height;
-				Vector2 size = tex.Size() / 2f;
-				if (anim != null)
-				{
-					frame = anim.Frame;
-					height = tex.Height / anim.FrameCount;
-					size = new Vector2(tex.Width, height) / 2f;
-				}
-
-				Item anitem = new Item();
-				anitem.SetDefaults(data.X);
-
-				Main.spriteBatch.Draw(tex, position, new Rectangle(0, height * frame, tex.Width, height), anitem.modItem?.GetAlpha(Color.White) ?? Color.White, 0f, size, 1f, SpriteEffects.None, 0);
-				if (data.Y > 0)
-				{
-					string str = data.Y.ToString();
-					Vector2 size2 = Main.fontDeathText.MeasureString(str);
-					Main.spriteBatch.DrawString(Main.fontMouseText, str, position + new Vector2(4, 4), Color.White);
-				}
-
+				DrawItem(Main.spriteBatch, data.X,position,data.Y);
 				position.X += 32;
-
 			}
 
 		}
@@ -462,6 +466,48 @@ namespace SGAmod
 
 			}
 
+		}
+
+		//Came from Luiafk; only mod I know that has chest-related netcode (was edited thou)
+		public static void ForceUpdateChestsForPlayers()
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+				return;
+
+			for (int i = 0; i < 255; i++)
+			{
+				Player p = Main.player[i];
+				bool chestIsOpened = p.chest >= 0;
+				if (p.active && !p.dead && chestIsOpened)
+				{
+					ForceUpdateChestForPlayer(p,p.chest);
+				}
+			}
+		}
+
+		public static void ForceUpdateChestForPlayer(Player p, int specificChest)
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+				return;
+
+			int specificItemSlot = -1;
+
+			int chest = specificChest;
+			if (specificItemSlot < 0)
+			{
+				for (int i = 0; i < 40; i++)
+				{
+					NetMessage.SendData(MessageID.SyncChestItem, p.whoAmI, -1, null, chest, i);
+				}
+            }
+            else
+            {
+				NetMessage.SendData(MessageID.SyncChestItem, p.whoAmI, -1, null, chest, specificItemSlot);
+			}
+
+				NetMessage.SendData(MessageID.SyncPlayerChest, p.whoAmI, -1, null, chest);
+				Main.player[p.whoAmI].chest = chest;
+				NetMessage.SendData(MessageID.SyncPlayerChestIndex, -1, p.whoAmI, null, p.whoAmI, chest);
 		}
 
 		public static void DrawFishingLine(Vector2 start, Vector2 end, Vector2 Velocity, Vector2 offset, float reel)
@@ -921,5 +967,27 @@ namespace SGAmod
 			this.text = text;
 		}
 	}
+	public class LuminousAlterItemClass
+	{
+		public int infusionTime;
+		public int outputItem;
+		public int stackCost = 1;
+		public int stackMade = 1;
+		public Func<bool> SpecialCondition;
 
+		public LuminousAlterItemClass(int outputItem, int infusionTime, int stackCost, int stackMade = 1, Func<bool> SCon = default)
+		{
+			if (SCon == default)
+			{
+				SpecialCondition = delegate ()
+				 {
+					 return !Main.dayTime && !Main.raining;
+				 };
+			}
+			this.outputItem = outputItem;
+			this.infusionTime = infusionTime;
+			this.stackCost = stackCost;
+			this.stackMade = stackMade;
+		}
+	}
 }

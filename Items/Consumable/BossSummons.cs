@@ -305,6 +305,49 @@ namespace SGAmod.Items.Consumable
 
 	}
 
+	public class AuroraTearAwoken : BaseBossSummon
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Awoken Aurora Tear");
+			Tooltip.SetDefault("'Bustling with Luminous energy'\nUse in the underground Hallow to manually summmon an empowered Prismic Banshee");
+		}
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.Lerp(Color.BlueViolet, Color.HotPink, (float)Math.Sin((Main.essScale - 0.70f) / 0.30f)).ToVector3() * 0.85f * Main.essScale);
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 26;
+			item.height = 14;
+			item.value = Item.sellPrice(0, 20, 50, 0);
+			item.rare = 11;
+		}
+		public override bool CanUseItem(Player player)
+		{
+			bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+			;
+			if (underground && player.ZoneHoly && !NPC.AnyNPCs(mod.NPCType("PrismBanshee")))
+			{
+				return true;
+			}
+			else
+			{
+				if (player == Main.LocalPlayer)
+					Main.NewText("'it regrets activating where it was not originally from...'", 200, 100, 150);
+				return false;
+
+			}
+		}
+		public override bool UseItem(Player player)
+		{
+			NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("PrismBanshee"));
+			Main.PlaySound(SoundID.Roar, player.position, 1);
+			return true;
+		}
+	}
+
 	public class RoilingSludge : BaseBossSummon
 	{
 		public override void SetStaticDefaults()

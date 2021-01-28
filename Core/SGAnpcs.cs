@@ -1066,10 +1066,11 @@ namespace SGAmod
 
 			//if (onlyOnce)
 			//{
-			if (Main.expertMode) {
-			if (!npc.boss && npc.lifeMax > 25 && npc.lifeMax < 10000 && !npc.dontTakeDamage && npc.type != ModContent.NPCType<PrismSpirit>() && !npc.SpawnedFromStatue && NPC.AnyNPCs(ModContent.NPCType<PrismBanshee>()))
+			if (Main.expertMode)
 			{
-				List<NPC> banshee = Main.npc.Where(testnpc => testnpc.active && testnpc.type == ModContent.NPCType<PrismBanshee>()).ToList();
+				if (!npc.boss && npc.lifeMax > 25 && npc.lifeMax < 10000 && !npc.dontTakeDamage && npc.type != ModContent.NPCType<PrismSpirit>() && !npc.SpawnedFromStatue && NPC.AnyNPCs(ModContent.NPCType<PrismBanshee>()))
+				{
+					List<NPC> banshee = Main.npc.Where(testnpc => testnpc.active && testnpc.type == ModContent.NPCType<PrismBanshee>()).ToList();
 					if (banshee.Count > 0)
 					{
 						banshee = banshee.OrderBy(ordertest => ordertest.DistanceSQ(npc.Center)).ToList();
@@ -1083,11 +1084,7 @@ namespace SGAmod
 						}
 					}
 
-
-
 				}
-
-
 			}
 
 

@@ -23,6 +23,7 @@ namespace SGAmod.NPCs
 	{
 		public int bansheeState = 0;
 		public int maxattacktime = 300;
+		public int expectedHandCount = 2;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismic Banshee");
@@ -40,20 +41,22 @@ namespace SGAmod.NPCs
         {
 			writer.Write(bansheeState);
 			writer.Write(maxattacktime);
+			writer.Write(expectedHandCount);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
 			bansheeState = reader.ReadInt32();
 			maxattacktime = reader.ReadInt32();
+			expectedHandCount = reader.ReadInt32();
 		}
 
 		public void ChangeHit(ref int damage, ref bool crit,int player,Projectile proj)
         {
 			if (npc.ai[0] < 900)
 			{
-				damage = (int)(damage * 0.25f);
-				crit = false;
+				//damage = (int)(damage * 0.25f);
+				//crit = false;
 			}
 			bool pickedone = false;
 			foreach(NPC giveMeAHandWouldYa in Main.npc.Where(myhands => myhands.active && myhands.type == ModContent.NPCType<PrismBansheeHand>() && (int)myhands.ai[1] == npc.whoAmI && (myhands.modNPC as PrismBansheeHand).blockTime<1))
@@ -89,7 +92,7 @@ namespace SGAmod.NPCs
         public override void SetDefaults()
 		{
 			npc.lifeMax = 80000;
-			npc.defense = 75;
+			npc.defense = 50;
 			npc.damage = 0;
 			npc.scale = 1f;
 			npc.width = 48;
@@ -115,8 +118,8 @@ namespace SGAmod.NPCs
 
         public override void NPCLoot()
         {
-			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AuroraTear"), Main.expertMode ? 2 : 1);
-			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(12, Main.expertMode ? 30 : 20));
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AuroraTear"), (Main.expertMode ? 2 : 1)*(2-(int)npc.ai[3]));
+			//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(12, Main.expertMode ? 30 : 20) * (2 - (int)npc.ai[3]));
 			SGAWorld.downedPrismBanshee = true;
 		}
 
@@ -148,7 +151,7 @@ namespace SGAmod.NPCs
 				{
 					if (!Filters.Scene["SGAmod:ShockwaveBanshee"].IsActive())
 					{
-						Main.NewText("work!");
+						//Main.NewText("work!");
 						Filters.Scene.Activate("SGAmod:ShockwaveBanshee", npc.Center, new object[0]).GetShader().UseColor(5f, 2f, 10f).UseTargetPosition(npc.Center);
 					}
 
@@ -211,26 +214,37 @@ namespace SGAmod.NPCs
 			npc.timeLeft = 300;
 			npc.localAI[0] += 1;
 			npc.ai[0] += 1;
+			npc.dontTakeDamage = false;
+			if (npc.ai[3] < 1)
+			{
+				if (expectedHandCount < 6)
+					npc.dontTakeDamage = true;
+				npc.GivenName = "Aurora Banshee";
+			}
+
 			if (npc.ai[0] == 1)
 			{
-				HalfVector2 half = new HalfVector2(-128, 32);
+				HalfVector2 half = new HalfVector2(-128, -40);
 
 				int hand = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismBansheeHand>());
 				Main.npc[hand].ai[1] = npc.whoAmI;
 				Main.npc[hand].ai[2] = ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
+				Main.npc[hand].localAI[2] = expectedHandCount;
 				Main.npc[hand].netUpdate = true;
 
-				half = new HalfVector2(128, 32);
+				half = new HalfVector2(128, -40);
 
 				hand = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismBansheeHand>());
 				Main.npc[hand].ai[1] = npc.whoAmI;
 				Main.npc[hand].ai[2] = ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
+				Main.npc[hand].localAI[2] = expectedHandCount;				
 				Main.npc[hand].netUpdate = true;
 			}
 
-			bool underground = (int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
-
 			Player P = Main.player[npc.target];
+
+			bool underground = ((int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0);
+
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active || !underground)
 			{
 				npc.TargetClosest(false);
@@ -274,13 +288,70 @@ namespace SGAmod.NPCs
 				else
 				{
 					npc.velocity *= 0.90f;
+
 					DoAttacks();
+
 					if (npc.ai[0] > 900 + maxattacktime)
 					{
 						npc.ai[0] = Main.rand.Next(1, 100);
 						npc.netUpdate = true;
+					} 
+				}
+
+				if (npc.ai[3]< 1 && npc.ai[0] % 91 == 0 && npc.ai[1] < 1 && expectedHandCount<24)
+				{
+					List<NPC> they = Main.npc.Where(myhands => myhands.active && myhands.type == ModContent.NPCType<PrismBansheeHand>() && (int)myhands.ai[1] == npc.whoAmI).ToList();
+					if (Main.npc.Where(myhands => myhands.active && myhands.type == ModContent.NPCType<PrismBansheeHand>() && (int)myhands.ai[1] == npc.whoAmI).ToList().Count < expectedHandCount)
+					{
+						npc.ai[1] = 1;
+						npc.netUpdate = true;
+                    }
+                    else
+                    {
+						int index = 0;
+						List<NPC> they2 = Main.npc.Where(myhands => myhands.active && myhands.type == ModContent.NPCType<PrismBansheeHand>() && (int)myhands.ai[1] == npc.whoAmI && myhands.localAI[2]==expectedHandCount).ToList();
+						if (they2.Count < 2 && they.Count >= 2)
+						{
+							they[0].localAI[2] = expectedHandCount;
+							they[1].localAI[2] = expectedHandCount;
+						}
+
 					}
 				}
+
+				if (npc.ai[1] > 0)
+				{
+					npc.ai[1] += 1;
+
+					if (npc.ai[1] == 120)
+					{
+						if (expectedHandCount<8)
+						expectedHandCount += 1;
+						HalfVector2 half = new HalfVector2(-Main.rand.NextFloat(48, 160), Main.rand.NextFloat(-80, 80));
+
+						int hand = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismBansheeHand>());
+						Main.npc[hand].ai[1] = npc.whoAmI;
+						Main.npc[hand].ai[2] = ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
+						Main.npc[hand].localAI[2] = Math.Min(7,expectedHandCount);
+						Main.npc[hand].netUpdate = true;
+
+						half = new HalfVector2(Main.rand.NextFloat(48, 160), Main.rand.NextFloat(-80, 80));
+
+						hand = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismBansheeHand>());
+						Main.npc[hand].ai[1] = npc.whoAmI;
+						Main.npc[hand].ai[2] = ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
+						Main.npc[hand].localAI[2] = Math.Min(7, expectedHandCount);
+						Main.npc[hand].netUpdate = true;
+					}
+
+					if (npc.ai[1] > 240)
+					{
+						npc.ai[1] = -1;
+						npc.velocity *= 0.50f;
+					}
+
+				}
+
 			}
 		}
 
@@ -312,7 +383,9 @@ namespace SGAmod.NPCs
 
 			float inrc = Main.GlobalTime / 30f;
 
-			DrawPrismCore(spriteBatch,drawColor,npc.Center,npc.localAI[0],npc.scale);
+			float scaleEffect = (float)(Math.Sin((npc.ai[1] / 240f) * MathHelper.Pi));
+
+			DrawPrismCore(spriteBatch,drawColor,npc.Center,npc.localAI[0],npc.scale+(scaleEffect*2f));
 
 			float strength = 1f;
 
@@ -324,7 +397,7 @@ namespace SGAmod.NPCs
 					{
 						Vector2 handoffset = new Vector2(hand.Center.X, hand.position.Y);
 						List<Vector2> trailspots = new List<Vector2>();
-						Vector2 point1 = Vector2.Lerp(npc.Center, handoffset, 0.5f) + new Vector2(0, 96 + (float)Math.Sin(npc.localAI[0] / 40f) * 30f);
+						Vector2 point1 = Vector2.Lerp(npc.Center, handoffset, 0.5f) + new Vector2(0, 128 + (float)Math.Sin(npc.localAI[0] / 40f) * 32f);
 						Vector2 point2 = new HalfVector2() { PackedValue = ReLogic.Utilities.ReinterpretCast.FloatAsUInt(hand.ai[2]) }.ToVector2();
 
 						for (float f = 0; f < 1f; f += 0.02f)
@@ -366,6 +439,8 @@ namespace SGAmod.NPCs
 			hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
 			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, npc.localAI[0] / 150f));
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+			hallowed.Parameters["rainbowScale"].SetValue(1f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(2f, 2f));
 
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
@@ -382,6 +457,7 @@ namespace SGAmod.NPCs
 			hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
 			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, npc.localAI[0] / 150f));
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
 
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
@@ -391,7 +467,7 @@ namespace SGAmod.NPCs
 				{
 					PrismBansheeHand myhand = hand.modNPC as PrismBansheeHand;
 					Texture2D handtex = Main.npcTexture[hand.type];
-					spriteBatch.Draw(handtex, new Vector2(hand.Center.X, hand.position.Y) - Main.screenPosition, null, Color.White, hand.rotation, handtex.Size() / 2f, hand.scale, hand.spriteDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+					spriteBatch.Draw(handtex, new Vector2(hand.Center.X, hand.Center.Y) - Main.screenPosition, null, Color.White, hand.rotation, handtex.Size() / 2f, hand.scale, hand.spriteDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 				}
 			}
 
@@ -407,6 +483,9 @@ namespace SGAmod.NPCs
 			hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
 			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, npc.localAI[0] / 60f));
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+			hallowed.Parameters["rainbowScale"].SetValue(1f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(0.25f, 0.25f));
+
 
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
@@ -421,12 +500,54 @@ namespace SGAmod.NPCs
 				}
 			}
 
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1,1));
+
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-
-
 			spriteBatch.Draw(tex, drawPos, null, Color.White, npc.rotation, (tex.Size() / 2f), npc.scale, SpriteEffects.None, 0f);
+
+			if (npc.ai[1] > 0)
+			{
+
+				VertexBuffer vertexBuffer;
+				Effect effect = SGAmod.TrailEffect;
+
+				effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Main.GameViewMatrix.Zoom) * WVP.Projection());
+				effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("Space"));
+				effect.Parameters["coordOffset"].SetValue(0);
+				effect.Parameters["coordMultiplier"].SetValue(4f);
+				effect.Parameters["strength"].SetValue(Math.Min(0.8f,scaleEffect *1.25f));
+
+				VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
+
+				Vector3 screenPos = (npc.Center - Main.screenPosition).ToVector3();
+				float size = 48f + scaleEffect*(320f);
+
+				vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-size, -size, 0), Color.Purple, new Vector2(0, 0));
+				vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-size, size, 0), Color.Purple, new Vector2(0, 1));
+				vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(size, -size, 0), Color.Purple, new Vector2(1, 0));
+
+				vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(size, size, 0), Color.Purple, new Vector2(1, 1));
+				vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-size, size, 0), Color.Purple, new Vector2(0, 1));
+				vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(size, -size, 0), Color.Purple, new Vector2(1, 0));
+
+				vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+				vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+				Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+				RasterizerState rasterizerState = new RasterizerState();
+				rasterizerState.CullMode = CullMode.None;
+				Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+
+				effect.CurrentTechnique.Passes["DefaultPassSinShade"].Apply();
+
+				Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			}
 
 			//spriteBatch.Draw(tex2, drawPos, null, Color.Magenta, npc.rotation, (tex2.Size() / 2f), npc.scale, SpriteEffects.None, 0f);
 
@@ -466,7 +587,7 @@ namespace SGAmod.NPCs
 		}
         public override bool CheckDead()
         {
-			if (Owner != null)
+			if (Owner != null && Owner.ai[3] >= 1)
 			{
 				npc.life = npc.lifeMax;
 				return false;
@@ -474,10 +595,43 @@ namespace SGAmod.NPCs
 			return true;
         }
 
+        public override void HitEffect(int hitDirection, double damage)
+        {
+			SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_CrystalCartImpact, (int)npc.Center.X, (int)npc.Center.Y);
+			if (sound != null)
+			{
+				sound.Pitch += Main.rand.NextFloat(0f,0.25f);
+			}
+		}
+
+        public override void NPCLoot()
+        {
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Shatter, (int)npc.Center.X, (int)npc.Center.Y, 1);
+			if (sound != null)
+			{
+				sound.Pitch = -0.25f;
+			}
+			sound = Main.PlaySound(SoundID.DD2_CrystalCartImpact, (int)npc.Center.X, (int)npc.Center.Y);
+			if (sound != null)
+			{
+				sound.Pitch = -0.25f;
+			}
+
+			for (float f = 6; f < 12; f += 0.10f)
+			{
+				Vector2 offset = Main.rand.NextVector2Circular(1f, f);
+				int dust = Dust.NewDust(new Vector2(npc.position.X, npc.position.Y)+ Vector2.Normalize(offset)*f, npc.width, npc.height, DustID.PurpleCrystalShard);
+				Main.dust[dust].scale = 1;
+				Main.dust[dust].noGravity = true;
+				Main.dust[dust].velocity = Main.rand.NextVector2Circular(f,f);
+			}
+
+		}
+
         public override void SetDefaults()
 		{
-			npc.lifeMax = 1000;
-			npc.defense = 10000;
+			npc.lifeMax = 10000;
+			npc.defense = 20;
 			npc.damage = 120;
 			npc.width = 48;
 			npc.height = 48;
@@ -508,6 +662,7 @@ namespace SGAmod.NPCs
 			writer.Write(blockTime);
 			writer.Write(bansheesmoothness);
 			writer.Write(npc.localAI[3]);
+			writer.Write(npc.localAI[2]);
 		}
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
@@ -515,16 +670,19 @@ namespace SGAmod.NPCs
 			blockTime = reader.ReadInt32();
 			bansheesmoothness = reader.ReadInt32();
 			npc.localAI[3] = reader.ReadInt32();
+			npc.localAI[2] = reader.ReadInt32();
 		}
 
 		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
-			projectile.damage = projectile.damage >> 2;
+			projectile.SGAProj().damageReduce += (0.25f/(1f+((npc.localAI[2] - 1f)/5f)));
+			projectile.SGAProj().damageReduceTime = 60;
+			//projectile.damage = projectile.damage >> 2;
 		}
 
-        private void ArmOutState(ref Vector2 gohere)
+		private void ArmOutState(ref Vector2 gohere)
 		{
-			gohere = Owner.Center + new Vector2(ArmOffset.X * 2f, 20f);
+			gohere = Owner.Center + new Vector2(ArmOffset.X * 2f, ArmOffset.Y/2f);
 		}
 		public void NormalMovement(Vector2 gohere)
 		{
@@ -532,7 +690,7 @@ namespace SGAmod.NPCs
 
 			if (blockTime > 0)
 			{
-				gohere = Owner.Center + (Vector2.UnitX * Math.Abs(ArmOffset.X)).RotatedBy(blockAngle);
+				gohere = Owner.Center+Owner.velocity + (Vector2.UnitX * Math.Abs(ArmOffset.X)).RotatedBy(blockAngle);
 				distvector = (gohere - npc.Center) * 1.5f;
 
 			}
@@ -546,6 +704,11 @@ namespace SGAmod.NPCs
 		public bool BansheeMovement(Vector2 gohere)
 		{
 			PrismBanshee bantie = Owner.modNPC as PrismBanshee;
+
+			//Main.NewText(npc.localAI[2] + " : "+ bantie.expectedHandCount);
+			if (npc.localAI[2] != bantie.expectedHandCount)
+				return false;
+
 			if (bantie.bansheeState == 1)
 			{
 				npc.ai[0] -= 1;
@@ -563,7 +726,7 @@ namespace SGAmod.NPCs
 				{
 					int aicounter = ((int)bansheesmoothness - 100) % 150;
 					Player P = Main.player[npc.target];
-					Vector2 offset = new Vector2(npc.Center.X + (aicounter * Math.Sign(ArmOffset.X) * 16f), P.MountedCenter.Y - 300);
+					Vector2 offset = new Vector2(npc.Center.X + (aicounter * Math.Sign(ArmOffset.X) * (16f+((ArmOffset.Y + 40)*0.1f))), P.MountedCenter.Y - 300);
 					int proj2 = Projectile.NewProjectile(offset, Vector2.UnitY * (aicounter % 20 == 0 ? 24f : 16f), mod.ProjectileType("PrismShardHinted"), 80, 4, 0);
 					(Main.projectile[proj2].modProjectile as CirnoIceShardHinted).CirnoStart = npc.Center;
 					Main.projectile[proj2].tileCollide = false;
@@ -576,7 +739,7 @@ namespace SGAmod.NPCs
 			{
 				npc.ai[0] -= 1;
 				bansheesmoothness += 1;
-				gohere = Owner.Center + new Vector2(Math.Sign(ArmOffset.X) * (80f - (Owner.ai[0] - 900) / 6f), -16f);
+				gohere = Owner.Center + new Vector2(Math.Sign(ArmOffset.X) * (80f - (Owner.ai[0] - 900) / 6f), ArmOffset.Y);
 				if (bansheesmoothness > 400)
 					gohere = Owner.Center + new Vector2(Math.Sign(ArmOffset.X) * (160), -64f);
 
@@ -813,6 +976,8 @@ namespace SGAmod.NPCs
 				//if (npc.target<0)
 				npc.TargetClosest();
 
+				npc.dontTakeDamage = Owner.ai[3] < 1;
+
 				NoiseGenerator noisy = new NoiseGenerator(npc.whoAmI);
 
 				float offsetterangle = (((npc.ai[0] / 100f) + (float)noisy.Noise(9000, -9000) * MathHelper.TwoPi) + (float)noisy.Noise((int)npc.ai[0], 0));
@@ -1009,7 +1174,6 @@ Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerS
 			npc.chaseable = false;
 			aiType = NPCID.Worm;
 			animationType = NPCID.Worm;
-			banner = npc.type;
 			npc.rarity = 2;
 			npc.scale = 0.50f;
 		}
@@ -1042,7 +1206,10 @@ Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerS
 					sound.Pitch = 0.50f;
 				}
 				npc.Transform(mod.NPCType("PrismBanshee"));
+				npc.ai[3] = 1;
+				npc.netUpdate = true;
 				counter = 0;
+				return false;
 			}
 			if (counter2++ == 15)
 			{

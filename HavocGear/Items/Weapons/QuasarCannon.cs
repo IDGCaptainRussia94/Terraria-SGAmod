@@ -10,7 +10,7 @@ using Idglibrary;
 
 namespace SGAmod.HavocGear.Items.Weapons
 {
-	public class QuasarCannon : SeriousSamWeapon
+	public class QuasarCannon : SeriousSamWeapon,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{

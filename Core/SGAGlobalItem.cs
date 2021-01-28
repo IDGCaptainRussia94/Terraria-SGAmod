@@ -16,6 +16,7 @@ using Idglibrary;
 using AAAAUThrowing;
 using Terraria.Utilities;
 using SGAmod.Buffs;
+using SGAmod.Tiles;
 
 namespace SGAmod
 {
@@ -612,6 +613,11 @@ namespace SGAmod
             {
                 player.QuickSpawnItem(ModContent.ItemType<StarCollector>());
             }   
+        }
+
+        public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
+        {
+            HopperTile.HandleItemHoppers(item);
         }
 
         public override void UpdateInventory(Item item,Player player)

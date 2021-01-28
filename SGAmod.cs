@@ -109,6 +109,7 @@ namespace SGAmod
 		public static Dictionary<int, string> StuffINeedFuckingSpritesFor;
 		public static Dictionary<int, EnchantmentCraftingMaterial> EnchantmentCatalyst;
 		public static Dictionary<int, EnchantmentCraftingMaterial> EnchantmentFocusCrystal;
+		public static Dictionary<int, LuminousAlterItemClass> LuminousAlterItems;
 		public static Dictionary<int, int> CoinsAndProjectiles;
 		public static int[] otherimmunes = new int[3];
 		public static bool Calamity = false;
@@ -372,6 +373,7 @@ namespace SGAmod
 			SGAmod.NonStationDefenses = new Dictionary<int, int>();
 			SGAmod.EnchantmentCatalyst = new Dictionary<int, EnchantmentCraftingMaterial>();
 			SGAmod.EnchantmentFocusCrystal = new Dictionary<int, EnchantmentCraftingMaterial>();
+			SGAmod.LuminousAlterItems = new Dictionary<int, LuminousAlterItemClass>();
 			SGAmod.CoinsAndProjectiles = new Dictionary<int, int>();
 			CoinsAndProjectiles.Add(ProjectileID.CopperCoin, ItemID.CopperCoin); CoinsAndProjectiles.Add(ProjectileID.SilverCoin, ItemID.SilverCoin); 
 			CoinsAndProjectiles.Add(ProjectileID.GoldCoin, ItemID.GoldCoin); CoinsAndProjectiles.Add(ProjectileID.PlatinumCoin, ItemID.PlatinumCoin);
@@ -447,6 +449,8 @@ namespace SGAmod
 
 				TrailEffect = SGAmod.Instance.GetEffect("Effects/trailShaders");
 				HallowedEffect = SGAmod.Instance.GetEffect("Effects/Hallowed");
+				HallowedEffect.Parameters["overlayScale"].SetValue(new Vector2(1, 1));
+				HallowedEffect.Parameters["rainbowScale"].SetValue(1f);
 
 				GameShaders.Misc["SGAmod:DeathAnimation"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/EffectDeath")), "DeathAnimation").UseImage("Images/Misc/Perlin");
 				GameShaders.Misc["SGAmod:ShaderOutline"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/ShaderOutline")), "ShaderOutline").UseImage("Images/Misc/Perlin");

@@ -17,7 +17,7 @@ namespace SGAmod.Items.Accessories.Charms
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Amulet of Diehard Cataclysm");
-			Tooltip.SetDefault("'Embrace the suffering, indulge on the reward'\n'truely, only for the worthy... And the british'\n25% more Expertise is earned and respawn instantly outside of boss fights\n" + Idglib.ColorText(Color.Red, "You die in one hit, IFrames cause great damage over time") +"\n" + Idglib.ColorText(Color.Red, "Most if not all methods of death prevention are disabled") +"\nAn exception to the formentioned rule are Just Blocks\nThis item doesn't take effect til 3 seconds after spawning to prevent soft-locks");
+			Tooltip.SetDefault("'Embrace the suffering, indulge on the reward'\n'Truly, only for the worthy... And the british'\n25% more Expertise is earned and respawn instantly outside of boss fights\n" + Idglib.ColorText(Color.Red, "You die in one hit, IFrames cause great damage over time") +"\n" + Idglib.ColorText(Color.Red, "Most if not all methods of death prevention are disabled") +"\nAn exception to the formentioned rule are Just Blocks\nThis item doesn't take effect til 3 seconds after spawning to prevent soft-locks");
 			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 10));
 		}
 
@@ -42,7 +42,7 @@ namespace SGAmod.Items.Accessories.Charms
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-			if (sgaplayer.NoHitCharmTimer > 180)
+			if (sgaplayer.NoHitCharmTimer > 180 && !IdgNPC.bossAlive)
 			{
 				if (sgaplayer.NoHitCharmTimer<100000)
 				{
@@ -69,6 +69,8 @@ namespace SGAmod.Items.Accessories.Charms
 					}
 				}
 					sgaplayer.NoHitCharm = true;
+				player.shadowDodge = false;
+				player.blackBelt = false;
 			}
 		}
 		public override void AddRecipes()

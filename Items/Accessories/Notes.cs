@@ -80,35 +80,35 @@ namespace SGAmod.Items.Accessories
 			{"Contains research notes into the current SGAmod boss yet to be fought","How did Draken get these?","","","","","","","",""},
 
 
-			{"Case Speciman: WC01-S -aka- Copper Wraith", "Threat: None","Known Alliegence: Paradox Coalition, Allied",
-				"Following the excape of the DRAKEN experiment, scout classes were manufactured",
+			{"Case Specimen: WC01-S -aka- Copper Wraith", "Threat: None","Known Alliegence: Paradox Coalition, Allied",
+				"Following the escape of the DRAKEN experiment, scout classes were manufactured",
 				"Armed with the ability to animate light and weak metals, WC01-S searches the lands for the experiment",
 				"Like all Wraith Cores it is able to discharge beams of energy in a pitch from its core",
 				"These cores are, however, suspectible to direct shattering hits, such as primative arms like arrows",
 				"More research is needed into better protecting the main frame...","",""},
 
-{"Case Speciman: Caliburn Gaurdian", "Threat: Unknown, Likely low","Known Alliegence: Unknown",
+{"Case Specimen: Caliburn Gaurdian", "Threat: Unknown, Likely low","Known Alliegence: Unknown",
 				"These animated swords are strange, they resonate the same energy used to power wraith cores",
 				"They could be orginal source of power before 'Her Supremacy' aquired the tech elsewhere",
 				"Non the less, their purpose, and the purpose of these shrines remains unknown",
 				"What is known is that there are 3, and each defeated gaurdian only serves to empower the next",
 				"More research is required into the matter...","",""},
 
-{"Case Speciman: Spider Queen", "Threat: low","Known Alliegence: Fauna",
+{"Case Specimen: Spider Queen", "Threat: low","Known Alliegence: Fauna",
 				"A giant spider, not unlike the other spiders seen across the various worlds",
 				"This one however has particually powerful acidic venom, which could melt the strongest of metals",
 				"Not the priority of the head of research, but could be used in future weapons",
 				"Provided of course the acid just doesn't melt the wraith soldiers themselves",
 				"Outside of the acid she seems to have the ability to weave webs to stop attackers in their tracks","Quite a powerful, brutish creature indeed...",""},
 
-		{"Case Speciman: Murk", "Threat: True power unknown, likely low","Known Alliegence: Slimes?",
+		{"Case Specimen: Murk", "Threat: True power unknown, likely low","Known Alliegence: Slimes?",
 				"A possible relative to the King Slime Specimen, this 'Murk' seems to possess an uncanny ability to control flies",
 				"Flies... that have stingers, an obey Slime's every order, surprisingly powerful all things considered",
 				"There's something off about this creature, it seems to resonate an unholy power",
 				"Maybe that power would be released if the power of all other things in this world would be released?",
 				"Until then, there's nothing of much use in this creature to us","",""},
 
-					{"Case Speciman: WC02 -aka- Cobalt Wraith", "Threat: None","Known Alliegence: Paradox Coalition, Allied",
+					{"Case Specimen: WC02 -aka- Cobalt Wraith", "Threat: None","Known Alliegence: Paradox Coalition, Allied",
 				"A standard issue battleclass Wraith, able combat large groups of dissident forces",
 				"This one was released to this world when a great surge of energy was detected",
 				"it has a form of primitive self learning, in the current process of stealing local knowledge",
@@ -120,7 +120,7 @@ namespace SGAmod.Items.Accessories
 				"We are not allowed to talk much about Hellion, but she has almost godly powers as we can call them",
 				"Extremely cruel and cunning, has no problems with scorching entire planets when they refuse to meet her demands",
 				"But this power is nothing compared to what the DRAKEN experiment will be, far, far more",
-				"Hellion has deemed it necessary to elimanate the Terrarian herself, and take the experiment back",
+				"Hellion has deemed it necessary to eliminate the Terrarian herself, and take the experiment back",
 				"We have no doubt that the mission will succeed, sighing off",""},
 
 

@@ -105,6 +105,11 @@ namespace SGAmod.Dimensions
 
         public static HashSet<Point16> InnerArenaTiles;
         public static List<MazeRoom> MazeGraphPoints;
+        public override void Unload()
+        {
+            InnerArenaTiles.Clear();
+            MazeGraphPoints.Clear();
+        }
 
         private Point16 Flow(Point16 point,int scalesize)
         {
@@ -307,7 +312,7 @@ namespace SGAmod.Dimensions
 
                 for (int i = 0; i < 4; i += 1)
                 {
-                    //Check cards
+                    //Check Card Directions
 
                     //Point16 cardOffset = (DarkSector.Cardinals[(offset + i) % DarkSector.Cardinals.Length]) * new Point16(sizeCheck, sizeCheck);
                     Point16 cardOffset = (Vector2.UnitX* sizeCheck).RotatedBy(UniRand.NextFloat(MathHelper.TwoPi)).ToPoint16();
@@ -324,6 +329,8 @@ namespace SGAmod.Dimensions
 
                     // Main.tile[checkHere.X, checkHere.Y].type = TileID.Adamantite;
                     //Main.tile[checkHere.X, checkHere.Y].active(true);
+
+                    //Place down some stuff to mark this area so we don't move back here
                     IDGWorldGen.PlaceMulti(checkHere.ToPoint(), TileID.Adamantite, roomsize * 3);
 
                     Point check1 = (currentPosition + Flow(currentPosition, flowSize)).ToPoint();
@@ -353,6 +360,8 @@ namespace SGAmod.Dimensions
                     goto ResetMove;
 
                 }
+
+                //Dead end, time to step back
 
                 MazeRoom stepBack = mazeStack.Pop();
                 MazeRoom previous = stepBack;
@@ -434,7 +443,6 @@ namespace SGAmod.Dimensions
             List<MazeRoom> InnerRooms = (mazeRooms.FindAll(testby => testby.gen <= maxGen * 0.25)).OrderBy(randomize => UniRand.Next(10000)).ToList();
 
             EvilSegmentRooms(CorruptionRooms,0);
-
 
             foreach (MazeRoom mazeRoom in InnerRooms)
             {

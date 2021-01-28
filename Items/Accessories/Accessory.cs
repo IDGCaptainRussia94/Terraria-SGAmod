@@ -945,9 +945,14 @@ namespace SGAmod.Items.Accessories
 			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(-2.5f, 0f, 0f));
 			hallowed.Parameters["prismColor"].SetValue(((Color)GetAlpha(itemColor)).ToVector3());
 			hallowed.Parameters["alpha"].SetValue(1f);
+			hallowed.Parameters["rainbowScale"].SetValue(1f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(0.5f, 0.5f));
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
 			spriteBatch.Draw(inner2, drawPos, null, Color.White,0, inner2.Size()/2f, Main.inventoryScale*1, SpriteEffects.None, 0f);
+
+			hallowed.Parameters["rainbowScale"].SetValue(1f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1, 1));
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
@@ -959,7 +964,8 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("Blazingheart"), 1);
 			recipe.AddIngredient(mod.ItemType("AlkalescentHeart"), 1);
-			recipe.AddIngredient(mod.ItemType("AncientFabricItem"), 15);
+			recipe.AddIngredient(mod.ItemType("AncientFabricItem"), 25);
+			recipe.AddIngredient(mod.ItemType("StygianCore"), 1);
 			recipe.AddTile(TileID.LihzahrdAltar);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

@@ -23,7 +23,7 @@ namespace SGAmod.Items.Tools
 		{
 			Item refItem = new Item();
 			refItem.SetDefaults(ItemID.TheEyeOfCthulhu);
-			item.damage = 20;
+			item.damage = 36;
 			item.useTime = 60;
 			item.useAnimation = 60;
 			item.useStyle = 5;

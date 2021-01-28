@@ -222,7 +222,7 @@ namespace SGAmod.Dimensions
                             powertool = true;
                     }
 
-                        if (limit % 16 == 0 && limit > 0 && ((item.pick > 99999 && !powertool) || item.hammer > 0 || item.axe > 0 || item.createTile > -1 || item.createWall > -1))
+                        if (limit % 16 == 0 && limit > 0 && ((item.pick > 0 && !powertool) || item.hammer > 0 || item.axe > 0 || item.createTile > -1 || item.createWall > -1))
                     {
                         return false;
                     }
@@ -238,11 +238,12 @@ namespace SGAmod.Dimensions
     {
         public override bool CanExplode(int i, int j, int type)
         {
-            if (SLWorld.currentSubworld is SGAPocketDim sub)
+            if (SLWorld.currentSubworld is SGAPocketDim sub && SGAPocketDim.WhereAmI!=null)
             {
                 int dimmusic = sub.LimitPlayers;
                 if (dimmusic > 0 && dimmusic % 16 == 0)
                 {
+                    //Main.NewText("test");
                     if (DeeperDungeon.instance.IsSpike(type,1))
                         return true;
 
@@ -254,12 +255,12 @@ namespace SGAmod.Dimensions
         public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
 
-            if (SLWorld.currentSubworld is SGAPocketDim sub)
+            if (SLWorld.currentSubworld is SGAPocketDim sub && SGAPocketDim.WhereAmI != null)
             {
                 int dimmusic = sub.LimitPlayers;
                 if (dimmusic > 0 && dimmusic % 16 == 0)
                 {
-                    if (DeeperDungeon.instance.IsSpike(type,0))
+                    if (DeeperDungeon.instance.IsSpike(type,1))
                     {
                         fail = false;
                         effectOnly = false;

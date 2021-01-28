@@ -6,7 +6,9 @@ float prismAlpha;
 
 texture overlayTexture;
 float3 overlayProgress;
+float2 overlayScale;
 float overlayAlpha;
+float rainbowScale;
 float3 overlayStrength;
 float overlayMinAlpha;
 float alpha;
@@ -37,7 +39,12 @@ static const float pi = 3.14159265359;
   
   float3 HSVtoRGB(in float3 HSV)
   {
-    float3 RGB = HUEtoRGB((HSV.x+(overlayProgress.z*1.00))%1);
+  float progress = overlayProgress.z;
+
+  if (progress<0)
+  progress = (1-progress)%1;
+
+    float3 RGB = HUEtoRGB(((HSV.x*rainbowScale)+(progress))%1);
     return ((RGB - 1) * HSV.y + 1) * HSV.z;
   }
 
@@ -60,7 +67,7 @@ float4 PrismFunction(float2 coords : TEXCOORD0) : COLOR0
 
     if (overlayAlpha>0)
     {
-        float4 colorOverlay = tex2D(overlaytexsampler, coords+float2((overlayProgress.x+sinOffset)%1.0,(overlayProgress.y)%1.0));
+        float4 colorOverlay = tex2D(overlaytexsampler, overlayScale*(coords+float2((overlayProgress.x+sinOffset)%1.0,(overlayProgress.y)%1.0)));
         if (colorOverlay.r > overlayMinAlpha)
         {
         colorOverlay.rgb = colorOverlay.rgb*overlayStrength.x;
@@ -77,10 +84,21 @@ float4 PrismFunction(float2 coords : TEXCOORD0) : COLOR0
 	return color*alpha;
 }
 
+float4 FadeFunction(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 inputColor = tex2D(uImage0, coords);
+	float base = sin(coords.y * 3.14159265);
+	return inputColor * (sin(coords.x * 3.14159265)*base)*alpha;
+}
+
 technique Technique1
 {
     pass Prism
     {
         PixelShader = compile ps_2_0 PrismFunction();
+    }
+        pass ColorFade
+    {
+        PixelShader = compile ps_2_0 FadeFunction();
     }
 }

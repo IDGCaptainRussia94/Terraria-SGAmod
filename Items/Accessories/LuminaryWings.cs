@@ -108,7 +108,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.WingsSolar, 1);
 			recipe.AddIngredient(ItemID.WingsStardust, 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBooster"), 1);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 20);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 40);
 			recipe.AddIngredient(mod.ItemType("OmniSoul"), 30);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 25);

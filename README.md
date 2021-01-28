@@ -1,7 +1,7 @@
 # SGAmod
 IDGCaptainRussia94's content mod
 
-//Items with place holder sprites and need resprites: Heart Guard, Hellion's Cascade, Twines of Fate, MVM Upgrade, Jagged Overgrown Spike, Joyrider, Truely Suspicious Looking Eye, Hellion's Crown (Item Sprite ?), All Buff Icons
+//Items with place holder sprites and need resprites: Twines of Fate, MVM Upgrade, Jagged Overgrown Spike, Hellion's Crown (Item Sprite ?), Some Buff Icons
 
 //Items that are NOT ok to be resprited: Stormbreaker, Wave Beam, Serpent's Redemption, Creeper's Throw, The trap related weapons for now
 
@@ -11,15 +11,53 @@ Github was moved: previous builds of the mod can be found over here: https://git
 -Corruption only: Gas Passer, Wraith Arrows, Dosed Arrows, Corrupted Tome, Cursed Hail, Jagged Spike Buckler (can be bypassed with fishing)
 
 
--Ideas: Banners, the Couch, Bannerlord=collection of banners, Spectre homing bullets/projectiles, Tech weapons have an "overclock" mechanic that changes up their gameplay while active, spider queen can melt normal generated blocks (dirt and so)
-Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes!
+-Ideas: Banners, the Couch, Bannerlord=collection of banners tf2/style things, Spectre homing bullets/projectiles, Tech weapons have an "overclock" mechanic that changes up their gameplay while active and overhaul ideas (maybe?), spider queen can melt normal generated blocks (dirt and so)
+Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
+Spartan Laser/mining railgun (need sprites)
 
--Add Hellion Army progress Bar
+-Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy), Aurora Gear and Luminous Alter Tile Entity!
 
 Changelog:
 
+3.530-(1/21/21)-Patch 11-Tech N Wreck:
 
-3.521-(1/21/21)-Hotfix #12:
+--Added:
+
+-True Rainbow Heart
+
+-Hoppers N Droppers, automate your Terraria!
+
+-
+
+
+--Changed:
+
+-Draken's Dialog has been moved around to help give players instructions, also a new interaction has been added after you become close friends
+
+-Amulet of Diehard Cataclysm no longer activates during a boss; only out of boss fights, effect also replays properly now
+
+-Souls of Byte are now a post-Hellion Drop (Hellion Core only drops them after the entire fight is beaten)
+
+-Buffed Cyber Scythe: Now controls in and out twice as fast
+
+-Buffed Geyodo: it really should have did more damage, even if a meager ammount
+
+-Nerfed Tactical SMG Rifle: damage lowered to 25 (from 28)
+
+
+--Fixed
+
+-Disallowed Tools in the Deeper Dungeon again, due to a glitch, use bombs to break everything you could mine before!
+
+-Amulet of Diehard Cataclysm should now properly prevent Blackbelt and Shadow Dodges
+
+-Cyber Scythe's max range growing smaller with melee speed instead of larger
+
+-Prismic Banshee's 'hands' having a weird hitbox
+
+
+
+3.521-(1/21/21)-Hot Fix #16:
 
 --Added:
 
@@ -36,6 +74,8 @@ Changelog:
 -Supreme Pinky should no longer unlock Expertise from phase 1 in expert mode
 
 -Bench God's Favor's slotted item not saving properly (or at all basically)
+
+-Fixed a rather nasty multiplayer oversight
 
 
 3.520-(1/18/21)-Patch 10-Scraps of the Past:

@@ -18,7 +18,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Weapons.Technical
 {
-	public class AssaultRifle : SeriousSamWeapon
+	public class AssaultRifle : SeriousSamWeapon, ITechItem
 	{
 		int firemode = 0;
 		public override void SetStaticDefaults()
@@ -29,7 +29,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override void SetDefaults()
 		{
-			item.damage = 28;
+			item.damage = 25;
 			item.ranged = true;
 			item.width = 42;
 			item.height = 16;
@@ -134,6 +134,8 @@ namespace SGAmod.Items.Weapons.Technical
 			recipe.AddIngredient(ItemID.IllegalGunParts, 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
 			recipe.AddIngredient(ItemID.ChainGun, 1);
+			recipe.AddIngredient(ItemID.ClockworkAssaultRifle, 1);
+			recipe.AddIngredient(ItemID.Gatligator, 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 15);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
@@ -142,7 +144,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	}
 
-	public class OnyxTacticalShotgun : SeriousSamWeapon
+	public class OnyxTacticalShotgun : SeriousSamWeapon,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -215,7 +217,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-	public class CircuitBreakerBlade : SeriousSamWeapon
+	public class CircuitBreakerBlade : SeriousSamWeapon, ITechItem
 	{
 		public static NPC FindClosestTarget(Player ply,Vector2 loc, Vector2 size, bool block = true, bool friendlycheck = true, bool chasecheck = false)
 		{
@@ -452,7 +454,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-	public class TeslaStaff : SeriousSamWeapon
+	public class TeslaStaff : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -521,7 +523,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-		public class Massacre : SeriousSamWeapon
+		public class Massacre : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -665,7 +667,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-	public class RodofEnforcement : SeriousSamWeapon
+	public class RodofEnforcement : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -861,7 +863,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-	public class BeamCannon : SeriousSamWeapon
+	public class BeamCannon : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -1658,7 +1660,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	}
 
-	public class VolcanicSpaceBlaster : NoviteBlaster
+	public class VolcanicSpaceBlaster : NoviteBlaster, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -1962,7 +1964,7 @@ namespace SGAmod.Items.Weapons.Technical
 namespace SGAmod.HavocGear.Items.Weapons
 {
 
-	public class BigDakka : SeriousSamWeapon
+	public class BigDakka : SeriousSamWeapon, ITechItem
 	{
 		int ammotype;
 		public override void SetStaticDefaults()

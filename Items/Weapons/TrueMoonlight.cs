@@ -148,7 +148,7 @@ namespace SGAmod.Items.Weapons
 			ModRecipe recipe = new StarMetalRecipes(mod);
 			recipe.AddIngredient(mod.ItemType("SwordofTheBlueMoon"), 1);
 			recipe.AddIngredient(ItemID.BrokenHeroSword, 1);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 8);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 20);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 15);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this, 1);

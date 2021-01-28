@@ -27,6 +27,16 @@ namespace SGAmod
 	interface IHitScanItem
 	{
 	}
+	interface ITechItem
+	{
+		/*int MaxElectricCharge();
+		int ElectricChargePerUse();
+		int ElectricChargeWhileInUse();*/
+	}
+	interface IHopperInterface
+	{
+		bool HopperInputItem(Item item,Point tilelocation,int movementCount);
+	}	
 	interface ISGABoss
 	{
 		string Trophy();

@@ -1337,6 +1337,7 @@ namespace SGAmod.NPCs
 			hallowed.Parameters["overlayAlpha"].SetValue(0f);
 			hallowed.Parameters["overlayStrength"].SetValue(0f);
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1,1));
 
 			Vector2 drawOrigin2 = new Vector2(inner.Width, inner.Height / 2) / 2f;
 

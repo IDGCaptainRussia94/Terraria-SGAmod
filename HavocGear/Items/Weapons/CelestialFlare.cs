@@ -44,7 +44,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("ThermalBlade"), 1);
 			recipe.AddIngredient(ItemID.FragmentSolar, 8);
  			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 6);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 20);
 			recipe.AddIngredient(ItemID.SoulofLight, 6);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);

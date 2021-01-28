@@ -16,8 +16,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 	public class SeriousSamWeapon : ModItem
 	{
-
-		public override bool Autoload(ref string name)
+        public override bool Autoload(ref string name)
 		{
 			return GetType() != typeof(SeriousSamWeapon);
 		}
@@ -43,15 +42,10 @@ namespace SGAmod.Items.Weapons.SeriousSam
 				tt.text = newline;
 			}
 		}
-		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
-		{
-			//add += player.GetModPlayer<SGAPlayer>().techdamage-1f;
-			mult *= player.GetModPlayer<SGAPlayer>().techdamage;
-		}
 	}
 
 
-	public class BeamGun : SeriousSamWeapon, IHitScanItem
+	public class BeamGun : SeriousSamWeapon, IHitScanItem,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -544,9 +538,9 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 			Texture2D tex = Main.chain6Texture;
 
-			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
-			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
-			Color color = Color.Lerp((projectile.GetAlpha(lightColor) * 0.5f), Color.White, 0.5f); //* ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+			//Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
+			//Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
+			//Color color = Color.Lerp((projectile.GetAlpha(lightColor) * 0.5f), Color.White, 0.5f); //* ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
 			int timing = 0;
 			timing *= ((tex.Height) / 5);
 			float alpha = 1f;

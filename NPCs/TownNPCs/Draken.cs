@@ -605,7 +605,7 @@ namespace SGAmod.NPCs.TownNPCs
 							adder = " The very next target is... ugh.... (ERROR) 0_0";
 						}
 					}
-					Main.npcChatText = "You have " + modplayer.ExpertiseCollected + " Expertise, out of a total of " + modplayer.ExpertiseCollectedTotal + "." + adder+ " You can Hold 'Shift' and click 'Check Expertise' to see your current and total Expertise, as well as see what's next on the target list.";
+					Main.npcChatText = "You have " + modplayer.ExpertiseCollected + " Expertise, out of a total of " + modplayer.ExpertiseCollectedTotal + "." + adder;
 
 				}
 				else
@@ -710,7 +710,7 @@ namespace SGAmod.NPCs.TownNPCs
 				if (SGAWorld.downedHellion > 1)
 					chat = "You've done it, thank you [i: " + ItemID.Heart + "]!";
 
-				Main.npcChatText = chat;
+				Main.npcChatText = chat + " --- You can Hold 'Shift' and click 'Check Expertise' to see your current and total Expertise, as well as see what's next on the target list.";
 				//Main.CloseNPCChatOrSign();
 				//SGAmod.TryToggleUI(null);
 			}

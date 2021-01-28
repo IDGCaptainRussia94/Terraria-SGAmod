@@ -326,8 +326,13 @@ namespace SGAmod
 			graniteMagnet = false;
 			SunderedDefense = false;
 			lockoneffect = Math.Min(lockoneffect + 1, 5000);
+
+			if (!NoHitCharm)
+			{
+				NoHitCharmTimer = Math.Min(NoHitCharmTimer+1,181);
+			}
+
 			NoHitCharm = false;
-			NoHitCharmTimer += 1;
 
 			if (ammoLeftInClip > ammoLeftInClipMax)
 				ammoLeftInClip = ammoLeftInClipMax;

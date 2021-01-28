@@ -218,14 +218,28 @@ namespace SGAmod
 			SGAmod.EnchantmentFocusCrystal.Add(ModContent.ItemType<EntropyTransmuter>(), new EnchantmentCraftingMaterial(15, 200, "One enchantment will always grant entropy bonuses"));
 			SGAmod.EnchantmentFocusCrystal.Add(ModContent.ItemType<CalamityRune>(), new EnchantmentCraftingMaterial(20, 200, "Enchantments may grant bonuses to Apocalypticals"));
 
+			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<AuroraTear>(), new LuminousAlterItemClass(ModContent.ItemType<AuroraTearAwoken>(), 60*300, 1));
+			SGAmod.LuminousAlterItems.Add(ItemID.SoulofLight, new LuminousAlterItemClass(ModContent.ItemType<IlluminantEssence>(), 60 * 8, 1));
+			SGAmod.LuminousAlterItems.Add(ItemID.Meteorite, new LuminousAlterItemClass(ItemID.LunarOre, 60 * 10, 12,12));
+			SGAmod.LuminousAlterItems.Add(ItemID.PinkGel, new LuminousAlterItemClass(ModContent.ItemType<Prettygel>(), 20 * 30, 20,1));
+			//---
+			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<IlluminantEssence>(), new LuminousAlterItemClass(ModContent.ItemType<StygianCore>(), 60 * 30, 15,1, (Func<bool>)(() => !Main.dayTime && Main.bloodMoon && !Main.raining)));
+			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<EntropyTransmuter>(), new LuminousAlterItemClass(ModContent.ItemType<CalamityRune>(), 60 * 10,1, 1, (Func<bool>)(() => !Main.dayTime && Main.bloodMoon && !Main.raining)));
+			SGAmod.LuminousAlterItems.Add(ItemID.ShinyStone, new LuminousAlterItemClass(ModContent.ItemType<CalamityRune>(), 60 * 60, 1,1, (Func<bool>)(() => !Main.dayTime && Main.bloodMoon && !Main.raining)));
+			SGAmod.LuminousAlterItems.Add(ItemID.CrimtaneBar, new LuminousAlterItemClass(ItemID.DemoniteBar, 60 * 5, 1,1, (Func<bool>)(() => !Main.dayTime && Main.bloodMoon && !Main.raining)));
+			SGAmod.LuminousAlterItems.Add(ItemID.DemoniteBar, new LuminousAlterItemClass(ItemID.CrimtaneBar, 60 * 5, 1,1, (Func<bool>)(() => !Main.dayTime && Main.bloodMoon && !Main.raining)));
+
+			//now I did come up with a way you can automate this, if you feed it a large enough stack, when it finishes the infusion it just yeets the new item onto the ground and starting working on the rest of the stack so you can convoy the items for example, this keeps up til there's either not enough items left or the conditions no longer match (IE it's now day)
+				//If the item were to be turned into air via the last stack, the new item takes its place on the Alter for you to pickup
+				
 			//SGAWorld.downedCopperWraith==0 ? true : false)
-			Idglib.AbsentItemDisc.Add(this.ItemType("Tornado"), "5% to drop from Wyverns after Golem");
+							Idglib.AbsentItemDisc.Add(this.ItemType("Tornado"), "5% to drop from Wyverns after Golem");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Upheaval"), "20% to drop from Golem");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Powerjack"), "10% to drop from Wall of Flesh");
 			Idglib.AbsentItemDisc.Add(this.ItemType("SwordofTheBlueMoon"), "10% (20% in expert mod) drop from Moon Lord");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Fieryheart"), "This item is a secret...");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Sunbringer"), "This item is not obtainable yet");
-			Idglib.AbsentItemDisc.Add(this.ItemType("StoneBarrierStaff"), "Sold by the Dryad after defeating Spider Queen");
+			Idglib.AbsentItemDisc.Add(this.ItemType("StoneBarrierStaff"), "Found in the Deeper Dungeons");
 			Idglib.AbsentItemDisc.Add(this.ItemType("PeacekeepersDuster"), "Sold by the Traveling Merchant in Hardmode");
 			Idglib.AbsentItemDisc.Add(this.ItemType("SecondCylinder"), "Sold by the Arms Dealer in a world with tin, or in Hardmode");
 			Idglib.AbsentItemDisc.Add(this.ItemType("GunBarrelParts"), "Sold by the Arms Dealer in a world with copper, or in Hardmode");

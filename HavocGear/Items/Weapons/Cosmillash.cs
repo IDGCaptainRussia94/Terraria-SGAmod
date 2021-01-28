@@ -66,7 +66,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("ShadeflameStaff"), 1);
 			recipe.AddIngredient(ItemID.FragmentNebula, 8);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 6);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 20);
 			recipe.AddIngredient(ItemID.SoulofNight, 6);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);

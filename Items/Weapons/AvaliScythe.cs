@@ -484,8 +484,9 @@ namespace SGAmod.Items.Weapons
 
 					if (Main.netMode != NetmodeID.Server && master.ai[1] < 1)
 					{
-						projectile.ai[0] += ((Main.MouseWorld - owner.MountedCenter).Length() - projectile.ai[0]) / (1000f / ((master.ai[0] * owner.meleeSpeed) + 1));
-						projectile.ai[0] = Math.Max(Math.Min(160, master.ai[0] * 20), Math.Min(projectile.ai[0], 600f * owner.meleeSpeed));
+						float speedrate = (1000f / (((master.ai[0]*2f) * owner.meleeSpeed) + 1));
+						projectile.ai[0] += ((Main.MouseWorld - owner.MountedCenter).Length() - projectile.ai[0]) / speedrate;
+						projectile.ai[0] = Math.Max(Math.Min(160, master.ai[0] * 20), Math.Min(projectile.ai[0], 600f / owner.meleeSpeed));
 						projectile.netUpdate = true;
 					}
 				}
@@ -635,7 +636,7 @@ namespace SGAmod.Items.Weapons
         }
     }
 
-	public class LaserLance : SeriousSamWeapon
+	public class LaserLance : SeriousSamWeapon,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -835,7 +836,7 @@ namespace SGAmod.Items.Weapons
 namespace SGAmod.HavocGear.Items.Weapons
 {
 
-	public class RedPhasebrand : AvaliScythe
+	public class RedPhasebrand : AvaliScythe,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{

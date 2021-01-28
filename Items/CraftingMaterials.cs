@@ -1415,7 +1415,6 @@ public class LunarRoyalGel : ModItem
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
-
 	}
 
 	public class EALogo : ModItem

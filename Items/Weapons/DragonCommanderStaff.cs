@@ -41,6 +41,7 @@ namespace SGAmod.Items.Weapons
 			item.height = 24;
 			item.useTime = 10;
 			item.mana = 25;
+			item.expert = true;
 			item.useAnimation = 10;
 			item.autoReuse = false;
 			item.useTurn = false;

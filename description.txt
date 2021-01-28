@@ -19,7 +19,7 @@ And finally, alot of content in this mod is placeholder sprites due to a lack of
 
 Changelog:
 
-3.521-(1/21/21)-Hotfix #12:
+3.521-(1/21/21)-Hot Fix #16:
 
 --Added:
 
@@ -36,6 +36,8 @@ Changelog:
 -Supreme Pinky should no longer unlock Expertise from phase 1 in expert mode
 
 -Bench God's Favor's slotted item not saving properly (or at all basically)
+
+-Fixed a rather nasty multiplayer oversight
 
 
 
@@ -150,6 +152,21 @@ Changelog:
 -Luminite Wraith should no longer have a broken smooth circle on their vortex attack
 
 -Typeos and various minor fixes
+
+
+3.515-(12/29/20)-Hot Fix #15:
+
+-Missed a thing, Happy New Years everyone #2!
+
+
+--Changed:
+
+-Luminite Wraith's Djinns no longer do contact damage
+
+
+--Fixed:
+
+-Luminite Wraith's Djinns ALWAYS Spawning
 
 
 
@@ -367,7 +384,8 @@ Changelog:
 
 -Stone Aura Staff hurting friend NPCs
 
-3.455-(12/5/20)-Hot Fix #13:
+
+3.440-(12/3/20)-Hot Fix #12:
 
 
 --Changed:

@@ -23,6 +23,8 @@ namespace SGAmod
 	public bool enhancedbees=false;
 	public bool splittingcoins=false;
 	public bool raindown=false;
+		public float damageReduce = 1f;
+		public int damageReduceTime = 0;
 		public bool embued = false;
 		public bool onehit = false;
 	public Vector2 splithere=new Vector2(0,0);
@@ -80,17 +82,22 @@ namespace SGAmod
 				return;
         }
 
-        public override void ModifyHitNPC(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-        {
+		public override void ModifyHitNPC(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
 			if (projectile.friendly)
 			{
 				Player owner = Main.player[projectile.owner];
 				if (owner != null)
 				{
-					if (projectile.melee && owner.heldProj == projectile.whoAmI || (projectile.modProjectile!=null && projectile.modProjectile is IShieldBashProjectile))
+					if (projectile.melee && owner.heldProj == projectile.whoAmI || (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile))
 						damage = (int)((float)damage * owner.SGAPly().trueMeleeDamage);
 				}
 			}
+			if (damageReduce > 1)
+			{
+				damage = (int)(damage / damageReduce);
+			}
+
 
 			if (embued)
 				damage = (int)(projectile.damage * 1.50f);
@@ -137,6 +144,19 @@ namespace SGAmod
 
         public override void PostAI(Projectile projectile)
 		{
+			SGAprojectile modeproj = projectile.GetGlobalProjectile<SGAprojectile>();
+			if (modeproj.damageReduce > 1f)
+            {
+				modeproj.damageReduceTime -= 1;
+				if (damageReduceTime < 1)
+				{
+					modeproj.damageReduce /= 2f;
+					if (modeproj.damageReduce < 1)
+						modeproj.damageReduce = 1f;
+				}
+			}
+
+
 			Player owner = Main.player[projectile.owner];
 			if (owner != null)
 			{
@@ -172,7 +192,7 @@ namespace SGAmod
 				Main.dust[dust].color = Main.hslToRgb(((float)(Main.GlobalTime / 3)+(float)projectile.whoAmI*7.16237f) % 1f, 0.9f, 0.65f);
 			}
 
-			SGAprojectile modeproj = projectile.GetGlobalProjectile<SGAprojectile>();
+			//SGAprojectile modeproj = projectile.GetGlobalProjectile<SGAprojectile>();
 			if (projectile.owner < 255 && Main.player[projectile.owner].active && projectile.friendly && !projectile.hostile)
 			{
 				if (!modeproj.stackedattack)

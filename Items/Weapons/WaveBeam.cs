@@ -10,7 +10,7 @@ using Idglibrary;
 
 namespace SGAmod.Items.Weapons
 {
-	public class WaveBeam : SeriousSamWeapon
+	public class WaveBeam : SeriousSamWeapon,ITechItem
 	{
 		private bool altfired=false;
 		public override void SetStaticDefaults()

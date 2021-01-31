@@ -723,6 +723,14 @@ namespace SGAmod
 				player.maxRunSpeed *= 1.15f;
 			}
 
+			if (player.HeldItem.type == mod.ItemType("NoviteKnife"))
+			{
+				player.moveSpeed *= 1.20f;
+				player.accRunSpeed *= 1.20f;
+				player.maxRunSpeed *= 1.20f;
+				player.jumpSpeedBoost += 1f;
+			}
+
 			if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
 				skillMananger.PostUpdateRunSpeeds();
 

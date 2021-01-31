@@ -120,7 +120,11 @@ namespace SGAmod.NPCs
         {
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AuroraTear"), (Main.expertMode ? 2 : 1)*(2-(int)npc.ai[3]));
 			//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(12, Main.expertMode ? 30 : 20) * (2 - (int)npc.ai[3]));
-			SGAWorld.downedPrismBanshee = true;
+			if (SGAWorld.downedPrismBanshee<1)
+			SGAWorld.downedPrismBanshee = 1;
+			if (npc.ai[3] < 1 && SGAWorld.downedPrismBanshee<2)
+				SGAWorld.downedPrismBanshee = 2;
+
 		}
 
         public void DoAttacks()
@@ -642,8 +646,8 @@ namespace SGAmod.NPCs
 			npc.noGravity = true;
 			npc.noTileCollide = true;
 			npc.netAlways = true;
-			npc.HitSound = SoundID.NPCHit7;
-			npc.DeathSound = SoundID.NPCDeath6;
+			//npc.HitSound = SoundID.NPCHit7;
+			// npc.DeathSound = SoundID.NPCDeath6;
 			npc.Opacity = 0f;
 		}
 		public override string Texture
@@ -1239,7 +1243,7 @@ Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerS
 
 			bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
 
-			return (player.ZoneHoly && underground) ? (SGAWorld.downedPrismBanshee ? 0.020f : 0.15f) : 0f;
+			return (player.ZoneHoly && underground) ? (SGAWorld.downedPrismBanshee>0 ? 0.020f : 0.15f) : 0f;
 		}
 	}
 

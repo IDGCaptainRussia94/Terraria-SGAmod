@@ -81,11 +81,12 @@ namespace SGAmod
 						ammo = ItemID.ThrowingKnife;
 					if (player.HasItem(ItemID.PoisonedKnife))
 						ammo = ItemID.PoisonedKnife;
-					if (player.HasItem(ItemID.BoneDagger))
-						ammo = ItemID.BoneDagger;
 					if (player.HasItem(ItemID.FrostDaggerfish))
 						ammo = ItemID.FrostDaggerfish;
-
+					if (player.HasItem(ItemID.StarAnise))
+						ammo = ItemID.StarAnise;
+					if (player.HasItem(ItemID.BoneDagger))
+						ammo = ItemID.BoneDagger;
 
 
 					if (ammo > 0)

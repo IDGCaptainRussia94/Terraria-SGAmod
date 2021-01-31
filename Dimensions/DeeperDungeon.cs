@@ -885,9 +885,10 @@ namespace SGAmod.Dimensions
                         Main.chest[chestid].item[e].stack = 1;
                         e += 1;
                     } 
-                    if (unirand.Next(0, 100) < 3 + (SGAWorld.dungeonlevel * 1))
+                    if (unirand.Next(0, 90) < 3 + (SGAWorld.dungeonlevel * 1))
                     {
-                        Main.chest[chestid].item[e].SetDefaults(unirand.NextBool() ? SGAmod.Instance.ItemType("BenchGodsFavor") : SGAmod.Instance.ItemType("PortalEssence"));
+                        int[] choices = { SGAmod.Instance.ItemType("BenchGodsFavor"), SGAmod.Instance.ItemType("PortalEssence"), SGAmod.Instance.ItemType("DungeonSplunker")};
+                        Main.chest[chestid].item[e].SetDefaults(choices[unirand.Next(choices.Length)]);
                         Main.chest[chestid].item[e].stack = 1;
                         e += 1;
                     }                    

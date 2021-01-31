@@ -31,14 +31,22 @@ namespace SGAmod.Items.Placeable
 			item.consumable = true;
 			item.createTile = mod.TileType("LuminousAlter");
 		}
+		public static Color AuroraLineColor
+        {
+            get
+            {
+				Color rainbowColor = Main.hslToRgb((Main.GlobalTime * 0.085f) % 1f, 1f, 0.75f);
+				return Color.Lerp(rainbowColor, Color.Lerp(Color.Pink, Color.Aqua, 0.5f + (float)Math.Sin(Main.GlobalTime * 0.735f)), 0.5f + (float)Math.Sin(Main.GlobalTime * 0.375f));
+			}
+        }
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			foreach (TooltipLine line in tooltips)
 			{
 				if (line.mod == "Terraria" && line.Name == "ItemName")
 				{
-					Color rainbowColor = Main.hslToRgb((Main.GlobalTime * 3.00f) % 1f, 1f, 0.75f);
-					line.overrideColor = Color.Lerp(rainbowColor, Color.Lerp(Color.Pink, Color.Aqua, 0.5f + (float)Math.Sin(Main.GlobalTime * 1f)), 0.5f + (float)Math.Sin(Main.GlobalTime * 0.65f));
+					Color rainbowColor = Main.hslToRgb((Main.GlobalTime * 0.085f) % 1f, 1f, 0.75f);
+					line.overrideColor = AuroraLineColor;
 				}
 			}
 		}
@@ -46,13 +54,10 @@ namespace SGAmod.Items.Placeable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.TinkerersWorkshop, 1);
-			recipe.AddIngredient(ItemID.MeteoriteBar, 8);
-			recipe.AddIngredient(mod.ItemType("VialofAcid"), 25);
-			recipe.AddRecipeGroup("SGAmod:PressurePlates", 2);
-			//recipe.AddIngredient(mod.ItemType("WraithFragment3"), 10);
-			recipe.AddRecipeGroup("SGAmod:TechStuff", 2);
-			recipe.AddTile(TileID.WorkBenches);
+			recipe.AddIngredient(ItemID.LunarBar, 8);
+			recipe.AddIngredient(mod.ItemType("AuroraTear"), 1);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 12);
+			recipe.AddTile(TileID.LihzahrdAltar);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}

@@ -158,8 +158,6 @@ namespace SGAmod
 						Main.dust[dust].noGravity = false;
 						Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
 					}
-
-
 				}
 			}
 

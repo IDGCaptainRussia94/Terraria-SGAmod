@@ -1,5 +1,5 @@
 author = IDGCaptainRussia
-version = 3.521
+version = 3.530
 displayName = [i:2730][i:2718][i:2712]mod - [i:3725] [c/4fd446:Century's Millennium] [i:3580][i:3040]
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, *.xcf, *.idg, *.MD, *.csproj, *.user, obj\*, bin\*
 includePDB = true

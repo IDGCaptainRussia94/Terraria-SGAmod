@@ -23,6 +23,7 @@ namespace SGAmod.Effects
         public bool doFade = true;
         public bool connectEnds = false;
         public Vector2 coordOffset;
+        public Vector2 coordMultiplier;
         public Vector2 capsize;
         public Func<float, Color> color;
 
@@ -33,6 +34,7 @@ namespace SGAmod.Effects
             projsize = Vector2.Zero;
             this.pass = pass;
             coordOffset = Vector2.Zero;
+            coordMultiplier = Vector2.One;
             strength = 1f;
             capsize = new Vector2(0,64f);
             if (color2 == default)
@@ -59,7 +61,7 @@ namespace SGAmod.Effects
             effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Main.GameViewMatrix.Zoom) * WVP.Projection());
             effect.Parameters["imageTexture"].SetValue(tex);
             effect.Parameters["coordOffset"].SetValue(coordOffset);
-            effect.Parameters["coordMultiplier"].SetValue(1f);
+            effect.Parameters["coordMultiplier"].SetValue(coordMultiplier);
             effect.Parameters["strength"].SetValue(strength);
 
             int totalcount = drawPoses.Count;

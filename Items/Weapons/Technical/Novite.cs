@@ -19,7 +19,7 @@ namespace SGAmod.Items.Weapons.Technical
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Knife");
-			Tooltip.SetDefault("Instantly hits against targets where you swing\nHitting some types of targets in the rear will backstab, automatically becoming a crit");
+			Tooltip.SetDefault("Instantly hits against targets where you swing\nHitting some types of targets in the rear will backstab, automatically becoming a crit\nHolding this weapon increases your movement speed and jump height");
 		}
 		public override void SetDefaults()
 		{
@@ -148,9 +148,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override bool CanUseItem(Player player)
 		{
-			if (player.SGAPly().electricCharge > 50)
-				return true;
-			return false;
+			return player.SGAPly().ConsumeElectricCharge(50, 0, consume: false);
 		}
 		public override void AddRecipes()
 		{
@@ -314,14 +312,17 @@ namespace SGAmod.Items.Weapons.Technical
 			Vector2 directionmeasure = direction;
 			direction.Normalize();
 
+			bool cantchargeup = false;
+
 			if (projectile.ai[0] < chargeuptime + 1)
 			{
 				if (DoChargeUp())
 					projectile.ai[0] += 1;
+				else
+					cantchargeup = true;
 			}
 
-
-			bool channeling = ((player.channel || projectile.ai[0] < 5) && !player.noItems && !player.CCed);
+			bool channeling = ((player.channel || (projectile.ai[0] < 5 && !cantchargeup)) && !player.noItems && !player.CCed);
 			projectile.Center = player.MountedCenter + direction * spacing;
 
 			Vector2 mousePos = Main.MouseWorld;

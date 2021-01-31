@@ -348,7 +348,7 @@ namespace SGAmod.Items.Weapons
 									Main.projectile[proj].timeLeft = 300;
 									//Main.projectile[proj].usesLocalNPCImmunity = true;
 									Main.projectile[proj].localNPCHitCooldown = 8;
-									Main.projectile[proj].thrown = true;
+									Main.projectile[proj].Throwing().thrown = true;
 									IdgProjectile.Sync(proj);
 
 									for (int q = 0; q < 50; q++)

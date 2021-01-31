@@ -13,32 +13,43 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners tf2/style things, Spectre homing bullets/projectiles, Tech weapons have an "overclock" mechanic that changes up their gameplay while active and overhaul ideas (maybe?), spider queen can melt normal generated blocks (dirt and so)
 Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
-Spartan Laser/mining railgun (need sprites)
+Spartan Laser/mining railgun (need sprites), shuricane (shuriken Hurricane!)
 
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy), Aurora Gear and Luminous Alter Tile Entity!
+-Add Hellion Bas bar, STILL! Add Hellion checkpoints! Make Madal not do self damage/less damage
 
 Changelog:
 
-3.530-(1/21/21)-Patch 11-Tech N Wreck:
+3.530-(1/28/21)-Patch 11-Tech N Wreck:
 
 --Added:
 
--True Rainbow Heart
+-Plasmic Rail Gun, True Rainbow Heart, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear
+
+-Luminous Alter, use it to transmute various items overtime by infusing them with Starlight!
 
 -Hoppers N Droppers, automate your Terraria!
 
--
+-Prismic Banshee has a stronger manually summoned version after Luminite Wraith is defeated you can fight for double loot, the boss in general has undergone a couple of changes
+
+-Resprites, enjoy a far better looking Jackpot!
 
 
 --Changed:
 
 -Draken's Dialog has been moved around to help give players instructions, also a new interaction has been added after you become close friends
 
+-Added the Star Anise to the list of items the Ninja Stash can summon on attacks
+
 -Amulet of Diehard Cataclysm no longer activates during a boss; only out of boss fights, effect also replays properly now
 
 -Souls of Byte are now a post-Hellion Drop (Hellion Core only drops them after the entire fight is beaten)
 
+-Hellion's beam has been given a visual overhaul to fix a bug where it was invisible (see fixed)
+
 -Buffed Cyber Scythe: Now controls in and out twice as fast
+
+-Buffed Novite Knife: Now carries over a movement speed and jump boost from its source material (granted, from deathmatch)
 
 -Buffed Geyodo: it really should have did more damage, even if a meager ammount
 
@@ -47,13 +58,19 @@ Changelog:
 
 --Fixed
 
--Disallowed Tools in the Deeper Dungeon again, due to a glitch, use bombs to break everything you could mine before!
+-Disallowed Tools in the Deeper Dungeon again, due to a mining glitch, use bombs to break everything you could mine before! Unless you have the Dungeon Splunker
 
 -Amulet of Diehard Cataclysm should now properly prevent Blackbelt and Shadow Dodges
+
+-Hellion Beams being invisible
 
 -Cyber Scythe's max range growing smaller with melee speed instead of larger
 
 -Prismic Banshee's 'hands' having a weird hitbox
+
+-Virulent Ore placing the wrong tile, due to me forgoting to undo a testing thing
+
+-Stormbreaker not counting the lightning as modded throwing damage
 
 
 

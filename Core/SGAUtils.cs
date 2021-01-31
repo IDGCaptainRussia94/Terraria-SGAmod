@@ -224,7 +224,55 @@ namespace SGAmod
 
 	}
 
-	public class PostDrawCollection
+	//Converts a 1D array of an inventory into a 2D grid, to make item interfacing a HELL of alot easier! (this is presuming the grid is a fixed rectangle with no extra spaces, the y size scales up to match)
+	public class GridInventory
+	{
+		public int maxX;
+		public int maxY;
+		public Item[,] inventory;
+		public GridInventory(int maxWidth,Item[] inventoryToGrid)
+        {
+			maxX = maxWidth;
+			maxY = (int)(inventoryToGrid.Length / maxWidth) + 1;
+			inventory = new Item[maxWidth, maxY];
+			int index = 0;
+			int yindex = 0;
+			foreach(Item item in inventoryToGrid)
+            {
+				inventory[index % maxWidth, yindex] = item;
+				if (index == maxWidth - 1)
+                {
+					yindex += 1;
+					//maxY += 1;
+				}
+				index += 1;
+
+			}
+        }
+
+		public Point FindItem(Item item)
+		{
+			Point point = new Point(-1, -1);
+			for (int x = 0; x < maxX; x += 1)
+			{
+				for (int y = 0; y < maxY; y += 1)
+				{
+					if (!inventory[x, y].IsAir && inventory[x,y].type == item.type)
+                    {
+						return new Point(x, y);
+					}
+				}
+			}
+			return point;
+		}
+
+		public bool InsideGrid(int x,int y)
+        {
+			return x >= 0 && y >= 0 && x < maxX && x < maxY;
+		}
+	}
+
+		public class PostDrawCollection
 	{
 		public Vector3 light;
 

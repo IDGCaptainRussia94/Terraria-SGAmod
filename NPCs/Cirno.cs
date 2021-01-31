@@ -855,7 +855,7 @@ return false;
 	public class CirnoBolt : ModProjectile
 	{
 
-		double keepspeed=0.0;
+		public double keepspeed =0.0;
 		public float homing=0.02f;
 		Vector2 gothere;
 		public override void SetStaticDefaults()

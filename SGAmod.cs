@@ -273,6 +273,7 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 571));//109
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 711));//110
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + 1));//111
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Glow_"+ 239));//112
 
 				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 				int height = queenTex.Height;
@@ -882,7 +883,7 @@ namespace SGAmod
 			if (!Main.dedServ)
 			{
 				localtimer += 1;
-				HellionBeam.UpdateHellionBeam((int)(localtimer));
+				//HellionBeam.UpdateHellionBeam((int)(localtimer));
 				ParadoxMirror.drawit(new Vector2(0, 0), Main.spriteBatch, Color.White, Color.White, 1f, 0);
 			}
 		}

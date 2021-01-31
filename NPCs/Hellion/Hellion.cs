@@ -19,6 +19,8 @@ using SGAmod.Items.Weapons;
 using SGAmod.Buffs;
 using SGAmod.NPCs.TrueDraken;
 using System.Diagnostics;
+using SGAmod.Effects;
+using System.Linq;
 
 namespace SGAmod.NPCs.Hellion
 {
@@ -3174,7 +3176,7 @@ namespace SGAmod.NPCs.Hellion
 		public class HellionBeam : ProjectileLaserBase
 	{
 
-		float scale2 = 0f;
+		protected float scale2 = 0f;
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
@@ -3205,8 +3207,6 @@ namespace SGAmod.NPCs.Hellion
 				if (SGAmod.hellionLaserTex != null)
 					SGAmod.hellionLaserTex.Dispose();
 
-
-
 				if (SGAmod.updatelasers)
 				{
 
@@ -3234,8 +3234,6 @@ namespace SGAmod.NPCs.Hellion
 
 					SGAmod.hellionLaserTex.SetData(dataColors);
 
-
-
 				}
 			}
 
@@ -3243,21 +3241,25 @@ namespace SGAmod.NPCs.Hellion
 
 		public override void AI()
 		{
-			if (projectile.ai[1] > 9 && projectile.ai[1] < 20)
-				scale2 += 0.05f;
+			if (GetType() == typeof(HellionBeam))
+			{
 
-			if (projectile.ai[1] > 79 && projectile.ai[1] < 90)
-				scale2 -= 0.05f;
+				if (projectile.ai[1] > 9 && projectile.ai[1] < 20)
+					scale2 += 0.05f;
 
-			if (projectile.ai[1] > 100)
-				scale2 = Math.Min(scale2 + 0.15f, 1.5f);
+				if (projectile.ai[1] > 79 && projectile.ai[1] < 90)
+					scale2 -= 0.05f;
+
+				if (projectile.ai[1] > 100)
+					scale2 = Math.Min(scale2 + 0.15f, 1.5f);
 
 
-			projectile.ai[1] += 1;
-			if (projectile.ai[1]==100)
-			Main.PlaySound(29, (int)projectile.Center.X, (int)projectile.Center.Y, 104, 1f, 0f);
+				projectile.ai[1] += 1;
+				if (projectile.ai[1] == 100)
+					Main.PlaySound(29, (int)projectile.Center.X, (int)projectile.Center.Y, 104, 1f, 0f);
 
-			projectile.localAI[0] += 0.2f;
+				projectile.localAI[0] += 0.2f;
+			}
 			base.AI();
 		}
 
@@ -3293,12 +3295,29 @@ namespace SGAmod.NPCs.Hellion
 			if (Main.dedServ)
 				return false;
 
-			Color colortex = Color.White;
+			Color colortex = Color.Red*0.75f;
 			if (projectile.ai[1] < 100)
-				colortex = Color.Green;
-			Vector2 scale = new Vector2(MathHelper.Clamp((float)projectile.timeLeft / 20, 0f, 1f)* scale2, 1f);
-			if (SGAmod.hellionLaserTex!=null && !SGAmod.hellionLaserTex.IsDisposed)
-			Idglib.DrawTether(SGAmod.hellionLaserTex, hitspot, projectile.Center, projectile.Opacity* Math.Min(scale2,1f), scale.X, scale.Y, colortex);
+				colortex = Color.Green*0.50f;
+			Vector2 scale = new Vector2(MathHelper.Clamp((float)projectile.timeLeft / 20, 0f, 1f) * scale2, 1f);
+
+			List<Vector2> vectors = new List<Vector2>();
+			vectors.Add(hitspot);
+			vectors.Add(projectile.Center);
+
+			TrailHelper trail = new TrailHelper("FadedBasicEffectPass", SGAmod.ExtraTextures[21]);
+			trail.projsize = Vector2.Zero;
+			trail.coordOffset = new Vector2(0, -Main.GlobalTime*3f);
+			trail.coordMultiplier = new Vector2(1f, 30f);
+			trail.doFade = false;
+			trail.trailThickness = 16*scale.X;
+			trail.color = delegate (float percent)
+			{
+				return colortex;
+			};
+			trail.trailThicknessIncrease = 0;
+			trail.DrawTrail(vectors, projectile.Center);
+
+
 			//Idglib.DrawTether(lasers[(int)projectile.localAI[0] % 3], hitspot, projectile.Center, projectile.Opacity* Math.Min(scale2,1f), scale.X, scale.Y, Color.White);
 			//Texture2D captex = ModContent.GetTexture("SGAmod/NPCs/Hellion/end_and_start");
 			//Main.spriteBatch.Draw(captex, projectile.Center - Main.screenPosition, null, Color.White * Math.Min(scale2,1f), (projectile.velocity).ToRotation() - ((float)Math.PI / 2f), new Vector2(captex.Width / 2, captex.Height / 2), new Vector2(scale.X, scale.Y), SpriteEffects.None, 0.0f);

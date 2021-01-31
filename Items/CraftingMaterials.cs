@@ -98,7 +98,7 @@ namespace SGAmod.HavocGear.Items
 			item.useTime = 10;
 			item.useStyle = 1;
 			item.consumable = true;
-			item.createTile = mod.TileType("WatcherOre");
+			item.createTile = mod.TileType("VirulentOre");
 		}
 
 	}
@@ -1453,7 +1453,7 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("'The Whole Experience'");
-			Tooltip.SetDefault("While in your inventory, specific cutscenes and events will reply\nLuminite Wraith will be summoned in his pre-Moonlord stage");
+			Tooltip.SetDefault("While in your inventory, specific cutscenes and events will replay\nLuminite Wraith will be summoned in his pre-Moonlord stage");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 		public static bool Check()
@@ -1479,6 +1479,137 @@ public class LunarRoyalGel : ModItem
 		}
 	}
 
+	public class DungeonSplunker : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Dungeon Splunker");
+			Tooltip.SetDefault("While in your inventory, allows you to use pickaxes in the Deeper Dungeons");
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+		}
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb((Main.GlobalTime * 0.916f) % 1f, 0.8f, 0.75f);
+		}
+		public override string Texture
+		{
+			get { return "Terraria/UI/Cursor_10"; }
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 14;
+			item.height = 14;
+			item.value = 0;
+			item.rare = ItemRarityID.Quest;
+		}
+	}
+
+	public class HellionCheckpoint1 : ModItem
+	{
+		protected virtual Color color => Color.Lime;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Lession 1: Pedant of Doubt");
+			Tooltip.SetDefault("'And there without, is not without doubt, of your failure...'\nPlace your inventory to allow Reality's Sunder summon Hellion at post Goblin Army\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 25% less items\nWill consume one when summoned"));
+		}
+		public override void SetDefaults()
+		{
+			item.width = 40;
+			item.height = 40;
+			item.value = 0;
+			item.rare = -12;
+			item.expert = true;
+			item.maxStack = 30;
+			//item.damage = 1;
+		}
+		public override string Texture => "Terraria/Item_"+ItemID.AlphabetStatue1;
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb(Main.GlobalTime % 1f, 1f, 0.75f);
+		}
+		public override void GrabRange(Player player, ref int grabRange)
+		{
+			grabRange *= 32;
+		}
+		public override bool GrabStyle(Player player)
+		{
+			Vector2 vectorItemToPlayer = player.Center - item.Center;
+			Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * 0.25f;
+			item.velocity = item.velocity + movement;
+			item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
+			return true;
+		}
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			Texture2D inner = Main.itemTexture[item.type];
+
+			/*GridInventory gi = new GridInventory(10, Main.LocalPlayer.inventory);
+
+			Point where = gi.FindItem(item);
+
+			Main.NewText(gi.maxY);
+
+			if (gi.InsideGrid(where.X + 1, where.Y))
+            {
+				Main.NewText(Lang.GetItemName(gi.inventory[where.X + 1, where.Y].type));
+				if (gi.inventory[where.X + 1, where.Y].type == ModContent.ItemType<AuroraTear>())
+				colorz = Color.Yellow;
+            }*/
+
+
+			/*Texture2D inner = Main.textGlyphTexture[0];
+			int length = inner.Width / 25;
+			Vector2 textureOrigin = new Vector2(inner.Width / length, inner.Height) / 2f;*/
+
+			Vector2 slotSize = new Vector2(52f, 52f);
+			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+			Vector2 textureOrigin = new Vector2(inner.Width, inner.Height) / 2f;
+
+			for (float f = 0f; f < 4; f += 0.25f)
+			{
+				spriteBatch.Draw(inner, drawPos+new Vector2(Main.rand.NextFloat(-f,f), Main.rand.NextFloat(-f, f)), null, (Color)GetAlpha(drawColor)*0.10f, 0, textureOrigin, Main.inventoryScale * 1, SpriteEffects.None, 0f);
+			}
+
+			spriteBatch.Draw(inner, drawPos+new Vector2((-0.50f+Main.GlobalTime%1)*16f* scale,0), null, color * 1f, 0, textureOrigin, Main.inventoryScale * 0.50f, SpriteEffects.None, 0f);
+
+			return false;
+		}
+	}
+
+	public class HellionCheckpoint2 : HellionCheckpoint1
+	{
+		protected override Color color => Color.Purple;
+		public override string Texture => "Terraria/Item_" + ItemID.AlphabetStatue2;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Lession 2: Rotten Desires");
+			Tooltip.SetDefault("'And there without, is not without doubt, of your failure...'\nPlace your inventory to allow Reality's Sunder summon Hellion at post Pirate Army\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 50% less items\nRequires Lession 1\nWill consume one when summoned"));
+		}
+	}
+
+	public class HellionCheckpoint3 : HellionCheckpoint1
+	{
+		protected override Color color => Color.Red;
+		public override string Texture => "Terraria/Item_" + ItemID.AlphabetStatue3;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Lession 3: Climax of Eternity");
+			Tooltip.SetDefault("'And there without, is not without doubt, of your failure...'\nPlace your inventory to allow Reality's Sunder summon Hellion at post Festive Moons Army\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 75% less items\nRequires Lession 2\nWill consume one when summoned"));
+		}
+	}
+
+	public class HellionCheckpoint4 : HellionCheckpoint1
+	{
+		protected override Color color => Color.Black;
+		public override string Texture => "Terraria/Item_" + ItemID.AlphabetStatue4;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Lession 4: Epilogue");
+			Tooltip.SetDefault("'The End'\nPlace your inventory to allow Reality's Sunder summon Hellion In her Last Stand phase\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 90% less items\nRequires Lession 3\nWill consume one when summoned"));
+		}
+	}
 
 }
 

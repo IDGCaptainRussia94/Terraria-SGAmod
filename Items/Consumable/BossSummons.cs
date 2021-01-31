@@ -310,7 +310,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Awoken Aurora Tear");
-			Tooltip.SetDefault("'Bustling with Luminous energy'\nUse in the underground Hallow to manually summmon an empowered Prismic Banshee");
+			Tooltip.SetDefault("'Bustling with Luminous energy'\nUse in the underground Hallow to manually summmon the Aurora Banshee, an empowered version");
 		}
 		public override void PostUpdate()
 		{
@@ -318,11 +318,18 @@ namespace SGAmod.Items.Consumable
 		}
 		public override void SetDefaults()
 		{
-			item.maxStack = 999;
+			item.maxStack = 30;
 			item.width = 26;
 			item.height = 14;
 			item.value = Item.sellPrice(0, 20, 50, 0);
-			item.rare = 11;
+			item.consumable = true;
+			item.useTime = 2;
+			item.useAnimation = 2;
+			item.useStyle = 4;
+			item.noMelee = true; //so the item's animation doesn't do damage
+			item.value = 0;
+			item.rare = 9;
+			item.UseSound = SoundID.Item12;
 		}
 		public override bool CanUseItem(Player player)
 		{
@@ -335,7 +342,7 @@ namespace SGAmod.Items.Consumable
 			else
 			{
 				if (player == Main.LocalPlayer)
-					Main.NewText("'it regrets activating where it was not originally from...'", 200, 100, 150);
+					Main.NewText("'it rejects activating where it was not originally from...'", 200, 100, 150);
 				return false;
 
 			}

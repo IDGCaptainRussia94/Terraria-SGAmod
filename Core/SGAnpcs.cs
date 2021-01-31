@@ -1282,7 +1282,7 @@ namespace SGAmod
 			if (!NPC.downedMoonlord)
 				return;
 
-			if (SGAWorld.downedPrismBanshee)
+			if (SGAWorld.downedPrismBanshee>0)
 			{
 
 				if ((npc.type == NPCID.EnchantedSword || npc.type == NPCID.IlluminantBat || npc.type == NPCID.IlluminantSlime || npc.type == NPCID.ChaosElemental) && Main.rand.Next(3) <= 1)

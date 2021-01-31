@@ -56,7 +56,7 @@ namespace SGAmod.Tiles
 		// - ((tile.frameX / 36) % 2)
 		public static Point GetRealHopperCorner(Point here,Tile tile)
         {
-			Point coords = new Point(here.X - ((tile.frameX)%36) / 18, here.Y - (tile.frameY / 18));
+			Point coords = new Point(here.X - ((tile.frameX)%36) / 18, here.Y - ((tile.frameY) % 36) / 18);
 			return coords;
 
 		}
@@ -70,10 +70,10 @@ namespace SGAmod.Tiles
 		{
 			if (item.velocity.Y == 0 && SGAWorld.modtimer % 30 == 0)
 			{
-				Main.NewText("Debug Message!");
+				//Main.NewText("Debug Message!");
 				Point tilePosition = new Point((int)(item.Center.X/16), ((int)(item.Center.Y)/16)+2);
 				Tile tile = Framing.GetTileSafely(tilePosition.X, tilePosition.Y);
-				Main.NewText(tile.type + " this type "+item.position);
+				//Main.NewText(tile.type + " this type "+item.position);
 				if (tile.type == ModContent.TileType<HopperTile>())
 				{
 					MoveItem(item, tilePosition,0);
@@ -95,6 +95,10 @@ namespace SGAmod.Tiles
 			Tile tile = Framing.GetTileSafely(tilePos.X, tilePos.Y);
 			Point coords = GetRealHopperCorner(tilePos, tile);
 			Point offset = tileDirection[tile.frameX / 36];
+
+			if ((tile.frameY / 32) % 2 > 0)
+				return false;
+
 			Point checkCoords = new Point(coords.X + offset.X, coords.Y + offset.Y);
 
 			Tile modtile = Framing.GetTileSafely(checkCoords.X, checkCoords.Y);
@@ -200,7 +204,7 @@ namespace SGAmod.Tiles
 				for (int y = 0; y < 2; y += 1)
 				{
 					Tile corner = Framing.GetTileSafely(coords.X + x, coords.Y + y);
-					corner.frameY = (short)((corner.frameX + 36) % maxYSize);
+					corner.frameY = (short)((corner.frameY + 36) % maxYSize);
 				}
 			}
 			if (Main.netMode == NetmodeID.MultiplayerClient)

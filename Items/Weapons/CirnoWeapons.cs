@@ -786,8 +786,7 @@ namespace SGAmod.NPCs
 	public class CirnoBoltPlayer : CirnoBolt
 	{
 
-		double keepspeed = 0.0;
-		float homing = 0.05f;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cirno's Grace");
@@ -799,6 +798,8 @@ namespace SGAmod.NPCs
 			projectile.hostile = false;
 			projectile.friendly = true;
 			projectile.coldDamage = true;
+			keepspeed = 0.0;
+			homing = 0.05f;
 		}
 
 		public override void AI()

@@ -936,7 +936,6 @@ namespace SGAmod.Items.Accessories
 				hallowed.Parameters["prismColor"].SetValue(Main.hslToRgb(i % 1f, 1f, 0.75f).ToVector3());
 				hallowed.Parameters["alpha"].SetValue((1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.75f);
 				hallowed.CurrentTechnique.Passes["Prism"].Apply();
-
 			}
 
 			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));

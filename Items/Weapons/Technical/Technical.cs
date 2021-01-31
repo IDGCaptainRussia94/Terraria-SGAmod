@@ -15,6 +15,7 @@ using AAAAUThrowing;
 using SGAmod.Buffs;
 using SGAmod.Effects;
 using Microsoft.Xna.Framework.Audio;
+using SGAmod.Items.Weapons.Technical;
 
 namespace SGAmod.Items.Weapons.Technical
 {
@@ -1700,9 +1701,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override bool CanUseItem(Player player)
 		{
-			if (player.SGAPly().electricCharge > 300)
-				return true;
-			return false;
+			return player.SGAPly().ConsumeElectricCharge(300, 0, consume: false);
 		}
 		public override void AddRecipes()
 		{
@@ -1964,6 +1963,382 @@ namespace SGAmod.Items.Weapons.Technical
 namespace SGAmod.HavocGear.Items.Weapons
 {
 
+	public class PlasmaGun : NoviteBlaster, ITechItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Plasmic Rail Gun");
+			Tooltip.SetDefault("Charges up a powerful piercing railgun shot\nHyper charged plasma melts enemies in lavaburn at max charge\nRequires Plasma Cells and Electric Charge to fire\nYou can fire a weaker beam if you run out of Plasma\nRight click to zoom out");
+			SGAmod.UsesPlasma.Add(SGAmod.Instance.ItemType("PlasmaGun"), 1000);
+		}
+
+		public override void SetDefaults()
+		{
+			item.damage = 2500;
+			item.magic = true;
+			item.width = 32;
+			item.height = 62;
+			item.useTime = 70;
+			item.useAnimation = 70;
+			item.useStyle = 5;
+			item.crit = 15;
+			item.noMelee = true;
+			item.knockBack = 15;
+			item.value = Item.buyPrice(0, 5, 0, 0);
+			item.rare = ItemRarityID.Cyan;
+			//item.UseSound = SoundID.Item99;
+			item.autoReuse = true;
+			item.shoot = ModContent.ProjectileType<PlasmaGunCharging>();
+			item.shootSpeed = 32f;
+			item.noUseGraphic = false;
+			item.channel = true;
+		}
+		public override Vector2? HoldoutOffset()
+		{
+			return new Vector2(-6, -0);
+		}
+		public override void HoldItem(Player player)
+		{
+			player.scope = true;
+		}
+		public override bool CanUseItem(Player player)
+		{
+
+			return player.SGAPly().RefilPlasma() && player.SGAPly().ConsumeElectricCharge(300, 60, false, false);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+
+			recipe.AddIngredient(mod.ItemType("VolcanicSpaceBlaster"), 1);
+			recipe.AddIngredient(ItemID.SniperRifle, 1);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 6);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
+			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
+			recipe.AddIngredient(null, "AdvancedPlating", 5);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			float rotation = MathHelper.ToRadians(0);
+			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 8f;
+			if (player.ownedProjectileCounts[item.shoot] < 1)
+			{
+				int proj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, item.shoot, damage, knockBack, player.whoAmI);
+				player.SGAPly().ConsumeElectricCharge(200, 300);
+			}
+			return false;
+		}
+
+	}
+
+	public class PlasmaGunCharging : NovaBlasterCharging
+	{
+
+		public override int chargeuptime => 180;
+		public override float velocity => 72f;
+		public override float spacing => 96f;
+		public override int fireRate => 30;
+		int chargeUpTimer = 0;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Vocanic Beater Charging");
+		}
+
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.tileCollide = false;
+			projectile.magic = true;
+			aiType = 0;
+		}
+
+		public override void ChargeUpEffects()
+		{
+			chargeUpTimer += 1;
+
+			if (projectile.ai[0] < chargeuptime)
+			{
+				if (chargeUpTimer % 4 == 0)
+				{
+					float perc = MathHelper.Clamp(projectile.ai[0] / (float)chargeuptime, 0f, 1f);
+					SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_LightningAuraZap, (int)projectile.Center.X, (int)projectile.Center.Y);
+					if (sound != null)
+					{
+						sound.Pitch = -0.5f + perc;
+					}
+				}
+				for (int num315 = 0; num315 < 2; num315 = num315 + 1)
+				{
+					if (Main.rand.Next(0, 3) == 0)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y) + randomcircle * 20, 0, 0, DustID.AncientLight, 0f, 0f, 100, Color.Magenta, 0.75f);
+
+						Main.dust[num622].scale = 1f;
+						Main.dust[num622].noGravity = true;
+						//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+						Main.dust[num622].velocity.X = -randomcircle.X;
+						Main.dust[num622].velocity.Y = -randomcircle.Y;
+						Main.dust[num622].alpha = 150;
+					}
+				}
+			}
+			else
+			{
+				for (int num315 = 0; num315 < 2; num315 = num315 + 1)
+				{
+					if (Main.rand.Next(0, 2) == 0)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, DustID.AncientLight, 0f, 0f, 100, Color.Magenta, 0.75f);
+
+						Main.dust[num622].scale = 1.5f;
+						Main.dust[num622].noGravity = true;
+						//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+						Main.dust[num622].velocity.X = randomcircle.X * 2;
+						Main.dust[num622].velocity.Y = randomcircle.Y * 2;
+						Main.dust[num622].alpha = 100;
+					}
+				}
+			}
+
+
+			if (projectile.ai[0] == chargeuptime)
+			{
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_LightningBugZap, (int)projectile.Center.X, (int)projectile.Center.Y);
+				if (sound != null)
+				{
+					sound.Pitch -= 0.5f;
+				}
+
+				for (int num315 = 0; num315 < 35; num315 = num315 + 1)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+					int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, DustID.AncientLight, 0f, 0f, 100, Color.Magenta, 0.5f);
+
+					Main.dust[num622].scale = 2.8f;
+					Main.dust[num622].noGravity = true;
+					//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+					Main.dust[num622].velocity.X = randomcircle.X * 4f;
+					Main.dust[num622].velocity.Y = randomcircle.Y * 4f;
+					Main.dust[num622].alpha = 150;
+				}
+			}
+
+		}
+
+		public override bool DoChargeUp()
+		{
+			int plasma = player.SGAPly().plasmaLeftInClip;
+			player.SGAPly().plasmaLeftInClip = Math.Max(plasma - 1, 0);
+			return player.SGAPly().ConsumeElectricCharge(7, 120,consume: plasma>0) && player.SGAPly().plasmaLeftInClip>0;
+		}
+
+		public override void FireWeapon(Vector2 direction)
+		{
+			float perc = MathHelper.Clamp(projectile.ai[0] / (float)chargeuptime, 0f, 1f);
+
+			float speed = 4f+ perc*4f;
+
+			Vector2 perturbedSpeed = (new Vector2(direction.X, direction.Y) * speed); // Watch out for dividing by 0 if there is only 1 projectile.
+
+			projectile.Center += projectile.velocity;
+
+			int damage = (int)(projectile.damage*(projectile.ai[0]/ chargeuptime));
+
+			if (projectile.ai[0] >= chargeuptime || player.SGAPly().plasmaLeftInClip<1)
+			{
+				int type = ModContent.ProjectileType<PlasmaBeam>();
+				Vector2 center = projectile.Center-Vector2.Normalize(perturbedSpeed)*32f;
+				int prog = Projectile.NewProjectile(center.X, center.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, projectile.knockBack, player.whoAmI);
+				if (projectile.ai[0] >= chargeuptime)
+				IdgProjectile.AddOnHitBuff(prog, ModContent.BuffType<LavaBurn>(), (int)(120 + (perc * 300f)));
+
+				player.velocity -= perturbedSpeed;
+
+
+				Main.PlaySound(SoundID.Item73, player.Center);
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, (int)center.X, (int)center.Y);
+				if (sound != null)
+				{
+					sound.Pitch += 0.5f;
+				}
+
+				for (int num315 = 0; num315 < 35; num315 = num315 + 1)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+					int num622 = Dust.NewDust(center, 0, 0, DustID.Shadowflame, 0f, 0f, 100, default(Color), 0.5f);
+
+					Main.dust[num622].scale = 3.2f;
+					Main.dust[num622].noGravity = true;
+					//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+					Main.dust[num622].velocity.X = randomcircle.X * Main.rand.NextFloat(4f,8f);
+					Main.dust[num622].velocity.Y = randomcircle.Y * Main.rand.NextFloat(4f, 8f);
+					Main.dust[num622].alpha = 50;
+				}
+
+				for (int num315 = 0; num315 < 20; num315 = num315 + 1)
+				{
+					if (Main.rand.Next(0, 2) == 0)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						int num622 = Dust.NewDust(center, 0, 0, DustID.AncientLight, 0f, 0f, 100, Color.Magenta, 0.75f);
+
+						Main.dust[num622].scale = 1.5f;
+						Main.dust[num622].noGravity = true;
+						//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+						randomcircle *= Main.rand.NextFloat(-2f, 4f+ num315/4f);
+						Main.dust[num622].velocity.X = randomcircle.X;
+						Main.dust[num622].velocity.Y = randomcircle.Y;
+						Main.dust[num622].alpha = 100;
+					}
+				}
+
+			}
+			projectile.Kill();
+		}
+
+	}
+
+	public class PlasmaBeam : NPCs.Hellion.HellionBeam
+    {
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 60;
+			projectile.damage = 15;
+			projectile.width = 64;
+			projectile.height = 64;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Plasma Beam");
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Item_" + ItemID.GeyserTrap; }
+		}
+
+		public override bool CanDamage()
+		{
+			if (projectile.ai[1] < 2)
+				return true;
+			return false;
+		}
+
+		public override void AI()
+		{
+
+			scale2 = Math.Min(scale2 + 0.5f, 1.5f);
+
+			projectile.ai[1] += 1;
+
+			if (projectile.ai[1] < 40 && projectile.ai[1]%6==0)
+			{
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_LightningBugZap, (int)projectile.Center.X, (int)projectile.Center.Y);
+				if (sound != null)
+				{
+					sound.Pitch = -1f+(projectile.timeLeft / 60f)*0.80f;
+					sound.Volume = projectile.timeLeft/60f;
+				}
+			}
+
+			if (projectile.ai[1] == 1)
+			{
+
+				for (int num315 = 0; num315 < 2200f; num315 = num315 + 4)
+				{
+					Vector2 offset2 = Vector2.Normalize(projectile.velocity);
+					int num622 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y)+ (offset2 * num315), 0, 0, DustID.Shadowflame, 0f, 0f, 100, Color.Magenta, 0.5f);
+					float speedz = Main.rand.NextFloat(0.25f, 6f);
+
+					Main.dust[num622].scale = 2.0f;
+					Main.dust[num622].noGravity = true;
+					Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+					offset2 = offset2.RotatedBy(Main.rand.NextBool() ? MathHelper.PiOver2 : -MathHelper.PiOver2);
+					Main.dust[num622].velocity.X = offset2.X * speedz;
+					Main.dust[num622].velocity.Y = offset2.Y * speedz;
+					Main.dust[num622].alpha = 50;
+				}
+
+			}
+
+			Vector2 offset = Vector2.Normalize(projectile.velocity);
+			Lighting.AddLight(new Vector2(projectile.Center.X, projectile.Center.Y) + (offset * Main.rand.NextFloat(MaxDistance))/16,(Color.Magenta*0.50f).ToVector3());
+
+			projectile.localAI[0] += 0.2f;
+			base.AI();
+		}
+
+		public override void MoreAI(Vector2 dustspot)
+		{
+			//nil
+			//SGAmod.updatelasers = true;
+		}
+
+        public override void OnHitPlayer(Player player, int damage, bool crit)
+        {
+            //nah
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			if (Main.dedServ)
+				return false;
+
+			Color colortex = Color.Purple * 0.75f;
+			Vector2 scale = new Vector2(MathHelper.Clamp(projectile.timeLeft / 8f, 0f, 1f) * scale2, 1f);
+
+			List<Vector2> vectors = new List<Vector2>();
+			vectors.Add(projectile.Center);
+			vectors.Add(hitspot);
+
+			TrailHelper trail = new TrailHelper("FadedBasicEffectPass", SGAmod.ExtraTextures[21]);
+			trail.projsize = Vector2.Zero;
+			trail.coordOffset = new Vector2(0, projectile.localAI[0] * -0.22f);
+			trail.coordMultiplier = new Vector2(1f, 120f);
+			trail.doFade = false;
+			trail.trailThickness = 18 * scale.X;
+			trail.trailThicknessIncrease = 0;
+			trail.color = delegate (float percent)
+			{
+				return colortex;
+			};
+			trail.DrawTrail(vectors, projectile.Center);
+
+			trail = new TrailHelper("FadedBasicEffectPass", SGAmod.ExtraTextures[21]);
+			trail.projsize = Vector2.Zero;
+			trail.coordOffset = new Vector2(0, projectile.localAI[0] * 0.22f);
+			trail.coordMultiplier = new Vector2(2f, 180f);
+			trail.doFade = false;
+			trail.trailThickness = 10 * scale.X;
+			trail.trailThicknessIncrease = 0;
+			trail.color = delegate (float percent)
+			{
+				return Color.Lerp(Color.White,Color.Purple*0.25f,1f-(projectile.timeLeft/60f));
+			};
+			trail.DrawTrail(vectors, projectile.Center);
+
+			return false;
+		}
+
+	}
+
+
 	public class BigDakka : SeriousSamWeapon, ITechItem
 	{
 		int ammotype;
@@ -2018,7 +2393,6 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("VolcanicSpaceBlaster"), 1);
 			recipe.AddIngredient(ItemID.SnowmanCannon, 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 12);
 			recipe.AddIngredient(mod.ItemType("MoneySign"), 8);

@@ -55,6 +55,32 @@ namespace SGAmod.Buffs
 			npc.SGANPCs().reducedDefense += 5;
 		}
 	}
+	public class RadioDebuff : ModBuff
+	{
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Irradiated");
+			Description.SetDefault("Not for players to see!");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = false;
+			Main.buffNoSave[Type] = true;
+		}
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+			if (npc.buffTime[buffIndex] < 200)
+			{
+				npc.GetGlobalNPC<SGAnpcs>().IrradiatedAmmount_ = 0;
+				npc.GetGlobalNPC<SGAnpcs>().IrradiatedAmmount = 0;
+			}
+		}
+	}
 
 	public class Targeted : ModBuff
 	{

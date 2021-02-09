@@ -400,7 +400,7 @@ namespace SGAmod.Items.Consumable
 
 		public override bool UseItem(Player player)
 		{
-				NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType(SGAWorld.downedMurk == 0 ? "BossFlyMiniboss1" : "Murk"));
+				NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType(SGAWorld.downedMurk == 0 || TheWholeExperience.Check() ? "BossFlyMiniboss1" : "Murk"));
 				Main.PlaySound(SoundID.Roar, player.position, 0);
 				return true;
 		}
@@ -461,7 +461,7 @@ namespace SGAmod.Items.Consumable
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
+			/*ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LunarBar, 3);
 			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 3);
 			recipe.AddIngredient(3111, 10); //pink gel
@@ -475,7 +475,7 @@ namespace SGAmod.Items.Consumable
 			recipe.AddIngredient(mod.ItemType("MurkyGel"), 20);
 			recipe.AddTile(220); //Soldifier
 			recipe.SetResult(this);
-			recipe.AddRecipe();
+			recipe.AddRecipe();*/
 		}
 	}
 

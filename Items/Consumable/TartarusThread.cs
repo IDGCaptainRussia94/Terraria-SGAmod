@@ -42,7 +42,6 @@ namespace SGAmod.Items.Consumable
 		Finished,
 		Failed
     }
-
 	public class AStarPathFinder
     {
 		public static bool Debug => true;

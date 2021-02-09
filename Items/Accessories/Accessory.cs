@@ -632,6 +632,7 @@ namespace SGAmod.Items.Accessories
 			item.defense = 12;
 			item.height = 24;
 			item.accessory = true;
+			item.waistSlot = 10;
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -1199,7 +1200,7 @@ namespace SGAmod.Items.Accessories
 		}
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
+			/*ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.FragmentSolar, 3);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 25);
 			recipe.AddIngredient(mod.ItemType("StygianCore"), 1);
@@ -1209,7 +1210,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.CrystalBall, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this, 1);
-			recipe.AddRecipe();
+			recipe.AddRecipe();*/
 		}
 
 
@@ -2683,6 +2684,9 @@ namespace SGAmod.Items.Accessories
 			item.shoeSlot = 14;
 			item.value = Item.sellPrice(0, 25, 0, 0);
 			item.accessory = true;
+			item.handOnSlot = 11;
+			item.handOffSlot = 6;
+			item.shoeSlot = 14;
 		}
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
@@ -3504,7 +3508,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Jabb-a-wacky");
-			Tooltip.SetDefault("Increases Jab-lin jabbing speed by 20% and grants autofire\n"+ Idglib.ColorText(Color.Red, "Your precision gets a little off thou..."));
+			Tooltip.SetDefault("'Skeleton Merchant's personal hook; puts a little el-bone grease into your jabs'\nIncreases Jab-lin jabbing speed by 20% and grants autofire\n"+ Idglib.ColorText(Color.Red, "Your precision gets a little off thou..."));
 		}
 
 		public override string Texture

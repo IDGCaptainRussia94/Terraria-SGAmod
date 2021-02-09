@@ -36,6 +36,8 @@ namespace SGAmod
 	interface IHopperInterface
 	{
 		bool HopperInputItem(Item item,Point tilelocation,int movementCount);
+
+		bool HopperExportItem(ref Item item, Point tilelocation, int movementCount);
 	}	
 	interface ISGABoss
 	{

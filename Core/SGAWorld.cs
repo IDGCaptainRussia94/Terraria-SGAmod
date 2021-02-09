@@ -59,6 +59,7 @@ namespace SGAmod
         public static int dungeonlevel = 0;
         public static bool portalcanmovein = false;
         public static bool darknessVision = false;
+        public static NoiseGenerator WorldNoise;
 
         public static int SnapCooldown = 0;
 
@@ -125,6 +126,14 @@ namespace SGAmod
                     questvars[x] = 0;
                 }
             }
+
+            WorldNoise = new NoiseGenerator(Main.worldName.GetHashCode());
+
+            WorldNoise.Amplitude = 1;
+            WorldNoise.Octaves = 4;
+            WorldNoise.Persistence = 0.750;
+            WorldNoise.Frequency *= 1.25;
+
             SGAmod.cachedata = false;
         }
 

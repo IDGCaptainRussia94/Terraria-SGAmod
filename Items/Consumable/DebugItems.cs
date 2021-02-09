@@ -14,6 +14,7 @@ using System.Linq;
 using Steamworks;
 using Terraria.ModLoader.Engine;
 using System.Reflection;
+using Terraria.ModLoader.Audio;
 
 namespace SGAmod.Items.Consumable
 {
@@ -42,6 +43,49 @@ namespace SGAmod.Items.Consumable
 		public override string Texture
 		{
 			get { return "Terraria/Heart2"; }
+		}
+
+	}
+
+	public class Debug7 : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug-Music Test");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.maxStack = 30;
+			item.rare = 8;
+			item.value = 1000;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item9;
+			item.consumable = true;
+		}
+		public override bool UseItem(Player player)
+		{
+			//Main.NewText(SGAmod.musicTest != null);
+			SGAmod.musicTest = new MusicStreamingOGG("tmod:SGAmod/Sounds/Music/creepy.ogg");
+			//if (!SGAmod.musicTest.IsPlaying)
+			//{
+			SGAmod.musicTest.Reset();
+			SGAmod.musicTest.Play();
+				SGAmod.musicTest.SetVariable("Pitch", -0.95f);
+				SGAmod.musicTest.SetVariable("Volume", 1f);
+			//}
+
+			return false;
+
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Item_" + ItemID.Harp; }
 		}
 
 	}

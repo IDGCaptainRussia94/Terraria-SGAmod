@@ -431,7 +431,7 @@ namespace SGAmod.NPCs
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			Effect hallowed = SGAmod.HallowedEffect;
 
@@ -451,7 +451,7 @@ namespace SGAmod.NPCs
 			spriteBatch.Draw(texture, drawPos, null, Color.White, npc.rotation, new Vector2(texture.Width, texture.Height / 1.20f) / 2f, npc.scale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			hallowed.Parameters["alpha"].SetValue(1);
 			hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
@@ -477,7 +477,7 @@ namespace SGAmod.NPCs
 
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			hallowed.Parameters["alpha"].SetValue(1);
 			hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
@@ -507,7 +507,7 @@ namespace SGAmod.NPCs
 			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1,1));
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(tex, drawPos, null, Color.White, npc.rotation, (tex.Size() / 2f), npc.scale, SpriteEffects.None, 0f);
 

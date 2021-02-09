@@ -55,8 +55,8 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.Wood, 5);
-            recipe.AddIngredient(ItemID.StoneBlock, 10);
+            recipe.AddRecipeGroup("Wood", 5);
+            recipe.AddRecipeGroup("SGAmod:Stone", 10);
             recipe.AddTile(TileID.WorkBenches);
             recipe.SetResult(this, 100);
             recipe.AddRecipe();

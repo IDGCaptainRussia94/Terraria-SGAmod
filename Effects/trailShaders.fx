@@ -19,7 +19,8 @@ struct VertexShaderOutput
 float2 coordMultiplier;
 float2 coordOffset;
 float strength;
-bool twoWayAlpha;
+float rainbowScale;
+float rainbowProgress;
 
 //custom passes
 texture imageTexture;
@@ -42,7 +43,7 @@ sampler imageSampler = sampler_state
   
   float3 HSVtoRGB(in float3 HSV)
   {
-  float progress = overlayProgress.z;
+  float progress = rainbowProgress;
 
   if (progress<0)
   progress = (1-progress)%1;

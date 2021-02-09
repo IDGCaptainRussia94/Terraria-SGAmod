@@ -452,7 +452,7 @@ namespace SGAmod.NPCs.Dank
             if (spawnInfo.player.ZoneJungle && Main.hardMode)
                 return 0.01f;
 
-            return Main.hardMode ? ((tile == mod.TileType("MoistStone") || tile == TileID.Mud) ? 0.15f : 0f) : 0f;
+            return Main.hardMode ? ((tile == mod.TileType("MoistStone") || TileID.Sets.Mud[tile]) ? 0.15f : 0f) : 0f;
         }
     }
 }

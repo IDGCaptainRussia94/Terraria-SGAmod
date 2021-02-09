@@ -40,7 +40,7 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("ClayMore"), 1);
+			recipe.AddIngredient(mod.ItemType("Mudmore"), 1);
 			recipe.AddIngredient(mod.ItemType("ThermalBlade"), 1);
 			recipe.AddIngredient(ItemID.FragmentSolar, 8);
  			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);

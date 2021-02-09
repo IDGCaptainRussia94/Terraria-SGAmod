@@ -12,9 +12,8 @@ namespace SGAmod.Items.Placeable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hopper");
-			Tooltip.SetDefault("Picks up items that fall onto its top, can be placed mid-air\nHoppers place items into chests and other chained Hoppers\nHammer the hopper to change its output position\nHoppers can be disabled by sending a wire signal to themm");
+			Tooltip.SetDefault("Picks up items that fall onto its top, can be placed mid-air\nHoppers place items into chests and other chained Hoppers\nHammer the hopper to change its output position\nHoppers can be disabled by sending a wire signal to them");
 		}
-        public override string Texture => "Terraria/Item_"+ItemID.JungleKeyMold;
         public override void SetDefaults()
 		{
 			item.width = 30;
@@ -28,16 +27,24 @@ namespace SGAmod.Items.Placeable
 			item.consumable = true;
 			item.value = Item.buyPrice(silver: 10);
 			item.rare = 1;
-			item.createTile = mod.TileType("HopperTile");
+			item.createTile = mod.TileType("ChestHopperTile");
 			item.placeStyle = 0;
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 4);
-			recipe.AddIngredient(mod.ItemType("NoviteBar"), 4);
-			recipe.AddIngredient(ItemID.Chest, 1);
+			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 2);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 3);
+			recipe.AddRecipeGroup("SGAmod:Chests", 1);
+			recipe.AddTile(TileID.HeavyWorkBench);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 3);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 2);
+			recipe.AddRecipeGroup("SGAmod:Chests", 1);
 			recipe.AddTile(TileID.HeavyWorkBench);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

@@ -363,6 +363,33 @@ namespace SGAmod
 			return predictedPos;
 		}
 
+		public static bool HasAccessoryEquipped(this Player player, int ItemID)
+		{
+			for (int k = 3; k < 8 + player.extraAccessorySlots; k++) if (player.armor[k].type == ItemID) return true;
+			return false;
+		}
+
+		public static void BoostAllDamage(this Player player, float damage, int crit = 0)
+		{
+			player.meleeDamage += damage;
+			player.rangedDamage += damage;
+			player.magicDamage += damage;
+			player.minionDamage += damage;
+			player.thrownDamage += damage;
+
+			player.thrownCrit += crit;
+			player.rangedCrit += crit;
+			player.meleeCrit += crit;
+			player.magicCrit += crit;
+		}
+		public static bool IsValidDebuff(Player player, int buffindex)
+		{
+			int bufftype = player.buffType[buffindex];
+			bool vitalbuff = (bufftype == BuffID.PotionSickness || bufftype == BuffID.ManaSickness || bufftype == BuffID.ChaosState);
+			return player.buffTime[buffindex] > 2 && Main.debuff[bufftype] && !Main.buffNoTimeDisplay[bufftype] && !Main.vanityPet[bufftype] && !vitalbuff;
+		}
+
+
 		public static int ItemToMusic(int itemtype)
 		{
 			int value;
@@ -1029,8 +1056,12 @@ namespace SGAmod
 			{
 				SpecialCondition = delegate ()
 				 {
-					 return !Main.dayTime && !Main.raining;
+					 return !Main.dayTime && !Main.raining && !Main.bloodMoon;
 				 };
+            }
+            else
+            {
+				SpecialCondition = SCon;
 			}
 			this.outputItem = outputItem;
 			this.infusionTime = infusionTime;

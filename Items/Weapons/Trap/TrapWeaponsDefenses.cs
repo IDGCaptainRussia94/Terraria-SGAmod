@@ -59,7 +59,7 @@ namespace SGAmod.Items.Weapons
 
 		public void DoTurn(Player player)
 		{
-			if (!player.GetModPlayer<SGAPlayer>().grippinggloves && player.velocity.X != 0)
+			if (player.GetModPlayer<SGAPlayer>().grippinggloves<1 && player.velocity.X != 0)
 				player.ChangeDir(player.velocity.X > 0 ? 1 : -1);
 
 		}
@@ -503,7 +503,7 @@ namespace SGAmod.Items.Weapons
 				if (Main.LocalPlayer == owner)
 				{
 					Vector2 direction = (Main.MouseWorld - owner.Center);
-					if (owner.GetModPlayer<SGAPlayer>().grippinggloves)
+					if (owner.GetModPlayer<SGAPlayer>().grippinggloves>0)
 					{
 						projectile.direction = (direction.X > 0).ToDirectionInt();
 					}
@@ -514,7 +514,7 @@ namespace SGAmod.Items.Weapons
 
 				}
 
-				if (owner.GetModPlayer<SGAPlayer>().grippinggloves)
+				if (owner.GetModPlayer<SGAPlayer>().grippinggloves>0)
 				{
 				owner.ChangeDir(projectile.direction);
 				}

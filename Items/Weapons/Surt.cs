@@ -45,7 +45,7 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new StarMetalRecipes(mod);
-			recipe.AddIngredient(mod.ItemType("Mudmore"), 1);
+			recipe.AddIngredient(mod.ItemType("ClayMore"), 1);
 			recipe.AddIngredient(ItemID.BrokenHeroSword, 1);
 			recipe.AddIngredient(mod.ItemType("PrimordialSkull"), 1);
 			recipe.AddIngredient(ItemID.HellstoneBar, 15);

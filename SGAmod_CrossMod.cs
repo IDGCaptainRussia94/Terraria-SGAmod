@@ -46,6 +46,7 @@ using Terraria.Achievements;
 using Terraria.GameContent.Achievements;
 using System.Reflection;
 using SGAmod.Items.Weapons.Shields;
+using SGAmod.Items.Placeable;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -154,7 +155,7 @@ namespace SGAmod
 				//bossList.Call("AddBossWithInfo", "Copper Wraith", 0.05f, (Func<bool>)(() => (SGAWorld.downedWraiths > 0)), string.Format("Use a [i:{0}] at anytime, defeat this boss to unlock crafting the furnace,bars, and anything else made there", ItemType("WraithCoreFragment")));
 				bossList.Call("AddBoss", 0.05f, ModContent.NPCType<CopperWraith>(), this, "Copper Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 0)), ModContent.ItemType<WraithCoreFragment>(), new List<int>() { }, new List<int>() { ModContent.ItemType<WraithFragment>(), ModContent.ItemType<WraithFragment2>(), ItemID.CopperOre, ItemID.TinOre, ItemID.IronOre, ItemID.LeadOre, ItemID.SilverOre, ItemID.TungstenOre, ItemID.GoldOre, ItemID.PlatinumOre }, "Use a [i:" + ItemType("WraithCoreFragment") + "] at anytime, will also spawn should you craft too many bars at a furnace before beating it", "Copper Wraith makes a hasty retreat", "SGAmod/NPCs/Wraiths/CopperWraithLog");
 				bossList.Call("AddMiniBoss", 2.9f, ModContent.NPCType<CaliburnGuardian>(), this, "The Caliburn Guardians", (Func<bool>)(() => SGAWorld.downedCaliburnGuardians > 2), new List<int>() { }, new List<int>() { }, new List<int>() { ModContent.ItemType<CaliburnTypeA>(), ModContent.ItemType<CaliburnTypeB>(), ModContent.ItemType<CaliburnTypeC>() }, "Find Caliburn Alters in Dank Shrines Underground and right click them to fight a Caliburn Spirit, after beating a spirit you can retrive your reward by breaking the Alter; each guardian is stronger than the previous", "The Caliburn Spirit returns to its slumber");
-				bossList.Call("AddBoss", 3.5f, ModContent.NPCType<SpiderQueen>(), this, "Spider Queen", (Func<bool>)(() => SGAWorld.downedSpiderQueen), new List<int>() { }, new List<int>(ModContent.ItemType<AcidicEgg>()) { }, new List<int>() { ModContent.ItemType<VialofAcid>(), ModContent.ItemType<AmberGlowSkull>(), ModContent.ItemType<CorrodedShield>() }, "Use a [i: " + ItemType("AcidicEgg") + "] underground, anytime", "The Spider Queen will be feasting quite well tonight", "SGAmod/NPCs/SpiderQueen/SpiderQueenLog");
+				bossList.Call("AddBoss", 3.5f, ModContent.NPCType<SpiderQueen>(), this, "Spider Queen", (Func<bool>)(() => SGAWorld.downedSpiderQueen), new List<int>() { ModContent.ItemType<AcidicEgg>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<VialofAcid>(), ModContent.ItemType<AmberGlowSkull>(), ModContent.ItemType<CorrodedShield>() }, "Use a [i: " + ItemType("AcidicEgg") + "] underground, anytime", "The Spider Queen will be feasting quite well tonight", "SGAmod/NPCs/SpiderQueen/SpiderQueenLog");
 				bossList.Call("AddMiniBoss", 5.4f, ModContent.NPCType<BossFlyMiniboss1>(), this, "Killer Fly Swarm", (Func<bool>)(() => SGAWorld.downedMurk > 0), new List<int>() { ModContent.ItemType<RoilingSludge>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<RoilingSludge>() }, "Use a [i:" + ItemType("RoilingSludge") + "] in the jungle");
 				bossList.Call("AddBoss", 5.5f, ModContent.NPCType<Murk>(), this, "Murk", (Func<bool>)(() => SGAWorld.downedMurk > 1), new List<int>() { ModContent.ItemType<RoilingSludge>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<MurkBossBag>(), ModContent.ItemType<MudAbsorber>(), ModContent.ItemType<MurkyGel>(), ModContent.ItemType<MurkFlail>(), ModContent.ItemType<Mudmore>(), ModContent.ItemType<Mossthorn>(), ModContent.ItemType<Landslide>(), ModContent.ItemType<SwarmGrenade>() }, "Use a [i:" + ItemType("RoilingSludge") + "] in the jungle after killing the fly swarm", "Murk slinks back into the depths of the jungle");
 
@@ -167,11 +168,11 @@ namespace SGAmod
 				bossList.Call("AddBoss", 11.25f, ModContent.NPCType<TPD>(), this, "Twin Prime Destroyers", (Func<bool>)(() => SGAWorld.downedTPD), new List<int>() { ModContent.ItemType<Mechacluskerf>() }, new List<int>() { }, new List<int>() { ItemID.ChlorophyteBar, ItemID.ShroomiteBar, ItemID.SpectreBar, ItemID.Ectoplasm, ModContent.ItemType<StarMetalMold>() }, "Use a [i:" + ItemType("Mechacluskerf") + "] anywhere at night");
 				bossList.Call("AddBoss", 11.85f, ModContent.NPCType<Harbinger>(), this, "Doom Harbinger", (Func<bool>)(() => SGAWorld.downedHarbinger), new List<int>() { ModContent.ItemType<TruelySusEye>() }, new List<int>() { }, new List<int>() { }, "Can spawn randomly at the start of night after golem is beaten, the Old One's Army event is finished on tier 3, and the Martians are beaten, or use a [i:" + ItemType("TruelySusEye") + "]. Defeating him will allow the cultists to spawn (Single Player Only)");
 				bossList.Call("AddBoss", 12.5f, ModContent.NPCType<LuminiteWraith>(), this, "Luminite Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() { ItemID.LunarCraftingStation }, "Use a [i:" + ItemType("WraithCoreFragment3") + "], defeat this boss to get the Ancient Manipulator.", "", "SGAmod/NPCs/Wraiths/LWraithLog");
-				bossList.Call("AddMiniBoss", 14.5f, ModContent.NPCType<PrismBanshee>(), this, "Prismatic Banshee", (Func<bool>)(() => SGAWorld.downedPrismBanshee>0), new List<int>() { }, new List<int>() { }, new List<int>() { ModContent.ItemType<AuroraTear>()}, "Find it's seed spawning in underground in the Hallow after Moonlord's defeat, if the seed is not destroyed in time the Prism Banshee will hatch. Prismic Banshee's defeat makes the seed spawn far less often and allows Illuminant Essence to drop", "Banshee has left");
+				bossList.Call("AddMiniBoss", 14.5f, ModContent.NPCType<PrismBanshee>(), this, "Prismatic Banshee", (Func<bool>)(() => SGAWorld.downedPrismBanshee>0), new List<int>() { }, new List<int>() { }, new List<int>() { ModContent.ItemType<AuroraTear>()}, "Find its seed spawning underground in the Hallow after Moonlord's defeat, if the seed is not destroyed in time the Prism Banshee will hatch. Prismic Banshee's defeat makes the seed spawn far less often and allows Illuminant Essence to drop", "Banshee has left");
 				bossList.Call("AddBoss", 14.8f, ModContent.NPCType<LuminiteWraith>(), this, "Luminite Wraith (Rematch)", (Func<bool>)(() => (SGAWorld.downedWraiths > 3)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CosmicFragment>(), ItemID.FragmentNebula, ItemID.FragmentVortex, ItemID.FragmentStardust, ItemID.FragmentSolar, ItemID.LunarBar, ItemID.LunarOre }, "Use a [i:" + ItemType("WraithCoreFragment3") + "] after the first fight when Moonlord is defeated to issue a rematch; the true battle begins...", "", "SGAmod/NPCs/Wraiths/LWraithLog2");
-				bossList.Call("AddMiniBoss", 14.9f, ModContent.NPCType<PrismBanshee>(), this, "Aurora Banshee", (Func<bool>)(() => SGAWorld.downedPrismBanshee > 1), new List<int>() { }, new List<int>() { }, new List<int>() { ModContent.ItemType<AuroraTear>()}, "Use a [i:" + ModContent.ItemType<AuroraTearAwoken>() + "] in the underground Hallow, this version drops double the resources, but it is quite stronger", "Banshee has left");
+				bossList.Call("AddMiniBoss", 14.9f, ModContent.NPCType<PrismBanshee>(), this, "Aurora Banshee", (Func<bool>)(() => SGAWorld.downedPrismBanshee > 1), new List<int>() { ModContent.ItemType<AuroraTearAwoken>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<AuroraTear>()}, "Use a [i:" + ModContent.ItemType<AuroraTearAwoken>() + "] in the underground Hallow, this version drops double the resources, but it is quite stronger", "Banshee has left");
 				bossList.Call("AddBoss", 15f, ModContent.NPCType<Cratrogeddon>(), this, "Cratrogeddon", (Func<bool>)(() => SGAWorld.downedCratrosityPML), new List<int>() { ModContent.ItemType<SalvagedCrate>(), ItemID.TempleKey }, new List<int>() { }, new List<int>() { ModContent.ItemType<TerrariacoCrateKeyUber>(), ModContent.ItemType<MoneySign>() }, "Right Click a [i:" + ItemType("SalvagedCrate") + "] while you have a [i:" + ItemID.TempleKey + "] in your inventory at night", "All players have paid up their lives to microtransactions, again", "SGAmod/NPCs/Cratrosity/CratrosityLog");
-				bossList.Call("AddBoss", 16f, ModContent.NPCType<SPinky>(), this, "Supreme Pinky", (Func<bool>)(() => SGAWorld.downedSPinky), new List<int>() { ModContent.ItemType<Prettygel>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<LunarSlimeHeart>(), ModContent.ItemType<LunarRoyalGel>() }, "Use a [i:" + ItemType("Prettygel") + "] at night", "Supreme Pinky is content with the justice they have dealt");
+				bossList.Call("AddBoss", 16f, ModContent.NPCType<SPinky>(), this, "Supreme Pinky", (Func<bool>)(() => SGAWorld.downedSPinky), new List<int>() { ModContent.ItemType<Prettygel>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<LunarSlimeHeart>(), ModContent.ItemType<LunarRoyalGel>() }, "Use a [i:" + ItemType("Prettygel") + "] at night, infuse 20 [i: " + ItemID.PinkGel + "] at a [i: "+ ModContent.ItemType<LuminousAlter>()+"]", "Supreme Pinky is content with the justice they have dealt");
 				bossList.Call("AddBoss", 17.5f, ModContent.NPCType<Hellion>(), this, "Helon 'Hellion' Weygold", (Func<bool>)(() => SGAWorld.downedHellion > 1), new List<int>() { ModContent.ItemType<HellionSummon>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CodeBreakerHead>(), ModContent.ItemType<ByteSoul>(), ModContent.ItemType<DrakeniteBar>() }, "Use a [i:" + ItemType("HellionSummon") + "]. Talk to Draken when the time is right... (Expert Only)");
 
 				//CaliburnCompess
@@ -220,21 +221,47 @@ namespace SGAmod
 			SGAmod.EnchantmentFocusCrystal.Add(ModContent.ItemType<CalamityRune>(), new EnchantmentCraftingMaterial(20, 200, "Enchantments may grant bonuses to Apocalypticals"));
 
 			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<AuroraTear>(), new LuminousAlterItemClass(ModContent.ItemType<AuroraTearAwoken>(), 60*300, 1));
+			SGAmod.LuminousAlterItems.Add(ItemID.PinkGel, new LuminousAlterItemClass(ModContent.ItemType<Prettygel>(), 60 * 45, 20, 1));
 			SGAmod.LuminousAlterItems.Add(ItemID.SoulofLight, new LuminousAlterItemClass(ModContent.ItemType<IlluminantEssence>(), 60 * 8, 1));
-			SGAmod.LuminousAlterItems.Add(ItemID.Meteorite, new LuminousAlterItemClass(ItemID.LunarOre, 60 * 10, 12,12));
-			SGAmod.LuminousAlterItems.Add(ItemID.PinkGel, new LuminousAlterItemClass(ModContent.ItemType<Prettygel>(), 20 * 30, 20,1));
-			//---
-			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<IlluminantEssence>(), new LuminousAlterItemClass(ModContent.ItemType<StygianCore>(), 60 * 30, 15,1, (Func<bool>)(() => !Main.dayTime && Main.bloodMoon && !Main.raining)));
-			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<EntropyTransmuter>(), new LuminousAlterItemClass(ModContent.ItemType<CalamityRune>(), 60 * 10,1, 1, (Func<bool>)(() => !Main.dayTime && Main.bloodMoon && !Main.raining)));
-			SGAmod.LuminousAlterItems.Add(ItemID.ShinyStone, new LuminousAlterItemClass(ModContent.ItemType<CalamityRune>(), 60 * 60, 1,1, (Func<bool>)(() => !Main.dayTime && Main.bloodMoon && !Main.raining)));
-			SGAmod.LuminousAlterItems.Add(ItemID.CrimtaneBar, new LuminousAlterItemClass(ItemID.DemoniteBar, 60 * 5, 1,1, (Func<bool>)(() => !Main.dayTime && Main.bloodMoon && !Main.raining)));
-			SGAmod.LuminousAlterItems.Add(ItemID.DemoniteBar, new LuminousAlterItemClass(ItemID.CrimtaneBar, 60 * 5, 1,1, (Func<bool>)(() => !Main.dayTime && Main.bloodMoon && !Main.raining)));
+			SGAmod.LuminousAlterItems.Add(ItemID.Mushroom, new LuminousAlterItemClass(ItemID.GlowingMushroom, 60 * 12, 1,10));
+			SGAmod.LuminousAlterItems.Add(ItemID.Gel, new LuminousAlterItemClass(ItemID.PinkGel, 60 * 30, 1, 1));
+			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<OmniSoul>(), new LuminousAlterItemClass(ItemID.FragmentSolar, 60 * 20, 1, 1));
+			SGAmod.LuminousAlterItems.Add(ItemID.Meteorite, new LuminousAlterItemClass(ItemID.LunarOre, 60 * 10, 4,4));
+
+			Func<bool> BloodSunCondition = delegate ()
+			{
+				return ((!Main.dayTime && Main.bloodMoon) || Main.eclipse) && !Main.raining;
+			};
+
+			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<AncientFabricItem>(), new LuminousAlterItemClass(ModContent.ItemType<StygianCore>(), 60 * 60, 50, 1, BloodSunCondition));
+			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<EntropyTransmuter>(), new LuminousAlterItemClass(ModContent.ItemType<CalamityRune>(), 60 * 10, 1, 1, BloodSunCondition));
+			SGAmod.LuminousAlterItems.Add(ItemID.ShinyStone, new LuminousAlterItemClass(ModContent.ItemType<CalamityRune>(), 60 * 60, 1, 1, BloodSunCondition));
+
+			Func<bool> BloodmoonCondition  = delegate ()
+			{
+				return !Main.dayTime && !Main.raining && Main.bloodMoon;
+			};
+
+			SGAmod.LuminousAlterItems.Add(ItemID.DemoniteBar, new LuminousAlterItemClass(ItemID.CrimtaneBar, 60 * 5, 1,1, BloodmoonCondition));
+			SGAmod.LuminousAlterItems.Add(ItemID.ShadowScale, new LuminousAlterItemClass(ItemID.TissueSample, 60 * 6, 1, 1, BloodmoonCondition));
+			SGAmod.LuminousAlterItems.Add(ItemID.CursedFlame, new LuminousAlterItemClass(ItemID.Ichor, 60 * 8, 1, 1, BloodmoonCondition));
+			SGAmod.LuminousAlterItems.Add(ItemID.CorruptSeeds, new LuminousAlterItemClass(ItemID.CrimsonSeeds, 60 * 5, 1, 1, BloodmoonCondition));
+
+			Func<bool> BlackSunCondition = delegate ()
+			{
+				return !Main.raining && Main.eclipse;
+			};
+
+			SGAmod.LuminousAlterItems.Add(ItemID.CrimtaneBar, new LuminousAlterItemClass(ItemID.DemoniteBar, 60 * 5, 1, 1, BlackSunCondition));
+			SGAmod.LuminousAlterItems.Add(ItemID.TissueSample, new LuminousAlterItemClass(ItemID.ShadowScale, 60 * 6, 1, 1, BlackSunCondition));
+			SGAmod.LuminousAlterItems.Add(ItemID.Ichor, new LuminousAlterItemClass(ItemID.CursedFlame, 60 * 8, 1, 1, BlackSunCondition));
+			SGAmod.LuminousAlterItems.Add(ItemID.CrimsonSeeds, new LuminousAlterItemClass(ItemID.CorruptSeeds, 60 * 5, 1, 1, BlackSunCondition));
 
 			//now I did come up with a way you can automate this, if you feed it a large enough stack, when it finishes the infusion it just yeets the new item onto the ground and starting working on the rest of the stack so you can convoy the items for example, this keeps up til there's either not enough items left or the conditions no longer match (IE it's now day)
-				//If the item were to be turned into air via the last stack, the new item takes its place on the Alter for you to pickup
-				
+			//If the item were to be turned into air via the last stack, the new item takes its place on the Alter for you to pickup
+
 			//SGAWorld.downedCopperWraith==0 ? true : false)
-							Idglib.AbsentItemDisc.Add(this.ItemType("Tornado"), "5% to drop from Wyverns after Golem");
+			Idglib.AbsentItemDisc.Add(this.ItemType("Tornado"), "5% to drop from Wyverns after Golem");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Upheaval"), "20% to drop from Golem");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Powerjack"), "10% to drop from Wall of Flesh");
 			Idglib.AbsentItemDisc.Add(this.ItemType("SwordofTheBlueMoon"), "10% (20% in expert mod) drop from Moon Lord");

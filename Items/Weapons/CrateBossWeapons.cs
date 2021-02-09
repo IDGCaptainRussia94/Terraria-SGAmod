@@ -185,10 +185,12 @@ namespace SGAmod.Items.Weapons
 			float numberProjectiles = 1;
 			float rotation = MathHelper.ToRadians(8);
 			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 45f;
+			float rooffset = player.direction*MathHelper.PiOver2*-0.15f;
 
 			for (int i = 0; i < numberProjectiles; i++)
 			{
-				Vector2 perturbedSpeed = (new Vector2(speedX, speedY) * speed).RotatedBy(MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0, 100) / 100f)) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
+				Vector2 perturbedSpeed = (new Vector2(speedX, speedY) * speed).RotatedBy((MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0, 100) / 100f))) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
+				position = position.RotatedBy(rooffset, player.MountedCenter);
 				int proj = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, mod.ProjectileType("JackpotRocket"), damage, knockBack, player.whoAmI);
 				Main.projectile[proj].friendly = true;
 				Main.projectile[proj].hostile = false;

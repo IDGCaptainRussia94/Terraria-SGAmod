@@ -15,6 +15,8 @@ using AAAAUThrowing;
 using SGAmod.NPCs.Cratrosity;
 using SGAmod.Buffs;
 using System.Linq;
+using Microsoft.Xna.Framework.Audio;
+using SGAmod.Items.Weapons;
 
 namespace SGAmod
 {
@@ -267,7 +269,26 @@ namespace SGAmod
 			}
 
 		}
+		public void IrradiatedExplosion(NPC npc,int baseDamage)
+		{
+			if (IrradiatedAmmount > 0)
+			{
+				int proj = Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<RadioactivePool>(), (npc.boss ? 0 : baseDamage) + IrradiatedAmmount, 0, Main.player.OrderBy(playerxy => playerxy.Distance(npc.Center)).ToArray()[0].whoAmI);
+				Main.projectile[proj].ai[1] = 1;
+				Main.projectile[proj].timeLeft = 2;
+				Main.projectile[proj].netUpdate = true;
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageSummonSkeleton, (int)npc.Center.X, (int)npc.Center.Y);
+				if (sound != null)
+					sound.Pitch -= 0.525f;
 
+				if (npc.HasBuff(ModContent.BuffType<RadioDebuff>()))
+				npc.DelBuff(npc.FindBuffIndex(ModContent.BuffType<RadioDebuff>()));
+				IrradiatedAmmount = 0;
+				IrradiatedAmmount_ = 0;
+			}
+
+
+		}
 		public void LifeSteal(NPC npc, Player player, ref int damage, ref float knockback, ref bool crit)
 		{
 			if (player != null)
@@ -524,7 +545,7 @@ namespace SGAmod
 			SGAWorld.overalldamagedone = ((int)damage) + SGAWorld.overalldamagedone;
 			if (projectile != null)
 			{
-				if (moddedplayer.FieryheartBuff > 0 && projectile.owner == player.whoAmI)
+				if (moddedplayer.FieryheartBuff > 0 && projectile.owner == player.whoAmI && projectile.friendly)
 				{
 					if (!npc.buffImmune[BuffID.Daybreak] || moddedplayer.FieryheartBuff > 15)
 					IdgNPC.AddBuffBypass(npc.whoAmI,189, 1 * (20+(int)(player.SGAPly().ExpertiseCollectedTotal/250f)));

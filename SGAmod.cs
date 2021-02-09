@@ -57,6 +57,7 @@ using Terraria.GameContent.UI.Elements;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Dimensions.NPCs;
 using SGAmod.Items.Placeable.Paintings;
+using Terraria.ModLoader.Audio;
 
 #if Dimensions
 using SGAmod.Dimensions;
@@ -151,6 +152,7 @@ namespace SGAmod
 		public static float fogAlpha = 1f;
 		public static Effect TrailEffect;
 		public static Effect HallowedEffect;
+		public static MusicStreamingOGG musicTest;
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
 
 		public int OSDetect()
@@ -364,6 +366,8 @@ namespace SGAmod
 			ClipWeaponReloading.SetupRevolverHoldingTypes();
 
 
+			//MusicStreamingMP3 musicTest = new MusicStreamingMP3("tmod:SGAmod/Sounds/Music/Swamp.mp3");
+
 			anysubworld = false;
 			SGAmod.SkillUIActive = false;
 			SkillTree.SKillUI.SkillUITimer = 0;
@@ -523,6 +527,14 @@ namespace SGAmod
 					RecipeEditor editor = new RecipeEditor(recipe2);
 					editor.AddIngredient(SGAmod.Instance.ItemType("WraithFragment4"), 10);
 				}
+			}
+
+			finder = new RecipeFinder();
+			finder.SetResult(ItemID.LunarBar);
+			foreach (Recipe recipe2 in finder.SearchRecipes())
+			{
+				RecipeEditor editor = new RecipeEditor(recipe2);
+				editor.AddIngredient(SGAmod.Instance.ItemType("IlluminantEssence"), 2);
 			}
 
 			int tileType = ModContent.TileType<Tiles.ReverseEngineeringStation>();
@@ -704,6 +716,66 @@ namespace SGAmod
 
 		public override void AddRecipeGroups()
 		{
+			List<int> chests = new List<int>();
+			List<int> ores = new List<int>();
+			List<int> mud = new List<int>();
+			List<int> stone = new List<int>();
+			List<int> team = new List<int>();
+
+			for (int i = 0; i < Main.itemTexture.Length; i += 1)
+            {
+				Item item = new Item();
+				item.SetDefaults(i);
+				if (!item.consumable || item.createTile < 0 || (item.modItem != null && item.modItem.mod == this))
+				{
+					continue;
+				}
+				if (TileID.Sets.BasicChest[item.createTile])
+				{
+					chests.Add(item.type);
+					continue;
+				}
+				if (TileID.Sets.Ore[item.createTile])
+				{
+					ores.Add(item.type);
+					continue;
+				}
+				if (TileID.Sets.Mud[item.createTile])
+				{
+					mud.Add(item.type);
+					continue;
+				}
+				if (TileID.Sets.Stone[item.createTile])
+				{
+					stone.Add(item.type);
+					continue;
+				}
+				if (TileID.Sets.TeamTiles[item.createTile])
+				{
+					team.Add(item.type);
+					continue;
+				}
+				if (TileID.Sets.TeamTiles[item.createTile])
+				{
+					team.Add(item.type);
+					continue;
+				}
+			}
+
+			RecipeGroup groupspecial = new RecipeGroup(() => "any" + " Chest", chests.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:Chests", groupspecial);
+			groupspecial = new RecipeGroup(() => "any" + " Ore", ores.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:Ore", groupspecial);
+			groupspecial = new RecipeGroup(() => "any" + " Mud", mud.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:Mud", groupspecial);
+			groupspecial = new RecipeGroup(() => "any" + " Stone", stone.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:Stone", groupspecial);
+			groupspecial = new RecipeGroup(() => "any" + " Team Tiles", team.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:TeamTiles", groupspecial);
+
+
+
+
 			RecipeGroup group = new RecipeGroup(() => "any" + " Copper or Tin ore", new int[]
 			{
 			ItemID.CopperOre,
@@ -994,6 +1066,10 @@ namespace SGAmod
 
 		public override void PostUpdateEverything()
 		{
+			if (SGAmod.musicTest != null && SGAmod.musicTest.IsPlaying)
+			{
+				SGAmod.musicTest.CheckBuffer();
+			}
 #if Dimensions
 			proxydimmod.PostUpdateEverything();
 			MakeRenderTarget();

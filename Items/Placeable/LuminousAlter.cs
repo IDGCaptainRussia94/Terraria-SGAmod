@@ -13,7 +13,7 @@ namespace SGAmod.Items.Placeable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Luminous Alter");
-			Tooltip.SetDefault("When exposed to a clear night sky: transmutes items with Starlight\nConverts items into other items over a period of time\nCan corrupt specific items instead when the moon turns red");
+			Tooltip.SetDefault("When exposed to a clear night sky: transmutes items with Starlight\nConverts items into other items over a period of time\nCan corrupt specific items instead when the moon turns red or black");
 		}
 		public override void SetDefaults()
 		{

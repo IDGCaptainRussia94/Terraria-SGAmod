@@ -90,7 +90,7 @@ Changelog:
 
 -The Gunarang now properly eats your ammo as it shoots it (and throwing the gun does not)
 
--Forager's Blade and Guerrilla Pistol are now found only on corruption and crimson world respectively
+-Forager's Blade and Guerrilla Pistol are now found only on crimson worlds (with the Rustwork Blade and Rusty Rifle on corruption)
 
 -A speed cap on Jab-lin stab rate
 

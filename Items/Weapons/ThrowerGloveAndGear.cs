@@ -16,6 +16,8 @@ using Terraria.DataStructures;
 using SGAmod.Buffs;
 using System.Linq;
 using Microsoft.Xna.Framework.Audio;
+using SGAmod.Dusts;
+using SGAmod.Items.Accessories;
 
 namespace SGAmod.Items.Weapons
 {
@@ -1239,7 +1241,7 @@ namespace SGAmod.Items.Weapons
 			item.useTurn = true;
 			//ProjectileID.CultistBossLightningOrbArc
 			item.width = 8;
-			item.height = 28;
+			item.height = 8;
 			item.knockBack = 6;
 			item.maxStack = 999;
 			item.consumable = false;
@@ -1294,7 +1296,7 @@ namespace SGAmod.Items.Weapons
 	public class JarateShurikensProg : ModProjectile
 	{
 
-		int fakeid = ProjectileID.SnowBallFriendly;
+		protected int fakeid = ProjectileID.SnowBallFriendly;
 		public int guyihit = -10;
 		public int cooldown = -10;
 		public override void SetStaticDefaults()
@@ -1364,8 +1366,323 @@ namespace SGAmod.Items.Weapons
 			return true;
 		}
 
+	}
+
+	class UraniumSnowballs : JarateShurikens
+	{
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Uranium Filled Snowballs");
+			Tooltip.SetDefault("'Excuse me? Yeah, this is a thing'\nSnowballs leave behind Irradiated pools, infecting enemies\nEnemies killed while Irradiated explode, crits force an explosion\nRight click to throw an empowered shot that sticks to enemies\n"+ Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 20 seconds each")
+				+"\n"+ Idglib.ColorText(Color.Red,"You suffer Radiation 2 while holding these")+"\n"+Idglib.ColorText(Color.Red,"Radiation 1 if only in inventory"));
+		}
+
+        public override string Texture => "Terraria/Item_"+ItemID.Snowball;
+
+        public override void SetDefaults()
+		{
+			item.useStyle = 1;
+			item.Throwing().thrown = true;
+			item.useTurn = true;
+			//ProjectileID.CultistBossLightningOrbArc
+			item.width = 8;
+			item.height = 8;
+			item.knockBack = 6;
+			item.maxStack = 999;
+			item.damage = 72;
+			item.consumable = true;
+			item.UseSound = SoundID.Item1;
+			item.useAnimation = 30;
+			item.useTime = 30;
+			item.noUseGraphic = true;
+			item.noMelee = true;
+			item.autoReuse = true;
+			item.value = Item.buyPrice(0, 0, 1, 0);
+			item.rare = 4;
+			item.shootSpeed = 25f;
+			item.shoot = mod.ProjectileType("UraniumSnowballsProg");
+			item.ammo = AmmoID.Snowball;
+		}
+
+        public override Color? GetAlpha(Color lightColor)
+        {
+			return Color.Lerp(Color.Lime, Color.Green, 0.50f + (float)Math.Sin(Main.GlobalTime * 4f) / 2f);
+        }
+
+        public override void UpdateInventory(Player player)
+        {
+			player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type, 60*3);
+		}
+        public override void HoldItem(Player player)
+        {
+			//if (!player.HasAccessoryEquipped(ModContent.ItemType<HandlingGloves>()) || !player.HasAccessoryEquipped(ModContent.ItemType<BlinkTechGear>()))
+		}
+
+        public override bool AltFunctionUse(Player player)
+        {
+            return player.SGAPly().AddCooldownStack(60*20,2);
+        }
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+
+			int numberProjectiles = 1;
+			float rotation = MathHelper.ToRadians(0);
+			//for (int i = 0; i < numberProjectiles; i += 1)
+			//{
+				Vector2 perturbedSpeed = (new Vector2(speedX, speedY)).RotatedBy(MathHelper.Lerp(-rotation, rotation, Main.rand.NextFloat()));
+				int thisoned = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, Main.myPlayer);
+				Main.projectile[thisoned].Throwing().thrown = true;
+				Main.projectile[thisoned].ranged = false;
+			if (player.altFunctionUse == 2)
+            {
+				Main.projectile[thisoned].ai[1] = 1;
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DrakinShot, (int)position.X, (int)position.Y);
+				if (sound != null)
+					sound.Pitch -= 0.525f;
+			}
+			Main.projectile[thisoned].netUpdate = true;
+			//}
+
+			return false;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return true;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Snowball, 50);
+			recipe.AddIngredient(ItemID.LunarOre, 1);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this, 50);
+			recipe.AddRecipe();
+		}
 
 	}
+
+	public class UraniumSnowballsProg : JarateShurikensProg
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Uranium Filled Snowballs");
+		}
+		public override string Texture => "Terraria/Item_" + ItemID.Snowball;
+		int hitnpc = -1;
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			if (crit)
+			{
+				target.SGANPCs().IrradiatedExplosion(target, damage);
+			}
+			hitnpc = target.whoAmI;
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.SnowBallFriendly);
+			projectile.Throwing().thrown = false;
+			projectile.ranged = true;
+			projectile.magic = false;
+			projectile.tileCollide = true;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.extraUpdates = 0;
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			projectile.type = fakeid;
+
+			for (float num654 = 0; num654 < 8; num654+=0.25f)
+			{
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); randomcircle *= (float)(num654 / 10.00);
+				int num655 = Dust.NewDust(projectile.position + Vector2.UnitX * -6f, projectile.width + 12, projectile.height+12, 75, 0,0, 150, Color.Lime, 1.8f);
+				Main.dust[num655].noGravity = true;
+				Main.dust[num655].noLight = true;
+				Main.dust[num655].velocity = new Vector2(randomcircle.X * 12f, randomcircle.Y * 12f);
+			}
+
+			if (projectile.ai[1] < 1)
+			{
+				int proj = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<RadioactivePool>(), projectile.damage, projectile.knockBack, projectile.owner);
+			}
+			else
+			{
+				int proj = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<RadioactivePool>(), projectile.damage*2, projectile.knockBack, projectile.owner);
+				Main.projectile[proj].width += 160;
+				Main.projectile[proj].height += 160;
+				Main.projectile[proj].timeLeft = 600;
+				Main.projectile[proj].Center -= new Vector2(80, 80);
+				if (hitnpc > -1)
+                {
+					//Main.projectile[proj].ai[1] = -(hitnpc+1);
+				}
+				Main.projectile[proj].netUpdate = true;
+			}
+
+			SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_SkyDragonsFuryShot, (int)projectile.Center.X, (int)projectile.Center.Y);
+			if (sound != null)
+				sound.Pitch -= 0.525f;
+
+			return true;
+		}
+
+		public override void AI()
+		{
+			if (projectile.ai[1] > 0)
+			{
+				projectile.localAI[1] += 1;
+
+				if (projectile.localAI[1]%3==0)
+				{
+					int proj = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<RadioactivePool>(), projectile.damage, projectile.knockBack, projectile.owner);
+					Main.projectile[proj].timeLeft = 50;
+				}
+			}
+
+			for (int num654 = 0; num654 < 2; num654++)
+			{
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
+				int num655 = Dust.NewDust(projectile.Center + Main.rand.NextVector2Circular(16,16), 0, 0, 75, randomcircle.X * 3f, randomcircle.Y * 3f, 150, Color.Lime, 1f);
+				Main.dust[num655].noGravity = true;
+				Main.dust[num655].noLight = true;
+			}
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Vector2 drawOrigin = new Vector2(Main.projectileTexture[projectile.type].Width * 0.5f, projectile.height * 0.5f);
+			for (int k = projectile.oldPos.Length-1; k > 0; k-=1)
+			{
+				Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition + drawOrigin;
+				Color color = Color.Lime * (1f-((float)k / ((float)projectile.oldPos.Length)));
+				spriteBatch.Draw(Main.projectileTexture[projectile.type], drawPos, null, color * 0.75f, projectile.rotation, drawOrigin, projectile.scale+0.5f, SpriteEffects.None, 0f);
+			}
+
+			Texture2D texture = SGAmod.ExtraTextures[96];
+			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.Lime*0.50f, 0, texture.Size() / 2f, 0.5f, SpriteEffects.None, 0f);
+
+			spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center-Main.screenPosition, null, Color.GreenYellow, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+			return false;
+		}
+	}
+
+	public class RadioactivePool : SludgeProj
+	{
+
+		float scalePercent => MathHelper.Clamp(projectile.timeLeft / 60f, 0f, Math.Min(projectile.localAI[0] / 10f, 1f));
+
+		public override void SetDefaults()
+		{
+			projectile.width = 128;
+			projectile.height = 128;
+			projectile.aiStyle = -1;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.penetrate = -1;
+			projectile.tileCollide = false;
+			projectile.magic = false;
+			projectile.timeLeft = 160;
+			projectile.light = 0.1f;
+			projectile.extraUpdates = 0;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+			aiType = -1;
+			Main.projFrames[projectile.type] = 1;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Pool of Radioactive Sludge");
+		}
+
+		public override bool CanDamage()
+		{
+			return projectile.ai[1]>0;
+		}
+
+        public override void AI()
+		{
+			if (projectile.localAI[1] < 10)
+			{
+				projectile.localAI[1] = Main.rand.Next(3) + 100;
+			}
+			projectile.localAI[0] += 1;
+
+			/*if (projectile.ai[1] < 0)
+			{
+				NPC npc = Main.npc[(int)(-projectile.ai[1] + 1)];
+				if (npc!=null && npc.active)
+				{
+					projectile.Center = npc.Center;
+                }
+                else
+                {
+					projectile.ai[1] = 0;
+                }
+            }*/
+
+			Point16 point = new Point16((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16);
+
+			float boomspeed = projectile.ai[1] > 0 ? 8 : 0;
+
+			if (projectile.timeLeft > 30 && boomspeed<1)
+			{
+				foreach (NPC enemy in Main.npc.Where(npctest => npctest.active && !npctest.friendly && !npctest.immortal &&
+				npctest.Distance(projectile.Center) < projectile.width * projectile.scale))
+				{
+					SGAnpcs sganpc = enemy.SGANPCs();
+					sganpc.nonStackingImpaled = projectile.damage * 3;
+					sganpc.impaled += projectile.damage/2;
+					sganpc.IrradiatedAmmount = Math.Min(sganpc.IrradiatedAmmount + 1, projectile.damage * 3);
+					enemy.AddBuff(mod.BuffType("RadioDebuff"), 60 * 18);
+				}
+			}
+
+			for (int num654 = 0; num654 < 4+ boomspeed * 4; num654++)
+			{
+				if (boomspeed > 0 || Main.rand.Next(160) < projectile.timeLeft)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
+					int num655 = Dust.NewDust(projectile.Center + Main.rand.NextVector2Circular(projectile.width, projectile.width), 0, 0, 184, projectile.velocity.X + randomcircle.X * (4f), projectile.velocity.Y + randomcircle.Y * (4f), 150, Color.Lime, 0.5f);
+					Main.dust[num655].noGravity = true;
+				}
+			}
+
+			for (int num654 = 1; num654 < 3 + boomspeed*4; num654++)
+			{
+				if (boomspeed > 0 || Main.rand.Next(160) < projectile.timeLeft)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
+					int num655 = Dust.NewDust(projectile.Center + Main.rand.NextVector2Circular(projectile.width/2, projectile.width/2), 0, 0, ModContent.DustType<RadioDust>(), projectile.velocity.X + randomcircle.X * (2f), projectile.velocity.Y + randomcircle.Y * (2f), boomspeed > 0 ? 140 : 220, boomspeed > 0 ? Color.Orange : Color.Lime, 0.5f + (boomspeed / 20f));
+					Main.dust[num655].noGravity = true;
+				}
+			}
+
+			if (Main.rand.Next(24) < projectile.timeLeft)
+			{
+				int num126 = Dust.NewDust(projectile.Center + Main.rand.NextVector2Circular(projectile.width/2, projectile.width/2), 0, 0, 184, 0, 0, 140, new Color(30, 30, 30, 20), 1f);
+				Main.dust[num126].noGravity = true;
+				Main.dust[num126].velocity = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-6f, 1f));
+			}
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			return false;
+		}
+	}
+
 
 	class SharkBait : ModItem
 	{

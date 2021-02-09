@@ -34,7 +34,7 @@ namespace SGAmod.HavocGear.Items
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Bottle);
-			recipe.AddIngredient(ItemID.MudBlock,3);
+			recipe.AddRecipeGroup("SGAmod:Mud", 3);
 			recipe.needWater = true;
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
@@ -1453,7 +1453,7 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("'The Whole Experience'");
-			Tooltip.SetDefault("While in your inventory, specific cutscenes and events will replay\nLuminite Wraith will be summoned in his pre-Moonlord stage");
+			Tooltip.SetDefault("While in your inventory, specific cutscenes and events will replay\nLuminite Wraith will be summoned in his pre-Moonlord stage\nKiller Fly Swarm will be summoned instead of Murk");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 		public static bool Check()

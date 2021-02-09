@@ -17,7 +17,7 @@ using Terraria.ModLoader.IO;
 
 namespace SGAmod.Tiles
 {
-    public class LuminousAlter : ModTile
+    public class LuminousAlter : ModTile,IHopperInterface
     {
         public static LuminousAlterTE FindAlterTE(int i, int j)
         {
@@ -65,18 +65,50 @@ namespace SGAmod.Tiles
 
         public override bool NewRightClick(int i, int j)
         {
-            int dust = Dust.NewDust(new Vector2(i, j) * 16, 0, 0, DustID.PurpleCrystalShard);
+            /*int dust = Dust.NewDust(new Vector2(i, j) * 16, 0, 0, DustID.PurpleCrystalShard);
             Main.dust[dust].scale = 3f;
-            Main.dust[dust].noGravity = true;
+            Main.dust[dust].noGravity = true;*/
 
             Tile tile = Framing.GetTileSafely(i, j);
 
             //int x = i - (tile.frameX / 18);
             //int y = j - (tile.frameY / 18);
             LuminousAlterTE alter = FindAlterTE(i, j);
-            alter.Interact(Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem], Main.LocalPlayer);
+            if (alter!=null)
+            alter.Interact(Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem],out _, Main.LocalPlayer);
 
             return true;
+        }
+        public bool HopperInputItem(Item item, Point tilePos, int movementCount)
+        {
+            LuminousAlterTE alter = FindAlterTE(tilePos.X, tilePos.Y);
+            if (alter != null)
+            {
+                return alter.Interact(item,out _, null,true);
+            }
+
+            return false;
+        }
+
+        public bool HopperExportItem(ref Item item, Point tilePos, int movementCount)
+        {
+            LuminousAlterTE alter = FindAlterTE(tilePos.X, tilePos.Y);
+            if (alter != null && !alter.heldItem.IsAir && !alter.AcceptItem(alter.heldItem))
+            {
+                Item takeOutItem;
+                bool foundItem = alter.Interact(item, out takeOutItem, null, onlyTakeOut: true,ejectOnly: true);
+
+                if (foundItem)
+                    item = takeOutItem;
+                return foundItem;
+            }
+
+            return false;
+        }
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            ModContent.GetInstance<LuminousAlterTE>().Kill(i, j);
+            Item.NewItem(i * 16, j * 16, 64, 16, mod.ItemType("LuminousAlter"), 1, false, 0, false, false);
         }
 
         public override void DrawEffects(int x, int y, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
@@ -90,12 +122,6 @@ namespace SGAmod.Tiles
                     nextSpecialDrawIndex += 1;
                 }
             }
-        }
-
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            ModContent.GetInstance<LuminousAlterTE>().Kill(i, j);
-            Item.NewItem(i * 16, j * 16, 64, 16, mod.ItemType("LuminousAlter"), 1, false, 0, false, false);
         }
 
         public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
@@ -187,20 +213,30 @@ namespace SGAmod.Tiles
             heldItem.TurnToAir();
         }
 
-        public virtual void Interact(Item item,Player player = null,bool noTakeOut=false)
+        public virtual bool Interact(Item item, out Item takeOutItem, Player player = null, bool noTakeOut = false, bool onlyTakeOut = false, bool ejectOnly = false)
         {
+            takeOutItem = null;
             if (heldItem.IsAir)
             {
-                if (AcceptItem(item))
+                if (!onlyTakeOut && item!=null && AcceptItem(item))
                 {
                     InsertItem(item,player);
+
+                    if (player!=null)
                     player.GetModPlayer<LuminousAlterPlayer>().AlterTileTE = this;
+
+                    return true;
                 }
+                return false;
             }
             else
             {
                 if (!noTakeOut)
-                ExitItem();
+                {
+                    takeOutItem = ExitItem(ejectOnly);
+                    return true;
+                }
+                return false;
             }
         }
 
@@ -213,9 +249,9 @@ namespace SGAmod.Tiles
         {
             return true;
         }
-        public virtual void ExitItem()
+        public virtual Item ExitItem(bool ejectOnly = false)
         {
-            //nil
+            return null;
         }
 
         public override void OnKill()
@@ -277,13 +313,28 @@ namespace SGAmod.Tiles
         public class LuminousAlterTE : OneItemSlotTE
     {
         public int chargingProcess = 0;
+        public ushort clientChargingTimer = 0;
+        private LuminousAlterItemClass tempItemData;
+        public LuminousAlterItemClass itemData;
+        public int ProcessRate => 60;
         public static void DebugText(string text)
         {
             Main.NewText(text);
         }
         public override bool AcceptItem(Item item)
         {
-            return true;
+            LuminousAlterItemClass findClass;
+
+            if (item != null && Position.Y <= 200 && Collision.CanHitLine(Position.ToVector2()*16,1,1,new Vector2(Position.X*16,0),1,1) && SGAmod.LuminousAlterItems.TryGetValue(item.type, out findClass))
+            {
+                if (item.stack >= findClass.stackCost && findClass.SpecialCondition())
+                {
+                    tempItemData = findClass;
+                    return true;
+                }
+
+            }
+            return false;
         }
 
         public override bool InsertItem(Item item,Player player)
@@ -291,7 +342,9 @@ namespace SGAmod.Tiles
             Item playerItem = item;
             if (!playerItem.IsAir)
             {
+                itemData = tempItemData;
                 heldItem = playerItem.DeepClone();
+                chargingProcess = 0;
                 playerItem.TurnToAir();
                 SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_CrystalCartImpact, Position.X * 16, Position.Y * 16);
                 if (sound != null)
@@ -306,17 +359,26 @@ namespace SGAmod.Tiles
             }
             return false;
         }
-        public override void ExitItem()
+        public override Item ExitItem(bool ejectOnly = false)
         {
             if (!heldItem.IsAir)
             {
-                int item2 = Item.NewItem(Vector2.Zero, Vector2.Zero, heldItem.type, heldItem.stack);
-                Main.item[item2] = heldItem.DeepClone();
-                Main.item[item2].favorited = false;
-                Main.item[item2].newAndShiny = false;
-                Main.item[item2].position = (Position.ToVector2() + new Vector2(0.5f, -2f)) * 16;
+                Item thisOne;
+                if (!ejectOnly)
+                {
+                    int item2 = Item.NewItem(Vector2.Zero, Vector2.Zero, heldItem.type, heldItem.stack);
+                    Main.item[item2] = heldItem.DeepClone();
+                    Main.item[item2].favorited = false;
+                    Main.item[item2].newAndShiny = false;
+                    Main.item[item2].position = (Position.ToVector2() + new Vector2(0.5f, -2f)) * 16;
+                    thisOne = Main.item[item2];
+                }
+                else
+                {
+                    thisOne = heldItem.DeepClone();
+                }
 
-                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item2);
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, thisOne.whoAmI);
 
                 heldItem.TurnToAir();
                 SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_CrystalCartImpact, Position.X * 16, Position.Y * 16);
@@ -328,23 +390,28 @@ namespace SGAmod.Tiles
                     NetMessage.SendTileSquare(Main.myPlayer, Position.X, Position.Y, 2);
                     NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, Position.X, Position.Y, Type, 0f, 0, 0, 0);
                 }
+                return thisOne;
             }
+            return null;
         }
 
         public override void NetSend(BinaryWriter writer, bool lightSend)
         {
             ItemIO.Send(heldItem, writer);
+            writer.Write(chargingProcess);
         }
 
         public override void NetReceive(BinaryReader reader, bool lightReceive)
         {
             ItemIO.Receive(heldItem, reader);
+            chargingProcess = reader.ReadUInt16();
         }
 
         public override TagCompound Save()
         {
             TagCompound baseCompound = base.Save();
             baseCompound.Add("chargingProcess", chargingProcess);
+            baseCompound.Add("clientChargingTimer", (int)clientChargingTimer);
             return baseCompound;
 
         }
@@ -352,6 +419,8 @@ namespace SGAmod.Tiles
         {
             TagCompound baseCompound = base.DoLoad(tag);
             chargingProcess = baseCompound.GetInt("chargingProcess");
+            clientChargingTimer = (ushort)baseCompound.GetInt("clientChargingTimer");
+
             return baseCompound;
         }
 
@@ -371,16 +440,82 @@ namespace SGAmod.Tiles
 
         }
 
+        public void ItemInfusion()
+        {
+            Vector2 there = (Position.ToVector2() + new Vector2(0.5f, -2f)) * 16;
+            int output = itemData.outputItem;
+            if (output == ItemID.FragmentSolar)
+            {
+                output = (new int[] { ItemID.FragmentSolar, ItemID.FragmentVortex, ItemID.FragmentNebula, ItemID.FragmentStardust})[Main.rand.Next(4)];
+            }
+            int item2 = Item.NewItem(there, Vector2.Zero, output, itemData.stackMade);
+            Main.item[item2].favorited = false;
+            Main.item[item2].newAndShiny = true;
+            //Main.item[item2].position = (Position.ToVector2() + new Vector2(0.5f, -2f)) * 16;
+            heldItem.stack -= itemData.stackCost;
+
+            if (heldItem.stack < 1)
+            {
+                heldItem.TurnToAir();
+                InsertItem(Main.item[item2], null);
+            }
+            else
+            {
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item2);
+            }
+        }
+
         public override void Update()
         {
-            if (updateTimer % 60 == 0)
+            if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                if (Main.netMode == 1)
+                if (updateTimer % 60 == 0)
                 {
+                    if (heldItem != null && itemData != default)
+                    {
+                        if (AcceptItem(heldItem))
+                        {
+                            chargingProcess += ProcessRate;
+                            if (chargingProcess >= itemData.infusionTime)
+                            {
+                                ItemInfusion();
+
+                                clientChargingTimer = 60;
+                                chargingProcess -= itemData.infusionTime;
+                            }
+                            if (chargingProcess>0)
+                            clientChargingTimer = 150;
+                        }
+                    }
                     //NetMessage.SendTileSquare(Main.myPlayer, Position.X, Position.Y, 2);
                     NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, Position.X, Position.Y, Type, 0f, 0, 0, 0);
                 }
             }
+
+            if (Main.netMode < NetmodeID.Server)
+            {
+                if (clientChargingTimer > 0)
+                {
+                    if (clientChargingTimer == 120)
+                    {
+                        if (itemData != null)
+                        {
+                            SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_WitherBeastAuraPulse, Position.X * 16, Position.Y * 16);
+                            if (sound != null)
+                                sound.Pitch = -0.75f+((clientChargingTimer/(float)itemData.infusionTime)*1.50f);
+                        }
+                    }
+
+                    if (clientChargingTimer % 6 == 0)
+                    {
+                        int dust = Dust.NewDust(new Vector2(Position.X, Position.Y) * 16, 16, 16, DustID.PurpleCrystalShard);
+                        Main.dust[dust].scale = 3f;
+                        Main.dust[dust].noGravity = true;
+                    }
+                    clientChargingTimer -= 1;
+                }
+            }
+
             base.Update();
         }
 

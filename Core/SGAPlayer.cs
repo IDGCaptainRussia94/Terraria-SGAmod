@@ -106,7 +106,7 @@ namespace SGAmod
 		//Accessory related
 		public bool CirnoWings = false;
 		public bool SerratedTooth = false;
-		public bool grippinggloves = false;
+		public int grippinggloves = 0;
 		public bool mudbuff = false; public bool alkalescentHeart = false; public bool jabALot = false; public bool NoHitCharm = false; public int NoHitCharmTimer = 0;
 		public int Havoc = 0;
 		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false;
@@ -194,6 +194,7 @@ namespace SGAmod
 		public float recoil = 0;
 		public int greandethrowcooldown = 0;
 		public int? resetver = 1;
+		public int claySlowDown = 0;
 		public bool nightmareplayer = false;
 		public bool playercreated = false;
 		public bool granteditems = false;
@@ -270,6 +271,8 @@ namespace SGAmod
 			heldShieldReset -= 1;
 			if (heldShieldReset<1)
 			heldShield = -1;
+
+			claySlowDown = Math.Max(claySlowDown - 1, 0);
 
 			shieldDamageReduce = 0f;
 			shieldDamageBoost = 0f;
@@ -387,7 +390,7 @@ namespace SGAmod
 			drownRate = 0;
 			summonweaponspeed = 0f;
 			SlowDownReset -= 1;
-			grippinggloves = false;
+			grippinggloves = 0;
 			timer += 1;
 			mudbuff = false;
 			boosterdelay -= 1;
@@ -813,6 +816,11 @@ namespace SGAmod
 
 		}
 
+		public delegate void PostUpdateEquipsDelegate(SGAPlayer player);
+		public static event PostUpdateEquipsDelegate PostUpdateEquipsEvent;
+
+		//Really should do more event stuff like this ^
+
 		public override void PostUpdateEquips()
 		{
 
@@ -828,6 +836,8 @@ namespace SGAmod
 					shieldDamageReduce += 5;
                 }
 			}
+
+			PostUpdateEquipsEvent?.Invoke(this);
 
 			if (player.HasBuff(BuffID.Lovestruck))
 			{
@@ -893,6 +903,9 @@ namespace SGAmod
 
 			if (player.HeldItem.type == ModContent.ItemType<CrateBossWeaponMeleeOld>())
 				player.goldRing = true;
+
+			if (player.HeldItem.type == ModContent.ItemType<UraniumSnowballs>() && grippinggloves<2)
+				player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationTwo").Type, 60 * 3);
 
 			if (player.HasBuff(mod.BuffType("TechnoCurse")))
 			{

@@ -1229,7 +1229,7 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.10f;
-			player.GetModPlayer<SGAPlayer>().grippinggloves = true;
+			player.GetModPlayer<SGAPlayer>().grippinggloves = Math.Max(player.GetModPlayer<SGAPlayer>().grippinggloves,1);
 			player.GetModPlayer<SGAPlayer>().SlowDownResist += 2f;
 		}
 
@@ -1253,14 +1253,14 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Handling Gloves");
-			Tooltip.SetDefault("'For handling extreme situations!'\nImmunity to knockback and fire blocks!\n+8 defense while holding a Non-Stationary Defense\nGreatly reduces the movement speed slowdown of Non-Stationary Defenses\nYou can turn around while holding a Non-Stationary Defense\n15% increased Trap Damage and 10% increased Trap Armor Penetration");
+			Tooltip.SetDefault("'For handling extreme situations!'\nImmunity to knockback and fire blocks!\nReduces the effects of holding radioactive materials\n+8 defense while holding a Non-Stationary Defense\nGreatly reduces the movement speed slowdown of Non-Stationary Defenses\nYou can turn around while holding a Non-Stationary Defense\n15% increased Trap Damage and 10% increased Trap Armor Penetration");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.15f;
 			player.GetModPlayer<SGAPlayer>().TrapDamageAP += 0.10f;
-			player.GetModPlayer<SGAPlayer>().grippinggloves = true;
+			player.GetModPlayer<SGAPlayer>().grippinggloves = Math.Max(player.GetModPlayer<SGAPlayer>().grippinggloves, 2);
 			player.GetModPlayer<SGAPlayer>().SlowDownResist += 8f;
 			player.noKnockback = true;
 			player.fireWalk = true;
@@ -1295,6 +1295,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.ObsidianShield, 1);
 			recipe.AddIngredient(ItemID.ChlorophyteBar, 10);
 			recipe.AddIngredient(ItemID.HellstoneBar, 5);
+			recipe.AddIngredient(ItemID.LeadBar, 6);
 			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);

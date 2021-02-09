@@ -13,10 +13,10 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners tf2/style things, Spectre homing bullets/projectiles, Tech weapons have an "overclock" mechanic that changes up their gameplay while active and overhaul ideas (maybe?), spider queen can melt normal generated blocks (dirt and so)
 Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
-Spartan Laser/mining railgun (need sprites), shuricane (shuriken Hurricane!)
+Spartan Laser/mining railgun (add mining), shuricane (shuriken Hurricane!), Binding Voodoo Magic
 
--Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy), Aurora Gear and Luminous Alter Tile Entity!
--Add Hellion Bas bar, STILL! Add Hellion checkpoints! Make Madal not do self damage/less damage
+-Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy), Aurora Gear and finish Luminous Alter Tile Entity!
+-Add Hellion army bar, STILL! Add Hellion checkpoints! Make Madal not do self damage/less damage, Hopper Sprites
 
 Changelog:
 
@@ -24,7 +24,7 @@ Changelog:
 
 --Added:
 
--Plasmic Rail Gun, True Rainbow Heart, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear
+-Plasmic Rail Gun, Uranium Filled Snowballs, True Rainbow Heart, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear
 
 -Luminous Alter, use it to transmute various items overtime by infusing them with Starlight!
 
@@ -32,10 +32,12 @@ Changelog:
 
 -Prismic Banshee has a stronger manually summoned version after Luminite Wraith is defeated you can fight for double loot, the boss in general has undergone a couple of changes
 
--Resprites, enjoy a far better looking Jackpot!
+-Resprites, enjoy a far better looking Jackpot with glowing coins!
 
 
 --Changed:
+
+-The Calamity Rune and Luminous Gel are created at the Luminous Alter now, check the wiki for all the recipe combos
 
 -Draken's Dialog has been moved around to help give players instructions, also a new interaction has been added after you become close friends
 
@@ -45,13 +47,25 @@ Changelog:
 
 -Souls of Byte are now a post-Hellion Drop (Hellion Core only drops them after the entire fight is beaten)
 
+-Added some flavor text to the Jabb-a-wacky to hint how to get it
+
+-Most non-npc specific SGAmod drops no longer drop from statue spawned NPCs
+
+-Mudmore and Clay-More were switched on the Celstial Flare and Surt because it made more sense upgrade wise
+
+-Ragnarok's Brew costs more resources except Styigan Stars and makes 3, to help justify it requiring Styigan Stars
+
 -Hellion's beam has been given a visual overhaul to fix a bug where it was invisible (see fixed)
+
+-Buffed Clay-More: now has a ranged attack, at a cost
 
 -Buffed Cyber Scythe: Now controls in and out twice as fast
 
 -Buffed Novite Knife: Now carries over a movement speed and jump boost from its source material (granted, from deathmatch)
 
 -Buffed Geyodo: it really should have did more damage, even if a meager ammount
+
+-Buffed Gas Passer: double base damage over time, slightly better scaling with enemy HP
 
 -Nerfed Tactical SMG Rifle: damage lowered to 25 (from 28)
 
@@ -64,13 +78,23 @@ Changelog:
 
 -Hellion Beams being invisible
 
+-'The Whole Experience' not working on Killer Fly Swarm; you can now refight that boss
+
 -Cyber Scythe's max range growing smaller with melee speed instead of larger
 
 -Prismic Banshee's 'hands' having a weird hitbox
 
 -Virulent Ore placing the wrong tile, due to me forgoting to undo a testing thing
 
+-Gucci Guantlet's Amber Gem causing null errors in merchant shops
+
+-Town NPCs getting daybroken by enemy attacks while you had the Fiery Heart
+
 -Stormbreaker not counting the lightning as modded throwing damage
+
+-An invisible non-transparent pixel on Rusty Sword's sprite, causing it to look odd ingame
+
+-Other smaller fixes I might have forgotten about-including typeos
 
 
 
@@ -144,7 +168,7 @@ Changelog:
 
 -The Gunarang now properly eats your ammo as it shoots it (and throwing the gun does not)
 
--Forager's Blade and Guerrilla Pistol are now found only on corruption and crimson world respectively
+-Forager's Blade and Guerrilla Pistol are now found only on crimson worlds (with the Rustwork Blade and Rusty Rifle on corruption)
 
 -A speed cap on Jab-lin stab rate
 

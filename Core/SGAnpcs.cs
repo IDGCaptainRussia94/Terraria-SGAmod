@@ -27,6 +27,7 @@ using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 using SGAmod.NPCs;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod
 {
@@ -91,6 +92,18 @@ namespace SGAmod
             {
 				nonStackingImpaled_ = Math.Max(value, nonStackingImpaled_);
             }
+		}
+		internal int IrradiatedAmmount_;
+		public int IrradiatedAmmount
+		{
+			get
+			{
+				return IrradiatedAmmount_;
+			}
+			set
+			{
+				IrradiatedAmmount_ = Math.Max(value, IrradiatedAmmount_);
+			}
 		}
 
 		public int FindBuffIndex(NPC npc, int type)
@@ -306,7 +319,7 @@ namespace SGAmod
 
 			if (Combusted > 0)
 			{
-				npc.lifeRegen -= 50 + (int)(Math.Pow(npc.lifeMax, 0.5) / 3.0);
+				npc.lifeRegen -= 100 + (int)(Math.Pow(npc.lifeMax, 0.5) / 2.5);
 				Combusted -= 1;
 				if (damage < 50)
 					damage = 50;
@@ -454,6 +467,29 @@ namespace SGAmod
 				}
 
 			}
+
+			if (IrradiatedAmmount > 0)
+            {
+				for (int i = 0; i < Math.Min(10, IrradiatedAmmount / 10); i += 1)
+				{
+					if (Main.rand.Next(100) < 1)
+					{
+						int num126 = Dust.NewDust(npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height), 0, 0, 184, 0, 0, 140, new Color(30, 30, 30, 20), 1f);
+						Main.dust[num126].noGravity = true;
+						Main.dust[num126].velocity = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-6f, 1f));
+					}
+				}
+				if (counter % 10 == 0)
+				{
+					for (int num654 = 0; num654 < 1; num654++)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
+						int num655 = Dust.NewDust(npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height), 0, 0, ModContent.DustType<Dusts.RadioDust>(), npc.velocity.X + randomcircle.X * 1f, npc.velocity.Y + randomcircle.Y * 1f, 200, Color.Lime, 0.5f);
+						Main.dust[num655].noGravity = true;
+					}
+				}
+			}
+
 			if (NinjaSmoked)
 			{
 				Vector2 position2 = npc.position;
@@ -996,6 +1032,7 @@ namespace SGAmod
 				{
 					foreach (Item item in shop.item)
 					{
+						if (item.shopCustomPrice != null)
 						item.value = (int)(item.shopCustomPrice * 0.85);
 					}
 				}
@@ -1156,8 +1193,9 @@ namespace SGAmod
 					}
 
 				}
-
 			}
+				IrradiatedExplosion(npc,IrradiatedAmmount);
+
 			if (npc.boss)
 			{
 				Achivements.SGAAchivements.UnlockAchivement("Offender", Main.LocalPlayer);
@@ -1210,6 +1248,9 @@ namespace SGAmod
 
 			//if (!NPC.BusyWithAnyInvasionOfSorts())
 			//{
+			if (npc.SpawnedFromStatue)
+				return;
+
 			if (lastHitByItem == ModContent.ItemType<ForagersBlade>())
 			{
 				if (npc.HitSound == SoundID.NPCHit1)

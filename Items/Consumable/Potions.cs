@@ -311,13 +311,13 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.BottledWater,2);
-			recipe.AddIngredient(null, "Entrophite", 10);
+			recipe.AddIngredient(ItemID.BottledWater,3);
+			recipe.AddIngredient(null, "Entrophite", 15);
 			recipe.AddIngredient(null, "StygianCore", 1);
-			recipe.AddIngredient(null, "FieryShard", 1);
-			recipe.AddIngredient(null, "UnmanedOre", 3);
+			recipe.AddIngredient(null, "FieryShard", 2);
+			recipe.AddIngredient(null, "UnmanedOre", 5);
 			recipe.AddTile(TileID.Bottles);
-			recipe.SetResult(this, 2);
+			recipe.SetResult(this, 3);
 			recipe.AddRecipe();
 		}
 	}

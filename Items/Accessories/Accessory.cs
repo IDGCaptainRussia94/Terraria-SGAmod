@@ -543,12 +543,13 @@ namespace SGAmod.Items.Accessories
 			bool left = player.direction < 0;//player.Center.X > (Main.maxTilesX * 16) / 2f;
 			int coincount = player.CountItem(ItemID.CopperCoin) + (player.CountItem(ItemID.SilverCoin) * 100) + (player.CountItem(ItemID.GoldCoin) * 10000) + (player.CountItem(ItemID.PlatinumCoin) * 1000000);
 			float howmuch = Math.Min(0.25f, (coincount / 10000000f) / 4f);
-			player.magicDamage += howmuch;
+			/*player.magicDamage += howmuch;
 			player.rangedDamage += howmuch;
 			player.Throwing().thrownDamage += howmuch;
 			player.minionDamage += howmuch;
 			player.meleeDamage += howmuch;
-			SGAmod.BoostModdedDamage(player, howmuch, 0);
+			SGAmod.BoostModdedDamage(player, howmuch, 0);*/
+			player.BoostAllDamage(howmuch, 5);
 			if (GetType() == typeof(CorperateEpiphany))
 				player.GetModPlayer<SGAPlayer>().MidasIdol = hideVisual ? 3 : left ? 1 : 2;
 			else
@@ -638,9 +639,9 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-			player.meleeDamage += 0.05f; player.magicDamage += 0.05f; player.rangedDamage += 0.05f; player.minionDamage += 0.05f; player.Throwing().thrownDamage += 0.05f;
-			SGAmod.BoostModdedDamage(player, 0.05f, 5);
-			player.meleeCrit += 5; player.magicCrit += 5; player.rangedCrit += 5; player.Throwing().thrownCrit += 5;
+			//player.meleeDamage += 0.05f; player.magicDamage += 0.05f; player.rangedDamage += 0.05f; player.minionDamage += 0.05f; player.Throwing().thrownDamage += 0.05f;
+			player.BoostAllDamage(0.05f, 5);
+			//player.meleeCrit += 5; player.magicCrit += 5; player.rangedCrit += 5; player.Throwing().thrownCrit += 5;
 			sgaply.maxblink += hideVisual ? 0 : 60 * 6;
 			player.aggro -= 400;
 			//sgaply.boosterPowerLeftMax += (int)(10000f * 0.15f);
@@ -925,6 +926,8 @@ namespace SGAmod.Items.Accessories
 			hallowed.Parameters["overlayAlpha"].SetValue(1f);
 			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2.5f,2.5f,0f));
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+			hallowed.Parameters["rainbowScale"].SetValue(1f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1, 1));
 
 			Vector2 slotSize = new Vector2(52f, 52f);
 			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
@@ -2454,8 +2457,9 @@ namespace SGAmod.Items.Accessories
 				float peak = MathHelper.Clamp(1f - ((float)Math.Abs(27000.00 - Main.time) / scale), 0f, 1f);
 				SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 				float ammount = 0.05f * peak;
-				player.Throwing().thrownDamage += ammount; player.meleeDamage += ammount; player.minionDamage += ammount; player.rangedDamage += ammount; player.magicDamage += ammount;
-				SGAmod.BoostModdedDamage(player, ammount, 0);
+				player.BoostAllDamage(ammount, 0);
+				//player.Throwing().thrownDamage += ammount; player.meleeDamage += ammount; player.minionDamage += ammount; player.rangedDamage += ammount; player.magicDamage += ammount;
+				//SGAmod.BoostModdedDamage(player, ammount, 0);
 				player.bulletDamage += ammount;
 			}
 		}
@@ -2700,11 +2704,13 @@ namespace SGAmod.Items.Accessories
 			sgaply.ninjaSash = Math.Max(sgaply.ninjaSash, 3);
 
 			player.Throwing().thrownCrit += 15;//+ 5% from Gi
-			player.Throwing().thrownDamage += 0.25f;//20% + 5% from Gi
+			player.Throwing().thrownDamage += 0.20f;//20% + 5% from Gi
 
-			player.meleeDamage += 0.05f; player.rangedDamage += 0.05f; player.magicDamage += 0.05f; player.minionDamage += 0.05f;
-			player.rangedCrit += 5; player.magicCrit += 5; player.meleeCrit += 5;
-			SGAmod.BoostModdedDamage(player, 0.05f, 5);
+			player.BoostAllDamage(0.05f, 5);
+
+			//player.meleeDamage += 0.05f; player.rangedDamage += 0.05f; player.magicDamage += 0.05f; player.minionDamage += 0.05f;
+			//player.rangedCrit += 5; player.magicCrit += 5; player.meleeCrit += 5;
+			//SGAmod.BoostModdedDamage(player, 0.05f, 5);
 
 			player.meleeSpeed += 0.10f;
 			player.moveSpeed += 0.10f;

@@ -78,6 +78,8 @@ Changelog:
 
 -Hellion Beams being invisible
 
+-Prismic Banshee and supreme pinky should not properly handle gravitation potion's effects properly on screen
+
 -'The Whole Experience' not working on Killer Fly Swarm; you can now refight that boss
 
 -Cyber Scythe's max range growing smaller with melee speed instead of larger
@@ -2190,6 +2192,10 @@ JellyBru#3929 (Donno if he has a forums account likely not), did the epic Wraith
 
 
 
+Maskano#8754 (Donno if he has a forums account likely not), epic resprite guru!
+
+
+
 Just DudeSquid#4617 and daimgamer#6490 on discord, did some great (Calamity/"Superior") sprites, Squid also has his own mod called Volcanit, where most of his work can be found, check it out!
 
 
@@ -2201,38 +2207,37 @@ Just DudeSquid#4617 and daimgamer#6490 on discord, did some great (Calamity/"Sup
 [USER=61456]@PhilBill44[/USER] : Spriter, made the mod icon, suggestions and ideas, and other things (I honestly couldn't have made that icon, love ya) (I miss you very much Phil :( )
 
 
-
 [USER=75780]@Mister Creeper[/USER] : Former Havoc team Spriter, currently made alot of items including Stormbreaker's sprite. Left the team over personal reasons. Dev items are left in because I refuse to remove my hard work over his petty reasons.
 
+
+DeJuiceTD#2055 (Donno if he has a forums account likely not), Several great sprite contribs! Including a few resprites
 
 
 Freya manibrandr: Whom I had commissioned some paid sprites (oh where that come from?) of some very specific things I wanted to make in the mod, this would include all the Serious Sam weapons, and Draken
 
 
-
-Dejsprite#0880 : did some sprites
-
+Dejsprite#0880 : did some sprites, went missing thou :(
 
 
-[USER=161571]@El3trick_Plays[/USER] : Made some sprites for items that needed them, pretty awesome! Later dropped out of the team without a word and cut all contact with me for seemly no reason.
+MountainyBear49#0279 : Extremely epic Big Dakka resprite, hail Glory mod in their honor!
 
 
+[USER=161571]@El3trick_Plays[/USER] : Made some sprites for items that needed them, pretty awesome! Later dropped out of the team without a word and cut all contact with me for seemly no reason, oh well, thanks thou!
 
-[USER=156265]@Lonely Star[/USER] : did one sprite and kinda went missing, has shown very little activity.
 
+[USER=156265]@Lonely Star[/USER] : did one sprite and kinda went missing, has shown very little activity, still credit given where due.
+
+
+Ajax: Made sprites and alot of cool suggestions.
 
 
 [USER=55315]@Kooyah[/USER] : Retired and former Havoc team Spriter, and all of sharkvern's sprites, and a good chunk of havoc item and tile sprites. (also includes backlog sprites, and he even made an improved one, awesome!)
 
 
-
 [USER=58157]@Iggysaur[/USER] : the Havoc team coder before myself, spriter as well, did most of the code for the ported items from that mod.
 
 
-
 [USER=48283]@GabeHasWon[/USER] for making Murk originally.
-
-
 
 Vasyanex - formally on the Havoc team, they need their own mention as they are the only people I don't have 100% perms to use content from, but I really don't want Vasyanex's sprites going to waste or AlexusIchimonji's Caliburn sprites, and they were meant for havoc which I have perms to use now anyways.
 

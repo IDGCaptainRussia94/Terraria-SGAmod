@@ -55,7 +55,7 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			//player.GetModPlayer<SGAPlayer>().Havoc = 1;
-			player.Throwing().thrownCrit += 5;
+			/*player.Throwing().thrownCrit += 5;
 			player.rangedCrit += 5;
 			player.meleeCrit += 5;
 			player.magicCrit += 5;
@@ -63,7 +63,10 @@ namespace SGAmod.Items.Accessories
 			player.rangedDamage += 0.05f;
 			player.meleeDamage += 0.05f;
 			player.minionDamage += 0.05f;
-			player.Throwing().thrownDamage += 0.05f;
+			player.Throwing().thrownDamage += 0.05f;*/
+
+			player.BoostAllDamage(0.05f, 5);
+
 			player.Throwing().thrownVelocity += 0.25f;
 			SGAmod.BoostModdedDamage(player, 0.05f, 5);
 			player.SGAPly().tf2emblemLevel = 1;
@@ -190,14 +193,14 @@ namespace SGAmod.Items.Accessories
 		{
 			item.width = 18;
 			item.height = 18;
-			item.value = Item.sellPrice(1, 0, 0, 0); ;
+			item.value = Item.sellPrice(1, 0, 0, 0);
 			item.rare = 9;
 			item.accessory = true;
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.Throwing().thrownCrit += 5;
+			/*player.Throwing().thrownCrit += 5;
 			player.rangedCrit += 5;
 			player.meleeCrit += 5;
 			player.magicCrit += 5;
@@ -205,7 +208,9 @@ namespace SGAmod.Items.Accessories
 			player.rangedDamage += 0.05f;
 			player.meleeDamage += 0.05f;
 			player.minionDamage += 0.05f;
-			SGAmod.BoostModdedDamage(player, 0.05f, 5);
+			SGAmod.BoostModdedDamage(player, 0.05f, 5);*/
+			player.BoostAllDamage(0.05f, 5);
+
 			player.Throwing().thrownDamage += 0.05f;
 
 			player.Throwing().thrownVelocity += 0.1f;
@@ -250,11 +255,13 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.magicDamage += 0.05f;
+			/*player.magicDamage += 0.05f;
 			player.rangedDamage += 0.05f;
 			player.meleeDamage += 0.05f;
 			player.minionDamage += 0.05f;
-			player.Throwing().thrownDamage += 0.10f;
+			player.Throwing().thrownDamage += 0.05f;*/
+			player.BoostAllDamage(0.05f, 0);
+
 			player.Throwing().thrownVelocity += 0.15f;
 			SGAmod.BoostModdedDamage(player, 0.05f, 0);
 			player.statManaMax2 += 20;

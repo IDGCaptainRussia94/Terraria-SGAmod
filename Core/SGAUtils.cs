@@ -30,6 +30,7 @@ using SGAmod.Items.Weapons.SeriousSam;
 using ReLogic.Graphics;
 using Terraria.Utilities;
 using System.Reflection;
+using AAAAUThrowing;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -365,7 +366,9 @@ namespace SGAmod
 
 		public static bool HasAccessoryEquipped(this Player player, int ItemID)
 		{
-			for (int k = 3; k < 8 + player.extraAccessorySlots; k++) if (player.armor[k].type == ItemID) return true;
+			for (int k = 3; k <= 7 + player.extraAccessorySlots; k += 1)
+				if (player.armor[k].type == ItemID)
+					return true;
 			return false;
 		}
 
@@ -375,12 +378,13 @@ namespace SGAmod
 			player.rangedDamage += damage;
 			player.magicDamage += damage;
 			player.minionDamage += damage;
-			player.thrownDamage += damage;
+			player.Throwing().thrownDamage += damage;
 
-			player.thrownCrit += crit;
-			player.rangedCrit += crit;
 			player.meleeCrit += crit;
+			player.rangedCrit += crit;
 			player.magicCrit += crit;
+			player.Throwing().thrownCrit += crit;
+			SGAmod.BoostModdedDamage(player, damage, crit);
 		}
 		public static bool IsValidDebuff(Player player, int buffindex)
 		{

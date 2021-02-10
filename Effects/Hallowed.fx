@@ -67,7 +67,8 @@ float4 PrismFunction(float2 coords : TEXCOORD0) : COLOR0
 
     if (overlayAlpha>0)
     {
-        float4 colorOverlay = tex2D(overlaytexsampler, overlayScale*(coords+float2((overlayProgress.x+sinOffset)%1.0,(overlayProgress.y)%1.0)));
+    float2 effectCoords = float2(overlayScale*(coords+float2(overlayProgress.x+sinOffset,overlayProgress.y)));
+        float4 colorOverlay = tex2D(overlaytexsampler, float2(effectCoords.x%1.0,effectCoords.y%1.0));
         if (colorOverlay.r > overlayMinAlpha)
         {
         colorOverlay.rgb = colorOverlay.rgb*overlayStrength.x;

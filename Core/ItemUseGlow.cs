@@ -122,16 +122,20 @@ namespace SGAmod
                     else
                     {
 
+                        float drawAngle = drawPlayer.itemRotation + item.GetGlobalItem<ItemUseGlow>().angleAdd * drawPlayer.direction;
+                        Vector2 drawPos = new Vector2((float)((int)(value2.X + (item.GetGlobalItem<ItemUseGlow>().glowOffsetX * drawPlayer.direction) - Main.screenPosition.X)),
+                            (float)((int)(value2.Y + (item.GetGlobalItem<ItemUseGlow>().glowOffsetY * drawPlayer.gravDir) - Main.screenPosition.Y)));
 
                         DrawData value = new DrawData(texture,
-                            new Vector2((float)((int)(value2.X + (item.GetGlobalItem<ItemUseGlow>().glowOffsetX *drawPlayer.direction) - Main.screenPosition.X)),
-                            (float)((int)(value2.Y + (item.GetGlobalItem<ItemUseGlow>().glowOffsetY * drawPlayer.gravDir) - Main.screenPosition.Y))), new Rectangle?(new Rectangle(0, 0, texture.Width, texture.Height)),
+                            drawPos, new Rectangle?(new Rectangle(0, 0, texture.Width, texture.Height)),
                             glowcolor,
-                            drawPlayer.itemRotation+ item.GetGlobalItem<ItemUseGlow>().angleAdd* drawPlayer.direction,
+                            drawAngle,
                              new Vector2(texture.Width * 0.5f - texture.Width * 0.5f * (float)drawPlayer.direction, drawPlayer.gravDir == -1 ? 0f : texture.Height),
                             item.scale,
                             drawInfo.spriteEffects,
                             0);
+
+                        costomDraw(item, drawInfo, drawPos, drawAngle, glowcolor);
 
                         Main.playerDrawData.Add(value);
 

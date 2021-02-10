@@ -22,7 +22,7 @@ namespace SGAmod.Items.Armors.Engineer
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Helmet");
-            Tooltip.SetDefault("10% increased Summon damage\nIncreases your max number of sentries\n25% reduced Electric Consumption\n+2000 Max Electric Charge");
+            Tooltip.SetDefault("15% increased Summon damage\nIncreases your max number of sentries\n+2000 Max Electric Charge");
         }
         public override void SetDefaults()
         {
@@ -34,8 +34,7 @@ namespace SGAmod.Items.Armors.Engineer
         public override void UpdateEquip(Player player)
         {
             player.maxTurrets += 1;
-            player.minionDamage += 0.10f;
-            player.SGAPly().electricChargeCost *= 0.75f;
+            player.minionDamage += 0.15f;
             player.SGAPly().electricChargeMax += 2000;
         }
         public override void AddRecipes()
@@ -56,7 +55,7 @@ namespace SGAmod.Items.Armors.Engineer
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Chestplate");
-            Tooltip.SetDefault("10% increased Technological and Summon damage\nIncreases your max number of sentries\n+2 passive Electric Charge Rate\n+2500 Max Electric Charge");
+            Tooltip.SetDefault("10% increased Technological damage\nIncreases your max number of sentries\n+2 passive Electric Charge Rate\n+2500 Max Electric Charge");
         }
         public override bool Autoload(ref string name)
         {
@@ -74,7 +73,6 @@ namespace SGAmod.Items.Armors.Engineer
         public override void UpdateEquip(Player player)
         {
             player.maxTurrets += 1;
-            player.minionDamage += 0.10f;
             player.SGAPly().techdamage += 0.10f;
             player.SGAPly().electricrechargerate += 2;
             player.SGAPly().electricChargeCost *= 0.75f;
@@ -100,7 +98,7 @@ namespace SGAmod.Items.Armors.Engineer
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Leggings");
-            Tooltip.SetDefault("10% increased Summon damage\nIncreased movement speed\n25% reduced Electric Recharge Delay\n+1500 Max Electric Charge");
+            Tooltip.SetDefault("15% increased Summon damage\n25% reduced Electric Consumption and Recharge Delay\n+1500 Max Electric Charge");
         }
 
         public override void SetDefaults()
@@ -112,11 +110,10 @@ namespace SGAmod.Items.Armors.Engineer
         }
         public override void UpdateEquip(Player player)
         {
-            player.minionDamage += 0.10f;
+            player.minionDamage += 0.15f;
             player.SGAPly().electricChargeReducedDelay *= 0.75f;
+            player.SGAPly().electricChargeCost *= 0.75f;
             player.SGAPly().electricChargeMax += 1500;
-            player.moveSpeed += 1.25f;
-            player.accRunSpeed += 1.5f;
         }
         public override void AddRecipes()
         {

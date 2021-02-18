@@ -881,7 +881,7 @@ namespace SGAmod.Items.Accessories
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("True Rainbow Heart");
+			DisplayName.SetDefault("[i: " + ModContent.ItemType<Rainbowheart>() + "]");
 			Tooltip.SetDefault("'Our fires burn hotter than the golden sun'\nRadiation Resistance now also allow you to resist Limbo Fading\nAll effects of the Blazing Heart and Alkalescent Heart");
 		}
         public override string Texture => "SGAmod/GreyHeart";
@@ -908,6 +908,7 @@ namespace SGAmod.Items.Accessories
 			base.UpdateAccessory(player, hideVisual);
 			player.SGAPly().FieryheartBuff = 30;
 			player.SGAPly().alkalescentHeart = true;
+			player.GetModPlayer<IdgPlayer>().resistLimbo = true;
 		}
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{

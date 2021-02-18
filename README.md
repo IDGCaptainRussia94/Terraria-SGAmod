@@ -85,7 +85,7 @@ Changelog:
 
 -Nerfed Ninja's Stash: there is now a limit to how many summoned attacks you can spawn in rapid succession
 
--Nerfed Cosmic Cocktail: all of its spawned projectiles now only have a 12.5% chance to crit when they normally would crit
+-Nerfed Cosmic Cocktail: all of its spawned projectiles now only have a 12.5% chance to crit when they normally would crit, Use time has been increased to 60 frames (from 40)
 
 -Nerfed Kou Sash and Shin Sash: crit chance boost was incorrect and has been lowered
 
@@ -124,6 +124,12 @@ Changelog:
 
 -Other smaller fixes I might have forgotten about-including typeos
 
+
+3.522-(2/18/21)-Hotfix #17:
+
+--Fixed:
+
+-Dark Sectors not drawing properly
 
 
 3.521-(1/21/21)-Hot Fix #16:

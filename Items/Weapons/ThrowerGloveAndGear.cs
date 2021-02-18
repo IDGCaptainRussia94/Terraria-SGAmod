@@ -1052,8 +1052,8 @@ namespace SGAmod.Items.Weapons
 			item.Throwing().thrown = true;
 			item.thrown = false;
 			item.damage = 50;
-			item.useTime = 40;
-			item.useAnimation = 40;
+			item.useTime = 60;
+			item.useAnimation = 60;
 			item.maxStack = 999;
 			item.shootSpeed = 8f;
 			item.shoot = mod.ProjectileType("CelestialCocktailProj");

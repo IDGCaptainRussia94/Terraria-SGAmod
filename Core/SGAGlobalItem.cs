@@ -418,7 +418,7 @@ namespace SGAmod
 
                     if ((player.SGAPly().timer+item.whoAmI) % 10 == 0 && player.ownedProjectileCounts[ModContent.ProjectileType<VibraniumThrownExplosion>()]<20)
                     {
-                        Projectile.NewProjectile(item.Center.X, item.Center.Y, 0, 0, ModContent.ProjectileType<VibraniumThrownExplosion>(), (int)((100*player.Throwing().thrownDamage)*MathHelper.Clamp(1f+(item.stack/100f),1f,5f)), 0, player.whoAmI, 0f, 0f);
+                        Projectile.NewProjectile(item.Center.X, item.Center.Y, 0, 0, ModContent.ProjectileType<VibraniumThrownExplosion>(), (int)((100 * player.Throwing().thrownDamage)*MathHelper.Clamp((item.stack/10f),0.25f,5f)), 0, player.whoAmI, 0f, 0f);
                     }
 
                     return true;

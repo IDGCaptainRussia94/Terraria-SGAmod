@@ -59,6 +59,8 @@ namespace SGAmod
 		public int myammo = 0;
 		public int timer = 0;
 		public int beefield = 0;
+		public int ninjaStashLimit = 0;
+		public int molotovLimit = 0;
 		public float morespawns = 1f;
 
 		//For holding Trap Weapons
@@ -107,9 +109,10 @@ namespace SGAmod
 		public bool CirnoWings = false;
 		public bool SerratedTooth = false;
 		public int grippinggloves = 0;
+		public bool vibraniumSetPlatform = false; public bool vibraniumSetWall = false;
 		public bool mudbuff = false; public bool alkalescentHeart = false; public bool jabALot = false; public bool NoHitCharm = false; public int NoHitCharmTimer = 0;
 		public int Havoc = 0;
-		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false;
+		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool vibraniumSet = false;
 		public float SpaceDiverWings = 0f;
 		public int gamePadAutoAim = 0;
 		public int tidalCharm = 0;
@@ -287,7 +290,10 @@ namespace SGAmod
 			intimacy = 0;
 			toxicity = 0;
 			consumeCurse = 0;
-			ReloadingRevolver = Math.Max(ReloadingRevolver - 1, 0);
+			if (ReloadingRevolver > 0)
+				ReloadingRevolver -= 1;
+			if (molotovLimit > 0)
+				molotovLimit -= 1;
 			twinesoffate = false;
 			jabALot = false;
 			glacialStone = false;
@@ -323,6 +329,7 @@ namespace SGAmod
 			Blazewyrmset = false;
 			Mangroveset = false;
 			IDGset = false;
+			vibraniumSet = false;
 			novusStackBoost = false;
 			Pressured = false;
 			Havoc = 0;
@@ -839,6 +846,9 @@ namespace SGAmod
 
 			PostUpdateEquipsEvent?.Invoke(this);
 
+			if (ninjaSash>0)
+				ninjaStashLimit = Math.Max(ninjaStashLimit - 1, 0);
+
 			if (player.HasBuff(BuffID.Lovestruck))
 			{
 				if (intimacy>0)
@@ -904,8 +914,16 @@ namespace SGAmod
 			if (player.HeldItem.type == ModContent.ItemType<CrateBossWeaponMeleeOld>())
 				player.goldRing = true;
 
-			if (player.HeldItem.type == ModContent.ItemType<UraniumSnowballs>() && grippinggloves<2)
-				player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationTwo").Type, 60 * 3);
+			string[] buffTier = {"", "RadiationOne", "RadiationTwo", "RadiationThree" };
+
+			if (player.HeldItem.modItem != null && player.HeldItem.modItem is IRadioactiveItem) 
+			{
+				int buffID = (player.HeldItem.modItem as IRadioactiveItem).RadioactiveHeld()-(grippinggloves>1 ? 1 : 0);
+				int indexer = (int)MathHelper.Clamp(buffID, 0, buffTier.Length - 1);
+
+				if (indexer > 0)
+				player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff(buffTier[indexer]).Type, 60 * 3);
+			}
 
 			if (player.HasBuff(mod.BuffType("TechnoCurse")))
 			{
@@ -1156,7 +1174,7 @@ namespace SGAmod
 			}
 
 
-			if (NPC.CountNPCS(mod.NPCType("Cirno")) > 0 || (SGAWorld.downedCirno == false && Main.hardMode))
+			if (NPC.CountNPCS(mod.NPCType("Cirno")) > 0 || (SGAWorld.downedCirno == false && Main.hardMode && SGAConfig.Instance.NegativeWorldEffects))
 				player.AddBuff(mod.BuffType("NoFly"), 1, true);
 
 			/*if (pmlcrato>0 || NPC.CountNPCS(mod.NPCType("SPinky"))>9990){player.AddBuff(mod.BuffType("Locked"), 2, true);}*/
@@ -1406,9 +1424,13 @@ namespace SGAmod
 			modcheckdelay = true;
 		}
 
+		public delegate void PreUpdateMovementDelegate(SGAPlayer player);
+		public static event PreUpdateMovementDelegate PreUpdateMovementEvent;
+
 		public override void PreUpdateMovement()
 		{
-				if (GeyserInABottleActive && GeyserInABottle)
+			PreUpdateMovementEvent?.Invoke(this);
+			if (GeyserInABottleActive && GeyserInABottle)
 			{
 				if (player.controlJump && !player.jumpAgainCloud)
 				{
@@ -1590,6 +1612,8 @@ namespace SGAmod
 
 		private int OnHit(ref int damage, ref bool crit, NPC npc, Projectile projectile)
 		{
+			//StackDebuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationThree").Type, 60 * 15);
+
 			if (SGAmod.overpoweredMod > 0)
             {
 				crit = true;
@@ -1765,10 +1789,30 @@ namespace SGAmod
 					return;
 				}*/
 			}
+			if (SGAmod.Ability2Key.JustPressed)
+			{
+				if (vibraniumSet)
+				{
+					if (vibraniumSetWall)
+						vibraniumSetWall = false;
+					else
+						vibraniumSetWall = true;
+				}
+			}
+			if (SGAmod.ToggleRecipeHotKey.JustPressed)
+			{
+				if (vibraniumSet)
+				{
+					if (vibraniumSetPlatform)
+						vibraniumSetPlatform = false;
+					else
+						vibraniumSetPlatform = true;
+				}
 
-			if (Main.netMode != NetmodeID.Server && SGAmod.ToggleRecipeHotKey.JustPressed)
-            {
-				SGAmod.RecipeIndex += 1;
+				if (Main.netMode != NetmodeID.Server)
+				{
+					SGAmod.RecipeIndex += 1;
+				}
 			}
 
 			if (Main.netMode != NetmodeID.Server && SGAmod.ToggleGamepadKey.JustPressed)
@@ -2168,14 +2212,14 @@ namespace SGAmod
 		{
 			get
 			{
-				return "ModLoader/StartBag";
+				return "SGAmod/Items/Consumable/derg_bag";
 			}
 		}
 
 		public override void SetStaticDefaults()
 		{
 			base.DisplayName.SetDefault("IDG's Starting Bag");
-			base.Tooltip.SetDefault("Some starting items couldn't fit in your inventory??\n{$CommonItemTooltip.RightClickToOpen}\n'don't mind me just reusing TMODLoader assets lol-IDG'");
+			base.Tooltip.SetDefault("Some starting items couldn't fit in your inventory??\n{$CommonItemTooltip.RightClickToOpen}\n'don't mind me just still reusing TMODLoader assets lol-IDG'");
 		}
 
 		public override void SetDefaults()

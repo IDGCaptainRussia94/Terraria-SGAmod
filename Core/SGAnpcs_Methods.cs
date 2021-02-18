@@ -74,46 +74,49 @@ namespace SGAmod
 
 			if (crit)
 			{
-				if (moddedplayer.ninjaSash > 0 && ((item != null && item.Throwing().thrown) || (projectile != null && projectile.Throwing().thrown)))
+				if (moddedplayer.ninjaStashLimit < 600)
 				{
-					int ammo = 0;
-					if (player.HasItem(ItemID.Shuriken))
-						ammo = ItemID.Shuriken;
-					if (player.HasItem(ItemID.ThrowingKnife))
-						ammo = ItemID.ThrowingKnife;
-					if (player.HasItem(ItemID.PoisonedKnife))
-						ammo = ItemID.PoisonedKnife;
-					if (player.HasItem(ItemID.FrostDaggerfish))
-						ammo = ItemID.FrostDaggerfish;
-					if (player.HasItem(ItemID.StarAnise))
-						ammo = ItemID.StarAnise;
-					if (player.HasItem(ItemID.BoneDagger))
-						ammo = ItemID.BoneDagger;
-
-
-					if (ammo > 0)
+					if (moddedplayer.ninjaSash > 0 && ((item != null && (item.Throwing().thrown || item.thrown)) || (projectile != null && (projectile.Throwing().thrown || projectile.thrown))))
 					{
-						Item itemy = new Item();
-						itemy.SetDefaults(ammo);
-						int shootype = itemy.shoot;
+						int ammo = 0;
+						if (player.HasItem(ItemID.Shuriken))
+							ammo = ItemID.Shuriken;
+						if (player.HasItem(ItemID.ThrowingKnife))
+							ammo = ItemID.ThrowingKnife;
+						if (player.HasItem(ItemID.PoisonedKnife))
+							ammo = ItemID.PoisonedKnife;
+						if (player.HasItem(ItemID.FrostDaggerfish))
+							ammo = ItemID.FrostDaggerfish;
+						if (player.HasItem(ItemID.StarAnise))
+							ammo = ItemID.StarAnise;
+						if (player.HasItem(ItemID.BoneDagger))
+							ammo = ItemID.BoneDagger;
 
-						Vector2 anglez = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, -2000));
-						anglez.Normalize();
 
-						float i = Main.rand.NextFloat(90f, 260f);
-
-						int thisoned = Projectile.NewProjectile(npc.Center + (anglez * i), anglez * -16f, shootype, damage, 0f, Main.myPlayer);
-						Main.projectile[thisoned].ranged = false;
-						Main.projectile[thisoned].thrown = false;
-
-
-						for (float gg = 2f; gg > 0.25f; gg -= 0.6f)
+						if (ammo > 0)
 						{
-							int goreIndex = Gore.NewGore(npc.Center + (anglez * i), -anglez * gg, Main.rand.Next(61, 64), 1f);
-							Main.gore[goreIndex].scale = 1.5f;
-						}
+							Item itemy = new Item();
+							itemy.SetDefaults(ammo);
+							int shootype = itemy.shoot;
 
-						player.ConsumeItem(ammo);
+							Vector2 anglez = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, -2000));
+							anglez.Normalize();
+
+							float i = Main.rand.NextFloat(90f, 260f);
+
+							int thisoned = Projectile.NewProjectile(npc.Center + (anglez * i), anglez * -16f, shootype, damage, 0f, Main.myPlayer);
+							Main.projectile[thisoned].ranged = false;
+							Main.projectile[thisoned].thrown = false;
+
+
+							for (float gg = 2f; gg > 0.25f; gg -= 0.6f)
+							{
+								int goreIndex = Gore.NewGore(npc.Center + (anglez * i), -anglez * gg, Main.rand.Next(61, 64), 1f);
+								Main.gore[goreIndex].scale = 1.5f;
+							}
+							moddedplayer.ninjaStashLimit += (int)(60/player.Throwing().thrownDamage);
+							player.ConsumeItem(ammo);
+						}
 					}
 				}
 			}
@@ -171,7 +174,7 @@ namespace SGAmod
 							Projectile proj = Main.projectile[i];
 							if (proj.active && proj.owner == player.whoAmI)
 							{
-								if (proj.Throwing().thrown)
+								if (proj.Throwing().thrown || proj.thrown)
 									proj.SGAProj().Embue(projectile);
 
 							}
@@ -315,6 +318,12 @@ namespace SGAmod
 			Projectile held = null;
 			if (projectile != null)
 			{
+
+				if (crit && moddedplayer.molotovLimit>0 && projectile.Throwing().thrown)
+				{
+				crit = (Main.rand.Next(8) == 0);
+				}
+
 				if (player!=null && player.heldProj>=0)
 				held = Main.projectile[player.heldProj];
 

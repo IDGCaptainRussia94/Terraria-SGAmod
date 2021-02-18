@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using SGAmod.Items.Weapons;
+using AAAAUThrowing;
 
 namespace SGAmod
 {
@@ -101,6 +102,8 @@ namespace SGAmod
 
 			if (embued)
 				damage = (int)(projectile.damage * 1.50f);
+
+
 		}
         public override bool? CanHitNPC(Projectile projectile, NPC target)
 		{
@@ -269,27 +272,30 @@ namespace SGAmod
 		}}
 
 			}*/
-			if (Main.player[projectile.owner] != null)
+			if (projectile.type == 181 || projectile.type == ProjectileID.GiantBee)
 			{
-				Player ply = Main.player[projectile.owner];
-				if (ply != null)
+				if (Main.player[projectile.owner] != null)
 				{
-					SGAPlayer modplayer = ply.GetModPlayer<SGAPlayer>();
+					Player ply = Main.player[projectile.owner];
 					if (ply != null)
 					{
-						if (modplayer.beefield > 0)
+						SGAPlayer modplayer = ply.GetModPlayer<SGAPlayer>();
+						if (ply != null)
 						{
-							//modeproj.enhancedbees == true
-							if ((projectile.type == 181 || projectile.type==ProjectileID.GiantBee) && modplayer.beefieldtoggle > 0)
+							if (modplayer.beefield > 0)
 							{
-								if (projectile.velocity.Length() > 20)
+								//modeproj.enhancedbees == true
+								if (modplayer.beefieldtoggle > 0)
 								{
-									projectile.velocity.Normalize();
-									projectile.velocity = projectile.velocity * 0.98f;
-								}
-								else
-								{
-									projectile.velocity = projectile.velocity * 1.15f;
+									if (projectile.velocity.Length() > 20)
+									{
+										projectile.velocity.Normalize();
+										projectile.velocity = projectile.velocity * 0.98f;
+									}
+									else
+									{
+										projectile.velocity = projectile.velocity * 1.15f;
+									}
 								}
 							}
 						}

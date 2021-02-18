@@ -758,7 +758,7 @@ namespace SGAmod.NPCs.TownNPCs
 			{
 				Item itm = new Item();
 				itm.SetDefaults(itemsinshop[index, 0]);
-			str = "You are " + (math) + " away from the next item unlocking: "+ itm.Name;
+			str = "You are " + (math) + " away from the next item unlocking: "+ itm.Name+".";
 			}
 
 

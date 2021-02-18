@@ -6,7 +6,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SGAmod
 {
-
+	interface IRadioactiveItem
+	{
+		int RadioactiveHeld();
+		int RadioactiveInventory();
+	}
 	interface IShieldItem
 	{
 

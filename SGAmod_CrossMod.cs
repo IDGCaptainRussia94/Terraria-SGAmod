@@ -220,42 +220,7 @@ namespace SGAmod
 			SGAmod.EnchantmentFocusCrystal.Add(ModContent.ItemType<EntropyTransmuter>(), new EnchantmentCraftingMaterial(15, 200, "One enchantment will always grant entropy bonuses"));
 			SGAmod.EnchantmentFocusCrystal.Add(ModContent.ItemType<CalamityRune>(), new EnchantmentCraftingMaterial(20, 200, "Enchantments may grant bonuses to Apocalypticals"));
 
-			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<AuroraTear>(), new LuminousAlterItemClass(ModContent.ItemType<AuroraTearAwoken>(), 60*300, 1));
-			SGAmod.LuminousAlterItems.Add(ItemID.PinkGel, new LuminousAlterItemClass(ModContent.ItemType<Prettygel>(), 60 * 45, 20, 1));
-			SGAmod.LuminousAlterItems.Add(ItemID.SoulofLight, new LuminousAlterItemClass(ModContent.ItemType<IlluminantEssence>(), 60 * 8, 1));
-			SGAmod.LuminousAlterItems.Add(ItemID.Mushroom, new LuminousAlterItemClass(ItemID.GlowingMushroom, 60 * 12, 1,10));
-			SGAmod.LuminousAlterItems.Add(ItemID.Gel, new LuminousAlterItemClass(ItemID.PinkGel, 60 * 30, 1, 1));
-			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<OmniSoul>(), new LuminousAlterItemClass(ItemID.FragmentSolar, 60 * 20, 1, 1));
-			SGAmod.LuminousAlterItems.Add(ItemID.Meteorite, new LuminousAlterItemClass(ItemID.LunarOre, 60 * 10, 4,4));
-
-			Func<bool> BloodSunCondition = delegate ()
-			{
-				return ((!Main.dayTime && Main.bloodMoon) || Main.eclipse) && !Main.raining;
-			};
-
-			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<AncientFabricItem>(), new LuminousAlterItemClass(ModContent.ItemType<StygianCore>(), 60 * 60, 50, 1, BloodSunCondition));
-			SGAmod.LuminousAlterItems.Add(ModContent.ItemType<EntropyTransmuter>(), new LuminousAlterItemClass(ModContent.ItemType<CalamityRune>(), 60 * 10, 1, 1, BloodSunCondition));
-			SGAmod.LuminousAlterItems.Add(ItemID.ShinyStone, new LuminousAlterItemClass(ModContent.ItemType<CalamityRune>(), 60 * 60, 1, 1, BloodSunCondition));
-
-			Func<bool> BloodmoonCondition  = delegate ()
-			{
-				return !Main.dayTime && !Main.raining && Main.bloodMoon;
-			};
-
-			SGAmod.LuminousAlterItems.Add(ItemID.DemoniteBar, new LuminousAlterItemClass(ItemID.CrimtaneBar, 60 * 5, 1,1, BloodmoonCondition));
-			SGAmod.LuminousAlterItems.Add(ItemID.ShadowScale, new LuminousAlterItemClass(ItemID.TissueSample, 60 * 6, 1, 1, BloodmoonCondition));
-			SGAmod.LuminousAlterItems.Add(ItemID.CursedFlame, new LuminousAlterItemClass(ItemID.Ichor, 60 * 8, 1, 1, BloodmoonCondition));
-			SGAmod.LuminousAlterItems.Add(ItemID.CorruptSeeds, new LuminousAlterItemClass(ItemID.CrimsonSeeds, 60 * 5, 1, 1, BloodmoonCondition));
-
-			Func<bool> BlackSunCondition = delegate ()
-			{
-				return !Main.raining && Main.eclipse;
-			};
-
-			SGAmod.LuminousAlterItems.Add(ItemID.CrimtaneBar, new LuminousAlterItemClass(ItemID.DemoniteBar, 60 * 5, 1, 1, BlackSunCondition));
-			SGAmod.LuminousAlterItems.Add(ItemID.TissueSample, new LuminousAlterItemClass(ItemID.ShadowScale, 60 * 6, 1, 1, BlackSunCondition));
-			SGAmod.LuminousAlterItems.Add(ItemID.Ichor, new LuminousAlterItemClass(ItemID.CursedFlame, 60 * 8, 1, 1, BlackSunCondition));
-			SGAmod.LuminousAlterItems.Add(ItemID.CrimsonSeeds, new LuminousAlterItemClass(ItemID.CorruptSeeds, 60 * 5, 1, 1, BlackSunCondition));
+			LuminousAlterCraftingHint.InitLuminousCrafting();
 
 			//now I did come up with a way you can automate this, if you feed it a large enough stack, when it finishes the infusion it just yeets the new item onto the ground and starting working on the rest of the stack so you can convoy the items for example, this keeps up til there's either not enough items left or the conditions no longer match (IE it's now day)
 			//If the item were to be turned into air via the last stack, the new item takes its place on the Alter for you to pickup

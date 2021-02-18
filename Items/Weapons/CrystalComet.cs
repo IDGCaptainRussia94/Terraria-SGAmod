@@ -162,7 +162,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 600;
+			item.damage = 250;
 			item.magic = true;
 			item.width = 24;
 			item.height = 24;
@@ -301,7 +301,7 @@ namespace SGAmod.Items.Weapons
 					if (diff.Length() > 1800 || projectile.ai[1]>1200)
 					{
 
-						if (!player.CheckMana(8, true))
+						if (!player.CheckMana(player.HeldItem,8, true))
 						{
 							projectile.ai[0] = -10000;
 							projectile.netUpdate = true;

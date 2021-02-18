@@ -222,7 +222,7 @@ namespace SGAmod.Items.Weapons.Technical
 	{
 		public static NPC FindClosestTarget(Player ply,Vector2 loc, Vector2 size, bool block = true, bool friendlycheck = true, bool chasecheck = false)
 		{
-			int num;
+			/*int num;
 			float num170 = 1000000;
 			NPC num171 = null;
 
@@ -248,7 +248,10 @@ namespace SGAmod.Items.Weapons.Technical
 			if (num170 > 400)
 				return null;
 
-			return num171;
+			return num171;*/
+
+			List<NPC> closestnpcs = SGAUtils.ClosestEnemies(loc, 400f);
+			return closestnpcs?[0];//Closest
 
 		}
 		public override void SetStaticDefaults()
@@ -940,7 +943,7 @@ namespace SGAmod.Items.Weapons.Technical
 			if (player.altFunctionUse == 2)
 			{
 				modply.plasmaLeftInClip -= 50;
-				player.CheckMana(40, true);
+				player.CheckMana(item,40, true);
 				player.itemTime *= 5;
 				player.itemAnimation *= 5;
 				Main.PlaySound(SoundID.Item, player.Center, 122);

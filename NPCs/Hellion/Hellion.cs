@@ -2461,6 +2461,54 @@ namespace SGAmod.NPCs.Hellion
 
 		}
 
+		public void CircleAura(SpriteBatch spriteBatch, Color drawColor, float alphaeffect)
+		{
+			Vector2 drawPos = noescapeauraloc;
+			Texture2D texture = SGAmod.ExtraTextures[96];
+
+			//float alphaeffect = MathHelper.Clamp(1f - (((noescapeaurasize * auradraweffect) - 1700) / 200f), 0f, 1f);
+
+			if (alphaeffect > 0)
+			{
+				float inrc = Main.GlobalTime / 30f;
+
+				List<Vector2> vects = new List<Vector2>();
+				int maxDetail = 720;
+				for (int i = 0; i < maxDetail; i += 1)
+				{
+					float angle = (2f * (float)Math.PI / ((float)maxDetail) * i) + inrc;
+					float dist = noescapeaurasize * auradraweffect;
+					Vector2 thisloc = new Vector2((float)(Math.Cos(angle) * dist), (float)(Math.Sin(angle) * dist));
+					vects.Add(drawPos + thisloc);
+				}
+
+				for (int i = 1; i > -2; i -= 2)
+				{
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+					TrailHelper trail = new TrailHelper("FadedBasicEffectPass", SGAmod.ExtraTextures[21]);
+					trail.color = delegate (float percent)
+					{
+						float value = (float)((percent * 3f) + Main.GlobalTime / 10f);
+						Color glowingcolors1 = Main.hslToRgb(Math.Abs(i<0 ? (0.5f-value) : value) % 1f, 0.9f, 0.65f);
+						return glowingcolors1;
+					};
+
+					trail.projsize = Vector2.Zero;
+					trail.coordOffset = new Vector2(0, Main.GlobalTime * 1f*i);
+					trail.coordMultiplier = new Vector2(1, 10);
+					trail.trailThickness = 48+(i*16);
+					trail.trailThicknessIncrease = 0;
+					trail.doFade = false;
+					trail.connectEnds = true;
+					trail.strength = alphaeffect;
+					trail.DrawTrail(vects, npc.Center);
+				}
+			}
+		}
+
+
 		public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
 			Vector2 drawPos = noescapeauraloc - Main.screenPosition;
@@ -2475,11 +2523,10 @@ namespace SGAmod.NPCs.Hellion
 				float alphaeffect = MathHelper.Clamp(1f - (((noescapeaurasize * auradraweffect) - 1700) / 200f), 0f, 1f);
 				//if (!rematch)
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+				CircleAura(spriteBatch,drawColor, rematch ? alphaeffect : 1f);
 
 				alphaeffect = 1f;
-				for (int i = 0; i < 720; i += 1)
+				/*for (int i = 0; i < 720; i += 1)
 				{
 					float angle = (2f * (float)Math.PI / 720f * i) + inrc;
 					float dist = (float)noescapeaurasize * auradraweffect;
@@ -2497,7 +2544,7 @@ namespace SGAmod.NPCs.Hellion
 						spriteBatch.Draw(Main.blackTileTexture, drawPos + thisloc, new Rectangle(0, 0, 64, 64), (((glowingcolors1 * 0.15f) * auradraweffect) * noescapeauravisualsize) * alphaeffect, 0, new Vector2(32, 32), (new Vector2(1f, 1f) * Main.rand.NextFloat(0.5f, 5f)) * noescapeauravisualsize, SpriteEffects.None, 0f);
 
 					}
-				}
+				}*/
 
 				if (rematch)
 				{

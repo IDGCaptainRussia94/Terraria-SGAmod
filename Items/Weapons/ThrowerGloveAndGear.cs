@@ -234,6 +234,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("ThrowerGlove"), 1);
 			recipe.AddIngredient(ItemID.AleThrowingGlove, 1);
 			recipe.AddIngredient(ItemID.BoneGlove, 1);
+			recipe.AddIngredient(ItemID.AncientCloth, 8);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 12);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.AddTile(TileID.MythrilAnvil);
@@ -1134,6 +1135,8 @@ namespace SGAmod.Items.Weapons
 				projectile.position -= new Vector2(64, 64);
 			}
 
+			Main.player[projectile.owner].SGAPly().molotovLimit = 60;
+
 			Vector2 gotohere = projectile.velocity;
 			gotohere.Normalize();
 
@@ -1368,8 +1371,10 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	class UraniumSnowballs : JarateShurikens
+	class UraniumSnowballs : JarateShurikens, IRadioactiveItem
 	{
+		public int RadioactiveHeld() => 2;
+		public int RadioactiveInventory() => 1;
 
 		public override void SetStaticDefaults()
 		{
@@ -1410,7 +1415,6 @@ namespace SGAmod.Items.Weapons
         {
 			return Color.Lerp(Color.Lime, Color.Green, 0.50f + (float)Math.Sin(Main.GlobalTime * 4f) / 2f);
         }
-
         public override void UpdateInventory(Player player)
         {
 			player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type, 60*3);

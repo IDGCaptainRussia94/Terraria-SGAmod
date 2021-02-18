@@ -485,7 +485,7 @@ namespace SGAmod.Items.Weapons.Shields
 			if (player.manaCost == 0.0f)
 				player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " tried to block with unlimited mana and divided by 0"), 1337, 0);
 			//damage = (int)(damage / (player.magicDamage*2)-1f);
-			if (!player.manaSick && !player.manaRegenBuff && player.CheckMana(damage, true, false))
+			if (!player.manaSick && !player.manaRegenBuff && player.CheckMana(new Item(), damage, true, false))
 			{
 				damage -= player.statMana;
 				player.immune = true;

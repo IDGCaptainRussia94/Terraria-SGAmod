@@ -120,6 +120,7 @@ namespace SGAmod
 		public static Texture2D hellionLaserTex;
 		public static Texture2D ParadoxMirrorTex;
 		public static Texture2D PrismBansheeTex;
+		public static Texture2D PlatformTex;
 		public static int OSType;
 		internal static ModHotKey CollectTaxesHotKey;
 		internal static ModHotKey WalkHotKey;
@@ -127,6 +128,7 @@ namespace SGAmod
 		internal static ModHotKey NinjaSashHotkey;
 		internal static ModHotKey ToggleRecipeHotKey;
 		internal static ModHotKey ToggleGamepadKey;
+		internal static ModHotKey Ability2Key;
 		internal static ModHotKey SkillTestKey;
 		public static bool cachedata = false;
 		public static bool updatelasers = false;
@@ -278,8 +280,11 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Glow_"+ 239));//112
 
 				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
+				Texture2D PlatTex = ModContent.GetTexture("Terraria/Tiles_"+TileID.Asphalt);
+
 				int height = queenTex.Height;
 				PrismBansheeTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, height-(height / 6), queenTex.Width, height / 6));
+				PlatformTex = PlatTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(18*5,0, 16, 16));
 			}
 
 			else
@@ -332,6 +337,7 @@ namespace SGAmod
 			SGAPlayer.ShieldTypes.Add(ItemType("GraniteMagnet"), ProjectileType("GraniteMagnetProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("CobaltMagnet"), ProjectileType("CobaltMagnetProj"));
 
+			//LuminousAlterCraftingHint.InitLuminousCrafting();
 
 			AddItem("MusicBox_Boss2Remix", new SGAItemMusicBox("MusicBox_Boss2Remix", "Murk","Boss 2 Remix","Unknown"));
 			AddItem("MusicBox_Swamp", new SGAItemMusicBox("MusicBox_Swamp", "Dank Shrine", "The Swamp of Ebag sah'now", "Skyre Ventes"));
@@ -392,8 +398,9 @@ namespace SGAmod
 
 			CollectTaxesHotKey = RegisterHotKey("Collect Taxes", "X");
 			WalkHotKey = RegisterHotKey("Walk Mode", "C");
-			ToggleRecipeHotKey = RegisterHotKey("Cycle Recipes", "V");
-			ToggleGamepadKey = RegisterHotKey("Cycle Aiming Style", "V");
+			ToggleRecipeHotKey = RegisterHotKey("Cycle Recipes/Abilities", "V");
+			Ability2Key = RegisterHotKey("Abilities 2", "B");
+			ToggleGamepadKey = RegisterHotKey("Cycle Aiming Style", "Z");
 			GunslingerLegendHotkey = RegisterHotKey("Gunslinger Legend Ability", "Q");
 			NinjaSashHotkey = RegisterHotKey("Shin Sash Ability", "Q");
 			//SkillTestKey = RegisterHotKey("(Debug) Skill Tree Key", "T");
@@ -440,12 +447,12 @@ namespace SGAmod
 
 			//The Blizzard Part here was snipped from Elements Awoken, which I'm sure came from somewhere else.
 			//Oh, and the Sky code was originally from Zokalon, so I'm mentioning that too! Thanks guys!
-
+			if (!Main.dedServ)
+			{
 			Filters.Scene["SGAmod:ProgramSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0.4f), EffectPriority.High);
 			Filters.Scene["SGAmod:HellionSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0f), EffectPriority.High);
 			Filters.Scene["SGAmod:CirnoBlizzard"] = new Filter(new BlizzardShaderData("FilterBlizzardForeground").UseColor(1f, 1f, 1f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/noise", 0, null).UseIntensity(0.9f).UseImageScale(new Vector2(8f, 2.75f), 0), EffectPriority.High);
-			if (!Main.dedServ)
-			{
+
 				Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/Shockwave"));
 				Filters.Scene["SGAmod:Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
 				Filters.Scene["SGAmod:ShockwaveBanshee"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);

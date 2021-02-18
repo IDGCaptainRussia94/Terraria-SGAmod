@@ -13,7 +13,7 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners tf2/style things, Spectre homing bullets/projectiles, Tech weapons have an "overclock" mechanic that changes up their gameplay while active and overhaul ideas (maybe?), spider queen can melt normal generated blocks (dirt and so)
 Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
-Spartan Laser/mining railgun (add mining), shuricane (shuriken Hurricane!), Binding Voodoo Magic
+Spartan Laser/mining railgun (add mining), shuricane (shuriken Hurricane!), Binding Vudoo Clothier's Doll Magic, Mana Potion Pet (Blue Gusher)
 
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy), Aurora Gear and finish Luminous Alter Tile Entity!
 -Add Hellion army bar, STILL! Add Hellion checkpoints! Make Madal not do self damage/less damage, Hopper Sprites
@@ -26,11 +26,17 @@ Changelog:
 
 -Plasmic Rail Gun, Uranium Filled Snowballs, True Rainbow Heart, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear
 
+-A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
+
 -Luminous Alter, use it to transmute various items overtime by infusing them with Starlight!
+
+-A stronger post-L.Wraith Prismic Banshee that drops double loot
 
 -Hoppers N Droppers, automate your Terraria!
 
 -Prismic Banshee has a stronger manually summoned version after Luminite Wraith is defeated you can fight for double loot, the boss in general has undergone a couple of changes
+
+-Config option to disable Drowning Presence/Snowfrosted outside of boss fights
 
 -Resprites, enjoy a far better looking Jackpot with glowing coins!
 
@@ -47,6 +53,8 @@ Changelog:
 
 -Souls of Byte are now a post-Hellion Drop (Hellion Core only drops them after the entire fight is beaten)
 
+-Handling Gloves now reduce the penality of holding radioactive items
+
 -Added some flavor text to the Jabb-a-wacky to hint how to get it
 
 -Most non-npc specific SGAmod drops no longer drop from statue spawned NPCs
@@ -56,6 +64,8 @@ Changelog:
 -Ragnarok's Brew costs more resources except Styigan Stars and makes 3, to help justify it requiring Styigan Stars
 
 -Hellion's beam has been given a visual overhaul to fix a bug where it was invisible (see fixed)
+
+-Hellion's arena aura has been changed to something less flashy and likely more GPU friendly
 
 -Buffed Clay-More: now has a ranged attack, at a cost
 
@@ -67,7 +77,17 @@ Changelog:
 
 -Buffed Gas Passer: double base damage over time, slightly better scaling with enemy HP
 
+-Buffed Cosmic Grasp: (again), base damage increased so it's not just a side great to the Cosmillash
+
 -Nerfed Tactical SMG Rifle: damage lowered to 25 (from 28)
+
+-Nerfed Shooting Star: base damage massively lowered, this thing had more DPS than Enmity did!
+
+-Nerfed Ninja's Stash: there is now a limit to how many summoned attacks you can spawn in rapid succession
+
+-Nerfed Cosmic Cocktail: all of its spawned projectiles now only have a 12.5% chance to crit when they normally would crit
+
+-Nerfed Kou Sash and Shin Sash: crit chance boost was incorrect and has been lowered
 
 
 --Fixed
@@ -75,6 +95,8 @@ Changelog:
 -Disallowed Tools in the Deeper Dungeon again, due to a mining glitch, use bombs to break everything you could mine before! Unless you have the Dungeon Splunker
 
 -Amulet of Diehard Cataclysm should now properly prevent Blackbelt and Shadow Dodges
+
+-There should no longer be an issues with HUD mods from now on!
 
 -Hellion Beams being invisible
 
@@ -86,6 +108,8 @@ Changelog:
 
 -Prismic Banshee's 'hands' having a weird hitbox
 
+-Granite Magnet not pulling items in faster when worn as an accessory
+
 -Virulent Ore placing the wrong tile, due to me forgoting to undo a testing thing
 
 -Gucci Guantlet's Amber Gem causing null errors in merchant shops
@@ -93,6 +117,8 @@ Changelog:
 -Town NPCs getting daybroken by enemy attacks while you had the Fiery Heart
 
 -Stormbreaker not counting the lightning as modded throwing damage
+
+-A few issues when using vanilla throwing items, for now
 
 -An invisible non-transparent pixel on Rusty Sword's sprite, causing it to look odd ingame
 

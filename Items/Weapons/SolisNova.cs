@@ -221,7 +221,7 @@ namespace SGAmod.Items.Weapons
 					}
 				}
 
-				if (((projectile.ai[0] > 0 || !player.CheckMana(10)) || !player.channel) && projectile.ai[1]>1)
+				if (((projectile.ai[0] > 0 || !player.CheckMana(player.HeldItem,10)) || !player.channel) && projectile.ai[1]>1)
 				{
 					projectile.ai[0] += 1;
 					if (projectile.ai[0] == 1)
@@ -245,7 +245,7 @@ namespace SGAmod.Items.Weapons
 
 						if (projectile.ai[1] % 6 == 0)
 						{
-							player.CheckMana((int)(0.20f + (growsize / 20f)),true);
+							player.CheckMana(player.HeldItem,(int)(0.20f + (growsize / 20f)),true);
 							if (player.statMana < 1 && player.manaFlower)
 								player.QuickMana();
 						}

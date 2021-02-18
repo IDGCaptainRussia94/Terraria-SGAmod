@@ -17,6 +17,7 @@ using AAAAUThrowing;
 using Terraria.Utilities;
 using SGAmod.Buffs;
 using SGAmod.Tiles;
+using SGAmod.Items.Armors;
 
 namespace SGAmod
 {
@@ -168,6 +169,11 @@ namespace SGAmod
             {
                 return "SpaceDiver";
             }
+            int[] vibraniumSet = { mod.ItemType("VibraniumMask"), mod.ItemType("VibraniumHelmet"), mod.ItemType("VibraniumHeadgear"), mod.ItemType("VibraniumMask"), mod.ItemType("VibraniumMask") };
+            if (vibraniumSet.Any(testby => testby == head.type) && body.type == mod.ItemType("VibraniumChestplate") && legs.type == mod.ItemType("VibraniumLeggings"))
+            {
+                return "Vibranium";
+            }
             if (!head.vanity && !body.vanity && !legs.vanity) {
                 if (head.type == mod.ItemType("MisterCreeperHead") && body.type == mod.ItemType("MisterCreeperBody") && legs.type == mod.ItemType("MisterCreeperLegs"))
                 {
@@ -222,6 +228,27 @@ namespace SGAmod
                 sgaplayer.techdamage += 0.25f;
                 sgaplayer.electricChargeCost *= 0.75f;
             }
+            if (set == "Vibranium")
+            {
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+                string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt skybridge below your feet\nYou can land on this bridge while falling down\nHold Down to fall through\nThis consumes electric charge while active, "+Idglib.ColorText(Color.Red,"and will trigger a shield break on deplete");
+
+                s = "Not Binded!";
+                foreach (string key in SGAmod.Ability2Key.GetAssignedKeys())
+                {
+                    s = key;
+                }
+
+                string text2 = "Press the 'Abilities 2' (" + s + ") Hotkey to phase a wall around where you aim\nThis wall is treated as solid tiles in most cases\nThis consumes electric charge on activate and damage, will trigger a shield break on deplete";
+                player.setBonus = text1+"\n"+ text2 + "\nGain an additional free Cooldown Stack";
+                sgaplayer.MaxCooldownStacks += 1;
+                sgaplayer.vibraniumSet = true;
+                Items.Armors.VibraniumChestplate.VibraniumSetBonus(sgaplayer);
+            }            
             if (set == "MisterCreeper")
             {
                 player.setBonus = "Any sword that doesn't shoot a projectile is swung 50% faster and deals crits when you are falling downwards\nWhen you take damage, you launch a damaging high velocity grenade at what hit you\nThese grenades are launched even during immunity frames if your touching an enemy\nDrinking a healing potion launches a ton of bouncy grendes in all directions" +
@@ -355,6 +382,10 @@ namespace SGAmod
             {
                 grabRange += 48;
             }
+            if (item.maxStack > 1 && ((item.modItem != null && item.Throwing().thrown) || item.thrown) && player.armor[0].type == ModContent.ItemType<VibraniumHat>())
+            {
+                grabRange += (int)(720 * player.Throwing().thrownVelocity);
+            }
         }
 
         public override bool GrabStyle(Item item,Player player)
@@ -367,17 +398,30 @@ namespace SGAmod
                     Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * 0.1f;
                     item.velocity = item.velocity + movement;
                     item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
-
                 }
-                else
+            }
+            else
+            {
+                float speed = 0.025f;
+                bool pullIn = player.SGAPly().graniteMagnet;
+                if (item.maxStack > 1 && ((item.modItem != null && item.Throwing().thrown) || item.thrown) && player.armor[0].type == ModContent.ItemType<VibraniumHat>())
                 {
-                    if (player.SGAPly().graniteMagnet)
+                    speed += 0.75f;
+                    pullIn = true;
+                }
+                if (pullIn)
+                {
+                    Vector2 vectorItemToPlayer = player.Center - item.Center;
+                    Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * speed;
+                    item.velocity = item.velocity + movement;
+                    item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
+
+                    if ((player.SGAPly().timer+item.whoAmI) % 10 == 0 && player.ownedProjectileCounts[ModContent.ProjectileType<VibraniumThrownExplosion>()]<20)
                     {
-                        Vector2 vectorItemToPlayer = player.Center - item.Center;
-                        Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * 0.025f;
-                        item.velocity = item.velocity + movement;
-                        item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
+                        Projectile.NewProjectile(item.Center.X, item.Center.Y, 0, 0, ModContent.ProjectileType<VibraniumThrownExplosion>(), (int)((100*player.Throwing().thrownDamage)*MathHelper.Clamp(1f+(item.stack/100f),1f,5f)), 0, player.whoAmI, 0f, 0f);
                     }
+
+                    return true;
                 }
             }
 
@@ -505,6 +549,14 @@ namespace SGAmod
 
             }
             return base.OnPickup(item, player);
+        }
+
+        public override void OnConsumeAmmo(Item item, Player player)
+        {
+            if (item.ammo > -1 && player.armor[0].type == ModContent.ItemType<VibraniumHelmet>())
+            {
+                player.SGAPly().AddElectricCharge(item.damage);
+            }
         }
 
         public override float UseTimeMultiplier(Item item, Player player)

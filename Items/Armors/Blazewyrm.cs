@@ -58,7 +58,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blazewyrm Breastplate");
-			Tooltip.SetDefault("1% increased Melee Apocalyptical Chance\n12% increase melee crit chance");
+			Tooltip.SetDefault("1% increased Melee Apocalyptical Chance\n12% increased melee crit chance");
 		}
 		public override void SetDefaults()
 		{

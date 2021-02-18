@@ -45,6 +45,22 @@ namespace SGAmod.Buffs
 			player.GetModPlayer<SGAPlayer>().Shieldbreak = true;
 		}
 	}
+	public class PlaceHolderDebuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Place Holder Debuff");
+			Description.SetDefault("Your not suppose to see this!");
+			Main.pvpBuff[Type] = false;
+			Main.debuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+		}
+	}
 	public class BIPBuff : ModBuff
 	{
 

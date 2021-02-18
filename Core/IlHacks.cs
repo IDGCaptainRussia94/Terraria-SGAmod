@@ -30,6 +30,7 @@ namespace SGAmod
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
 			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
+			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
 			//IL.Terraria.Lighting.AddLight_int_int_float_float_float += AddLightHack;
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
@@ -43,9 +44,49 @@ namespace SGAmod
 			IL.Terraria.Player.CheckDrowning -= BreathingHack;
 			IL.Terraria.NPC.Collision_LavaCollision -= ForcedNPCLavaCollisionHack;
 			IL.Terraria.Player.UpdateManaRegen -= NoMovementManaRegen;
+			IL.Terraria.Player.CheckMana_Item_int_bool_bool -= MagicCostHack;
 			//IL.Terraria.Player.PickTile -= PickPowerOverride;
 			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
 		}
+
+		private delegate bool MagicOverride(Player player,ref int ammount,bool pay);
+		static internal void MagicCostHack(ILContext il)//Change and apply effects AFTER the ammount has been properly set in CheckMana_Item_int_bool_bool
+		{
+
+			ILCursor c = new ILCursor(il);
+
+			//MethodInfo HackTheMethod = typeof(TileLoader).GetMethod("MineDamage", BindingFlags.Public | BindingFlags.Static);
+			if (!c.TryGotoNext(MoveType.Before, i => i.MatchLdfld<Player>("statMana")))
+				goto Failed;
+
+			c.Index -= 1;
+
+			ILLabel label = c.DefineLabel();
+
+			//c.Index -= 3;
+			c.Emit(OpCodes.Ldarg, 0);//player
+			c.Emit(OpCodes.Ldarga, 2);//'ammount' int, passed as 'ref'
+			c.Emit(OpCodes.Ldarg, 3);//'pay' bool
+			c.EmitDelegate<MagicOverride>((Player player,ref int ammount, bool pay) =>
+			{
+				return Items.Armors.VibraniumHeadgear.DoMagicStuff(player,ref ammount,pay);
+			});
+			c.Emit(OpCodes.Brtrue_S, label); //if false, jump ahead
+			c.Emit(OpCodes.Ldc_I4_0);//false
+			c.Emit(OpCodes.Ret);//return ^false
+
+			c.MarkLabel(label);
+
+
+			return;
+
+		Failed:
+			throw new Exception("IL Error Test");
+		Failed2:
+			throw new Exception("IL Error Test 2");
+
+		}
+
 		private struct ColorTriplet
 		{
 			public float r;
@@ -98,7 +139,7 @@ namespace SGAmod
 		}
 
 		private delegate void PickPower(Player player,ref int damage);
-		static internal void PickPowerOverride(ILContext il)//I'd prefer slower pickaxes that CAN mine stronger materials, thank you very much! (doesn't seem to work, harder blocks still get mined fast!
+		static internal void PickPowerOverride(ILContext il)//I'd prefer slower pickaxes that CAN mine stronger materials, thank you very much! (doesn't seem to work, harder blocks still get mined fast!)
 		{
 
 			ILCursor c = new ILCursor(il);

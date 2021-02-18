@@ -132,7 +132,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 				player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * player.direction, projectile.velocity.X * player.direction);
 			}
 
-		if (projectile.ai[0]>10 && player.CheckMana(10,false,true))
+		if (projectile.ai[0]>10 && player.CheckMana(new Item(), 10,false,true))
 			{
 
 				if (projectile.ai[0]%20==0)
@@ -142,7 +142,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 				{
 
 					if (projectile.ai[0] % 20 == 0)
-						player.CheckMana(8,true,false);
+						player.CheckMana(new Item(), 8,true,false);
 
 		for (num315 = 0; num315 < 2; num315 = num315 + 1)
 			{

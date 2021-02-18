@@ -301,8 +301,6 @@ namespace SGAmod.Items.Consumable
 			Main.PlaySound(SoundID.Roar, player.position, 0);
 			return true;
 		}
-
-
 	}
 
 	public class AuroraTearAwoken : BaseBossSummon
@@ -323,13 +321,13 @@ namespace SGAmod.Items.Consumable
 			item.height = 14;
 			item.value = Item.sellPrice(0, 20, 50, 0);
 			item.consumable = true;
-			item.useTime = 2;
-			item.useAnimation = 2;
+			item.useTime = 32;
+			item.useAnimation = 32;
 			item.useStyle = 4;
 			item.noMelee = true; //so the item's animation doesn't do damage
 			item.value = 0;
 			item.rare = 9;
-			item.UseSound = SoundID.Item12;
+			item.UseSound = SoundID.Item35;
 		}
 		public override bool CanUseItem(Player player)
 		{
@@ -565,7 +563,7 @@ namespace SGAmod.Items.Consumable
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Avarice Coin");
+			DisplayName.SetDefault("Cirno Ball");
 		}
 		public override string Texture
 		{

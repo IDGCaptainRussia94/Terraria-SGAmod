@@ -709,6 +709,7 @@ namespace SGAmod
                 Idglibrary.Idglib.nightmaremode = NightmareHardcore;
             }
             Hellion.HellionManager();
+
             SharkvernHead.DoStormThings(null, null);
 
             SnapCooldown = Math.Max(SnapCooldown - 1, 0);

@@ -28,6 +28,7 @@ static const float pi = 3.14159265359;
 //Shader by IDGCaptainRussia94 (2nd)
 
 //Except this part below, these 2 functions came from here https://www.chilliant.com/rgb2hsv.html
+//This code has been modified slightly to meet my needs for this shader!
 
   float3 HUEtoRGB(in float H)
   {

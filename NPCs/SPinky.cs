@@ -520,7 +520,7 @@ namespace SGAmod.NPCs
 
 			if (npc.ai[0] == 6370)
             {
-				soundz = Main.PlaySound(29, (int)npc.Center.X, (int)npc.Center.Y, 105);
+				soundz = Main.PlaySound(SoundID.Zombie, (int)npc.Center.X, (int)npc.Center.Y, 105);
 			}
 
 			if (npc.ai[0] > 6400)
@@ -1608,26 +1608,10 @@ namespace SGAmod.NPCs
 			int maxDetail = 180;
 			for (int i = 0; i < maxDetail; i += 1)
 			{
-				//double angle = ((1f + i / 10f)) + 2.0 * Math.PI * (i / ((double)10f));
-				//double angle = (double)(1f+(inrc + (i / 10f))) + (2.0 * Math.PI) * (double)(i / (10f));
 				float angle = ((i/ (float)maxDetail)*MathHelper.TwoPi)+inrc;
 				float dist = circlesize;
 				Vector2 thisloc = new Vector2((float)(Math.Cos(angle) * dist), (float)(Math.Sin(angle) * dist));
 				vects.Add(circleLoc+thisloc);
-				//if (new Rectangle((int)((drawPos + thisloc).X) - 128, (int)((drawPos + thisloc).Y) - 128, 256, 256).Intersects(new Rectangle((int)Main.screenPosition.X, (int)Main.screenPosition.Y, Main.screenWidth, Main.screenHeight)))
-				//{
-
-				//Color glowingcolors1 = Main.hslToRgb(0.6f, 0.9f, 0.9f);//(inrc + (((float)i) / 480f)) / 640f
-				//Color glowingcolors1 = Main.hslToRgb((float)(((float)i / 720f) + Main.GlobalTime / 50) % 1, 0.9f, 0.65f);
-				//shader.UseColor(glowingcolors1.R, glowingcolors1.G, glowingcolors1.B);
-				//DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 600, 600)), Microsoft.Xna.Framework.Color.White * 1f, npc.rotation, new Vector2(600f, 600f), 1, SpriteEffects.None, 0);
-
-				//GameShaders.Misc["ForceField"].Apply(new DrawData?(value9));
-				//Main.pixelShader.CurrentTechnique.Passes[0].Apply();
-
-				//spriteBatch.Draw(texture, drawPos + thisloc, null, (glowingcolors1 * 0.15f) * drawdist, npc.spriteDirection * (inrc * 0.1f), new Vector2(texture.Width / 2f, texture.Height / 2f), new Vector2(1f, 1f), SpriteEffects.None, 0f);
-				//value9.Draw(Main.spriteBatch);
-				//}
 			}
 
 			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));

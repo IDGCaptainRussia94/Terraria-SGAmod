@@ -882,7 +882,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("True Rainbow Heart");
-			Tooltip.SetDefault("'Our fires burn hotter than the golden sun'\nAll effects of the Blazing Heart and Alkalescent Heart");
+			Tooltip.SetDefault("'Our fires burn hotter than the golden sun'\nRadiation Resistance now also allow you to resist Limbo Fading\nAll effects of the Blazing Heart and Alkalescent Heart");
 		}
         public override string Texture => "SGAmod/GreyHeart";
         public override void SetDefaults()
@@ -1125,7 +1125,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Corroded Skull");
-			Tooltip.SetDefault("'It seems suprisingly intact, yet corroded by the Spider Queen'\nGrants immunity against Acid Burn\nGrants 50% increased radiation resistance");
+			Tooltip.SetDefault("'It seems suprisingly intact, yet corroded by the Spider Queen'\nGrants immunity against Acid Burn\nGrants 25% increased radiation resistance");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -2570,7 +2570,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ninja's Stash");
-			Tooltip.SetDefault("Scoring crits with your throwing weapons summon shurikens and throwing knives to strike hit enemies\nThese summoned attacks cannot crit or trigger Thrower damage\nFurthermore, they are consumed from the player's inventory");
+			Tooltip.SetDefault("Scoring crits with your throwing weapons summon shurikens and throwing knives to strike hit enemies\nThese summoned attacks cannot crit or trigger Thrower damage\nFurthermore, they are limited by your throwing damage\nFinally they are consumed from the player's inventory on use");
 		}
 
 		public override void SetDefaults()
@@ -2596,7 +2596,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shin Sash");
-			Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nEnemies affected become far more likely to cause the player to black belt dodge contact damage\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") + "\nThrowing damage and crit chance are increased by 10%\nEffects of Ninja Sash and Thrower Pouch");
+			Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nEnemies affected become far more likely to cause the player to black belt dodge contact damage\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") + "\nThrowing damage is increased by 10% and crit chance by 5%\nEffects of Ninja Sash and Thrower Pouch");
 		}
 
 		public override void SetDefaults()
@@ -2614,7 +2614,7 @@ namespace SGAmod.Items.Accessories
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.ninjaSash = Math.Max(sgaply.ninjaSash, 2);
 			player.Throwing().thrownDamage += 0.10f;
-			player.Throwing().thrownCrit += 10;
+			player.Throwing().thrownCrit += 5;
 		}
 		public override void AddRecipes()
 		{
@@ -2674,7 +2674,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Kou Sash");
-			Tooltip.SetDefault("'A true Assassin's attire'\nScoring an Apocalyptical imbues all your currently thrown projectiles\nImbued projectiles gain 50% increased damage and inflict Moonlight Curse\nThrowing damage increased by 20%, and crit chance is increased by 10%\nCombines the effects of:\n-Shin Sash\n-Master Ninja Gear\n-Gi\n-Shinobi's Shadow\n-Bundle of Jab-lin Parts");
+			Tooltip.SetDefault("'A true Assassin's attire'\nScoring an Apocalyptical imbues all your currently thrown projectiles\nImbued projectiles gain 50% increased damage and inflict Moonlight Curse\nThrowing damage is increased by 10% and crit chance by 5%\nCombines the effects of:\n-Shin Sash\n-Master Ninja Gear\n-Gi\n-Shinobi's Shadow\n-Bundle of Jab-lin Parts");
 		}
 
 		public override void SetDefaults()
@@ -2703,10 +2703,10 @@ namespace SGAmod.Items.Accessories
 			ModContent.GetInstance<JavelinBundle>().UpdateAccessory(player, hideVisual);
 			sgaply.ninjaSash = Math.Max(sgaply.ninjaSash, 3);
 
-			player.Throwing().thrownCrit += 15;//+ 5% from Gi
-			player.Throwing().thrownDamage += 0.20f;//20% + 5% from Gi
+			player.Throwing().thrownCrit += 5;//5%
+			player.Throwing().thrownDamage += 0.10f;//15%
 
-			player.BoostAllDamage(0.05f, 5);
+			player.BoostAllDamage(0.05f, 5);//Gi
 
 			//player.meleeDamage += 0.05f; player.rangedDamage += 0.05f; player.magicDamage += 0.05f; player.minionDamage += 0.05f;
 			//player.rangedCrit += 5; player.magicCrit += 5; player.meleeCrit += 5;
@@ -2839,6 +2839,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = ItemRarityID.Blue;
 			item.accessory = true;
 		}
+
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
@@ -3379,7 +3380,6 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
 			recipe.AddIngredient(mod.ItemType("BottledLiquidEssence"), 1);
 			recipe.AddIngredient(ItemID.FlipperPotion, 5);
@@ -3665,7 +3665,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fluid Displacer");
-			Tooltip.SetDefault("Displaces fluids around you, allowing you move through them freely\nConsumes Electric Charge to prevent the player from submerging\nConsumes far more to prevent lava submerging\nTriggers a shield break when Electric Charge runs out\n"+Idglib.ColorText(Color.Red,"Removing this accessory during Shield Break will cause great damage!"));
+			Tooltip.SetDefault("Displaces fluids around you, allowing you move through them freely\nConsumes Electric Charge to prevent the player from submerging\nConsumes far more to prevent lava submerging\nTriggers a Shield Break when Electric Charge runs out\n"+Idglib.ColorText(Color.Red,"Removing this accessory during Shield Break will cause great damage!"));
 		}
 		public override void SetDefaults()
 		{

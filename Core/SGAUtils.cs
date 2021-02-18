@@ -284,6 +284,7 @@ namespace SGAmod
 	}
 	public static class TextureExtension
 	{
+		//Lifted code used with credit to the source, I do not own this but credit given where due!
 		//https://stackoverflow.com/questions/44760512/xna-make-a-new-texture2d-out-of-another-texture2d
 		/// <summary>
 		/// Creates a new texture from an area of the texture.
@@ -354,7 +355,7 @@ namespace SGAmod
 		}*/
 
 
-		//Again, from Joost, thanks man
+		//Again, from Joost used with written permission, thanks man
 		public static Vector2 PredictiveAim(float speed, Vector2 origin, Vector2 target, Vector2 targetVelocity, bool ignoreY)
 		{
 			Vector2 vel = (ignoreY ? new Vector2(targetVelocity.X, 0) : targetVelocity);
@@ -547,7 +548,7 @@ namespace SGAmod
 
 		}
 
-		//Came from Luiafk; only mod I know that has chest-related netcode (was edited thou)
+		//Came from Luiafk; the only mod I know that has chest-related netcode (was edited thou to fit my needs)
 		public static void ForceUpdateChestsForPlayers()
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)
@@ -564,6 +565,7 @@ namespace SGAmod
 			}
 		}
 
+		//Same story, also heavily edited, please don't sue me :(
 		public static void ForceUpdateChestForPlayer(Player p, int specificChest)
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)
@@ -589,6 +591,7 @@ namespace SGAmod
 				NetMessage.SendData(MessageID.SyncPlayerChestIndex, -1, p.whoAmI, null, p.whoAmI, chest);
 		}
 
+		//Adapted from Vanilla Terraria
 		public static void DrawFishingLine(Vector2 start, Vector2 end, Vector2 Velocity, Vector2 offset, float reel)
 		{
 			float pPosX = start.X;
@@ -694,6 +697,7 @@ namespace SGAmod
 
 
 		//These next 3 methods came from a cheats forum lol, but hey if I can use them in Terraria... (https://www.unknowncheats.me/forum/battlefield-4-a/143104-absolutely-accurate-aiming-prediction-correction-erros-theory.html)
+		//Used as is, no modifications were made
 		private static uint SolveCubic(double[] coeff, ref double[] x)
 		{
 			/* Adjust coefficients */

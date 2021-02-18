@@ -193,10 +193,7 @@ namespace SGAmod
 					collected = (int)(collected * 0.80);
 				}
 
-				ExpertiseCollected += collected;
-				ExpertiseCollectedTotal += collected;
-
-				CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.LimeGreen, "+" + collected + " Expertise", false, false);
+				AddExpertise(collected);
 
 				ExpertisePointsFromBosses.RemoveAt((int)found);
 				ExpertisePointsFromBossesPoints.RemoveAt((int)found);
@@ -214,6 +211,15 @@ namespace SGAmod
 
 			}
 
+
+		}
+
+		public void AddExpertise(int ammount)
+        {
+			ExpertiseCollected += ammount;
+			ExpertiseCollectedTotal += ammount;
+
+			CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.LimeGreen, "+" + ammount + " Expertise", false, false);
 
 		}
 

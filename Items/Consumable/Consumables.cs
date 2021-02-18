@@ -513,7 +513,7 @@ namespace SGAmod.Items.Consumable
 			if (player.SGAPly().Electicpermboost < max)
 			player.SGAPly().Electicpermboost += 200;
 			player.SGAPly().AddCooldownStack(60 * 40, 1);
-			player.SGAPly().electricCharge += (int)((float)player.SGAPly().electricChargeMax*0.20f);
+			player.SGAPly().AddElectricCharge((int)((float)player.SGAPly().electricChargeMax*0.20f));
 			return true;
 		}
 

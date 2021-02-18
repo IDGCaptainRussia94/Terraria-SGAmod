@@ -457,6 +457,7 @@ namespace SGAmod
 						dust = Main.dust[num52];
 						dust.alpha += 25;
 					}
+
 					Main.dust[num52].noLight = true;
 					dust = Main.dust[num52];
 					dust.velocity *= 0.2f;

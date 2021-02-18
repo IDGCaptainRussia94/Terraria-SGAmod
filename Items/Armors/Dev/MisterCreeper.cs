@@ -55,7 +55,6 @@ namespace SGAmod.Items.Armors.Dev
 			}
 
 		}
-
 		public virtual void AddEffects(Player player)
 		{
 			player.Throwing().thrownCrit += 20;

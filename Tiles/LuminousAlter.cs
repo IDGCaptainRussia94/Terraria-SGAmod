@@ -475,7 +475,7 @@ namespace SGAmod.Tiles
                     {
                         if (AcceptItem(heldItem))
                         {
-                            chargingProcess += ProcessRate;
+                            chargingProcess += ProcessRate*10;
                             if (chargingProcess >= itemData.infusionTime)
                             {
                                 ItemInfusion();
@@ -492,6 +492,11 @@ namespace SGAmod.Tiles
                 }
             }
 
+            base.Update();
+        }
+
+        public override void PostGlobalUpdate()
+        {
             if (Main.netMode < NetmodeID.Server)
             {
                 if (clientChargingTimer > 0)
@@ -502,7 +507,7 @@ namespace SGAmod.Tiles
                         {
                             SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_WitherBeastAuraPulse, Position.X * 16, Position.Y * 16);
                             if (sound != null)
-                                sound.Pitch = -0.75f+((clientChargingTimer/(float)itemData.infusionTime)*1.50f);
+                                sound.Pitch = -0.75f + ((clientChargingTimer / (float)itemData.infusionTime) * 1.50f);
                         }
                     }
 
@@ -515,8 +520,6 @@ namespace SGAmod.Tiles
                     clientChargingTimer -= 1;
                 }
             }
-
-            base.Update();
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)

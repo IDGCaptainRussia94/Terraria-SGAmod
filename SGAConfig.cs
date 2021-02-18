@@ -44,6 +44,12 @@ namespace SGAmod
 		[ReloadRequired]
 		[DefaultValue(true)]
 		public bool ManaPotionChange { get; set; }
+
+		[Label("Negative World Effects")]
+		[Tooltip("Enables/Disables world debuffs tied to bosses, like Snowfrosted and Drowning Presence outside of boss fights")]
+		[ReloadRequired]
+		[DefaultValue(true)]
+		public bool NegativeWorldEffects { get; set; }
 	}
 
 	[Label("SGA Client Options")]

@@ -20,6 +20,7 @@ namespace SGAmod.Effects
         public float trailThicknessIncrease = 1f;
         public string pass;
         public float strength;
+        public float yFade = 1f; 
         public bool doFade = true;
         public bool connectEnds = false;
         public Vector2 coordOffset;
@@ -63,6 +64,7 @@ namespace SGAmod.Effects
             effect.Parameters["coordOffset"].SetValue(coordOffset);
             effect.Parameters["coordMultiplier"].SetValue(coordMultiplier);
             effect.Parameters["strength"].SetValue(strength);
+            effect.Parameters["yFade"].SetValue(yFade);
 
             int totalcount = drawPoses.Count;
             int caps = (int)capsize.X;

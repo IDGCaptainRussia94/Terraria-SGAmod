@@ -21,6 +21,7 @@ float2 coordOffset;
 float strength;
 float rainbowScale;
 float rainbowProgress;
+float yFade;
 
 //custom passes
 texture imageTexture;
@@ -81,7 +82,16 @@ float4 BasicEffectFaded(VertexShaderOutput input) : COLOR
 
 	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
 	pixel = saturate(pixel);
-	return pixel * (sin(input.TextureCoordinates.x * 3.14159265));
+	return pixel * sin(input.TextureCoordinates.x * 3.14159265);
+}
+
+//Same as above, but now faded on the Y axis
+float4 BasicEffectFadedY(VertexShaderOutput input) : COLOR
+{
+
+	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
+	pixel = saturate(pixel);
+	return pixel * (min(sin(input.TextureCoordinates.y * 3.14159265)*yFade,1.0000000));
 }
 
 //Simple color gradient fade
@@ -117,12 +127,17 @@ technique BasicColorDrawing
 		VertexShader = compile vs_2_0 MainVS();
 		PixelShader = compile ps_2_0 BasicEffectFaded();
 	}
-	pass DefaultPass
+		pass FadedBasicEffectPassY
+	{
+		VertexShader = compile vs_2_0 MainVS();
+		PixelShader = compile ps_2_0 BasicEffectFadedY();
+	}	
+		pass DefaultPass
 	{
 		VertexShader = compile vs_2_0 MainVS();
 		PixelShader = compile ps_2_0 MainPS();
 	}
-	pass DefaultPassSinShade
+		pass DefaultPassSinShade
 	{
 		VertexShader = compile vs_2_0 MainVS();
 		PixelShader = compile ps_2_0 MainPSSinShade();

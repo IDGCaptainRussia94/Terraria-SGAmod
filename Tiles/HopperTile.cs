@@ -16,6 +16,7 @@ namespace SGAmod.Tiles
 	{
 		const int maxXSize = 18 * 6;
 		const int maxYSize = 18 * 4;
+		protected virtual int dropItem => ModContent.ItemType<HopperItem>();
 		public override void SetDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
@@ -282,7 +283,7 @@ namespace SGAmod.Tiles
 			if (fail)
 				return;
 
-			int item = ModContent.ItemType<HopperItem>();
+			int item = dropItem;
 			Tile tile = Framing.GetTileSafely(i, j);
 			Point coords = GetRealHopperCorner(new Point(i, j), tile);
 
@@ -302,6 +303,7 @@ namespace SGAmod.Tiles
 	{
 		const int maxXSize = 18 * 6;
 		const int maxYSize = 18 * 4;
+		protected override int dropItem => ModContent.ItemType<HopperChestItem>();
 		public override bool Autoload(ref string name, ref string texture)
 		{
 			texture = "SGAmod/Tiles/HopperTile";

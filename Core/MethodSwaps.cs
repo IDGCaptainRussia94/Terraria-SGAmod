@@ -19,6 +19,7 @@ using Microsoft.Xna.Framework.Audio;
 using Terraria.Graphics.Shaders;
 using Terraria.GameContent.UI.Elements;
 using SGAmod.Dimensions;
+using SGAmod.Items.Armors;
 
 namespace SGAmod
 {
@@ -34,11 +35,34 @@ namespace SGAmod
 			On.Terraria.GameContent.Events.DD2Event.SpawnMonsterFromGate += CrucibleArenaMaster.DD2PortalOverrides;
 			On.Terraria.GameContent.UI.Elements.UICharacterListItem.DrawSelf += Menu_UICharacterListItem;
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
+			On.Terraria.Collision.TileCollision += Collision_TileCollision;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
-			//Some Reflection Stuff, this first method swap came from scalie because lets be honest, who else is gonna figure this stuff out? Vanilla is a can of worms and BS at times. Credit due to him
-			static private readonly FieldInfo _playerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
+		private static bool Player_CheckManaItem(On.Terraria.Player.orig_CheckMana_Item_int_bool_bool orig, Player self, Item item, int amount, bool pay, bool blockQuickMana)
+		{
+			Main.NewText(amount);
+			if (self.armor[0].type == ModContent.ItemType<VibraniumHeadgear>())
+			{
+				amount = (int)(amount * 0.50f);
+				return orig(self, item, amount, pay, blockQuickMana) && self.SGAPly().ConsumeElectricCharge(amount, amount, true, pay);
+			}
+			return orig(self,item, amount, pay, blockQuickMana);
+		}
+
+		private static bool Player_CheckMana(On.Terraria.Player.orig_CheckMana_int_bool_bool orig, Player self, int amount, bool pay, bool blockQuickMana)
+        {
+			Main.NewText("test");
+            if (self.armor[0].type == ModContent.ItemType<VibraniumHeadgear>())
+            {
+				amount = (int)(amount *0.50f);
+				return orig(self, amount, pay, blockQuickMana) && self.SGAPly().ConsumeElectricCharge(amount,amount,true,pay);
+			}
+			return orig(self, amount, pay, blockQuickMana);
+        }
+
+        //Some Reflection Stuff, this first method swap came from scalie because lets be honest, who else is gonna figure this stuff out? Vanilla is a can of worms and BS at times. Credit due to him
+        static private readonly FieldInfo _playerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
 		static private readonly FieldInfo _player = typeof(UICharacter).GetField("_player", BindingFlags.NonPublic | BindingFlags.Instance);
 
 		static private void Menu_UICharacterListItem(On.Terraria.GameContent.UI.Elements.UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
@@ -76,7 +100,24 @@ namespace SGAmod
 		}
 
 
-		static private void Player_CheckDrowning(On.Terraria.Player.orig_CheckDrowning orig, Player self)
+
+		//Collision_TileCollision
+		static private Vector2 Collision_TileCollision(On.Terraria.Collision.orig_TileCollision orig, Vector2 Position, Vector2 Velocity, int Width, int Height, bool fallThrough = false, bool fall2 = false, int gravDir = 1)
+		{
+			foreach (Projectile projectile in Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<Items.Armors.VibraniumWall>() && !testby.hostile))
+            {
+				if (projectile.DistanceSQ(Position) < 16 * 16)
+                {
+					Player owner = Main.player[projectile.owner];
+					owner.SGAPly().ConsumeElectricCharge(20, 5, true);
+					return Vector2.Normalize(Position-owner.MountedCenter)*Velocity.Length();
+				}
+			}
+
+			return orig(Position, Velocity, Width, Height, fallThrough, fall2, gravDir);
+		}
+
+			static private void Player_CheckDrowning(On.Terraria.Player.orig_CheckDrowning orig, Player self)
 		{
 			// 'orig' is a delegate that lets you call back into the original method.
 			// 'self' is the 'this' parameter that would have been passed to the original method.

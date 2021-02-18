@@ -95,8 +95,14 @@ namespace SGAmod.Dimensions
         public override void PostUpdateRunSpeeds()
         {
 
+            //if (!noLight)
+            //SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(player.Center.X, player.Center.Y, lightSize)));
+        }
+
+        public override void PostUpdate()
+        {
             if (!noLight)
-            SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(player.Center.X, player.Center.Y, lightSize)));
+                SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(player.Center.X, player.Center.Y, lightSize)));
         }
 
         public override void PreUpdate()

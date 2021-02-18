@@ -93,7 +93,15 @@ namespace SGAmod
 					}
 				}
 			}
+		}
 
+		public void StackDebuff(int type,int time)
+        {
+			player.AddBuff(ModContent.BuffType<PlaceHolderDebuff>(), time);
+			if (player.FindBuffIndex(ModContent.BuffType<PlaceHolderDebuff>()) >= 0)
+            {
+				player.buffType[player.FindBuffIndex(ModContent.BuffType<PlaceHolderDebuff>())] = type;
+			}
 		}
 
 		public float GetMinionSlots
@@ -125,6 +133,11 @@ namespace SGAmod
 			}
 			return false;
 			
+		}
+
+		public void AddElectricCharge(int ammount)
+        {
+			electricCharge += ammount;
 		}
 
 		public bool ConsumeElectricCharge(int requiredcharge, int delay, bool damage = false,bool consume = true)

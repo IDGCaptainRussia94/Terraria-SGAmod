@@ -62,7 +62,11 @@ namespace SGAmod.Items.Armors
 			DisplayName.SetDefault("Celestial Crown");
 			Tooltip.SetDefault("5% faster item use times");
 		}
-		public override void SetDefaults()
+        public override bool Autoload(ref string name)
+        {
+			return false;
+        }
+        public override void SetDefaults()
 		{
 			item.width = 18;
 			item.height = 18;

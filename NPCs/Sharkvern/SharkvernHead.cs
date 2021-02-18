@@ -153,7 +153,7 @@ namespace SGAmod.NPCs.Sharkvern
 
             if (shark == null)
             {
-                if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && !SGAWorld.downedSharkvern && Main.raining)
+                if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && !SGAWorld.downedSharkvern && Main.raining && SGAConfig.Instance.NegativeWorldEffects)
                 {
                     Main.maxRaining = 0.80f;
 
@@ -169,7 +169,6 @@ namespace SGAmod.NPCs.Sharkvern
                             }
                         }
                     }
-
                     goto endhere;
                 }
                 return;

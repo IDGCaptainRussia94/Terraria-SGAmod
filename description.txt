@@ -19,11 +19,11 @@ And finally, alot of content in this mod is placeholder sprites due to a lack of
 
 Changelog:
 
-3.521-(1/21/21)-Hotfix #12:
+3.522-(2/18/21)-Hotfix #13:
 
---Added:
+--Fixed:
 
--New respites! (Salvaged Crate)
+-Dark Sectors not drawing properly
 
 
 --Changed:

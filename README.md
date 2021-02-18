@@ -18,6 +18,12 @@ Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge ba
 
 Changelog:
 
+3.522-(2/18/21)-Hotfix #13:
+
+--Fixed:
+
+-Dark Sectors not drawing properly
+
 
 3.521-(1/21/21)-Hotfix #12:
 

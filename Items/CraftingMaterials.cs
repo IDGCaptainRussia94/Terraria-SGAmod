@@ -1585,7 +1585,7 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lession 2: Rotten Desires");
-			Tooltip.SetDefault("'And there without, is not without doubt, of your failure...'\nPlace your inventory to allow Reality's Sunder summon Hellion at post Pirate Army\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 50% less items\nRequires Lession 1\nWill consume one when summoned"));
+			Tooltip.SetDefault("'And there without, is not without doubt, of your failure...'\nPlace your inventory to allow Reality's Sunder summon Hellion at post Pirate Army\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 50% less items\nWill consume one when summoned"));
 		}
 	}
 
@@ -1596,7 +1596,7 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lession 3: Climax of Eternity");
-			Tooltip.SetDefault("'And there without, is not without doubt, of your failure...'\nPlace your inventory to allow Reality's Sunder summon Hellion at post Festive Moons Army\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 75% less items\nRequires Lession 2\nWill consume one when summoned"));
+			Tooltip.SetDefault("'And there without, is not without doubt, of your failure...'\nPlace your inventory to allow Reality's Sunder summon Hellion at post Festive Moons Army\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 75% less items\nWill consume one when summoned"));
 		}
 	}
 
@@ -1607,7 +1607,7 @@ public class LunarRoyalGel : ModItem
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lession 4: Epilogue");
-			Tooltip.SetDefault("'The End'\nPlace your inventory to allow Reality's Sunder summon Hellion In her Last Stand phase\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 90% less items\nRequires Lession 3\nWill consume one when summoned"));
+			Tooltip.SetDefault("'The End'\nPlace your inventory to allow Reality's Sunder summon Hellion with 1 HP\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 90% less items\nWill consume one when summoned"));
 		}
 	}
 

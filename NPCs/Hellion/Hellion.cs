@@ -27,7 +27,7 @@ namespace SGAmod.NPCs.Hellion
 
 	public abstract class HellionAttacks
 	{
-
+		public static int Checkpoint = 0;
 		public static void HellionWelcomesYou()
 		{
 			if (SGAWorld.modtimer >= 300)
@@ -1680,6 +1680,31 @@ namespace SGAmod.NPCs.Hellion
 			npc.netAlways = true;
 			npc.GetGlobalNPC<SGAnpcs>().TimeSlowImmune = true;
 			dpswarning = false;
+
+			if (HellionAttacks.Checkpoint > 0)
+			{
+				if (HellionAttacks.Checkpoint == 1)
+				{
+					npc.life = (int)(npc.lifeMax*0.90);
+					phase = 2;
+				}
+ 				if (HellionAttacks.Checkpoint == 2)
+				{
+					npc.life = (int)(npc.lifeMax*0.60);
+					phase = 4;
+				}
+				if (HellionAttacks.Checkpoint == 3)
+				{
+					npc.life = (int)(npc.lifeMax * 0.40);
+					phase = 6;
+				}
+				if (HellionAttacks.Checkpoint == 4)
+				{
+					npc.life = 1;
+					phase = 6;
+				}
+
+			}
 		}
 
 		public static Hellion GetHellion()

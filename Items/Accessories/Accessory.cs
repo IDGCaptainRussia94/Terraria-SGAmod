@@ -947,6 +947,7 @@ namespace SGAmod.Items.Accessories
 			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(Main.GlobalTime / 4f, 0, Main.GlobalTime / 4f));
 			hallowed.Parameters["overlayAlpha"].SetValue(0.5f);
 			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(-2.5f, 0f, 0f));
+			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
 			hallowed.Parameters["prismColor"].SetValue(((Color)GetAlpha(itemColor)).ToVector3());
 			hallowed.Parameters["alpha"].SetValue(1f);
 			hallowed.Parameters["rainbowScale"].SetValue(1f);
@@ -1216,9 +1217,49 @@ namespace SGAmod.Items.Accessories
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();*/
 		}
-
-
 	}
+
+	public class RadSuit : SybariteGem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Rad Suit");
+			Tooltip.SetDefault("'Deflects punching at a molecular level!'\nGrants 50% increased radiation resistance\nYou create bursts of Radiation on enemies when you score an Apocalyptical\nEnemies killed while Irradiated explode\nDamage done is boosted by your Apocalyptical Strength");
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Accessories/RadSuit"); }
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().RadSuit = true;
+			player.GetModPlayer<IdgPlayer>().radresist += 0.50f;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 2);
+			item.rare = ItemRarityID.Red;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LunarOre, 20);
+			recipe.AddIngredient(ItemID.Nanites, 200);
+			recipe.AddIngredient(ItemID.LeadBar, 10);
+			recipe.AddIngredient(ItemID.Leather, 20);
+			recipe.AddIngredient(ItemID.SWATHelmet, 1);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
 	public class FridgeFlamesCanister : ModItem
 	{
 		public override void SetStaticDefaults()

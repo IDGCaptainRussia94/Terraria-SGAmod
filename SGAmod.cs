@@ -120,6 +120,7 @@ namespace SGAmod
 		public static Texture2D hellionLaserTex;
 		public static Texture2D ParadoxMirrorTex;
 		public static Texture2D PrismBansheeTex;
+		public static Texture2D RadSuitHeadTex;
 		public static Texture2D PlatformTex;
 		public static int OSType;
 		internal static ModHotKey CollectTaxesHotKey;
@@ -135,6 +136,7 @@ namespace SGAmod
 		public static bool updateportals = false;
 		public static bool anysubworld = false;
 		public static float overpoweredMod = 0f;
+		public static int vibraniumCounter = 0;
 		private int localtimer = 0;
 		public static List<PostDrawCollection> PostDraw;
 		public static RenderTarget2D drawnscreen;
@@ -154,6 +156,8 @@ namespace SGAmod
 		public static float fogAlpha = 1f;
 		public static Effect TrailEffect;
 		public static Effect HallowedEffect;
+		public static Effect FadeInEffect;
+		public static Effect RadialEffect;
 		public static MusicStreamingOGG musicTest;
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
 
@@ -282,9 +286,44 @@ namespace SGAmod
 				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 				Texture2D PlatTex = ModContent.GetTexture("Terraria/Tiles_"+TileID.Asphalt);
 
+				Item item = new Item();
+				item.SetDefaults(ItemID.ParkaHood);
+				Texture2D RadTex = ModContent.GetTexture("Terraria/Armor_Head_" + item.headSlot);
+
+				item = new Item();
+				item.SetDefaults(ItemID.SWATHelmet);
+				Texture2D RadTex2 = ModContent.GetTexture("Terraria/Armor_Head_" + item.headSlot);
+
 				int height = queenTex.Height;
+				//RadSuitHeadTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, 0, RadTex.Width, RadTex.Height));
 				PrismBansheeTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, height-(height / 6), queenTex.Width, height / 6));
 				PlatformTex = PlatTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(18*5,0, 16, 16));
+
+				Texture2D tex = new Texture2D(Main.graphics.GraphicsDevice, RadTex.Width, RadTex.Height);
+
+				Color[] datacolors2 = new Color[RadTex.Width * RadTex.Height];
+				RadTex.GetData(datacolors2);
+				tex.SetData(datacolors2);
+
+				Color[] dataColors = new Color[RadTex.Width * RadTex.Height];
+				RadTex2.GetData(dataColors);
+
+				for (int y = 0; y < RadTex.Height; y++)
+				{
+					for (int x = 0; x < RadTex.Width; x += 1)
+					{
+						int therex = (int)MathHelper.Clamp((x), 0, RadTex.Width);
+						int therey = (int)MathHelper.Clamp((y), 0, RadTex.Height);
+						if (datacolors2[(int)therex + therey * RadTex.Width].A > 0)
+						{
+
+							dataColors[(int)therex + therey * RadTex.Width] = datacolors2[(int)therex + therey * RadTex.Width];
+						}
+					}
+				}
+
+				tex.SetData(dataColors);
+				RadSuitHeadTex = tex;
 			}
 
 			else
@@ -303,6 +342,8 @@ namespace SGAmod
 				HellionGores = null;
 				ExtraTextures = null;
 				PrismBansheeTex.Dispose();
+				RadSuitHeadTex.Dispose();
+				PlatformTex.Dispose();
 
 			}
 
@@ -451,7 +492,7 @@ namespace SGAmod
 			{
 			Filters.Scene["SGAmod:ProgramSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0.4f), EffectPriority.High);
 			Filters.Scene["SGAmod:HellionSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0f), EffectPriority.High);
-			Filters.Scene["SGAmod:CirnoBlizzard"] = new Filter(new BlizzardShaderData("FilterBlizzardForeground").UseColor(1f, 1f, 1f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/noise", 0, null).UseIntensity(0.9f).UseImageScale(new Vector2(8f, 2.75f), 0), EffectPriority.High);
+			Filters.Scene["SGAmod:CirnoBlizzard"] = new Filter(new BlizzardShaderData("FilterBlizzardForeground").UseColor(1f, 1f, 1f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/Noise", 0, null).UseIntensity(0.9f).UseImageScale(new Vector2(8f, 2.75f), 0), EffectPriority.High);
 
 				Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/Shockwave"));
 				Filters.Scene["SGAmod:Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
@@ -464,6 +505,13 @@ namespace SGAmod
 				HallowedEffect.Parameters["overlayScale"].SetValue(new Vector2(1, 1));
 				HallowedEffect.Parameters["rainbowScale"].SetValue(1f);
 
+				FadeInEffect = SGAmod.Instance.GetEffect("Effects/FadeIn");
+				FadeInEffect.Parameters["fadeMultiplier"].SetValue(new Vector2(1, 1));
+				FadeInEffect.Parameters["fadeOffset"].SetValue(new Vector2(1, 1));
+				FadeInEffect.Parameters["fadePercentSize"].SetValue(4f);
+
+				RadialEffect = SGAmod.Instance.GetEffect("Effects/Radial");
+
 				GameShaders.Misc["SGAmod:DeathAnimation"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/EffectDeath")), "DeathAnimation").UseImage("Images/Misc/Perlin");
 				GameShaders.Misc["SGAmod:ShaderOutline"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/ShaderOutline")), "ShaderOutline").UseImage("Images/Misc/Perlin");
 				//AddEquipTexture(new Items.Armors.Dev.Dragonhead(), null, EquipType.Head, "Dragonhead", "SGAmod/Items/Armors/Dev/IDGHead_SmallerHead");
@@ -471,7 +519,7 @@ namespace SGAmod
 			SkyManager.Instance["SGAmod:ProgramSky"] = new ProgramSky();
 			SkyManager.Instance["SGAmod:HellionSky"] = new HellionSky();
 			Overlays.Scene["SGAmod:SGAHUD"] = new SGAHUD();
-			Overlays.Scene["SGAmod:CirnoBlizzard"] = new SimpleOverlay("Images/Misc/noise", new BlizzardShaderData("FilterBlizzardBackground").UseColor(0.2f, 1f, 0.2f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/noise", 0, null).UseIntensity(0.7f).UseImageScale(new Vector2(3f, 0.75f), 0), EffectPriority.High, RenderLayers.Landscape);
+			Overlays.Scene["SGAmod:CirnoBlizzard"] = new SimpleOverlay("Images/Misc/Noise", new BlizzardShaderData("FilterBlizzardBackground").UseColor(0.2f, 1f, 0.2f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/Noise", 0, null).UseIntensity(0.7f).UseImageScale(new Vector2(3f, 0.75f), 0), EffectPriority.High, RenderLayers.Landscape);
 
 			//On.Terraria.Player.AdjTiles += Player_AdjTiles;
 		}
@@ -1082,6 +1130,7 @@ namespace SGAmod
 			MakeRenderTarget();
 #endif
 
+			vibraniumCounter = Math.Max(vibraniumCounter - 1, 0);
 			SGAWorld.modtimer += 1;
 			PrismShardHinted.ApplyPrismOnce = false;
 

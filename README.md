@@ -13,10 +13,10 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners tf2/style things, Spectre homing bullets/projectiles, Tech weapons have an "overclock" mechanic that changes up their gameplay while active and overhaul ideas (maybe?), spider queen can melt normal generated blocks (dirt and so)
 Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
-Spartan Laser/mining railgun (add mining), shuricane (shuriken Hurricane!), Binding Vudoo Clothier's Doll Magic, Mana Potion Pet (Blue Gusher)
+Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Binding Vudoo Clothier's Doll Magic, Mana Potion Pet (Blue Gusher), Clothier drop that forces dropped throwing items to attack enemies
 
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy), Aurora Gear and finish Luminous Alter Tile Entity!
--Add Hellion army bar, STILL! Add Hellion checkpoints! Make Madal not do self damage/less damage, Hopper Sprites
+-Add Hellion army bar, STILL! Add Hellion checkpoints! Make Madal not do self damage/less damage, Add Dropper
 
 Changelog:
 
@@ -24,7 +24,7 @@ Changelog:
 
 --Added:
 
--Plasmic Rail Gun, Uranium Filled Snowballs, True Rainbow Heart, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear
+-Plasmic Rail Gun, Uranium Filled Snowballs, Radioactive Snowball Cannon, True Rainbow Heart, Rad Suit, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear
 
 -A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
 
@@ -36,9 +36,9 @@ Changelog:
 
 -Prismic Banshee has a stronger manually summoned version after Luminite Wraith is defeated you can fight for double loot, the boss in general has undergone a couple of changes
 
--Config option to disable Drowning Presence/Snowfrosted outside of boss fights
+-New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights
 
--Resprites, enjoy a far better looking Jackpot with glowing coins!
+-Various Resprites, added missing sprites, and smaller improvements; enjoy a far better looking Jackpot with glowing coins!
 
 
 --Changed:
@@ -79,13 +79,15 @@ Changelog:
 
 -Buffed Cosmic Grasp: (again), base damage increased so it's not just a side great to the Cosmillash
 
+-Buffed all consumable Jab-lins: as they now have a chance to drop again after expiring
+
 -Nerfed Tactical SMG Rifle: damage lowered to 25 (from 28)
 
 -Nerfed Shooting Star: base damage massively lowered, this thing had more DPS than Enmity did!
 
 -Nerfed Ninja's Stash: there is now a limit to how many summoned attacks you can spawn in rapid succession
 
--Nerfed Cosmic Cocktail: all of its spawned projectiles now only have a 12.5% chance to crit when they normally would crit, Use time has been increased to 60 frames (from 40)
+-Nerfed Cosmic Cocktail: all of its spawned projectiles now only have a 10% chance to crit when they normally would crit, Use time has been increased to 60 frames (from 40), damage lowered to 40 (from 50)
 
 -Nerfed Kou Sash and Shin Sash: crit chance boost was incorrect and has been lowered
 
@@ -96,7 +98,7 @@ Changelog:
 
 -Amulet of Diehard Cataclysm should now properly prevent Blackbelt and Shadow Dodges
 
--There should no longer be an issues with HUD mods from now on!
+-There should no longer be an issues with HUD mods that override the vanilla HUD from now on
 
 -Hellion Beams being invisible
 
@@ -107,6 +109,8 @@ Changelog:
 -Cyber Scythe's max range growing smaller with melee speed instead of larger
 
 -Prismic Banshee's 'hands' having a weird hitbox
+
+-Grappling removing the player's light in the foggy darkness
 
 -Granite Magnet not pulling items in faster when worn as an accessory
 

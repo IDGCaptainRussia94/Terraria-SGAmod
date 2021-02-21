@@ -169,7 +169,7 @@ namespace SGAmod
             {
                 return "SpaceDiver";
             }
-            int[] vibraniumSet = { mod.ItemType("VibraniumMask"), mod.ItemType("VibraniumHelmet"), mod.ItemType("VibraniumHeadgear"), mod.ItemType("VibraniumMask"), mod.ItemType("VibraniumMask") };
+            int[] vibraniumSet = { mod.ItemType("VibraniumMask"), mod.ItemType("VibraniumHelmet"), mod.ItemType("VibraniumHeadgear"), mod.ItemType("VibraniumHood"), mod.ItemType("VibraniumHat") };
             if (vibraniumSet.Any(testby => testby == head.type) && body.type == mod.ItemType("VibraniumChestplate") && legs.type == mod.ItemType("VibraniumLeggings"))
             {
                 return "Vibranium";
@@ -382,7 +382,7 @@ namespace SGAmod
             {
                 grabRange += 48;
             }
-            if (item.maxStack > 1 && ((item.modItem != null && item.Throwing().thrown) || item.thrown) && player.armor[0].type == ModContent.ItemType<VibraniumHat>())
+            if (item.maxStack > 1 && ((item.modItem != null && (item.Throwing().thrown || item.modItem is IJablinItem)) || item.thrown) && player.armor[0].type == ModContent.ItemType<VibraniumHat>())
             {
                 grabRange += (int)(720 * player.Throwing().thrownVelocity);
             }
@@ -404,7 +404,7 @@ namespace SGAmod
             {
                 float speed = 0.025f;
                 bool pullIn = player.SGAPly().graniteMagnet;
-                if (item.maxStack > 1 && ((item.modItem != null && item.Throwing().thrown) || item.thrown) && player.armor[0].type == ModContent.ItemType<VibraniumHat>())
+                if (item.maxStack > 1 && ((item.modItem != null && (item.Throwing().thrown || item.modItem is IJablinItem)) || item.thrown) && player.armor[0].type == ModContent.ItemType<VibraniumHat>())
                 {
                     speed += 0.75f;
                     pullIn = true;
@@ -418,7 +418,7 @@ namespace SGAmod
 
                     if ((player.SGAPly().timer+item.whoAmI) % 10 == 0 && player.ownedProjectileCounts[ModContent.ProjectileType<VibraniumThrownExplosion>()]<20)
                     {
-                        Projectile.NewProjectile(item.Center.X, item.Center.Y, 0, 0, ModContent.ProjectileType<VibraniumThrownExplosion>(), (int)((100 * player.Throwing().thrownDamage)*MathHelper.Clamp((item.stack/10f),0.25f,5f)), 0, player.whoAmI, 0f, 0f);
+                        Projectile.NewProjectile(item.Center.X, item.Center.Y, 0, 0, ModContent.ProjectileType<VibraniumThrownExplosion>(), (int)((100 * player.Throwing().thrownDamage)*MathHelper.Clamp((item.stack/25f),0.5f,3f)), 0, player.whoAmI, 0f, 0f);
                     }
 
                     return true;

@@ -188,14 +188,49 @@ namespace SGAmod.Items.Tools
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 
-			float percenthit = MathHelper.Clamp(PickPower/60f, 0f,1f);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Effect fadeIn = SGAmod.FadeInEffect;
+
+			float percenthit = MathHelper.Clamp(PickPower / 60f, 0f, 1f);
+			float percenthit2 = MathHelper.Clamp((PickPower - 45) / 60f, 0f, 1f);
+
+			fadeIn.Parameters["alpha"].SetValue(1);
+			fadeIn.Parameters["strength"].SetValue(percenthit2);
+			fadeIn.Parameters["fadeColor"].SetValue(Color.Goldenrod.ToVector3());
+			fadeIn.Parameters["blendColor"].SetValue(lightColor.ToVector3());
+
+			fadeIn.CurrentTechnique.Passes["FadeIn"].Apply();
+
 			for (int i = 0; i < Pickaxes.Length; i += 1)
 			{
 				Texture2D tex = Main.itemTexture[Pickaxes[i]];
 				Vector2 offset = new Vector2(0, tex.Height*percenthit);
 				float angle = projectile.rotation + MathHelper.TwoPi * (i / (float)Pickaxes.Length);
-				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, new Rectangle(0, (int)(tex.Height * (1f-percenthit)),(int)(tex.Width* percenthit), (int)(tex.Height* (percenthit))), lightColor, angle, offset, projectile.scale, default, 0);
+				//spriteBatch.Draw(tex, projectile.Center - Main.screenPosition,null, lightColor, angle, offset, projectile.scale, default, 0);
+
+				//spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, new Rectangle(0, (int)(tex.Height * (1f-percenthit)),(int)(tex.Width* percenthit), (int)(tex.Height* (percenthit))), Color.White, angle, offset, projectile.scale, default, 0);
 			}
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			/*Effect RadialEffect = SGAmod.RadialEffect;
+
+			Texture2D mainTex = mod.GetTexture("GreyHeart");//Main.projectileTexture[projectile.type];
+
+			RadialEffect.Parameters["overlayTexture"].SetValue(mod.GetTexture("Space"));
+			RadialEffect.Parameters["alpha"].SetValue(1f);
+			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime*0.125f, Main.GlobalTime * 0.275f));
+			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(2f,1f));
+			RadialEffect.Parameters["ringScale"].SetValue(0.30f);
+			RadialEffect.Parameters["ringOffset"].SetValue(0.50f);
+			RadialEffect.Parameters["tunnel"].SetValue(false);
+
+			RadialEffect.CurrentTechnique.Passes["Radial"].Apply();
+
+			spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.White, 0, mainTex.Size()/2f, 32f, default, 0);*/
+
 			return true;
 		}
 

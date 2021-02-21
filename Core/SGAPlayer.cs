@@ -118,7 +118,7 @@ namespace SGAmod
 		public int tidalCharm = 0;
 		public bool lunarSlimeHeart = false;
 		public bool LifeFlower = false; public bool GeyserInABottle = false; public bool GeyserInABottleActive = false; public bool JavelinBaseBundle = false; public bool JavelinSpearHeadBundle = false; public bool PrimordialSkull = false;
-		public bool MatrixBuffp = false; public bool BoosterMagnet = false; public bool HoE = false; public bool CalamityRune = false;
+		public bool MatrixBuffp = false; public bool BoosterMagnet = false; public bool HoE = false; public bool CalamityRune = false; public bool RadSuit = false;
 		public int EnhancingCharm = 0;
 		public bool noactionstackringofrespite = false;
 		public bool enchantedShieldPolish = false; public bool diesIraeStone = false; public bool magusSlippers = false; public bool airTank = false; public bool murkyCharm = false;
@@ -381,6 +381,7 @@ namespace SGAmod
 			techdamage = 1f;
 			HoE = false;
 			CalamityRune = false;
+			RadSuit = false;
 			for (int a = 0; a < apocalypticalChance.Length; a++)
 				apocalypticalChance[a] = 0;
 			apocalypticalStrength = 1f;

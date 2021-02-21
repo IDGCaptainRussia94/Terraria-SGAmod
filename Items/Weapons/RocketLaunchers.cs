@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.Enums;
 using Idglibrary;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Weapons
 {
@@ -402,6 +403,66 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ItemID.GrenadeLauncher, 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
 			recipe.AddTile(mod.TileType("PrismalStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class RadioactiveSnowballCannon : ModItem, IRadioactiveItem
+	{
+		public int RadioactiveHeld() => 2;
+		public int RadioactiveInventory() => 1;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Radioactive Snowball Cannon");
+			Tooltip.SetDefault("'Sure Brain, sure...\nEnriches normal snowballs with radioactive isotopes" + "\n" + Idglib.ColorText(Color.Red, "You suffer Radiation 2 while holding this") + "\n" + Idglib.ColorText(Color.Red, "Radiation 1 if only in inventory"));
+		}
+		public override void UpdateInventory(Player player)
+		{
+			player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type, 60 * 3);
+		}
+
+		public override void SetDefaults()
+		{
+			var snd = item.UseSound;
+			item.CloneDefaults(ItemID.SnowballLauncher);
+			item.damage = 25;
+			item.UseSound = snd;
+			item.width = 48;
+			item.height = 48;
+			item.knockBack = 6;
+			item.value = 100000;
+			item.ranged = true;
+			item.rare = ItemRarityID.Yellow;
+			item.shootSpeed += 1f;
+		}
+
+		public override Vector2? HoldoutOffset()
+		{
+			return new Vector2(-18, -6);
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			player.SGAPly().timer = 1;
+			if (type == ProjectileID.SnowBallFriendly)
+				type = mod.ProjectileType("UraniumSnowballs");
+
+			SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageAttack, (int)position.X, (int)position.Y);
+			if (sound != null)
+				sound.Pitch -= 0.525f;
+
+			return true;
+
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.SnowballLauncher, 1);
+			recipe.AddIngredient(ModContent.ItemType<UraniumSnowballs>(), 250);
+			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}

@@ -260,7 +260,7 @@ namespace SGAmod
 
 					Texture2D texture = mod.GetTexture("BoostBar");
 
-					int offsetY = -texture.Height;
+					int offsetY = -texture.Height+SGAConfigClient.Instance.HUDDisplacement;
 
 					if (perc > 0)
 					{

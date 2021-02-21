@@ -129,7 +129,7 @@ namespace SGAmod
 			overpoweredMod = 0;// (ModLoader.GetMod("AFKPETS") != null ? 0.5f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0) +(ModLoader.GetMod("Luiafk") != null ? 2f : 0) +(ModLoader.GetMod("FargowiltasSouls") != null ? 2.5f : 0);
 							   //Why do people still use Luiafk in legit playthroughs? I donno...
 
-			Mod fargos = ModLoader.GetMod("Fargowiltas");
+				Mod fargos = ModLoader.GetMod("Fargowiltas");
 			if (fargos != null)
 			{
 				// AddSummon, order or value in terms of vanilla bosses, your mod internal name, summon  

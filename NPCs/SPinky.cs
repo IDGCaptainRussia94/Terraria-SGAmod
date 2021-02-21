@@ -1437,7 +1437,7 @@ namespace SGAmod.NPCs
 					hallowed.Parameters["alpha"].SetValue(0.750f);
 					hallowed.Parameters["prismColor"].SetValue(Color.White.ToVector3());
 					hallowed.Parameters["prismAlpha"].SetValue(0f);
-					hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));
+					hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("TiledPerlin"));
 					hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, Main.GlobalTime / 1f, Main.GlobalTime / 2f));
 					hallowed.Parameters["overlayAlpha"].SetValue(Math.Min((npc.ai[0] - 5000) / 60f, 20f));
 					hallowed.Parameters["overlayStrength"].SetValue(new Vector3(1f, 0.50f, 1f));

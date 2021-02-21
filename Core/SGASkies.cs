@@ -33,52 +33,59 @@ namespace SGAmod
 
 
 			}
-				
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, zoomitz);
 
-			int width = (int)(200f); int height = (int)(200f);
-
-			Texture2D beam = new Texture2D(Main.graphics.GraphicsDevice, width, height);
-			var dataColors = new Color[width * height];
-
-
-			///
-
-
-			for (int y = 0; y < height; y++)
-			{
-				for (int x = 0; x < width; x++)
-				{
-					float dist = (new Vector2(x, y) - new Vector2(width / 2, height / 2)).Length();
-						float alg = ((-Main.GlobalTime + ((float)(dist) / 0.5f)) / 1f);
-						dataColors[x + y * width] = (Main.hslToRgb(alg % 1f, 0.75f, 0.5f));
-				}
-			}
-
-			///
-
-
-			beam.SetData(0, null, dataColors, 0, width * height);
-			Color color = Color.White;
 			float tempcolor = SGAmod.HellionSkyalpha;
 
-			if (SGAmod.HellionSkyalpha > 0.30)
-			{
-				color = Color.Lerp(Color.White, Color.Black, Math.Min(0.9f, (SGAmod.HellionSkyalpha - 0.30f) * 3.50f));
-				tempcolor *= 1.5f;
-			}
-			if (HellionSky.spinornah)
-			{
-				Main.spriteBatch.Draw(beam, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, color * Math.Min(1f, tempcolor)*0.5f, Main.GlobalTime/4f, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(1920, 1080) * 12f, SpriteEffects.None, 0f);
-				Main.spriteBatch.Draw(beam, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, color * Math.Min(1f, tempcolor)*0.5f, -Main.GlobalTime / 4f, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(1920, 1080) * 12f, SpriteEffects.None, 0f);
+			int width = SGAConfigClient.Instance.HellionSkyDetail; int height = SGAConfigClient.Instance.HellionSkyDetail;
+			if (width == 0)
+				return;
 
-			}
-			else
+
+			if (tempcolor > 0)
 			{
-				Main.spriteBatch.Draw(beam, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, color * Math.Min(1f, tempcolor), rotation, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(1920, 1080) * 10f, SpriteEffects.None, 0f);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, zoomitz);
+
+				Texture2D beam = new Texture2D(Main.graphics.GraphicsDevice, width, height);
+				var dataColors = new Color[width * height];
+
+
+				///
+
+
+				for (int y = 0; y < height; y++)
+				{
+					for (int x = 0; x < width; x++)
+					{
+						float dist = (new Vector2(x, y) - new Vector2(width / 2, height / 2)).Length();
+						float alg = ((-Main.GlobalTime + ((float)(dist) / 0.5f)) / 1f);
+						dataColors[x + y * width] = (Main.hslToRgb(alg % 1f, 0.75f, 0.5f));
+					}
+				}
+
+				///
+
+
+				beam.SetData(0, null, dataColors, 0, width * height);
+				Color color = Color.White;
+
+				if (SGAmod.HellionSkyalpha > 0.30)
+				{
+					color = Color.Lerp(Color.White, Color.Black, Math.Min(0.9f, (SGAmod.HellionSkyalpha - 0.30f) * 3.50f));
+					tempcolor *= 1.5f;
+				}
+				float scaleBased = 200f/width;
+				if (HellionSky.spinornah)
+				{
+					Main.spriteBatch.Draw(beam, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, color * Math.Min(1f, tempcolor) * 0.5f, Main.GlobalTime / 4f, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(1920, 1080) * 12f* scaleBased, SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(beam, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, color * Math.Min(1f, tempcolor) * 0.5f, -Main.GlobalTime / 4f, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(1920, 1080) * 12f * scaleBased, SpriteEffects.None, 0f);
+
+				}
+				else
+				{
+					Main.spriteBatch.Draw(beam, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, color * Math.Min(1f, tempcolor), rotation, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(1920, 1080) * 10f * scaleBased, SpriteEffects.None, 0f);
+				}
 			}
-			//}
 
 		}
 
@@ -139,7 +146,7 @@ namespace SGAmod
 			//deathShader.Apply(null);
 			if (maxDepth >= 0 && minDepth < 0)
 			{
-				Texture2D texa = ModContent.GetTexture("SGAmod/noise");
+				Texture2D texa = ModContent.GetTexture("SGAmod/Noise");
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
@@ -234,7 +241,7 @@ namespace SGAmod
 			{
 				if (maxDepth >= singles[i,0] && minDepth < singles[i,1])
 				{
-					Texture2D texa = ModContent.GetTexture("SGAmod/noise");
+					Texture2D texa = ModContent.GetTexture("SGAmod/Noise");
 
 					int sizechunk = texa.Width;
 					for (int y = 0; y < Main.screenHeight + sizechunk; y += sizechunk)

@@ -104,13 +104,19 @@ namespace SGAmod
 		//Collision_TileCollision
 		static private Vector2 Collision_TileCollision(On.Terraria.Collision.orig_TileCollision orig, Vector2 Position, Vector2 Velocity, int Width, int Height, bool fallThrough = false, bool fall2 = false, int gravDir = 1)
 		{
-			foreach (Projectile projectile in Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<Items.Armors.VibraniumWall>() && !testby.hostile))
-            {
-				if (projectile.DistanceSQ(Position) < 16 * 16)
-                {
-					Player owner = Main.player[projectile.owner];
-					owner.SGAPly().ConsumeElectricCharge(20, 5, true);
-					return Vector2.Normalize(Position-owner.MountedCenter)*Velocity.Length();
+			if (SGAmod.vibraniumCounter > 0)
+			{
+				foreach (Projectile projectile in Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<Items.Armors.VibraniumWall>()))
+				{
+					if (projectile.DistanceSQ(Position) < 16 * 16)
+					{
+						if (!projectile.hostile)
+						{
+							Player owner = Main.player[projectile.owner];
+							owner.SGAPly().ConsumeElectricCharge(20, 5, true);
+							return Vector2.Normalize(Position - owner.MountedCenter) * Velocity.Length();
+						}
+					}
 				}
 			}
 
@@ -176,7 +182,7 @@ namespace SGAmod
 		{
 			orig(self);
 
-			if (SGAConfigClient.Instance.LavaBlending == false)
+			if (SGAConfigClient.Instance.SpecialBlending == false)
 				return;
 
 			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -192,7 +198,7 @@ namespace SGAmod
 		{
 			orig(self);
 
-			if (SGAConfigClient.Instance.SpecialBlending == false)
+			if (SGAConfigClient.Instance.LavaBlending == false)
 				return;
 
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);

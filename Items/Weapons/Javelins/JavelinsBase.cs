@@ -16,6 +16,18 @@ using SGAmod.Buffs;
 
 namespace SGAmod.Items.Weapons.Javelins
 {
+    public class JablinData
+    {
+        public string itemName;
+        public int dropChance;
+
+        public JablinData(string itemName,int dropChance)
+        {
+            this.itemName = itemName;
+            this.dropChance = dropChance;
+        }
+    }
+
     public enum JavelinType : byte
     {
         Stone,
@@ -33,8 +45,10 @@ namespace SGAmod.Items.Weapons.Javelins
         SwampSovnya
     }
 
-    public class StoneJavelin : ModItem
+    public class StoneJavelin : ModItem, IJablinItem
     {
+
+        public static List<JablinData> jablinData = new List<JablinData>();
 
         //public delegate int PerformCalculation(int x, int y);
         //public Action<string> messageTarget;
@@ -49,6 +63,20 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Stone Jab-lin");
+            StoneJavelin.jablinData.Add(new JablinData("StoneJavelin", 8));
+            StoneJavelin.jablinData.Add(new JablinData("IceJavelin", 8));
+            StoneJavelin.jablinData.Add(new JablinData("CrimsonJavelin", 8));
+            StoneJavelin.jablinData.Add(new JablinData("CorruptionJavelin", 8));
+            StoneJavelin.jablinData.Add(new JablinData("AmberJavelin", 8));
+            StoneJavelin.jablinData.Add(new JablinData("DynastyJavelin", 8));
+            StoneJavelin.jablinData.Add(new JablinData("PearlWoodJavelin", 8));
+            StoneJavelin.jablinData.Add(new JablinData("ShadowJavelin", 8));
+            StoneJavelin.jablinData.Add(new JablinData("SanguineBident", 0));
+            StoneJavelin.jablinData.Add(new JablinData("TerraTrident", 0));
+            StoneJavelin.jablinData.Add(new JablinData("CrimsonCatastrophe", 0));
+            StoneJavelin.jablinData.Add(new JablinData("ThermalJavelin", 8));
+            StoneJavelin.jablinData.Add(new JablinData("SwampSovnya", 0));
+
             //Tooltip.SetDefault("Shoots a spread of bullets");
         }
 
@@ -356,6 +384,30 @@ namespace SGAmod.Items.Weapons.Javelins
             if (stickin>-1)
                 return false;
             return base.CanHitNPC(target);
+        }
+
+        public override void Kill(int timeLeft)
+        {
+
+            if (projectile.owner == Main.myPlayer)
+            {
+                int dropChance = StoneJavelin.jablinData[(int)projectile.ai[1]].dropChance;
+                if (dropChance < 1)
+                    return;
+                // Drop a javelin item, 1 in 18 chance (~5.5% chance)
+                Main.NewText(StoneJavelin.jablinData[(int)projectile.ai[1]].itemName);
+                int item =
+                Main.rand.NextBool(dropChance)
+                    ? Item.NewItem(projectile.getRect(), mod.ItemType(StoneJavelin.jablinData[(int)projectile.ai[1]].itemName))
+                    : 0;
+
+                // Sync the drop for multiplayer
+                // Note the usage of Terraria.ID.MessageID, please use this!
+                if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
+                {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
+                }
+            }
         }
 
         public static void JavelinOnHit(NPC target, Projectile projectile, ref double damage)
@@ -705,11 +757,12 @@ namespace SGAmod.Items.Weapons.Javelins
                 if (projectile.ai[1] == (int)JavelinType.Thermal)
                 {
                     glow = ModContent.GetTexture("SGAmod/Items/GlowMasks/ThermalJavelin_Glow");
+                    drawColor = Color.White;
                 }
                     for (int k = 0; k < (stickin < 0 ? projectile.oldPos.Length : 1); k++)
                     {
                         Vector2 drawPos = new Vector2(projectile.oldPos[k].X + projectile.width / 2, projectile.oldPos[k].Y + projectile.height / 2) - Main.screenPosition;
-                        Color color = projectile.GetAlpha(drawColor) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                        Color color = (projectile.ai[1] == (int)JavelinType.Thermal ? Color.White : projectile.GetAlpha(drawColor)) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                         spriteBatch.Draw(texture, drawPos, new Rectangle?(), color * 0.5f, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f) - (((float)Math.PI / 2) * (facingleft ? 0f : -1f)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
                     if (glow != null)
                         spriteBatch.Draw(glow, drawPos, new Rectangle?(), color * 0.5f, projectile.rotation + (facingleft ? (float)(1f * Math.PI) : 0f) - (((float)Math.PI / 2) * (facingleft ? 0f : -1f)), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);

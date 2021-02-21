@@ -228,7 +228,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Breastplate");
-			Tooltip.SetDefault("10% faster item use times\n+1% increased damage and crit chance per 1000 Electric Charge\nGrants 25% increased radiation resistance and 500% increased recover rate\n+5000 Max Electric Charge");
+			Tooltip.SetDefault("10% faster item use times\n+1% increased damage and 0.5% crit chance per 1000 Electric Charge\nGrants 25% increased radiation resistance and 500% increased recover rate\n+5000 Max Electric Charge");
 		}
         public override bool Autoload(ref string name)
         {
@@ -250,7 +250,7 @@ namespace SGAmod.Items.Armors
 			sgaplayer.UseTimeMul += 0.10f;
 
 			float percentCharge = sgaplayer.electricCharge / DamageMul;
-			player.BoostAllDamage(percentCharge, (int)(percentCharge*100));
+			player.BoostAllDamage(percentCharge, (int)(percentCharge*50));
 
 			player.SGAPly().electricChargeMax += 5000;
 			player.GetModPlayer<IdgPlayer>().radresist += 0.25f;
@@ -270,6 +270,7 @@ namespace SGAmod.Items.Armors
 			float percentCharge = player.SGAPly().electricCharge / DamageMul;
 			player.BoostAllDamage(percentCharge, (int)(percentCharge * 100));
 			tooltips.Add(new TooltipLine(mod, "VibraniumChestplateDamageBoost", "Bonus Damage: "+ (percentCharge*100f).ToString("0.00")+"%"));
+			tooltips.Add(new TooltipLine(mod, "VibraniumChestplateDamageBoost", "Bonus Crit: " + (int)(percentCharge * 50f) + "%"));
 		}
 
 		public static void VibraniumHoverInPlace(SGAPlayer sgaplayer)
@@ -499,7 +500,9 @@ namespace SGAmod.Items.Armors
 			float dist = 80 + (float)Math.Sin((projectile.localAI[0]+(projectile.whoAmI*67f))/20f)*projectile.damage;
 			Vector2 pos = Owner.MountedCenter + (projectile.ai[1].ToRotationVector2()* dist);
 			projectile.Center += Owner.velocity+(pos - projectile.Center)/8f;
-        }
+			SGAmod.vibraniumCounter = 3;
+
+		}
 		public virtual bool DoCheck()
         {
 			Owner = Main.player[projectile.owner];

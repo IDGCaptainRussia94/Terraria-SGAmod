@@ -13,7 +13,7 @@ using AAAAUThrowing;
 
 namespace SGAmod.Items.Weapons.Javelins
 {
-    public class CrimsonCatastrophe : SanguineBident
+    public class CrimsonCatastrophe : SanguineBident, IJablinItem
     {
 
         public override float Stabspeed => 10f;
@@ -105,7 +105,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class TerraTrident : SanguineBident
+    public class TerraTrident : SanguineBident, IJablinItem
     {
 
         public override float Stabspeed => 3.6f;
@@ -218,7 +218,7 @@ namespace SGAmod.Items.Weapons.Javelins
         }
     }
 
-    public class SanguineBident : StoneJavelin
+    public class SanguineBident : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 3.6f;
@@ -340,7 +340,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class SwampSovnya: SanguineBident
+    public class SwampSovnya: SanguineBident, IJablinItem
     {
         public override float Stabspeed => 4.00f;
         public override float Throwspeed => 10f;
@@ -377,7 +377,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class ThermalJavelin : StoneJavelin
+    public class ThermalJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 4.00f;
@@ -412,7 +412,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class ShadowJavelin : StoneJavelin
+    public class ShadowJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.70f;
@@ -447,7 +447,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class PearlWoodJavelin : StoneJavelin
+    public class PearlWoodJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 3.00f;
@@ -484,7 +484,7 @@ namespace SGAmod.Items.Weapons.Javelins
     }
 
 
-    public class DynastyJavelin : StoneJavelin
+    public class DynastyJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.70f;
@@ -513,7 +513,7 @@ namespace SGAmod.Items.Weapons.Javelins
         }
     }
 
-    public class AmberJavelin : StoneJavelin
+    public class AmberJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.70f;
@@ -549,7 +549,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-        public class CorruptionJavelin : StoneJavelin
+        public class CorruptionJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.50f;
@@ -585,7 +585,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class CrimsonJavelin : StoneJavelin
+    public class CrimsonJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.20f;
@@ -621,7 +621,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class IceJavelin : StoneJavelin
+    public class IceJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.20f;

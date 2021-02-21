@@ -62,10 +62,10 @@ namespace SGAmod.Items.Consumable
 		public void AStarTiles(Point16 EndPoint, int stepSize)
 		{
 			Path.Clear();
-						state = (int)PathState.Calculating;
 
 			Task.Run(delegate ()
 			{
+				state = (int)PathState.Calculating;
 				int seed2 = seed;
 				if (seed == -1)
 					seed2 = (int)Main.GlobalTime * 7894;
@@ -198,7 +198,7 @@ namespace SGAmod.Items.Consumable
 							}
 						}
 
-						Thread.Sleep(50);
+						//Thread.Sleep(50);
 					}
 				}
 

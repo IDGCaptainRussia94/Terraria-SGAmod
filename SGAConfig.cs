@@ -72,6 +72,14 @@ namespace SGAmod
 		[DefaultValue(true)]
 		public bool EpicApocalypticals { get; set; }
 
+		[Label("HUD Y displacement")]
+		[Tooltip("adjust the verticle offset of the SGAmod HUD elements")]
+		[Increment(1)]
+		[Range(-300, 300)]
+		[DefaultValue(0)]
+		[Slider]
+		public int HUDDisplacement { get; set; }
+
 		[Header("Performance")]
 		[Label("Fog Detail")]
 		[Tooltip("More is more detailed, but also more demanding")]
@@ -80,6 +88,14 @@ namespace SGAmod
 		[DefaultValue(30)]
 		[Slider]
 		public int FogDetail { get; set; }
+
+		[Label("Hellion Sky Detail")]
+		[Tooltip("Lower this if Hellion's fight is lagging you, a value of 0 disables this.")]
+		[Increment(20)]
+		[Range(0, 300)]
+		[DefaultValue(200)]
+		[Slider]
+		public int HellionSkyDetail { get; set; }
 
 		[Label("Murk-lite")]
 		[Tooltip("Disables the fog from drawing during Murk's fight, and uses a dust indicator instead")]

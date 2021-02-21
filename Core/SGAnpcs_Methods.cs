@@ -240,8 +240,22 @@ namespace SGAmod
 								player.ConsumeItemRespectInfiniteAmmoTypes(ammo);
 							}
 						}
+					}
 
+					if (moddedplayer.RadSuit)
+                    {
+						IrradiatedExplosion(npc, (int)(damage * 1f * moddedplayer.apocalypticalStrength));
 
+						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageHealImpact, (int)npc.Center.X, (int)npc.Center.Y);
+						if (sound != null)
+							sound.Pitch += 0.525f;
+
+						int proj = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<RadioactivePool>(), (int)(damage * 1f * moddedplayer.apocalypticalStrength), projectile.knockBack, projectile.owner);
+						Main.projectile[proj].width += 80;
+						Main.projectile[proj].height += 80;
+						Main.projectile[proj].timeLeft += (int)(120*moddedplayer.apocalypticalStrength);
+						Main.projectile[proj].Center -= new Vector2(40, 40);
+						Main.projectile[proj].netUpdate = true;
 					}
 
 					if (moddedplayer.CalamityRune)
@@ -321,7 +335,7 @@ namespace SGAmod
 
 				if (crit && moddedplayer.molotovLimit>0 && projectile.Throwing().thrown)
 				{
-				crit = (Main.rand.Next(8) == 0);
+				crit = (Main.rand.Next(10) == 0);
 				}
 
 				if (player!=null && player.heldProj>=0)

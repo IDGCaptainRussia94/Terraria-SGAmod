@@ -1051,7 +1051,7 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 1;
 			item.Throwing().thrown = true;
 			item.thrown = false;
-			item.damage = 50;
+			item.damage = 40;
 			item.useTime = 60;
 			item.useAnimation = 60;
 			item.maxStack = 999;
@@ -1397,6 +1397,7 @@ namespace SGAmod.Items.Weapons
 			item.knockBack = 6;
 			item.maxStack = 999;
 			item.damage = 72;
+			item.crit = 15;
 			item.consumable = true;
 			item.UseSound = SoundID.Item1;
 			item.useAnimation = 30;

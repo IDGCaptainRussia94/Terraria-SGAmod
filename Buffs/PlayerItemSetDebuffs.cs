@@ -66,7 +66,7 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/BrokenImmortalityDebuff";
 			return true;
 		}
 		public override void SetDefaults()

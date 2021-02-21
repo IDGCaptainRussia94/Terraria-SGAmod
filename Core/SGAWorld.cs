@@ -125,6 +125,16 @@ namespace SGAmod
                 {
                     questvars[x] = 0;
                 }
+
+                if (!Main.dedServ)
+                {
+                    Item c0decrown = new Item();
+                    c0decrown.SetDefaults(mod.ItemType("CelestialCrown"));
+
+                    Main.armorHeadLoaded[c0decrown.headSlot] = true;
+                    Main.armorHeadTexture[c0decrown.headSlot] = SGAmod.RadSuitHeadTex;
+                }
+
             }
 
             WorldNoise = new NoiseGenerator(Main.worldName.GetHashCode());

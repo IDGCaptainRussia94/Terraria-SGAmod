@@ -19,6 +19,10 @@ namespace SGAmod
 	{
 
 	}
+	interface IJablinItem
+	{
+
+	}
 	interface IDrawAdditive
 	{
 		void DrawAdditive(SpriteBatch spriteBatch);

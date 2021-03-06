@@ -129,6 +129,7 @@ namespace SGAmod
 		public FlaskOfBlaze flaskBuff = default;
 		public bool dualityshades = false;
 		public bool gunslingerLegend = false;
+		public bool YoyoTricks = false;
 		public bool twinesoffate = false;
 		public bool MVMBoost = false;
 		public bool SybariteGem = false;
@@ -365,6 +366,7 @@ namespace SGAmod
 			Noselfdamage = false;
 			JaggedWoodenSpike = false; JuryRiggedSpikeBuckler = false; HeartGuard = false; GoldenCog = false;
 			MidasIdol = 0;
+			YoyoTricks = false;
 			OmegaSigil = false;
 			tpdcpu = false;
 			MurkyDepths = false;
@@ -1790,24 +1792,26 @@ namespace SGAmod
 					return;
 				}*/
 			}
-			if (SGAmod.Ability2Key.JustPressed)
-			{
-				if (vibraniumSet)
-				{
-					if (vibraniumSetWall)
-						vibraniumSetWall = false;
-					else
-						vibraniumSetWall = true;
-				}
-			}
 			if (SGAmod.ToggleRecipeHotKey.JustPressed)
 			{
 				if (vibraniumSet)
 				{
-					if (vibraniumSetPlatform)
-						vibraniumSetPlatform = false;
+					if (player.controlTorch)
+					{
+						if (vibraniumSetWall)
+							vibraniumSetWall = false;
+						else
+							vibraniumSetWall = true;
+					}
 					else
-						vibraniumSetPlatform = true;
+					{
+						if (vibraniumSetPlatform)
+							vibraniumSetPlatform = false;
+						else
+							vibraniumSetPlatform = true;
+
+						Main.PlaySound(SoundID.Zombie, (int)player.Center.X,(int)player.Center.Y, 68, 1f, vibraniumSetPlatform ? -0.25f : 0.35f);
+					}
 				}
 
 				if (Main.netMode != NetmodeID.Server)
@@ -2234,13 +2238,21 @@ namespace SGAmod
 		public override void RightClick(Player player)
 		{
 
+			List<int> loot = new List<int>();
+
+			loot.Add(Main.rand.NextBool() ? ItemID.TsunamiInABottle : (Main.rand.NextBool() ? ItemID.FartinaJar : ItemID.CloudinaBottle));
+			loot.Add(Main.rand.NextBool() ? ItemID.SailfishBoots : ItemID.HermesBoots);
+			loot.Add(SGAmod.Instance.ItemType("ThrowerPouch")); loot.Add(ItemID.GrapplingHook); loot.Add(ItemID.MiningHelmet);
+			loot.Add(Main.rand.NextBool() ? ItemID.TungstenPickaxe : ItemID.SilverPickaxe);
+
 			List<int> itemsbonus = new List<int>();
 
-			int[] loot = { ItemID.TsunamiInABottle, ItemID.FartinaJar, ItemID.CloudinaBottle, SGAmod.Instance.ItemType("ThrowerPouch"), ItemID.HermesBoots, ItemID.SailfishBoots, ItemID.GrapplingHook, ItemID.SilverPickaxe, ItemID.TungstenPickaxe, ItemID.MiningHelmet };
+			//int[] loot = { ItemID.TsunamiInABottle, ItemID.FartinaJar, ItemID.CloudinaBottle, SGAmod.Instance.ItemType("ThrowerPouch"), ItemID.HermesBoots, ItemID.SailfishBoots, ItemID.GrapplingHook, ItemID.SilverPickaxe, ItemID.TungstenPickaxe, ItemID.MiningHelmet };
 			int[] loot2 = { ItemID.ShinePotion, ItemID.BuilderPotion, ItemID.MiningPotion, ItemID.NightOwlPotion };
 			for (int zz = 0; zz < 3; zz++)
 			{
-				itemsbonus.Add(loot[Main.rand.Next(0, loot.Length)]);
+				int index = Main.rand.Next(0, loot.Count);
+				itemsbonus.Add(loot[index]);
 			}
 
 			Item item3 = new Item();

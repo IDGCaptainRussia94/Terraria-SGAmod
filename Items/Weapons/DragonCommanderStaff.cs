@@ -309,7 +309,7 @@ namespace SGAmod.Items.Weapons
 
 			if (projectile.ai[0] > 1)
 			{
-				TrailHelper trail = new TrailHelper("FadedBasicEffectPass", mod.GetTexture("noise"));
+				TrailHelper trail = new TrailHelper("FadedBasicEffectPass", mod.GetTexture("Noise"));
 				trail.projsize = projectile.Hitbox.Size() / 2f;
 				trail.coordOffset = new Vector2(0, Main.GlobalTime * -0.5f);
 				trail.trailThickness = 6;

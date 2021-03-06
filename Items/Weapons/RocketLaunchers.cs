@@ -427,7 +427,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			var snd = item.UseSound;
-			item.CloneDefaults(ItemID.SnowballLauncher);
+			item.CloneDefaults(ItemID.SnowballCannon);
 			item.damage = 25;
 			item.UseSound = snd;
 			item.width = 48;
@@ -446,11 +446,12 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
+			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 32f;
 			player.SGAPly().timer = 1;
 			if (type == ProjectileID.SnowBallFriendly)
-				type = mod.ProjectileType("UraniumSnowballs");
+				type = mod.ProjectileType("UraniumSnowballsProg");
 
-			SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageAttack, (int)position.X, (int)position.Y);
+			SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_GoblinBomberThrow, (int)position.X, (int)position.Y);
 			if (sound != null)
 				sound.Pitch -= 0.525f;
 
@@ -460,7 +461,7 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.SnowballLauncher, 1);
+			recipe.AddIngredient(ItemID.SnowballCannon, 1);
 			recipe.AddIngredient(ModContent.ItemType<UraniumSnowballs>(), 250);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this, 1);

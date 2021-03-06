@@ -1224,17 +1224,17 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rad Suit");
-			Tooltip.SetDefault("'Deflects punching at a molecular level!'\nGrants 50% increased radiation resistance\nYou create bursts of Radiation on enemies when you score an Apocalyptical\nEnemies killed while Irradiated explode\nDamage done is boosted by your Apocalyptical Strength");
+			Tooltip.SetDefault("'Deflects punching at a molecular level!'\nGrants 50% increased radiation resistance and immunity to Radiation One\nYou create bursts of Radiation on enemies when you score an Apocalyptical\nEnemies killed while Irradiated explode\nDamage done is boosted by your Apocalyptical Strength");
 		}
 		public override string Texture
 		{
 			get { return ("SGAmod/Items/Accessories/RadSuit"); }
 		}
-
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.GetModPlayer<SGAPlayer>().RadSuit = true;
 			player.GetModPlayer<IdgPlayer>().radresist += 0.50f;
+			player.buffImmune[ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type] = true;
 		}
 
 		public override void SetDefaults()
@@ -1257,6 +1257,39 @@ namespace SGAmod.Items.Accessories
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
+		}
+	}
+
+	public class YoyoTricks : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Yoyo Threads");
+			Tooltip.SetDefault("Increases Yoyo velocity by 25%, does more damage the further out on the line it is\nCaps at 15% boost at max range\nHaving a longer reach can boost this even higher");
+		}
+		public override string Texture
+		{
+			get { return ("Terraria/Item_"+(Main.rand.NextBool() ? ItemID.GreenThread : ItemID.PinkThread)); }
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb((Main.GlobalTime / 5f) % 1f, 0.50f, 0.75f);
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().YoyoTricks = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 2);
+			item.rare = ItemRarityID.LightRed;
+			item.accessory = true;
 		}
 	}
 
@@ -1654,7 +1687,7 @@ namespace SGAmod.Items.Accessories
 		public override void OnWear(SGAPlayer player)
 		{
 			player.damagetaken += 0.1f;
-			player.apocalypticalChance[3] += 4.0;
+			player.apocalypticalChance[3] += 3.0;
 		}
 	}
 
@@ -1686,7 +1719,7 @@ namespace SGAmod.Items.Accessories
 		public override void OnWear(SGAPlayer player)
 		{
 			player.morespawns += 0.5f;
-			player.apocalypticalChance[0] += 4.0;
+			player.apocalypticalChance[0] += 3.0;
 		}
 	}
 
@@ -1719,7 +1752,7 @@ namespace SGAmod.Items.Accessories
 		{
 			if (Main.rand.Next(0, 300) == 1)
 				player.player.AddBuff(BuffID.Bleeding, 200);
-			player.apocalypticalChance[2] += 4.0;
+			player.apocalypticalChance[2] += 3.0;
 		}
 	}
 
@@ -1761,7 +1794,7 @@ namespace SGAmod.Items.Accessories
 		public virtual void OnWear(SGAPlayer player)
 		{
 			player.player.buffImmune[BuffID.WellFed] = true;
-			player.apocalypticalChance[1] += 4.0;
+			player.apocalypticalChance[1] += 3.0;
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3235,7 +3268,6 @@ namespace SGAmod.Items.Accessories
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
-
 	}
 
 	public class EnchantedShieldPolish : ModItem
@@ -3290,6 +3322,53 @@ namespace SGAmod.Items.Accessories
 			item.value = Item.buyPrice(silver: 30);
 			item.rare = ItemRarityID.Orange;
 			item.accessory = true;
+		}
+	}
+
+	public class MagicianGear : DruidicSneakers
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Magician's Gear");
+			Tooltip.SetDefault("'Wanna see a magic trick?'\n+20% magic damage and 5% crit chance if not Mana Sick\n"+Language.GetTextValue("ItemTooltip.CelestialMagnet")+"\nGrants the effects of:\n-Star Collector\n-Enchanted Shield Polish\n-Druidic Sneakers");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			SGAPlayer sgaply = player.SGAPly();
+			sgaply.starCollector = true;
+			ModContent.GetInstance<EnchantedShieldPolish>().UpdateAccessory(player, hideVisual);
+			player.manaMagnet = true;
+			if (!player.manaSick)
+			{
+				player.magicDamage += 0.20f;
+				player.magicCrit += 5;
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.buyPrice(silver: 30);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<DruidicSneakers>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<StarCollector>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<EnchantedShieldPolish>(), 1);
+			recipe.AddIngredient(ItemID.CelestialEmblem, 1);
+			recipe.AddIngredient(ItemID.Bunny, 1);
+			recipe.AddIngredient(ItemID.TaxCollectorsStickOfDoom, 1);
+			recipe.AddIngredient(ItemID.MagicHat, 1);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
 		}
 	}
 
@@ -3780,6 +3859,8 @@ namespace SGAmod.Items.Accessories
 
 	public class GraniteMagnet : Weapons.Shields.CorrodedShield, IHitScanItem
 	{
+		public override string ShowPercentText => "none";
+		public override bool CanBlock => false;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Granite Magnet");

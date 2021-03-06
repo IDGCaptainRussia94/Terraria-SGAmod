@@ -309,7 +309,7 @@ namespace SGAmod.NPCs.Wraiths
 						npc.velocity = npc.velocity * 0.86f;
 						if (npc.ai[0] % 20 == 0 && npc.ai[0] % 900 > 650)
 						{
-							NPC findthem = Main.npc[NPC.FindFirstNPC(mod.NPCType("CobaltWraith"))];
+							//NPC findthem = Main.npc[NPC.FindFirstNPC(mod.NPCType("CobaltWraith"))];
 							//int arrowType = SGAWorld.NightmareHardcore > 0 && !(findthem.modNPC as CobaltWraith).raged ? mod.ProjectileType("UnmanedArrow2") : ProjectileID.WoodenArrowHostile;
 							int arrowType = ProjectileID.WoodenArrowHostile;
 							List<Projectile> one = Idglib.Shattershots(npc.Center, npc.Center + new Vector2(-15 * npc.spriteDirection, 0), new Vector2(0, 0), arrowType, 20, 20, 0, 1, true, (Main.rand.Next(-100, 100) * 0.000f) - npc.rotation, true, 300);

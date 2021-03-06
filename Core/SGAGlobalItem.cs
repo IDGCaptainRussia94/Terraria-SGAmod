@@ -59,12 +59,49 @@ namespace SGAmod
 
         public override bool CanUseItem(Item item, Player player)
         {
-            if ((player.SGAPly().ReloadingRevolver>0) && item.damage > 0) {
+            if ((player.SGAPly().ReloadingRevolver > 0) && item.damage > 0)
+            {
                 return false;
-            } else {
+            }
+            else
+            {
                 return base.CanUseItem(item, player);
             }
         }
+
+        public override bool PreDrawTooltipLine(Item item,DrawableTooltipLine line, ref int yOffset)
+        {
+            if (item.modItem != null && item.modItem is IAuroraItem)
+            {
+                if (line.mod == "Terraria" && line.Name == "ItemName")
+                {
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Main.UIScaleMatrix);
+
+                    Effect hallowed = SGAmod.HallowedEffect;
+
+                    Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
+
+                    hallowed.Parameters["alpha"].SetValue(0.5f);
+                    hallowed.Parameters["prismColor"].SetValue(Items.Placeable.LuminousAlter.AuroraLineColor.ToVector3());
+                    hallowed.Parameters["rainbowScale"].SetValue(0.25f);
+                    hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
+                    hallowed.Parameters["overlayTexture"].SetValue(SGAmod.PearlIceBackground);
+                    hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, Main.GlobalTime / 14f, 0));
+                    hallowed.Parameters["overlayAlpha"].SetValue(1.5f);
+                    hallowed.Parameters["overlayStrength"].SetValue(new Vector3(1f, 0f, 0f));
+                    hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+                    hallowed.CurrentTechnique.Passes["PrismNoRainbow"].Apply();
+
+                    Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                    return false;
+                }
+            }
+            return true;
+        }
+
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
@@ -238,12 +275,8 @@ namespace SGAmod
                 string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt skybridge below your feet\nYou can land on this bridge while falling down\nHold Down to fall through\nThis consumes electric charge while active, "+Idglib.ColorText(Color.Red,"and will trigger a shield break on deplete");
 
                 s = "Not Binded!";
-                foreach (string key in SGAmod.Ability2Key.GetAssignedKeys())
-                {
-                    s = key;
-                }
 
-                string text2 = "Press the 'Abilities 2' (" + s + ") Hotkey to phase a wall around where you aim\nThis wall is treated as solid tiles in most cases\nThis consumes electric charge on activate and damage, will trigger a shield break on deplete";
+                string text2 = "If while holding the AutoSelect key, phase a wall around where you aim instead\nThis wall is treated as solid tiles in most cases\nThis consumes electric charge on activate and damage, will trigger a shield break on deplete";
                 player.setBonus = text1+"\n"+ text2 + "\nGain an additional free Cooldown Stack";
                 sgaplayer.MaxCooldownStacks += 1;
                 sgaplayer.vibraniumSet = true;
@@ -959,7 +992,27 @@ namespace SGAmod
 
     }
 
-        public class TrapPrefix : ModPrefix
+    public class BustedPrefix : TrapPrefix
+    {
+        public override PrefixCategory Category { get { return PrefixCategory.AnyWeapon; } }
+
+        public BustedPrefix(int misc)
+        {
+            this.misc = misc;
+        }
+        public override bool CanRoll(Item item)
+        {
+            return true;
+        }
+    }
+    public class BustedAccessoryPrefix : BustedPrefix
+    {
+        public override PrefixCategory Category { get { return PrefixCategory.Accessory; } }
+
+        public BustedAccessoryPrefix(int misc) : base(misc) { }
+    }
+
+    public class TrapPrefix : ModPrefix
     {
         public float armorbreak = 0f;
         public float damage = 0f;
@@ -999,6 +1052,12 @@ namespace SGAmod
         {
             if (base.Autoload(ref name))
             {
+                if (GetType() == typeof(BustedPrefix))
+                {
+                    mod.AddPrefix("Busted", new BustedPrefix(2));
+                    mod.AddPrefix("Screwed Up", new BustedAccessoryPrefix(2));
+                }
+
                 if (GetType() == typeof(ShieldPrefix))
                 {
                     mod.AddPrefix("Defensive", new ShieldPrefix(3));
@@ -1009,7 +1068,6 @@ namespace SGAmod
                     mod.AddPrefix("Sundering", new TrapPrefix(0.08f, 0.10f));
                     mod.AddPrefix("Undercut", new TrapPrefix(0.12f, 0.10f));
                     mod.AddPrefix("Razor Sharp", new TrapPrefix(0.2f, 0.15f));
-                    mod.AddPrefix("Busted", new TrapPrefixAccessory(0,0,2));
                 }
                 if (GetType() == typeof(TrapPrefixAccessory))
                 {
@@ -1181,6 +1239,14 @@ namespace SGAmod
             {
                 return true;
             }
+        }
+
+        public override bool CanEquipAccessory(Item item, Player player, int slot)
+        {
+            if (misc != 2)
+                return base.CanUseItem(item, player);
+            else
+                return false;
         }
 
         public override bool CanUseItem(Item item, Player player)

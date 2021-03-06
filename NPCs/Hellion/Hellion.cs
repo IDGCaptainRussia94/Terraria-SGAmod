@@ -708,7 +708,17 @@ namespace SGAmod.NPCs.Hellion
 					RippleBoom.MakeShockwave(npc.Center, 8f, 2f, 20f, 100, 3f, true);
 					CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.DarkRed, "TYRANT'S GLARE!", true, false);
 					hell.HellionTaunt("No need to hold back anymore!");
+					if (hell.tyrant < 1)
+                    {
+						npc.defense += 100;
+						npc.defDefense += 100;
+						for(int i=0;i < npc.buffImmune.Length;i+=1)
+                        {
+							npc.buffImmune[i] = true;
+						}
+					}
 					hell.tyrant = 1;
+					npc.netUpdate = true;
 					Main.PlaySound(15, (int)npc.Center.X, (int)npc.Center.Y, 2, 1f, -0.5f);
 				}
 
@@ -2550,8 +2560,8 @@ namespace SGAmod.NPCs.Hellion
 
 				CircleAura(spriteBatch,drawColor, rematch ? alphaeffect : 1f);
 
-				alphaeffect = 1f;
-				/*for (int i = 0; i < 720; i += 1)
+				/*alphaeffect = 1f;
+				for (int i = 0; i < 720; i += 1)
 				{
 					float angle = (2f * (float)Math.PI / 720f * i) + inrc;
 					float dist = (float)noescapeaurasize * auradraweffect;

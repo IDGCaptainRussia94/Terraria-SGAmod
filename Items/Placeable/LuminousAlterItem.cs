@@ -23,6 +23,7 @@ namespace SGAmod.Items.Placeable
 		public static void InitLuminousCrafting()
 		{
 			AddLuminousAlterRecipe(ModContent.ItemType<AuroraTear>(),ModContent.ItemType<AuroraTearAwoken>(), 60 * 300, 1);
+			AddLuminousAlterRecipe(ItemID.FallenStar,ModContent.ItemType<PrismaticBansheeStar>(), 60 * 150, 20,1);
 			AddLuminousAlterRecipe(ItemID.PinkGel, ModContent.ItemType<Prettygel>(), 60 * 45, 20, 1);
 			AddLuminousAlterRecipe(ItemID.SoulofLight, ModContent.ItemType<IlluminantEssence>(), 60 * 8, 1);
 			AddLuminousAlterRecipe(ItemID.Mushroom, ItemID.GlowingMushroom, 60 * 12, 1, 10);
@@ -105,7 +106,7 @@ namespace SGAmod.Items.Placeable
 			return false;
 		}
 	}
-	public class LuminousAlter : ModItem
+	public class LuminousAlter : ModItem, IAuroraItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -117,7 +118,7 @@ namespace SGAmod.Items.Placeable
 			item.maxStack = 999;
 			item.width = 26;
 			item.height = 14;
-			item.value = 1;
+			item.value = Item.sellPrice(0, 2, 50, 0);
 			item.rare = ItemRarityID.Cyan;
 			item.alpha = 0;
 			item.useTurn = true;
@@ -136,7 +137,7 @@ namespace SGAmod.Items.Placeable
 				return Color.Lerp(rainbowColor, Color.Lerp(Color.Pink, Color.Aqua, 0.5f + (float)Math.Sin(Main.GlobalTime * 0.735f)), 0.5f + (float)Math.Sin(Main.GlobalTime * 0.375f));
 			}
         }
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		/*public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			foreach (TooltipLine line in tooltips)
 			{
@@ -146,8 +147,7 @@ namespace SGAmod.Items.Placeable
 					line.overrideColor = AuroraLineColor;
 				}
 			}
-		}
-
+		}*/
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);

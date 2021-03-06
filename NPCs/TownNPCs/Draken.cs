@@ -588,12 +588,22 @@ namespace SGAmod.NPCs.TownNPCs
 
 					if (modplayer.ExpertisePointsFromBosses.Count > 0)
 					{
-
 						him2 = new NPC();
 						if (modplayer.ExpertisePointsFromBossesModded[0] != "")
+						{
 							him2.SetDefaults(mod.NPCType(modplayer.ExpertisePointsFromBossesModded[0]));
-						else
-							him2.SetDefaults(modplayer.ExpertisePointsFromBosses[0]);
+						}
+                        else
+						{
+							List<int> stringa = new List<int>(modplayer.ExpertisePointsFromBosses);
+							while ((WorldGen.crimson && (stringa[0] == NPCID.EaterofWorldsBody || stringa[0] == NPCID.EaterofWorldsTail || stringa[0] == NPCID.EaterofWorldsHead)) ||
+								(!WorldGen.crimson && stringa[0] == NPCID.BrainofCthulhu))
+								stringa.RemoveAt(0);
+
+
+							him2.SetDefaults(stringa[0]);
+						}
+
 						if (him2 != null)
 						{
 							adder = " The very next target is a(n) " + him2.FullName+". "+ GetNextItem();

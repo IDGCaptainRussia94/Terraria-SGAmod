@@ -1,6 +1,6 @@
 ﻿matrix WorldViewProjection;
 
-//Shader largly by Boffin and used and modified with permission!
+//Shader originally by Boffin and used and heavily modified by IDGCaptainRussia94 with permission! Do not use without his (Boffin) permission!
 
 struct VertexShaderInput
 {
@@ -32,7 +32,8 @@ sampler imageSampler = sampler_state
     AddressV = Wrap;
 };
 
-//These 2 functions came from here https://www.chilliant.com/rgb2hsv.html
+//These following 2 functions came from here https://www.chilliant.com/rgb2hsv.html (Copyright © 2002-2020 Ian Taylor)
+//While not to the extent as in Hallowed.fx, This code also has been modified slightly to meet my needs for this shader
 
   float3 HUEtoRGB(in float H)
   {
@@ -79,7 +80,6 @@ float4 BasicEffect(VertexShaderOutput input) : COLOR
 //Same as above, but now faded on the X axis
 float4 BasicEffectFaded(VertexShaderOutput input) : COLOR
 {
-
 	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
 	pixel = saturate(pixel);
 	return pixel * sin(input.TextureCoordinates.x * 3.14159265);
@@ -88,7 +88,6 @@ float4 BasicEffectFaded(VertexShaderOutput input) : COLOR
 //Same as above, but now faded on the Y axis
 float4 BasicEffectFadedY(VertexShaderOutput input) : COLOR
 {
-
 	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
 	pixel = saturate(pixel);
 	return pixel * (min(sin(input.TextureCoordinates.y * 3.14159265)*yFade,1.0000000));
@@ -103,9 +102,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 //The above but on both axis
 float4 MainPSSinShade(VertexShaderOutput input) : COLOR
 {
-	float base = sin(input.TextureCoordinates.y * 3.14159265);
+    float2 coords = (2 * input.TextureCoordinates - 1) * 1.125;
+    float dist = abs(sqrt((coords.x * coords.x) + (coords.y * coords.y)));
+	float4 pixel = input.Color * (1.00-clamp(dist,0,1));
+	pixel = saturate(pixel);
 
-	return input.Color * (sin(input.TextureCoordinates.x * 3.14159265)*base) * strength;
+	return pixel * strength;
 }
 
 //not used, purpose not known, left over code by Boffin

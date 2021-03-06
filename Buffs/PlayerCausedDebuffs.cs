@@ -86,7 +86,7 @@ namespace SGAmod.Buffs
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/TargetedDebuff";
 			return true;
 		}
 		public override void SetDefaults()
@@ -103,7 +103,7 @@ namespace SGAmod.Buffs
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/PetrifiedDebuff";
 			return true;
 		}
 		public override void SetDefaults()
@@ -124,7 +124,7 @@ namespace SGAmod.Buffs
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/MarkedDebuff";
 			return true;
 		}
 		public override void SetDefaults()
@@ -242,7 +242,7 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/DankSlowDebuff";
 			return true;
 		}
 		public override void SetDefaults()
@@ -287,7 +287,7 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AcidBurn";
+			texture = "SGAmod/Buffs/RustBurnDebuff";
 			return true;
 		}
 
@@ -332,7 +332,7 @@ namespace SGAmod.Buffs
 		}
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "Terraria/Buff_" + BuffID.Burning;
+			texture = "SGAmod/Buffs/LavaBurnDebuff";
 			return true;
 		}
 		public override void Update(Player player, ref int buffIndex)

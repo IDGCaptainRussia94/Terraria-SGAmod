@@ -111,10 +111,10 @@ namespace SGAmod.NPCs
 			npc.DeathSound = SoundID.NPCDeath6;
 			npc.value = Item.buyPrice(0, 5, 0);
 		}
-		public override string Texture
+		/*public override string Texture
 		{
-			get { return ("Terraria/Projectile_" + ProjectileID.Starfury); }
-		}
+			get { return ("SGAmod/Items/Consumable/PrismaticBansheeStar"); }
+		}*/
 
         public override void NPCLoot()
         {
@@ -359,7 +359,7 @@ namespace SGAmod.NPCs
 			}
 		}
 
-		public static void DrawPrismCore(SpriteBatch spriteBatch, Color drawColor,Vector2 drawWhere,float rotter,float scale = 1,float scaleup=96)
+		public static void DrawPrismCore(SpriteBatch spriteBatch, Color drawColor,Vector2 drawWhere,float rotter,float scale = 1,float scaleup=96,int startingpoint=0)
         {
 			Vector2 drawPos = drawWhere - Main.screenPosition;
 			Texture2D tex2 = Main.projectileTexture[SGAmod.Instance.ProjectileType("JavelinProj")];
@@ -370,7 +370,8 @@ namespace SGAmod.NPCs
 				{
 					float rotAngle = f + ((rotter + (i / 8f)) / ((-i * 2) + 16f)) * (((i - 24) % 12 == 0) ? 1f : -1f);
 					Vector2 vecAngle = Vector2.UnitX.RotatedBy(rotAngle)*scale;
-					spriteBatch.Draw(tex2, drawPos + vecAngle * i, null, Color.Magenta * peralpha * (1f - (i / 84f)),rotAngle + MathHelper.PiOver2, (tex2.Size() / 2f), scale, SpriteEffects.None, 0f);
+					float fadeOut = 84f * (scaleup/84f);
+					spriteBatch.Draw(tex2, drawPos + vecAngle * (startingpoint+i), null, Color.Magenta * peralpha * (1f - (i / fadeOut)),rotAngle + MathHelper.PiOver2, (tex2.Size() / 2f), scale, SpriteEffects.None, 0f);
 				}
 			}
 
@@ -379,7 +380,7 @@ namespace SGAmod.NPCs
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
 			Vector2 drawPos = npc.Center - Main.screenPosition;
-			Texture2D texture = SGAmod.PrismBansheeTex;
+			Texture2D texture = ModContent.GetTexture("SGAmod/NPCs/PrismicBanshee");// SGAmod.PrismBansheeTex;
 			Texture2D tex = Main.npcTexture[npc.type];
 			//Texture2D tex3 = Main.projectileTexture[ProjectileID.CultistBossIceMist];
 
@@ -389,7 +390,7 @@ namespace SGAmod.NPCs
 
 			float scaleEffect = (float)(Math.Sin((npc.ai[1] / 240f) * MathHelper.Pi));
 
-			DrawPrismCore(spriteBatch,drawColor,npc.Center,npc.localAI[0],npc.scale+(scaleEffect*2f));
+			DrawPrismCore(spriteBatch,drawColor,npc.Center,npc.localAI[0],npc.scale+(scaleEffect*2f),128,(int)MathHelper.Clamp(npc.localAI[0]/8f,0,24));
 
 			float strength = 1f;
 
@@ -414,7 +415,7 @@ namespace SGAmod.NPCs
 						}
 
 
-						TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
+						TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
 						trail.color = delegate (float percent)
 						{
 							return Color.Lerp(Main.hslToRgb(((-npc.localAI[0] / 90f) + percent) % 1f, 1f, 0.85f), Color.Magenta, Math.Max((float)Math.Sin(npc.localAI[0] / 35f), 0f));
@@ -437,18 +438,18 @@ namespace SGAmod.NPCs
 
 			hallowed.Parameters["alpha"].SetValue(1);
 			hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
-			hallowed.Parameters["prismAlpha"].SetValue(0.85f);
+			hallowed.Parameters["prismAlpha"].SetValue(0);
 			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("TiledPerlin"));
 			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -npc.localAI[0] / 250f, npc.localAI[0] / 150f));
-			hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
+			hallowed.Parameters["overlayAlpha"].SetValue(0.20f);
 			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, npc.localAI[0] / 150f));
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
 			hallowed.Parameters["rainbowScale"].SetValue(1f);
-			hallowed.Parameters["overlayScale"].SetValue(new Vector2(2f, 2f));
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(2f, 4f));
 
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
-			spriteBatch.Draw(texture, drawPos, null, Color.White, npc.rotation, new Vector2(texture.Width, texture.Height / 1.20f) / 2f, npc.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(texture, drawPos, new Rectangle(0,0, texture.Width, texture.Height/2), Color.White, npc.rotation, new Vector2(texture.Width, (texture.Height/2) * 1.15f) / 2f, npc.scale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -461,6 +462,7 @@ namespace SGAmod.NPCs
 			hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
 			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, npc.localAI[0] / 150f));
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+			hallowed.Parameters["rainbowScale"].SetValue(1f);
 			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
 
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
@@ -474,7 +476,6 @@ namespace SGAmod.NPCs
 					spriteBatch.Draw(handtex, new Vector2(hand.Center.X, hand.Center.Y) - Main.screenPosition, null, Color.White, hand.rotation, handtex.Size() / 2f, hand.scale, hand.spriteDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 				}
 			}
-
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -526,7 +527,7 @@ namespace SGAmod.NPCs
 				VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
 
 				Vector3 screenPos = (npc.Center - Main.screenPosition).ToVector3();
-				float size = 48f + scaleEffect*(320f);
+				float size = 64f + scaleEffect*(360f);
 
 				vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-size, -size, 0), Color.Purple, new Vector2(0, 0));
 				vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-size, size, 0), Color.Purple, new Vector2(0, 1));
@@ -1048,7 +1049,7 @@ namespace SGAmod.NPCs
 
 			if (hinted.strength > 0)
 			{
-				TrailHelper trail = new TrailHelper("DefaultPass", SGAmod.Instance.GetTexture("noise"));
+				TrailHelper trail = new TrailHelper("DefaultPass", SGAmod.Instance.GetTexture("Noise"));
 				trail.color = delegate (float percent)
 				{
 					return Color.Magenta;
@@ -1224,7 +1225,7 @@ Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerS
 		}
 		public override string Texture
 		{
-			get { return ("Terraria/Projectile_" + ProjectileID.Starfury); }
+			get { return ("SGAmod/Items/Consumable/PrismaticBansheeStar"); }
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)

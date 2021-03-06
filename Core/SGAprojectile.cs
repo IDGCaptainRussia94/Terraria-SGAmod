@@ -88,10 +88,19 @@ namespace SGAmod
 			if (projectile.friendly)
 			{
 				Player owner = Main.player[projectile.owner];
+				SGAPlayer sgaply = owner.SGAPly();
 				if (owner != null)
 				{
+					float damageIncrease = 1f;
+					if (projectile.aiStyle == 99)
+					{
+						damageIncrease += projectile.Distance(owner.MountedCenter) / ((float)ProjectileID.Sets.YoyosMaximumRange[projectile.type])*0.15f;
+					}
 					if (projectile.melee && owner.heldProj == projectile.whoAmI || (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile))
-						damage = (int)((float)damage * owner.SGAPly().trueMeleeDamage);
+						damageIncrease += (sgaply.trueMeleeDamage);
+
+					damage = (int)((float)damage * damageIncrease);
+
 				}
 			}
 			if (damageReduce > 1)

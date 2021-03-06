@@ -27,8 +27,8 @@ static const float pi = 3.14159265359;
 // This is a shader. You are on your own with shaders. Compile shaders in an XNB project.
 //Shader by IDGCaptainRussia94 (2nd)
 
-//Except this part below, these 2 functions came from here https://www.chilliant.com/rgb2hsv.html
-//This code has been modified slightly to meet my needs for this shader!
+//Except this part below, these following 2 functions came from here https://www.chilliant.com/rgb2hsv.html (Copyright © 2002-2020 Ian Taylor)
+//This code has been slightly modified to meet the needs for this shader!
 
   float3 HUEtoRGB(in float H)
   {
@@ -86,6 +86,39 @@ float4 PrismFunction(float2 coords : TEXCOORD0) : COLOR0
 	return color*alpha;
 }
 
+float4 NoRainbowBlendFunction(float2 coords : TEXCOORD0) : COLOR0
+{
+	float4 color = tex2D(uImage0, coords);
+    	if (!any(color))
+		return color;
+
+        float sinOffset = sin(((overlayStrength.z)+coords.y)*pi)*overlayStrength.y;
+
+    float luminosity = (color.r + color.g + color.b) / 3;
+    float4 white = float4(1, 1, 1,1);
+    float3 blendedColor = color.rgb*prismColor.rgb;
+    float3 unshadedColor = color.rgb;
+
+    color.rgb = lerp(unshadedColor,blendedColor,prismAlpha);
+    float3 shadedColor = color.rgb;
+
+    if (overlayAlpha>0)
+    {
+    float2 effectCoords = float2(overlayScale*(coords+float2(overlayProgress.x+sinOffset,overlayProgress.y)));
+        float4 colorOverlay = tex2D(overlaytexsampler, float2(effectCoords.x%1.0,effectCoords.y%1.0));
+        if (colorOverlay.r > overlayMinAlpha)
+        {
+        colorOverlay.rgb = colorOverlay.rgb*overlayStrength.x;
+        color.rgb = lerp(shadedColor,colorOverlay.rgb,(colorOverlay.g-overlayMinAlpha)*(overlayAlpha+overlayMinAlpha));
+        }
+    }
+
+    color.rgb *= luminosity;
+    color = saturate(color);
+
+	return color*alpha;
+}
+
 float4 FadeFunction(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 inputColor = tex2D(uImage0, coords);
@@ -98,6 +131,10 @@ technique Technique1
     pass Prism
     {
         PixelShader = compile ps_2_0 PrismFunction();
+    }
+        pass PrismNoRainbow
+    {
+        PixelShader = compile ps_2_0 NoRainbowBlendFunction();
     }
         pass ColorFade
     {

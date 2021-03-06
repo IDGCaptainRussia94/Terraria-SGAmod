@@ -48,41 +48,79 @@ namespace SGAmod.Dimensions
     {
         public static LimborinthLoad instance;
         float turning = 0f;
+        float grow = 0f;
         public override void OnInitialize()
         {
             turning = 0f;
             instance = this;
             base.OnInitialize();
         }
+        public override void Update(GameTime gameTime)
+        {
+
+        }
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
+            //SLWorld.progress.TotalProgress;
             base.DrawSelf(spriteBatch);
+            grow = MathHelper.Clamp(grow + (1f/1200f),0f,1f);
             turning += MathHelper.TwoPi / 180f;
             UnifiedRandom alwaysthesame = new UnifiedRandom(DimDungeonsProxy.DungeonSeeds);
 
             spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, null, null, Main.UIScaleMatrix);
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Main.UIScaleMatrix);
 
             Vector2 loc = new Vector2(Main.screenWidth, Main.screenHeight) / 2f;
             Texture2D texx = ModContent.GetTexture("SGAmod/Items/WatchersOfNull");
             Vector2 offset = new Vector2(texx.Width, texx.Height / 13) / 2f;
-            spriteBatch.Draw(texx, loc, new Rectangle(0, 0, texx.Width, texx.Height / 13), Color.White, turning, offset, Vector2.One*5f, SpriteEffects.None, 0f);
+            //if (SLWorld.progress != null)
+            spriteBatch.Draw(texx, loc, new Rectangle(0, 0, texx.Width, texx.Height / 13), Color.White, 0, offset, Vector2.One * grow * 20f, SpriteEffects.None, 0f);
 
 
             // spriteBatch.End();
             //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
 
             spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
+
+            Effect RadialEffect = SGAmod.RadialEffect;
+
+            Texture2D mainTex = SGAmod.Instance.GetTexture("GreyHeart");//Main.projectileTexture[projectile.type];
+
+            RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Space"));
+            RadialEffect.Parameters["alpha"].SetValue(1f);
+            RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.025f, Main.GlobalTime * 0.175f));
+            RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(3f, 1.5f));
+            RadialEffect.Parameters["ringScale"].SetValue(0.85f);
+            RadialEffect.Parameters["ringOffset"].SetValue(1f);
+            RadialEffect.Parameters["ringColor"].SetValue(Color.Red.ToVector3());
+            RadialEffect.Parameters["tunnel"].SetValue(true);
+
+            RadialEffect.CurrentTechnique.Passes["Radial"].Apply();
+
+            spriteBatch.Draw(mainTex, new Vector2(Main.screenWidth, Main.screenHeight) /2f, null, Color.White, 0, mainTex.Size() / 2f, Main.screenWidth/ 16f, default, 0);
+
+            RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("TiledPerlin"));
+            RadialEffect.Parameters["alpha"].SetValue(0.5f);
+            RadialEffect.Parameters["texOffset"].SetValue(new Vector2(Main.GlobalTime * 0.0125f, Main.GlobalTime * 0.205f));
+            RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(4.2f, 0.25f));
+            RadialEffect.Parameters["ringScale"].SetValue(1.15f);
+            RadialEffect.Parameters["ringOffset"].SetValue(1.25f);
+            RadialEffect.Parameters["ringColor"].SetValue(Color.DarkRed.ToVector3());
+            RadialEffect.Parameters["tunnel"].SetValue(true);
+
+            RadialEffect.CurrentTechnique.Passes["Radial"].Apply();
+
+            spriteBatch.Draw(mainTex, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.White, 0, mainTex.Size() / 2f, Main.screenWidth / 16f, default, 0);
+
+
+            spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
-
         }
-
 
     }
 
-
-
-    public class Limborinth : SGAPocketDim
+        public class Limborinth : SGAPocketDim
     {
         public override int width => 3200;
         public override int height => 2400;
@@ -98,7 +136,7 @@ namespace SGAmod.Dimensions
 
             get
             {
-                return MusicID.Title;
+                return SGAmod.Instance.GetSoundSlot(SoundType.Music, "Sounds/Music/Silence");
             }
 
         }

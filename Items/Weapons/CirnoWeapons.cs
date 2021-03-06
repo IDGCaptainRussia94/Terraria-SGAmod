@@ -790,6 +790,7 @@ namespace SGAmod.NPCs
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cirno's Grace");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override void SetDefaults()

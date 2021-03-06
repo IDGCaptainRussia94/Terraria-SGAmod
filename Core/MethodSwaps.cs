@@ -25,7 +25,8 @@ namespace SGAmod
 {
 	public class SGAMethodSwaps
 	{
-
+		//Welcome to Russia's collection of vanilla hacking nonsense!
+		//Lite edition, for the heavy booze see ILHacks.cs
 		internal static void Apply()
 		{
 			On.Terraria.Player.NinjaDodge += Player_NinjaDodge;
@@ -36,9 +37,14 @@ namespace SGAmod
 			On.Terraria.GameContent.UI.Elements.UICharacterListItem.DrawSelf += Menu_UICharacterListItem;
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
+			On.Terraria.Player.DropSelectedItem += DontDropManifestedItems;
+			On.Terraria.Player.dropItemCheck += SoulboundPriority;
+			On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
+			On.Terraria.Player.ItemFitsWeaponRack += NoPlacingManifestedItemOnItemRack;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
+		//These aren't used atm
 		private static bool Player_CheckManaItem(On.Terraria.Player.orig_CheckMana_Item_int_bool_bool orig, Player self, Item item, int amount, bool pay, bool blockQuickMana)
 		{
 			Main.NewText(amount);
@@ -98,8 +104,38 @@ namespace SGAmod
 			}
 
 		}
+		//More of the above!
+		//At this rate I honestly don't care anymore, I've already been repeatedly shafted by other people
+		static private bool NoPlacingManifestedItemOnItemFrame(On.Terraria.Player.orig_ItemFitsItemFrame orig, Player self, Item i) => !(i.modItem is IManifestedItem) && orig(self, i);
 
+		static private bool NoPlacingManifestedItemOnItemRack(On.Terraria.Player.orig_ItemFitsWeaponRack orig, Player self, Item i) => !(i.modItem is IManifestedItem) && orig(self, i);
 
+		static private void SoulboundPriority(On.Terraria.Player.orig_dropItemCheck orig, Player self)
+		{
+			if (Main.mouseItem.type > ItemID.None && !Main.playerInventory && Main.mouseItem.modItem != null && Main.mouseItem.modItem is IManifestedItem)
+			{
+				for (int k = 49; k > 0; k--)
+				{
+					Item item = self.inventory[k];
+					if (!(self.inventory[k].modItem is IManifestedItem) || k == 0)
+					{
+						//Not so fast!
+						int index = Item.NewItem(self.position, item.type, item.stack, false, item.prefix, false, false);
+						Main.item[index] = item.Clone();
+						Main.item[index].position = self.position;
+						item.TurnToAir();
+						break;
+					}
+				}
+			}
+			orig(self);
+		}
+
+		static private void DontDropManifestedItems(On.Terraria.Player.orig_DropSelectedItem orig, Player self)
+		{
+			if (self.inventory[self.selectedItem].modItem is IManifestedItem || Main.mouseItem.modItem is IManifestedItem) return;
+			else orig(self);
+		}
 
 		//Collision_TileCollision
 		static private Vector2 Collision_TileCollision(On.Terraria.Collision.orig_TileCollision orig, Vector2 Position, Vector2 Velocity, int Width, int Height, bool fallThrough = false, bool fall2 = false, int gravDir = 1)

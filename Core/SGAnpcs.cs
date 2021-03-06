@@ -975,7 +975,7 @@ namespace SGAmod
 					if (Main.LocalPlayer.ZoneUnderworldHeight)
 					{
 						shop.item[nextSlot].SetDefaults(ModContent.ItemType<MagicMusicBox>());
-						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(3, 0, 0, 0);
+						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(1, 0, 0, 0);
 						nextSlot++;
 					}
 					break;

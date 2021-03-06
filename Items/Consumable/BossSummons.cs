@@ -279,11 +279,13 @@ namespace SGAmod.Items.Consumable
 			item.consumable = true;
 		}
 
+		public static bool underground(Entity player) => (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+
 		public override bool CanUseItem(Player player)
 		{
-			bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
-			;
-			if (underground && !NPC.AnyNPCs(mod.NPCType("SpiderQueen")))
+			//bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+
+			if (underground(player) && !NPC.AnyNPCs(mod.NPCType("SpiderQueen")))
 			{
 				return true;
 			}
@@ -303,12 +305,12 @@ namespace SGAmod.Items.Consumable
 		}
 	}
 
-	public class AuroraTearAwoken : BaseBossSummon
+	public class PrismaticBansheeStar : BaseBossSummon,IAuroraItem
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Awoken Aurora Tear");
-			Tooltip.SetDefault("'Bustling with Luminous energy'\nUse in the underground Hallow to manually summmon the Aurora Banshee, an empowered version");
+			DisplayName.SetDefault("Prismatic Star");
+			Tooltip.SetDefault("'Fallen star imbued with Luminous energy, a fabricated Prismic Egg'\nThrow it on Pearlstone in the underground Hallow\nAfter a short while summons the Aurora Banshee, an empowered version");
 		}
 		public override void PostUpdate()
 		{
@@ -319,7 +321,7 @@ namespace SGAmod.Items.Consumable
 			item.maxStack = 30;
 			item.width = 26;
 			item.height = 14;
-			item.value = Item.sellPrice(0, 20, 50, 0);
+			item.value = Item.sellPrice(0, 1, 50, 0);
 			item.consumable = true;
 			item.useTime = 32;
 			item.useAnimation = 32;
@@ -329,13 +331,50 @@ namespace SGAmod.Items.Consumable
 			item.rare = 9;
 			item.UseSound = SoundID.Item35;
 		}
-		public override bool CanUseItem(Player player)
+        public override void Update(ref float gravity, ref float maxFallSpeed)
+        {
+			if (item.velocity.Y == 0 && item.stack<2)
+			{
+				//Main.NewText("Debug Message!");
+				Point tilePosition = new Point((int)(item.Center.X / 16), ((int)(item.Center.Y) / 16) + 2);
+				Tile tile = Framing.GetTileSafely(tilePosition.X, tilePosition.Y);
+				//Main.NewText(tile.type + " this type "+item.position);
+				if (tile.type == TileID.Pearlstone && AcidicEgg.underground(item))
+				{
+					item.ownTime += 2;
+
+					if (item.ownTime % 50 == 0)
+					{
+						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageCastHeal, item.Center);
+						if (sound != null)
+						{
+							sound.Pitch = -0.65f + (item.ownTime / 1000f);
+						}
+					}
+
+					if (item.ownTime > 600 && item.stack<2)
+                    {
+						NPC.NewNPC((int)item.Center.X, (int)item.Center.Y, ModContent.NPCType<PrismBanshee>());
+						item.active = false;
+                    }
+					Main.NewText(item.ownTime);
+				}
+			}
+		}
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
+			PrismBanshee.DrawPrismCore(spriteBatch, lightColor, item.Center, item.ownTime*0.8f, item.scale, 96f * (item.ownTime/600f));
+			return true;
+        }
+        public override bool CanUseItem(Player player)
 		{
 			bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
 			;
 			if (underground && player.ZoneHoly && !NPC.AnyNPCs(mod.NPCType("PrismBanshee")))
 			{
-				return true;
+				if (player == Main.LocalPlayer)
+					Main.NewText("Here is good, rest it on some pearlstone!", 200, 100, 150);
+				return false;
 			}
 			else
 			{
@@ -509,22 +548,16 @@ namespace SGAmod.Items.Consumable
 			{
 				if (!Main.dayTime || !player.ZoneSnow)
 				{
-					item.consumable = false;
 				if (player == Main.LocalPlayer)
 					Main.NewText("It's power lies in the snow biome during the day", 50, 50, 250);
 					return false;
 				}
 				else
 				{
-					item.consumable = true;
 					return true;
 				}
-				return base.CanUseItem(player);
 			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
@@ -611,16 +644,38 @@ namespace SGAmod.Items.Consumable
 
 				if (projectile.localAI[1] > 300)
                 {
-					int npc = NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y+24, ModContent.NPCType<Cirno>());
+					NPC FakeNPC = new NPC();
+						FakeNPC.SetDefaults(ModContent.NPCType<Cirno>());
+					if (Main.netMode == NetmodeID.SinglePlayer)
+					{
+						int npc = NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y + 24, ModContent.NPCType<Cirno>());
+					}
+					else
+					{
+						if (Main.netMode != NetmodeID.Server && Main.myPlayer == projectile.owner)
+						{
+							ModPacket packet = mod.GetPacket();
+							packet.Write((ushort)999);
+							packet.Write((int)projectile.Center.X);
+							packet.Write((int)projectile.Center.Y);
+							packet.Write(ModContent.NPCType<NPCs.Cirno>());
+							packet.Write(0);
+							packet.Write(0);
+							packet.Write(0);
+							packet.Write(0);
+							packet.Write(projectile.owner);
+							packet.Send();
+						}
+					}
 
-					string typeName2 = Main.npc[npc].TypeName;
+					string typeName2 = FakeNPC.TypeName;
 					if (Main.netMode == 0)
 					{
 						Main.NewText(Language.GetTextValue("Announcement.HasAwoken", typeName2), 175, 75);
 					}
 					else if (Main.netMode == 2)
 					{
-						NetMessage.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", Main.npc[npc].GetTypeNetName()), new Color(175, 75, 255));
+						NetMessage.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", FakeNPC.GetTypeNetName()), new Color(175, 75, 255));
 					}
 
 					Main.PlaySound(15, (int)projectile.position.X, (int)projectile.position.Y, 0);

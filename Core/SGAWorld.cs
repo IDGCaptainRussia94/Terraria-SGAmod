@@ -109,6 +109,7 @@ namespace SGAmod
                 downedCratrosity = false;
                 downedCratrosityPML = false;
                 downedHellion = 0;
+                downedPrismBanshee = 0;
                 tf2cratedrops = false;
                 tf2quest = 0;
                 bossprgressor = 0;

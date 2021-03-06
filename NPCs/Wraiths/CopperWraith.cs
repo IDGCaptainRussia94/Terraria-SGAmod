@@ -555,7 +555,7 @@ namespace SGAmod.NPCs.Wraiths
 
 		public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			if ((projectile.penetrate < 1 || projectile.penetrate > 1) && projectile.damage > (GetType() == typeof(CobaltWraith) ? 20 : 30))
+			if ((projectile.maxPenetrate < 1 || projectile.maxPenetrate > 1) && projectile.damage > (GetType() == typeof(CobaltWraith) ? 20 : 30))
 			{
 				damage = (int)((float)damage * 0.25f);
 
@@ -566,7 +566,7 @@ namespace SGAmod.NPCs.Wraiths
 				//{
 				if (GetType() == typeof(CopperWraith))
 					damage = (int)(damage * 1.5);
-				if (projectile.penetrate < 2 && projectile.penetrate > -1)
+				if (projectile.maxPenetrate < 2 && projectile.maxPenetrate > -1)
 					crit = true;
 			}
 		}

@@ -325,9 +325,9 @@ namespace SGAmod.Items.Weapons.Technical
 			bool channeling = ((player.channel || (projectile.ai[0] < 5 && !cantchargeup)) && !player.noItems && !player.CCed);
 			projectile.Center = player.MountedCenter + direction * spacing;
 
-			Vector2 mousePos = Main.MouseWorld;
 			if (channeling)
 			{
+				Vector2 mousePos = Main.MouseWorld;
 				if (projectile.owner == Main.myPlayer)
 				{
 					Vector2 diff = mousePos - player.MountedCenter;

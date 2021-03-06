@@ -19,6 +19,14 @@ namespace SGAmod
 	{
 
 	}
+	interface IAuroraItem
+	{
+
+	}	
+	interface IManifestedItem
+    {
+
+    }
 	interface IJablinItem
 	{
 

@@ -135,19 +135,19 @@ namespace SGAmod.Tiles
 			int chester = Chest.FindChest(checkCoords.X, checkCoords.Y);
 			if (chester >= 0)
 			{
-
 				int emptyslot = -1;
 				bool matchingType = false;
 				int ammountleft = item.stack;
+
 				for (int i = 0; i < 40; i++)
 				{
 					Item itemInChest = Main.chest[chester].item[i];
-					if (itemInChest.IsAir)
+					if (itemInChest != null && itemInChest.IsAir)
 					{
 						emptyslot = i;
 						break;
 					}
-					if (itemInChest.type == item.type && item.maxStack > 1 && item.stack < item.maxStack)
+					if (itemInChest != null && itemInChest.type == item.type && item.maxStack > 1 && item.stack < item.maxStack)
 					{
 						ammountleft -= item.maxStack;
 						matchingType = true;
@@ -169,6 +169,7 @@ namespace SGAmod.Tiles
 
 						Main.chest[chester].item[emptyslot] = clonedItem;
 						item.TurnToAir();
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
 					}
 				}
 				else
@@ -181,12 +182,14 @@ namespace SGAmod.Tiles
 					if (ammountleft > 0)
 					{
 						item.stack = ammountleft;
-						if (Main.netMode != NetmodeID.SinglePlayer)
+						if (Main.netMode != NetmodeID.MultiplayerClient)
 							NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
 					}
 					else
 					{
 						item.TurnToAir();
+						if (Main.netMode != NetmodeID.MultiplayerClient)
+							NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
 					}
 				}
 				SGAUtils.ForceUpdateChestsForPlayers();
@@ -219,7 +222,6 @@ namespace SGAmod.Tiles
 					return (modTile as IHopperInterface).HopperInputItem(item, checkCoords, movementCount + 1);
 				}
 			}
-
 			return InputToChest(item, checkCoords);
 		}
 		public override bool Slope(int i, int j)

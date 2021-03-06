@@ -16,12 +16,12 @@ namespace SGAmod.Items.Armors
 {
 
 	[AutoloadEquip(EquipType.Head)]
-	public class VibraniumMask : ModItem
-	{
+	public class VibraniumMask : Weapons.Aurora.VibraniumText
+    {
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Mask");
-			Tooltip.SetDefault("25% increased melee speed\n32% increased melee damage and 25% crit chance\n5% increased melee Apocalyptical Chance");
+			Tooltip.SetDefault("25% increased melee speed\n32% increased melee damage and 25% crit chance\nMelee Apocalyptical Chance increases the more electric charge you have");
 		}
 		public override void SetDefaults()
 		{
@@ -41,25 +41,27 @@ namespace SGAmod.Items.Armors
 			player.meleeDamage += 0.32f;
 			player.meleeCrit += 25;
 			SGAPlayer sgaplayer = player.GetModPlayer(mod,typeof(SGAPlayer).Name) as SGAPlayer;
-            sgaplayer.apocalypticalChance[0] += 5f;
+			float percentCharge = (sgaplayer.electricCharge / 20000f)*0.05f;
+			sgaplayer.apocalypticalChance[0] += percentCharge;
 		}
+
 		public override void AddRecipes()
 		{
-			/*ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
-			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this);
-			recipe.AddRecipe();*/
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("VibraniumBar"), 8);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
 		}
 	}
 
 	[AutoloadEquip(EquipType.Head)]
-	public class VibraniumHelmet : ModItem
+	public class VibraniumHelmet : VibraniumMask
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Helmet");
-			Tooltip.SetDefault("30% increased ranged damage and 10% crit chance\n30% extra damage on non-bullet/arrow/rockets types\nWhenever ammo is consumed, you gain their damage as Electric Charge\n3% increased ranged Apocalyptical Chance");
+			Tooltip.SetDefault("30% increased ranged damage and 10% crit chance\n30% extra damage on non-bullet/arrow/rockets types\nWhenever ammo is consumed, you gain their damage as Electric Charge\n2% increased ranged Apocalyptical Chance");
 		}
 		public override void SetDefaults()
 		{
@@ -68,10 +70,6 @@ namespace SGAmod.Items.Armors
 			item.value = 10000;
 			item.rare = ItemRarityID.Red;
 			item.defense = 25;
-		}
-		public override bool DrawHead()
-		{
-			return false;
 		}
 		public override void UpdateEquip(Player player)
 		{
@@ -83,32 +81,23 @@ namespace SGAmod.Items.Armors
 			player.arrowDamage -= 0.15f;
 
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-			sgaplayer.apocalypticalChance[1] += 3f;
-		}
-		public override void AddRecipes()
-		{
-			/*ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
-			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this);
-			recipe.AddRecipe();*/
+			sgaplayer.apocalypticalChance[1] += 2f;
 		}
 	}
 
 	[AutoloadEquip(EquipType.Head)]
-	public class VibraniumHeadgear : ModItem
+	public class VibraniumHeadgear : VibraniumMask
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Headgear");
-			Tooltip.SetDefault("30% increased ranged damage and 10% crit chance\nHalf of your mana cost is paid as Electric Charge (by 3X the cost)\n"+Idglib.ColorText(Color.Red, "Will trigger a shield break on deplete")+"\n3% increased magic Apocalyptical Chance");
+			Tooltip.SetDefault("30% increased ranged damage and 10% crit chance\nHalf of your mana cost is paid as Electric Charge (by 3X the cost)\n"+Idglib.ColorText(Color.Red, "Will trigger a shield break on deplete")+"\n2% increased magic Apocalyptical Chance");
 		}
 		internal static bool DoMagicStuff(Player player, ref int ammount, bool pay)
 		{
 			bool doIt = true;
 			if (player.armor[0].type == ModContent.ItemType<VibraniumHeadgear>())
 			{
-				Main.NewText("Il TEST! " + ammount);
 				doIt = player.SGAPly().ConsumeElectricCharge(10 + ammount, 30 + ammount * 2, true, pay);
 				ammount = (int)(ammount * 0.50f);
 			}
@@ -123,38 +112,26 @@ namespace SGAmod.Items.Armors
 			item.rare = ItemRarityID.Red;
 			item.defense = 20;
 		}
-		public override bool DrawHead()
-		{
-			return false;
-		}
 		public override void UpdateEquip(Player player)
 		{
 			player.magicDamage += 0.30f;
 			player.magicCrit += 10;
 
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-			sgaplayer.apocalypticalChance[2] += 3f;
+			sgaplayer.apocalypticalChance[2] += 2f;
 
 			if (sgaplayer.ShieldType < 1)
 				sgaplayer.ShieldType = 100;
 		}
-		public override void AddRecipes()
-		{
-			/*ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
-			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this);
-			recipe.AddRecipe();*/
-		}
 	}
 
 	[AutoloadEquip(EquipType.Head)]
-	public class VibraniumHood : ModItem
+	public class VibraniumHood : VibraniumMask
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Hood");
-			Tooltip.SetDefault("30% increased Summon damage\n+3 max minions and +2 max sentries\nSummon weapons are used 50% faster\nSummons a friendly Resonant Wisp to aid the player\nThis wisp's strength scales with your summon damage and max minionss\nWhen not minion targeting, it temporarily cripples nearby enemy projectiles at a cost of Electric Charge\nWhen minion targeting, zaps that enemy to damage and cripple them");
+			Tooltip.SetDefault("30% increased Summon damage\n+3 max minions and +2 max sentries\nSummon weapons are used 50% faster\nSummons a friendly Resonant Wisp to aid the player\nThis wisp's strength scales with your summon damage and max minions\nWhen not minion targeting, it temporarily cripples nearby enemy projectiles at a cost of Electric Charge\nThis process is faster and cheaper while holding a Summoning weapon");
 		}
 
 		public override void SetDefaults()
@@ -164,6 +141,10 @@ namespace SGAmod.Items.Armors
 			item.value = 10000;
 			item.rare = ItemRarityID.Red;
 			item.defense = 10;
+		}
+		public override bool DrawHead()
+		{
+			return true;
 		}
 		public override void UpdateEquip(Player player)
 		{
@@ -175,23 +156,15 @@ namespace SGAmod.Items.Armors
 			sgaplayer.summonweaponspeed += 0.50f;
 
 		}
-		public override void AddRecipes()
-		{
-			/*ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
-			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this);
-			recipe.AddRecipe();*/
-		}
 	}
 
 	[AutoloadEquip(EquipType.Head)]
-	public class VibraniumHat : ModItem
+	public class VibraniumHat : VibraniumHood
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Hat");
-			Tooltip.SetDefault("30% increased throwing damage and 10% crit chance\n+25% Throwing velocity and 15% faster attack speed\nGravitate consumable throwing items from a long range towards you\nThese items spawn magnetic fields to attack enemies\n3% increased throwing Apocalyptical Chance");
+			Tooltip.SetDefault("30% increased throwing damage and 10% crit chance\n+25% Throwing velocity and attack speed\nGravitate consumable throwing items from a long range towards you\nThese items spawn magnetic fields to attack enemies\nThe range of both is increased by your Throwing Velocity\n2% increased throwing Apocalyptical Chance");
 		}
 
 		public override void SetDefaults()
@@ -209,22 +182,14 @@ namespace SGAmod.Items.Armors
 			player.Throwing().thrownDamage += 0.30f;
 			player.Throwing().thrownCrit += 10;
 			player.Throwing().thrownVelocity += 0.25f;
-			sgaplayer.ThrowingSpeed += 0.15f;
-			sgaplayer.apocalypticalChance[3] += 3.0;
-		}
-		public override void AddRecipes()
-		{
-			/*ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
-			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this);
-			recipe.AddRecipe();*/
+			sgaplayer.ThrowingSpeed += 0.25f;
+			sgaplayer.apocalypticalChance[3] += 2.0;
 		}
 	}
 
 	[AutoloadEquip(EquipType.Body)]
-	public class VibraniumChestplate : ModItem
-	{
+	public class VibraniumChestplate : Weapons.Aurora.VibraniumText
+    {
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Breastplate");
@@ -268,11 +233,9 @@ namespace SGAmod.Items.Armors
 		{
 			Player player = Main.LocalPlayer;
 			float percentCharge = player.SGAPly().electricCharge / DamageMul;
-			player.BoostAllDamage(percentCharge, (int)(percentCharge * 100));
 			tooltips.Add(new TooltipLine(mod, "VibraniumChestplateDamageBoost", "Bonus Damage: "+ (percentCharge*100f).ToString("0.00")+"%"));
 			tooltips.Add(new TooltipLine(mod, "VibraniumChestplateDamageBoost", "Bonus Crit: " + (int)(percentCharge * 50f) + "%"));
 		}
-
 		public static void VibraniumHoverInPlace(SGAPlayer sgaplayer)
 		{
 			Player player = sgaplayer.player;
@@ -338,8 +301,8 @@ namespace SGAmod.Items.Armors
 	}
 
 	[AutoloadEquip(EquipType.Legs)]
-	public class VibraniumLeggings : ModItem
-	{
+	public class VibraniumLeggings : Weapons.Aurora.VibraniumText
+    {
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Leggings");

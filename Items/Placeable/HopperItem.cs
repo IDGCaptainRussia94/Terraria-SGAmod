@@ -95,15 +95,9 @@ namespace SGAmod.Items.Placeable
         public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 2);
-			recipe.AddIngredient(mod.ItemType("NoviteBar"), 3);
-			recipe.AddTile(TileID.HeavyWorkBench);
-			recipe.SetResult(this, 1);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 3);
-			recipe.AddIngredient(mod.ItemType("NoviteBar"), 2);
+			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 1);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 1);
+			recipe.AddIngredient(ItemID.MetalSink, 1);
 			recipe.AddTile(TileID.HeavyWorkBench);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

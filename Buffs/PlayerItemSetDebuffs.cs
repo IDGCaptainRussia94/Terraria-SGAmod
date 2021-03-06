@@ -49,13 +49,13 @@ namespace SGAmod.Buffs
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/BrokenImmortalityDebuff";
 			return true;
 		}
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Place Holder Debuff");
-			Description.SetDefault("Your not suppose to see this!");
+			Description.SetDefault("Your not suppose to see this! No Seriously this debuff is NEVER meant to be active! It is Swapped out instantly to stack same-type debuffs!");
 			Main.pvpBuff[Type] = false;
 			Main.debuff[Type] = true;
 			Main.buffNoSave[Type] = true;

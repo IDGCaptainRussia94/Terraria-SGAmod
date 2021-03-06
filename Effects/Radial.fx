@@ -7,6 +7,7 @@ float2 texOffset;
 float alpha;
 float ringScale;
 float ringOffset;
+float3 ringColor;
 bool tunnel;
 sampler overlaytexsampler = sampler_state
 {
@@ -23,9 +24,9 @@ static const float pi = 3.14159265359;
 
 float4 RadialFunction(float2 coords : TEXCOORD0) : COLOR0
 {
-	float4 color = tex2D(overlaytexsampler, coords);
-    	if (!any(color))
-		return color;
+	float4 overlaycolor = tex2D(overlaytexsampler, coords);
+    	if (!any(overlaycolor))
+		return overlaycolor;
 
     float2 radianCoords = (2 * coords - 1) * 1.125;
     
@@ -33,8 +34,8 @@ float4 RadialFunction(float2 coords : TEXCOORD0) : COLOR0
 
     if (dist>1.00)
     {
-    color = 0;
-    return color;
+    overlaycolor = 0;
+    return overlaycolor;
     }
 
 
@@ -52,6 +53,8 @@ float4 RadialFunction(float2 coords : TEXCOORD0) : COLOR0
         //float2 overlayTexCoords = float2(abs((overlayTextCoordsPre.x+(texOffset.x))*texMultiplier.x)%1.00,abs((overlayTextCoordsPre.y+(texOffset.y))*texMultiplier.y)%1.00);
 
     float4 newColor = tex2D(overlaytexsampler, overlayTextCoords)*clamp(1.000000-(abs(dist-ringOffset)/ringScale),0.000000,1.000000);
+    newColor.rgb = newColor.rgb*ringColor;
+    newColor = saturate(newColor);
 
 	return newColor*alpha;
 }

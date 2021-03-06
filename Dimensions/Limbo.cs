@@ -29,7 +29,7 @@ namespace SGAmod.Dimensions
         public override bool saveSubworld => false;
         public override string DimName => "Limbo";
         public override UserInterface loadingUI => base.loadingUI;
-        public override UIState loadingUIState => base.loadingUIState;
+        public override UIState loadingUIState => new LimborinthLoad();
 
         public static Texture2D[] staticeffects=new Texture2D[20];
         public override float maxSpawns => 5f;

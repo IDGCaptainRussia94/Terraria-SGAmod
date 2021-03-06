@@ -75,17 +75,7 @@ namespace SGAmod.Items.Accessories.Charms
 		}
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
-			recipe.AddIngredient(ItemID.Minecart, 1);
-			recipe.AddIngredient(ItemID.Gel, 10);
-			recipe.AddRecipeGroup("SGAmod:Tier1Pickaxe", 1);
-			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 2);
-			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 15);
-			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 5);
-			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
+			//none
 		}
 
 	}

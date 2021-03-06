@@ -31,6 +31,7 @@ using ReLogic.Graphics;
 using Terraria.Utilities;
 using System.Reflection;
 using AAAAUThrowing;
+using System.Threading;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -63,6 +64,213 @@ namespace SGAmod
 			Main.worldRate = 0;
 		}
 	}*/
+
+	public class PathNode
+	{
+
+		public PathNode previousLocation;
+		public int distanceFromStart;
+		public int distanceToEnd;
+		public Point16 location;
+		public PathNode(Point16 loc, int distanceFromStart, int distanceToEnd, PathNode prev = default)
+		{
+			previousLocation = prev;
+
+			this.distanceFromStart = distanceFromStart;
+			this.distanceToEnd = distanceToEnd;
+			location = loc;
+		}
+	}
+	enum PathState
+	{
+		Ready,
+		Calculating,
+		Finished,
+		Failed
+	}
+	//IDG's homebrew take at an AStar pathfinder!
+	public class AStarPathFinder
+	{
+		public static bool Debug => true;
+		private Point16[] RoseCompass = { new Point16(1, 0), new Point16(1, -1), new Point16(0, -1), new Point16(-1, -1), new Point16(-1, 0), new Point16(-1, 1), new Point16(0, 1), new Point16(1, 1) };
+		private int[] RoosCompassDist = { 10, 14 };
+
+		public Point16 startingPosition = new Point16(0, 0);
+
+		public List<PathNode> Path = new List<PathNode>();
+		public int recursionLimit = 10000;
+		public int seed = -1;
+		public int wallsWeight = 0;
+		public int state = (int)PathState.Ready;
+		public AStarPathFinder(bool diagonal = true)
+		{
+			if (!diagonal)
+			{
+				RoseCompass = new Point16[] { new Point16(1, 0), new Point16(1, -1), new Point16(0, -1), new Point16(-1, -1), new Point16(-1, 0), new Point16(-1, 1), new Point16(0, 1), new Point16(1, 1) };
+				RoosCompassDist = new int[] { 10, 14 };
+			}
+
+		}
+		static public int Heuristic(Point16 a, Point16 b)
+		{
+			return (Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y)) * 10;
+		}
+		public bool AStarTiles(Point16 EndPoint, int stepSize)
+		{
+
+			//So this doesn't freeze your game, AStarPathFinder uses a thread and a state checker for this
+			//Task.Run(delegate ()
+			return ThreadPool.QueueUserWorkItem(delegate (Object threadState)
+			{
+				Path.Clear();
+				state = (int)PathState.Calculating;
+				int seed2 = seed;
+				if (seed == -1)
+					seed2 = (int)Main.GlobalTime * 7894;
+
+				UnifiedRandom uniRand = new UnifiedRandom(seed2);
+				EndPoint = (EndPoint.ToVector2() / stepSize).ToPoint16() * new Point16(stepSize);
+				Point16 StartPoint = (startingPosition.ToVector2() / stepSize).ToPoint16() * new Point16(stepSize);
+
+				if (Main.tile[StartPoint.X, StartPoint.Y].active() || Main.tile[EndPoint.X, EndPoint.Y].active())
+					return;
+
+				List<PathNode> openCells = new List<PathNode>();
+				List<PathNode> closedCells = new List<PathNode>();
+				int CurrentCost = 0;
+
+				openCells.Add(new PathNode(StartPoint, CurrentCost, Heuristic(StartPoint, EndPoint)));
+
+				int RecursionCount = 0;
+
+			//Did you mean Recursion?
+			Recursion:
+
+				//Magic priority sorter!
+				openCells = openCells.OrderBy(order => ((order.distanceFromStart + order.distanceToEnd) * 100) + uniRand.Next(8)).ToList();
+
+				PathNode checkCell = openCells[0];
+				openCells.RemoveAt(0);
+				closedCells.Insert(0, checkCell);
+
+				if (AStarPathFinder.Debug)
+				{
+					int dust = Dust.NewDust(checkCell.location.ToVector2() * 16, 0, 0, DustID.PurpleCrystalShard);
+					Main.dust[dust].scale = 2f;
+					Main.dust[dust].velocity = Vector2.Zero;
+					Main.dust[dust].noGravity = true;
+				}
+
+				//End Reached, success!
+				if (checkCell.location == EndPoint || RecursionCount > recursionLimit)
+				{
+					//no wait, we failed to find it in time :(
+					if (RecursionCount > recursionLimit)
+						state = (int)PathState.Failed;
+
+					goto EndHere;
+				}
+
+
+				//Open cells around the current cell
+				for (int i = 0; i < RoseCompass.Length; i += 1)
+				{
+					int dist = RoosCompassDist[i % 2] * stepSize;
+					Point16 pointcheck = new Point16(stepSize, stepSize) * RoseCompass[i];
+					Point16 newPoint = checkCell.location + pointcheck;
+
+					Tile tile = Main.tile[newPoint.X, newPoint.Y];
+					bool solidWall = tile.active() && Main.tileSolid[tile.type];
+					int extraCost = solidWall ? wallsWeight : 0;
+
+
+					if (!solidWall || wallsWeight > 0)
+					{
+						int endDist = Heuristic(newPoint, EndPoint);//(int)(EndPoint - newPoint).ToVector2().Length() * 10;
+																	//int startDist = (int)(StartPoint - newPoint).ToVector2().Length() * 10;
+						int startDist = checkCell.distanceFromStart + dist + extraCost;
+
+						PathNode thisOne = closedCells.FirstOrDefault(test => test.location == newPoint);
+						//Open a new cell here
+						if (thisOne == default)
+						{
+							if (openCells.FirstOrDefault(test => test.location == newPoint) == default)
+							{
+								PathNode NewCell = new PathNode(newPoint, startDist, endDist, checkCell);
+								openCells.Add(NewCell);
+
+								/*dust = Dust.NewDust(NewCell.location.ToVector2() * 16, 0, 0, DustID.SparksMech);
+								Main.dust[dust].scale = 5f;
+								Main.dust[dust].velocity = Vector2.Zero;
+								Main.dust[dust].noGravity = true;*/
+							}
+						}
+						else
+						{
+							//fixes up distances if they're shorter
+							if (thisOne.distanceFromStart + thisOne.distanceToEnd > checkCell.distanceFromStart + checkCell.distanceToEnd)
+							{
+								closedCells.RemoveAt(0);
+								checkCell.distanceFromStart = thisOne.distanceFromStart;
+								checkCell.previousLocation = thisOne;
+								closedCells.Insert(0, checkCell);
+
+								/*dust = Dust.NewDust(checkCell.location.ToVector2() * 16, 0, 0, DustID.Blood);
+								Main.dust[dust].scale = 1f;
+								Main.dust[dust].velocity = Vector2.Zero;
+								Main.dust[dust].noGravity = true;*/
+							}
+
+						}
+
+					}
+				}
+				RecursionCount += 1;
+
+				goto Recursion;
+
+			EndHere:
+
+				//Construct the path by backtracking, also draw a line in debug, but otherwise; we're done
+				int testx = 0;
+				List<PathNode> finalPoints = new List<PathNode>();
+
+				while (checkCell.previousLocation != default)
+				{
+					finalPoints.Add(checkCell);
+					checkCell = checkCell.previousLocation;
+				}
+
+				//if we didn't fail we clearly succeeded
+				if (state != (int)PathState.Failed)
+					state = (int)PathState.Finished;
+
+				Path = new List<PathNode>(finalPoints);
+
+				if (AStarPathFinder.Debug)
+				{
+					for (int i = 0; i < 500; i += 1)
+					{
+						foreach (PathNode node in finalPoints)
+						{
+							if (Main.LocalPlayer.DistanceSQ(node.location.ToVector2() * 16) < 1000 * 1000)
+							{
+								int dustx = Dust.NewDust(node.location.ToVector2() * 16, 0, 0, DustID.PurpleCrystalShard);
+								Main.dust[dustx].scale = 2f;
+								Main.dust[dustx].velocity = Vector2.Zero;
+								Main.dust[dustx].noGravity = true;
+							}
+						}
+
+						//Thread.Sleep(50);
+					}
+				}
+
+			});
+
+		}
+
+	}
 
 	//please don't touch
 	public class UncraftClass

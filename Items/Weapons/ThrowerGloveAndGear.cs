@@ -208,7 +208,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Rioter's Glove");
-			Tooltip.SetDefault("Throws hand grenades further, and increases their damage\nUpgraded to now throw Ale, Molotovs, Spiky balls, and Bones! And iamproving their damage\n" + disc);
+			Tooltip.SetDefault("Throws hand grenades further, and increases their damage\nUpgraded to now throw Ale, Molotovs, Spiky balls, and Bones! And improving their damage\n" + disc);
 		}
 
 		public override void SetDefaults()
@@ -232,9 +232,10 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("ThrowerGlove"), 1);
+			recipe.AddIngredient(mod.ItemType("DivineShower"), 2);
 			recipe.AddIngredient(ItemID.AleThrowingGlove, 1);
 			recipe.AddIngredient(ItemID.BoneGlove, 1);
-			recipe.AddIngredient(ItemID.AncientCloth, 8);
+			recipe.AddIngredient(ItemID.AncientCloth, 5);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 12);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.AddTile(TileID.MythrilAnvil);

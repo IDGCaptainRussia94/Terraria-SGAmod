@@ -12,31 +12,36 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners tf2/style things, Spectre homing bullets/projectiles, Tech weapons have an "overclock" mechanic that changes up their gameplay while active and overhaul ideas (maybe?), spider queen can melt normal generated blocks (dirt and so)
-Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
-Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Binding Vudoo Clothier's Doll Magic, Mana Potion Pet (Blue Gusher), Clothier drop that forces dropped throwing items to attack enemies
+Cruciatus, Charon's Ferry (shadow tenticle mount thing), Spider body mount with legs?, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
+Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Binding Vudoo Clothier's Doll Magic, Mana Potion Pet (Blue Gusher), Clothier drop that forces dropped throwing items to attack enemies, Make Enchanted Fury a Clothier drop
 
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy), Aurora Gear and finish Luminous Alter Tile Entity!
--Add Hellion army bar, STILL! Add Hellion checkpoints! Make Madal not do self damage/less damage, Add Dropper
+-Add Hellion army bar, STILL!
 
 Changelog:
 
 3.530-(1/28/21)-Patch 11-Tech N Wreck:
 
+Todo-Aurora Gear, Finish Vibranium Summon headpiece and enemies, Seismic Resonanter to create the ore, Add Hellion checkpoints!, Add Dropper, Finish Aurora Banshee summoning by dropping it, Finish Luminious Alter
+
+
 --Added:
 
--Plasmic Rail Gun, Uranium Filled Snowballs, Radioactive Snowball Cannon, True Rainbow Heart, Rad Suit, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear
+-Plasmic Rail Gun, Pulsar Perforator, Uranium Filled Snowballs, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Yoyo Threads, Rad Suit, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star
 
 -A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
 
 -Luminous Alter, use it to transmute various items overtime by infusing them with Starlight!
 
--A stronger post-L.Wraith Prismic Banshee that drops double loot
+-A stronger post-L.Wraith Prismic Banshee that drops double loot, also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam!
 
 -Hoppers N Droppers, automate your Terraria!
 
 -Prismic Banshee has a stronger manually summoned version after Luminite Wraith is defeated you can fight for double loot, the boss in general has undergone a couple of changes
 
 -New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights
+
+-Limbo has been given a loading screen
 
 -Various Resprites, added missing sprites, and smaller improvements; enjoy a far better looking Jackpot with glowing coins!
 
@@ -46,6 +51,8 @@ Changelog:
 -The Calamity Rune and Luminous Gel are created at the Luminous Alter now, check the wiki for all the recipe combos
 
 -Draken's Dialog has been moved around to help give players instructions, also a new interaction has been added after you become close friends
+
+-Hellion gains defense and debuff immunity apon activating Tyrant's Glare (post Festive Moons/warped background phase)
 
 -Added the Star Anise to the list of items the Ninja Stash can summon on attacks
 
@@ -63,9 +70,19 @@ Changelog:
 
 -Ragnarok's Brew costs more resources except Styigan Stars and makes 3, to help justify it requiring Styigan Stars
 
--Hellion's beam has been given a visual overhaul to fix a bug where it was invisible (see fixed)
+-Hellion's beam has been given a visual overhaul to fix a bug where it was invisible (see fixed), also Hellion's arena aura has been changed to something less flashy on the eyes and likely more GPU friendly
 
--Hellion's arena aura has been changed to something less flashy and likely more GPU friendly
+-Copper/Cobalt Wraith's cores can no longer take crits from the last hit on piercing weapon
+
+-Several homing weapons that wern't classed as homing now are
+
+-Excavator and Geyodo have gained a new visual effect
+
+-Busted has been moved to weapons, and a new prefix has been added in its place for accessories
+
+-Rebalanced Maldal: Has a different effect that won't hurt the player
+
+-Lowered the price of the Universal Music Box to 1 plat (from 3)
 
 -Buffed Clay-More: now has a ranged attack, at a cost
 
@@ -81,6 +98,8 @@ Changelog:
 
 -Buffed all consumable Jab-lins: as they now have a chance to drop again after expiring
 
+-Nerfed Rioter's Glove: Has been moved further into progression again (hardmode => post-early hardmode SGAmod bosses)
+
 -Nerfed Tactical SMG Rifle: damage lowered to 25 (from 28)
 
 -Nerfed Shooting Star: base damage massively lowered, this thing had more DPS than Enmity did!
@@ -91,6 +110,8 @@ Changelog:
 
 -Nerfed Kou Sash and Shin Sash: crit chance boost was incorrect and has been lowered
 
+-Nerfed all the Horseman Saddles: Apocalyptical chance boost reduced to 3%
+
 
 --Fixed
 
@@ -98,17 +119,23 @@ Changelog:
 
 -Amulet of Diehard Cataclysm should now properly prevent Blackbelt and Shadow Dodges
 
+-Possibly fixed the unloading IL problems (players getting frozen on world login)
+
 -There should no longer be an issues with HUD mods that override the vanilla HUD from now on
 
--Hellion Beams being invisible
+-Hellion Beams being invisible, and a little oversight that led to alot of unintentional lag in the fight
 
 -Prismic Banshee and supreme pinky should not properly handle gravitation potion's effects properly on screen
 
 -'The Whole Experience' not working on Killer Fly Swarm; you can now refight that boss
 
+-Draken saying you need to fight the evil biome boss when you are not in that world type
+
+-Calburn's defeat message, it now says you can break moist stone only after you've beaten all 3 of them
+
 -Cyber Scythe's max range growing smaller with melee speed instead of larger
 
--Prismic Banshee's 'hands' having a weird hitbox
+-Prismic Banshee's 'hands' having a weird hitbox, and counting as defeated on other play-throughs
 
 -Grappling removing the player's light in the foggy darkness
 
@@ -122,9 +149,17 @@ Changelog:
 
 -Stormbreaker not counting the lightning as modded throwing damage
 
+-Incorrect damage types involving the Mangrove Orbs
+
+-The Amulet of Diehard Cataclysm having a crafting recipe
+
+-Cirno refusing to spawn serverside, she now spawns on the client end of whoever summoned her and is synced from there
+
 -A few issues when using vanilla throwing items, for now
 
 -An invisible non-transparent pixel on Rusty Sword's sprite, causing it to look odd ingame
+
+-Granite magnet listing it can "block" damage
 
 -Other smaller fixes I might have forgotten about-including typeos
 

@@ -1939,7 +1939,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 			Texture2D tex = Main.projectileTexture[projectile.type];
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
 			trail.color = delegate (float percent)
 			{
 				return Color.Orange;
@@ -1977,7 +1977,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 2500;
+			item.damage = 3200;
 			item.magic = true;
 			item.width = 32;
 			item.height = 62;

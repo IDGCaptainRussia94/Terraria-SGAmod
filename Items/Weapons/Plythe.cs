@@ -79,6 +79,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Scythe");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override void SetDefaults()

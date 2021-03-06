@@ -8,5 +8,6 @@ homepage = https://discord.gg/aGy34Xw
 hideResources = true
 includeSource = true
 modReferences = Idglibrary,AAAAUThrowing,SubworldLibrary
-weakReferences = CalamityMod@1.4.2.101
+weakReferences = CalamityMod@1.4.2.101,IridiumMod
 sortAfter = Idglibrary,AAAAUThrowing
+sortBefore = IridiumMod

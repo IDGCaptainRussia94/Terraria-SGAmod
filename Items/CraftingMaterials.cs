@@ -265,7 +265,70 @@ namespace SGAmod.HavocGear.Items
 
 namespace SGAmod.Items
 {
-	public class IceFairyDust: ModItem
+	public class VibraniumCrystal : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Vibranium Crystal");
+			Tooltip.SetDefault("'Almost shakes out your hands'");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 16;
+			item.height = 16;
+			item.value = 500;
+			item.rare = ItemRarityID.Red;
+		}
+	}
+	public class VibraniumPlating : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Vibranium Crystal");
+			Tooltip.SetDefault("'It constantly vibrates to the touch'");
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 16;
+			item.height = 16;
+			item.value = 400;
+			item.rare = ItemRarityID.Purple;
+		}
+	}
+	public class VibraniumBar : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Vibranium Crystal");
+			Tooltip.SetDefault("'This alloy is just barely stable enough to not phase out of existance'");
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 16;
+			item.height = 16;
+			item.value = 1000;
+			item.rare = ItemRarityID.Purple;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("VibraniumCrystal"), 3);
+			recipe.AddIngredient(mod.ItemType("VibraniumPlating"), 3);
+			recipe.AddIngredient(ItemID.LunarBar, 1);
+			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 1);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.needLava = true;
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class IceFairyDust : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -586,7 +649,31 @@ namespace SGAmod.Items
 		}
 	}
 
-public class LunarRoyalGel : ModItem
+	public class AuroraTearAwoken : ModItem, IAuroraItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Awoken Aurora Tear");
+			Tooltip.SetDefault("'Bustling with awoken, Luminous energy'");
+		}
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.Lerp(Color.BlueViolet, Color.HotPink, (float)Math.Sin((Main.essScale - 0.70f) / 0.30f)).ToVector3() * 0.85f * Main.essScale);
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 30;
+			item.width = 26;
+			item.height = 14;
+			item.value = Item.sellPrice(0, 2, 50, 0);
+			item.noMelee = true; //so the item's animation doesn't do damage
+			item.value = 0;
+			item.rare = ItemRarityID.Cyan;
+			item.UseSound = SoundID.Item35;
+		}
+	}
+
+	public class LunarRoyalGel : ModItem
 	{
 		public override void SetStaticDefaults()
 		{

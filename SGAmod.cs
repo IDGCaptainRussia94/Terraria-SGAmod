@@ -122,6 +122,7 @@ namespace SGAmod
 		public static Texture2D PrismBansheeTex;
 		public static Texture2D RadSuitHeadTex;
 		public static Texture2D PlatformTex;
+		public static Texture2D PearlIceBackground;
 		public static int OSType;
 		internal static ModHotKey CollectTaxesHotKey;
 		internal static ModHotKey WalkHotKey;
@@ -129,7 +130,6 @@ namespace SGAmod
 		internal static ModHotKey NinjaSashHotkey;
 		internal static ModHotKey ToggleRecipeHotKey;
 		internal static ModHotKey ToggleGamepadKey;
-		internal static ModHotKey Ability2Key;
 		internal static ModHotKey SkillTestKey;
 		public static bool cachedata = false;
 		public static bool updatelasers = false;
@@ -285,6 +285,7 @@ namespace SGAmod
 
 				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 				Texture2D PlatTex = ModContent.GetTexture("Terraria/Tiles_"+TileID.Asphalt);
+				PearlIceBackground = ModContent.GetTexture("Terraria/Background_206");
 
 				Item item = new Item();
 				item.SetDefaults(ItemID.ParkaHood);
@@ -344,6 +345,7 @@ namespace SGAmod
 				PrismBansheeTex.Dispose();
 				RadSuitHeadTex.Dispose();
 				PlatformTex.Dispose();
+				PearlIceBackground.Dispose();
 
 			}
 
@@ -439,8 +441,7 @@ namespace SGAmod
 
 			CollectTaxesHotKey = RegisterHotKey("Collect Taxes", "X");
 			WalkHotKey = RegisterHotKey("Walk Mode", "C");
-			ToggleRecipeHotKey = RegisterHotKey("Cycle Recipes/Abilities", "V");
-			Ability2Key = RegisterHotKey("Abilities 2", "B");
+			ToggleRecipeHotKey = RegisterHotKey("Abilities/Cycle Recipes", "V");
 			ToggleGamepadKey = RegisterHotKey("Cycle Aiming Style", "Z");
 			GunslingerLegendHotkey = RegisterHotKey("Gunslinger Legend Ability", "Q");
 			NinjaSashHotkey = RegisterHotKey("Shin Sash Ability", "Q");

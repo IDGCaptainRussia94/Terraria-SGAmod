@@ -40,7 +40,7 @@ namespace SGAmod.Items.Weapons.Shields
 				return proj;
 			}
 		}
-		public string ShowPercentText
+		public virtual string ShowPercentText
 		{
 			get
 			{
@@ -114,9 +114,12 @@ namespace SGAmod.Items.Weapons.Shields
 		{
 			if (CanBlock)
 			{
-				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, ShowPercentText + DamagePercent)));
-				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, "Block at the last second to 'Just Block', taking no damage")));
-				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 3 seconds each")));
+				if (ShowPercentText != "none")
+				{
+					tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, ShowPercentText + DamagePercent)));
+					tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, "Block at the last second to 'Just Block', taking no damage")));
+					tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 3 seconds each")));
+				}
 				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, "Can be held out like a torch and used normally by holding shift")));
 			}
 		}

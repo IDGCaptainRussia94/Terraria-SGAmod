@@ -11,7 +11,62 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SGAmod.Items.Tools
 {
-	public class Geyodo : ModItem
+	public class TerraExcavator : Geyodo
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Terra Excavator");
+			Tooltip.SetDefault("Control a yoyo bound with even stronger pickaxes\nCarves tunnels out of earth AND your enemies, terra tier!");
+		}
+
+		public override void SetDefaults()
+		{
+			Item refItem = new Item();
+			refItem.SetDefaults(ItemID.TheEyeOfCthulhu);
+			item.damage = 46;
+			item.useTime = 60;
+			item.useAnimation = 60;
+			item.useStyle = 5;
+			item.channel = true;
+			item.melee = true;
+			item.noMelee = true;
+			item.knockBack = 7f;
+			item.value = Item.sellPrice(0, 5, 0, 0);
+			item.rare = ItemRarityID.Lime;
+			item.pick = 200;
+			item.noUseGraphic = true;
+			item.autoReuse = true;
+			item.UseSound = SoundID.Item19;
+			item.shoot = mod.ProjectileType("TerraExcavatorProj");
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("Geyodo"), 1);
+			recipe.AddIngredient(ItemID.SpectrePickaxe, 1);
+			recipe.AddIngredient(ItemID.ShroomiteDiggingClaw, 1);
+			recipe.AddIngredient(ItemID.ChlorophytePickaxe, 1);
+			recipe.AddIngredient(ItemID.PickaxeAxe, 1);
+			recipe.AddIngredient(ItemID.BrokenHeroSword, 1);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+		}
+	}
+	public class TerraExcavatorProj : ExcavatorProj
+	{
+		public override int[] Pickaxes => new int[] { ItemID.SpectrePickaxe, ItemID.ShroomiteDiggingClaw, ItemID.ChlorophytePickaxe, ItemID.PickaxeAxe };
+		public override int RealPickPower => 45;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Terra Excavator");
+			//ProjectileID.Sets.YoyosLifeTimeMultiplier[projectile.type] = 5000f;
+			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 500f;
+			ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 10f;
+		}
+	}
+	public class Geyodo : Excavator
 	{
 		public override void SetStaticDefaults()
 		{
@@ -32,7 +87,7 @@ namespace SGAmod.Items.Tools
 			item.noMelee = true;
 			item.knockBack = 7f;
 			item.value = Item.sellPrice(0, 1, 50, 0);
-			item.rare = ItemRarityID.Orange;
+			item.rare = ItemRarityID.Pink;
 			item.pick = 180;
 			item.noUseGraphic = true;
 			item.autoReuse = true;
@@ -62,7 +117,7 @@ namespace SGAmod.Items.Tools
 		public override int RealPickPower => 45;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("GeyodoProj");
+			DisplayName.SetDefault("Geyodo Proj");
 			//ProjectileID.Sets.YoyosLifeTimeMultiplier[projectile.type] = 5000f;
 			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 400f;
 			ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 8f;
@@ -129,7 +184,7 @@ namespace SGAmod.Items.Tools
 		public virtual int[] Pickaxes => new int[] { ItemID.CopperPickaxe, ItemID.IronPickaxe, ItemID.SilverPickaxe, ItemID.GoldPickaxe };
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("ExcavatorProj");
+			DisplayName.SetDefault("Excavator Proj");
 			//ProjectileID.Sets.YoyosLifeTimeMultiplier[projectile.type] = 5000f;
 			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 300f;
 			ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 6f;
@@ -197,7 +252,7 @@ namespace SGAmod.Items.Tools
 			float percenthit2 = MathHelper.Clamp((PickPower - 45) / 60f, 0f, 1f);
 
 			fadeIn.Parameters["alpha"].SetValue(1);
-			fadeIn.Parameters["strength"].SetValue(percenthit2);
+			fadeIn.Parameters["strength"].SetValue(1f-percenthit2);
 			fadeIn.Parameters["fadeColor"].SetValue(Color.Goldenrod.ToVector3());
 			fadeIn.Parameters["blendColor"].SetValue(lightColor.ToVector3());
 
@@ -210,7 +265,7 @@ namespace SGAmod.Items.Tools
 				float angle = projectile.rotation + MathHelper.TwoPi * (i / (float)Pickaxes.Length);
 				//spriteBatch.Draw(tex, projectile.Center - Main.screenPosition,null, lightColor, angle, offset, projectile.scale, default, 0);
 
-				//spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, new Rectangle(0, (int)(tex.Height * (1f-percenthit)),(int)(tex.Width* percenthit), (int)(tex.Height* (percenthit))), Color.White, angle, offset, projectile.scale, default, 0);
+				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, new Rectangle(0, (int)(tex.Height * (1f-percenthit)),(int)(tex.Width* percenthit), (int)(tex.Height* (percenthit))), Color.White, angle, offset, projectile.scale, default, 0);
 			}
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);

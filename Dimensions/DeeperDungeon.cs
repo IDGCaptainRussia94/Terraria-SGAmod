@@ -247,18 +247,11 @@ namespace SGAmod.Dimensions
 
         public virtual void PlatformBlockType(Tile thetile, ref int platformtype)
         {
-            if (thetile.type == TileID.BlueDungeonBrick)
+            if (thetile.type == TileID.BlueDungeonBrick || thetile.type == TileID.TeamBlockBluePlatform)
                 platformtype = TileID.TeamBlockBluePlatform;
-            if (thetile.type == TileID.GreenDungeonBrick)
+            if (thetile.type == TileID.GreenDungeonBrick || thetile.type == TileID.TeamBlockGreenPlatform)
                 platformtype = TileID.TeamBlockGreenPlatform;
-            if (thetile.type == TileID.PinkDungeonBrick)
-                platformtype = TileID.TeamBlockPinkPlatform;
-
-            if (thetile.type == TileID.TeamBlockBluePlatform)
-                platformtype = TileID.TeamBlockBluePlatform;
-            if (thetile.type == TileID.TeamBlockGreenPlatform)
-                platformtype = TileID.TeamBlockGreenPlatform;
-            if (thetile.type == TileID.TeamBlockPinkPlatform)
+            if (thetile.type == TileID.PinkDungeonBrick || thetile.type == TileID.TeamBlockPinkPlatform)
                 platformtype = TileID.TeamBlockPinkPlatform;
 
         }
@@ -880,7 +873,7 @@ namespace SGAmod.Dimensions
                 {
                     if (unirand.Next(0, 100) < 10 + (SGAWorld.dungeonlevel * 5))
                     {
-                        int[] theitem = { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone"), SGAmod.Instance.ItemType("MagusSlippers") };
+                        int[] theitem = { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone"), SGAmod.Instance.ItemType("MagusSlippers"), SGAmod.Instance.ItemType("YoyoTricks") };
                         Main.chest[chestid].item[e].SetDefaults(theitem[Main.rand.Next(0, theitem.Length)]);
                         Main.chest[chestid].item[e].stack = 1;
                         e += 1;

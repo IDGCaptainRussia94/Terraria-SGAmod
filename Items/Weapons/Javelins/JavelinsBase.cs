@@ -395,7 +395,7 @@ namespace SGAmod.Items.Weapons.Javelins
                 if (dropChance < 1)
                     return;
                 // Drop a javelin item, 1 in 18 chance (~5.5% chance)
-                Main.NewText(StoneJavelin.jablinData[(int)projectile.ai[1]].itemName);
+                //Main.NewText(StoneJavelin.jablinData[(int)projectile.ai[1]].itemName);
                 int item =
                 Main.rand.NextBool(dropChance)
                     ? Item.NewItem(projectile.getRect(), mod.ItemType(StoneJavelin.jablinData[(int)projectile.ai[1]].itemName))

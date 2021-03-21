@@ -121,7 +121,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 50;
+            item.damage = 38;
             item.width = 32;
             item.height = 32;
             item.crit = 10;

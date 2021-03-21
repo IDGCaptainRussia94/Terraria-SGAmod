@@ -18,6 +18,7 @@ using Terraria.Utilities;
 using SGAmod.Buffs;
 using SGAmod.Tiles;
 using SGAmod.Items.Armors;
+using Terraria.GameContent.Events;
 
 namespace SGAmod
 {
@@ -138,11 +139,11 @@ namespace SGAmod
                     tooltips.Add(new TooltipLine(mod, "Plasma Item", Idglib.ColorText(c, "This weapon uses plasma cells for recharging")));
                 }
 
-                if (SGAmod.StuffINeedFuckingSpritesFor.ContainsKey(item.type))
+                if (item.modItem is IManifestedItem)
                 {
                     string tt = "This is a placeholder sprite";
                     Color c = Main.hslToRgb(0f, 0.75f, 0.7f);
-                    tooltips.Add(new TooltipLine(mod, "Plasma Item", SGAmod.StuffINeedFuckingSpritesFor.TryGetValue(item.type, out tt) ? tt : tt));
+                    tooltips.Add(new TooltipLine(mod, "Manifested Item", Idglib.ColorText(Color.Yellow,"This item is a manifestion of your armor set, bound to you")));
                 }
 
                 int ammoclip = Main.LocalPlayer.SGAPly().IsRevolver(item);
@@ -186,10 +187,14 @@ namespace SGAmod
 
         public override string IsArmorSet(Item head, Item body, Item legs)
         {
+            if (head.type == mod.ItemType("DesertHelmet") && body.type == mod.ItemType("DesertShirt") && legs.type == mod.ItemType("DesertPants"))
+            {
+                return "Desert";
+            }
             if (head.type == mod.ItemType("DankWoodHelm") && body.type == mod.ItemType("DankWoodChest") && legs.type == mod.ItemType("DankLegs"))
             {
                 return "Dank";
-            }
+            }          
             if (head.type == mod.ItemType("UnmanedHood") && body.type == mod.ItemType("UnmanedBreastplate") && legs.type == mod.ItemType("UnmanedLeggings"))
             {
                 return "Novus";
@@ -198,6 +203,10 @@ namespace SGAmod
             {
                 return "Novite";
             }
+            if (head.type == mod.ItemType("EngineerHead") && body.type == mod.ItemType("EngineerChest") && legs.type == mod.ItemType("EngineerLegs"))
+            {
+                return "Engineer";
+            }            
             if (head.type == mod.ItemType("BlazewyrmHelm") && body.type == mod.ItemType("BlazewyrmBreastplate") && legs.type == mod.ItemType("BlazewyrmLeggings"))
             {
                 return "Blazewyrm";
@@ -229,11 +238,21 @@ namespace SGAmod
         public override void UpdateArmorSet(Player player, string set)
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+            if (set == "Desert")
+            {
+                player.setBonus = "Immunity to Mighty Winds and increased throwing veloity in a Sandstorm\nManifested weapon: Sand Tosser";
+                player.buffImmune[BuffID.WindPushed] = true;
+                if (Sandstorm.Happening && player.ZoneDesert)
+                {
+                    player.Throwing().thrownVelocity += 0.20f;
+                }
+                sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Desert.ManifestedSandTosser>();
+            }
             if (set == "Dank")
             {
                 player.setBonus = "10% of the sum of all damage types is added to your current weapon's attack\nyou regen life faster while on the surface during the day";
                 sgaplayer.Dankset = 3;
-            }
+            }            
             if (set == "Novus")
             {
                 player.setBonus = "Novus items emit more light when used and deal 20% more damage\nGain an additional free Cooldown Stack";
@@ -245,6 +264,11 @@ namespace SGAmod
                 player.setBonus = "Gain a movement bonus based on current charge\nWhen you take damage you discharge a chain bolt at a nearby enemy\nThis costs 750 Electic Charge and is scaled based on Defense and Technological Damage";
                 sgaplayer.Noviteset = 3;
             }
+            if (set == "Engineer")
+            {
+                player.setBonus = "Hold JUMP to hover at an expense to Electric Charge\nManifested weapon: Engie Controls";
+                sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Engineer.ManifestedEngieControls>();
+            }            
             if (set == "Blazewyrm")
             {
                 player.setBonus = "True melee crits create a very powerful explosion equal to triple the damage dealt\nEach strike requires a free Cooldown Stack, and adds one for 12 seconds\n20% increased melee damage against enemies inflicted with Thermal Blaze" +
@@ -710,6 +734,14 @@ namespace SGAmod
             if (item.buffType > 0 && SGAmod.overpoweredMod>1f)
             {
                 item.maxStack = 29;
+            }
+            if (item.modItem!=null && item.modItem is IManifestedItem)
+            {
+                if (player.inventory[player.selectedItem] != item)
+                {
+                    item.active = false;
+                    item.TurnToAir();
+                }
             }
         }
 

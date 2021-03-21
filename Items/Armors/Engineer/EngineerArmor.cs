@@ -10,9 +10,11 @@ using static Terraria.ModLoader.ModContent;
 using Terraria.DataStructures;
 using static Terraria.WorldGen;
 using Idglibrary;
+using Microsoft.Xna.Framework.Audio;
 
 //What's mine is mine to reuse, maybe next time make me sign a binding contract
 //Sigh, hopefully we can reach a compromise, I really want to keep this...
+//And we didn't, of course. Not surprised when TML is full of leeches as lethal as Rotten Eggs...
 
 namespace SGAmod.Items.Armors.Engineer
 {
@@ -47,10 +49,14 @@ namespace SGAmod.Items.Armors.Engineer
             recipe.SetResult(this, 1);
             recipe.AddRecipe();
         }
+        public override bool Autoload(ref string name)
+        {
+            return false;
+        }
     }
 
     [AutoloadEquip(EquipType.Body)]
-    public class EngineerChest : ModItem
+    public class EngineerChest : EngineerHead
     {
         public override void SetStaticDefaults()
         {
@@ -60,7 +66,7 @@ namespace SGAmod.Items.Armors.Engineer
         public override bool Autoload(ref string name)
         {
             SGAPlayer.PostUpdateEquipsEvent += PostMovementUpdate;
-            return true;
+            return base.Autoload(ref name);
         }
 
         public override void SetDefaults()
@@ -93,7 +99,7 @@ namespace SGAmod.Items.Armors.Engineer
         }
     }
     [AutoloadEquip(EquipType.Legs)]
-    public class EngineerLegs : ModItem
+    public class EngineerLegs : EngineerHead
     {
         public override void SetStaticDefaults()
         {
@@ -133,8 +139,13 @@ namespace SGAmod.Items.Armors.Engineer
         float EaseXVel = 0f;
         float EaseYVel = 0f;
         public int EngineerTransform = 0;
-        bool TransformActive => (EngineerTransform >= MaxTransform);
+        public byte EngineerModes = 15;
+        public int AttackCheck = 0;
+        public float aimDir = 0;
+        public float[] RecoilEffect = { 0, 0 };
+        public bool TransformActive => (EngineerTransform >= MaxTransform);
         SGAPlayer sgaplayer => player.GetModPlayer<SGAPlayer>();
+        public int engieAttack => (EngineerModes >> 1);//chop off the 4th bit, leaving a number between 0-7
 
         public override void Initialize()
         {
@@ -142,7 +153,46 @@ namespace SGAmod.Items.Armors.Engineer
             Noise.Octaves = 2;
         }
 
-        private bool EngieArmor()
+        public override void clientClone(ModPlayer clientClone)
+        {
+            EngineerArmorPlayer engieplayer = clientClone as EngineerArmorPlayer;
+            engieplayer.aimDir = aimDir;
+            engieplayer.AttackCheck = AttackCheck;
+            engieplayer.EngineerModes = EngineerModes;
+        }
+
+        public override void SendClientChanges(ModPlayer clientPlayer)
+        {
+            if (!EngieArmor())
+                return;
+
+            bool mismatch = false;
+            EngineerArmorPlayer engieplayer = clientPlayer as EngineerArmorPlayer;
+
+            if (engieplayer.aimDir != aimDir && engieplayer.AttackCheck != AttackCheck && engieplayer.EngineerModes != EngineerModes)
+                mismatch = true;
+
+            if (mismatch)
+            {
+                SendClientChangesPacket();
+            }
+        }
+
+        private void SendClientChangesPacket()
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModPacket packet = SGAmod.Instance.GetPacket();
+                packet.Write(501);
+                packet.Write(player.whoAmI);
+                packet.Write((double)aimDir);
+                packet.Write((byte)AttackCheck);
+                packet.Write((byte)EngineerModes);
+                packet.Send();
+            }
+        }
+
+        public bool EngieArmor()
         {
             return (player.armor[0].type == ItemType<EngineerHead>() && player.armor[1].type == ItemType<EngineerChest>() && player.armor[2].type == ItemType<EngineerLegs>());//Really is there a better way?
         }
@@ -178,15 +228,28 @@ namespace SGAmod.Items.Armors.Engineer
                 }
             }
         }
+        public void ToggleEngieArmor()
+        {
+            EngineerModes |= 8;//flip the 4th bit
+            Main.NewText("Bit test: " + EngineerModes);
+        }
         public void HandleEngineerArmor()
         {
             EaseXVel += (player.velocity.X - EaseXVel) / 15f;
             EaseYVel += (player.velocity.Y - EaseYVel) / 12f;
+            for(int i=0;i< RecoilEffect.Length; i += 1)
+            {
+                RecoilEffect[i] *= 0.75f;
+            }
             if (EngieArmor())
             {
                 //Do engie things here
 
-                if (player.controlJump && sgaplayer.ConsumeElectricCharge(40,30,false,sgaplayer.timer%4==0))
+                AttackCheck = AttackCheck % 128;
+
+                bool JetpackOn = (EngineerModes & (8)) != 0;//4th bit switch is 1! So it is on!
+
+                if (player.controlJump && JetpackOn && sgaplayer.ConsumeElectricCharge(40,30,false,sgaplayer.timer%4==0))
                 {
                     EngineerTransform = (short)Math.Min(EngineerTransform + 1, MaxTransform);
                     if (TransformActive)
@@ -312,6 +375,13 @@ namespace SGAmod.Items.Armors.Engineer
                         (float)Math.Sin(Main.GlobalTime * 1.33f) * 0.05f,
                         (float)Noise.Noise(sgaplayer.timer * (bodyoffset.X<-11 ? 1 : -1),sgaplayer.timer)/5f};
 
+                    if (player.HeldItem.type == ModContent.ItemType<ManifestedEngieControls>() && Main.LocalPlayer == player)
+                    {
+                        aimDir = (Main.MouseWorld - player.MountedCenter).ToRotation();
+                        rotationangles[2] = aimDir;
+                        rotationangles[3] = aimDir;
+                    }
+
                     //Sway backwards as the player moves
                     rotationangles[0] -= (float)Math.Pow(Math.Abs(EaseXVel / 20), 0.60);
                     rotationangles[1] -= (float)Math.Pow(Math.Abs(EaseXVel / 16), 0.70);
@@ -325,6 +395,10 @@ namespace SGAmod.Items.Armors.Engineer
                     if (TransformActive)
                         rotationangles[3] += (float)Math.Pow(Math.Abs((EaseXVel + (player.velocity.X/ 3f)) / 18f), 0.60) * Math.Sign(EaseXVel+(player.velocity.X / 3f)) *player.direction;
 
+                    float localroteffect = 0f;
+                    localroteffect -= MathHelper.PiOver2 * MathHelper.Clamp(RecoilEffect[bodyoffset.X >= 0 ? 0 : 1] / 15f, 0f, 1f) * 1.00f;
+                    rotationangles[1] += localroteffect;
+
                     //Support Arms
                     if (part %2 == 0)
                     {
@@ -332,7 +406,9 @@ namespace SGAmod.Items.Armors.Engineer
                         {
                             if (part % (i + 3) == 0)
                             {
+
                                 Vector2 spriteoriginlocal = new Vector2(XOffset(ShoulderMounts[i], (int)spriteorigins[i].X), spriteorigins[i].Y);
+
                                 Vector2 partoffset = ((partoffsets[i] * facingdirection).RotatedBy(i < 1 ? 0f : rotationangles[i - 1] * facingdirection.X));
 
                                 Vector2 drawhere = player.position + info.bodyOrigin + bodyoffset + partoffset;
@@ -391,7 +467,6 @@ namespace SGAmod.Items.Armors.Engineer
             }
         }
     }
-
     public class AdaptedEngieSmokeEffect : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
@@ -420,6 +495,66 @@ namespace SGAmod.Items.Armors.Engineer
             Lighting.AddLight(dust.position, new Vector3(1.45f, 2.28f, 2.37f) * light);
             return false;
         }
+    }
+    public class ManifestedEngieControls : Desert.ManifestedSandTosser, IManifestedItem
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Engie Controls");
+            Tooltip.SetDefault("Manually control your rocket pods and fire bouncy grenades!");
+        }
+        public override string Texture => "SGAmod/Items/Armors/Engineer/ShoulderLauncher1";
+
+        public override void SetDefaults()
+        {
+            //item.CloneDefaults(ItemID.ManaFlower);
+            item.width = 12;
+            item.height = 24;
+            item.rare = ItemRarityID.Blue;
+            item.value = 0;
+            item.useStyle = ItemUseStyleID.HoldingOut;
+            item.damage = 35;
+            item.summon = true;
+            item.shootSpeed = 6f;
+            item.shoot = ProjectileID.Grenade;
+            item.useTurn = true;
+            //ProjectileID.CultistBossLightningOrbArc
+            item.width = 16;
+            item.height = 16;
+            item.useAnimation = 4;
+            item.useTime = 4;
+            item.reuseDelay = 16;
+            item.knockBack = 1;
+            item.UseSound = SoundID.Item1;
+            item.noUseGraphic = true;
+            item.noMelee = true;
+        }
+        public override bool CanUseItem(Player player)
+        {
+            EngineerArmorPlayer engiePlayer = player.GetModPlayer<EngineerArmorPlayer>();
+            return engiePlayer.EngineerTransform<1;
+        }
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+            EngineerArmorPlayer engiePlayer = player.GetModPlayer<EngineerArmorPlayer>();
+            engiePlayer.AttackCheck += 1;
+            engiePlayer.RecoilEffect[engiePlayer.AttackCheck%2] += 15f;
+            player.bodyFrame.Y = player.bodyFrame.Height;
+
+            Vector2 loc = player.MountedCenter + new Vector2(0, -20);
+
+            int probg = Projectile.NewProjectile(loc.X, loc.Y, speedX, speedY, type, damage, knockBack, player.whoAmI);
+
+            SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 61);
+            if (sound != null)
+            {
+                sound.Pitch = 0.5f+ (engiePlayer.AttackCheck%2)*0.25f;
+            }
+
+            return false;
+        }
+
     }
 
 }

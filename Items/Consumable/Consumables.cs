@@ -204,7 +204,7 @@ namespace SGAmod.Items.Consumable
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Divine Shower Storm");
+			DisplayName.SetDefault("Divinity Caller");
 			Tooltip.SetDefault("'The heavens favor you'\nCauses all fallen stars on the ground to rain down on all active enemies; whichever is limited first\nThe entirety of 1 stack will fall over 1 enemy, but spread out the larger the stack is\nHowever this caps out at 5 per stack\nIs limited to once per night, per a long cooldown");
 		}
 

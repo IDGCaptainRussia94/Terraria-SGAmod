@@ -250,7 +250,13 @@ namespace SGAmod
 						if (sound != null)
 							sound.Pitch += 0.525f;
 
-						int proj = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<RadioactivePool>(), (int)(damage * 0.5f * moddedplayer.apocalypticalStrength), projectile.knockBack, projectile.owner);
+						int proj;
+
+						if (projectile!=null)
+						proj = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<RadioactivePool>(), (int)(damage * 0.5f * moddedplayer.apocalypticalStrength), projectile.knockBack, projectile.owner);
+						else
+							proj = Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<RadioactivePool>(), (int)(damage * 0.5f * moddedplayer.apocalypticalStrength), knockback, player.whoAmI);
+
 						Main.projectile[proj].width += 80;
 						Main.projectile[proj].height += 80;
 						Main.projectile[proj].timeLeft += (int)(30*moddedplayer.apocalypticalStrength);

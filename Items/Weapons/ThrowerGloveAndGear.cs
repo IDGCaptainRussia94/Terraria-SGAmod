@@ -392,6 +392,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			projectile.CloneDefaults(ProjectileID.GemHookAmethyst);
+			projectile.tileCollide = false;
 		}
 
 		public override string Texture
@@ -475,15 +476,16 @@ namespace SGAmod.Items.Weapons
 			{
 				if (owner.ownedLargeGems[0] && owner.ownedLargeGems[1] && owner.ownedLargeGems[2] && owner.ownedLargeGems[3] && owner.ownedLargeGems[4] && owner.ownedLargeGems[5] && owner.ownedLargeGems[6])
 				{
+					bool finalGem = owner.SGAPly().finalGem > 0;
 					float basevalues = (owner.meleeDamage + owner.magicDamage + owner.minionDamage + owner.rangedDamage + owner.Throwing().thrownDamage)/5f;
-					Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, projectile.velocity.X, projectile.velocity.Y, ModContent.ProjectileType<GucciSnap>(), (int)(100000f*basevalues), 10f, projectile.owner);
+					Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, projectile.velocity.X, projectile.velocity.Y, ModContent.ProjectileType<GucciSnap>(), finalGem ? int.MaxValue-1 : (int)(100000f*basevalues), 10f, projectile.owner);
 					projectile.Kill();
-					SGAWorld.SnapCooldown = 60*300;
+					SGAWorld.SnapCooldown = finalGem ? 60 : 60 * 300;
 					if (Main.dedServ)
 					{
 						ModPacket packet = SGAmod.Instance.GetPacket();
 						packet.Write((ushort)MessageType.Snapped);
-						packet.Write(60 * 300);
+						packet.Write(finalGem ? 60 : 60 * 300);
 						packet.Send();
 					}
 					return;

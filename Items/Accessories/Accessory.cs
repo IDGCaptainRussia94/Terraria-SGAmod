@@ -1664,7 +1664,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Herald of Death");
-			Tooltip.SetDefault("'And now, the 4th seal is broken'\nGrants 50% increased Apocalyptical Strength\nAnd 4% throwing Apocalyptical Chance while mounted\n" + Idglib.ColorText(Color.Red, "But your damage taken is slightly increased"));
+			Tooltip.SetDefault("'And now, the 4th seal is broken'\nGrants 50% increased Apocalyptical Strength\nAnd 3% throwing Apocalyptical Chance while mounted\n" + Idglib.ColorText(Color.Red, "But your damage taken is slightly increased"));
 		}
 
 		public override void SetDefaults()
@@ -1680,7 +1680,7 @@ namespace SGAmod.Items.Accessories
 		{
 			tooltips.Add(new TooltipLine(mod, "saddletext", "'and now, the 4th seal is broken'"));
 			tooltips.Add(new TooltipLine(mod, "saddletext", "grants 50% increased Apocalyptical Strength"));
-			tooltips.Add(new TooltipLine(mod, "saddletext", "And 4% throwing Apocalyptical Chance while mounted"));
+			tooltips.Add(new TooltipLine(mod, "saddletext", "And 3% throwing Apocalyptical Chance while mounted"));
 			tooltips.Add(new TooltipLine(mod, "saddletext", Idglib.ColorText(Color.Red, "But your damage taken is slightly increased")));
 		}
 
@@ -1696,7 +1696,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Herald of War");
-			Tooltip.SetDefault("'Then the 2nd seal was broken'\nGrants 50% increased Apocalyptical Strength\nAnd 4% melee Apocalyptical Chance while mounted\n" + Idglib.ColorText(Color.Red, "But enemy spawn rates are increased"));
+			Tooltip.SetDefault("'Then the 2nd seal was broken'\nGrants 50% increased Apocalyptical Strength\nAnd 3% melee Apocalyptical Chance while mounted\n" + Idglib.ColorText(Color.Red, "But enemy spawn rates are increased"));
 		}
 
 		public override void SetDefaults()
@@ -1712,7 +1712,7 @@ namespace SGAmod.Items.Accessories
 		{
 			tooltips.Add(new TooltipLine(mod, "saddletext", "'then the 2nd seal was broken'"));
 			tooltips.Add(new TooltipLine(mod, "saddletext", "grants 50% increased Apocalyptical Strength"));
-			tooltips.Add(new TooltipLine(mod, "saddletext", "And 4% melee Apocalyptical Chance while mounted"));
+			tooltips.Add(new TooltipLine(mod, "saddletext", "And 3% melee Apocalyptical Chance while mounted"));
 			tooltips.Add(new TooltipLine(mod, "saddletext", Idglib.ColorText(Color.Red, "But enemy spawn rates are increased")));
 		}
 
@@ -1728,7 +1728,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Herald of Pestilence");
-			Tooltip.SetDefault("'The 1st seal is broken'\nGrants 50% increased Apocalyptical Strength\nAnd 4% magic Apocalyptical Chance while mounted\n" + Idglib.ColorText(Color.Red, "But may inflict bleeding randomly"));
+			Tooltip.SetDefault("'The 1st seal is broken'\nGrants 50% increased Apocalyptical Strength\nAnd 3% magic Apocalyptical Chance while mounted\n" + Idglib.ColorText(Color.Red, "But may inflict bleeding randomly"));
 		}
 
 		public override void SetDefaults()
@@ -1743,7 +1743,7 @@ namespace SGAmod.Items.Accessories
 		{
 			tooltips.Add(new TooltipLine(mod, "saddletext", "'The 1st seal is broken'"));
 			tooltips.Add(new TooltipLine(mod, "saddletext", "Grants 50% increased Apocalyptical Strength"));
-			tooltips.Add(new TooltipLine(mod, "saddletext", "And 4% magic Apocalyptical Chance while mounted"));
+			tooltips.Add(new TooltipLine(mod, "saddletext", "And 3% magic Apocalyptical Chance while mounted"));
 			tooltips.Add(new TooltipLine(mod, "saddletext", Idglib.ColorText(Color.Red, "But may inflict bleeding randomly")));
 
 		}
@@ -1777,7 +1777,7 @@ namespace SGAmod.Items.Accessories
 		{
 			tooltips.Add(new TooltipLine(mod, "saddletext", "'Thus the 3nd seal was broken'"));
 			tooltips.Add(new TooltipLine(mod, "saddletext", "Grants 50% increased Apocalyptical Strength"));
-			tooltips.Add(new TooltipLine(mod, "saddletext", "And 4% ranged Apocalyptical Chance while mounted"));
+			tooltips.Add(new TooltipLine(mod, "saddletext", "And 3% ranged Apocalyptical Chance while mounted"));
 			tooltips.Add(new TooltipLine(mod, "saddletext", Idglib.ColorText(Color.Red, "But will nullify the effects of Well Fed")));
 
 		}
@@ -2051,9 +2051,9 @@ namespace SGAmod.Items.Accessories
 			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Allows you to 'swim' in air while it is raining (hide the accessory to disable)")));
 			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Most status effects that trigger while wet will trigger here")));
 			if (!SGAWorld.downedSharkvern)
-				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DarkBlue, "Its full potential is locked behind the Sharkvern")));
+				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DarkBlue, "Its full potential is locked behind the Tempest Sharkvern")));
 			else
-				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Sharkvern's defeat allows this to take effect when it is not raining")));
+				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Tempest Sharkvern's defeat allows this to take effect when it is not raining")));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)

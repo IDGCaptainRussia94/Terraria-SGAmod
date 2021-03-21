@@ -37,8 +37,9 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if (projectile.penetrate!=1)
-            damage = (int)(damage * 0.50f);
+            Player player = Main.player[projectile.owner];
+            if (projectile.penetrate!=1 && (!SGAprojectile.IsTrueMelee(projectile, player)))
+            damage = (int)(damage * (GetType() == typeof(SharkvernTail) ? 1f : 0.75f));
         }
 
         public override void HitEffect(int hitDirection, double damage)
@@ -127,7 +128,7 @@ namespace SGAmod.NPCs.Sharkvern
         {
             Texture2D texture = Main.npcTexture[npc.type];
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-            Main.spriteBatch.Draw(texture, npc.Center - Main.screenPosition, new Rectangle?(), drawColor*npc.Opacity, npc.rotation, origin, npc.scale,localdist.X>0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            //Main.spriteBatch.Draw(texture, npc.Center - Main.screenPosition, new Rectangle?(), drawColor*npc.Opacity, npc.rotation, origin, npc.scale,localdist.X>0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             return false;
         }
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)

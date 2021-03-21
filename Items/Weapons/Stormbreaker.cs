@@ -180,9 +180,6 @@ namespace SGAmod.Items.Weapons
 			Vector2 positiondust = Vector2.Normalize(new Vector2(projectile.velocity.X, projectile.velocity.Y)) * 8f;
 			Player player = Main.player[projectile.owner];
 
-
-
-
 			for (int num315 = 0; num315 < 1; num315 = num315 + 1)
 			{
 				int num622 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y) + positiondust, 0, 0, 185, 0f, 0f, 100, default(Color), 1f);
@@ -219,9 +216,10 @@ namespace SGAmod.Items.Weapons
 
 				if (Main.LocalPlayer == player)
 				{
-					projectile.velocity += flytodistnorm * 8f;
-					projectile.velocity /= 1.05f;
-					float maxspeed = 38f * (1f + ((player.Throwing().thrownVelocity - 1f) / 2f));
+					float speedBoost = (player.Throwing().thrownVelocity - 1f);
+					projectile.velocity += flytodistnorm * 8f * (speedBoost + 1f);
+					projectile.velocity /= (1.05f * ((speedBoost * 0.05f) + 1f));
+					float maxspeed = 38f * (1f + ((player.Throwing().thrownVelocity - 1f) / 1f));
 					if (projectile.velocity.Length() > maxspeed)
 					{
 						projectile.velocity.Normalize(); projectile.velocity *= maxspeed;
@@ -255,15 +253,8 @@ namespace SGAmod.Items.Weapons
 
 	}}*/
 
-
 			projectile.rotation = projectile.rotation.AngleLerp(((float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f) + (float)(Math.PI / -4.0), 0.2f);
 		}
-
-
-
-
-
-
 	}
 
 	public class Stormbreaker2 : ModProjectile

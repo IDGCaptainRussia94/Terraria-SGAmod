@@ -467,7 +467,7 @@ namespace SGAmod.NPCs
 
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
-			if (NPCHands.Count > 0)
+				if (NPCHands.Count > 0)
 			{
 				foreach (NPC hand in NPCHands)
 				{

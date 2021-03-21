@@ -34,7 +34,7 @@ using SGAmod.NPCs;
 namespace SGAmod.Dimensions
 {
 
-        public class SGADimPlayer : ModPlayer
+    public class SGADimPlayer : ModPlayer
     {
 
         public int enterlimbo = 0;
@@ -43,6 +43,7 @@ namespace SGAmod.Dimensions
         public int lightSize = 3000;
         public int lightGrowRate = 5;
         public int heartBeat = 0;
+        public Vector2 NullBossArenaSpot = default;
         public static int staticHeartBeat = 0;
         public static float staticHeartRate = 0;
         public override void UpdateBiomeVisuals()
@@ -75,10 +76,10 @@ namespace SGAmod.Dimensions
                 {
                     sound.Pitch = -0.75f + (float)Math.Min(Math.Atan(count / 25f), 1.7f);
                 }
-                NullWatcher.DoAwarenessChecks(600 + count*5, false, true, player.Center);
+                NullWatcher.DoAwarenessChecks(600 + count * 5, false, true, player.Center);
                 heartBeat = 0;
                 staticHeartBeat = 30;
-                staticHeartRate = Math.Min(count/500f,0.04f);
+                staticHeartRate = Math.Min(count / 500f, 0.04f);
             }
             if (!Main.dedServ && Main.LocalPlayer == player)
             {
@@ -88,7 +89,7 @@ namespace SGAmod.Dimensions
             noLight = false;
             noLightGrow = Math.Max(noLightGrow - 1, 0);
             if (!(player.HasBuff(BuffID.Darkness) || player.HasBuff(BuffID.Blackout)))
-            lightSize = Math.Min(lightSize + (noLightGrow > 0 ? 0 : lightGrowRate), 3000);// 2000+(int)(Math.Sin(Main.GlobalTime/2f)*1000);
+                lightSize = Math.Min(lightSize + (noLightGrow > 0 ? 0 : lightGrowRate), 3000);// 2000+(int)(Math.Sin(Main.GlobalTime/2f)*1000);
             lightGrowRate = 5;
         }
 
@@ -114,9 +115,9 @@ namespace SGAmod.Dimensions
                 if (SLWorld.currentSubworld is SGAPocketDim sub)
                 {
                     int limit = sub.LimitPlayers;
-                    if (limit%16==0 && limit>0)
+                    if (limit % 16 == 0 && limit > 0)
                     {
-                        player.AddBuff(BuffID.NoBuilding,2);
+                        player.AddBuff(BuffID.NoBuilding, 2);
                     }
                     player.GetModPlayer<SGAPlayer>().noModTeleport = true;
                 }
@@ -125,9 +126,9 @@ namespace SGAmod.Dimensions
                     SLWorld.noReturn = true;
             }
 
-            if (Main.netMode != NetmodeID.Server && !Main.dedServ && Main.LocalPlayer==player)
+            if (Main.netMode != NetmodeID.Server && !Main.dedServ && Main.LocalPlayer == player)
             {
-                Projectile.NewProjectile(Main.screenPosition+new Vector2(Main.screenWidth,Main.screenHeight)/2, Vector2.Zero, mod.ProjectileType("DrawOverride"), 0, 0f);
+                Projectile.NewProjectile(Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) / 2, Vector2.Zero, mod.ProjectileType("DrawOverride"), 0, 0f);
             }
 
             enterlimbo += 1;
@@ -148,7 +149,7 @@ namespace SGAmod.Dimensions
                 if (enterlimbo == -5)
                 {
                     Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/crack"), new Vector2(-1, -1));
-                    player.Center = new Vector2(Main.rand.Next(200,Main.maxTilesX-400)*16, 64);
+                    player.Center = new Vector2(Main.rand.Next(200, Main.maxTilesX - 400) * 16, 64);
                 }
                 if (enterlimbo > -2)
                 {
@@ -159,9 +160,30 @@ namespace SGAmod.Dimensions
 
                     }
                 }
-
-
             }
+            if (SGAPocketDim.WhereAmI == typeof(Limborinth))
+            {
+                if (Framing.GetTileSafely((int)(player.Center.X / 16f), (int)(player.Center.Y / 16f)).wall == mod.WallType("NullWallBossArena"))
+                {
+                    if (NullBossArenaSpot == default)
+                    {
+                        Idglib.Chat("There's no turning back now...", 120, 15, 15);
+                        NullBossArenaSpot = player.Center;
+                    }
+                }
+                else
+                {
+                    if (NullBossArenaSpot != default)
+                    {
+                        player.Center = NullBossArenaSpot;
+                    }
+                }
+            }
+            else
+            {
+                NullBossArenaSpot = default;
+            }
+
         }
 
     }

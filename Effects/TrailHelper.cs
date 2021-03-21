@@ -79,8 +79,8 @@ namespace SGAmod.Effects
 
             for (k = 1; k < totalcount; k += 1)
             {
-                float fraction = (float)k / (float)fractiontotal;
-                float fractionPlus = (float)(k + 1) / (float)fractiontotal;
+                float fraction = (float)(k-1) / (float)(totalcount-1);
+                float fractionPlus = (float)(k) / (float)(totalcount-1);
 
                 Vector2 trailloc = drawPoses[k] + projsize;
                 Vector2 prev2 = drawPoses[k - 1] + projsize;
@@ -125,13 +125,13 @@ namespace SGAmod.Effects
                 Color colortemp = Color.Lerp(valuecol1, valuecol1 * fadeTo, fraction);
                 Color colortemp2 = Color.Lerp(valuecol2, valuecol2 * fadeTo, fractionPlus);
 
-                vertices[0 + (k * 6)] = new VertexPositionColorTexture(prevcoords[0], colortemp, new Vector2(0, fractionPlus));
-                vertices[1 + (k * 6)] = new VertexPositionColorTexture(drawtopright, colortemp2, new Vector2(1, fraction));
-                vertices[2 + (k * 6)] = new VertexPositionColorTexture(drawtopleft, colortemp2, new Vector2(0, fraction));
+                vertices[0 + (k * 6)] = new VertexPositionColorTexture(prevcoords[0], colortemp, new Vector2(0, fraction));
+                vertices[1 + (k * 6)] = new VertexPositionColorTexture(drawtopright, colortemp2, new Vector2(1, fractionPlus));
+                vertices[2 + (k * 6)] = new VertexPositionColorTexture(drawtopleft, colortemp2, new Vector2(0, fractionPlus));
 
-                vertices[3 + (k * 6)] = new VertexPositionColorTexture(prevcoords[0], colortemp, new Vector2(0, fractionPlus));
-                vertices[4 + (k * 6)] = new VertexPositionColorTexture(prevcoords[1], colortemp, new Vector2(1, fractionPlus));
-                vertices[5 + (k * 6)] = new VertexPositionColorTexture(drawtopright, colortemp2, new Vector2(1, fraction));
+                vertices[3 + (k * 6)] = new VertexPositionColorTexture(prevcoords[0], colortemp, new Vector2(0, fraction));
+                vertices[4 + (k * 6)] = new VertexPositionColorTexture(prevcoords[1], colortemp, new Vector2(1, fraction));
+                vertices[5 + (k * 6)] = new VertexPositionColorTexture(drawtopright, colortemp2, new Vector2(1, fractionPlus));
 
                 prevcoords = new Vector3[2] { drawtop + left, drawtop + right };
 

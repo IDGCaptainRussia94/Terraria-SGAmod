@@ -36,9 +36,9 @@ namespace SGAmod.Items.Weapons.Aurora
 				hallowed.Parameters["alpha"].SetValue(0.5f);
 				hallowed.Parameters["prismColor"].SetValue(Color.Lerp(Color.Lerp(Color.Red, Color.Blue, 0.50f + (float)Math.Sin(Main.GlobalTime / 0.5f) / 2.5f),Color.Gray,0.35f).ToVector3());
 				hallowed.Parameters["rainbowScale"].SetValue(0.25f);
-				hallowed.Parameters["overlayScale"].SetValue(new Vector2(2.5f, 2.5f));
-				hallowed.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Stain"));
-				hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, 0.5f, Main.GlobalTime / 1f));
+				hallowed.Parameters["overlayScale"].SetValue(new Vector2(4,2));
+				hallowed.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Doom_Harbinger_Resprite_pupil"));
+				hallowed.Parameters["overlayProgress"].SetValue(new Vector3((float)Math.Sin(Main.GlobalTime * 8f)>0 ? Main.GlobalTime * 2f : -Main.GlobalTime * 2f, 0.5f, Main.GlobalTime * 3f));
 				hallowed.Parameters["overlayAlpha"].SetValue(0.33f);
 				hallowed.Parameters["overlayStrength"].SetValue(new Vector3(1f, 0f, 0f));
 				hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
@@ -63,14 +63,14 @@ namespace SGAmod.Items.Weapons.Aurora
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Pulsar Perforator");
-			Tooltip.SetDefault("Throws resonant knives that bounce between targets and bypass defense\nThe knives do not count as a hit against Irradiated targets\nWhen fully charged, emits a Gamma Ray burst in both directions");
+			Tooltip.SetDefault("Throws resonant knives that bounce between targets and bypass defense\nThe knives continue to bounce against Irradiated targets\nWhen fully charged, emits a Gamma Ray burst in both directions\nThis inflicts Severe Radiation to hit enemies");
 		}
 
 		public override string Texture => "SGAmod/Items/Weapons/Vibranium/QuasarKunai";
 
 		public override void SetDefaults()
 		{
-			item.damage = 50;
+			item.damage = 125;
 			item.width = 32;
 			item.height = 32;
 			item.useTime = 8;
@@ -85,7 +85,7 @@ namespace SGAmod.Items.Weapons.Aurora
 			item.autoReuse = true;
 			item.Throwing().thrown = true;
 			item.shoot = ModContent.ProjectileType<GammaBurstProjectileChargeUp>();
-			item.shootSpeed = 6f;
+			item.shootSpeed = 10f;
 			item.channel = true;
 
 			if (!Main.dedServ)
@@ -206,7 +206,7 @@ namespace SGAmod.Items.Weapons.Aurora
 	{
 		public Player Player => Main.player[projectile.owner];
 		public float MaxCharge => 300f;
-		public float MaxKnives => 12f;
+		public float MaxKnives => 20f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gamma Burst Charging");
@@ -359,7 +359,7 @@ namespace SGAmod.Items.Weapons.Aurora
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			enemiesHit.Add(new Point(target.whoAmI, 1000000));
-			List<NPC> closestnpcs = SGAUtils.ClosestEnemies(projectile.Center, 320, Main.player[projectile.owner].MountedCenter, AddedWeight: enemiesHit, checkCanChase: false);
+			List<NPC> closestnpcs = SGAUtils.ClosestEnemies(projectile.Center, 640, projectile.Center, AddedWeight: enemiesHit, checkCanChase: false);
 
 			for (float num315 = 4; num315 < 16; num315 = num315 + 1f)
 			{
@@ -513,9 +513,15 @@ namespace SGAmod.Items.Weapons.Aurora
 			projectile.velocity = oldVelocity * 0.9f;
 			return false;
 		}
+		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+			damage += (int)(target.defense / 2);
+		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
+			target.SGANPCs().IrradiatedAmmount = projectile.damage * 3;
+			target.AddBuff(mod.BuffType("RadioDebuff"), 60 * 20);
 			//stuff
 		}
 

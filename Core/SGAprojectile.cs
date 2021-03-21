@@ -83,6 +83,12 @@ namespace SGAmod
 				return;
         }
 
+		public static bool IsTrueMelee(Projectile projectile, Player player)
+        {
+			return (projectile.melee && player.heldProj == projectile.whoAmI || (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile));
+
+		}
+
 		public override void ModifyHitNPC(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			if (projectile.friendly)
@@ -96,7 +102,7 @@ namespace SGAmod
 					{
 						damageIncrease += projectile.Distance(owner.MountedCenter) / ((float)ProjectileID.Sets.YoyosMaximumRange[projectile.type])*0.15f;
 					}
-					if (projectile.melee && owner.heldProj == projectile.whoAmI || (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile))
+					if (IsTrueMelee(projectile,owner))
 						damageIncrease += (sgaply.trueMeleeDamage);
 
 					damage = (int)((float)damage * damageIncrease);

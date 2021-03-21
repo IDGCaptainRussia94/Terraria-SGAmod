@@ -1631,24 +1631,6 @@ namespace SGAmod.Items
 		{
 			Texture2D inner = Main.itemTexture[item.type];
 
-			/*GridInventory gi = new GridInventory(10, Main.LocalPlayer.inventory);
-
-			Point where = gi.FindItem(item);
-
-			Main.NewText(gi.maxY);
-
-			if (gi.InsideGrid(where.X + 1, where.Y))
-            {
-				Main.NewText(Lang.GetItemName(gi.inventory[where.X + 1, where.Y].type));
-				if (gi.inventory[where.X + 1, where.Y].type == ModContent.ItemType<AuroraTear>())
-				colorz = Color.Yellow;
-            }*/
-
-
-			/*Texture2D inner = Main.textGlyphTexture[0];
-			int length = inner.Width / 25;
-			Vector2 textureOrigin = new Vector2(inner.Width / length, inner.Height) / 2f;*/
-
 			Vector2 slotSize = new Vector2(52f, 52f);
 			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
 			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
@@ -1697,6 +1679,62 @@ namespace SGAmod.Items
 			Tooltip.SetDefault("'The End'\nPlace your inventory to allow Reality's Sunder summon Hellion with 1 HP\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 90% less items\nWill consume one when summoned"));
 		}
 	}
+
+	public class FinalGem : ModItem
+	{
+		protected virtual Color color => Color.Lime;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Final Gem");
+			Tooltip.SetDefault("While in your inventory, empowers the Gucci Guantlet to its true full power");
+		}
+		public override void SetDefaults()
+		{
+			item.width = 40;
+			item.height = 40;
+			item.value = 0;
+			item.rare = -12;
+			item.expert = true;
+			item.maxStack = 1;
+			//item.damage = 1;
+		}
+        public override void UpdateInventory(Player player)
+        {
+			player.SGAPly().finalGem = 3;
+        }
+
+        public override string Texture
+		{
+			get { return ("Terraria/Extra_57"); }
+		}
+
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			float maxsize = 20;
+			Texture2D[] gems = Main.gemTexture;
+			Texture2D myTex = Main.itemTexture[item.type];
+			spriteBatch.Draw(myTex, position + new Vector2(14f, 14f), frame, drawColor*0.25f, Main.GlobalTime / 1f, myTex.Size() / 2f, scale * 2.5f * Main.essScale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(myTex, position + new Vector2(14f, 14f), frame, drawColor * 0.25f, -Main.GlobalTime / 1f, myTex.Size() / 2f, scale * 2.5f * Main.essScale, SpriteEffects.None, 0f);
+
+			for (int i = 0; i < maxsize; i += 1)
+			{
+				Texture2D inner = gems[i % gems.Length];
+				Double Azngle = i+(Main.GlobalTime/8f);
+				Vector2 here = new Vector2((float)Math.Cos(Azngle), (float)Math.Sin(Azngle)) * (i * 2f);
+				float scaler = (1f - (float)((float)i / maxsize));
+				spriteBatch.Draw(inner, position + (new Vector2(14f, 14f)) + here, null, Color.Lerp(drawColor, Color.MediumPurple, 0.25f) * scaler, Main.GlobalTime *= (i % 2 == 0 ? -1f : 1f), new Vector2(inner.Width / 2, inner.Height / 2), scale * scaler, SpriteEffects.None, 0f);
+			}
+			spriteBatch.Draw(myTex, position + new Vector2(14f, 14f), frame, drawColor, Main.GlobalTime/1f, myTex.Size()/2f, scale * 1.5f * Main.essScale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(myTex, position + new Vector2(14f, 14f), frame, drawColor, -Main.GlobalTime/1f, myTex.Size() / 2f, scale * 1.5f * Main.essScale, SpriteEffects.None, 0f);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			return false;
+		}
+	}
+
 
 }
 

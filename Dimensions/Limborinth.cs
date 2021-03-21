@@ -507,7 +507,7 @@ namespace SGAmod.Dimensions
 
         public void EvilSegmentRooms(List<MazeRoom> ListOfRooms,int type)
         {
-            //Do Boss Room Gen
+            //Do Sub-Boss Room Gen
 
             float bossArenaSize = 80;
             Vector2 CorruptionRoomAngleAverage = Vector2.Zero;
@@ -574,7 +574,7 @@ namespace SGAmod.Dimensions
             ListofOrderedRooms.Insert(0, new MazeRoom(AveragePoint.ToPoint16(), 0, new Point16(0, 0), 0, true));
 
             int index = 0;
-            foreach (MazeRoom lootroom in ListofOrderedRooms)
+            /*foreach (MazeRoom lootroom in ListofOrderedRooms)
             {
                 if (index < 3)
                 {
@@ -596,7 +596,7 @@ namespace SGAmod.Dimensions
                     }
                 }
                 index += 1;
-            }
+            }*/
 
         }
 
@@ -631,7 +631,7 @@ namespace SGAmod.Dimensions
                 //if (BossRoomInside.Contains(point.X, point.Y))
                 //{
                 tileline.active(false);
-                tileline.wall = tileline.wall = (ushort)SGAmod.Instance.WallType("NullWall");
+                tileline.wall = tileline.wall = (ushort)SGAmod.Instance.WallType("NullWallBossArena");
                 //}
             }
             if (roomsize < 5)
@@ -651,7 +651,7 @@ namespace SGAmod.Dimensions
 
                             if (BossRoom.Contains(point.X, point.Y))
                             {
-                                if (tileline.wall != (ushort)SGAmod.Instance.WallType("NullWall"))
+                                if (tileline.wall != (ushort)SGAmod.Instance.WallType("NullWall") && tileline.wall != (ushort)SGAmod.Instance.WallType("NullWallBossArena"))
                                 {
                                     tileline.wall = (ushort)SGAmod.Instance.WallType("NullWall");
                                 }
@@ -660,7 +660,6 @@ namespace SGAmod.Dimensions
                     }
                 }
             }
-
         }
 
         public bool InsideMap(int x, int y)

@@ -8,7 +8,8 @@ namespace SGAmod.Dimensions.Walls
 {
 	public class NullWall : ModWall
 	{
-		public override void SetDefaults() {
+		public override void SetDefaults()
+		{
 			Main.wallHouse[Type] = false;
 			dustType = DustID.Smoke;
 			AddMapEntry(new Color(0, 0, 0));
@@ -16,6 +17,11 @@ namespace SGAmod.Dimensions.Walls
 
 		public override void NumDust(int i, int j, bool fail, ref int num) {
 			num = fail ? 1 : 3;
+		}
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Dimensions/Walls/NullWall";
+			return true;
 		}
 
 		public override bool CanExplode(int i, int j)
@@ -25,6 +31,15 @@ namespace SGAmod.Dimensions.Walls
 		public override void KillWall(int i, int j, ref bool fail)
 		{
 			fail = true;
+		}
+	}
+	public class NullWallBossArena : NullWall
+	{
+		public override void SetDefaults()
+		{
+			Main.wallHouse[Type] = false;
+			dustType = DustID.Smoke;
+			AddMapEntry(new Color(200, 0, 0));
 		}
 	}
 

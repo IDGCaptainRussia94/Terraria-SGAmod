@@ -234,9 +234,28 @@ namespace SGAmod
 		{
 			orig(self);
 
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+
+			if (SGAConfigClient.Instance.SpecialBlending)
+			{
+				for (int i = 0; i < Main.npc.Length; i += 1)
+				{
+					NPC npc = Main.npc[i];
+					if (npc.active)
+					{
+						if (npc.modNPC != null && npc.modNPC is NPCs.Sharkvern.SharkvernCloudMiniboss cloud)
+						{
+							cloud.Draw(Main.spriteBatch,Lighting.GetColor((int)npc.Center.X >> 4, (int)npc.Center.Y >> 4,Color.White));
+						}
+					}
+				}
+			}
+
 			if (SGAConfigClient.Instance.LavaBlending == false)
 				return;
 
+			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.SolarDye);
 			shader.Apply(null);

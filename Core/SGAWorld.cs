@@ -69,6 +69,7 @@ namespace SGAmod
         public static int modtimer = 0;
         public static int craftwarning = 0;
         public static bool GennedVirulent = false;
+        public static bool tidalCharmUnlocked = false;
         public static int[] oretypesprehardmode = { TileID.Copper, TileID.Iron, TileID.Silver, TileID.Gold };
         public static int[] oretypeshardmode = { TileID.Cobalt, TileID.Mythril, TileID.Adamantite };
         public static ModWorld Instance;
@@ -98,6 +99,8 @@ namespace SGAmod
                 downedWraiths = 0;
                 downedMurk = 0;
                 craftwarning = 0;
+                tidalCharmUnlocked = false;
+                GennedVirulent = false;
                 downedMurklegacy = false;
                 downedCaliburnGuardians = 0;
                 downedCaliburnGuardiansPoints = 0;
@@ -347,6 +350,7 @@ namespace SGAmod
             tag["bossprgressor"] = bossprgressor;
             tag["portalcanmovein"] = portalcanmovein;
             tag["GennedVirulent"] = GennedVirulent;
+            tag["tidalCharmUnlocked"] = GennedVirulent;
             tag["downedPrismBansheeByte"] = downedPrismBanshee; 
             tag["downedSpiderQueen"] = downedSpiderQueen;
             tag["downedCratrosityPML"] = downedCratrosityPML;
@@ -413,6 +417,7 @@ namespace SGAmod
             if (tag.ContainsKey("tf2quest")) { tf2quest = 0; }//tag.GetInt("tf2quest");}
             if (tag.ContainsKey("bossprgressor")) { bossprgressor = tag.GetInt("bossprgressor"); }
             if (tag.ContainsKey("GennedVirulent")) { GennedVirulent = tag.GetBool("GennedVirulent"); }
+            if (tag.ContainsKey("tidalCharmUnlocked")) { GennedVirulent = tag.GetBool("tidalCharmUnlocked"); }
             if (tag.ContainsKey("downedPrismBansheeByte")) { downedPrismBanshee = tag.GetByte("downedPrismBansheeByte"); }
 
 
@@ -462,7 +467,7 @@ namespace SGAmod
             BitsByte flags = new BitsByte(); flags[0] = downedCustomInvasion; flags[1] = downedSPinky; flags[2] = downedTPD; flags[3] = downedCratrosity; flags[4] = downedCirno; flags[5] = downedSharkvern; flags[6] = downedHarbinger; flags[7] = GennedVirulent;
             writer.Write(flags);
             BitsByte flags2 = new BitsByte(); flags[0] = downedSpiderQueen; flags[1] = downedCratrosityPML; flags[2] = downedCaliburnGuardianHardmode;
-            flags[3] = darknessVision; flags[4] = portalcanmovein; flags[5] = downedPrismBanshee>0; flags[6] = downedPrismBanshee > 1; flags[7] = true;
+            flags[3] = darknessVision; flags[4] = portalcanmovein; flags[5] = downedPrismBanshee>0; flags[6] = downedPrismBanshee > 1; flags[7] = tidalCharmUnlocked;
             writer.Write(flags2);
 
             writer.Write((short)downedWraiths);
@@ -509,6 +514,7 @@ namespace SGAmod
                 downedPrismBanshee = 1;
             if (flags2[6])
                 downedPrismBanshee = 2;
+            tidalCharmUnlocked = flags2[7];
 
 
             downedWraiths = reader.ReadInt16();

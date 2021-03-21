@@ -152,6 +152,7 @@ namespace SGAmod
 		public int NoFireBurn = 0;
 		public int breathingdelay = 0;
 		public int sufficate = 200;
+		public int finalGem = 0;
 
 		//Stat Related
 		public float UseTimeMul = 1f;
@@ -249,8 +250,11 @@ namespace SGAmod
 
 		public int Microtransactionsdelay = 0;
 
+		public int manifestedWeaponType = 0;
+
 		public override void ResetEffects()
 		{
+			manifestedWeaponType = 0;
 			watcherDebuff = 0;
 			MVMBoost = false;
 			gunslingerLegend = false;
@@ -275,6 +279,7 @@ namespace SGAmod
 			heldShieldReset -= 1;
 			if (heldShieldReset<1)
 			heldShield = -1;
+			finalGem -= 1;
 
 			claySlowDown = Math.Max(claySlowDown - 1, 0);
 
@@ -833,7 +838,13 @@ namespace SGAmod
 
 		public override void PostUpdateEquips()
 		{
-
+			if (finalGem > 0)
+			{
+				for(int index = 0; index < 7; index += 1)
+				{
+					player.ownedLargeGems[index] = true;
+				}
+			}
 			//Minecarts-
 
 			//player.powerrun = true;
@@ -848,6 +859,16 @@ namespace SGAmod
 			}
 
 			PostUpdateEquipsEvent?.Invoke(this);
+			if (player.SGAPly().manifestedWeaponType > 0)
+			{
+				if (player.inventory[player.selectedItem].IsAir)
+				{
+					Item newItem = new Item();
+					newItem.SetDefaults(player.SGAPly().manifestedWeaponType);
+					player.inventory[player.selectedItem] = newItem;
+					Main.NewText(player.inventory[player.selectedItem].type);
+				}
+			}
 
 			if (ninjaSash>0)
 				ninjaStashLimit = Math.Max(ninjaStashLimit - 1, 0);
@@ -1813,8 +1834,13 @@ namespace SGAmod
 						Main.PlaySound(SoundID.Zombie, (int)player.Center.X,(int)player.Center.Y, 68, 1f, vibraniumSetPlatform ? -0.25f : 0.35f);
 					}
 				}
+                Items.Armors.Engineer.EngineerArmorPlayer EAP = player.GetModPlayer<Items.Armors.Engineer.EngineerArmorPlayer>();
+				if (EAP.EngieArmor())
+				{
+					EAP.ToggleEngieArmor();
+				}
 
-				if (Main.netMode != NetmodeID.Server)
+					if (Main.netMode != NetmodeID.Server)
 				{
 					SGAmod.RecipeIndex += 1;
 				}

@@ -828,16 +828,17 @@ namespace SGAmod
 				if (hell != null)
 				{
 					Player ply = Main.player[hell.npc.target];
-					hellionTimer += 1;
+					hellionTimer += hellionTimer>=0 ? 1 : 1;
 					if (hellionTimer % 5 == 0)
 					{
 						if (!Collision.CanHit(npc.Center, 1, 1, Main.player[hell.npc.target].Center, 1, 1) && npc.aiStyle < 15 && npc.aiStyle > -1)
 						{
-							hellionTimer += 500;
-							if (hellionTimer > 30000)
-								hellionTimer = -300;
+							hellionTimer += 200;
 						}
 					}
+					if (hellionTimer > 100+(hell.phase*200))
+						hellionTimer = -300;
+
 					if (hellionTimer < 0)
 					{
 						Vector2 dists = new Vector2(5 + (float)Math.Sin(MathHelper.ToRadians((hellionTimer + npc.whoAmI * 9f) / 100f)) * 20f, (float)Math.Cos(npc.whoAmI / 4f));

@@ -18,12 +18,12 @@ Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Bind
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy and Seismic Resonator Ore Creator), Aurora Gear and finish Luminous Alter Tile Entity!
 -Add Hellion army bar, STILL!
 
+Todo-Aurora Gear, Finish Vibranium Summon headpiece and enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Add Dropper, Finish Luminious Alter (effects)
+-A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
+
 Changelog:
 
 3.530-(1/28/21)-Patch 11-Tech N Wreck:
-
-Todo-Aurora Gear, Finish Vibranium Summon headpiece and enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Add Dropper, Finish Luminious Alter (effects)
-
 
 --Added:
 
@@ -31,11 +31,9 @@ Todo-Aurora Gear, Finish Vibranium Summon headpiece and enemies, Seismic Resonan
 
 -Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials!
 
--A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
-
 -Luminous Alter, use it to transmute various items overtime by infusing them with Starlight!
 
--A stronger post-L.Wraith Prismic Banshee that drops double loot, also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam!
+-A stronger post-L.Wraith Prismic Banshee that drops double loot, also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam! (hint: put fallen stars into the previous mentioned Luminous Alter)
 
 -Hoppers N Droppers, automate your Terraria!
 

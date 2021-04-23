@@ -24,6 +24,10 @@ namespace SGAmod.NPCs
 		{
 			DisplayName.SetDefault("Resonant Wisp");
 		}
+		public override bool Autoload(ref string name)
+		{
+			return SGAmod.VibraniumUpdate;
+		}
 		public override void SetDefaults()
 		{
 			npc.width = 48;

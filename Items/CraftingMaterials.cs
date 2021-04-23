@@ -10,6 +10,7 @@ using Terraria.Graphics.Shaders;
 using Terraria.Graphics;
 using Idglibrary;
 using SGAmod.Items.Placeable;
+using SGAmod.Items.Weapons.Vibranium;
 
 namespace SGAmod.HavocGear.Items
 {
@@ -41,7 +42,7 @@ namespace SGAmod.HavocGear.Items
 		}
 
 	}
-	public class VirulentBar : ModItem
+	public class VirulentBar : VibraniumText
 	{
 		public override void SetStaticDefaults()
 		{
@@ -280,8 +281,12 @@ namespace SGAmod.Items
 			item.value = 500;
 			item.rare = ItemRarityID.Red;
 		}
-	}
-	public class VibraniumPlating : ModItem
+        public override bool Autoload(ref string name)
+        {
+            return SGAmod.VibraniumUpdate;
+        }
+    }
+	public class VibraniumPlating : VibraniumCrystal
 	{
 		public override void SetStaticDefaults()
 		{
@@ -298,7 +303,7 @@ namespace SGAmod.Items
 			item.rare = ItemRarityID.Purple;
 		}
 	}
-	public class VibraniumBar : ModItem
+	public class VibraniumBar : VibraniumText
 	{
 		public override void SetStaticDefaults()
 		{
@@ -325,6 +330,10 @@ namespace SGAmod.Items
 			recipe.needLava = true;
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
+		}
+		public override bool Autoload(ref string name)
+		{
+			return SGAmod.VibraniumUpdate;
 		}
 	}
 

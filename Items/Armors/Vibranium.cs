@@ -16,7 +16,7 @@ namespace SGAmod.Items.Armors
 {
 
 	[AutoloadEquip(EquipType.Head)]
-	public class VibraniumMask : Weapons.Aurora.VibraniumText
+	public class VibraniumMask : Weapons.Vibranium.VibraniumText
     {
 		public override void SetStaticDefaults()
 		{
@@ -188,7 +188,7 @@ namespace SGAmod.Items.Armors
 	}
 
 	[AutoloadEquip(EquipType.Body)]
-	public class VibraniumChestplate : Weapons.Aurora.VibraniumText
+	public class VibraniumChestplate : Weapons.Vibranium.VibraniumText
     {
 		public override void SetStaticDefaults()
 		{
@@ -301,7 +301,7 @@ namespace SGAmod.Items.Armors
 	}
 
 	[AutoloadEquip(EquipType.Legs)]
-	public class VibraniumLeggings : Weapons.Aurora.VibraniumText
+	public class VibraniumLeggings : Weapons.Vibranium.VibraniumText
     {
 		public override void SetStaticDefaults()
 		{

@@ -139,7 +139,7 @@ namespace SGAmod.Items.Armors.Engineer
         float EaseXVel = 0f;
         float EaseYVel = 0f;
         public int EngineerTransform = 0;
-        public byte EngineerModes = 15;
+        public byte EngineerModes = 16;
         public int AttackCheck = 0;
         public float aimDir = 0;
         public float[] RecoilEffect = { 0, 0 };
@@ -230,8 +230,10 @@ namespace SGAmod.Items.Armors.Engineer
         }
         public void ToggleEngieArmor()
         {
-            EngineerModes |= 8;//flip the 4th bit
+            EngineerModes ^= 4;
+            CombatText.NewText(new Rectangle(player.Hitbox.X, player.Hitbox.Y - 8, 0, player.Hitbox.Width), Color.Orange, "Jetpack " + ((EngineerModes & 4)!=0 ? "ACTIVE" : "inactive"), false, false);
             Main.NewText("Bit test: " + EngineerModes);
+            Main.NewText("Bit Test: " + (EngineerModes&4));
         }
         public void HandleEngineerArmor()
         {
@@ -247,7 +249,7 @@ namespace SGAmod.Items.Armors.Engineer
 
                 AttackCheck = AttackCheck % 128;
 
-                bool JetpackOn = (EngineerModes & (8)) != 0;//4th bit switch is 1! So it is on!
+                bool JetpackOn = (EngineerModes & (4)) != 0;//1th bit switch is 1! So it is on!
 
                 if (player.controlJump && JetpackOn && sgaplayer.ConsumeElectricCharge(40,30,false,sgaplayer.timer%4==0))
                 {
@@ -538,6 +540,21 @@ namespace SGAmod.Items.Armors.Engineer
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             EngineerArmorPlayer engiePlayer = player.GetModPlayer<EngineerArmorPlayer>();
+            bool shift = false;
+            if (engiePlayer.EngineerModes > 3)
+            {
+                shift = true;
+                engiePlayer.EngineerModes -= 4;
+            }
+            engiePlayer.EngineerModes = (byte)((engiePlayer.EngineerModes+1)%4);
+            CombatText.NewText(new Rectangle(player.Hitbox.X, player.Hitbox.Y - 8, 0, player.Hitbox.Width), Color.Orange, "Attack mode: " + engiePlayer.EngineerModes, false,false);
+            if (shift)
+            {
+                engiePlayer.EngineerModes += 4;
+            }
+
+            Main.NewText("Bit test: " + engiePlayer.EngineerModes);
+
             engiePlayer.AttackCheck += 1;
             engiePlayer.RecoilEffect[engiePlayer.AttackCheck%2] += 15f;
             player.bodyFrame.Y = player.bodyFrame.Height;

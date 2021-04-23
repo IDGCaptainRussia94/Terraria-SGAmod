@@ -13,7 +13,7 @@ using SGAmod.Effects;
 using System.Linq;
 using Terraria.DataStructures;
 
-namespace SGAmod.Items.Weapons.Aurora
+namespace SGAmod.Items.Weapons.Vibranium
 {
 	public class VibraniumText : ModItem
 	{
@@ -54,7 +54,7 @@ namespace SGAmod.Items.Weapons.Aurora
 
 		public override bool Autoload(ref string name)
         {
-			return GetType() != typeof(VibraniumText);
+			return SGAmod.VibraniumUpdate;// GetType() != typeof(VibraniumText);
         }
 	}
 		

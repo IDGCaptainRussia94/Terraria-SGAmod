@@ -95,6 +95,10 @@ namespace SGAmod
 		public partial class SGAmod : Mod
 	{
 
+		public const bool VibraniumUpdate = false;
+		public const bool EngieUpdate = false;
+
+
 		public static SGAmod Instance;
 		public static string SteamID;
 		public static bool SkillUIActive = false;

@@ -203,7 +203,7 @@ namespace SGAmod.Tiles
 			if (movementCount >= 100)
 				return false;
 
-			Main.NewText("Debug Message 2!");
+			//Main.NewText("Debug Message 2!");
 			Tile tile = Framing.GetTileSafely(tilePos.X, tilePos.Y);
 			Point coords = GetRealHopperCorner(tilePos, tile);
 			Point offset = tileDirection[tile.frameX / 36];

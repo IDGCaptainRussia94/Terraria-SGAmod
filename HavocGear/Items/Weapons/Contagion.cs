@@ -43,7 +43,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             recipe.AddIngredient(null, "Mossthorn", 1);
             recipe.AddIngredient(null, "TidalWave", 1);
             recipe.AddIngredient(null, "VialofAcid", 5);
-            recipe.AddIngredient(null, "VirulentBar", 10);
+            recipe.AddIngredient(mod.ItemType("VirulentBar"), 10);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);
             recipe.AddRecipe();

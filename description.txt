@@ -19,6 +19,172 @@ And finally, alot of content in this mod is placeholder sprites due to a lack of
 
 Changelog:
 
+3.530-(5/1/21)-Patch 11-Tech N Wreck (Unfinished, not that anyone really cared anyways):
+
+--Added:
+
+-Plasmic Rail Gun, Pulsar Perforator, Uranium Filled Snowballs, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Yoyo Threads, Rad Suit, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star
+
+-Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials!
+
+-Somewhat unfinished summoner-aligned Engineer set.
+
+-Luminous Alter, use it to transmute various items overtime by infusing them with Starlight!
+
+-A stronger post-L.Wraith Prismic Banshee that drops double loot, also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam! (hint: put fallen stars into the previous mentioned Luminous Alter)
+
+-Hoppers [strikeout]N Droppers[strikeout], automate your Terraria!
+
+-Prismic Banshee has a stronger manually summoned version after Luminite Wraith is defeated you can fight for double loot, the boss in general has undergone a couple of changes
+
+-A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's apperence has been changed
+
+-New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights
+
+-Limbo has been given a loading screen
+
+-Added alot of missing debuff icons
+
+-Various Resprites, added missing sprites, and smaller improvements; enjoy a far better looking Jackpot with glowing coins!
+
+-Unfinished Vibranium content, use cheat sheet to access it
+
+
+--Changed:
+
+-The Calamity Rune and Luminous Gel are created at the Luminous Alter now, check the wiki for all the recipe combos
+
+-Draken's Dialog has been moved around to help give players instructions, also a new interaction has been added after you become close friends
+
+-Hellion gains defense and debuff immunity apon activating Tyrant's Glare (post Festive Moons/warped background phase)
+
+-Hellion's beam has been given a visual overhaul to fix a bug where it was invisible (see fixed), also Hellion's arena aura has been changed to something less flashy on the eyes and likely more GPU friendly, Skeletron Hands now do 150 contact damage, Hellion has more delay before moving again with the lasers, or shooting sky fractures, some other attacks changed in an effort to make them more fair, army enemies will now fly at the player more often
+
+-Sharkvern's body segments now take 25% (Tail 0%) reduced damage to peircing weapons, and no reduction to true melee projectiles (IE yoyos, spears), various changes have happened to the fight
+
+-Added the Star Anise to the list of items the Ninja Stash can summon on attacks
+
+-Amulet of Diehard Cataclysm no longer activates during a boss; only out of boss fights, effect also replays properly now
+
+-Souls of Byte are now a post-Hellion Drop (Hellion Core only drops them after the entire fight is beaten)
+
+-Handling Gloves now reduce the penality of holding radioactive items
+
+-Added some flavor text to the Jabb-a-wacky to hint how to get it
+
+-Most non-npc specific SGAmod drops no longer drop from statue spawned NPCs
+
+-Mudmore and Clay-More were switched on the Celstial Flare and Surt because it made more sense upgrade wise
+
+-Ragnarok's Brew costs more resources except Styigan Stars and makes 3, to help justify it requiring Styigan Stars
+
+-Various balance changes to Sharkvern as well
+
+-Copper/Cobalt Wraith's cores can no longer take crits from the last hit on piercing weapon
+
+-Several homing weapons that wern't classed as homing now are
+
+-Excavator and Geyodo have gained a new visual effect
+
+-Busted has been moved to weapons, and a new prefix has been added in its place for accessories
+
+-Rebalanced Maldal: Has a different effect that won't hurt the player
+
+-Lowered the price of the Universal Music Box to 1 plat (from 3)
+
+-Divine Shower Storm has been renamed to Divinity Caller
+
+-Buffed Clay-More: now has a ranged attack, at a cost
+
+-Buffed Cyber Scythe: Now controls in and out twice as fast
+
+-Buffed Stormbreaker: flies faster with more friction at higher throwing speeds
+
+-Buffed Novite Knife: Now carries over a movement speed and jump boost from its source material (granted, from deathmatch)
+
+-Buffed Geyodo: it really should have did more damage, even if a meager ammount
+
+-Buffed Gas Passer: double base damage over time, slightly better scaling with enemy HP
+
+-Buffed Cosmic Grasp: (again), base damage increased so it's not just a side great to the Cosmillash
+
+-Buffed all consumable Jab-lins: as they now have a chance to drop again after expiring
+
+-Nerfed Rioter's Glove: Has been moved further into progression again (hardmode => post-early hardmode SGAmod bosses)
+
+-Nerfed Tactical SMG Rifle: damage lowered to 25 (from 28)
+
+-Nerfed Terra Trident: Damage lowered to 38 from 50
+
+-Nerfed Shooting Star: base damage massively lowered, this thing had more DPS than Enmity did!
+
+-Nerfed Ninja's Stash: there is now a limit to how many summoned attacks you can spawn in rapid succession
+
+-Nerfed Cosmic Cocktail: all of its spawned projectiles now only have a 10% chance to crit when they normally would crit, Use time has been increased to 60 frames (from 40), damage lowered to 40 (from 50)
+
+-Nerfed Kou Sash and Shin Sash: crit chance boost was incorrect and has been lowered
+
+-Nerfed all the Horseman Saddles: Apocalyptical chance boost reduced to 3%
+
+
+--Fixed
+
+-Disallowed Tools in the Deeper Dungeon again, due to a mining glitch, use bombs to break everything you could mine before! Unless you have the Dungeon Splunker
+
+-Amulet of Diehard Cataclysm should now properly prevent Blackbelt and Shadow Dodges
+
+-Possibly fixed the unloading IL problems (players getting frozen on world login)
+
+-There should no longer be an issues with HUD mods that override the vanilla HUD from now on
+
+-Hellion Beams being invisible, and a little oversight that led to alot of unintentional lag in the fight
+
+-Prismic Banshee and supreme pinky should not properly handle gravitation potion's effects properly on screen
+
+-'The Whole Experience' not working on Killer Fly Swarm; you can now refight that boss
+
+-Draken saying you need to fight the evil biome boss when you are not in that world type
+
+-Calburn's defeat message, it now says you can break moist stone only after you've beaten all 3 of them
+
+-Cyber Scythe's max range growing smaller with melee speed instead of larger
+
+-Prismic Banshee's 'hands' having a weird hitbox, and counting as defeated on other play-throughs
+
+-Grappling removing the player's light in the foggy darkness
+
+-Granite Magnet not pulling items in faster when worn as an accessory
+
+-Virulent Ore placing the wrong tile, due to me forgoting to undo a testing thing
+
+-Gucci Guantlet's Amber Gem causing null errors in merchant shops
+
+-Town NPCs getting daybroken by enemy attacks while you had the Fiery Heart
+
+-Stormbreaker not counting the lightning as modded throwing damage
+
+-Incorrect damage types involving the Mangrove Orbs
+
+-The Amulet of Diehard Cataclysm having a crafting recipe
+
+-Cirno refusing to spawn serverside, she now spawns on the client end of whoever summoned her and is synced from there
+
+-A few issues when using vanilla throwing items, for now
+
+-An invisible non-transparent pixel on Rusty Sword's sprite, causing it to look odd ingame
+
+-Granite magnet listing it can "block" damage
+
+-Other smaller fixes I might have forgotten about-including typeos
+
+
+3.522-(2/18/21)-Hotfix #17:
+
+--Fixed:
+
+-Dark Sectors not drawing properly
+
+
 3.521-(1/21/21)-Hot Fix #16:
 
 --Added:

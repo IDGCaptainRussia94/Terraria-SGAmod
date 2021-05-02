@@ -54,7 +54,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 
 		public override bool Autoload(ref string name)
         {
-			return SGAmod.VibraniumUpdate;// GetType() != typeof(VibraniumText);
+			return GetType() != typeof(VibraniumText) && SGAmod.VibraniumUpdate;
         }
 	}
 		

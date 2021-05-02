@@ -54,7 +54,7 @@ namespace SGAmod.HavocGear.Items.Armor
         	public override void AddRecipes()
         	{
             		ModRecipe recipe = new ModRecipe(mod);
-            		recipe.AddIngredient(null, "VirulentBar", 11);
+            		recipe.AddIngredient(mod.ItemType("VirulentBar"), 11);
 					recipe.AddIngredient(null, "DankWoodChest", 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
@@ -92,7 +92,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "VirulentBar", 7);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 7);
 			recipe.AddIngredient(null, "DankWoodHelm", 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
@@ -132,7 +132,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "VirulentBar", 9);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 9);
 			recipe.AddIngredient(null, "DankLegs", 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);

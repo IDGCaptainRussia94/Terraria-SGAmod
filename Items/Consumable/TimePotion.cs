@@ -61,7 +61,7 @@ namespace SGAmod.Items.Consumable
 			recipe.AddIngredient(ItemID.LesserRestorationPotion);
 			recipe.AddIngredient(ItemID.StrangeBrew);
 			recipe.AddIngredient(ItemID.AncientCloth, 2);
-			recipe.AddIngredient(null, "VirulentBar", 4);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 4);
 			recipe.AddIngredient(mod.ItemType("Entrophite"), 40);
 			recipe.AddIngredient(ItemID.DD2KoboldBanner);
 			recipe.AddIngredient(ItemID.FossilOre, 10);

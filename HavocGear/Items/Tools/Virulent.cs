@@ -46,7 +46,7 @@ namespace SGAmod.HavocGear.Items.Tools
 			ModRecipe recipe;
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "MangrovePickaxe", 1);
-			recipe.AddIngredient(null, "VirulentBar", 5);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 5);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -85,7 +85,7 @@ namespace SGAmod.HavocGear.Items.Tools
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "VirulentBar", 15);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 15);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -122,7 +122,7 @@ namespace SGAmod.HavocGear.Items.Tools
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "MangroveHammer", 1);
 			recipe.AddIngredient(null, "MangroveAxe", 1);
-			recipe.AddIngredient(null, "VirulentBar", 5);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 5);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -163,7 +163,7 @@ namespace SGAmod.HavocGear.Items.Tools
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "VirulentBar", 15);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 15);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

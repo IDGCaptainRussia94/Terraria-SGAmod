@@ -42,7 +42,7 @@ namespace SGAmod.HavocGear.Items
 		}
 
 	}
-	public class VirulentBar : VibraniumText
+	public class VirulentBar : ModItem
 	{
 		public override void SetStaticDefaults()
 		{

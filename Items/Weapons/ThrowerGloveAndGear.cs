@@ -18,6 +18,7 @@ using System.Linq;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Dusts;
 using SGAmod.Items.Accessories;
+using SGAmod.Items.Weapons.Vibranium;
 
 namespace SGAmod.Items.Weapons
 {
@@ -1035,6 +1036,55 @@ namespace SGAmod.Items.Weapons
 			spriteBatch.Draw(tex, drawPos, null, lightColor.MultiplyRGB(Color.Brown) * 0.5f* scalePercent, projectile.rotation, tex.Size()/2f, projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
+	}
+
+	class RottenEggshels : ModItem, IAuroraItem
+	{
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Calabash Nebula");
+			Tooltip.SetDefault("'Rotten Eggs Infused with so much Starlight it might as well be...'");
+		}
+		public override string Texture => "Terraria/Projectile_"+ProjectileID.RottenEgg;
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb(Main.GlobalTime % 1f, 1f, 0.75f);
+		}
+
+		public override void SetDefaults()
+		{
+			item.CloneDefaults(ItemID.Grenade);
+			item.useStyle = 1;
+			item.Throwing().thrown = true;
+			item.thrown = false;
+			item.damage = 100;
+			item.shootSpeed = 6f;
+			item.shoot = ProjectileID.RottenEgg;
+			item.value = Item.buyPrice(0, 0, 2, 0);
+			item.rare = 0;
+		}
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+
+			Vector2 position2 = new Vector2(speedX, speedY);
+
+			Projectile.NewProjectile(position, position2.RotatedByRandom(Math.PI/20f), ModContent.ProjectileType<GammBurstBeam>(), damage, knockBack * 3f, player.whoAmI);
+
+			for(int i = 0; i < 30; i += 1)
+            {
+				Projectile.NewProjectile(position, position2.RotatedByRandom(Math.PI * (0.5f/(1f+(i/5f))))*Main.rand.NextFloat(2.75f,5f), type, (int)(damage/3f), knockBack, player.whoAmI);
+			}
+
+			return false;
+        }
+        public override void AddRecipes()
+		{
+			//nil
+		}
+
 	}
 
 

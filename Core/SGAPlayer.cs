@@ -866,7 +866,7 @@ namespace SGAmod
 					Item newItem = new Item();
 					newItem.SetDefaults(player.SGAPly().manifestedWeaponType);
 					player.inventory[player.selectedItem] = newItem;
-					Main.NewText(player.inventory[player.selectedItem].type);
+					//Main.NewText(player.inventory[player.selectedItem].type);
 				}
 			}
 

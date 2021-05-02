@@ -71,7 +71,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			recipe.AddIngredient(ItemID.StarCannon, 1);
 			recipe.AddIngredient(null, "WraithFragment4", 8);
 			recipe.AddIngredient(null, "AdvancedPlating", 8);
-			recipe.AddIngredient(null, "VirulentBar", 4);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 4);
 			recipe.AddIngredient(ItemID.MeteoriteBar, 8);
 			recipe.AddIngredient(ItemID.HallowedBar, 6);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));

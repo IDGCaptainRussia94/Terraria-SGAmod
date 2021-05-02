@@ -95,8 +95,8 @@ namespace SGAmod
 		public partial class SGAmod : Mod
 	{
 
-		public const bool VibraniumUpdate = false;
-		public const bool EngieUpdate = false;
+		public const bool VibraniumUpdate = true;
+		public const bool EngieUpdate = true;
 
 
 		public static SGAmod Instance;
@@ -669,7 +669,7 @@ namespace SGAmod
 			recipe = new ModRecipe(this);
 			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(null,"DankCore", 2);
-			recipe.AddIngredient(null, "VirulentBar", 10);
+			recipe.AddIngredient(this.ItemType("VirulentBar"), 10);
 			recipe.AddIngredient(ItemID.Frog, 1);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.FrogLeg);

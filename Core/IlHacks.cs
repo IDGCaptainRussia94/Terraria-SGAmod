@@ -30,7 +30,7 @@ namespace SGAmod
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
 			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
-			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
+			//IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack; Eh not used anyways
 			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
 			//IL.Terraria.Lighting.AddLight_int_int_float_float_float += AddLightHack;
 			//IL.Terraria.Player.PickTile += PickPowerOverride;

@@ -266,7 +266,12 @@ namespace SGAmod
             }
             if (set == "Engineer")
             {
-                player.setBonus = "Hold JUMP to hover at an expense to Electric Charge\nManifested weapon: Engie Controls";
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+                player.setBonus = "Hold JUMP to hover at an expense to Electric Charge\nManifested weapon: Engie Controls\nPress the 'Toggle Recipe' (" + s + ") Hotkey to toggle jetpack mode";
                 sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Engineer.ManifestedEngieControls>();
             }            
             if (set == "Blazewyrm")

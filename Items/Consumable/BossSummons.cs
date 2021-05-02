@@ -357,7 +357,7 @@ namespace SGAmod.Items.Consumable
 						NPC.NewNPC((int)item.Center.X, (int)item.Center.Y, ModContent.NPCType<PrismBanshee>());
 						item.active = false;
                     }
-					Main.NewText(item.ownTime);
+					//Main.NewText(item.ownTime);
 				}
 			}
 		}

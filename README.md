@@ -23,7 +23,7 @@ Todo-Aurora Gear, Finish Vibranium Summon headpiece and enemies, Seismic Resonan
 
 Changelog:
 
-3.530-(1/28/21)-Patch 11-Tech N Wreck:
+3.530-(5/1/21)-Patch 11-Tech N Wreck (Unfinished):
 
 --Added:
 
@@ -31,15 +31,17 @@ Changelog:
 
 -Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials!
 
+-Somewhat unfinished summoner-aligned Engineer set.
+
 -Luminous Alter, use it to transmute various items overtime by infusing them with Starlight!
 
 -A stronger post-L.Wraith Prismic Banshee that drops double loot, also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam! (hint: put fallen stars into the previous mentioned Luminous Alter)
 
--Hoppers N Droppers, automate your Terraria!
+-Hoppers [strikeout]N Droppers[strikeout], automate your Terraria!
 
 -Prismic Banshee has a stronger manually summoned version after Luminite Wraith is defeated you can fight for double loot, the boss in general has undergone a couple of changes
 
--A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fullyy unlocks Tidal Charm)
+-A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's apperence has been changed
 
 -New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights
 
@@ -48,6 +50,8 @@ Changelog:
 -Added alot of missing debuff icons
 
 -Various Resprites, added missing sprites, and smaller improvements; enjoy a far better looking Jackpot with glowing coins!
+
+-Unfinished Vibranium content, use cheat sheet to access it
 
 
 --Changed:

@@ -785,7 +785,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(null, "DankWood", 25);
             recipe.AddIngredient(null, "DankCore", 1);
-            recipe.AddIngredient(null, "VirulentBar", 12);
+            recipe.AddIngredient(mod.ItemType("VirulentBar"), 12);
             recipe.AddIngredient(ItemID.VineRopeCoil, 2);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);

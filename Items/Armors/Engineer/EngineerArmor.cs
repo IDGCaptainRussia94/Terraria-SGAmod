@@ -51,7 +51,7 @@ namespace SGAmod.Items.Armors.Engineer
         }
         public override bool Autoload(ref string name)
         {
-            return false;
+            return SGAmod.EngieUpdate;//fuck all
         }
     }
 
@@ -379,7 +379,10 @@ namespace SGAmod.Items.Armors.Engineer
 
                     if (player.HeldItem.type == ModContent.ItemType<ManifestedEngieControls>() && Main.LocalPlayer == player)
                     {
-                        aimDir = (Main.MouseWorld - player.MountedCenter).ToRotation();
+                        aimDir = (Main.MouseWorld - player.MountedCenter).ToRotation()*player.direction;
+                        if (player.direction < 0)
+                            aimDir += MathHelper.Pi;
+
                         rotationangles[2] = aimDir;
                         rotationangles[3] = aimDir;
                     }
@@ -547,13 +550,15 @@ namespace SGAmod.Items.Armors.Engineer
                 engiePlayer.EngineerModes -= 4;
             }
             engiePlayer.EngineerModes = (byte)((engiePlayer.EngineerModes+1)%4);
-            CombatText.NewText(new Rectangle(player.Hitbox.X, player.Hitbox.Y - 8, 0, player.Hitbox.Width), Color.Orange, "Attack mode: " + engiePlayer.EngineerModes, false,false);
+
+            //CombatText.NewText(new Rectangle(player.Hitbox.X, player.Hitbox.Y - 8, 0, player.Hitbox.Width), Color.Orange, "Attack mode: " + engiePlayer.EngineerModes, false,false);
+
             if (shift)
             {
                 engiePlayer.EngineerModes += 4;
             }
 
-            Main.NewText("Bit test: " + engiePlayer.EngineerModes);
+            //Main.NewText("Bit test: " + engiePlayer.EngineerModes);
 
             engiePlayer.AttackCheck += 1;
             engiePlayer.RecoilEffect[engiePlayer.AttackCheck%2] += 15f;

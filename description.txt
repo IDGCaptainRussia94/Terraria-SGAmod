@@ -19,6 +19,13 @@ And finally, alot of content in this mod is placeholder sprites due to a lack of
 
 Changelog:
 
+3.580-(7/16/21)-Hotfix #14:
+
+--Fixed:
+
+-A work around to a bug involving HUD mods ('Un'Leveled specifically) breaking SGAmod's HUD
+
+
 3.522-(2/18/21)-Hotfix #13:
 
 --Fixed:

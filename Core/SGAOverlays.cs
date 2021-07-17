@@ -39,13 +39,18 @@ namespace SGAmod
 				return;
 			}
 
+			int foundIndex = 0;
+
 			for (int k = 0; k < layers.Count; k++)
 			{
 				if (layers[k].Name == "Vanilla: Resource Bars")
 				{
-					layers.Insert(k + 1, new LegacyGameInterfaceLayer("SGAmod: HUD", DrawHUD, InterfaceScaleType.UI));
+					foundIndex = k + 1;
+					break;
 				}
 			}
+
+			layers.Insert(foundIndex, new LegacyGameInterfaceLayer("SGAmod: HUD", DrawHUD, InterfaceScaleType.UI));
 
 			int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 			if (mouseTextIndex != -1)

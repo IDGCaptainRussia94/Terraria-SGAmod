@@ -18,6 +18,13 @@ Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge ba
 
 Changelog:
 
+3.580-(7/16/21)-Hotfix #14:
+
+--Fixed:
+
+-A work around to a bug involving HUD mods ('Un'Leveled specifically) breaking SGAmod's HUD
+
+
 3.522-(2/18/21)-Hotfix #13:
 
 --Fixed:

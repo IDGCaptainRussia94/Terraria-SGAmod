@@ -492,11 +492,6 @@ namespace SGAmod.Tiles
                 }
             }
 
-            base.Update();
-        }
-
-        public override void PostGlobalUpdate()
-        {
             if (Main.netMode < NetmodeID.Server)
             {
                 if (clientChargingTimer > 0)
@@ -520,6 +515,35 @@ namespace SGAmod.Tiles
                     clientChargingTimer -= 1;
                 }
             }
+
+            base.Update();
+        }
+
+        public override void PostGlobalUpdate()
+        {
+            /*if (Main.netMode < NetmodeID.Server)
+            {
+                if (clientChargingTimer > 0)
+                {
+                    if (clientChargingTimer == 120)
+                    {
+                        if (itemData != null)
+                        {
+                            SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_WitherBeastAuraPulse, Position.X * 16, Position.Y * 16);
+                            if (sound != null)
+                                sound.Pitch = -0.75f + ((clientChargingTimer / (float)itemData.infusionTime) * 1.50f);
+                        }
+                    }
+
+                    if (clientChargingTimer % 6 == 0)
+                    {
+                        int dust = Dust.NewDust(new Vector2(Position.X, Position.Y) * 16, 16, 16, DustID.PurpleCrystalShard);
+                        Main.dust[dust].scale = 3f;
+                        Main.dust[dust].noGravity = true;
+                    }
+                    clientChargingTimer -= 1;
+                }
+            }*/
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)

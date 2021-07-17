@@ -24,17 +24,12 @@ namespace SGAmod.Items.Accessories
 			tooltips.Add(new TooltipLine(mod, "Dedicated2", Idglib.ColorText(c, "And the amazing spriters who helped him")));
 		}
 
-		public override string Texture
-		{
-			get { return("SGAmod/Items/Weapons/CrateBossWeaponThrown");}
-		}
-
         public override void SetDefaults()
 		{
 			item.width = 18;
 			item.height = 18;
 			item.value = Item.sellPrice(1, 0, 0, 0);
-			item.rare = 9;
+			item.rare = ItemRarityID.Cyan;
 			item.accessory = true;
 			item.expert=true;
 		}

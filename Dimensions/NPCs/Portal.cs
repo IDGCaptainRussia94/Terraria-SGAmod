@@ -14,6 +14,7 @@ using Idglibrary;
 
 namespace SGAmod.Dimensions.NPCs
 {
+	[AutoloadHead]
 	public class DungeonPortal : ModNPC
 	{
 
@@ -25,7 +26,14 @@ namespace SGAmod.Dimensions.NPCs
 			return mod.Properties.Autoload;
 		}
 
-		public override void SetStaticDefaults()
+        public override void BossHeadSlot(ref int index)
+        {
+			if (!SGAWorld.portalcanmovein)
+				index = -1;
+        }
+        public override string HeadTexture => "SGAmod/Dimensions/NPCs/DungeonPortal_Head";
+
+        public override void SetStaticDefaults()
 		{
 			// DisplayName automatically assigned from .lang files, but the commented line below is the normal approach.
 			// DisplayName.SetDefault("Example Person");
@@ -269,7 +277,7 @@ namespace SGAmod.Dimensions.NPCs
 				}
 				else
 				{
-					shop = true;
+					//shop = true;
 				}
 			}
 		}

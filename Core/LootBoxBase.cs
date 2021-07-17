@@ -130,6 +130,11 @@ namespace SGAmod
 			projectile.localAI[0] = Main.rand.Next(40, 60);//Starting position, make sure this is higher than items Visible
 		}
 
+		public virtual void ExtraItem(WeightedRandom<LootBoxContents> WR)
+        {
+			//WR.Add(new LootBoxContents(ItemID.Handgun, 1), 4);
+		}
+
 		//Fun part :p, Control what goes into the loot box! This is per item
 		protected virtual void FillLootBox(WeightedRandom<LootBoxContents> WR)
 		{
@@ -170,6 +175,7 @@ namespace SGAmod
 				for (int i = 0; i < maxItems; i += 1)
 				{
 					FillLootBox(WR);
+					ExtraItem(WR);
 					WR.Clear();
 					WR.needsRefresh = true;
 				}

@@ -35,11 +35,11 @@ namespace SGAmod
                 SGAPlayer modplayer = player.GetModPlayer<SGAPlayer>();
                 int whichone = (int)Main.GlobalTime % 4;
                 string[] theones = { "Melee", "Ranged", "Magic", "Throwing" };
-                string text = modplayer.apocalypticalChance[whichone] +"% "+ theones[whichone] + " Apocalyptical Chance";
+                string text = modplayer.apocalypticalChance[whichone] + "% " + theones[whichone] + " Apocalyptical Chance";
 
                 if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl))
                 {
-                    text += "\nApocalyptical Strength: "+ (modplayer.apocalypticalStrength*100f)+"%";
+                    text += "\nApocalyptical Strength: " + (modplayer.apocalypticalStrength * 100f) + "%";
                     text += "\nAn Apocalyptical is when your crit-crits, resulting in 3X damage";
                     text += "\nItems and effects may add special effects on top of this";
                     text += "\nApocalyptical Strength however only really boosts these effects rather than the damage of the crit";
@@ -70,7 +70,7 @@ namespace SGAmod
             }
         }
 
-        public override bool PreDrawTooltipLine(Item item,DrawableTooltipLine line, ref int yOffset)
+        public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
         {
             if (item.modItem != null && item.modItem is IAuroraItem)
             {
@@ -95,6 +95,7 @@ namespace SGAmod
                     hallowed.CurrentTechnique.Passes["PrismNoRainbow"].Apply();
 
                     Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
+
                     Main.spriteBatch.End();
                     Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
                     return false;
@@ -143,7 +144,7 @@ namespace SGAmod
                 {
                     string tt = "This is a placeholder sprite";
                     Color c = Main.hslToRgb(0f, 0.75f, 0.7f);
-                    tooltips.Add(new TooltipLine(mod, "Manifested Item", Idglib.ColorText(Color.Yellow,"This item is a manifestion of your armor set, bound to you")));
+                    tooltips.Add(new TooltipLine(mod, "Manifested Item", Idglib.ColorText(Color.Yellow, "This item is a manifestion of your armor set, bound to you")));
                 }
 
                 int ammoclip = Main.LocalPlayer.SGAPly().IsRevolver(item);
@@ -194,7 +195,7 @@ namespace SGAmod
             if (head.type == mod.ItemType("DankWoodHelm") && body.type == mod.ItemType("DankWoodChest") && legs.type == mod.ItemType("DankLegs"))
             {
                 return "Dank";
-            }          
+            }
             if (head.type == mod.ItemType("UnmanedHood") && body.type == mod.ItemType("UnmanedBreastplate") && legs.type == mod.ItemType("UnmanedLeggings"))
             {
                 return "Novus";
@@ -206,7 +207,7 @@ namespace SGAmod
             if (head.type == mod.ItemType("EngineerHead") && body.type == mod.ItemType("EngineerChest") && legs.type == mod.ItemType("EngineerLegs"))
             {
                 return "Engineer";
-            }            
+            }
             if (head.type == mod.ItemType("BlazewyrmHelm") && body.type == mod.ItemType("BlazewyrmBreastplate") && legs.type == mod.ItemType("BlazewyrmLeggings"))
             {
                 return "Blazewyrm";
@@ -252,7 +253,7 @@ namespace SGAmod
             {
                 player.setBonus = "10% of the sum of all damage types is added to your current weapon's attack\nyou regen life faster while on the surface during the day";
                 sgaplayer.Dankset = 3;
-            }            
+            }
             if (set == "Novus")
             {
                 player.setBonus = "Novus items emit more light when used and deal 20% more damage\nGain an additional free Cooldown Stack";
@@ -273,7 +274,7 @@ namespace SGAmod
                 }
                 player.setBonus = "Hold JUMP to hover at an expense to Electric Charge\nManifested weapon: Engie Controls\nPress the 'Toggle Recipe' (" + s + ") Hotkey to toggle jetpack mode";
                 sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Engineer.ManifestedEngieControls>();
-            }            
+            }
             if (set == "Blazewyrm")
             {
                 player.setBonus = "True melee crits create a very powerful explosion equal to triple the damage dealt\nEach strike requires a free Cooldown Stack, and adds one for 12 seconds\n20% increased melee damage against enemies inflicted with Thermal Blaze" +
@@ -301,20 +302,20 @@ namespace SGAmod
                 {
                     s = key;
                 }
-                string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt skybridge below your feet\nYou can land on this bridge while falling down\nHold Down to fall through\nThis consumes electric charge while active, "+Idglib.ColorText(Color.Red,"and will trigger a shield break on deplete");
+                string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt skybridge below your feet\nYou can land on this bridge while falling down\nHold Down to fall through\nThis consumes electric charge while active, " + Idglib.ColorText(Color.Red, "and will trigger a shield break on deplete");
 
                 s = "Not Binded!";
 
                 string text2 = "If while holding the AutoSelect key, phase a wall around where you aim instead\nThis wall is treated as solid tiles in most cases\nThis consumes electric charge on activate and damage, will trigger a shield break on deplete";
-                player.setBonus = text1+"\n"+ text2 + "\nGain an additional free Cooldown Stack";
+                player.setBonus = text1 + "\n" + text2 + "\nGain an additional free Cooldown Stack";
                 sgaplayer.MaxCooldownStacks += 1;
                 sgaplayer.vibraniumSet = true;
                 Items.Armors.VibraniumChestplate.VibraniumSetBonus(sgaplayer);
-            }            
+            }
             if (set == "MisterCreeper")
             {
                 player.setBonus = "Any sword that doesn't shoot a projectile is swung 50% faster and deals crits when you are falling downwards\nWhen you take damage, you launch a damaging high velocity grenade at what hit you\nThese grenades are launched even during immunity frames if your touching an enemy\nDrinking a healing potion launches a ton of bouncy grendes in all directions" +
-                    "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\n"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 180 seconds") + "\nCreeper's explosive throw and Stormbreaker are empowered\n------";
+                    "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 180 seconds") + "\nCreeper's explosive throw and Stormbreaker are empowered\n------";
                 sgaplayer.MisterCreeperset = true;
                 sgaplayer.devempowerment[1] = 3;
             }
@@ -328,7 +329,7 @@ namespace SGAmod
             }
         }
 
-        public bool NovusCoreCheck(Player player,Item item)
+        public bool NovusCoreCheck(Player player, Item item)
         {
 
             if (player.SGAPly().Novusset > 3)
@@ -363,7 +364,7 @@ namespace SGAmod
         public override void MeleeEffects(Item item, Player player, Rectangle hitbox)
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-            sgaplayer.FlaskEffects(hitbox,player.velocity);
+            sgaplayer.FlaskEffects(hitbox, player.velocity);
             if (NovusCoreCheck(player, item))
             {
                 if (Main.rand.Next(7) == 0)
@@ -394,12 +395,12 @@ namespace SGAmod
 
             float basemul = 1f;
 
-                SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+            SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 
             if (item.shoot < 1 && item.melee && item.pick + item.axe + item.hammer < 1)
-                damage = (int)((float)damage*sgaplayer.trueMeleeDamage);
+                damage = (int)((float)damage * sgaplayer.trueMeleeDamage);
 
-            if (NovusCoreCheck(player,item))
+            if (NovusCoreCheck(player, item))
                 basemul += 0.1f;
 
             if (item.modItem != null)
@@ -414,14 +415,14 @@ namespace SGAmod
                 }
             }
 
-            if (sgaplayer.Dankset>0)
+            if (sgaplayer.Dankset > 0)
             {
-                damage = (int)(damage+(damage * ((player.magicDamage + player.minionDamage + player.rangedDamage + player.meleeDamage + player.Throwing().thrownDamage) - 5f) * 0.10f));
+                damage = (int)(damage + (damage * ((player.magicDamage + player.minionDamage + player.rangedDamage + player.meleeDamage + player.Throwing().thrownDamage) - 5f) * 0.10f));
             }
 
-            if (sgaplayer.IDGset && sgaplayer.digiStacks>0 && item.ranged)
+            if (sgaplayer.IDGset && sgaplayer.digiStacks > 0 && item.ranged)
             {
-                damage = damage+(int)((float)damage*((float)sgaplayer.digiStacks/ (float)sgaplayer.digiStacksMax)*1.00f);
+                damage = damage + (int)((float)damage * ((float)sgaplayer.digiStacks / (float)sgaplayer.digiStacksMax) * 1.00f);
             }
 
             damage = (int)(damage * (float)basemul);
@@ -450,7 +451,7 @@ namespace SGAmod
             }
         }
 
-        public override bool GrabStyle(Item item,Player player)
+        public override bool GrabStyle(Item item, Player player)
         {
             if (item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3)
             {
@@ -478,9 +479,9 @@ namespace SGAmod
                     item.velocity = item.velocity + movement;
                     item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
 
-                    if ((player.SGAPly().timer+item.whoAmI) % 10 == 0 && player.ownedProjectileCounts[ModContent.ProjectileType<VibraniumThrownExplosion>()]<20)
+                    if ((player.SGAPly().timer + item.whoAmI) % 10 == 0 && player.ownedProjectileCounts[ModContent.ProjectileType<VibraniumThrownExplosion>()] < 20)
                     {
-                        Projectile.NewProjectile(item.Center.X, item.Center.Y, 0, 0, ModContent.ProjectileType<VibraniumThrownExplosion>(), (int)((100 * player.Throwing().thrownDamage)*MathHelper.Clamp((item.stack/25f),0.5f,3f)), 0, player.whoAmI, 0f, 0f);
+                        Projectile.NewProjectile(item.Center.X, item.Center.Y, 0, 0, ModContent.ProjectileType<VibraniumThrownExplosion>(), (int)((100 * player.Throwing().thrownDamage) * MathHelper.Clamp((item.stack / 25f), 0.5f, 3f)), 0, player.whoAmI, 0f, 0f);
                     }
 
                     return true;
@@ -543,7 +544,7 @@ namespace SGAmod
                     player.HealEffect(5);
                     player.statLife += 5;
                 }
-                if (sgaplayer.intimacy>0 && player.HasBuff(BuffID.Lovestruck))
+                if (sgaplayer.intimacy > 0 && player.HasBuff(BuffID.Lovestruck))
                 {
                     player.HealEffect(10);
                     player.statLife += 10;
@@ -565,7 +566,7 @@ namespace SGAmod
             //NetMessage.SendData(66, -1, -1, null, num492, (float)num497, 0f, 0f, 0, 0, 0);
 
 
-            if (sgaplayer.MidasIdol > 0 && sgaplayer.MidasIdol<3)
+            if (sgaplayer.MidasIdol > 0 && sgaplayer.MidasIdol < 3)
             {
                 /*int[] count = {player.CountItem(ItemID.CopperCoin), player.CountItem(ItemID.SilverCoin), player.CountItem(ItemID.GoldCoin), player.CountItem(ItemID.PlatinumCoin) };
 
@@ -634,15 +635,15 @@ namespace SGAmod
             }
             if (item.ranged && item.useAmmo == AmmoID.Bullet && item.autoReuse == false)
             {
-                usetimetemp += sgaplayer.triggerFinger-1f;
+                usetimetemp += sgaplayer.triggerFinger - 1f;
             }
 
 
             if (item.summon)
             {
-                usetimetemp*=(1f+sgaplayer.summonweaponspeed);
+                usetimetemp *= (1f + sgaplayer.summonweaponspeed);
             }
-            if ((item.Throwing().thrown || item.thrown) && item.type!=ItemID.Beenade) {
+            if ((item.Throwing().thrown || item.thrown) && item.type != ItemID.Beenade) {
                 usetimetemp *= sgaplayer.ThrowingSpeed;
             }
             /*ModItem mitem = item.modItem;
@@ -661,7 +662,7 @@ namespace SGAmod
             }
 
             if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
-                player.SGAPly().skillMananger.UseTimeMultiplier(item,ref usetimetemp);
+                player.SGAPly().skillMananger.UseTimeMultiplier(item, ref usetimetemp);
             return (usetimetemp * sgaplayer.UseTimeMul);
         }
 
@@ -677,13 +678,13 @@ namespace SGAmod
             if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister)
             {
 
-                int probg = Projectile.NewProjectile(position.X + (int)(speedX * 2f), position.Y + (int)(speedY * 2f), speedX, speedY, mod.ProjectileType("IceFlames"), (int)(damage*0.75), knockBack, player.whoAmI);
+                int probg = Projectile.NewProjectile(position.X + (int)(speedX * 2f), position.Y + (int)(speedY * 2f), speedX, speedY, mod.ProjectileType("IceFlames"), (int)(damage * 0.75), knockBack, player.whoAmI);
                 Main.projectile[probg].ranged = item.ranged;
                 Main.projectile[probg].magic = item.magic;
                 Main.projectile[probg].friendly = true;
                 Main.projectile[probg].hostile = false;
                 Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(15));
-                Main.projectile[probg].velocity.X = perturbedSpeed.X*0.6f;
+                Main.projectile[probg].velocity.X = perturbedSpeed.X * 0.6f;
                 Main.projectile[probg].velocity.Y = perturbedSpeed.Y * 0.6f;
                 Main.projectile[probg].owner = player.whoAmI;
                 SGAprojectile modeproj = Main.projectile[probg].GetGlobalProjectile<SGAprojectile>();
@@ -694,22 +695,45 @@ namespace SGAmod
             return true;
         }
 
+        public static void AwardSGAmodDevArmor(Player player)
+        {
+            Mod mod = SGAmod.Instance;
+
+            string[] texts = {"Wooo!","Congrats!","You're Winner!","You did it!","Unusual Unboxed!","Yay!" };
+
+            for(int i = 0; i < 32; i += 1)
+            {
+                CombatText.NewText(new Rectangle((int)Main.screenPosition.X, (int)Main.screenPosition.Y,Main.screenWidth,Main.screenHeight), Main.DiscoColor, texts[Main.rand.Next(texts.Length)], true);
+            }
+
+            int itt = Projectile.NewProjectile(player.Center, new Vector2(0, -5), ProjectileID.RocketFireworkYellow,100,0, player.whoAmI);
+            Main.projectile[itt].timeLeft = 72;
+            itt = Projectile.NewProjectile(player.Center, new Vector2(2, -4), ProjectileID.RocketFireworkGreen, 100, 0, player.whoAmI);
+            Main.projectile[itt].timeLeft = 72;
+            itt = Projectile.NewProjectile(player.Center, new Vector2(-2, -4), ProjectileID.RocketFireworkBlue, 100, 0, player.whoAmI);
+            Main.projectile[itt].timeLeft = 72;
+
+            switch (Main.rand.Next(0,2))
+            {
+                case 1:
+                    player.QuickSpawnItem(mod.ItemType("MisterCreeperHead"), 1);
+                    player.QuickSpawnItem(mod.ItemType("MisterCreeperBody"), 1);
+                    player.QuickSpawnItem(mod.ItemType("MisterCreeperLegs"), 1);
+                    break;
+
+                default:
+                    player.QuickSpawnItem(mod.ItemType("IDGHead"), 1);
+                    player.QuickSpawnItem(mod.ItemType("IDGBreastplate"), 1);
+                    player.QuickSpawnItem(mod.ItemType("IDGLegs"), 1);
+                    break;
+            }
+        }
+
         public override void OpenVanillaBag(string context, Player player, int arg)
         {
             if (context == "bossBag")
             {
-                if (Main.rand.Next(100) <= (Main.hardMode ? 2 : 1))
-                {
-                    player.QuickSpawnItem(mod.ItemType("MisterCreeperHead"), 1);
-                    player.QuickSpawnItem(mod.ItemType("MisterCreeperBody"), 1);
-                    player.QuickSpawnItem(mod.ItemType("MisterCreeperLegs"), 1);
-                }
-                if (Main.rand.Next(100) <= (Main.hardMode ? 2 : 1))
-                {
-                    player.QuickSpawnItem(mod.ItemType("IDGHead"), 1);
-                    player.QuickSpawnItem(mod.ItemType("IDGBreastplate"), 1);
-                    player.QuickSpawnItem(mod.ItemType("IDGLegs"), 1);
-                }
+
                 if (arg == ItemID.GolemBossBag && Main.rand.Next(100) < 20)
                     player.QuickSpawnItem(mod.ItemType("Upheaval"), 1);
                 if (arg == ItemID.MoonLordBossBag)

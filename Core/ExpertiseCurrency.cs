@@ -9,6 +9,7 @@ using Idglibrary;
 
 namespace SGAmod
 {
+
 	public class ScrapMetalCurrency: CustomCurrencySingleCoin
 	{
 		public Color SGACustomCurrencyTextColor = Color.BlueViolet;

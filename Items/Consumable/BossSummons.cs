@@ -978,6 +978,16 @@ namespace SGAmod.Items.Consumable
 
 		public override bool CanUseItem(Player player)
 		{
+			if (Main.netMode > 0)
+			{
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					Hellion hell = new Hellion();
+					hell.HellionTaunt("This fight is not possible in Multiplayer, comeback in Single Player");
+				}
+				return false;
+            }
+
 			if (Hellion.GetHellion()==null && !IdgNPC.bossAlive && SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths > 3 && NPC.CountNPCS(mod.NPCType("HellionMonolog"))<1)
 			{
 				if (!Main.expertMode)

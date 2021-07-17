@@ -129,6 +129,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	[AutoloadEquip(EquipType.HandsOn)]
 	public class YoyoGauntlet : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -336,7 +337,6 @@ namespace SGAmod.Items.Accessories
 			DisplayName.SetDefault("Soul of Secrets");
 			Tooltip.SetDefault("While worn, it will unlock the true nature of so called 'Vanity' Dev Armors in your inventory...\nCombines the effects of:\n-Blood Charm Pendant\n-Lifeforce Quintessence\n-Havoc's Fragmented Remains\n-Portable Hive\ntoggle visiblity to disable bee spawning of Portable Hive");
 		}
-
 		public override void SetDefaults()
 		{
 			item.width = 24;
@@ -676,6 +676,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	[AutoloadEquip(EquipType.Back)]
 	public class JavelinBaseBundle : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -750,6 +751,7 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	[AutoloadEquip(EquipType.Back)]
 	public class JavelinBundle : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -1066,7 +1068,8 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("ByteSoul"), 100);
+			//recipe.AddIngredient(mod.ItemType("ByteSoul"), 100);
+			recipe.AddIngredient(mod.ItemType("AncientFabricItemAncientFabricItem"), 100);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 50);
 			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 100);
 			recipe.AddIngredient(mod.ItemType("EldritchTentacle"), 25);
@@ -1122,6 +1125,7 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
+	[AutoloadEquip(EquipType.Face)]
 	public class AmberGlowSkull : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -1471,6 +1475,8 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+
+	[AutoloadEquip(EquipType.Shoes)]
 	public class DemonSteppers : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -1992,6 +1998,8 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+
+	[AutoloadEquip(EquipType.Waist)]
 	public class ThrowerPouch : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -2035,7 +2043,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tidal Charm");
-			Tooltip.SetDefault("Increases yout max Breath by 5 bubbles\nHaving less breath boosts your defense\nThis boost increases through progression as you beat SGAmod bosses");
+			Tooltip.SetDefault("Increases your max Breath by 5 bubbles\nHaving less breath boosts your defense\nThis boost increases through progression as you beat SGAmod bosses");
 		}
 
 		public override void SetDefaults()
@@ -2154,6 +2162,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	[AutoloadEquip(EquipType.HandsOn)]
 	public class RingOfRespite : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -2216,6 +2225,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	[AutoloadEquip(EquipType.Neck)]
 	public class NeckONerves : RingOfRespite
 	{
 		public override void SetStaticDefaults()
@@ -2956,6 +2966,8 @@ namespace SGAmod.Items.Accessories
 			recipe.AddRecipe();
 		}
 	}
+
+	[AutoloadEquip(EquipType.Neck)]
 	public class PrismalNecklace : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -3063,8 +3075,9 @@ namespace SGAmod.Items.Accessories
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();*/
 		}
-
 	}
+
+	[AutoloadEquip(EquipType.Back)]
 	public class NormalQuiver : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -3087,8 +3100,9 @@ namespace SGAmod.Items.Accessories
 			item.rare = ItemRarityID.Orange;
 			item.accessory = true;
 		}
-
 	}
+
+	[AutoloadEquip(EquipType.Neck)]
 	public class MurkyCharm : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -3119,6 +3133,7 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	[AutoloadEquip(EquipType.Shoes)]
 	public class MagusSlippers : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -3145,6 +3160,7 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
+	[AutoloadEquip(EquipType.Shoes)]
 	public class DruidicSneakers : MagusSlippers
 	{
 		public override void SetStaticDefaults()
@@ -3323,14 +3339,16 @@ namespace SGAmod.Items.Accessories
 			item.rare = ItemRarityID.Orange;
 			item.accessory = true;
 		}
-	}
 
+    }
+
+	[AutoloadEquip(EquipType.Back)]
 	public class MagicianGear : DruidicSneakers
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Magician's Gear");
-			Tooltip.SetDefault("'Wanna see a magic trick?'\n+20% magic damage and 5% crit chance if not Mana Sick\n"+Language.GetTextValue("ItemTooltip.CelestialMagnet")+"\nGrants the effects of:\n-Star Collector\n-Enchanted Shield Polish\n-Druidic Sneakers");
+			Tooltip.SetDefault("'For when you want to take the show on the road!'\n+20% magic damage and 5% crit chance if not Mana Sick\n"+Language.GetTextValue("ItemTooltip.CelestialMagnet")+"\nGrants the effects of:\n-Star Collector\n-Enchanted Shield Polish\n-Druidic Sneakers");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3353,7 +3371,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 16;
 			item.height = 16;
 			item.value = Item.buyPrice(silver: 30);
-			item.rare = ItemRarityID.Orange;
+			item.rare = ItemRarityID.Red;
 			item.accessory = true;
 		}
 		public override void AddRecipes()
@@ -3372,10 +3390,11 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
+	[AutoloadEquip(EquipType.Face)]
 	public class TerraDivingGear : ModItem
 	{
 		protected string allText => Language.GetTextValue("ItemTooltip.ArcticDivingGear") + "\n" + Language.GetTextValue("ItemName.BreathingReed") + " " + Language.GetTextValue("ItemTooltip.BreathingReed") + "\n" +
-			((GetType() == typeof(PrismalDivingGear)) ? Language.GetTextValue("ItemTooltip.FlipperPotion")+"\n" : "") + "Hold DOWN to fall faster in liquids";
+			((GetType() == typeof(PrismalDivingGear)) ? Language.GetTextValue("ItemTooltip.FlipperPotion")+"\n" : "") + "Hold DOWN to fall faster in liquids\n'Sometimes known as Dergon Diving Gear'";
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Terra Diving Gear");
@@ -3594,6 +3613,7 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	[AutoloadEquip(EquipType.Shield)]
 	public class RustedBulwark : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -3718,6 +3738,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	[AutoloadEquip(EquipType.Waist)]
 	public class PocketRocks : ModItem
 	{
 		public override void SetStaticDefaults()

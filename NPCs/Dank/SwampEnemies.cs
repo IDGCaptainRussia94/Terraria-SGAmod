@@ -85,7 +85,7 @@ namespace SGAmod.NPCs.Dank
 
         public override void NPCLoot()
         {
-            int rand = Main.rand.Next(4);
+            int rand = Main.rand.Next(5);
             if (rand == 0)
             {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Treepeater"));
@@ -102,6 +102,10 @@ namespace SGAmod.NPCs.Dank
             {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("EarthbreakerShield"));
             }         
+            if (rand == 4)
+            {
+                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("StickySituationSummon"));
+            }
         }
     }
 
@@ -116,8 +120,10 @@ namespace SGAmod.NPCs.Dank
             npc.lifeMax = 300;
             npc.value = 100f;
             npc.aiStyle = 3;
-            aiType = NPCID.WalkingAntlion;
-            animationType = NPCID.Zombie;
+            aiType = NPCID.Unicorn;
+            animationType = NPCID.BloodZombie; //Changed from Zombie to BloodZombie
+            npc.HitSound = SoundID.NPCHit1; //New addition
+            // npc.DeathSound = SoundID.NPCDeath1; //New addition
             banner = npc.type;
             bannerItem = mod.ItemType("GiantLizardBanner");
         }
@@ -137,18 +143,24 @@ namespace SGAmod.NPCs.Dank
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Giant Lizard");
-            Main.npcFrameCount[npc.type] = 8;
+            Main.npcFrameCount[npc.type] = 9; //Changed from 8 to 9
         }
 
         public override void NPCLoot()
         {
+            Microsoft.Xna.Framework.Audio.SoundEffectInstance snd = Main.PlaySound(SoundID.DD2_WyvernDeath, (int)npc.Center.X, (int)npc.Center.Y);
+            if (snd != null)
+            {
+                snd.Pitch = -0.50f;
+            }
+
             if (Main.rand.Next(100) == 0)
             {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.LizardEgg);
             }
             if (Main.rand.Next(5) == 0 && SGAWorld.downedMurk > 1)
             {
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Biomass"), Main.rand.Next(1,12));
+                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Biomass"), Main.rand.Next(1, 12));
             }
         }
 

@@ -23,40 +23,44 @@ Todo-Aurora Gear, Finish Vibranium Summon headpiece and enemies, Seismic Resonan
 
 Changelog:
 
-3.530-(5/1/21)-Patch 11-Tech N Wreck (Unfinished):
+3.530-(5/1/21)-Patch 11-Tech N Wreck
 
 --Added:
 
--Plasmic Rail Gun, Pulsar Perforator, Uranium Filled Snowballs, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Yoyo Threads, Rad Suit, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star
+-Seraphim Shard, Plasmic Rail Gun, Pulsar Perforator, Aura Borealis Staff, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Yoyo Threads, Rad Suit, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals
 
--Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials!
+-Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
--Somewhat unfinished summoner-aligned Engineer set.
+-Added a new Town NPC: The Conbrand Merchant, he is interested in trading you "Contraband Crates" for rare materials, find him hanging around after-dark in your town
+
+-The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! RoR2 Engineer summoner-aligned set made from post-Skeletron materials! And JellyBru's Dev Armor finally added!
+
+-Vibranium armor and a few weapons for the late game
+
+-Venerable Catharsis, for a hefty Expertise cost from Draken after Moonlord you can make Normal Worlds into Expert Worlds.
 
 -Luminous Alter, use it to transmute various items overtime by infusing them with Starlight!
 
 -A stronger post-L.Wraith Prismic Banshee that drops double loot, also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam! (hint: put fallen stars into the previous mentioned Luminous Alter)
 
+-A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's figt and apperence has been tweaked
+
 -Hoppers [strikeout]N Droppers[strikeout], automate your Terraria!
 
--Prismic Banshee has a stronger manually summoned version after Luminite Wraith is defeated you can fight for double loot, the boss in general has undergone a couple of changes
-
--A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's apperence has been changed
-
--New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights
+-New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights, Option to enable/disable early luminite
 
 -Limbo has been given a loading screen
 
 -Added alot of missing debuff icons
 
--Various Resprites, added missing sprites, and smaller improvements; enjoy a far better looking Jackpot with glowing coins!
-
--Unfinished Vibranium content, use cheat sheet to access it
+-Various Resprites, added many missing sprites, and smaller improvements; many items have been given an equip sprite and enjoy a far better looking Jackpot with glowing coins!
 
 
 --Changed:
 
 -The Calamity Rune and Luminous Gel are created at the Luminous Alter now, check the wiki for all the recipe combos
+
+-The Strange Portal has been given a head and can now be manually moved into different houses
 
 -Draken's Dialog has been moved around to help give players instructions, also a new interaction has been added after you become close friends
 
@@ -64,13 +68,19 @@ Changelog:
 
 -Hellion's beam has been given a visual overhaul to fix a bug where it was invisible (see fixed), also Hellion's arena aura has been changed to something less flashy on the eyes and likely more GPU friendly, Skeletron Hands now do 150 contact damage, Hellion has more delay before moving again with the lasers, or shooting sky fractures, some other attacks changed in an effort to make them more fair, army enemies will now fly at the player more often
 
--Sharkvern's body segments now take 25% (Tail 0%) reduced damage to peircing weapons, and no reduction to true melee projectiles (IE yoyos, spears), various changes have happened to the fight
+-Sharkvern's HP increased to 120000, body segments now take 25% (Tail 0%) reduced damage to peircing weapons, and no reduction to true melee projectiles (IE yoyos, spears), various changes have happened to the fight, and various balance changes as well
+
+-Sharkvern and their storm effects can no longer drown an underground player
+
+-Strange portal no longer sells items in Multiplayer, Deeper Dungeons loot is now alternatively obtained from a Contraband Crate (including the rare items that wern't sold before)
+
+-Hellion will now flat out not allow you to summon her in Multiplayer; really sorry before, this is something I should have done sooner
 
 -Added the Star Anise to the list of items the Ninja Stash can summon on attacks
 
 -Amulet of Diehard Cataclysm no longer activates during a boss; only out of boss fights, effect also replays properly now
 
--Souls of Byte are now a post-Hellion Drop (Hellion Core only drops them after the entire fight is beaten)
+-Souls of Byte are now a post-Hellion Drop (Hellion Core only drops them after the entire fight is beaten, so only beating phase 1 is required to farm them)
 
 -Handling Gloves now reduce the penality of holding radioactive items
 
@@ -82,7 +92,9 @@ Changelog:
 
 -Ragnarok's Brew costs more resources except Styigan Stars and makes 3, to help justify it requiring Styigan Stars
 
--Various balance changes to Sharkvern as well
+-Ancient Fabric is now sold by the merchant in multiplayer
+
+-Flawed 1mm0rtal1ty Pr0t0call is now crafted with Ancient Fabric instead of Souls of Byte
 
 -Copper/Cobalt Wraith's cores can no longer take crits from the last hit on piercing weapon
 
@@ -116,7 +128,7 @@ Changelog:
 
 -Nerfed Rioter's Glove: Has been moved further into progression again (hardmode => post-early hardmode SGAmod bosses)
 
--Nerfed Tactical SMG Rifle: damage lowered to 25 (from 28)
+-Nerfed Tactical SMG Rifle: damage lowered to 25 (from 28), one less bullet is fired per shot
 
 -Nerfed Terra Trident: Damage lowered to 38 from 50
 
@@ -153,6 +165,10 @@ Changelog:
 
 -Cyber Scythe's max range growing smaller with melee speed instead of larger
 
+-Rustwork Blade can now be used to craft Big Bang
+
+-Animation bug with the Giant Lizard, also uses unicorn AI and has a proper death sound
+
 -Prismic Banshee's 'hands' having a weird hitbox, and counting as defeated on other play-throughs
 
 -Grappling removing the player's light in the foggy darkness
@@ -160,6 +176,8 @@ Changelog:
 -Granite Magnet not pulling items in faster when worn as an accessory
 
 -Virulent Ore placing the wrong tile, due to me forgoting to undo a testing thing
+
+-Sticky Situation being unobtainable
 
 -Gucci Guantlet's Amber Gem causing null errors in merchant shops
 
@@ -299,7 +317,7 @@ Changelog:
 
 -Nerfed Magishield: Blocking with the shield now throws the player back if they consume the damage with their mana, even if they are knockback immune
 
--Refactored and improved a bit more of the code, Soul of Byte emits light and other things
+-Refactored and improved a bit more of the code, Soul of Byte emits light, SPinky has a new head sprite, various resprites and other things
 
 
 --Fixed:

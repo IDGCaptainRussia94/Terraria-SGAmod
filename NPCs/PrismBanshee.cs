@@ -19,6 +19,7 @@ using Terraria.DataStructures;
 
 namespace SGAmod.NPCs
 {
+	[AutoloadBossHead]
 	public class PrismBanshee : ModNPC
 	{
 		public int bansheeState = 0;
@@ -653,7 +654,7 @@ namespace SGAmod.NPCs
 		}
 		public override string Texture
 		{
-			get { return ("Terraria/Projectile_" + ProjectileID.CultistBossIceMist); }
+			get { return ("SGAmod/NPCs/PrismicCrystalCluster"); }
 		}
 
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
@@ -820,6 +821,9 @@ namespace SGAmod.NPCs
 			npc.localAI[0] += 1;
 			npc.ai[0] += 1;
 			npc.localAI[3] -= 1;
+
+			npc.rotation = -npc.velocity.X*0.15f;
+
 			if (Owner != null)
 			{
 				//if (npc.target<0)

@@ -47,6 +47,9 @@ namespace SGAmod.Dimensions
 			Filters.Scene["SGAmod:LimboSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.6f, 0.6f, 0.6f).UseOpacity(0.25f), EffectPriority.High);
 			SkyManager.Instance["SGAmod:LimboSky"] = new LimboSky();
 			LimboDim.CreateTextures();
+			Filters.Scene["SGAmod:SpaceSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(1f ,1f ,1f).UseOpacity(0.0f), EffectPriority.High);
+			SkyManager.Instance["SGAmod:SpaceSky"] = new SpaceSky();			
+			
 			On.Terraria.Player.Teleport += Player_Teleport;
 			//On.Terraria.Player.Update += Player_Update;
 			DrawOverride.InitTestThings();
@@ -67,9 +70,14 @@ namespace SGAmod.Dimensions
 
 		public void PostUpdateEverything()
 		{
+
 			DrawOverride.DrawFog();
 			SGAmod.PostDraw.Clear();
 			NullWatcher.DoAwarenessChecks(NullWatcher.SeeDistance, true, false);
+
+			bool spacey = SGAPocketDim.WhereAmI != null && SGAPocketDim.WhereAmI == typeof(SpaceDim);
+			if (spacey)
+				 MineableAsteriod.SpawnAsteriods();
 			//Main.NewText("test1");
 
 			List<HellionInsanity> madness = DimDungeonsProxy.madness;

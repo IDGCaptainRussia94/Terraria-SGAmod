@@ -298,6 +298,44 @@ namespace SGAmod.Items.Consumable
 			recipe.AddRecipe();
 		}
 	}
+	public class VenerableCatharsis : TrueCopperWraithNotch
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Venerable Catharsis");
+			Tooltip.SetDefault("Upgrades a Normal world to an Expert World\n-Permanent Upgrade-");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.maxStack = 1;
+			item.rare = ItemRarityID.Quest;
+			item.value = Item.sellPrice(gold: 1);
+			item.useStyle = 2;
+			item.useAnimation = 32;
+			item.useTime = 32;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item123;
+			item.consumable = true;
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Item_" + ItemID.WorkBench); }
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return !Main.expertMode;
+		}
+		public override bool UseItem(Player player)
+		{
+			Main.expertMode = true;
+			return true;
+		}
+	}
 
 	public class BenchGodsFavor : TrueCopperWraithNotch
 	{

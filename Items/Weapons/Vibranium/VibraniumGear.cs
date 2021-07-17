@@ -70,7 +70,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 
 		public override void SetDefaults()
 		{
-			item.damage = 125;
+			item.damage = 150;
 			item.width = 32;
 			item.height = 32;
 			item.useTime = 8;
@@ -193,7 +193,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<VibraniumBar>(), 10);
-			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Weapons.MangroveShiv>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Weapons.MangroveShiv>(), 100);
 			recipe.AddIngredient(ItemID.MagicDagger, 1);
 			recipe.AddTile(mod.GetTile("LuminousAlter"));
 			recipe.SetResult(this, 1);
@@ -277,7 +277,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 					{
 						projectile.ai[0] += 1;
 						for (float f = 0; f <= MathHelper.Pi; f += MathHelper.Pi)
-							Projectile.NewProjectile(projectile.Center, projectile.velocity.RotatedBy(f), ModContent.ProjectileType<GammBurstBeam>(), projectile.damage * (int)MaxKnives, projectile.knockBack * 3f, projectile.owner);
+							Projectile.NewProjectile(projectile.Center, projectile.velocity.RotatedBy(f), ModContent.ProjectileType<GammBurstBeam>(), projectile.damage* 3 * (int)MaxKnives, projectile.knockBack * 3f, projectile.owner);
 
 						SoundEffectInstance sound2 = Main.PlaySound(SoundID.DD2_DrakinShot, projectile.Center);
 						if (sound2 != null)
@@ -354,6 +354,9 @@ namespace SGAmod.Items.Weapons.Vibranium
 		}
 		public override bool? CanHitNPC(NPC target)
 		{
+			if (target.friendly)
+				return false;
+
 			return (enemiesHit.FirstOrDefault(testby => target.type == testby.X) == default);
 		}
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

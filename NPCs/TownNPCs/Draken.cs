@@ -330,7 +330,7 @@ namespace SGAmod.NPCs.TownNPCs
 						guys.AddRange(BirthdayParty.CelebratingNPCs);
 						guys.Remove(index);
 
-						chat.Add("They're throwing a party... for me, a monster?",500);
+						chat.Add("They're throwing a party... for me, a monster?", 500);
 						chat.Add("I'm scared "+Main.LocalPlayer.name, 500);
 						chat.Add("Don't let them hurt me, please :(", 500);
 						chat.Add("It's going to happen, isn't it?", 500);
@@ -892,7 +892,7 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopCustomPrice = 150;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
-			}						
+			}								
 			if (modplayer.ExpertiseCollectedTotal >= 10000)
 			{
 				shop.item[nextSlot].SetDefaults(ItemID.AviatorSunglasses);
@@ -906,7 +906,14 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopCustomPrice = 500;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
-			}		
+			}
+			if (!Main.expertMode && NPC.downedMoonlord)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("VenerableCatharsis"));
+				shop.item[nextSlot].shopCustomPrice = 500;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}
 		}
 
 		public override void NPCLoot()

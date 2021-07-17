@@ -649,7 +649,6 @@ namespace SGAmod.NPCs
 				soundfinish = Main.PlaySound(SoundID.DD2_BookStaffTwisterLoop, npc.Center);
 				if (soundfinish != null)
 				{
-
 					soundfinish.Volume = 0.99f;
 				}
             }
@@ -1231,8 +1230,6 @@ namespace SGAmod.NPCs
 				{
 					SupremeArmyCommand();
 				}
-
-
 
 				NoEscape(circlesize, circleLoc-P.MountedCenter);
 				goThere = P.MountedCenter + new Vector2(0, -300);

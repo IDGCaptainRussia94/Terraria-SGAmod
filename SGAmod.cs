@@ -188,9 +188,6 @@ namespace SGAmod
 					break;
 			}
 			return -1;
-
-
-
 		}
 #if Dimensions
 		DimDungeonsProxy proxydimmod;
@@ -286,6 +283,8 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 711));//110
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + 1));//111
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Glow_"+ 239));//112
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_" + TileID.ExposedGems));//113
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_" + TileID.Crystals));//114
 
 				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 				Texture2D PlatTex = ModContent.GetTexture("Terraria/Tiles_"+TileID.Asphalt);
@@ -781,11 +780,18 @@ namespace SGAmod
 			List<int> mud = new List<int>();
 			List<int> stone = new List<int>();
 			List<int> team = new List<int>();
+			List<int> accessory = new List<int>();
 
 			for (int i = 0; i < Main.itemTexture.Length; i += 1)
             {
 				Item item = new Item();
 				item.SetDefaults(i);
+				if (i < Main.item.Length &&  item.accessory)
+                {
+					accessory.Add(item.type);
+					continue;
+                }
+
 				if (!item.consumable || item.createTile < 0 || (item.modItem != null && item.modItem.mod == this))
 				{
 					continue;
@@ -820,6 +826,12 @@ namespace SGAmod
 					team.Add(item.type);
 					continue;
 				}
+				if (TileID.Sets.BasicChest[item.createTile])
+				{
+					chests.Add(item.type);
+					continue;
+				}
+
 			}
 
 			RecipeGroup groupspecial = new RecipeGroup(() => "any" + " Chest", chests.ToArray());
@@ -832,9 +844,8 @@ namespace SGAmod
 			RecipeGroup.RegisterGroup("SGAmod:Stone", groupspecial);
 			groupspecial = new RecipeGroup(() => "any" + " Team Tiles", team.ToArray());
 			RecipeGroup.RegisterGroup("SGAmod:TeamTiles", groupspecial);
-
-
-
+			groupspecial = new RecipeGroup(() => "any" + " Accessory", accessory.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:VanillaAccessory", groupspecial);
 
 			RecipeGroup group = new RecipeGroup(() => "any" + " Copper or Tin ore", new int[]
 			{
@@ -1066,8 +1077,13 @@ namespace SGAmod
 
 		}
 
-        public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
+		public delegate void ModifyTransformMatrixDelegate(ref SpriteViewMatrix Transform);
+		public static event ModifyTransformMatrixDelegate ModifyTransformMatrixEvent;
+
+		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
         {
+			ModifyTransformMatrixEvent?.Invoke(ref Transform);
+
 			if (SGADimPlayer.staticHeartBeat >= 0)
 			{
 				float zoom1 = Math.Max(0, (float)Math.Sin(MathHelper.Pi * (SGADimPlayer.staticHeartBeat / 15f)));

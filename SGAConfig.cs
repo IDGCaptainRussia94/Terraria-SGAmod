@@ -47,9 +47,13 @@ namespace SGAmod
 
 		[Label("Negative World Effects")]
 		[Tooltip("Enables/Disables world debuffs tied to bosses, like Snowfrosted and Drowning Presence outside of boss fights")]
-		[ReloadRequired]
 		[DefaultValue(true)]
 		public bool NegativeWorldEffects { get; set; }
+
+		[Label("Early Luminite")]
+		[Tooltip("Enables/Disables pre-Moonlord Luminite sources (Astrial Luminite), disable this if it breaks progression with other mods")]
+		[DefaultValue(true)]
+		public bool EarlyLuminite { get; set; }
 	}
 
 	[Label("SGA Client Options")]

@@ -41,7 +41,7 @@ namespace SGAmod.Dimensions
         //3=loot room, doesn't generate minirooms
         //4=hallway leading into loot room
 
-        public DungeonTile(Vector2 vect,int type2,int hallwayindex,bool floor, int lootroomid=0,int subtype=0)
+        public DungeonTile(Vector2 vect, int type2, int hallwayindex, bool floor, int lootroomid = 0, int subtype = 0)
         {
             vector = vect;
             type = type2;
@@ -59,7 +59,7 @@ namespace SGAmod.Dimensions
         public int branchingchance;
         public int branched;
 
-        public DungeonPath(Vector2 vect, Vector2 direction2,int branchingchance,int branched)
+        public DungeonPath(Vector2 vect, Vector2 direction2, int branchingchance, int branched)
         {
             vector = vect;
             direction = direction2;
@@ -97,7 +97,7 @@ namespace SGAmod.Dimensions
         public override string DimName => "Deeper Dungeons";
         public override int DimType => 2;
         public override float maxSpawns => 1f;
-        public override float spawnRate => Math.Max(0.25f,0.75f-((float)SGAWorld.dungeonlevel*0.10f));
+        public override float spawnRate => Math.Max(0.25f, 0.75f - ((float)SGAWorld.dungeonlevel * 0.10f));
 
         public static int globallineroomindex = 0;
         public static DeeperDungeon instance;
@@ -322,10 +322,10 @@ namespace SGAmod.Dimensions
                     flowpath.Normalize();
 
                     subtype = 0;
-                    if (UniRand.Next(0, 5)==0)
-                    subtype = 1;
+                    if (UniRand.Next(0, 5) == 0)
+                        subtype = 1;
 
-                    MakeRoomLine(randomloc, tryhere, new Vector2(16, 16), ref allareas, UniRand, filltype: Math.Abs(flowpath.Y) > 0.75f ? 2 : UniRand.NextBool() ? 0 : 1, stepsize: UniRand.Next(8, 12),subtype: subtype);
+                    MakeRoomLine(randomloc, tryhere, new Vector2(16, 16), ref allareas, UniRand, filltype: Math.Abs(flowpath.Y) > 0.75f ? 2 : UniRand.NextBool() ? 0 : 1, stepsize: UniRand.Next(8, 12), subtype: subtype);
                     randomloc = tryhere;
                     hallwaycount += 1;
                     if (hallwaycount > maxhallway)
@@ -343,7 +343,7 @@ namespace SGAmod.Dimensions
 
             //end is the start, place exit portal there
 
-            NPC.NewNPC((int)(end.X*16f), (int)(end.Y*16f), ModContent.NPCType<DungeonPortal>());
+            NPC.NewNPC((int)(end.X * 16f), (int)(end.Y * 16f), ModContent.NPCType<DungeonPortal>());
 
             //MakeRoomLine(new Vector2(100, 100), new Vector2(width-200, 200), new Vector2(12, 12), ref allareas, UniRand,filltype: 0);
             //MakeRoomLine(new Vector2(width - 200, 200), new Vector2(width - 200, height-50), new Vector2(10, 10), ref allareas, UniRand, filltype: 2);
@@ -383,7 +383,7 @@ namespace SGAmod.Dimensions
                         }
 
                     }
-                    prog.Value = ((float)(repeat* DeeperDungeon.pathways.Count) + (float)i) / ((float)DeeperDungeon.pathways.Count * 3) * 0.25f;
+                    prog.Value = ((float)(repeat * DeeperDungeon.pathways.Count) + (float)i) / ((float)DeeperDungeon.pathways.Count * 3) * 0.25f;
                 }
             }
 
@@ -394,8 +394,8 @@ namespace SGAmod.Dimensions
 
             prog.Message = "Carving Rooms...";
 
-             //Post fill in           
-           
+            //Post fill in           
+
             List<DungeonTile> lootrooms = new List<DungeonTile>();
 
             for (int x = 0; x < allareas.Count; x += 1)
@@ -411,7 +411,7 @@ namespace SGAmod.Dimensions
                 {
                     lootrooms.Add(allareas[x]);
                 }
-                prog.Value = 0.25f+((float)x/ (float)allareas.Count)*0.25f;
+                prog.Value = 0.25f + ((float)x / (float)allareas.Count) * 0.25f;
             }
 
             prog.Message = "Adding pointy edges...";
@@ -452,11 +452,11 @@ namespace SGAmod.Dimensions
             prog.Message = "Lootin it up";
 
             int choice2 = UniRand.Next(0, DeeperDungeon.LootRooms.Count);
-            for (int thisone = 0; thisone < DeeperDungeon.LootRooms.Count; thisone += 1) 
+            for (int thisone = 0; thisone < DeeperDungeon.LootRooms.Count; thisone += 1)
             {
                 int choice = thisone;
                 int size = (int)DeeperDungeon.LootRooms[choice].size.X;
-                int achest=WorldGen.PlaceChest((int)DeeperDungeon.LootRooms[choice].vector.X + UniRand.Next(-size / 3, size / 3),
+                int achest = WorldGen.PlaceChest((int)DeeperDungeon.LootRooms[choice].vector.X + UniRand.Next(-size / 3, size / 3),
                     (int)(DeeperDungeon.LootRooms[choice].vector.Y + ((int)DeeperDungeon.LootRooms[choice].size.Y) / 2) - 1, 21, false, choice2 == choice ? 4 : 1);
 
                 DeeperDungeon.AddStuffToChest(achest, choice2 == choice ? 2 : 0, UniRand);
@@ -470,9 +470,9 @@ namespace SGAmod.Dimensions
                 {
                     WorldGen.PlaceObject((int)DeeperDungeon.LootRooms[choice].vector.X + thisone22, (int)(DeeperDungeon.LootRooms[choice].vector.Y - ((int)DeeperDungeon.LootRooms[choice].size.Y) / 2), TileID.Banners, false, WorldGen.genRand.Next(10));
 
-                    int offset = WorldGen.genRand.Next(-8,0) + 4;
+                    int offset = WorldGen.genRand.Next(-8, 0) + 4;
                     int barType = barTypes[WorldGen.genRand.Next(barTypes.Count)];
-                    for (int xx = WorldGen.genRand.Next(-2,0)-1; xx < WorldGen.genRand.Next(2)+2; xx += 1)
+                    for (int xx = WorldGen.genRand.Next(-2, 0) - 1; xx < WorldGen.genRand.Next(2) + 2; xx += 1)
                     {
                         for (int yy = 0; yy < (WorldGen.genRand.Next(3) + 2) - Math.Abs(xx); yy += 1)
                         {
@@ -521,7 +521,7 @@ namespace SGAmod.Dimensions
         }
 
         public static void MakeRoomLine(Vector2 locstart, Vector2 locend, Vector2 size, ref List<DungeonTile> passdown, UnifiedRandom UniRand, float stepsize = 10, int gen = 0, int buffersize = 8
-            , int filltype = 1, int makenewroomchance = 100, int maxgencheck = 5, int branched = 0,int subtype=0)
+            , int filltype = 1, int makenewroomchance = 100, int maxgencheck = 5, int branched = 0, int subtype = 0)
         {
             Vector2 thedist = locend - locstart;
             Vector2 pointer = locstart;
@@ -541,7 +541,7 @@ namespace SGAmod.Dimensions
         }
 
 
-        public static void MakeRoom(Vector2 loc, Vector2 size, ref List<DungeonTile> passdown, UnifiedRandom UniRand, int gen = 0, int buffersize = 8, int filltype = 1, int makenewroomchance = 100, int maxgencheck = 5,int subtype2 = 0)
+        public static void MakeRoom(Vector2 loc, Vector2 size, ref List<DungeonTile> passdown, UnifiedRandom UniRand, int gen = 0, int buffersize = 8, int filltype = 1, int makenewroomchance = 100, int maxgencheck = 5, int subtype2 = 0)
         {
             for (int x = 0; x < size.X; x += 1)
             {
@@ -557,7 +557,7 @@ namespace SGAmod.Dimensions
 
                     DeeperDungeon.instance.PlaceRoomBlock(UniRand);
 
-                    passdown.Add(new DungeonTile(here, filltype, DeeperDungeon.globallineroomindex, y == size.Y - 1,subtype: subtype2));
+                    passdown.Add(new DungeonTile(here, filltype, DeeperDungeon.globallineroomindex, y == size.Y - 1, subtype: subtype2));
                     //thetile.active(true);
                     //thetile.type = TileID.Dirt;
 
@@ -570,7 +570,7 @@ namespace SGAmod.Dimensions
                         if (anewsize.Y < 2)
                             anewsize.Y = 2;
 
-                        DeeperDungeon.MakeRoom(here, anewsize / 1.5f, ref passdown, UniRand, gen + 2, buffersize, filltype, makenewroomchance, maxgencheck,subtype2);
+                        DeeperDungeon.MakeRoom(here, anewsize / 1.5f, ref passdown, UniRand, gen + 2, buffersize, filltype, makenewroomchance, maxgencheck, subtype2);
                     }
                 }
             }
@@ -585,13 +585,13 @@ namespace SGAmod.Dimensions
                 if ((allareas[x].type == 0 || allareas[x].type == 2) && allareas[x].subtype == 1)
                 {
                     if (UniRand.Next(0, 300) == 0)
-                        WorldGen.placeTrap((int)allareas[x].vector.X, (int)allareas[x].vector.Y,0);
+                        WorldGen.placeTrap((int)allareas[x].vector.X, (int)allareas[x].vector.Y, 0);
                 }
 
-                    if (allareas[x].type < 2 && allareas[x].subtype == 2)
+                if (allareas[x].type < 2 && allareas[x].subtype == 2)
                 {
                     if (UniRand.Next(0, 15) == 0)
-                        IDGWorldGen.PlaceMulti(allareas[x].vector, -1500, UniRand.Next(2, UniRand.Next(4,8)), WallID.IceUnsafe);
+                        IDGWorldGen.PlaceMulti(allareas[x].vector, -1500, UniRand.Next(2, UniRand.Next(4, 8)), WallID.IceUnsafe);
 
                     if (UniRand.Next(0, 75) == 0)
                         IDGWorldGen.PlaceMulti(allareas[x].vector, TileID.BreakableIce, UniRand.Next(2, 5), replacetile: false);
@@ -599,9 +599,9 @@ namespace SGAmod.Dimensions
 
                 if (allareas[x].type == 1)
                 {
-                    if (UniRand.Next(0,allareas[x].subtype==1 || allareas[x].subtype == 2 ? 20 : 150) == 0)
+                    if (UniRand.Next(0, allareas[x].subtype == 1 || allareas[x].subtype == 2 ? 20 : 150) == 0)
                     {
-                        DeeperDungeon.Spikeclustersizes = new[,] { { 15,32 }, { 6,12} };
+                        DeeperDungeon.Spikeclustersizes = new[,] { { 15, 32 }, { 6, 12 } };
                         DeeperDungeon.Spikeclusterchance = new[] { 80, 80, 80, 80 };
                         DeeperDungeon.Spikeclustersizemul = new[] { 0.3f, 0.75f, 0.5f, 0.6f };
                     }
@@ -626,13 +626,13 @@ namespace SGAmod.Dimensions
                                 {
                                     type = TileID.Cobweb;
                                     if (allareas[x].subtype == 2)
-                                    type = TileID.BreakableIce;
+                                        type = TileID.BreakableIce;
                                     sizer[0] *= 1.75f;
                                     sizer[1] *= 1.75f;
                                     sizer[2] *= 1.75f;
                                     sizer[3] *= 1.75f;
                                 }
-                                IDGWorldGen.TileRunner((int)allareas[x].vector.X, (int)allareas[x].vector.Y, (double)(UniRand.Next(DeeperDungeon.Spikeclustersizes[0, 0], DeeperDungeon.Spikeclustersizes[0, 1]) * sizer[i]), (int)(UniRand.Next(DeeperDungeon.Spikeclustersizes[1, 0], DeeperDungeon.Spikeclustersizes[1, 1]) * sizer[i]), type, true, 0f, 0f, false, false,UniRand);
+                                IDGWorldGen.TileRunner((int)allareas[x].vector.X, (int)allareas[x].vector.Y, (double)(UniRand.Next(DeeperDungeon.Spikeclustersizes[0, 0], DeeperDungeon.Spikeclustersizes[0, 1]) * sizer[i]), (int)(UniRand.Next(DeeperDungeon.Spikeclustersizes[1, 0], DeeperDungeon.Spikeclustersizes[1, 1]) * sizer[i]), type, true, 0f, 0f, false, false, UniRand);
                                 //Main.tile[(int)allareas[x].vector.X, (int)allareas[x].vector.Y].type = (int)TileID.Spikes;
                                 //Main.tile[(int)allareas[x].vector.X, (int)allareas[x].vector.Y].active(true);
                             }
@@ -746,7 +746,7 @@ namespace SGAmod.Dimensions
                             for (int zz = 0; zz < DeeperDungeon.platformmaxsize; zz += 1)
                             {
                                 Tile thetile = Framing.GetTileSafely((int)(shuffledareas[z].vector.X + (zz * zzz * expandto)), (int)(shuffledareas[z].vector.Y));
-                                if (thetile.active() && !DeeperDungeon.instance.IsSpike(thetile.type,0))
+                                if (thetile.active() && !DeeperDungeon.instance.IsSpike(thetile.type, 0))
                                 {
                                     DeeperDungeon.instance.PlatformBlockType(thetile, ref platformtype);
                                     touchingoneend = true;
@@ -803,7 +803,7 @@ namespace SGAmod.Dimensions
                                     if (UniRand.Next(0, 30) < 1)
                                     {
                                         bool locked = UniRand.Next(0, 3) == 1;
-                                        int thechest=WorldGen.PlaceChest((int)allareas[x].vector.X, (int)allareas[x].vector.Y, 21, false, locked ? 2 : 1);
+                                        int thechest = WorldGen.PlaceChest((int)allareas[x].vector.X, (int)allareas[x].vector.Y, 21, false, locked ? 2 : 1);
                                         DeeperDungeon.AddStuffToChest(thechest, locked ? 1 : 0, UniRand);
                                     }
                                     else
@@ -834,23 +834,26 @@ namespace SGAmod.Dimensions
 
             for (int x = 0; x < allareas.Count; x += 1)
             {
-                    if (UniRand.Next(0, (int)(DeeperDungeon.paintingchance)) == 0)
-                    {
+                if (UniRand.Next(0, (int)(DeeperDungeon.paintingchance)) == 0)
+                {
 
                     //DungeonTile dedung = new DungeonTile(new Vector2(-99999, 0), 0, 0, false);
                     //dedung = newtilescopy.Find(thisdist => (thisdist.vector - newtiles[x].vector).Length() < 300);
 
                     //if (dedung.vector.X < -8000)
                     //{
-                    WorldGen.PlaceObject((int)allareas[x].vector.X, (int)allareas[x].vector.Y, TileID.Painting6X4, false, Main.rand.Next(0,32));
-  
-                               // newtilescopy.Add(newtiles[x]);
+                    WorldGen.PlaceObject((int)allareas[x].vector.X, (int)allareas[x].vector.Y, TileID.Painting6X4, false, Main.rand.Next(0, 32));
 
-                        //}
-                    }
+                    // newtilescopy.Add(newtiles[x]);
+
+                    //}
+                }
             }
 
         }
+
+        public static int[] CommonItems => new int[] { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone"), SGAmod.Instance.ItemType("MagusSlippers"), SGAmod.Instance.ItemType("YoyoTricks")};
+        public static int[] RareItems => new int[] { SGAmod.Instance.ItemType("BenchGodsFavor"), SGAmod.Instance.ItemType("PortalEssence"), SGAmod.Instance.ItemType("DungeonSplunker") };
 
 
         public static void AddStuffToChest(int chestid, int loottype,UnifiedRandom unirand)
@@ -873,14 +876,14 @@ namespace SGAmod.Dimensions
                 {
                     if (unirand.Next(0, 100) < 10 + (SGAWorld.dungeonlevel * 5))
                     {
-                        int[] theitem = { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone"), SGAmod.Instance.ItemType("MagusSlippers"), SGAmod.Instance.ItemType("YoyoTricks") };
+                        int[] theitem = CommonItems;
                         Main.chest[chestid].item[e].SetDefaults(theitem[Main.rand.Next(0, theitem.Length)]);
                         Main.chest[chestid].item[e].stack = 1;
                         e += 1;
                     } 
                     if (unirand.Next(0, 90) < 3 + (SGAWorld.dungeonlevel * 1))
                     {
-                        int[] choices = { SGAmod.Instance.ItemType("BenchGodsFavor"), SGAmod.Instance.ItemType("PortalEssence"), SGAmod.Instance.ItemType("DungeonSplunker")};
+                        int[] choices = RareItems;
                         Main.chest[chestid].item[e].SetDefaults(choices[unirand.Next(choices.Length)]);
                         Main.chest[chestid].item[e].stack = 1;
                         e += 1;

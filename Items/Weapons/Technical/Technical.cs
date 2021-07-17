@@ -108,7 +108,7 @@ namespace SGAmod.Items.Weapons.Technical
 			Main.PlaySound(SoundID.Item41, player.Center);
 
 			float speed = 1.5f;
-			float numberProjectiles = 3;
+			float numberProjectiles = 2;
 			float rotation = MathHelper.ToRadians(1+ player.GetModPlayer<SGAPlayer>().recoil);
 			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 20f;
 
@@ -2502,9 +2502,9 @@ namespace SGAmod.HavocGear.Items.Weapons
 				}
 				for (float new1 = -1f; new1 < 2f; new1 = new1 + 2f)
 				{
-					float angle = 90;
+					float angle = MathHelper.Pi/1.45f;
 					Vector2 angg = projectile.velocity.RotatedBy(angle * new1);
-					DustID2 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("HotDust"), 0, 0, 20, default(Color), 1f);
+					DustID2 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y)-Vector2.Normalize(projectile.velocity) * 3f, projectile.width, projectile.height, mod.DustType("HotDust"), 0, 0, 20, default(Color), 1f);
 					Main.dust[DustID2].velocity = new Vector2(angg.X * 2f, angg.Y * 2f);
 					Main.dust[DustID2].noGravity = true;
 				}
@@ -2598,7 +2598,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 								for (int new1 = 0; new1 < 5; new1 = new1 + 3)
 								{
 									Vector2 newloc = projectile.Center;
-									newloc -= normal * 8f;
+									newloc -= normal * 58f;
 									newloc += (normal.RotatedBy(MathHelper.ToRadians(90)) * num315) * (10 + new1);
 									int proj = Projectile.NewProjectile(newloc.X, newloc.Y, newspeed.X * 1.5f, newspeed.Y * 1.5f, type, damageproj, knockbackproj, player.whoAmI);
 									if (Main.rand.Next(100) < 75 && (ammo2.modItem != null && ammo2.modItem.ConsumeAmmo(player)) && ammo2.maxStack > 1)

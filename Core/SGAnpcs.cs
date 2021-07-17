@@ -919,6 +919,12 @@ namespace SGAmod
 						shop.item[nextSlot].SetDefaults(mod.ItemType("PremiumUpgrade"));
 						nextSlot++;
 					}
+					if (SGAWorld.downedSPinky && SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths > 3 && Main.netMode > 0)
+					{
+						shop.item[nextSlot].SetDefaults(mod.ItemType("AncientFabricItem"));
+						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 1, 0, 0);
+						nextSlot++;
+					}
 					break;
 
 				case NPCID.ArmsDealer:
@@ -960,15 +966,15 @@ namespace SGAmod
 
 				case NPCID.Mechanic:
 
-						shop.item[nextSlot].SetDefaults(ModContent.ItemType<Spanner>());
-						nextSlot++;
+					shop.item[nextSlot].SetDefaults(ModContent.ItemType<Spanner>());
+					nextSlot++;
 					break;
 
 				case NPCID.Wizard:
 
-						shop.item[nextSlot].SetDefaults(ModContent.ItemType<EnchantedBubble>());
-						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 50, 0);
-						nextSlot++;
+					shop.item[nextSlot].SetDefaults(ModContent.ItemType<EnchantedBubble>());
+					shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 50, 0);
+					nextSlot++;
 					break;
 
 				case NPCID.TravellingMerchant:
@@ -980,11 +986,12 @@ namespace SGAmod
 						nextSlot++;
 					}
 					break;
+
 				case NPCID.SkeletonMerchant:
 
-						shop.item[nextSlot].SetDefaults(ModContent.ItemType<RustedBulwark>());
-						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 2, 50, 0);
-						nextSlot++;
+					shop.item[nextSlot].SetDefaults(ModContent.ItemType<RustedBulwark>());
+					shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 2, 50, 0);
+					nextSlot++;
 
 					if (NPC.downedBoss2)
 					{
@@ -1079,8 +1086,8 @@ namespace SGAmod
 
 			if (Main.rand.Next(0, 4) == 1 && Main.hardMode)
 			{
-				rocket = Main.rand.NextBool();
-				shop[nextSlot] = rocket ? ModContent.ItemType<SoldierRocketLauncher>() : ModContent.ItemType<Gunarang>();
+				int[] weapon = { ModContent.ItemType<SeraphimShard>(), ModContent.ItemType<SoldierRocketLauncher>(), ModContent.ItemType<Gunarang>() };
+				shop[nextSlot] = weapon[Main.rand.Next(weapon.Length)];
 				nextSlot++;
 
 			}
@@ -1480,6 +1487,7 @@ namespace SGAmod
 						"What do you mean the dragon isn't for sale? I'll offer you top dollar for it!"};
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
+
 					break;			
 				case NPCID.TaxCollector:
 					if (Main.rand.Next(0, 3) == 0 && NPC.CountNPCS(mod.NPCType("Dergon")) > 0)
@@ -1487,7 +1495,6 @@ namespace SGAmod
 						string[] lines = { "I don't expect for one second that scaled lizard is hiding his hoard, tax evasion I say!",
 						"I'll find that dragon's hoard sooner or later, he can't keep lying forever."};
 						chat = lines[Main.rand.Next(lines.Length)];
-
 					}
 					break;
 

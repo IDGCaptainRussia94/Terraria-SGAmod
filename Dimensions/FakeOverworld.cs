@@ -166,30 +166,6 @@ namespace SGAmod.Dimensions
 
         }
 
-        public bool InsideMap(int x, int y)
-        {
-            return x >= 0 && y >= 0 && x < Main.maxTilesX && y < Main.maxTilesY;
-        }
-
-        public int GetTilesAround(int xx, int yy, int buffer = 1)
-        {
-            int tilecount = 0;
-            for (int x = xx - buffer; x <= xx + buffer; x += 1)
-            {
-                for (int y = yy - buffer; y <= yy + buffer; y += 1)
-                {
-                    if (InsideMap(x, y))
-                    {
-                        if (Main.tile[x, y].active())
-                        {
-                            tilecount += 1;
-                        }
-                    }
-                }
-            }
-            return tilecount;
-
-        }
         public override List<GenPass> tasks { get; }
 
         public FakeOverworld()

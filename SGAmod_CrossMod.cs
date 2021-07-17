@@ -266,6 +266,7 @@ namespace SGAmod
 			Idglib.AbsentItemDisc.Add(this.ItemType("DrakeniteBar"), "Drops Hellion's 2nd form");
 			Idglib.AbsentItemDisc.Add(this.ItemType("UnmanedOre"), "Throw Transmutation Powder onto Novite Ore!");
 			Idglib.AbsentItemDisc.Add(this.ItemType("NoviteOre"), "Throw Transmutation Powder onto Novus Ore!");
+			Idglib.AbsentItemDisc.Add(this.ItemType("OverseenCrystal"), "Found in near orbit space, just go up up and away!");
 
 			/*SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("PrismalBooster"), "Recolor because lack of spriters");
 			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("NovusCore"), "Don't complain about the placeholder sprite, my spriters wouldn't do jack shit about despite my efforts");

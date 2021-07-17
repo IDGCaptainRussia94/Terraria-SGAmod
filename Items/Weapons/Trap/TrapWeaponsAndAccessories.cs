@@ -1218,6 +1218,8 @@ namespace SGAmod.Items.Accessories
 			recipe.AddRecipe();
 		}
 	}
+
+	[AutoloadEquip(EquipType.HandsOn)]
 	public class GrippingGloves : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -1232,12 +1234,6 @@ namespace SGAmod.Items.Accessories
 			player.GetModPlayer<SGAPlayer>().grippinggloves = Math.Max(player.GetModPlayer<SGAPlayer>().grippinggloves,1);
 			player.GetModPlayer<SGAPlayer>().SlowDownResist += 2f;
 		}
-
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.AleThrowingGlove); }
-		}
-
 		public override void SetDefaults()
 		{
 			item.maxStack = 1;
@@ -1248,6 +1244,8 @@ namespace SGAmod.Items.Accessories
 			item.accessory = true;
 		}
 	}
+
+	[AutoloadEquip(EquipType.HandsOn)]
 	public class HandlingGloves : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -1268,17 +1266,6 @@ namespace SGAmod.Items.Accessories
 				player.statDefense += 8;
 
 		}
-
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.AleThrowingGlove); }
-		}
-
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return Color.Orange;
-		}
-
 		public override void SetDefaults()
 		{
 			item.maxStack = 1;

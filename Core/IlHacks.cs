@@ -30,12 +30,16 @@ namespace SGAmod
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
 			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
-			//IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack; Eh not used anyways
+			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;// Eh not used anyways
 			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
 			//IL.Terraria.Lighting.AddLight_int_int_float_float_float += AddLightHack;
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 			IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;
+
+			IL.Terraria.Main.DrawBackground += RemoveLavabackground;
+			IL.Terraria.Main.DrawBackground += RemoveOldLavabackground;
+
 		}
 		internal static void Unpatch()
 		{
@@ -548,7 +552,63 @@ namespace SGAmod
 			 });
 			c.Emit(OpCodes.Brtrue_S, target);//Form "if brackets"
 		}
+		static internal void RemoveLavabackground(ILContext il)//Temp Subworld fix
+		{
+			ILCursor c = new ILCursor(il);
 
+			if (!c.TryGotoNext(MoveType.After,
+				i => i.MatchStloc(2)))
+			{
+				SGAmod.Instance.Logger.Debug("> Background edit label not found.");
+				return;
+			}
+
+			c.MoveAfterLabels();
+
+			c.Emit(OpCodes.Ldloc_2);
+
+			c.EmitDelegate<Func<double, double>>((num) =>
+			{
+				if (SubworldLibrary.Subworld.AnyActive<SGAmod>())
+				{
+					return (Main.maxTilesY * 5);
+				}
+				return (num);
+			});
+
+			c.Emit(OpCodes.Stloc, 2);
+
+			c.Index = il.Instrs.Count - 1;
+
+			c.TryGotoPrev(MoveType.Before, i => i.MatchLdsfld(typeof(Main), "caveParallax"));
+			c.Index -= 3;
+
+
+			c.Emit(OpCodes.Ldloc, 20);//Inventory Slot int Index
+			c.EmitDelegate<Func<bool,bool>> ((num) =>
+			{
+				if (SubworldLibrary.Subworld.AnyActive<SGAmod>())
+				{
+					return false;
+				}
+				return (num);
+			});
+			c.Emit(OpCodes.Stloc, 20);//Inventory Slot int Index
+			
+
+		}
+		static internal void RemoveOldLavabackground(ILContext il)//Temp Subworld fix
+		{
+			ILCursor c = new ILCursor(il);
+
+			c.TryGotoNext(MoveType.Before,i => i.MatchLdcI4(230));
+			c.Remove();
+
+			c.Emit(OpCodes.Ldc_I4,-100);//Inventory Slot int Index
+
+
+
+		}
 	}
 }
 

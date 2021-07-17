@@ -10,6 +10,7 @@ using Idglibrary;
 using System.Linq;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Effects;
+using SGAmod.Dimensions;
 
 namespace SGAmod.NPCs.Sharkvern
 {
@@ -180,7 +181,7 @@ namespace SGAmod.NPCs.Sharkvern
                         {
                             if (player2.active && !player2.dead)
                             {
-                                if (Collision.CanHit(player2.Center, 1, 1, player2.Center - new Vector2(0, 1200), 1, 1))
+                                if (!player2.ZoneUnderworldHeight && Collision.CanHit(player2.Center, 1, 1, player2.Center - new Vector2(0, 1200), 1, 1))
                                     player2.AddBuff(ModContent.BuffType<SharkvernDrown>(), 2, true);
                             }
                         }
@@ -799,7 +800,8 @@ namespace SGAmod.NPCs.Sharkvern
             TrailHelper trail = new TrailHelper("BasicEffectPass", mod.GetTexture("NPCs/Sharkvern/SharkvernWhole"));//NPCs/Sharkvern/SharkvernWhole
             trail.color = delegate (float percent)
             {
-                return Lighting.GetColor((int)npc.Center.X >> 4, (int)npc.Center.X >> 4)*npc.Opacity;
+                Vector2 there = FinalPoints[(int)(percent * (float)(FinalPoints.Count-1))];
+                return Lighting.GetColor((int)there.X >> 4, (int)there.Y >> 4)*npc.Opacity;
             };
             trail.projsize = Vector2.Zero;
             //trail.coordOffset = new Vector2(0, 0);
@@ -976,7 +978,7 @@ namespace SGAmod.NPCs.Sharkvern
         public override void SetDefaults()
         {
             DisplayName.SetDefault("Drowning Presence");
-            Description.SetDefault("You litterally cannot breath!\nYour Merman form is disabled");
+            Description.SetDefault("You litterally cannot breath!\nAll forms of infinite water breathing are disabled");
             Main.debuff[Type] = true;
             Main.pvpBuff[Type] = true;
             Main.buffNoSave[Type] = true;
@@ -991,7 +993,16 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override void ModifyBuffTip(ref string tip, ref int rare)
         {
-            if (NPC.CountNPCS(ModContent.NPCType<SharkvernHead>()) < 1 && !SGAWorld.downedSharkvern)
+            if (!Main.gameMenu && SGAPocketDim.WhereAmI != null)
+            {
+                if (SGAPocketDim.WhereAmI == typeof(SpaceDim))
+                {
+                    tip += "\nInflicted by the vaccum of space";
+                    return;
+                }
+
+            }
+                if (NPC.CountNPCS(ModContent.NPCType<SharkvernHead>()) < 1 && !SGAWorld.downedSharkvern)
                 tip += "\nBeat Sharkvern to remove this effect";
         }
 

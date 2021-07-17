@@ -386,11 +386,12 @@ namespace SGAmod.Items.Weapons
 			trail.DrawTrail(projectile.oldPos.ToList(), projectile.Center);
 
 
+			Texture2D texaz = SGAmod.ExtraTextures[110];
+
 			for (float xx = -3; xx < 3.5f; xx += 0.5f)
 			{
 				for (float i = 1f; i < 3; i += 0.4f)
 				{
-					Texture2D texaz = SGAmod.ExtraTextures[110];
 					float scalerz = 0.85f + (float)Math.Cos(Main.GlobalTime * 1.25f * (Math.Abs(xx) + i)) * 0.3f;
 					spriteBatch.Draw(texaz, (projectile.Center + ((projectile.velocity.ToRotation() + (float)Math.PI / 4f)).ToRotationVector2() * (xx * 9f)) - Main.screenPosition, null, Color.Yellow * (0.5f / (i + xx)) * 0.25f, projectile.velocity.ToRotation() + (float)Math.PI / 2f, new Vector2(texaz.Width / 2f, texaz.Height / 4f), (new Vector2(1 + i, 1 + i * 1.5f) / (1f + Math.Abs(xx))) * scalerz * projectile.scale, SpriteEffects.None, 0f);
 				}

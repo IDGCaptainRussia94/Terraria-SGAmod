@@ -97,6 +97,114 @@ namespace SGAmod.Dimensions.Tiles
 		}
 	}
 
+	public class Spacerock : ModTile
+	{
+		public override void SetDefaults()
+		{
+			Main.tileSolid[Type] = true;
+			Main.tileMergeDirt[Type] = true;
+			Main.tileBlockLight[Type] = true;
+			Main.tileLighted[Type] = true;
+
+			Main.tileMerge[(ushort)mod.TileType("Spacerock")][(ushort)mod.TileType("Spacerock2")] = true;
+			Main.tileMerge[(ushort)mod.TileType("Spacerock2")][(ushort)mod.TileType("Spacerock")] = true;
+
+			Main.tileMerge[TileID.Meteorite][(ushort)mod.TileType("Spacerock")] = true;
+			Main.tileMerge[(ushort)mod.TileType("Spacerock")][TileID.Meteorite] = true;
+
+			Main.tileMerge[(ushort)mod.TileType("Spacerock2")][TileID.Meteorite] = true;
+			Main.tileMerge[TileID.Meteorite][(ushort)mod.TileType("Spacerock2")] = true;
+
+			Main.tileMerge[(ushort)mod.TileType("AstrialLuminite")][(ushort)mod.TileType("Spacerock2")] = true;
+			Main.tileMerge[(ushort)mod.TileType("Spacerock2")][(ushort)mod.TileType("AstrialLuminite")] = true;
+
+			Main.tileMerge[(ushort)mod.TileType("AstrialLuminite")][(ushort)mod.TileType("Spacerock")] = true;
+			Main.tileMerge[(ushort)mod.TileType("Spacerock")][(ushort)mod.TileType("AstrialLuminite")] = true;
+
+			Main.tileMerge[TileID.Meteorite][(ushort)mod.TileType("AstrialLuminite")] = true;
+			Main.tileMerge[(ushort)mod.TileType("AstrialLuminite")][TileID.Meteorite] = true;
+
+			minPick = 100;
+			soundType = SoundID.Tink;
+			soundStyle = 0;
+			mineResist = 5f;
+			dustType = 36;
+			TileID.Sets.CanBeClearedDuringGeneration[Type] = true;
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("");
+			AddMapEntry(Color.DarkGray, name);
+		}
+	}
+
+	public class Spacerock2 : Spacerock
+	{
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			minPick = 100;
+			soundType = SoundID.Tink;
+			soundStyle = 0;
+			mineResist = 5f;
+			dustType = 36;
+			TileID.Sets.CanBeClearedDuringGeneration[Type] = true;
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("");
+			AddMapEntry(Color.DarkRed, name);
+		}
+	}
+
+	public class AstrialLuminite : ModTile
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Tiles_" + TileID.LunarOre;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			TileID.Sets.Ore[Type] = true;
+			Main.tileSolid[Type] = true;
+			Main.tileMergeDirt[Type] = true;
+			Main.tileBlockLight[Type] = true;
+			Main.tileLighted[Type] = true;
+			minPick = SGAConfig.Instance.EarlyLuminite ? 225 : 200;
+			soundType = SoundID.Tink;
+			soundStyle = 0;
+			mineResist = 5f;
+			dustType = DustID.LunarOre;
+			drop = ItemID.LunarOre;
+			TileID.Sets.CanBeClearedDuringGeneration[Type] = true;
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("Astrial Luminite");
+			AddMapEntry(Color.White, name);
+		}
+
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+        {
+			if (!fail)
+			{ 
+				noItem = true;
+
+				for (int zz = 0; zz < Main.rand.Next(1, 4); zz += 1)
+				{
+					Item.NewItem(new Vector2(i, j) * 16, 16, 16, ItemID.LunarOre, 1);
+				}
+			}
+        }
+
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+		{
+			if (Main.tile[i, j].active())
+			{
+				r = Color.PaleTurquoise.R * 0.02f;
+				g = Color.PaleTurquoise.G * 0.02f;
+				b = Color.PaleTurquoise.B * 0.02f;
+			}
+		}
+
+
+	}
+
 	public class HopeOre : Fabric
 	{
 		public override void SetDefaults()

@@ -11,6 +11,8 @@ using Terraria.Graphics;
 using Idglibrary;
 using SGAmod.Items.Placeable;
 using SGAmod.Items.Weapons.Vibranium;
+using SGAmod.Items.Accessories;
+using Terraria.Utilities;
 
 namespace SGAmod.HavocGear.Items
 {
@@ -266,12 +268,184 @@ namespace SGAmod.HavocGear.Items
 
 namespace SGAmod.Items
 {
+	public class Glowrock : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Glowrock");
+			Tooltip.SetDefault("These rocks seem to give the Asteriods a glow; Curious.\nExtract it via an Extractinator for some goodies!\nDoesn't have much other use, outside of illegal interests");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 16;
+			item.height = 16;
+			item.useTime = 10;
+			item.useAnimation = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			ItemID.Sets.ExtractinatorMode[base.item.type] = base.item.type;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.consumable = true;
+			item.value = 0;
+			item.rare = ItemRarityID.Blue;
+		}
+
+        public override void ExtractinatorUse(ref int resultType, ref int resultStack)
+        {
+			if (Main.rand.Next(8) < 4)
+				return;
+
+			WeightedRandom<(int, int)> WR = new WeightedRandom<(int, int)>();
+
+			if (NPC.downedPlantBoss)
+			{
+				WR.Add((ItemID.Ectoplasm, Main.rand.Next(1, 1)), 1);
+			}
+
+			if (NPC.downedMoonlord)
+				WR.Add((ItemID.LunarOre, Main.rand.Next(1, 3)), 1);
+
+			WR.Add((ItemID.SoulofLight, 1), 1);
+			WR.Add((ItemID.SoulofNight, 1), 1);
+			WR.Add((ItemID.DarkBlueSolution, Main.rand.Next(1, 9)),0.50);
+			WR.Add((ItemID.BlueSolution, Main.rand.Next(1, 9)), 0.50);
+
+			WR.needsRefresh = true;
+			(int, int) thing = WR.Get();
+			resultType = thing.Item1;
+			resultStack = thing.Item2;
+		}
+
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.Blue.ToVector3() * 0.55f);
+		}
+
+	}
+
+		public class OverseenCrystal : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Overseen Crystal");
+			Tooltip.SetDefault("Shards manifested from Phaethon's existance; resonates with charged forgotten spirits\nMay be used to fuse several strong materials together with ease\nSurely a shady dealer will also be interested in trading for these...");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 16;
+			item.height = 16;
+			item.value = 250;
+			item.rare = ItemRarityID.Blue;
+		}
+
+		public override void AddRecipes()
+		{
+
+			int tileType = ModContent.TileType<Tiles.ReverseEngineeringStation>();
+
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<UnmanedOre>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<NoviteOre>(), 2);
+			recipe.AddIngredient(this, 4);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ModContent.GetInstance<PrismalOre>(),8);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 5);
+			recipe.AddIngredient(ItemID.CrystalShard, 1);
+			recipe.AddIngredient(this, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ModContent.GetInstance<VibraniumCrystal>(), 1);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<AdvancedPlating>(), 2);
+			recipe.AddIngredient(this, 2);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ModContent.GetInstance<VibraniumPlating>(), 2);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.SoulofLight, 1);
+			recipe.AddIngredient(ItemID.SoulofNight, 1);
+			recipe.AddIngredient(this, 2);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ModContent.GetInstance<OmniSoul>(), 2);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.FossilOre, 2);
+			recipe.AddIngredient(this, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.DefenderMedal, 1);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.HallowedBar, 4);
+			recipe.AddIngredient(ItemID.SoulofFright, 1);
+			recipe.AddIngredient(ItemID.SoulofNight, 1);
+			recipe.AddIngredient(ItemID.SoulofSight, 1);
+			recipe.AddIngredient(this, 5);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ModContent.GetInstance<Consumable.DivineShower>(), 1);
+			recipe.AddRecipe();
+
+			/*ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddRecipeGroup("SGAmod:VanillaAccessory", 2);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 4);
+			recipe.AddTile(TileID.CrystalBall);
+			recipe.SetResult(ModContent.GetInstance<StarCollector>());
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddRecipeGroup("SGAmod:VanillaAccessory", 1);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 3);
+			recipe.AddTile(TileID.CrystalBall);
+			recipe.SetResult(ModContent.GetInstance<RustedBulwark>());
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddRecipeGroup("SGAmod:VanillaAccessory", 1);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 2);
+			recipe.AddIngredient(ItemID.ArmorPolish, 1);
+			recipe.AddTile(TileID.CrystalBall);
+			recipe.SetResult(ModContent.GetInstance<EnchantedShieldPolish>());
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddRecipeGroup("SGAmod:VanillaAccessory", 1);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 3);
+			recipe.AddTile(TileID.CrystalBall);
+			recipe.SetResult(ModContent.GetInstance<MurkyCharm>());
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddRecipeGroup("SGAmod:VanillaAccessory", 2);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 4);
+			recipe.AddTile(TileID.CrystalBall);
+			recipe.SetResult(ModContent.GetInstance<MagusSlippers>());
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddRecipeGroup("SGAmod:VanillaAccessory", 2);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 4);
+			recipe.AddTile(TileID.CrystalBall);
+			recipe.SetResult(ModContent.GetInstance<MagusSlippers>());
+			recipe.AddRecipe();*/
+
+		}
+
+	}
 	public class VibraniumCrystal : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Crystal");
-			Tooltip.SetDefault("'Almost shakes out your hands'");
+			Tooltip.SetDefault("'Makes a humming sound while almost shaking out your hands'");
 		}
 		public override void SetDefaults()
 		{
@@ -290,8 +464,8 @@ namespace SGAmod.Items
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Vibranium Crystal");
-			Tooltip.SetDefault("'It constantly vibrates to the touch'");
+			DisplayName.SetDefault("Vibranium Plating");
+			Tooltip.SetDefault("'Dark cold steel; it constantly vibrates to the touch'");
 		}
 
 		public override void SetDefaults()
@@ -307,7 +481,7 @@ namespace SGAmod.Items
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Vibranium Crystal");
+			DisplayName.SetDefault("Vibranium Bar");
 			Tooltip.SetDefault("'This alloy is just barely stable enough to not phase out of existance'");
 		}
 

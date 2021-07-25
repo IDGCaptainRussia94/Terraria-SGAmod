@@ -22,6 +22,30 @@ namespace SGAmod.Buffs
 			player.GetModPlayer<SGAPlayer>().Pressured=true;
 		}
 	}
+	public class CleansedPerception : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Histoplasma");
+			Description.SetDefault("The doors of perception have been cleansed!");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = false;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/AcidBurn";
+			return true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			if (Main.netMode != NetmodeID.Server)
+				Main.buffTexture[ModContent.BuffType<CleansedPerception>()] = Main.buffTexture[Main.rand.Next(Main.buffTexture.Length)];
+		}
+	}
 	public class ShieldBreak: ModBuff
 	{
 		public override void SetDefaults()

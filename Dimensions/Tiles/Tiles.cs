@@ -179,6 +179,11 @@ namespace SGAmod.Dimensions.Tiles
 			AddMapEntry(Color.White, name);
 		}
 
+        public override bool CanExplode(int i, int j)
+        {
+			return false;
+        }
+
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
 			if (!fail)

@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Audio;
 using Terraria.Graphics.Shaders;
 using Terraria.GameContent.UI.Elements;
 using SGAmod.Dimensions;
-using SGAmod.Items.Armors;
+using SGAmod.Items.Armors.Vibranium;
 
 namespace SGAmod
 {
@@ -142,7 +142,7 @@ namespace SGAmod
 		{
 			if (SGAmod.vibraniumCounter > 0)
 			{
-				foreach (Projectile projectile in Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<Items.Armors.VibraniumWall>()))
+				foreach (Projectile projectile in Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<Items.Armors.Vibranium.VibraniumWall>()))
 				{
 					if (projectile.DistanceSQ(Position) < 16 * 16)
 					{
@@ -221,7 +221,7 @@ namespace SGAmod
 			if (SGAConfigClient.Instance.SpecialBlending == false)
 				return;
 
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int k = 0; k < Main.maxProjectiles; k++) //projectiles
 				if (Main.projectile[k].active && Main.projectile[k].modProjectile is IDrawAdditive)
@@ -234,7 +234,7 @@ namespace SGAmod
 		{
 			orig(self);
 
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 
 			if (SGAConfigClient.Instance.SpecialBlending)
@@ -252,26 +252,28 @@ namespace SGAmod
 				}
 			}
 
-			if (SGAConfigClient.Instance.LavaBlending == false)
-				return;
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.SolarDye);
-			shader.Apply(null);
-
-			for (int i = 0; i < Main.projectile.Length; i += 1)
+			if (SGAConfigClient.Instance.LavaBlending == true)
 			{
-				Projectile projectile = Main.projectile[i];
-				if (projectile.active)
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+				ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.SolarDye);
+				shader.Apply(null);
+
+				for (int i = 0; i < Main.projectile.Length; i += 1)
 				{
-					if (projectile.modProjectile != null && projectile.modProjectile is Items.Weapons.SeriousSam.LavaRocks Lava)
+					Projectile projectile = Main.projectile[i];
+					if (projectile.active)
 					{
-						Lava.DrawLava();
+						if (projectile.modProjectile != null && projectile.modProjectile is Items.Weapons.SeriousSam.LavaRocks Lava)
+						{
+							Lava.DrawLava();
+						}
 					}
 				}
 			}
-			Main.spriteBatch.End();
+				Main.spriteBatch.End();
+			
 		}
 		static private SoundEffectInstance Main_PlaySound(On.Terraria.Main.orig_PlaySound_int_int_int_int_float_float orig, int type, int x = -1, int y = -1, int Style = 1, float volumeScale = 1f, float pitchOffset = 0f)
 		{

@@ -1966,7 +1966,7 @@ namespace SGAmod.Items.Weapons.Technical
 namespace SGAmod.HavocGear.Items.Weapons
 {
 
-	public class PlasmaGun : NoviteBlaster, ITechItem
+	public class PlasmaGun : NoviteBlaster, ITechItem,IHitScanItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -2018,7 +2018,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 6);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
 			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
-			recipe.AddIngredient(null, "AdvancedPlating", 5);
+			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

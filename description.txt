@@ -1,4 +1,4 @@
-SGA mod is a content mod mostly based around less mundane gameplay, more interesting items from weaponized traps to more techical creations, and tough as nails boss fights; the Dergon will show you the way.
+[i:2730][i:2718][i:2712]mod - [i:3725]mod is a content mod mostly based around less mundane gameplay, more interesting items from weaponized traps to more techical creations, and tough as nails boss fights; the Dergon will show you the way.
 
 What you can expect:
 
@@ -176,6 +176,13 @@ Changelog:
 -Granite magnet listing it can "block" damage
 
 -Other smaller fixes I might have forgotten about-including typeos
+
+
+3.580-(7/16/21)-Hotfix #18:
+
+--Fixed:
+
+-A work around to a bug involving HUD mods ('Un'Leveled specifically) breaking SGAmod's HUD
 
 
 3.522-(2/18/21)-Hotfix #17:

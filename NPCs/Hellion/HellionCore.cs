@@ -517,7 +517,7 @@ namespace SGAmod.NPCs.Hellion
 
         public override void NPCLoot()
         {
-            if (!Main.player[npc.target].dead && !onlyonce && SGAWorld.downedHellion>1)
+            if (!Main.player[npc.target].dead && !onlyonce)// && SGAWorld.downedHellion>1)
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("ByteSoul"), 1);
             onlyonce = true;
         }
@@ -810,7 +810,19 @@ namespace SGAmod.NPCs.Hellion
             else
             {
                 npc.ai[0] += 1;
-                if (npc.ai[0] > 200)
+                if (npc.ai[0] == 1 && SGAWorld.downedHellion<1)
+                {
+                    npc.ai[1] = 1;
+                    for (int i = 0; i < 8 + P.extraAccessorySlots; i += 1)
+                    {
+                        if (P.armor[i].type == ModContent.ItemType<Items.Accessories.DevPower>())
+                        {
+                            npc.ai[1] = 0;
+                            break;
+                        }
+                    }
+                }
+                if (npc.ai[0] > 200 && (npc.ai[0] < 540 || npc.ai[1]==0))
                 {
                     npc.velocity += (((P.Center + new Vector2(0, -200)) - npc.Center) / 100f);
                 }
@@ -819,31 +831,72 @@ namespace SGAmod.NPCs.Hellion
             }
             Hellion Hellinstance = new Hellion();
 
+
+
             if (npc.ai[0] == 120)
                 Hellinstance.HellionTaunt("hmmmm...");
             if (npc.ai[0] == 260)
                 Hellinstance.HellionTaunt("It seems you have destroyed my most powerful creation...");
-            if (npc.ai[0] == 460)
-                Hellinstance.HellionTaunt("Your powerful, very powerful, maybe that's why he fled to you.");
-            if (npc.ai[0] == 700)
-                Hellinstance.HellionTaunt("With that kind of power, we could have been allies, But in the end...");
-            if (npc.ai[0] == 1000)
-                Hellinstance.HellionTaunt("I have put far too many resources into the project");
-            if (npc.ai[0] == 1100)
-                Hellinstance.HellionTaunt("And far too many slip ups to have let accured");
-            if (npc.ai[0] == 1300)
-                Hellinstance.HellionTaunt("So...");
-            if (npc.ai[0] == 1500)
-                Hellinstance.HellionTaunt("I think it's finally time, I ended this, myself");
 
-            if (npc.ai[0] == 1700)
+            if (npc.ai[1] == 1)
             {
-                NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)npc.position.Y + npc.height / 2, mod.NPCType("Hellion"), npc.whoAmI, 0f, 0f, 0f, 0f, 255);
-                npc.life = 0;
-                npc.active = false;
+                if (SGAWorld.downedHellion == -1 && npc.ai[0] == 100)
+                {
+                    Hellinstance.HellionTaunt("You are still too weak...");
+                    npc.ai[0] = 461;
+                }
+
+                if (npc.ai[0] == 460)
+                    Hellinstance.HellionTaunt("But no matter...");
+
+                if (npc.ai[0] == 560)
+                    Hellinstance.HellionTaunt("Only with the power of [The Secret of Souls] would you ever hope to succeed...");
+
+                if (npc.ai[0] == 600)
+                {
+                    Projectile.NewProjectile(npc.Center, Vector2.Zero, SGAmod.Instance.ProjectileType("HellionTeleport"), 0, 2f);
+                }
+
+                    if (npc.ai[0] == 660)
+                {
+                    npc.life = 0;
+                    npc.active = false;
+                    SGAWorld.downedHellion = -1;
+                }
+
+            }
+            else
+            {
+
+                if (npc.ai[0] == 460)
+                    Hellinstance.HellionTaunt("Your powerful, very powerful, maybe that's why he fled to you.");
+                if (npc.ai[0] == 700)
+                    Hellinstance.HellionTaunt("With that kind of power, we could have been allies, But in the end...");
+                if (npc.ai[0] == 1000)
+                    Hellinstance.HellionTaunt("I have put far too many resources into the project");
+                if (npc.ai[0] == 1100)
+                    Hellinstance.HellionTaunt("And far too many slip ups to have let accured");
+                if (npc.ai[0] == 1300)
+                    Hellinstance.HellionTaunt("So...");
+                if (npc.ai[0] == 1500)
+                    Hellinstance.HellionTaunt("I think it's finally time, I ended this, myself");
+
+                if (npc.ai[0] == 1700)
+                {
+                    NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)npc.position.Y + npc.height / 2, mod.NPCType("Hellion"), npc.whoAmI, 0f, 0f, 0f, 0f, 255);
+                    npc.life = 0;
+                    npc.active = false;
+
+                    if (SGAWorld.downedHellion < 1)
+                    {
+                        SGAWorld.downedHellion = 1;
+                    }
+
+                }
+
             }
 
-
+            //					int prog = Projectile.NewProjectile(npc.Center, Vector2.Zero, SGAmod.Instance.ProjectileType("HellionTeleport"), 0, 2f);
 
             return false;
         }
@@ -926,11 +979,6 @@ namespace SGAmod.NPCs.Hellion
         {
 
             int num154 = NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)npc.position.Y + npc.height / 2, mod.NPCType("HellionMonolog"), npc.whoAmI, SGAWorld.downedHellion < 1 || TheWholeExperience.Check() ? 0f : 1698f, 0f, 0f, 0f, 255);
-
-            if (SGAWorld.downedHellion < 1)
-            {
-                SGAWorld.downedHellion = 1;
-            }
 
         }
 

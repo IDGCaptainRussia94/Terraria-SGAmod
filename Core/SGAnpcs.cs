@@ -742,15 +742,19 @@ namespace SGAmod
 				return false;
 			}
 
-				if ((npc.type == NPCID.CultistDevote || npc.type == NPCID.CultistArcherBlue || npc.type == NPCID.CultistTablet) && (SGAWorld.downedHarbinger == false && Main.netMode < 1))
-			{
-				npc.active = false;
-				return false;
-			}
-			else
-			{
-				//npc.dontTakeDamage=false;
-			}
+			//Until I add Doom Harbinger back
+			/*if ((npc.type == NPCID.CultistDevote || npc.type == NPCID.CultistArcherBlue || npc.type == NPCID.CultistTablet) && (SGAWorld.downedHarbinger == false && Main.netMode < 1))
+		{
+			npc.active = false;
+			return false;
+		}
+		else
+		{
+			//npc.dontTakeDamage=false;
+		}
+
+		*/
+
 			return true;
 		}
 		public override void AI(NPC npc)
@@ -1083,8 +1087,12 @@ namespace SGAmod
 			}
 
 			bool rocket = false;
-
-			if (Main.rand.Next(0, 4) == 1 && Main.hardMode)
+			if (Main.rand.Next(0, 3) == 0 && Main.hardMode)
+			{
+				shop[nextSlot] = ModContent.ItemType<Items.Mounts.GiantIceCube>();
+				nextSlot++;
+			}
+			if (Main.rand.Next(0, 3) == 0 && Main.hardMode)
 			{
 				int[] weapon = { ModContent.ItemType<SeraphimShard>(), ModContent.ItemType<SoldierRocketLauncher>(), ModContent.ItemType<Gunarang>() };
 				shop[nextSlot] = weapon[Main.rand.Next(weapon.Length)];

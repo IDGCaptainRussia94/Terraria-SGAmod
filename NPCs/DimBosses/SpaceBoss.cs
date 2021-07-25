@@ -1298,7 +1298,7 @@ namespace SGAmod.Dimensions.NPCs
 				//Vector2 dir = ((npc.Center - Main.screenPosition) - sky.sunPosition);
 				//float angle = dir.ToRotation();
 
-				//Sunabsorb
+				//Sun absorb healing
 
 				if (npc.ai[0]>800 && shieldeffect > 0 && sky.skyalpha>0)
 				{
@@ -1633,7 +1633,7 @@ namespace SGAmod.Dimensions.NPCs
 
 					if (count == 0)
 					{
-						spriteBatch.Draw(noise, (npc.Center + loc) - Main.screenPosition, null, (npc.ai[0]>999 ? Color.Blue : Color.PaleTurquoise) * shieldAlpha, angle, noise.Size() / 2f, (new Vector2(200f, 150f) / noisesize) * scale, SpriteEffects.None, 0f);
+						spriteBatch.Draw(noise, (npc.Center + loc) - Main.screenPosition, null, (npc.ai[0] > 999 ? Color.Blue : Color.PaleTurquoise) * shieldAlpha, angle, noise.Size() / 2f, (new Vector2(200f, 150f) / noisesize) * scale, SpriteEffects.None, 0f);
 						spriteBatch.Draw(noise, (npc.Center + loc) - Main.screenPosition, null, (npc.ai[0] > 999 ? Color.Blue : Color.PaleTurquoise) * shieldAlpha, angle, noise.Size() / 2f, (-new Vector2(200f, 150f) / noisesize) * scale, SpriteEffects.None, 0f);
 					}
 					else

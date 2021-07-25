@@ -146,6 +146,7 @@ namespace SGAmod
 		public static RenderTarget2D drawnscreen;
 		public static RenderTarget2D postRenderEffectsTarget;
 		public static RenderTarget2D postRenderEffectsTargetCopy;
+		public static (Texture2D, Texture2D) VanillaHearts;
 
 		public static SGACustomUIMenu CustomUIMenu;
 		public static UserInterface CustomUIMenuInterface;
@@ -160,6 +161,7 @@ namespace SGAmod
 		public static float fogAlpha = 1f;
 		public static Effect TrailEffect;
 		public static Effect HallowedEffect;
+		public static Effect TrippyRainbowEffect;
 		public static Effect FadeInEffect;
 		public static Effect RadialEffect;
 		public static MusicStreamingOGG musicTest;
@@ -238,6 +240,8 @@ namespace SGAmod
 				HellionTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.FrostShard));
 				HellionTextures.Add(ModContent.GetTexture("Terraria/Projectile_490"));
 				HellionTextures.Add(ModContent.GetTexture("Terraria/Projectile_"+ProjectileID.Leaf));
+
+				VanillaHearts = (ModContent.GetTexture("Terraria/Heart"), ModContent.GetTexture("Terraria/Heart2"));
 
 			}
 
@@ -503,6 +507,8 @@ namespace SGAmod
 				Filters.Scene["SGAmod:ShockwaveBanshee"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
 				Ref<Effect> screenRef2 = new Ref<Effect>(GetEffect("Effects/ScreenWave"));
 				Filters.Scene["SGAmod:ScreenWave"] = new Filter(new ScreenShaderData(screenRef2, "ScreenWave"), EffectPriority.VeryHigh);
+				//screenRef2 = new Ref<Effect>(GetEffect("Effects/ScreenTrippy"));
+				//Filters.Scene["SGAmod:ScreenTrippy"] = new Filter(new ScreenShaderData(screenRef2, "ScreenTrippy").UseImage("SGAmod/TiledPerlin", 1, null), EffectPriority.VeryHigh);
 
 				TrailEffect = SGAmod.Instance.GetEffect("Effects/trailShaders");
 				HallowedEffect = SGAmod.Instance.GetEffect("Effects/Hallowed");
@@ -513,6 +519,13 @@ namespace SGAmod
 				FadeInEffect.Parameters["fadeMultiplier"].SetValue(new Vector2(1, 1));
 				FadeInEffect.Parameters["fadeOffset"].SetValue(new Vector2(1, 1));
 				FadeInEffect.Parameters["fadePercentSize"].SetValue(4f);
+
+				TrippyRainbowEffect = SGAmod.Instance.GetEffect("Effects/ScreenTrippy");
+				TrippyRainbowEffect.Parameters["uColor"].SetValue(new Vector3(0.02f, 0.02f, 0f));
+				TrippyRainbowEffect.Parameters["uOpacity"].SetValue(1f);
+				TrippyRainbowEffect.Parameters["uDirection"].SetValue(new Vector2(1f, Main.GlobalTime * 0.1f));
+				TrippyRainbowEffect.Parameters["uIntensity"].SetValue(1f);
+				TrippyRainbowEffect.Parameters["uProgress"].SetValue(0f);
 
 				RadialEffect = SGAmod.Instance.GetEffect("Effects/Radial");
 

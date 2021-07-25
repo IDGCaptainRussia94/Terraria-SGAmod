@@ -704,6 +704,7 @@ namespace SGAmod.Dimensions
 
             if (!Main.dedServ)
             {
+
                 int lightingtotal = Main.LocalPlayer.GetModPlayer<SGADimPlayer>().lightSize;
 
                 Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
@@ -894,7 +895,77 @@ namespace SGAmod.Dimensions
                     Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
                 }*/
 
+
+
                 PrismShardHinted.Draw(spriteBatch, lightColor);
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+                foreach (Player player in Main.player)
+                {
+                    if (player == null || !player.active)
+                        break;
+                    if (player.dead)
+                        continue;
+
+
+
+                    SGAPlayer sgaply = player.SGAPly();
+
+                    if (sgaply.valkyrieSet)
+                    {
+                        UnifiedRandom rando = new UnifiedRandom(player.whoAmI+Main.worldName.GetHashCode());
+
+
+                        Texture2D extra = Main.extraTexture[89];
+                        Vector2 sizehalf = extra.Size() / 2f;
+
+                        float counter = System.Math.Min(player.lifeRegen, player.lifeRegenTime * 0.01f) * 1f;
+
+                        for (int i = 0; i < counter; i += 1)
+                        {
+
+                            float alphaxxx = MathHelper.Clamp((counter - i),0f,1f)*0.75f;
+
+                            Matrix aurashards = Matrix.CreateFromYawPitchRoll(rando.NextFloat(MathHelper.TwoPi) + (Main.GlobalTime * (rando.NextFloat(0.25f, 1f)*(rando.NextBool() ? 1f : -1f))), 0, rando.NextFloat(-MathHelper.Pi / 1f, MathHelper.Pi / 1f));
+
+                            Vector3 loc = Vector3.Transform(Vector3.UnitX, aurashards);
+
+                            spriteBatch.Draw(extra, (player.MountedCenter + new Vector2(loc.X, loc.Y)*48f) - Main.screenPosition, null, Main.hslToRgb(rando.NextFloat(1f),0.45f,0.75f) * MathHelper.Clamp(loc.Z, 0f, 1f)* alphaxxx, 0, sizehalf, 1f, SpriteEffects.None, 0f);
+                        }
+
+
+                    }
+
+
+                    if (sgaply.GetEnergyShieldAmmountAndRecharge.Item1 > 0)
+                    {
+                        //Main.NewText("test");
+                        Texture2D noise = SGAmod.Instance.GetTexture(sgaply.jellybruSet ? "NPCs/PrismicBanshee" : "Perlin");
+                        Vector2 noisesize = noise.Size();
+
+                        DrawData value9 = new DrawData(noise, new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, (int)noisesize.X, (int)noisesize.Y)), Microsoft.Xna.Framework.Color.White, 0, noise.Size()/2f, 1f, SpriteEffects.None, 0);
+                        var deathShader = GameShaders.Misc["ForceField"];
+                        deathShader.UseColor(new Vector3(1f, 1f, 1f));
+                        GameShaders.Misc["ForceField"].Apply(new DrawData?(value9));
+                        float alphapercent = (sgaply.GetEnergyShieldAmmountAndRecharge.Item1 / (float)sgaply.GetEnergyShieldAmmountAndRecharge.Item2);
+                        deathShader.UseOpacity(1f);
+
+                        float angle = MathHelper.Pi;
+                        Vector2 loc = new Vector2((float)((Math.Cos(angle) * 0f)), (float)((Math.Sin(angle) * 0f)));
+
+                        Color basecolor = Color.Lerp(Color.LightBlue, player.GetImmuneAlpha(Color.White, 0.5f), 0.5f) * 0.75f;
+
+                            if (sgaply.jellybruSet)
+                        {
+                            basecolor = Color.Lerp(Color.Magenta, player.GetImmuneAlpha(Color.Purple, 0.5f), 0.75f) * 1f;
+                        }
+
+                        spriteBatch.Draw(noise, (player.MountedCenter + loc) - Main.screenPosition, null, basecolor* alphapercent, angle, noise.Size() / 2f, (new Vector2(200f, 150f) / noisesize)*0.6f, SpriteEffects.None, 0f);
+
+                    }
+                }
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);

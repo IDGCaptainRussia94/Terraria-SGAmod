@@ -112,7 +112,7 @@ namespace SGAmod
 		public bool vibraniumSetPlatform = false; public bool vibraniumSetWall = false;
 		public bool mudbuff = false; public bool alkalescentHeart = false; public bool jabALot = false; public bool NoHitCharm = false; public int NoHitCharmTimer = 0;
 		public int Havoc = 0;
-		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool vibraniumSet = false;
+		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public bool valkyrieSet = false; public (int,int) illuminantSet = (0,0);
 		public float SpaceDiverWings = 0f;
 		public int gamePadAutoAim = 0;
 		public int tidalCharm = 0;
@@ -179,6 +179,10 @@ namespace SGAmod
 		public int ammoLeftInClipMaxStack = 0;
 		public int ammoLeftInClipMaxAddedAmmo = 0;
 		public int ammoLeftInClipMax = 6;
+		public float energyShieldReservation = 0f;
+		public (int, int,int) energyShieldAmmountAndRecharge = (0, 0,0);
+		public (int, int) GetEnergyShieldAmmountAndRecharge => ((int)(energyShieldAmmountAndRecharge.Item1 * techdamage), (int)(energyShieldAmmountAndRecharge.Item2*techdamage));
+
 
 		public int plasmaLeftInClipMax = 1000;
 		public const int plasmaLeftInClipMaxConst = 1000; public const int boosterPowerLeftMaxConst = 10000;
@@ -252,6 +256,8 @@ namespace SGAmod
 
 		public int manifestedWeaponType = 0;
 
+		public bool EnergyDepleted => GetEnergyShieldAmmountAndRecharge.Item1 < 1 && energyShieldAmmountAndRecharge.Item3 > 0;
+
 		public override void ResetEffects()
 		{
 			manifestedWeaponType = 0;
@@ -285,6 +291,19 @@ namespace SGAmod
 
 			shieldDamageReduce = 0f;
 			shieldDamageBoost = 0f;
+
+
+			energyShieldReservation = 0f;
+			if (energyShieldAmmountAndRecharge.Item1 > energyShieldAmmountAndRecharge.Item2)
+            {
+				energyShieldAmmountAndRecharge.Item1 = energyShieldAmmountAndRecharge.Item2;
+			}
+			energyShieldAmmountAndRecharge.Item2 = 0;
+
+			if (!Shieldbreak || energyShieldAmmountAndRecharge.Item3 > 1)
+				energyShieldAmmountAndRecharge.Item3 -= 1;
+
+
 			enchantedShieldPolish = false;
 			diesIraeStone = false;
 			starCollector = false;
@@ -335,7 +354,10 @@ namespace SGAmod
 			Blazewyrmset = false;
 			Mangroveset = false;
 			IDGset = false;
+			jellybruSet = false;
 			vibraniumSet = false;
+			valkyrieSet = false;
+			illuminantSet = (0,0);
 			novusStackBoost = false;
 			Pressured = false;
 			Havoc = 0;
@@ -769,23 +791,28 @@ namespace SGAmod
 				benchGodItem.X = -100;
 
 				Filter manshad = Filters.Scene["SGAmod:ScreenWave"];
-				if (player.HeldItem.type == ModContent.ItemType<Debug1>())
+				int perception = ModContent.BuffType<CleansedPerception>();
+				if (player == Main.LocalPlayer && (player.HeldItem.type == ModContent.ItemType<Debug1>() || player.HasBuff(perception)))
 				{
-					if (timer%60==0)
-						Main.NewText("Test!");
+					float alpha = 1;
+					if (player.HasBuff(perception))
+						alpha = MathHelper.Clamp(player.buffTime[player.FindBuffIndex(perception)]/1200f,0f,1f);
+
+					//if (timer%60==0)
+						//Main.NewText("Test!");
 
 					if (!manshad.IsActive())
 					{
 						Filters.Scene.Activate("SGAmod:ScreenWave", player.Center, new object[0]);
-						Main.NewText("Turn on! Test!");
+						Overlays.Scene.Activate("SGAmod:SGAHUD");
+						//Main.NewText("Turn on! Test!");
 
 					}
 					else
 					{
 						ScreenShaderData shader = manshad.GetShader();
-						shader.UseIntensity(26f).UseProgress((Main.GlobalTime * 0.1f) % 1f).UseOpacity(1f).UseColor(0.02f,0.02f,0f).UseTargetPosition(player.Center);
-
-
+						shader.UseIntensity(26f).UseProgress((Main.GlobalTime * 0.1f) % 1f).UseOpacity(alpha).UseColor(0.02f, 0.02f, 0f).UseTargetPosition(player.Center).UseDirection(new Vector2(1f, Main.GlobalTime * 0.1f))
+							.UseImageScale(new Vector2(Main.GlobalTime * -0.4f, Main.GlobalTime * 0.7f),0);
 					}
 
 				}
@@ -793,9 +820,10 @@ namespace SGAmod
 				{
 					if (manshad.IsActive())
 					{
-						Main.NewText("Turn off! Test!");
+						//Main.NewText("Turn off! Test!");
 						manshad.Deactivate();
 					}
+					Overlays.Scene.Deactivate("SGAmod:SGAHUD");
 				}
 			}
 
@@ -833,6 +861,8 @@ namespace SGAmod
 
 		public delegate void PostUpdateEquipsDelegate(SGAPlayer player);
 		public static event PostUpdateEquipsDelegate PostUpdateEquipsEvent;
+
+		public static event PostUpdateEquipsDelegate PostCharmsUpdateEquipsEvent;
 
 		//Really should do more event stuff like this ^
 
@@ -910,6 +940,8 @@ namespace SGAmod
 					}
 				}
 			}
+
+			PostCharmsUpdateEquipsEvent?.Invoke(this);
 
 			if (HasGucciGauntlet())
 			{
@@ -1630,6 +1662,9 @@ namespace SGAmod
 
 			if (BIP)
 				player.AddBuff(mod.BuffType("BIPBuff"), 60 * 5);
+
+			if (TakeShieldHit(ref damage))
+				return false;
 
 			return true;
 		}

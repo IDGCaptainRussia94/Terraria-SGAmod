@@ -98,7 +98,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Flask of Acid");
-			Tooltip.SetDefault("Melee attacks have a chance to melt enemies");
+			Tooltip.SetDefault("Melee attacks have a chance to melt enemies\nMelee Damage is reduced by 10% due to acid dulling the weapon");
 		}
 
 		public override void FlaskEffect(Rectangle rect, Vector2 speed)
@@ -137,9 +137,14 @@ namespace SGAmod.Items.Consumable
 		{
 			base.SetDefaults();
 			DisplayName.SetDefault("Weapon Imbue: Acid Burn");
-			Description.SetDefault("Melee attacks have a chance to melt enemies");
+			Description.SetDefault("Melee attacks have a chance to melt enemies\nMelee Damage is reduced by 10% due to acid dulling the weapon");
 		}
-	}
+
+        public override void Update(Player player, ref int buffIndex)
+        {
+			player.meleeDamage -= 0.10f;
+        }
+    }
 
 
 }

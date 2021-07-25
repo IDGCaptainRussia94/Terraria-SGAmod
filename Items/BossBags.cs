@@ -201,7 +201,6 @@ namespace SGAmod.Items
 			item.rare = -12;
 		}
 
-
 		public override int BossBagNPC
 		{
 			get
@@ -219,7 +218,7 @@ namespace SGAmod.Items
 		{
 		player.TryGettingDevArmor();
 
-			string[] dropitems = { "Starburster", "Snowfall", "IceScepter", "RubiedBlade", "IcicleFall", "Magishield" };
+			string[] dropitems = { "Starburster", "Snowfall", "IceScepter", "RubiedBlade", "IcicleFall", "Magishield"};
 			player.QuickSpawnItem(mod.ItemType(dropitems[Main.rand.Next(dropitems.Length)]));
 			player.QuickSpawnItem(mod.ItemType("CryostalBar"),Main.rand.Next(25, 40));
 			player.QuickSpawnItem(mod.ItemType("CirnoWings"), 1);
@@ -245,7 +244,6 @@ namespace SGAmod.Items
 			item.rare = -12;
 		}
 
-
 		public override int BossBagNPC
 		{
 			get
@@ -253,7 +251,6 @@ namespace SGAmod.Items
 				return mod.NPCType("SPinky");
 			}
 		}
-
 
 		public override bool CanRightClick()
 		{
@@ -263,7 +260,8 @@ namespace SGAmod.Items
 		{
 			player.TryGettingDevArmor();
 				player.QuickSpawnItem(mod.ItemType("LunarRoyalGel"), Main.rand.Next(40, 60));
-				//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("LunarRoyalGel"));
+			Armors.Illuminant.IlluminantHelmet.IlluminantArmorDrop(2, player.Center);
+			//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("LunarRoyalGel"));
 			player.QuickSpawnItem(mod.ItemType("LunarSlimeHeart"));
 
 		}

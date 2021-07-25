@@ -56,7 +56,12 @@ namespace SGAmod.Items.Weapons
 			}
 			return false;
 		}
-	}
+
+        public override void AddRecipes()
+        {
+            //nil
+        }
+    }
 
 	public class ShadeFlameProj : ModProjectile
 	{

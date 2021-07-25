@@ -47,7 +47,7 @@ namespace SGAmod.Items.Weapons.Auras
 			{
 				AuraMinionBorealis shoot = Main.projectile[thetarget].modProjectile as AuraMinionBorealis;
 				tooltips.Add(new TooltipLine(mod, "Bonuses", "Power Level: "+ shoot.thepower));
-				tooltips.Add(new TooltipLine(mod, "Bonuses", "Passive: Grants max life per Power Level"));
+				tooltips.Add(new TooltipLine(mod, "Bonuses", "Passive: Grants life Regen per Power Level"));
 
 				if (shoot.thepower >= 1.0)
 					tooltips.Add(new TooltipLine(mod, "Bonuses", "Lv1: Applies Betsy's Curse to enemies"));
@@ -153,7 +153,7 @@ namespace SGAmod.Items.Weapons.Auras
 			}
 			if (type is Player)
 			{
-				(type as Player).statLifeMax2 += (int)(thepower*10f);
+				(type as Player).lifeRegen += (int)(thepower*2f);
 			}
 
 		}

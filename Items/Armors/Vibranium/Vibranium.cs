@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Audio;
 using System;
 using SGAmod.Projectiles;
 
-namespace SGAmod.Items.Armors
+namespace SGAmod.Items.Armors.Vibranium
 {
 
 	[AutoloadEquip(EquipType.Head)]
@@ -61,7 +61,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Helmet");
-			Tooltip.SetDefault("30% increased ranged damage and 10% crit chance\n30% extra damage on non-bullet/arrow/rockets types\nWhenever ammo is consumed, you gain their damage as Electric Charge\n2% increased ranged Apocalyptical Chance");
+			Tooltip.SetDefault("60% increased ranged damage and 10% crit chance\n30% reduced damage on bullet/arrow/rockets types\nWhenever ammo is consumed, you gain their damage as Electric Charge\n2% increased ranged Apocalyptical Chance");
 		}
 		public override void SetDefaults()
 		{
@@ -76,9 +76,9 @@ namespace SGAmod.Items.Armors
 			player.rangedDamage += 0.60f;
 			player.rangedCrit += 10;
 
-			player.bulletDamage -= 0.15f;
-			player.rocketDamage -= 0.15f;
-			player.arrowDamage -= 0.15f;
+			player.bulletDamage -= 0.30f;
+			player.rocketDamage -= 0.30f;
+			player.arrowDamage -= 0.30f;
 
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.apocalypticalChance[1] += 2f;
@@ -131,7 +131,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Hood");
-			Tooltip.SetDefault("30% increased Summon damage\n+3 max minions and +2 max sentries\nSummon weapons are used 50% faster\nSummons a friendly Resonant Wisp to aid the player\nThis wisp's strength scales with your summon damage and max minions\nWhen not minion targeting, it temporarily cripples nearby enemy projectiles at a cost of Electric Charge\nThis process is faster and cheaper while holding a Summoning weapon");
+			Tooltip.SetDefault("50% increased Summon damage\n+6 max minions and +2 max sentries\nSummon weapons are used 75% faster\nSummons a friendly Resonant Wisp to aid the player\nThis wisp's strength scales with your summon damage and max minions\nWhen not minion targeting, it temporarily cripples nearby enemy projectiles at a cost of Electric Charge\nThis process is faster and cheaper while holding a Summoning weapon");
 		}
 
 		public override void SetDefaults()
@@ -150,10 +150,10 @@ namespace SGAmod.Items.Armors
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 
-			player.minionDamage += 0.30f;
-			player.maxMinions += 3;
+			player.minionDamage += 0.50f;
+			player.maxMinions += 6;
 			player.maxTurrets += 2;
-			sgaplayer.summonweaponspeed += 0.50f;
+			sgaplayer.summonweaponspeed += 0.75f;
 
 		}
 	}
@@ -164,7 +164,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Hat");
-			Tooltip.SetDefault("30% increased throwing damage and 10% crit chance\n+25% Throwing velocity and attack speed\nGravitate consumable throwing items from a long range towards you\nThese items spawn magnetic fields to attack enemies\nThe range of both is increased by your Throwing Velocity\n2% increased throwing Apocalyptical Chance");
+			Tooltip.SetDefault("40% increased throwing damage and 15% crit chance\n+30% Throwing velocity and attack speed\nGravitate consumable throwing items from a long range towards you\nThese items spawn magnetic fields to attack enemies\nThe range of both is increased by your Throwing Velocity\n2% increased throwing Apocalyptical Chance");
 		}
 
 		public override void SetDefaults()
@@ -179,10 +179,10 @@ namespace SGAmod.Items.Armors
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 
-			player.Throwing().thrownDamage += 0.30f;
-			player.Throwing().thrownCrit += 10;
-			player.Throwing().thrownVelocity += 0.25f;
-			sgaplayer.ThrowingSpeed += 0.25f;
+			player.Throwing().thrownDamage += 0.40f;
+			player.Throwing().thrownCrit += 15;
+			player.Throwing().thrownVelocity += 0.30f;
+			sgaplayer.ThrowingSpeed += 0.30f;
 			sgaplayer.apocalypticalChance[3] += 2.0;
 		}
 	}
@@ -193,7 +193,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Breastplate");
-			Tooltip.SetDefault("10% faster item use times\n+1% increased damage and 0.5% crit chance per 1000 Electric Charge\nGrants 25% increased radiation resistance and 500% increased recover rate\n+5000 Max Electric Charge");
+			Tooltip.SetDefault("10% faster item use times\n+1% (1.5% summon) increased damage and 0.5% crit chance per 1000 Electric Charge\nGrants 25% increased radiation resistance and 500% increased recover rate\n+5000 Max Electric Charge");
 		}
         public override bool Autoload(ref string name)
         {
@@ -216,6 +216,7 @@ namespace SGAmod.Items.Armors
 
 			float percentCharge = sgaplayer.electricCharge / DamageMul;
 			player.BoostAllDamage(percentCharge, (int)(percentCharge*50));
+			player.minionDamage += percentCharge * 0.5f;
 
 			player.SGAPly().electricChargeMax += 5000;
 			player.GetModPlayer<IdgPlayer>().radresist += 0.25f;

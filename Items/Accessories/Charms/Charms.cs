@@ -231,6 +231,160 @@ namespace SGAmod.Items.Accessories.Charms
 		}
 
 	}
+	public class ReservationCharmlv1 : MiningCharmlv1
+	{
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Reservation Amulet Tier 1");
+			string capper = (GetType() == typeof(ReservationCharmlv3) ? "75" : GetType() == typeof(ReservationCharmlv2) ? "50" : "25");
+			Tooltip.SetDefault("Converts "+ capper + "% of your max HP into a regenerating barrier that blocks damage\nThis barrier's max strength is improved by your tech multiplier\n" + Idglib.ColorText(Color.Red, capper+"% of your HP is capped")+"\n" +Idglib.ColorText(Color.Red,"Damage is applied to shields before any armor reduction")+"\n" + Idglib.ColorText(Color.Red, "Inflicts Shield Break on deplete"));
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.rare = ItemRarityID.Green;
+			item.accessory = true;
+			item.mountType = 6;
+		}
+		public override bool Autoload(ref string name)
+		{
+			SGAPlayer.PostCharmsUpdateEquipsEvent += PostAccessoryUpdate;
+			return base.Autoload(ref name);
+		}
+
+		protected void PostAccessoryUpdate(SGAPlayer sgaplayer)
+        {
+			Player player = sgaplayer.player;
+
+			//Main.NewText(sgaplayer.energyShieldAmmountAndRecharge.Item2);
+			if (sgaplayer.GetEnergyShieldAmmountAndRecharge.Item2 > 0)
+			{
+				if (sgaplayer.energyShieldAmmountAndRecharge.Item3 < 1 && !sgaplayer.Shieldbreak)
+				{
+					sgaplayer.ShieldRecharge();
+					if (sgaplayer.energyShieldAmmountAndRecharge.Item3==0)
+						sgaplayer.StartShieldRecharge();
+
+
+					sgaplayer.energyShieldAmmountAndRecharge.Item1 = (int)MathHelper.Clamp((int)Math.Ceiling(sgaplayer.energyShieldAmmountAndRecharge.Item1 + (sgaplayer.energyShieldAmmountAndRecharge.Item2 / 120f)), 0, sgaplayer.energyShieldAmmountAndRecharge.Item2);
+				}
+			}
+
+			if (sgaplayer.energyShieldReservation > 0)
+            {
+				int percent = (int)(player.statLifeMax2 * (1f-sgaplayer.energyShieldReservation));
+				if (player.statLife > percent)
+                {
+					player.statLife = percent;
+				}
+
+            }
+
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+			float thepercent = GetType() == typeof(ReservationCharmlv3) ? 0.75f : GetType() == typeof(ReservationCharmlv2) ? 0.50f : 0.25f;
+
+			int percentLife = (int)((player.statLifeMax2) * thepercent);
+			sgaplayer.energyShieldAmmountAndRecharge.Item2 += percentLife;
+			sgaplayer.energyShieldReservation += (1f- sgaplayer.energyShieldReservation)*thepercent;
+
+			if (sgaplayer.ShieldType<1000)
+			sgaplayer.ShieldType = 1000;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("EmptyCharm"), 1);
+			recipe.AddIngredient(ItemID.Minecart, 1);
+			recipe.AddIngredient(ItemID.Gel, 10);
+			recipe.AddIngredient(mod.ItemType("CopperWraithNotch"), 2);
+			recipe.AddIngredient(ModContent.ItemType<AdvancedPlating>(), 6);
+			recipe.AddIngredient(ModContent.ItemType<WraithFragment3>(), 8);
+			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class ReservationCharmlv2 : ReservationCharmlv1
+	{
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Reservation Amulet Tier 2");
+		}
+
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.value = Item.sellPrice(0, 2, 50, 0);
+			item.rare = ItemRarityID.Pink;
+			item.accessory = true;
+			item.mountType = 6;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("ReservationCharmlv1"), 1);
+			recipe.AddIngredient(mod.ItemType("CobaltWraithNotch"), 15);
+			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 10);
+			recipe.AddIngredient(mod.ItemType("Fridgeflame"), 6);
+			recipe.AddIngredient(ItemID.HallowedBar, 5);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class ReservationCharmlv3 : ReservationCharmlv2
+	{
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Reservation Amulet Tier 3");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.value = Item.sellPrice(0, 10, 0, 0);
+			item.rare = ItemRarityID.Cyan;
+			item.accessory = true;
+			item.mountType = 11;
+			item.expert = true;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("ReservationCharmlv2"), 1);
+			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 2);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
+			recipe.AddIngredient(ItemID.MinecartMech, 1);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
 
 	public class AnticipationCharmlv2 : MiningCharmlv1
 	{

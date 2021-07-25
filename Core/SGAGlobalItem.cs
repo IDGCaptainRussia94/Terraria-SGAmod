@@ -18,6 +18,7 @@ using Terraria.Utilities;
 using SGAmod.Buffs;
 using SGAmod.Tiles;
 using SGAmod.Items.Armors;
+using SGAmod.Items.Armors.Vibranium;
 using Terraria.GameContent.Events;
 
 namespace SGAmod
@@ -216,21 +217,32 @@ namespace SGAmod
             {
                 return "SpaceDiver";
             }
+            if (head.type == mod.ItemType("ValkyrieHelm") && body.type == mod.ItemType("ValkyrieBreastplate") && legs.type == mod.ItemType("ValkyrieLeggings"))
+            {
+                return "Valkyrie";
+            }                 
+            if (head.type == mod.ItemType("IlluminantHelmet") && body.type == mod.ItemType("IlluminantChestplate") && legs.type == mod.ItemType("IlluminantLeggings"))
+            {
+                return "Illuminant";
+            }                
             int[] vibraniumSet = { mod.ItemType("VibraniumMask"), mod.ItemType("VibraniumHelmet"), mod.ItemType("VibraniumHeadgear"), mod.ItemType("VibraniumHood"), mod.ItemType("VibraniumHat") };
             if (vibraniumSet.Any(testby => testby == head.type) && body.type == mod.ItemType("VibraniumChestplate") && legs.type == mod.ItemType("VibraniumLeggings"))
             {
                 return "Vibranium";
             }
-            if (!head.vanity && !body.vanity && !legs.vanity) {
+            if (!head.vanity && !body.vanity && !legs.vanity)
+            {
                 if (head.type == mod.ItemType("MisterCreeperHead") && body.type == mod.ItemType("MisterCreeperBody") && legs.type == mod.ItemType("MisterCreeperLegs"))
                 {
                     return "MisterCreeper";
-                } }
-            if (!head.vanity && !body.vanity && !legs.vanity)
-            {
+                }
                 if (head.type == mod.ItemType("IDGHead") && body.type == mod.ItemType("IDGBreastplate") && legs.type == mod.ItemType("IDGLegs"))
                 {
                     return "IDG";
+                }
+                if (head.type == mod.ItemType("JellybruHelmet") && body.type == mod.ItemType("JellybruChestplate") && legs.type == mod.ItemType("JellybruLeggings"))
+                {
+                    return "Jellybru";
                 }
             }
             return "";
@@ -295,6 +307,19 @@ namespace SGAmod
                 sgaplayer.techdamage += 0.25f;
                 sgaplayer.electricChargeCost *= 0.75f;
             }
+            if (set == "Valkyrie")
+            {
+                string text1 = "Gain a throwing damage increase based on your current life regen\nMale Characters gain 15% Endurance\nFemale Characters gain 20% more flight time";
+                player.setBonus = text1 + "\nGain an additional free Cooldown Stack";
+                sgaplayer.valkyrieSet = true;
+                sgaplayer.MaxCooldownStacks += 1;
+            }
+            if (set == "Illuminant")
+            {
+                string text1 = "Reduces all new Action Cooldown Stacks by 40%\nEach Action Cooldown Stack grants 4% damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\nAll Vanilla Prefixes on accessories are twice as effective";
+                player.setBonus = text1;
+                sgaplayer.illuminantSet.Item1 = 5;
+            }            
             if (set == "Vibranium")
             {
                 string s = "Not Binded!";
@@ -310,7 +335,7 @@ namespace SGAmod
                 player.setBonus = text1 + "\n" + text2 + "\nGain an additional free Cooldown Stack";
                 sgaplayer.MaxCooldownStacks += 1;
                 sgaplayer.vibraniumSet = true;
-                Items.Armors.VibraniumChestplate.VibraniumSetBonus(sgaplayer);
+                Items.Armors.Vibranium.VibraniumChestplate.VibraniumSetBonus(sgaplayer);
             }
             if (set == "MisterCreeper")
             {
@@ -327,6 +352,12 @@ namespace SGAmod
                 sgaplayer.digiStacksMax += 100000;
                 sgaplayer.devempowerment[0] = 3;
             }
+            if (set == "Jellybru")
+            {
+                player.setBonus = "Reserves some (more with mana cost reduction) of your max HP as shields\nThese shields are boosted by your Magic Damage and Tech Damage Scaling\nShields fully recharge in 2 seconds\n(If jelly had any dev weapons) is empowered\n------";
+                sgaplayer.jellybruSet = true;
+                sgaplayer.devempowerment[2] = 3;
+            }        
         }
 
         public bool NovusCoreCheck(Player player, Item item)
@@ -445,7 +476,7 @@ namespace SGAmod
             {
                 grabRange += 48;
             }
-            if (item.maxStack > 1 && ((item.modItem != null && (item.Throwing().thrown || item.modItem is IJablinItem)) || item.thrown) && player.armor[0].type == ModContent.ItemType<VibraniumHat>())
+            if (item.maxStack > 1 && ((item.modItem != null && (item.Throwing().thrown || item.modItem is IJablinItem)) || item.thrown) && player.armor[0].type == ModContent.ItemType<VibraniumHat> ())
             {
                 grabRange += (int)(720 * player.Throwing().thrownVelocity);
             }
@@ -612,6 +643,16 @@ namespace SGAmod
 
             }
             return base.OnPickup(item, player);
+        }
+
+        public override void HorizontalWingSpeeds(Item item, Player player, ref float speed, ref float acceleration)
+        {
+            if (player.armor[2].type == ModContent.ItemType<Items.Armors.Dev.JellybruLeggings>())
+            {
+                float boost = player.SGAPly().EnergyDepleted ? 2f : 1f;
+                speed += 1.5f*boost;
+                acceleration += 0.15f*boost;
+            }
         }
 
         public override void OnConsumeAmmo(Item item, Player player)

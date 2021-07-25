@@ -36,7 +36,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			item.useStyle = 1;
-			item.thrown=true;
+			item.Throwing().thrown=true;
 			item.damage = 500;
 			item.shootSpeed = 45f;
 			item.shoot = mod.ProjectileType("Stormbreakerproj");

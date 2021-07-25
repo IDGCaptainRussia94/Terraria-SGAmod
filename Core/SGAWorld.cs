@@ -235,7 +235,7 @@ namespace SGAmod
                 stolecrafting += 1;
             if (Main.netMode < 1)
             {
-                if (harbingercounter == 5)
+                /*if (harbingercounter == 5)
                 {
                     if (Main.rand.Next(0, 10) < 5 && bossprgressor == 1 && downedHarbinger == false && DD2Event.DownedInvasionT3 && NPC.downedMartians)
                     {
@@ -248,7 +248,7 @@ namespace SGAmod
                     harbingercounter = 6;
                     SGAmod.CalamityNoRevengenceNoDeathNoU();
                     NPC.SpawnOnPlayer(Main.rand.Next(0, Main.PlayerList.Count), mod.NPCType("Harbinger"));
-                }
+                }*/
             }
 
             questvars[11] = Math.Max(questvars[11] - 1, 0);

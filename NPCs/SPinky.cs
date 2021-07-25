@@ -1666,6 +1666,7 @@ namespace SGAmod.NPCs
 				else
 				{
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("LunarRoyalGel"), 30);
+                    Items.Armors.Illuminant.IlluminantHelmet.IlluminantArmorDrop(1, npc.Center);
 				}
 			}
 

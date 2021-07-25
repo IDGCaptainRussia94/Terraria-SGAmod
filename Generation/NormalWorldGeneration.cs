@@ -339,17 +339,22 @@ namespace SGAmod.Generation
                 }
             }
             Main.tile[(int)placementspot.X, (int)placementspot.Y + buffersizey - 1].active(true);
+            WorldGen.SlopeTile((int)placementspot.X, (int)placementspot.Y + buffersizey - 1, 0);
+
             for (int xx = 0; xx < 4; xx += 1)
             {
                 Main.tile[(int)placementspot.X - xx, (int)placementspot.Y + buffersizey - 1].active(true);
                 Main.tile[(int)placementspot.X + xx, (int)placementspot.Y + buffersizey - 1].active(true);
+                WorldGen.SlopeTile((int)placementspot.X - xx, (int)placementspot.Y + buffersizey - 1, 0);
+                WorldGen.SlopeTile((int)placementspot.X + xx, (int)placementspot.Y + buffersizey - 1, 0);
+
             }
 
-            Main.tile[(int)placementspot.X - 2, (int)placementspot.Y + buffersizey - 2].active(true);
-            Main.tile[(int)placementspot.X - 1, (int)placementspot.Y + buffersizey - 2].active(true);
-            Main.tile[(int)placementspot.X, (int)placementspot.Y + buffersizey - 2].active(true);
-            Main.tile[(int)placementspot.X + 1, (int)placementspot.Y + buffersizey - 2].active(true);
-            Main.tile[(int)placementspot.X + 2, (int)placementspot.Y + buffersizey - 2].active(true);
+            Main.tile[(int)placementspot.X - 2, (int)placementspot.Y + buffersizey - 2].active(true); WorldGen.SlopeTile((int)placementspot.X - 2, (int)placementspot.Y + buffersizey - 2, 0);
+            Main.tile[(int)placementspot.X - 1, (int)placementspot.Y + buffersizey - 2].active(true); WorldGen.SlopeTile((int)placementspot.X - 1, (int)placementspot.Y + buffersizey - 2, 0);
+            Main.tile[(int)placementspot.X, (int)placementspot.Y + buffersizey - 2].active(true); WorldGen.SlopeTile((int)placementspot.X, (int)placementspot.Y + buffersizey - 2, 0);
+            Main.tile[(int)placementspot.X + 1, (int)placementspot.Y + buffersizey - 2].active(true); WorldGen.SlopeTile((int)placementspot.X + 1, (int)placementspot.Y + buffersizey - 2, 0);
+            Main.tile[(int)placementspot.X + 2, (int)placementspot.Y + buffersizey - 2].active(true); WorldGen.SlopeTile((int)placementspot.X + 2, (int)placementspot.Y + buffersizey - 2, 0);
 
             Point offset = new Point(0, -3);
             int altertype = type == 0 ? SGAmod.Instance.TileType("CaliburnAltar") : (type == 1 ? SGAmod.Instance.TileType("CaliburnAltarB") : SGAmod.Instance.TileType("CaliburnAltarC"));

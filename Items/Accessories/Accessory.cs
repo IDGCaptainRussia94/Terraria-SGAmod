@@ -135,7 +135,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Yoyo Gauntlet");
-			Tooltip.SetDefault("15% increased melee damage and melee speed, +5 armor penetration\nInflict OnFire! and Frostburn on hit and do Cold Damage\nYoyo Bag Effect and fabulous rainbow strings!");
+			Tooltip.SetDefault("15% increased melee damage and melee speed, +5 armor penetration\nInflict OnFire! and Frostburn on hit and counts as Cold Damage\nYoyo Bag and Professional's Threads Effect, and fabulous rainbow strings!");
 		}
 
 		public override void SetDefaults()
@@ -160,7 +160,7 @@ namespace SGAmod.Items.Accessories
 			player.yoyoGlove = true;
 			player.yoyoString = true;
 			player.SGAPly().glacialStone = true;
-
+			player.SGAPly().YoyoTricks = true;
 
 		}
 		public override void AddRecipes()
@@ -427,7 +427,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("PortableHive"), 1);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 25);
 			recipe.AddIngredient(mod.ItemType("MoneySign"), 15);
-			recipe.AddIngredient(mod.ItemType("AncientFabricItem"), 100);
+			recipe.AddIngredient(mod.ItemType("ByteSoul"), 100);
 			recipe.AddIngredient(ItemID.ShroomiteBar, 30);
 			recipe.AddIngredient(ItemID.SpectreBar, 30);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 30);
@@ -1069,7 +1069,7 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			//recipe.AddIngredient(mod.ItemType("ByteSoul"), 100);
-			recipe.AddIngredient(mod.ItemType("AncientFabricItemAncientFabricItem"), 100);
+			recipe.AddIngredient(mod.ItemType("ByteSoul"), 50);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 50);
 			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 100);
 			recipe.AddIngredient(mod.ItemType("EldritchTentacle"), 25);
@@ -1268,7 +1268,7 @@ namespace SGAmod.Items.Accessories
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Yoyo Threads");
+			DisplayName.SetDefault("Professional's Threads");
 			Tooltip.SetDefault("Increases Yoyo velocity by 25%, does more damage the further out on the line it is\nCaps at 15% boost at max range\nHaving a longer reach can boost this even higher");
 		}
 		public override string Texture
@@ -3689,7 +3689,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("T.P.D.C.P.U");
-			Tooltip.SetDefault("'Twin Prime Destroyers Coolent Processing Unit'\nReduces all new Cooldown Stacks by 25%\nRemoves the negitive effects of Enchanted Amulets");
+			Tooltip.SetDefault("'Twin Prime Destroyers Coolent Processing Unit'\nReduces all new Cooldown Stacks by 25%\nRemoves the negative effects of Enchanted Amulets\nReservation Amulet gets improved stats instead\nAmulet of Diehard Cataclysm is not affected");
 		}
 
 		public override void SetDefaults()
@@ -3707,7 +3707,7 @@ namespace SGAmod.Items.Accessories
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.tpdcpu = true;
-			sgaplayer.actionCooldownRate -= 0.25f;
+			sgaplayer.actionCooldownRate *= 0.75f;
 			//Terraria.GameContent.Events.DD2Event.LaneSpawnRate = 9;
 		}
 

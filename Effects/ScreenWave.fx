@@ -34,11 +34,11 @@ float4 Wave(float2 coords : TEXCOORD0) : COLOR0
 
     float ysin = 0;
     if (uColor.r>0)
-    ysin = (sin((coords.x+adder.x+uProgress)*tau*(uColor.r*100)))*(uIntensity/uScreenResolution.y);
+    ysin = (sin((coords.x+adder.x+uProgress)*tau*(uColor.r*100)))*(uIntensity/uScreenResolution.y)*uOpacity;
 
     float xcos = 0;
     if (uColor.g>0)
-    xcos = (cos((coords.y+adder.y-uProgress)*tau*(uColor.g*100)))*(uIntensity/uScreenResolution.x);
+    xcos = (cos((coords.y+adder.y-uProgress)*tau*(uColor.g*100)))*(uIntensity/uScreenResolution.x)*uOpacity;
 
 
     float2 newcoords = float2(coords.x+xcos,coords.y+ysin);

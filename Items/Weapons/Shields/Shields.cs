@@ -310,6 +310,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
+			if (GetType() == typeof(CorrodedShieldProjDash))
 			target.AddBuff(mod.BuffType("AcidBurn"), (int)(60 * 1.50));
 		}
 

@@ -24,7 +24,7 @@ namespace SGAmod.Items.Weapons
 {
 	class ThrowerGlove : ModItem
 	{
-		public static string disc = "\nMay also be worn in place of a Grapple Hook to throw grenades with the grapple key\nHowever, the grenades are slower and has a cooldown";
+		public static string disc = "\nMay also be worn in place of a Grapple Hook to throw grenades with the grapple key\nHowever, the grenades are slower and have a cooldown";
 		public virtual int level => 0;
 		public override void SetStaticDefaults()
 		{

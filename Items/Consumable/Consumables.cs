@@ -13,6 +13,8 @@ using System.Security.AccessControl;
 using Microsoft.Xna.Framework.Audio;
 using System.Security.Cryptography;
 using System.IO;
+using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 
 namespace SGAmod.Items.Consumable
 {
@@ -304,6 +306,17 @@ namespace SGAmod.Items.Consumable
 		{
 			DisplayName.SetDefault("Venerable Catharsis");
 			Tooltip.SetDefault("Upgrades a Normal world to an Expert World\n-Permanent Upgrade-");
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(5, 4));
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return lightColor;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Consumable/VenerableCatharsis"); }
 		}
 
 		public override void SetDefaults()
@@ -321,11 +334,6 @@ namespace SGAmod.Items.Consumable
 			item.consumable = true;
 		}
 
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.WorkBench); }
-		}
-
 		public override bool CanUseItem(Player player)
 		{
 			return !Main.expertMode;
@@ -333,6 +341,101 @@ namespace SGAmod.Items.Consumable
 		public override bool UseItem(Player player)
 		{
 			Main.expertMode = true;
+			return true;
+		}
+	}
+
+	public class JoyfulShroom : TrueCopperWraithNotch
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Joyful Shroom");
+			Tooltip.SetDefault("This is not a normal Mushroom...");
+		}
+
+		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
+		{
+				//if (line.mod == "Terraria" && line.Name == "ItemName")
+				//{
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Main.UIScaleMatrix);
+
+					Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
+
+					Effect TrippyRainbowEffect = SGAmod.TrippyRainbowEffect;
+
+					TrippyRainbowEffect.Parameters["uColor"].SetValue(new Vector3(0.05f, 0.05f, 0f));
+					TrippyRainbowEffect.Parameters["uScreenResolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight) / 6f);
+					TrippyRainbowEffect.Parameters["uOpacity"].SetValue(0.15f);
+					TrippyRainbowEffect.Parameters["uDirection"].SetValue(new Vector2(1f, Main.GlobalTime * 0.1f));
+					TrippyRainbowEffect.Parameters["uIntensity"].SetValue(1f);
+					TrippyRainbowEffect.Parameters["uScreenPosition"].SetValue(Main.screenPosition / 500f);
+					TrippyRainbowEffect.Parameters["uTargetPosition"].SetValue(Main.screenPosition / 500f);
+					TrippyRainbowEffect.Parameters["uProgress"].SetValue(Main.GlobalTime * 0.05f);
+					TrippyRainbowEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("TiledPerlin"));
+					TrippyRainbowEffect.CurrentTechnique.Passes["ScreenTrippy"].Apply();
+
+					Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+					return false;
+				//}
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.maxStack = 1;
+			item.rare = ItemRarityID.Quest;
+			item.value = Item.buyPrice(gold: 1);
+			item.useStyle = ItemUseStyleID.EatingUsing;
+			item.useAnimation = 64;
+			item.useTime = 64;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item2;
+			item.consumable = true;
+		}
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.LivingRainbowDye);
+			shader.UseOpacity(0.5f);
+			shader.UseSaturation(0.25f);
+			shader.Apply(null);
+			spriteBatch.Draw(Main.itemTexture[item.type], position, frame, drawColor, 0, origin, scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			return false;
+		}
+
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.LivingRainbowDye);
+			shader.UseOpacity(0.5f);
+			shader.UseSaturation(0.25f);
+			shader.Apply(null);
+			spriteBatch.Draw(Main.itemTexture[item.type], item.position-Main.screenPosition, null, lightColor, 0, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			return false;
+		}
+
+        public override string Texture => "Terraria/Projectile_"+ProjectileID.Mushroom;
+
+		public override bool UseItem(Player player)
+		{
+			player.AddBuff(ModContent.BuffType<Buffs.CleansedPerception>(),60*60);
+			//Main.expertMode = true;
 			return true;
 		}
 	}

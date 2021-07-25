@@ -14,6 +14,7 @@ namespace SGAmod.Items.Armors.Dev
 	[AutoloadEquip(EquipType.Head)]
 	public class MisterCreeperHead : ModItem
 	{
+		public virtual Color AwakenedColors => Color.Orange;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mister Creeper's Crowning Attire");
@@ -57,15 +58,15 @@ namespace SGAmod.Items.Armors.Dev
 		}
 		public virtual void AddEffects(Player player)
 		{
-			player.Throwing().thrownCrit += 20;
-			player.meleeCrit += 10;
+			player.Throwing().thrownCrit += 12;
+			player.meleeCrit += 8;
 			player.Throwing().thrownCost33 = true;
 			player.meleeSpeed += 0.25f;
 			player.GetModPlayer<SGAPlayer>().ThrowingSpeed += 0.15f;
 		}
 		public virtual List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "10% Increased Melee Crit, 20% increased throwing Crit"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "8% Increased Melee Crit, 12% increased throwing Crit"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "33% to not consume thrown items, 25% increased melee swing speed"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "15% increased throwing rate"));
 			return tooltips;
@@ -81,7 +82,7 @@ namespace SGAmod.Items.Armors.Dev
 					//Client Side
 					if (Main.myPlayer == player.whoAmI)
 					{
-						CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Orange, "???!!!", false, false);
+						CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), AwakenedColors, "???!!!", false, false);
 						Main.PlaySound(29, (int)player.position.X, (int)player.position.Y, 105, 1f, -0.6f);
 					}
 					InitEffects();
@@ -145,15 +146,15 @@ namespace SGAmod.Items.Armors.Dev
 		public override void AddEffects(Player player)
 		{
 			player.noKnockback = true;
-			player.endurance += 0.15f;
-			player.Throwing().thrownDamage += 0.25f;
+			player.endurance += 0.20f;
+			player.Throwing().thrownDamage += 0.32f;
 			player.meleeDamage += 0.25f;
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "25% increased melee and throwing damage"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "25% increased melee damage, 32% increased throwing damage"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Immunity to Knockback, greatly increased Life Regen"));
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Extra 15% Endurance"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "20% improved Endurance"));
 			return tooltips;
 		}
 

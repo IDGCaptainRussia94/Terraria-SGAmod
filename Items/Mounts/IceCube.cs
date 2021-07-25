@@ -16,7 +16,7 @@ namespace SGAmod.Items.Mounts
 		public override void SetDefaults() {
 			mountData.spawnDust = DustID.Ice;
 			mountData.buff = BuffType<IceCubeMountBuff>();
-			mountData.heightBoost = 20;
+			mountData.heightBoost = 8;
 			mountData.fallDamage = 0.5f;
 			mountData.runSpeed = 0f;
 			mountData.dashSpeed = 0f;
@@ -30,13 +30,13 @@ namespace SGAmod.Items.Mounts
 			mountData.constantJump = true;
 			int[] array = new int[mountData.totalFrames];
 			for (int l = 0; l < array.Length; l++) {
-				array[l] = 20;
+				array[l] = 10;
 			}
 			mountData.playerYOffsets = array;
 			mountData.xOffset = 0;
 			//mountData.bodyFrame = 3;
-			mountData.yOffset = -12;
-			mountData.playerHeadOffset = 22;
+			mountData.yOffset = -6;
+			mountData.playerHeadOffset = 6;
 			mountData.standingFrameCount = 4;
 			mountData.standingFrameDelay = 12;
 			mountData.standingFrameStart = 0;
@@ -114,11 +114,15 @@ namespace SGAmod.Items.Mounts
 				IceCubeSpecificData iceCubes = (IceCubeSpecificData)drawPlayer.mount._mountSpecificData;
 				//int timer = DateTime.Now.Millisecond % 800 / 200;
 				Texture2D balloonTexture = Main.itemTexture[ItemID.FrozenSlimeBlock];
+				Texture2D iceBlock = mod.GetTexture("Items/Mounts/GiantIceCubePlatform");
 				Vector2 orig = balloonTexture.Size() / 2f;
-				foreach (Vector2 icespot in iceCubes.iceCubes)
+
+				/*foreach (Vector2 icespot in iceCubes.iceCubes)
 				{
 					playerDrawData.Add(new DrawData(balloonTexture, drawPosition + icespot.RotatedBy(rotation), null, drawColor*0.4f, rotation, orig, drawScale, spriteEffects ^ SpriteEffects.FlipHorizontally, 0));
-				}
+				}*/
+
+				playerDrawData.Add(new DrawData(iceBlock, drawPosition + new Vector2(0,drawPlayer.height-22).RotatedBy(rotation), null, drawColor * 0.75f, rotation, iceBlock.Size() / 2f, drawScale, spriteEffects ^ SpriteEffects.FlipHorizontally, 0));			
 			}
 			// by returning true, the regular drawing will still happen.
 			return true;
@@ -128,7 +132,7 @@ namespace SGAmod.Items.Mounts
 	public class GiantIceCube : ModItem
 	{
 		public override void SetStaticDefaults() {
-			DisplayName.SetDefault("Giant Frozen Slime Cube");
+			DisplayName.SetDefault("Ice Cube?");
 			Tooltip.SetDefault("'for those hot summer days to cool your feet'\nCannot accelerate, but causes you to slide around at max speed with no friction");
 		}
 
@@ -150,7 +154,7 @@ namespace SGAmod.Items.Mounts
 	{
 		public override void SetDefaults()
 		{
-			DisplayName.SetDefault("Feet Cube");
+			DisplayName.SetDefault("Slide Cube");
 			Description.SetDefault("atleast you won't lose your footing! Where your going is another story");
 			Main.buffNoTimeDisplay[Type] = true;
 			Main.buffNoSave[Type] = true;

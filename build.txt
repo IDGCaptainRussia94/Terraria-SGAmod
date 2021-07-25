@@ -1,6 +1,6 @@
 author = IDGCaptainRussia
 version = 3.600
-displayName = [i:2730][i:2718][i:2712]mod - [i:3725] [c/ff0000:Memento Mori] [i:3580][i:3040]
+displayName = SGAmod: [c/ff00ff:Tech N Wreck]
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, *.xcf, *.idg, *.MD, *.csproj, *.user, obj\*, bin\*
 includePDB = true
 hideCode = true

@@ -21,7 +21,8 @@ namespace SGAmod.Items.Armors.Dev
 	[AutoloadEquip(EquipType.Head)]
 		public class IDGHead : MisterCreeperHead
 		{
-			public override void SetStaticDefaults()
+		public override Color AwakenedColors => Color.Lime;
+		public override void SetStaticDefaults()
 			{
 				DisplayName.SetDefault("IDGCaptainRussia94's Dergon Disguise");
 			}
@@ -57,24 +58,6 @@ namespace SGAmod.Items.Armors.Dev
 				tooltips.Add(new TooltipLine(mod, "IDG", "25% increased ranged damage, 15% increased ranged crit chance"));
 				tooltips.Add(new TooltipLine(mod, "IDG", "40% increased summon damage, Summon weapons are used 50% faster"));
 				return tooltips;
-			}
-
-			public override void UpdateInventory(Player player)
-			{
-				if (item.vanity)
-				{
-					if (player.GetModPlayer<SGAPlayer>().devpower>0)
-					{
-						item.vanity = false;
-						//Client Side
-						if (Main.myPlayer == player.whoAmI)
-						{
-							CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Lime, "???!!!", false, false);
-							Main.PlaySound(29, (int)player.position.X, (int)player.position.Y, 105, 1f, -0.6f);
-						}
-						InitEffects();
-					}
-				}
 			}
 			public override void UpdateEquip(Player player)
 			{

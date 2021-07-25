@@ -83,7 +83,7 @@ namespace SGAmod.Dimensions
 
                 proggers.Message = "disks in stack: " + circlePointsStack.Count + " TakenPoints " + TakenPoints.Count;
 
-                SGAmod.Instance.Logger.Debug(circlePointsStack.Count + "Disk count");
+                // SGAmod.Instance.Logger.Debug(circlePointsStack.Count + "Disk count");
 
                 for (int tries = 0; tries < 999; tries += 1)
                 {

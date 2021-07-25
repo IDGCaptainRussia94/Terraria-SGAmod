@@ -36,6 +36,8 @@ namespace SGAmod.NPCs.Hellion
 				if (SGAWorld.downedHellion < 2 || Main.dedServ || Main.netMode == NetmodeID.Server || Main.gameMenu)
 					return;
 
+				SGAmod.NightmareUnlocked = true;
+
 				if (!Directory.Exists(SGAmod.filePath))
 				{
 					Directory.CreateDirectory(SGAmod.filePath);

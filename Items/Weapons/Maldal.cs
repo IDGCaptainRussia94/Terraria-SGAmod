@@ -48,7 +48,7 @@ namespace SGAmod.Items.Weapons
 
 		public override Color? GetAlpha(Color lightColor)
 		{
-			return lightColor = Main.hslToRgb((Main.GlobalTime / 6f) % 1f, 0.85f, 0.45f);
+			return Main.hslToRgb((Main.GlobalTime / 6f) % 1f, 0.85f, 0.45f);
 		}
 
 		public override bool CanUseItem(Player player)
@@ -64,7 +64,7 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("ByteSoul"), 100);
+			recipe.AddIngredient(mod.ItemType("ByteSoul"), 75);
 			//recipe.AddIngredient(mod.ItemType("LostNotes"), 5);
 			recipe.AddRecipeGroup("Fragment", 15);
 			recipe.AddIngredient(ItemID.SpellTome, 1);

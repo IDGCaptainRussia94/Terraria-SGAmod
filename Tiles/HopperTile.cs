@@ -75,15 +75,18 @@ namespace SGAmod.Tiles
 
 		public static void HandleItemHoppers(Item item)
 		{
-			if (item.velocity.Y == 0 && SGAWorld.modtimer % 30 == 0)
+			if (item.active && item.velocity.Y == 0 && SGAWorld.modtimer % 30 == 0)
 			{
 				//Main.NewText("Debug Message!");
 				Point tilePosition = new Point((int)(item.Center.X / 16), ((int)(item.Center.Y) / 16) + 2);
-				Tile tile = Framing.GetTileSafely(tilePosition.X, tilePosition.Y);
-				//Main.NewText(tile.type + " this type "+item.position);
-				if (tile.type == ModContent.TileType<HopperTile>() || tile.type == ModContent.TileType<ChestHopperTile>())
+				if (WorldGen.InWorld(tilePosition.X, tilePosition.Y))
 				{
-					MoveItem(item, tilePosition, 0);
+					Tile tile = Framing.GetTileSafely(tilePosition.X, tilePosition.Y);
+					//Main.NewText(tile.type + " this type "+item.position);
+					if (tile.type == ModContent.TileType<HopperTile>() || tile.type == ModContent.TileType<ChestHopperTile>())
+					{
+						MoveItem(item, tilePosition, 0);
+					}
 				}
 			}
 		}
@@ -205,11 +208,12 @@ namespace SGAmod.Tiles
 
 			//Main.NewText("Debug Message 2!");
 			Tile tile = Framing.GetTileSafely(tilePos.X, tilePos.Y);
-			Point coords = GetRealHopperCorner(tilePos, tile);
-			Point offset = tileDirection[tile.frameX / 36];
 
 			if ((tile.frameY / 32) % 2 > 0)
 				return false;
+
+			Point coords = GetRealHopperCorner(tilePos, tile);
+			Point offset = tileDirection[tile.frameX / 36];
 
 			Point checkCoords = new Point(coords.X + offset.X, coords.Y + offset.Y);
 
@@ -269,11 +273,18 @@ namespace SGAmod.Tiles
 			Tile tile = Framing.GetTileSafely(i, j);
 			Point coords = GetRealHopperCorner(new Point(i, j), tile);
 
-			for (int x = 0; x < 2; x += 1)
+			SGAmod.Instance.Logger.Warn("Tile xy: " + (i) + " - " + (j));
+			for (int x = 0; x < 3; x += 1)
 			{
-				if (Chest.FindChest(coords.X + i, coords.Y - 2) >= 0)
+				for (int y = 1; y < 4; y += 1)
 				{
-					return false;
+					SGAmod.Instance.Logger.Warn("Tile here: "+(coords.X + x) +" - "+(coords.Y - y));
+					Tile tilehere = Framing.GetTileSafely(coords.X + x, coords.Y - y);
+					ModTile modtile = TileLoader.GetTile(tilehere.type);
+					if (Chest.FindChestByGuessing(coords.X + x, coords.Y - y) >= 0 || tilehere.type == TileID.Containers || (modtile != null && modtile.chest != ""))
+					{
+						return false;
+					}
 				}
 			}
 

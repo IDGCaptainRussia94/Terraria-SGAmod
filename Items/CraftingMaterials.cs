@@ -1723,7 +1723,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("'The Whole Experience'");
-			Tooltip.SetDefault("While in your inventory, specific cutscenes and events will replay\nLuminite Wraith will be summoned in his pre-Moonlord stage\nKiller Fly Swarm will be summoned instead of Murk");
+			Tooltip.SetDefault("While in your inventory, specific cutscenes and events will replay\nLuminite Wraith will be summoned in his pre-Moonlord stage\nKiller Fly Swarm will be summoned instead of Murk\nHellion will replay her monolog after Hellion Core");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 		public static bool Check()

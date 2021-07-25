@@ -110,7 +110,6 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("PrismalBooster"), 1);
 			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 40);
 			recipe.AddIngredient(mod.ItemType("OmniSoul"), 30);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 25);
 			recipe.AddIngredient(mod.ItemType("MoneySign"), 20);
 			recipe.AddTile(TileID.LunarCraftingStation);

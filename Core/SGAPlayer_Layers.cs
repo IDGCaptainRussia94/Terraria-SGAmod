@@ -231,7 +231,6 @@ namespace SGAmod
 			if (modply.armorglowmasks[index] != null && !drawPlayer.mount.Active)
 			{
 				Texture2D texture = ModContent.GetTexture(modply.armorglowmasks[index]);
-
 				int drawX = (int)((drawInfo.position.X + drawPlayer.bodyPosition.X + 10) - Main.screenPosition.X);
 				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
 				DrawData data;

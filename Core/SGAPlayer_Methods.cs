@@ -95,6 +95,56 @@ namespace SGAmod
 			}
 		}
 
+		public void ShieldRecharge()
+        {
+
+        }
+
+		public void StartShieldRecharge()
+		{
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Zombie, (int)player.Center.X, (int)player.Center.Y, 71);
+			if (sound != null)
+				sound.Pitch += 0.5f;
+		}
+
+		public void ShieldDepleted()
+        {
+			if (!tpdcpu)
+			CauseShieldBreak(60 * 7);
+		}
+
+		public bool TakeShieldHit(ref int damage)
+		{
+			if (GetEnergyShieldAmmountAndRecharge.Item1 > damage)
+            {
+
+				if (!player.immune)
+				{
+					SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 93);
+					if (sound != null)
+						sound.Pitch += -0.5f + ((GetEnergyShieldAmmountAndRecharge.Item1 / GetEnergyShieldAmmountAndRecharge.Item2) * 1.25f);
+
+					energyShieldAmmountAndRecharge.Item3 = 60 * (tpdcpu ? 3 : 5);
+					energyShieldAmmountAndRecharge.Item1 -= damage;
+
+					Main.NewText(damage);
+
+					player.immune = true;
+					player.immuneTime = 20;
+				}
+
+				return true;
+			}
+			damage -= GetEnergyShieldAmmountAndRecharge.Item1;
+
+			if (GetEnergyShieldAmmountAndRecharge.Item1 > 0)
+			{
+				ShieldDepleted();
+				energyShieldAmmountAndRecharge.Item1 = 0;
+			}
+			return false;
+		}
+
 		public void StackDebuff(int type,int time)
         {
 			player.AddBuff(ModContent.BuffType<PlaceHolderDebuff>(), time);
@@ -120,6 +170,10 @@ namespace SGAmod
 
 		public bool AddCooldownStack(int time, int count = 1)
 		{
+			if (illuminantSet.Item1>4 && Main.rand.Next(4) == 0)
+            {
+				return true;
+            }
 			if (CooldownStacks.Count + (count - 1) < MaxCooldownStacks)
 			{
 				//if (player.HasBuff(mod.BuffType("CondenserBuff")))
@@ -140,6 +194,24 @@ namespace SGAmod
 			electricCharge += ammount;
 		}
 
+		public void CauseShieldBreak(int time)
+        {
+			player.AddBuff(ModContent.BuffType<ShieldBreak>(), time);
+			CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Aquamarine, "Shield Break!", true, false);
+			SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)player.Center.X, (int)player.Center.Y, 53);
+			if (sound != null)
+				sound.Pitch -= 0.5f;
+
+			for (int i = 0; i < 20; i += 1)
+			{
+				int dust = Dust.NewDust(new Vector2(player.Center.X - 4, player.Center.Y - 8), 8, 16, 269);
+				Main.dust[dust].scale = 0.50f;
+				Main.dust[dust].noGravity = false;
+				Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
+			}
+
+		}
+
 		public bool ConsumeElectricCharge(int requiredcharge, int delay, bool damage = false,bool consume = true)
 		{
 			int newcharge = (int)Math.Max(requiredcharge * electricChargeCost,1);
@@ -158,19 +230,7 @@ namespace SGAmod
 				{
 					electricCharge = 0;
 					electricdelay = 30;
-					player.AddBuff(ModContent.BuffType<ShieldBreak>(), 60 * 5);
-					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Aquamarine, "Shield Break!", true, false);
-					SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)player.Center.X, (int)player.Center.Y, 53);
-					if (sound != null)
-						sound.Pitch -= 0.5f;
-
-					for (int i = 0; i < 20; i += 1)
-					{
-						int dust = Dust.NewDust(new Vector2(player.Center.X - 4, player.Center.Y - 8), 8, 16, 269);
-						Main.dust[dust].scale = 0.50f;
-						Main.dust[dust].noGravity = false;
-						Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
-					}
+					CauseShieldBreak(60 * 5);
 				}
 			}
 

@@ -36,6 +36,7 @@ namespace SGAmod
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 			IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;
+			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
 
 			IL.Terraria.Main.DrawBackground += RemoveLavabackground;
 			IL.Terraria.Main.DrawBackground += RemoveOldLavabackground;
@@ -54,6 +55,49 @@ namespace SGAmod
 			//IL.Terraria.Player.PickTile -= PickPowerOverride;
 			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
 			*/
+		}
+
+		static internal void HUDLifeBarsOverride(ILContext il)//Overrides the Life Hearts to draw custom stuff on top
+		{
+
+			ILCursor c = new ILCursor(il);
+
+			ILLabel afterpoint = null;
+
+			c.Index = il.Instrs.Count - 1;
+
+			if (!c.TryGotoPrev(MoveType.After, i => i.MatchLdfld<Player>("ghost"),i => i.MatchBrtrue(out afterpoint)))
+				goto Failed;
+
+			c.Emit(OpCodes.Ldloc, 7);//'i' variable
+			c.Emit(OpCodes.Ldloc, 11);//'not sure' variable
+			c.Emit(OpCodes.Ldloc, 8);//'not sure 2' variable
+			c.Emit(OpCodes.Ldloc, 12);//'not sure 3' variable (wow, just wow)
+			c.EmitDelegate<Action<int,int,int, int>>((int heartIndex,int othervalue, int othervalue2, int othervalue3) =>
+			{
+				//HUDCode(0);
+
+				SGAInterface.HUDCode(1,(heartIndex, othervalue, othervalue2, othervalue3));
+			});
+
+			c.GotoLabel(afterpoint, MoveType.AfterLabel);
+
+			ILLabel here = c.MarkLabel();
+
+			Action resertHearts = () =>
+			{
+				SGAInterface.HUDCode(0);
+			};
+
+
+			c.EmitDelegate(resertHearts);
+
+
+			return;
+
+		Failed:
+			throw new Exception("IL Error Test");
+
 		}
 
 		private delegate bool MagicOverride(Player player,ref int ammount,bool pay);
@@ -76,7 +120,7 @@ namespace SGAmod
 			c.Emit(OpCodes.Ldarg, 3);//'pay' bool
 			c.EmitDelegate<MagicOverride>((Player player,ref int ammount, bool pay) =>
 			{
-				return Items.Armors.VibraniumHeadgear.DoMagicStuff(player,ref ammount,pay);
+				return Items.Armors.Vibranium.VibraniumHeadgear.DoMagicStuff(player,ref ammount,pay);
 			});
 			c.Emit(OpCodes.Brtrue_S, label); //if false, jump ahead
 			c.Emit(OpCodes.Ldc_I4_0);//false

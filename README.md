@@ -27,15 +27,13 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Plasmic Rail Gun, Pulsar Perforator, Aura Borealis Staff, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Yoyo Threads, Rad Suit, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals
+-Seraphim Shard, Plasmic Rail Gun, Pulsar Perforator, Aura Borealis Staff, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Professional's Threads, Rad Suit, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Ice Cube?
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
--Added a new Town NPC: The Conbrand Merchant, he is interested in trading you "Contraband Crates" for rare materials, find him hanging around after-dark in your town
+-A new Town NPC: The Conbrand Merchant, he is interested in trading you "Contraband Crates" for rare materials, find him hanging around after-dark in your town
 
--The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! RoR2 Engineer summoner-aligned set made from post-Skeletron materials! And JellyBru's Dev Armor finally added!
-
--Vibranium armor and a few weapons for the late game
+-The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! RoR2 Engineer summoner-aligned set made from post-Skeletron materials! Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And JellyBru's Dev Armor finally added!
 
 -Venerable Catharsis, for a hefty Expertise cost from Draken after Moonlord you can make Normal Worlds into Expert Worlds.
 
@@ -47,18 +45,22 @@ Changelog:
 
 -Hoppers [strikeout]N Droppers[strikeout], automate your Terraria!
 
--New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights, Option to enable/disable early luminite
+-New Amulet: Reservation Amulet, reserve a fraction of your HP to gain a protected regenerating shield!
+
+-New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights, Option to enable/disable early luminite from Near Orbit
 
 -Limbo has been given a loading screen
 
 -Added alot of missing debuff icons
 
--Various Resprites, added many missing sprites, and smaller improvements; many items have been given an equip sprite and enjoy a far better looking Jackpot with glowing coins!
+-Many items have been given an equip sprite, Various Resprites, added many missing sprites, and smaller improvements; enjoy a far better looking Jackpot with glowing coins!
 
 
 --Changed:
 
 -The Calamity Rune and Luminous Gel are created at the Luminous Alter now, check the wiki for all the recipe combos
+
+-Hellion's 2nd phase will now only start if the player is wearing a Soul of Secrets
 
 -The Strange Portal has been given a head and can now be manually moved into different houses
 
@@ -80,9 +82,11 @@ Changelog:
 
 -Amulet of Diehard Cataclysm no longer activates during a boss; only out of boss fights, effect also replays properly now
 
--Souls of Byte are now a post-Hellion Drop (Hellion Core only drops them after the entire fight is beaten, so only beating phase 1 is required to farm them)
-
 -Handling Gloves now reduce the penality of holding radioactive items
+
+-Traveling Merchant's SGAmod items are a bit more common
+
+-Action Cooldown Rate reductions are now multiplicative, meaning they cannot go below 0
 
 -Added some flavor text to the Jabb-a-wacky to hint how to get it
 
@@ -92,9 +96,11 @@ Changelog:
 
 -Ragnarok's Brew costs more resources except Styigan Stars and makes 3, to help justify it requiring Styigan Stars
 
--Ancient Fabric is now sold by the merchant in multiplayer
+-Ancient Fabric is now sold by the Merchant in multiplayer
 
--Flawed 1mm0rtal1ty Pr0t0call is now crafted with Ancient Fabric instead of Souls of Byte
+-Luminary Wings no longer require Prismal Bars (they already require the Prismal Booster, so why more?)
+
+-Flawed 1mm0rtal1ty Pr0t0call is now crafted with Ancient Fabric instead of Souls of Byte, Soul of secrets requires Souls of Byte again instead of Ancient Fabric
 
 -Copper/Cobalt Wraith's cores can no longer take crits from the last hit on piercing weapon
 
@@ -124,13 +130,19 @@ Changelog:
 
 -Buffed Cosmic Grasp: (again), base damage increased so it's not just a side great to the Cosmillash
 
+-Buffed Mister Creeper's Slick Suit: Throwing damage increased to 32% (from 25%), endurance increased to 20% (from 15%)
+
 -Buffed all consumable Jab-lins: as they now have a chance to drop again after expiring
+
+-Nerfed Mister Creeper's Crowning Attire: crit chances reduced to 8/12 (from 10/20)
 
 -Nerfed Rioter's Glove: Has been moved further into progression again (hardmode => post-early hardmode SGAmod bosses)
 
 -Nerfed Tactical SMG Rifle: damage lowered to 25 (from 28), one less bullet is fired per shot
 
 -Nerfed Terra Trident: Damage lowered to 38 from 50
+
+-Nerfed Surt: now only grants more than 1 tick of On Fire! when near full charge, up to about 6 seconds of On Fire!
 
 -Nerfed Shooting Star: base damage massively lowered, this thing had more DPS than Enmity did!
 
@@ -142,8 +154,20 @@ Changelog:
 
 -Nerfed all the Horseman Saddles: Apocalyptical chance boost reduced to 3%
 
+-Nerfed Flask Of Acid: now reduces melee damage by 10%
+
+-Doom Harbinger has been semi-removed for the time being, you can still summon him via his item, but he is no longer required by progression or spawns on his own
+
+-Remove the flavor icons on the mod's name, especially the statues, they made searching up the mod impractical... I'll readd them in the description where they won't matter as much
+
+-Also rewrote the description because it was dated
+
 
 --Fixed
+
+-The imfamous recipe browser crash!
+
+-Hopefully for the love of god, the Caliburn Shrines will no longer fail to generate a sword shrine
 
 -Disallowed Tools in the Deeper Dungeon again, due to a mining glitch, use bombs to break everything you could mine before! Unless you have the Dungeon Splunker
 
@@ -151,13 +175,15 @@ Changelog:
 
 -Possibly fixed the unloading IL problems (players getting frozen on world login)
 
--There should no longer be an issues with HUD mods that override the vanilla HUD from now on
-
 -Hellion Beams being invisible, and a little oversight that led to alot of unintentional lag in the fight
+
+-Nightmare Mode not being unlocked without a reload
 
 -Prismic Banshee and supreme pinky should not properly handle gravitation potion's effects properly on screen
 
 -'The Whole Experience' not working on Killer Fly Swarm; you can now refight that boss
+
+-Earthbreaker Shield causing acid burn on damage
 
 -Draken saying you need to fight the evil biome boss when you are not in that world type
 
@@ -165,7 +191,11 @@ Changelog:
 
 -Cyber Scythe's max range growing smaller with melee speed instead of larger
 
--Rustwork Blade can now be used to craft Big Bang
+-Rustwork Blade can now be used to craft the Big Bang
+
+-Shadeflame Staff having a crafting recipe
+
+-Lava Details no longer hides Additive blending
 
 -Animation bug with the Giant Lizard, also uses unicorn AI and has a proper death sound
 
@@ -183,7 +213,7 @@ Changelog:
 
 -Town NPCs getting daybroken by enemy attacks while you had the Fiery Heart
 
--Stormbreaker not counting the lightning as modded throwing damage
+-Stormbreaker not counting the lightning as modded throwing damage and the weapon not being listed as modded throwing damage
 
 -Incorrect damage types involving the Mangrove Orbs
 
@@ -198,6 +228,13 @@ Changelog:
 -Granite magnet listing it can "block" damage
 
 -Other smaller fixes I might have forgotten about-including typeos
+
+
+3.580-(7/16/21)-Hotfix #18:
+
+--Fixed:
+
+-A work around to a bug involving HUD mods ('Un'Leveled specifically) breaking SGAmod's HUD
 
 
 3.522-(2/18/21)-Hotfix #17:
@@ -709,7 +746,7 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 
 -The Fiery Heart is now obtainable and reworked to be stronger
 
--Nightmare mode now visibly shows next on your character in the character selection screen
+-Nightmare Mode now visibly shows next on your character in the character selection screen
 
 -Worldgen chest loot: loot chances increased for Decayed Moss+Photosyte/A Machete or Guerrilla Pistol only have a 18.75% chance to show up in non-Dank Shrine chests (75% in Dank Shrines), and no longer show up in other modded chests anymore in world generation. Dragons Might and Matrix Potions are less common.
 

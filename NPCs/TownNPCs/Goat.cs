@@ -190,6 +190,9 @@ namespace SGAmod.NPCs.TownNPCs
 			nextSlot += 1;
 			shop.item[nextSlot].SetDefaults(mod.ItemType("MasterfullyCraftedHatOfTheDragonGods"));
 			nextSlot += 1;
+			shop.item[nextSlot].SetDefaults(mod.ItemType("JoyfulShroom"));
+			shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 10, 0, 0);
+			nextSlot += 1;			
 			shop.item[nextSlot].SetDefaults(mod.ItemType("NoHitCharmlv1"));
 			shop.item[nextSlot].shopCustomPrice = Item.buyPrice(1, 0, 0, 0);
 			nextSlot += 1;

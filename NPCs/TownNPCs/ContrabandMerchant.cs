@@ -290,10 +290,10 @@ namespace SGAmod.NPCs.TownNPCs
 			shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.DesertFossilCurrencyCustomCurrencyID;
 			nextSlot++;
 
-			if (NPC.downedBoss3)
+			if (NPC.CountNPCS(ModContent.NPCType<Dimensions.NPCs.DungeonPortal>()) > 0)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxVanillaPotions>());
-				shop.item[nextSlot].shopCustomPrice = randz.Next(30, 45);
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxDeeperDungeons>());
+				shop.item[nextSlot].shopCustomPrice = randz.Next(20, 45);
 				shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.DesertFossilCurrencyCustomCurrencyID;
 			}
 			nextSlot++;
@@ -459,10 +459,10 @@ namespace SGAmod.NPCs.TownNPCs
 			item.rare = ItemRarityID.Blue;
 		}
 
-        public override void UpdateInventory(Player player)
+        public override bool OnPickup(Player player)
         {
 			SGAGlobalItem.AwardSGAmodDevArmor(player);
-			item.TurnToAir();
+			return false;
         }
 
         public override string Texture => "Terraria/Confuse";

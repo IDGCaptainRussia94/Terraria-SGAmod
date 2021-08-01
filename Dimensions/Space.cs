@@ -487,7 +487,7 @@ namespace SGAmod.Dimensions
             SpaceBoss boss = bossIndex >= 0 ? Main.npc[bossIndex].modNPC as SpaceBoss : null;
 
             skyalpha = MathHelper.Clamp(skyalpha + (boss != null && boss.goingDark > 0 ? -0.0015f : 0.005f), 0f, 1f);
-            darkalpha = MathHelper.Clamp(darkalpha + (boss != null && boss.goingDark > 0 ? 0.0025f : -0.005f), 0f, 1f);
+            darkalpha = MathHelper.Clamp(darkalpha + (boss != null && boss.goingDark > 0 ? 0.0025f : (boss!= null && boss.DyingState ? -0.075f : -0.005f)), 0f, 1f);
 
             //acolor = Main.hslToRgb(0f, 0.0f, 0.5f);
         }

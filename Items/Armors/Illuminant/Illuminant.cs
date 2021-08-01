@@ -1,6 +1,7 @@
 using AAAAUThrowing;
 using Microsoft.Xna.Framework;
 using SGAmod.Tiles;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -20,11 +21,13 @@ namespace SGAmod.Items.Armors.Illuminant
 			for (int i = 0; i < ammount; i += 1)
             {
 				Item.NewItem(where, Vector2.Zero, armors[0]);
-            }
+				armors.RemoveAt(0);
+			}
         }
 
 		public override bool Autoload(ref string name)
         {
+			if (GetType() == typeof(IlluminantHelmet))
 			SGAPlayer.PostUpdateEquipsEvent += SetBonus;
 			return true;
         }
@@ -38,8 +41,8 @@ namespace SGAmod.Items.Armors.Illuminant
 			item.width = 18;
 			item.height = 18;
 			item.value = Item.sellPrice(0,50,0,0);
-			item.rare = ItemRarityID.Cyan;
-			item.defense = 20;
+			item.rare = ItemRarityID.Purple;
+			item.defense = 24;
 		}
 
 		public static void SetBonus(SGAPlayer sgaplayer)
@@ -48,12 +51,14 @@ namespace SGAmod.Items.Armors.Illuminant
             {
 				Player player = sgaplayer.player;
 
-				Lighting.AddLight(player.MountedCenter, Color.HotPink.ToVector3() * 0.75f * sgaplayer.illuminantSet.Item2);
+				Lighting.AddLight(player.MountedCenter, Color.HotPink.ToVector3() * (0.4f+(float)Math.Sin(Main.GlobalTime*3f)*0.3f) * sgaplayer.illuminantSet.Item2);
 
 				if (sgaplayer.illuminantSet.Item1 > 4)
 				{
+					//Main.NewText(sgaplayer.illuminantSet.Item2);
 					player.BoostAllDamage(sgaplayer.activestacks * 0.04f, sgaplayer.activestacks*2);
-					sgaplayer.actionCooldownRate *= 0.60f;
+					player.minionDamage += sgaplayer.activestacks * 0.02f;
+					sgaplayer.actionCooldownRate *= 0.80f;
 
 					for (int i = 3; i < 8 + player.extraAccessorySlots; i++)
 					{
@@ -70,13 +75,22 @@ namespace SGAmod.Items.Armors.Illuminant
 					}
 				}
 			}
-        }
+			sgaplayer.illuminantSet.Item2 = 0;
+
+		}
+
+		public Color ArmorGlow(Player player, int index)
+		{
+			float mathy = (float)((Main.GlobalTime*4f) + (index / 1f));
+			return Color.White*((0.4f)+((float)System.Math.Sin(mathy)*0.3f));
+		}
 
 		public override void UpdateVanity(Player player, EquipType type)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.illuminantSet.Item2 += 1;
 			sgaplayer.armorglowmasks[0] = "SGAmod/Items/Armors/Illuminant/" + Name+ "_Head";
+			sgaplayer.armorglowcolor[0] = ArmorGlow;
 		}
 		public override void UpdateEquip(Player player)
 		{
@@ -100,7 +114,7 @@ namespace SGAmod.Items.Armors.Illuminant
 			item.height = 18;
 			item.value = Item.sellPrice(0, 60, 0, 0);
 			item.rare = ItemRarityID.Purple;
-			item.defense = 25;
+			item.defense = 35;
 			item.lifeRegen = 3;
 		}
 
@@ -110,6 +124,8 @@ namespace SGAmod.Items.Armors.Illuminant
 			sgaplayer.illuminantSet.Item2 += 1;
 			sgaplayer.armorglowmasks[1] = "SGAmod/Items/Armors/Illuminant/" + Name + "_Body";
 				sgaplayer.armorglowmasks[2] = "SGAmod/Items/Armors/Illuminant/" + Name + "_Arms";
+			sgaplayer.armorglowcolor[1] = ArmorGlow;
+			sgaplayer.armorglowcolor[2] = ArmorGlow;
 		}
 	}
 
@@ -127,7 +143,7 @@ namespace SGAmod.Items.Armors.Illuminant
 			item.height = 18;
 			item.value = Item.sellPrice(0, 50, 0, 0);
 			item.rare = ItemRarityID.Purple;
-			item.defense = 10;
+			item.defense = 16;
 			item.lifeRegen = 2;
 		}
 
@@ -136,6 +152,7 @@ namespace SGAmod.Items.Armors.Illuminant
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.illuminantSet.Item2 += 1;
 			sgaplayer.armorglowmasks[3] = "SGAmod/Items/Armors/Illuminant/" + Name + "_Legs";
+			sgaplayer.armorglowcolor[3] = ArmorGlow;
 		}
 	}
 

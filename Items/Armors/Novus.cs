@@ -15,7 +15,8 @@ namespace SGAmod.Items.Armors
 			DisplayName.SetDefault("Novus Hood");
 			Tooltip.SetDefault("5% faster item use times");
 		}
-		public override void SetDefaults()
+        public override string Texture => "SGAmod/Items/Armors/NovusHood";
+        public override void SetDefaults()
 		{
 			item.width = 18;
 			item.height = 18;
@@ -50,6 +51,7 @@ namespace SGAmod.Items.Armors
 			DisplayName.SetDefault("Novus Breastplate");
 			Tooltip.SetDefault("5% increased crit chance");
 		}
+		public override string Texture => "SGAmod/Items/Armors/NovusChestplate";
 		public override void SetDefaults()
 		{
 			item.width = 18;
@@ -83,6 +85,7 @@ namespace SGAmod.Items.Armors
 			DisplayName.SetDefault("Novus Leggings");
 			Tooltip.SetDefault("5% increased movement speed\n10% increased acceleration and max running speed");
 		}
+		public override string Texture => "SGAmod/Items/Armors/NovusLeggings";
 		public override void SetDefaults()
 		{
 			item.width = 18;

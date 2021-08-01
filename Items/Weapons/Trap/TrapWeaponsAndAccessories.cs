@@ -100,7 +100,7 @@ namespace SGAmod.Items.Weapons.Trap
 		{
 			DisplayName.SetDefault("Portable 'Makeshift' Spear Trap");
 			Tooltip.SetDefault("It's not the same as found in the temple, but it'll do" +
-				"\nLaunches piercing spears at close range" +
+				"\nLaunches piercing spears at close range" + "\nHold attack to stick the spear into a wall and grapple towards it"+
 	"\nCounts as trap damage, pierces infinitely, but doesn't crit");
 		}
 
@@ -108,7 +108,6 @@ namespace SGAmod.Items.Weapons.Trap
 		{
 			get { return ("SGAmod/Items/Weapons/Trap/DartTrapGun"); }
 		}
-
 
 		public override void SetDefaults()
 		{
@@ -128,7 +127,7 @@ namespace SGAmod.Items.Weapons.Trap
 			item.shootSpeed = 12f;
 			item.shoot = mod.ProjectileType("TrapSpearGun");
 		}
-		public override void AddRecipes()
+        public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
@@ -159,7 +158,7 @@ namespace SGAmod.Items.Weapons.Trap
 		{
 			DisplayName.SetDefault("Portable Spear Trap");
 			Tooltip.SetDefault("'Now we're stabbing'" +
-				"\nVery quickly launches piercing spears at close range" +
+				"\nVery quickly launches piercing spears at medium range" +"\nHold attack to stick the spear into a wall and grapple towards it" +
 	"\nCounts as trap damage, pierces infinitely, but doesn't crit");
 		}
 
@@ -606,6 +605,7 @@ namespace SGAmod.Items.Weapons.Trap
 
 		public virtual int stuntime => 5;
 		public virtual float traveldist => 300;
+		public int touchedWall = 0;
 		int fakeid = ProjectileID.SpearTrap;
 		public override void SetStaticDefaults()
 		{
@@ -628,12 +628,28 @@ namespace SGAmod.Items.Weapons.Trap
 		public override bool PreAI()
 		{
 			projectile.type = ProjectileID.SpearTrap;
+
+			if (touchedWall>0 && touchedWall < 2)
+            {
+				Player basep = Main.player[projectile.owner];
+				if (basep.controlUseItem)
+				{
+					basep.velocity = Vector2.Normalize(projectile.Center - basep.Center)*new Vector2(Math.Abs(projectile.velocity.X), Math.Abs(projectile.velocity.Y));
+				}
+                else
+				{
+					touchedWall = 2;
+				}
+
+			}
+
 			return base.PreAI();
 		}
 
 		public override bool PreKill(int timeLeft)
 		{
 			projectile.type = fakeid;
+
 			return true;
 		}
 
@@ -669,6 +685,7 @@ namespace SGAmod.Items.Weapons.Trap
 				{
 					projectile.velocity *= -1f;
 					projectile.ai[0] += 1f;
+					touchedWall = 1;
 					return;
 				}
 				float num384 = Vector2.Distance(projectile.Center, value8);
@@ -693,6 +710,11 @@ namespace SGAmod.Items.Weapons.Trap
 				projectile.velocity *= (speezx+0.15f);
 
 			}
+
+			if (touchedWall == 1)
+            {
+				projectile.Center -= projectile.velocity;
+            }
 
 		}
 

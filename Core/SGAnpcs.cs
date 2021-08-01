@@ -31,6 +31,22 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod
 {
+	public class DamageStack
+	{
+		public int time;
+		public int damage;
+
+		public DamageStack(int damage, int time)
+		{
+			this.damage = damage;
+			this.time = time;
+		}
+		public bool Update()
+		{
+			time -= 1;
+			return time < 1;
+		}
+	}
 	public partial class SGAnpcs : GlobalNPC
 	{
 
@@ -82,6 +98,8 @@ namespace SGAmod
 		public byte crimsonCatastrophe = 0;
 		private int nonStackingImpaled_;
 		public int PinkyMinion = 0;
+		public List<DamageStack> damageStacks = new List<DamageStack>();
+
 		public int nonStackingImpaled
 		{
             get
@@ -420,6 +438,15 @@ namespace SGAmod
 			}
 			if (!npc.dontTakeDamage)
 			{
+				if (damageStacks.Count > 0)
+				{
+					for(int i=0;i<damageStacks.Count;i+=1)
+					{
+						impaled += damageStacks[i].damage;
+						damageStacks[i].Update();
+					}
+				}
+
 				impaled += nonStackingImpaled;
 				if (impaled > 0)
 				{
@@ -1129,7 +1156,7 @@ namespace SGAmod
 					{
 						banshee = banshee.OrderBy(ordertest => ordertest.DistanceSQ(npc.Center)).ToList();
 						NPC myguy = banshee[0];
-						if (myguy.DistanceSQ(npc.Center) < 1000 * 1000)
+						if (myguy.DistanceSQ(npc.Center) < 2500 * 2500)
 						{
 							int npcnew = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismSpirit>());
 							Main.npc[npcnew].ai[1] = myguy.whoAmI;

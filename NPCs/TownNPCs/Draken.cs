@@ -975,6 +975,7 @@ namespace SGAmod.NPCs.TownNPCs
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Enemies have 20% more HP")));
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Your health is tripled, however you take triple damage")));
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Some SGAmod bosses gain new abilities")));
+					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Many optional SGAmod config settings are forced on")));
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Your Expertise gain is increased by 25%")));
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Enemy money dropped is increased by 50%")));
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "There is a 10% chance for enemies to drop double loot, and that loot to drop more loot!")));

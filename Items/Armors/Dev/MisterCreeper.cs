@@ -58,17 +58,20 @@ namespace SGAmod.Items.Armors.Dev
 		}
 		public virtual void AddEffects(Player player)
 		{
-			player.Throwing().thrownCrit += 12;
-			player.meleeCrit += 8;
+			player.Throwing().thrownCrit += 22;
+			player.meleeCrit += 18;
+			player.meleeDamage += 0.10f; player.Throwing().thrownDamage += 0.10f;
 			player.Throwing().thrownCost33 = true;
 			player.meleeSpeed += 0.25f;
 			player.GetModPlayer<SGAPlayer>().ThrowingSpeed += 0.15f;
+			player.BoostAllDamage(-0.10f, -10);
 		}
 		public virtual List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "8% Increased Melee Crit, 12% increased throwing Crit"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "33% to not consume thrown items, 25% increased melee swing speed"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "15% increased throwing rate"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red,"10% reduced non-melee/throwing damage")));
 			return tooltips;
 		}
 
@@ -147,14 +150,20 @@ namespace SGAmod.Items.Armors.Dev
 		{
 			player.noKnockback = true;
 			player.endurance += 0.20f;
-			player.Throwing().thrownDamage += 0.32f;
-			player.meleeDamage += 0.25f;
+			player.Throwing().thrownDamage += 0.42f;
+			player.meleeDamage += 0.35f;
+
+			player.Throwing().thrownCrit += 10;
+			player.meleeCrit += 10;
+
+			player.BoostAllDamage(-0.10f, -10);
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "25% increased melee damage, 32% increased throwing damage"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Immunity to Knockback, greatly increased Life Regen"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "20% improved Endurance"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red, "10% reduced non-melee/throwing damage")));
 			return tooltips;
 		}
 
@@ -188,11 +197,18 @@ namespace SGAmod.Items.Armors.Dev
 			player.accRunSpeed += 2f;
 			player.wingTimeMax = (int)(player.wingTimeMax*1.20f);
 			player.GetModPlayer<SGAPlayer>().Noselfdamage = true;
+			player.BoostAllDamage(-0.10f,-10);
+
+			player.Throwing().thrownCrit += 10;
+			player.meleeCrit += 10;
+			player.meleeDamage += 0.10f; player.Throwing().thrownDamage += 0.10f;
+
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Do you don't take ANY self damage (includes fall and explosive damage)"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Movement speed increased and Flight time improved by 20%"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red, "10% reduced non-melee/throwing damage and crit")));
 			return tooltips;
 		}
 

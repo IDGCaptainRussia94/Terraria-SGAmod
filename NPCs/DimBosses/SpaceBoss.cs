@@ -36,6 +36,7 @@ namespace SGAmod.Dimensions.NPCs
 		public float sleep = 1f;
 		public float eyeScale = 1f;
 		public bool openUp = true;
+		public bool exploded = false;
 
 		public Vector2 offset = Vector2.Zero;
 		public Vector2 Originaloffset = Vector2.Zero;
@@ -80,6 +81,36 @@ namespace SGAmod.Dimensions.NPCs
 
 			movespeed = timetolook;
 		}
+
+		public void Explode()
+        {
+			if (!exploded)
+            {
+				exploded = true;
+				for (int i = 0; i < 64; i += 1)
+				{
+					Vector2 offset = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
+					int dust = Dust.NewDust(new Vector2(BasePosition.X, BasePosition.Y) + offset * Main.rand.NextFloat(4f, 16f), 0, 0, DustID.AncientLight);
+					Main.dust[dust].scale = 1.5f;
+					Main.dust[dust].velocity = Vector2.Normalize(-offset) * (float)(2f * Main.rand.NextFloat(1.50f, 4.50f));
+					Main.dust[dust].noGravity = true;
+					Main.dust[dust].color = Color.Blue;
+				}
+				SoundEffectInstance sound = Main.PlaySound(SoundID.NPCKilled, (int)BasePosition.X, (int)BasePosition.Y, 12);
+				if (sound != null)
+				{
+					sound.Pitch = -0.5f;
+				}
+
+				sound = Main.PlaySound(SoundID.NPCKilled, (int)BasePosition.X, (int)BasePosition.Y, 58);
+				if (sound != null)
+                {
+					sound.Pitch = -0.5f;
+				}
+
+			}
+
+        }
 
 		public void Update()
         {
@@ -131,6 +162,7 @@ namespace SGAmod.Dimensions.NPCs
 		public int airReady = 0;
 		public Vector2 velocity = Vector2.Zero;
 		public MineableAsteriod grabrock;
+		public float whiten = 0;
 
 		public float Rotation
         {
@@ -491,7 +523,7 @@ namespace SGAmod.Dimensions.NPCs
 		public void StateShielded()
 		{
 			boss.state = 10;
-			npc.life = (int)MathHelper.Clamp(npc.life + (int)(npc.lifeMax / 10000), 0, npc.lifeMax);
+			npc.life = (int)MathHelper.Clamp(npc.life + (int)(npc.lifeMax / 20000), 0, npc.lifeMax);
 			boss.friction = 0.975f;
 			UnifiedRandom rando = new UnifiedRandom(npc.type);
 			foreach (SpaceBossEye eyxxe in boss.Eyes)
@@ -798,6 +830,7 @@ namespace SGAmod.Dimensions.NPCs
 		public Vector2 goToEmptySpace = default;
 		public List<Vector2> visitedEmptySpaces = new List<Vector2>();
 		public SpaceBossAI ai;
+		public SoundEffectInstance Deathsnd;
 
 		public int goingDark = -60 * 300;
 
@@ -823,12 +856,12 @@ namespace SGAmod.Dimensions.NPCs
 			npc.aiStyle = -1;
 			npc.damage = 0;
 			npc.noGravity = true;
-			npc.defense = 15;
+			npc.defense = 0;
 			npc.HitSound = SoundID.NPCHit1;
 			npc.DeathSound = SoundID.NPCDeath1;
 			npc.knockBackResist = 0.5f;
 			//npc.immortal = true;
-			animationType = NPCID.Guide; ;
+			animationType = NPCID.Guide;
 			npc.rarity = 1;
 
 			npc.lifeMax = 100000;
@@ -839,7 +872,53 @@ namespace SGAmod.Dimensions.NPCs
 			npc.knockBackResist = 0f;
 		}
 
-		/*public override bool? CanBeHitByItem(Player player, Item item)
+        public override bool CheckDead()
+        {
+			if (npc.ai[0] < 100000)
+            {
+				npc.ai[0] = 100000;
+				npc.life = 10000;
+				return false;
+			}
+			if (npc.ai[0] < 200000)
+            {
+				npc.life = 1000;
+            }
+
+			return npc.ai[0] > 200000;
+        }
+
+        public override void NPCLoot()
+        {
+
+			RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 24f, 80, 1f, true);
+
+			SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_KoboldExplosion, -1, -1);
+
+			if (sound != null)
+            {
+				sound.Pitch = -0.5f;
+            }
+
+			sound = Main.PlaySound(SoundID.NPCKilled, -1, -1, 10);
+			if (sound != null)
+			{
+				sound.Pitch = -0.5f;
+			}
+
+			for (int i = 0; i < 10; i += 1)
+			{
+				int projtype = ModContent.ProjectileType<MineableAsteriodOverseenCrystal>();
+				Vector2 velocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
+				Projectile projectile = Projectile.NewProjectileDirect(npc.Center + (velocity* Main.rand.NextFloat(-8f, 20f)), velocity*Main.rand.NextFloat(8f,16f), projtype, 0, 0);
+				projectile.damage = 5;
+			}
+			
+
+			SpaceDim.crystalAsteriods = true;
+		}
+
+        /*public override bool? CanBeHitByItem(Player player, Item item)
 		{
 			return ((WakingUp || Sleeping) ? false : CanBeHitByItem(player, item));
         }
@@ -853,7 +932,7 @@ namespace SGAmod.Dimensions.NPCs
 			return ((WakingUp || Sleeping) ? false : CanHitNPC(target));
 		}*/
 
-		public override bool CheckActive()
+        public override bool CheckActive()
 		{
 			return npc.life < 1;
 		}
@@ -906,14 +985,6 @@ namespace SGAmod.Dimensions.NPCs
 
 				ai = new SpaceBossAI(this);
 
-				SpaceBossEye eye = new SpaceBossEye(npc.Center + Vector2.UnitY, this, new Vector2(0, 0));
-				eye.customID = 1;
-				SpaceBossEye eye2 = new SpaceBossEye(npc.Center + Vector2.UnitY, this, new Vector2(0, 0));
-				eye2.customID = -1;
-
-				Eyes.Add(eye);
-				Eyes.Add(eye2);
-
 				for (int i = 0; i < 32; i += 1)
 				{
 
@@ -929,6 +1000,14 @@ namespace SGAmod.Dimensions.NPCs
 					rock.eye = eye3;
 					Eyes.Add(eye3);
 				}
+
+				SpaceBossEye eye = new SpaceBossEye(npc.Center + Vector2.UnitY, this, new Vector2(0, 0));
+				eye.customID = 1;
+				//SpaceBossEye eye2 = new SpaceBossEye(npc.Center + Vector2.UnitY, this, new Vector2(0, 0));
+				//eye2.customID = -1;
+
+				Eyes.Add(eye);
+				//Eyes.Add(eye2);
 
 				LaunchTethers();
 			}
@@ -955,8 +1034,99 @@ namespace SGAmod.Dimensions.NPCs
 
 		public bool Sleeping => npc.active && npc.ai[0] < 1 && npc.ai[0] >= 0;
 		public bool WakingUp => npc.active && npc.ai[0] >= 1 && npc.ai[0] < 300;
-		public bool Activestate => npc.active && npc.ai[0] >= 300;
+		public bool Activestate => npc.active && npc.ai[0] >= 300 && !DyingState;
+
+		public bool DyingState => npc.ai[0] >= 100000;
 		public int timePassed = 0;
+		public Projectile deathproj;
+
+		public void StateDying()
+		{
+			npc.ai[0] += 1f;
+			npc.dontTakeDamage = true;
+			if (goingDark>0)
+			goingDark /= 4;
+			npc.velocity /= 2f;
+
+			if (npc.ai[0] == 100001)
+			{
+
+				Deathsnd = Main.PlaySound(SoundID.Shatter, (int)npc.Center.X, (int)npc.Center.Y, 0);
+				cutscenestartpos = new Vector3(Main.screenPosition.X, Main.screenPosition.Y, 1f);
+
+				deathproj = Projectile.NewProjectileDirect(npc.Center, Vector2.Zero, ModContent.ProjectileType<SpaceBossExplode>(), 0, 0);
+
+				scenecam = cutscenestartpos;
+				//scenecamend = npc.Center - (new Vector2(Main.screenWidth, Main.screenHeight) / 2f);
+				camlength = 60;
+				camlength2 = 700;
+				film = new Film();
+				film.AppendSequence(camlength, FilmSetCamera);
+				film.AppendSequence(camlength2 - camlength, FilmSetCamera);
+				//for(int i=0;i<150;i++)
+				film.AppendSequence(300, FilmSetCamera);
+
+				film.AddSequence(0, film.AppendPoint, PerFrameSettings);
+
+				CinematicManager.Instance.PlayFilm(film);
+
+				foreach (SpaceBossRock rock in Rocks)
+				{
+					rock.LockUnlock(false);
+				}
+
+			}
+
+			if (deathproj != null && deathproj.active)
+            {
+				deathproj.Center = npc.Center;
+			}
+
+			if (Deathsnd != null)
+			{
+				Deathsnd.Volume = 0.99f;
+				Deathsnd.Pitch = MathHelper.Clamp(0.8f-(npc.ai[0]-100000f)/45f,-0.9f,0.9f);
+			}
+
+
+			UnifiedRandom randonx = new UnifiedRandom(npc.whoAmI);
+
+			int time = (int)npc.ai[0] - 100000;
+
+			foreach (SpaceBossRock rock in Rocks)
+			{
+				//if (rock.airReady > 0)
+				//{
+				int index = randonx.Next(60, 200);
+				if (time > index)
+				{
+					rock.bossOffset += Vector2.One.RotatedByRandom(MathHelper.TwoPi) * ((time - index) * 0.05f);
+					rock.bossOffset += Vector2.Normalize(npc.Center- rock.Position) * ((time - index) * 0.025f);
+					rock.whiten += 0.025f;
+				}
+				//}
+			}
+
+			UnifiedRandom rando = new UnifiedRandom(npc.type);
+			foreach (SpaceBossEye eyxxe in Eyes)
+			{
+				int index = randonx.Next(40, 200);
+				if (Main.rand.Next(0, time) > index)
+					eyxxe.NewLook(npc.Center + new Vector2(rando.Next(24, 160)).RotatedBy(rando.NextFloat(-1f, 1f) * npc.localAI[0]), 0.25f, true, true);
+
+				if (time - index > 120 && eyxxe.customID == 0)
+                {
+					eyxxe.Explode();
+				}
+
+			}
+
+			if (npc.ai[0] == 100300)
+			{
+				npc.ai[0] = 250000;
+				npc.StrikeNPCNoInteraction(1000000, 0, 0);
+			}
+		}
 
 
 		public void StateSleeping()
@@ -987,6 +1157,9 @@ namespace SGAmod.Dimensions.NPCs
 			}
 			npc.velocity += new Vector2(0, (float)Math.Cos(timePassed / 200) * 0.005f);
 			npc.velocity *= 0.98f;
+			SpaceDim.crystalAsteriods = false;
+
+
 
 		}
 
@@ -994,25 +1167,26 @@ namespace SGAmod.Dimensions.NPCs
 		public static Vector3 scenecamend;
 		public static Vector3 scenecam;
 		public static int cutsceneposition = 0;
+		public static int camlength = 300;
+		public static int camlength2 = 120;
+
 
 		private void FilmSetCamera(FrameEventData evt)
 		{
 			if (evt.Frame<2)
 				cutscenestartpos = new Vector3(Main.screenPosition.X, Main.screenPosition.Y,1f);
 
-			if (evt.AbsoluteFrame < 300)
+			if (evt.AbsoluteFrame < camlength)
 			{
 				Vector2 diff = npc.Center - (new Vector2(Main.screenWidth, Main.screenHeight) / 2f);
 				scenecamend = Vector3.Lerp(cutscenestartpos, new Vector3(diff.X, diff.Y,1f), evt.Frame / (float)evt.Duration);
 			}
 
-			if (evt.AbsoluteFrame > 1200)
+			if (evt.AbsoluteFrame > camlength2)
 			{
 				Vector2 diff = Main.LocalPlayer.Center - (new Vector2(Main.screenWidth, Main.screenHeight) / 2f);
-				scenecamend = Vector3.Lerp(cutscenestartpos, new Vector3(diff.X, diff.Y, 1f-MathHelper.Clamp(((evt.Frame / (float)evt.Duration)*3f)-2f, 0f,1f)), evt.Frame/(float)evt.Duration);
+				scenecamend = Vector3.Lerp(cutscenestartpos, new Vector3(diff.X, diff.Y, 1f-MathHelper.Clamp(((evt.Frame / (float)evt.Duration)*3f)-2f, 0f,1f)), (evt.Frame/(float)evt.Duration)*1.05f);
 			}
-
-			Main.NewText(evt.Frame);
 
 			scenecam += (scenecamend - scenecam) * 0.05f;
 			//Main.screenPosition = scenecam;
@@ -1025,10 +1199,10 @@ namespace SGAmod.Dimensions.NPCs
 
 		private void MoveCamera(ref SpriteViewMatrix transform)
         {
-			if (SpaceBoss.cutsceneposition > 0)
+			if (SpaceBoss.cutsceneposition > 0 && SGAPocketDim.WhereAmI == typeof(SpaceDim))
 			{
 				Vector2 oldpos = Main.screenPosition;
-				Main.screenPosition = Vector2.Lerp(new Vector2(SpaceBoss.scenecam.X, SpaceBoss.scenecam.Y), Main.screenPosition, 1f-SpaceBoss.scenecam.Z);
+				Main.screenPosition = Vector2.Lerp(new Vector2(SpaceBoss.scenecam.X, SpaceBoss.scenecam.Y), Main.screenPosition, MathHelper.Clamp(1f-SpaceBoss.scenecam.Z,0f,1f));
 			}
 		}
 
@@ -1041,12 +1215,16 @@ namespace SGAmod.Dimensions.NPCs
 
 			if (npc.ai[0] == 1)
             {
-				cutscenestartpos = new Vector3(Main.screenPosition.X, Main.screenPosition.Y,1f);
+
+						camlength = 300;
+						camlength2 = 1200;
+		cutscenestartpos = new Vector3(Main.screenPosition.X, Main.screenPosition.Y,1f);
 
 				scenecam = cutscenestartpos;
-				//scenecamend = npc.Center - (new Vector2(Main.screenWidth, Main.screenHeight) / 2f);
-				film.AppendSequence(300, FilmSetCamera);
-				film.AppendSequence(900, FilmSetCamera);
+
+		//scenecamend = npc.Center - (new Vector2(Main.screenWidth, Main.screenHeight) / 2f);
+				film.AppendSequence(camlength, FilmSetCamera);
+				film.AppendSequence(camlength2- camlength, FilmSetCamera);
 				//for(int i=0;i<150;i++)
 				film.AppendSequence(150, FilmSetCamera);
 
@@ -1203,6 +1381,12 @@ namespace SGAmod.Dimensions.NPCs
 			foreach (SpaceBossEye eye in Eyes)
 				eye.Update();
 
+			if (DyingState)
+			{
+				StateDying();
+				return;
+			}
+
 			if (Sleeping)
 			{
 				StateSleeping();
@@ -1228,6 +1412,7 @@ namespace SGAmod.Dimensions.NPCs
 						SGADimPlayer dply = player.GetModPlayer<SGADimPlayer>();
 						dply.noLightGrow = (int)MathHelper.Max(dply.noLightGrow, 5);
 						dply.lightSize = (int)(dply.lightSize + ((750 - dply.lightSize) * 0.0010f));
+						player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationTwo").Type, 2);
 					}
 				}
 
@@ -1253,6 +1438,8 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
+
+				//Darkness Nebula
 
 				ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.TwilightDye);
 
@@ -1342,7 +1529,7 @@ namespace SGAmod.Dimensions.NPCs
 
 				//Twilight Nebula
 
-				float alphaik = (1f - sky.darkalpha) * 0.50f * darknessAura;
+				float alphaik = ((1f - sky.darkalpha) * 0.50f * darknessAura)*MathHelper.Clamp(1f-(npc.ai[0]-100000f)/180f,0f,1f);
 
 				if (alphaik > 0 && screenPos!=null)
 				{
@@ -1415,6 +1602,12 @@ namespace SGAmod.Dimensions.NPCs
 					float alpha = rock.eye.sleep-0.60f;
 					if (alpha <= 0 && rock.state < 1000)
 						continue;
+
+					if (rock.whiten > 0)
+                    {
+						alpha = MathHelper.Clamp(1f-Main.rand.NextFloat(0f, rock.whiten),0,1);
+					}
+
 				List<Vector2> toThem = new List<Vector2>();
 
 					toThem.Add(rock.Position);
@@ -1471,6 +1664,7 @@ namespace SGAmod.Dimensions.NPCs
 					int size = 128;
 					if (rock.airReady > 0 && poz.X > -size && poz.X < Main.screenWidth + size && poz.Y > -size && poz.Y < Main.screenHeight + size)
 					{
+
 						spriteBatch.Draw(Main.bubbleTexture, rock.Position - Main.screenPosition, null, rock.color * MathHelper.Clamp(rock.airReady / 120f, 0f, 1f), (float)Math.Sin(rock.Rotation) * 0.4f, Main.bubbleTexture.Size() / 2f, MathHelper.Clamp(rock.airReady / 600f, 0f, 1f) * 4f, SpriteEffects.None, 0f);
 					}
 				}
@@ -1479,12 +1673,22 @@ namespace SGAmod.Dimensions.NPCs
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
+			Effect fadeIn = SGAmod.FadeInEffect;
+
 			foreach (SpaceBossRock rock in Rocks)
 			{
 				Vector2 poz = rock.Position - Main.screenPosition;
 				int size = 80;
 				if (poz.X > -size && poz.X < Main.screenWidth + size && poz.Y > -size && poz.Y < Main.screenHeight + size)
 				{
+
+					fadeIn.Parameters["alpha"].SetValue(1);
+					fadeIn.Parameters["strength"].SetValue(rock.whiten);
+					fadeIn.Parameters["fadeColor"].SetValue(Color.White.ToVector3());
+					fadeIn.Parameters["blendColor"].SetValue(rock.color.ToVector3());
+
+					fadeIn.CurrentTechnique.Passes["FadeIn"].Apply();
+
 					spriteBatch.Draw(rocklarge, rock.Position - Main.screenPosition, null, rock.color, rock.Rotation, rocklargeorig / 2f, rock.scale, SpriteEffects.None, 0f);
 				}
 			}
@@ -1570,14 +1774,17 @@ namespace SGAmod.Dimensions.NPCs
 
 			//ArmorShaderData shader3 = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye); shader3.Apply(null);
 
+			float percentive = (npc.ai[0] - 100000);
+
+			Color EyeColor = Color.Lerp(Color.White, Color.Blue, MathHelper.Clamp(percentive / 250f, 0f, 1f));
 
 			foreach (SpaceBossEye eye in Eyes)
 			{
 				Vector2 eyepos = Vector2.Normalize(eye.currentLook) * (eye.EyeDistance*eye.eyeMaxDistance);
 				float scaleeye = MathHelper.Clamp(eye.sleep, 0f, 1f);
 
-				if (scaleeye>0)
-				spriteBatch.Draw(eyetex, (eye.BasePosition) + (eye.offset + eyepos) - Main.screenPosition,null, Color.White, 0, eyetexorig, new Vector2(1f, scaleeye)*eye.eyeScale, SpriteEffects.None, 0f);
+				if (scaleeye>0 && ! eye.exploded)
+				spriteBatch.Draw(eyetex, (eye.BasePosition) + (eye.offset + eyepos) - Main.screenPosition,null, EyeColor, 0, eyetexorig, new Vector2(1f, scaleeye)*(eye.eyeScale), SpriteEffects.None, 0f);
 			}
 
 			eyetex = mod.GetTexture("Extra_57b");
@@ -1588,8 +1795,8 @@ namespace SGAmod.Dimensions.NPCs
 				Vector2 eyepos = Vector2.Normalize(eye.currentLook) * (eye.EyeDistance * eye.eyeMaxDistance);
 				float scaleeye = MathHelper.Clamp(eye.sleep, 0f, 1f);
 
-				if (scaleeye > 0)
-					spriteBatch.Draw(eyetex, (eye.BasePosition) + (eye.offset + eyepos) - Main.screenPosition, null, Color.White*0.50f, 0, eyetexorig, new Vector2(0.75f,0.75f*scaleeye) * (eye.eyeScale * Main.essScale), SpriteEffects.None, 0f);
+				if (scaleeye > 0 && !eye.exploded)
+					spriteBatch.Draw(eyetex, (eye.BasePosition) + (eye.offset + eyepos) - Main.screenPosition, null, EyeColor * 0.50f, 0, eyetexorig, new Vector2(0.75f,0.75f*scaleeye) * (eye.eyeScale * Main.essScale), SpriteEffects.None, 0f);
 			}
 
 			//Shield
@@ -1785,6 +1992,119 @@ namespace SGAmod.Dimensions.NPCs
 			return false;
 		}
 
+	}
+
+	public class SpaceBossExplode : ModProjectile
+	{
+		protected float timeleft = 150f;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("SpaceBoss is dying animation");
+		}
+		public override string Texture
+		{
+			get { return "SGAmod/Items/Weapons/Ammo/AcidRocket"; }
+		}
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = false;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 420;
+			projectile.extraUpdates = 0;
+			aiType = -1;
+			projectile.aiStyle = -1;
+		}
+
+		public override void AI()
+		{
+			projectile.ai[0] += 1;
+			projectile.localAI[0] += 0.20f;
+			if (projectile.ai[0] > 300)
+            {
+				projectile.localAI[0] += 4f;
+			}
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D texture = Main.glowMaskTexture[239];
+			//if (projectile.ai[0] < 120)
+			//{
+
+			/*for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi/16f)
+			{
+				float there = f-Main.GlobalTime/10f;
+				spriteBatch.Draw(texture2, projectile.Center - Main.screenPosition, null, (Color.Pink* 0.25f) * MathHelper.Clamp((projectile.timeLeft-60) / 60f, 0f, projectile.ai[0] / 800f), there, texture2.Size() / 2f, new Vector2(4f, 4f)+ (new Vector2(32f, 32f)/(1+(projectile.ai[0] / 300f))), SpriteEffects.None, 0f);
+			}*/
+
+			VertexBuffer vertexBuffer;
+			Effect effect = SGAmod.TrailEffect;
+
+			effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Main.GameViewMatrix.Zoom) * WVP.Projection());
+			effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("Space"));
+			effect.Parameters["coordOffset"].SetValue(0);
+			effect.Parameters["coordMultiplier"].SetValue(4f);
+			effect.Parameters["strength"].SetValue(MathHelper.Clamp((projectile.timeLeft-30) / 80f, 0f, projectile.ai[0] / 250f));
+
+			float adder = projectile.localAI[0];//MathHelper.Clamp((projectile.ai[0] - 300f)/1f, 0f, 300f);
+
+			VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
+
+			Vector3 screenPos = (projectile.Center - Main.screenPosition).ToVector3();
+			float size = projectile.localAI[0]*3f;
+
+			vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-size, -size, 0), Color.White, new Vector2(0, 0));
+			vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-size, size, 0), Color.White, new Vector2(0, 1));
+			vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(size, -size, 0), Color.White, new Vector2(1, 0));
+
+			vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(size, size, 0), Color.White, new Vector2(1, 1));
+			vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-size, size, 0), Color.White, new Vector2(0, 1));
+			vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(size, -size, 0), Color.White, new Vector2(1, 0));
+
+			vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+			vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+			Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+			RasterizerState rasterizerState = new RasterizerState();
+			rasterizerState.CullMode = CullMode.None;
+			Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+
+			effect.CurrentTechnique.Passes["DefaultPassSinShade"].Apply();
+
+			Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 5f)
+			{
+				float there = f + Main.GlobalTime / 10f;
+				spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, (Color.White * 0.20f) * MathHelper.Clamp(projectile.timeLeft / 120f, 0f, MathHelper.Clamp(projectile.ai[0]/180f,0f,1f)), there, texture.Size() / 2f, new Vector2(0.85f, 1f) * ((Math.Abs(20f-((projectile.ai[0])/ 300f)*20f))+ (adder/60f)), SpriteEffects.None, 0f);
+			}
+
+			//}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+			return false;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			return true;
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
 	}
 
 

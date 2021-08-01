@@ -302,6 +302,11 @@ namespace SGAmod
 			}
 
 		}
+
+		public void AddDamageStack(int damage,int time)
+        {
+			damageStacks.Add(new DamageStack(damage,time));
+		}
 		public void IrradiatedExplosion(NPC npc,int baseDamage)
 		{
 			if (IrradiatedAmmount > 0)
@@ -664,7 +669,7 @@ namespace SGAmod
 					hasabuff = true;
 				}
 			}
-
+			
 
 			if (DosedInGas && hasabuff)
 			{

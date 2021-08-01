@@ -91,7 +91,7 @@ namespace SGAmod.Items.Armors.Vibranium
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Headgear");
-			Tooltip.SetDefault("30% increased ranged damage and 10% crit chance\nHalf of your mana cost is paid as Electric Charge (by 3X the cost)\n"+Idglib.ColorText(Color.Red, "Will trigger a shield break on deplete")+"\n2% increased magic Apocalyptical Chance");
+			Tooltip.SetDefault("30% increased magic damage and 12% crit chance\nHalf of your mana cost is paid as Electric Charge (by 3X the cost)\n"+Idglib.ColorText(Color.Red, "Will trigger a shield break on deplete")+"\n2% increased magic Apocalyptical Chance");
 		}
 		internal static bool DoMagicStuff(Player player, ref int ammount, bool pay)
 		{
@@ -115,7 +115,7 @@ namespace SGAmod.Items.Armors.Vibranium
 		public override void UpdateEquip(Player player)
 		{
 			player.magicDamage += 0.30f;
-			player.magicCrit += 10;
+			player.magicCrit += 12;
 
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.apocalypticalChance[2] += 2f;

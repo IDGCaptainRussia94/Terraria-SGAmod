@@ -853,7 +853,7 @@ namespace SGAmod.Dimensions
         }
 
         public static int[] CommonItems => new int[] { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone"), SGAmod.Instance.ItemType("MagusSlippers"), SGAmod.Instance.ItemType("YoyoTricks")};
-        public static int[] RareItems => new int[] { SGAmod.Instance.ItemType("BenchGodsFavor"), SGAmod.Instance.ItemType("PortalEssence"), SGAmod.Instance.ItemType("DungeonSplunker") };
+        public static int[] RareItems => new int[] { SGAmod.Instance.ItemType("BenchGodsFavor"), SGAmod.Instance.ItemType("PortalEssence"), SGAmod.Instance.ItemType("DungeonSplunker"), SGAmod.Instance.ItemType("InterdimensionalPartyHat") };
 
 
         public static void AddStuffToChest(int chestid, int loottype,UnifiedRandom unirand)

@@ -27,13 +27,13 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Plasmic Rail Gun, Pulsar Perforator, Aura Borealis Staff, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Professional's Threads, Rad Suit, Dungeon Splunker, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Ice Cube?
+-Seraphim Shard, Plasmic Rail Gun, Pulsar Perforator, Aura Borealis Staff, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Professional's Threads, Rad Suit, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Ice Cube?
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
 -A new Town NPC: The Conbrand Merchant, he is interested in trading you "Contraband Crates" for rare materials, find him hanging around after-dark in your town
 
--The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! RoR2 Engineer summoner-aligned set made from post-Skeletron materials! Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And JellyBru's Dev Armor finally added!
+-The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And JellyBru's Dev Armor finally added!
 
 -Venerable Catharsis, for a hefty Expertise cost from Draken after Moonlord you can make Normal Worlds into Expert Worlds.
 
@@ -47,7 +47,9 @@ Changelog:
 
 -New Amulet: Reservation Amulet, reserve a fraction of your HP to gain a protected regenerating shield!
 
--New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights, Option to enable/disable early luminite from Near Orbit
+-New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights, Option to enable/disable early luminite (via pickaxe power) from Near Orbit, A config option for a patch to fix the Lava Background problem with Subworlds, Disable the Dark Sector from spawning, and a bonus mode to up enemy strength when playing with specific overpowered mods
+
+-New resprites for the entire Novus set with a consistant palette! Thanks DeJuiceTD, and Rijam for making the armor frames! (previous armor has been added to Jubia's shop under its original filename: Unmaned)
 
 -Limbo has been given a loading screen
 
@@ -98,7 +100,11 @@ Changelog:
 
 -Ancient Fabric is now sold by the Merchant in multiplayer
 
--Luminary Wings no longer require Prismal Bars (they already require the Prismal Booster, so why more?)
+-The range at which Prismic Banshee picks up enemy deaths as Prismic Spirits has been more than doubled
+
+-Many optional config options that make various parts more difficult are now treated as always turned on in Nightmare Mode
+
+-Luminary Wings no longer require Prismal Bars (they already require the Prismal Booster, so why more?), furthermore, they also no longer require vanilla wings
 
 -Flawed 1mm0rtal1ty Pr0t0call is now crafted with Ancient Fabric instead of Souls of Byte, Soul of secrets requires Souls of Byte again instead of Ancient Fabric
 
@@ -114,7 +120,11 @@ Changelog:
 
 -Lowered the price of the Universal Music Box to 1 plat (from 3)
 
+-Some config options no longer require a reload to take effect
+
 -Divine Shower Storm has been renamed to Divinity Caller
+
+-Portable 'Makeshift' Spear Trap and Portable Spear Trap have gained a new functionality to allow them to act as grapple guns
 
 -Buffed Clay-More: now has a ranged attack, at a cost
 
@@ -133,6 +143,8 @@ Changelog:
 -Buffed Mister Creeper's Slick Suit: Throwing damage increased to 32% (from 25%), endurance increased to 20% (from 15%)
 
 -Buffed all consumable Jab-lins: as they now have a chance to drop again after expiring
+
+-Nerfed Mister Creeper's Armor Set: all damage types that are not melee and throwing get a -10% damage and crit chance per armor piece
 
 -Nerfed Mister Creeper's Crowning Attire: crit chances reduced to 8/12 (from 10/20)
 
@@ -174,6 +186,8 @@ Changelog:
 -Amulet of Diehard Cataclysm should now properly prevent Blackbelt and Shadow Dodges
 
 -Possibly fixed the unloading IL problems (players getting frozen on world login)
+
+-True Melee Projectiles doing double damage
 
 -Hellion Beams being invisible, and a little oversight that led to alot of unintentional lag in the fight
 
@@ -1488,7 +1502,7 @@ Changelog:
 
 -Added:
 
--Twines of Fate, Tidal Charm,Icicle Fall, Shark Food, Drakenite Bars (they are dropped by Hellion, for now, some items require them now), Heart Guard (Crimson alt of the JuryRigged Spiked Buckler), Anomaly Study Paper, Joyrider
+-Twines of Fate, Tidal Charm, Icicle Fall, Shark Food, Drakenite Bars (they are dropped by Hellion, for now, some items require them now), Heart Guard (Crimson alt of the JuryRigged Spiked Buckler), Anomaly Study Paper, Joyrider
 
 -Truely Suspicious Looking Eye-manually Summon Doom Harbinger and also refight him if you wish
 

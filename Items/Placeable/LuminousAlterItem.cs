@@ -23,14 +23,14 @@ namespace SGAmod.Items.Placeable
 		public static void InitLuminousCrafting()
 		{
 			AddLuminousAlterRecipe(ModContent.ItemType<AuroraTear>(),ModContent.ItemType<AuroraTearAwoken>(), 60 * 300, 1);
-			AddLuminousAlterRecipe(ItemID.FallenStar,ModContent.ItemType<PrismaticBansheeStar>(), 60 * 150, 20,1);
+			AddLuminousAlterRecipe(ItemID.FallenStar,ModContent.ItemType<PrismaticBansheeStar>(), 60 * 120, 20,1);
 			AddLuminousAlterRecipe(ItemID.PinkGel, ModContent.ItemType<Prettygel>(), 60 * 45, 20, 1);
 			AddLuminousAlterRecipe(ItemID.SoulofLight, ModContent.ItemType<IlluminantEssence>(), 60 * 8, 1);
 			AddLuminousAlterRecipe(ItemID.Mushroom, ItemID.GlowingMushroom, 60 * 12, 1, 10);
 			AddLuminousAlterRecipe(ItemID.Gel, ItemID.PinkGel, 60 * 30, 1, 1);
-			AddLuminousAlterRecipe(ModContent.ItemType<OmniSoul>(), ItemID.FragmentSolar, 60 * 20, 1, 1);
+			AddLuminousAlterRecipe(ModContent.ItemType<OmniSoul>(), ItemID.FragmentSolar, 60 * 10, 1, 1);
 			AddLuminousAlterRecipe(ItemID.Meteorite, ItemID.LunarOre, 60 * 10, 4, 4);
-			AddLuminousAlterRecipe(ItemID.RottenEgg, ModContent.ItemType<Weapons.RottenEggshels>(), 60 * 10, 50, 50);
+			AddLuminousAlterRecipe(ItemID.RottenEgg, ModContent.ItemType<Weapons.RottenEggshels>(), 60 * 10, 10, 50);
 
 			Func<bool> BloodSunCondition = delegate ()
 			{
@@ -85,7 +85,7 @@ namespace SGAmod.Items.Placeable
 			{
 				if (line.mod == "Terraria" && line.Name == "ItemName")
 				{
-					Color rainbowColor = Main.hslToRgb((Main.GlobalTime * 0.085f) % 1f, 1f, 0.75f);
+					//Color rainbowColor = Main.hslToRgb((Main.GlobalTime * 0.085f) % 1f, 1f, 0.75f);
 					line.overrideColor = LuminousAlter.AuroraLineColor;
 				}
 			}
@@ -152,10 +152,10 @@ namespace SGAmod.Items.Placeable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.LunarBar, 8);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
 			recipe.AddIngredient(mod.ItemType("AuroraTear"), 1);
 			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 12);
-			recipe.AddTile(TileID.LihzahrdAltar);
+			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}

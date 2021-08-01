@@ -96,8 +96,7 @@ namespace SGAmod
 	{
 
 		public const bool VibraniumUpdate = true;
-		public const bool EngieUpdate = true;
-
+		public const bool EngieUpdate = false;
 
 		public static SGAmod Instance;
 		public static string SteamID;
@@ -117,7 +116,6 @@ namespace SGAmod
 		public static Dictionary<int, LuminousAlterItemClass> LuminousAlterItems;
 		public static Dictionary<int, int> CoinsAndProjectiles;
 		public static int[] otherimmunes = new int[3];
-		public static bool Calamity = false;
 		public static bool NightmareUnlocked = false;
 		public static string userName = Environment.UserName;
 		public static string filePath = "C:/Users/" + userName + "/Documents/My Games/Terraria/ModLoader/SGAmod";
@@ -397,6 +395,7 @@ namespace SGAmod
 			AddItem("MusicBox_Sharkvern", new SGAItemMusicBox("MusicBox_Sharkvern", "Sharkvern", "Freak of Nature", "Musicman"));
 			AddItem("MusicBox_Creepy", new SGAItemMusicBox("MusicBox_Creepy", "Creepy", "???", "Unknown"));
 			AddItem("MusicBox_Cirno", new SGAItemMusicBox("MusicBox_Cirno", "Cirno", "Algid Action", "Rijam"));
+			AddItem("MusicBox_Space", new SGAItemMusicBox("MusicBox_Space", "Space", "Asteriod Expanse", "Rijam"));
 
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Murk"), ItemType("MusicBox_Boss2Remix"), TileType("MusicBox_Boss2Remix"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Swamp"), ItemType("MusicBox_Swamp"), TileType("MusicBox_Swamp"));
@@ -406,6 +405,7 @@ namespace SGAmod
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Shark"), ItemType("MusicBox_Sharkvern"), TileType("MusicBox_Sharkvern"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/creepy"), ItemType("MusicBox_Creepy"), TileType("MusicBox_Creepy"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cirno_v2"), ItemType("MusicBox_Cirno"), TileType("MusicBox_Cirno"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space"), ItemType("MusicBox_Space"), TileType("MusicBox_Space"));
 
 			AddTile("PrismalBarTile", new BarTile("PrismalBar", "Prismal Bar", new Color(210, 0, 100)), "SGAmod/Tiles/PrismalBarTile");
 			AddTile("UnmanedBarTile", new BarTile("UnmanedBar", "Unmaned Bar", new Color(70, 0, 40)), "SGAmod/Tiles/UnmanedBarTile");
@@ -532,6 +532,7 @@ namespace SGAmod
 				GameShaders.Misc["SGAmod:DeathAnimation"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/EffectDeath")), "DeathAnimation").UseImage("Images/Misc/Perlin");
 				GameShaders.Misc["SGAmod:ShaderOutline"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/ShaderOutline")), "ShaderOutline").UseImage("Images/Misc/Perlin");
 				//AddEquipTexture(new Items.Armors.Dev.Dragonhead(), null, EquipType.Head, "Dragonhead", "SGAmod/Items/Armors/Dev/IDGHead_SmallerHead");
+				//AddEquipTexture(null, EquipType.Head, "InterdimensionalPartyHat_Head", "Terraria/Armor_Head_"+ 195);
 			}
 			SkyManager.Instance["SGAmod:ProgramSky"] = new ProgramSky();
 			SkyManager.Instance["SGAmod:HellionSky"] = new HellionSky();
@@ -576,7 +577,6 @@ namespace SGAmod
 			}
 			NightmareUnlocked = false;
 			Instance = null;
-			Calamity = false;
 			otherimmunes = null;
 			if (!Main.dedServ)
 			{

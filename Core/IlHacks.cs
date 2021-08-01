@@ -32,15 +32,18 @@ namespace SGAmod
 			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
 			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;// Eh not used anyways
 			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
-			//IL.Terraria.Lighting.AddLight_int_int_float_float_float += AddLightHack;
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 			IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;
 			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
 
-			IL.Terraria.Main.DrawBackground += RemoveLavabackground;
-			IL.Terraria.Main.DrawBackground += RemoveOldLavabackground;
+			//IL.Terraria.Lighting.AddLight_int_int_float_float_float += AddLightHack;
 
+			if (SGAConfigClient.Instance.FixSubworldsLavaBG)
+			{
+				IL.Terraria.Main.DrawBackground += RemoveLavabackground;
+				IL.Terraria.Main.OldDrawBackground += RemoveOldLavabackground;
+			}
 		}
 		internal static void Unpatch()
 		{
@@ -138,27 +141,6 @@ namespace SGAmod
 
 		}
 
-		private struct ColorTriplet //Appartently this is "acceptable" if it matches the same structure as the original to use in IL patches, wat? Thx for the tip DraedonHunter!
-		{
-			public float r;
-
-			public float g;
-
-			public float b;
-
-			public ColorTriplet(float R, float G, float B)
-			{
-				r = R;
-				g = G;
-				b = B;
-			}
-
-			public ColorTriplet(float averageColor)
-			{
-				r = (g = (b = averageColor));
-			}
-		}
-
 		static internal void YoyoAIHack(ILContext il)//Yoyo go fast! Doesn't hard conflict with Iridium mod, Which also has a similar patch.
 		{
 
@@ -186,6 +168,36 @@ namespace SGAmod
 			throw new Exception("IL Error Test");
 		}
 
+		
+		private struct ColorTriplet //Appartently this is "acceptable" if it matches the same structure as the original to use in IL patches, wat? Thx for the tip DraedonHunter!
+		{
+			public float r;
+
+			public float g;
+
+			public float b;
+
+			public ColorTriplet(float R, float G, float B)
+			{
+				r = R;
+				g = G;
+				b = B;
+			}
+
+			public ColorTriplet(float averageColor)
+			{
+				r = (g = (b = averageColor));
+			}
+		}
+
+		private static void EditLights(ref ColorTriplet obj)
+		{
+			obj.r = 0.05f;
+			obj.g = 0.05f;
+			obj.b = 0.05f;
+
+		}
+
 
 		private delegate void LightTest(ref ColorTriplet obj);
 		static internal void AddLightHack(ILContext il)//Experimental BS, not used
@@ -199,14 +211,10 @@ namespace SGAmod
 
 			c.Index -= 1;
 			//c.Index -= 3;
-			c.Emit(OpCodes.Ldloca, 1);//ColorTriplet instance thing
+			c.Emit(OpCodes.Ldloca, 1);//ColorTriplet instance thing pass as ref
 			c.EmitDelegate<LightTest>((ref ColorTriplet obj) =>
 			{
-
-				obj.r = 0.05f;
-				obj.g = 0.05f;
-				obj.b = 0.05f;
-
+				EditLights(ref obj);
 			});
 
 			return;
@@ -215,6 +223,7 @@ namespace SGAmod
 			throw new Exception("IL Error Test");
 
 		}
+		
 
 		private delegate void PickPower(Player player,ref int damage);
 		static internal void PickPowerOverride(ILContext il)//I'd prefer slower pickaxes that CAN mine stronger materials, thank you very much! (doesn't seem to work, harder blocks still get mined fast!), Also not used due to Terraria being a stuburn mule about it
@@ -609,7 +618,7 @@ namespace SGAmod
 
 			c.MoveAfterLabels();
 
-			c.Emit(OpCodes.Ldloc_2);
+			c.Emit(OpCodes.Ldloc_2);//Get Lava BG Position
 
 			c.EmitDelegate<Func<double, double>>((num) =>
 			{
@@ -620,7 +629,7 @@ namespace SGAmod
 				return (num);
 			});
 
-			c.Emit(OpCodes.Stloc, 2);
+			c.Emit(OpCodes.Stloc, 2);//Move the Lava BG Position somewhere below the map
 
 			c.Index = il.Instrs.Count - 1;
 
@@ -628,16 +637,16 @@ namespace SGAmod
 			c.Index -= 3;
 
 
-			c.Emit(OpCodes.Ldloc, 20);//Inventory Slot int Index
+			c.Emit(OpCodes.Ldloc, 20);//Draw Lava BG Border?
 			c.EmitDelegate<Func<bool,bool>> ((num) =>
 			{
-				if (SubworldLibrary.Subworld.AnyActive<SGAmod>())
+				if (SubworldLibrary.Subworld.AnyActive<SGAmod>())//Flat out don't draw the Lava BG Border if any Subworld is active
 				{
 					return false;
 				}
 				return (num);
 			});
-			c.Emit(OpCodes.Stloc, 20);//Inventory Slot int Index
+			c.Emit(OpCodes.Stloc, 20);//Set it
 			
 
 		}

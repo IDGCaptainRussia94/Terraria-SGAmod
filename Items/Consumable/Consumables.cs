@@ -15,6 +15,8 @@ using System.Security.Cryptography;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
+using Terraria.GameContent.Events;
+using System.Collections.ObjectModel;
 
 namespace SGAmod.Items.Consumable
 {
@@ -355,6 +357,7 @@ namespace SGAmod.Items.Consumable
 
 		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
 		{
+			if (GetType() == typeof(JoyfulShroom))
 				//if (line.mod == "Terraria" && line.Name == "ItemName")
 				//{
 					Main.spriteBatch.End();
@@ -404,12 +407,26 @@ namespace SGAmod.Items.Consumable
 		}
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
+			bool shroom = GetType() == typeof(JoyfulShroom);
+
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
-			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.LivingRainbowDye);
+			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(shroom ? ItemID.LivingRainbowDye : ItemID.NebulaDye);
 			shader.UseOpacity(0.5f);
 			shader.UseSaturation(0.25f);
-			shader.Apply(null);
+
+			if (shroom)
+			{
+				shader.Apply(null);
+			}
+			else
+			{
+				Texture2D stain = mod.GetTexture("Stain");
+				DrawData value28 = new DrawData(stain, new Vector2(240, 240), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 600, 600)), Microsoft.Xna.Framework.Color.White, MathHelper.PiOver2, stain.Size() / 2f, 0.2f, SpriteEffects.None, 0);
+				shader.Apply(null, new DrawData?(value28));
+			}
+
+
 			spriteBatch.Draw(Main.itemTexture[item.type], position, frame, drawColor, 0, origin, scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
@@ -902,6 +919,82 @@ namespace SGAmod.Items.Consumable
 				else
 					Main.npc[(NPC.FindFirstNPC(NPCID.TravellingMerchant))].Center = projectile.Center;
 			}
+		}
+	}
+
+	//[AutoloadEquip(EquipType.Head)]
+	public class InterdimensionalPartyHat : JoyfulShroom
+	{
+        public override string Texture => "Terraria/Item_"+ItemID.PartyHat;
+        public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Interdimensional Party Hat");
+			Tooltip.SetDefault("'Well, this explains the party hats...'\nStarts a genuine party, adds the portal to the party as a 3rd wheel if present\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stacks, adds 200 seconds each"));
+		}
+		public override bool CanUseItem(Player player)
+		{
+			return player.SGAPly().CooldownStacks.Count + 1 < player.SGAPly().MaxCooldownStacks && !BirthdayParty.PartyIsUp;
+		}
+		public override bool UseItem(Player player)
+		{
+			bool worked = false;
+			for (int i = 0; i < 1000; i += 1)
+			{
+				BirthdayParty.PartyDaysOnCooldown = 0;
+				BirthdayParty.CheckMorning();
+				if (BirthdayParty.GenuineParty)
+				{
+					worked = true;
+					int indexer = NPC.FindFirstNPC(ModContent.NPCType<Dimensions.NPCs.DungeonPortal>());
+					if (indexer >= 0)
+					{
+						BirthdayParty.CelebratingNPCs.Add(indexer);
+					}
+					Main.NewText("It would seem the item has worked... try making sure you have the npcs first");
+					break;
+				}
+			}
+			if (!worked)
+            {
+				Main.NewText("It would seem the item has failed... try making sure you have the npcs first");
+				return true;
+            }
+			player.SGAPly().AddCooldownStack(60 * 200, 1);
+
+			return true;
+		}
+
+        public override bool Autoload(ref string name)
+        {
+			return true;
+        }
+
+        public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 1;
+			item.rare = 5;
+			item.value = 50000;
+			item.useStyle = ItemUseStyleID.HoldingUp;
+			item.noUseGraphic = true;
+			item.useAnimation = 30;
+			item.useTime = 30;
+			item.vanity = true;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item1;
+			Item hat = new Item(); hat.SetDefaults(ItemID.PartyHat);
+			item.headSlot = hat.headSlot;
+		}
+
+		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
+		{
+			return true;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			//Stuff
 		}
 	}
 

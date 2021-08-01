@@ -104,9 +104,6 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("CirnoWings"), 1);
 			recipe.AddIngredient(mod.ItemType("DemonSteppers"), 1);
-			recipe.AddIngredient(ItemID.WingsNebula, 1);
-			recipe.AddIngredient(ItemID.WingsSolar, 1);
-			recipe.AddIngredient(ItemID.WingsStardust, 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBooster"), 1);
 			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 40);
 			recipe.AddIngredient(mod.ItemType("OmniSoul"), 30);

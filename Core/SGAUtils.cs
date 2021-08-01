@@ -583,16 +583,18 @@ namespace SGAmod
 
 		public static void BoostAllDamage(this Player player, float damage, int crit = 0)
 		{
+			UThrowingPlayer thrownPlayer = player.Throwing();
+
 			player.meleeDamage += damage;
 			player.rangedDamage += damage;
 			player.magicDamage += damage;
 			player.minionDamage += damage;
-			player.Throwing().thrownDamage += damage;
+			thrownPlayer.thrownDamage += damage;
 
-			player.meleeCrit += crit;
-			player.rangedCrit += crit;
-			player.magicCrit += crit;
-			player.Throwing().thrownCrit += crit;
+			player.meleeCrit = crit; if (player.meleeCrit < 0) player.meleeCrit = 0;
+			player.rangedCrit += crit; if (player.rangedCrit < 0) player.rangedCrit = 0;
+			player.magicCrit += crit; if (player.magicCrit < 0) player.magicCrit = 0;
+			thrownPlayer.thrownCrit += crit; if (thrownPlayer.thrownCrit < 0) thrownPlayer.thrownCrit = 0;
 			SGAmod.BoostModdedDamage(player, damage, crit);
 		}
 		public static bool IsValidDebuff(Player player, int buffindex)

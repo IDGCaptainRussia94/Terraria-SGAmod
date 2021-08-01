@@ -63,15 +63,15 @@ namespace SGAmod.Items.Weapons.Vibranium
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Pulsar Perforator");
-			Tooltip.SetDefault("Throws resonant knives that bounce between targets and bypass defense\nThe knives continue to bounce against Irradiated targets\nWhen fully charged, emits a Gamma Ray burst in both directions\nThis inflicts Severe Radiation to hit enemies");
+			Tooltip.SetDefault("Throws resonant knives that bounce between targets, bypass defense, and leave a stacking DoT\nThe knives continue to bounce more against Irradiated targets\nWhen fully charged, emits a Gamma Ray burst in both directions\nThis inflicts Severe Radiation to hit enemies");
 		}
 
 		public override string Texture => "SGAmod/Items/Weapons/Vibranium/QuasarKunai";
 
 		public override void SetDefaults()
 		{
-			item.damage = 150;
-			item.crit = 50;
+			item.damage = 100;
+			item.crit = 10;
 			item.width = 32;
 			item.height = 32;
 			item.useTime = 8;
@@ -364,6 +364,8 @@ namespace SGAmod.Items.Weapons.Vibranium
 		{
 			enemiesHit.Add(new Point(target.whoAmI, 1000000));
 			List<NPC> closestnpcs = SGAUtils.ClosestEnemies(projectile.Center, 640, projectile.Center, AddedWeight: enemiesHit, checkCanChase: false);
+
+			target.SGANPCs().AddDamageStack(damage, 180);
 
 			for (float num315 = 4; num315 < 16; num315 = num315 + 1f)
 			{

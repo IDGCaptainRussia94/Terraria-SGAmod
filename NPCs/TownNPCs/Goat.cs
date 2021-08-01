@@ -182,12 +182,20 @@ namespace SGAmod.NPCs.TownNPCs
 			shop.item[nextSlot].SetDefaults(mod.ItemType("UnderTheWaterfallPainting"));
 			shop.item[nextSlot].value = Item.buyPrice(1,0);
 			nextSlot += 1; 
+
 			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientSpaceDiverHelmet"));
 			nextSlot += 1; 		
 			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientSpaceDiverChestplate"));
 			nextSlot += 1; 		
 			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientSpaceDiverLeggings"));
 			nextSlot += 1;
+			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientUnmanedHood"));
+			nextSlot += 1; 		
+			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientUnmanedBreastplate"));
+			nextSlot += 1; 		
+			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientUnmanedLeggings"));
+			nextSlot += 1;
+
 			shop.item[nextSlot].SetDefaults(mod.ItemType("MasterfullyCraftedHatOfTheDragonGods"));
 			nextSlot += 1;
 			shop.item[nextSlot].SetDefaults(mod.ItemType("JoyfulShroom"));

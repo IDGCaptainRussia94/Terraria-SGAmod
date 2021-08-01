@@ -475,7 +475,7 @@ namespace SGAmod.Tiles
                     {
                         if (AcceptItem(heldItem))
                         {
-                            chargingProcess += ProcessRate*10;
+                            chargingProcess += ProcessRate*1;
                             if (chargingProcess >= itemData.infusionTime)
                             {
                                 ItemInfusion();

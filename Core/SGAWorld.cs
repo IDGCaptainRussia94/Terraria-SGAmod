@@ -207,6 +207,9 @@ namespace SGAmod
 
         public override void PostUpdate()
         {
+            if (!SGAConfig.Instance.OPmods)
+                SGAmod.overpoweredMod = 0;
+
             if ((Main.netMode < 1 || Main.myPlayer == 0) && Main.expertMode)
                 NightmareHardcore = Main.LocalPlayer.GetModPlayer<SGAPlayer>().nightmareplayer ? 1 : 0;
 

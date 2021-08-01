@@ -68,7 +68,6 @@ namespace SGAmod.Items.Accessories
 			player.BoostAllDamage(0.05f, 5);
 
 			player.Throwing().thrownVelocity += 0.25f;
-			SGAmod.BoostModdedDamage(player, 0.05f, 5);
 			player.SGAPly().tf2emblemLevel = 1;
 		}
 	}
@@ -263,7 +262,6 @@ namespace SGAmod.Items.Accessories
 			player.BoostAllDamage(0.05f, 0);
 
 			player.Throwing().thrownVelocity += 0.15f;
-			SGAmod.BoostModdedDamage(player, 0.05f, 0);
 			player.statManaMax2 += 20;
 			player.statLifeMax2 += 25;
 			player.manaCost -= 0.025f;

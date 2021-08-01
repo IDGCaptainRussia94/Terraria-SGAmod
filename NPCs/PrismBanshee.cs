@@ -28,7 +28,7 @@ namespace SGAmod.NPCs
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismic Banshee");
-			Main.npcFrameCount[npc.type] = 1;
+			Main.npcFrameCount[npc.type] = 2;
 			NPCID.Sets.MustAlwaysDraw[npc.type] = true;
 		}
 
@@ -163,7 +163,14 @@ namespace SGAmod.NPCs
 
 					float progress = (400 - statetimer) / 2400f;
 					if (statetimer >= 400)
+					{
 						progress = MathHelper.Clamp((statetimer - 400f) / 200f, 0f, 1f);
+						if (Main.netMode != 2)
+						{
+							Texture2D tex = Main.npcTexture[npc.type];
+							npc.frame = new Rectangle(0, tex.Height / 2, tex.Width, tex.Height / 2);
+						}
+					}
 
 					float alpha = Math.Min(statetimer, 100f);
 
@@ -187,6 +194,7 @@ namespace SGAmod.NPCs
 				}
 				if (statetimer == 400)
 				{
+
 					SoundEffectInstance sound = Main.PlaySound(SoundID.Roar, (int)npc.Center.X, (int)npc.Center.Y, 2);
 					if (sound != null)
 						sound.Pitch += 0.75f;
@@ -298,6 +306,11 @@ namespace SGAmod.NPCs
 
 					if (npc.ai[0] > 900 + maxattacktime)
 					{
+						if (Main.netMode != 2)
+						{
+							Texture2D tex = Main.npcTexture[npc.type];
+							npc.frame = new Rectangle(0, 0, tex.Width, tex.Height / 2);
+						}
 						npc.ai[0] = Main.rand.Next(1, 100);
 						npc.netUpdate = true;
 					} 
@@ -360,7 +373,7 @@ namespace SGAmod.NPCs
 			}
 		}
 
-		public static void DrawPrismCore(SpriteBatch spriteBatch, Color drawColor,Vector2 drawWhere,float rotter,float scale = 1,float scaleup=96,int startingpoint=0)
+        public static void DrawPrismCore(SpriteBatch spriteBatch, Color drawColor,Vector2 drawWhere,float rotter,float scale = 1,float scaleup=96,int startingpoint=0)
         {
 			Vector2 drawPos = drawWhere - Main.screenPosition;
 			Texture2D tex2 = Main.projectileTexture[SGAmod.Instance.ProjectileType("JavelinProj")];
@@ -457,7 +470,7 @@ namespace SGAmod.NPCs
 
 			hallowed.Parameters["alpha"].SetValue(1);
 			hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
-			hallowed.Parameters["prismAlpha"].SetValue(0.85f);
+			hallowed.Parameters["prismAlpha"].SetValue(0.185f);
 			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));
 			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -npc.localAI[0] / 250f, npc.localAI[0] / 150f));
 			hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
@@ -511,7 +524,7 @@ namespace SGAmod.NPCs
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(tex, drawPos, null, Color.White, npc.rotation, (tex.Size() / 2f), npc.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(tex, drawPos, npc.frame, Color.White, npc.rotation, (tex.Size() / 2f), npc.scale, SpriteEffects.None, 0f);
 
 			if (npc.ai[1] > 0)
 			{

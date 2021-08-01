@@ -103,7 +103,7 @@ namespace SGAmod
 						damageIncrease += projectile.Distance(owner.MountedCenter) / ((float)ProjectileID.Sets.YoyosMaximumRange[projectile.type])*0.15f;
 					}
 					if (IsTrueMelee(projectile,owner))
-						damageIncrease += (sgaply.trueMeleeDamage);
+						damageIncrease += (sgaply.trueMeleeDamage-1f);
 
 					damage = (int)((float)damage * damageIncrease);
 

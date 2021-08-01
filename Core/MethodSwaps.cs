@@ -41,6 +41,7 @@ namespace SGAmod
 			On.Terraria.Player.dropItemCheck += SoulboundPriority;
 			On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
 			On.Terraria.Player.ItemFitsWeaponRack += NoPlacingManifestedItemOnItemRack;
+			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
@@ -66,9 +67,14 @@ namespace SGAmod
 			}
 			return orig(self, amount, pay, blockQuickMana);
         }
+		public static void AddLight(On.Terraria.Lighting.orig_AddLight_int_int_float_float_float orig, int i, int j, float R, float G, float B)
+		{
+			Main.time = 6000;
+		}
 
-        //Some Reflection Stuff, this first method swap came from scalie because lets be honest, who else is gonna figure this stuff out? Vanilla is a can of worms and BS at times. Credit due to him
-        static private readonly FieldInfo _playerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
+
+		//Some Reflection Stuff, this first method swap came from scalie because lets be honest, who else is gonna figure this stuff out? Vanilla is a can of worms and BS at times. Credit due to him
+		static private readonly FieldInfo _playerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
 		static private readonly FieldInfo _player = typeof(UICharacter).GetField("_player", BindingFlags.NonPublic | BindingFlags.Instance);
 
 		static private void Menu_UICharacterListItem(On.Terraria.GameContent.UI.Elements.UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)

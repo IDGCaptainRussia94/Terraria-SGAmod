@@ -226,7 +226,7 @@ namespace SGAmod.Dimensions
                         player.velocity = new Vector2(0, 16);
                     }
 
-                    if (player.wings > 0 && player.velocity.Y < 0 && player.Center.Y < (16*50) && spacevar == 0)
+                    if (player.wings > 0 && player.velocity.Y < 0 && player.Center.Y < (16*50) && spacevar == 0 && player.controlJump && !IdgNPC.bossAlive)
                     {
                         SGAPocketDim.EnterSubworld(mod.GetType().Name + "_SpaceDim");
                     }
@@ -784,7 +784,7 @@ namespace SGAmod.Dimensions
                 Main.graphics.GraphicsDevice.SetRenderTarget(target);
                 Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-                Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1f, 1f, 0f));
+                Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
 
                 //Main.spriteBatch.Begin(SpriteSortMode.Immediate, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
                 Main.spriteBatch.Draw(targetOther, new Vector2(0, 0), null, Color.Black * 0.96f, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
@@ -944,25 +944,60 @@ namespace SGAmod.Dimensions
                         //Main.NewText("test");
                         Texture2D noise = SGAmod.Instance.GetTexture(sgaply.jellybruSet ? "NPCs/PrismicBanshee" : "Perlin");
                         Vector2 noisesize = noise.Size();
-
-                        DrawData value9 = new DrawData(noise, new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, (int)noisesize.X, (int)noisesize.Y)), Microsoft.Xna.Framework.Color.White, 0, noise.Size()/2f, 1f, SpriteEffects.None, 0);
-                        var deathShader = GameShaders.Misc["ForceField"];
-                        deathShader.UseColor(new Vector3(1f, 1f, 1f));
-                        GameShaders.Misc["ForceField"].Apply(new DrawData?(value9));
                         float alphapercent = (sgaply.GetEnergyShieldAmmountAndRecharge.Item1 / (float)sgaply.GetEnergyShieldAmmountAndRecharge.Item2);
-                        deathShader.UseOpacity(1f);
 
-                        float angle = MathHelper.Pi;
-                        Vector2 loc = new Vector2((float)((Math.Cos(angle) * 0f)), (float)((Math.Sin(angle) * 0f)));
 
-                        Color basecolor = Color.Lerp(Color.LightBlue, player.GetImmuneAlpha(Color.White, 0.5f), 0.5f) * 0.75f;
+                        if (false)//sgaply.jellybruSet)
+                        {
+                            Effect hallowed = SGAmod.HallowedEffect;
+
+
+                            hallowed.Parameters["alpha"].SetValue(alphapercent);
+                            hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
+                            hallowed.Parameters["prismAlpha"].SetValue(0f);
+                            hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Stain"));
+                            hallowed.Parameters["overlayProgress"].SetValue(new Vector3(Main.GlobalTime / 5f, Main.GlobalTime/3f, 0f));
+                            hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
+                            hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, Main.GlobalTime/4f));
+                            hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+                            hallowed.Parameters["rainbowScale"].SetValue(0.8f);
+                            hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
+
+                            hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+
+                            Texture2D bubbles = ModContent.GetTexture("Terraria/NPC_" + NPCID.DetonatingBubble);
+                            Vector2 half = new Vector2(bubbles.Width, bubbles.Height / 2f) / 2f;
+
+                            spriteBatch.Draw(bubbles, (player.MountedCenter) - Main.screenPosition, new Rectangle(0, bubbles.Height / 2, bubbles.Width, bubbles.Height / 2), Color.LightPink * alphapercent, -(float)Math.Sin(Main.GlobalTime) / 4f, half, (Vector2.One * 1.5f) + (new Vector2((float)Math.Sin(Main.GlobalTime), (float)Math.Cos(Main.GlobalTime))) * 0.25f, SpriteEffects.None, 0f);
+
+                            spriteBatch.Draw(bubbles, (player.MountedCenter) - Main.screenPosition, new Rectangle(0, bubbles.Height / 2, bubbles.Width, bubbles.Height / 2), Color.LightPink * alphapercent, (float)Math.Sin(Main.GlobalTime)/4f, half, (Vector2.One * 1.5f) + (new Vector2((float)Math.Cos(Main.GlobalTime + MathHelper.PiOver2), (float)Math.Sin(Main.GlobalTime-MathHelper.PiOver2))) * 0.25f, SpriteEffects.None, 0f);
+
+                            Main.spriteBatch.End();
+                            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+                        }
+                        else
+                        {
+
+                            DrawData value9 = new DrawData(noise, new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, (int)noisesize.X, (int)noisesize.Y)), Microsoft.Xna.Framework.Color.White, 0, noise.Size() / 2f, 1f, SpriteEffects.None, 0);
+                            var deathShader = GameShaders.Misc["ForceField"];
+                            deathShader.UseColor(new Vector3(1f, 1f, 1f));
+                            GameShaders.Misc["ForceField"].Apply(new DrawData?(value9));
+                            deathShader.UseOpacity(1f);
+
+                            float angle = MathHelper.Pi;
+                            Vector2 loc = new Vector2((float)((Math.Cos(angle) * 0f)), (float)((Math.Sin(angle) * 0f)));
+
+                            Color basecolor = Color.Lerp(Color.LightBlue, player.GetImmuneAlpha(Color.White, 0.5f), 0.5f) * 0.75f;
 
                             if (sgaply.jellybruSet)
-                        {
-                            basecolor = Color.Lerp(Color.Magenta, player.GetImmuneAlpha(Color.Purple, 0.5f), 0.75f) * 1f;
-                        }
+                            {
+                                basecolor = Color.Lerp(Color.Magenta, player.GetImmuneAlpha(Color.LightPink, 0.5f), 0.75f) * 1f;
+                            }
 
-                        spriteBatch.Draw(noise, (player.MountedCenter + loc) - Main.screenPosition, null, basecolor* alphapercent, angle, noise.Size() / 2f, (new Vector2(200f, 150f) / noisesize)*0.6f, SpriteEffects.None, 0f);
+                            spriteBatch.Draw(noise, (player.MountedCenter + loc) - Main.screenPosition, null, basecolor * alphapercent, angle, noise.Size() / 2f, (new Vector2(200f, 150f) / noisesize) * 0.6f, SpriteEffects.None, 0f);
+                        }
 
                     }
                 }
@@ -1111,7 +1146,7 @@ namespace SGAmod.Dimensions
 
             if (!SGAmod.anysubworld)
             {
-                if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && darkSectors.Count < 1 && SGAWorld.modtimer > 150)
+                if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && SGAConfig.Instance.DarkSector && darkSectors.Count < 1 && SGAWorld.modtimer > 150)
                 {
                     UnifiedRandom rando = new UnifiedRandom(Main.worldName.GetHashCode());
 
@@ -1120,7 +1155,7 @@ namespace SGAmod.Dimensions
                     new DarkSector(randomspot.X, randomspot.Y, seed: Main.worldName.GetHashCode());
 
                 }
-               }
+            }
 
             foreach (DarkSector sector in darkSectors)
             {

@@ -34,14 +34,12 @@ namespace SGAmod
 		public bool GolemImprovement { get; set; }
 
 		[Label("Lethal Drowning")]
-		[Tooltip("Enables/Disables the gradually increased damage taken after 5 seconds of drowning, which only resets when your breath fully recovers")]
-		[ReloadRequired]
+		[Tooltip("Enables/Disables the gradually increasing damage taken after 5 seconds of drowning, which only resets when your breath fully recovers")]
 		[DefaultValue(true)]
 		public bool DrowningChange { get; set; }
 
 		[Label("Nerfed Mana Regen Potion")]
 		[Tooltip("Enables/Disables the nerfed Mana Regen")]
-		[ReloadRequired]
 		[DefaultValue(true)]
 		public bool ManaPotionChange { get; set; }
 
@@ -54,6 +52,17 @@ namespace SGAmod
 		[Tooltip("Enables/Disables pre-Moonlord Luminite sources (Astrial Luminite), disable this if it breaks progression with other mods")]
 		[DefaultValue(true)]
 		public bool EarlyLuminite { get; set; }
+
+		[Label("Dark Sector")]
+		[Tooltip("Enables/Disables the Dark Sector to appear when loading a post-mechs world")]
+		[DefaultValue(true)]
+		public bool DarkSector { get; set; }
+
+		[Label("Overpowered Mods")]
+		[ReloadRequired]
+		[Tooltip("Enables/Disables a stacking difficulty increase when playing with specific OP mods")]
+		[DefaultValue(false)]
+		public bool OPmods { get; set; }
 	}
 
 	[Label("SGA Client Options")]
@@ -66,6 +75,7 @@ namespace SGAmod
 
 		//[Header("$Mods.BossChecklist.Configs.Header.BossLogUI")]
 
+		[Header("Visuals")]
 		[Label("Hellion Privacy")]
 		[Tooltip("Enables/Disables Hellion refering to the player by their computer login name (will refer to local player name when on)")]
 		[DefaultValue(false)]
@@ -86,7 +96,7 @@ namespace SGAmod
 
 		[Header("Performance")]
 		[Label("Fog Detail")]
-		[Tooltip("More is more detailed, but also more demanding")]
+		[Tooltip("Adjust the detail of the darkness fog effect; Higher is more detailed, but also more demanding")]
 		[Increment(1)]
 		[Range(5, 100)]
 		[DefaultValue(30)]
@@ -115,6 +125,13 @@ namespace SGAmod
 		[Tooltip("Enables/Disables The Solar Dye on the rocks shot by the Lava Rocks Gun, may improve performance")]
 		[DefaultValue(false)]
 		public bool LavaBlending { get; set; }
+
+		[Header("Subworlds Patch")]
+		[Label("Remove Lava Background")]
+		[Tooltip("Fixes the Lava BG showing up in Subworlds, might break other mods which may attempt to do the same")]
+		[ReloadRequired]
+		[DefaultValue(true)]
+		public bool FixSubworldsLavaBG { get; set; }
 
 	}
 

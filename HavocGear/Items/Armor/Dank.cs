@@ -27,11 +27,7 @@ namespace SGAmod.HavocGear.Items.Armor
 
         public override void UpdateEquip(Player player)
         {
-            player.magicCrit += 4;
-            player.rangedCrit += 4;
-            player.meleeCrit += 4;
-            player.Throwing().thrownCrit += 4;
-            SGAmod.BoostModdedDamage(player, 0, 4);
+            player.BoostAllDamage(0, 4);
         }
 
         public override void AddRecipes()

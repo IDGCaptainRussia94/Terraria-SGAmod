@@ -25,6 +25,8 @@ using System.Diagnostics;
 using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityMod.World;
+using ThoriumMod.ModSupport;
+using ThoriumMod;
 using SGAmod.NPCs;
 using SGAmod.NPCs.Wraiths;
 using SGAmod.NPCs.Hellion;
@@ -60,7 +62,8 @@ namespace SGAmod
 
 	public partial class SGAmod : Mod
 	{
-
+		public static bool Calamity = false;
+		public static bool Thorium = false;
 
 
 		public static void BoostModdedDamage(Player player, float damage, int crit)
@@ -75,7 +78,6 @@ namespace SGAmod
 		{
 			set
 			{
-
 				if (SGAmod.Calamity)
 				{
 
@@ -83,6 +85,16 @@ namespace SGAmod
 					calply.throwingDamage += value.damage;
 					calply.throwingCrit += value.crit;
 				}
+				if (SGAmod.Thorium)
+				{
+
+					ThoriumPlayer thorply = value.player.GetModPlayer<ThoriumPlayer>();
+					thorply.symphonicDamage += value.damage;
+					thorply.symphonicCrit += value.crit;
+					thorply.radiantBoost += value.damage;
+					thorply.radiantCrit += value.crit;
+				}
+
 			}
 		}
 
@@ -126,8 +138,9 @@ namespace SGAmod
 			musicToItemReference = (Dictionary<int, int>)musicToItemField.GetValue(null);
 
 			Calamity = ModLoader.GetMod("CalamityMod") != null;
+			Thorium = ModLoader.GetMod("ThoriumMod") != null;
 
-			overpoweredMod = 0;// (ModLoader.GetMod("AFKPETS") != null ? 0.5f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0) +(ModLoader.GetMod("Luiafk") != null ? 2f : 0) +(ModLoader.GetMod("FargowiltasSouls") != null ? 2.5f : 0);
+			overpoweredMod = ((ModLoader.GetMod("AFKPETS") != null ? 0.5f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0) + (ModLoader.GetMod("Luiafk") != null ? 2f : 0) + (ModLoader.GetMod("FargowiltasSouls") != null ? 2.5f : 0));
 							   //Why do people still use Luiafk in legit playthroughs? I donno...
 
 				Mod fargos = ModLoader.GetMod("Fargowiltas");

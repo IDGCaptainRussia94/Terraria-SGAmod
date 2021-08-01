@@ -113,6 +113,8 @@ namespace SGAmod
 			CauseShieldBreak(60 * 7);
 		}
 
+		(int, int) shieldAmmounts = (5, 7);
+
 		public bool TakeShieldHit(ref int damage)
 		{
 			if (GetEnergyShieldAmmountAndRecharge.Item1 > damage)
@@ -124,7 +126,7 @@ namespace SGAmod
 					if (sound != null)
 						sound.Pitch += -0.5f + ((GetEnergyShieldAmmountAndRecharge.Item1 / GetEnergyShieldAmmountAndRecharge.Item2) * 1.25f);
 
-					energyShieldAmmountAndRecharge.Item3 = 60 * (tpdcpu ? 3 : 5);
+					energyShieldAmmountAndRecharge.Item3 = 60 * (tpdcpu ? shieldAmmounts.Item1 : shieldAmmounts.Item2);
 					energyShieldAmmountAndRecharge.Item1 -= damage;
 
 					Main.NewText(damage);
@@ -663,7 +665,7 @@ namespace SGAmod
 			{
 				for (int g = 0; g < Player.MaxBuffs; g += 1)
 				{
-					if (player.manaRegenBuff && SGAConfig.Instance.ManaPotionChange)
+					if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore>0))
 					{
 						if (player.buffType[g] == BuffID.ManaSickness && player.buffTime[g] > 3)
 						{

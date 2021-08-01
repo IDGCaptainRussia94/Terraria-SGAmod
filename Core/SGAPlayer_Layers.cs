@@ -150,6 +150,68 @@ namespace SGAmod
 			SGAPlayer.drawdigistuff(drawInfo, false);
 		});
 
+		public static void DrawilluminantLayer(PlayerDrawInfo drawInfo, bool front)
+		{
+
+			Player drawPlayer = drawInfo.drawPlayer;
+			SGAmod mod = SGAmod.Instance;
+			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
+
+
+			int activestacks = modply.activestacks;
+
+			if (activestacks > 0)
+			{
+				List<Vector4> whichone = new List<Vector4>();
+				UnifiedRandom rando = new UnifiedRandom(drawPlayer.whoAmI);
+
+				for (int i = 0; i < activestacks; i += 1)
+				{
+					float percent = rando.NextFloat(1f) * MathHelper.TwoPi;
+					Matrix mxatrix = Matrix.CreateRotationY((Main.GlobalTime*2f)+ percent) * Matrix.CreateRotationZ(((i / (float)activestacks) * MathHelper.TwoPi)+(Main.GlobalTime * (rando.NextFloat(0.4f,0.6f))));
+					Vector3 vec3 = Vector3.Transform(Vector3.UnitX, mxatrix);
+					float alpha = 1f;
+					if (modply.CooldownStacks.Count >= i)
+						alpha = MathHelper.Clamp((modply.CooldownStacks[i].timeleft / (float)modply.CooldownStacks[i].maxtime)*3f,0f,1f);
+
+					whichone.Add(new Vector4(vec3, alpha));
+				}
+				whichone = whichone.OrderBy((x) => x.Z).ToList();
+
+				if (whichone.Count > 0)
+				{
+					for (int a = 0; a < whichone.Count; a += 1)
+					{
+						Vector4 theplace = whichone[a];
+						float scaler = 1+theplace.Z;
+
+						if ((scaler >= 1f && front) || (scaler < 1f && !front))
+						{
+
+							Texture2D texture = SGAmod.Instance.GetTexture("Extra_57b");
+
+							Vector2 drawhere = new Vector2(theplace.X, theplace.Y)* 64f;
+							DrawData data = new DrawData(texture, drawPlayer.MountedCenter+drawhere - Main.screenPosition, null, Color.Magenta*(theplace.W*0.75f), (float)0, texture.Size()/2f, 0.5f+(scaler-1f)*0.25f, (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+							//data.shader = (int)drawPlayer.dye[2].dye;
+							Main.playerDrawData.Add(data);
+						}
+					}
+				}
+
+			}
+
+		}
+
+		public static readonly PlayerLayer illuminantEffect = new PlayerLayer("SGAmod", "illuminantEffect", PlayerLayer.MiscEffectsFront, delegate (PlayerDrawInfo drawInfo)
+		{
+			SGAPlayer.DrawilluminantLayer(drawInfo, true);
+		});
+
+		public static readonly PlayerLayer illuminantEffectBack = new PlayerLayer("SGAmod", "illuminantEffect", PlayerLayer.MiscEffectsBack, delegate (PlayerDrawInfo drawInfo)
+		{
+			SGAPlayer.DrawilluminantLayer(drawInfo, false);
+		});
+
 		public static readonly PlayerLayer AltWings = new PlayerLayer("SGAmod", "AltWings", PlayerLayer.Wings, delegate (PlayerDrawInfo drawInfo)
 		{
 			Player drawPlayer = drawInfo.drawPlayer;
@@ -295,22 +357,38 @@ namespace SGAmod
 				}
 			}
 
-			if (IDGset)
+			if (IDGset || illuminantSet.Item1 > 4)
 			{
 				int armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsFront"));
 				if (armLayer2 >= 0)
 				{
-					DigiEffect.visible = true;
-					layers.Insert(armLayer2, DigiEffect);
+					if (IDGset)
+					{
+						DigiEffect.visible = true;
+						layers.Insert(armLayer2, DigiEffect);
+					}
+					if (illuminantSet.Item1 > 4)
+                    {
+						illuminantEffect.visible = true;
+						layers.Insert(armLayer2, illuminantEffect);
+					}
+
 					armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsBack"));
 					if (armLayer2 >= 0)
 					{
-						DigiEffectBack.visible = true;
-						layers.Insert(armLayer2, DigiEffectBack);
+						if (IDGset)
+						{
+							DigiEffectBack.visible = true;
+							layers.Insert(armLayer2, DigiEffectBack);
+						}
+						if (illuminantSet.Item1 > 4)
+						{
+							illuminantEffectBack.visible = true;
+							layers.Insert(armLayer2, illuminantEffectBack);
+						}
 					}
 				}
 			}
-
             #endregion
 
             #region armor glowmasks

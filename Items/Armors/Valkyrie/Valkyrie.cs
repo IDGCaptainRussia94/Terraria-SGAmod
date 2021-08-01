@@ -1,4 +1,5 @@
 using AAAAUThrowing;
+using Microsoft.Xna.Framework;
 using SGAmod.Tiles;
 using System.Collections.Generic;
 using Terraria;
@@ -13,7 +14,8 @@ namespace SGAmod.Items.Armors.Valkyrie
 	{
         public override bool Autoload(ref string name)
         {
-			SGAPlayer.PostUpdateEquipsEvent += SetBonus;
+			if (GetType() == typeof(ValkyrieHelm))
+				SGAPlayer.PostUpdateEquipsEvent += SetBonus;
 			return true;
         }
         public override void SetStaticDefaults()
@@ -36,7 +38,7 @@ namespace SGAmod.Items.Armors.Valkyrie
 			if (sgaplayer.valkyrieSet)
 			{
 				Player player = sgaplayer.player;
-				player.Throwing().thrownDamage += (int)System.Math.Min(player.lifeRegen, player.lifeRegenTime * 0.01f) * 0.01f;
+				player.Throwing().thrownDamage += (int)System.Math.Min(player.lifeRegen, player.lifeRegenTime * 0.01f) * 0.03f;
 
 				if (player.Male)
 					player.endurance += 0.15f;
@@ -44,6 +46,13 @@ namespace SGAmod.Items.Armors.Valkyrie
 					player.wingTimeMax = (int)(player.wingTimeMax * 1.20f);
 
 			}
+		}
+		public Color ArmorGlow(Player player, int index)
+		{
+			float peak = MathHelper.Clamp(1f - ((float)System.Math.Abs(27000.00 - Main.time) / 60000f), 0f, 1f);
+			//float valx = (float)System.Math.Sin(((Main.time / Main.dayLength)));
+			//Main.NewText(valx);
+			return Color.White * MathHelper.Clamp(1f- peak, 0f,1f);
 		}
 
 		public override void UpdateEquip(Player player)

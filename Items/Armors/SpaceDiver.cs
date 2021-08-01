@@ -33,7 +33,7 @@ namespace SGAmod.Items.Armors
 		}
 		player.arcticDivingGear = true;
 			sgaplayer.electricChargeMax += 3000;
-			player.magicDamage -= 0.05f; player.rangedDamage -= 0.05f; player.minionDamage -= 0.05f; player.Throwing().thrownDamage -= 0.05f; player.meleeDamage -= 0.05f;
+			player.BoostAllDamage(-0.05f);
 			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.05f);
 			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 2;
 		}
@@ -86,8 +86,7 @@ namespace SGAmod.Items.Armors
             sgaplayer.UseTimeMul += 0.10f;
 			sgaplayer.electricChargeMax += 3000;
 
-			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.Throwing().thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
-			SGAmod.BoostModdedDamage(player, -0.1f, 0);
+			player.BoostAllDamage(-0.10f);
 			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.05f);
 			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 3;
 		}
@@ -140,7 +139,7 @@ namespace SGAmod.Items.Armors
 				player.SGAPly().electricrechargerate += 5;
 
 			}
-			player.magicDamage -= 0.10f; player.rangedDamage -= 0.10f; player.minionDamage -= 0.10f; player.Throwing().thrownDamage -= 0.10f; player.meleeDamage -= 0.10f;
+			player.BoostAllDamage(-0.10f);
 			player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.05f);
 			player.GetModPlayer<SGAPlayer>().boosterrechargerate += 2;
 		}

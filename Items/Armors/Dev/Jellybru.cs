@@ -26,7 +26,7 @@ namespace SGAmod.Items.Armors.Dev
 		}
 		public override void InitEffects()
 		{
-			item.defense = 10;
+			item.defense = 12;
 			item.rare = 10;
 		}
 
@@ -38,15 +38,22 @@ namespace SGAmod.Items.Armors.Dev
 
 				//Main.NewText(player.manaCost);
 
-				float thepercent = 1f-MathHelper.Clamp(1.15f* player.manaCost,0.5f,1f);
+				float thepercent = 1f-MathHelper.Clamp(1.10f* player.manaCost,0.5f,1f);
 
 				int percentLife = (int)((player.statLifeMax2) * thepercent);
 
-				percentLife = (int)((percentLife) * player.magicDamage);
+				percentLife = (int)((percentLife * 2) * player.magicDamage);
 
 				sgaplayer.energyShieldAmmountAndRecharge.Item2 += percentLife;
 				sgaplayer.energyShieldReservation += (1f - sgaplayer.energyShieldReservation) * thepercent;
 				sgaplayer.ShieldType = 1001;
+
+				if (!sgaplayer.EnergyDepleted)
+                {
+					Item itemxx = new Item();
+					itemxx.SetDefaults(ItemID.AnkhCharm);
+					player.VanillaUpdateVanityAccessory(itemxx);
+                }
 
 			}
 
@@ -64,8 +71,8 @@ namespace SGAmod.Items.Armors.Dev
 
 		public override void AddEffects(Player player)
 		{
-			player.magicDamage += 0.15f;
-			player.magicCrit += 15;
+			player.magicDamage += 0.14f;
+			player.magicCrit += 14;
 			player.statManaMax2 += 50;
 			player.manaRegenBonus += player.SGAPly().EnergyDepleted ? 250 : 100;
 			player.manaRegenDelayBonus += 2;
@@ -74,7 +81,7 @@ namespace SGAmod.Items.Armors.Dev
 
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "Jellybru", "+15% magic damage and crit chance, +50 Mana"));
+			tooltips.Add(new TooltipLine(mod, "Jellybru", "+14% magic damage and crit chance, +50 Mana"));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", "Mana regen is greatly improved, Regen delay is reduced"));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "--When Shield Down--")));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "Mana regen is improved to extreme levels!")));
@@ -130,14 +137,14 @@ namespace SGAmod.Items.Armors.Dev
 			}
 			public override void InitEffects()
 			{
-				item.defense = 25;
+				item.defense = 20;
 				item.rare = 10;
 				item.lifeRegen = 3;
 			}
 			public override void AddEffects(Player player)
 			{
 			SGAPlayer sgaply = player.SGAPly();
-				player.magicDamage += 0.15f;
+				player.magicDamage += 0.16f;
 				player.manaCost *= 0.80f;
 				player.statManaMax2 += 100;
 
@@ -150,7 +157,7 @@ namespace SGAmod.Items.Armors.Dev
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 			{
-			tooltips.Add(new TooltipLine(mod, "Jellybru", "+15% magic damage, +100 Mana"));
+			tooltips.Add(new TooltipLine(mod, "Jellybru", "+16% magic damage, +100 Mana"));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", "magic cost reduced by 20%, minorly increased Life Regen"));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "--When Shield Down--")));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "Gain the powers of the nebula pillar!")));
@@ -178,7 +185,7 @@ namespace SGAmod.Items.Armors.Dev
 
 			public override void InitEffects()
 			{
-				item.defense = 15;
+				item.defense = 8;
 				item.rare = 10;
 			}
 		public override void AddEffects(Player player)
@@ -186,7 +193,7 @@ namespace SGAmod.Items.Armors.Dev
 
 			SGAPlayer sgaplayer = player.SGAPly();
 
-			player.magicDamage += 0.10f;
+			player.magicDamage += 0.15f;
 			player.statManaMax2 += 50;
 			player.moveSpeed += sgaplayer.EnergyDepleted ? 6f : 2f;
 			player.accRunSpeed += sgaplayer.EnergyDepleted ? 6f : 2f;
@@ -194,7 +201,7 @@ namespace SGAmod.Items.Armors.Dev
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "Jellybru", "+10% magic damage, +50 Mana"));
+			tooltips.Add(new TooltipLine(mod, "Jellybru", "+15% magic damage, +50 Mana"));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", "Movement and horizontal flight speed increased"));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "--When Shield Down--")));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "Gain a great speed increase!")));

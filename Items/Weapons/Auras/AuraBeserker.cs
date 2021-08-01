@@ -118,13 +118,7 @@ namespace SGAmod.Items.Weapons.Auras
 				theply.beserk[0] = 5;
 				theply.beserk[1] = (int)((float)thepower*1f);
 
-				theply.player.meleeDamage += (float)(theply.beserk[1] * 0.05f);
-				theply.player.magicDamage += (float)(theply.beserk[1] * 0.05f);
-				theply.player.minionDamage += (float)(theply.beserk[1] * 0.05f);
-				theply.player.rangedDamage += (float)(theply.beserk[1] * 0.05f);
-				theply.player.Throwing().thrownDamage += (float)(theply.beserk[1] * 0.05f);
-				SGAmod.BoostModdedDamage(theply.player, (float)(theply.beserk[1] * 0.05f),0);
-
+				theply.player.BoostAllDamage((float)(theply.beserk[1] * 0.05f), 0);
 			}
 
 		}

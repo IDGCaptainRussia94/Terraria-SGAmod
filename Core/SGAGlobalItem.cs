@@ -156,7 +156,7 @@ namespace SGAmod
                 }
             }
 
-            if (item.type == ItemID.ManaRegenerationPotion && SGAConfig.Instance.ManaPotionChange)
+            if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore>0))
             {
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Mana Sickness decays very slowly")));
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Max Mana is reduced by 60")));
@@ -253,7 +253,7 @@ namespace SGAmod
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
             if (set == "Desert")
             {
-                player.setBonus = "Immunity to Mighty Winds and increased throwing veloity in a Sandstorm\nManifested weapon: Sand Tosser";
+                player.setBonus = "Immunity to Mighty Winds and increased throwing velocity in a Sandstorm\nManifested weapon: Sand Tosser";
                 player.buffImmune[BuffID.WindPushed] = true;
                 if (Sandstorm.Happening && player.ZoneDesert)
                 {
@@ -316,7 +316,7 @@ namespace SGAmod
             }
             if (set == "Illuminant")
             {
-                string text1 = "Reduces all new Action Cooldown Stacks by 40%\nEach Action Cooldown Stack grants 4% damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\nAll Vanilla Prefixes on accessories are twice as effective";
+                string text1 = "Reduces all new Action Cooldown Stacks by 20%\nEach Action Cooldown Stack grants 4% (6% Summon) damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\nAll Vanilla Prefixes on accessories are twice as effective";
                 player.setBonus = text1;
                 sgaplayer.illuminantSet.Item1 = 5;
             }            
@@ -340,21 +340,21 @@ namespace SGAmod
             if (set == "MisterCreeper")
             {
                 player.setBonus = "Any sword that doesn't shoot a projectile is swung 50% faster and deals crits when you are falling downwards\nWhen you take damage, you launch a damaging high velocity grenade at what hit you\nThese grenades are launched even during immunity frames if your touching an enemy\nDrinking a healing potion launches a ton of bouncy grendes in all directions" +
-                    "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 180 seconds") + "\nCreeper's explosive throw and Stormbreaker are empowered\n------";
+                    "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 180 seconds") + "\nCreeper's explosive throw and Stormbreaker are empowered\n \n ";
                 sgaplayer.MisterCreeperset = true;
                 sgaplayer.devempowerment[1] = 3;
             }
             if (set == "IDG")
             {
                 player.setBonus = "Minions cause less immunity frames, the enemy targeted by a minion weapon is Digi-Cursed\nDigi-Curse causes enemies to take 10% increased damage from all sources\n" +
-                    "Minion Damage builds up Digi-Stacks, which increase ranged damage\nMax Stacks boosts ranged damage by 100%\nFurthermore, copies of your current bullet type are fired from your Stacks\nThese copies do 50% of the base projectile's damage\nPlus the copy consumes a percentage of Stacks based on the damage\nAny projectiles below 100 damage will not produce a copy\nSerpent's Redemption is empowered\n------";
+                    "Minion Damage builds up Digi-Stacks, which increase ranged damage\nMax Stacks boosts ranged damage by 100%\nFurthermore, copies of your current bullet type are fired from your Stacks\nThese copies do 50% of the base projectile's damage\nPlus the copy consumes a percentage of Stacks based on the damage\nAny projectiles below 100 damage will not produce a copy\nSerpent's Redemption is empowered\n \n ";
                 sgaplayer.IDGset = true;
                 sgaplayer.digiStacksMax += 100000;
                 sgaplayer.devempowerment[0] = 3;
             }
             if (set == "Jellybru")
             {
-                player.setBonus = "Reserves some (more with mana cost reduction) of your max HP as shields\nThese shields are boosted by your Magic Damage and Tech Damage Scaling\nShields fully recharge in 2 seconds\n(If jelly had any dev weapons) is empowered\n------";
+                player.setBonus = "Reserves some (more with mana cost reduction) of your max HP x2 as an energy barrier\nThese barriers are boosted by your Magic and Tech Damage Scaling\nBarriers fully recharge in 6 seconds" + Idglib.ColorText(Color.PaleTurquoise, "When Shield Up: Gain Ankh Charm effects") + "\n(If jelly had any dev weapons) is empowered\n \n ";
                 sgaplayer.jellybruSet = true;
                 sgaplayer.devempowerment[2] = 3;
             }        

@@ -357,7 +357,7 @@ namespace SGAmod
 			jellybruSet = false;
 			vibraniumSet = false;
 			valkyrieSet = false;
-			illuminantSet = (0,0);
+			illuminantSet = (0, illuminantSet.Item2);
 			novusStackBoost = false;
 			Pressured = false;
 			Havoc = 0;
@@ -473,7 +473,7 @@ namespace SGAmod
 			noactionstackringofrespite = false;
 			actionCooldownRate = 1f;
 			Noviteset = 0;
-			if (player.breath >= player.breathMax || !SGAConfig.Instance.DrowningChange)
+			if (player.breath >= player.breathMax || (!SGAConfig.Instance.DrowningChange && SGAWorld.NightmareHardcore<1))
 				drowningIncrementer.X = 0;
 			else if (player.breath < 1)
 				drowningIncrementer.X += 1;
@@ -889,6 +889,7 @@ namespace SGAmod
 			}
 
 			PostUpdateEquipsEvent?.Invoke(this);
+
 			if (player.SGAPly().manifestedWeaponType > 0)
 			{
 				if (player.inventory[player.selectedItem].IsAir)
@@ -959,9 +960,7 @@ namespace SGAmod
 				}
 				if (player.ownedLargeGems[5])
 				{
-					SGAmod.BoostModdedDamage(player, 0.05f, 5);
-					player.Throwing().thrownDamage += 0.05f; player.meleeDamage += 0.05f; player.magicDamage += 0.05f; player.minionDamage += 0.10f; player.rangedDamage += 0.05f;
-					player.Throwing().thrownCrit += 5; player.meleeCrit += 5; player.magicCrit += 5; player.rangedCrit += 5;
+					player.BoostAllDamage(0.05f, 5);
 					player.lifeRegen += 2;
 					player.maxRunSpeed += 0.5f;
 				}
@@ -1022,7 +1021,7 @@ namespace SGAmod
 
 
 			CharmingAmuletCode();
-			if (player.manaRegenBuff && SGAConfig.Instance.ManaPotionChange)
+			if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore>0))
 				player.statManaMax2 = Math.Max(player.statManaMax2-50,0);
 
 			if (creeperexplosion > 9700)
@@ -1230,7 +1229,7 @@ namespace SGAmod
 			}
 
 
-			if (NPC.CountNPCS(mod.NPCType("Cirno")) > 0 || (SGAWorld.downedCirno == false && Main.hardMode && SGAConfig.Instance.NegativeWorldEffects))
+			if (NPC.CountNPCS(mod.NPCType("Cirno")) > 0 || (SGAWorld.downedCirno == false && Main.hardMode && (SGAConfig.Instance.NegativeWorldEffects || SGAWorld.NightmareHardcore>0)))
 				player.AddBuff(mod.BuffType("NoFly"), 1, true);
 
 			/*if (pmlcrato>0 || NPC.CountNPCS(mod.NPCType("SPinky"))>9990){player.AddBuff(mod.BuffType("Locked"), 2, true);}*/

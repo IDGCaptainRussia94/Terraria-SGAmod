@@ -287,6 +287,7 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Glow_"+ 239));//112
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_" + TileID.ExposedGems));//113
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_" + TileID.Crystals));//114
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.DetonatingBubble));//115
 
 				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 				Texture2D PlatTex = ModContent.GetTexture("Terraria/Tiles_"+TileID.Asphalt);
@@ -380,6 +381,7 @@ namespace SGAmod
 			SGAPlayer.ShieldTypes.Add(ItemType("RiotShield"), ProjectileType("RiotShieldProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("SolarShield"), ProjectileType("SolarShieldProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("CapShield"), ProjectileType("CapShieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("AegisaltAetherstone"), ProjectileType("AegisaltAetherstoneProj"));
 
 			SGAPlayer.ShieldTypes.Add(ItemType("LaserMarker"), ProjectileType("LaserMarkerProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("GraniteMagnet"), ProjectileType("GraniteMagnetProj"));

@@ -194,7 +194,7 @@ namespace SGAmod.Items.Armors.Engineer
 
         public bool EngieArmor()
         {
-            return (player.armor[0].type == ItemType<EngineerHead>() && player.armor[1].type == ItemType<EngineerChest>() && player.armor[2].type == ItemType<EngineerLegs>());//Really is there a better way?
+            return (!player.armor[0].IsAir && !player.armor[1].IsAir && !player.armor[2].IsAir) && (player.armor[0].type == ItemType<EngineerHead>() && player.armor[1].type == ItemType<EngineerChest>() && player.armor[2].type == ItemType<EngineerLegs>());//Really is there a better way?
         }
         private void RaycastTile(int z, int zz, ref int highest, ref int middleheight, ref int middletouch, ref int average, Point16 playerpos, ref Vector2 touchpoint)
         {

@@ -70,7 +70,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 
 		public override void SetDefaults()
 		{
-			item.damage = 100;
+			item.damage = 120;
 			item.crit = 10;
 			item.width = 32;
 			item.height = 32;
@@ -365,7 +365,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 			enemiesHit.Add(new Point(target.whoAmI, 1000000));
 			List<NPC> closestnpcs = SGAUtils.ClosestEnemies(projectile.Center, 640, projectile.Center, AddedWeight: enemiesHit, checkCanChase: false);
 
-			target.SGANPCs().AddDamageStack(damage, 180);
+			target.SGANPCs().AddDamageStack((int)(damage * 1.5f), 200);
 
 			for (float num315 = 4; num315 < 16; num315 = num315 + 1f)
 			{

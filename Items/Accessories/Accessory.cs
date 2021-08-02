@@ -3321,7 +3321,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Star Collector");
-			Tooltip.SetDefault("Picking up Mana stars reduces Mana Sickness by 1 second");
+			Tooltip.SetDefault("Picking up Mana stars reduces Mana Sickness by 1 second\nFurthermore, if your mana is full, heal 5 HP");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3689,7 +3689,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("T.P.D.C.P.U");
-			Tooltip.SetDefault("'Twin Prime Destroyers Coolent Processing Unit'\nReduces all new Cooldown Stacks by 25%\nRemoves the negative effects of Enchanted Amulets\nReservation Amulet gets improved stats instead\nAmulet of Diehard Cataclysm is not affected");
+			Tooltip.SetDefault("'Twin Prime Destroyers Coolent Processing Unit'\nReduces all new Cooldown Stacks by 25%\nBarrier recharge delay is reduced by 2 seconds\nGrants Immunity to Shield Break\nRemoves the negative effects of most Enchanted Amulets\nAmulet of Diehard Cataclysm is not affected");
 		}
 
 		public override void SetDefaults()

@@ -154,6 +154,13 @@ namespace SGAmod
                     Color c = Main.hslToRgb(0.7f, 0.15f, 0.7f);
                     tooltips.Add(new TooltipLine(mod, "Clip Item", Idglib.ColorText(c, ammoclip == 2 ? "Counts as a revolver: Automatically Reloads itself when held" : "This weapon has a clip and requires manual reloading")));
                 }
+
+                if (item?.modItem is IDevItem)
+                {
+                    (string, string) dev = ((IDevItem)item.modItem).DevName();
+                    Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
+                    tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, dev.Item1 + "'s "+(dev.Item2+ (dev.Item2 != "" ? " " : "")) + "dev weapon")));
+                }
             }
 
             if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore>0))
@@ -354,7 +361,7 @@ namespace SGAmod
             }
             if (set == "Jellybru")
             {
-                player.setBonus = "Reserves some (more with mana cost reduction) of your max HP x2 as an energy barrier\nThese barriers are boosted by your Magic and Tech Damage Scaling\nBarriers fully recharge in 6 seconds" + Idglib.ColorText(Color.PaleTurquoise, "When Shield Up: Gain Ankh Charm effects") + "\n(If jelly had any dev weapons) is empowered\n \n ";
+                player.setBonus = "Reserves some (more with mana cost reduction) of your max HP x2 as an energy barrier\nThese barriers are boosted by your Magic and Tech Damage Scaling\nBarriers fully recharge in 6 seconds" + Idglib.ColorText(Color.PaleTurquoise, "When Shield Up: Gain Ankh Charm effects") + "\nThe Jelly Brew and Aegisalt Aetherstone are empowered\n \n ";
                 sgaplayer.jellybruSet = true;
                 sgaplayer.devempowerment[2] = 3;
             }        
@@ -591,6 +598,13 @@ namespace SGAmod
                     int index = player.FindBuffIndex(BuffID.ManaSickness);
                     if (index >= 0)
                         player.buffTime[index] -= 60;
+
+                    if (player.statManaMax2 >= player.statManaMax2)
+                    {
+                        player.HealEffect(5);
+                        player.statLife += 5;
+                    }
+
                 }
             }
             //lifesteal/gain

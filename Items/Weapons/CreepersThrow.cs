@@ -9,12 +9,17 @@ using Idglibrary;
 
 namespace SGAmod.Items.Weapons
 {
-	public class CreepersThrow : ModItem
+	public class CreepersThrow : ModItem,IDevItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mister Creeper's Explosive Throw");
 			Tooltip.SetDefault("Controls a yoyo shaped creeper that lights a fuse when near enemies and explodes violently shortly after\nHowever, watch out as you can hurt yourself from the creeper's explosion");
+		}
+
+		public (string, string) DevName()
+		{
+			return ("Mister Creeper","other (legacy)");
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -25,9 +30,6 @@ namespace SGAmod.Items.Weapons
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "40% increased damage"));
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Creates smaller explosions leading up to the larger one"));
 			}
-			Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
-			//string potion="[i:" + ItemID.RedPotion + "]";
-			tooltips.Add(new TooltipLine(mod, "IDG Debug Item", Idglib.ColorText(c, "Mister Creeper's other (Legecy) Dev Weapon")));
 		}
 
 		public override void SetDefaults()

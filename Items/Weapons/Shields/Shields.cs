@@ -130,7 +130,12 @@ namespace SGAmod.Items.Weapons.Shields
 		public int blocktimer = 1;
 		protected virtual float BlockAngle => 0.75f;
 		protected virtual float BlockDamage => 0.25f;
+		protected virtual int BlockPeriod => 30;
 		protected virtual float AngleAdjust => 0f;
+		protected virtual float BlockAngleAdjust => 0f;
+		protected virtual float AlphaFade => 1f;
+		protected virtual float HoldingDistance => 10f;
+
 		public virtual float BlockDamagePublic
 		{
 			get
@@ -219,7 +224,7 @@ namespace SGAmod.Items.Weapons.Shields
 				if (projectile.owner == Main.myPlayer)
 				{
 					Vector2 diff = mousePos - player.Center;
-					projectile.velocity = diff;
+					projectile.velocity = diff.RotatedBy(BlockAngleAdjust);
 					projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
 					projectile.netUpdate = true;
 					projectile.Center = mousePos;
@@ -243,7 +248,7 @@ namespace SGAmod.Items.Weapons.Shields
 					player.bodyFrame.Y = player.bodyFrame.Height * 5;
 				player.direction = (directionmeasure.X > 0).ToDirectionInt();
 
-				projectile.Center = player.Center + (projectile.velocity * 10f);
+				projectile.Center = player.Center + (projectile.velocity * HoldingDistance);
 				projectile.velocity *= 8f;
 
 			}
@@ -256,7 +261,7 @@ namespace SGAmod.Items.Weapons.Shields
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 			float facing = facingleft ? AngleAdjust : -AngleAdjust;
 
-			if (blocktimer < 30 && blocktimer > 1)
+			if (blocktimer < BlockPeriod && blocktimer > 1)
 				Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f) * MathHelper.Clamp((30 - blocktimer) / 8f, 0f, 1f), (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale + 0.25f, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
 
 		}
@@ -271,7 +276,7 @@ namespace SGAmod.Items.Weapons.Shields
 			Texture2D texture = MyTexture;
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 			float facing = facingleft ? AngleAdjust : -AngleAdjust;
-			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor * projectile.Opacity, (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor * AlphaFade * projectile.Opacity, (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
 		}
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
@@ -311,7 +316,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (GetType() == typeof(CorrodedShieldProjDash))
-			target.AddBuff(mod.BuffType("AcidBurn"), (int)(60 * 1.50));
+				target.AddBuff(mod.BuffType("AcidBurn"), (int)(60 * 1.50));
 		}
 
 		public override void AI()
@@ -525,7 +530,7 @@ namespace SGAmod.Items.Weapons.Shields
 			item.height = 32;
 			item.useTime = 70;
 			item.useTime = 20;
-            item.useAnimation = 20;
+			item.useAnimation = 20;
 			item.damage = 0;
 			item.useStyle = ItemUseStyleID.SwingThrow;
 			item.value = Item.sellPrice(0, 2, 50, 0);
@@ -571,7 +576,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
-        {
+		{
 			Vector2 vector27 = default(Vector2);
 			vector27.X = (float)Main.mouseX + Main.screenPosition.X;
 			//Just RoD stuff
@@ -607,9 +612,9 @@ namespace SGAmod.Items.Weapons.Shields
 
 			player.AddBuff(BuffID.ChaosState, 360);
 			return false;
-        }
+		}
 
-        public override void AddRecipes()
+		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.RodofDiscord, 1);
@@ -739,7 +744,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 		public static void Entrap(Vector2 where, float distance, int count, int owner, Projectile projpoj = null)
 		{
-			List<NPC> them = Main.npc.Where(testnpc => testnpc.active && CrackedMirrorProj.AffectNPC(testnpc) && testnpc.DistanceSQ(where) < distance*distance && !testnpc.HasBuff(ModContent.BuffType<PiercedVulnerable>())).ToList();
+			List<NPC> them = Main.npc.Where(testnpc => testnpc.active && CrackedMirrorProj.AffectNPC(testnpc) && testnpc.DistanceSQ(where) < distance * distance && !testnpc.HasBuff(ModContent.BuffType<PiercedVulnerable>())).ToList();
 			if (them.Count > 0)
 			{
 				int limit = 0;
@@ -781,7 +786,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 			if (projectile.timeLeft < 70)
 			{
-				if ((projectile.timeLeft < 40 && projectile.velocity.Y>3f) || projectile.timeLeft>6)
+				if ((projectile.timeLeft < 40 && projectile.velocity.Y > 3f) || projectile.timeLeft > 6)
 					projectile.timeLeft = 5;
 				//if (owner.velocity.Y<15f)
 				player.velocity.Y += 0.25f;
@@ -810,6 +815,99 @@ namespace SGAmod.Items.Weapons.Shields
 		}
 
 	}
+	public class EarthbreakerRockSpike : ModProjectile
+	{
+		float strength => Math.Min(1f - (projectile.localAI[1] / 110f), 1f);
+		public static int OffsetPoint => 64;
+		public static bool ApplyPrismOnce = false;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Earthbreaker Spike");
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.tileCollide = false;
+			projectile.timeLeft = 300;
+			projectile.hide = true;
+		}
+		public override string Texture
+		{
+			get { return "SGAmod/Invisible"; }
+		}
+		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
+		{
+			drawCacheProjsBehindNPCsAndTiles.Add(projectile.whoAmI);
+		}
+		public override bool PreKill(int timeLeft)
+		{
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Item70, projectile.Center);
+			if (sound != null)
+			{
+				sound.Pitch -= 0.50f;
+
+			}
+			return true;
+		}
+		public override void AI()
+		{
+			projectile.localAI[0] += 1;
+			NPC target = Main.npc[(int)projectile.ai[1]];
+			if (projectile.localAI[0] > 5)
+			{
+				projectile.velocity *= 0.85f;
+
+			}
+			if (target.active && target.life > 0)
+			{
+				SGAnpcs snpc = target.SGANPCs();
+				target.AddBuff(ModContent.BuffType<PiercedVulnerable>(), 60 * 15);
+				snpc.noMovement = Math.Max(snpc.noMovement, 3);
+				target.Center = projectile.Center + new Vector2(0, -OffsetPoint);
+				if (projectile.velocity.Y < 0 && !Collision.CanHit(target.Center, 16, 16, target.Center - Vector2.UnitY * 32, 8, 8))
+					projectile.velocity.Y = -projectile.velocity.Y / 2f;
+
+			}
+			else
+			{
+				projectile.Kill();
+			}
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			if (projectile.localAI[1] < 100)
+				projectile.localAI[1] = 100 + Main.rand.Next(0, 3);
+
+			float rot = MathHelper.Pi;
+			Texture2D tex = Main.extraTexture[35];
+			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2.5f;
+			Vector2 drawPos = ((projectile.Center)) + new Vector2(0f, 4f);
+			int timing = (int)(projectile.localAI[1] - 100);
+			timing %= 3;
+			timing *= ((tex.Height) / 3);
+
+			for (int i = -64; i < 180; i += 32)
+			{
+				for (int a = -8; a < 9; a += 8)
+				{
+					Point loc = new Point((int)((drawPos.X + a) / 16f), (int)((drawPos.Y + (i + Math.Abs(a))) / 16f));
+					Color lighting = Lighting.GetColor(loc.X, loc.Y);
+					if (Lighting.GetBlackness(loc.X, loc.Y).R < 220)
+					{
+						spriteBatch.Draw(tex, drawPos - Main.screenPosition + new Vector2(a, i + Math.Abs(a)), new Rectangle(0, timing, tex.Width, (tex.Height) / 3), Color.Lerp(Color.Brown, Color.White, 0.5f).MultiplyRGB(lighting) * projectile.Opacity, projectile.rotation + rot, drawOrigin, projectile.scale * 1f, SpriteEffects.None, 0f);
+					}
+				}
+			}
+
+
+			return false;
+
+		}
+
+	}
+
 	public class SolarShield : CorrodedShield, IShieldItem
 	{
 		private SolarShieldProj SolarShieldGet => GetShieldProj?.modProjectile as SolarShieldProj;
@@ -1008,7 +1106,6 @@ namespace SGAmod.Items.Weapons.Shields
 
 	}
 
-
 	public class CapShield : CorrodedShield, IShieldItem
 	{
 		public override string DamagePercent => "at a decent angle";
@@ -1147,8 +1244,6 @@ namespace SGAmod.Items.Weapons.Shields
 			recipe.AddRecipe();
 		}
 	}
-
-
 	public class CapShieldProj : CorrodedShieldProj, IDrawAdditive
 	{
 		protected override float BlockAngle => 0.4f;
@@ -1467,99 +1562,318 @@ namespace SGAmod.Items.Weapons.Shields
 
 	}
 
-
-	public class EarthbreakerRockSpike : ModProjectile
+	public class AegisaltAetherstone : CorrodedShield, IShieldItem,IDevItem
 	{
-		float strength => Math.Min(1f - (projectile.localAI[1] / 110f), 1f);
-		public static int OffsetPoint => 64;
-		public static bool ApplyPrismOnce = false;
+		public override string DamagePercent => "at a large angle";
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Earthbreaker Spike");
+			DisplayName.SetDefault("Aegisalt Aetherstone");
+			Tooltip.SetDefault("Makes copies of itself when held out; covering every direction\nEach shield goes down after taking a hit, and recovers faster with Melee Speed\nAttack launches all active shields out as piercing waves\nAlt-Fire tightens the shields, allowing for a narrower wave shot\nPerforming a Just Block spawns hearts and mana stars, and resets Barrier cooldown");
+			Item.staff[item.type] = true;
 		}
+
+		public (string, string) DevName()
+		{
+			return ("JellyBru", "other");
+		}
+
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
+			item.width = 24;
+			item.height = 32;
+			item.damage = 100;
+			item.useTime = 40;
+			item.useAnimation = 40;
+			item.melee = true;
+			item.value = Item.sellPrice(0, 10, 0, 0);
+			item.rare = ItemRarityID.Cyan;
+			item.shoot = ModContent.ProjectileType<AegisaltAetherstoneProjDash>();
+			item.shootSpeed = 16f;
+			item.expert = true;
+		}
+        public override bool AltFunctionUse(Player player)
+        {
+			List<Projectile> them = Main.projectile.Where(testby => testby.owner == player.whoAmI && testby.modProjectile != null && testby.modProjectile is AegisaltAetherstoneProj).ToList();
+			foreach (Projectile proj2 in them)
+			{
+				AegisaltAetherstoneProj projha = (AegisaltAetherstoneProj)proj2.modProjectile;
+				if (projha.blocktimer < projha.TimeToCopy)
+                {
+					return false;
+                }
+			}
+
+			return true;
+        }
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+			if (player.altFunctionUse != 2)
+			{
+				return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+			}
+			else
+			{
+				List<Projectile> them = Main.projectile.Where(testby => testby.owner == player.whoAmI && testby.modProjectile != null && testby.modProjectile is AegisaltAetherstoneProj).ToList();
+				foreach (Projectile proj2 in them)
+				{
+					AegisaltAetherstoneProj projha = (AegisaltAetherstoneProj)proj2.modProjectile;
+					projha.tightFormation = projha.tightFormation ? false : true;
+					if (projha.genCopy == 0)
+					{
+						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DefenseTowerSpawn, (int)proj2.Center.X, (int)proj2.Center.Y);
+						if (sound != null)
+						{
+							sound.Pitch = 0.8f;
+						}
+					}
+
+				}
+			}
+			return false;
+		}
+
+    }
+
+	public class AegisaltAetherstoneProj : CorrodedShieldProj, IDrawAdditive
+	{
+		protected override float BlockDamage => 0.25f;
+		protected override float BlockAngle => disabledTimer > 0 ? 10f : 0.25f;
+
+		protected override float AlphaFade => MathHelper.Clamp(1f - Math.Min(disabledTimer / 20f, 0.75f), 0f, Math.Min(blocktimer / TimeToCopy, 1f));
+
+		protected override float HoldingDistance => MathHelper.Clamp(((blocktimer / TimeToCopy) * 32f) + Math.Abs(genCopy * 100), 0f, 32f);
+
+		public bool copied = false;
+
+		public bool tightFormation = false;
+
+		public float spreadValue = 1f;
+
+		public float TimeToCopy => 30f * player.meleeSpeed;
+		int maxCopies = 2;
+		public float disabledTimer = 0;
+		float AddAngleAmmount => (((MathHelper.Pi * 0.80f) / ((float)maxCopies)) * (genCopy > 0 ? 1f : -1f));
+
+		protected override float BlockAngleAdjust => (genCopy == 0 ? 0 : angleAdd + MathHelper.Clamp(blocktimer / TimeToCopy, 0f, 1f) * AddAngleAmmount)* spreadValue;
+
+		public int genCopy = 0;
+		public float angleAdd = 0;
+
+		public override Texture2D MyTexture => mod.GetTexture("Items/Weapons/Shields/AegisaltAetherstoneProj");
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Aegisalt Aetherstone");
+		}
+		public override void AI()
+		{
+
+			spreadValue += ((!tightFormation ? 1f : 0.25f) - spreadValue) / 8f;
+
+			disabledTimer -= 6f-(player.meleeSpeed*5f);
+
+			if (disabledTimer > 0)
+			{
+				projectile.timeLeft = 5;
+			}
+
+			if (!copied && blocktimer > TimeToCopy && Math.Abs(genCopy) < maxCopies)
+			{
+				copied = true;
+				for (int i = -1; i < 2; i += 2)
+				{
+					if (genCopy == 0 || (genCopy < 0 && i < 0) || (genCopy > 0 && i > 0))
+					{
+						Projectile proj = Projectile.NewProjectileDirect(projectile.Center, Vector2.Zero, projectile.type, projectile.damage, projectile.knockBack, projectile.owner);
+						if (proj != null)
+						{
+							((AegisaltAetherstoneProj)proj?.modProjectile).genCopy = genCopy + i;
+
+							((AegisaltAetherstoneProj)proj?.modProjectile).angleAdd = angleAdd + (genCopy == 0 ? 0f : ((AegisaltAetherstoneProj)proj?.modProjectile).AddAngleAmmount);
+							if (i == 1)
+							{
+								SoundEffectInstance sound = Main.PlaySound(SoundID.Item78, (int)projectile.Center.X, (int)projectile.Center.Y);
+								if (sound != null)
+								{
+									sound.Pitch = -0.8f + Math.Abs(genCopy) / 10f;
+								}
+							}
+						}
+					}
+				}
+			}
+			base.AI();
+		}
+		public override void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex)
+		{
+			player.SGAPly().energyShieldAmmountAndRecharge.Item3 = 0;
+			player.QuickSpawnItem(ItemID.Heart);
+			player.QuickSpawnItem(ItemID.Star);
+		}
+		public override bool HandleBlock(ref int damage, Player player)
+		{
+			disabledTimer = 75;
+			return true;
+		}
+
+	}
+
+	public class AegisaltAetherstoneProjDash : CorrodedShieldProjDash, IShieldBashProjectile
+	{
+		public override int HoldType => ModContent.ItemType<AegisaltAetherstone>();
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("AegisaltAetherstoneProj");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.Boulder);
+			aiType = ProjectileID.Boulder;
+			projectile.friendly = true;
+			projectile.timeLeft = 2;
+			projectile.hostile = false;
+			projectile.penetrate = -1;
+			projectile.light = 0.5f;
+			projectile.width = 64;
+			projectile.height = 64;
+			projectile.melee = true;
 			projectile.tileCollide = false;
-			projectile.timeLeft = 300;
-			projectile.hide = true;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+		}
+
+		public override void AI()
+		{
+			Player owner = Main.player[projectile.owner];
+			if (owner.SGAPly().jellybruSet)
+				projectile.localNPCHitCooldown = 4;
+
+			foreach (Projectile proj2 in Main.projectile.Where(testby => testby.owner == projectile.owner && testby.modProjectile != null && testby.modProjectile is AegisaltAetherstoneProj))
+			{
+				AegisaltAetherstoneProj projha = (AegisaltAetherstoneProj)proj2.modProjectile;
+				if (projha.disabledTimer < 1)
+				{
+					projha.disabledTimer = Math.Max(projha.disabledTimer, 75);
+					Projectile.NewProjectileDirect(projectile.Center, Vector2.Normalize(proj2.velocity) * projectile.velocity.Length(), ModContent.ProjectileType<AegisaltAetherstoneProjSlashWave>(), projectile.damage, projectile.knockBack, projectile.owner);
+
+					SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_FlameburstTowerShot, (int)projectile.Center.X, (int)projectile.Center.Y);
+					if (sound != null)
+					{
+						sound.Pitch = 0.25f;
+					}
+
+				}
+			}
 		}
 		public override string Texture
 		{
 			get { return "SGAmod/Invisible"; }
 		}
-		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
+
+	}
+
+	public class AegisaltAetherstoneProjSlashWaveEffect
+	{
+
+		public int time = 0;
+		public int timeMax = 0;
+		public Vector2 position;
+
+		public AegisaltAetherstoneProjSlashWaveEffect(int time,Vector2 pos)
 		{
-			drawCacheProjsBehindNPCsAndTiles.Add(projectile.whoAmI);
-		}
-		public override bool PreKill(int timeLeft)
-		{
-			SoundEffectInstance sound = Main.PlaySound(SoundID.Item70, projectile.Center);
-			if (sound != null)
-			{
-				sound.Pitch -= 0.50f;
-
-			}
-			return true;
-		}
-		public override void AI()
-		{
-			projectile.localAI[0] += 1;
-			NPC target = Main.npc[(int)projectile.ai[1]];
-			if (projectile.localAI[0] > 5)
-			{
-				projectile.velocity *= 0.85f;
-
-			}
-			if (target.active && target.life > 0)
-			{
-				SGAnpcs snpc = target.SGANPCs();
-				target.AddBuff(ModContent.BuffType<PiercedVulnerable>(), 60 * 15);
-				snpc.noMovement = Math.Max(snpc.noMovement, 3);
-				target.Center = projectile.Center + new Vector2(0, -OffsetPoint);
-				if (projectile.velocity.Y < 0 && !Collision.CanHit(target.Center, 16, 16, target.Center - Vector2.UnitY * 32, 8, 8))
-					projectile.velocity.Y = -projectile.velocity.Y / 2f;
-
-			}
-			else
-			{
-				projectile.Kill();
-			}
-		}
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-		{
-
-			if (projectile.localAI[1] < 100)
-				projectile.localAI[1] = 100 + Main.rand.Next(0, 3);
-
-			float rot = MathHelper.Pi;
-			Texture2D tex = Main.extraTexture[35];
-			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2.5f;
-			Vector2 drawPos = ((projectile.Center)) + new Vector2(0f, 4f);
-			int timing = (int)(projectile.localAI[1] - 100);
-			timing %= 3;
-			timing *= ((tex.Height) / 3);
-
-			for (int i = -64; i < 180; i += 32)
-			{
-				for (int a = -8; a < 9; a += 8)
-				{
-					Point loc = new Point((int)((drawPos.X + a) / 16f), (int)((drawPos.Y + (i + Math.Abs(a))) / 16f));
-					Color lighting = Lighting.GetColor(loc.X, loc.Y);
-					if (Lighting.GetBlackness(loc.X, loc.Y).R < 220)
-					{
-						spriteBatch.Draw(tex, drawPos- Main.screenPosition + new Vector2(a, i+Math.Abs(a)), new Rectangle(0, timing, tex.Width, (tex.Height) / 3), Color.Lerp(Color.Brown, Color.White, 0.5f).MultiplyRGB(lighting) * projectile.Opacity, projectile.rotation + rot, drawOrigin, projectile.scale * 1f, SpriteEffects.None, 0f);
-					}
-				}
-			}
-
-
-			return false;
-
+			this.time = 0;
+			this.timeMax = time;
+			position = pos;
 		}
 
 	}
 
+	public class AegisaltAetherstoneProjSlashWave : ModProjectile,IDrawAdditive
+	{
+		List<AegisaltAetherstoneProjSlashWaveEffect> effects = new List<AegisaltAetherstoneProjSlashWaveEffect>();
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("AegisaltAetherstoneProj");
+		}
+		public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.Boulder);
+			aiType = ProjectileID.Boulder;
+			projectile.friendly = true;
+			projectile.timeLeft = 60;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+			projectile.hostile = false;
+			projectile.penetrate = -1;
+			projectile.light = 0.5f;
+			projectile.width = 72;
+			projectile.height = 72;
+			projectile.melee = true;
+			projectile.tileCollide = false;
+			projectile.aiStyle = -1;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+		}
+
+		public override void AI()
+		{
+            projectile.ai[0] += 1;
+
+			if (projectile.ai[0] % 4 == 0)
+            {
+				effects.Add(new AegisaltAetherstoneProjSlashWaveEffect(25, projectile.Center));
+			}
+
+			for (int i = 0; i < effects.Count; i += 1)
+			{
+				effects[i].time += 1;
+				if (effects[i].time > effects[i].timeMax)
+                {
+					effects.RemoveAt(i);
+					i -= 1;
+				}
+			}
+			projectile.rotation = projectile.velocity.ToRotation();
+		}
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			bool facingleft = projectile.velocity.X > 0;
+			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
+			Texture2D texture = Main.projectileTexture[projectile.type];
+			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+			float facing = -1;
+
+			for (int i = 0; i < effects.Count; i += 1)
+			{
+				AegisaltAetherstoneProjSlashWaveEffect effectx = effects[i];
+				float alpha = (1f - MathHelper.Clamp(effectx.time / ((float)effectx.timeMax),0f, 1f))*Math.Min(projectile.timeLeft / 30f, 1f);
+				Main.spriteBatch.Draw(texture, effectx.position - Main.screenPosition, null, Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f) * alpha, projectile.rotation, origin, (Vector2.One*projectile.scale) + new Vector2(0, 1f-alpha), effect, 0);
+			}
+		}
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+			return false;
+        }
+
+        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+			Texture2D texture = Main.projectileTexture[projectile.type];
+			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.White * Math.Min(projectile.timeLeft / 30f, 1f), projectile.rotation, origin, (Vector2.One * projectile.scale), SpriteEffects.None, 0);
+		}
+
+        public override string Texture
+		{
+			get { return "SGAmod/Items/Weapons/Shields/AegisaltAetherstoneProjAlt"; }
+		}
+
+	}
 
 }

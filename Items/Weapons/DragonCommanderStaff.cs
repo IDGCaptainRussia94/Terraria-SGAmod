@@ -19,7 +19,7 @@ using Terraria.Utilities;
 namespace SGAmod.Items.Weapons
 {
 
-	public class DragonCommanderStaff : ModItem, IHitScanItem
+	public class DragonCommanderStaff : ModItem, IHitScanItem, IDevItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -31,6 +31,10 @@ namespace SGAmod.Items.Weapons
         {
 			SGAPlayer sga = player.SGAPly();
 			mult = 0.25f+((sga.ExpertiseCollectedTotal/20000f)*0.75f);
+		}
+		public (string, string) DevName()
+        {
+			return ("IDGCaptainRussia94","other");
 		}
 
         public override void SetDefaults()
@@ -108,11 +112,11 @@ namespace SGAmod.Items.Weapons
 			Projectile.NewProjectile(Main.MouseWorld.X, Main.MouseWorld.Y, 0,0, type, damage, knockBack, player.whoAmI);
 			return false;
         }
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        /*public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
 			tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, "IDGCaptainRussia94's other dev weapon")));
-		}
+		}*/
 	}
 
 	public class DrakenSummonProj : ModProjectile

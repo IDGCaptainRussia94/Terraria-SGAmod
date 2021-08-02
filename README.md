@@ -142,6 +142,10 @@ Changelog:
 
 -Buffed Mister Creeper's Slick Suit: Throwing damage increased to 32% (from 25%), endurance increased to 20% (from 15%)
 
+-Buffed T.P.D.C.P.U: Now grants complete immunity to Shield Break
+
+-Buffed Star Collector: Now heals 5 HP at max mana
+
 -Buffed all consumable Jab-lins: as they now have a chance to drop again after expiring
 
 -Nerfed Mister Creeper's Armor Set: all damage types that are not melee and throwing get a -10% damage and crit chance per armor piece

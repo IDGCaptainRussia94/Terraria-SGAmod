@@ -10,7 +10,7 @@ using AAAAUThrowing;
 
 namespace SGAmod.Items.Weapons
 {
-	class Stormbreaker : ModItem
+	class Stormbreaker : ModItem,IDevItem
 	{
 		bool altfired=false;
 
@@ -21,7 +21,12 @@ namespace SGAmod.Items.Weapons
 			Tooltip.SetDefault("Left click to guide the Stormbreaker at enemies and deal an additional Squareroot of their max life on hit\nRight click to hold the hammer up and smite your foes, Consumes 100 Electric Charge per foe to be smited\nfoes must be marked via primary fire (40% chance if immune) or wet to be smited\n2 more bolts are summoned during a rainstorm, but overall are less accurate\n'atleast it's not yet another Infinity Gauntlet'");
 		}
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
+		public (string,string) DevName()
+		{
+			return ("Mister Creeper","(legacy)");
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
 			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[1] > 0)
 			{
@@ -29,9 +34,6 @@ namespace SGAmod.Items.Weapons
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "10% increased damage on Primary"));
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Secondary will always summon lightning as if it were raining"));
 			}
-			Color c = Main.hslToRgb((float)(Main.GlobalTime/4)%1f, 0.4f, 0.45f);
-            //string potion="[i:" + ItemID.RedPotion + "]";
-            tooltips.Add(new TooltipLine(mod,"IDG Debug Item", Idglib.ColorText(c, "Mister Creeper's (Legecy) Dev Weapon")));
         }
 		public override void SetDefaults()
 		{

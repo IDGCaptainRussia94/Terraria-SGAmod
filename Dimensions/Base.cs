@@ -296,7 +296,8 @@ namespace SGAmod.Dimensions
                 }
                 if (SGAPocketDim.WhereAmI == typeof(DeeperDungeon))
                 {
-                    return mod.GetTexture("SpaceMapBackground_NoSun");
+                    Texture2D bg = (Texture2D)typeof(Main).GetField("mapBG5Texture", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(Main.instance);
+                    return bg;
                 }
             }
             return null;

@@ -443,7 +443,8 @@ namespace SGAmod
 					for(int i=0;i<damageStacks.Count;i+=1)
 					{
 						impaled += damageStacks[i].damage;
-						damageStacks[i].Update();
+						if (damageStacks[i].Update())
+							damageStacks.RemoveAt(i);
 					}
 				}
 

@@ -109,7 +109,6 @@ namespace SGAmod
 
 		public void ShieldDepleted()
         {
-			if (!tpdcpu)
 			CauseShieldBreak(60 * 7);
 		}
 
@@ -198,20 +197,22 @@ namespace SGAmod
 
 		public void CauseShieldBreak(int time)
         {
-			player.AddBuff(ModContent.BuffType<ShieldBreak>(), time);
-			CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Aquamarine, "Shield Break!", true, false);
-			SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)player.Center.X, (int)player.Center.Y, 53);
-			if (sound != null)
-				sound.Pitch -= 0.5f;
-
-			for (int i = 0; i < 20; i += 1)
+			if (!tpdcpu)
 			{
-				int dust = Dust.NewDust(new Vector2(player.Center.X - 4, player.Center.Y - 8), 8, 16, 269);
-				Main.dust[dust].scale = 0.50f;
-				Main.dust[dust].noGravity = false;
-				Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
-			}
+				player.AddBuff(ModContent.BuffType<ShieldBreak>(), time);
+				CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Aquamarine, "Shield Break!", true, false);
+				SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)player.Center.X, (int)player.Center.Y, 53);
+				if (sound != null)
+					sound.Pitch -= 0.5f;
 
+				for (int i = 0; i < 20; i += 1)
+				{
+					int dust = Dust.NewDust(new Vector2(player.Center.X - 4, player.Center.Y - 8), 8, 16, 269);
+					Main.dust[dust].scale = 0.50f;
+					Main.dust[dust].noGravity = false;
+					Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
+				}
+			}
 		}
 
 		public bool ConsumeElectricCharge(int requiredcharge, int delay, bool damage = false,bool consume = true)
@@ -519,41 +520,47 @@ namespace SGAmod
 						}
 					}*/
 					Projectile proj = Main.projectile[heldShield];
-					if (proj.active)
-					foundhim = heldShield;
-
-				if (foundhim > -1)
+				if (proj.active)
 				{
-					CorrodedShieldProj modShieldProj = proj.modProjectile as CorrodedShieldProj;
-					if (modShieldProj == null)
-						return false;
-					int blocktime = modShieldProj.blocktimer;
-					bool blocking = modShieldProj.Blocking;
-					if (proj == null || blocktime < 2 || !blocking)
-						return false;
-
-
-
-					Vector2 itavect2 = Main.projectile[foundhim].Center - player.Center;
-					itavect2.Normalize();
-					Vector2 ang1 = Vector2.Normalize(proj.velocity);
-					float diff = Vector2.Dot(itavect, ang1);
-
-
-					if (diff > (proj.modProjectile as CorrodedShieldProj).BlockAnglePublic)
+					foreach (Projectile proj2 in Main.projectile.Where(testby => testby.modProjectile != null && testby.modProjectile is CorrodedShieldProj))
 					{
-						if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
-							return true;
+						proj = proj2;
+						foundhim = heldShield;
 
-						float damageval = 1f - modShieldProj.BlockDamagePublic;
-						damage = (int)(damage * damageval);
+						if (foundhim > -1)
+						{
+							CorrodedShieldProj modShieldProj = proj.modProjectile as CorrodedShieldProj;
+							if (modShieldProj == null)
+								return false;
+							int blocktime = modShieldProj.blocktimer;
+							bool blocking = modShieldProj.Blocking;
+							if (proj == null || blocktime < 2 || !blocking)
+								continue;// return false;
 
-						Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
 
-						if (!NoHitCharm && !(proj.modProjectile as CorrodedShieldProj).HandleBlock(ref damage, player))
-							return true;
 
-						return false;
+							Vector2 itavect2 = Main.projectile[foundhim].Center - player.Center;
+							itavect2.Normalize();
+							Vector2 ang1 = Vector2.Normalize(proj.velocity);
+							float diff = Vector2.Dot(itavect, ang1);
+
+
+							if (diff > (proj.modProjectile as CorrodedShieldProj).BlockAnglePublic)
+							{
+								if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
+									return true;
+
+								float damageval = 1f - modShieldProj.BlockDamagePublic;
+								damage = (int)(damage * damageval);
+
+								Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
+
+								if (!NoHitCharm && !(proj.modProjectile as CorrodedShieldProj).HandleBlock(ref damage, player))
+									return true;
+
+								continue;// return false;
+							}
+						}
 					}
 				}
 

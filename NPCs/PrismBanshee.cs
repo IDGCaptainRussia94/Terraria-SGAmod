@@ -496,7 +496,7 @@ namespace SGAmod.NPCs
 
 			hallowed.Parameters["alpha"].SetValue(1);
 			hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
-			hallowed.Parameters["prismAlpha"].SetValue(0.80f);
+			hallowed.Parameters["prismAlpha"].SetValue(0.10f);
 			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));
 			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -npc.localAI[0] / 150f, npc.localAI[0] / 75f));
 			hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
@@ -916,10 +916,6 @@ namespace SGAmod.NPCs
 			npc.DeathSound = SoundID.NPCDeath39;
 			npc.Opacity = 0f;
 		}
-		public override string Texture
-		{
-			get { return ("Terraria/NPC_" + NPCID.DungeonSpirit); }
-		}
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.WriteVector2(flyTo);
@@ -1084,95 +1080,95 @@ namespace SGAmod.NPCs
 
 			if (hinted.projectile.Opacity > 0)
 			{
-			if (hinted.projectile.localAI[0] < 100)
-				hinted.projectile.localAI[0] = 100 + Main.rand.Next(0, 3);
+				if (hinted.projectile.localAI[0] < 100)
+					hinted.projectile.localAI[0] = 100 + Main.rand.Next(0, 3);
 
-			Texture2D tex = Main.extraTexture[35];
-			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2f;
-			Vector2 drawPos = ((hinted.VectorEffect - Main.screenPosition)) + new Vector2(0f, 4f);
-			int timing = (int)(hinted.projectile.localAI[0] - 100);
-			timing %= 3;
-			timing *= ((tex.Height) / 3);
-			spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height) / 3), Color.Lerp(Color.Magenta,Color.White,0.4f).MultiplyRGB(lightColor)*projectile.Opacity, hinted.projectile.rotation, drawOrigin, hinted.projectile.scale, SpriteEffects.None, 0f);
+				Texture2D tex = Main.extraTexture[35];
+				Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2f;
+				Vector2 drawPos = ((hinted.VectorEffect - Main.screenPosition)) + new Vector2(0f, 4f);
+				int timing = (int)(hinted.projectile.localAI[0] - 100);
+				timing %= 3;
+				timing *= ((tex.Height) / 3);
+				spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height) / 3), Color.Lerp(Color.Magenta, Color.White, 0.4f).MultiplyRGB(lightColor) * projectile.Opacity, hinted.projectile.rotation, drawOrigin, hinted.projectile.scale, SpriteEffects.None, 0f);
 			}
 
 			return false;
 
 		}
 
-static public void Draw(SpriteBatch spriteBatch, Color lightColor)
-{
-
-
-/*int testitem = ModContent.ProjectileType<PrismShardHinted>();
-
-var sortedGoods = Main.projectile.Where(testproj => testproj.active && testproj.type == testitem);
-
-foreach (Projectile proj in sortedGoods)
-{
-	PrismShardHinted hinted = proj.modProjectile as PrismShardHinted;
-
-	for (int k = hinted.oldPos.Length - 1; k > 0; k--)
-	{
-		if (hinted.oldPos[k] == default)
-			hinted.oldPos[k] = hinted.VectorEffect;
-	}
-
-	if (hinted.strength > 0)
-	{
-		TrailHelper trail = new TrailHelper("DefaultPass", SGAmod.Instance.GetTexture("noise"));
-		trail.color = delegate (float percent)
+		static public void Draw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			return Color.Magenta;
-		};
-		trail.projsize = hinted.projectile.Hitbox.Size() / 2f;
-		trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
-		trail.trailThickness = 4;
-		trail.trailThicknessIncrease = 6;
-		trail.capsize = new Vector2(4f, 0f);
-		trail.strength = hinted.strength;
-		trail.DrawTrail(hinted.oldPos.ToList(), hinted.projectile.Center);
-	}
-}
 
-Main.spriteBatch.End();
-Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-foreach (Projectile proj in sortedGoods)
-{
-	PrismShardHinted hinted = proj.modProjectile as PrismShardHinted;
+			/*int testitem = ModContent.ProjectileType<PrismShardHinted>();
 
-	Effect hallowed = SGAmod.HallowedEffect;
+			var sortedGoods = Main.projectile.Where(testproj => testproj.active && testproj.type == testitem);
 
-	hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
-	hallowed.Parameters["prismAlpha"].SetValue(0.75f);
-	hallowed.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Perlin"));
-	hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -hinted.projectile.localAI[1] / 50f, hinted.projectile.localAI[1] / 25f));
-	hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
-	hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.20f, hinted.projectile.localAI[1] / 20f));
-	hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
-	hallowed.Parameters["alpha"].SetValue(hinted.projectile.Opacity);
+			foreach (Projectile proj in sortedGoods)
+			{
+				PrismShardHinted hinted = proj.modProjectile as PrismShardHinted;
 
-	hallowed.CurrentTechnique.Passes["Prism"].Apply();
+				for (int k = hinted.oldPos.Length - 1; k > 0; k--)
+				{
+					if (hinted.oldPos[k] == default)
+						hinted.oldPos[k] = hinted.VectorEffect;
+				}
 
-	//if (hinted.projectile.Opacity > 0)
-	//{
-		if (hinted.projectile.localAI[0] < 100)
-			hinted.projectile.localAI[0] = 100 + Main.rand.Next(0, 3);
+				if (hinted.strength > 0)
+				{
+					TrailHelper trail = new TrailHelper("DefaultPass", SGAmod.Instance.GetTexture("noise"));
+					trail.color = delegate (float percent)
+					{
+						return Color.Magenta;
+					};
+					trail.projsize = hinted.projectile.Hitbox.Size() / 2f;
+					trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
+					trail.trailThickness = 4;
+					trail.trailThicknessIncrease = 6;
+					trail.capsize = new Vector2(4f, 0f);
+					trail.strength = hinted.strength;
+					trail.DrawTrail(hinted.oldPos.ToList(), hinted.projectile.Center);
+				}
+			}
 
-		Texture2D tex = Main.extraTexture[35];
-		Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2f;
-		Vector2 drawPos = ((hinted.VectorEffect - Main.screenPosition)) + new Vector2(0f, 4f);
-		int timing = (int)(hinted.projectile.localAI[0]-100);
-		timing %= 3;
-		timing *= ((tex.Height) / 3);
-		spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height) / 3), Color.White, hinted.projectile.rotation, drawOrigin, hinted.projectile.scale, SpriteEffects.None, 0f);
-	//}
-}
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-Main.spriteBatch.End();
-Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-*/
+			foreach (Projectile proj in sortedGoods)
+			{
+				PrismShardHinted hinted = proj.modProjectile as PrismShardHinted;
+
+				Effect hallowed = SGAmod.HallowedEffect;
+
+				hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
+				hallowed.Parameters["prismAlpha"].SetValue(0.75f);
+				hallowed.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Perlin"));
+				hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -hinted.projectile.localAI[1] / 50f, hinted.projectile.localAI[1] / 25f));
+				hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
+				hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.20f, hinted.projectile.localAI[1] / 20f));
+				hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+				hallowed.Parameters["alpha"].SetValue(hinted.projectile.Opacity);
+
+				hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+				//if (hinted.projectile.Opacity > 0)
+				//{
+					if (hinted.projectile.localAI[0] < 100)
+						hinted.projectile.localAI[0] = 100 + Main.rand.Next(0, 3);
+
+					Texture2D tex = Main.extraTexture[35];
+					Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2f;
+					Vector2 drawPos = ((hinted.VectorEffect - Main.screenPosition)) + new Vector2(0f, 4f);
+					int timing = (int)(hinted.projectile.localAI[0]-100);
+					timing %= 3;
+					timing *= ((tex.Height) / 3);
+					spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height) / 3), Color.White, hinted.projectile.rotation, drawOrigin, hinted.projectile.scale, SpriteEffects.None, 0f);
+				//}
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			*/
 		}
 
 	}

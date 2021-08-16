@@ -9,6 +9,8 @@ using SGAmod.Dimensions;
 using Idglibrary;
 using System.IO;
 using System.Linq;
+using SGAmod.HavocGear.Items.Weapons;
+using SGAmod.Items.Weapons;
 
 namespace SGAmod.NPCs.Murk
 {
@@ -113,19 +115,22 @@ namespace SGAmod.NPCs.Murk
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("MurkyGel"));
                     }
 
-                    int choice = Main.rand.Next(6);
+                    int choice = Main.rand.Next(7);
                     if (choice == 0)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("MurkFlail"));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < MurkFlail>());
                     else if (choice == 1)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Mossthorn"));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < Mossthorn>());
                     else if (choice == 2)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Landslide"));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < Landslide>());
                     else if (choice == 3)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Mudmore"));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < Mudmore>());
                     else if (choice == 4)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SwarmGrenade"), Main.rand.Next(40, 100));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SwarmGrenade>(), Main.rand.Next(40, 100));
                     else if (choice == 5)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(SGAWorld.GennedVirulent ? "HorseFlyStaff" : "GnatStaff"));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, SGAWorld.GennedVirulent ? ModContent.ItemType <HorseFlyStaff>() : ModContent.ItemType<GnatStaff>());
+                    else if (choice == 6)
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<SwarmGun>());
+
                 }
             }
             Achivements.SGAAchivements.UnlockAchivement("Murk", Main.LocalPlayer);

@@ -26,7 +26,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.WoodenCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 2334; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -35,7 +35,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.IronCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 2335; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -44,7 +44,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.GoldenCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 2336; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -53,7 +53,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.CorruptFishingCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3203; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -62,7 +62,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.CrimsonFishingCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3204; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -71,7 +71,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.DungeonFishingCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3205; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -80,7 +80,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.FloatingIslandFishingCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3206; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 
@@ -106,7 +106,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.HallowedFishingCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3207; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -115,7 +115,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.IronCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3208; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -128,7 +128,7 @@ namespace SGAmod.NPCs.Cratrosity
 		}
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3208; }
+			get { return "SGAmod/HavocGear/Items/DankCrate"; }
 		}
 
 		public override void AI()

@@ -14,6 +14,7 @@ using Terraria.GameContent.Events;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Effects;
 using System.Linq;
+using AAAAUThrowing;
 
 namespace SGAmod.NPCs
 {
@@ -793,57 +794,65 @@ namespace SGAmod.NPCs
 	public override bool CanHitPlayer(Player target){
 		return false;
 	}
-	public override void AI()
-	{
-		projectile.velocity=new Vector2(projectile.velocity.X,projectile.velocity.Y*0.95f);
-		int q=0;
+		public override void AI()
+		{
+			projectile.velocity = new Vector2(projectile.velocity.X, projectile.velocity.Y * 0.95f);
+			int q = 0;
 			for (q = 0; q < 4; q++)
+			{
+
+				int dust = Dust.NewDust(projectile.position - new Vector2(100, 0), 200, 12, DustID.Smoke, 0f, projectile.velocity.Y * 0.4f, 100, colorcloud, 3f);
+				Main.dust[dust].noGravity = true;
+				//Main.dust[dust].velocity *= 1.8f;
+				//Main.dust[dust].velocity.Y -= 0.5f;
+				//Main.playerDrawDust.Add(dust);
+			}
+			projectile.ai[0]++;
+			int target2 = Idglib.FindClosestTarget(projectile.friendly ? 0 : 1, projectile.position, new Vector2(0, 0));
+			Entity target;
+			target = Main.player[target2] as Player;
+			if (projectile.friendly)
+			{
+				target = Main.npc[target2] as NPC;
+				//target=Main.player[target2];
+			}
+
+			if (target is Player)
+			{
+				Player targetasplayer = target as Player;
+				if (targetasplayer.ownedProjectileCounts[mod.ProjectileType("SnowfallCloud")] > 0)
 				{
-
-					int dust = Dust.NewDust(projectile.position-new Vector2(100,0), 200, 12, DustID.Smoke, 0f, projectile.velocity.Y * 0.4f, 100, colorcloud, 3f);
-					Main.dust[dust].noGravity = true;
-					//Main.dust[dust].velocity *= 1.8f;
-					//Main.dust[dust].velocity.Y -= 0.5f;
-					//Main.playerDrawDust.Add(dust);
+					projectile.Kill();
 				}
-				projectile.ai[0]++;
-		int target2=Idglib.FindClosestTarget(projectile.friendly ? 0 : 1,projectile.position,new Vector2(0,0));
-		Entity target;
-		target=Main.player[target2] as Player;
-		if (projectile.friendly){
-		target=Main.npc[target2] as NPC;
-		//target=Main.player[target2];
-		}
+			}
 
-		if (target is Player){
-		Player targetasplayer=target as Player;
-		if (targetasplayer.ownedProjectileCounts[mod.ProjectileType("SnowfallCloud")]>0){
-		projectile.Kill();
-		}}
-
-		if (target!=null){
+			if (target != null)
+			{
 
 
 
-		Vector2 dist=target.Center-projectile.position;
-		if (System.Math.Abs(dist.X)<250){
-		if (projectile.ai[0]%rate==0){
-		List<Projectile> itz=Idglib.Shattershots(projectile.Center+new Vector2(Main.rand.Next(-100,100),0),projectile.Center+new Vector2(Main.rand.Next(-200,200),500),new Vector2(0,0), projectileid, (int)projectile.damage,8f,0,1,true,0,true,220);
-		itz[0].friendly=projectile.friendly;
-		itz[0].hostile=projectile.hostile;
-		itz[0].coldDamage = true;
-		itz[0].netUpdate=true;
-		itz[0].ranged = false;
-		itz[0].minion = true;
-		}
-		}
+				Vector2 dist = target.Center - projectile.position;
+				if (System.Math.Abs(dist.X) < 250)
+				{
+					if (projectile.ai[0] % rate == 0)
+					{
+						List<Projectile> itz = Idglib.Shattershots(projectile.Center + new Vector2(Main.rand.Next(-100, 100), 0), projectile.Center + new Vector2(Main.rand.Next(-200, 200), 500), new Vector2(0, 0), projectileid, (int)projectile.damage, 8f, 0, 1, true, 0, true, 220);
+						itz[0].friendly = projectile.friendly;
+						itz[0].hostile = projectile.hostile;
+						itz[0].coldDamage = true;
+						itz[0].netUpdate = true;
+						itz[0].ranged = false;
+						itz[0].Throwing().thrown = false;
+						itz[0].minion = true;
+					}
+				}
+
+
+			}
+
 
 
 		}
-
-
-
-	}
 
 public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 {

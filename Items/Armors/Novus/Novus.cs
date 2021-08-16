@@ -4,7 +4,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using AAAAUThrowing;
 
-namespace SGAmod.Items.Armors
+namespace SGAmod.Items.Armors.Novus
 {
 
 	[AutoloadEquip(EquipType.Head)]
@@ -15,7 +15,7 @@ namespace SGAmod.Items.Armors
 			DisplayName.SetDefault("Novus Hood");
 			Tooltip.SetDefault("5% faster item use times");
 		}
-        public override string Texture => "SGAmod/Items/Armors/NovusHood";
+        public override string Texture => "SGAmod/Items/Armors/Novus/NovusHood";
         public override void SetDefaults()
 		{
 			item.width = 18;
@@ -51,7 +51,7 @@ namespace SGAmod.Items.Armors
 			DisplayName.SetDefault("Novus Breastplate");
 			Tooltip.SetDefault("5% increased crit chance");
 		}
-		public override string Texture => "SGAmod/Items/Armors/NovusChestplate";
+		public override string Texture => "SGAmod/Items/Armors/Novus/NovusChestplate";
 		public override void SetDefaults()
 		{
 			item.width = 18;
@@ -85,7 +85,7 @@ namespace SGAmod.Items.Armors
 			DisplayName.SetDefault("Novus Leggings");
 			Tooltip.SetDefault("5% increased movement speed\n10% increased acceleration and max running speed");
 		}
-		public override string Texture => "SGAmod/Items/Armors/NovusLeggings";
+		public override string Texture => "SGAmod/Items/Armors/Novus/NovusLeggings";
 		public override void SetDefaults()
 		{
 			item.width = 18;

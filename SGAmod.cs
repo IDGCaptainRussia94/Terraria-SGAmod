@@ -97,6 +97,8 @@ namespace SGAmod
 
 		public const bool VibraniumUpdate = true;
 		public const bool EngieUpdate = false;
+		public const bool ArmorButtonUpdate = false;
+		public const bool EnchantmentsUpdate = false;
 
 		public static SGAmod Instance;
 		public static string SteamID;
@@ -117,6 +119,7 @@ namespace SGAmod
 		public static Dictionary<int, int> CoinsAndProjectiles;
 		public static int[] otherimmunes = new int[3];
 		public static bool NightmareUnlocked = false;
+		public static bool exitingSubworld = false;
 		public static string userName = Environment.UserName;
 		public static string filePath = "C:/Users/" + userName + "/Documents/My Games/Terraria/ModLoader/SGAmod";
 		public static Texture2D hellionLaserTex;
@@ -151,6 +154,11 @@ namespace SGAmod
 
 		internal static SGACraftBlockPanel craftBlockPanel;
 		internal static UserInterface craftBlockPanelInterface;
+
+		internal static SGAArmorButton armorButton;
+		internal static UserInterface armorButtonPanelInterface;
+
+
 
 		public static Dictionary<int, int> itemToMusicReference = new Dictionary<int, int>();
 		public static Dictionary<int, int> musicToItemReference = new Dictionary<int, int>();
@@ -410,7 +418,7 @@ namespace SGAmod
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space"), ItemType("MusicBox_Space"), TileType("MusicBox_Space"));
 
 			AddTile("PrismalBarTile", new BarTile("PrismalBar", "Prismal Bar", new Color(210, 0, 100)), "SGAmod/Tiles/PrismalBarTile");
-			AddTile("UnmanedBarTile", new BarTile("UnmanedBar", "Unmaned Bar", new Color(70, 0, 40)), "SGAmod/Tiles/UnmanedBarTile");
+			AddTile("UnmanedBarTile", new BarTile("UnmanedBar", "Novus Bar", new Color(70, 0, 40)), "SGAmod/Tiles/UnmanedBarTile");
 			AddTile("NoviteBarTile", new BarTile("NoviteBar", "Novite Bar", new Color(240, 221, 168)), "SGAmod/Tiles/NoviteBarTile");
 			AddTile("BiomassBarTile", new BarTile("BiomassBar", "Biomass Bar", new Color(40, 150, 40)), "SGAmod/Tiles/BiomassBarTile");
 			AddTile("VirulentBarTile", new BarTile("VirulentBar", "Virulent Bar", new Color(21, 210, 20)), "SGAmod/Tiles/VirulentBarTile");
@@ -480,6 +488,15 @@ namespace SGAmod
 				craftBlockPanel.Initialize();
 				craftBlockPanelInterface = new UserInterface();
 				craftBlockPanelInterface.SetState(craftBlockPanel);
+
+				if (ArmorButtonUpdate)
+				{
+					armorButton = new SGAArmorButton();
+					armorButton.Initialize();
+					armorButtonPanelInterface = new UserInterface();
+					armorButtonPanelInterface.SetState(armorButton);
+				}
+
 
 			}
 
@@ -591,7 +608,7 @@ namespace SGAmod
 		public override void AddRecipes()
 		{
 			RecipeFinder finder;
-			int[] stuff = { ItemID.MythrilAnvil, ItemID.OrichalcumAnvil };
+			int[] stuff = { ItemID.AdamantiteForge, ItemID.TitaniumForge };
 			for (int i = 0; i < 2; i += 1)
 			{
 				finder = new RecipeFinder();
@@ -926,6 +943,12 @@ namespace SGAmod
 			ItemID.CrimtaneBar
 			});
 			RecipeGroup.RegisterGroup("SGAmod:Tier5Bars", group6);
+			group6 = new RecipeGroup(() => "any" + " Novus or Novite Bars", new int[]
+{
+			ModContent.ItemType<UnmanedBar>(),
+			ModContent.ItemType<NoviteBar>()
+});
+			RecipeGroup.RegisterGroup("SGAmod:NoviteNovusBars", group6);
 			group6 = new RecipeGroup(() => "any" + " Evil Javelins", new int[]
 			{
 			this.ItemType("CorruptionJavelin"),
@@ -1004,6 +1027,19 @@ namespace SGAmod
 });
 			RecipeGroup.RegisterGroup("SGAmod:Tier7Pickaxe", pickaxe);
 
+			pickaxe = new RecipeGroup(() => "Any gems", new int[]
+{
+			ItemID.Amber,
+			ItemID.Amethyst,
+			ItemID.Diamond,
+			ItemID.Emerald,
+			ItemID.Ruby,
+			ItemID.Sapphire,
+			ItemID.Topaz
+
+});
+			RecipeGroup.RegisterGroup("SGAmod:Gems", pickaxe);
+
 
 			if (RecipeGroup.recipeGroupIDs.ContainsKey("IronBar"))
 			{
@@ -1023,18 +1059,24 @@ namespace SGAmod
 
 		public override void UpdateUI(GameTime gameTime)
 		{
+
 			if (SkillUIActive)
 				SkillTree.SKillUI.UpdateUI();
 
 			craftBlockPanel.visible = Main.playerInventory;
+			if (ArmorButtonUpdate)
+			armorButton.visible = Main.playerInventory;
 
 			//Main.NewText(Main.time);
 			if (CustomUIMenu.visible)
 			{
 				CustomUIMenuInterface?.Update(gameTime);
 			}
-			if (Main.playerInventory && Main.LocalPlayer.SGAPly().benchGodFavor)
+			if (Main.playerInventory)
 			{
+				if (ArmorButtonUpdate && Main.EquipPage == 0)
+				armorButtonPanelInterface?.Update(gameTime);
+				if (Main.LocalPlayer.SGAPly().benchGodFavor)
 				craftBlockPanelInterface?.Update(gameTime);
 			}
 

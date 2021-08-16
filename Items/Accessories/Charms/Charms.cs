@@ -378,6 +378,7 @@ namespace SGAmod.Items.Accessories.Charms
 			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 2);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 15);
 			recipe.AddIngredient(ItemID.MinecartMech, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
@@ -466,6 +467,7 @@ namespace SGAmod.Items.Accessories.Charms
 			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 2);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 15);
 			recipe.AddIngredient(ItemID.MinecartMech, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
@@ -547,6 +549,7 @@ namespace SGAmod.Items.Accessories.Charms
 			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 2);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 15);
 			recipe.AddIngredient(ItemID.MinecartMech, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
@@ -628,6 +631,7 @@ namespace SGAmod.Items.Accessories.Charms
 			recipe.AddIngredient(mod.ItemType("LuminiteWraithNotch"), 2);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 15);
 			recipe.AddIngredient(ItemID.MinecartMech, 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);

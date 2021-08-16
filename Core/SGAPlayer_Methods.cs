@@ -169,6 +169,18 @@ namespace SGAmod
 			}
 		}
 
+		public void RestoreBreath(int ammount, bool texteffect = true)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
+			Main.PlaySound(SoundID.Drown, (int)player.Center.X, (int)player.Center.Y, 0, 1f, 0.50f);
+			sgaplayer.AddCooldownStack(60 * 90, 1);
+			player.breath = (int)MathHelper.Clamp(player.breath + ammount, 0, player.breathMax);
+			sgaplayer.sufficate = player.breath;
+			if (texteffect)
+				CombatText.NewText(player.Hitbox, Color.Aqua, "+" + (ammount / 20) + " bubbles");
+
+		}
+
 		public bool AddCooldownStack(int time, int count = 1)
 		{
 			if (illuminantSet.Item1>4 && Main.rand.Next(4) == 0)
@@ -358,7 +370,7 @@ namespace SGAmod
 			return false;
 		}
 
-		public static void LimitProjectiles(Player player, int maxprojs, ushort[] types)
+		public static void LimitProjectiles(Player player, int maxprojs, int[] types)
 		{
 
 			int projcount = 0;

@@ -312,11 +312,17 @@ namespace SGAmod.Buffs
 				return true;
 		}
 
+		public static bool IsInorganic(NPC npc)
+        {
+			return npc.HitSound == SoundID.NPCHit4 || npc.HitSound == SoundID.NPCHit7;
+
+		}
+
 		public override void Update(NPC npc, ref int buffIndex)
 		{
-			int timer = (int)((10 + (npc.HitSound == SoundID.NPCHit4 || npc.HitSound == SoundID.NPCHit7 ? 40 : 0)) * MathHelper.Min(npc.buffTime[buffIndex] / 150f, 1f));
-			npc.SGANPCs().impaled += 10 + (npc.HitSound==SoundID.NPCHit4 || npc.HitSound == SoundID.NPCHit7 ? 40 : 0);
-			npc.SGANPCs().reducedDefense += npc.HitSound == SoundID.NPCHit4 || npc.HitSound == SoundID.NPCHit7 ? 25 : 0;
+			int timer = (int)((10 + (IsInorganic(npc) ? 40 : 0)) * MathHelper.Min(npc.buffTime[buffIndex] / 150f, 1f));
+			npc.SGANPCs().impaled += 10 + (IsInorganic(npc) ? 40 : 0);
+			npc.SGANPCs().reducedDefense += IsInorganic(npc) ? 25 : 0;
 		}
 	}
 	public class LavaBurn : ModBuff
@@ -440,7 +446,7 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/MoonLightCurse";
+			texture = "SGAmod/Buffs/SnapFade";
 			return true;
 		}
 	}

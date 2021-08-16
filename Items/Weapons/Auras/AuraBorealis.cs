@@ -76,24 +76,25 @@ namespace SGAmod.Items.Weapons.Auras
 			// These below are needed for a minion weapon
 			item.noMelee = true;
 			item.summon = true;
-			item.buffType = mod.BuffType("AuraBuffBorealis");
+			item.buffType = ModContent.BuffType<AuraBorealisBuff>();
 			// No buffTime because otherwise the item tooltip would say something like "1 minute duration"
 			item.shoot = ModContent.ProjectileType<AuraMinionBorealis>();
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<StoneBarrierStaff>(), 1);
+			/*recipe.AddIngredient(ModContent.ItemType<StoneBarrierStaff>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
 			recipe.AddIngredient(ItemID.CrystalShard, 10);
 			recipe.AddTile(ModContent.TileType<LuminousAlter>());
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 
-			recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.LunarBar, 15);
+			recipe = new ModRecipe(mod);*/
 			recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 10);
 			recipe.AddIngredient(ItemID.CrystalShard, 10);
+			recipe.AddIngredient(ItemID.LunarBar, 12);
 			recipe.AddTile(ModContent.TileType<LuminousAlter>());
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -104,7 +105,7 @@ namespace SGAmod.Items.Weapons.Auras
 	public class AuraMinionBorealis : AuraMinion
 	{
 
-		protected override int BuffType => ModContent.BuffType<AuraBuffBorealis>();
+		protected override int BuffType => ModContent.BuffType<AuraBorealisBuff>();
 
         protected override float AuraSize => 120f;
 
@@ -151,9 +152,9 @@ namespace SGAmod.Items.Weapons.Auras
 					}
 				}
 			}
-			if (type is Player)
+			if (type is Player alliedplayer && alliedplayer.team == player.team)
 			{
-				(type as Player).lifeRegen += (int)(thepower*2f);
+				alliedplayer.lifeRegen += (int)(thepower*2f);
 			}
 
 		}
@@ -260,7 +261,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 	}
 
-	public class AuraBuffBorealis : ModBuff
+	public class AuraBorealisBuff : ModBuff
 	{
 		public override void SetDefaults()
 		{
@@ -272,7 +273,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/AuraBorealisBuff";
 			return base.Autoload(ref name, ref texture);
 		}
 

@@ -360,7 +360,7 @@ namespace SGAmod
 			if (acidburn)
 			{
 				int tier = 2;
-				if (npc.HasBuff(ModContent.BuffType<RustBurn>()))
+				if (npc.HasBuff(ModContent.BuffType<RustBurn>()) && RustBurn.IsInorganic(npc))
 					tier = 3;
 				npc.lifeRegen -= 20 + Math.Min(tier*150, npc.defense * tier);
 				if (damage < 5)
@@ -946,7 +946,7 @@ namespace SGAmod
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(20, 0, 0, 0);
 						nextSlot++;
 					}
-					if (Main.hardMode)
+					if (true)
 					{
 						shop.item[nextSlot].SetDefaults(mod.ItemType("PremiumUpgrade"));
 						nextSlot++;
@@ -1023,6 +1023,10 @@ namespace SGAmod
 
 					shop.item[nextSlot].SetDefaults(ModContent.ItemType<RustedBulwark>());
 					shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 2, 50, 0);
+					nextSlot++;
+
+					shop.item[nextSlot].SetDefaults(ModContent.ItemType<SnakeEyes>());
+					shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 5, 0, 0);
 					nextSlot++;
 
 					if (NPC.downedBoss2)
@@ -1207,9 +1211,11 @@ namespace SGAmod
 				Player ply = Main.player[playerid];
 				if (ply.active)
 				{
+					SGAPlayer sgaply = ply.SGAPly();
+
 					if (!Main.dedServ)
 					{
-						ply.GetModPlayer<SGAPlayer>().DoExpertiseCheck(npc);
+						sgaply.DoExpertiseCheck(npc);
 					}
 					else
 					{
@@ -1221,25 +1227,43 @@ namespace SGAmod
 							packet.Send(ply.whoAmI);
 						}
 					}
-					if (ply.HasItem(mod.ItemType("EntropyTransmuter")))
+
+					if (npc.Distance(ply.Center) < 1200)
 					{
-						if (npc.Distance(ply.Center) < 1000)
+
+						if (sgaply.tf2emblemLevel > 0)
 						{
-							ply.GetModPlayer<SGAPlayer>().AddEntropy(npc.lifeMax);
+							if (Main.netMode != NetmodeID.MultiplayerClient)
+								TF2Emblem.AwardXpToPlayer(ply, (int)npc.value);
 
 							if (Main.dedServ)
 							{
 								ModPacket packet = mod.GetPacket();
-								packet.Write((ushort)MessageType.GrantEntrophite);
-								packet.Write(npc.lifeMax);
+								packet.Write((ushort)MessageType.GrantTf2EmblemXp);
+								packet.Write((int)npc.value);
 								packet.Send(ply.whoAmI);
 							}
 						}
 					}
 
+					if (ply.HasItem(mod.ItemType("EntropyTransmuter")))
+					{
+						if (Main.netMode != NetmodeID.MultiplayerClient)
+							ply.GetModPlayer<SGAPlayer>().AddEntropy(npc.lifeMax);
+
+						if (Main.dedServ)
+						{
+							ModPacket packet = mod.GetPacket();
+							packet.Write((ushort)MessageType.GrantEntrophite);
+							packet.Write(npc.lifeMax);
+							packet.Send(ply.whoAmI);
+						}
+					}
+
 				}
 			}
-				IrradiatedExplosion(npc,IrradiatedAmmount);
+
+			IrradiatedExplosion(npc, IrradiatedAmmount);
 
 			if (npc.boss)
 			{
@@ -1298,12 +1322,19 @@ namespace SGAmod
 
 			if (lastHitByItem == ModContent.ItemType<ForagersBlade>())
 			{
-				if (npc.HitSound == SoundID.NPCHit1)
+				if (npc.HitSound == SoundID.NPCHit1)//Yup... lol
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.Leather);
 			}
-			if (Main.hardMode && SGAWorld.tf2cratedrops && (Main.rand.Next(0, 300) < 1 || (SGAWorld.downedCratrosity == false && Main.rand.Next(0, 30) < 1)))
+			if (SGAWorld.tf2cratedrops)
 			{
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateBase"));
+				int craterates = SGAWorld.downedCratrosity == false ? (Main.hardMode ? 300 : 1500) : (Main.hardMode ? 30 : 200);
+
+				var setting = SGAConfig.Instance.CrateFieldDropChance;
+
+				if ((Main.rand.Next(0, (int)(craterates * (setting != null ? setting.rate/100f : 1f))) == 0))
+				{
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateBase"));
+				}
 			}
 			if (npc.type == NPCID.WyvernHead && NPC.downedGolemBoss && Main.rand.Next(100) < 5)
 			{

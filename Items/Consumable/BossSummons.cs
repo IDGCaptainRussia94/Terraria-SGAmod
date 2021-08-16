@@ -469,7 +469,7 @@ namespace SGAmod.Items.Consumable
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			if (SGAmod.Calamity)
+			if (SGAmod.Calamity.Item1)
 				tooltips.Add(new TooltipLine(mod, "NoU", "Summoning this boss with automatically disable Revengence and Death Modes"));
 		}
 
@@ -830,7 +830,7 @@ namespace SGAmod.Items.Consumable
 		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			if (SGAmod.Calamity)
+			if (SGAmod.Calamity.Item1)
 				tooltips.Add(new TooltipLine(mod, "NoU", "Summoning this boss with automatically disable Revengence and Death Modes"));
 		}
 		public override bool CanUseItem(Player player)

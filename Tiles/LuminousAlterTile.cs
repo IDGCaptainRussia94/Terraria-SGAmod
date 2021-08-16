@@ -57,7 +57,7 @@ namespace SGAmod.Tiles
 
         public override void MouseOver(int i, int j)
         {
-            Main.LocalPlayer.showItemIconText = "This is test, Demetri!";
+            //Main.LocalPlayer.showItemIconText = "This is test, Demetri!";
             Main.LocalPlayer.showItemIcon = true;
             Main.LocalPlayer.showItemIcon2 = ModContent.ItemType<Items.Consumable.Debug1>();
             //nil
@@ -319,7 +319,7 @@ namespace SGAmod.Tiles
         public int ProcessRate => 60;
         public static void DebugText(string text)
         {
-            Main.NewText(text);
+            //Main.NewText(text);
         }
         public override bool AcceptItem(Item item)
         {
@@ -475,7 +475,7 @@ namespace SGAmod.Tiles
                     {
                         if (AcceptItem(heldItem))
                         {
-                            chargingProcess += ProcessRate*1;
+                            chargingProcess += (int)(ProcessRate*SGAConfig.Instance.InfusionTime);
                             if (chargingProcess >= itemData.infusionTime)
                             {
                                 ItemInfusion();

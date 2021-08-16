@@ -1590,9 +1590,26 @@ namespace SGAmod.Items.Weapons.Shields
 			item.rare = ItemRarityID.Cyan;
 			item.shoot = ModContent.ProjectileType<AegisaltAetherstoneProjDash>();
 			item.shootSpeed = 16f;
-			item.expert = true;
+			item.UseSound = default;
 		}
-        public override bool AltFunctionUse(Player player)
+        public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
+        {
+			if (player.SGAPly().devempowerment[2]>0)
+				mult += 0.50f;
+        }
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[2] > 0)
+			{
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Enpowerment bonus ---"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Damage, shield regen rate, block percent and angle are greatly improved"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Bash does damage at interverals"));
+			}
+			base.ModifyTooltips(tooltips);
+		}
+
+		public override bool AltFunctionUse(Player player)
         {
 			List<Projectile> them = Main.projectile.Where(testby => testby.owner == player.whoAmI && testby.modProjectile != null && testby.modProjectile is AegisaltAetherstoneProj).ToList();
 			foreach (Projectile proj2 in them)
@@ -1633,13 +1650,20 @@ namespace SGAmod.Items.Weapons.Shields
 			}
 			return false;
 		}
-
-    }
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 40);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
 
 	public class AegisaltAetherstoneProj : CorrodedShieldProj, IDrawAdditive
 	{
-		protected override float BlockDamage => 0.25f;
-		protected override float BlockAngle => disabledTimer > 0 ? 10f : 0.25f;
+		protected override float BlockDamage => player.SGAPly().devempowerment[2] > 0 ? 0.50f : 0.25f;
+		protected override float BlockAngle => disabledTimer > 0 ? 10f : (player.SGAPly().devempowerment[2] > 0 ? 0.0f : 0.25f);
 
 		protected override float AlphaFade => MathHelper.Clamp(1f - Math.Min(disabledTimer / 20f, 0.75f), 0f, Math.Min(blocktimer / TimeToCopy, 1f));
 
@@ -1656,7 +1680,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public float disabledTimer = 0;
 		float AddAngleAmmount => (((MathHelper.Pi * 0.80f) / ((float)maxCopies)) * (genCopy > 0 ? 1f : -1f));
 
-		protected override float BlockAngleAdjust => (genCopy == 0 ? 0 : angleAdd + MathHelper.Clamp(blocktimer / TimeToCopy, 0f, 1f) * AddAngleAmmount)* spreadValue;
+		protected override float BlockAngleAdjust => (genCopy == 0 ? 0 : angleAdd + MathHelper.Clamp(blocktimer / TimeToCopy, 0f, 1f) * AddAngleAmmount) * spreadValue;
 
 		public int genCopy = 0;
 		public float angleAdd = 0;
@@ -1672,7 +1696,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 			spreadValue += ((!tightFormation ? 1f : 0.25f) - spreadValue) / 8f;
 
-			disabledTimer -= 6f-(player.meleeSpeed*5f);
+			disabledTimer -= 6f - (player.meleeSpeed * 5f);
 
 			if (disabledTimer > 0)
 			{
@@ -1714,10 +1738,9 @@ namespace SGAmod.Items.Weapons.Shields
 		}
 		public override bool HandleBlock(ref int damage, Player player)
 		{
-			disabledTimer = 75;
+			disabledTimer = player.SGAPly().devempowerment[2]>0 ? 40 : 75;
 			return true;
 		}
-
 	}
 
 	public class AegisaltAetherstoneProjDash : CorrodedShieldProjDash, IShieldBashProjectile
@@ -1746,10 +1769,15 @@ namespace SGAmod.Items.Weapons.Shields
 			projectile.localNPCHitCooldown = -1;
 		}
 
+		public override bool CanDamage()
+		{
+			return false;
+		}
+
 		public override void AI()
 		{
 			Player owner = Main.player[projectile.owner];
-			if (owner.SGAPly().jellybruSet)
+			if (owner.SGAPly().devempowerment[2] > 0)
 				projectile.localNPCHitCooldown = 4;
 
 			foreach (Projectile proj2 in Main.projectile.Where(testby => testby.owner == projectile.owner && testby.modProjectile != null && testby.modProjectile is AegisaltAetherstoneProj))
@@ -1773,7 +1801,6 @@ namespace SGAmod.Items.Weapons.Shields
 		{
 			get { return "SGAmod/Invisible"; }
 		}
-
 	}
 
 	public class AegisaltAetherstoneProjSlashWaveEffect
@@ -1792,7 +1819,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 	}
 
-	public class AegisaltAetherstoneProjSlashWave : ModProjectile,IDrawAdditive
+	public class AegisaltAetherstoneProjSlashWave : ModProjectile, IShieldBashProjectile, IDrawAdditive
 	{
 		List<AegisaltAetherstoneProjSlashWaveEffect> effects = new List<AegisaltAetherstoneProjSlashWaveEffect>();
 		public override void SetStaticDefaults()
@@ -1817,15 +1844,20 @@ namespace SGAmod.Items.Weapons.Shields
 			projectile.tileCollide = false;
 			projectile.aiStyle = -1;
 			projectile.usesLocalNPCImmunity = true;
-			projectile.localNPCHitCooldown = -1;
+			projectile.localNPCHitCooldown = 4;
 		}
 
 		public override void AI()
 		{
-            projectile.ai[0] += 1;
+			Player player = Main.player[projectile.owner];
+
+			if (player != null)
+				projectile.localNPCHitCooldown = player.SGAPly().devempowerment[2]>0 ? 4 : -1;
+
+			projectile.ai[0] += 1;
 
 			if (projectile.ai[0] % 4 == 0)
-            {
+			{
 				effects.Add(new AegisaltAetherstoneProjSlashWaveEffect(25, projectile.Center));
 			}
 
@@ -1833,7 +1865,7 @@ namespace SGAmod.Items.Weapons.Shields
 			{
 				effects[i].time += 1;
 				if (effects[i].time > effects[i].timeMax)
-                {
+				{
 					effects.RemoveAt(i);
 					i -= 1;
 				}

@@ -582,7 +582,11 @@ namespace SGAmod.NPCs.Cratrosity
 					spriteBatch.Draw(texture, drawPos, null, lightColor, (float)Cratesangle[a, i], new Vector2(16, 16), new Vector2(1, 1), SpriteEffects.None, 0f);
 				}
 			}
-			return true;
+
+			Texture2D mainTex = GetType() == typeof(Cratrogeddon) ? Main.itemTexture[ItemID.GoldenCrate] : Main.itemTexture[ItemID.GoldenCrate];
+			Main.spriteBatch.Draw(mainTex, npc.Center - Main.screenPosition, null, lightColor, npc.rotation, mainTex.Size() / 2f, npc.scale, default, 0);
+
+			return false;
 		}
 
 

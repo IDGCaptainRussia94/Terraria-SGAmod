@@ -51,6 +51,7 @@ namespace SGAmod
         public static int overalldamagedone = 0;
         public static int MoistStonecount = 0;
         public static int tf2quest = 0;
+        public static byte highestDimDungeonFloor = 0;
         public static int bossprgressor = 0;
         public static int tf2questcounter = 0;
         public static int[] questvars = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -82,6 +83,7 @@ namespace SGAmod
         {
             modtimer = 0;
             Instance = this;
+
             if (SGAmod.cachedata == false)
             {
                 portalcanmovein = false;
@@ -89,6 +91,7 @@ namespace SGAmod
                 oretypeshardmode = new int[3] { TileID.Cobalt, TileID.Mythril, TileID.Adamantite };
                 NightmareHardcore = 0;
                 dungeonlevel = 0;
+                //highestDimDungeonFloor = 0;
                 Main.invasionSize = 0;
                 customInvasionUp = false;
                 downedCustomInvasion = false;
@@ -355,6 +358,8 @@ namespace SGAmod
             tag["GennedVirulent"] = GennedVirulent;
             tag["tidalCharmUnlocked"] = GennedVirulent;
             tag["downedPrismBansheeByte"] = downedPrismBanshee; 
+            tag["highestDimDungeonFloor"] = highestDimDungeonFloor; 
+
             tag["downedSpiderQueen"] = downedSpiderQueen;
             tag["downedCratrosityPML"] = downedCratrosityPML;
             tag["downedCaliburnGuardians"] = downedCaliburnGuardians;
@@ -423,6 +428,8 @@ namespace SGAmod
             if (tag.ContainsKey("tidalCharmUnlocked")) { GennedVirulent = tag.GetBool("tidalCharmUnlocked"); }
             if (tag.ContainsKey("downedPrismBansheeByte")) { downedPrismBanshee = tag.GetByte("downedPrismBansheeByte"); }
 
+            //if (!SGAmod.exitingSubworld)
+            if (tag.ContainsKey("highestDimDungeonFloor")) { highestDimDungeonFloor = Math.Max(tag.GetByte("highestDimDungeonFloor"), highestDimDungeonFloor); }
 
             if (tag.ContainsKey("overalldamagedone")) { overalldamagedone = tag.GetInt("overalldamagedone"); }
 
@@ -453,6 +460,7 @@ namespace SGAmod
                     if (tag.ContainsKey(tagname)) { oretypeshardmode[x] = tag.GetInt(tagname); }
                 }
             }
+            SGAmod.exitingSubworld = false;
         }
 
         //Sync downed data
@@ -709,12 +717,16 @@ namespace SGAmod
                       progress.Message = "Hiding Secret Chambers";
                       Generation.NormalWorldGeneration.TempleChambers();
                   }));
-                int CaliburnShrines = tasks.FindIndex(genpass => genpass.Name.Equals("Pots"));
-                tasks.Add(new PassLegacy("Caliburn Shrines", delegate (GenerationProgress progress)
-                  {
-                      progress.Message = "Hiding Caliburn's Gifts";
-                      Generation.NormalWorldGeneration.GenAllCaliburnShrine();
-                  }));
+
+                if (SGAConfig.Instance.DankShrines)
+                {
+                    int CaliburnShrines = tasks.FindIndex(genpass => genpass.Name.Equals("Pots"));
+                    tasks.Add(new PassLegacy("Caliburn Shrines", delegate (GenerationProgress progress)
+                      {
+                          progress.Message = "Hiding Caliburn's Gifts";
+                          Generation.NormalWorldGeneration.GenAllCaliburnShrine();
+                      }));
+                }
 
             }
 

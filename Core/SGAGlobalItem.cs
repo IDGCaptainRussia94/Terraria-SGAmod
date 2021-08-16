@@ -20,6 +20,8 @@ using SGAmod.Tiles;
 using SGAmod.Items.Armors;
 using SGAmod.Items.Armors.Vibranium;
 using Terraria.GameContent.Events;
+using Terraria.DataStructures;
+using SGAmod.Items.Armors.Dev;
 
 namespace SGAmod
 {
@@ -196,50 +198,66 @@ namespace SGAmod
 
         public override string IsArmorSet(Item head, Item body, Item legs)
         {
-            if (head.type == mod.ItemType("DesertHelmet") && body.type == mod.ItemType("DesertShirt") && legs.type == mod.ItemType("DesertPants"))
+            if (head.type == ModContent.ItemType <Items.Armors.Desert.DesertHelmet>() && body.type == ModContent.ItemType<Items.Armors.Desert.DesertShirt>() && legs.type == ModContent.ItemType <Items.Armors.Desert.DesertPants>())
             {
                 return "Desert";
             }
-            if (head.type == mod.ItemType("DankWoodHelm") && body.type == mod.ItemType("DankWoodChest") && legs.type == mod.ItemType("DankLegs"))
+            if (head.type == ModContent.ItemType<HavocGear.Items.Armor.DankWoodHelm>() && body.type == ModContent.ItemType<HavocGear.Items.Armor.DankWoodChest>() && legs.type == ModContent.ItemType<HavocGear.Items.Armor.DankLegs>())
             {
                 return "Dank";
             }
-            if (head.type == mod.ItemType("UnmanedHood") && body.type == mod.ItemType("UnmanedBreastplate") && legs.type == mod.ItemType("UnmanedLeggings"))
+            if (head.type == ModContent.ItemType<Items.Armors.Novus.UnmanedHood>() && body.type == ModContent.ItemType<Items.Armors.Novus.UnmanedBreastplate>() && legs.type == ModContent.ItemType<Items.Armors.Novus.UnmanedLeggings>())
             {
                 return "Novus";
             }
-            if (head.type == mod.ItemType("NoviteHelmet") && body.type == mod.ItemType("NoviteChestplate") && legs.type == mod.ItemType("NoviteLeggings"))
+            if (head.type == ModContent.ItemType<Items.Armors.Novite.NoviteHelmet>() && body.type == ModContent.ItemType<Items.Armors.Novite.NoviteChestplate>() && legs.type == ModContent.ItemType<Items.Armors.Novite.NoviteLeggings>())
             {
                 return "Novite";
             }
-            if (head.type == mod.ItemType("EngineerHead") && body.type == mod.ItemType("EngineerChest") && legs.type == mod.ItemType("EngineerLegs"))
+            if (head.type == ModContent.ItemType<Items.Armors.Acid.AcidHelmet>() && body.type == ModContent.ItemType<Items.Armors.Acid.AcidChestplate>() && legs.type == ModContent.ItemType<Items.Armors.Acid.AcidLeggings>())
+            {
+                return "Acid";
+            }
+            if (head.type == ModContent.ItemType<Items.Armors.Engineer.EngineerHead>() && body.type == ModContent.ItemType<Items.Armors.Engineer.EngineerChest>() && legs.type == ModContent.ItemType<Items.Armors.Engineer.EngineerLegs>())
             {
                 return "Engineer";
             }
-            if (head.type == mod.ItemType("BlazewyrmHelm") && body.type == mod.ItemType("BlazewyrmBreastplate") && legs.type == mod.ItemType("BlazewyrmLeggings"))
+            if (head.type == ModContent.ItemType<Items.Armors.Blazewyrm.BlazewyrmHelm>() && body.type == ModContent.ItemType<Items.Armors.Blazewyrm.BlazewyrmBreastplate>() && legs.type == ModContent.ItemType<Items.Armors.Blazewyrm.BlazewyrmLeggings>())
             {
                 return "Blazewyrm";
             }
-            if (head.type == mod.ItemType("SpaceDiverHelmet") && body.type == mod.ItemType("SpaceDiverChestplate") && legs.type == mod.ItemType("SpaceDiverLeggings"))
+            if (head.type == ModContent.ItemType<HavocGear.Items.Armor.MangroveHelmet>() && body.type == ModContent.ItemType<HavocGear.Items.Armor.MangroveChestplate>() && legs.type == ModContent.ItemType<HavocGear.Items.Armor.MangroveGreaves>())
+            {
+                return "Mangrove";
+            }                      
+            if ((head.type == ModContent.ItemType<Items.Armors.HallowedVisor>() || head.type == ModContent.ItemType<Items.Armors.AncientHallowedVisor>()) && body.type == ItemID.HallowedPlateMail && body.type == ItemID.HallowedGreaves)
+            {
+                return "Hallowed";
+            }            
+            if (head.type == ModContent.ItemType<Items.Armors.SpaceDiver.SpaceDiverHelmet>() && body.type == ModContent.ItemType<Items.Armors.SpaceDiver.SpaceDiverChestplate>() && legs.type == ModContent.ItemType<Items.Armors.SpaceDiver.SpaceDiverLeggings>())
             {
                 return "SpaceDiver";
             }
-            if (head.type == mod.ItemType("ValkyrieHelm") && body.type == mod.ItemType("ValkyrieBreastplate") && legs.type == mod.ItemType("ValkyrieLeggings"))
+            if (head.type == ModContent.ItemType<Items.Armors.Mandala.MandalaHood>() || body.type == ModContent.ItemType<Items.Armors.Mandala.MandalaChestplate>() || legs.type == ModContent.ItemType<Items.Armors.Mandala.MandalaLeggings>())
+            {
+                return "Mandala";
+            }
+            if (head.type == ModContent.ItemType<Items.Armors.Valkyrie.ValkyrieHelm>() && body.type == ModContent.ItemType<Items.Armors.Valkyrie.ValkyrieBreastplate>() && legs.type == ModContent.ItemType<Items.Armors.Valkyrie.ValkyrieLeggings>())
             {
                 return "Valkyrie";
             }                 
-            if (head.type == mod.ItemType("IlluminantHelmet") && body.type == mod.ItemType("IlluminantChestplate") && legs.type == mod.ItemType("IlluminantLeggings"))
+            if (head.type == ModContent.ItemType<Items.Armors.Illuminant.IlluminantHelmet>() && body.type == ModContent.ItemType<Items.Armors.Illuminant.IlluminantChestplate>() && legs.type == ModContent.ItemType<Items.Armors.Illuminant.IlluminantLeggings>())
             {
                 return "Illuminant";
             }                
-            int[] vibraniumSet = { mod.ItemType("VibraniumMask"), mod.ItemType("VibraniumHelmet"), mod.ItemType("VibraniumHeadgear"), mod.ItemType("VibraniumHood"), mod.ItemType("VibraniumHat") };
+            int[] vibraniumSet = { ModContent.ItemType<Items.Armors.Vibranium.VibraniumMask>(), ModContent.ItemType<Items.Armors.Vibranium.VibraniumHelmet>(), ModContent.ItemType<Items.Armors.Vibranium.VibraniumHeadgear>(), ModContent.ItemType<Items.Armors.Vibranium.VibraniumHood>(), ModContent.ItemType<Items.Armors.Vibranium.VibraniumHat>() };
             if (vibraniumSet.Any(testby => testby == head.type) && body.type == mod.ItemType("VibraniumChestplate") && legs.type == mod.ItemType("VibraniumLeggings"))
             {
                 return "Vibranium";
             }
             if (!head.vanity && !body.vanity && !legs.vanity)
             {
-                if (head.type == mod.ItemType("MisterCreeperHead") && body.type == mod.ItemType("MisterCreeperBody") && legs.type == mod.ItemType("MisterCreeperLegs"))
+                if (head.type == ModContent.ItemType <Items.Armors.Dev.MisterCreeperHead>() && body.type == ModContent.ItemType < Items.Armors.Dev.MisterCreeperBody>() && legs.type == ModContent.ItemType < Items.Armors.Dev.MisterCreeperLegs>())
                 {
                     return "MisterCreeper";
                 }
@@ -247,7 +265,7 @@ namespace SGAmod
                 {
                     return "IDG";
                 }
-                if (head.type == mod.ItemType("JellybruHelmet") && body.type == mod.ItemType("JellybruChestplate") && legs.type == mod.ItemType("JellybruLeggings"))
+                if (head.type == ModContent.ItemType<Items.Armors.Dev.JellybruHelmet>() && body.type == mod.ItemType("JellybruChestplate") && legs.type == mod.ItemType("JellybruLeggings"))
                 {
                     return "Jellybru";
                 }
@@ -284,6 +302,17 @@ namespace SGAmod
                 player.setBonus = "Gain a movement bonus based on current charge\nWhen you take damage you discharge a chain bolt at a nearby enemy\nThis costs 750 Electic Charge and is scaled based on Defense and Technological Damage";
                 sgaplayer.Noviteset = 3;
             }
+            if (set == "Acid")
+            {
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Hunger of Fames\nAll throwing weapons get coated in acid for a short time, but resets your life regeneration\n"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds") + "Poison, Venom, and Acid Burn all lower enemy defense by an extra 5";
+                sgaplayer.acidSet = (true, sgaplayer.acidSet.Item2);
+            }
             if (set == "Engineer")
             {
                 string s = "Not Binded!";
@@ -292,17 +321,35 @@ namespace SGAmod
                     s = key;
                 }
                 player.setBonus = "Hold JUMP to hover at an expense to Electric Charge\nManifested weapon: Engie Controls\nPress the 'Toggle Recipe' (" + s + ") Hotkey to toggle jetpack mode";
-                sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Engineer.ManifestedEngieControls>();
+                //sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Engineer.ManifestedEngieControls>();
             }
             if (set == "Blazewyrm")
             {
                 player.setBonus = "True melee crits create a very powerful explosion equal to triple the damage dealt\nEach strike requires a free Cooldown Stack, and adds one for 12 seconds\n20% increased melee damage against enemies inflicted with Thermal Blaze" +
                         "\nImmune to fireblocks as well as immunity to On Fire! and Thermal Blaze\nGain an additional free Cooldown Stack";
                 player.fireWalk = true;
-                player.buffImmune[BuffID.OnFire] = true;
+                player.buffImmune[BuffID.OnFire] = true;///
                 player.buffImmune[mod.BuffType("ThermalBlaze")] = true;
                 sgaplayer.Blazewyrmset = true;
                 sgaplayer.MaxCooldownStacks += 1;
+            }
+            if (set == "Mangrove")
+            {
+                player.setBonus = "Crit throwing attacks grant Dryad's Blessing and spawn Mangrove Orbs from you that seek out enemies\nYou are limited to 4 of these Orbs at a time\nWhile you are in the jungle:\n-Greatly Increased regeneration" +
+    "\n-Gain an additional Free Cooldown Stack";
+
+                player.GetModPlayer<SGAPlayer>().Mangroveset = true;
+                if (player.ZoneJungle)
+                {
+                    player.lifeRegen += 5;
+                    player.SGAPly().MaxCooldownStacks += 1;
+                }
+            }
+            if (set == "Hallowed")
+            {
+                player.setBonus = "25% faster throwing item use and chance to not consume throwable";
+                player.SGAPly().ThrowingSpeed += 0.25f;
+                player.SGAPly().Thrownsavingchance += 0.25f;
             }
             if (set == "SpaceDiver")
             {
@@ -313,6 +360,12 @@ namespace SGAmod
                 sgaplayer.SpaceDiverWings += 0.5f;
                 sgaplayer.techdamage += 0.25f;
                 sgaplayer.electricChargeCost *= 0.75f;
+            }
+            if (set == "Mandala")
+            {
+                player.setBonus = "A minature Asteriod belt and Phaethon manifest around you\nManifested weapon: Overseer's Tutelage";
+                player.buffImmune[BuffID.WindPushed] = true;
+                //sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Desert.ManifestedSandTosser>();
             }
             if (set == "Valkyrie")
             {
@@ -429,7 +482,8 @@ namespace SGAmod
         }
 
         [System.Obsolete]
-        public override void GetWeaponDamage(Item item, Player player, ref int damage) {
+        public override void GetWeaponDamage(Item item, Player player, ref int damage)
+        {
 
             float basemul = 1f;
 
@@ -483,6 +537,10 @@ namespace SGAmod
             {
                 grabRange += 48;
             }
+            if (item.type == ModContent.ItemType<Dimensions.BubblePickup>() && player.SGAPly().terraDivingGear)
+            {
+                grabRange += 400;
+            }            
             if (item.maxStack > 1 && ((item.modItem != null && (item.Throwing().thrown || item.modItem is IJablinItem)) || item.thrown) && player.armor[0].type == ModContent.ItemType<VibraniumHat> ())
             {
                 grabRange += (int)(720 * player.Throwing().thrownVelocity);
@@ -491,15 +549,17 @@ namespace SGAmod
 
         public override bool GrabStyle(Item item, Player player)
         {
-            if (item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3)
+
+            bool boostedrealin = ((item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3) && player.GetModPlayer<SGAPlayer>().BoosterMagnet) || 
+                (item.type == ModContent.ItemType<Dimensions.BubblePickup>() && player.SGAPly().terraDivingGear);
+
+
+            if (boostedrealin)
             {
-                if (player.GetModPlayer<SGAPlayer>().BoosterMagnet)
-                {
                     Vector2 vectorItemToPlayer = player.Center - item.Center;
                     Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * 0.1f;
                     item.velocity = item.velocity + movement;
                     item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
-                }
             }
             else
             {
@@ -538,7 +598,7 @@ namespace SGAmod
                 if (player.statMana + item.healMana >= player.statManaMax2)
                 {
                     int difference = (player.statMana + item.healMana) - player.statManaMax2;
-                    player.AddBuff(ModContent.BuffType<ManaRegenFake>(), difference * 2);
+                    player.AddBuff(ModContent.BuffType<ManaRegenFakeBuff>(), difference * 2);
                 }
             }
 
@@ -661,11 +721,18 @@ namespace SGAmod
 
         public override void HorizontalWingSpeeds(Item item, Player player, ref float speed, ref float acceleration)
         {
-            if (player.armor[2].type == ModContent.ItemType<Items.Armors.Dev.JellybruLeggings>())
+            int plyleggings = player.armor[2].type;
+
+            if (plyleggings == ModContent.ItemType<Items.Armors.Dev.JellybruLeggings>())
             {
                 float boost = player.SGAPly().EnergyDepleted ? 2f : 1f;
                 speed += 1.5f*boost;
                 acceleration += 0.15f*boost;
+            }
+             if (plyleggings == ModContent.ItemType<Items.Armors.Mandala.MandalaLeggings>() && Dimensions.SGAPocketDim.WhereAmI != null)
+            {
+                speed += 2f;
+                acceleration += 0.20f;
             }
         }
 
@@ -724,6 +791,23 @@ namespace SGAmod
         public override void PickAmmo(Item weapon, Item ammo, Player player, ref int type, ref float speed, ref int damage, ref float knockback)
         {
             player.GetModPlayer<SGAPlayer>().myammo = ammo.type;
+
+            if (player.SGAPly().russianRoulette && Main.rand.Next(6) == 0)
+            {
+                player.SGAPly().MisterCreeperset = false;
+                player.Hurt(PlayerDeathReason.ByPlayer(player.whoAmI), damage, -player.direction, true, false, true, 1);
+                knockback = 0;
+                speed = 0.5f;
+                type = ProjectileID.BlowupSmoke;
+            }
+        }
+
+        public override void ModifyWeaponDamage(Item item, Player player, ref float add, ref float mult, ref float flat)
+        {
+            if (item.useAmmo > 0 && player.SGAPly().russianRoulette)
+            {
+                add += item?.modItem is Items.Weapons.RevolverBase ? 1f : 0.5f;
+            }
         }
 
         public override bool Shoot(Item item, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -768,18 +852,24 @@ namespace SGAmod
             itt = Projectile.NewProjectile(player.Center, new Vector2(-2, -4), ProjectileID.RocketFireworkBlue, 100, 0, player.whoAmI);
             Main.projectile[itt].timeLeft = 72;
 
-            switch (Main.rand.Next(0,2))
+            switch (Main.rand.Next(0,3))
             {
+                case 2:
+                    player.QuickSpawnItem(ModContent.ItemType<JellybruHelmet>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < JellybruChestplate>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < JellybruLeggings>(), 1);
+                    break;
+
                 case 1:
-                    player.QuickSpawnItem(mod.ItemType("MisterCreeperHead"), 1);
-                    player.QuickSpawnItem(mod.ItemType("MisterCreeperBody"), 1);
-                    player.QuickSpawnItem(mod.ItemType("MisterCreeperLegs"), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < MisterCreeperHead>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < MisterCreeperBody>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < MisterCreeperLegs>(), 1);
                     break;
 
                 default:
-                    player.QuickSpawnItem(mod.ItemType("IDGHead"), 1);
-                    player.QuickSpawnItem(mod.ItemType("IDGBreastplate"), 1);
-                    player.QuickSpawnItem(mod.ItemType("IDGLegs"), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < IDGHead>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < IDGBreastplate>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < IDGLegs>(), 1);
                     break;
             }
         }
@@ -1119,6 +1209,10 @@ namespace SGAmod
         public override bool CanRoll(Item item)
         {
             return true;
+        }
+        public override float RollChance(Item item)
+        {
+            return 30f;
         }
     }
     public class BustedAccessoryPrefix : BustedPrefix
@@ -1537,6 +1631,9 @@ namespace SGAmod
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
+            if (!SGAmod.EnchantmentsUpdate)
+                return;
+
             if (SGAmod.EnchantmentCatalyst != null)
             {
                 EnchantmentCraftingMaterial valuz;

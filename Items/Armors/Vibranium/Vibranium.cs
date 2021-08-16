@@ -134,7 +134,23 @@ namespace SGAmod.Items.Armors.Vibranium
 			Tooltip.SetDefault("50% increased Summon damage\n+6 max minions and +2 max sentries\nSummon weapons are used 75% faster\nSummons a friendly Resonant Wisp to aid the player\nThis wisp's strength scales with your summon damage and max minions\nWhen not minion targeting, it temporarily cripples nearby enemy projectiles at a cost of Electric Charge\nThis process is faster and cheaper while holding a Summoning weapon");
 		}
 
-		public override void SetDefaults()
+        public override bool Autoload(ref string name)
+        {
+			SGAPlayer.PostUpdateEquipsEvent += UpdateSetBonus;
+			return true;
+        }
+
+		private void UpdateSetBonus(SGAPlayer sgaply)
+		{
+			Player player = sgaply.player;
+			if (!player.dead && player.armor[0].type == ModContent.ItemType<VibraniumHood>() && player.ownedProjectileCounts[ModContent.ProjectileType<VibraniumWispMinion>()]<1)
+			{
+				Projectile.NewProjectile(player.Center,Vector2.Zero,ModContent.ProjectileType<VibraniumWispMinion>(),100,2f,player.whoAmI);
+			}
+
+		}
+
+        public override void SetDefaults()
 		{
 			item.width = 18;
 			item.height = 18;
@@ -435,7 +451,189 @@ namespace SGAmod.Items.Armors.Vibranium
         }
     }
 
-	public class VibraniumWall : ModProjectile
+	public class VibraniumWispMinion : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Vibranium's Wisp");
+		}
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Starfury);
+			aiType = -1;
+			projectile.aiStyle = -1;
+			projectile.tileCollide = false;
+			projectile.melee = false;
+			projectile.minion = true;
+			projectile.minionSlots = 0;
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Projectile_" + ProjectileID.FallingStar; }
+		}
+
+        public override bool CanDamage()
+        {
+			return false;
+        }
+
+        public override bool PreKill(int timeLeft)
+		{
+			projectile.type = ProjectileID.Starfury;
+			return true;
+		}
+		public override void AI()
+		{
+			Player player = Main.player[projectile.owner];
+			SGAPlayer sgaply = player.SGAPly();
+
+			projectile.localAI[0] += 1f;
+
+			if (!player.dead && player.armor[0].type == ModContent.ItemType<VibraniumHood>())
+            {
+				bool playerheldsummon = !player.HeldItem.IsAir && player.HeldItem.summon;
+
+				projectile.timeLeft = 3;
+				projectile.damage = (int)((25f*player.minionDamage) * (1f+(player.maxMinions/2f)));
+
+				projectile.ai[0] += 1;
+
+				Vector2 gothere = player.MountedCenter + new Vector2(0, -player.gravDir * 64f);
+				if (player.MinionAttackTargetNPC >= 0)
+				{
+					NPC target = Main.npc[player.MinionAttackTargetNPC];
+					gothere = target.Center - Vector2.Normalize(target.Center - player.Center) * 256f;
+
+					if (projectile.ai[0] % (playerheldsummon ? 6 : 10) == 0)
+					{
+						int index = 0;
+						int dist = 400 * 400;
+
+						foreach (NPC npctarget in Main.npc.Where(testby => testby.active && !testby.dontTakeDamage && testby.chaseable && !testby.friendly && (testby.Center - projectile.Center).LengthSquared() < dist).OrderBy(testby => testby.type == player.MinionAttackTargetNPC ? -100 : (testby.Center - player.Center).LengthSquared()))
+						{
+							if (index > player.maxTurrets)
+								continue;
+
+							Vector2 there = npctarget.Center - projectile.Center;
+
+							Projectile.NewProjectile(projectile.Center, npctarget.Center - projectile.Center, ModContent.ProjectileType<VibraniumZapEffect>(), 0, 0);
+							SoundEffectInstance snd = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 91);
+
+							npctarget.StrikeNPC(projectile.damage,0f,player.direction);
+							player.addDPS(projectile.damage);
+
+							if (snd != null)
+							{
+								snd.Pitch = 0.50f;
+							}
+							index += 1;
+						}
+					}
+
+
+				}
+				else
+				{
+
+					int index = 0;
+					int dist = 400 * 400;
+
+					if (projectile.ai[0] % (playerheldsummon ? 5 : 20) == 0)
+					{
+						foreach (Projectile proj in Main.projectile.Where(testby => testby.active && !testby.friendly && testby.hostile && (testby.Center - player.Center).LengthSquared() < dist && testby.GetGlobalProjectile<SGAprojectile>().damageReduceTime <= 0).OrderBy(testby => (testby.Center - player.Center).LengthSquared()))
+						{
+
+							if (!sgaply.ConsumeElectricCharge((int)(proj.damage * (playerheldsummon ? 0.75f : 1.5f)), 60) || index > player.maxTurrets)
+								continue;
+
+							SGAprojectile sgaproj = proj.GetGlobalProjectile<SGAprojectile>();
+							sgaproj.damageReduce = 10f;
+							sgaproj.damageReduceTime = 180;
+
+							Vector2 there = proj.Center - projectile.Center;
+
+							Projectile.NewProjectile(projectile.Center, proj.Center - projectile.Center, ModContent.ProjectileType<VibraniumZapEffect>(), 0, 0);
+							SoundEffectInstance snd = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 91);
+
+							if (snd != null)
+							{
+								snd.Pitch = 0.50f;
+							}
+
+							index += 1;
+
+						}
+					}
+
+				}
+
+				Vector2 finalvectormovement = gothere - projectile.Center;
+				if (finalvectormovement.Length() > 24f)
+				{
+
+					projectile.velocity += (finalvectormovement / 400f) + Vector2.Normalize(finalvectormovement) *0.075f;
+				}
+				projectile.velocity *= 0.95f;
+
+				return;
+            }
+
+			//projectile.timeLeft = 1;
+			//projectile.active = false;
+
+			
+		}
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+			NPCs.ResonantWisp.DrawResonantWisp(projectile,projectile.Center,projectile.localAI[0],spriteBatch,lightColor);
+			return false;
+        }
+    }
+
+	public class VibraniumZapEffect : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Vibranium's Zap");
+		}
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Starfury);
+			aiType = -1;
+			projectile.aiStyle = -1;
+			projectile.timeLeft = 8;
+			projectile.tileCollide = false;
+			projectile.melee = false;
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Projectile_591"; }
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+		public override void AI()
+		{
+			projectile.position -= projectile.velocity;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D tex = Main.projectileTexture[projectile.type];
+
+			spriteBatch.Draw(tex, projectile.Center-Main.screenPosition, null, Color.White*MathHelper.Clamp(projectile.timeLeft/8f,0f,1f), projectile.velocity.ToRotation()+MathHelper.PiOver2, new Vector2(tex.Width / 2f, tex.Height), new Vector2(1f, projectile.velocity.Length()/tex.Height), SpriteEffects.None, 0);
+
+			return false;
+		}
+	}
+
+
+		public class VibraniumWall : ModProjectile
 	{
 		Player Owner;
 		public override void SetStaticDefaults()

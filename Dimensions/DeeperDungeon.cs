@@ -854,9 +854,9 @@ namespace SGAmod.Dimensions
 
         public static int[] CommonItems => new int[] { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone"), SGAmod.Instance.ItemType("MagusSlippers"), SGAmod.Instance.ItemType("YoyoTricks")};
         public static int[] RareItems => new int[] { SGAmod.Instance.ItemType("BenchGodsFavor"), SGAmod.Instance.ItemType("PortalEssence"), SGAmod.Instance.ItemType("DungeonSplunker"), SGAmod.Instance.ItemType("InterdimensionalPartyHat") };
+        public static int[] ShadowItems => new int[] { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow, SGAmod.Instance.ItemType("BeserkerAuraStaff"), SGAmod.Instance.ItemType("EnchantedFury") };
 
-
-        public static void AddStuffToChest(int chestid, int loottype,UnifiedRandom unirand)
+    public static void AddStuffToChest(int chestid, int loottype,UnifiedRandom unirand)
         {
 
             if (chestid > -1)
@@ -925,10 +925,10 @@ namespace SGAmod.Dimensions
                 if (loottype == 2)//Shadow Chest
                 {
 
-                    lootrare = new List<int> { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow, SGAmod.Instance.ItemType("BeserkerAuraStaff"), SGAmod.Instance.ItemType("EnchantedFury") };
+                    //lootrare = new List<int> { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow, SGAmod.Instance.ItemType("BeserkerAuraStaff"), SGAmod.Instance.ItemType("EnchantedFury") };
 
-                    int index = unirand.Next(0, lootrare.Count);
-                    Main.chest[chestid].item[e].SetDefaults(lootrare[index]);
+                    int index = unirand.Next(0, ShadowItems.Length);
+                    Main.chest[chestid].item[e].SetDefaults(ShadowItems[index]);
                     Main.chest[chestid].item[e].stack = 1;
                     e += 1;
 

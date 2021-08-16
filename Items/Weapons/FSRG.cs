@@ -20,7 +20,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 60;
+			item.damage = 70;
 			item.ranged = true;
 			item.width = 32;
 			item.height = 62;
@@ -78,13 +78,13 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
             ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("Gatlipiller"), 1);
-			recipe.AddIngredient(mod.ItemType("SharkTooth"), 50);
-			recipe.AddIngredient(mod.ItemType("VirulentBar"), 5);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 20);
-			recipe.AddIngredient(ItemID.LunarBar, 5);
+			recipe.AddIngredient(ModContent.ItemType <Gatlipiller>(), 1);
 			recipe.AddIngredient(ItemID.SDMG, 1);
+			recipe.AddIngredient(ModContent.ItemType <HavocGear.Items.Weapons.SharkTooth>(), 50);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.VirulentBar>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 20);
+			recipe.AddIngredient(ModContent.ItemType<VibraniumBar>(), 8);
+			recipe.AddIngredient(ItemID.LunarBar, 5);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			//recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);

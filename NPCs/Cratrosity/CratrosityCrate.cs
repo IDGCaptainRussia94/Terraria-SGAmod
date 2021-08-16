@@ -89,9 +89,17 @@ namespace SGAmod.NPCs.Cratrosity
 			player.AddBuff(mod.BuffType("Microtransactions"), 200, true);
 		}
 
+		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		{
+			Texture2D mainTex = Main.itemTexture[CrateIndex];
+			//if (GetType() == typeof(CratrosityCrateDankCrate))
+				//mainTex = ModContent.GetTexture(Texture);
+
+			Main.spriteBatch.Draw(mainTex, npc.Center - Main.screenPosition, null, drawColor, 0, mainTex.Size()/2f, npc.scale, default, 0);
+			return false;
+		}
 
 
-
-	}
+    }
 }
 

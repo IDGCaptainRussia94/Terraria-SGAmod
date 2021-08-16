@@ -20,6 +20,10 @@ using Terraria.Graphics.Shaders;
 using Terraria.GameContent.UI.Elements;
 using SGAmod.Dimensions;
 using SGAmod.Items.Armors.Vibranium;
+using Terraria.IO;
+using Terraria.ModLoader.IO;
+using Terraria.Utilities;
+using System.IO;
 
 namespace SGAmod
 {
@@ -35,14 +39,34 @@ namespace SGAmod
 			On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
 			On.Terraria.GameContent.Events.DD2Event.SpawnMonsterFromGate += CrucibleArenaMaster.DD2PortalOverrides;
 			On.Terraria.GameContent.UI.Elements.UICharacterListItem.DrawSelf += Menu_UICharacterListItem;
+
+			//Unused until more relevant
+			//On.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += CtorModWorlData;
+			//On.Terraria.GameContent.UI.Elements.UIWorldListItem.DrawSelf += Menu_UICWorldListItem;
+
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
+			On.Terraria.Player.AddBuff += Player_AddBuff;
 			On.Terraria.Player.DropSelectedItem += DontDropManifestedItems;
-			On.Terraria.Player.dropItemCheck += SoulboundPriority;
+			On.Terraria.Player.dropItemCheck += ManifestedPriority;
 			On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
 			On.Terraria.Player.ItemFitsWeaponRack += NoPlacingManifestedItemOnItemRack;
+			//On.Terraria.Main.Update += Main_Update;
+
 			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
+		}
+
+		public static void Main_Update(On.Terraria.Main.orig_Update orig,Main mainer, GameTime time)
+        {
+			//if (!Main.gameMenu)
+			//Main.rand = new Terraria.Utilities.UnifiedRandom(10);
+			orig(mainer, time);
+
+			if (Main.menuMode<3)
+			{
+				SGAWorld.highestDimDungeonFloor = 0;
+			}
 		}
 
 		//These aren't used atm
@@ -72,9 +96,51 @@ namespace SGAmod
 			Main.time = 6000;
 		}
 
+        //Neat trick from scalie to detour a Constructor to prepare modded data from the twld file
+        readonly static Dictionary<UIWorldListItem, TagCompound> SGAmodData = new Dictionary<UIWorldListItem, TagCompound>();
+		private static void CtorModWorlData(On.Terraria.GameContent.UI.Elements.UIWorldListItem.orig_ctor orig, UIWorldListItem self, WorldFileData data, int snapPointIndex)
+		{
+			orig(self, data, snapPointIndex);
 
-		//Some Reflection Stuff, this first method swap came from scalie because lets be honest, who else is gonna figure this stuff out? Vanilla is a can of worms and BS at times. Credit due to him
-		static private readonly FieldInfo _playerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
+			string path = data.Path.Replace(".wld",".twld");
+			TagCompound tag;
+
+			try
+			{
+				byte[] buffer = FileUtilities.ReadAllBytes(path, data.IsCloudSave);
+				tag = TagIO.FromStream(new MemoryStream(buffer), true);
+			}
+			catch
+			{
+				tag = null;
+			}
+
+			TagCompound tag2 = tag?.GetList<TagCompound>("modData").FirstOrDefault(k => k.GetString("mod") == "SGAmod" && k.GetString("name") == "SGAWorld");
+			TagCompound tag3 = tag2?.Get<TagCompound>("data");
+
+			SGAmodData.Add(self, tag3);
+		}
+
+		private static void Menu_UICWorldListItem(On.Terraria.GameContent.UI.Elements.UIWorldListItem.orig_DrawSelf orig, UIWorldListItem self, SpriteBatch spriteBatch)
+		{
+			orig(self, spriteBatch);
+			Vector2 pos = self.GetDimensions().ToRectangle().TopRight();
+			int floors = -1;
+			if (SGAmodData.TryGetValue(self, out var tag3) && tag3 != null)
+			{
+				if (tag3.ContainsKey("highestDimDungeonFloor"))
+				floors = tag3.GetByte("highestDimDungeonFloor");
+			}
+
+			string text = "Floors completed: " + (int)floors;
+
+			Utils.DrawBorderString(spriteBatch, text, pos + new Vector2(-Main.fontMouseText.MeasureString(text).X-8, 5), Color.DeepSkyBlue); ;
+		}
+
+
+
+			//Some Reflection Stuff, this first method swap came from scalie because lets be honest, who else is gonna figure this stuff out? Vanilla is a can of worms and BS at times. Credit due to him
+			static private readonly FieldInfo _playerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
 		static private readonly FieldInfo _player = typeof(UICharacter).GetField("_player", BindingFlags.NonPublic | BindingFlags.Instance);
 
 		static private void Menu_UICharacterListItem(On.Terraria.GameContent.UI.Elements.UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
@@ -116,7 +182,7 @@ namespace SGAmod
 
 		static private bool NoPlacingManifestedItemOnItemRack(On.Terraria.Player.orig_ItemFitsWeaponRack orig, Player self, Item i) => !(i.modItem is IManifestedItem) && orig(self, i);
 
-		static private void SoulboundPriority(On.Terraria.Player.orig_dropItemCheck orig, Player self)
+		static private void ManifestedPriority(On.Terraria.Player.orig_dropItemCheck orig, Player self)
 		{
 			if (Main.mouseItem.type > ItemID.None && !Main.playerInventory && Main.mouseItem.modItem != null && Main.mouseItem.modItem is IManifestedItem)
 			{
@@ -203,6 +269,25 @@ namespace SGAmod
 
 			}
 			orig(self);
+		}
+
+		static private void Player_AddBuff(On.Terraria.Player.orig_AddBuff orig, Player self,int buff,int time,bool quiet)
+		{
+			// 'orig' is a delegate that lets you call back into the original method.
+			// 'self' is the 'this' parameter that would have been passed to the original method.
+
+			SGAPlayer sgaply = self.SGAPly();
+
+			if (sgaply.phaethonEye>0 && Main.debuff[buff] && time>60)
+			{
+				if (Main.rand.Next(3) == 0 && sgaply.AddCooldownStack(time))
+				{
+					Projectile.NewProjectile(self.Center, Vector2.Zero, ModContent.ProjectileType<Items.Accessories.PhaethonEyeProcEffect>(),0,0,self.whoAmI);
+					return;
+				}
+			}
+			orig(self,buff,time,quiet);
+
 		}
 
 		static private void Player_NinjaDodge(On.Terraria.Player.orig_NinjaDodge orig, Player self)

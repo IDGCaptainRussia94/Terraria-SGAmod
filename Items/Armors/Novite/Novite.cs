@@ -4,7 +4,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using System;
 
-namespace SGAmod.Items.Armors
+namespace SGAmod.Items.Armors.Novite
 {
 
 	[AutoloadEquip(EquipType.Head)]

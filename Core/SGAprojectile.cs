@@ -24,6 +24,7 @@ namespace SGAmod
 	public bool enhancedbees=false;
 	public bool splittingcoins=false;
 	public bool raindown=false;
+		public bool acid = false;
 		public float damageReduce = 1f;
 		public int damageReduceTime = 0;
 		public bool embued = false;
@@ -120,6 +121,13 @@ namespace SGAmod
 
 
 		}
+        public override void ModifyHitPlayer(Projectile projectile, Player target, ref int damage, ref bool crit)
+        {
+			if (damageReduce > 1)
+			{
+				damage = (int)(damage / damageReduce);
+			}
+		}
         public override bool? CanHitNPC(Projectile projectile, NPC target)
 		{
 			if (projectile.type == ProjectileID.FlamethrowerTrap && projectile.owner > -1)
@@ -130,10 +138,16 @@ namespace SGAmod
 		{
 			if (embued)
 			{
-				target.AddBuff(mod.BuffType("MoonLightCurse"),90);
+				target.AddBuff(ModContent.BuffType<Buffs.MoonLightCurse>(), 90);
 			}
 
-				if (onehit)
+			if (acid)
+			{
+				target.AddBuff(ModContent.BuffType<Buffs.AcidBurn>(), damage);
+				acid = false;
+			}
+
+			if (onehit)
 				projectile.Kill();
 		}
 
@@ -143,7 +157,8 @@ namespace SGAmod
 			Player owner = Main.player[projectile.owner];
 			if (owner != null)
 			{
-				if (owner.SGAPly().SybariteGem)
+				SGAPlayer sgaply = owner.SGAPly();
+				if (sgaply != null && sgaply.SybariteGem)
 				{
 					if (Main.rand.Next(0, 4) == 0)
 					{
@@ -163,9 +178,10 @@ namespace SGAmod
         public override void PostAI(Projectile projectile)
 		{
 			SGAprojectile modeproj = projectile.GetGlobalProjectile<SGAprojectile>();
-			if (modeproj.damageReduce > 1f)
+				modeproj.damageReduceTime -= 1;			
+			if (modeproj.damageReduce >= 0f)
             {
-				modeproj.damageReduceTime -= 1;
+
 				if (damageReduceTime < 1)
 				{
 					modeproj.damageReduce /= 2f;
@@ -210,6 +226,17 @@ namespace SGAmod
 				Main.dust[dust].color = Main.hslToRgb(((float)(Main.GlobalTime / 3)+(float)projectile.whoAmI*7.16237f) % 1f, 0.9f, 0.65f);
 			}
 
+			if (acid)
+            {
+				if (Main.rand.Next(0, 5) == 1)
+				{
+					int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("AcidDust"));
+					Main.dust[dust].scale = 0.25f;
+					Main.dust[dust].noGravity = false;
+					Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(60, 100) * 0.01f);
+				}
+			}
+
 			//SGAprojectile modeproj = projectile.GetGlobalProjectile<SGAprojectile>();
 			if (projectile.owner < 255 && Main.player[projectile.owner].active && projectile.friendly && !projectile.hostile)
 			{
@@ -248,11 +275,19 @@ namespace SGAmod
 				if (projectile.friendly)
 				{
 					Player owner = Main.player[projectile.owner];
-					if (owner != null && owner.SGAPly().enchantedShieldPolish)
+					if (owner != null)
 					{
-						if (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile)
+						SGAPlayer sgaply = owner.SGAPly();
+						if (sgaply.acidSet.Item2 && projectile.Throwing().thrown)
 						{
-							projectile.magic = true;
+							acid = true;
+						}
+						if (sgaply.enchantedShieldPolish)
+						{
+							if (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile)
+							{
+								projectile.magic = true;
+							}
 						}
 					}
 				}

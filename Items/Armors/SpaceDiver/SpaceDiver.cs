@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 using Idglibrary;
 using AAAAUThrowing;
 
-namespace SGAmod.Items.Armors
+namespace SGAmod.Items.Armors.SpaceDiver
 {
 
 	[AutoloadEquip(EquipType.Head)]

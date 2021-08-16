@@ -970,6 +970,8 @@ namespace SGAmod.Items.Weapons
 			{
 				projectile.localAI[1] = Main.rand.Next(3)+100;
 			}
+
+			projectile.ai[1] += 1;
 			projectile.localAI[0] += 1;
 
 			Point16 point = new Point16((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16);
@@ -998,6 +1000,9 @@ namespace SGAmod.Items.Weapons
 						enemy.AddBuff(BuffID.Oiled, 60*1);
 						enemy.AddBuff(BuffID.Confused, 3);
 						enemy.SGANPCs().nonStackingImpaled = projectile.damage;
+
+						if (projectile.ai[1]%20==0)
+						enemy.SGANPCs().AddDamageStack(projectile.damage/3,120);
 					}
 
 					for (int num654 = 0; num654 < 1 + (projectile.localAI[0]<10003 ? 10 : 0); num654++)
@@ -2252,13 +2257,13 @@ namespace SGAmod.Items.Weapons
 			for (int num172 = 0; num172 < Main.maxNPCs; num172 += 1)
 			{
 				NPC target = Main.npc[num172];
-				float damagefalloff = 1f - ((target.Center - projectile.Center).Length() / 256f);
-				if ((target.Center - projectile.Center).Length() < 256f && !target.friendly && !target.dontTakeDamage)// && ((target.modNPC!=null && target.modNPC.CanBeHitByProjectile(projectile)==true) || target.modNPC==null))
+				float damagefalloff = 1f - ((target.Center - projectile.Center).Length() / 320f);
+				if ((target.Center - projectile.Center).Length() < 320f && !target.friendly && !target.dontTakeDamage)// && ((target.modNPC!=null && target.modNPC.CanBeHitByProjectile(projectile)==true) || target.modNPC==null))
 				{
 					Player owner = Main.player[projectile.owner];
 					//if (owner.active)
 					//owner.ApplyDamageToNPC(target, (int)(projectile.damage * damagefalloff), 0f, 1, false);
-					float damazz = (Main.DamageVar((float)1500) * damagefalloff);
+					float damazz = (Main.DamageVar((float)2000) * damagefalloff);
 					target.AddBuff(mod.BuffType("NinjaSmokedDebuff"),(int)damazz);
 					if (Main.player[projectile.owner].SGAPly().ninjaSash > 2)
 						IdgNPC.AddBuffBypass(target.whoAmI,mod.BuffType("NinjaSmokedDebuff"), (int)damazz);
@@ -2277,6 +2282,23 @@ namespace SGAmod.Items.Weapons
 			Main.dust[dust].noGravity = false;
 			Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(60, 100) * 0.01f);
 			projectile.timeLeft -= 1;
+
+			for (int num172 = 0; num172 < Main.maxNPCs; num172 += 1)
+			{
+				NPC target = Main.npc[num172];
+				float damagefalloff = 1f - ((target.Center - projectile.Center).Length() / 80f);
+				if ((target.Center - projectile.Center).Length() < 80f && !target.friendly && !target.dontTakeDamage)
+				{
+					Player owner = Main.player[projectile.owner];
+					//if (owner.active)
+					//owner.ApplyDamageToNPC(target, (int)(projectile.damage * damagefalloff), 0f, 1, false);
+					float damazz = (Main.DamageVar((float)500) * damagefalloff);
+					target.AddBuff(mod.BuffType("NinjaSmokedDebuff"), (int)damazz);
+					if (Main.player[projectile.owner].SGAPly().ninjaSash > 2)
+						IdgNPC.AddBuffBypass(target.whoAmI, mod.BuffType("NinjaSmokedDebuff"), (int)damazz);
+				}
+			}
+
 		}
 
 	}
@@ -2511,7 +2533,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 			if ((projectile.localAI[0]+(projectile.whoAmI*7)) % 60 == 0 || (int)projectile.ai[1] == 0)
 			{
-				float left = 0.40f + (1f-(projectile.timeLeft/300f))*0.20f;
+				float left = (0.40f + (1f-(projectile.timeLeft/300f))*0.20f)*(GetType() == typeof(FlyProjectileThrown) ? 1f : 0.60f);
 				projectile.ai[1] = Main.rand.NextFloat(-MathHelper.Pi * left, MathHelper.Pi * left);
 				projectile.netUpdate = true;
 			}

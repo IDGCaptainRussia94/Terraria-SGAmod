@@ -23,6 +23,7 @@ using SGAmod.Effects;
 using SGAmod.Items;
 using System.Linq;
 using SGAmod.Dimensions.NPCs;
+using SGAmod.Items.Consumable;
 
 namespace SGAmod.Dimensions
 {
@@ -31,6 +32,7 @@ namespace SGAmod.Dimensions
         public override int width => 3200;
         public override int height => 800;
         public override bool saveSubworld => false;
+        public override float spawnRate => 4.0f;
 
         public override string DimName => "Near Terrarian Orbit";
 
@@ -804,7 +806,7 @@ namespace SGAmod.Dimensions
 
                 Point thisPart = new Point(partof * 18,0);
 
-                spriteBatch.Draw(textile, drawPos + (offset * (projectile.width + 4) * (projectile.width < 20 ? (rand.NextFloat(0.80f, 0.90f)) : (rand.NextFloat(0.60f, 0.80f)))).RotatedBy(projectile.rotation), new Rectangle(thisPart.X, thisPart.Y, 16, 16), lightColor, projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(textile, drawPos + (offset * (projectile.width + 4) * (projectile.width < 20 ? (rand.NextFloat(0.80f, 0.90f)) : (rand.NextFloat(0.60f, 0.80f)))).RotatedBy(projectile.rotation), new Rectangle(thisPart.X, thisPart.Y, 16, 16), Color.White, projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
             }
 
             base._DrawAsteriod(spriteBatch, lightColor);
@@ -873,7 +875,7 @@ namespace SGAmod.Dimensions
 
                 Point thisPart = new Point(partof2, partof * 18);
                 
-                spriteBatch.Draw(textile, drawPos + (offset * (projectile.width+4) * (projectile.width < 20 ? (rand.NextFloat(0.80f, 0.90f)) : (rand.NextFloat(0.60f,0.80f)))).RotatedBy(projectile.rotation), new Rectangle(thisPart.X, thisPart.Y,16,16), lightColor, projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(textile, drawPos + (offset * (projectile.width+4) * (projectile.width < 20 ? (rand.NextFloat(0.80f, 0.90f)) : (rand.NextFloat(0.60f,0.80f)))).RotatedBy(projectile.rotation), new Rectangle(thisPart.X, thisPart.Y,16,16), Color.White, projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
             }
 
             /*for (int i = 0; i < projectile.width*0.75; i += 1)
@@ -901,6 +903,7 @@ namespace SGAmod.Dimensions
         public float rotateAngle = 0;
         public Color glowColor = Color.White;
         public bool splitting = true;
+        public int npc = -1;
 
         public static void SpawnAsteriods()
         {
@@ -934,6 +937,7 @@ namespace SGAmod.Dimensions
 
                 if (Main.rand.Next(0,5) == 1)
                 projtype = ModContent.ProjectileType<MineableAsteriodGem>();
+
 
                 if (Main.rand.Next(0,10) == 1 && SpaceDim.crystalAsteriods)
                 projtype = ModContent.ProjectileType<MineableAsteriodOverseenCrystal>();
@@ -1009,6 +1013,9 @@ namespace SGAmod.Dimensions
                     stuff.Add(ModContent.ItemType<Glowrock>());
                 }
 
+                if (Main.rand.Next(0, 5) == 0)
+                    stuff.Add(ModContent.ItemType<BubblePickup>());
+
                 if (Main.rand.Next(-5, 6) == 0)
                     stuff.Add(ItemID.Amber);
                 if (Main.rand.Next(-5, 6) == 0)
@@ -1026,7 +1033,9 @@ namespace SGAmod.Dimensions
                 if (Main.rand.Next(-5, 15) == 0)
                     stuff.Add(ItemID.DD2ElderCrystal);
 
-                loot.Add((stuff[Main.rand.Next(stuff.Count)], Main.rand.Next(1, 5)));
+                int itemtype = stuff[Main.rand.Next(stuff.Count)];
+
+                loot.Add((itemtype, itemtype == ModContent.ItemType<BubblePickup>() ? 1 : Main.rand.Next(1, 5)));
             }
 
             SoundEffectInstance snd = Main.PlaySound(SoundID.DD2_MonkStaffGroundImpact, (int)projectile.Center.X, (int)projectile.Center.Y);
@@ -1078,7 +1087,13 @@ namespace SGAmod.Dimensions
 
         public override bool PreKill(int timeLeft)
         {
-            if (!splitting)
+            if (npc >= 0 && Main.npc[npc].active)
+            {
+                NPC npc2 = Main.npc[npc];
+                npc2.StrikeNPC(npc2.lifeMax * 2,0,0);
+            }
+
+                if (!splitting)
                 return true;
 
             for (int i = 0; i < Main.rand.Next(1, 3); i += 1)
@@ -1104,10 +1119,24 @@ namespace SGAmod.Dimensions
 
         public override void AI()
         {
+            if (npc>=0 && Main.npc[npc].active)
+            {
+                NPC npc2 = Main.npc[npc];
+                projectile.Center = npc2.Center;
+                projectile.velocity = npc2.velocity;
+                projectile.tileCollide = false;
+                (npc2.modNPC as OverseenHeadAsteriod).timer = 3;
+            }
+            else
+            {
+                projectile.tileCollide = true;
+                npc = -1;
+            }
+
             miningTargeted = (int)MathHelper.Clamp(miningTargeted - 1, 0, 20);
             projectile.rotation += rotateAngle;
 
-            if (projectile.damage > 0)
+            if (projectile.damage > 0 && npc<0)
             {
                 if (projectile.velocity.Length() > 3f)
                     projectile.velocity *= 0.97f;
@@ -1215,8 +1244,36 @@ namespace SGAmod.Dimensions
 
     }
 
-    public class OverseenHead : ModNPC
+    public class OverseenHeadAsteriod : OverseenHead
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Overseen Asteriod");
+        }
+
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+            npc.dontTakeDamage = true;
+            npc.damage = 0;
+            timer = 5;
+        }
+
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+        {
+            return false;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        {
+            return false;
+        }
+
+    }
+
+        public class OverseenHead : ModNPC
+    {
+        public int timer = Int32.MaxValue;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Overseen Head");
@@ -1258,6 +1315,10 @@ namespace SGAmod.Dimensions
 
         public override void AI()
         {
+            if (timer < 1)
+            {
+                npc.StrikeNPC(npc.lifeMax * 2, 0, 0);
+            }
             if (npc.aiStyle != 56)
             {
                 int num825 = Dust.NewDust(npc.position, npc.width, npc.height, 180);
@@ -1299,5 +1360,21 @@ namespace SGAmod.Dimensions
         }
 
     }
+    public class BubblePickup : EnchantedBubble
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Air Bubble");
+            ItemID.Sets.ItemNoGravity[item.type] = false;
+        }
+
+        public override bool OnPickup(Player player)
+        {
+            player.SGAPly().RestoreBreath(20);
+            return false;
+        }
+
+    }
+
 
 }

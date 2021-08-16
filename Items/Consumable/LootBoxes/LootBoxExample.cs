@@ -81,6 +81,8 @@ namespace SGAmod.Items.Consumable.LootBoxes
 			WR.Add(new LootBoxContents(itemtype, 1), 1);
 			foreach (int itemtype in Dimensions.DeeperDungeon.RareItems)
 				WR.Add(new LootBoxContents(itemtype, 1), 0.25);
+			foreach (int itemtype in Dimensions.DeeperDungeon.ShadowItems)
+				WR.Add(new LootBoxContents(itemtype, 1), 0.40);
 
 			loots.Add(WR.Get());
 		}
@@ -524,7 +526,7 @@ namespace SGAmod.Items.Consumable.LootBoxes
 		{
 			tickeffect = 15;
 			//Lets you play a sound or otherwise make a client sided effect when the counter ticks over something
-			Main.PlaySound(12, -1, -1, 0, 1f, 0.6f);
+			Main.PlaySound(SoundID.MenuTick, -1, -1, 0, 1f, 0.6f);
 		}
 
 		protected override void AwardItem(int itemtype)
@@ -535,7 +537,7 @@ namespace SGAmod.Items.Consumable.LootBoxes
 		//Copy and override PreDraw to make drawing changes of your own!
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D ticker = mod.GetTexture("MatrixArrow");
+			Texture2D ticker = mod.GetTexture("Ticker");
 
 
 			Player player = Main.player[projectile.owner];

@@ -63,6 +63,7 @@ namespace SGAmod
 		Snapped = 105,
 		GrantExpertise = 250,
 		GrantEntrophite = 251,
+		GrantTf2EmblemXp = 252,
 		LockPlayer = 499,
 		CloneClient = 500,
 		CraftWarning = 995,
@@ -195,6 +196,13 @@ namespace SGAmod
 				return;
 			}
 
+			if (atype == (ushort)MessageType.GrantTf2EmblemXp)
+			{
+				Logger.Debug("DEBUG client: Grant TF2 emblem XP");
+				TF2Emblem.AwardXpToPlayer(Main.player[Main.myPlayer], reader.ReadInt32());
+				return;
+			}
+
 			/*				ModPacket packet = SGAmod.Instance.GetPacket();
 				packet.Write(500);
 				packet.Write(player.whoAmI);
@@ -232,6 +240,8 @@ namespace SGAmod
 				int gunslingerLegendtarget = reader.ReadInt16();
 				int activestacks = reader.ReadInt16();
 				bool dragonFriend = reader.ReadBoolean();
+				bool armorToggleMode = reader.ReadBoolean();
+
 				Logger.Debug("DEBUG both: Clone Client 10");
 				int[] ammos = { reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32() };
 
@@ -253,6 +263,7 @@ namespace SGAmod
 					sgaplayer.gunslingerLegendtarget = (int)gunslingerLegendtarget;
 					sgaplayer.activestacks = (int)activestacks;
 					sgaplayer.dragonFriend = dragonFriend;
+					sgaplayer.armorToggleMode = armorToggleMode;
 
 					for (int i = 0; i < 4; i++)
 					{

@@ -79,10 +79,11 @@ namespace SGAmod.Items.Armors.Engineer
         public override void UpdateEquip(Player player)
         {
             player.maxTurrets += 1;
-            player.SGAPly().techdamage += 0.10f;
-            player.SGAPly().electricrechargerate += 2;
-            player.SGAPly().electricChargeCost *= 0.75f;
-            player.SGAPly().electricChargeMax += 2500;
+            SGAPlayer sgaply = player.SGAPly();
+            sgaply.techdamage += 0.10f;
+            sgaply.electricrechargerate += 2;
+            sgaply.electricChargeCost *= 0.75f;
+            sgaply.electricChargeMax += 2500;
         }
         public override void AddRecipes()
         {
@@ -104,7 +105,7 @@ namespace SGAmod.Items.Armors.Engineer
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Leggings");
-            Tooltip.SetDefault("15% increased Summon damage\n25% reduced Electric Consumption and Recharge Delay\n+1500 Max Electric Charge");
+            Tooltip.SetDefault("15% increased Summon damage and 25% increased Summon weapon use Speed\n25% reduced Electric Consumption and Recharge Delay\n+1500 Max Electric Charge");
         }
 
         public override void SetDefaults()
@@ -117,9 +118,13 @@ namespace SGAmod.Items.Armors.Engineer
         public override void UpdateEquip(Player player)
         {
             player.minionDamage += 0.15f;
-            player.SGAPly().electricChargeReducedDelay *= 0.75f;
-            player.SGAPly().electricChargeCost *= 0.75f;
-            player.SGAPly().electricChargeMax += 1500;
+
+            SGAPlayer sgaply = player.SGAPly();
+
+            sgaply.electricChargeReducedDelay *= 0.75f;
+            sgaply.electricChargeCost *= 0.75f;
+            sgaply.electricChargeMax += 1500;
+            sgaply.summonweaponspeed += 0.25f;
         }
         public override void AddRecipes()
         {

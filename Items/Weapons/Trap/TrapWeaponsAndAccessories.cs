@@ -106,7 +106,7 @@ namespace SGAmod.Items.Weapons.Trap
 
 		public override string Texture
 		{
-			get { return ("SGAmod/Items/Weapons/Trap/DartTrapGun"); }
+			get { return ("SGAmod/Items/Weapons/Trap/MakeshiftSpearTrapGun"); }
 		}
 
 		public override void SetDefaults()
@@ -586,7 +586,7 @@ namespace SGAmod.Items.Weapons.Trap
 	{
 
 		public override int stuntime => 4;
-		public override float traveldist => 500;
+		public override float traveldist => 600;
 		int fakeid = ProjectileID.SpearTrap;
 		public override void SetStaticDefaults()
 		{
@@ -604,7 +604,7 @@ namespace SGAmod.Items.Weapons.Trap
 	{
 
 		public virtual int stuntime => 5;
-		public virtual float traveldist => 300;
+		public virtual float traveldist => 450;
 		public int touchedWall = 0;
 		int fakeid = ProjectileID.SpearTrap;
 		public override void SetStaticDefaults()

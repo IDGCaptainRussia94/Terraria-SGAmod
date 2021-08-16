@@ -12,6 +12,7 @@ namespace SGAmod.HavocGear.Projectiles
     	public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tornado");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
         
 		public override void SetDefaults()

@@ -62,13 +62,13 @@ namespace SGAmod
 
 	public partial class SGAmod : Mod
 	{
-		public static bool Calamity = false;
-		public static bool Thorium = false;
+		public static (bool,Mod) Calamity = (false,null);
+		public static (bool,Mod) Thorium = (false, null);
 
 
 		public static void BoostModdedDamage(Player player, float damage, int crit)
 		{
-			if (SGAmod.Calamity)
+			if (SGAmod.Calamity.Item1 || SGAmod.Thorium.Item1)
 			{
 				PropertyBoostModdedDamage = new ModdedDamage(player, damage, crit);
 			}
@@ -78,21 +78,26 @@ namespace SGAmod
 		{
 			set
 			{
-				if (SGAmod.Calamity)
+				if (SGAmod.Calamity.Item1)
 				{
 
 					CalamityPlayer calply = value.player.GetModPlayer<CalamityPlayer>();
 					calply.throwingDamage += value.damage;
 					calply.throwingCrit += value.crit;
 				}
-				if (SGAmod.Thorium)
+				if (SGAmod.Thorium.Item1)
 				{
 
-					ThoriumPlayer thorply = value.player.GetModPlayer<ThoriumPlayer>();
-					thorply.symphonicDamage += value.damage;
-					thorply.symphonicCrit += value.crit;
-					thorply.radiantBoost += value.damage;
-					thorply.radiantCrit += value.crit;
+					SGAmod.Thorium.Item2.Call("BonusBardDamage", value.player, value.damage);
+					SGAmod.Thorium.Item2.Call("BonusBardCrit", value.player, value.crit);
+					SGAmod.Thorium.Item2.Call("BonusHealerDamage", value.player, value.damage);
+					SGAmod.Thorium.Item2.Call("BonusHealerCrit", value.player, value.crit);
+
+					//ThoriumPlayer thorply = value.player.GetModPlayer<ThoriumPlayer>();
+					//thorply.symphonicDamage += value.damage;
+					//thorply.symphonicCrit += value.crit;
+					//thorply.radiantBoost += value.damage;
+					//thorply.radiantCrit += value.crit;
 				}
 
 			}
@@ -100,7 +105,7 @@ namespace SGAmod
 
 		public static void CalamityNoRevengenceNoDeathNoU()
 		{
-			if (SGAmod.Calamity)
+			if (SGAmod.Calamity.Item1)
 			{
 				bool nothing = CalamityFlipoffRevengence;
 			}
@@ -112,7 +117,7 @@ namespace SGAmod
 			{
 				Player player = Main.player[Main.myPlayer];
 
-				if (!SGAmod.Calamity)
+				if (!SGAmod.Calamity.Item1)
 					return false;
 
 				CalamityPlayer calply = player.GetModPlayer<CalamityPlayer>();
@@ -137,8 +142,11 @@ namespace SGAmod
 			itemToMusicReference = (Dictionary<int, int>)itemToMusicField.GetValue(null);
 			musicToItemReference = (Dictionary<int, int>)musicToItemField.GetValue(null);
 
-			Calamity = ModLoader.GetMod("CalamityMod") != null;
-			Thorium = ModLoader.GetMod("ThoriumMod") != null;
+			Mod cal = ModLoader.GetMod("CalamityMod");
+			Mod thor = ModLoader.GetMod("ThoriumMod");
+
+			Calamity = (cal != null, cal);
+			Thorium = (thor != null, thor);
 
 			overpoweredMod = ((ModLoader.GetMod("AFKPETS") != null ? 0.5f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0) + (ModLoader.GetMod("Luiafk") != null ? 2f : 0) + (ModLoader.GetMod("FargowiltasSouls") != null ? 2.5f : 0));
 							   //Why do people still use Luiafk in legit playthroughs? I donno...
@@ -176,7 +184,7 @@ namespace SGAmod
 
 				bossList.Call("AddBoss", 5.5f, ModContent.NPCType<Murk>(), this, "Murk", (Func<bool>)(() => SGAWorld.downedMurk > 1), new List<int>() { ModContent.ItemType<RoilingSludge>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<MurkBossBag>(), ModContent.ItemType<MudAbsorber>(), ModContent.ItemType<MurkyGel>(), ModContent.ItemType<MurkFlail>(), ModContent.ItemType<Mudmore>(), ModContent.ItemType<Mossthorn>(), ModContent.ItemType<Landslide>(), ModContent.ItemType<SwarmGrenade>() }, "Use a [i:" + ItemType("RoilingSludge") + "] in the jungle after killing the fly swarm", "Murk slinks back into the depths of the jungle");
 
-				bossList.Call("AddBoss", 6.4f, ModContent.NPCType<CobaltWraith>(), this, "Cobalt Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 1)), ModContent.ItemType<WraithCoreFragment2>(), new List<int>() { }, new List<int>() { ModContent.ItemType<WraithFragment4>(), ItemID.Hellstone, ItemID.SoulofLight, ItemID.SoulofNight, ItemID.PalladiumOre, ItemID.CobaltOre, ItemID.MythrilOre, ItemID.OrichalcumOre, ItemID.AdamantiteOre, ItemID.TitaniumOre }, "Use a [i:" + ItemType("WraithCoreFragment2") + "] at anytime, defeat this boss to unlock crafting a hardmode anvil, as well as anything crafted at one", "Cobalt Wraith completes its mission", "SGAmod/NPCs/Wraiths/CobaltWraithLog");
+				bossList.Call("AddBoss", 6.4f, ModContent.NPCType<CobaltWraith>(), this, "Cobalt Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 1)), ModContent.ItemType<WraithCoreFragment2>(), new List<int>() { }, new List<int>() { ModContent.ItemType<WraithFragment4>(), ItemID.Hellstone, ItemID.SoulofLight, ItemID.SoulofNight, ItemID.PalladiumOre, ItemID.CobaltOre, ItemID.MythrilOre, ItemID.OrichalcumOre, ItemID.AdamantiteOre, ItemID.TitaniumOre }, "Use a [i:" + ItemType("WraithCoreFragment2") + "] at anytime, defeat this boss to unlock crafting a hardmode forge, as well as anything crafted at one", "Cobalt Wraith completes its mission", "SGAmod/NPCs/Wraiths/CobaltWraithLog");
 
 				bossList.Call("AddBoss", 6.45f, ModContent.NPCType<Murk>(), this, "Murk-Lord of the Flies", (Func<bool>)(() => SGAWorld.GennedVirulent), new List<int>() { ModContent.ItemType<RoilingSludge>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<MurkBossBag>(), ModContent.ItemType<MudAbsorber>(), ModContent.ItemType<MurkyGel>(), ModContent.ItemType<MurkFlail>(), ModContent.ItemType<Mudmore>(), ModContent.ItemType<Mossthorn>(), ModContent.ItemType<Landslide>(), ModContent.ItemType<SwarmGrenade>() }, "Use a [i:" + ItemType("RoilingSludge") + "] in the jungle during hardmode and after killing the fly swarm, defeating this buffed version causes a new ore to generate", "Empowered Murk slinks back into the depths of the jungle");
 
@@ -194,6 +202,9 @@ namespace SGAmod
 
 				//bossList.Call("AddBoss", 11.85f, ModContent.NPCType<Harbinger>(), this, "Doom Harbinger", (Func<bool>)(() => SGAWorld.downedHarbinger), new List<int>() { ModContent.ItemType<TruelySusEye>() }, new List<int>() { }, new List<int>() { }, "Can spawn randomly at the start of night after golem is beaten, the Old One's Army event is finished on tier 3, and the Martians are beaten, or use a [i:" + ItemType("TruelySusEye") + "]. Defeating him will allow the cultists to spawn (Single Player Only)");
 
+				List<int> PhaethonDrops = new List<int>() { ModContent.ItemType<OverseenCrystal>(), ModContent.ItemType<AegisaltAetherstone>() };
+				bossList.Call("AddBoss", 11.85f, ModContent.NPCType<Harbinger>(), this, "Phaethon", (Func<bool>)(() => SGAWorld.downedHarbinger), new List<int>() { }, new List<int>() { }, new List<int>() { }, "Found in Near Orbit", (Func<bool>)(() => SGAWorld.downedHarbinger));
+
 				bossList.Call("AddBoss", 12.5f, ModContent.NPCType<LuminiteWraith>(), this, "Luminite Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() { ItemID.LunarCraftingStation }, "Use a [i:" + ItemType("WraithCoreFragment3") + "], defeat this boss to get the Ancient Manipulator.", "", "SGAmod/NPCs/Wraiths/LWraithLog");
 
 				bossList.Call("AddMiniBoss", 14.5f, ModContent.NPCType<PrismBanshee>(), this, "Prismic Banshee", (Func<bool>)(() => SGAWorld.downedPrismBanshee > 0), new List<int>() { }, new List<int>() { }, new List<int>() { ModContent.ItemType<AuroraTear>() }, "Find its seed spawning underground in the Hallow after Moonlord's defeat, if the seed is not destroyed in time the Prism Banshee will hatch. Prismic Banshee's defeat makes the seed spawn far less often and allows Illuminant Essence to drop", "Banshee has left");
@@ -207,7 +218,7 @@ namespace SGAmod
 				List<int> SPinkyDrops = new List<int>() { ModContent.ItemType<LunarSlimeHeart>(), ModContent.ItemType<IlluminantHelmet>(), ModContent.ItemType<IlluminantChestplate>(), ModContent.ItemType<IlluminantLeggings>(), ModContent.ItemType<LunarRoyalGel>() };
 				bossList.Call("AddBoss", 16f, ModContent.NPCType<SPinky>(), this, "Supreme Pinky", (Func<bool>)(() => SGAWorld.downedSPinky), new List<int>() { ModContent.ItemType<Prettygel>() }, new List<int>() { }, SPinkyDrops, "Use a [i:" + ItemType("Prettygel") + "] at night, infuse 20 [i: " + ItemID.PinkGel + "] at a [i: " + ModContent.ItemType<LuminousAlter>() + "]", "Supreme Pinky is content with the justice they have dealt");
 
-				bossList.Call("AddBoss", 17.5f, ModContent.NPCType<Hellion>(), this, "Helon 'Hellion' Weygold", (Func<bool>)(() => SGAWorld.downedHellion > 1), new List<int>() { ModContent.ItemType<HellionSummon>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CodeBreakerHead>(), ModContent.ItemType<ByteSoul>(), ModContent.ItemType<DrakeniteBar>() }, "Use a [i:" + ItemType("HellionSummon") + "]. Talk to Draken when the time is right... (Expert Only)");
+				bossList.Call("AddBoss", 17.5f, ModContent.NPCType<Hellion>(), this, "Helon 'Hellion' Weygold", (Func<bool>)(() => SGAWorld.downedHellion > 1), new List<int>() { ModContent.ItemType<HellionSummon>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CodeBreakerHead>(), ModContent.ItemType<ByteSoul>(), ModContent.ItemType<DrakeniteBar>() }, "Use the [i:" + ModContent.ItemType < HellionSummon>() + "]. Talk to Draken when the time is right... (Expert Only), equip the [i:" + ModContent.ItemType < DevPower>() + "] to unlock the 2nd phase");
 
 				//CaliburnCompess
 				//bossList.Call("AddMiniBossWithInfo", "The Caliburn Guardians", 1.4f, (Func<bool>)(() => SGAWorld.downedCaliburnGuardians > 2), "Find Caliburn Alters in Dank Shrines Underground and right click them to fight a Caliburn Spirit, after beating a sprite you can retrive your reward by breaking the Alter; each guardian is stronger than the previous");
@@ -299,7 +310,8 @@ namespace SGAmod
 			Idglib.AbsentItemDisc.Add(this.ItemType("DrakeniteBar"), "Drops Hellion's 2nd form");
 			Idglib.AbsentItemDisc.Add(this.ItemType("UnmanedOre"), "Throw Transmutation Powder onto Novite Ore!");
 			Idglib.AbsentItemDisc.Add(this.ItemType("NoviteOre"), "Throw Transmutation Powder onto Novus Ore!");
-			Idglib.AbsentItemDisc.Add(this.ItemType("OverseenCrystal"), "Found in near orbit space, just go up up and away!");
+			Idglib.AbsentItemDisc.Add(this.ItemType("OverseenCrystal"), "Found in near orbit space after beating the boss, just go up up and away!");
+			Idglib.AbsentItemDisc.Add(this.ItemType("Glowrock"), "Found in near orbit space, just go up up and away!");
 
 			/*SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("PrismalBooster"), "Recolor because lack of spriters");
 			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("NovusCore"), "Don't complain about the placeholder sprite, my spriters wouldn't do jack shit about despite my efforts");

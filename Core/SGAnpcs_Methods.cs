@@ -345,10 +345,10 @@ namespace SGAmod
 			}
 
 		}
-		public void DoModifies(NPC npc, Player player, Projectile projectile, Item item, ref int damage, ref float knockback, ref bool crit)
+		public void DoModifies(NPC npc, Player player, Projectile projectile, Item item, ref int sourcedamage, ref float knockback, ref bool crit)
 		{
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
-			damage = (int)(damage * damagemul);
+			int damage = (int)(sourcedamage * damagemul);
 
 			Projectile held = null;
 			if (projectile != null)
@@ -363,24 +363,34 @@ namespace SGAmod
 				held = Main.projectile[player.heldProj];
 
 				if (projectile.trap)
-					damage = (int)(damage * player.GetModPlayer<SGAPlayer>().TrapDamageMul);
+					damage += (int)(sourcedamage * (player.GetModPlayer<SGAPlayer>().TrapDamageMul-1f));
 			}
 
 			DoApoco(npc, projectile, player, item, ref damage, ref knockback, ref crit);
-				damage += (int)(Math.Min(npc.defense, reducedDefense) / 2);
-			if (Gourged)
-				damage += (npc.defense / 2) / 2;
-			if (Sodden)
-				damage = (int)((float)damage * 1.33f);
 
-			if (moddedplayer != null && moddedplayer.PrimordialSkull)
-				if (npc.HasBuff(BuffID.OnFire))
-					damage = (int)(damage * 1.25);
-
-			if (moddedplayer.MidasIdol > 0)
+			if (moddedplayer != null)
 			{
+				if (moddedplayer.acidSet.Item1)
+				{
+					reducedDefense += (npc.poisoned ? 5 : 0) + (npc.venom ? 5 : 0) + (acidburn ? 5 : 0);
+				}
+			}
+
+			damage += (int)(Math.Min(npc.defense, reducedDefense) / 2);
+
+			if (Gourged)
+				damage += npc.defense / 4;
+			if (Sodden)
+				damage += (int)((float)sourcedamage * 0.33f);
+
+			if (moddedplayer != null)
+			{
+				if (moddedplayer.PrimordialSkull)
+					if (npc.HasBuff(BuffID.OnFire))
+						damage += (int)(sourcedamage * 0.25);
+
 				if (npc.HasBuff(BuffID.Midas))
-					damage = (int)(damage * 1.15f);
+					damage += (int)(sourcedamage * 0.15f);
 			}
 
 			if (item != null)
@@ -392,21 +402,6 @@ namespace SGAmod
 						knockback += 50f;
 					}
 				}
-            }
-
-			if (petrified)
-            {
-				if (player != null && (item?.pick > 0 || (projectile != null && player.heldProj >= 0 && player.heldProj == projectile.whoAmI && player.HeldItem.pick > 0)))
-				{
-					damage = (int)(damage * 3f);
-					crit = true;
-					Main.PlaySound(SoundID.Tink, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, 0.25f);
-				}
-                else
-                {
-					damage = (int)(damage * 0.25f);
-				}
-
             }
 
 			if (projectile != null)
@@ -456,7 +451,7 @@ namespace SGAmod
 				{
 					if (moddedplayer.CirnoWings == true && projectile.coldDamage)
 					{
-						damage = (int)((float)damage * 1.20f);
+						damage += (int)((float)sourcedamage * 0.20f);
 					}
 				}
 
@@ -477,26 +472,56 @@ namespace SGAmod
 			{
 				if (npc.HasBuff(mod.BuffType("ThermalBlaze")) && item.melee)
 				{
-					damage = (int)(damage * 1.20f);
+					damage += (int)(sourcedamage * 0.20f);
 				}
 			}
 
 			if (moddedplayer.alkalescentHeart)
 			{
-				damage = (int)(damage*(1f+(npc.HasBuff(ModContent.BuffType<AcidBurn>()) ? 0.15f : (npc.HasBuff(BuffID.Venom) ? 0.10f : (npc.HasBuff(BuffID.Poisoned) ? 0.05f : 0)))));
+				damage += (int)(sourcedamage * (0f+(npc.HasBuff(ModContent.BuffType<AcidBurn>()) ? 0.15f : (npc.HasBuff(BuffID.Venom) ? 0.10f : (npc.HasBuff(BuffID.Poisoned) ? 0.05f : 0)))));
 			}
 
+			SGAPlayer sgaply = player.SGAPly();
+
+			if (sgaply.snakeEyes.Item1)
+            {
+				bool falsecrit = crit;
+				if (!crit && Main.rand.Next(100) == 0)
+				{
+					CombatText.NewText(npc.Hitbox,Color.Red,"False Crit",false,false);
+					falsecrit = true;
+				}
+				sgaply.snakeEyes.Item2 = falsecrit ? 0 : Math.Min(sgaply.snakeEyes.Item2 + 1, 100);
+				damage += (int)(sourcedamage * (0f + (sgaply.snakeEyes.Item2 / 100f)));
+            }
 
 			if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
 			{
 				if (item != null)
-					player.SGAPly().skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, item, null);
+					sgaply.skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, item, null);
 				if (projectile != null)
-					player.SGAPly().skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, null, projectile);
+					sgaply.skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, null, projectile);
 			}
+
+			if (petrified)
+			{
+				if (player != null && (item?.pick > 0 || (projectile != null && player.heldProj >= 0 && player.heldProj == projectile.whoAmI && player.HeldItem.pick > 0)))
+				{
+					damage = (int)(damage * 3f);
+					crit = true;
+					Main.PlaySound(SoundID.Tink, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, 0.25f);
+				}
+				else
+				{
+					damage = (int)(damage * 0.25f);
+				}
+			}
+
 
 			LifeSteal(npc, player, ref damage, ref knockback, ref crit);
 			OnCrit(npc, projectile, player, item, ref damage, ref knockback, ref crit);
+
+			sourcedamage = damage;
 
 		}
 

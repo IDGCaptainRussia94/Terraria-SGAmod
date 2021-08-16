@@ -119,12 +119,12 @@ namespace SGAmod.Items.Weapons.Auras
 				NPC himas = (type as NPC);
 				himas.AddBuff(himas.townNPC || himas.friendly ? BuffID.DryadsWard : BuffID.DryadsWardDebuff, 3);
 			}
-			if (type is Player)
+			if (type is Player alliedplayer && alliedplayer.team == player.team)
 			{
-				(type as Player).statDefense += (int)thepower;
+				alliedplayer.statDefense += (int)thepower;
 				if (thepower >= 2)
 				{
-					(type as Player).AddBuff(BuffID.DryadsWard, 2);
+					alliedplayer.AddBuff(BuffID.DryadsWard, 2);
 				}
 				if (thepower >= 3)
 				{

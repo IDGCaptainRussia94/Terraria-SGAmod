@@ -60,7 +60,13 @@ namespace SGAmod
 			*/
 		}
 
-		static internal void HUDLifeBarsOverride(ILContext il)//Overrides the Life Hearts to draw custom stuff on top
+		public static bool SpacePhysics(Item item)
+        {
+			item.velocity *= 0.98f;
+			return true;
+        }
+
+			static internal void HUDLifeBarsOverride(ILContext il)//Overrides the Life Hearts to draw custom stuff on top
 		{
 
 			ILCursor c = new ILCursor(il);

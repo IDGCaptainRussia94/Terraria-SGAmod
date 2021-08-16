@@ -53,6 +53,7 @@ namespace SGAmod
 		public int JoyrideShake = 0;
 		public bool Walkmode = false;
 		public bool Shieldbreak = false;
+		public bool invincible = false;
 		public int ShieldType = 0;
 		public int ShieldTypeDelay = 0;
 		public int realIFrames = 0;
@@ -112,7 +113,7 @@ namespace SGAmod
 		public bool vibraniumSetPlatform = false; public bool vibraniumSetWall = false;
 		public bool mudbuff = false; public bool alkalescentHeart = false; public bool jabALot = false; public bool NoHitCharm = false; public int NoHitCharmTimer = 0;
 		public int Havoc = 0;
-		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public bool valkyrieSet = false; public (int,int) illuminantSet = (0,0);
+		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public bool valkyrieSet = false; public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0);
 		public float SpaceDiverWings = 0f;
 		public int gamePadAutoAim = 0;
 		public int tidalCharm = 0;
@@ -127,6 +128,8 @@ namespace SGAmod
 		public int shinobj = 0;
 		public int soldierboost = 0;
 		public FlaskOfBlaze flaskBuff = default;
+		public (bool,int) snakeEyes = (false,0);
+		public bool russianRoulette = false;
 		public bool dualityshades = false;
 		public bool gunslingerLegend = false;
 		public bool YoyoTricks = false;
@@ -146,6 +149,8 @@ namespace SGAmod
 		public bool rustedBulwark = false;
 		public bool novusStackBoost = false;
 		public bool BIP = false;
+		public int phaethonEye = 0;
+		public bool armorToggleMode = false;
 
 		public bool Lockedin = false;
 		private int lockedelay = 0;
@@ -260,6 +265,7 @@ namespace SGAmod
 
 		public override void ResetEffects()
 		{
+			invincible = false;
 			manifestedWeaponType = 0;
 			watcherDebuff = 0;
 			MVMBoost = false;
@@ -304,6 +310,7 @@ namespace SGAmod
 				energyShieldAmmountAndRecharge.Item3 -= 1;
 
 
+			snakeEyes = (false, snakeEyes.Item2);
 			enchantedShieldPolish = false;
 			diesIraeStone = false;
 			starCollector = false;
@@ -315,6 +322,7 @@ namespace SGAmod
 			intimacy = 0;
 			toxicity = 0;
 			consumeCurse = 0;
+			russianRoulette = false;
 			if (ReloadingRevolver > 0)
 				ReloadingRevolver -= 1;
 			if (molotovLimit > 0)
@@ -350,6 +358,7 @@ namespace SGAmod
 			UseTimeMulPickaxe = 1f;
 			ThrowingSpeed = 1f;
 			SpaceDiverset = false;
+			acidSet = (false,false);
 			potionsicknessincreaser = 0;
 			Blazewyrmset = false;
 			Mangroveset = false;
@@ -396,6 +405,8 @@ namespace SGAmod
 			YoyoTricks = false;
 			OmegaSigil = false;
 			tpdcpu = false;
+			if (phaethonEye>0)
+			phaethonEye -= 1;
 			MurkyDepths = false;
 			MatrixBuffp = false;
 			plasmaLeftInClipMax = 1000;
@@ -558,6 +569,7 @@ namespace SGAmod
 			sgaplayer.gunslingerLegendtarget = gunslingerLegendtarget;
 			sgaplayer.activestacks = activestacks;
 			sgaplayer.dragonFriend = dragonFriend;
+			sgaplayer.armorToggleMode = armorToggleMode;
 
 			for (int i = 54; i < 58; i++)
 			{
@@ -585,7 +597,7 @@ namespace SGAmod
 				mismatch = true;
 			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots || sgaplayer.entropyCollected != entropyCollected || sgaplayer.DefenseFrame != DefenseFrame
 			|| sgaplayer.plasmaLeftInClip != plasmaLeftInClip || sgaplayer.Redmanastar != Redmanastar || sgaplayer.ExpertiseCollected != ExpertiseCollected || sgaplayer.ExpertiseCollectedTotal != ExpertiseCollectedTotal
-			 || sgaplayer.gunslingerLegendtarget != gunslingerLegendtarget || sgaplayer.activestacks != activestacks || sgaplayer.dragonFriend != dragonFriend)
+			 || sgaplayer.gunslingerLegendtarget != gunslingerLegendtarget || sgaplayer.activestacks != activestacks || sgaplayer.dragonFriend != dragonFriend || sgaplayer.armorToggleMode != armorToggleMode)
 				mismatch = true;
 
 
@@ -709,7 +721,7 @@ namespace SGAmod
 
 		public bool IsRestPotion(Item item)
 		{
-			return (item.type == ItemID.RestorationPotion || item.type == ItemID.LesserRestorationPotion || item.type == ItemID.StrangeBrew); ;
+			return (item.type == ItemID.RestorationPotion || item.type == ItemID.LesserRestorationPotion || item.type == ItemID.StrangeBrew);
 		}
 
 		public override void GetHealLife(Item item, bool quickHeal, ref int healValue)
@@ -1556,6 +1568,8 @@ namespace SGAmod
 
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
+			if (invincible)
+				return false;
 
 			if (damageSource.SourceCustomReason == (player.name + " went Kamikaze, but failed to blow up enemies"))
 				return true;
@@ -1594,6 +1608,13 @@ namespace SGAmod
 				return true;
 			}
 
+			if (phaethonEye > 0 && player.statLife - damage < 1 && AddCooldownStack(180+(damage*5)))
+			{
+				Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<Items.Accessories.PhaethonEyeProcEffect>(), 0, 0, player.whoAmI);
+				player.NinjaDodge();
+				return false;
+			}
+
 			if (OmegaSigil && player.statLife - damage < 1 && Main.rand.Next(100) <= 10)
 			{
 				damage = 0;
@@ -1621,7 +1642,7 @@ namespace SGAmod
 			if (Noselfdamage)
 			{
 				if (creeperexplosion < 9800)
-					if (damageSource.SourcePlayerIndex == player.whoAmI)
+					if (damageSource.SourcePlayerIndex == player.whoAmI && AddCooldownStack(60*60))
 						return false;
 			}
 
@@ -1839,6 +1860,8 @@ namespace SGAmod
 
 		public override void ProcessTriggers(TriggersSet triggersSet)
 		{
+
+			//Main.NewText(player.headFrame.Width);
 			if (Main.netMode == 0)
 			{
 				/*if (SGAmod.SkillTestKey.JustPressed)
@@ -1849,6 +1872,10 @@ namespace SGAmod
 			}
 			if (SGAmod.ToggleRecipeHotKey.JustPressed)
 			{
+				if (acidSet.Item1)
+                {
+                    Items.Armors.Acid.AcidHelmet.ActivateHungerOfFames(this);
+				}
 				if (vibraniumSet)
 				{
 					if (player.controlTorch)

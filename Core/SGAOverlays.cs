@@ -124,14 +124,14 @@ namespace SGAmod
 						Main.heart2Texture = SGAmod.Instance.GetTexture("Invisible");
 
 						Texture2D heartTexture = SGAmod.Instance.GetTexture("GreyHeart");
-						Texture2D heartTexture2 = SGAmod.Instance.GetTexture("LightHeart");
+						Texture2D heartTexture2 = SGAmod.Instance.GetTexture("ShieldHealth");
 
 						//Main.spriteBatch.Draw(heartTexture, new Vector2(0,0), null, Color.White, 0f, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), num6, SpriteEffects.None, 0f);
 
 
 						Main.spriteBatch.Draw(heartTexture, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, Color.White * 0.50f, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f, SpriteEffects.None, 0f);
 
-						Main.spriteBatch.Draw(heartTexture2, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, Color.Aqua * energy, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f + (energy * 0.25f), SpriteEffects.None, 0f);
+						Main.spriteBatch.Draw(heartTexture2, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, Color.White * energy, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f + (energy * 0.25f), SpriteEffects.None, 0f);
 
 					}
 
@@ -146,8 +146,12 @@ namespace SGAmod
 			{
 				SGAmod.CustomUIMenu.Draw(Main.spriteBatch);
 			}
-			if (Main.playerInventory && Main.LocalPlayer.SGAPly().benchGodFavor)
+			if (Main.playerInventory)
 			{
+				if (SGAmod.ArmorButtonUpdate && Main.EquipPage == 0)
+				SGAmod.armorButton.Draw(Main.spriteBatch);
+
+				if (Main.LocalPlayer.SGAPly().benchGodFavor)
 				SGAmod.craftBlockPanel.Draw(Main.spriteBatch);
 			}
 			return true;

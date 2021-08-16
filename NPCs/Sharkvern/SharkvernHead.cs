@@ -15,7 +15,7 @@ using SGAmod.Dimensions;
 namespace SGAmod.NPCs.Sharkvern
 {
     [AutoloadBossHead]
-    public class SharkvernHead : ModNPC, ISGABoss
+    public class SharkvernHead : SharkvernBase, ISGABoss
     {
 
         public string Trophy() => "SharkvernTrophy";
@@ -777,31 +777,39 @@ namespace SGAmod.NPCs.Sharkvern
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
             //Main.spriteBatch.Draw(texture, npc.Center - Main.screenPosition, new Rectangle?(), drawColor*npc.Opacity, npc.rotation, origin, npc.scale, npc.velocity.X>0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
 
-            List<Vector3> SharkPoints = new List<Vector3>();
+            List<(Vector3,Color)> SharkPoints = new List<(Vector3, Color)>();
 
             int startThere = tail.whoAmI;
             while(Main.npc[startThere].active && (Main.npc[startThere].type == ModContent.NPCType<SharkvernTail>() || Main.npc[startThere].type == ModContent.NPCType<SharkvernHead>() || Main.npc[startThere].type == ModContent.NPCType<SharkvernBody>()
                  || Main.npc[startThere].type == ModContent.NPCType<SharkvernBody2>() || Main.npc[startThere].type == ModContent.NPCType<SharkvernBody3>() || Main.npc[startThere].type == ModContent.NPCType<SharkvernNeck>()))
             {
                 NPC guy = Main.npc[startThere];
-                SharkPoints.Add(new Vector3(guy.Center.X, guy.Center.Y, guy.rotation));
+                bool isshark = guy.modNPC != null && guy.modNPC is SharkvernBase sharka;
+                Color color = isshark ? (guy.modNPC as SharkvernBase).sharkGlowColor : Color.Transparent;
+                SharkPoints.Add((new Vector3(guy.Center.X, guy.Center.Y, guy.rotation), color));
                 startThere = (int)guy.ai[1];
                 if (guy == npc)
                     break;
             }
 
             List<Vector2> FinalPoints = new List<Vector2>();
-            foreach(Vector3 vec3 in SharkPoints)
+            List<Color> FinalPointsColor = new List<Color>();
+
+            foreach ((Vector3,Color) vec3 in SharkPoints)
             {
-                FinalPoints.Add(new Vector2(vec3.X, vec3.Y));
+                FinalPoints.Add(new Vector2(vec3.Item1.X, vec3.Item1.Y));
+                FinalPointsColor.Add(vec3.Item2);
             }
             FinalPoints.Reverse();
 
             TrailHelper trail = new TrailHelper("BasicEffectPass", mod.GetTexture("NPCs/Sharkvern/SharkvernWhole"));//NPCs/Sharkvern/SharkvernWhole
             trail.color = delegate (float percent)
             {
-                Vector2 there = FinalPoints[(int)(percent * (float)(FinalPoints.Count-1))];
-                return Lighting.GetColor((int)there.X >> 4, (int)there.Y >> 4)*npc.Opacity;
+                int index = (int)(percent * (float)(FinalPoints.Count - 1));
+                Vector2 there = FinalPoints[index];
+                Color colorz = FinalPointsColor[(FinalPoints.Count - index) - 1];
+
+                return (colorz == Color.Transparent ? Lighting.GetColor((int)there.X >> 4, (int)there.Y >> 4) : colorz)*npc.Opacity;
             };
             trail.projsize = Vector2.Zero;
             //trail.coordOffset = new Vector2(0, 0);

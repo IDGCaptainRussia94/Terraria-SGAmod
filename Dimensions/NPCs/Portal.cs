@@ -200,9 +200,10 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				return "Go deeper to Floor " + (SGAWorld.dungeonlevel + 2)+"?";
 			}
+			string extrachat = " (Highest floor completed" + SGAWorld.highestDimDungeonFloor + ")";
 			if (BirthdayParty.PartyIsUp)
-				return "Are you sure you wish to leave the party?";
-			return "Do you dare enter?";
+				return "Are you sure you wish to leave the party?" + extrachat;
+			return "Do you dare enter?" + extrachat;
 		}
 
 		public override void SetChatButtons(ref string button, ref string button2)
@@ -273,6 +274,8 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				if (Main.netMode < 1)
 				{
+					if (SGAPocketDim.WhereAmI == null)
+						SGAWorld.dungeonlevel = SGAConfigDeeperDungeon.Instance?.SetDungeonFloors.floor ?? 0;
 					SGAPocketDim.EnterSubworld(mod.GetType().Name + "_DeeperDungeon", true);
 				}
 				else

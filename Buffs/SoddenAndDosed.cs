@@ -32,7 +32,7 @@ namespace SGAmod.Buffs
 			npc.GetGlobalNPC<SGAnpcs>().Sodden = true;
 		}
 	}
-	public class SoddenSlow : ModBuff
+	public class SoddenSlow : Sodden
 	{
 		public override void SetDefaults()
 		{
@@ -45,7 +45,7 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/MoonLightCurse";
+			texture = "SGAmod/Buffs/Sodden";
 			return true;
 		}
 
@@ -56,6 +56,7 @@ namespace SGAmod.Buffs
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
+			npc.GetGlobalNPC<SGAnpcs>().Sodden = true;
 			npc.GetGlobalNPC<SGAnpcs>().TimeSlow += 0.20f;
 		}
 	}

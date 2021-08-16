@@ -354,9 +354,9 @@ namespace SGAmod.Items
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 4);
 			recipe.AddIngredient(ItemID.CrystalShard, 1);
-			recipe.AddIngredient(this, 1);
+			recipe.AddIngredient(this, 2);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ModContent.GetInstance<VibraniumCrystal>(), 1);
 			recipe.AddRecipe();
@@ -534,7 +534,6 @@ namespace SGAmod.Items
 		{
 			DisplayName.SetDefault("Frigid Shard");
 			Tooltip.SetDefault("Raw essence of ice");
-			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 
 		public override void SetDefaults()
@@ -1545,7 +1544,7 @@ namespace SGAmod.Items
 		}
 		public override string Texture
 		{
-			get { return "Terraria/Heart2"; }
+			get { return "SGAmod/Items/Consumable/HopefulHeartItem"; }
 		}
 		public override bool CanPickup(Player player)
         {
@@ -1755,7 +1754,6 @@ namespace SGAmod.Items
 		{
 			DisplayName.SetDefault("Dungeon Splunker");
 			Tooltip.SetDefault("While in your inventory, allows you to use pickaxes in the Deeper Dungeons");
-			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 		public override Color? GetAlpha(Color lightColor)
 		{

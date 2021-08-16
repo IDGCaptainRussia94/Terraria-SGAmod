@@ -18,7 +18,8 @@ Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Bind
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy and Seismic Resonator Ore Creator), Aurora Gear and finish Luminous Alter Tile Entity!
 -Add Hellion army bar, STILL!
 
-Todo-Aurora Gear, Finish Vibranium Summon headpiece and enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Add Dropper, Finish Luminious Alter (effects)
+Todo-Aurora Gear, Finish Vibranium enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Add Dropper, Finish Luminious Alter (effects)
+Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
 
 Changelog:
@@ -27,13 +28,13 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Plasmic Rail Gun, Pulsar Perforator, Aura Borealis Staff, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Professional's Threads, Rad Suit, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Ice Cube?
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Professional's Threads, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Ice Cube?
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
 -A new Town NPC: The Conbrand Merchant, he is interested in trading you "Contraband Crates" for rare materials, find him hanging around after-dark in your town
 
--The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And JellyBru's Dev Armor finally added!
+-Added the following armor sets: The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! Fames set for throwers after Spider Queen. Hallowed Visor variant for Throwing. Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And JellyBru's Dev Armor finally added!
 
 -Venerable Catharsis, for a hefty Expertise cost from Draken after Moonlord you can make Normal Worlds into Expert Worlds.
 
@@ -41,15 +42,17 @@ Changelog:
 
 -A stronger post-L.Wraith Prismic Banshee that drops double loot, also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam! (hint: put fallen stars into the previous mentioned Luminous Alter)
 
--A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's figt and apperence has been tweaked
+-A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's fight and apperence has been tweaked (Prim shark! Vertex Shark! Trail Shark! With smooth lighting!)
 
 -Hoppers [strikeout]N Droppers[strikeout], automate your Terraria!
 
 -New Amulet: Reservation Amulet, reserve a fraction of your HP to gain a protected regenerating shield!
 
--New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights, Option to enable/disable early luminite (via pickaxe power) from Near Orbit, A config option for a patch to fix the Lava Background problem with Subworlds, Disable the Dark Sector from spawning, and a bonus mode to up enemy strength when playing with specific overpowered mods
+-New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights, Option to enable/disable early luminite (via pickaxe power) from Near Orbit, A config option for a patch to fix the Lava Background problem with Subworlds, Disable the Dark Sector from spawning, and a bonus mode to up enemy strength when playing with specific overpowered mods, ability to disable Dank Shrines/Dark Sector, and adjust crate drop rates
 
 -New resprites for the entire Novus set with a consistant palette! Thanks DeJuiceTD, and Rijam for making the armor frames! (previous armor has been added to Jubia's shop under its original filename: Unmaned)
+
+-It is now possible to jump to floors in the Deeper Dungeons you have cleared via the new Deeper Dungeons Config (since this update sadly)
 
 -Limbo has been given a loading screen
 
@@ -62,11 +65,17 @@ Changelog:
 
 -The Calamity Rune and Luminous Gel are created at the Luminous Alter now, check the wiki for all the recipe combos
 
--Hellion's 2nd phase will now only start if the player is wearing a Soul of Secrets
+-TF2 emblems have received a rework, they now gain XP as they are used, explained ingame. Contracker is now purchasable from the start of the game for 2 gold, RED/BLU emblems are craftable after Murk
+
+-Hellion's 2nd phase will now only start if the player is wearing a Soul of Secrets, allowing the 1st phase to be farmed and the player to get Souls of Bytes without having to face the 2nd phase right after
 
 -The Strange Portal has been given a head and can now be manually moved into different houses
 
+-Cobalt Wraith now locks the hardmode forge, rather than the anvil
+
 -Draken's Dialog has been moved around to help give players instructions, also a new interaction has been added after you become close friends
+
+-The way accessories boost percent damage taken on enemies has been changed, it now additive of the original damage rather than a stacking multiplier
 
 -Hellion gains defense and debuff immunity apon activating Tyrant's Glare (post Festive Moons/warped background phase)
 
@@ -75,6 +84,8 @@ Changelog:
 -Sharkvern's HP increased to 120000, body segments now take 25% (Tail 0%) reduced damage to peircing weapons, and no reduction to true melee projectiles (IE yoyos, spears), various changes have happened to the fight, and various balance changes as well
 
 -Sharkvern and their storm effects can no longer drown an underground player
+
+-Supreme Pinky, a few moves: now uses a Nova and Ring attack instead of rockets in phase 1, and the scythe attack in the final phase of Pinky Singularity has been replaced with the new Ring attack
 
 -Strange portal no longer sells items in Multiplayer, Deeper Dungeons loot is now alternatively obtained from a Contraband Crate (including the rare items that wern't sold before)
 
@@ -88,6 +99,10 @@ Changelog:
 
 -Traveling Merchant's SGAmod items are a bit more common
 
+-Cratrosity now properly uses texture pack crates
+
+-All damage and crit boosts now affect Thorium modded damage types
+
 -Action Cooldown Rate reductions are now multiplicative, meaning they cannot go below 0
 
 -Added some flavor text to the Jabb-a-wacky to hint how to get it
@@ -99,6 +114,8 @@ Changelog:
 -Ragnarok's Brew costs more resources except Styigan Stars and makes 3, to help justify it requiring Styigan Stars
 
 -Ancient Fabric is now sold by the Merchant in multiplayer
+
+-Aura Weapons now only affect players on the same team
 
 -The range at which Prismic Banshee picks up enemy deaths as Prismic Spirits has been more than doubled
 
@@ -116,17 +133,31 @@ Changelog:
 
 -Busted has been moved to weapons, and a new prefix has been added in its place for accessories
 
--Rebalanced Maldal: Has a different effect that won't hurt the player
-
 -Lowered the price of the Universal Music Box to 1 plat (from 3)
 
 -Some config options no longer require a reload to take effect
 
+-Transmutation Powder can now transmutate dropped ores
+
 -Divine Shower Storm has been renamed to Divinity Caller
+
+-Braxsaw is now post S.Pinky
+
+-Soul of Secrets is now much easier (and less crazy) to craft, using only accessories and post-moonlord materials
 
 -Portable 'Makeshift' Spear Trap and Portable Spear Trap have gained a new functionality to allow them to act as grapple guns
 
+-Rebalanced Maldal: Has a different effect that won't hurt the player
+
+-Rebalanced Sticky Situation: now has 3.75% (30 => 112) more damage, instead of the projectile doing more damage
+
+-Buffed F.S.R.G: moved later into progression (Post S-Pinky), damage increased from 60 to 70
+
+-Buffed Portable 'Makeshift' Spear Trap: range of the spear has been increased
+
 -Buffed Clay-More: now has a ranged attack, at a cost
+
+-Buffed Terra Diving Gear: Gains the ability to gravite bubbles to the player
 
 -Buffed Cyber Scythe: Now controls in and out twice as fast
 
@@ -136,9 +167,13 @@ Changelog:
 
 -Buffed Geyodo: it really should have did more damage, even if a meager ammount
 
+-Buffed Sludge Bomb: now also applies stacking damage every 1/3 a second equal to 1/3 of the base damage for 2 seconds (this weapon was honestly way too situational to be good, so here's a buff to make it real OP when it is)
+
 -Buffed Gas Passer: double base damage over time, slightly better scaling with enemy HP
 
 -Buffed Cosmic Grasp: (again), base damage increased so it's not just a side great to the Cosmillash
+
+-Buffed Jarate: Enemies remain Sodden for 3X as long now
 
 -Buffed Mister Creeper's Slick Suit: Throwing damage increased to 32% (from 25%), endurance increased to 20% (from 15%)
 
@@ -146,11 +181,19 @@ Changelog:
 
 -Buffed Star Collector: Now heals 5 HP at max mana
 
+-Buffed Shin Sash: Ninja bomb effects all enemies nearby as it travels for a shorter debuff, and the explosion smokes enemies for a larger range and longer time
+
+-Buffed Elite Emblem: Gives 20% (formally 15%) damage and 150 max mana (formally 100)
+
+-Buffed High Noon: Damage bonus increased to 10%, bullet to 6%
+
 -Buffed all consumable Jab-lins: as they now have a chance to drop again after expiring
 
 -Nerfed Mister Creeper's Armor Set: all damage types that are not melee and throwing get a -10% damage and crit chance per armor piece
 
 -Nerfed Mister Creeper's Crowning Attire: crit chances reduced to 8/12 (from 10/20)
+
+-Nerfed Mister Creeper's Business Casual: Negating self damage now requires an Action Cooldown Stack
 
 -Nerfed Rioter's Glove: Has been moved further into progression again (hardmode => post-early hardmode SGAmod bosses)
 
@@ -166,6 +209,8 @@ Changelog:
 
 -Nerfed Cosmic Cocktail: all of its spawned projectiles now only have a 10% chance to crit when they normally would crit, Use time has been increased to 60 frames (from 40), damage lowered to 40 (from 50)
 
+-Nerfed Yoyo Guantlet, I've always thought this accessory is very overpowered for when you get it, so it has been split up into a precurser accessory called Prismal Guantlet, which is the same but minus the yoyo upgrades, Yoyo Guantlet is now post-Luminite Wraith
+
 -Nerfed Kou Sash and Shin Sash: crit chance boost was incorrect and has been lowered
 
 -Nerfed all the Horseman Saddles: Apocalyptical chance boost reduced to 3%
@@ -174,7 +219,11 @@ Changelog:
 
 -Doom Harbinger has been semi-removed for the time being, you can still summon him via his item, but he is no longer required by progression or spawns on his own
 
--Remove the flavor icons on the mod's name, especially the statues, they made searching up the mod impractical... I'll readd them in the description where they won't matter as much
+-Removed unused enchanting tooltips from specific items
+
+-Removed the flavor icons on the mod's name, especially the statues, they made searching up the mod impractically... Difficult. I'll re-add them in the description where they won't matter as much
+
+-Various visual updates here and there
 
 -Also rewrote the description because it was dated
 
@@ -192,6 +241,8 @@ Changelog:
 -Possibly fixed the unloading IL problems (players getting frozen on world login)
 
 -True Melee Projectiles doing double damage
+
+-Commando Emblem not providing mana cost reduction
 
 -Hellion Beams being invisible, and a little oversight that led to alot of unintentional lag in the fight
 
@@ -213,6 +264,10 @@ Changelog:
 
 -Shadeflame Staff having a crafting recipe
 
+-Rust Burn boosting acid burn on organic enemies
+
+-Kou Sash not listing that it makes Ninja Bombs ignore enemy immunities
+
 -Lava Details no longer hides Additive blending
 
 -Animation bug with the Giant Lizard, also uses unicorn AI and has a proper death sound
@@ -226,6 +281,8 @@ Changelog:
 -Virulent Ore placing the wrong tile, due to me forgoting to undo a testing thing
 
 -Sticky Situation being unobtainable
+
+-Tornado's homing shots not being counted as homing
 
 -Gucci Guantlet's Amber Gem causing null errors in merchant shops
 
@@ -241,9 +298,19 @@ Changelog:
 
 -A few issues when using vanilla throwing items, for now
 
+-Icey flames (Fridgeflame Canister) not counting as cold damage
+
 -An invisible non-transparent pixel on Rusty Sword's sprite, causing it to look odd ingame
 
 -Granite magnet listing it can "block" damage
+
+-Prismal Diving Gear listing saying that it is known as Dergon Diving Gear
+
+-Novus Bars when placed being called Unmaned
+
+-Frigid Shard floating
+
+-(this may have been this update I don't remember) mining under Caliburn shrines, breaking them
 
 -Other smaller fixes I might have forgotten about-including typeos
 

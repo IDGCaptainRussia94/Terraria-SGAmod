@@ -238,7 +238,30 @@ namespace SGAmod.Buffs
 			player.lavaRose = true;
 		}
 	}
-	public class ManaRegenFake : ModBuff
+	public class InvincibleBuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Buff_" + BuffID.ShadowDodge;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Invincible");
+			Description.SetDefault("Damage is currently completely prevented");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			Main.debuff[Type] = true;
+			canBeCleared = false;
+		}
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().invincible = true;
+
+		}
+
+	}
+	public class ManaRegenFakeBuff : ModBuff
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{

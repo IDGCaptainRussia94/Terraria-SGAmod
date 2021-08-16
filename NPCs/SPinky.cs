@@ -689,11 +689,12 @@ namespace SGAmod.NPCs
 			}
 			if (npc.ai[0] % 300 == 0 && npc.ai[0] > 5200)
 			{
-				for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 16f)
-				{
-					float ff = f+npc.ai[0]/400f;
-					Projectile.NewProjectile(npc.Center, ff.ToRotationVector2() * 1f, ProjectileID.DemonScythe, 50, 0f);
-					Projectile.NewProjectile(npc.Center+(ff.ToRotationVector2() * 32f), ff.ToRotationVector2() * 1f, ModContent.ProjectileType<PinkyWarning>(), 1, 0f);
+
+				Projectile proj = Projectile.NewProjectileDirect(npc.Center, Vector2.Zero, ModContent.ProjectileType<PinkyRingAttack>(), 200, 0f);
+				if (proj != null)
+                {
+					proj.ai[0] = Main.rand.Next(0, 120);
+					proj.netUpdate = true;
 				}
 
 				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_BetsySummon,npc.Center);
@@ -1902,7 +1903,10 @@ namespace SGAmod.NPCs
 								itz[i].netUpdate = true;
 								}*/
 							if (generalcounter % 10 == 0)
+							{
 								Idglib.Shattershots(npc.Center, P.Center, new Vector2(0, 0), ProjectileID.DemonScythe, 50, 1f, (100 - (float)((generalcounter % 300) - 200) * 2) * 2, 2, false, 0, true, 220);
+								Idglib.Shattershots(npc.Center, P.Center, new Vector2(0, 0), ModContent.ProjectileType<PinkyWarning>(), 1, 1f, (100 - (float)((generalcounter % 300) - 200) * 2) * 2, 2, false, 0, true, 220);
+							}
 
 						}
 					}
@@ -1919,15 +1923,43 @@ namespace SGAmod.NPCs
 
 						}
 
-						if (generalcounter % 400 > 100 && generalcounter % 150 == 0)
+						if (generalcounter % 400 > 100)// && generalcounter % 150 == 0)
 						{
-							Vector2 here = (P.Center - npc.Center);
+							/*Vector2 here = (P.Center - npc.Center);
 							here.Normalize();
 							List<Projectile> itz = Idglib.Shattershots(npc.Center + new Vector2(0, 0), P.Center, new Vector2(0, 0), ProjectileID.SaucerMissile, 50, 18f, 200, 2, false, 0, false, 400);
 							itz[0].localAI[1] = -20;
 							itz[1].localAI[1] = -20;
 							itz = Idglib.Shattershots(npc.Center, P.Center.RotatedBy(MathHelper.ToRadians(180), npc.Center), new Vector2(0, 0), ProjectileID.SaucerMissile, 50, 15f, 180, 1, true, 0, false, 400);
-							itz[0].localAI[1] = -10;
+							itz[0].localAI[1] = -10;*/
+
+							if (generalcounter % 400 == 30)
+							{
+								Projectile proj = Projectile.NewProjectileDirect(npc.Center, Vector2.Zero, ModContent.ProjectileType<PinkyRingAttack>(), 150, 0f);
+								if (proj != null)
+								{
+									proj.ai[0] = Main.rand.Next(-300, 0);
+									(proj.modProjectile as PinkyRingAttack).maxTime = 250;
+									proj.timeLeft = 250;
+									(proj.modProjectile as PinkyRingAttack).ringSize = 36;
+									proj.netUpdate = true;
+								}
+							}
+							if (generalcounter % 300 == 100)
+							{
+								for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 16f)
+								{
+									float ff = f + generalcounter / 400f;
+									Projectile.NewProjectile(npc.Center, ff.ToRotationVector2() * 1f, ProjectileID.DemonScythe, 50, 0f);
+									Projectile.NewProjectile(npc.Center + (ff.ToRotationVector2() * 32f), ff.ToRotationVector2() * 1f, ModContent.ProjectileType<PinkyWarning>(), 1, 0f);
+								}
+
+								SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_BetsySummon, npc.Center);
+								if (sound != null)
+									sound.Pitch += 0.50f;
+							}
+
+
 						}
 
 					}
@@ -2699,6 +2731,101 @@ namespace SGAmod.NPCs
 		}
 	}
 
+	public class PinkyRingAttack : ModProjectile
+	{
+		Effect effect => SGAmod.TrailEffect;
+		public int maxTime = 520;
+		public int flashTime = 120;
+		public int ringSize = 48;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Lunar Ring");
+		}
+
+		public override string Texture => "SGAmod/HopefulHeart";
+
+		public override void SetDefaults()
+		{
+			projectile.width = 132;
+			projectile.height = 132;
+			projectile.friendly = false;
+			projectile.hostile = true;
+			projectile.tileCollide = false;
+			projectile.alpha = 40;
+			projectile.timeLeft = maxTime;
+			projectile.extraUpdates = 0;
+			projectile.ignoreWater = true;
+			projectile.damage = 20;
+		}
+
+		float FlashTimer => (float)Math.Sin((projectile.ai[0] / (float)flashTime) * MathHelper.TwoPi);
+
+		public override void AI()
+		{
+			float realsize = ((projectile.width * 32f) * 0.5f) * 1.1f;
+			projectile.ai[0] += 1;
+			projectile.localAI[0] += 1;
+			if (FlashTimer > 0 && projectile.timeLeft > 60)
+			{
+				foreach (Player player in Main.player.Where(testby => ringSize - Math.Abs(((testby.Center) - projectile.Center).Length() - (realsize * ((float)projectile.localAI[0] / (float)maxTime))) > 0))
+				{
+					player.Hurt(PlayerDeathReason.ByProjectile(255, projectile.whoAmI), projectile.damage, 0, Crit: true);
+				}
+			}
+		}
+
+		public override bool CanDamage()
+		{
+			return FlashTimer > 0 && projectile.timeLeft > 60 && projectile.localAI[0]>60;
+		}
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+			return false;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D mainTex = Main.projectileTexture[projectile.type];
+			Effect RadialEffect = SGAmod.RadialEffect;
+			float alpha = MathHelper.Clamp(projectile.timeLeft / 60f, 0f, 0.50f+MathHelper.Clamp(FlashTimer,-0.25f,0.50f))*Math.Min((projectile.localAI[0]-30f)/30f,1f);
+			Vector2 half = mainTex.Size() / 2f;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("TiledPerlin"));//SGAmod.PearlIceBackground
+			RadialEffect.Parameters["alpha"].SetValue(0.80f*alpha);
+			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.125f, -Main.GlobalTime * 0.175f));
+			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(2f, 2f));
+			RadialEffect.Parameters["ringScale"].SetValue(0.075f*((80f/ (float)projectile.width) * ((float)ringSize/64f)));
+			RadialEffect.Parameters["ringOffset"].SetValue((1f-(projectile.timeLeft/(float)maxTime))*0.9f);
+			RadialEffect.Parameters["ringColor"].SetValue(Color.Pink.ToVector3());
+			RadialEffect.Parameters["tunnel"].SetValue(false);
+
+			RadialEffect.CurrentTechnique.Passes["Radial"].Apply();
+
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.LightGray, 0, half, projectile.width*2f, default, 0);
+
+			RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Stain"));//SGAmod.PearlIceBackground
+			RadialEffect.Parameters["alpha"].SetValue(1.25f * alpha);
+			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * -0.125f, -Main.GlobalTime * 0.175f));
+			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(2f, 2f));
+			RadialEffect.Parameters["ringScale"].SetValue(0.05f * ((80f / (float)projectile.width) * ((float)ringSize / 64f)));
+			RadialEffect.Parameters["ringColor"].SetValue(Color.Magenta.ToVector3());
+
+			RadialEffect.CurrentTechnique.Passes["Radial"].Apply();
+
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.LightGray, 0, half, projectile.width * 2f, default, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
+
+			return false;
+		}
+
+	}
+
 	public class PinkyWarning : Hellion.HellionBolt
 	{
 		protected float timeleft = 150f;
@@ -2748,7 +2875,6 @@ namespace SGAmod.NPCs
 			return false;
 		}
 	}
-
 	public class PinkyExplode : ModProjectile
 	{
 		protected float timeleft = 150f;

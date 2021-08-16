@@ -191,7 +191,7 @@ namespace SGAmod
 							Texture2D texture = SGAmod.Instance.GetTexture("Extra_57b");
 
 							Vector2 drawhere = new Vector2(theplace.X, theplace.Y)* 64f;
-							DrawData data = new DrawData(texture, drawPlayer.MountedCenter+drawhere - Main.screenPosition, null, Color.Magenta*(theplace.W*0.75f), (float)0, texture.Size()/2f, 0.5f+(scaler-1f)*0.25f, (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+							DrawData data = new DrawData(texture, drawPlayer.MountedCenter+drawhere - Main.screenPosition, null, Color.Magenta*(theplace.W*0.75f), (float)Math.Sin(theplace.X), texture.Size()/2f, 0.5f+(scaler-1f)*0.25f, (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
 							//data.shader = (int)drawPlayer.dye[2].dye;
 							Main.playerDrawData.Add(data);
 						}

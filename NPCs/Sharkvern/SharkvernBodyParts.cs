@@ -9,7 +9,23 @@ using Terraria.ModLoader;
 
 namespace SGAmod.NPCs.Sharkvern
 {    
-    public class SharkvernTail : ModNPC
+    public class SharkvernBase : ModNPC
+    {
+        public Color sharkGlowColor = Color.Transparent;
+
+        public override void DrawEffects(ref Color drawColor)
+        {
+            sharkGlowColor = drawColor;
+            base.DrawEffects(ref drawColor);
+        }
+
+        public override bool Autoload(ref string name)
+        {
+            return GetType() != typeof(SharkvernBase);
+        }
+    }
+
+    public class SharkvernTail : SharkvernBase
     {
 
     public Vector2 localdist;

@@ -36,14 +36,14 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AcidBurn";
+			texture = "SGAmod/Buffs/CleansedPerceptionBuff";
 			return true;
 		}
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			if (Main.netMode != NetmodeID.Server)
-				Main.buffTexture[ModContent.BuffType<CleansedPerception>()] = Main.buffTexture[Main.rand.Next(Main.buffTexture.Length)];
+			//if (Main.netMode != NetmodeID.Server)
+			//	Main.buffTexture[ModContent.BuffType<CleansedPerception>()] = Main.buffTexture[Main.rand.Next(Main.buffTexture.Length)];
 		}
 	}
 	public class ShieldBreak: ModBuff
@@ -60,7 +60,7 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AcidBurn";
+			texture = "SGAmod/Buffs/ShieldBreak";
 			return true;
 		}
 

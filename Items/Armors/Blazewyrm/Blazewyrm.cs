@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace SGAmod.Items.Armors
+namespace SGAmod.Items.Armors.Blazewyrm
 {
 
 	[AutoloadEquip(EquipType.Head)]

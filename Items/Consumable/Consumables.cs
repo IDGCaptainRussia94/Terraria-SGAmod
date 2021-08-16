@@ -196,20 +196,18 @@ namespace SGAmod.Items.Consumable
 		public override bool UseItem(Player player)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
-			Main.PlaySound(SoundID.Drown, (int)player.Center.X, (int)player.Center.Y, 0, 1f, 0.50f);
 			sgaplayer.AddCooldownStack(60 * 90, 1);
-			player.breath = (int)MathHelper.Clamp(player.breath+200,0, player.breathMax);
-			sgaplayer.sufficate = player.breath;
+			sgaplayer.RestoreBreath(200,false);
 			return true;
 		}
 	}
 
-	public class DivineShower : ModItem
+		public class DivineShower : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Divinity Caller");
-			Tooltip.SetDefault("'The heavens favor you'\nCauses all fallen stars on the ground to rain down on all active enemies; whichever is limited first\nThe entirety of 1 stack will fall over 1 enemy, but spread out the larger the stack is\nHowever this caps out at 5 per stack\nIs limited to once per night, per a long cooldown");
+			Tooltip.SetDefault("'The heavens favor your creation'\nCauses all fallen stars on the ground to rain down on all active enemies; whichever is limited first\nThe entirety of 1 stack will fall over 1 enemy, but spread out the larger the stack is\nHowever this caps out at 5 per stack\nIs limited to once per night, per a long cooldown");
 		}
 
 		public override void SetDefaults()

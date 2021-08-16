@@ -121,9 +121,9 @@ namespace SGAmod.Items.Consumable
 				if (new Rectangle((int)projectile.position.X, (int)projectile.position.Y, projectile.width, projectile.height).Intersects
 					(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height)))
 				{
-					IdgNPC.AddBuffBypass(target.whoAmI, mod.BuffType("Sodden"), 60*15);
+					IdgNPC.AddBuffBypass(target.whoAmI, mod.BuffType("Sodden"), 60*45);
 					if (Main.player[projectile.owner].GetModPlayer<SGAPlayer>().MVMBoost)
-						IdgNPC.AddBuffBypass(target.whoAmI,mod.BuffType("SoddenSlow"), 60 * 15);
+						IdgNPC.AddBuffBypass(target.whoAmI,mod.BuffType("SoddenSlow"), 60 * 45);
 					projectile.Kill();
 				}
 			}

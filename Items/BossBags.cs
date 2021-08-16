@@ -1,3 +1,6 @@
+using SGAmod.HavocGear.Items.Accessories;
+using SGAmod.HavocGear.Items.Weapons;
+using SGAmod.Items.Weapons;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -41,33 +44,37 @@ namespace SGAmod.HavocGear.Items
 		public override void OpenBossBag(Player player)
 		{
 
-			int random = Main.rand.Next(6);
+			int random = Main.rand.Next(7);
+			if (random == 6)
+			{
+				player.QuickSpawnItem(ModContent.ItemType<SwarmGun>());
+			}
 			if (random == 5)
 			{
-				player.QuickSpawnItem(mod.ItemType(SGAWorld.GennedVirulent ? "HorseFlyStaff" : "GnatStaff"), 1);
-			}			
+				player.QuickSpawnItem(SGAWorld.GennedVirulent ? ModContent.ItemType<HorseFlyStaff>() : ModContent.ItemType<GnatStaff>(), 1);
+			}
 			if (random == 4)
 			{
-				player.QuickSpawnItem(mod.ItemType("SwarmGrenade"), Main.rand.Next(40, 100));
-			}			
+				player.QuickSpawnItem(ModContent.ItemType<SwarmGrenade>(), Main.rand.Next(40, 100));
+			}
 			if (random == 3)
 			{
-				player.QuickSpawnItem(mod.ItemType("Mudmore"));
+				player.QuickSpawnItem(ModContent.ItemType<Mudmore>());
 			}
 			if (random == 2)
 			{
-				player.QuickSpawnItem(mod.ItemType("MurkFlail"));
+				player.QuickSpawnItem(ModContent.ItemType<MurkFlail>());
 			}
 			if (random == 1)
 			{
-				player.QuickSpawnItem(mod.ItemType("Mossthorn"));
+				player.QuickSpawnItem(ModContent.ItemType<Mossthorn>());
 			}
 			if (random == 0)
 			{
-				player.QuickSpawnItem(mod.ItemType("Landslide"));
+				player.QuickSpawnItem(ModContent.ItemType<Landslide>());
 			}
-			player.QuickSpawnItem(mod.ItemType("MudAbsorber"));
-			player.QuickSpawnItem(mod.ItemType("MurkyGel"), Main.rand.Next(50, 70));
+			player.QuickSpawnItem(ModContent.ItemType<MudAbsorber>());
+			player.QuickSpawnItem(ModContent.ItemType<MurkyGel>(), Main.rand.Next(50, 70));
 		}
 	}
 	public class SharkvernBag : ModItem

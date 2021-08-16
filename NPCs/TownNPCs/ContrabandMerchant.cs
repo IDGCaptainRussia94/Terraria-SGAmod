@@ -293,7 +293,7 @@ namespace SGAmod.NPCs.TownNPCs
 			if (NPC.CountNPCS(ModContent.NPCType<Dimensions.NPCs.DungeonPortal>()) > 0)
 			{
 				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxDeeperDungeons>());
-				shop.item[nextSlot].shopCustomPrice = randz.Next(20, 45);
+				shop.item[nextSlot].shopCustomPrice = Main.netMode == NetmodeID.MultiplayerClient ? randz.Next(4, 12) : randz.Next(20, 45);
 				shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.DesertFossilCurrencyCustomCurrencyID;
 			}
 			nextSlot++;

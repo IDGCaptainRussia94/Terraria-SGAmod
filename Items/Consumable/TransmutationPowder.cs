@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using static Terraria.ModLoader.ModContent;
 using Idglibrary;
 using Terraria.DataStructures;
+using System.Linq;
 
 namespace SGAmod.Items.Consumable
 {
@@ -41,7 +42,7 @@ namespace SGAmod.Items.Consumable
 			item.noMelee = true;
 			item.autoReuse = false;
 			item.value = Item.buyPrice(0, 0, 0, 25);
-			item.rare = 1;
+			item.rare = ItemRarityID.Blue;
 		}
 
 		public override void AddRecipes()
@@ -114,7 +115,29 @@ namespace SGAmod.Items.Consumable
 			int dustType = DustType<TornadoDust>();
 			if (projectile.owner == Main.myPlayer)
 			{
-				Convert((int)(projectile.position.X + (float)(projectile.width / 2)) / 16, (int)(projectile.position.Y + (float)(projectile.height / 2)) / 16, 2);
+				ConvertTiles((int)(projectile.position.X + (float)(projectile.width / 2)) / 16, (int)(projectile.position.Y + (float)(projectile.height / 2)) / 16, 2);
+
+				int dist = 12 * 12;
+				foreach (Item itemtoConvert in Main.item.Where(testby => !testby.newAndShiny && (testby.type == ModContent.ItemType<UnmanedOre>() || testby.type == ModContent.ItemType<NoviteOre>()) && (testby.Center-projectile.Center).LengthSquared()<dist))
+				{
+
+					itemtoConvert.type = itemtoConvert.type == ModContent.ItemType<UnmanedOre>() ? ModContent.ItemType<NoviteOre>() : ModContent.ItemType<UnmanedOre>();
+					int stack = itemtoConvert.stack;
+					itemtoConvert.SetDefaults(itemtoConvert.type);
+					itemtoConvert.newAndShiny = true;
+					itemtoConvert.stack = stack;
+
+					for (int a = 0; a < 6; a++)
+					{
+						int dustIndex = Dust.NewDust(itemtoConvert.Hitbox.TopLeft(), itemtoConvert.Hitbox.Width, itemtoConvert.Hitbox.Height, dustType, 0f, 0f, 150, default(Color), 1f);
+						Dust dust = Main.dust[dustIndex];
+						dust.noGravity = true;
+						dust.velocity.X *= 2f;
+						dust.velocity.Y *= 2f;
+						dust.scale *= 3f;
+					}
+				}
+
 			}
 			if (projectile.ai[0] > 7f)
 			{
@@ -154,7 +177,7 @@ namespace SGAmod.Items.Consumable
 			projectile.rotation += 0.3f * (float)projectile.direction;
 		}
 
-		public void Convert(int i, int j, int size = 4)
+		public void ConvertTiles(int i, int j, int size = 4)
 		{
 			for (int k = i - size; k <= i + size; k++)
 			{

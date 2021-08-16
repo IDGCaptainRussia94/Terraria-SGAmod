@@ -24,7 +24,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 30;
+			item.damage = 112;
 			item.summon = true;
 			item.sentry = true;
 			item.width = 24;
@@ -171,7 +171,7 @@ namespace SGAmod.Items.Weapons
 							if (rec1.Intersects(rec2))
 							{
 								npc.SGANPCs().TimeSlow += 1f;
-								npc.SGANPCs().nonStackingImpaled = (int)(projectile.damage*3.75f);
+							npc.SGANPCs().nonStackingImpaled = projectile.damage;//(int)(projectile.damage*3.75f);
 							}
 
 						}
@@ -468,8 +468,6 @@ namespace SGAmod.Items.Weapons
 				enemiesNearby.RemoveAt(0);
 				j += 1;
 			}
-
-
 
 			Player player = Main.player[projectile.owner];
 			DoPlayerChecks(player);

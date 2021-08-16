@@ -3,6 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using System.Collections.Generic;
 using System.Linq;
+using SGAmod.Items.Accessories;
 
 namespace SGAmod
 {
@@ -170,7 +171,11 @@ namespace SGAmod
         public override bool RecipeAvailable(Recipe recipe)
         {
 
-            bool canwemakeit=base.RecipeAvailable(recipe);
+            bool canwemakeit = base.RecipeAvailable(recipe);
+
+            if (!TF2Emblem.CanCraftUp(recipe))
+                return false;
+
             if (recipe.createItem.type == mod.ItemType("HellionSummon") && SGAWorld.downedHellion < 1)
                 canwemakeit = false;
             //if ((((recipe.createItem.type==ItemID.MythrilAnvil || recipe.requiredTile.Any(tile => tile == TileID.MythrilAnvil)) || recipe.createItem.type==ItemID.OrichalcumAnvil) && (SGAWorld.downedWraiths<2))

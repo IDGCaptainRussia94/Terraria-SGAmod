@@ -112,9 +112,9 @@ namespace SGAmod.Items.Weapons.Auras
 		public override void InsideAura<T>(T type, Player player)
 		{
 
-			if (type is Player)
+			if (type is Player alliedplayer && alliedplayer.team == player.team)
 			{
-				SGAPlayer theply = (type as Player).SGAPly();
+				SGAPlayer theply = alliedplayer.SGAPly();
 				theply.beserk[0] = 5;
 				theply.beserk[1] = (int)((float)thepower*1f);
 

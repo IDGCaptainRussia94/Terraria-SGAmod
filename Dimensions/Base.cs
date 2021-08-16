@@ -109,6 +109,14 @@ namespace SGAmod.Dimensions
             //SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(player.Center.X, player.Center.Y, lightSize)));
         }
 
+        /*public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        {
+            //if (SpaceBoss.film.IsActive)
+            //return false;
+
+            //return true;
+        }*/
+
         public override void PostUpdate()
         {
             if (!noLight)
@@ -119,8 +127,14 @@ namespace SGAmod.Dimensions
 
         public override void PreUpdate()
         {
+            if (SpaceBoss.film.IsActive)
+            {
+                player.AddBuff(ModContent.BuffType<Buffs.InvincibleBuff>(), 2);
+                player.SGAPly().invincible = true;
+            }
 
-            if (!Main.gameMenu)
+
+                if (!Main.gameMenu)
             {
                 bool spacey = Spacey;
 
@@ -389,7 +403,10 @@ namespace SGAmod.Dimensions
                             powertool = true;
                     }
 
-                        if (limit % 16 == 0 && limit > 0 && ((item.pick > 0 && !powertool) || item.hammer > 0 || item.axe > 0 || item.createTile > -1 || item.createWall > -1))
+                    bool splunker = player.HasItem(ModContent.ItemType<DungeonSplunker>());
+                    bool walls = (item.createWall > -1 || item.createTile > -1);
+
+                        if ((limit % 16 == 0 && limit > 0 && ((((item.pick > 0 && !powertool) || item.hammer > 0 || item.axe > 0) && !splunker) || walls)))
                     {
                         return false;
                     }
@@ -419,6 +436,19 @@ namespace SGAmod.Dimensions
                     MineAsteriod(item, player);
                 }
             }
+        }
+
+        public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
+        {
+            if (!ItemID.Sets.ItemNoGravity[item.type])
+            {
+                if (SGAPocketDim.WhereAmI == typeof(SpaceDim))
+                {
+                    gravity *= 0.15f;
+                }
+            }
+
+            //base.Update(item, ref gravity, ref maxFallSpeed);
         }
 
         public override bool UseItem(Item item, Player player)
@@ -579,7 +609,6 @@ namespace SGAmod.Dimensions
             SGAmod.cachedata = true;
             if (SGAPocketDim.WhereAmI != null)
             {
-                SGAWorld.dungeonlevel += 1;
                 if (SGAPocketDim.WhereAmI == typeof(LimboDim))
                 {
                     SGAWorld.dungeonlevel = 0;
@@ -588,10 +617,17 @@ namespace SGAmod.Dimensions
 
             }
             Subworld.Enter(whereto, !vote);
+            if (SGAPocketDim.WhereAmI == typeof(DeeperDungeon))
+                SGAWorld.dungeonlevel += 1;
+
+            SGAWorld.highestDimDungeonFloor = (byte)Math.Max(SGAWorld.dungeonlevel, SGAWorld.highestDimDungeonFloor);
+
+
         }
 
         public static void ExitSubworld(bool novote = false)
         {
+            SGAmod.exitingSubworld = true;
             SLWorld.noReturn = false;
             Subworld.Exit(novote);
         }

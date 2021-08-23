@@ -14,11 +14,26 @@ using Idglibrary;
 
 namespace SGAmod.Dimensions.NPCs
 {
-	[AutoloadHead]
-	public class DungeonPortal : ModNPC
+	public class DungeonPortalDeeperDungeons : DungeonPortal
 	{
 
-		float walkframe = 0f;
+		public override bool Autoload(ref string name)
+		{
+			name = "Stranger Portal";
+			return mod.Properties.Autoload;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			npc.rarity = 1;
+		}
+	}
+
+
+		[AutoloadHead]
+	public class DungeonPortal : ModNPC
+	{
 
 		public override bool Autoload(ref string name)
 		{
@@ -64,7 +79,7 @@ namespace SGAmod.Dimensions.NPCs
 			//npc.immortal = true;
 			animationType = NPCID.Guide;
 			npc.homeless = true;
-			npc.rarity = 1;
+			//npc.rarity = 1;
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 2) % 1f, 0.5f, 0.35f);
 
 		}
@@ -200,7 +215,7 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				return "Go deeper to Floor " + (SGAWorld.dungeonlevel + 2)+"?";
 			}
-			string extrachat = " (Highest floor completed" + SGAWorld.highestDimDungeonFloor + ")";
+			string extrachat = " (Highest floor completed: " + SGAWorld.highestDimDungeonFloor + ")";
 			if (BirthdayParty.PartyIsUp)
 				return "Are you sure you wish to leave the party?" + extrachat;
 			return "Do you dare enter?" + extrachat;
@@ -258,14 +273,6 @@ namespace SGAmod.Dimensions.NPCs
 			shop.item[nextSlot].shopCustomPrice = 100;
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 			nextSlot++;
-
-			if (Main.LocalPlayer.SGAPly().ExpertiseCollectedTotal >= 4000)
-			{
-				shop.item[nextSlot].SetDefaults(mod.ItemType("EntropyTransmuter"));
-				shop.item[nextSlot].shopCustomPrice = 150;
-				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
-				nextSlot++;
-			}
 		}
 
 		public override void OnChatButtonClicked(bool firstButton, ref bool shop)

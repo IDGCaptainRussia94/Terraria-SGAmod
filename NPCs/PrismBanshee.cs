@@ -167,7 +167,7 @@ namespace SGAmod.NPCs
 						progress = MathHelper.Clamp((statetimer - 400f) / 200f, 0f, 1f);
 						if (Main.netMode != 2)
 						{
-							Texture2D tex = Main.npcTexture[npc.type];
+							Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/PrismicBanshee");
 							npc.frame = new Rectangle(0, tex.Height / 2, tex.Width, tex.Height / 2);
 						}
 					}
@@ -228,6 +228,13 @@ namespace SGAmod.NPCs
 			npc.localAI[0] += 1;
 			npc.ai[0] += 1;
 			npc.dontTakeDamage = false;
+
+			if (Main.netMode != 2)
+			{
+				Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/PrismicBanshee");
+				npc.frame = new Rectangle(0, 0, tex.Width, tex.Height / 2);
+			}
+
 			if (npc.ai[3] < 1)
 			{
 				if (expectedHandCount < 6)
@@ -306,11 +313,6 @@ namespace SGAmod.NPCs
 
 					if (npc.ai[0] > 900 + maxattacktime)
 					{
-						if (Main.netMode != 2)
-						{
-							Texture2D tex = Main.npcTexture[npc.type];
-							npc.frame = new Rectangle(0, 0, tex.Width, tex.Height / 2);
-						}
 						npc.ai[0] = Main.rand.Next(1, 100);
 						npc.netUpdate = true;
 					} 
@@ -463,7 +465,7 @@ namespace SGAmod.NPCs
 
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
-			spriteBatch.Draw(texture, drawPos, new Rectangle(0,0, texture.Width, texture.Height/2), Color.White, npc.rotation, new Vector2(texture.Width, (texture.Height/2) * 1.15f) / 2f, npc.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(texture, drawPos, npc.frame, Color.White, npc.rotation, new Vector2(texture.Width, (texture.Height/2) * 1.15f) / 2f, npc.scale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -515,7 +517,7 @@ namespace SGAmod.NPCs
 				foreach (NPC spirit in NPCspirits)
 				{
 					Texture2D handtex = Main.npcTexture[spirit.type];
-					spriteBatch.Draw(handtex, new Vector2(spirit.Center.X, spirit.Center.Y) - Main.screenPosition, new Rectangle(0, ((int)(spirit.localAI[0] / 30f) % 3) * (handtex.Height / 3), handtex.Width, handtex.Height / 3), Color.White, -spirit.velocity.X * 0.05f, new Vector2(handtex.Width, handtex.Height / 3) / 2f, spirit.scale, spirit.spriteDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+					spriteBatch.Draw(handtex, new Vector2(spirit.Center.X, spirit.Center.Y) - Main.screenPosition, new Rectangle(0, ((int)(spirit.localAI[0] / 30f) % 4) * (handtex.Height / 4), handtex.Width, handtex.Height / 4), Color.White, -spirit.velocity.X * 0.05f, new Vector2(handtex.Width, handtex.Height / 4) / 2f, spirit.scale, spirit.spriteDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 				}
 			}
 
@@ -524,7 +526,7 @@ namespace SGAmod.NPCs
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(tex, drawPos, npc.frame, Color.White, npc.rotation, (tex.Size() / 2f), npc.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(tex, drawPos, null, Color.White, npc.rotation, (tex.Size() / 2f), npc.scale, SpriteEffects.None, 0f);
 
 			if (npc.ai[1] > 0)
 			{

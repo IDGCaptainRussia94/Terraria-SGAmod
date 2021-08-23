@@ -38,7 +38,7 @@ namespace SGAmod.Items.Armors.Dev
 
 				//Main.NewText(player.manaCost);
 
-				float thepercent = 1f-MathHelper.Clamp(1.10f* player.manaCost,0.5f,1f);
+				float thepercent = 1f-MathHelper.Clamp(0.5f,0.5f,1f);
 
 				int percentLife = (int)((player.statLifeMax2) * thepercent);
 

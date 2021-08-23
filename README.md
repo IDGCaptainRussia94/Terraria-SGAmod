@@ -28,7 +28,7 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Professional's Threads, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Ice Cube?
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Professional's Threads, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Ice Cube?
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
@@ -48,7 +48,7 @@ Changelog:
 
 -New Amulet: Reservation Amulet, reserve a fraction of your HP to gain a protected regenerating shield!
 
--New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights, Option to enable/disable early luminite (via pickaxe power) from Near Orbit, A config option for a patch to fix the Lava Background problem with Subworlds, Disable the Dark Sector from spawning, and a bonus mode to up enemy strength when playing with specific overpowered mods, ability to disable Dank Shrines/Dark Sector, and adjust crate drop rates
+-New Config options: Hellion sky detail and HUD Y displacement, options to disable Drowning Presence/Snowfrosted outside of boss fights, Option to enable/disable early luminite (via pickaxe power) from Near Orbit, A config option for a patch to fix the Lava Background problem with Subworlds, Disable the Dark Sector/Dank Shrines, adjust crate drop rates, and more!
 
 -New resprites for the entire Novus set with a consistant palette! Thanks DeJuiceTD, and Rijam for making the armor frames! (previous armor has been added to Jubia's shop under its original filename: Unmaned)
 
@@ -57,6 +57,8 @@ Changelog:
 -Limbo has been given a loading screen
 
 -Added alot of missing debuff icons
+
+-A few new music tracks, including for Cratrosity (thanks again Rijam!)
 
 -Many items have been given an equip sprite, Various Resprites, added many missing sprites, and smaller improvements; enjoy a far better looking Jackpot with glowing coins!
 
@@ -73,6 +75,10 @@ Changelog:
 
 -Cobalt Wraith now locks the hardmode forge, rather than the anvil
 
+-Cirno now enrages with a chance outside the snow biome and no longer becomes unhittable
+
+-Boss checklists; be sure to check it AFTER each fight as well!
+
 -Draken's Dialog has been moved around to help give players instructions, also a new interaction has been added after you become close friends
 
 -The way accessories boost percent damage taken on enemies has been changed, it now additive of the original damage rather than a stacking multiplier
@@ -85,7 +91,7 @@ Changelog:
 
 -Sharkvern and their storm effects can no longer drown an underground player
 
--Supreme Pinky, a few moves: now uses a Nova and Ring attack instead of rockets in phase 1, and the scythe attack in the final phase of Pinky Singularity has been replaced with the new Ring attack
+-Supreme Pinky, a few moves: now uses a Nova and Ring attack instead of rockets in phase 1, and the scythe attack in the final phase of Pinky Singularity has been replaced with the new Ring attack, and Radiation continues into phase 2
 
 -Strange portal no longer sells items in Multiplayer, Deeper Dungeons loot is now alternatively obtained from a Contraband Crate (including the rare items that wern't sold before)
 
@@ -103,7 +109,7 @@ Changelog:
 
 -All damage and crit boosts now affect Thorium modded damage types
 
--Action Cooldown Rate reductions are now multiplicative, meaning they cannot go below 0
+-Action Cooldown Rate reductions are now multiplicative, meaning they cannot reduce the cooldown below 0
 
 -Added some flavor text to the Jabb-a-wacky to hint how to get it
 
@@ -143,6 +149,8 @@ Changelog:
 
 -Braxsaw is now post S.Pinky
 
+-Entropy Transmuter is now sold by merchant for one Plat in MP instead of Expertise from the (now removed) Portal shop
+
 -Soul of Secrets is now much easier (and less crazy) to craft, using only accessories and post-moonlord materials
 
 -Portable 'Makeshift' Spear Trap and Portable Spear Trap have gained a new functionality to allow them to act as grapple guns
@@ -150,6 +158,8 @@ Changelog:
 -Rebalanced Maldal: Has a different effect that won't hurt the player
 
 -Rebalanced Sticky Situation: now has 3.75% (30 => 112) more damage, instead of the projectile doing more damage
+
+-Buffed Radiation Cure Potion: now grants life recovery during boss fights, but at a greatly reduced rate
 
 -Buffed F.S.R.G: moved later into progression (Post S-Pinky), damage increased from 60 to 70
 
@@ -219,13 +229,13 @@ Changelog:
 
 -Doom Harbinger has been semi-removed for the time being, you can still summon him via his item, but he is no longer required by progression or spawns on his own
 
+-Strange Portal is no longer considered a rare creature, and the one inside the Deeper Dungeons still is
+
 -Removed unused enchanting tooltips from specific items
 
--Removed the flavor icons on the mod's name, especially the statues, they made searching up the mod impractically... Difficult. I'll re-add them in the description where they won't matter as much
+-Removed the flavor icons on the mod's name, especially the statues, they made searching up the mod impractically... Difficult. I'll re-add them in the description where they won't matter as much, also rewrote the description because it was dated
 
 -Various visual updates here and there
-
--Also rewrote the description because it was dated
 
 
 --Fixed
@@ -243,6 +253,10 @@ Changelog:
 -True Melee Projectiles doing double damage
 
 -Commando Emblem not providing mana cost reduction
+
+-Prefixes not being rolled
+
+-Tidal Charm not properly accounting for ALL breath boosts; leading to less defense with it on than without
 
 -Hellion Beams being invisible, and a little oversight that led to alot of unintentional lag in the fight
 

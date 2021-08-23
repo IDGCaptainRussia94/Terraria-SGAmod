@@ -310,7 +310,7 @@ namespace SGAmod
                     s = key;
                 }
 
-                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Hunger of Fames\nAll throwing weapons get coated in acid for a short time, but resets your life regeneration\n"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds") + "Poison, Venom, and Acid Burn all lower enemy defense by an extra 5";
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Hunger of Fames for a short time\nAll throwing weapons get coated in acid for the 1st hit, but resets your life regeneration" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds") + "\nPoison, Venom, and Acid Burn all lower enemy defence by an extra 5\n ";
                 sgaplayer.acidSet = (true, sgaplayer.acidSet.Item2);
             }
             if (set == "Engineer")
@@ -369,9 +369,17 @@ namespace SGAmod
             }
             if (set == "Valkyrie")
             {
-                string text1 = "Gain a throwing damage increase based on your current life regen\nMale Characters gain 15% Endurance\nFemale Characters gain 20% more flight time";
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+
+                string text2 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to active Ragnarök for a time based off current life regeneration\nThrowing speed and apocalyptical chance are increased"+ Idglib.ColorText(Color.Red,"But resets life regen while active")+"\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 150 seconds") + "\n";
+
+                string text1 = "Gain a throwing damage increase based on your current life regen\nMale Characters gain 15% Endurance\nFemale Characters gain 20% more flight time\n"+text2;
                 player.setBonus = text1 + "\nGain an additional free Cooldown Stack";
-                sgaplayer.valkyrieSet = true;
+                sgaplayer.valkyrieSet.Item1 = true;
                 sgaplayer.MaxCooldownStacks += 1;
             }
             if (set == "Illuminant")
@@ -414,7 +422,7 @@ namespace SGAmod
             }
             if (set == "Jellybru")
             {
-                player.setBonus = "Reserves some (more with mana cost reduction) of your max HP x2 as an energy barrier\nThese barriers are boosted by your Magic and Tech Damage Scaling\nBarriers fully recharge in 6 seconds" + Idglib.ColorText(Color.PaleTurquoise, "When Shield Up: Gain Ankh Charm effects") + "\nThe Jelly Brew and Aegisalt Aetherstone are empowered\n \n ";
+                player.setBonus = "Reserves 50% of your max HP x2 as an energy barrier\nDamage to your barrier is reduced by Mana Cost Reduction\nThese barriers are boosted by your Magic and Tech Damage Scaling\nBarriers fully recharge in 6 seconds" + Idglib.ColorText(Color.PaleTurquoise, "When Shield Up: Gain Ankh Charm effects") + "\nThe Jelly Brew and Aegisalt Aetherstone are empowered\n \n ";
                 sgaplayer.jellybruSet = true;
                 sgaplayer.devempowerment[2] = 3;
             }        
@@ -917,6 +925,23 @@ namespace SGAmod
                     item.TurnToAir();
                 }
             }
+
+            string[] buffTier = { "", "RadiationOne", "RadiationTwo", "RadiationThree" };
+
+            if (item.modItem != null && item.modItem is IRadioactiveItem)
+            {
+                int buffID = (item.modItem as IRadioactiveItem).RadioactiveInventory() - (player.SGAPly().grippinggloves > 1 ? 1 : 0);
+                int indexer = (int)MathHelper.Clamp(buffID, 0, buffTier.Length - 1);
+
+                if (indexer > 0)
+                    player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff(buffTier[indexer]).Type, 2);
+            }
+
+        }
+
+        public override bool NewPreReforge(Item item)
+        {
+            return base.NewPreReforge(item);
         }
 
     }
@@ -1212,7 +1237,7 @@ namespace SGAmod
         }
         public override float RollChance(Item item)
         {
-            return 30f;
+            return 1f;
         }
     }
     public class BustedAccessoryPrefix : BustedPrefix
@@ -1264,45 +1289,65 @@ namespace SGAmod
             {
                 if (GetType() == typeof(BustedPrefix))
                 {
-                    mod.AddPrefix("Busted", new BustedPrefix(2));
-                    mod.AddPrefix("Screwed Up", new BustedAccessoryPrefix(2));
+                    //mod.AddPrefix("Busted", new BustedPrefix(2));
+                    //mod.AddPrefix("Screwed Up", new BustedAccessoryPrefix(2));
                 }
 
                 if (GetType() == typeof(ShieldPrefix))
                 {
-                    mod.AddPrefix("Defensive", new ShieldPrefix(3));
+                    //mod.AddPrefix("Defensive", new ShieldPrefix(3));
                 }
                 if (GetType() == typeof(TrapPrefix))
                 {
-                    mod.AddPrefix("Edged", new TrapPrefix(0.05f, 0.05f));
-                    mod.AddPrefix("Sundering", new TrapPrefix(0.08f, 0.10f));
-                    mod.AddPrefix("Undercut", new TrapPrefix(0.12f, 0.10f));
+                    if (!SGAConfig.Instance.BestPrefixes)
+                    {
+                        mod.AddPrefix("Edged", new TrapPrefix(0.05f, 0.05f));
+                        mod.AddPrefix("Sundering", new TrapPrefix(0.08f, 0.10f));
+                        mod.AddPrefix("Undercut", new TrapPrefix(0.12f, 0.10f));
+                    }
                     mod.AddPrefix("Razor Sharp", new TrapPrefix(0.2f, 0.15f));
                 }
                 if (GetType() == typeof(TrapPrefixAccessory))
                 {
-                    mod.AddPrefix("Tinkering", new TrapPrefixAccessory(0f, 0.04f));
-                    mod.AddPrefix("Knowledgeable", new TrapPrefixAccessory(0.06f, 0f));
-                    mod.AddPrefix("Dungeoneer's", new TrapPrefixAccessory(0.04f, 0.05f));
+                    mod.AddPrefix("Defensive", new ShieldPrefix(3));
+
+                    mod.AddPrefix("Busted", new BustedPrefix(2));
+                    mod.AddPrefix("Screwed Up", new BustedAccessoryPrefix(2));
+
+                    if (!SGAConfig.Instance.BestPrefixes)
+                    {
+                        mod.AddPrefix("Tinkering", new TrapPrefixAccessory(0f, 0.04f));
+                        mod.AddPrefix("Knowledgeable", new TrapPrefixAccessory(0.06f, 0f));
+                        mod.AddPrefix("Dungeoneer's", new TrapPrefixAccessory(0.04f, 0.05f));
+                    }
                     mod.AddPrefix("Goblin Tinker's Own", new TrapPrefixAccessory(0.05f, 0.075f));
                     mod.AddPrefix("Energized", new TrapPrefixAccessory(0,0,1));
                 }
                 if (GetType() == typeof(ThrowerPrefix))
                 {
-                    mod.AddPrefix("Tossable", new ThrowerPrefix(0f, 0f, 0.1f, 0.15f));
-                    mod.AddPrefix("Impacting", new ThrowerPrefix(0f, 0f, 0.15f, 0.2f));
+                    if (!SGAConfig.Instance.BestPrefixes)
+                    {
+                        mod.AddPrefix("Tossable", new ThrowerPrefix(0f, 0f, 0.1f, 0.15f));
+                        mod.AddPrefix("Impacting", new ThrowerPrefix(0f, 0f, 0.15f, 0.2f));
+                    }
                     mod.AddPrefix("Olympian", new ThrowerPrefix(0f, 0f, 0.25f, 0.4f));
                 }
                 if (GetType() == typeof(ThrowerPrefixAccessory))
                 {
-                    mod.AddPrefix("Lightweight", new ThrowerPrefixAccessory(0f, 0f, 0.025f, 0.025f,0f,0,0));
-                    mod.AddPrefix("Slinger's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.02f,0.01f,0,0));
-                    mod.AddPrefix("Pocketed", new ThrowerPrefixAccessory(0f, 0f, 0.02f, 0.03f, 0.015f,0,0));
-                    mod.AddPrefix("Conserving", new ThrowerPrefixAccessory(0f, 0f, 0.0f, 0.0f,0.05f,0,0));
+                    if (!SGAConfig.Instance.BestPrefixes)
+                    {
+                        mod.AddPrefix("Lightweight", new ThrowerPrefixAccessory(0f, 0f, 0.025f, 0.025f, 0f, 0, 0));
+                        mod.AddPrefix("Slinger's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.02f, 0.01f, 0, 0));
+                        mod.AddPrefix("Pocketed", new ThrowerPrefixAccessory(0f, 0f, 0.02f, 0.03f, 0.015f, 0, 0));
+                        mod.AddPrefix("Conserving", new ThrowerPrefixAccessory(0f, 0f, 0.0f, 0.0f, 0.05f, 0, 0));
+                    }
                     mod.AddPrefix("Roguish", new ThrowerPrefixAccessory(0f, 0f, 0.06f, 0.05f,0.02f,0,0));
 
-                    mod.AddPrefix("Doomsayer", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 0.5f,0.05f));
-                    mod.AddPrefix("Horseman's", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 1f,0.075f));
+                    if (!SGAConfig.Instance.BestPrefixes)
+                    {
+                        mod.AddPrefix("Doomsayer", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 0.5f, 0.05f));
+                    }
+                        mod.AddPrefix("Horseman's", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 1f, 0.075f));
 
                     mod.AddPrefix("Disordered", new ThrowerPrefixAccessory(0.05f, 0.075f, 0f, 0f, 0f, 0.25f, 0.06f));
                     mod.AddPrefix("Rioter's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.03f, 0f, 0.25f, 0.04f));

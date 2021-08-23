@@ -1009,6 +1009,7 @@ return false;
 			npc.noTileCollide = true;
 			npc.noGravity = true;
 			npc.value = 40000f;
+			npc.coldDamage = true;
 		}
 
 				public override float SpawnChance(NPCSpawnInfo spawnInfo)

@@ -1474,10 +1474,10 @@ namespace SGAmod.Items.Weapons
         {
 			return Color.Lerp(Color.Lime, Color.Green, 0.50f + (float)Math.Sin(Main.GlobalTime * 4f) / 2f);
         }
-        public override void UpdateInventory(Player player)
+        /*public override void UpdateInventory(Player player)
         {
 			player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type, 60*3);
-		}
+		}*/
         public override void HoldItem(Player player)
         {
 			//if (!player.HasAccessoryEquipped(ModContent.ItemType<HandlingGloves>()) || !player.HasAccessoryEquipped(ModContent.ItemType<BlinkTechGear>()))

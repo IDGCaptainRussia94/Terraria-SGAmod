@@ -135,7 +135,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Gauntlet");
-			Tooltip.SetDefault("15% increased melee damage and melee speed, +5 armor penetration\nInflict OnFire! and Frostburn on hit and counts as Cold Damage");
+			Tooltip.SetDefault("15% increased melee damage and melee speed, +5 armor penetration\nInflict OnFire! and Frostburn on hit and melee hits count as Cold Damage");
 		}
 
 		public override void SetDefaults()
@@ -761,7 +761,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 24;
 			item.rare = ItemRarityID.Pink;
-			item.value = Item.sellPrice(0, 0, 2, 0); ;
+			item.value = Item.sellPrice(0, 0, 2, 0);
 			item.accessory = true;
 		}
 
@@ -1218,8 +1218,8 @@ namespace SGAmod.Items.Accessories
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Phaethon's Eye");
-			Tooltip.SetDefault("'an eye of the Shadowspirit, grants its wearing blessings of the cosmos...'" +
+			DisplayName.SetDefault("Shadowspirit's Eye");
+			Tooltip.SetDefault("'an eye of Phaethon, grants its wearing protection of the cosmos...'" +
 				"\nGrants a 1/3 chance of converting debuffs into Action Cooldown Stacks\nLethal damage is converted into an Action Cooldown Stack\nGrants ALL sense potion effects (hide to disable)");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
@@ -1430,11 +1430,20 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LunarOre, 20);
-			recipe.AddIngredient(ItemID.Nanites, 200);
+			recipe.AddIngredient(ModContent.ItemType<StarMetalBar>(), 16);
 			recipe.AddIngredient(ItemID.LeadBar, 10);
 			recipe.AddIngredient(ItemID.Leather, 20);
 			recipe.AddIngredient(ItemID.SWATHelmet, 1);
-			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.AddTile(ModContent.TileType<Tiles.ReverseEngineeringStation>());
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+			
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LunarOre, 50);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 25);
+			recipe.AddIngredient(ItemID.LeadBar, 10);
+			recipe.AddIngredient(ItemID.TatteredCloth, 5);
+			recipe.AddTile(ModContent.TileType<Tiles.ReverseEngineeringStation>());
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
@@ -2223,7 +2232,13 @@ namespace SGAmod.Items.Accessories
 			Tooltip.SetDefault("Increases your max Breath by 5 bubbles\nHaving less breath boosts your defense\nThis boost increases through progression as you beat SGAmod bosses");
 		}
 
-		public override void SetDefaults()
+        public override bool Autoload(ref string name)
+        {
+			SGAPlayer.PostUpdateEquipsEvent += DefenseBoost;
+			return true;
+        }
+
+        public override void SetDefaults()
 		{
 			item.width = 24;
 			item.height = 24;
@@ -2235,18 +2250,15 @@ namespace SGAmod.Items.Accessories
 		{
 			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Allows you to 'swim' in air while it is raining (hide the accessory to disable)")));
 			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Most status effects that trigger while wet will trigger here")));
-			if (!SGAWorld.downedSharkvern)
+			if (!SGAWorld.tidalCharmUnlocked)
 				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DarkBlue, "Its full potential is locked behind the Tempest Sharkvern")));
 			else
 				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Tempest Sharkvern's defeat allows this to take effect when it is not raining")));
 		}
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
-		{
-			player.breathMax += 100;
-			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-			if (!hideVisual && ((Main.raining) || SGAWorld.downedSharkvern))
-			sgaply.tidalCharm = 2;
+		public void DefenseBoost(SGAPlayer sgaply)
+        {
+			Player player = sgaply.player;
 			int defensegiven = 8;
 			defensegiven += SGAWorld.downedWraiths * 2;
 			if (SGAWorld.downedSpiderQueen)
@@ -2266,7 +2278,16 @@ namespace SGAmod.Items.Accessories
 			if (SGAWorld.downedSPinky)
 				defensegiven += 3;
 
-			player.statDefense += (int)((1f - ((float)player.breath / (float)player.breathMax)) * defensegiven);
+			player.statDefense += Math.Max((int)((1f - ((float)player.breath / (float)player.breathMax)) * defensegiven), 0);
+
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.breathMax += 100;
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			if (!hideVisual && ((Main.raining) || SGAWorld.downedSharkvern))
+			sgaply.tidalCharm = 2;
 
 		}
 
@@ -3200,18 +3221,44 @@ namespace SGAmod.Items.Accessories
 			recipe.AddRecipe();
 		}
 	}
-
-	[AutoloadEquip(EquipType.Neck)]
-	public class PrismalNecklace : ModItem
+	public class OraclesInsight : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Prismal Necklace");
-			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace") + " (by 2)\nIncreases your max number of sentries\n"+Language.GetTextValue("ItemTooltip.HerculesBeetle"));
+			DisplayName.SetDefault("Oracle's Insight");
+			Tooltip.SetDefault("Auras are boosted by 1 power level\n10% increased minion damage");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			player.minionDamage += 0.10f;
+			(float, float) boost = (player.SGAPly().auraBoosts.Item1+1f, player.SGAPly().auraBoosts.Item2);
+			player.SGAPly().auraBoosts = boost;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 2);
+			item.rare = ItemRarityID.Blue;
+			item.accessory = true;
+		}
+	}
+
+	[AutoloadEquip(EquipType.Neck)]
+	public class PrismalNecklace : OraclesInsight
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Prismal Necklace");
+			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace") + " (by 2)\nIncreases your max number of sentries\n"+Language.GetTextValue("ItemTooltip.HerculesBeetle")+ "\nEffects of Oracle's Insight");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player,hideVisual);
 			player.maxMinions += 2;
 			player.maxTurrets += 1;
 			player.minionDamage += 0.15f;

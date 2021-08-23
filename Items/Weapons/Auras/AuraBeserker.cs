@@ -75,7 +75,7 @@ namespace SGAmod.Items.Weapons.Auras
 	{
 
 		protected override int BuffType => ModContent.BuffType<AuraBuffBeserker>();
-		protected override float AuraSize => 60;
+		protected override float _AuraSize => 60;
 
 		public override void SetStaticDefaults()
 		{
@@ -100,8 +100,8 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public override float CalcAuraPower(Player player)
 		{
-			thepower = 1f+(player.minionDamage * (projectile.minionSlots / 2f));
-			return thepower;
+			float temp = 1f+(player.minionDamage * (projectile.minionSlots / 2f));
+			return temp;
 		}
 
 		public override void AuraAI(Player player)

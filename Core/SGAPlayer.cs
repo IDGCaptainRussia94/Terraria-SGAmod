@@ -109,11 +109,11 @@ namespace SGAmod
 		//Accessory related
 		public bool CirnoWings = false;
 		public bool SerratedTooth = false;
-		public int grippinggloves = 0;
+		public int grippinggloves = 0; public int grippingglovestimer = 0;
 		public bool vibraniumSetPlatform = false; public bool vibraniumSetWall = false;
 		public bool mudbuff = false; public bool alkalescentHeart = false; public bool jabALot = false; public bool NoHitCharm = false; public int NoHitCharmTimer = 0;
 		public int Havoc = 0;
-		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public bool valkyrieSet = false; public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0);
+		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public (bool,float,bool, float) valkyrieSet = (false,0,false,0); public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0);
 		public float SpaceDiverWings = 0f;
 		public int gamePadAutoAim = 0;
 		public int tidalCharm = 0;
@@ -129,6 +129,7 @@ namespace SGAmod
 		public int soldierboost = 0;
 		public FlaskOfBlaze flaskBuff = default;
 		public (bool,int) snakeEyes = (false,0);
+		public (float, float) auraBoosts = (0, 0);
 		public bool russianRoulette = false;
 		public bool dualityshades = false;
 		public bool gunslingerLegend = false;
@@ -285,12 +286,12 @@ namespace SGAmod
 
 			uncraftBoost = Math.Max(uncraftBoost - 1, 0);
 			surprised = Math.Max(surprised - 1, 0);
-			tidalCharm = (int)MathHelper.Clamp(tidalCharm - Math.Sign(tidalCharm), -1000,1000);
+			tidalCharm = (int)MathHelper.Clamp(tidalCharm - Math.Sign(tidalCharm), -1000, 1000);
 			shinobj -= 1;
 
 			heldShieldReset -= 1;
-			if (heldShieldReset<1)
-			heldShield = -1;
+			if (heldShieldReset < 1)
+				heldShield = -1;
 			finalGem -= 1;
 
 			claySlowDown = Math.Max(claySlowDown - 1, 0);
@@ -301,7 +302,7 @@ namespace SGAmod
 
 			energyShieldReservation = 0f;
 			if (energyShieldAmmountAndRecharge.Item1 > energyShieldAmmountAndRecharge.Item2)
-            {
+			{
 				energyShieldAmmountAndRecharge.Item1 = energyShieldAmmountAndRecharge.Item2;
 			}
 			energyShieldAmmountAndRecharge.Item2 = 0;
@@ -327,6 +328,17 @@ namespace SGAmod
 				ReloadingRevolver -= 1;
 			if (molotovLimit > 0)
 				molotovLimit -= 1;
+
+			if (grippingglovestimer < 1)
+			{
+				grippingglovestimer = 0;
+				grippinggloves = 0;
+			}
+			else
+			{
+				grippingglovestimer -= 1;
+			}
+
 			twinesoffate = false;
 			jabALot = false;
 			glacialStone = false;
@@ -358,14 +370,28 @@ namespace SGAmod
 			UseTimeMulPickaxe = 1f;
 			ThrowingSpeed = 1f;
 			SpaceDiverset = false;
-			acidSet = (false,false);
+			acidSet = (false, false);
 			potionsicknessincreaser = 0;
 			Blazewyrmset = false;
 			Mangroveset = false;
 			IDGset = false;
 			jellybruSet = false;
 			vibraniumSet = false;
-			valkyrieSet = false;
+
+			if (valkyrieSet.Item1 || valkyrieSet.Item2 > 0)
+			{
+				if ((!valkyrieSet.Item1 || valkyrieSet.Item3) && valkyrieSet.Item2 > 0)
+				{
+					valkyrieSet.Item2 -= 0.02f;
+					valkyrieSet.Item2 /= 1.1f;
+				}
+				valkyrieSet.Item4 += ((valkyrieSet.Item3 ? 0.15f : 1f) - valkyrieSet.Item4) * 0.20f;
+			}
+
+			valkyrieSet.Item1 = false;
+			valkyrieSet.Item3 = false;
+
+
 			illuminantSet = (0, illuminantSet.Item2);
 			novusStackBoost = false;
 			Pressured = false;
@@ -385,6 +411,7 @@ namespace SGAmod
 				ammoLeftInClip = ammoLeftInClipMax;
 
 			ammoLeftInClipMaxStack = 0;
+			auraBoosts = (0, 1f);
 			SpaceDiverWings = 0f;
 			ActionCooldown = false;
 			lunarSlimeHeart = false;
@@ -438,7 +465,6 @@ namespace SGAmod
 			drownRate = 0;
 			summonweaponspeed = 0f;
 			SlowDownReset -= 1;
-			grippinggloves = 0;
 			timer += 1;
 			mudbuff = false;
 			boosterdelay -= 1;
@@ -989,7 +1015,7 @@ namespace SGAmod
 				int indexer = (int)MathHelper.Clamp(buffID, 0, buffTier.Length - 1);
 
 				if (indexer > 0)
-				player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff(buffTier[indexer]).Type, 60 * 3);
+				player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff(buffTier[indexer]).Type, 2);
 			}
 
 			if (player.HasBuff(mod.BuffType("TechnoCurse")))
@@ -1491,7 +1517,7 @@ namespace SGAmod
 			modcheckdelay = true;
 		}
 
-		public delegate void PreUpdateMovementDelegate(SGAPlayer player);
+        public delegate void PreUpdateMovementDelegate(SGAPlayer player);
 		public static event PreUpdateMovementDelegate PreUpdateMovementEvent;
 
 		public override void PreUpdateMovement()
@@ -1732,7 +1758,10 @@ namespace SGAmod
 			{
 				player.AddBuff(BuffID.Electrified, 20 + (damage * 2));
 			}
-
+			if (NPC.CountNPCS(ModContent.NPCType<SPinkyTrue>()) > 0 && npc.type <= NPCID.BlueSlime && Main.expertMode)
+			{
+				player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationTwo").Type, 60 * 10);
+			}
 			if (Noviteset > 2)
 				ChainBolt();
 
@@ -1876,6 +1905,11 @@ namespace SGAmod
                 {
                     Items.Armors.Acid.AcidHelmet.ActivateHungerOfFames(this);
 				}
+				if (valkyrieSet.Item1)
+				{
+					Items.Armors.Valkyrie.ValkyrieHelm.ActivateRagnorok(this);
+				}
+
 				if (vibraniumSet)
 				{
 					if (player.controlTorch)

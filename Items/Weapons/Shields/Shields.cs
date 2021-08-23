@@ -14,6 +14,7 @@ using AAAAUThrowing;
 using Terraria.Graphics.Shaders;
 using SGAmod.Buffs;
 using Microsoft.Xna.Framework.Audio;
+using Terraria.Utilities;
 
 namespace SGAmod.Items.Weapons.Shields
 {
@@ -109,6 +110,29 @@ namespace SGAmod.Items.Weapons.Shields
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			return true;
+		}
+
+		public override int ChoosePrefix(UnifiedRandom rand)
+		{
+			switch (rand.Next(9))
+			{
+				case 1:
+					return PrefixID.Weak;
+				case 2:
+					return PrefixID.Frenzying;
+				case 3:
+					return PrefixID.Damaged;
+				case 4:
+					return PrefixID.Savage;
+				case 5:
+					return PrefixID.Furious;
+				case 6:
+					return PrefixID.Terrible;
+				case 7:
+					return mod.PrefixType("Screwed Up");
+				default:
+					return mod.PrefixType("Defensive");
+			}
 		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{

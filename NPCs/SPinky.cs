@@ -243,7 +243,7 @@ namespace SGAmod.NPCs
 			if (npc.ai[0]%(10-phase) == 0)
 			{
 
-				int num7 = NPC.NewNPC((int)npc.Center.X+Main.rand.Next(-800,800), (int)Main.screenPosition.Y-100,1);
+				int num7 = NPC.NewNPC((int)npc.Center.X+Main.rand.Next(-800,800), (int)Main.screenPosition.Y-100,NPCID.BlueSlime);
 				Main.npc[num7].ai[0] = 1;
 				if (Main.rand.Next(200) == 0)
 				{
@@ -1691,6 +1691,7 @@ namespace SGAmod.NPCs
 
         public override bool PreAI()
         {
+
 			if (GetType() == typeof(SPinkyClone))
 			return true;
 
@@ -1699,6 +1700,12 @@ namespace SGAmod.NPCs
 				AI();
 				return false;
 			}
+
+			foreach(Player player in Main.player.Where(testby => testby.active && !testby.dead))
+            {
+				GivePlayerRadiation(player);
+			}
+
 			return true;
 
 		}
@@ -1712,6 +1719,35 @@ namespace SGAmod.NPCs
         {
 			getHitEffect = MathHelper.Clamp((float)damage/50f,15f,90f);
 		}
+
+		public void GivePlayerRadiation(Player player)
+		{
+			Player P = player;
+			P.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type, 1);
+			if (Main.expertMode)
+			{
+				if (radpoison < 5 && (P.statLifeMax2 < P.statLifeMax * 0.15) && P == Main.LocalPlayer && Main.netMode != NetmodeID.Server)
+				{
+					radpoison = 5;
+					Main.NewText("<Supreme Pinky> ALMOST FINISHED, SOON YOU SHALL BE NOTHING BUT SLIME FOR THE PRINCESS!", 255, 100, 255);
+				}
+				if (radpoison < 4 && (P.statLifeMax2 < P.statLifeMax * 0.3) && P == Main.LocalPlayer && Main.netMode != NetmodeID.Server)
+				{
+					radpoison = 4;
+					Main.NewText("<Supreme Pinky> CONVERSION AT 70%!", 255, 100, 255);
+				}
+				if (radpoison < 3 && (P.statLifeMax2 < P.statLifeMax * 0.5) && P == Main.LocalPlayer && Main.netMode != NetmodeID.Server)
+				{
+					radpoison = 3;
+					Main.NewText("<Supreme Pinky> YOUR BODY MELTS, CONVERSION AT 50%!", 255, 100, 255);
+				}
+				if (radpoison < 2 && (P.statLifeMax2 < P.statLifeMax * 0.75) && P == Main.LocalPlayer && Main.netMode != NetmodeID.Server)
+				{
+					radpoison = 2;
+					Main.NewText("<Supreme Pinky> THE CONVERSION PROCESS IS PROCEEDING NICELY", 255, 100, 255);
+				}
+			}
+		}		
 
 		public void NoEscape(float dashdist,Vector2 dist)
 		{
@@ -1774,8 +1810,6 @@ namespace SGAmod.NPCs
                 {
 					npc.Center = P.Center + new Vector2(0, -200);
                 }
-				if (Main.expertMode)
-					P.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type, 1);
 
 				if (GetType() == typeof(SPinky))
 					npc.GivenName = "Supreme Pinky";
@@ -2092,26 +2126,6 @@ namespace SGAmod.NPCs
 
 					if (Main.expertMode)
 					{
-						if (radpoison < 5 && (P.statLifeMax2 < P.statLifeMax * 0.15) && P == Main.LocalPlayer && Main.netMode != 1)
-						{
-							radpoison = 5;
-							Main.NewText("<Supreme Pinky> ALMOST FINISHED, SOON YOU SHALL BE NOTHING BUT SLIME FOR THE PRINCESS!", 255, 100, 255);
-						}
-						if (radpoison < 4 && (P.statLifeMax2 < P.statLifeMax * 0.3) && P == Main.LocalPlayer && Main.netMode != 1)
-						{
-							radpoison = 4;
-							Main.NewText("<Supreme Pinky> CONVERSION AT 70%!", 255, 100, 255);
-						}
-						if (radpoison < 3 && (P.statLifeMax2 < P.statLifeMax * 0.5) && P == Main.LocalPlayer && Main.netMode != 1)
-						{
-							radpoison = 3;
-							Main.NewText("<Supreme Pinky> YOUR BODY MELTS, CONVERSION AT 50%!", 255, 100, 255);
-						}
-						if (radpoison < 2 && (P.statLifeMax2 < P.statLifeMax * 0.75) && P == Main.LocalPlayer && Main.netMode != 1)
-						{
-							radpoison = 2;
-							Main.NewText("<Supreme Pinky> THE CONVERSION PROCESS IS PROCEEDING NICELY", 255, 100, 255);
-						}
 
 						if ((Main.npc[father] == null) || father < 1)
 						{

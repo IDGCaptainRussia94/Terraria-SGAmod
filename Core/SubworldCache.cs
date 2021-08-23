@@ -38,6 +38,8 @@ namespace SGAmod
 
 		public static void UpdateCache() // Run this in a Modworld that is NOT the target of a subworld to update, can use check to make sure you aren't in subworlds
 		{
+			mod = SGAmod.Instance;
+
 			if (!SubworldCache.postCacheFields || SubworldCache.cache.Count<1)
 				return;
 

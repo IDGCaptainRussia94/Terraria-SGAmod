@@ -228,11 +228,11 @@ namespace SGAmod
 
 			if (acid)
             {
-				if (Main.rand.Next(0, 5) == 1)
+				if (Main.rand.Next(0, 3) == 1)
 				{
-					int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("AcidDust"));
-					Main.dust[dust].scale = 0.25f;
-					Main.dust[dust].noGravity = false;
+					int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, ModContent.DustType<Dusts.AcidDust>());
+					Main.dust[dust].scale = 0.75f;
+					Main.dust[dust].noGravity = true;
 					Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(60, 100) * 0.01f);
 				}
 			}
@@ -278,7 +278,7 @@ namespace SGAmod
 					if (owner != null)
 					{
 						SGAPlayer sgaply = owner.SGAPly();
-						if (sgaply.acidSet.Item2 && projectile.Throwing().thrown)
+						if (sgaply.acidSet.Item2 && (projectile.Throwing().thrown || projectile.thrown))
 						{
 							acid = true;
 						}

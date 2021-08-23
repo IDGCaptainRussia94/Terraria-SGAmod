@@ -107,7 +107,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 		protected override int BuffType => ModContent.BuffType<AuraBorealisBuff>();
 
-        protected override float AuraSize => 120f;
+        protected override float _AuraSize => 120f;
 
         public override void SetStaticDefaults()
 		{

@@ -37,6 +37,7 @@ namespace SGAmod
         public static bool downedCratrosityPML = false;
         public static bool downedSharkvern = false;
         public static bool downedCirno = false;
+        public static bool downedSpaceBoss = false;
         public static byte downedPrismBanshee = 0;
         public static int downedMurk = 0;
         public static int downedHellion = 0;
@@ -109,6 +110,7 @@ namespace SGAmod
                 downedCaliburnGuardiansPoints = 0;
                 downedCaliburnGuardianHardmode = false;
                 downedCirno = false;
+                downedSpaceBoss = false;
                 downedSharkvern = false;
                 darknessVision = false;
                 overalldamagedone = 0;
@@ -343,6 +345,7 @@ namespace SGAmod
             tag["downedSPinky"] = downedSPinky;
             tag["downedTPD"] = downedTPD;
             tag["downedCirno"] = downedCirno;
+            tag["downedSpaceBoss"] = downedSpaceBoss;
             tag["downedSharkvern"] = downedSharkvern;
             tag["overalldamagedone"] = overalldamagedone;
             tag["downedCratrosity"] = downedCratrosity;
@@ -409,6 +412,7 @@ namespace SGAmod
             downedSPinky = tag.GetBool("downedSPinky");
             downedTPD = tag.GetBool("downedTPD");
             downedCirno = tag.GetBool("downedCirno");
+            downedSpaceBoss = tag.GetBool("downedSpaceBoss");
             downedSharkvern = tag.GetBool("downedSharkvern");
             downedCratrosity = tag.GetBool("downedCratrosity");
             downedHarbinger = tag.GetBool("downedHarbinger");

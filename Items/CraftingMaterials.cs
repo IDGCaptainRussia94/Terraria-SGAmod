@@ -268,12 +268,12 @@ namespace SGAmod.HavocGear.Items
 
 namespace SGAmod.Items
 {
-	public class Glowrock : ModItem
+	public class Glowrock : ModItem, IRadioactiveItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Glowrock");
-			Tooltip.SetDefault("These rocks seem to give the Asteriods a glow; Curious.\nExtract it via an Extractinator for some goodies!\nDoesn't have much other use, outside of illegal interests");
+			Tooltip.SetDefault("These rocks seem to give the Asteriods a glow; Curious.\nExtract it via an Extractinator for some goodies!\nIt also seems rather... radioactive\nDoesn't have much other use, outside of illegal interests");
 		}
 		public override void SetDefaults()
 		{
@@ -322,22 +322,41 @@ namespace SGAmod.Items
 			Lighting.AddLight(item.Center, Color.Blue.ToVector3() * 0.55f);
 		}
 
-	}
+        public int RadioactiveHeld()
+        {
+			return 2;
+        }
 
-		public class OverseenCrystal : ModItem
+        public int RadioactiveInventory()
+        {
+			return 1;
+        }
+    }
+
+		public class OverseenCrystal : ModItem, IRadioactiveItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overseen Crystal");
-			Tooltip.SetDefault("Shards manifested from Phaethon's existance; resonates with charged forgotten spirits\nMay be used to fuse several strong materials together with ease\nSurely a shady dealer will also be interested in trading for these...");
+			Tooltip.SetDefault("Shards manifested from Phaethon's existance; resonates with charged forgotten spirits\nMay be used to fuse several strong materials together with ease\nDrat, it's also even more radioactive!\nSurely a shady dealer will also be interested in trading for these...");
 		}
 		public override void SetDefaults()
 		{
 			item.maxStack = 999;
 			item.width = 16;
 			item.height = 16;
-			item.value = 250;
+			item.value = 1000;
 			item.rare = ItemRarityID.Blue;
+		}
+
+		public int RadioactiveHeld()
+		{
+			return 3;
+		}
+
+		public int RadioactiveInventory()
+		{
+			return 2;
 		}
 
 		public override void AddRecipes()
@@ -1729,9 +1748,18 @@ namespace SGAmod.Items
         {
 			foreach(Player player in Main.player)
             {
-				if (player.HasItem(ModContent.ItemType<TheWholeExperience>()))
+				if (player.HasItem(ModContent.ItemType<TheWholeExperience>()) || player.HasItem(ModContent.ItemType<TheWholeExperienceEX>()))
 					return true;
             }
+			return false;
+		}
+		public static bool CheckHigherTier(bool highertier = false)
+		{
+			foreach (Player player in Main.player)
+			{
+				if (player.HasItem(ModContent.ItemType<TheWholeExperienceEX>()))
+					return true;
+			}
 			return false;
 		}
 		public override string Texture
@@ -1748,7 +1776,31 @@ namespace SGAmod.Items
 		}
 	}
 
-	public class DungeonSplunker : ModItem
+	public class TheWholeExperienceEX : TheWholeExperience
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("'The Whole Experience EX'");
+			Tooltip.SetDefault("Same effects as 'The Whole Experience EX', but now prevents leaving subworlds on death\nSubworld bosses will reset when you die and you respawn in place");
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+		}
+        public override Color? GetAlpha(Color lightColor)
+        {
+			return Main.hslToRgb(Main.GlobalTime%1f,1f,0.75f);
+        }
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<TheWholeExperience>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<WatchersOfNull>(), 20);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+
+		public class DungeonSplunker : ModItem
 	{
 		public override void SetStaticDefaults()
 		{

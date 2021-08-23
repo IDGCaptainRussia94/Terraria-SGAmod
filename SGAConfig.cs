@@ -64,6 +64,12 @@ namespace SGAmod
 		[DefaultValue(false)]
 		public bool OPmods { get; set; }
 
+		[Label("Only Best Prefixes")]
+		[Tooltip("Removes all the 'weaker' prefixes added SGAmod, turn this on if your hitting the prefix limit or don't want variety")]
+		[ReloadRequired]
+		[DefaultValue(false)]
+		public bool BestPrefixes { get; set; }
+
 		[Header("Vanilla Changes")]
 		[Label("Improved Golem")]
 		[Tooltip("Enables/Disables the changed Golem fight, this is presented as an option in the case of other mods who alter golem, to avoid issues")]

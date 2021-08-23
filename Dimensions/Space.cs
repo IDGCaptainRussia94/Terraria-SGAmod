@@ -48,11 +48,31 @@ namespace SGAmod.Dimensions
         int[,] poissonGrid;
 
         public static bool crystalAsteriods = true;
+        public static bool SpaceBossIsActive
+        {
+            get
+            {
+                int bossindex = NPC.FindFirstNPC(ModContent.NPCType<SpaceBoss>());
+
+                if (bossindex >= 0)
+                {
+                    SpaceBoss boss = Main.npc[bossindex]?.modNPC as SpaceBoss;
+                    if (boss != null && boss.WakingUpStartMusic)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+        }
         public override int? Music
         {
 
             get
             {
+                if (SpaceBossIsActive)
+                    return SGAmod.Instance.GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space_Boss_NOT_FINAL");
                 return SGAmod.Instance.GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space");
             }
 
@@ -1289,11 +1309,11 @@ namespace SGAmod.Dimensions
             //npc.defense += 15;
             //npc.defDamage += 15;
 
-            npc.aiStyle = 56;
+            npc.aiStyle = 74;
 
-            if (Main.rand.Next(0, 3) < 2)
+            if (Main.rand.Next(0, 3) < 2 || SpaceDim.SpaceBossIsActive)
             {
-                npc.aiStyle = Main.rand.NextBool() ? 74 : 86;
+                npc.aiStyle = Main.rand.NextBool() ? 86 : 56;
             }
         }
 
@@ -1315,6 +1335,7 @@ namespace SGAmod.Dimensions
 
         public override void AI()
         {
+            timer -= 1;
             if (timer < 1)
             {
                 npc.StrikeNPC(npc.lifeMax * 2, 0, 0);

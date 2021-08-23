@@ -166,6 +166,7 @@ namespace SGAmod.Dimensions.NPCs
 		public Vector2 velocity = Vector2.Zero;
 		public MineableAsteriod grabrock;
 		public float whiten = 0;
+		public float bossRockDist;
 
 		public float Rotation
         {
@@ -198,6 +199,7 @@ namespace SGAmod.Dimensions.NPCs
 			randomrotation = Main.rand.NextFloat(MathHelper.TwoPi);
 			randomRotation2 = Main.rand.NextFloat(-0.1f,0.1f);
 			scale = Main.rand.NextFloat(0.5f,0.8f);
+			bossRockDist = Main.rand.NextFloat(8f,72f);
 		}
 
 		public void UpdateRotation(float phi)
@@ -345,8 +347,8 @@ namespace SGAmod.Dimensions.NPCs
 				Vector2 diff = boss.npc.Center - Position;
 				bossOffset += Vector2.Normalize(diff) * (ragegrab ? 72f : 24f);
 
-				UnifiedRandom randomrock = new UnifiedRandom((int)(randomRotation2 * 32));
-				if (diff.Length() < 8f + randomrock.NextFloat(16f, 72f))
+				//UnifiedRandom randomrock = new UnifiedRandom((int)(randomRotation2 * 32));
+				if (diff.Length() < 8f + bossRockDist)
 				{
 					//bossOffset = lastPlace;
 					LockUnlock(true);
@@ -758,7 +760,7 @@ namespace SGAmod.Dimensions.NPCs
 
 				int index = Main.rand.Next(0, closerocksbutnottooclose.Length / 3);
 
-				if (index>=0)
+				if (index>=0 && closerocksbutnottooclose.Length>index)
 				NPC.NewNPC((int)closerocksbutnottooclose[index].Position.X, (int)closerocksbutnottooclose[index].Position.Y, ModContent.NPCType<OverseenHead>());
 			}
 
@@ -1069,6 +1071,8 @@ namespace SGAmod.Dimensions.NPCs
 		public float friction = 1f;
 		public int specialCooldown = 0;
 		public Vector2[] screenPos;
+		public Vector2 startPosition;
+		public bool NoHitMode => Items.TheWholeExperience.CheckHigherTier();
 
 		public static Film film = new Film();
 
@@ -1109,8 +1113,8 @@ namespace SGAmod.Dimensions.NPCs
 			npc.damage = 0;
 			npc.noGravity = true;
 			npc.defense = 0;
-			npc.HitSound = SoundID.NPCHit1;
-			npc.DeathSound = SoundID.NPCDeath1;
+			npc.HitSound = SoundID.NPCHit7;
+			npc.DeathSound = SoundID.NPCDeath7;
 			npc.knockBackResist = 0.5f;
 			//npc.immortal = true;
 			animationType = NPCID.Guide;
@@ -1169,24 +1173,13 @@ namespace SGAmod.Dimensions.NPCs
 			if (Main.expertMode)
             {
 				Item.NewItem(npc.Center, ModContent.ItemType<Items.Accessories.PhaethonEye>());
-            }		
+            }
+
+			SGAWorld.downedSpaceBoss = true;
+			SubworldCache.AddCache("SGAmod", "SGAWorld", "downedSpaceBoss", true,null);
 
 			SpaceDim.crystalAsteriods = true;
 		}
-
-        /*public override bool? CanBeHitByItem(Player player, Item item)
-		{
-			return ((WakingUp || Sleeping) ? false : CanBeHitByItem(player, item));
-        }
-
-        public override bool? CanBeHitByProjectile(Projectile projectile)
-        {
-            return ((WakingUp || Sleeping) ? false : CanBeHitByProjectile(projectile));
-		}
-        public override bool? CanHitNPC(NPC target)
-        {
-			return ((WakingUp || Sleeping) ? false : CanHitNPC(target));
-		}*/
 
         public override bool CheckActive()
 		{
@@ -1232,7 +1225,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			if (timePassed == 0)
 			{
-
+				startPosition = npc.Center;
 				screenPos = new Vector2[10];
 				for (int i = 0; i < screenPos.Length; i += 1)
 				{
@@ -1291,6 +1284,8 @@ namespace SGAmod.Dimensions.NPCs
 
 		public bool Sleeping => npc.active && npc.ai[0] < 1 && npc.ai[0] >= 0;
 		public bool WakingUp => npc.active && npc.ai[0] >= 1 && npc.ai[0] < 300;
+
+		public bool WakingUpStartMusic => npc.ai[0] >= 200;
 		public bool Activestate => npc.active && npc.ai[0] >= 300 && !DyingState;
 
 		public bool DyingState => npc.ai[0] >= 100000;
@@ -1526,7 +1521,7 @@ namespace SGAmod.Dimensions.NPCs
 						{
 							Vector2 toboss = npc.Center - rock.bossOffset;
 							rock.bossOffset += Vector2.Normalize(toboss) * MathHelper.Clamp((eye.sleep-1.5f)*6f,0f,12f);
-							if (toboss.Length() < 8f+ randomrock.NextFloat(8f,64f))
+							if (toboss.Length() < rock.bossRockDist)
 							{
 								rock.LockUnlock(true);
 							}
@@ -1654,6 +1649,19 @@ namespace SGAmod.Dimensions.NPCs
 			}
 			else
 			{
+				if (NoHitMode && Main.player[npc.target].dead)
+                {
+					NPC.NewNPC((int)startPosition.X, (int)startPosition.Y, npc.type);
+					npc.active = false;
+					npc.type = 0;
+					foreach(Projectile proj in TetherAsteriods)
+                    {
+						proj.active = false;
+					}
+
+					return;
+                }
+
 				if (darknessAura<(phase > 1 ? 1f : 0.75f) && npc.ai[0]>120)
 				darknessAura += 0.005f;
 
@@ -1697,6 +1705,21 @@ namespace SGAmod.Dimensions.NPCs
 
 		public void AlterSky(SpaceSky sky, int index, SpriteBatch spriteBatch, float minDepth, float maxDepth)
 		{
+
+			if (index == 1 && Activestate)
+            {
+				Texture2D sunray = ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.MedusaHeadRay);// Main.projectileTexture[ProjectileID.MedusaHeadRay];
+
+				for (float f = 0; f < 1f; f += 0.25f) 	
+				{
+					float indexsize = (f+Main.GlobalTime/8f)%1f;
+
+
+					spriteBatch.Draw(sunray, sky.sunPosition, null, (Color.White * (shieldeffect / 15f)) * sky.skyalpha* (1f-indexsize), ((npc.Center - Main.screenPosition) - sky.sunPosition).ToRotation() + MathHelper.PiOver2, new Vector2(sunray.Width / 2f, sunray.Height), Vector2.One* (indexsize*3f), SpriteEffects.None, 0f);
+				}
+
+			}
+
 			if (index == 3)
 			{
 				Main.spriteBatch.End();
@@ -1737,16 +1760,9 @@ namespace SGAmod.Dimensions.NPCs
 					}
 				}
 
-				//Dark Aura
-
-				//Main.spriteBatch.End();
-				//Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
-
-
 				value28 = new DrawData(sunGlow, new Vector2(240, 240), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 240, 240)), Microsoft.Xna.Framework.Color.White, MathHelper.PiOver2, stain.Size() / 2f, 1f, SpriteEffects.None, 0);
 
-				//Vector2 dir = ((npc.Center - Main.screenPosition) - sky.sunPosition);
-				//float angle = dir.ToRotation();
+
 
 				//Sun absorb healing
 
@@ -1775,10 +1791,6 @@ namespace SGAmod.Dimensions.NPCs
 
 					foreach ((float, float, float, Vector2) prog in ordering)
 					{
-						//float prog = MathHelper.Clamp((f+(Main.GlobalTime*0.25f))%(1f),0f,1f);
-						//shader.UseColor(Color.Lerp(Color.White, Color.Blue, MathHelper.Clamp(prog.Item1 * 2f - 1f, 0f, 1f)).ToVector3());
-						//shader.UseOpacity(1f);
-						//shader.Apply(null, new DrawData?(value28));
 
 						float angle = prog.Item3;
 

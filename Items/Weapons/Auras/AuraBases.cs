@@ -80,7 +80,9 @@ namespace SGAmod.Items.Weapons.Auras
 	public class AuraMinion : ModProjectile
 	{
 		protected virtual int BuffType => ModContent.BuffType<AuraBuffStone>();
-		protected virtual float AuraSize => 160;
+		protected Player Player => Main.player[projectile.owner];
+		protected virtual float _AuraSize => 160;
+		protected virtual float AuraSize => _AuraSize;// * Player.SGAPly().auraBoosts.Item2;
 		protected float thesize = 0;
 		public float thepower = 0;
 
@@ -103,13 +105,19 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public virtual float CalcAuraPower(Player player)
 		{
-			thepower = (player.minionDamage * (1f + (projectile.minionSlots / 3f)));
+			float temp = (player.minionDamage * (1f + (projectile.minionSlots / 3f)));
+			return temp;
+		}
+
+		public float CalcAuraPowerReal(Player player)
+		{
+			thepower = CalcAuraPower(player)+player.SGAPly().auraBoosts.Item1;
 			return thepower;
 		}
 
 		public virtual float CalcAuraSize(Player player)
 		{
-			return AuraSize * (float)Math.Pow((double)CalcAuraPower(player),0.80);
+			return (AuraSize * (float)Math.Pow((double)CalcAuraPowerReal(player),0.80));
 		}
 
 		public override void SetDefaults()

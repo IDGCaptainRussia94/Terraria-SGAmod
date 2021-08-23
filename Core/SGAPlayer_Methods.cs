@@ -116,7 +116,10 @@ namespace SGAmod
 
 		public bool TakeShieldHit(ref int damage)
 		{
-			if (GetEnergyShieldAmmountAndRecharge.Item1 > damage)
+
+			int takenshielddamage = (int)(jellybruSet ? damage*Math.Max(player.manaCost, 0.10f) : damage);
+
+			if (GetEnergyShieldAmmountAndRecharge.Item1 > takenshielddamage)
             {
 
 				if (!player.immune)
@@ -126,9 +129,9 @@ namespace SGAmod
 						sound.Pitch += -0.5f + ((GetEnergyShieldAmmountAndRecharge.Item1 / GetEnergyShieldAmmountAndRecharge.Item2) * 1.25f);
 
 					energyShieldAmmountAndRecharge.Item3 = 60 * (tpdcpu ? shieldAmmounts.Item1 : shieldAmmounts.Item2);
-					energyShieldAmmountAndRecharge.Item1 -= damage;
+					energyShieldAmmountAndRecharge.Item1 -= takenshielddamage;
 
-					Main.NewText(damage);
+					//Main.NewText(takenshielddamage);
 
 					player.immune = true;
 					player.immuneTime = 20;

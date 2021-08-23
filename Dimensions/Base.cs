@@ -50,6 +50,7 @@ namespace SGAmod.Dimensions
         public float spaceX = 0;
         public int spacevar = 0;
         public MineableAsteriod targetedAsteriod = null;
+        private bool wasDead = false;
         public override void UpdateBiomeVisuals()
         {
             //TheProgrammer
@@ -59,12 +60,17 @@ namespace SGAmod.Dimensions
  
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
         {
-            if (SGAmod.anysubworld)
+            if (SGAmod.anysubworld && !Items.TheWholeExperience.CheckHigherTier(true))
             {
                 if (SLWorld.currentSubworld is SGAPocketDim)
                     DimDingeonsWorld.deathtimer = Math.Max(1, DimDingeonsWorld.deathtimer);
 
             }
+        }
+
+        public override void UpdateDead()
+        {
+            wasDead = false;
         }
 
         public override void Initialize()
@@ -119,6 +125,14 @@ namespace SGAmod.Dimensions
 
         public override void PostUpdate()
         {
+            if (wasDead)
+            {
+                wasDead = false;
+                if (Items.TheWholeExperience.CheckHigherTier(true))
+                {
+                    player.Center = player.lastDeathPostion;
+                }
+            }
             if (!noLight)
                 SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(player.Center.X, player.Center.Y, lightSize)));
         }
@@ -950,7 +964,7 @@ namespace SGAmod.Dimensions
 
                     SGAPlayer sgaply = player.SGAPly();
 
-                    if (sgaply.valkyrieSet)
+                    if (sgaply.valkyrieSet.Item2>0)
                     {
                         UnifiedRandom rando = new UnifiedRandom(player.whoAmI+Main.worldName.GetHashCode());
 
@@ -958,18 +972,18 @@ namespace SGAmod.Dimensions
                         Texture2D extra = Main.extraTexture[89];
                         Vector2 sizehalf = extra.Size() / 2f;
 
-                        float counter = System.Math.Min(player.lifeRegen, player.lifeRegenTime * 0.01f) * 1f;
+                        float counter = sgaply.valkyrieSet.Item2 * 1f;
 
                         for (int i = 0; i < counter; i += 1)
                         {
 
                             float alphaxxx = MathHelper.Clamp((counter - i),0f,1f)*0.75f;
 
-                            Matrix aurashards = Matrix.CreateFromYawPitchRoll(rando.NextFloat(MathHelper.TwoPi) + (Main.GlobalTime * (rando.NextFloat(0.25f, 1f)*(rando.NextBool() ? 1f : -1f))), 0, rando.NextFloat(-MathHelper.Pi / 1f, MathHelper.Pi / 1f));
+                            Matrix aurashards = Matrix.CreateFromYawPitchRoll(rando.NextFloat(MathHelper.TwoPi) + (Main.GlobalTime * (rando.NextFloat(0.25f, 1f)*(rando.NextBool() ? 1f : -1f)))+(player.Center.X/120f), 0, rando.NextFloat(-MathHelper.Pi / 1f, MathHelper.Pi / 1f));
 
                             Vector3 loc = Vector3.Transform(Vector3.UnitX, aurashards);
 
-                            spriteBatch.Draw(extra, (player.MountedCenter + new Vector2(loc.X, loc.Y)*48f) - Main.screenPosition, null, Main.hslToRgb(rando.NextFloat(1f),0.45f,0.75f) * MathHelper.Clamp(loc.Z, 0f, 1f)* alphaxxx, 0, sizehalf, 1f, SpriteEffects.None, 0f);
+                            spriteBatch.Draw(extra, (player.MountedCenter + new Vector2(loc.X, loc.Y)*(48f* sgaply.valkyrieSet.Item4)) - Main.screenPosition, null, Main.hslToRgb(rando.NextFloat(1f),0.45f,0.75f) * MathHelper.Clamp(loc.Z, 0f, 1f)* alphaxxx, 0, sizehalf, 1f, SpriteEffects.None, 0f);
                         }
 
 

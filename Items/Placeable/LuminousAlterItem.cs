@@ -30,6 +30,8 @@ namespace SGAmod.Items.Placeable
 			AddLuminousAlterRecipe(ItemID.Gel, ItemID.PinkGel, 60 * 30, 1, 1);
 			AddLuminousAlterRecipe(ModContent.ItemType<OmniSoul>(), ItemID.FragmentSolar, 60 * 10, 1, 1);
 			AddLuminousAlterRecipe(ItemID.Meteorite, ItemID.LunarOre, 60 * 10, 4, 4);
+			AddLuminousAlterRecipe(ItemID.StoneBlock, ModContent.ItemType<Glowrock>(), 60 * 1, 1, 1);
+
 			AddLuminousAlterRecipe(ItemID.RottenEgg, ModContent.ItemType<Weapons.RottenEggshels>(), 60 * 10, 10, 50);
 
 			Func<bool> BloodSunCondition = delegate ()

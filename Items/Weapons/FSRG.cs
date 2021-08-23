@@ -9,8 +9,8 @@ using SGAmod.Items.Weapons.SeriousSam;
 
 namespace SGAmod.Items.Weapons
 {
-	public class FSRG : ModItem
-	{
+	public class FSRG : ModItem// Vibranium.VibraniumText
+    {
 		private int varityshot=0;
 		public override void SetStaticDefaults()
 		{

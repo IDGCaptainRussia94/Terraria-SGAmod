@@ -1,5 +1,6 @@
 using AAAAUThrowing;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using SGAmod.Tiles;
 using System.Collections.Generic;
 using Terraria;
@@ -33,12 +34,42 @@ namespace SGAmod.Items.Armors.Valkyrie
 			item.lifeRegen = 2;
 		}
 
+		public static void ActivateRagnorok(SGAPlayer sgaply)
+		{
+			if (sgaply.AddCooldownStack(60 * 150,2))
+			{
+				sgaply.player.AddBuff(ModContent.BuffType<RagnarokBuff>(), (int)(120*System.Math.Min(sgaply.player.lifeRegen, sgaply.player.lifeRegenTime * 0.01f)));
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_EtherianPortalOpen, (int)sgaply.player.Center.X, (int)sgaply.player.Center.Y);
+				if (sound != null)
+				{
+					sound.Pitch = 0.85f;
+				}
+
+				SoundEffectInstance sound2 = Main.PlaySound(SoundID.Zombie, (int)sgaply.player.Center.X, (int)sgaply.player.Center.Y, 35);
+				if (sound2 != null)
+				{
+					sound2.Pitch = -0.5f;
+				}
+
+				for (int i = 0; i < 50; i += 1)
+				{
+					int dust = Dust.NewDust(sgaply.player.Hitbox.TopLeft() + new Vector2(0, -8), sgaply.player.Hitbox.Width, sgaply.player.Hitbox.Height + 8, DustID.AncientLight);
+					Main.dust[dust].scale = 2f;
+					Main.dust[dust].noGravity = true;
+					Main.dust[dust].velocity = (sgaply.player.velocity * Main.rand.NextFloat(0.75f, 1f)) + Vector2.UnitX.RotatedBy(-MathHelper.PiOver2 + Main.rand.NextFloat(-1.2f, 1.2f)) * Main.rand.NextFloat(1f, 3f);
+				}
+			}
+		}
+
 		public static void SetBonus(SGAPlayer sgaplayer)
 		{
-			if (sgaplayer.valkyrieSet)
+			if (sgaplayer.valkyrieSet.Item1)
 			{
 				Player player = sgaplayer.player;
-				player.Throwing().thrownDamage += (int)System.Math.Min(player.lifeRegen, player.lifeRegenTime * 0.01f) * 0.03f;
+
+				if (!sgaplayer.valkyrieSet.Item3)
+				sgaplayer.valkyrieSet.Item2 += (System.Math.Min(player.lifeRegen, player.lifeRegenTime * 0.01f) - sgaplayer.valkyrieSet.Item2)/30f;
+				player.Throwing().thrownDamage += (sgaplayer.valkyrieSet.Item2+(sgaplayer.valkyrieSet.Item3 ? player.lifeRegen : 0)) * 0.03f;
 
 				if (player.Male)
 					player.endurance += 0.15f;
@@ -147,6 +178,57 @@ namespace SGAmod.Items.Armors.Valkyrie
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			if (!Main.dedServ && !Main.dayTime)
 				sgaplayer.armorglowmasks[3] = "SGAmod/Items/Armors/Valkyrie/" + Name + "_Legs";
+		}
+	}
+
+	public class RagnarokBuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Ragnarök");
+			Description.SetDefault("The end is close!");
+			Main.debuff[Type] = false;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = false;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/AcidBurn";
+			return true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			SGAPlayer sgaply = player.SGAPly();
+			sgaply.valkyrieSet.Item3 = true;
+			player.lifeRegenTime = 0;
+			player.lifeRegenCount = 0;
+			sgaply.apocalypticalChance[3] += 3;
+			sgaply.ThrowingSpeed += 0.4f;
+
+
+			int dust = Dust.NewDust(player.Hitbox.TopLeft() + new Vector2(0, -8), player.Hitbox.Width, player.Hitbox.Height+16, 36);
+			Main.dust[dust].scale = 3f;
+			Main.dust[dust].noGravity = true;
+			Main.dust[dust].alpha = 240;
+			Main.dust[dust].velocity = (player.velocity * Main.rand.NextFloat(0.4f, 1.2f)) + Vector2.UnitX.RotatedBy(-MathHelper.PiOver2 + Main.rand.NextFloat(-0.6f, 0.6f)) * Main.rand.NextFloat(1f, 4f);
+
+			dust = Dust.NewDust(player.Hitbox.TopLeft() + new Vector2((player.Hitbox.Width/2) - 8, 4), 16, 0, DustID.AncientLight);
+			Main.dust[dust].scale = 1f;
+			Main.dust[dust].noGravity = true;
+			Main.dust[dust].alpha = 240;
+			Main.dust[dust].velocity = (player.velocity * Main.rand.NextFloat(0.4f, 1.2f)) + Vector2.UnitX.RotatedBy(-MathHelper.PiOver2 + Main.rand.NextFloat(-0.6f, 0.6f)) * Main.rand.NextFloat(1f, 5f);
+
+			dust = Dust.NewDust(player.Hitbox.TopLeft() + new Vector2((player.Hitbox.Width / 2) - 8, 4), 16, 0, 182);
+			Main.dust[dust].scale = 0.25f;
+			Main.dust[dust].noGravity = true;
+			Main.dust[dust].alpha = 200;
+			Main.dust[dust].fadeIn = 1f;
+			Main.dust[dust].velocity = (player.velocity * Main.rand.NextFloat(0.75f, 1.2f)) + Vector2.UnitX.RotatedBy(-MathHelper.PiOver2 + Main.rand.NextFloat(-0.6f, 0.6f)) * Main.rand.NextFloat(0f, 1f);
+
+
 		}
 	}
 

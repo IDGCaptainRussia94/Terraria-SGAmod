@@ -430,10 +430,10 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.RestorationPotion,2);
+			recipe.AddIngredient(ItemID.RestorationPotion, 2);
 			recipe.AddIngredient(ItemID.StrangeBrew);
 			recipe.AddIngredient(null, "ManaBattery", 1);
-			recipe.AddIngredient(ItemID.ChlorophyteOre,4);
+			recipe.AddIngredient(ItemID.ChlorophyteOre, 4);
 			recipe.AddTile(TileID.AlchemyTable);
 			recipe.SetResult(this, 2);
 			recipe.AddRecipe();

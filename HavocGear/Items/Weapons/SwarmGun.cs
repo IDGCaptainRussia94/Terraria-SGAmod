@@ -37,7 +37,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			//item.UseSound = SoundID.Item99;
 			item.autoReuse = true;
 			item.shoot = ModContent.ProjectileType<SwarmGunCharging>();
-			item.shootSpeed = 32f;
+			item.shootSpeed = 3f;
 			item.noUseGraphic = false;
 			item.channel = true;
 		}
@@ -63,8 +63,8 @@ namespace SGAmod.HavocGear.Items.Weapons
 	{
 
 		public override int chargeuptime => 180;
-		public override float velocity => 72f;
-		public override float spacing => 96f;
+		public override float velocity => 40f;
+		public override float spacing => 80f;
 		public override int fireRate => 30;
 		int chargeUpTimer = 0;
 		public override void SetStaticDefaults()
@@ -95,7 +95,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 				{
 					float perc = MathHelper.Clamp(projectile.ai[0] / (float)chargeuptime, 0f, 1f);
 					//SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_LightningAuraZap, (int)projectile.Center.X, (int)projectile.Center.Y);
-					SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DrakinBreathIn, (int)projectile.Center.X, (int)projectile.Center.Y);
+					SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_KoboldHurt, (int)projectile.Center.X, (int)projectile.Center.Y);
 					if (sound != null)
 					{
 						sound.Pitch = -0.5f + perc;
@@ -106,7 +106,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 					if (Main.rand.Next(0, 3) == 0)
 					{
 						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y) + randomcircle * 20, 0, 0, 184, 0f, 0f, 100, Color.Magenta, 0.75f);
+						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y) + randomcircle * 20, 0, 0, 184, 0f, 0f, 100, Color.Green, 0.75f);
 
 						Main.dust[num622].scale = 1f;
 						Main.dust[num622].noGravity = true;
@@ -124,7 +124,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 					if (Main.rand.Next(0, 2) == 0)
 					{
 						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, 184, 0f, 0f, 100, Color.Magenta, 0.75f);
+						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, 184, 0f, 0f, 100, Color.Green, 0.75f);
 
 						Main.dust[num622].scale = 1.5f;
 						Main.dust[num622].noGravity = true;
@@ -142,13 +142,13 @@ namespace SGAmod.HavocGear.Items.Weapons
 				SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 97);
 				if (sound != null)
 				{
-					sound.Pitch -= 0.5f;
+					sound.Pitch += 0.5f;
 				}
 
 				for (int num315 = 0; num315 < 35; num315 = num315 + 1)
 				{
 					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-					int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, DustID.AncientLight, 0f, 0f, 100, Color.Magenta, 0.5f);
+					int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, 195, 0f, 0f, 100, Color.Green, 0.5f);
 
 					Main.dust[num622].scale = 2.8f;
 					Main.dust[num622].noGravity = true;
@@ -197,7 +197,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 				for (int num315 = 0; num315 < 35; num315 = num315 + 1)
 				{
 					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-					int num622 = Dust.NewDust(center, 0, 0, DustID.Shadowflame, 0f, 0f, 184, default(Color), 0.5f);
+					int num622 = Dust.NewDust(center, 0, 0, 195, 0f, 0f, 184, default(Color), 0.5f);
 
 					Main.dust[num622].scale = 3.2f;
 					Main.dust[num622].noGravity = true;
@@ -212,7 +212,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 					if (Main.rand.Next(0, 2) == 0)
 					{
 						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-						int num622 = Dust.NewDust(center, 0, 0, DustID.AncientLight, 0f, 0f, 100, Color.Magenta, 0.75f);
+						int num622 = Dust.NewDust(center, 0, 0, 195, 0f, 0f, 100, Color.Lime, 0.75f);
 
 						Main.dust[num622].scale = 1.5f;
 						Main.dust[num622].noGravity = true;

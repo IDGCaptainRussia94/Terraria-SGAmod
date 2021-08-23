@@ -946,6 +946,13 @@ namespace SGAmod
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(20, 0, 0, 0);
 						nextSlot++;
 					}
+					if (Main.netMode != NetmodeID.SinglePlayer && NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
+					{
+						shop.item[nextSlot].SetDefaults(mod.ItemType("EntropyTransmuter"));
+						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(1, 0, 0, 0);
+						nextSlot++;
+					}
+
 					if (true)
 					{
 						shop.item[nextSlot].SetDefaults(mod.ItemType("PremiumUpgrade"));

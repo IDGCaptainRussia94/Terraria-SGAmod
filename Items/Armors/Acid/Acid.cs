@@ -1,4 +1,6 @@
 using AAAAUThrowing;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -29,12 +31,26 @@ namespace SGAmod.Items.Armors.Acid
 			if (sgaply.AddCooldownStack(60 * 60))
             {
 				sgaply.player.AddBuff(ModContent.BuffType<FamesHungerBuff>(),300);
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_FlameburstTowerShot, (int)sgaply.player.Center.X, (int)sgaply.player.Center.Y);
+				if (sound != null)
+				{
+					sound.Pitch = 0.5f;
+				}
 
+				SoundEffectInstance sound2 = Main.PlaySound(SoundID.Zombie, (int)sgaply.player.Center.X, (int)sgaply.player.Center.Y, 35);
+				if (sound2 != null)
+				{
+					sound2.Pitch = -0.5f;
+				}
 
-
+				for(int i = 0; i < 50; i += 1)
+                {
+					int dust = Dust.NewDust(sgaply.player.Hitbox.TopLeft() + new Vector2(0, -8), sgaply.player.Hitbox.Width, sgaply.player.Hitbox.Height+8, ModContent.DustType<Dusts.AcidDust>());
+					Main.dust[dust].scale = 2f;
+					Main.dust[dust].noGravity = true;
+					Main.dust[dust].velocity = (sgaply.player.velocity * Main.rand.NextFloat(0.75f, 1f)) + Vector2.UnitX.RotatedBy(-MathHelper.PiOver2 + Main.rand.NextFloat(-1.2f, 1.2f))*Main.rand.NextFloat(1f,3f);
+				}
 			}
-
-
 		}
 
         public override bool DrawHead()
@@ -158,7 +174,7 @@ namespace SGAmod.Items.Armors.Acid
 		{
 			DisplayName.SetDefault("Hunger of Fames");
 			Description.SetDefault("Acidically consume everything, even yourself");
-			Main.debuff[Type] = true;
+			Main.debuff[Type] = false;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
 			longerExpertDebuff = false;
@@ -176,6 +192,12 @@ namespace SGAmod.Items.Armors.Acid
 			sgaply.acidSet = (sgaply.acidSet.Item1, true);
 			player.lifeRegenTime = 0;
 			player.lifeRegenCount = 0;
+
+			int dust = Dust.NewDust(player.Hitbox.BottomLeft()+new Vector2(0,-12), player.Hitbox.Width, 12, ModContent.DustType<Dusts.AcidDust>());
+			Main.dust[dust].scale = 1f;
+			Main.dust[dust].noGravity = true;
+			Main.dust[dust].velocity = (player.velocity * Main.rand.NextFloat(0.9f,1f))+Vector2.UnitX.RotatedBy(-MathHelper.PiOver2+Main.rand.NextFloat(-0.3f,0.3f))*Main.rand.NextFloat(1f,3f);
+
 		}
 	}
 

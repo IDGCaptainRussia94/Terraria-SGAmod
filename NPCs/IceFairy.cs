@@ -36,6 +36,7 @@ namespace SGAmod.NPCs
 			npc.noTileCollide = true;
 			npc.noGravity = true;
 			npc.value = 300f;
+			npc.coldDamage = true;
 			banner = npc.type;
 			bannerItem = mod.ItemType("IceFairyBanner");
 		}

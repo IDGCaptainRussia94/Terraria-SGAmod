@@ -293,18 +293,41 @@ namespace SGAmod
 			if (modply.armorglowmasks[index] != null && !drawPlayer.mount.Active)
 			{
 				Texture2D texture = ModContent.GetTexture(modply.armorglowmasks[index]);
+
 				int drawX = (int)((drawInfo.position.X + drawPlayer.bodyPosition.X + 10) - Main.screenPosition.X);
 				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
 				DrawData data;
 				if (index == 3)
 					data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.legFrame.Y, drawPlayer.legFrame.Width, drawPlayer.legFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.legFrame.Width / 2, drawPlayer.legFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
-				else if (index == 0)
-					data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.headFrame.Y, drawPlayer.headFrame.Width, drawPlayer.headFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.headFrame.Width / 2, drawPlayer.headFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
 				else
 					data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.bodyFrame.Y, drawPlayer.bodyFrame.Width, drawPlayer.bodyFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width / 2, drawPlayer.bodyFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
 				data.shader = (int)drawPlayer.dye[index > 1 ? index - 1 : index].dye;
 
 				Main.playerDrawData.Add(data);
+
+				if (modply.valkyrieSet.Item3)
+				{
+					int indexer = drawPlayer.FindBuffIndex(ModContent.BuffType<Items.Armors.Valkyrie.RagnarokBuff>());
+					if (indexer >= 0)
+					{
+						for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.Pi / 8f)
+						{
+							float distance = (2f + (float)Math.Sin(Main.GlobalTime * 3f) * 2f)+(20f * (modply.valkyrieSet.Item4-0.25f));
+							float drawX2 = (float)(drawX + Math.Cos(Main.GlobalTime + f) * distance);
+							float drawY2 = (float)(drawY + Math.Sin(Main.GlobalTime + f) * distance);
+
+							Color colorz = Color.White * MathHelper.Clamp(drawPlayer.buffTime[indexer] / 200f, 0f, 1f);
+
+							if (index == 3)
+								data = new DrawData(texture, new Vector2(drawX2, drawY2), new Rectangle(0, drawPlayer.legFrame.Y, drawPlayer.legFrame.Width, drawPlayer.legFrame.Height), colorz * 0.05f, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width / 2, drawPlayer.bodyFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+							else
+								data = new DrawData(texture, new Vector2(drawX2, drawY2), new Rectangle(0, drawPlayer.bodyFrame.Y, drawPlayer.bodyFrame.Width, drawPlayer.bodyFrame.Height), colorz * 0.05f, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width / 2, drawPlayer.bodyFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+							data.shader = (int)drawPlayer.dye[index > 1 ? index - 1 : index].dye;
+
+							Main.playerDrawData.Add(data);
+						}
+					}
+				}
 			}
 
 		}

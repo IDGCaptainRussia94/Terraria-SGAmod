@@ -1255,6 +1255,7 @@ namespace SGAmod.Items.Accessories
 			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.10f;
 			player.GetModPlayer<SGAPlayer>().grippinggloves = Math.Max(player.GetModPlayer<SGAPlayer>().grippinggloves,1);
 			player.GetModPlayer<SGAPlayer>().SlowDownResist += 2f;
+			player.GetModPlayer<SGAPlayer>().grippingglovestimer = 3;
 		}
 		public override void SetDefaults()
 		{
@@ -1281,6 +1282,7 @@ namespace SGAmod.Items.Accessories
 			player.GetModPlayer<SGAPlayer>().TrapDamageMul += 0.15f;
 			player.GetModPlayer<SGAPlayer>().TrapDamageAP += 0.10f;
 			player.GetModPlayer<SGAPlayer>().grippinggloves = Math.Max(player.GetModPlayer<SGAPlayer>().grippinggloves, 2);
+			player.GetModPlayer<SGAPlayer>().grippingglovestimer = 3;
 			player.GetModPlayer<SGAPlayer>().SlowDownResist += 8f;
 			player.noKnockback = true;
 			player.fireWalk = true;

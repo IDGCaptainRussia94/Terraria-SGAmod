@@ -81,6 +81,7 @@ namespace SGAmod.NPCs.Cratrosity
 			npc.noTileCollide = true;
 			npc.noGravity = true;
 			theclostestcrate = npc.Center;
+			music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cratrosity");
 			npc.value = Item.buyPrice(0, 10, 0, 0);
 		}
 

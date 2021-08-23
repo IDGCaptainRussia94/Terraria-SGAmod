@@ -299,7 +299,9 @@ namespace SGAmod.Dimensions
             Vector2 end = randomloc;
             flowpath.Normalize();
             end = randomloc;
-        backtostart:
+
+            backtostart:
+
             previousareas.Add(randomloc);
             Main.spawnTileX = (int)(randomloc.X);
             Main.spawnTileY = (int)(randomloc.Y);
@@ -343,7 +345,7 @@ namespace SGAmod.Dimensions
 
             //end is the start, place exit portal there
 
-            NPC.NewNPC((int)(end.X * 16f), (int)(end.Y * 16f), ModContent.NPCType<DungeonPortal>());
+            NPC.NewNPC((int)(end.X * 16f), (int)(end.Y * 16f), ModContent.NPCType<DungeonPortalDeeperDungeons>());
 
             //MakeRoomLine(new Vector2(100, 100), new Vector2(width-200, 200), new Vector2(12, 12), ref allareas, UniRand,filltype: 0);
             //MakeRoomLine(new Vector2(width - 200, 200), new Vector2(width - 200, height-50), new Vector2(10, 10), ref allareas, UniRand, filltype: 2);

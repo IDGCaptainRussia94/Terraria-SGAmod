@@ -42,6 +42,7 @@ namespace SGAmod.Tiles
 
 			dustType = 7;
 			disableSmartCursor = true;
+			disableSmartInteract = true;
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Hopper");
 			AddMapEntry(new Color(150, 105, 85), name);

@@ -419,10 +419,6 @@ namespace SGAmod.Items.Weapons
 			DisplayName.SetDefault("Radioactive Snowball Cannon");
 			Tooltip.SetDefault("'Sure Brain, sure...\nEnriches normal snowballs with radioactive isotopes" + "\n" + Idglib.ColorText(Color.Red, "You suffer Radiation 2 while holding this") + "\n" + Idglib.ColorText(Color.Red, "Radiation 1 if only in inventory"));
 		}
-		public override void UpdateInventory(Player player)
-		{
-			player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type, 60 * 3);
-		}
 
 		public override void SetDefaults()
 		{

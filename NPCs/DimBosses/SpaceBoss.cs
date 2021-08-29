@@ -410,6 +410,131 @@ namespace SGAmod.Dimensions.NPCs
 			npc = boss.npc;
 		}
 
+		enum SpaceBossAttackTypes
+		{
+			Nothing,
+			XBeams,
+			TossRoids,
+			ShadowNebula,
+			EolAttack,
+			InstallRoids,
+		}
+
+		public bool ChooseAttack()
+		{
+
+			List<int> ChooseableAttacks = new List<int>();
+
+			ChooseableAttacks.Add((int)SpaceBossAttackTypes.XBeams);
+
+			ChooseableAttacks.Add((int)SpaceBossAttackTypes.EolAttack);
+
+			ChooseableAttacks.Add((int)SpaceBossAttackTypes.TossRoids);
+
+			if (boss.phase >= 1)
+			{
+				for (int i = 0; i < 4; i += 1)
+				{
+					ChooseableAttacks.Add((int)SpaceBossAttackTypes.InstallRoids);
+				}
+			}
+
+
+
+			if (boss.goingDark < -60 * 150 && boss.specialCooldown < 1 && boss.phase > 1)
+			{
+				ChooseableAttacks.Add((int)SpaceBossAttackTypes.ShadowNebula);
+				ChooseableAttacks.Add((int)SpaceBossAttackTypes.ShadowNebula);
+				ChooseableAttacks.Add((int)SpaceBossAttackTypes.ShadowNebula);
+			}
+
+			if (npc.life / (float)npc.lifeMax < boss.healthphase)//Heal if phase requires it
+			{
+				boss.phase += 1;
+				npc.ai[0] = 10000;//Shields up
+				return true;
+			}
+
+			if (npc.ai[0] > 1200 && npc.ai[0] < 10000)//Do special move
+			{
+			tryagain:
+				int attack = ChooseableAttacks[Main.rand.Next(ChooseableAttacks.Count)];
+
+				if (attack == (int)SpaceBossAttackTypes.ShadowNebula)//Choose: Shadow Nebula
+				{
+					boss.specialCooldown = 80 * 60;
+					npc.ai[0] = 50000;//Shadow Nebula
+					return true;
+				}
+
+				if (ToEnemy.Length() > 3200)//Heal if too far away
+
+				{
+					npc.ai[0] = 10000;//Shields up
+					return true;
+				}
+
+				if (attack == (int)SpaceBossAttackTypes.XBeams)//Choose: X Beams
+				{
+					SpaceBossRock[] nearbyrocks = boss.RocksAreas.Where(testby => (testby.Position - Main.player[npc.target].Center).LengthSquared() < (2000f * 2000f) && (testby.Position - Main.player[npc.target].Center).LengthSquared() > (640f * 640f)).ToArray();
+					if (nearbyrocks.Length > 2)//Need atleast 3 nearby to use this
+					{
+						npc.ai[0] = 10200;//X Beams
+						return true;
+					}
+					else
+					{
+						ChooseableAttacks.Add((int)SpaceBossAttackTypes.Nothing);
+						ChooseableAttacks.RemoveAll(testby => testby == (int)SpaceBossAttackTypes.XBeams);
+						goto tryagain;
+					}
+				}
+
+				if (attack == (int)SpaceBossAttackTypes.EolAttack)//Choose: EoL attack
+				{
+					SpaceBossEye[] eyesClosed = boss.Eyes.Where(testby => testby.sleep < 0).ToArray();
+					if (eyesClosed.Length < 3)//Need all eyes to be open
+					{
+						npc.ai[0] = 10900 + boss.phase * 30;//EoL attack
+						return true;
+					}
+					else
+					{
+						ChooseableAttacks.Add((int)SpaceBossAttackTypes.Nothing);
+						ChooseableAttacks.RemoveAll(testby => testby == (int)SpaceBossAttackTypes.EolAttack);
+						goto tryagain;
+					}
+				}
+
+				if (attack == (int)SpaceBossAttackTypes.InstallRoids)//Choose: Install Roids
+				{
+					int num = 1800 * 1800;
+					Projectile[] roidsnearby = boss.AllAsteriods.Where(testby => (testby.Center - boss.npc.Center).LengthSquared() < (num)).ToArray();
+					if (roidsnearby.Length > 7)//Need some asteriods nearby
+					{
+						npc.ai[0] = 11700;
+						return true;
+					}
+					else
+					{
+						ChooseableAttacks.Add((int)SpaceBossAttackTypes.Nothing);
+						ChooseableAttacks.RemoveAll(testby => testby == (int)SpaceBossAttackTypes.InstallRoids);
+						goto tryagain;
+					}
+				}
+
+				if (attack == (int)SpaceBossAttackTypes.TossRoids)//Choose: Toss Roids
+				{
+					npc.ai[0] = 10500;//Toss Roids
+					return true;
+				}
+
+			}
+
+			return false;
+
+		}
+
 		public void StateShadowNebula()
 		{
 			boss.state = 100;
@@ -697,6 +822,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			if ((int)npc.ai[0] == 10120)
 			{
+				boss.healthphase -= 0.25f;
 				boss.LaunchTethers();
 			}
 
@@ -765,132 +891,6 @@ namespace SGAmod.Dimensions.NPCs
 			}
 
 			ChooseAttack();
-
-		}
-
-		enum SpaceBossAttackTypes
-		{
-			Nothing,
-			XBeams,
-			TossRoids,
-			ShadowNebula,
-			EolAttack,
-			InstallRoids,
-		}
-
-		public bool ChooseAttack()
-		{
-
-			List<int> ChooseableAttacks = new List<int>();
-
-			ChooseableAttacks.Add((int)SpaceBossAttackTypes.XBeams);
-
-			ChooseableAttacks.Add((int)SpaceBossAttackTypes.EolAttack);
-
-			ChooseableAttacks.Add((int)SpaceBossAttackTypes.TossRoids);
-
-			if (boss.phase >= 1)
-			{
-				for (int i = 0; i < 4; i += 1)
-				{
-					ChooseableAttacks.Add((int)SpaceBossAttackTypes.InstallRoids);
-				}
-			}
-
-
-
-			if (boss.goingDark < -60 * 150 && boss.specialCooldown < 1 && boss.phase > 1)
-			{
-				ChooseableAttacks.Add((int)SpaceBossAttackTypes.ShadowNebula);
-				ChooseableAttacks.Add((int)SpaceBossAttackTypes.ShadowNebula);
-				ChooseableAttacks.Add((int)SpaceBossAttackTypes.ShadowNebula);
-			}
-
-			if (npc.life / (float)npc.lifeMax < boss.healthphase)//Heal if phase requires it
-			{
-				boss.phase += 1;
-				boss.healthphase -= 0.25f;
-				npc.ai[0] = 10000;//Shields up
-				return true;
-			}
-
-			if (npc.ai[0] > 1200 && npc.ai[0] < 10000)//Do special move
-			{
-			tryagain:
-				int attack = ChooseableAttacks[Main.rand.Next(ChooseableAttacks.Count)];
-
-				if (attack == (int)SpaceBossAttackTypes.ShadowNebula)//Choose: Shadow Nebula
-				{
-					boss.specialCooldown = 80 * 60;
-					npc.ai[0] = 50000;//Shadow Nebula
-					return true;
-				}
-
-				if (ToEnemy.Length() > 3200)//Heal if too far away
-
-				{
-					npc.ai[0] = 10000;//Shields up
-					return true;
-				}
-
-				if (attack == (int)SpaceBossAttackTypes.XBeams)//Choose: X Beams
-				{
-					SpaceBossRock[] nearbyrocks = boss.RocksAreas.Where(testby => (testby.Position - Main.player[npc.target].Center).LengthSquared() < (2000f * 2000f) && (testby.Position - Main.player[npc.target].Center).LengthSquared() > (640f * 640f)).ToArray();
-					if (nearbyrocks.Length > 2)//Need atleast 3 nearby to use this
-					{
-						npc.ai[0] = 10200;//X Beams
-						return true;
-					}
-					else
-					{
-						ChooseableAttacks.Add((int)SpaceBossAttackTypes.Nothing);
-						ChooseableAttacks.RemoveAll(testby => testby == (int)SpaceBossAttackTypes.XBeams);
-						goto tryagain;
-					}
-				}
-
-				if (attack == (int)SpaceBossAttackTypes.EolAttack)//Choose: EoL attack
-				{
-					SpaceBossEye[] eyesClosed = boss.Eyes.Where(testby => testby.sleep < 0).ToArray();
-					if (eyesClosed.Length < 3)//Need all eyes to be open
-					{
-						npc.ai[0] = 10900+boss.phase*30;//EoL attack
-						return true;
-					}
-					else
-					{
-						ChooseableAttacks.Add((int)SpaceBossAttackTypes.Nothing);
-						ChooseableAttacks.RemoveAll(testby => testby == (int)SpaceBossAttackTypes.EolAttack);
-						goto tryagain;
-					}
-				}
-
-				if (attack == (int)SpaceBossAttackTypes.InstallRoids)//Choose: Install Roids
-				{
-					int num = 1800 * 1800;
-					Projectile[] roidsnearby = boss.AllAsteriods.Where(testby => (testby.Center-boss.npc.Center).LengthSquared()<(num)).ToArray();
-					if (roidsnearby.Length > 7)//Need some asteriods nearby
-					{
-						npc.ai[0] = 11700;
-						return true;
-					}
-					else
-					{
-						ChooseableAttacks.Add((int)SpaceBossAttackTypes.Nothing);
-						ChooseableAttacks.RemoveAll(testby => testby == (int)SpaceBossAttackTypes.InstallRoids);
-						goto tryagain;
-					}
-				}
-
-				if (attack == (int)SpaceBossAttackTypes.TossRoids)//Choose: Toss Roids
-				{
-					npc.ai[0] = 10500;//Toss Roids
-					return true;
-				}
-
-			}
-
-			return false;
 
 		}
 
@@ -1195,6 +1195,12 @@ namespace SGAmod.Dimensions.NPCs
 
 		public void DamageAlter(ref int damage, object thing)
 		{
+
+			if (npc.life < npc.lifeMax * healthphase)
+            {
+				float damagescale = 1f-MathHelper.Clamp(((npc.lifeMax * healthphase)- npc.life)/1000f,0f,1f);
+				damage = (int)(damage * damagescale);
+			}
 
 			if (thing is Projectile proj)
 			{
@@ -1703,12 +1709,64 @@ namespace SGAmod.Dimensions.NPCs
 			npc.velocity *= friction;
 		}
 
+		public static void DarknessNebulaEffect(Texture2D sunGlow,float scale, Vector2 position,float alphaik, int extraseed,float length=10)
+        {
+
+			if (alphaik > 0)
+			{
+				ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.TwilightDye);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+				Texture2D stain = SGAmod.Instance.GetTexture("Doom_Harbinger_Resprite_pupil");
+
+				DrawData value28 = new DrawData(sunGlow, new Vector2(240, 240), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 240, 240)), Microsoft.Xna.Framework.Color.White, MathHelper.PiOver2, stain.Size() / 2f, 1f, SpriteEffects.None, 0);
+
+				List<(float, float, float)> ordering = new List<(float, float, float)>();
+
+				UnifiedRandom rando = new UnifiedRandom(extraseed);
+
+				float timescale = 1f;
+
+				for (float f = 0f; f < 1f; f += 1f / length)
+				{
+					float prog = MathHelper.Clamp((f + (Main.GlobalTime * 0.25f * timescale)) % (1f), 0f, 1f);
+					float alpha = MathHelper.Clamp((prog * 5f) * MathHelper.Clamp(1.5f - (prog * 1.5f), 0f, 1f), 0f, 1f);
+					ordering.Add((prog, alpha, rando.NextFloat(MathHelper.TwoPi)));
+				}
+				ordering = ordering.OrderBy(testby => testby.Item1).ToList();
+				float scalee = scale;
+
+				int index2 = 0;
+
+				Vector2 half = sunGlow.Size() / 2f;
+
+				foreach ((float, float, float) prog in ordering)
+				{
+					//float prog = MathHelper.Clamp((f+(Main.GlobalTime*0.25f))%(1f),0f,1f);
+					shader.UseColor(Color.Lerp(Color.White, Color.Blue, MathHelper.Clamp(prog.Item1 * 2f - 1f, 0f, 1f)).ToVector3());
+					shader.UseOpacity(1f);
+					shader.Apply(null, new DrawData?(value28));
+
+					float angle = prog.Item3;
+
+					Vector2 pos = position - Main.screenPosition;// Vector2.Lerp(npc.Center-Main.screenPosition,new Vector2(Main.screenWidth, Main.screenHeight)/2f, prog.Item1 / 5f);
+
+					Main.spriteBatch.Draw(sunGlow, pos, null, Color.White * (prog.Item2 * alphaik), angle, half, (scalee) + (0.05f + prog.Item1 * 1.25f), SpriteEffects.None, 0f);
+
+					index2 += 1;
+				}
+			}
+
+		}
+
 		public void AlterSky(SpaceSky sky, int index, SpriteBatch spriteBatch, float minDepth, float maxDepth)
 		{
 
 			if (index == 1 && Activestate)
             {
-				Texture2D sunray = ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.MedusaHeadRay);// Main.projectileTexture[ProjectileID.MedusaHeadRay];
+				Texture2D sunray = SGAmod.ExtraTextures[116];
 
 				for (float f = 0; f < 1f; f += 0.25f) 	
 				{
@@ -1763,7 +1821,6 @@ namespace SGAmod.Dimensions.NPCs
 				value28 = new DrawData(sunGlow, new Vector2(240, 240), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 240, 240)), Microsoft.Xna.Framework.Color.White, MathHelper.PiOver2, stain.Size() / 2f, 1f, SpriteEffects.None, 0);
 
 
-
 				//Sun absorb healing
 
 				if (npc.ai[0]>800 && shieldeffect > 0 && sky.skyalpha>0)
@@ -1806,7 +1863,9 @@ namespace SGAmod.Dimensions.NPCs
 
 				float alphaik = ((1f - sky.darkalpha) * 0.50f * darknessAura)*MathHelper.Clamp(1f-(npc.ai[0]-100000f)/180f,0f,1f);
 
-				if (alphaik > 0 && screenPos!=null)
+				DarknessNebulaEffect(sunGlow, (sky.darkalpha * 5f) * 6f,npc.Center,alphaik,npc.whoAmI,10);
+
+				/*if (alphaik > 0 && screenPos!=null)
 				{
 					Main.spriteBatch.End();
 					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
@@ -1844,7 +1903,7 @@ namespace SGAmod.Dimensions.NPCs
 
 						index2 += 1;
 					}
-				}
+				}*/
 
 			}
 
@@ -2015,7 +2074,7 @@ namespace SGAmod.Dimensions.NPCs
 
 				toThem.Reverse();
 
-				TrailHelper trail = new TrailHelper("FadedBasicEffectPass", npc.ai[0]>999 ? mod.GetTexture("TiledPerlin") : SGAmod.ExtraTextures[21]);
+				TrailHelper trail = new TrailHelper("FadedBasicEffectPass", npc.ai[0]>999 ? mod.GetTexture("TiledPerlin") : Main.extraTexture[21]);
 				trail.projsize = Vector2.Zero;
 				trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
 				trail.trailThickness = 16;

@@ -1226,7 +1226,7 @@ namespace SGAmod
 					}
 					else
 					{
-						if ((ply.Center - npc.Center).Length() < 1400)
+						if ((ply.Center - npc.Center).Length() < 2000)
 						{
 							ModPacket packet = mod.GetPacket();
 							packet.Write((ushort)MessageType.GrantExpertise);
@@ -1294,13 +1294,16 @@ namespace SGAmod
 			if (npc.type == NPCID.MoonLordCore)
 			{
 				if (Main.rand.Next(20) < 1)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FistOfMoonlord"));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < FistOfMoonlord>());
 				if (Main.rand.Next(10) < (Main.expertMode ? 2 : 1))
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SwordofTheBlueMoon"));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SwordofTheBlueMoon>());
+				if (Main.rand.Next(6) < 1 && !Main.expertMode)
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<SoulPincher>());
+
 				if (SGAWorld.downedCratrosity)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SalvagedCrate"));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SalvagedCrate>());
 				if (!Main.expertMode)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("EldritchTentacle"), Main.rand.Next(15, 30));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < EldritchTentacle>(), Main.rand.Next(15, 30));
 			}
 			if (npc.type == NPCID.Golem && SGAWorld.bossprgressor == 0)
 			{

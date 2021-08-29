@@ -1758,7 +1758,7 @@ namespace SGAmod
 			{
 				player.AddBuff(BuffID.Electrified, 20 + (damage * 2));
 			}
-			if (NPC.CountNPCS(ModContent.NPCType<SPinkyTrue>()) > 0 && npc.type <= NPCID.BlueSlime && Main.expertMode)
+			if (NPC.CountNPCS(ModContent.NPCType<SPinkyTrue>()) > 0 && npc!=null && npc.type <= NPCID.BlueSlime && Main.expertMode)
 			{
 				player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationTwo").Type, 60 * 10);
 			}

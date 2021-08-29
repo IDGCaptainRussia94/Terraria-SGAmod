@@ -269,7 +269,7 @@ namespace SGAmod.NPCs
 			{
 				npc.TargetClosest(false);
 				P = Main.player[npc.target];
-				if (!P.active || P.dead || !Main.dayTime || !underground)
+				if (!P.active || P.dead || !underground)
 				{
 					npc.velocity = new Vector2(npc.velocity.X, npc.velocity.Y + 1f);
 				}

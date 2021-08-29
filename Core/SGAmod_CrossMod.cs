@@ -50,6 +50,7 @@ using System.Reflection;
 using SGAmod.Items.Weapons.Shields;
 using SGAmod.Items.Placeable;
 using SGAmod.Items.Armors.Illuminant;
+using System.Linq;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -205,7 +206,7 @@ namespace SGAmod
 				List<int> PhaethonDrops = new List<int>() { ModContent.ItemType<OverseenCrystal>(), ModContent.ItemType<AegisaltAetherstone>() };
 				bossList.Call("AddBoss", 11.86f, ModContent.NPCType<Dimensions.NPCs.SpaceBoss>(), this, "Phaethon", (Func<bool>)(() => SGAWorld.downedSpaceBoss), new List<int>() { }, new List<int>() { }, new List<int>() {ModContent.ItemType<PhaethonEye>(), ModContent.ItemType<OverseenCrystal>() }, "Found in Near Orbit","The cosmos accept another prey", "Terraria/Confuse", "Terraria/Confuse", (Func<bool>)(() => SGAWorld.downedSpaceBoss));
 
-				bossList.Call("AddBoss", 12.5f, ModContent.NPCType<LuminiteWraith>(), this, "Luminite Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() { ItemID.LunarCraftingStation }, "Use a [i:" + ItemType("WraithCoreFragment3") + "], defeat this boss to get the Ancient Manipulator.", "", "SGAmod/NPCs/Wraiths/LWraithLog");
+				bossList.Call("AddBoss", 13.1f, ModContent.NPCType<LuminiteWraith>(), this, "Luminite Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() { ItemID.LunarCraftingStation }, "Use a [i:" + ItemType("WraithCoreFragment3") + "], defeat this boss to get the Ancient Manipulator.", "", "SGAmod/NPCs/Wraiths/LWraithLog");
 
 				bossList.Call("AddMiniBoss", 14.5f, ModContent.NPCType<PrismBanshee>(), this, "Prismic Banshee", (Func<bool>)(() => SGAWorld.downedPrismBanshee > 0), new List<int>() { }, new List<int>() { }, new List<int>() { ModContent.ItemType<AuroraTear>() }, "Find its seed spawning underground in the Hallow after Moonlord's defeat, if the seed is not destroyed in time the Prism Banshee will hatch. Prismic Banshee's defeat makes the seed spawn far less often and allows Illuminant Essence to drop", "Banshee has left", "SGAmod/NPCs/PrismicBansheeLog", "SGAmod/NPCs/PrismBanshee_Head_Boss");
 
@@ -218,10 +219,10 @@ namespace SGAmod
 				List<int> SPinkyDrops = new List<int>() { ModContent.ItemType<LunarSlimeHeart>(), ModContent.ItemType<IlluminantHelmet>(), ModContent.ItemType<IlluminantChestplate>(), ModContent.ItemType<IlluminantLeggings>(), ModContent.ItemType<LunarRoyalGel>() };
 				bossList.Call("AddBoss", 16f, ModContent.NPCType<SPinky>(), this, "Supreme Pinky", (Func<bool>)(() => SGAWorld.downedSPinky), new List<int>() { ModContent.ItemType<Prettygel>() }, new List<int>() { }, SPinkyDrops, "Use a [i:" + ItemType("Prettygel") + "] at night, infuse 20 [i: " + ItemID.PinkGel + "] at a [i: " + ModContent.ItemType<LuminousAlter>() + "]", "Supreme Pinky is content with the justice they have dealt");
 
-				bossList.Call("AddBoss", 17.5f, ModContent.NPCType<Hellion>(), this, "???", (Func<bool>)(() => false), new List<int>() { ModContent.ItemType<HellionSummon>() }, new List<int>() { }, new List<int>() {ModContent.ItemType<ByteSoul>()}, "Craft & Use the [i:" + ModContent.ItemType < HellionSummon>() + "] or talk to Draken when the time is right... (Expert Only)", "Pathetic...", "Terraria/Confuse", "Terraria/Confuse", (Func<bool>)(() => SGAWorld.downedHellion < 1));
+				bossList.Call("AddBoss", 17.5f, ModContent.NPCType<Hellion>(), this, string.Concat(Enumerable.Repeat("¿", Main.rand.Next(1,10))), (Func<bool>)(() => false), new List<int>() { ModContent.ItemType<HellionSummon>() }, new List<int>() { }, new List<int>() {ModContent.ItemType<ByteSoul>()}, "Craft & Use the [i:" + ModContent.ItemType < HellionSummon>() + "] or talk to Draken when the time is right... (Expert Only)", "Pathetic...", "Terraria/Confuse", "Terraria/Confuse", (Func<bool>)(() => SGAWorld.downedHellion == 0));
 
 
-				bossList.Call("AddBoss", 17.5f, ModContent.NPCType<Hellion>(), this, "Helon 'Hellion' Weygold", (Func<bool>)(() => SGAWorld.downedHellion > 1), new List<int>() { ModContent.ItemType<HellionSummon>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CodeBreakerHead>(), ModContent.ItemType<ByteSoul>(), ModContent.ItemType<DrakeniteBar>() }, "Craft & Use the [i:" + ModContent.ItemType<HellionSummon>() + "]. Equip the [i:" + ModContent.ItemType<DevPower>() + "] to unlock the 2nd phase (Expert Only)", "...", "SGAmod/NPCs/Hellion/Hellion", "SGAmod/NPCs/Hellion/Hellion_map_icon", (Func<bool>)(() => SGAWorld.downedHellion > 0));
+				bossList.Call("AddBoss", 17.5f, ModContent.NPCType<Hellion>(), this, "Helon 'Hellion' Weygold", (Func<bool>)(() => SGAWorld.downedHellion > 1), new List<int>() { ModContent.ItemType<HellionSummon>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CodeBreakerHead>(), ModContent.ItemType<ByteSoul>(), ModContent.ItemType<DrakeniteBar>() }, "Craft & Use the [i:" + ModContent.ItemType<HellionSummon>() + "]. Equip the [i:" + ModContent.ItemType<DevPower>() + "] to unlock the 2nd phase (Expert Only)", "...", "SGAmod/NPCs/Hellion/Hellion", "SGAmod/NPCs/Hellion/Hellion_map_icon", (Func<bool>)(() => SGAWorld.downedHellion != 0));
 
 				//CaliburnCompess
 				//bossList.Call("AddMiniBossWithInfo", "The Caliburn Guardians", 1.4f, (Func<bool>)(() => SGAWorld.downedCaliburnGuardians > 2), "Find Caliburn Alters in Dank Shrines Underground and right click them to fight a Caliburn Spirit, after beating a sprite you can retrive your reward by breaking the Alter; each guardian is stronger than the previous");

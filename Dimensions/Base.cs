@@ -979,7 +979,7 @@ namespace SGAmod.Dimensions
 
                             float alphaxxx = MathHelper.Clamp((counter - i),0f,1f)*0.75f;
 
-                            Matrix aurashards = Matrix.CreateFromYawPitchRoll(rando.NextFloat(MathHelper.TwoPi) + (Main.GlobalTime * (rando.NextFloat(0.25f, 1f)*(rando.NextBool() ? 1f : -1f)))+(player.Center.X/120f), 0, rando.NextFloat(-MathHelper.Pi / 1f, MathHelper.Pi / 1f));
+                            Matrix aurashards = Matrix.CreateFromYawPitchRoll(rando.NextFloat(MathHelper.TwoPi) + (Main.GlobalTime * (rando.NextFloat(0.25f, 1f)*(rando.NextBool() ? 1f : -1f)))+(player.Center.X/120f), 0,rando.NextFloat(-MathHelper.Pi / 1f, MathHelper.Pi / 1f));
 
                             Vector3 loc = Vector3.Transform(Vector3.UnitX, aurashards);
 

@@ -822,7 +822,7 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopCustomPrice = 15;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
-			}
+			}		
 			if (modplayer.ExpertiseCollectedTotal >= 300)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("CaliburnCompess"));
@@ -843,7 +843,14 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopCustomPrice = 50;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
-			}					
+			}
+			if (modplayer.ExpertiseCollectedTotal >= 750)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("ThievesThrow"));
+				shop.item[nextSlot].shopCustomPrice = 30;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}
 			if (modplayer.ExpertiseCollectedTotal >= 1000)
 			{
 				shop.item[nextSlot].SetDefaults(ItemID.Arkhalis);

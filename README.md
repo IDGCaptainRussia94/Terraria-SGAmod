@@ -28,7 +28,7 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, Terra Excavator, True Rainbow Heart, Professional's Threads, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Ice Cube?
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Threads, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Ice Cube?
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
@@ -145,6 +145,8 @@ Changelog:
 
 -Transmutation Powder can now transmutate dropped ores
 
+-increased the range of Expertise awards in multiplayer
+
 -Divine Shower Storm has been renamed to Divinity Caller
 
 -Braxsaw is now post S.Pinky
@@ -173,6 +175,10 @@ Changelog:
 
 -Buffed Stormbreaker: flies faster with more friction at higher throwing speeds
 
+-Buffed Thermal Blade: Crits Lava-burning enemies
+
+-Buffed Kelven: inflicts Lava Burn instead of Thermal Blaze
+
 -Buffed Novite Knife: Now carries over a movement speed and jump boost from its source material (granted, from deathmatch)
 
 -Buffed Geyodo: it really should have did more damage, even if a meager ammount
@@ -180,6 +186,8 @@ Changelog:
 -Buffed Sludge Bomb: now also applies stacking damage every 1/3 a second equal to 1/3 of the base damage for 2 seconds (this weapon was honestly way too situational to be good, so here's a buff to make it real OP when it is)
 
 -Buffed Gas Passer: double base damage over time, slightly better scaling with enemy HP
+
+-Buffed Plythe: Can now stack up to 10
 
 -Buffed Cosmic Grasp: (again), base damage increased so it's not just a side great to the Cosmillash
 
@@ -278,7 +286,11 @@ Changelog:
 
 -Shadeflame Staff having a crafting recipe
 
+-Acid Scepter reciving bonuses from the Novus Set
+
 -Rust Burn boosting acid burn on organic enemies
+
+-Prismic Banshee despawning during the night
 
 -Kou Sash not listing that it makes Ninja Bombs ignore enemy immunities
 
@@ -315,6 +327,8 @@ Changelog:
 -Icey flames (Fridgeflame Canister) not counting as cold damage
 
 -An invisible non-transparent pixel on Rusty Sword's sprite, causing it to look odd ingame
+
+-Hellion Core dropping a trophy
 
 -Granite magnet listing it can "block" damage
 

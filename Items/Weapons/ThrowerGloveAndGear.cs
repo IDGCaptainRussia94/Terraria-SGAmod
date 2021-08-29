@@ -1911,7 +1911,578 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
+	class SoulPincher : ModItem
+	{
 
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Lunar Fork");
+			Tooltip.SetDefault("Throws a lunar fork that does an extra 500% damage to the most healthy enemy nearby\n'Moonlord's favorite!'");
+		}
+
+		public override void SetDefaults()
+		{
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.Throwing().thrown = true;
+			item.useTurn = true;
+			item.width = 8;
+			item.height = 8;
+			item.knockBack = 6;
+			item.damage = 100;
+			item.crit = 0;
+			//item.UseSound = SoundID.Item1;
+			item.useAnimation = 30;
+			item.useTime = 30;
+			item.noUseGraphic = true;
+			item.noMelee = true;
+			item.autoReuse = true;
+			item.value = Item.buyPrice(0, 5, 0, 0);
+			item.rare = ItemRarityID.Cyan;
+			item.shootSpeed = 5f;
+			item.shoot = ModContent.ProjectileType<SoulPincherProjectile>();
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+
+			int numberProjectiles = 1;
+			float rotation = MathHelper.ToRadians(0);
+			//for (int i = 0; i < numberProjectiles; i += 1)
+			//{
+			Vector2 perturbedSpeed = (new Vector2(speedX, speedY)).RotatedBy(MathHelper.Lerp(-rotation, rotation, Main.rand.NextFloat()));
+			int thisoned = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, Main.myPlayer);
+			Main.projectile[thisoned].netUpdate = true;
+			//}
+
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)position.X, (int)position.Y, 66);
+			if (sound != null)
+				sound.Pitch -= 0.525f;
+
+			return false;
+		}
+
+	}
+
+	public class SoulPincherProjectile : ModProjectile, IDrawAdditive
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Soul Pincher Projectile");
+		}
+		public override string Texture => "SGAmod/Items/Weapons/SoulPincher";
+		int hitnpc = -1;
+
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.SnowBallFriendly);
+			projectile.Throwing().thrown = true;
+			projectile.width = 32;
+			projectile.height = 32;
+			projectile.tileCollide = true;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.penetrate = 1;
+			projectile.timeLeft = 600;
+			projectile.extraUpdates = 5;
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 15;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+        public override bool CanDamage()
+        {
+			return projectile.timeLeft > 100;
+        }
+
+        public override bool PreKill(int timeLeft)
+		{
+
+			if (timeLeft > 100)
+			{
+
+				SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 43);
+				if (sound != null)
+					sound.Pitch -= 0.525f;
+
+				sound = Main.PlaySound(SoundID.DD2_GhastlyGlaiveImpactGhost, (int)projectile.Center.X, (int)projectile.Center.Y);
+				if (sound != null)
+					sound.Pitch -= 0.525f;
+
+				List<NPC> enemies = SGAUtils.ClosestEnemies(projectile.Center, 600);
+				if (enemies != null)
+				{
+					enemies = enemies.OrderBy(testby => -testby.life).ToList();
+
+					if (enemies.Count > 0)
+					{
+						NPC targetenemy = enemies[0];
+						targetenemy.StrikeNPC(projectile.damage * 5, 20f, Math.Sign(projectile.velocity.X));
+						for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.Pi / 4f)
+						{
+							Projectile prog = Projectile.NewProjectileDirect(targetenemy.Center + Vector2.UnitX.RotatedBy(f) * 128f, Vector2.UnitX.RotatedBy(f) * -3f, projectile.type, 0, 0, projectile.owner);
+							prog.timeLeft = 100;
+						}
+						Projectile prog2 = Projectile.NewProjectileDirect(projectile.Center, Vector2.Normalize(targetenemy.Center-projectile.Center)*4f, projectile.type, 0, 0, projectile.owner);
+						prog2.timeLeft = 100;
+					}
+				}
+            }
+            else
+            {
+				SoundEffectInstance sound2 = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 104);
+				if (sound2 != null)
+					sound2.Pitch -= 0.525f;
+
+			}
+
+			return true;
+		}
+
+		public override void AI()
+		{
+			projectile.ai[0] += 1;
+			projectile.rotation = projectile.velocity.ToRotation()+MathHelper.PiOver4;
+			if (projectile.damage < -50)
+			{
+				for (int num654 = 0; num654 < 2; num654++)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
+					int num655 = Dust.NewDust(projectile.Center + Main.rand.NextVector2Circular(16, 16), 0, 0, DustID.AncientLight, randomcircle.X * 3f, randomcircle.Y * 3f, 150, Color.PaleTurquoise, 1f);
+					Main.dust[num655].noGravity = true;
+					Main.dust[num655].noLight = true;
+				}
+			}
+
+		}
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			float alphatime = MathHelper.Clamp(projectile.timeLeft / 60f, 0f, Math.Min(projectile.ai[0]/20f,1f));
+			Texture2D texbrew = Main.projectileTexture[projectile.type];
+			Vector2 drawOrigin = new Vector2(texbrew.Width * 0.5f, texbrew.Height * 0.5f);
+
+			for (int k = projectile.oldPos.Length - 1; k > 0; k -= 1)
+			{
+				Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition + drawOrigin;
+				Color color = Color.PaleTurquoise * (1f - ((float)k / ((float)projectile.oldPos.Length)));
+				spriteBatch.Draw(Main.projectileTexture[projectile.type], drawPos, null, color * 0.75f*alphatime, projectile.rotation, drawOrigin, projectile.scale + 0.5f, SpriteEffects.None, 0f);
+			}
+
+		}
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			float alphatime = MathHelper.Clamp(projectile.timeLeft / 60f, 0f, Math.Min(projectile.ai[0] / 20f, 1f));
+			Texture2D texbrew = Main.projectileTexture[projectile.type];
+			Vector2 drawOrigin = new Vector2(texbrew.Width * 0.5f, texbrew.Height * 0.5f);
+
+			spriteBatch.Draw(texbrew, projectile.Center - Main.screenPosition, null, Color.White*alphatime, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+			return false;
+		}
+	}
+
+	class TheJellyBrew : ModItem
+	{
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("The Jelly Brew");
+			Tooltip.SetDefault("Creates expanding bubbles on impact with enemy or solid tiles\nExplodes into lunar fumes when another bubble is created or after 5 seconds\nStrike enemies with the bottle to mark them for the fumes to chase after");
+		}
+
+		public override void SetDefaults()
+		{
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.Throwing().thrown = true;
+			item.useTurn = true;
+			item.width = 8;
+			item.height = 8;
+			item.knockBack = 6;
+			item.damage = 150;
+			item.crit = 0;
+			//item.UseSound = SoundID.Item1;
+			item.useAnimation = 30;
+			item.useTime = 30;
+			item.noUseGraphic = true;
+			item.noMelee = true;
+			item.autoReuse = false;
+			item.value = Item.buyPrice(0, 5, 0, 0);
+			item.rare = ItemRarityID.Cyan;
+			item.shootSpeed = 14f;
+			item.mana = 75;
+			item.expert = true;
+			item.shoot = mod.ProjectileType("TheJellyBrewProjectile");
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+
+			int numberProjectiles = 1;
+			float rotation = MathHelper.ToRadians(0);
+			//for (int i = 0; i < numberProjectiles; i += 1)
+			//{
+			Vector2 perturbedSpeed = (new Vector2(speedX, speedY)).RotatedBy(MathHelper.Lerp(-rotation, rotation, Main.rand.NextFloat()));
+			int thisoned = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, Main.myPlayer);
+			Main.projectile[thisoned].netUpdate = true;
+			//}
+
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)position.X, (int)position.Y, 106);
+			if (sound != null)
+				sound.Pitch -= 0.525f;
+
+			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.PinkGel, 25);
+			recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 20);
+			recipe.AddIngredient(ItemID.ToxicFlask, 1);
+			recipe.AddIngredient(ModContent.ItemType<CosmicFragment>(), 1);
+			recipe.AddTile(ModContent.TileType<Tiles.LuminousAlter>());
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class TheJellyBrewProjectile : JarateShurikensProg,IDrawAdditive
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("TheJelly Brew Projectile");
+		}
+		public override string Texture => "SGAmod/Projectiles/TheJellyBrewProjectile";
+		int hitnpc = -1;
+
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.SnowBallFriendly);
+			projectile.Throwing().thrown = true;
+			projectile.width = 12;
+			projectile.height = 12;
+			projectile.tileCollide = true;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.penetrate = 1;
+			projectile.extraUpdates = 0;
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            foreach(Projectile cloud in Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<TheJellyBrewProjectileCloud>() && testby.owner == projectile.owner))
+            {
+				cloud.ai[1] = target.whoAmI+1;
+				/*if (cloud.velocity.Length() < 10)
+                {
+					cloud.velocity += Vector2.Normalize(cloud.velocity) * 10f;
+				}*/
+				cloud.netUpdate = true;
+			}
+        }
+
+        public override bool PreKill(int timeLeft)
+		{
+
+			Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<TheJellyBrewProjectileBubble>(), projectile.damage, projectile.knockBack, projectile.owner);
+
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 107);
+			if (sound != null)
+				sound.Pitch -= 0.525f;
+
+			sound = Main.PlaySound(SoundID.DD2_GhastlyGlaiveImpactGhost, (int)projectile.Center.X, (int)projectile.Center.Y);
+			if (sound != null)
+				sound.Pitch -= 0.525f;
+
+			return true;
+		}
+
+		public override void AI()
+		{
+			projectile.velocity.Y += Player.defaultGravity;
+
+			projectile.rotation += projectile.velocity.X*0.05f;
+			for (int num654 = 0; num654 < 2; num654++)
+			{
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
+				int num655 = Dust.NewDust(projectile.Center + Main.rand.NextVector2Circular(16, 16), 0, 0, DustID.AncientLight, randomcircle.X * 3f, randomcircle.Y * 3f, 150, Color.Lime, 1f);
+				Main.dust[num655].noGravity = true;
+				Main.dust[num655].noLight = true;
+			}
+
+		}
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			Texture2D texbrew = Main.projectileTexture[projectile.type];
+			Vector2 drawOrigin = new Vector2(texbrew.Width * 0.5f, texbrew.Height * 0.5f);
+
+			for (int k = projectile.oldPos.Length - 1; k > 0; k -= 1)
+			{
+				Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition;
+				Color color = Color.PaleTurquoise * (1f - ((float)k / ((float)projectile.oldPos.Length)));
+				spriteBatch.Draw(Main.projectileTexture[projectile.type], drawPos, null, color * 0.75f, projectile.rotation, drawOrigin, projectile.scale + 0.5f, SpriteEffects.None, 0f);
+			}
+
+		}
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D texbrew = Main.projectileTexture[projectile.type];
+			Vector2 drawOrigin = new Vector2(texbrew.Width * 0.5f, texbrew.Height * 0.5f);
+
+			spriteBatch.Draw(texbrew, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+			return false;
+		}
+	}
+
+	public class TheJellyBrewProjectileBubble : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("TheJelly Brew Projectile Bubble");
+		}
+		public override string Texture => "SGAmod/Projectiles/TheJellyBrewProjectile";
+		int hitnpc = -1;
+
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.SnowBallFriendly);
+			projectile.Throwing().thrown = true;
+			projectile.width = 480;
+			projectile.height = 480;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 600;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = 20;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.extraUpdates = 0;
+			projectile.penetrate = -1;
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		float Scale => 0.5f+(projectile.ai[0]/60f);
+
+		public override bool PreKill(int timeLeft)
+		{
+
+			for (int i = 0; i < (int)(Scale * 3f) + 2; i += 1)
+			{
+				float velocityproj = 4 + (i / 10f);
+				Vector2 velocityposspeed = Main.rand.NextVector2Circular(velocityproj, velocityproj);
+				Projectile proj = Projectile.NewProjectileDirect(projectile.Center+Vector2.Normalize(velocityposspeed)*(Scale * 24f), velocityposspeed * (Main.player[projectile.owner].Throwing().thrownVelocity), ModContent.ProjectileType<TheJellyBrewProjectileCloud>(), projectile.damage, projectile.knockBack, projectile.owner);
+				if (proj != null)
+                {
+					proj.timeLeft = (int)(150 + (Scale*30f) + (i * 4f));
+					proj.netUpdate = true;
+				}
+			}
+
+
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 112);
+			if (sound != null)
+				sound.Pitch -= 0.525f;
+
+			sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y,111);
+			if (sound != null)
+				sound.Pitch -= 0.525f;
+
+			return true;
+		}
+
+		bool InTheCircle(Rectangle targetHitbox)
+        {
+			Vector2 circle = projectile.Center;
+
+			float closestX = MathHelper.Clamp(circle.X, targetHitbox.X, targetHitbox.X + targetHitbox.Width);
+			float closestY = MathHelper.Clamp(circle.Y, targetHitbox.Y, targetHitbox.Y + targetHitbox.Height);
+
+			// Calculate the distance between the circle's center and this closest point
+			float distanceX = circle.X - closestX;
+			float distanceY = circle.Y - closestY;
+
+			// If the distance is less than the circle's radius, an intersection occurs
+			float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+			return distanceSquared < (72f * 72f) * Scale;
+
+		}
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+			return InTheCircle(targetHitbox);
+        }
+
+        public override void AI()
+		{
+
+			if (projectile.ai[0] < 1)
+			{
+				Projectile[] oldest = Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<TheJellyBrewProjectileBubble>()).OrderBy(testby => testby.timeLeft).ToArray();
+
+				if (oldest.Length > 1)
+				{
+					oldest[0].timeLeft = 2;
+					oldest[0].netUpdate = true;
+				}
+			}
+
+			projectile.ai[0] += Main.player[projectile.owner].SGAPly().ThrowingSpeed;
+
+			for (int num654 = 0; num654 < 2; num654++)
+			{
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
+				int num655 = Dust.NewDust(projectile.Center + Main.rand.NextVector2Circular(16, 16), 0, 0, DustID.AncientLight, randomcircle.X * 3f, randomcircle.Y * 3f, 150, Color.Lime, 1f);
+				Main.dust[num655].noGravity = true;
+				Main.dust[num655].noLight = true;
+			}
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D bubbles = SGAmod.ExtraTextures[115];
+			Vector2 drawOrigin = new Vector2(bubbles.Width, bubbles.Height/2f)*0.50f;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Effect hallowed = SGAmod.HallowedEffect;
+
+			float alphapercent = 1f;
+
+			hallowed.Parameters["alpha"].SetValue(alphapercent);
+			hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
+			hallowed.Parameters["prismAlpha"].SetValue(0f);
+			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Stain"));
+			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(Main.GlobalTime / 5f, Main.GlobalTime / 3f, 0f));
+			hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
+			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, Main.GlobalTime / 4f));
+			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+			hallowed.Parameters["rainbowScale"].SetValue(0.8f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
+
+			hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+
+			//Texture2D bubbles = ModContent.GetTexture("Terraria/NPC_" + NPCID.DetonatingBubble);
+			//Vector2 half = new Vector2(bubbles.Width, bubbles.Height / 2f) / 2f;
+
+			spriteBatch.Draw(bubbles, projectile.Center - Main.screenPosition, new Rectangle(0, bubbles.Height / 2, bubbles.Width, bubbles.Height / 2), Color.LightPink * alphapercent, -(float)Math.Sin(Main.GlobalTime) / 4f, drawOrigin, (Vector2.One * Scale) + (new Vector2((float)Math.Sin(Main.GlobalTime), (float)Math.Cos(Main.GlobalTime))) * 0.25f, SpriteEffects.None, 0f);
+
+			spriteBatch.Draw(bubbles, projectile.Center - Main.screenPosition, new Rectangle(0, bubbles.Height / 2, bubbles.Width, bubbles.Height / 2), Color.LightPink * alphapercent, (float)Math.Sin(Main.GlobalTime) / 4f, drawOrigin, (Vector2.One * Scale) + (new Vector2((float)Math.Cos(Main.GlobalTime + MathHelper.PiOver2), (float)Math.Sin(Main.GlobalTime - MathHelper.PiOver2))) * 0.25f, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+			//spriteBatch.Draw(texbrew, projectile.Center - Main.screenPosition, null, Color.GreenYellow, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+			return false;
+		}
+	}
+
+	public class TheJellyBrewProjectileCloud : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("TheJelly Brew Projectile Bubble");
+		}
+		public override string Texture => "Terraria/Projectile_"+ProjectileID.SporeCloud;
+		int hitnpc = -1;
+
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.SnowBallFriendly);
+			projectile.Throwing().thrown = true;
+			projectile.width = 32;
+			projectile.height = 32;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 150;
+			projectile.usesIDStaticNPCImmunity = true;
+			projectile.idStaticNPCHitCooldown = 20;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.extraUpdates = 0;
+			projectile.penetrate = -1;
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			return true;
+		}
+
+		public override void AI()
+		{
+			if (projectile.timeLeft < 30)
+				projectile.velocity *= 0.90f;
+
+			if (projectile.velocity.Length() > 1f)
+			{
+				if (projectile.ai[1] < 1)
+				{
+					/*List<NPC> target = SGAUtils.ClosestEnemies(projectile.Center, 600);
+
+					if (target != null && target.Count > 1)
+					{
+						NPC mytarget = target[1];
+						projectile.ai[1] = mytarget.whoAmI + 1;
+					}*/
+                }
+                else
+                {
+					NPC mytarget = Main.npc[(int)projectile.ai[1]-1];
+					if (mytarget.active && mytarget.chaseable)
+					{
+						projectile.velocity = projectile.velocity.ToRotation().AngleTowards((mytarget.Center - projectile.Center).ToRotation(), 0.05f).ToRotationVector2() * projectile.velocity.Length();
+                    }
+                    else
+                    {
+						projectile.ai[1] = 0;
+					}
+				}
+
+			}
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D cloudtex = Main.projectileTexture[projectile.type];
+			Vector2 drawOrigin = new Vector2(cloudtex.Width, cloudtex.Height/5f) * 0.50f;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Effect hallowed = SGAmod.HallowedEffect;
+
+			float alphapercent = MathHelper.Clamp(projectile.timeLeft/80f,0f,1f);
+
+			hallowed.Parameters["alpha"].SetValue(alphapercent);
+			hallowed.Parameters["prismColor"].SetValue(Color.PaleTurquoise.ToVector3());
+			hallowed.Parameters["prismAlpha"].SetValue(1f);
+			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Stain"));
+			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(Main.GlobalTime / 5f, Main.GlobalTime / 3f, 0f));
+			hallowed.Parameters["overlayAlpha"].SetValue(0.65f);
+			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, Main.GlobalTime / 4f));
+			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+			hallowed.Parameters["rainbowScale"].SetValue(0.8f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
+
+			hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+			spriteBatch.Draw(cloudtex, projectile.Center - Main.screenPosition, new Rectangle(0, (int)((projectile.timeLeft/8f)%5)*(cloudtex.Height / 5), cloudtex.Width, cloudtex.Height / 5), Color.LightPink * alphapercent, 0, drawOrigin, (Vector2.One * 1f), SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+			//spriteBatch.Draw(texbrew, projectile.Center - Main.screenPosition, null, Color.GreenYellow, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+			return false;
+		}
+	}
 
 	class SharkBait : ModItem
 	{

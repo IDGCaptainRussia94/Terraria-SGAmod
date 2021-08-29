@@ -1,6 +1,6 @@
 author = IDGCaptainRussia
 version = 3.600
-displayName = SGAmod: [c/ff00ff:Tech N Wreck]
+displayName = SGAmod: [c/ff00ff:Tech N Wreck] Beta
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, *.xcf, *.idg, *.MD, *.csproj, *.user, obj\*, bin\*
 includePDB = true
 hideCode = true

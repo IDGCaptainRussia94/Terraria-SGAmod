@@ -296,6 +296,8 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_" + TileID.ExposedGems));//113
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_" + TileID.Crystals));//114
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.DetonatingBubble));//115
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.MedusaHeadRay));//116
+
 
 				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 				Texture2D PlatTex = ModContent.GetTexture("Terraria/Tiles_"+TileID.Asphalt);
@@ -787,7 +789,7 @@ namespace SGAmod
 			recipe.SetResult(ItemID.FrozenTurtleShell);
 			recipe.AddRecipe();
 
-			int[] moonlorditems = { ItemID.Terrarian, ItemID.LunarFlareBook, ItemID.RainbowCrystalStaff, ItemID.SDMG, ItemID.StarWrath, ItemID.Meowmere, ItemID.LastPrism, ItemID.MoonlordTurretStaff, ItemID.FireworksLauncher };
+			int[] moonlorditems = { ItemID.Terrarian, ItemID.LunarFlareBook, ItemID.RainbowCrystalStaff, ItemID.SDMG, ItemID.StarWrath, ItemID.Meowmere, ItemID.LastPrism, ItemID.MoonlordTurretStaff, ItemID.FireworksLauncher,ModContent.ItemType<SoulPincher>() };
 
 			foreach (int idofitem in moonlorditems)
 			{

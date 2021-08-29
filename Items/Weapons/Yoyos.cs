@@ -6,6 +6,207 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
+using System.Linq;
+
+namespace SGAmod.HavocGear.Items.Weapons
+{
+	public class MossYoyo : MangroveBow
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Quagmire");
+			Tooltip.SetDefault("Hits apply Dank Slow against your foes\nContinous hits make the slow stronger\nEnemies who are immune to Poison are also immune to Dank Slow");
+		}
+
+		public override void SetDefaults()
+		{
+			Item refItem = new Item();
+			refItem.SetDefaults(ItemID.Amarok);
+			item.damage = 25;
+			item.useTime = 24;
+			item.useAnimation = 22;
+			item.useStyle = 5;
+			item.channel = true;
+			item.noMelee = true;
+			item.melee = true;
+			item.crit = 4;
+			item.knockBack = 4.5f;
+			item.value = 47000 * 5;
+			item.rare = 3;
+			item.noUseGraphic = true;
+			item.UseSound = SoundID.Item1;
+			item.autoReuse = true;
+			item.shoot = mod.ProjectileType("MossYoyoProj");
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.WoodYoyo);
+			recipe.AddIngredient(null, "BiomassBar", 8);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, (int)((double)damage), knockBack, player.whoAmI, 0.0f, 0.0f);
+			return false;
+		}
+	}
+	public class Jaws : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Jaws");
+			Tooltip.SetDefault("Throws a yoyo with spinning teeth that halve enemy defense\nthe teeth break on tiles or after they hit enemies enough times");
+		}
+
+		public override void SetDefaults()
+		{
+			Item refItem = new Item();
+			refItem.SetDefaults(ItemID.Amarok);
+			item.damage = 45;
+			item.useTime = 24;
+			item.useAnimation = 22;
+			item.useStyle = 5;
+			item.channel = true;
+			item.melee = true;
+			item.noMelee = true;
+			item.crit = 4;
+			item.knockBack = 2.2f;
+			item.value = 100000;
+			item.rare = 5;
+			item.noUseGraphic = true;
+			item.autoReuse = true;
+			item.UseSound = SoundID.Item19;
+			item.shoot = mod.ProjectileType("JawsProj");
+		}
+
+		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, (int)((double)damage), knockBack, player.whoAmI, 0.0f, 0.0f);
+			return false;
+		}
+	}
+	public class Kelvin : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Kelvin");
+			Tooltip.SetDefault("'Flaming!'\nLava Burns enemies for 2 seconds on hit");
+		}
+
+		public override void SetDefaults()
+		{
+			Item refItem = new Item();
+			refItem.SetDefaults(ItemID.TheEyeOfCthulhu);
+			item.damage = 40;
+			item.useTime = 22;
+			item.useAnimation = 22;
+			item.useStyle = 5;
+			item.channel = true;
+			item.melee = true;
+			item.knockBack = 2.5f;
+			item.value = 10000;
+			item.noMelee = true;
+			item.rare = 6;
+			item.noUseGraphic = true;
+			item.autoReuse = true;
+			item.shoot = mod.ProjectileType("KelvinProj");
+			item.UseSound = SoundID.Item19;
+		}
+
+		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, (int)((double)damage), knockBack, player.whoAmI, 0.0f, 0.0f);
+			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(null, "FieryShard", 10);
+			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class Upheaval : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Upheaval");
+			Tooltip.SetDefault("Unleashes flaming boulders as it's held out");
+		}
+
+		public override void SetDefaults()
+		{
+			Item refItem = new Item();
+			refItem.SetDefaults(ItemID.TheEyeOfCthulhu);
+			item.damage = 105;
+			item.useTime = 22;
+			item.useAnimation = 22;
+			item.noMelee = true;
+			item.useStyle = 5;
+			item.channel = true;
+			item.melee = true;
+			item.knockBack = 4f;
+			item.value = 500000;
+			item.rare = 9;
+			item.noUseGraphic = true;
+			item.autoReuse = true;
+			item.UseSound = SoundID.Item19;
+			item.shoot = mod.ProjectileType("UpheavalProj");
+		}
+
+		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, (int)((double)damage), knockBack, player.whoAmI, 0.0f, 0.0f);
+			return false;
+		}
+	}
+
+	public class Tornado : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Tornado");
+			Tooltip.SetDefault("Control a living tornado that fires homing tornadoes at enemies as it's held out");
+		}
+
+		public override void SetDefaults()
+		{
+			Item refItem = new Item();
+			refItem.SetDefaults(ItemID.TheEyeOfCthulhu);
+			item.damage = 125;
+			item.useTime = 22;
+			item.useAnimation = 22;
+			item.useStyle = 5;
+			item.channel = true;
+			item.melee = true;
+			item.noMelee = true;
+			item.knockBack = 2.5f;
+			item.value = 1000000;
+			item.rare = 9;
+			item.noUseGraphic = true;
+			item.autoReuse = true;
+			item.UseSound = SoundID.Item19;
+			item.shoot = mod.ProjectileType("TornadoProj");
+		}
+
+		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, (int)((double)damage), knockBack, player.whoAmI, 0.0f, 0.0f);
+			return false;
+		}
+	}
+
+
+}
 
 namespace SGAmod.Items.Weapons
 {
@@ -272,6 +473,87 @@ namespace SGAmod.Items.Weapons
 		}
 
 
+	}
+
+	public class ThievesThrow : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Thieves' Throw");
+			Tooltip.SetDefault("Steals items off the ground and teleports them to the player\n'Yes, it also steals Hearts, gotta put that joke in there'");
+		}
+
+		public override void SetDefaults()
+		{
+			Item refItem = new Item();
+			refItem.SetDefaults(ItemID.TheEyeOfCthulhu);
+			item.damage = 0;
+			item.useTime = 22;
+			item.useAnimation = 22;
+			item.useStyle = 5;
+			item.channel = true;
+			item.melee = true;
+			item.knockBack = 2.5f;
+			item.value = 50000;
+			item.noMelee = true;
+			item.rare = ItemRarityID.Green;
+			item.noUseGraphic = true;
+			item.autoReuse = true;
+			item.shoot = mod.ProjectileType("ThievesThrowProj");
+			item.UseSound = SoundID.Item19;
+		}
+
+		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, 0, knockBack, player.whoAmI, 0.0f, 0.0f);
+			return false;
+		}
+	}
+
+	public class ThievesThrowProj : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Thieves Throw");
+			ProjectileID.Sets.YoyosLifeTimeMultiplier[projectile.type] = 300.0f;
+			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 1500f;
+			ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 25f;
+		}
+
+        public override string Texture => "SGAmod/Projectiles/ThievesThrowProj";
+
+        public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.TheEyeOfCthulhu);
+			projectile.extraUpdates = 0;
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.aiStyle = 99;
+			projectile.friendly = true;
+			projectile.penetrate = -1;
+			projectile.melee = true;
+			projectile.scale = 1f;
+		}
+
+        public override bool CanDamage()
+        {
+			return false;
+        }
+
+        public override void AI()
+		{
+			Player player = Main.player[projectile.owner];
+			foreach(Item item in Main.item.Where(testby => testby.active && (projectile.Center - testby.Center).LengthSquared() < 20000))
+            {
+				item.velocity += Collision.TileCollision(item.position, Vector2.Normalize(projectile.Center - item.Center)*0.40f,item.width,item.height);
+
+				if ((item.Center- projectile.Center).LengthSquared() < 600)
+                {
+					item.Center = player.Center;
+                }
+            }
+		}
 	}
 
 

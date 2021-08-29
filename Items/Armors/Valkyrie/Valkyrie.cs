@@ -104,7 +104,8 @@ namespace SGAmod.Items.Armors.Valkyrie
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 25);
-			recipe.AddIngredient(ItemID.LunarBar, 5);
+			recipe.AddIngredient(ModContent.ItemType<StarMetalBar>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<LuminiteWraithNotch>(), 1);
 			recipe.AddTile(ModContent.TileType<LuminousAlter>());
 			recipe.SetResult(this);
 			recipe.AddRecipe();

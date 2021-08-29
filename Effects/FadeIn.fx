@@ -15,7 +15,30 @@ static const float pi = 3.14159265359;
 
 //Shader by IDGCaptainRussia94 (3nd)
 
+float4 SmoothYFadeFunction(float2 coords : TEXCOORD0) : COLOR0
+{
+	float4 color = tex2D(uImage0, coords);
 
+    	if (!any(color))
+		return color;
+
+            float luminosity = (color.r + color.g + color.b) / 3;
+            color.rgb = lerp(color.rgb*blendColor.rgb,fadeColor*luminosity,strength);
+
+        	if (coords.y>fadeOffset.y)
+            {
+            float alphablend = ((coords.y-fadeOffset.y)*fadeMultiplier.y);
+
+                color *= clamp(alphablend,0.0,1.0);
+                if (color.a == 0)
+                discard;
+            }else
+            {
+            discard;
+            }
+
+	return color*alpha;
+}
 
 float4 FadeFunction(float2 coords : TEXCOORD0) : COLOR0
 {
@@ -56,4 +79,9 @@ technique Technique1
     {
         PixelShader = compile ps_2_0 FadeInFunction();
     }
+        pass SmoothYFadePass
+    {
+        PixelShader = compile ps_2_0 SmoothYFadeFunction();
+    }
+
 }

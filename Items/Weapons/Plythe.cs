@@ -34,7 +34,7 @@ namespace SGAmod.Items.Weapons
 			item.useTurn = true;
 			item.width = 54;
 			item.height = 32;
-			item.maxStack = 5;
+			item.maxStack = 10;
 			item.knockBack = 0;
 			item.consumable = false;
 			item.UseSound = SoundID.Item1;
@@ -67,7 +67,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 4);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 2);
 			recipe.AddTile(TileID.LunarCraftingStation);
-			recipe.SetResult(this,1);
+			recipe.SetResult(this,2);
             recipe.AddRecipe();
 		}
 	}

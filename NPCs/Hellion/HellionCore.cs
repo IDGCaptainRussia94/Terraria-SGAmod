@@ -812,6 +812,7 @@ namespace SGAmod.NPCs.Hellion
                 npc.ai[0] += 1;
                 if (npc.ai[0] == 1 && SGAWorld.downedHellion<1)
                 {
+                    if (SGAWorld.NightmareHardcore<1)
                     npc.ai[1] = 1;
                     for (int i = 0; i < 8 + P.extraAccessorySlots; i += 1)
                     {

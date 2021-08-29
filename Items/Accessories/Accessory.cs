@@ -462,7 +462,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ModContent.ItemType<LunarRoyalGel>(), 25);
 			recipe.AddIngredient(ModContent.ItemType<MoneySign>(), 15);
 			recipe.AddIngredient(ModContent.ItemType<EldritchTentacle>(), 20);
-			recipe.AddIngredient(ModContent.ItemType<ByteSoul>(), 100);
+			recipe.AddIngredient(ModContent.ItemType<ByteSoul>(), 50);
 			/*recipe.AddIngredient(ItemID.ShroomiteBar, 30);
 			recipe.AddIngredient(ItemID.SpectreBar, 30);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 30);
@@ -2876,7 +2876,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shin Sash");
-			Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nEnemies affected become far more likely to cause the player to black belt dodge contact damage\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") + "\nThrowing damage is increased by 10% and crit chance by 5%\nEffects of Ninja Sash and Thrower Pouch");
+			Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nEBombed enemies are highly likely to miss (Ninja Dodge)\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") + "\nThrowing damage is increased by 10% and crit chance by 5%\nEffects of Ninja Sash and Thrower Pouch");
 		}
 
 		public override void SetDefaults()

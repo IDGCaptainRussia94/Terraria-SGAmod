@@ -835,13 +835,13 @@ namespace SGAmod.NPCs.Hellion
 
 
 				int portaltime = 350;
-				int proj = hell.phase>3 ? mod.ProjectileType("HellionBeam") : mod.ProjectileType("HellionBolt");
-				if (npc.ai[1] % 8 == 0 && npc.ai[1] < 1800 && npc.ai[1] > 1450)
+				int proj = hell.phase>2 ? mod.ProjectileType("HellionBeam") : mod.ProjectileType("HellionBolt");
+				if (npc.ai[1] % 8 == 0 && npc.ai[1] < (proj == mod.ProjectileType("HellionBeam") ? 1700 : 1800) && npc.ai[1] > 1450)
 				{
 					Vector2 where = npc.Center;
 					float angle = MathHelper.ToRadians(npc.ai[1] * ((npc.ai[1] % 12 == 0) ? 1.91f : -1.91f) * 2f);
 					if (proj == mod.ProjectileType("HellionBeam"))
-						angle = npc.ai[1] * 0.01f;
+						angle = npc.ai[0] * 0.02f;
 
 					float disttogo = 500 - (npc.ai[1] - 1800);
 					Vector2 wheretogo = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * disttogo;
@@ -1155,7 +1155,7 @@ namespace SGAmod.NPCs.Hellion
 					if (type == 3)
 						{
 							projectilepattern = (time) => (time == 130);
-							proj = ProjectileID.DiamondBolt;
+							proj = ProjectileID.DemonScythe;
 							Main.PlaySound(SoundID.Item, (int)(npc.Center + where).X, (int)(npc.Center + where).Y, 33, 0.25f, 0.5f);
 						}
 					if (type == 8 || type == 9)
@@ -1169,7 +1169,7 @@ namespace SGAmod.NPCs.Hellion
 
 					}
 					int dam = type > 0 ? (type == 8 || type == 9 ? 250 : 100) : 75;
-					int ize = ParadoxMirror.SummonMirror(npc.Center + where, Speedz * (-1f), dam, 60 + ((type == 3) ? 90 : (type == 8 || type == 9 ? 180 : 0)), angle, proj, projectilepattern, proj==mod.ProjectileType("HellionBeam") ? 2.5f : 15f*basespeed, proj == ProjectileID.DiamondBolt || proj == mod.ProjectileType("HellionBolt") ? 400 : 200, stick);
+					int ize = ParadoxMirror.SummonMirror(npc.Center + where, Speedz * (-1f), dam, 60 + ((type == 3) ? 90 : (type == 8 || type == 9 ? 180 : 0)), angle, proj, projectilepattern, proj==mod.ProjectileType("HellionBeam") ? 2.5f : 15f*basespeed, proj == ProjectileID.DemonScythe || proj == mod.ProjectileType("HellionBolt") ? 400 : 200, stick);
 					//Main.projectile[ize].ai[1] = (npc.ai[0] / 90f) % 1f;
 					if (type == 8)
 					{
@@ -1655,7 +1655,7 @@ namespace SGAmod.NPCs.Hellion
 		public class Hellion : ModNPC,ISGABoss
 	{
 		public string Trophy() => "HellionTrophy";
-		public bool Chance() => true;
+		public bool Chance() => GetType() != typeof(HellionCore);
 		
 		private float[] oldRot = new float[12];
 		private Vector2[] oldPos = new Vector2[12];
@@ -2557,7 +2557,7 @@ namespace SGAmod.NPCs.Hellion
 					Main.spriteBatch.End();
 					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-					TrailHelper trail = new TrailHelper("FadedBasicEffectPass", SGAmod.ExtraTextures[21]);
+					TrailHelper trail = new TrailHelper("FadedBasicEffectPass", Main.extraTexture[21]);
 					trail.color = delegate (float percent)
 					{
 						float value = (float)((percent * 3f) + Main.GlobalTime / 10f);
@@ -2967,6 +2967,10 @@ namespace SGAmod.NPCs.Hellion
 				Main.projectile[prog].localAI[0] = 1f;
 				Main.projectile[prog].localAI[1] = 1f;
 			}
+			if (type == ProjectileID.DemonScythe)
+            {
+				Projectile.NewProjectile(projectile.Center, projectile.localAI[0].ToRotationVector2() * 1f, ModContent.ProjectileType<PinkyWarning>(), 5, 2f);
+			}
 			Main.projectile[prog].friendly = projectile.friendly;
 			Main.projectile[prog].hostile = projectile.hostile;
 			Main.projectile[prog].tileCollide = false;
@@ -3113,7 +3117,7 @@ namespace SGAmod.NPCs.Hellion
 
 
 					//effect += 0.1f;
-					Texture2D inner = SGAmod.ExtraTextures[19];
+					Texture2D inner = Main.extraTexture[19];
 
 					for (int i = 0; i < 360; i += 360 / 12)
 					{
@@ -3421,7 +3425,7 @@ namespace SGAmod.NPCs.Hellion
 			vectors.Add(hitspot);
 			vectors.Add(projectile.Center);
 
-			TrailHelper trail = new TrailHelper("FadedBasicEffectPass", SGAmod.ExtraTextures[21]);
+			TrailHelper trail = new TrailHelper("FadedBasicEffectPass", Main.extraTexture[21]);
 			trail.projsize = Vector2.Zero;
 			trail.coordOffset = new Vector2(0, -Main.GlobalTime*3f);
 			trail.coordMultiplier = new Vector2(1f, 30f);
@@ -3539,7 +3543,7 @@ namespace SGAmod.NPCs.Hellion
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-				spriteBatch.Draw(SGAmod.ExtraTextures[60], startpos - Main.screenPosition, null, Color.Gold * MathHelper.Clamp(1f - ((float)projectile.ai[0] / 120f), 0f, 0.75f), there, (SGAmod.ExtraTextures[60].Size() / 2f)+new Vector2(0,12), new Vector2(0.75f, projectile.ai[0] / 1f), SpriteEffects.None, 0f);
+				spriteBatch.Draw(Main.extraTexture[60], startpos - Main.screenPosition, null, Color.Gold * MathHelper.Clamp(1f - ((float)projectile.ai[0] / 120f), 0f, 0.75f), there, (Main.extraTexture[60].Size() / 2f)+new Vector2(0,12), new Vector2(0.75f, projectile.ai[0] / 1f), SpriteEffects.None, 0f);
 			}
 
 			Main.spriteBatch.End();

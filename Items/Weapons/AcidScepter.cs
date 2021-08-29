@@ -11,8 +11,8 @@ using Idglibrary;
 
 namespace SGAmod.Items.Weapons
 {
-	public class AcidScepter : UnmanedPickaxe
-	{
+	public class AcidScepter : ModItem
+    {
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Acid Scepter");

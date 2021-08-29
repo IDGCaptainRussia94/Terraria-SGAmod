@@ -22,6 +22,7 @@ using SGAmod.Items.Armors.Vibranium;
 using Terraria.GameContent.Events;
 using Terraria.DataStructures;
 using SGAmod.Items.Armors.Dev;
+using SGAmod.Items;
 
 namespace SGAmod
 {
@@ -890,7 +891,12 @@ namespace SGAmod
                 if (arg == ItemID.GolemBossBag && Main.rand.Next(100) < 20)
                     player.QuickSpawnItem(mod.ItemType("Upheaval"), 1);
                 if (arg == ItemID.MoonLordBossBag)
-                    player.QuickSpawnItem(mod.ItemType("EldritchTentacle"), Main.rand.Next(20, 40));
+                {
+                    player.QuickSpawnItem(ModContent.ItemType<EldritchTentacle>(), Main.rand.Next(20, 40));
+                    if (Main.rand.Next(6)<1)
+                    player.QuickSpawnItem(ModContent.ItemType<Items.Weapons.SoulPincher>());
+
+                }
                 if (arg == ItemID.BossBagBetsy)
                     player.QuickSpawnItem(mod.ItemType("OmegaSigil"), 1);
                 if (arg == ItemID.WallOfFleshBossBag && Main.rand.Next(100) <= 10)

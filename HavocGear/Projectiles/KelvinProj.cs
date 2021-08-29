@@ -49,7 +49,7 @@ namespace SGAmod.HavocGear.Projectiles
         {
         	Player player = Main.player[projectile.owner];
 		target.immune[projectile.owner] = 2;
-		target.AddBuff(mod.BuffType("ThermalBlaze"), 120);
+		target.AddBuff(ModContent.BuffType<Buffs.LavaBurn>(), 120);
     	}
     }
 }

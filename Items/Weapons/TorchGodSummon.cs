@@ -45,7 +45,10 @@ namespace SGAmod.Items.Weapons
 			item.autoReuse = true;
 			item.useTurn = false;
 			item.mana = 4;
-
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/TorchGodSummon_Glow");
+			}
 		}
 
         public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)

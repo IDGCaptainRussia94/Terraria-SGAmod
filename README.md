@@ -18,6 +18,12 @@ Cruciatus, Charon's Ferry, Overwatch (Null Watcher), Torch God's Summon, Orge ba
 
 Changelog:
 
+3.581-(8/29/21)-Hotfix #15:
+
+--Fixed:
+
+-(hopefully) fixed the missing noise texture bug (prismic banshee despawning)
+
 3.580-(7/16/21)-Hotfix #14:
 
 --Fixed:

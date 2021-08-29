@@ -1935,7 +1935,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 			Texture2D tex = Main.projectileTexture[projectile.type];
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
 			trail.color = delegate (float percent)
 			{
 				return Color.Orange;

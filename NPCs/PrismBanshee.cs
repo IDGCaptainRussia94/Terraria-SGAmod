@@ -337,7 +337,7 @@ namespace SGAmod.NPCs
 						}
 
 
-						TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
+						TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
 						trail.color = delegate (float percent)
 						{
 							return Color.Lerp(Main.hslToRgb(((-npc.localAI[0] / 90f) + percent) % 1f, 1f, 0.85f), Color.Magenta, Math.Max((float)Math.Sin(npc.localAI[0] / 35f), 0f));
@@ -879,7 +879,7 @@ namespace SGAmod.NPCs
 
 			if (hinted.strength > 0)
 			{
-				TrailHelper trail = new TrailHelper("DefaultPass", SGAmod.Instance.GetTexture("noise"));
+				TrailHelper trail = new TrailHelper("DefaultPass", SGAmod.Instance.GetTexture("Noise"));
 				trail.color = delegate (float percent)
 				{
 					return Color.Magenta;

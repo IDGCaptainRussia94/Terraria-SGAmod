@@ -53,7 +53,7 @@ namespace SGAmod
 
 		[Label("Infusion Rate")]
 		[Tooltip("adjust a multiplyer on how long the Luminous Altar takes to infuse items")]
-		[Range(0.01f, 3f)]
+		[Range(0.10f, 5f)]
 		[DefaultValue(1f)]
 		[Slider]
 		public float InfusionTime { get; set; }

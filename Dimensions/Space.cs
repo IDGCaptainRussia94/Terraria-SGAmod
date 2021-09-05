@@ -1304,6 +1304,7 @@ namespace SGAmod.Dimensions
             base.SetDefaults();
             npc.CloneDefaults(NPCID.MeteorHead);
 
+            npc.knockBackResist = 0.25f;
             npc.life *= 5;
             npc.lifeMax *= 5;
             //npc.defense += 15;
@@ -1365,12 +1366,12 @@ namespace SGAmod.Dimensions
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, Main.DefaultSamplerState, DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
 
-            spriteBatch.Draw(texGlow, drawPos, null, Color.Blue * 0.75f, 0, texGlow.Size() / 2f, 0.15f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(texGlow, drawPos, null, Color.Blue * 0.75f*npc.Opacity, 0, texGlow.Size() / 2f, 0.15f, SpriteEffects.None, 0f);
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
-            spriteBatch.Draw(tex, drawPos, null, Color.Lerp(lightColor,Color.White, 0.5f), npc.rotation, drawOrigin / 2f, npc.scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, drawPos, null, Color.Lerp(lightColor,Color.White, 0.5f) * npc.Opacity, npc.rotation, drawOrigin / 2f, npc.scale, SpriteEffects.None, 0f);
 
             return false;
         }

@@ -35,6 +35,7 @@ namespace SGAmod.Items.Accessories
 		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
+			base.ModifyTooltips(tooltips);
 			tooltips.Add(new TooltipLine(mod, "Boost", SGAGlobalItem.pboostertextboost));
 		}
 

@@ -24,11 +24,11 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 
 Changelog:
 
-3.530-(5/1/21)-Patch 11-Tech N Wreck
+3.600-(5/1/21)-Patch 11-Tech N Wreck
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Threads, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Ice Cube?
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Threads, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Dankwood Wall
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
@@ -42,7 +42,7 @@ Changelog:
 
 -A stronger post-L.Wraith Prismic Banshee that drops double loot, also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam! (hint: put fallen stars into the previous mentioned Luminous Alter)
 
--A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's fight and apperence has been tweaked (Prim shark! Vertex Shark! Trail Shark! With smooth lighting!)
+-A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's fight and apperence has been tweaked (Prim shark! Vertex Shark! Trail Shark! With smooth lighting!), there's also an extra attack that was added
 
 -Hoppers [strikeout]N Droppers[strikeout], automate your Terraria!
 
@@ -58,9 +58,9 @@ Changelog:
 
 -Added alot of missing debuff icons
 
--A few new music tracks, including for Cratrosity (thanks again Rijam!)
+-A few new music tracks, including one for Cratrosity (thanks again Rijam!)
 
--Many items have been given an equip sprite, Various Resprites, added many missing sprites, and smaller improvements; enjoy a far better looking Jackpot with glowing coins!
+-Many items have been given an equip sprite, Various Resprites, added many missing sprites, and smaller improvements; enjoy a far better looking Jackpot with glowing coins! (Debug SwampWall to fix Dank Shrines, normally not accessible)
 
 
 --Changed:
@@ -68,6 +68,8 @@ Changelog:
 -The Calamity Rune and Luminous Gel are created at the Luminous Alter now, check the wiki for all the recipe combos
 
 -TF2 emblems have received a rework, they now gain XP as they are used, explained ingame. Contracker is now purchasable from the start of the game for 2 gold, RED/BLU emblems are craftable after Murk
+
+-The way accessories boost percent damage taken on enemies has been changed, it now additive of the original damage rather than a stacking multiplier
 
 -Hellion's 2nd phase will now only start if the player is wearing a Soul of Secrets, allowing the 1st phase to be farmed and the player to get Souls of Bytes without having to face the 2nd phase right after
 
@@ -77,11 +79,9 @@ Changelog:
 
 -Cirno now enrages with a chance outside the snow biome and no longer becomes unhittable
 
+-Murk balance changes: spawns a fly every 3 (direct melee swing 5) hits, instead of chance. Slam has a longer delay, but mudballs do more damage, Spinning Stinger attack is telegraphed with delays, Orge Snot balls have been replaced with a less-sticky version that inflicts a stacking debuff
+
 -Boss checklists; be sure to check it AFTER each fight as well!
-
--Draken's Dialog has been moved around to help give players instructions, also a new interaction has been added after you become close friends
-
--The way accessories boost percent damage taken on enemies has been changed, it now additive of the original damage rather than a stacking multiplier
 
 -Hellion gains defense and debuff immunity apon activating Tyrant's Glare (post Festive Moons/warped background phase)
 
@@ -90,6 +90,10 @@ Changelog:
 -Sharkvern's HP increased to 120000, body segments now take 25% (Tail 0%) reduced damage to peircing weapons, and no reduction to true melee projectiles (IE yoyos, spears), various changes have happened to the fight, and various balance changes as well
 
 -Sharkvern and their storm effects can no longer drown an underground player
+
+-Dank Slimes now explode akin to orge spit on death, granting the new debuff mentioned above
+
+-Draken's Dialog has been moved around to help give players instructions, also a new interaction has been added after you become close friends
 
 -Supreme Pinky, a few moves: now uses a Nova and Ring attack instead of rockets in phase 1, and the scythe attack in the final phase of Pinky Singularity has been replaced with the new Ring attack, and Radiation continues into phase 2
 
@@ -150,6 +154,8 @@ Changelog:
 -Divine Shower Storm has been renamed to Divinity Caller
 
 -Braxsaw is now post S.Pinky
+
+-Demon Steppers now mention the Walk Mode key
 
 -Entropy Transmuter is now sold by merchant for one Plat in MP instead of Expertise from the (now removed) Portal shop
 
@@ -341,6 +347,13 @@ Changelog:
 -(this may have been this update I don't remember) mining under Caliburn shrines, breaking them
 
 -Other smaller fixes I might have forgotten about-including typeos
+
+
+3.581-(8/29/21)-Hotfix #19:
+
+--Fixed:
+
+-(hopefully) fixed the missing noise texture bug (prismic banshee despawning)
 
 
 3.580-(7/16/21)-Hotfix #18:

@@ -41,6 +41,11 @@ namespace SGAmod.NPCs.Murk
                 Main.dust[dust].noGravity = false; //this make so the dust has no gravity
                 Main.dust[dust].velocity *= 1f;
             }
+            if (npc.life < 1)
+            {
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<LessStickyOgreBallOneTick>(),0,0);
+            }
+
         }
 
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)

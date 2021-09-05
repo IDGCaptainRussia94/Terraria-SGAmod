@@ -207,6 +207,105 @@ namespace SGAmod.Projectiles
 				target.AddBuff(mod.BuffType("AcidBurn"), 30 * (Main.rand.Next(0, 3)==1 ? 2 : 1));
 		}
 
+	}
+
+
+
+	public class NoviteBullet : ModProjectile
+	{
+		private Vector2[] oldPos = new Vector2[6];
+		private float[] oldRot = new float[6];
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Round");
+		}
+
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+			projectile.width = 12;
+			projectile.height = 12;
+			projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.tileCollide = true;
+			projectile.ranged = true;
+			projectile.timeLeft = 3000;
+			projectile.extraUpdates = 5;
+			aiType = ProjectileID.Bullet;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			projectile.type = ProjectileID.CursedBullet;
+			return true;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Ammo/NoviteBullet"); }
+		}
+
+		public override void AI()
+		{
+
+			if (Main.rand.Next(0, 20) == 1)
+			{
+				int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, DustID.GoldCoin);
+				Main.dust[dust].scale = 0.20f;
+				Main.dust[dust].noGravity = false;
+				Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(0, 100) * 0.01f);
+			}
+
+			projectile.position -= projectile.velocity * 0.8f;
+
+			for (int k = oldPos.Length - 1; k > 0; k--)
+			{
+				oldPos[k] = oldPos[k - 1];
+			}
+			oldPos[0] = projectile.Center;
+
+			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
+
+			Player player = Main.player[projectile.owner];
+
+			if (projectile.ai[0] == 0 && player!=null)
+            {
+				List<NPC> enemies = SGAUtils.ClosestEnemies(projectile.Center,300);
+
+				if (enemies != null && enemies.Count > 0 && player.SGAPly().ConsumeElectricCharge(30,30))
+                {
+					NPC enemy = enemies[0];
+					projectile.ai[0] = 1;
+					projectile.velocity = Vector2.Normalize(enemy.Center - projectile.Center) * projectile.velocity.Length();
+					Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 67, 0.25f, 0.5f);
+				}
+
+            }
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			Texture2D tex = Main.projectileTexture[projectile.type];
+			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
+
+			//oldPos.Length - 1
+			for (int k = oldPos.Length - 1; k >= 0; k -= 1)
+			{
+				Vector2 drawPos = ((oldPos[k] - Main.screenPosition)) + new Vector2(0f, 0f);
+				Color color = Color.Lerp(Color.White, lightColor, (float)k / (oldPos.Length + 1));
+				float alphaz = (1f - (float)(k + 1) / (float)(oldPos.Length + 2)) * 1f;
+				spriteBatch.Draw(tex, drawPos, null, color * alphaz, projectile.rotation, drawOrigin, projectile.scale* alphaz, SpriteEffects.None, 0f);
+			}
+			return false;
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			//null
+		}
+
 
 
 	}

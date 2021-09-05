@@ -75,11 +75,17 @@ namespace SGAmod.NPCs.TownNPCs
 
 		public override void HitEffect(int hitDirection, double damage)
 		{
-			/*int num = npc.life > 0 ? 1 : 5;
-			for (int k = 0; k < num; k++)
+			if (npc.life <= 0)
 			{
-				Dust.NewDust(npc.position, npc.width, npc.height, mod.DustType("Sparkle"));
-			}*/
+				for (int i = 0; i < 2; i++)
+				{
+					Gore.NewGore(npc.Center, npc.velocity, mod.GetGoreSlot("Gores/Draken_wing_gib"), 1f);
+					Gore.NewGore(npc.Center + new Vector2(npc.spriteDirection * -6f, 3f), npc.velocity, mod.GetGoreSlot("Gores/Draken_leg_gib"), 1f);
+				}
+
+				Gore.NewGore(npc.Center+new Vector2(npc.spriteDirection*8f,-2f), npc.velocity, mod.GetGoreSlot("Gores/Draken_head_gib"), 1f);
+
+			}
 		}
 
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
@@ -431,6 +437,8 @@ namespace SGAmod.NPCs.TownNPCs
 				{
 					chat.Add("My god... You've done, you beat her... I don't know what to say other than thank you <3", 2.0);
 					chat.Add("So is this it? Am I finally free of Hellion's wrath? I don't hear her voice anymore", 2.0);
+					if (!Main.LocalPlayer.HasItem(ModContent.ItemType<Items.Weapons.DragonCommanderStaff>()))
+					chat.Add("Hey! Bring a [i: " + ModContent.ItemType<Items.CosmicFragment>() + "] to me, I have something for you!", 5.0);
 				}
 				else
 				{
@@ -732,17 +740,19 @@ namespace SGAmod.NPCs.TownNPCs
 		public string GetNextItem()
 		{
 			itemsinshop = new[,]{
-				{ SGAmod.Instance.ItemType("EmptyCharm"),50 },
-			{ SGAmod.Instance.ItemType("AssemblyStar"),200 },
-			{ SGAmod.Instance.ItemType("CaliburnCompess"),300 },
-			{ SGAmod.Instance.ItemType("GrippingGloves"),400 },
-			{ SGAmod.Instance.ItemType("RedManaStar"),500 },
+			{ ModContent.ItemType<Items.EmptyCharm>(),50 },
+			{ ModContent.ItemType<Items.AssemblyStar>(),200 },
+			{ ModContent.ItemType<Items.Consumable.CaliburnCompess>(),300 },
+			{ ModContent.ItemType<Items.Accessories.GrippingGloves>(),400 },
+			{ ModContent.ItemType<Items.Consumable.RedManaStar>(),500 },
+			{ ModContent.ItemType<Items.Weapons.ThievesThrow>(),750 },
+
 			{ ItemID.Arkhalis,1000 },
 			{ ItemID.RodofDiscord,2000 },
-			{ SGAmod.Instance.ItemType("Gong"),2500 },
+			{ ModContent.ItemType<Items.Consumable.Gong>(),2500 },
 			//{ SGAmod.Instance.ItemType("EntropyTransmuter"),4000 },
-			{ SGAmod.Instance.ItemType("PrimordialSkull"),5000 },
-			{ SGAmod.Instance.ItemType("MVMUpgrade"),6000 },
+			{ ModContent.ItemType<Items.Accessories.PrimordialSkull>(),5000 },
+			{ ModContent.ItemType<Items.Accessories.MVMUpgrade>(),6000 },
 			{ ItemID.AviatorSunglasses,10000 },
 			{ ItemID.RedPotion,1000000 },
 			{ ItemID.RedPotion,1000000 },

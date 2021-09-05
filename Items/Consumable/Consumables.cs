@@ -144,7 +144,80 @@ namespace SGAmod.Items.Consumable
 		}
 	}
 
-	public class EnchantedBubble : ModItem
+	public class MossySalve : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Mossy Salve");
+			Tooltip.SetDefault("'A nasty infection is better than bleeding out right?'\nStops Bleeding, Massive Bleeding, OnFire!, and Burning\nAlso heals 25 HP\n" + Idglib.ColorText(Color.Red, "However causes Swamp Rot infection and Murky Depths") +"\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each"));
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.Green;
+			item.value = Item.buyPrice(silver: 50);
+			item.useStyle = 2;
+			item.useAnimation = 30;
+			item.useTime = 30;
+			item.useTurn = true;
+			//item.UseSound = SoundID.Drown;
+			item.consumable = true;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return player.SGAPly().CooldownStacks.Count < player.SGAPly().MaxCooldownStacks;
+		}
+		public override bool UseItem(Player player)
+		{
+			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
+			sgaplayer.AddCooldownStack(60 * 60, 1);
+
+			int[] buffs = { ModContent.BuffType<NPCs.Murk.PoisonStack>(), BuffID.Bleeding, BuffID.OnFire, BuffID.Burning, ModContent.BuffType<Buffs.MassiveBleeding>() };
+
+			foreach(int buff in buffs)
+            {
+				int buffindex = player.FindBuffIndex(buff);
+				if (buffindex >= 0)
+                {
+					player.DelBuff(buffindex);
+                }
+			}
+
+			player.HealEffect(25);
+            player.statLife += 25;
+
+			player.AddBuff(ModContent.BuffType<NPCs.Murk.MurkyDepths>(),60* (Main.expertMode ? 15 : 30));
+			player.AddBuff(ModContent.BuffType<Buffs.PlaceHolderDebuff>(), 60 * 10);
+			if (player.FindBuffIndex(ModContent.BuffType<Buffs.PlaceHolderDebuff>()) >= 0)
+			{
+				player.buffType[player.FindBuffIndex(ModContent.BuffType<Buffs.PlaceHolderDebuff>())] = ModContent.BuffType<NPCs.Murk.PoisonStack>();
+			}
+
+			Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 3, 1f, -0.50f);
+
+			return true;
+		}
+		public override void AddRecipes()
+		{
+			if (GetType() == typeof(MossySalve))
+			{
+				ModRecipe recipe = new ModRecipe(mod);
+				recipe.AddIngredient(ItemID.Vine, 5);
+				recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.DankCore>(), 1);
+				recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.DecayedMoss>(), 3);
+				recipe.AddTile(TileID.WorkBenches);
+				recipe.SetResult(this, 3);
+				recipe.AddRecipe();
+
+			}
+		}
+	}
+
+	public class EnchantedBubble : MossySalve
 	{
 		public override void SetStaticDefaults()
 		{
@@ -189,10 +262,6 @@ namespace SGAmod.Items.Consumable
 			}
 		}
 
-		public override bool CanUseItem(Player player)
-		{
-			return player.SGAPly().CooldownStacks.Count < player.SGAPly().MaxCooldownStacks;
-		}
 		public override bool UseItem(Player player)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
@@ -655,7 +724,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Energizer Battery");
-			Tooltip.SetDefault("'Keeping going and going...'\nInstantly restores 20% of your Max Electric Charge on use\nIncreases your Max Electric Charge by 200 per use (up to 2000)\nAfter Sharkvern, this is raised 3000\nAfter Luminite Wraith, this is raised again to 5000\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 40 seconds each"));
+			Tooltip.SetDefault("'Keeping going and going...'\nInstantly restores 20% of your Max Electric Charge on use\nIncreases your Max Electric Charge by 200 per use (up to 2000)\nAfter Sharkvern, this is raised to 3000\nAfter Luminite Wraith, it is raised again to 5000\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 40 seconds each"));
 		}
 
 		public override bool CanUseItem(Player player)

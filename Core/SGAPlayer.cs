@@ -93,7 +93,7 @@ namespace SGAmod
 		public bool MassiveBleeding = false;
 		public bool ELS = false;
 		public bool ActionCooldown = false;
-		public bool thermalblaze = false; public bool acidburn = false;
+		public bool thermalblaze = false; public bool acidburn = false; public int badLifeRegen = 0;
 		public int FieryheartBuff = 0;
 		public int creeperexplosion = 0;
 		public bool DankShrineZone = false;
@@ -284,6 +284,7 @@ namespace SGAmod
 			if (gamePadAutoAim > 0)
 				gamePadAutoAim -= 1;
 
+			badLifeRegen = 0;
 			uncraftBoost = Math.Max(uncraftBoost - 1, 0);
 			surprised = Math.Max(surprised - 1, 0);
 			tidalCharm = (int)MathHelper.Clamp(tidalCharm - Math.Sign(tidalCharm), -1000, 1000);
@@ -727,6 +728,7 @@ namespace SGAmod
 					player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " couldn't dodge fate"), 10000, player.direction);
 				return;
 			}
+			player.lifeRegen -= badLifeRegen;
 		}
 
 		public override void SetupStartInventory(IList<Item> items, bool mediumcoreDeath)

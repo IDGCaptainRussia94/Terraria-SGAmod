@@ -31,7 +31,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.knockBack = 1.5f;
 			item.value = 25;
 			item.rare = 5;
-			item.shoot = mod.ProjectileType("BlazeBullet");   //The projectile shoot when your weapon using this ammo
+			item.shoot = ModContent.ProjectileType <Projectiles.BlazeBullet>();   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 5f;                  //The speed of the projectile
 			item.ammo = AmmoID.Bullet;
 		}
@@ -70,7 +70,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.knockBack = 1.5f;
 			item.value = 25;
 			item.rare = 5;
-			item.shoot = mod.ProjectileType("AcidBullet");   //The projectile shoot when your weapon using this ammo
+			item.shoot = ModContent.ProjectileType<Projectiles.AcidBullet>();   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 2.5f;                  //The speed of the projectile
 			item.ammo = AmmoID.Bullet;
 		}
@@ -79,6 +79,44 @@ namespace SGAmod.Items.Weapons.Ammo
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("VialofAcid"), 1);
+			recipe.AddIngredient(ItemID.MusketBall, 50);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this, 50);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class NoviteBullet : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Bullet");
+			Tooltip.SetDefault("Redirects when near enemies, but only once\nCosts 25 electric charge to change direction");
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Ammo/NoviteBullet"); }
+		}
+		public override void SetDefaults()
+		{
+			item.damage = 6;
+			item.ranged = true;
+			item.width = 8;
+			item.height = 8;
+			item.maxStack = 999;
+			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
+			item.knockBack = 0f;
+			item.value = 20;
+			item.rare = ItemRarityID.Green;
+			item.shoot = ModContent.ProjectileType<Projectiles.NoviteBullet>();   //The projectile shoot when your weapon using this ammo
+			item.shootSpeed = 4.5f;                  //The speed of the projectile
+			item.ammo = AmmoID.Bullet;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<NoviteBar>(), 1);
 			recipe.AddIngredient(ItemID.MusketBall, 50);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this, 50);
@@ -106,9 +144,9 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.maxStack = 999;
 			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
 			item.knockBack = 1.5f;
-			item.value = 25;
+			item.value = 10;
 			item.rare = 1;
-			item.shoot = mod.ProjectileType("TungstenBullet");   //The projectile shoot when your weapon using this ammo
+			item.shoot = ModContent.ProjectileType<Projectiles.TungstenBullet>();   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 4.5f;                  //The speed of the projectile
 			item.ammo = AmmoID.Bullet;
 		}
@@ -148,7 +186,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.knockBack = 2.0f;
 			item.value = 300;
 			item.rare = 10;
-			item.shoot = mod.ProjectileType("AimBotBullet");   //The projectile shoot when your weapon using this ammo
+			item.shoot = ModContent.ProjectileType <Projectiles.AimBotBullet>();   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 1f;                  //The speed of the projectile
 			item.ammo = AmmoID.Bullet;
 		}
@@ -204,7 +242,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.knockBack = 1.5f;
 			item.value = 100;
 			item.rare = 9;
-			item.shoot = mod.ProjectileType("PortalBullet");   //The projectile shoot when your weapon using this ammo
+			item.shoot = ModContent.ProjectileType<Projectiles.PortalBullet>();   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 4.5f;                  //The speed of the projectile
 			item.ammo = AmmoID.Bullet;
 		}

@@ -45,8 +45,10 @@ namespace SGAmod.Items.Weapons.Aurora
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(mod.ItemType("UnmanedStaff"), 1);
-            recipe.AddIngredient(mod.ItemType("VialofAcid"), 10);
+            recipe.AddIngredient(ItemID.LunarFlareBook, 1);
+            recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
+            recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 190);
+            recipe.AddIngredient(ItemID.ShinePotion, 1);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();

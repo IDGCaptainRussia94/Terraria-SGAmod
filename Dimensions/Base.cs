@@ -807,14 +807,14 @@ namespace SGAmod.Dimensions
                         for (int i = 0; i < 360; i += 360 / fogDetail)
                             Main.spriteBatch.Draw(pern, new Vector2(vecx.X, vecx.Y) - Main.screenPosition, null, Color.White * fogAlpha, MathHelper.ToRadians(i), new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(1.5f, 1.5f) * size, SpriteEffects.None, 0f);
 
-                        /*for (int i = 0; i < Main.maxNPCs; i += 1)
-                        {
-                            if (Main.npc[i].active && Main.npc[i].townNPC)
-                            {
-                                for (int x = 0; x < 360; x += 360 / 30)
-                                    Main.spriteBatch.Draw(pern, (Main.npc[i].Center) - Main.screenPosition, null, Color.White * 0.25f, MathHelper.ToRadians(x), new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(7f, 7f), SpriteEffects.None, 0f);
-                            }
-                        }*/
+                        //for (int i = 0; i < Main.maxNPCs; i += 1)
+                        //{
+                        //    if (Main.npc[i].active && Main.npc[i].townNPC)
+                        //    {
+                        //        for (int x = 0; x < 360; x += 360 / 30)
+                        //            Main.spriteBatch.Draw(pern, (Main.npc[i].Center) - Main.screenPosition, null, Color.White * 0.25f, MathHelper.ToRadians(x), new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(7f, 7f), SpriteEffects.None, 0f);
+                        //    }
+                        //}
 
                         pern = ModContent.GetTexture("SGAmod/Extra_49");
                         for (int i = 0; i < 360; i += 360 / 30)
@@ -859,10 +859,8 @@ namespace SGAmod.Dimensions
 
 
 
-
-
-
             }
+
         }
 
             public static void DrawPostEffectNPCs(float scale = 2f)
@@ -964,9 +962,9 @@ namespace SGAmod.Dimensions
 
                     SGAPlayer sgaply = player.SGAPly();
 
-                    if (sgaply.valkyrieSet.Item2>0)
+                    if (sgaply.valkyrieSet.Item2 > 0)
                     {
-                        UnifiedRandom rando = new UnifiedRandom(player.whoAmI+Main.worldName.GetHashCode());
+                        UnifiedRandom rando = new UnifiedRandom(player.whoAmI + Main.worldName.GetHashCode());
 
 
                         Texture2D extra = Main.extraTexture[89];
@@ -977,13 +975,13 @@ namespace SGAmod.Dimensions
                         for (int i = 0; i < counter; i += 1)
                         {
 
-                            float alphaxxx = MathHelper.Clamp((counter - i),0f,1f)*0.75f;
+                            float alphaxxx = MathHelper.Clamp((counter - i), 0f, 1f) * 0.75f;
 
-                            Matrix aurashards = Matrix.CreateFromYawPitchRoll(rando.NextFloat(MathHelper.TwoPi) + (Main.GlobalTime * (rando.NextFloat(0.25f, 1f)*(rando.NextBool() ? 1f : -1f)))+(player.Center.X/120f), 0,rando.NextFloat(-MathHelper.Pi / 1f, MathHelper.Pi / 1f));
+                            Matrix aurashards = Matrix.CreateFromYawPitchRoll(rando.NextFloat(MathHelper.TwoPi) + (Main.GlobalTime * (rando.NextFloat(0.25f, 1f) * (rando.NextBool() ? 1f : -1f))) + (player.Center.X / 120f), 0, rando.NextFloat(-MathHelper.Pi / 1f, MathHelper.Pi / 1f));
 
                             Vector3 loc = Vector3.Transform(Vector3.UnitX, aurashards);
 
-                            spriteBatch.Draw(extra, (player.MountedCenter + new Vector2(loc.X, loc.Y)*(48f* sgaply.valkyrieSet.Item4)) - Main.screenPosition, null, Main.hslToRgb(rando.NextFloat(1f),0.45f,0.75f) * MathHelper.Clamp(loc.Z, 0f, 1f)* alphaxxx, 0, sizehalf, 1f, SpriteEffects.None, 0f);
+                            spriteBatch.Draw(extra, (player.MountedCenter + new Vector2(loc.X, loc.Y) * (48f * sgaply.valkyrieSet.Item4)) - Main.screenPosition, null, Main.hslToRgb(rando.NextFloat(1f), 0.45f, 0.75f) * MathHelper.Clamp(loc.Z, 0f, 1f) * alphaxxx, 0, sizehalf, 1f, SpriteEffects.None, 0f);
                         }
 
 
@@ -1007,9 +1005,9 @@ namespace SGAmod.Dimensions
                             hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
                             hallowed.Parameters["prismAlpha"].SetValue(0f);
                             hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Stain"));
-                            hallowed.Parameters["overlayProgress"].SetValue(new Vector3(Main.GlobalTime / 5f, Main.GlobalTime/3f, 0f));
+                            hallowed.Parameters["overlayProgress"].SetValue(new Vector3(Main.GlobalTime / 5f, Main.GlobalTime / 3f, 0f));
                             hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
-                            hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, Main.GlobalTime/4f));
+                            hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, Main.GlobalTime / 4f));
                             hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
                             hallowed.Parameters["rainbowScale"].SetValue(0.8f);
                             hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
@@ -1022,7 +1020,7 @@ namespace SGAmod.Dimensions
 
                             spriteBatch.Draw(bubbles, (player.MountedCenter) - Main.screenPosition, new Rectangle(0, bubbles.Height / 2, bubbles.Width, bubbles.Height / 2), Color.LightPink * alphapercent, -(float)Math.Sin(Main.GlobalTime) / 4f, half, (Vector2.One * 1.5f) + (new Vector2((float)Math.Sin(Main.GlobalTime), (float)Math.Cos(Main.GlobalTime))) * 0.25f, SpriteEffects.None, 0f);
 
-                            spriteBatch.Draw(bubbles, (player.MountedCenter) - Main.screenPosition, new Rectangle(0, bubbles.Height / 2, bubbles.Width, bubbles.Height / 2), Color.LightPink * alphapercent, (float)Math.Sin(Main.GlobalTime)/4f, half, (Vector2.One * 1.5f) + (new Vector2((float)Math.Cos(Main.GlobalTime + MathHelper.PiOver2), (float)Math.Sin(Main.GlobalTime-MathHelper.PiOver2))) * 0.25f, SpriteEffects.None, 0f);
+                            spriteBatch.Draw(bubbles, (player.MountedCenter) - Main.screenPosition, new Rectangle(0, bubbles.Height / 2, bubbles.Width, bubbles.Height / 2), Color.LightPink * alphapercent, (float)Math.Sin(Main.GlobalTime) / 4f, half, (Vector2.One * 1.5f) + (new Vector2((float)Math.Cos(Main.GlobalTime + MathHelper.PiOver2), (float)Math.Sin(Main.GlobalTime - MathHelper.PiOver2))) * 0.25f, SpriteEffects.None, 0f);
 
                             Main.spriteBatch.End();
                             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
@@ -1061,7 +1059,7 @@ namespace SGAmod.Dimensions
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
 
-                float alpha = 1f-((Main.LocalPlayer.GetModPlayer<SGADimPlayer>().lightSize - 1800f) / 600f);
+                float alpha = 1f - ((Main.LocalPlayer.GetModPlayer<SGADimPlayer>().lightSize - 1800f) / 600f);
 
                 Matrix Custommatrix = Matrix.CreateScale(1f, 1f, 0f);// Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
 
@@ -1076,7 +1074,7 @@ namespace SGAmod.Dimensions
                         Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
                         //Draw Shadow RenderTarget2D
                         if (!isMurk || (isMurk && !SGAConfigClient.Instance.Murklite))
-                        Main.spriteBatch.Draw(SGAmod.drawnscreen, new Vector2(0, 0), null, new Color(50, 50, 50) * alpha * SGAmod.fogAlpha, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
+                            Main.spriteBatch.Draw(SGAmod.drawnscreen, new Vector2(0, 0), null, new Color(50, 50, 50) * alpha * SGAmod.fogAlpha, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
                     }
                     Main.spriteBatch.End();
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
@@ -1103,7 +1101,7 @@ namespace SGAmod.Dimensions
 
 
 
-                List<HellionInsanity> madness= DimDungeonsProxy.madness;
+                List<HellionInsanity> madness = DimDungeonsProxy.madness;
 
                 if (madness.Count > 0)
                 {
@@ -1283,7 +1281,6 @@ namespace SGAmod.Dimensions
 
                     if (dimstring != null)
                     {
-
                         Player locply = Main.LocalPlayer;
                         spriteBatch.End();
 
@@ -1298,7 +1295,50 @@ namespace SGAmod.Dimensions
 
                     }
 
-                    spriteBatch.End();
+                    //Boss-Specific stuff
+                    if (SLWorld.currentSubworld is SpaceDim dim)
+                    {
+
+                        NPC[] bossg = Main.npc.Where(testby => testby.active && testby.type == ModContent.NPCType<SpaceBoss>()).ToArray();
+
+                        SpaceBoss boss = null;
+
+                        if (bossg.Length > 0)
+                            boss = (SpaceBoss)(bossg[0].modNPC);
+
+                        if (boss != null && boss.npc.ai[3] > 1)
+                        {
+                            Player locply = Main.LocalPlayer;
+                            spriteBatch.End();
+
+                            alpha = 1f;
+
+                            dimstring = "--Time til the end--";
+
+                            Vector2 offset = new Vector2(Main.screenWidth / 2, Main.screenHeight * 0.87f);
+                            Matrix Custommatrix2 = Matrix.CreateScale(1.25f, 1.25f, 1) * Matrix.CreateTranslation(offset.X, offset.Y, 0f) *
+                            Matrix.CreateScale((Main.screenWidth / 1920f), (Main.screenHeight / 1024f), 0f);
+                            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Custommatrix2);
+
+                            Vector2 size = Main.fontDeathText.MeasureString(dimstring);
+                            spriteBatch.DrawString(Main.fontDeathText, dimstring, new Vector2(-size.X / 2f, 0), Color.MediumAquamarine * alpha);
+
+
+                            spriteBatch.End();
+                            dimstring = "" + Math.Round(boss.countdownToTheEnd / 60f, 2);
+
+                            offset = new Vector2(Main.screenWidth / 2, Main.screenHeight * 0.92f);
+                            Custommatrix2 = Matrix.CreateScale(2f, 2f, 1) * Matrix.CreateTranslation(offset.X, offset.Y, 0f) *
+                            Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
+                            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Custommatrix2);
+
+                            size = Main.fontDeathText.MeasureString(dimstring);
+                            spriteBatch.DrawString(Main.fontDeathText, dimstring, new Vector2(-size.X / 2f, 0), (boss.countdownToTheEnd / 60f) < 20 ? Color.Red : Color.MediumAquamarine * alpha);
+
+                        }
+                    }
+
+                        spriteBatch.End();
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1f,1f,1f));
 
                     float alpha2 = SGADimPlayer.staticHeartBeat>0 ? (float)Math.Sin((SGADimPlayer.staticHeartBeat/30f)*MathHelper.Pi) * 150f : 0;

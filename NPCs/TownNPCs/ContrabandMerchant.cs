@@ -18,6 +18,8 @@ namespace SGAmod.NPCs.TownNPCs
 	public class ContrabandMerchant : ModNPC
 	{
 		public int itemRandomizer = 0;
+		public static UnifiedRandom randz = new UnifiedRandom();
+
 
 		public static OverseenCrystalCurrency OverseenCrystalCustomCurrencySystem;
 		public static int OverseenCrystalCustomCurrencyID;
@@ -104,11 +106,22 @@ namespace SGAmod.NPCs.TownNPCs
 
 		public override void HitEffect(int hitDirection, double damage)
 		{
-			/*int num = npc.life > 0 ? 1 : 5;
-			for (int k = 0; k < num; k++)
+			if (npc.life <= 0)
 			{
-				Dust.NewDust(npc.position, npc.width, npc.height, mod.DustType("Sparkle"));
-			}*/
+				if (Terraria.GameContent.Events.BirthdayParty.PartyIsUp)
+				{
+					Gore.NewGore(npc.position, npc.velocity, mod.GetGoreSlot("Gores/ContrabandMerchant_Gore_Head_alt"), 1f);
+				}
+				else
+				{
+					Gore.NewGore(npc.position, npc.velocity, mod.GetGoreSlot("Gores/ContrabandMerchant_Gore_Head"), 1f);
+				}
+				for (int k = 0; k < 2; k++)
+				{
+					Gore.NewGore(npc.position, npc.velocity, mod.GetGoreSlot("Gores/ContrabandMerchant_Gore_Arm"), 1f);
+					Gore.NewGore(npc.position, npc.velocity, mod.GetGoreSlot("Gores/ContrabandMerchant_Gore_Leg"), 1f);
+				}
+			}
 		}
 
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
@@ -236,12 +249,11 @@ namespace SGAmod.NPCs.TownNPCs
 
 		public override void AI()
 		{
-			if (!Main.dayTime && itemRandomizer == 0)
+			if (itemRandomizer == 0)
 			{
 				UnifiedRandom rando = new UnifiedRandom(Main.worldName.GetHashCode() + npc.Center.GetHashCode());
 
 				itemRandomizer = rando.Next();
-
 			}
 			if ((Main.dayTime) && !ContrabandMerchant.IsNpcOnscreen(npc.Center))
 			{
@@ -280,7 +292,7 @@ namespace SGAmod.NPCs.TownNPCs
 		public override void SetupShop(Chest shop, ref int nextSlot)
 		{
 
-			UnifiedRandom randz = new UnifiedRandom(itemRandomizer);
+			randz = new UnifiedRandom(itemRandomizer);
 
 			//if (Main.LocalPlayer.HasItem(ItemID.AncientCloth))
 			//{

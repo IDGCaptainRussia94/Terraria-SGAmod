@@ -179,7 +179,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Yoyo Gauntlet");
-			Tooltip.SetDefault("All effects of Prismal Guantlet, Plus:\nYoyo Bag and Professional's Threads Effect, and fabulous rainbow strings!");
+			Tooltip.SetDefault("All effects of Prismal Guantlet, Plus:\nYoyo Bag and Professional's Drop Effect, and fabulous rainbow strings!");
 		}
 
 		public override void SetDefaults()
@@ -1453,12 +1453,12 @@ namespace SGAmod.Items.Accessories
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Professional's Threads");
+			DisplayName.SetDefault("Professional's Drop");
 			Tooltip.SetDefault("Increases Yoyo velocity by 25%, does more damage the further out on the line it is\nCaps at 15% boost at max range\nHaving a longer reach can boost this even higher");
 		}
 		public override string Texture
 		{
-			get { return ("Terraria/Item_"+(Main.rand.NextBool() ? ItemID.GreenThread : ItemID.PinkThread)); }
+			get { return ("Terraria/OneDropLogo"); }
 		}
 
 		public override Color? GetAlpha(Color lightColor)
@@ -1703,7 +1703,17 @@ namespace SGAmod.Items.Accessories
 
 		}
 
-		public override void SetDefaults()
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+			string s = "Not Binded!";
+			foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+			{
+				s = key;
+			}
+			tooltips.Add(new TooltipLine(mod, "DemonSteppersSpeed", "Toggle the speed boost with the 'Walk Mode' hotkey ("+ s+")"));
+		}
+
+        public override void SetDefaults()
 		{
 			item.maxStack = 1;
 			item.width = 26;
@@ -3389,7 +3399,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Murky Charm");
-			Tooltip.SetDefault("Reduces the life lost from drowning\nGrants immunity to Murky Depths");
+			Tooltip.SetDefault("Reduces the life lost from drowning\nGrants immunity to Murky Depths and Swamp Rot");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3400,6 +3410,7 @@ namespace SGAmod.Items.Accessories
 				sgaply.murkyCharm = true;
 				sgaply.drownRate -= 1;
 				player.buffImmune[ModContent.BuffType<NPCs.Murk.MurkyDepths>()] = true;
+				player.buffImmune[ModContent.BuffType<NPCs.Murk.PoisonStack>()] = true;
 			}
 		}
 
@@ -3816,7 +3827,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Diving Gear");
-			Tooltip.SetDefault(allText+ "\nEffects of Murky Charm and Prismal Air Tank");
+			Tooltip.SetDefault(allText+ "\nEffects of Terra Diving Gear, Murky Charm, and Prismal Air Tank");
 		}
 
         public override bool DrawHead()

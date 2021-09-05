@@ -11,6 +11,7 @@ using System.Linq;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Effects;
 using SGAmod.Dimensions;
+using Terraria.DataStructures;
 
 namespace SGAmod.NPCs.Sharkvern
 {
@@ -29,9 +30,11 @@ namespace SGAmod.NPCs.Sharkvern
         public List<int> averagey;
         public int timer = 0;
         public int timer2 = 0;
+        public int doSharkRise = 0;
         public bool ramwater = true;
         public int whirlpoolAttackNum=0;
         public bool RainFight = false;
+        public int leftNRight = 1;
         public NPC tail;
 
 
@@ -443,20 +446,32 @@ namespace SGAmod.NPCs.Sharkvern
             }
             else
             {
-
-                if (timer % 1000 > 700)
+                if (doSharkRise < 10)
                 {
-                    collision = true;
-                    targetYPos -= 800;
-                    if (timer % 1000 == 849)
+                    if (timer % 1000 > 700)
                     {
-                        ramwater = false;
-                        npc.netUpdate = true;
+                        collision = true;
+                        targetYPos -= 800;
+                        if (timer % 1000 == 849)
+                        {
+                            ramwater = false;
+                            npc.netUpdate = true;
+                        }
+                        if (timer % 1000 > 850)
+                        {
+                            targetYPos += 4800;
+                        }
                     }
-                    if (timer % 1000 > 850)
-                    {
-                        targetYPos += 4800;
-                    }
+                }
+            }
+
+            if (doSharkRise > 9)
+            {
+                collision = true;
+                targetXPos -= 1500*leftNRight;
+                if (doSharkRise > 300)
+                {
+                    targetXPos += (doSharkRise - 300)*(3000*leftNRight);
                 }
             }
 
@@ -733,6 +748,33 @@ namespace SGAmod.NPCs.Sharkvern
                 {
                     npc.ai[3] = -1000;
                     whirlpoolAttackNum += 1;
+                }
+            }
+            else
+            {
+
+                if (npc.life < (int)(npc.lifeMax * 0.75f))
+                {
+                    if (doSharkRise < 10)
+                        doSharkRise += 1;
+                }
+
+                if (doSharkRise > 9)
+                {
+                    doSharkRise += 1;
+                    timer -= 1;
+                }
+                if (doSharkRise > 300)
+                {
+                    if (doSharkRise % 15 == 0)
+                    {
+                        Projectile.NewProjectileDirect(new Vector2(npc.Center.X, Main.player[npc.target].Center.Y-128f), Vector2.UnitY * 4f, ModContent.ProjectileType<SharkDropProj>(), 50, 5f);
+                    }
+                }
+                if (doSharkRise > 600)
+                {
+                    leftNRight *= -1;
+                    doSharkRise = -1300;
                 }
             }
 
@@ -1022,5 +1064,211 @@ namespace SGAmod.NPCs.Sharkvern
 
     }
 
+    public class SharkDropProj : ModProjectile
+    {
 
+        public Player P;
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Shark Drop");
+        }
+
+        public override void SetDefaults()
+        {
+            //projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+            projectile.width = 18;
+            projectile.height = 18;
+            projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
+            projectile.hostile = true;
+            projectile.friendly = false;
+            projectile.tileCollide = true;
+            projectile.extraUpdates = 300;
+            projectile.timeLeft = 300;
+            projectile.penetrate = 1;
+            projectile.usesLocalNPCImmunity = true;
+            aiType = ProjectileID.WoodenArrowFriendly;
+        }
+
+        public override string Texture
+        {
+            get { return "Terraria/Projectile_" + ProjectileID.RocketII; }
+        }
+
+        public override bool CanDamage()
+        {
+            return false;
+        }
+
+        public override bool PreKill(int timeLeft)
+        {
+            Projectile.NewProjectileDirect(projectile.Center, Vector2.Zero, ModContent.ProjectileType<SharkDropProjDelay>(), projectile.damage, 5f);
+
+            return true;
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            return true;
+        }
+
+        public override void AI()
+        {
+
+            Point16 loc = new Point16((int)projectile.Center.X >> 4, (int)projectile.Center.Y >> 4);
+            if (WorldGen.InWorld(loc.X, loc.Y))
+            {
+                Tile tile = Main.tile[loc.X, loc.Y];
+                if (tile != null)
+                    if (tile.liquid > 64)
+                        projectile.Kill();
+            }
+
+        }
+    }
+
+    public class SharkDropProjDelay : PinkyWarning
+    {
+        protected override Color color => Color.Aqua;
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Shark Delay");
+        }
+
+        public override void SetDefaults()
+        {
+            //projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+            projectile.width = 18;
+            projectile.height = 18;
+            projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
+            projectile.hostile = true;
+            projectile.friendly = false;
+            projectile.tileCollide = true;
+            projectile.extraUpdates = 0;
+            projectile.timeLeft = 60;
+            projectile.penetrate = 1;
+            projectile.usesLocalNPCImmunity = true;
+            aiType = ProjectileID.WoodenArrowFriendly;
+            timeleft = 60f;
+        }
+        public override string Texture
+        {
+            get { return "Terraria/Projectile_" + ProjectileID.RocketII; }
+        }
+        public override bool CanDamage()
+        {
+            return false;
+        }
+
+        public override bool PreKill(int timeLeft)
+        {
+            Projectile.NewProjectileDirect(projectile.Center, Vector2.UnitY * -20f, ModContent.ProjectileType<FlyingSharkProjBossProj>(), projectile.damage, 5f);
+
+            for (int i = 0; i < 40; i += 1)
+            {
+                int dust2 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 33);
+                Main.dust[dust2].scale = 2.5f;
+                Main.dust[dust2].noGravity = false;
+                Main.dust[dust2].velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-32f, -8f));
+            }
+
+            Main.PlaySound(SoundID.Splash, (int)projectile.position.X, (int)projectile.position.Y, 1, 1f, 0.25f);
+
+            return true;
+        }
+
+        public override void AI()
+        {
+            projectile.ai[0] += 1;
+            for (int i = 0; i < 10; i += 1)
+            {
+                int dust2 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 33);
+                Main.dust[dust2].scale = 2.5f;
+                Main.dust[dust2].alpha = 200;
+                Main.dust[dust2].noGravity = false;
+                Main.dust[dust2].velocity = new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-6f, 1f));
+            }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            float there = projectile.velocity.ToRotation() - MathHelper.ToRadians(-90);
+            //if (projectile.ai[0] < 120)
+            //{
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            spriteBatch.Draw(Main.extraTexture[60], projectile.Center+new Vector2(0,12) - Main.screenPosition, null, color * MathHelper.Clamp(projectile.timeLeft / 30f, 0f, 0.9f), 0, (Main.extraTexture[60].Size() / 2f) + new Vector2(0, 12), new Vector2(0.75f, 1f+projectile.ai[0]/5f), SpriteEffects.None, 0f);
+            //}
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+            return false;
+        }
+    }
+
+    public class FlyingSharkProjBossProj : ModProjectile
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Hungry Hungry Shark");
+        }
+
+        public override string Texture
+        {
+            get { return ("Terraria/NPC_" + NPCID.Shark); }
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile refProjectile = new Projectile();
+            refProjectile.SetDefaults(ProjectileID.WaterBolt);
+            projectile.extraUpdates = 0;
+            projectile.width = 24;
+            projectile.height = 64;
+            projectile.aiStyle = -1;
+            projectile.timeLeft = 200;
+            projectile.tileCollide = false;
+            projectile.friendly = false;
+            projectile.hostile = true;
+            projectile.penetrate = -1;
+            projectile.usesLocalNPCImmunity = true;
+            projectile.localNPCHitCooldown = -1;
+            projectile.scale = 1f;
+        }
+
+        public override void AI()
+        {
+            int dust = Dust.NewDust(projectile.position, projectile.width, projectile.height, 33);
+            Main.dust[dust].scale = 2f;
+            Main.dust[dust].noGravity = false;
+            Main.dust[dust].velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-1f, 1f));
+
+            projectile.localAI[0] += 1;
+            projectile.velocity.Y += 0.25f;
+            projectile.rotation = MathHelper.PiOver2;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+
+            Texture2D tex = Main.npcTexture[ModContent.NPCType<SharvernMinion>()];
+            Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
+            Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
+            Color color = projectile.GetAlpha(lightColor) * 1f; //* ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+            int timing = (int)(projectile.localAI[0] / 8f);
+            timing %= 4;
+            timing *= ((tex.Height) / 4);
+            float yspeed = projectile.velocity.Y;
+            if (Math.Abs(projectile.velocity.Y) > 2f)
+            {
+                yspeed = (Math.Sign(yspeed) * 2f) + yspeed / 5f;
+            }
+            spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height - 1) / 4),
+                color * MathHelper.Clamp((float)projectile.timeLeft / 30f, 0f, (float)Math.Min(projectile.localAI[0] / 15f, 1f)), projectile.rotation
+                , drawOrigin, projectile.scale, projectile.velocity.X < 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+            return false;
+        }
+
+    }
 }

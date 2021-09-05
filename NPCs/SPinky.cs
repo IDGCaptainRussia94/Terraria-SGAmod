@@ -2843,6 +2843,7 @@ namespace SGAmod.NPCs
 	public class PinkyWarning : Hellion.HellionBolt
 	{
 		protected float timeleft = 150f;
+		protected virtual Color color => Color.Purple;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Warning Forever!");
@@ -2870,7 +2871,7 @@ namespace SGAmod.NPCs
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(Main.extraTexture[60], startpos - Main.screenPosition, null, Color.Purple * MathHelper.Clamp(projectile.timeLeft / (float)timeleft, 0f, 0.75f), there, (Main.extraTexture[60].Size() / 2f) + new Vector2(0, 12), new Vector2(0.75f, projectile.ai[0]* projectile.damage), SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.extraTexture[60], startpos - Main.screenPosition, null, color * MathHelper.Clamp(projectile.timeLeft / (float)timeleft, 0f, 0.75f), there, (Main.extraTexture[60].Size() / 2f) + new Vector2(0, 12), new Vector2(GetType() == typeof(Murk.MurkTelegraphedAttack) ? 0.25f : 0.75f, projectile.ai[0]* projectile.damage), SpriteEffects.None, 0f);
 			//}
 
 			Main.spriteBatch.End();

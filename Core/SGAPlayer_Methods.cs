@@ -176,7 +176,6 @@ namespace SGAmod
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
 			Main.PlaySound(SoundID.Drown, (int)player.Center.X, (int)player.Center.Y, 0, 1f, 0.50f);
-			sgaplayer.AddCooldownStack(60 * 90, 1);
 			player.breath = (int)MathHelper.Clamp(player.breath + ammount, 0, player.breathMax);
 			sgaplayer.sufficate = player.breath;
 			if (texteffect)

@@ -226,13 +226,13 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "BottledMud", 1);
-			recipe.AddIngredient(null, "VirulentOre", 1);
-			recipe.AddIngredient(null, "DankWood", 5);
+			recipe.AddIngredient(null, "BottledMud", 2);
+			recipe.AddIngredient(null, "VirulentOre", 2);
+			recipe.AddIngredient(null, "DankWood", 8);
 			recipe.AddIngredient(null, "DankCore", 1);
-			recipe.AddIngredient(null, "VialofAcid", 2);
+			recipe.AddIngredient(null, "VialofAcid", 4);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
-			recipe.SetResult(this, 1);
+			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
 		}
 	}

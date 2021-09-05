@@ -67,11 +67,17 @@ namespace SGAmod.NPCs.TownNPCs
 
 		public override void HitEffect(int hitDirection, double damage)
 		{
-			/*int num = npc.life > 0 ? 1 : 5;
-			for (int k = 0; k < num; k++)
+			if (npc.life <= 0)
 			{
-				Dust.NewDust(npc.position, npc.width, npc.height, mod.DustType("Sparkle"));
-			}*/
+
+				Gore.NewGore(npc.position, npc.velocity, mod.GetGoreSlot("Gores/Goat_head_gib"), 1f);
+
+				for (int k = 0; k < 2; k++)
+				{
+					Gore.NewGore(npc.position, npc.velocity, mod.GetGoreSlot("Gores/Goat_leg_gib"), 1f);
+					Gore.NewGore(npc.position, npc.velocity, mod.GetGoreSlot("Gores/Goat_arm_gib"), 1f);
+				}
+			}
 		}
 
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)

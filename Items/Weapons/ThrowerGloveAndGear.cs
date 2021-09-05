@@ -2087,7 +2087,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("The Jelly Brew");
-			Tooltip.SetDefault("Creates expanding bubbles on impact with enemy or solid tiles\nExplodes into lunar fumes when another bubble is created or after 5 seconds\nStrike enemies with the bottle to mark them for the fumes to chase after");
+			Tooltip.SetDefault("Creates expanding neurotoxic bubbles on impact with enemy or solid tiles\nBubbles damage enemies and deflects incoming projectiles\nExplodes into neurotoxic fumes when another bubble is created or after 5 seconds\nStrike enemies with the bottle to mark them for the fumes to chase after");
 		}
 
 		public override void SetDefaults()
@@ -2330,15 +2330,17 @@ namespace SGAmod.Items.Weapons
 				}
 			}
 
-			projectile.ai[0] += Main.player[projectile.owner].SGAPly().ThrowingSpeed;
+			float scalle = (Scale * 24f)* (Scale * 24f);
 
-			for (int num654 = 0; num654 < 2; num654++)
+			foreach (Projectile proj in Main.projectile.Where(testby => testby.active && testby.whoAmI != projectile.whoAmI && testby.velocity.Length() > 0.5f && (projectile.Center - testby.Center).LengthSquared() < scalle))
 			{
-				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
-				int num655 = Dust.NewDust(projectile.Center + Main.rand.NextVector2Circular(16, 16), 0, 0, DustID.AncientLight, randomcircle.X * 3f, randomcircle.Y * 3f, 150, Color.Lime, 1f);
-				Main.dust[num655].noGravity = true;
-				Main.dust[num655].noLight = true;
+				if (Vector2.Dot(Vector2.Normalize(proj.velocity), Vector2.Normalize(projectile.Center - proj.Center)) > 0)
+				{
+					proj.velocity = Vector2.Normalize(proj.Center-projectile.Center).RotatedBy(Main.rand.NextFloat(-0.25f, 0.25f)) * proj.velocity.Length();
+				}
 			}
+
+			projectile.ai[0] += Main.player[projectile.owner].SGAPly().ThrowingSpeed;
 
 		}
 

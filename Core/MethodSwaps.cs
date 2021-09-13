@@ -47,6 +47,7 @@ namespace SGAmod
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
 			On.Terraria.Player.AddBuff += Player_AddBuff;
+            On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
 			On.Terraria.Player.DropSelectedItem += DontDropManifestedItems;
 			On.Terraria.Player.dropItemCheck += ManifestedPriority;
 			On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
@@ -57,7 +58,28 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
-		public static void Main_Update(On.Terraria.Main.orig_Update orig,Main mainer, GameTime time)
+        private static void Player_UpdateLifeRegen(On.Terraria.Player.orig_UpdateLifeRegen orig, Player self)
+        {
+			SGAPlayer sgaply = self.SGAPly();
+			if (sgaply.jungleTemplarSet.Item2)
+			{
+				if (sgaply.ConsumeElectricCharge(3, 300, true))
+				{
+					Vector2 playervel = self.velocity;
+
+					self.velocity = Vector2.Zero;
+					orig(self);
+					self.velocity = playervel;
+				}
+
+				return;
+			}
+
+			orig(self);
+
+		}
+
+        public static void Main_Update(On.Terraria.Main.orig_Update orig,Main mainer, GameTime time)
         {
 			//if (!Main.gameMenu)
 			//Main.rand = new Terraria.Utilities.UnifiedRandom(10);

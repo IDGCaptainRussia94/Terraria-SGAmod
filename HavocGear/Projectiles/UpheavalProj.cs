@@ -60,7 +60,7 @@ namespace SGAmod.HavocGear.Projectiles
 					float num431 = Main.npc[num430].position.X + (float)(Main.npc[num430].width / 2);
 					float num432 = Main.npc[num430].position.Y + (float)(Main.npc[num430].height / 2);
 					float num433 = Math.Abs(projectile.position.X + (float)(projectile.width / 2) - num431) + Math.Abs(projectile.position.Y + (float)(projectile.height / 2) - num432);
-					if (num433 < num429 && Collision.CanHit(projectile.Center, 1, 1, Main.npc[num430].Center, 1, 1))
+					if (num433 < num429 && Collision.CanHitLine(projectile.Center, 1, 1, Main.npc[num430].Center, 1, 1))
 					{
 						if (num428 < 20)
 						{

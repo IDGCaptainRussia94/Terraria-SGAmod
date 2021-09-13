@@ -1313,7 +1313,7 @@ namespace SGAmod.Dimensions
 
                             alpha = 1f;
 
-                            dimstring = "--Time til the end--";
+                            dimstring = boss.countdownToTheEnd < 1 ? "ENDED" : "--Time til the end--";
 
                             Vector2 offset = new Vector2(Main.screenWidth / 2, Main.screenHeight * 0.87f);
                             Matrix Custommatrix2 = Matrix.CreateScale(1.25f, 1.25f, 1) * Matrix.CreateTranslation(offset.X, offset.Y, 0f) *
@@ -1323,18 +1323,20 @@ namespace SGAmod.Dimensions
                             Vector2 size = Main.fontDeathText.MeasureString(dimstring);
                             spriteBatch.DrawString(Main.fontDeathText, dimstring, new Vector2(-size.X / 2f, 0), Color.MediumAquamarine * alpha);
 
+                            if (boss.countdownToTheEnd > 0)
+                            {
+                                spriteBatch.End();
+                                dimstring = "" + Math.Round(boss.countdownToTheEnd / 60f, 2);
 
-                            spriteBatch.End();
-                            dimstring = "" + Math.Round(boss.countdownToTheEnd / 60f, 2);
+                                offset = new Vector2(Main.screenWidth / 2, Main.screenHeight * 0.92f);
+                                Custommatrix2 = Matrix.CreateScale(2f, 2f, 1) * Matrix.CreateTranslation(offset.X, offset.Y, 0f) *
+                                Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
+                                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Custommatrix2);
 
-                            offset = new Vector2(Main.screenWidth / 2, Main.screenHeight * 0.92f);
-                            Custommatrix2 = Matrix.CreateScale(2f, 2f, 1) * Matrix.CreateTranslation(offset.X, offset.Y, 0f) *
-                            Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
-                            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Custommatrix2);
+                                size = Main.fontDeathText.MeasureString(dimstring);
+                                spriteBatch.DrawString(Main.fontDeathText, dimstring, new Vector2(-size.X / 2f, 0), (boss.countdownToTheEnd / 60f) < 20 ? Color.Red : Color.MediumAquamarine * alpha);
 
-                            size = Main.fontDeathText.MeasureString(dimstring);
-                            spriteBatch.DrawString(Main.fontDeathText, dimstring, new Vector2(-size.X / 2f, 0), (boss.countdownToTheEnd / 60f) < 20 ? Color.Red : Color.MediumAquamarine * alpha);
-
+                            }
                         }
                     }
 

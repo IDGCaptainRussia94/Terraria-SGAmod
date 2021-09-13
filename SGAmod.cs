@@ -408,6 +408,7 @@ namespace SGAmod
 			AddItem("MusicBox_Creepy", new SGAItemMusicBox("MusicBox_Creepy", "Creepy", "???", "Unknown"));
 			AddItem("MusicBox_Cirno", new SGAItemMusicBox("MusicBox_Cirno", "Cirno", "Algid Action", "Rijam"));
 			AddItem("MusicBox_Space", new SGAItemMusicBox("MusicBox_Space", "Space", "Asteriod Expanse", "Rijam"));
+			AddItem("MusicBox_SpaceBoss", new SGAItemMusicBox("MusicBox_SpaceBoss", "Space Boss", "Meteoroid Barrage", "Rijam"));
 
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Murk"), ItemType("MusicBox_Boss2Remix"), TileType("MusicBox_Boss2Remix"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Swamp"), ItemType("MusicBox_Swamp"), TileType("MusicBox_Swamp"));
@@ -418,6 +419,7 @@ namespace SGAmod
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/creepy"), ItemType("MusicBox_Creepy"), TileType("MusicBox_Creepy"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cirno_v2"), ItemType("MusicBox_Cirno"), TileType("MusicBox_Cirno"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space"), ItemType("MusicBox_Space"), TileType("MusicBox_Space"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space_Boss"), ItemType("MusicBox_SpaceBoss"), TileType("MusicBox_SpaceBoss"));
 
 			AddTile("PrismalBarTile", new BarTile("PrismalBar", "Prismal Bar", new Color(210, 0, 100)), "SGAmod/Tiles/PrismalBarTile");
 			AddTile("UnmanedBarTile", new BarTile("UnmanedBar", "Novus Bar", new Color(70, 0, 40)), "SGAmod/Tiles/UnmanedBarTile");

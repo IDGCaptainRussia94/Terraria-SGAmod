@@ -77,13 +77,17 @@ namespace SGAmod
 		{
 			if (type == 0)
 			{
-				Main.heartTexture = SGAmod.VanillaHearts.Item1;
-				Main.heart2Texture = SGAmod.VanillaHearts.Item2;
+				SGAmod.VanillaHearts.Item1 = Main.heartTexture;
+				SGAmod.VanillaHearts.Item2 = Main.heart2Texture;
+
+				if (Main.heartTexture == SGAmod.Instance.GetTexture("Invisible"))
+				{
+					Main.heartTexture = SGAmod.VanillaHearts.Item1;
+					Main.heart2Texture = SGAmod.VanillaHearts.Item2;
+				}
 			}
 			if (type == 1)
 			{
-				Main.heartTexture = SGAmod.VanillaHearts.Item1;
-				Main.heart2Texture = SGAmod.VanillaHearts.Item2;
 
 				int i = itta.Item1;
 

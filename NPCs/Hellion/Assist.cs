@@ -199,7 +199,7 @@ namespace SGAmod.NPCs.Hellion
 								if (flag && Type == 50 && n < 900)
 								{
 									int num24 = 20;
-									if (!Collision.CanHit(new Vector2((float)num9, (float)(num10 - 1)) * 16f, 16, 16, new Vector2((float)num9, (float)(num10 - 1 - num24)) * 16f, 16, 16) || !Collision.CanHit(new Vector2((float)num9, (float)(num10 - 1 - num24)) * 16f, 16, 16, Main.player[plr].Center, 0, 0))
+									if (!Collision.CanHitLine(new Vector2((float)num9, (float)(num10 - 1)) * 16f, 16, 16, new Vector2((float)num9, (float)(num10 - 1 - num24)) * 16f, 16, 16) || !Collision.CanHitLine(new Vector2((float)num9, (float)(num10 - 1 - num24)) * 16f, 16, 16, Main.player[plr].Center, 0, 0))
 									{
 										num9 = 0;
 										num10 = 0;

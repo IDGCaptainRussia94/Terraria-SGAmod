@@ -77,6 +77,14 @@ float4 BasicEffect(VertexShaderOutput input) : COLOR
 	return pixel;
 }
 
+float4 BasicEffectAlpha(VertexShaderOutput input) : COLOR
+{
+	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
+	float luma = (pixel.r+pixel.g+pixel.b)/3.0;
+	pixel = saturate(pixel);
+	return pixel*luma;
+}
+
 //Same as above, but now faded on the X axis
 float4 BasicEffectFaded(VertexShaderOutput input) : COLOR
 {
@@ -123,6 +131,11 @@ technique BasicColorDrawing
 	{
 		VertexShader = compile vs_2_0 MainVS();
 		PixelShader = compile ps_2_0 BasicEffect();
+	}	
+		pass BasicEffectAlphaPass
+	{
+		VertexShader = compile vs_2_0 MainVS();
+		PixelShader = compile ps_2_0 BasicEffectAlpha();
 	}	
 		pass FadedBasicEffectPass
 	{

@@ -196,7 +196,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 			recipe.AddIngredient(ModContent.ItemType<VibraniumBar>(), 10);
 			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Weapons.MangroveShiv>(), 100);
 			recipe.AddIngredient(ItemID.MagicDagger, 1);
-			recipe.AddTile(mod.GetTile("LuminousAlter"));
+			recipe.AddTile(ModContent.TileType<Tiles.TechTiles.LuminousAlter>());
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}

@@ -20,6 +20,9 @@
     <Reference Include="AAAAUThrowing">
       <HintPath>..\..\Mod Reader\AAAAUThrowing\AAAAUThrowing.XNA.dll</HintPath>
     </Reference>
+    <Reference Include="BossChecklist">
+      <HintPath>..\..\Mod Reader\BossChecklist\BossChecklist.XNA.dll</HintPath>
+    </Reference>
     <Reference Include="CalamityMod">
       <HintPath>..\..\Mod Reader\CalamityMod\CalamityMod.XNA.dll</HintPath>
     </Reference>

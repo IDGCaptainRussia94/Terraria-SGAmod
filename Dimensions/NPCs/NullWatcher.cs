@@ -104,7 +104,7 @@ namespace SGAmod.Dimensions.NPCs
                 if (!sound)
                 {
                     List<Player> players = Main.player.Where(playercheck => playercheck != null && playercheck.active && !playercheck.dead && playercheck.Distance(watcher.npc.Center) < (distance+playercheck.SGAPly().watcherDebuff)
-                   && (!checkwalls || Collision.CanHit(playercheck.Center, 1, 1, watcher.npc.Center, 1, 1))).ToList();
+                   && (!checkwalls || Collision.CanHitLine(playercheck.Center, 1, 1, watcher.npc.Center, 1, 1))).ToList();
                     players = players.OrderBy(playercheck2 => playercheck2.Distance(watcher.npc.Center)).ToList();
 
                     if (players != null && players.Count>0)
@@ -212,7 +212,7 @@ namespace SGAmod.Dimensions.NPCs
 
                 for(int i = 0; i < Main.rand.Next(48,300); i += 16)
                 {
-                    if (Collision.CanHit(npc.Center,1,1,npc.Center - new Vector2(0, 16), 1, 1))
+                    if (Collision.CanHitLine(npc.Center,1,1,npc.Center - new Vector2(0, 16), 1, 1))
                     {
                         npc.Center -= new Vector2(0,16);
                     }

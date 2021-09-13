@@ -888,7 +888,7 @@ namespace SGAmod.Items.Weapons.Shields
 				target.AddBuff(ModContent.BuffType<PiercedVulnerable>(), 60 * 15);
 				snpc.noMovement = Math.Max(snpc.noMovement, 3);
 				target.Center = projectile.Center + new Vector2(0, -OffsetPoint);
-				if (projectile.velocity.Y < 0 && !Collision.CanHit(target.Center, 16, 16, target.Center - Vector2.UnitY * 32, 8, 8))
+				if (projectile.velocity.Y < 0 && !Collision.CanHitLine(target.Center, 16, 16, target.Center - Vector2.UnitY * 32, 8, 8))
 					projectile.velocity.Y = -projectile.velocity.Y / 2f;
 
 			}
@@ -1493,7 +1493,6 @@ namespace SGAmod.Items.Weapons.Shields
 					if (Main.npc[num172].active)
 					{
 
-						//(Collision.CanHit(new Vector2(loc.X, loc.Y), 1, 1, Main.npc[num172].position, Main.npc[num172].width, Main.npc[num172].height) || block == false)
 						if (num175 < num170)
 						{
 							int result = 0;

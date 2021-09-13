@@ -18,23 +18,23 @@ Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Bind
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy and Seismic Resonator Ore Creator), Aurora Gear and finish Luminous Alter Tile Entity!
 -Add Hellion army bar, STILL!
 
-Todo-Aurora Gear, Finish Vibranium enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Add Dropper, Finish Luminious Alter (effects)
+Todo-Aurora Gear, Finish Vibranium enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Add Dropper, Finish Luminious Alter (effects), Money Drain, upgradable drones and solar panels?
 Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
 
 Changelog:
 
-3.600-(5/1/21)-Patch 11-Tech N Wreck
+3.600a-(9/13/21)-Patch 11-Tech N Wreck: Beta
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Threads, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Dankwood Wall
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Dankwood Wall
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
 -A new Town NPC: The Conbrand Merchant, he is interested in trading you "Contraband Crates" for rare materials, find him hanging around after-dark in your town
 
--Added the following armor sets: The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! Fames set for throwers after Spider Queen. Hallowed Visor variant for Throwing. Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And JellyBru's Dev Armor finally added!
+-Added the following armor sets: The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! Fames set for throwers after Spider Queen. Hallowed Visor variant for Throwing. Jungle Templar for post Golem Throwing/Tech. Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And JellyBru's Dev Armor finally added!
 
 -Venerable Catharsis, for a hefty Expertise cost from Draken after Moonlord you can make Normal Worlds into Expert Worlds.
 
@@ -44,7 +44,7 @@ Changelog:
 
 -A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's fight and apperence has been tweaked (Prim shark! Vertex Shark! Trail Shark! With smooth lighting!), there's also an extra attack that was added
 
--Hoppers [strikeout]N Droppers[strikeout], automate your Terraria!
+-Hoppers N Droppers, automate your Terraria!
 
 -New Amulet: Reservation Amulet, reserve a fraction of your HP to gain a protected regenerating shield!
 
@@ -193,8 +193,6 @@ Changelog:
 
 -Buffed Gas Passer: double base damage over time, slightly better scaling with enemy HP
 
--Buffed Plythe: Can now stack up to 10
-
 -Buffed Cosmic Grasp: (again), base damage increased so it's not just a side great to the Cosmillash
 
 -Buffed Jarate: Enemies remain Sodden for 3X as long now
@@ -224,6 +222,8 @@ Changelog:
 -Nerfed Tactical SMG Rifle: damage lowered to 25 (from 28), one less bullet is fired per shot
 
 -Nerfed Terra Trident: Damage lowered to 38 from 50
+
+-Nerfed Plythe: Reduced crit chance
 
 -Nerfed Surt: now only grants more than 1 tick of On Fire! when near full charge, up to about 6 seconds of On Fire!
 
@@ -289,6 +289,8 @@ Changelog:
 -Cyber Scythe's max range growing smaller with melee speed instead of larger
 
 -Rustwork Blade can now be used to craft the Big Bang
+
+-Hopefully Limbo no longer displays mountains in it
 
 -Shadeflame Staff having a crafting recipe
 
@@ -1090,6 +1092,8 @@ THANK YOU ALL FOR 100,000 DOWNLOADS! <3, it seriously means alot, you have no id
 -Entrophite Tranmuter not working online, also incorrect info on the Entropy Transmuter
 
 -A serious oversight bug with Cosmic Cocktail projectiles being Imbued stacking up their damage to near infinite damage
+
+-All instances of collision/laser/sight checking being 'blocked' by air, thanks 4keY for your video pointing this out, I was always wondering why this kept happening
 
 -A bug involving the Revolving West and being able to use with other items while reloading
 
@@ -2472,6 +2476,7 @@ Just DudeSquid#4617 and daimgamer#6490 on discord, did some great (Calamity/"Sup
 
 --------------------------------------------------------------Contributions--------------------------------------------------------------
 
+Zoomo for his fantastic commissioned work! Did various accessories in them in the mod including their equip sprites
 
 
 [USER=61456]@PhilBill44[/USER] : Spriter, made the mod icon, suggestions and ideas, and other things (I honestly couldn't have made that icon, love ya) (I miss you very much Phil :( )

@@ -47,7 +47,7 @@ namespace SGAmod.Items.Weapons
 				Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 34,1f,Main.rand.NextFloat(-0.25f,0.25f));
 			Vector2 formerposition = position;
 				position += Vector2.Normalize(new Vector2(speedX, speedY))*42f;
-			if (Collision.CanHit(position, 3, 3, formerposition, 3, 3))
+			if (Collision.CanHitLine(position, 3, 3, formerposition, 3, 3))
 			{
 				int probg = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI);
 				Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(10));

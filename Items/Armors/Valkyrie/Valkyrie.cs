@@ -2,6 +2,7 @@ using AAAAUThrowing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Tiles;
+using SGAmod.Tiles.TechTiles;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;

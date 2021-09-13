@@ -329,8 +329,8 @@ namespace SGAmod.Buffs
 	{
 		public override void SetDefaults()
 		{
-			DisplayName.SetDefault("Lava Burn");
-			Description.SetDefault("Magma melts your skin\nObsidian Skin is disabled");
+			DisplayName.SetDefault("Severe Lava Burn");
+			Description.SetDefault("Magma scorches your body\nObsidian Skin is disabled");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
@@ -343,6 +343,7 @@ namespace SGAmod.Buffs
 		}
 		public override void Update(Player player, ref int buffIndex)
 		{
+			if (GetType() == typeof(LavaBurn))
 			player.lavaImmune = false;
 			player.SGAPly().lavaBurn = true;
 
@@ -350,6 +351,18 @@ namespace SGAmod.Buffs
 		public override void Update(NPC npc, ref int buffIndex)
 		{
 			npc.GetGlobalNPC<SGAnpcs>().lavaBurn = true;
+		}
+	}
+	public class LavaBurnLight : LavaBurn
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Lava Burn");
+			Description.SetDefault("Magma burns your skin");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = true;
 		}
 	}
 	public class MoonLightCurse : ModBuff

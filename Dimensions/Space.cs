@@ -72,7 +72,7 @@ namespace SGAmod.Dimensions
             get
             {
                 if (SpaceBossIsActive)
-                    return SGAmod.Instance.GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space_Boss_NOT_FINAL");
+                    return SGAmod.Instance.GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space_Boss");
                 return SGAmod.Instance.GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space");
             }
 
@@ -495,12 +495,15 @@ namespace SGAmod.Dimensions
         private Color acolor = Color.Gray;
         Effect effect => SGAmod.TrailEffect;
         public Vector2 sunPosition;
+        public Vector2 sunOrigPosition;
+        public Vector2 sunBossPosition;
         public float skyalpha = 1f;
         public float darkalpha = 0f;
+        public float sunIsApprouching = 0f;
 
         public override void OnLoad()
         {
-            sunPosition = new Vector2((Main.screenWidth / 2), (Main.screenHeight / 8));
+            sunOrigPosition = new Vector2((Main.screenWidth / 2), (Main.screenHeight / 8));
         }
 
         public override void Update(GameTime gameTime)
@@ -510,6 +513,20 @@ namespace SGAmod.Dimensions
 
             skyalpha = MathHelper.Clamp(skyalpha + (boss != null && boss.goingDark > 0 ? -0.0015f : 0.005f), 0f, 1f);
             darkalpha = MathHelper.Clamp(darkalpha + (boss != null && boss.goingDark > 0 ? 0.0025f : (boss!= null && boss.DyingState ? -0.075f : -0.005f)), 0f, 1f);
+
+            sunPosition = sunOrigPosition;
+
+            if (bossIndex >= 0 && !boss.DyingState)
+            {
+                sunBossPosition = boss.npc.Center;
+                sunIsApprouching = MathHelper.Clamp(1f-(boss.countdownToTheEnd / (100f * 60f)),0f,1f);
+            }
+            else
+            {
+                sunIsApprouching = MathHelper.Clamp(sunIsApprouching - (1f / 300f),0f,1f);
+            }
+
+            sunPosition = Vector2.Lerp(sunOrigPosition, Vector2.Lerp(sunOrigPosition, Vector2.Lerp(sunOrigPosition, sunBossPosition - Main.screenPosition, sunIsApprouching), sunIsApprouching), sunIsApprouching);
 
             //acolor = Main.hslToRgb(0f, 0.0f, 0.5f);
         }
@@ -529,6 +546,15 @@ namespace SGAmod.Dimensions
             basicEffect.TextureEnabled = true;
             basicEffect.Texture = SGAmod.ExtraTextures[21];*/
 
+            Matrix identity = Matrix.Identity;
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, identity);
+
+            spriteBatch.Draw(Main.blackTileTexture, Vector2.Zero, new Rectangle(0,0,Main.screenWidth, Main.screenHeight), Color.Black, 0,Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, identity);
 
             int bossIndex = NPC.FindFirstNPC(ModContent.NPCType<SpaceBoss>());
             SpaceBoss boss = bossIndex>=0 ? Main.npc[bossIndex].modNPC as SpaceBoss : null;
@@ -536,12 +562,12 @@ namespace SGAmod.Dimensions
 
 
             VertexBuffer vertexBuffer;
-            Vector2 parallex = new Vector2(Main.screenPosition.X / 9000f, -Main.GlobalTime * 0.1f);
+            Vector2 parallex = Vector2.Zero;// new Vector2(Main.screenPosition.X / 9000f, -Main.GlobalTime * 0.1f);
 
             effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Main.GameViewMatrix.Zoom) * WVP.Projection());
-            effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("Space"));
+            effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("TiledPerlin"));
             effect.Parameters["coordOffset"].SetValue(parallex);
-            effect.Parameters["coordMultiplier"].SetValue(4f);
+            effect.Parameters["coordMultiplier"].SetValue(new Vector2(0.25f,0.45f));
             effect.Parameters["strength"].SetValue(1f);
 
             VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
@@ -549,15 +575,17 @@ namespace SGAmod.Dimensions
             Vector3 screenPos = new Vector3(-16, 0, 0);
             float skymove = ((Math.Max(Main.screenPosition.Y - 8000, 0)) / (Main.maxTilesY * 16f));
 
-            Vector3 screenPosParallex = screenPos + new Vector3(0, -Main.screenHeight * (skymove) / 2f, 0);
+            UnifiedRandom alwaysthesame = new UnifiedRandom(DimDungeonsProxy.DungeonSeeds);
 
-            vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-16, 0, 0), Color.Black, new Vector2(0, 0));
-            vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), Color.Black, new Vector2(0, 0));
-            vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), Color.Black, new Vector2(0, 0));
+            Color colorsa = Color.Lerp(Color.Lerp(Color.Black,Main.hslToRgb(alwaysthesame.NextFloat(),1f,0.75f),0.1f), Color.OrangeRed, MathHelper.Clamp((sunIsApprouching - 0.10f)*1.45f,0f,1f));
 
-            vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight, 0), Color.Black, new Vector2(0, 0));
-            vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), Color.Black, new Vector2(0, 0));
-            vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), Color.Black, new Vector2(0, 0));
+            vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-16, 0, 0), colorsa, new Vector2(0, 0));
+            vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
+            vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
+
+            vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight, 0), colorsa, new Vector2(1, 1));
+            vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
+            vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
 
             vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
             vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
@@ -579,8 +607,6 @@ namespace SGAmod.Dimensions
                     //spriteBatch.Draw(Main.blackTileTexture, Vector2.Zero, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), (Color.Black * 0.8f), 0, Vector2.Zero, new Vector2(1f, 1f), SpriteEffects.None, 0f);
                 }
 
-                Matrix identity = Matrix.Identity;
-
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, identity);
 
@@ -590,8 +616,6 @@ namespace SGAmod.Dimensions
                 //ArmorShaderData shader3 = GameShaders.Armor.GetShaderFromItemId(ItemID.MartianArmorDye); shader3.Apply(null);
 
                 //Stars
-
-                UnifiedRandom alwaysthesame = new UnifiedRandom(DimDungeonsProxy.DungeonSeeds);
 
                 for (float i = 0.03f; i <= 0.32f; i += 0.02f)
                 {
@@ -618,25 +642,55 @@ namespace SGAmod.Dimensions
 
                 if (maxDepth >= 0 && minDepth < 0)//Sun
                 {
+                    if (sunIsApprouching > 0.2f)
+                    {
+
+                        Main.spriteBatch.End();
+                        Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, identity);
+
+                        Color colors = Color.Lerp(Color.Transparent, Color.OrangeRed, sunIsApprouching-0.20f);
+
+                        /*vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-16, 0, 0), colors, new Vector2(0, 0));
+                        vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colors, new Vector2(0, 0));
+                        vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colors, new Vector2(0, 0));
+
+                        vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight, 0), colors, new Vector2(0, 0));
+                        vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colors, new Vector2(0, 0));
+                        vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colors, new Vector2(0, 0));
+
+                        vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+                        vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+                        Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+                        Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+
+                        effect.CurrentTechnique.Passes["BasicEffectPass"].Apply();
+                        Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);*/
+
+                    }
+
                     Main.spriteBatch.End();
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.DepthRead, RasterizerState.CullNone, null, identity);
                     Texture2D sun = Main.sunTexture;
 
-                    Texture2D inner = SGAmod.Instance.GetTexture("Extra_57b");//Main.extraTexture[57];
+                    float closenessScale = 1f+((float)Math.Pow(sunIsApprouching * 500f, 1.8f) / 800f);
+                    float closenessScale2 = 1f + ((float)Math.Pow(sunIsApprouching * 2500f, 1.5f) / 800f);
 
+                    Texture2D inner = SGAmod.Instance.GetTexture("Extra_57b");//Main.extraTexture[57];
 
 
                     Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
 
                     for (float i = 0; i < 1f; i += 0.10f)
                     {
-                        spriteBatch.Draw(inner, sunPosition, null, ((Color.White * 0.6f * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.5f) * 0.50f) * skyalpha, i * MathHelper.TwoPi, textureOrigin, 3f * (0.5f + 3.00f * (((Main.GlobalTime / 2f) + i) % 1f)), SpriteEffects.None, 0f);
+                        spriteBatch.Draw(inner, sunPosition, null, ((Color.White * 0.6f * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.5f) * 0.50f) * skyalpha, i * MathHelper.TwoPi, textureOrigin, (3f * (0.5f + 3.00f * (((Main.GlobalTime / 2f) + i) % 1f)))* closenessScale2, SpriteEffects.None, 0f);
                     }
 
                     Main.spriteBatch.End();
                     Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, identity);
 
-                    spriteBatch.Draw(sun, sunPosition, null, Color.White * skyalpha, 0, sun.Size() / 2f, 1.5f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(sun, sunPosition, null, Color.White * skyalpha, 0, sun.Size() / 2f, 1.5f * closenessScale, SpriteEffects.None, 0f);
                 }
 
                 Main.spriteBatch.End();

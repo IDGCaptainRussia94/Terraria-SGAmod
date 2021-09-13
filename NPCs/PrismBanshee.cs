@@ -199,7 +199,7 @@ namespace SGAmod.NPCs
 					if (sound != null)
 						sound.Pitch += 0.75f;
 
-					foreach(Player player2 in Main.player.Where(testplayer => testplayer.active && Collision.CanHit(testplayer.MountedCenter,1,1,npc.Center,1,1)))
+					foreach(Player player2 in Main.player.Where(testplayer => testplayer.active && Collision.CanHitLine(testplayer.MountedCenter,1,1,npc.Center,1,1)))
                     {
 						player2.Hurt(PlayerDeathReason.ByCustomReason(player2.name+" had their brain popped"), 10000, npc.spriteDirection, Crit: true);
 					}
@@ -948,7 +948,7 @@ namespace SGAmod.NPCs
 
 				Vector2 checkloc = target.Center;
 				Vector2 checkFlyLoc = checkloc + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * distance;
-				if (Collision.CanHit(checkloc, 1, 1, checkFlyLoc, 1, 1))
+				if (Collision.CanHitLine(checkloc, 1, 1, checkFlyLoc, 1, 1))
 				{
                     flyTo = checkFlyLoc;
 					npc.netUpdate = true;

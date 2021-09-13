@@ -882,14 +882,14 @@ namespace SGAmod.Dimensions
                         Main.chest[chestid].item[e].SetDefaults(theitem[Main.rand.Next(0, theitem.Length)]);
                         Main.chest[chestid].item[e].stack = 1;
                         e += 1;
-                    } 
+                    }
                     if (unirand.Next(0, 90) < 3 + (SGAWorld.dungeonlevel * 1))
                     {
                         int[] choices = RareItems;
                         Main.chest[chestid].item[e].SetDefaults(choices[unirand.Next(choices.Length)]);
                         Main.chest[chestid].item[e].stack = 1;
                         e += 1;
-                    }                    
+                    }
                     if (unirand.Next(0, 100) < 10 + (SGAWorld.dungeonlevel * 10))
                     {
                         int index = unirand.Next(0, lootrare.Count);

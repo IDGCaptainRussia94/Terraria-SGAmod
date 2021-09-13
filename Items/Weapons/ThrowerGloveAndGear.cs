@@ -2080,7 +2080,7 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
-	class TheJellyBrew : ModItem
+	class TheJellyBrew : ModItem,IDevItem
 	{
 
 		public override void SetStaticDefaults()
@@ -2088,6 +2088,20 @@ namespace SGAmod.Items.Weapons
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("The Jelly Brew");
 			Tooltip.SetDefault("Creates expanding neurotoxic bubbles on impact with enemy or solid tiles\nBubbles damage enemies and deflects incoming projectiles\nExplodes into neurotoxic fumes when another bubble is created or after 5 seconds\nStrike enemies with the bottle to mark them for the fumes to chase after");
+		}
+
+		public (string, string) DevName()
+		{
+			return ("JellyBru", "");
+		}
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[2] > 0)
+			{
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Enpowerment bonus ---"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "PLACEHOLDER"));
+			}
+			base.ModifyTooltips(tooltips);
 		}
 
 		public override void SetDefaults()
@@ -2140,7 +2154,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 20);
 			recipe.AddIngredient(ItemID.ToxicFlask, 1);
 			recipe.AddIngredient(ModContent.ItemType<CosmicFragment>(), 1);
-			recipe.AddTile(ModContent.TileType<Tiles.LuminousAlter>());
+			recipe.AddTile(ModContent.TileType<Tiles.TechTiles.LuminousAlter>());
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}

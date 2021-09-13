@@ -654,7 +654,7 @@ namespace SGAmod
 				if (Main.npc[i].active)
 				{
 					bool colcheck = !checkWalls || (Collision.CheckAABBvLineCollision(Main.npc[i].position, new Vector2(Main.npc[i].width, Main.npc[i].height), Main.npc[i].Center, Center)
-	&& Collision.CanHit(Main.npc[i].Center, 0, 0, Center, 0, 0));
+	&& Collision.CanHitLine(Main.npc[i].Center, 0, 0, Center, 0, 0));
 					if (!Main.npc[i].friendly && !Main.npc[i].townNPC && !Main.npc[i].dontTakeDamage && (!checkCanChase || Main.npc[i].CanBeChasedBy()) && colcheck
 					&& squaredDist < maxdist)
 					{

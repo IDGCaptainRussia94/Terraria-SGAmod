@@ -64,11 +64,14 @@ namespace SGAmod.Items.Mounts
 			mountData.textureHeight = mountData.backTexture.Height;
 		}
 
-		public override void UpdateEffects(Player player) {
-
+		public override void UpdateEffects(Player player)
+		{
+			Main.NewText(player.eocDash);
 			player.slippy2 = true;
+
 			// This code spawns some dust if we are moving fast enough.
-			if (!(Math.Abs(player.velocity.X) > 4f)) {
+			if (!(Math.Abs(player.velocity.X) > 4f))
+			{
 				return;
 			}
 			Rectangle rect = player.getRect();

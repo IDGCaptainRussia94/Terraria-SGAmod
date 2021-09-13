@@ -165,11 +165,6 @@ namespace SGAmod.Dimensions
 
         }
 
-        public bool InsideMap(int x, int y)
-        {
-            return x >= 0 && y >= 0 && x < Main.maxTilesX && y < Main.maxTilesY;
-        }
-
         public override List<GenPass> tasks { get; }
 
         public TheGate()

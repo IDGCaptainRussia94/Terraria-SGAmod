@@ -863,7 +863,7 @@ namespace SGAmod
 					hellionTimer += hellionTimer>=0 ? 1 : 1;
 					if (hellionTimer % 5 == 0)
 					{
-						if (!Collision.CanHit(npc.Center, 1, 1, Main.player[hell.npc.target].Center, 1, 1) && npc.aiStyle < 15 && npc.aiStyle > -1)
+						if (!Collision.CanHitLine(npc.Center, 1, 1, Main.player[hell.npc.target].Center, 1, 1) && npc.aiStyle < 15 && npc.aiStyle > -1)
 						{
 							hellionTimer += 200;
 						}

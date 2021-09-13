@@ -16,13 +16,13 @@ using Idglibrary;
 using AAAAUThrowing;
 using Terraria.Utilities;
 using SGAmod.Buffs;
-using SGAmod.Tiles;
 using SGAmod.Items.Armors;
 using SGAmod.Items.Armors.Vibranium;
 using Terraria.GameContent.Events;
 using Terraria.DataStructures;
 using SGAmod.Items.Armors.Dev;
 using SGAmod.Items;
+using SGAmod.Tiles.TechTiles;
 
 namespace SGAmod
 {
@@ -88,7 +88,7 @@ namespace SGAmod
                     Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
 
                     hallowed.Parameters["alpha"].SetValue(0.5f);
-                    hallowed.Parameters["prismColor"].SetValue(Items.Placeable.LuminousAlter.AuroraLineColor.ToVector3());
+                    hallowed.Parameters["prismColor"].SetValue(Items.Placeable.TechPlaceable.LuminousAlterItem.AuroraLineColor.ToVector3());
                     hallowed.Parameters["rainbowScale"].SetValue(0.25f);
                     hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
                     hallowed.Parameters["overlayTexture"].SetValue(SGAmod.PearlIceBackground);
@@ -235,6 +235,10 @@ namespace SGAmod
             {
                 return "Hallowed";
             }            
+            if (head.type == ModContent.ItemType<Items.Armors.JungleTemplar.JungleTemplarHelmet>() && body.type == ModContent.ItemType<Items.Armors.JungleTemplar.JungleTemplarChestplate>() && legs.type == ModContent.ItemType<Items.Armors.JungleTemplar.JungleTemplarLeggings>())
+            {
+                return "JungleTemplar";
+            }            
             if (head.type == ModContent.ItemType<Items.Armors.SpaceDiver.SpaceDiverHelmet>() && body.type == ModContent.ItemType<Items.Armors.SpaceDiver.SpaceDiverChestplate>() && legs.type == ModContent.ItemType<Items.Armors.SpaceDiver.SpaceDiverLeggings>())
             {
                 return "SpaceDiver";
@@ -339,7 +343,7 @@ namespace SGAmod
                 player.setBonus = "Crit throwing attacks grant Dryad's Blessing and spawn Mangrove Orbs from you that seek out enemies\nYou are limited to 4 of these Orbs at a time\nWhile you are in the jungle:\n-Greatly Increased regeneration" +
     "\n-Gain an additional Free Cooldown Stack";
 
-                player.GetModPlayer<SGAPlayer>().Mangroveset = true;
+                sgaplayer.Mangroveset = true;
                 if (player.ZoneJungle)
                 {
                     player.lifeRegen += 5;
@@ -349,8 +353,22 @@ namespace SGAmod
             if (set == "Hallowed")
             {
                 player.setBonus = "25% faster throwing item use and chance to not consume throwable";
-                player.SGAPly().ThrowingSpeed += 0.25f;
-                player.SGAPly().Thrownsavingchance += 0.25f;
+                sgaplayer.ThrowingSpeed += 0.25f;
+                sgaplayer.Thrownsavingchance += 0.25f;
+            }
+            if (set == "JungleTemplar")
+            {
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Precurser's Power for a short time\nRepairs wounds at full speed even while moving, but consumes Electric Charge\nAlso during this, throwing damage is effected by Tech Damage scaling" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 80 seconds") + "\nYou gain the ability to run as if on Asphalt\nReflect 3X damage and gain knockback immunity while grounded" + Idglib.ColorText(Color.Red, "Gravity is increased, wings are less effective, Shield Break can happen")+ "\n" + Idglib.ColorText(Color.Red, "User is submerged in lava at low Electric Charge") + "\nGain an additional free Cooldown Stack";
+
+                sgaplayer.MaxCooldownStacks += 1;
+                sgaplayer.jungleTemplarSet.Item1 = true;
+                Items.Armors.JungleTemplar.JungleTemplarHelmet.SetBonus(sgaplayer);
             }
             if (set == "SpaceDiver")
             {
@@ -364,7 +382,7 @@ namespace SGAmod
             }
             if (set == "Mandala")
             {
-                player.setBonus = "A minature Asteriod belt and Phaethon manifest around you\nManifested weapon: Overseer's Tutelage";
+                player.setBonus = "A minature Asteriod belt and Phaethon manifest around you\nAny debuffs applied to you are inflicted on enemies by your minions\nManifested weapon: Overseer's Tutelage";
                 player.buffImmune[BuffID.WindPushed] = true;
                 //sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Desert.ManifestedSandTosser>();
             }
@@ -735,13 +753,31 @@ namespace SGAmod
             if (plyleggings == ModContent.ItemType<Items.Armors.Dev.JellybruLeggings>())
             {
                 float boost = player.SGAPly().EnergyDepleted ? 2f : 1f;
-                speed += 1.5f*boost;
-                acceleration += 0.15f*boost;
+                speed += 1.5f * boost;
+                acceleration += 0.15f * boost;
             }
-             if (plyleggings == ModContent.ItemType<Items.Armors.Mandala.MandalaLeggings>() && Dimensions.SGAPocketDim.WhereAmI != null)
+
+            if (plyleggings == ModContent.ItemType<Items.Armors.Mandala.MandalaLeggings>() && Dimensions.SGAPocketDim.WhereAmI != null)
             {
                 speed += 2f;
                 acceleration += 0.20f;
+            }
+
+            if (player.SGAPly().jungleTemplarSet.Item1)
+            {
+                speed *= 0.75f;
+                acceleration *= 0.75f;
+            }
+
+        }
+
+        public override void VerticalWingSpeeds(Item item, Player player, ref float ascentWhenFalling, ref float ascentWhenRising, ref float maxCanAscendMultiplier, ref float maxAscentMultiplier, ref float constantAscend)
+        {
+            if (player.SGAPly().jungleTemplarSet.Item1)
+            {
+                maxCanAscendMultiplier *= 0.75f;
+                constantAscend *= 0.75f;
+                ascentWhenRising *= 0.25f;
             }
         }
 

@@ -51,6 +51,7 @@ using SGAmod.Items.Weapons.Shields;
 using SGAmod.Items.Placeable;
 using SGAmod.Items.Armors.Illuminant;
 using System.Linq;
+using SGAmod.Items.Placeable.TechPlaceable;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -217,7 +218,7 @@ namespace SGAmod
 				bossList.Call("AddBoss", 15f, ModContent.NPCType<Cratrogeddon>(), this, "Cratrogeddon", (Func<bool>)(() => SGAWorld.downedCratrosityPML), new List<int>() { ModContent.ItemType<SalvagedCrate>(), ItemID.TempleKey }, new List<int>() { }, new List<int>() { ModContent.ItemType<TerrariacoCrateKeyUber>(), ModContent.ItemType<MoneySign>() }, "Right Click a [i:" + ItemType("SalvagedCrate") + "] while you have a [i:" + ItemID.TempleKey + "] in your inventory at night", "All players have paid up their lives to microtransactions, again", "SGAmod/NPCs/Cratrosity/CratrosityLog");
 
 				List<int> SPinkyDrops = new List<int>() { ModContent.ItemType<LunarSlimeHeart>(), ModContent.ItemType<IlluminantHelmet>(), ModContent.ItemType<IlluminantChestplate>(), ModContent.ItemType<IlluminantLeggings>(), ModContent.ItemType<LunarRoyalGel>() };
-				bossList.Call("AddBoss", 16f, ModContent.NPCType<SPinky>(), this, "Supreme Pinky", (Func<bool>)(() => SGAWorld.downedSPinky), new List<int>() { ModContent.ItemType<Prettygel>() }, new List<int>() { }, SPinkyDrops, "Use a [i:" + ItemType("Prettygel") + "] at night, infuse 20 [i: " + ItemID.PinkGel + "] at a [i: " + ModContent.ItemType<LuminousAlter>() + "]", "Supreme Pinky is content with the justice they have dealt");
+				bossList.Call("AddBoss", 16f, ModContent.NPCType<SPinky>(), this, "Supreme Pinky", (Func<bool>)(() => SGAWorld.downedSPinky), new List<int>() { ModContent.ItemType<Prettygel>() }, new List<int>() { }, SPinkyDrops, "Use a [i:" + ItemType("Prettygel") + "] at night, infuse 20 [i: " + ItemID.PinkGel + "] at a [i: " + ModContent.ItemType<LuminousAlterItem>() + "]", "Supreme Pinky is content with the justice they have dealt");
 
 				bossList.Call("AddBoss", 17.5f, ModContent.NPCType<Hellion>(), this, string.Concat(Enumerable.Repeat("¿", Main.rand.Next(1,10))), (Func<bool>)(() => false), new List<int>() { ModContent.ItemType<HellionSummon>() }, new List<int>() { }, new List<int>() {ModContent.ItemType<ByteSoul>()}, "Craft & Use the [i:" + ModContent.ItemType < HellionSummon>() + "] or talk to Draken when the time is right... (Expert Only)", "Pathetic...", "Terraria/Confuse", "Terraria/Confuse", (Func<bool>)(() => SGAWorld.downedHellion == 0));
 
@@ -269,7 +270,7 @@ namespace SGAmod
 			SGAmod.EnchantmentFocusCrystal.Add(ModContent.ItemType<EntropyTransmuter>(), new EnchantmentCraftingMaterial(15, 200, "One enchantment will always grant entropy bonuses"));
 			SGAmod.EnchantmentFocusCrystal.Add(ModContent.ItemType<CalamityRune>(), new EnchantmentCraftingMaterial(20, 200, "Enchantments may grant bonuses to Apocalypticals"));
 
-			LuminousAlterCraftingHint.InitLuminousCrafting();
+            Items.Placeable.TechPlaceable.LuminousAlterCraftingHint.InitLuminousCrafting();
 
 			//now I did come up with a way you can automate this, if you feed it a large enough stack, when it finishes the infusion it just yeets the new item onto the ground and starting working on the rest of the stack so you can convoy the items for example, this keeps up til there's either not enough items left or the conditions no longer match (IE it's now day)
 			//If the item were to be turned into air via the last stack, the new item takes its place on the Alter for you to pickup

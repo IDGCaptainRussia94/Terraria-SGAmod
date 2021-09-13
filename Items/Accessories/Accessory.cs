@@ -3235,7 +3235,7 @@ namespace SGAmod.Items.Accessories
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Oracle's Insight");
+			DisplayName.SetDefault("Auracle's Insight");
 			Tooltip.SetDefault("Auras are boosted by 1 power level\n10% increased minion damage");
 		}
 
@@ -4332,7 +4332,7 @@ namespace SGAmod.Items.Accessories
 
 					Vector2 vectorItemToPlayer = magnetHere - item.Center;
 					Vector2 vectorItemToPlayer2 = projectile.Center - item.Center;
-					if (vectorItemToPlayer2.Length() < 600 && Vector2.Dot(Vector2.Normalize(vectorItemToPlayer2), Vector2.Normalize(projectile.velocity)) < -0.9f && Collision.CanHit(magnetHere, 1, 1, item.Center, 1, 1))
+					if (vectorItemToPlayer2.Length() < 600 && Vector2.Dot(Vector2.Normalize(vectorItemToPlayer2), Vector2.Normalize(projectile.velocity)) < -0.9f && Collision.CanHitLine(magnetHere, 1, 1, item.Center, 1, 1))
 					{
 						Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * (GetType() == typeof(CobaltMagnetProj) ? 1f : 0.45f);
 						item.velocity = item.velocity + movement;

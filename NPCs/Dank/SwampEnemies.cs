@@ -335,7 +335,7 @@ namespace SGAmod.NPCs.Dank
                 npc.rotation /= 2f;
                 if (target != null && target.active && !target.dead)
                 {
-                    if (Collision.CanHit(npc.Center, 1, 1, target.Center, 1, 1))
+                    if (Collision.CanHitLine(npc.Center, 1, 1, target.Center, 1, 1))
                     {
                         npc.aiAction += 3;
                     }
@@ -366,7 +366,7 @@ namespace SGAmod.NPCs.Dank
                         if (WorldGen.InWorld(here.X, here.Y))
                         {
                             there.Add(here.ToVector2());
-                            if (!Collision.CanHit(npc.Center, 1, 1, here.ToVector2() * 16, 1, 1))
+                            if (!Collision.CanHitLine(npc.Center, 1, 1, here.ToVector2() * 16, 1, 1))
                             {
                                 hit = true;
                                 gotothere = here.ToVector2() * 16;
@@ -406,7 +406,7 @@ namespace SGAmod.NPCs.Dank
                 npc.velocity.Y -= 0.5f;
                 npc.velocity.X /= 1.05f;
 
-                if (Math.Abs(npc.velocity.X)<0.25 && npc.velocity.Y <= 0 && !Collision.CanHit(npc.Center,1,1,npc.Center-new Vector2(0,24),1,1))
+                if (Math.Abs(npc.velocity.X)<0.25 && npc.velocity.Y <= 0 && !Collision.CanHitLine(npc.Center,1,1,npc.Center-new Vector2(0,24),1,1))
                 {
                     npc.velocity.Y = 5;
                 }
@@ -417,7 +417,7 @@ namespace SGAmod.NPCs.Dank
 
                 if (target != null && target.active && !target.dead)
                 {
-                    if (!Collision.CanHit(npc.Center, 1, 1, target.Center, 1, 1))
+                    if (!Collision.CanHitLine(npc.Center, 1, 1, target.Center, 1, 1))
                     {
                         npc.aiAction += 3;
                     }

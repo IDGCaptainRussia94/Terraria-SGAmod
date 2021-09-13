@@ -274,7 +274,7 @@ namespace SGAmod.Items.Armors.Vibranium
 		{
 			Player player = sgaplayer.player;
 
-			if (sgaplayer.ShieldType < 1)
+			if (sgaplayer.ShieldType == 0)
 				sgaplayer.ShieldType = 100;
 
 			//DoPlatformHere

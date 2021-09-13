@@ -222,33 +222,6 @@ namespace SGAmod.Items.Weapons.Technical
 	{
 		public static NPC FindClosestTarget(Player ply,Vector2 loc, Vector2 size, bool block = true, bool friendlycheck = true, bool chasecheck = false)
 		{
-			/*int num;
-			float num170 = 1000000;
-			NPC num171 = null;
-
-			for (int num172 = 0; num172 < Main.maxNPCs; num172 = num + 1)
-			{
-				float num173 = Main.npc[num172].position.X + (float)(Main.npc[num172].width / 2);
-				float num174 = Main.npc[num172].position.Y + (float)(Main.npc[num172].height / 2);
-				float num175 = Math.Abs(loc.X + (float)(size.X / 2) - num173) + Math.Abs(loc.Y + (float)(size.Y / 2) - num174);
-				if (Main.npc[num172].active)
-				{
-
-					if (num175 < num170 && !Main.npc[num172].dontTakeDamage && ((Collision.CanHit(new Vector2(loc.X, loc.Y), 1, 1, Main.npc[num172].position, Main.npc[num172].width, Main.npc[num172].height) && block) || block == false) && (Main.npc[num172].townNPC == false && (Main.npc[num172].CanBeChasedBy(new Projectile(), false) || !chasecheck)))
-					{
-						if (Main.npc[num172].immune[ply.whoAmI]<1)
-						{
-							num170 = num175;
-							num171 = Main.npc[num172];
-						}
-					}
-				}
-				num = num172;
-			}
-			if (num170 > 400)
-				return null;
-
-			return num171;*/
 
 			List<NPC> closestnpcs = SGAUtils.ClosestEnemies(loc, 400f);
 			return closestnpcs?[0];//Closest
@@ -1639,7 +1612,7 @@ namespace SGAmod.Items.Weapons.Technical
 				Lighting.AddLight(start, (Color.Red).ToVector3() * Main.rand.NextFloat(0.10f, 0.30f));
 
 
-				if (!Collision.CanHit(projectile.Center, 0, 0, start, 0, 0))
+				if (!Collision.CanHitLine(projectile.Center, 0, 0, start, 0, 0))
 				{
 					Distance -= 5f;
 					return;

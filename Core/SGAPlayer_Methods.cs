@@ -644,7 +644,7 @@ namespace SGAmod
 					player.Teleport(player.Center + new Vector2(player.dashTime > 0 ? -8 : 0, -20), 1);
 					for (int i = 0; i < 30; i += 1)
 					{
-						if (Collision.CanHit(player.Center, 16, 16, player.Center + new Vector2(Math.Sign(player.dashTime) * 8, 0), 16, 16))
+						if (Collision.CanHitLine(player.Center, 16, 16, player.Center + new Vector2(Math.Sign(player.dashTime) * 8, 0), 16, 16))
 						{
 							player.Center += new Vector2(Math.Sign(player.dashTime) * 8, 0);
 

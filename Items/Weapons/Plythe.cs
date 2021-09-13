@@ -28,13 +28,13 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 1;
 			item.Throwing().thrown=true;
 			item.damage = 110;
-			item.crit = 20;
+			item.crit = 10;
 			item.shootSpeed = 45f;
 			item.shoot = ModContent.ProjectileType<Scythe>();
 			item.useTurn = true;
 			item.width = 54;
 			item.height = 32;
-			item.maxStack = 10;
+			item.maxStack = 5;
 			item.knockBack = 0;
 			item.consumable = false;
 			item.UseSound = SoundID.Item1;

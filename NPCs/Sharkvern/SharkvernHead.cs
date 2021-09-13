@@ -79,6 +79,7 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override void NPCLoot()
         {
+
             if (Main.expertMode)
             {
                npc.DropBossBags();
@@ -184,7 +185,7 @@ namespace SGAmod.NPCs.Sharkvern
                         {
                             if (player2.active && !player2.dead)
                             {
-                                if (!player2.ZoneUnderworldHeight && Collision.CanHit(player2.Center, 1, 1, player2.Center - new Vector2(0, 1200), 1, 1))
+                                if (!player2.ZoneUnderworldHeight && Collision.CanHitLine(player2.Center, 1, 1, player2.Center - new Vector2(0, 1200), 1, 1))
                                     player2.AddBuff(ModContent.BuffType<SharkvernDrown>(), 2, true);
                             }
                         }
@@ -206,7 +207,7 @@ namespace SGAmod.NPCs.Sharkvern
                     {
                         if (player2.active && !player2.dead)
                         {
-                            if (Collision.CanHit(player2.Center, 1, 1, player2.Center - new Vector2(0, 400), 1, 1))
+                            if (Collision.CanHitLine(player2.Center, 1, 1, player2.Center - new Vector2(0, 400), 1, 1))
                                 player2.AddBuff(ModContent.BuffType<SharkvernDrown>(), 5+Math.Max(1,(int)(shark.rage / 4f)), true);
                         }
                     }

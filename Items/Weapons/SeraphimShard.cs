@@ -144,7 +144,7 @@ namespace SGAmod.Items.Weapons
 				if (projectile.ai[0] < 2)
                 {
 					Vector2 dotProduct = enemy.Center - projectile.Center;
-					if (Vector2.Dot(Vector2.Normalize(dotProduct), Vector2.Normalize(projectile.velocity)) > .50f && Collision.CanHit(enemy.Center, 1, 1, projectile.Center, 1, 1))
+					if (Vector2.Dot(Vector2.Normalize(dotProduct), Vector2.Normalize(projectile.velocity)) > .50f && Collision.CanHitLine(enemy.Center, 1, 1, projectile.Center, 1, 1))
 					projectile.ai[0] = 2;
 				}
 
@@ -222,7 +222,7 @@ namespace SGAmod.Items.Weapons
 			for(int i = 0; i < Main.maxNPCs; i += 1)
 			{
 				bool colcheck= Collision.CheckAABBvLineCollision(Main.npc[i].position, new Vector2(Main.npc[i].width, Main.npc[i].height), Main.npc[i].Center,projectile.Center)
-					&& Collision.CanHit(Main.npc[i].Center,0,0, projectile.Center,0,0);
+					&& Collision.CanHitLine(Main.npc[i].Center,0,0, projectile.Center,0,0);
 				if (Main.npc[i].active && !Main.npc[i].friendly && !Main.npc[i].townNPC && !Main.npc[i].dontTakeDamage && Main.npc[i].CanBeChasedBy() && colcheck
 					&& (Main.npc[i].Center-player.Center).Length()< SeekDist)
 					closestnpcs.Add(Main.npc[i]);

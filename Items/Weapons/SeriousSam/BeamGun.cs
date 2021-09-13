@@ -299,7 +299,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 					if (Main.npc[num172].active)
 					{
 
-					//(Collision.CanHit(new Vector2(loc.X, loc.Y), 1, 1, Main.npc[num172].position, Main.npc[num172].width, Main.npc[num172].height) || block == false)
+
 					if (num175 < num170)
 						{
 						int result = bouncetargets.Find(x => x == num172);

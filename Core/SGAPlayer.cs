@@ -113,7 +113,7 @@ namespace SGAmod
 		public bool vibraniumSetPlatform = false; public bool vibraniumSetWall = false;
 		public bool mudbuff = false; public bool alkalescentHeart = false; public bool jabALot = false; public bool NoHitCharm = false; public int NoHitCharmTimer = 0;
 		public int Havoc = 0;
-		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public (bool,float,bool, float) valkyrieSet = (false,0,false,0); public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0);
+		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public (bool,float,bool, float) valkyrieSet = (false,0,false,0); public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0); public (bool,bool) jungleTemplarSet = (false,false);
 		public float SpaceDiverWings = 0f;
 		public int gamePadAutoAim = 0;
 		public int tidalCharm = 0;
@@ -372,6 +372,7 @@ namespace SGAmod
 			ThrowingSpeed = 1f;
 			SpaceDiverset = false;
 			acidSet = (false, false);
+			jungleTemplarSet = (false,false);
 			potionsicknessincreaser = 0;
 			Blazewyrmset = false;
 			Mangroveset = false;
@@ -1186,9 +1187,9 @@ namespace SGAmod
 							int minTilePosX = (int)(player.Center.X / 16.0) - 1;
 							int minTilePosY = (int)((player.Center.Y + 32f) / 16.0) - 1;
 							int whereisity;
-							whereisity = Idglib.RaycastDown(minTilePosX + 1, Math.Max(minTilePosY, 0));
+							whereisity = Idglib.RaycastDown(minTilePosX + 1, (int)MathHelper.Clamp(minTilePosY, 0,Main.maxTilesY));
 							if ((whereisity - minTilePosY > 4 + (player.velocity.Y * 1)) || player.velocity.Y < 0)
-								if (Collision.CanHit(player.Center, 32, 32, player.Center + new Vector2(0, -96), 32, 32))
+								if (Collision.CanHitLine(player.Center, 32, 32, player.Center + new Vector2(0, -96), 32, 32))
 									player.position.Y += 8 + (player.velocity.Y * 2);
 						}
 						else
@@ -1831,12 +1832,12 @@ namespace SGAmod
 
 		public override void OnHitByNPC(NPC npc, int damage, bool crit)
 		{
-			afterTheHit(npc,null,damage,crit);
+			AfterTheHit(npc,null,damage,crit);
 		}
 
         public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
         {
-			afterTheHit(null, proj, damage, crit);
+			AfterTheHit(null, proj, damage, crit);
 		}
 
 		public static void SwearExplosion(Vector2 location,Player player,int damage)
@@ -1855,7 +1856,7 @@ namespace SGAmod
 
 		}
 
-        public void afterTheHit(NPC npc, Projectile projectile, int damage, bool crit)
+        public void AfterTheHit(NPC npc, Projectile projectile, int damage, bool crit)
         {
 
 			if (MisterCreeperset)
@@ -1910,6 +1911,10 @@ namespace SGAmod
 				if (valkyrieSet.Item1)
 				{
 					Items.Armors.Valkyrie.ValkyrieHelm.ActivateRagnorok(this);
+				}
+				if (jungleTemplarSet.Item1)
+				{
+					Items.Armors.JungleTemplar.JungleTemplarHelmet.ActivatePrecurserPower(this);
 				}
 
 				if (vibraniumSet)

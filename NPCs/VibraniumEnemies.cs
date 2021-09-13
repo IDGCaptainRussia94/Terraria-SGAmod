@@ -144,7 +144,7 @@ namespace SGAmod.NPCs
 							for (int i = 160; i < 320; i += 8)
                             {
 								Vector2 checkhere = P.MountedCenter+(Vector2.UnitX.RotatedBy(Main.rand.NextFloat(0f,MathHelper.TwoPi))*i);
-								if (Collision.CanHit(P.MountedCenter, 1, 1, checkhere, 1, 1))
+								if (Collision.CanHitLine(P.MountedCenter, 1, 1, checkhere, 1, 1))
 								{
 									npc.Center = checkhere;
 									npc.netUpdate = true;

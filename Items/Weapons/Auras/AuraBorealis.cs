@@ -10,6 +10,7 @@ using Idglibrary;
 using AAAAUThrowing;
 using Terraria.Utilities;
 using SGAmod.Tiles;
+using SGAmod.Tiles.TechTiles;
 
 namespace SGAmod.Items.Weapons.Auras
 {

@@ -20,6 +20,7 @@ using Microsoft.Xna.Framework.Audio;
 using SGAmod.NPCs.Hellion;
 using Terraria.Cinematics;
 using Terraria.Graphics.Effects;
+using SGAmod.Buffs;
 
 namespace SGAmod.Dimensions.NPCs
 {
@@ -741,7 +742,7 @@ namespace SGAmod.Dimensions.NPCs
 			}
 		}
 
-		public void StateCreateBeamX()
+		public void StateCreateBeamX()//XBeams
 		{
 
 			foreach (SpaceBossEye eyxxe in boss.Eyes)
@@ -857,9 +858,9 @@ namespace SGAmod.Dimensions.NPCs
 			}*/
 
 			boss.friction = 0.900f;
-			if (npc.ai[0] == 25100)
+			if (npc.ai[0] == 25140)
 			{
-				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageAttack, -1, -1);
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_PhantomPhoenixShot, -1, -1);
 				if (sound != null)
 				{
 					sound.Volume = 0.99f;
@@ -1038,6 +1039,79 @@ namespace SGAmod.Dimensions.NPCs
 
 		}
 
+		public void StateFinal()
+		{
+
+			foreach (Player player in Main.player)
+			{
+				if (player.active && !player.dead)
+				{
+					if (boss.countdownToTheEnd < 60 * 90)
+					{
+						player.AddBuff(BuffID.OnFire, 2);
+					}
+
+					if (boss.countdownToTheEnd < 60 * 60)
+					{
+						player.AddBuff(ModContent.BuffType<ThermalBlaze>(), 2);
+					}
+
+					if (boss.countdownToTheEnd < 60 * 30)
+					{
+						player.AddBuff(boss.countdownToTheEnd < 60 * 15 ? ModContent.BuffType<LavaBurn>() : ModContent.BuffType<LavaBurnLight>(), 2);
+					}
+
+					if (boss.countdownToTheEnd < 60 * 20)
+					{
+						player.AddBuff(BuffID.Burning, 2);
+					}
+
+					if (boss.countdownToTheEnd < -150)
+					{
+						player.KillMe(PlayerDeathReason.ByCustomReason("The sun crashed into "+player.name), 9001, 0);
+
+					}
+				}
+			}
+
+			if (npc.ai[0] % 30 == 0 && ToEnemy.LengthSquared() > 1600 * 1600)
+			{
+				Player target = Main.player[npc.target];
+				Vector2 place = target.Center + (Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(-400f, 400f)) + Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.Pi)) * 1200f;
+
+				Projectile.NewProjectile(place, Vector2.Normalize(ToEnemy) * Main.rand.NextFloat(1f, 3f), ModContent.ProjectileType<SpaceBossBasicShot>(), 30, 10);
+			}
+
+			if (npc.ai[0] % 30 == 0 && ToEnemy.LengthSquared() <= 1600 * 1600 && boss.shieldeffect<1)
+			{
+				Player target = Main.player[npc.target];
+
+				for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.Pi)
+				{
+					Projectile.NewProjectile(npc.Center, Vector2.UnitX.RotatedBy((npc.ai[0] / 80f)+f) * 2, ModContent.ProjectileType<SpaceBossBasicShot>(), 30, 10);
+				}
+			}
+
+
+			if (npc.ai[0] % 250 == 0)
+			{
+				SpaceBossRock[] nearbyrocks = boss.RocksAreas.Where(testby => (testby.Position - Main.player[npc.target].Center).LengthSquared() < (3000f * 3000f) && (testby.Position - Main.player[npc.target].Center).LengthSquared() > (640f * 640f)).ToArray();
+
+				if (nearbyrocks.Length > 0)
+				{
+
+					SpaceBossRock randomrock = nearbyrocks[Main.rand.Next(nearbyrocks.Length)];
+
+					for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.PiOver2)
+					{
+						Vector2 vec = Vector2.UnitX;
+						int prog = Projectile.NewProjectile(randomrock.Position, vec.RotatedBy(f + randomrock.Rotation) * 32f, SGAmod.Instance.ProjectileType("SpaceBossBeam"), 50, 15f);
+					}
+				}
+			}
+
+		}
+
 		public void StateActive()
 		{
 			boss.state = 1;
@@ -1097,6 +1171,8 @@ namespace SGAmod.Dimensions.NPCs
 
 				npc.dontTakeDamage = false;
 
+				if (npc.ai[3]>1)
+				StateFinal();
 
 				foreach (SpaceBossRock rockyplace in boss.Rocks)
 				{
@@ -1157,8 +1233,15 @@ namespace SGAmod.Dimensions.NPCs
 				else
 				{
 					boss.shieldeffect = MathHelper.Clamp(boss.shieldeffect - 1f, 0f, 30f);
-					if (boss.shieldeffect <= 0f)
-						StateMove();
+
+					if (boss.npc.ai[3] < 2)
+					{
+
+						if (boss.shieldeffect <= 0f)
+							StateMove();
+
+					}
+        
 				}
 
 			}
@@ -1407,6 +1490,9 @@ namespace SGAmod.Dimensions.NPCs
 
 		public bool WakingUpStartMusic => npc.ai[0] >= 200;
 		public bool Activestate => npc.active && npc.ai[0] >= 300 && !DyingState;
+		public int FinalTeleportState => (int)npc.ai[0] - 25000;
+
+
 
 		public bool DyingState => npc.ai[0] >= 100000;
 		public int timePassed = 0;
@@ -2113,14 +2199,15 @@ namespace SGAmod.Dimensions.NPCs
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
+				Texture2D bubbletex = ModContent.GetTexture("SGAmod/Dimensions/Space/BubbleHuge");
+
 				foreach (SpaceBossRock rock in RocksAreas)
 				{
 					Vector2 poz = rock.Position - Main.screenPosition;
 					int size = 128;
 					if (rock.airReady > 0 && poz.X > -size && poz.X < Main.screenWidth + size && poz.Y > -size && poz.Y < Main.screenHeight + size)
 					{
-
-						spriteBatch.Draw(Main.bubbleTexture, rock.Position - Main.screenPosition, null, rock.color * MathHelper.Clamp(rock.airReady / 120f, 0f, 1f), (float)Math.Sin(rock.Rotation) * 0.4f, Main.bubbleTexture.Size() / 2f, MathHelper.Clamp(rock.airReady / 600f, 0f, 1f) * 4f, SpriteEffects.None, 0f);
+						spriteBatch.Draw(bubbletex, rock.Position - Main.screenPosition, null, rock.color * MathHelper.Clamp(rock.airReady / 120f, 0f, 1f), (float)Math.Sin(rock.Rotation) * 0.4f, bubbletex.Size() / 2f, MathHelper.Clamp(rock.airReady / 600f, 0f, 1f) * 1f, SpriteEffects.None, 0f);
 					}
 				}
 			}
@@ -2252,6 +2339,22 @@ namespace SGAmod.Dimensions.NPCs
 
 				if (scaleeye > 0 && !eye.exploded)
 					spriteBatch.Draw(eyetex, (eye.BasePosition) + (eye.offset + eyepos) - Main.screenPosition, null, EyeColor * 0.50f, 0, eyetexorig, new Vector2(0.75f,0.75f*scaleeye) * (eye.eyeScale * Main.essScale), SpriteEffects.None, 0f);
+			}
+
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			if ((FinalTeleportState > 0 && FinalTeleportState<150) || npc.ai[3]>1)
+			{
+				float alpha = npc.ai[3] > 1 ? 150 : FinalTeleportState;
+				int index = 0;
+				float extraadd = Math.Max(0,npc.ai[0] - 100000);
+				for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 36f)
+				{
+					index += 1;
+					spriteBatch.Draw(eyetex, npc.Center - Main.screenPosition, new Rectangle(0, 0, (int)eyetexorig.X * 2, (int)eyetexorig.Y), Color.White * MathHelper.Clamp(alpha / 200f,0f,Math.Max(0.5f-(npc.ai[0]-100000)*0.025f,0)), f+Main.GlobalTime*(index%2==0 ? 1f : -1f), eyetexorig, new Vector2(1f, MathHelper.Clamp(alpha / 200f, 0f, 2f)+(extraadd/5f)) * alpha / 24f, SpriteEffects.None, 0f);
+				}
 			}
 
 			//Shield
@@ -2807,7 +2910,7 @@ namespace SGAmod.Dimensions.NPCs
 			projectile.hostile = true;
 			projectile.tileCollide = false;
 			projectile.alpha = 40;
-			projectile.timeLeft = 500;
+			projectile.timeLeft = 800;
 			projectile.light = 0.75f;
 			projectile.extraUpdates = 5;
 			projectile.ignoreWater = true;

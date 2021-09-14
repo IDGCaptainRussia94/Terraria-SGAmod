@@ -77,14 +77,25 @@ namespace SGAmod
 		{
 			if (type == 0)
 			{
-				/*SGAmod.VanillaHearts.Item1 = Main.heartTexture;
+				SGAmod.VanillaHearts.Item1 = Main.heartTexture;
 				SGAmod.VanillaHearts.Item2 = Main.heart2Texture;
 
 				if (Main.heartTexture == SGAmod.Instance.GetTexture("Invisible"))
 				{
 					Main.heartTexture = SGAmod.OGVanillaHearts.Item1;
 					Main.heart2Texture = SGAmod.OGVanillaHearts.Item2;
-				}*/
+				}
+			}
+			if (type == 2)
+			{
+				Main.heartTexture = SGAmod.VanillaHearts.Item1;
+				Main.heart2Texture = SGAmod.VanillaHearts.Item2;
+
+				if (Main.heartTexture == SGAmod.Instance.GetTexture("Invisible"))
+				{
+					Main.heartTexture = SGAmod.OGVanillaHearts.Item1;
+					Main.heart2Texture = SGAmod.OGVanillaHearts.Item2;
+				}
 			}
 			if (type == 1)
 			{
@@ -112,6 +123,12 @@ namespace SGAmod
 
 					float startingheartindex = ((num * (1f-sgaply.energyShieldReservation)) / num) * UIDisplay_LifePerHeart;
 
+					Main.heartTexture = SGAmod.VanillaHearts.Item1;
+					Main.heart2Texture = SGAmod.VanillaHearts.Item2;
+
+					//SGAmod.VanillaHearts.Item1 = Main.heartTexture;
+					//SGAmod.VanillaHearts.Item2 = Main.heart2Texture;
+
 					if (i > startingheartindex)
 					{
 
@@ -123,9 +140,6 @@ namespace SGAmod
 						float scale = 1f;
 						int num6 = itta.Item3;
 						int num9 = itta.Item4;
-
-						SGAmod.VanillaHearts.Item1 = Main.heartTexture;
-						SGAmod.VanillaHearts.Item2 = Main.heart2Texture;
 
 						Main.heartTexture = SGAmod.Instance.GetTexture("Invisible");
 						Main.heart2Texture = SGAmod.Instance.GetTexture("Invisible");
@@ -139,9 +153,6 @@ namespace SGAmod
 						Main.spriteBatch.Draw(heartTexture, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, Color.White * 0.50f, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f, SpriteEffects.None, 0f);
 
 						Main.spriteBatch.Draw(heartTexture2, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, Color.White * energy, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f + (energy * 0.25f), SpriteEffects.None, 0f);
-
-						Main.heartTexture = SGAmod.VanillaHearts.Item1;
-						Main.heart2Texture = SGAmod.VanillaHearts.Item2;
 
 					}
 

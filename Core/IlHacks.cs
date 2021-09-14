@@ -68,10 +68,20 @@ namespace SGAmod
 
 			static internal void HUDLifeBarsOverride(ILContext il)//Overrides the Life Hearts to draw custom stuff on top
 		{
+			Action resertHearts = () =>
+			{
+				SGAInterface.HUDCode(0);
+			};
+			Action resertHearts2 = () =>
+			{
+				SGAInterface.HUDCode(2);
+			};
 
 			ILCursor c = new ILCursor(il);
 
 			ILLabel afterpoint = null;
+
+			c.EmitDelegate(resertHearts);
 
 			c.Index = il.Instrs.Count - 1;
 
@@ -93,13 +103,7 @@ namespace SGAmod
 
 			ILLabel here = c.MarkLabel();
 
-			Action resertHearts = () =>
-			{
-				SGAInterface.HUDCode(0);
-			};
-
-
-			c.EmitDelegate(resertHearts);
+			c.EmitDelegate(resertHearts2);
 
 
 			return;

@@ -402,8 +402,14 @@ namespace SGAmod
 			SunderedDefense = false;
 			lockoneffect = Math.Min(lockoneffect + 1, 5000);
 
+
 			if (!NoHitCharm)
 			{
+				if (NoHitCharmTimer > 999999)
+				{
+					player.KillMe(PlayerDeathReason.ByCustomReason(player.name+ " attempted to break free of Cataclysm"),666666,0); 
+				}
+
 				NoHitCharmTimer = Math.Min(NoHitCharmTimer+1,181);
 			}
 
@@ -2352,7 +2358,7 @@ namespace SGAmod
 		public override void SetStaticDefaults()
 		{
 			base.DisplayName.SetDefault("IDG's Starting Bag");
-			base.Tooltip.SetDefault("Some starting items couldn't fit in your inventory??\n{$CommonItemTooltip.RightClickToOpen}\n'don't mind me just still reusing TMODLoader assets lol-IDG'");
+			base.Tooltip.SetDefault("Some starting items couldn't fit in your inventory??\n{$CommonItemTooltip.RightClickToOpen}");
 		}
 
 		public override void SetDefaults()

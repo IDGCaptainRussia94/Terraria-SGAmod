@@ -3022,7 +3022,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			Player target = Main.LocalPlayer;// Main.player[boss.npc.target];
 
-			if (boss == null || !boss.npc.active || boss.npc.life < 1 || boss.npc.type != ModContent.NPCType<SpaceBoss>() || (boss.shieldeffect <= 0.05 && npc.ai[2] > 2))
+			if (boss == null || !boss.npc.active || boss.npc.life < 1 || boss.npc.type != ModContent.NPCType<SpaceBoss>() || boss.npc.life >= boss.npc.lifeMax || (boss.shieldeffect <= 0.05 && npc.ai[2] > 2))
 			{
 				npc.StrikeNPCNoInteraction(npc.lifeMax * 3, 0, 0);
 			}

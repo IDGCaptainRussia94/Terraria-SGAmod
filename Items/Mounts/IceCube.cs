@@ -66,7 +66,7 @@ namespace SGAmod.Items.Mounts
 
 		public override void UpdateEffects(Player player)
 		{
-			Main.NewText(player.eocDash);
+
 			player.slippy2 = true;
 
 			// This code spawns some dust if we are moving fast enough.

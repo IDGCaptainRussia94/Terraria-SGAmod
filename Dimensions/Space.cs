@@ -564,7 +564,7 @@ namespace SGAmod.Dimensions
             VertexBuffer vertexBuffer;
             Vector2 parallex = Vector2.Zero;// new Vector2(Main.screenPosition.X / 9000f, -Main.GlobalTime * 0.1f);
 
-            effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Main.GameViewMatrix.Zoom) * WVP.Projection());
+            effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Vector2.One) * WVP.Projection());
             effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("TiledPerlin"));
             effect.Parameters["coordOffset"].SetValue(parallex);
             effect.Parameters["coordMultiplier"].SetValue(new Vector2(0.25f,0.45f));
@@ -684,7 +684,7 @@ namespace SGAmod.Dimensions
 
                     for (float i = 0; i < 1f; i += 0.10f)
                     {
-                        spriteBatch.Draw(inner, sunPosition, null, ((Color.White * 0.6f * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.5f) * 0.50f) * skyalpha, i * MathHelper.TwoPi, textureOrigin, (3f * (0.5f + 3.00f * (((Main.GlobalTime / 2f) + i) % 1f)))* closenessScale2, SpriteEffects.None, 0f);
+                        spriteBatch.Draw(inner, sunPosition, null, ((Color.White * 0.6f * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.5f) * 0.50f) * skyalpha, i * MathHelper.TwoPi, textureOrigin, (2.5f * (0.5f + 3.00f * (((Main.GlobalTime / 2f) + i) % 1f)))* closenessScale2, SpriteEffects.None, 0f);
                     }
 
                     Main.spriteBatch.End();

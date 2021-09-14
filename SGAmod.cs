@@ -148,6 +148,8 @@ namespace SGAmod
 		public static RenderTarget2D postRenderEffectsTarget;
 		public static RenderTarget2D postRenderEffectsTargetCopy;
 		public static (Texture2D, Texture2D) VanillaHearts;
+		public static (Texture2D, Texture2D) OGVanillaHearts;
+
 
 		public static SGACustomUIMenu CustomUIMenu;
 		public static UserInterface CustomUIMenuInterface;
@@ -248,6 +250,7 @@ namespace SGAmod
 				HellionTextures.Add(ModContent.GetTexture("Terraria/Projectile_"+ProjectileID.Leaf));
 
 				VanillaHearts = (ModContent.GetTexture("Terraria/Heart"), ModContent.GetTexture("Terraria/Heart2"));
+				OGVanillaHearts = (ModContent.GetTexture("Terraria/Heart"), ModContent.GetTexture("Terraria/Heart2"));
 
 			}
 
@@ -586,6 +589,9 @@ namespace SGAmod
 			SGAmod.EnchantmentCatalyst = null;
 			SGAmod.EnchantmentFocusCrystal = null;
 			SubworldCache.UnloadCache();
+
+			if (SGAmod.musicTest != null)
+			SGAmod.musicTest.Dispose();
 
 			SGAILHacks.Unpatch();
 

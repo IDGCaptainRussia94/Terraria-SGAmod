@@ -1788,7 +1788,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("'The Whole Experience EX'");
-			Tooltip.SetDefault("Same effects as 'The Whole Experience EX', but now prevents leaving subworlds on death\nSubworld bosses will reset when you die and you respawn in place");
+			Tooltip.SetDefault("Same effects as 'The Whole Experience', but now prevents leaving subworlds on death\nSubworld bosses will reset when you die and you respawn in place");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
         public override Color? GetAlpha(Color lightColor)

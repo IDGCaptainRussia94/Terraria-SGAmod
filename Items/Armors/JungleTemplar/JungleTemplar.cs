@@ -241,7 +241,7 @@ namespace SGAmod.Items.Armors.JungleTemplar
 	{
 		public override void SetDefaults()
 		{
-			DisplayName.SetDefault("Precurser's Power");
+			DisplayName.SetDefault("Precursor's Power");
 			Description.SetDefault("Ancient energy powers you up!\nGain shiny stone recovery even while moving, but consumes electric charge!\nExtreme energy causes harm if not wearing the armor set");
 			Main.debuff[Type] = false;
 			Main.pvpBuff[Type] = true;

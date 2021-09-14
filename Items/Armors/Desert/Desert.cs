@@ -61,6 +61,11 @@ namespace SGAmod.Items.Armors.Desert
 		{
 			player.Throwing().thrownDamage += 0.05f;
 		}
+		public override void DrawHands(ref bool drawHands, ref bool drawArms)
+		{
+			drawHands = true;
+			drawArms = true;
+		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);

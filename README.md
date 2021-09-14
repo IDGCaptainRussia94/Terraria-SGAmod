@@ -24,6 +24,35 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 
 Changelog:
 
+
+3.600c-(9/13/21)-Patch 11-Tech N Wreck: Beta
+
+
+--Fixed
+
+-Attempt to fix invisible hearts
+
+
+3.600b-(9/13/21)-Patch 11-Tech N Wreck: Beta
+
+
+--Fixed
+
+-Amulet of Diehard Cataclysm now working during bosses
+
+-Overseen Watchers now properly despawn
+
+-Space Background scaling
+
+-invisible Arms and Hands on the Nomadic Shirt
+
+-Jelly Bru Armor eating up too much HP
+
+-Removed Debug Text
+
+
+Changelog:
+
 3.600a-(9/13/21)-Patch 11-Tech N Wreck: Beta
 
 --Added:

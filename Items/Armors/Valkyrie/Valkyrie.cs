@@ -197,7 +197,7 @@ namespace SGAmod.Items.Armors.Valkyrie
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AcidBurn";
+			texture = "SGAmod/Buffs/RagnarokBuff";
 			return true;
 		}
 
@@ -229,8 +229,6 @@ namespace SGAmod.Items.Armors.Valkyrie
 			Main.dust[dust].alpha = 200;
 			Main.dust[dust].fadeIn = 1f;
 			Main.dust[dust].velocity = (player.velocity * Main.rand.NextFloat(0.75f, 1.2f)) + Vector2.UnitX.RotatedBy(-MathHelper.PiOver2 + Main.rand.NextFloat(-0.6f, 0.6f)) * Main.rand.NextFloat(0f, 1f);
-
-
 		}
 	}
 

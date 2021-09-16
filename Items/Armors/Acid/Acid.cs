@@ -182,7 +182,7 @@ namespace SGAmod.Items.Armors.Acid
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AcidBurn";
+			texture = "SGAmod/Buffs/HungerOfFamesBuff";
 			return true;
 		}
 

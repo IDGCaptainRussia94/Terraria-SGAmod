@@ -1077,9 +1077,9 @@ namespace SGAmod.Dimensions.NPCs
 			if (npc.ai[0] % 30 == 0 && ToEnemy.LengthSquared() > 1600 * 1600)
 			{
 				Player target = Main.player[npc.target];
-				Vector2 place = target.Center + (Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(-400f, 400f)) + Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.Pi)) * 1200f;
+				Vector2 place = target.Center + (Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(-400f, 400f)) + Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.Pi)) * 1800f;
 
-				Projectile.NewProjectile(place, Vector2.Normalize(ToEnemy) * Main.rand.NextFloat(1f, 3f), ModContent.ProjectileType<SpaceBossBasicShot>(), 30, 10);
+				Projectile.NewProjectile(place, Vector2.Normalize(ToEnemy) * Main.rand.NextFloat(2.5f, 3f), ModContent.ProjectileType<SpaceBossBasicShot>(), 30, 10);
 			}
 
 			if (npc.ai[0] % 30 == 0 && ToEnemy.LengthSquared() <= 1600 * 1600 && boss.shieldeffect<1)
@@ -1821,7 +1821,7 @@ namespace SGAmod.Dimensions.NPCs
 			state = 0;
 			npc.localAI[0] += 1;
 
-			if (npc.ai[3] > 1)
+			if (npc.ai[3] > 1 && npc.life>0 && !DyingState)
             {
 				countdownToTheEnd -= 1;
 			}

@@ -30,7 +30,16 @@ Changelog:
 
 --Fixed
 
--Attempt to fix invisible hearts
+
+-Blood Charm Pendant now properly has its equip sprite
+
+-The invisible hearts
+
+-JellyBru's armor problems
+
+-Text on Phaethon's final attack is now scaled properly (and stops counting down after he dies)
+
+-Fixed missing Vibranium Recipes
 
 
 3.600b-(9/13/21)-Patch 11-Tech N Wreck: Beta
@@ -320,6 +329,8 @@ Changelog:
 -Rustwork Blade can now be used to craft the Big Bang
 
 -Hopefully Limbo no longer displays mountains in it
+
+-Granite/Cobalt magnet should no longer cause items to get stuck on platforms
 
 -Shadeflame Staff having a crafting recipe
 

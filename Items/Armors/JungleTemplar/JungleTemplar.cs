@@ -251,7 +251,7 @@ namespace SGAmod.Items.Armors.JungleTemplar
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AcidBurn";
+			texture = "SGAmod/Buffs/PrecursorsPowerBuff";
 			return true;
 		}
 

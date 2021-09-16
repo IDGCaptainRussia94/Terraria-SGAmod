@@ -238,14 +238,6 @@ namespace SGAmod.Items.Armors.Vibranium
 			player.GetModPlayer<IdgPlayer>().radresist += 0.25f;
 			player.GetModPlayer<IdgPlayer>().radationRecover += 0.04f;
 		}		
-		public override void AddRecipes()
-		{
-			/*ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 15);
-			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this);
-			recipe.AddRecipe();*/
-		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			Player player = Main.LocalPlayer;
@@ -315,6 +307,14 @@ namespace SGAmod.Items.Armors.Vibranium
 				sgaplayer.vibraniumSetWall = false;
 			}
 		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("VibraniumBar"), 10);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
 	}
 
 	[AutoloadEquip(EquipType.Legs)]
@@ -345,11 +345,11 @@ namespace SGAmod.Items.Armors.Vibranium
 		}
 		public override void AddRecipes()
 		{
-			/*ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 10);
-			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this);
-			recipe.AddRecipe();*/
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("VibraniumBar"), 6);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
 		}
 	}
     public class VibraniumPlatform : ModProjectile

@@ -130,6 +130,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	[AutoloadEquip(EquipType.HandsOn)]
 	public class PrismalGuantlet : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -256,6 +257,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	[AutoloadEquip(EquipType.Neck)]
 	public class BloodCharmPendant : LifeFlower
 	{
 		public override void SetStaticDefaults()
@@ -4336,7 +4338,7 @@ namespace SGAmod.Items.Accessories
 					{
 						Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * (GetType() == typeof(CobaltMagnetProj) ? 1f : 0.45f);
 						item.velocity = item.velocity + movement;
-						item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
+						item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height,true);
 					}
 				}
 

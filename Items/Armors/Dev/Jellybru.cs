@@ -16,7 +16,10 @@ namespace SGAmod.Items.Armors.Dev
 	{
 		public override bool Autoload(ref string name)
 		{
-			SGAPlayer.PostUpdateEquipsEvent += SetBonus;
+			if (GetType() == typeof(JellybruHelmet))
+			{
+				SGAPlayer.PostUpdateEquipsEvent += SetBonus;
+			}
 			return true;
 		}
 		public override Color AwakenedColors => Color.Purple;
@@ -36,30 +39,25 @@ namespace SGAmod.Items.Armors.Dev
 			{
 				Player player = sgaplayer.player;
 
-				//				percentLife = (int)((percentLife * 2) * player.magicDamage);
-
-				//Main.NewText(player.manaCost);
-
-				float thepercent = 0.1f;// 1f-MathHelper.Clamp(0.5f,0.5f,1f);
+				float thepercent = 0.5f;
 
 				int percentLife = (int)((player.statLifeMax2) * thepercent);
 
 				percentLife = (int)((percentLife * 2) * player.magicDamage);
 
 				sgaplayer.energyShieldAmmountAndRecharge.Item2 += percentLife;
+				//Main.NewText(sgaplayer.energyShieldReservation);
 				sgaplayer.energyShieldReservation += (1f - sgaplayer.energyShieldReservation) * thepercent;
 
 				sgaplayer.ShieldType = 1001;
 
 				if (!sgaplayer.EnergyDepleted)
-                {
+				{
 					Item itemxx = new Item();
 					itemxx.SetDefaults(ItemID.AnkhCharm);
 					player.VanillaUpdateVanityAccessory(itemxx);
-                }
-
+				}
 			}
-
 		}
 
 		public override bool DrawHead()

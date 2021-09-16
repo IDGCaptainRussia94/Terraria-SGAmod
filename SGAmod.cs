@@ -151,6 +151,11 @@ namespace SGAmod
 		public static (Texture2D, Texture2D) OGVanillaHearts;
 
 
+		public static (bool, bool) SpecialEvents => ((DateTime.Now.Month, DateTime.Now.Day) == (8,24), (DateTime.Now.Month, DateTime.Now.Day) == (4, 1));
+		public static bool SpecialBirthdayMode = false;
+		public static bool AprilFoolsMode = false;
+
+
 		public static SGACustomUIMenu CustomUIMenu;
 		public static UserInterface CustomUIMenuInterface;
 
@@ -159,8 +164,6 @@ namespace SGAmod
 
 		internal static SGAArmorButton armorButton;
 		internal static UserInterface armorButtonPanelInterface;
-
-
 
 		public static Dictionary<int, int> itemToMusicReference = new Dictionary<int, int>();
 		public static Dictionary<int, int> musicToItemReference = new Dictionary<int, int>();
@@ -210,6 +213,11 @@ namespace SGAmod
 #endif
 
 			//SGAmod.AbsentItemDisc.Add(SGAmod.Instance.ItemType("Tornado"), "This is test");
+
+			if (SpecialEvents.Item1)
+				SpecialBirthdayMode = true;
+			if (SpecialEvents.Item2)
+				AprilFoolsMode = true;
 
 			Properties = new ModProperties()
 			{

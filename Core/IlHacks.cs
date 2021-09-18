@@ -23,6 +23,7 @@ namespace SGAmod
 		//Welcome to Russia's collection of vanilla hacking nonsense!
 		internal static void Patch()
         {
+			IL.Terraria.Main.Update += RemoveUpdateCinematic;
 			IL.Terraria.Player.AdjTiles += ForcedAdjTilesHack;
 			IL.Terraria.Player.Update += SwimInAirHack;
 			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
@@ -104,6 +105,25 @@ namespace SGAmod
 			ILLabel here = c.MarkLabel();
 
 			c.EmitDelegate(resertHearts2);
+
+
+			return;
+
+		Failed:
+			throw new Exception("IL Error Test");
+
+		}
+
+		static internal void RemoveUpdateCinematic(ILContext il)//Patch to fix high framerate issues with the cinematic system
+		{
+
+			ILCursor c = new ILCursor(il);
+
+			//MethodInfo HackTheMethod = typeof(TileLoader).GetMethod("MineDamage", BindingFlags.Public | BindingFlags.Static);
+			if (!c.TryGotoNext(MoveType.Before, i => i.MatchLdsfld<Terraria.Cinematics.CinematicManager>("Instance")))
+				goto Failed;
+
+			c.RemoveRange(3);//Get rid of em
 
 
 			return;

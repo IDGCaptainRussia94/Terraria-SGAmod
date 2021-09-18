@@ -271,6 +271,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Caliburn");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override void SetDefaults()
@@ -314,6 +315,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Caliburn");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 

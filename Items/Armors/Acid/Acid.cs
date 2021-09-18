@@ -193,10 +193,10 @@ namespace SGAmod.Items.Armors.Acid
 			player.lifeRegenTime = 0;
 			player.lifeRegenCount = 0;
 
-			int dust = Dust.NewDust(player.Hitbox.BottomLeft()+new Vector2(0,-12), player.Hitbox.Width, 12, ModContent.DustType<Dusts.AcidDust>());
+			int dust = Dust.NewDust(player.Hitbox.BottomLeft() + new Vector2(0, -12), player.Hitbox.Width, 12, ModContent.DustType<Dusts.AcidDust>());
 			Main.dust[dust].scale = 1f;
 			Main.dust[dust].noGravity = true;
-			Main.dust[dust].velocity = (player.velocity * Main.rand.NextFloat(0.9f,1f))+Vector2.UnitX.RotatedBy(-MathHelper.PiOver2+Main.rand.NextFloat(-0.3f,0.3f))*Main.rand.NextFloat(1f,3f);
+			Main.dust[dust].velocity = (player.velocity * Main.rand.NextFloat(0.9f, 1f)) + Vector2.UnitX.RotatedBy(-MathHelper.PiOver2 + Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(1f, 3f);
 
 		}
 	}

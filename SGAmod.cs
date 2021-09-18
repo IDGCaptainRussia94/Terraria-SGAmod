@@ -225,6 +225,7 @@ namespace SGAmod
 				AutoloadGores = true,
 				AutoloadSounds = true
 			};
+
 		}
 
 		public override void PreSaveAndQuit()
@@ -797,6 +798,15 @@ namespace SGAmod
 
 			recipe = new ModRecipe(this);
 			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ItemID.HermesBoots, 1);
+			recipe.AddIngredient(ItemID.IceBlock, 25);
+			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 4);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.IceSkates);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
 			recipe.AddIngredient(ItemID.TurtleShell, 1);
 			recipe.AddIngredient(ItemID.FrostCore, 1);
 			recipe.AddIngredient(this.ItemType("CryostalBar"), 8);
@@ -1214,9 +1224,12 @@ namespace SGAmod
 			NullWatcher.watchers.Clear();
 		}
 #endif
-
+		int test = 0;
 		public override void PostUpdateEverything()
 		{
+			//test++;
+			Terraria.Cinematics.CinematicManager.Instance.Update(new GameTime());
+			//Main.NewText(test);
 			if (SGAmod.musicTest != null && SGAmod.musicTest.IsPlaying)
 			{
 				SGAmod.musicTest.CheckBuffer();

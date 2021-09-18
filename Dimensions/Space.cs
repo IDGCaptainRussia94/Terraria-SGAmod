@@ -562,42 +562,48 @@ namespace SGAmod.Dimensions
 
 
             VertexBuffer vertexBuffer;
-            Vector2 parallex = Vector2.Zero;// new Vector2(Main.screenPosition.X / 9000f, -Main.GlobalTime * 0.1f);
-
-            effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Vector2.One) * WVP.Projection());
-            effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("TiledPerlin"));
-            effect.Parameters["coordOffset"].SetValue(parallex);
-            effect.Parameters["coordMultiplier"].SetValue(new Vector2(0.25f,0.45f));
-            effect.Parameters["strength"].SetValue(1f);
-
-            VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
-
-            Vector3 screenPos = new Vector3(-16, 0, 0);
-            float skymove = ((Math.Max(Main.screenPosition.Y - 8000, 0)) / (Main.maxTilesY * 16f));
 
             UnifiedRandom alwaysthesame = new UnifiedRandom(DimDungeonsProxy.DungeonSeeds);
 
-            Color colorsa = Color.Lerp(Color.Lerp(Color.Black,Main.hslToRgb(alwaysthesame.NextFloat(),1f,0.75f),0.1f), Color.OrangeRed, MathHelper.Clamp((sunIsApprouching - 0.10f)*1.45f,0f,1f));
+            for (int type = 0; type < 2; type += 1)
+            {
 
-            vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-16, 0, 0), colorsa, new Vector2(0, 0));
-            vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
-            vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
+                Vector2 parallex = new Vector2(alwaysthesame.NextFloat(), alwaysthesame.NextFloat())+(type == 0 ? Vector2.Zero : (new Vector2(Main.screenPosition.X, Main.screenPosition.Y*2.5f) /500000f));// new Vector2(Main.screenPosition.X / 9000f, -Main.GlobalTime * 0.1f);
 
-            vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight, 0), colorsa, new Vector2(1, 1));
-            vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
-            vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
+                effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Vector2.One) * WVP.Projection());
+                effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture(type == 0 ? "TiledPerlin" : "Space"));
+                effect.Parameters["coordOffset"].SetValue(parallex);
+                effect.Parameters["coordMultiplier"].SetValue(new Vector2(0.25f, 0.45f));
+                effect.Parameters["strength"].SetValue(type == 0 ? 1f : 5f);
 
-            vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
-            vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+                VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
 
-            Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+                Vector3 screenPos = new Vector3(-16, 0, 0);
+                float skymove = ((Math.Max(Main.screenPosition.Y - 8000, 0)) / (Main.maxTilesY * 16f));
 
-            RasterizerState rasterizerState = new RasterizerState();
-            rasterizerState.CullMode = CullMode.None;
-            Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+                Color colorsa = Color.Lerp(Color.Lerp(Color.Black, Main.hslToRgb(alwaysthesame.NextFloat(), 1f, 0.75f), 0.1f), Color.OrangeRed, MathHelper.Clamp((sunIsApprouching - 0.10f) * 1.45f, 0f, 1f));
 
-            effect.CurrentTechnique.Passes["BasicEffectPass"].Apply();
-            Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+                vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-16, 0, 0), colorsa, new Vector2(0, 0));
+                vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
+                vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
+
+                vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight, 0), colorsa, new Vector2(1, 1));
+                vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
+                vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
+
+                vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+                vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+                Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+                RasterizerState rasterizerState = new RasterizerState();
+                rasterizerState.CullMode = CullMode.None;
+                Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+
+                effect.CurrentTechnique.Passes[type == 0 ? "BasicEffectPass" : "BasicEffectAlphaPass"].Apply();
+                Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+
+            }
 
             if (skyalpha > 0)
             {
@@ -1446,7 +1452,7 @@ namespace SGAmod.Dimensions
 
         public override bool OnPickup(Player player)
         {
-            player.SGAPly().RestoreBreath(20);
+            player.SGAPly().RestoreBreath(20*item.stack);
             return false;
         }
 

@@ -28,18 +28,21 @@ Changelog:
 3.600c-(9/13/21)-Patch 11-Tech N Wreck: Beta
 
 
---Fixed
-
-
 -Blood Charm Pendant now properly has its equip sprite
 
--The invisible hearts
+-Fixed The invisible hearts
 
--JellyBru's armor problems
+-Fixed JellyBru's armor problems
 
--Text on Phaethon's final attack is now scaled properly (and stops counting down after he dies)
+-Fixed Text on Phaethon's final attack is now scaled properly (and stops counting down after he dies)
 
 -Fixed missing Vibranium Recipes
+
+-Fixed Caliburn's homing attacks not counting as homing
+
+-Picking up bubble stacks gives more air
+
+-Space is a bit prettier
 
 
 3.600b-(9/13/21)-Patch 11-Tech N Wreck: Beta

@@ -1516,13 +1516,13 @@ namespace SGAmod.Dimensions.NPCs
 
 				scenecam = cutscenestartpos;
 				//scenecamend = npc.Center - (new Vector2(Main.screenWidth, Main.screenHeight) / 2f);
-				camlength = 60;
-				camlength2 = 700;
+				camlength = 20;
+				camlength2 = 400;
 				film = new Film();
 				film.AppendSequence(camlength, FilmSetCamera);
 				film.AppendSequence(camlength2 - camlength, FilmSetCamera);
 				//for(int i=0;i<150;i++)
-				film.AppendSequence(300, FilmSetCamera);
+				film.AppendSequence(100, FilmSetCamera);
 
 				film.AddSequence(0, film.AppendPoint, PerFrameSettings);
 
@@ -1643,7 +1643,7 @@ namespace SGAmod.Dimensions.NPCs
 			if (evt.AbsoluteFrame > camlength2)
 			{
 				Vector2 diff = Main.LocalPlayer.Center - (new Vector2(Main.screenWidth, Main.screenHeight) / 2f);
-				scenecamend = Vector3.Lerp(cutscenestartpos, new Vector3(diff.X, diff.Y, 1f-MathHelper.Clamp(((evt.Frame / (float)evt.Duration)*3f)-2f, 0f,1f)), (evt.Frame/(float)evt.Duration)*1.05f);
+				scenecamend = Vector3.Lerp(cutscenestartpos, new Vector3(diff.X, diff.Y, 1f-MathHelper.Clamp(((evt.Frame / (float)evt.Duration)*3f)-2f, 0f,1f)), (evt.Frame/(float)evt.Duration)*(1.25f));
 			}
 
 			scenecam += (scenecamend - scenecam) * 0.05f;
@@ -1674,8 +1674,8 @@ namespace SGAmod.Dimensions.NPCs
 			if (npc.ai[0] == 1)
             {
 
-						camlength = 300;
-						camlength2 = 1200;
+						camlength = 100;
+						camlength2 = 500;
 		cutscenestartpos = new Vector3(Main.screenPosition.X, Main.screenPosition.Y,1f);
 
 				scenecam = cutscenestartpos;
@@ -1684,7 +1684,7 @@ namespace SGAmod.Dimensions.NPCs
 				film.AppendSequence(camlength, FilmSetCamera);
 				film.AppendSequence(camlength2- camlength, FilmSetCamera);
 				//for(int i=0;i<150;i++)
-				film.AppendSequence(150, FilmSetCamera);
+				film.AppendSequence(75, FilmSetCamera);
 
 				film.AddSequence(0, film.AppendPoint, PerFrameSettings);
 

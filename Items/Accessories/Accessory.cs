@@ -4179,7 +4179,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Granite Magnet");
-			Tooltip.SetDefault("Point at grounded items to attact them from a larger distance\nCan be held out like a torch and used normally by holding shift\nCan be worn to provide a minor increase to item grab radius and grab speed");
+			Tooltip.SetDefault("Point at grounded items to attract them from a larger distance\nCan be held out like a torch and used normally by holding shift\nCan be worn to provide a minor increase to item grab radius and grab speed");
 			Item.staff[item.type] = true;
 		}
 

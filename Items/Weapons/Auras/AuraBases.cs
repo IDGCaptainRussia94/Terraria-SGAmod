@@ -42,7 +42,9 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-				tooltips.Add(new TooltipLine(mod, "AuraUse", "Reusing the item consumes an extra minion slot and increases the current Aura Strength"));
+			Color c = Placeable.TechPlaceable.LuminousAlterItem.AuroraLineColor;
+			tooltips.Add(new TooltipLine(mod, "Plasma Item", Idglib.ColorText(c, "Aura weapons affect all around the player, friend and foe alike")));
+			tooltips.Add(new TooltipLine(mod, "AuraUse", Idglib.ColorText(c, "Reusing the item consumes an extra minion slot and increases the current Aura Strength")));
 			//tooltips.Add(new TooltipLine(mod, "AuraUse", "Alt Fire to relocate the Aura, Alt Fire again to return it to you"));
 		}
 

@@ -242,13 +242,13 @@ namespace SGAmod.Buffs
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "Terraria/Buff_" + BuffID.ShadowDodge;
+			//texture = "Terraria/Buff_" + BuffID.ShadowDodge;
 			return true;
 		}
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Invincible");
-			Description.SetDefault("Damage is currently completely prevented");
+			Description.SetDefault("Damage is currently completely prevented\n'that one time you aren't defeated during a cutscene!'");
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
 			Main.debuff[Type] = true;

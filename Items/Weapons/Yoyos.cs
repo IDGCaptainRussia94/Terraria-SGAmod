@@ -11,12 +11,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SGAmod.HavocGear.Items.Weapons
 {
-	public class MossYoyo : MangroveBow
+	public class MossYoyo : MangroveBow,IDankSlowText
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Quagmire");
-			Tooltip.SetDefault("Hits apply Dank Slow against your foes\nContinous hits make the slow stronger\nEnemies who are immune to Poison are also immune to Dank Slow");
+			Tooltip.SetDefault("Hits apply Dank Slow against your foes");
 		}
 
 		public override void SetDefaults()

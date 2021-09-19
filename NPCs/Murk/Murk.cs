@@ -1632,7 +1632,7 @@ namespace SGAmod.NPCs.Murk
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "Terraria/Buff_"+BuffID.Poisoned;
+            texture = "SGAmod/Buffs/PoisonStack";
             return true;
         }
 
@@ -1656,7 +1656,7 @@ namespace SGAmod.NPCs.Murk
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "SGAmod/NPCs/Murk/Murk_Head_Boss";
+            texture = "SGAmod/Buffs/MurkyDepths";
             return true;
         }
 

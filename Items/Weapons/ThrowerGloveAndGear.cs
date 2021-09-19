@@ -822,14 +822,14 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	class SludgeBomb : AcidGrenade
+	class SludgeBomb : AcidGrenade, IDankSlowText
 	{
 
 		public override void SetStaticDefaults()
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Sludge Bomb");
-			Tooltip.SetDefault("Explodes into sludge that sticks to walls and damage enemies\nEnemies near the sludge get Oiled, Confused, and Dank Slowed\nDank Slow only applies to enemies not immune to poison");
+			Tooltip.SetDefault("Explodes into sludge that sticks to walls and damage enemies\nEnemies near the sludge get Oiled, Confused, and Dank Slowed");
 		}
 
 		public override void SetDefaults()

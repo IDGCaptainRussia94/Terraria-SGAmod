@@ -20,6 +20,16 @@ namespace SGAmod
 	{
 
 	}
+
+	interface IRustBurnText
+	{
+
+	}
+
+	interface IDankSlowText
+	{
+
+	}
 	interface IShieldBashProjectile
 	{
 

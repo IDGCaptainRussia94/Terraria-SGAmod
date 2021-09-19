@@ -340,14 +340,14 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class SwampSovnya: SanguineBident, IJablinItem
+    public class SwampSovnya: SanguineBident, IJablinItem,IDankSlowText
     {
         public override float Stabspeed => 4.00f;
         public override float Throwspeed => 10f;
         public override int Penetrate => 5;
         public override float Speartype => 12;
         public override int[] Usetimes => new int[] { 25, 6 };
-        public override string[] Normaltext => new string[] {"'Hunt or be hunted'", "Thrown Jab-libs inflict Dank Slow to enemies if not immune to poison", "Jabs crit slowed targets and remove the debuff, increasing damage based on slow up to 5X","Additionally, this weapon does 25% increased direct and DOT damage to poison-immune enemies", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
+        public override string[] Normaltext => new string[] {"'Hunt or be hunted'", "Thrown Jab-libs inflict Dank Slow", "Jabs crit slowed targets and remove the debuff, increasing damage based on slow up to 5X","Additionally, this weapon does 25% increased direct and DOT damage to poison-immune enemies", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Swamp Sovnya");

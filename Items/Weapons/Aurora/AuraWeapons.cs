@@ -12,7 +12,7 @@ using SGAmod.Effects;
 
 namespace SGAmod.Items.Weapons.Aurora
 {
-    public class TheNorthernShine : ModItem
+    public class TheNorthernShine : ModItem,IAuroraItem
     {
         public override void SetStaticDefaults()
         {

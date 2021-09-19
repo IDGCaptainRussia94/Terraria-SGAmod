@@ -47,7 +47,7 @@ namespace SGAmod.NPCs.TownNPCs
 		{
 			get
 			{
-				return new string[] { "SGAmod/NPCs/TownNPCs/ContrabandMerchant" };
+				return new string[] { "SGAmod/NPCs/TownNPCs/ContrabandMerchant_alt" };
 			}
 		}
 
@@ -212,7 +212,7 @@ namespace SGAmod.NPCs.TownNPCs
 			chat.Add("Why yes am I profiting off you, because you can't escape the middleman here.");
 			chat.Add("Wrong? Pfff, when that one guy is standing in the way you kill them with rotten eggs! And you think what I do is wrong...");
 			chat.Add("Me a fence? With what proof, it's not like guards instantly know where I am when I steal a sweetroll.");
-			chat.Add("Sure I may be a recolor but atleast I don't use my vanity slots as storage.");
+			chat.Add("Sure I may be a recolor but at least I don't use my vanity slots as storage.");
 			chat.Add("No, I don't know about this 'Epic Store', stop asking me to sell stuff from it.");
 			chat.Add("I'd like to see you try getting what I sell on your own.");
 			chat.Add("I like to live on the edge, and part of that includes not living in your crude dwellings.");
@@ -241,7 +241,7 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("Nothing for sale while the sun shines, it's blistering bright glow...");
 				chat.Add("If you'll excuse me, I need to pack up and leave.");
 				chat.Add("I'll be back another night, but my time is up for now.");
-				chat.Add("Your a bit late arn't ya?");
+				chat.Add("Your a bit late aren't ya?");
 			}
 
 			return chat; // chat is implicitly cast to a string. You can also do "return chat.Get();" if that makes you feel better

@@ -136,7 +136,6 @@ namespace SGAmod
                 {
                     Color c = Main.hslToRgb(0.9f, 0.5f, 0.35f);
                     tooltips.Add(new TooltipLine(mod, "Havoc Item", Idglib.ColorText(c, "Former Havoc mod item")));
-
                 }
                 if (SGAmod.UsesPlasma.ContainsKey(item.type))
                 {
@@ -156,6 +155,16 @@ namespace SGAmod
                 {
                     Color c = Main.hslToRgb(0.7f, 0.15f, 0.7f);
                     tooltips.Add(new TooltipLine(mod, "Clip Item", Idglib.ColorText(c, ammoclip == 2 ? "Counts as a revolver: Automatically Reloads itself when held" : "This weapon has a clip and requires manual reloading")));
+                }
+
+                if (item?.modItem is IRustBurnText)
+                {
+                    tooltips.Add(new TooltipLine(mod, "RustBurnText", RustBurn.RustText));
+                }
+
+                if (item?.modItem is IDankSlowText)
+                {
+                    tooltips.Add(new TooltipLine(mod, "DankSlowText", DankSlow.DankText));
                 }
 
                 if (item?.modItem is IDevItem)

@@ -28,6 +28,10 @@ Changelog:
 3.600c-(9/13/21)-Patch 11-Tech N Wreck: Beta
 
 
+-Added a tooltip for auras
+
+-Added alt Contraband merchant texture
+
 -Blood Charm Pendant now properly has its equip sprite
 
 -Fixed The invisible hearts
@@ -42,7 +46,7 @@ Changelog:
 
 -Picking up bubble stacks gives more air
 
--Space is a bit prettier
+-Space is a bit prettier, increased asteriod varity
 
 
 3.600b-(9/13/21)-Patch 11-Tech N Wreck: Beta
@@ -165,6 +169,8 @@ Changelog:
 -Ragnarok's Brew costs more resources except Styigan Stars and makes 3, to help justify it requiring Styigan Stars
 
 -Ancient Fabric is now sold by the Merchant in multiplayer
+
+-Added a tooltip for auras
 
 -Aura Weapons now only affect players on the same team
 
@@ -329,7 +335,7 @@ Changelog:
 
 -Cyber Scythe's max range growing smaller with melee speed instead of larger
 
--Rustwork Blade can now be used to craft the Big Bang
+-Rustwork Blade can now be used to craft the Big Bang, and now only displays its extra text once
 
 -Hopefully Limbo no longer displays mountains in it
 
@@ -1889,7 +1895,7 @@ Previous version was suppose to be 2.800, but ended up being 2.900, oh well
 
 -Fridgeflame and Blink Tech Canisters now boost Technological Damage by 5% each
 
--Quagmire rebalance-reduced damage, now inflicts Dank Slow instead of Poison
+-Quagmire rebalanced: reduced damage, now inflicts Dank Slow instead of Poison
 
 -Jab-lins now display their crit chance and damage properly, melee attacks have a solid 50% to not be consumed, and both modes are boosted further by throwing item saving chances
 

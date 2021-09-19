@@ -3908,7 +3908,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 	[AutoloadEquip(EquipType.Shield)]
-	public class RustedBulwark : ModItem
+	public class RustedBulwark : ModItem,IRustBurnText
 	{
 		public override void SetStaticDefaults()
 		{
@@ -3924,11 +3924,6 @@ namespace SGAmod.Items.Accessories
 			item.rare = ItemRarityID.White;
 			item.value = Item.buyPrice(0, 0, 20, 0);
 			item.accessory = true;
-		}
-
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
-		{
-			tooltips.Add(new TooltipLine(mod, "RustBurnText", RustBurn.RustText));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)

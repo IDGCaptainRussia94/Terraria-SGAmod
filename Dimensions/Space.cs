@@ -220,7 +220,7 @@ namespace SGAmod.Dimensions
             List<Vector2> spots = EmptySpaces.Where(testby => rect.Contains(new Point((int)testby.X / 16, (int)testby.Y / 16))).ToList();
             Vector2 bossplace = EmptySpaces[0];
 
-            NPC.NewNPC((int)bossplace.X, (int)bossplace.Y,ModContent.NPCType<SpaceBoss>());
+            NPC.NewNPC((int)bossplace.X, (int)bossplace.Y, ModContent.NPCType<SpaceBoss>());
 
         }
 
@@ -512,18 +512,18 @@ namespace SGAmod.Dimensions
             SpaceBoss boss = bossIndex >= 0 ? Main.npc[bossIndex].modNPC as SpaceBoss : null;
 
             skyalpha = MathHelper.Clamp(skyalpha + (boss != null && boss.goingDark > 0 ? -0.0015f : 0.005f), 0f, 1f);
-            darkalpha = MathHelper.Clamp(darkalpha + (boss != null && boss.goingDark > 0 ? 0.0025f : (boss!= null && boss.DyingState ? -0.075f : -0.005f)), 0f, 1f);
+            darkalpha = MathHelper.Clamp(darkalpha + (boss != null && boss.goingDark > 0 ? 0.0025f : (boss != null && boss.DyingState ? -0.075f : -0.005f)), 0f, 1f);
 
             sunPosition = sunOrigPosition;
 
             if (bossIndex >= 0 && !boss.DyingState)
             {
                 sunBossPosition = boss.npc.Center;
-                sunIsApprouching = MathHelper.Clamp(1f-(boss.countdownToTheEnd / (100f * 60f)),0f,1f);
+                sunIsApprouching = MathHelper.Clamp(1f - (boss.countdownToTheEnd / (100f * 60f)), 0f, 1f);
             }
             else
             {
-                sunIsApprouching = MathHelper.Clamp(sunIsApprouching - (1f / 300f),0f,1f);
+                sunIsApprouching = MathHelper.Clamp(sunIsApprouching - (1f / 300f), 0f, 1f);
             }
 
             sunPosition = Vector2.Lerp(sunOrigPosition, Vector2.Lerp(sunOrigPosition, Vector2.Lerp(sunOrigPosition, sunBossPosition - Main.screenPosition, sunIsApprouching), sunIsApprouching), sunIsApprouching);
@@ -551,13 +551,13 @@ namespace SGAmod.Dimensions
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, identity);
 
-            spriteBatch.Draw(Main.blackTileTexture, Vector2.Zero, new Rectangle(0,0,Main.screenWidth, Main.screenHeight), Color.Black, 0,Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Main.blackTileTexture, Vector2.Zero, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, identity);
 
             int bossIndex = NPC.FindFirstNPC(ModContent.NPCType<SpaceBoss>());
-            SpaceBoss boss = bossIndex>=0 ? Main.npc[bossIndex].modNPC as SpaceBoss : null;
+            SpaceBoss boss = bossIndex >= 0 ? Main.npc[bossIndex].modNPC as SpaceBoss : null;
             bool drawBoss = boss != null && boss.npc.active;
 
 
@@ -568,7 +568,7 @@ namespace SGAmod.Dimensions
             for (int type = 0; type < 2; type += 1)
             {
 
-                Vector2 parallex = new Vector2(alwaysthesame.NextFloat(), alwaysthesame.NextFloat())+(type == 0 ? Vector2.Zero : (new Vector2(Main.screenPosition.X, Main.screenPosition.Y*2.5f) /500000f));// new Vector2(Main.screenPosition.X / 9000f, -Main.GlobalTime * 0.1f);
+                Vector2 parallex = new Vector2(alwaysthesame.NextFloat(), alwaysthesame.NextFloat()) + (type == 0 ? Vector2.Zero : (new Vector2(Main.screenPosition.X, Main.screenPosition.Y * 2.5f) / 500000f));// new Vector2(Main.screenPosition.X / 9000f, -Main.GlobalTime * 0.1f);
 
                 effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Vector2.One) * WVP.Projection());
                 effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture(type == 0 ? "TiledPerlin" : "Space"));
@@ -654,7 +654,7 @@ namespace SGAmod.Dimensions
                         Main.spriteBatch.End();
                         Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, identity);
 
-                        Color colors = Color.Lerp(Color.Transparent, Color.OrangeRed, sunIsApprouching-0.20f);
+                        Color colors = Color.Lerp(Color.Transparent, Color.OrangeRed, sunIsApprouching - 0.20f);
 
                         /*vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-16, 0, 0), colors, new Vector2(0, 0));
                         vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colors, new Vector2(0, 0));
@@ -680,7 +680,7 @@ namespace SGAmod.Dimensions
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.DepthRead, RasterizerState.CullNone, null, identity);
                     Texture2D sun = Main.sunTexture;
 
-                    float closenessScale = 1f+((float)Math.Pow(sunIsApprouching * 500f, 1.8f) / 800f);
+                    float closenessScale = 1f + ((float)Math.Pow(sunIsApprouching * 500f, 1.8f) / 800f);
                     float closenessScale2 = 1f + ((float)Math.Pow(sunIsApprouching * 2500f, 1.5f) / 800f);
 
                     Texture2D inner = SGAmod.Instance.GetTexture("Extra_57b");//Main.extraTexture[57];
@@ -690,7 +690,7 @@ namespace SGAmod.Dimensions
 
                     for (float i = 0; i < 1f; i += 0.10f)
                     {
-                        spriteBatch.Draw(inner, sunPosition, null, ((Color.White * 0.6f * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.5f) * 0.50f) * skyalpha, i * MathHelper.TwoPi, textureOrigin, (2.5f * (0.5f + 3.00f * (((Main.GlobalTime / 2f) + i) % 1f)))* closenessScale2, SpriteEffects.None, 0f);
+                        spriteBatch.Draw(inner, sunPosition, null, ((Color.White * 0.6f * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.5f) * 0.50f) * skyalpha, i * MathHelper.TwoPi, textureOrigin, (2.5f * (0.5f + 3.00f * (((Main.GlobalTime / 2f) + i) % 1f))) * closenessScale2, SpriteEffects.None, 0f);
                     }
 
                     Main.spriteBatch.End();
@@ -814,11 +814,11 @@ namespace SGAmod.Dimensions
 
             Color colormix = Color.Lerp(lightColor, Color.SkyBlue, 0.75f);
 
-            for (int i = 0; i < projectile.width*0.80; i += 1)
+            for (int i = 0; i < projectile.width * 0.80; i += 1)
             {
                 Vector2 offset = Vector2.One.RotatedBy(rand.NextFloat(MathHelper.TwoPi));
 
-                spriteBatch.Draw(tex, drawPos + (offset * (projectile.width + 4) * (projectile.width < 20 ? (rand.NextFloat(0.75f, 1f)) : (rand.NextFloat(0.50f, 0.80f)))).RotatedBy(projectile.rotation), null, colormix *rand.NextFloat(0.45f, 0.65f), projectile.rotation + (MathHelper.PiOver2)+ offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, drawPos + (offset * (projectile.width + 4) * (projectile.width < 20 ? (rand.NextFloat(0.75f, 1f)) : (rand.NextFloat(0.50f, 0.80f)))).RotatedBy(projectile.rotation), null, colormix * rand.NextFloat(0.45f, 0.65f), projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
             }
 
             base._DrawAsteriod(spriteBatch, lightColor);
@@ -827,7 +827,7 @@ namespace SGAmod.Dimensions
             {
                 Vector2 offset = Vector2.One.RotatedBy(rand.NextFloat(MathHelper.TwoPi));
 
-                spriteBatch.Draw(tex, drawPos + (offset * (projectile.width + 4) * (projectile.width < 20 ? (rand.NextFloat(0.1f, 1f)) : (rand.NextFloat(0.10f, 0.80f)))).RotatedBy(projectile.rotation), null, colormix*rand.NextFloat(0.25f, 0.75f), projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, drawPos + (offset * (projectile.width + 4) * (projectile.width < 20 ? (rand.NextFloat(0.1f, 1f)) : (rand.NextFloat(0.10f, 0.80f)))).RotatedBy(projectile.rotation), null, colormix * rand.NextFloat(0.25f, 0.75f), projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
             }
 
         }
@@ -882,9 +882,9 @@ namespace SGAmod.Dimensions
             {
                 Vector2 offset = Vector2.One.RotatedBy(rand.NextFloat(MathHelper.TwoPi));
 
-                int partof = rand.Next(textile.Width/18);
+                int partof = rand.Next(textile.Width / 18);
 
-                Point thisPart = new Point(partof * 18,0);
+                Point thisPart = new Point(partof * 18, 0);
 
                 spriteBatch.Draw(textile, drawPos + (offset * (projectile.width + 4) * (projectile.width < 20 ? (rand.NextFloat(0.80f, 0.90f)) : (rand.NextFloat(0.60f, 0.80f)))).RotatedBy(projectile.rotation), new Rectangle(thisPart.X, thisPart.Y, 16, 16), Color.White, projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
             }
@@ -909,7 +909,7 @@ namespace SGAmod.Dimensions
         {
             base.SetDefaults();
             asteriodHealth = 500;
-            gems = new int[] {ItemID.Amethyst, ItemID.Topaz, ItemID.Sapphire, ItemID.Emerald, ItemID.Ruby, ItemID.Diamond, ItemID.Amber};
+            gems = new int[] { ItemID.Amethyst, ItemID.Topaz, ItemID.Sapphire, ItemID.Emerald, ItemID.Ruby, ItemID.Diamond, ItemID.Amber };
         }
 
         public override void AI()
@@ -951,11 +951,11 @@ namespace SGAmod.Dimensions
                 Vector2 offset = Vector2.One.RotatedBy(rand.NextFloat(MathHelper.TwoPi));
 
                 int partof = rand.Next(3);
-                int partof2 = gemtype*18;
+                int partof2 = gemtype * 18;
 
                 Point thisPart = new Point(partof2, partof * 18);
-                
-                spriteBatch.Draw(textile, drawPos + (offset * (projectile.width+4) * (projectile.width < 20 ? (rand.NextFloat(0.80f, 0.90f)) : (rand.NextFloat(0.60f,0.80f)))).RotatedBy(projectile.rotation), new Rectangle(thisPart.X, thisPart.Y,16,16), Color.White, projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
+
+                spriteBatch.Draw(textile, drawPos + (offset * (projectile.width + 4) * (projectile.width < 20 ? (rand.NextFloat(0.80f, 0.90f)) : (rand.NextFloat(0.60f, 0.80f)))).RotatedBy(projectile.rotation), new Rectangle(thisPart.X, thisPart.Y, 16, 16), Color.White, projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
             }
 
             /*for (int i = 0; i < projectile.width*0.75; i += 1)
@@ -971,7 +971,7 @@ namespace SGAmod.Dimensions
 
     }
 
-        public class MineableAsteriod : ModProjectile, IMineableAsteriod
+    public class MineableAsteriod : ModProjectile, IMineableAsteriod
     {
         public override void SetStaticDefaults()
         {
@@ -992,7 +992,7 @@ namespace SGAmod.Dimensions
             if (Main.rand.Next(0, 100) == 0)
             {
 
-                int maxAsteriods = Main.projectile.Where(testby => testby?.modProjectile is IMineableAsteriod).Count();
+                //int maxAsteriods = Main.projectile.Where(testby => testby?.modProjectile is IMineableAsteriod).Count();
 
                 if (Main.rand.Next(0, 3) == 0)
                     return;
@@ -1008,22 +1008,22 @@ namespace SGAmod.Dimensions
                 Vector2 chosenspot = edges[Main.rand.Next(edges.Length)];
                 Vector2 velocity = Vector2.Normalize((chosenspot + player.Center) - player.Center);
 
-                velocity = velocity.RotatedBy(Main.rand.NextFloat(MathHelper.TwoPi))*Main.rand.NextFloat(0.5f,2f);
+                velocity = velocity.RotatedBy(Main.rand.NextFloat(MathHelper.TwoPi)) * Main.rand.NextFloat(0.5f, 2f);
 
                 int projtype = ModContent.ProjectileType<MineableAsteriod>();
 
-                if (Main.rand.Next(0,8) == 1)
-                projtype = ModContent.ProjectileType<MineableAsteriodCrystal>();
+                if (Main.rand.Next(0, 8) == 1)
+                    projtype = ModContent.ProjectileType<MineableAsteriodCrystal>();
 
-                if (Main.rand.Next(0,5) == 1)
-                projtype = ModContent.ProjectileType<MineableAsteriodGem>();
-
-
-                if (Main.rand.Next(0,10) == 1 && SpaceDim.crystalAsteriods)
-                projtype = ModContent.ProjectileType<MineableAsteriodOverseenCrystal>();
+                if (Main.rand.Next(0, 5) == 1)
+                    projtype = ModContent.ProjectileType<MineableAsteriodGem>();
 
 
-                Projectile proj = Projectile.NewProjectileDirect(player.Center+chosenspot, velocity, projtype, 0, 0);
+                if (Main.rand.Next(0, 10) == 1 && SpaceDim.crystalAsteriods)
+                    projtype = ModContent.ProjectileType<MineableAsteriodOverseenCrystal>();
+
+
+                Projectile proj = Projectile.NewProjectileDirect(player.Center + chosenspot, velocity, projtype, 0, 0);
             }
 
         }
@@ -1046,7 +1046,7 @@ namespace SGAmod.Dimensions
             projectile.timeLeft = 60 * 30;
             projectile.damage = 0;
             projectile.ignoreWater = false;
-            rotateAngle = Main.rand.NextFloat(0.01f,0.05f) * (Main.rand.NextBool() ? 1f : -1f);
+            rotateAngle = Main.rand.NextFloat(0.01f, 0.05f) * (Main.rand.NextBool() ? 1f : -1f);
             vanityLook = Main.rand.Next(0, 100);
         }
 
@@ -1082,9 +1082,9 @@ namespace SGAmod.Dimensions
 
         protected virtual void _AsteriodLoot()
         {
-            List<(int,int)> loot = new List<(int, int)>();
+            List<(int, int)> loot = new List<(int, int)>();
 
-            for (int i = 0; i < 1 + (projectile.width/3); i += 1)
+            for (int i = 0; i < 1 + (projectile.width / 3); i += 1)
             {
                 List<int> stuff = new List<int>();
                 for (int a = 0; a < 2; a += 1)
@@ -1125,13 +1125,13 @@ namespace SGAmod.Dimensions
             }
 
             foreach ((int, int) stuff in loot)
-            Item.NewItem(projectile.position, projectile.width, projectile.height, stuff.Item1, stuff.Item2);
+                Item.NewItem(projectile.position, projectile.width, projectile.height, stuff.Item1, stuff.Item2);
 
             for (int num654 = 0; num654 < 12; num654++)
             {
                 Vector2 dir = (Vector2.UnitX).RotateRandom(MathHelper.TwoPi);
                 Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
-                int num655 = Dust.NewDust(projectile.Center + dir * projectile.width, 0,0, 23, dir.X * (num654 / 2f), dir.Y*(num654/2f), 100, new Color(30, 30, 30, 20), 2f);
+                int num655 = Dust.NewDust(projectile.Center + dir * projectile.width, 0, 0, 23, dir.X * (num654 / 2f), dir.Y * (num654 / 2f), 100, new Color(30, 30, 30, 20), 2f);
                 Main.dust[num655].noGravity = true;
                 Main.dust[num655].scale = projectile.width / 10f;
 
@@ -1170,10 +1170,10 @@ namespace SGAmod.Dimensions
             if (npc >= 0 && Main.npc[npc].active)
             {
                 NPC npc2 = Main.npc[npc];
-                npc2.StrikeNPC(npc2.lifeMax * 2,0,0);
+                npc2.StrikeNPC(npc2.lifeMax * 2, 0, 0);
             }
 
-                if (!splitting)
+            if (!splitting)
                 return true;
 
             for (int i = 0; i < Main.rand.Next(1, 3); i += 1)
@@ -1190,16 +1190,16 @@ namespace SGAmod.Dimensions
                     ((MineableAsteriod)(proj.modProjectile)).glowColor = glowColor;
 
                     if (GetType() == typeof(MineableAsteriodGem))
-                    ((MineableAsteriodGem)(proj.modProjectile)).gemtype = ((MineableAsteriodGem)this).gemtype;
+                        ((MineableAsteriodGem)(proj.modProjectile)).gemtype = ((MineableAsteriodGem)this).gemtype;
                 }
-             }
+            }
 
             return true;
         }
 
         public override void AI()
         {
-            if (npc>=0 && Main.npc[npc].active)
+            if (npc >= 0 && Main.npc[npc].active)
             {
                 NPC npc2 = Main.npc[npc];
                 projectile.Center = npc2.Center;
@@ -1216,7 +1216,7 @@ namespace SGAmod.Dimensions
             miningTargeted = (int)MathHelper.Clamp(miningTargeted - 1, 0, 20);
             projectile.rotation += rotateAngle;
 
-            if (projectile.damage > 0 && npc<0)
+            if (projectile.damage > 0 && npc < 0)
             {
                 if (projectile.velocity.Length() > 3f)
                     projectile.velocity *= 0.97f;
@@ -1228,13 +1228,17 @@ namespace SGAmod.Dimensions
             //Main.dust[DustID2].noGravity = true;
         }
 
-        protected virtual void _DrawAsteriod(SpriteBatch spriteBatch,Color lightColor)
+        protected virtual void _DrawAsteriod(SpriteBatch spriteBatch, Color lightColor)
         {
             lightColor = Lighting.GetColor((int)projectile.Center.X >> 4, (int)projectile.Center.Y >> 4);
 
-            Texture2D tex = mod.GetTexture(vanityLook < 10 ? (vanityLook < 50 ? "Dimensions/Space/MeteorLarge2" : "Dimensions/Space/MeteorLarge") : "Dimensions/Space/MeteorLarge3");
+            int vanitytype = (3 + (vanityLook % 3));
+            Texture2D tex;
+
             if (projectile.width < 20)
-                tex = mod.GetTexture(vanityLook < 10 ? (vanityLook < 50 ? "Dimensions/Space/MeteorSmall2" : "Dimensions/Space/MeteorSmall") : "Dimensions/Space/MeteorSmall3");
+                tex = mod.GetTexture(vanityLook < 10 ? (vanityLook < 5 ? "Dimensions/Space/MeteorSmall2" : "Dimensions/Space/MeteorSmall") : "Dimensions/Space/MeteorSmall" + (3 + (vanityLook % 3)));
+            else
+                tex = mod.GetTexture(vanityLook < 10 ? (vanityLook < 5 ? "Dimensions/Space/MeteorLarge2" : "Dimensions/Space/MeteorLarge") : "Dimensions/Space/MeteorLarge" + (3 + (vanityLook % 3)));
 
             //Main.spriteBatch.End();
             //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, Main.DefaultSamplerState, DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
@@ -1242,8 +1246,8 @@ namespace SGAmod.Dimensions
             Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 2f);
             Vector2 drawPos = projectile.Center - Main.screenPosition;
 
-            Rectangle size = new Rectangle(0,0, tex.Width, (int)(drawOrigin.Y));
-            Rectangle sizeOutline = new Rectangle(0,(int)(drawOrigin.Y), tex.Width, (int)(drawOrigin.Y));
+            Rectangle size = new Rectangle(0, 0, tex.Width, (int)(drawOrigin.Y));
+            Rectangle sizeOutline = new Rectangle(0, (int)(drawOrigin.Y), tex.Width, (int)(drawOrigin.Y));
 
             //Main.spriteBatch.End();
             //Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);

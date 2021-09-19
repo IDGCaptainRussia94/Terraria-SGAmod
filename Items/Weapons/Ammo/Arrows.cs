@@ -204,12 +204,12 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddRecipe();
 		}
 	}
-	public class DankArrow : ModItem
+	public class DankArrow : ModItem,IDankSlowText
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dank Arrow");
-			Tooltip.SetDefault("Attacks may slow enemies\nConsecutive attacks will stack the debuff, making the slowing effect stronger, but this soft caps after a point\nDoes not affect Bosses and enemies who are immune to poisoned are also immune to Dank Slow");
+			Tooltip.SetDefault("");
 		}
 		public override void SetDefaults()
 		{

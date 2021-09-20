@@ -3233,7 +3233,8 @@ namespace SGAmod.Items.Accessories
 			recipe.AddRecipe();
 		}
 	}
-	public class OraclesInsight : ModItem
+	[AutoloadEquip(EquipType.Neck)]
+	public class AuraclesInsight : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -3257,15 +3258,27 @@ namespace SGAmod.Items.Accessories
 			item.rare = ItemRarityID.Blue;
 			item.accessory = true;
 		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.CrystalShard, 25);
+			recipe.AddIngredient(ModContent.ItemType<CryostalBar>(), 8);
+			recipe.AddIngredient(ItemID.Chain, 2);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
 	}
 
 	[AutoloadEquip(EquipType.Neck)]
-	public class PrismalNecklace : OraclesInsight
+	public class PrismalNecklace : AuraclesInsight
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Necklace");
-			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace") + " (by 2)\nIncreases your max number of sentries\n"+Language.GetTextValue("ItemTooltip.HerculesBeetle")+ "\nEffects of Oracle's Insight");
+			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace") + " (by 2)\nIncreases your max number of sentries\n"+Language.GetTextValue("ItemTooltip.HerculesBeetle")+ "\nEffects of Auracle's Insight");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3289,11 +3302,13 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("NovusSummoning"), 1);
-			recipe.AddIngredient(mod.ItemType("NoviteChip"), 1);
+			recipe.AddIngredient(ModContent.ItemType< NovusSummoning>(), 1);
+			recipe.AddIngredient(ModContent.ItemType< NoviteChip>(), 1);
 			recipe.AddIngredient(ItemID.HerculesBeetle, 1);
 			recipe.AddIngredient(ItemID.PygmyNecklace, 1);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 10);
+			recipe.AddIngredient(ModContent.ItemType< PrismalBar>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<AuraclesInsight>(), 1);
+
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

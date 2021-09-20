@@ -4,6 +4,7 @@ using Terraria.ModLoader;
 using System.Collections.Generic;
 using System.Linq;
 using SGAmod.Items.Accessories;
+using SGAmod.Items.Weapons.Technical;
 
 namespace SGAmod
 {
@@ -166,6 +167,12 @@ namespace SGAmod
 
                 }
             }
+
+            if (recipe.createItem.type == ModContent.ItemType<LaserMarker>())
+            {
+                ((LaserMarker)recipe.createItem.modItem).gemType = recipe.requiredItem[0].type;
+            }
+
         }
 
         public override bool RecipeAvailable(Recipe recipe)
@@ -175,6 +182,11 @@ namespace SGAmod
 
             if (!TF2Emblem.CanCraftUp(recipe))
                 return false;
+
+            if (recipe.createItem.type == ModContent.ItemType<LaserMarker>())
+            {
+                ((LaserMarker)recipe.createItem.modItem).gemType = recipe.requiredItem[0].type;
+            }
 
             if (recipe.createItem.type == mod.ItemType("HellionSummon") && SGAWorld.downedHellion < 1)
                 canwemakeit = false;

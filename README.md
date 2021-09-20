@@ -27,8 +27,9 @@ Changelog:
 
 3.600c-(9/13/21)-Patch 11-Tech N Wreck: Beta
 
+-Laser Markers can be made with different gemstones, and are visually improved
 
--Added a tooltip for auras
+-Added an extra tooltip for auras
 
 -Added alt Contraband merchant texture
 
@@ -47,6 +48,8 @@ Changelog:
 -Picking up bubble stacks gives more air
 
 -Space is a bit prettier, increased asteriod varity
+
+-Added missing Hellion Autoload boss heads
 
 
 3.600b-(9/13/21)-Patch 11-Tech N Wreck: Beta

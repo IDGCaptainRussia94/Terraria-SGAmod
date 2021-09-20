@@ -1652,7 +1652,8 @@ namespace SGAmod.NPCs.Hellion
 	}
 
 
-		public class Hellion : ModNPC,ISGABoss
+	//[AutoloadBossHead]
+	public class Hellion : ModNPC,ISGABoss
 	{
 		public string Trophy() => "HellionTrophy";
 		public bool Chance() => GetType() != typeof(HellionCore);

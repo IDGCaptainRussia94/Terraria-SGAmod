@@ -247,7 +247,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 				if (projectile.owner == Main.myPlayer)
 				{
-					Vector2 diff = mousePos - player.Center;
+					Vector2 diff = mousePos - player.MountedCenter;
 					projectile.velocity = diff.RotatedBy(BlockAngleAdjust);
 					projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
 					projectile.netUpdate = true;
@@ -272,7 +272,7 @@ namespace SGAmod.Items.Weapons.Shields
 					player.bodyFrame.Y = player.bodyFrame.Height * 5;
 				player.direction = (directionmeasure.X > 0).ToDirectionInt();
 
-				projectile.Center = player.Center + (projectile.velocity * HoldingDistance);
+				projectile.Center = player.MountedCenter + (projectile.velocity * HoldingDistance);
 				projectile.velocity *= 8f;
 
 			}

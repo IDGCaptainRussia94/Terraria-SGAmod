@@ -16,6 +16,7 @@ using SGAmod.Buffs;
 using SGAmod.Effects;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Items.Weapons.Technical;
+using Terraria.ModLoader.IO;
 
 namespace SGAmod.Items.Weapons.Technical
 {
@@ -1283,10 +1284,39 @@ namespace SGAmod.Items.Weapons.Technical
 	public class LaserMarker : Shields.CorrodedShield, IHitScanItem
 	{
 		public override bool CanBlock => false;
+
+		public int gemType = ItemID.Amethyst;
+
+        public override bool CloneNewInstances => true;
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.Write((short)gemType);
+		}
+		public override void NetRecieve(BinaryReader reader)
+		{
+			gemType = reader.ReadInt16();
+		}
+		public override TagCompound Save()
+		{
+			TagCompound tag = new TagCompound
+			{
+				["gemType"] = gemType
+			};
+			return tag;
+		}
+		public override void Load(TagCompound tag)
+		{
+			if (tag.ContainsKey("gemType"))
+			{
+				gemType = tag.GetInt("gemType");
+			}
+		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Laser Marker");
-			Tooltip.SetDefault("Point at your enemies to mark them, increasing damage they take by 10%\nCan be held out like a torch and used normally by holding shift\nCan also be thrown like a "+Terraria.Localization.Language.GetTextValue("ItemName.Glowstick"));
+			Tooltip.SetDefault("Laser Pointer, aim at your enemies to mark them, increasing damage they take by 10%\nCan be held out like a torch and used normally by holding shift\nCan also be thrown like a "+Terraria.Localization.Language.GetTextValue("ItemName.Glowstick"));
 			Item.staff[item.type] = true;
 		}
 
@@ -1322,17 +1352,30 @@ namespace SGAmod.Items.Weapons.Technical
 		{
 			return true;// player.SGAPly().CooldownStacks.Count < player.SGAPly().MaxCooldownStacks;
 		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			SGAmod.GemColors.TryGetValue(gemType,out Color color);
+
+				tooltips.Add(new TooltipLine(mod, "LaserColor", Idglib.ColorText(color, "Gem Colored Lens")));
+		}
+
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 1);
-			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 1);
-			recipe.AddIngredient(ItemID.Glass, 5);
-			recipe.AddIngredient(ItemID.SandBlock, 5);
-			recipe.AddIngredient(ItemID.Glowstick, 3);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this,3);
-			recipe.AddRecipe();
+			ModRecipe recipe;
+			foreach (int itemtype in SGAmod.GemColors.Keys)
+			{
+				recipe = new ModRecipe(mod);
+				recipe.AddIngredient(itemtype, 1);
+				recipe.AddRecipeGroup("SGAmod:Tier1Bars", 1);
+				recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 1);
+				recipe.AddIngredient(ItemID.Glass, 5);
+				recipe.AddIngredient(ItemID.SandBlock, 5);
+				recipe.AddIngredient(ItemID.Glowstick, 3);
+				recipe.AddTile(TileID.WorkBenches);
+				recipe.SetResult(this, 5);
+				recipe.AddRecipe();
+			}
 		} 
 
         public override bool UseItem(Player player)
@@ -1352,7 +1395,12 @@ namespace SGAmod.Items.Weapons.Technical
 				speedY = speed.Y;
 
 				//position = Main.MouseWorld;
-				Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI, 0f, 0f);
+				Projectile proj = Projectile.NewProjectileDirect(position, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI, 0f, 0f);
+			if (proj != null)
+            {
+				SGAmod.GemColors.TryGetValue(gemType, out Color color);
+				((LaserMarkerProj)proj.modProjectile).gemColor = color;
+			}
 
 			return false;
 		}
@@ -1360,11 +1408,20 @@ namespace SGAmod.Items.Weapons.Technical
 
 	}
 
-	public class LaserMarkerProj : Shields.CorrodedShieldProj
+	public class LaserMarkerProj : Shields.CorrodedShieldProj,IDrawAdditive
     {
 		protected int MyLaser = default;
 		public Vector2 EndPoint = default;
-		public override bool Blocking => false;
+		public Color gemColor = Color.Black;
+        public override bool CloneNewInstances => true;
+        public override ModProjectile Clone()
+        {
+			LaserMarkerProj clone = (LaserMarkerProj)MemberwiseClone();
+			clone.gemColor = this.gemColor;
+			return clone;
+		}
+
+        public override bool Blocking => false;
 
 		public override void SetStaticDefaults()
 		{
@@ -1445,26 +1502,34 @@ namespace SGAmod.Items.Weapons.Technical
 				projectile.velocity *= 8f;
 
 				MyLaser = Projectile.NewProjectile(projectile.Center, projectile.rotation.ToRotationVector2() * 2f, ModContent.ProjectileType<LaserMarkerLaserProj>(), 0, 0, player.whoAmI, ai1: (int)projectile.whoAmI);
+				Main.projectile[MyLaser].localAI[0] = Main.rgbToHsl(gemColor).X;
 
 			}
 		}
 
+		protected override void DrawAdd()
+        {
+			base.DrawAdd();
+			if (EndPoint != default)
+				DoDraw(Main.spriteBatch, Color.White);
+		}
 		public void DoDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
-			Vector2 origin = new Vector2(0, 2);
+			Vector2 origin = new Vector2(16, 1);
 			Vector2 start = projectile.Center + projectile.rotation.ToRotationVector2() * 2f;
 
 			Vector2 diff = (EndPoint - start);
 			float length = diff.Length();
 
+			Texture2D endpointtex = ModContent.GetTexture("SGAmod/Extra_49c");
 
-			Main.spriteBatch.Draw(Main.blackTileTexture, start - Main.screenPosition, new Rectangle(0, 0, 4, 4), Color.Red * 0.50f, diff.ToRotation(), origin, new Vector2(length / 4f, 1f), SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(ModContent.GetTexture("SGAmod/LaserBeam"), start - Main.screenPosition, new Rectangle(0, 0, 32, 1), gemColor * 0.50f, diff.ToRotation()+MathHelper.PiOver2, origin, new Vector2(0.5f, length), SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(endpointtex, EndPoint - Main.screenPosition, null, gemColor * 0.50f, 0, endpointtex.Size()/2f, 0.5f, SpriteEffects.None, 0);
+
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
-			if (EndPoint != default)
-				DoDraw(spriteBatch, drawColor);
 
 			bool facingleft = projectile.velocity.X > 0;
 			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
@@ -1475,15 +1540,28 @@ namespace SGAmod.Items.Weapons.Technical
 			return false;
 		}
 
-	}
+        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, Main.DefaultSamplerState, DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
-	class LaserMarkerThrownProj : LaserMarkerProj
+			Texture2D endpointtex = ModContent.GetTexture("SGAmod/Glow");
+			Main.spriteBatch.Draw(endpointtex, EndPoint - Main.screenPosition, null, gemColor * 1f, 0, endpointtex.Size() / 2f, 0.06f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(endpointtex, EndPoint - Main.screenPosition, null, Color.White * 0.20f, 0, endpointtex.Size() / 2f, 0.03f, SpriteEffects.None, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+    }
+
+	class LaserMarkerThrownProj : LaserMarkerProj,IDrawAdditive
 	{
 
 		public override void SetStaticDefaults()
 		{
 			base.SetStaticDefaults();
-			DisplayName.SetDefault("Rock");
+			DisplayName.SetDefault("Laser");
 		}
 
 		public override void SetDefaults()
@@ -1522,6 +1600,8 @@ namespace SGAmod.Items.Weapons.Technical
 			//vanilla
 			Player player = Main.player[projectile.owner];
 			MyLaser = Projectile.NewProjectile(projectile.Center, projectile.rotation.ToRotationVector2() * 2f, ModContent.ProjectileType<LaserMarkerLaserProj>(), 0, 0, player.whoAmI, ai1: (int)projectile.whoAmI);
+			Main.projectile[MyLaser].localAI[0] = Main.rgbToHsl(gemColor).X;
+
 		}
 
 	}
@@ -1545,8 +1625,8 @@ namespace SGAmod.Items.Weapons.Technical
 			projectile.hostile = false;
 			projectile.penetrate = 1;
 			projectile.light = 0.35f;
-			projectile.width = 24;
-			projectile.height = 24;
+			projectile.width = 4;
+			projectile.height = 4;
 			projectile.tileCollide = false;
 			projectile.extraUpdates = 0;
 			drawHeldProjInFrontOfHeldItemAndArms = true;
@@ -1582,6 +1662,8 @@ namespace SGAmod.Items.Weapons.Technical
 
 			NPC hitnpc = default;
 
+			Vector3 colorz = Main.hslToRgb(projectile.localAI[0], 1f, 0.75f).ToVector3() * 0.50f;
+
 			SetLaserPosition(player, ref hitnpc);
 
 			if (hitnpc != default)
@@ -1589,7 +1671,7 @@ namespace SGAmod.Items.Weapons.Technical
 				hitnpc.AddBuff(ModContent.BuffType<Marked>(), 2);
 			}
 
-			Lighting.AddLight(EndPoint, (Color.Red).ToVector3() * 0.50f);
+			Lighting.AddLight(EndPoint, colorz * 1.25f);
 
 			Projectile owner = Main.projectile[(int)projectile.ai[1]];
 
@@ -1603,18 +1685,28 @@ namespace SGAmod.Items.Weapons.Technical
 
 		private void SetLaserPosition(Player player, ref NPC hitnpc)
 		{
-			for (Distance = MOVE_DISTANCE; Distance <= 2200f; Distance += 5f)
+			Color colorz2 = Main.hslToRgb(projectile.localAI[0], 1f, 0.75f);
+			Main.NewText("test");
+
+			float distanceboost = 4f;
+
+			
+			for (Distance = MOVE_DISTANCE; Distance <= 2200f; Distance += distanceboost)
 			{
 				var start = projectile.Center + projectile.velocity * Distance;
 				EndPoint = start;
 
+				Vector3 colorz = colorz2.ToVector3() * Main.rand.NextFloat(0.10f, 0.30f);
+
 				//if (Main.rand.Next(0, 10) == 0)
-				Lighting.AddLight(start, (Color.Red).ToVector3() * Main.rand.NextFloat(0.10f, 0.30f));
+				Lighting.AddLight(start, colorz);
 
-
-				if (!Collision.CanHitLine(projectile.Center, 0, 0, start, 0, 0))
+				//projectile.Center + projectile.velocity * (Distance+distanceboost)
+				if (!Collision.CanHit(start, 0, 0, projectile.Center + projectile.velocity * (Distance + distanceboost), 0, 0))
 				{
-					Distance -= 5f;
+					Distance -= distanceboost;
+					distanceboost -= 1f;
+					if (distanceboost<1f)
 					return;
 				}
 				foreach (NPC npc in Main.npc)

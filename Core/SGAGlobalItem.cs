@@ -1671,7 +1671,7 @@ namespace SGAmod
             }
             if (misc == 3)
             {
-                string line2 = Idglib.ColorText(Color.Red, "+5% Shield Block");
+                string line2 = "+5% Shield Block";
                 TooltipLine line = new TooltipLine(mod, "SGAPrefixline", line2);
                 line.isModifier = true;
                 tooltips.Add(line);

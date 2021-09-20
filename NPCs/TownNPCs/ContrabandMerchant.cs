@@ -47,7 +47,7 @@ namespace SGAmod.NPCs.TownNPCs
 		{
 			get
 			{
-				return new string[] { "SGAmod/NPCs/TownNPCs/ContrabandMerchant_alt" };
+				return new string[] { "SGAmod/NPCs/TownNPCs/ContrabandMerchant_Alt" };
 			}
 		}
 

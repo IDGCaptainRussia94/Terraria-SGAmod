@@ -116,6 +116,7 @@ namespace SGAmod
 		public static Dictionary<int, EnchantmentCraftingMaterial> EnchantmentCatalyst;
 		public static Dictionary<int, EnchantmentCraftingMaterial> EnchantmentFocusCrystal;
 		public static Dictionary<int, LuminousAlterItemClass> LuminousAlterItems;
+		public static Dictionary<int, Color> GemColors;
 		public static Dictionary<int, int> CoinsAndProjectiles;
 		public static int[] otherimmunes = new int[3];
 		public static bool NightmareUnlocked = false;
@@ -462,6 +463,12 @@ namespace SGAmod
 			SGAmod.EnchantmentFocusCrystal = new Dictionary<int, EnchantmentCraftingMaterial>();
 			SGAmod.LuminousAlterItems = new Dictionary<int, LuminousAlterItemClass>();
 			SGAmod.CoinsAndProjectiles = new Dictionary<int, int>();
+			SGAmod.GemColors = new Dictionary<int, Color>();
+
+			SGAmod.GemColors.Add(ItemID.Sapphire, Color.Blue); SGAmod.GemColors.Add(ItemID.Ruby, Color.Red); SGAmod.GemColors.Add(ItemID.Emerald, Color.Lime);
+			SGAmod.GemColors.Add(ItemID.Topaz, Color.Yellow); SGAmod.GemColors.Add(ItemID.Amethyst, Color.Purple); SGAmod.GemColors.Add(ItemID.Diamond, Color.Aquamarine);
+			SGAmod.GemColors.Add(ItemID.Amber, Color.Orange);
+
 			CoinsAndProjectiles.Add(ProjectileID.CopperCoin, ItemID.CopperCoin); CoinsAndProjectiles.Add(ProjectileID.SilverCoin, ItemID.SilverCoin); 
 			CoinsAndProjectiles.Add(ProjectileID.GoldCoin, ItemID.GoldCoin); CoinsAndProjectiles.Add(ProjectileID.PlatinumCoin, ItemID.PlatinumCoin);
 

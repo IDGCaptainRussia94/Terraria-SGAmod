@@ -909,7 +909,6 @@ namespace SGAmod.Dimensions
         {
             base.SetDefaults();
             asteriodHealth = 500;
-            gems = new int[] { ItemID.Amethyst, ItemID.Topaz, ItemID.Sapphire, ItemID.Emerald, ItemID.Ruby, ItemID.Diamond, ItemID.Amber };
         }
 
         public override void AI()
@@ -919,8 +918,9 @@ namespace SGAmod.Dimensions
             {
                 gemtype = Main.rand.Next((int)gems.Length);
                 projectile.ai[0] = gems[gemtype];
-                Color[] colors = new Color[] { Color.Purple, Color.Yellow, Color.Blue, Color.Lime, Color.Red, Color.Aquamarine, Color.Orange };
-                glowColor = Color.Lerp(colors[gemtype], Color.White, 0.50f);
+                //Color[] colors = new Color[] { Color.Blue, Color.Red, Color.Lime, Color.Yellow, Color.Purple, Color.Aquamarine, Color.Orange };
+                SGAmod.GemColors.TryGetValue(gemtype, out Color colorgem);
+                glowColor = Color.Lerp(colorgem, Color.White, 0.50f);
             }
         }
 

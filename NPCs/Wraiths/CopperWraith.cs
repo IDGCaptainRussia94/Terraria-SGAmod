@@ -545,7 +545,7 @@ namespace SGAmod.NPCs.Wraiths
 			get { return ("SGAmod/NPCs/TPD"); }
 		}
 
-		public override string BossHeadTexture => "Terraria/Item_" + ItemID.CopperHelmet;
+		//public override string BossHeadTexture => "Terraria/Item_" + ItemID.CopperHelmet;
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{

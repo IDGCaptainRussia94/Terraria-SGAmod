@@ -410,7 +410,7 @@ namespace SGAmod.NPCs.Wraiths
 			get { return ("SGAmod/NPCs/TPD"); }
 		}
 
-		public override string BossHeadTexture => "Terraria/Projectile_538";
+		//public override string BossHeadTexture => "Terraria/Projectile_538";
 
         public override bool CheckActive()
         {

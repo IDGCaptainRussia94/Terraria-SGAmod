@@ -937,7 +937,7 @@ namespace SGAmod.NPCs.Hellion
 
 
 
-
+    //[AutoloadBossHead]
     public class HellionCore : Hellion
     {
 

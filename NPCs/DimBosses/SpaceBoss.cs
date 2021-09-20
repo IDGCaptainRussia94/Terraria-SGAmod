@@ -217,9 +217,9 @@ namespace SGAmod.Dimensions.NPCs
 			if (state < 1)
 				stateTimer = 0;
 
-			bool ragegrab = boss.tossRoids;
+			bool ragegrab = boss.TossRoids;
 			bool installgrab = boss.installRoids>0 && boss.npc.ai[0] < 11900;
-			bool chance = Main.rand.Next(0, 1000) < boss.phase || (boss.tossRoids && Main.rand.Next(0, 100)<1) || installgrab;
+			bool chance = Main.rand.Next(0, 1000) < boss.phase || (boss.TossRoids && Main.rand.Next(0, 100)<1) || installgrab;
 
 			if (installgrab && (state == 100 || state == 200))
             {
@@ -631,7 +631,7 @@ namespace SGAmod.Dimensions.NPCs
 		public void StateGrabAsteriodsAndSpin()
 		{
 
-			if (boss.tossRoids)
+			if (boss.TossRoids)
 			{
 				npc.rotation += boss.phase % 2 == 0 ? 0.15f : -0.15f;
 
@@ -1251,8 +1251,11 @@ namespace SGAmod.Dimensions.NPCs
 	}
 
 
-	public class SpaceBoss : ModNPC
+	public class SpaceBoss : ModNPC, ISGABoss
 	{
+		public string Trophy() => "SpaceBossTrophy";
+		public bool Chance() => false;
+		public bool TossRoids => (int)npc.ai[0] > 10600 && (int)npc.ai[0] < 10800;
 
 		public float darknessAura = 0.25f;
 		public float timeHere = 0f;
@@ -1261,7 +1264,6 @@ namespace SGAmod.Dimensions.NPCs
 		public int state = 0;
 		public float healthphase = 0.90f;
 		public int countdownToTheEnd = 60 * 100;
-		public bool tossRoids => (int)npc.ai[0] > 10600 && (int)npc.ai[0] < 10800;
 		public int installRoids = 0;
 		public float friction = 1f;
 		public int specialCooldown = 0;

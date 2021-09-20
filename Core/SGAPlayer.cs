@@ -31,6 +31,7 @@ using SGAmod.SkillTree;
 using SGAmod.Dimensions;
 using SGAmod.Items.Accessories;
 using SGAmod.Buffs;
+using SGAmod.Items.Weapons.Technical;
 
 namespace SGAmod
 {
@@ -1508,7 +1509,13 @@ namespace SGAmod
 							{
 								if (player.ownedProjectileCounts[projtype] < 1)
 								{
-									Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, projtype, player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
+									Projectile proj = Projectile.NewProjectileDirect(player.Center, Vector2.Zero, projtype, player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI);
+									if (proj != null && proj.modProjectile != null && player.HeldItem != null && player.HeldItem.modItem is LaserMarker heldmarker)
+									{
+										LaserMarkerProj marker = ((LaserMarkerProj)proj.modProjectile);
+										SGAmod.GemColors.TryGetValue(heldmarker.gemType, out Color color);
+										((LaserMarkerProj)proj.modProjectile).gemColor = color;
+									}
 								}
 							}
 						}

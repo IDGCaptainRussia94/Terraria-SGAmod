@@ -51,7 +51,10 @@ namespace SGAmod.Items.Weapons.Shields
 					CorrodedShieldProj proj2 = proj.modProjectile as CorrodedShieldProj;
 					if (proj2 != null)
 					{
-						return "Blocks " + (proj2.BlockDamagePublic) * 100 + "% of damage ";
+						float blockpercent = (proj2.BlockDamagePublic);
+						//blockpercent += Main.LocalPlayer.SGAPly().shieldDamageReduce;
+
+						return "Blocks " + (blockpercent) * 100 + "% of damage ";
 					}
 				}
 
@@ -129,7 +132,7 @@ namespace SGAmod.Items.Weapons.Shields
 				case 6:
 					return PrefixID.Terrible;
 				case 7:
-					return mod.PrefixType("Screwed Up");
+					return mod.PrefixType("Busted");
 				default:
 					return mod.PrefixType("Defensive");
 			}
@@ -166,7 +169,7 @@ namespace SGAmod.Items.Weapons.Shields
 			{
 				float boost = 0;
 				if (player != null)
-					boost += player.SGAPly().shieldDamageReduce;
+					boost += player.SGAPly().shieldDamageReduce*1f;
 
 				return BlockDamage + boost;
 			}

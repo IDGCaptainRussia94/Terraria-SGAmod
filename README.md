@@ -27,7 +27,7 @@ Changelog:
 
 3.600c-(9/13/21)-Patch 11-Tech N Wreck: Beta
 
--Laser Markers can be made with different gemstones, and are visually improved
+-Laser Markers can be made with colors via different gemstones, and are visually improved
 
 -Added an extra tooltip for auras
 

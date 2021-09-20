@@ -1501,7 +1501,7 @@ namespace SGAmod.Items.Weapons.Technical
 				projectile.Center = player.Center + (projectile.velocity * 10f);
 				projectile.velocity *= 8f;
 
-				MyLaser = Projectile.NewProjectile(projectile.Center, projectile.rotation.ToRotationVector2() * 2f, ModContent.ProjectileType<LaserMarkerLaserProj>(), 0, 0, player.whoAmI, ai1: (int)projectile.whoAmI);
+				MyLaser = Projectile.NewProjectile(projectile.Center+ projectile.rotation.ToRotationVector2() * 12f, projectile.rotation.ToRotationVector2() * 2f, ModContent.ProjectileType<LaserMarkerLaserProj>(), 0, 0, player.whoAmI, ai1: (int)projectile.whoAmI);
 				Main.projectile[MyLaser].localAI[0] = Main.rgbToHsl(gemColor).X;
 
 			}
@@ -1516,15 +1516,15 @@ namespace SGAmod.Items.Weapons.Technical
 		public void DoDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
 			Vector2 origin = new Vector2(16, 1);
-			Vector2 start = projectile.Center + projectile.rotation.ToRotationVector2() * 2f;
+			Vector2 start = projectile.Center + projectile.rotation.ToRotationVector2() * 12f;
 
 			Vector2 diff = (EndPoint - start);
 			float length = diff.Length();
 
 			Texture2D endpointtex = ModContent.GetTexture("SGAmod/Extra_49c");
 
-			Main.spriteBatch.Draw(ModContent.GetTexture("SGAmod/LaserBeam"), start - Main.screenPosition, new Rectangle(0, 0, 32, 1), gemColor * 0.50f, diff.ToRotation()+MathHelper.PiOver2, origin, new Vector2(0.5f, length), SpriteEffects.None, 0);
-			Main.spriteBatch.Draw(endpointtex, EndPoint - Main.screenPosition, null, gemColor * 0.50f, 0, endpointtex.Size()/2f, 0.5f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(ModContent.GetTexture("SGAmod/LaserBeam"), start - Main.screenPosition, new Rectangle(0, 0, 32, 1), gemColor * 0.50f, diff.ToRotation()+MathHelper.PiOver2, origin, new Vector2(0.25f, length), SpriteEffects.None, 0);
+			//Main.spriteBatch.Draw(endpointtex, EndPoint - Main.screenPosition, null, gemColor * 0.50f, 0, endpointtex.Size()/2f, 0.5f, SpriteEffects.None, 0);
 
 		}
 
@@ -1546,8 +1546,8 @@ namespace SGAmod.Items.Weapons.Technical
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, Main.DefaultSamplerState, DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D endpointtex = ModContent.GetTexture("SGAmod/Glow");
-			Main.spriteBatch.Draw(endpointtex, EndPoint - Main.screenPosition, null, gemColor * 1f, 0, endpointtex.Size() / 2f, 0.06f, SpriteEffects.None, 0);
-			Main.spriteBatch.Draw(endpointtex, EndPoint - Main.screenPosition, null, Color.White * 0.20f, 0, endpointtex.Size() / 2f, 0.03f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(endpointtex, EndPoint - Main.screenPosition, null, gemColor * 1f, 0, endpointtex.Size() / 2f, 1f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(endpointtex, EndPoint - Main.screenPosition, null, Color.White * 1f, 0, endpointtex.Size() / 2f, 0.75f, SpriteEffects.None, 0);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
@@ -1599,7 +1599,7 @@ namespace SGAmod.Items.Weapons.Technical
 		{
 			//vanilla
 			Player player = Main.player[projectile.owner];
-			MyLaser = Projectile.NewProjectile(projectile.Center, projectile.rotation.ToRotationVector2() * 2f, ModContent.ProjectileType<LaserMarkerLaserProj>(), 0, 0, player.whoAmI, ai1: (int)projectile.whoAmI);
+			MyLaser = Projectile.NewProjectile(projectile.Center+ projectile.rotation.ToRotationVector2() * 12f, projectile.rotation.ToRotationVector2() * 2f, ModContent.ProjectileType<LaserMarkerLaserProj>(), 0, 0, player.whoAmI, ai1: (int)projectile.whoAmI);
 			Main.projectile[MyLaser].localAI[0] = Main.rgbToHsl(gemColor).X;
 
 		}
@@ -1686,7 +1686,6 @@ namespace SGAmod.Items.Weapons.Technical
 		private void SetLaserPosition(Player player, ref NPC hitnpc)
 		{
 			Color colorz2 = Main.hslToRgb(projectile.localAI[0], 1f, 0.75f);
-			Main.NewText("test");
 
 			float distanceboost = 4f;
 

@@ -932,7 +932,7 @@ namespace SGAmod
 				TrapDamageItems stuff = player.HeldItem.GetGlobalItem<TrapDamageItems>();
 				if (stuff.misc == 3)
                 {
-					shieldDamageReduce += 5;
+					shieldDamageReduce += 0.05f;
                 }
 			}
 

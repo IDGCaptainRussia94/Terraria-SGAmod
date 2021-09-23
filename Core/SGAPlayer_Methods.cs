@@ -194,7 +194,7 @@ namespace SGAmod
 				//if (player.HasBuff(mod.BuffType("CondenserBuff")))
 				//	time = (int)((float)time * 1.15f);
 
-				time = (int)((float)time * actionCooldownRate);
+				time = (int)((float)time * ActionCooldownRate);
 
 				for (int i = 0; i < count; i += 1)
 					CooldownStacks.Add(new ActionCooldownStack(time, CooldownStacks.Count));

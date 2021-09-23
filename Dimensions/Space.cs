@@ -359,7 +359,6 @@ namespace SGAmod.Dimensions
                 }
             }
 
-
             Point baseLocation = new Point(UniRand.Next(400 + (width - 800)), tileheight);
 
             Main.spawnTileX = baseLocation.X;
@@ -374,10 +373,8 @@ namespace SGAmod.Dimensions
                 }
             }
 
-
+            prog.Message = "Filling up the sky with rocks";
             DFSPDS(new Point(width / 2, height / 2), UniRand);
-
-
 
 
             //Noisegen.Frequency

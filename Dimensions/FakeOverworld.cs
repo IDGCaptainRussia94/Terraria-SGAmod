@@ -97,23 +97,6 @@ namespace SGAmod.Dimensions
             }
 
 
-            //Celular Crap
-
-            for (int passes = 0; passes < 5; passes += 1)
-            {
-                for (int x = 0; x < Main.maxTilesX; x += 1)
-                {
-                    for (int y = 0; y < Main.maxTilesY; y += 1)
-                    {
-                        if (GetTilesAround(x, y, 1) > 4)
-                            Main.tile[x, y].active(true);
-                        else
-                            Main.tile[x, y].active(false);
-                    }
-                }
-            }
-
-
             //Hills
             for (int totalpass = 0; totalpass < 3; totalpass += 1)
             {
@@ -159,6 +142,22 @@ namespace SGAmod.Dimensions
                             Main.tile[xx, yy].active(false);
                     }
 
+                }
+            }
+
+            //Celular Crap
+
+            for (int passes = 0; passes < 5; passes += 1)
+            {
+                for (int x = 0; x < Main.maxTilesX; x += 1)
+                {
+                    for (int y = 0; y < Main.maxTilesY; y += 1)
+                    {
+                        if (GetTilesAround(x, y, 1) > 4)
+                            Main.tile[x, y].active(true);
+                        else
+                            Main.tile[x, y].active(false);
+                    }
                 }
             }
 

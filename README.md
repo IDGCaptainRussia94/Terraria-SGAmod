@@ -11,21 +11,22 @@ Github was moved: previous builds of the mod can be found over here: https://git
 -Corruption only: Gas Passer, Wraith Arrows, Dosed Arrows, Corrupted Tome, Cursed Hail, Jagged Spike Buckler (can be bypassed with fishing)
 
 
--Ideas: Banners, the Couch, Bannerlord=collection of banners tf2/style things, Spectre homing bullets/projectiles, Tech weapons have an "overclock" mechanic that changes up their gameplay while active and overhaul ideas (maybe?), spider queen can melt normal generated blocks (dirt and so)
+-Ideas: Banners, the Couch, Bannerlord=collection of banners tf2/style things, Tech weapons have an "overclock" mechanic that changes up their gameplay while active and overhaul ideas (maybe?), spider queen can melt normal generated blocks (dirt and so)
 Cruciatus (damage over time debuff attack), Charon's Ferry (shadow tenticle mount thing), Spider body mount with legs?, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
-Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Binding Vudoo Clothier's Doll Magic, Mana Potion Pet (Blue Gusher), Clothier drop that forces dropped throwing items to attack enemies, Make Enchanted Fury a Clothier drop
+Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Binding Vudoo Clothier's Doll Magic, Mana Potion Pet (Blue Gusher), Clothier drop that forces dropped throwing items to attack enemies, Make Enchanted Fury/Seriph Shard a Clothier drop
 
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy and Seismic Resonator Ore Creator), Aurora Gear and finish Luminous Alter Tile Entity!
 -Add Hellion army bar, STILL!
 
-Todo-Aurora Gear, Finish Vibranium enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Add Dropper, Finish Luminious Alter (effects), Money Drain, upgradable drones and solar panels?
+Todo-Aurora Gear, Finish Vibranium enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Add Dropper, Finish Luminious Alter (effects), Money Drain, upgradable drones and solar panels? (Laser orbital strike!)
 Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
+
 
 Changelog:
 
 
-3.600c-(9/13/21)-Patch 11-Tech N Wreck: Beta
+3.600c-(9/20/21)-Patch 11-Tech N Wreck: Beta
 
 -Laser Markers can be made with colors via different gemstones, and are visually improved
 
@@ -33,11 +34,15 @@ Changelog:
 
 -Added alt Contraband merchant texture
 
+-Sharkvern changes, hungry hungry sharks goes higher and sharkvern makes water/dig sounds only when in those specific tiles
+
 -Blood Charm Pendant now properly has its equip sprite
 
 -Fixed The invisible hearts
 
 -Fixed JellyBru's armor problems
+
+-Fixed Throwing star inflicting Sodden
 
 -Fixed Text on Phaethon's final attack is now scaled properly (and stops counting down after he dies)
 
@@ -76,7 +81,7 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Dankwood Wall
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
@@ -161,7 +166,7 @@ Changelog:
 
 -All damage and crit boosts now affect Thorium modded damage types
 
--Action Cooldown Rate reductions are now multiplicative, meaning they cannot reduce the cooldown below 0
+-Action Cooldown Rate reductions now have a soft cap
 
 -Added some flavor text to the Jabb-a-wacky to hint how to get it
 
@@ -272,6 +277,8 @@ Changelog:
 -Nerfed Tactical SMG Rifle: damage lowered to 25 (from 28), one less bullet is fired per shot
 
 -Nerfed Terra Trident: Damage lowered to 38 from 50
+
+-Nerfed Throwing gloves: Removed damage (and prefixes) on Grenadier's, lowered Riot Glove damage
 
 -Nerfed Plythe: Reduced crit chance
 

@@ -174,6 +174,25 @@ namespace SGAmod
 		public float shieldDamageReduce = 0f;
 		public float shieldDamageBoost = 0f;
 		public float actionCooldownRate = 1f;
+
+		public float ActionCooldownRate
+        {
+            get
+            {
+				return actionCooldownRate;
+			}
+            set
+            {
+				if (value < 0.50f)
+                {
+					actionCooldownRate = 0.50f-(float)Math.Pow(-(actionCooldownRate+0.50f),0.75f);
+				}
+
+				actionCooldownRate = value;// Math.Max(0.5f, actionCooldownRate);
+			}
+        }
+
+
 		public bool Noselfdamage = false;
 		public float UseTimeMulPickaxe = 1f;
 		public float summonweaponspeed = 0f;

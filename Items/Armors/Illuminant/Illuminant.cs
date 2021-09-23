@@ -58,7 +58,8 @@ namespace SGAmod.Items.Armors.Illuminant
 					//Main.NewText(sgaplayer.illuminantSet.Item2);
 					player.BoostAllDamage(sgaplayer.activestacks * 0.04f, sgaplayer.activestacks*2);
 					player.minionDamage += sgaplayer.activestacks * 0.02f;
-					sgaplayer.actionCooldownRate *= 0.80f;
+
+					sgaplayer.actionCooldownRate -= 0.20f;
 
 					for (int i = 3; i < 8 + player.extraAccessorySlots; i++)
 					{

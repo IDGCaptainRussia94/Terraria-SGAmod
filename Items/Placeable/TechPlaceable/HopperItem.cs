@@ -60,7 +60,7 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("HopperItem"), 1);
+			recipe.AddIngredient(ModContent.ItemType<HopperItem>(), 1);
 			recipe.AddIngredient(ItemID.LogicSensor_Above, 1);
 			recipe.AddRecipeGroup("SGAmod:Chests", 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
@@ -96,11 +96,11 @@ namespace SGAmod.Items.Placeable.TechPlaceable
         public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 1);
-			recipe.AddIngredient(mod.ItemType("NoviteBar"), 1);
+			recipe.AddIngredient(mod.ItemType("UnmanedBar"), 3);
+			recipe.AddIngredient(mod.ItemType("NoviteBar"), 3);
 			recipe.AddIngredient(ItemID.MetalSink, 1);
 			recipe.AddTile(TileID.HeavyWorkBench);
-			recipe.SetResult(this, 1);
+			recipe.SetResult(this, 3);
 			recipe.AddRecipe();
 		}
 	}

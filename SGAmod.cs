@@ -447,7 +447,7 @@ namespace SGAmod
 
 			SGAPlacablePainting.SetupPaintings();
 			ClipWeaponReloading.SetupRevolverHoldingTypes();
-
+            Items.Placeable.TechPlaceable.LuminousAlterCraftingHint.CreateRecipeItems();
 
 			//MusicStreamingMP3 musicTest = new MusicStreamingMP3("tmod:SGAmod/Sounds/Music/Swamp.mp3");
 
@@ -633,6 +633,9 @@ namespace SGAmod
 
 		public override void AddRecipes()
 		{
+
+			Items.Placeable.TechPlaceable.LuminousAlterCraftingHint.InitLuminousCrafting();
+
 			RecipeFinder finder;
 			int[] stuff = { ItemID.AdamantiteForge, ItemID.TitaniumForge };
 			for (int i = 0; i < 2; i += 1)

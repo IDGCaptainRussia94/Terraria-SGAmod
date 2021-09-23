@@ -547,7 +547,7 @@ namespace SGAmod.Items.Weapons
 				basicEffect.Projection = WVP.Projection();
 				basicEffect.VertexColorEnabled = true;
 				basicEffect.TextureEnabled = true;
-				basicEffect.Texture = SGAmod.ExtraTextures[21];
+				basicEffect.Texture = Main.extraTexture[21];
 
 
 				int totalcount = 3 + (int)div2;

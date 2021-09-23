@@ -47,7 +47,8 @@ namespace SGAmod.Items.Weapons.Aurora
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.LunarFlareBook, 1);
             recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
-            recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 190);
+            recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 10);
+            recipe.AddIngredient(ItemID.LunarBar, 8);
             recipe.AddIngredient(ItemID.ShinePotion, 1);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);

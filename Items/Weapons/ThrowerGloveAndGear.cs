@@ -100,7 +100,7 @@ namespace SGAmod.Items.Weapons
 		{
 			item.useStyle = 1;
 			item.Throwing().thrown = true;
-			item.damage = 4;
+			item.damage = 0;
 			item.shootSpeed = 5f;
 			item.shoot = ProjectileID.Grenade;
 			item.useTurn = true;
@@ -216,7 +216,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetDefaults();
 			item.useStyle = 1;
-			item.damage = 6;
+			item.damage = 3;
 			item.shoot = ModContent.ProjectileType<GrenadeNotAHook2>();
 			item.shootSpeed = 5.5f;
 			item.value = Item.buyPrice(0, 2, 50, 0);
@@ -1844,7 +1844,12 @@ namespace SGAmod.Items.Weapons
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
 		}
 
-		public override bool PreKill(int timeLeft)
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            //nil
+        }
+
+        public override bool PreKill(int timeLeft)
 		{
 			fakeid = ProjectileID.FallingStar;
 			projectile.type = fakeid;

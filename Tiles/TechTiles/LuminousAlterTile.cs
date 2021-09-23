@@ -59,6 +59,16 @@ namespace SGAmod.Tiles.TechTiles
         {
             //Main.LocalPlayer.showItemIconText = "This is test, Demetri!";
             Main.LocalPlayer.showItemIcon = true;
+
+            SGAmod.LuminousAlterItems.TryGetValue(Main.LocalPlayer.HeldItem.type, out LuminousAlterItemClass litem);
+
+            if (litem != null && litem != default)
+            {
+                Main.LocalPlayer.showItemIcon2 = litem.outputItem;
+                Main.LocalPlayer.showItemIconText = "    "+litem.requiredText;
+                return;
+            }
+
             Main.LocalPlayer.showItemIcon2 = ModContent.ItemType<Items.Consumable.Debug1>();
             //nil
         }
@@ -325,7 +335,7 @@ namespace SGAmod.Tiles.TechTiles
         {
             LuminousAlterItemClass findClass;
 
-            if (item != null && Position.Y <= 200 && Collision.CanHitLine(Position.ToVector2()*16,1,1,new Vector2(Position.X*16,0),1,1) && SGAmod.LuminousAlterItems.TryGetValue(item.type, out findClass))
+            if (item != null && Position.Y <= 400 && Collision.CanHitLine((Position.ToVector2()*16),1,1,new Vector2(Position.X*16,0),1,1) && SGAmod.LuminousAlterItems.TryGetValue(item.type, out findClass))
             {
                 if (item.stack >= findClass.stackCost && findClass.SpecialCondition())
                 {
@@ -461,6 +471,20 @@ namespace SGAmod.Tiles.TechTiles
             }
             else
             {
+
+                //Attempts to send a hopper output below it 1st, else the item is dropped
+                Point checkCoords = new Point(Position.X, Position.Y+2);
+
+                Tile modtile = Framing.GetTileSafely(checkCoords.X, checkCoords.Y);
+
+                if (ModContent.GetModTile(modtile.type) is ModTile modTile)
+                {
+                    if (modTile != null && modTile is IHopperInterface)
+                    {
+                        (modTile as IHopperInterface).HopperInputItem(Main.item[item2], checkCoords, 0);
+                    }
+                }
+
                 NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item2);
             }
         }
@@ -502,7 +526,7 @@ namespace SGAmod.Tiles.TechTiles
                         {
                             SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_WitherBeastAuraPulse, Position.X * 16, Position.Y * 16);
                             if (sound != null)
-                                sound.Pitch = -0.75f + ((clientChargingTimer / (float)itemData.infusionTime) * 1.50f);
+                                sound.Pitch = MathHelper.Clamp(-0.75f + ((clientChargingTimer / (float)itemData.infusionTime) * 1.50f),-0.75f,0.75f);
                         }
                     }
 

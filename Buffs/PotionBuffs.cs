@@ -186,7 +186,7 @@ namespace SGAmod.Buffs
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.SGAPly().MaxCooldownStacks += 1;
-			player.SGAPly().actionCooldownRate *= 1.15f;
+			player.SGAPly().actionCooldownRate += 1.15f;
 		}
 	}
 	public class EnergyPotionBuff : ModBuff

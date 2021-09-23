@@ -613,7 +613,7 @@ namespace SGAmod
                     item.velocity = item.velocity + movement;
                     item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
 
-                    if ((player.SGAPly().timer + item.whoAmI) % 10 == 0 && player.ownedProjectileCounts[ModContent.ProjectileType<VibraniumThrownExplosion>()] < 20)
+                    if ((player.SGAPly().timer + item.whoAmI) % 10 == 0 && player.armor[0].type == ModContent.ItemType<VibraniumHat>() && player.ownedProjectileCounts[ModContent.ProjectileType<VibraniumThrownExplosion>()] < 20)
                     {
                         Projectile.NewProjectile(item.Center.X, item.Center.Y, 0, 0, ModContent.ProjectileType<VibraniumThrownExplosion>(), (int)((100 * player.Throwing().thrownDamage) * MathHelper.Clamp((item.stack / 25f), 0.5f, 3f)), 0, player.whoAmI, 0f, 0f);
                     }

@@ -338,7 +338,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overseen Crystal");
-			Tooltip.SetDefault("Shards manifested from Phaethon's existance; resonates with charged forgotten spirits\nMay be used to fuse several strong materials together with ease\nDrat, it's also even more radioactive!\nSurely a shady dealer will also be interested in trading for these...");
+			Tooltip.SetDefault("Celestial Shards manifested from Phaethon's creators; resonates with charged forgotten spirits\nMay be used to fuse several strong materials together with ease\nDrat, it's also even more radioactive!\nSurely a shady dealer will also be interested in trading for these...");
 		}
 		public override void SetDefaults()
 		{

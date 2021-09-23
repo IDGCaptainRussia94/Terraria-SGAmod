@@ -238,8 +238,8 @@ namespace SGAmod.Items.Weapons
 		public static int GetBuffIndex(int theIndex)
 		{
 			int index = -1;
-            switch (theIndex)
-            {
+			switch (theIndex)
+			{
 				case 7:
 					index = BuffID.ShadowFlame;
 					break;
@@ -291,8 +291,8 @@ namespace SGAmod.Items.Weapons
 			aiType = 0;
 		}
 
-		public void ShootFlame(int damage,float knockBack,float speed2)
-        {
+		public void ShootFlame(int damage, float knockBack, float speed2)
+		{
 			Vector2 mousePos = Main.MouseWorld;
 			projectile.ai[1] = 180;
 			projectile.localAI[0] = 180;
@@ -302,7 +302,7 @@ namespace SGAmod.Items.Weapons
 
 			Main.PlaySound(SoundID.Item45, projectile.Center);
 
-			Projectile.NewProjectile(projectile.Center, speed, ModContent.ProjectileType<TorchGodSummonProjectile>(), damage, knockBack, projectile.owner,projectile.ai[0]);
+			Projectile.NewProjectile(projectile.Center, speed, ModContent.ProjectileType<TorchGodSummonProjectile>(), damage, knockBack, projectile.owner, projectile.ai[0]);
 
 		}
 
@@ -310,16 +310,16 @@ namespace SGAmod.Items.Weapons
 		{
 			Player player = Main.player[projectile.owner];
 
-			if (projectile.ai[1]<1)
-			Lighting.AddLight(projectile.Center, TorchColors[(int)projectile.ai[0]%16].ToVector3());
+			if (projectile.ai[1] < 1)
+				Lighting.AddLight(projectile.Center, TorchColors[(int)projectile.ai[0] % 16].ToVector3());
 
 			projectile.ai[1] -= 1;
 
 			projectile.localAI[0] -= 1;
 
-			if (projectile.localAI[0] < 0 && projectile.localAI[0]>-10)
-            {
-				int dust = Dust.NewDust(projectile.position+new Vector2(Main.rand.NextFloat(-6,6), Main.rand.NextFloat(-6, 6) + projectile.height/4), projectile.width, projectile.height, DustID.AncientLight);
+			if (projectile.localAI[0] < 0 && projectile.localAI[0] > -10)
+			{
+				int dust = Dust.NewDust(projectile.position + new Vector2(Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-6, 6) + projectile.height / 4), projectile.width, projectile.height, DustID.AncientLight);
 				Main.dust[dust].scale = 1.50f;
 				Main.dust[dust].fadeIn = 1.2f;
 				Main.dust[dust].color = TorchGodSummonMinion.TorchColors[(int)projectile.ai[0] % 16];
@@ -359,13 +359,13 @@ namespace SGAmod.Items.Weapons
 
 
 			if (!player.active || player.dead || ((us >= ((player.maxMinions - (player.SGAPly().GetMinionSlots)) * 2) || player.HeldItem.type != ModContent.ItemType<TorchGodSummon>()) && projectile.ai[1] < 1))
-            {
+			{
 				projectile.Kill();
-            }
+			}
 
-			float angle = (us / maxus)*MathHelper.TwoPi;
+			float angle = (us / maxus) * MathHelper.TwoPi;
 			float dist = 64f;
-			Vector2 wegohere = player.MountedCenter + Vector2.UnitX.RotatedBy(angle)*dist;
+			Vector2 wegohere = player.MountedCenter + Vector2.UnitX.RotatedBy(angle) * dist;
 
 			projectile.Center = wegohere;
 
@@ -379,28 +379,32 @@ namespace SGAmod.Items.Weapons
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			Texture2D textureTorch = Main.tileTexture[TileID.Torches];
-			Texture2D textureFlame = Main.FlameTexture[0];
 
-			Vector2 offset = new Vector2(11, 11);
-			Rectangle rect = new Rectangle(projectile.ai[1] > -9999990 ? 66 : 0, (int)(projectile.ai[0]%16) * 22, 22, 22);
-			Rectangle rect2 = new Rectangle(0, (int)(projectile.ai[0] % 16) * 22, 22, 22);
+			if (textureTorch != null)
+			{
 
-			Vector2 flameoffset = new Vector2(Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
+				Texture2D textureFlame = Main.FlameTexture[0];
 
-			spriteBatch.Draw(textureTorch, projectile.Center - Main.screenPosition, rect, Color.White, projectile.rotation, offset, new Vector2(1f, 1f), projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+				Vector2 offset = new Vector2(11, 11);
+				Rectangle rect = new Rectangle(projectile.ai[1] > -9999990 ? 66 : 0, (int)(projectile.ai[0] % 16) * 22, 22, 22);
+				Rectangle rect2 = new Rectangle(0, (int)(projectile.ai[0] % 16) * 22, 22, 22);
 
-			spriteBatch.Draw(textureFlame, projectile.Center + (flameoffset / 6f) - Main.screenPosition, rect2, (Color.White*0.75f) * MathHelper.Clamp((1f - projectile.localAI[0] - 5f) / 7f, 0f, 1f), projectile.rotation, offset, new Vector2(1f, 1f), projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+				Vector2 flameoffset = new Vector2(Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
 
-			flameoffset = new Vector2(Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
 
-			spriteBatch.Draw(textureFlame, projectile.Center + flameoffset - Main.screenPosition, rect2, Color.White*MathHelper.Clamp((1f- projectile.localAI[0]-5f) /10f,0f,1f), projectile.rotation, offset, new Vector2(1f, 1f), projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+				spriteBatch.Draw(textureTorch, projectile.Center - Main.screenPosition, rect, Color.White, projectile.rotation, offset, new Vector2(1f, 1f), projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 
+				spriteBatch.Draw(textureFlame, projectile.Center + (flameoffset / 6f) - Main.screenPosition, rect2, (Color.White * 0.75f) * MathHelper.Clamp((1f - projectile.localAI[0] - 5f) / 7f, 0f, 1f), projectile.rotation, offset, new Vector2(1f, 1f), projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+
+				flameoffset = new Vector2(Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
+
+				spriteBatch.Draw(textureFlame, projectile.Center + flameoffset - Main.screenPosition, rect2, Color.White * MathHelper.Clamp((1f - projectile.localAI[0] - 5f) / 10f, 0f, 1f), projectile.rotation, offset, new Vector2(1f, 1f), projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+			}
 
 			return false;
 		}
 
-
-    }
+	}
 
 
 }

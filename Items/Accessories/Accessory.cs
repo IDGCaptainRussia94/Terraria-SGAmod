@@ -4011,7 +4011,7 @@ namespace SGAmod.Items.Accessories
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.tpdcpu = true;
-			sgaplayer.actionCooldownRate *= 0.75f;
+			sgaplayer.actionCooldownRate -= 0.25f;
 			//Terraria.GameContent.Events.DD2Event.LaneSpawnRate = 9;
 		}
 

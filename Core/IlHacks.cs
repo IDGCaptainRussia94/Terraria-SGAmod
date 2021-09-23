@@ -37,6 +37,7 @@ namespace SGAmod
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 			IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;
 			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
+            IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
 
 			//IL.Terraria.Lighting.AddLight_int_int_float_float_float += AddLightHack;
 
@@ -46,7 +47,8 @@ namespace SGAmod
 				IL.Terraria.Main.OldDrawBackground += RemoveOldLavabackground;
 			}
 		}
-		internal static void Unpatch()
+
+        internal static void Unpatch()
 		{
 			/*IL.Terraria.Player.AdjTiles -= ForcedAdjTilesHack;
 			IL.Terraria.Player.Update -= SwimInAirHack;
@@ -67,7 +69,62 @@ namespace SGAmod
 			return true;
         }
 
-			static internal void HUDLifeBarsOverride(ILContext il)//Overrides the Life Hearts to draw custom stuff on top
+		static internal void BreathMeterHack(ILContext il)//Allows both lava and water meters to show up
+		{
+			ILCursor c = new ILCursor(il);
+			c.Index = il.Instrs.Count - 10;
+
+			if (!c.TryGotoPrev(MoveType.Before, i => i.MatchRet()))
+			{
+				goto Failed;
+			}
+
+			ILLabel labal = c.DefineLabel();
+
+			//c.MarkLabel(labal);
+			c.Remove();//Get rid of the return, so we can make our own
+
+			c.EmitDelegate<Func<bool>>(() =>
+			{
+				//Main.NewText("breath Test");
+				return Main.player[Main.myPlayer].lavaTime >= Main.player[Main.myPlayer].lavaMax || Main.player[Main.myPlayer].ghost;
+			});
+			c.Emit(OpCodes.Brfalse_S, labal);
+			c.Emit(OpCodes.Ret);//And here we add our own "if than return" instead, with vanilla-recreated code and our own
+			c.MarkLabel(labal);
+
+			for (int ix = 0; ix < 2; ix += 1)
+			{
+				if (!c.TryGotoNext(MoveType.Before, i => i.MatchLdsfld<Main>("myPlayer")))
+				{
+					goto Failed;
+				}
+			}
+
+			c.Index -= 1;
+			c.Emit(OpCodes.Ldloc, 1);
+			c.EmitDelegate<Func<Vector2,Vector2>>((Vector2 input) =>
+			{
+				return MoveLavaBreath(input);
+			});
+
+			c.Emit(OpCodes.Stloc, 1);
+
+			return;
+
+		Failed:
+			throw new Exception("IL Error Test");
+
+		}
+
+		public static Vector2 MoveLavaBreath(Vector2 input)
+        {
+			int index = Main.myPlayer;
+			Vector2 pos = input + new Vector2(0, Main.player[index].breath < Main.player[index].breathMax ? -(24) : 0);
+			return pos;
+		}
+
+		static internal void HUDLifeBarsOverride(ILContext il)//Overrides the Life Hearts to draw custom stuff on top
 		{
 			Action resertHearts = () =>
 			{
@@ -392,8 +449,11 @@ namespace SGAmod
 		static internal void SwimInAirHack(ILContext il)//Control water physics on the player, enforces "lava touching" if the player has the Lava Burn debuff
 		{
 			ILCursor c = new ILCursor(il);
+
+			c.Index = il.Instrs.Count - 1;
+
 			MethodInfo HackTheMethod = typeof(Collision).GetMethod("LavaCollision", BindingFlags.Public | BindingFlags.Static);
-			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
+			c.TryGotoPrev(i => i.MatchCall(HackTheMethod));
 
 			SwimInAirHackDelegate inLava = delegate (bool stackbool, Player player)
 			{

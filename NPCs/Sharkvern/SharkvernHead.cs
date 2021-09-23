@@ -552,7 +552,20 @@ namespace SGAmod.NPCs.Sharkvern
                         if (num1 > 20.0)
                             num1 = 20f;
                         npc.soundDelay = (int)num1;
-                        Main.PlaySound(15, (int)npc.position.X, (int)npc.position.Y, 1);
+
+                        Tile tilehere = Framing.GetTileSafely(npc.Center.ToWorldCoordinates());
+
+                        if (tilehere != null)
+                        {
+                            if (tilehere.active() && tilehere.liquid < 50)
+                            {
+                                Main.PlaySound(SoundID.Roar, (int)npc.position.X, (int)npc.position.Y, 1);
+                            }
+                            else if (tilehere.liquid >= 50)
+                            {
+                                Main.PlaySound(SoundID.Splash, (int)npc.position.X, (int)npc.position.Y, 1);
+                            }
+                        }
                     }
                 }
                 float absDirX = Math.Abs(dirX);

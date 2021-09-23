@@ -164,7 +164,7 @@ namespace SGAmod.Tiles.TechTiles
 						emptyslot = i;
 						break;
 					}
-					if (itemInChest != null && itemInChest.type == item.type && item.maxStack > 1 && item.stack < item.maxStack)
+					if (itemInChest != null && itemInChest.type == item.type && item.maxStack > 1 && itemInChest.stack < itemInChest.maxStack)
 					{
 						ammountleft -= item.maxStack;
 						matchingType = true;

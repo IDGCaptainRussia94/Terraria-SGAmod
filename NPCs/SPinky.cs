@@ -19,7 +19,6 @@ using SGAmod.Items;
 namespace SGAmod.NPCs
 {
 
-	[AutoloadBossHead]
 	public class SPinkyTrue : SPinky, ISGABoss
 	{
 		int realcounter;
@@ -1460,6 +1459,11 @@ namespace SGAmod.NPCs
 		public override void NPCLoot()
 		{
 			base.NPCLoot();
+		}
+
+        public override string HeadTexture
+		{
+			get { return ("SGAmod/NPCs/SPinkyTrue_Head_Boss"); }
 		}
 
 		public override string Texture

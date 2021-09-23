@@ -464,8 +464,8 @@ namespace SGAmod.Items.Armors.Vibranium
 			projectile.aiStyle = -1;
 			projectile.tileCollide = false;
 			projectile.melee = false;
-			projectile.minion = true;
-			projectile.minionSlots = 0;
+			//projectile.minion = true;
+			//projectile.minionSlots = 0;
 		}
 
 		public override string Texture

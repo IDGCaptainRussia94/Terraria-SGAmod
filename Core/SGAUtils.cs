@@ -321,7 +321,7 @@ namespace SGAmod
 
 					stackSize = recipe.createItem.stack;
 
-					if (stackSize <= item.stack && BlackListedItems.FirstOrDefault(search => search == item.type) == default)
+					if (stackSize <= item.stack && BlackListedItems.FirstOrDefault(search => search == item.type) == default || recipe.requiredItem[0].type != ModContent.ItemType<Items.Placeable.TechPlaceable.LuminousAlterItem>())
 					{
 
 						List<List<int>> isGroup = new List<List<int>>();
@@ -1267,8 +1267,9 @@ namespace SGAmod
 		public int stackCost = 1;
 		public int stackMade = 1;
 		public Func<bool> SpecialCondition;
+		public string requiredText = "";
 
-		public LuminousAlterItemClass(int outputItem, int infusionTime, int stackCost, int stackMade = 1, Func<bool> SCon = default)
+		public LuminousAlterItemClass(int outputItem, int infusionTime, int stackCost, int stackMade = 1, Func<bool> SCon = default,string requiredText = "")
 		{
 			if (SCon == default)
 			{
@@ -1285,6 +1286,7 @@ namespace SGAmod
 			this.infusionTime = infusionTime;
 			this.stackCost = stackCost;
 			this.stackMade = stackMade;
+			this.requiredText = requiredText;
 		}
 	}
 }

@@ -124,6 +124,86 @@ namespace SGAmod.Items.Weapons.Ammo
 		}
 	}
 
+	public class SeekerBullet : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Seeker Bullet");
+			Tooltip.SetDefault("Does summon damage\nHomes in on the minion focused enemy\nThis includes enemies who otherwise can't be chased");
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Ammo/SeekerBullet"); }
+		}
+        public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
+        {
+			flat += item.damage * player.minionDamage;
+		}
+        public override void SetDefaults()
+		{
+			item.damage = 10;
+			item.summon = true;
+			item.width = 8;
+			item.height = 8;
+			item.maxStack = 999;
+			item.consumable = true;
+			item.knockBack = 0f;
+			item.value = 20;
+			item.rare = ItemRarityID.LightPurple;
+			item.shoot = ModContent.ProjectileType<Projectiles.SeekerBullet>();
+			item.shootSpeed = 6f;
+			item.ammo = AmmoID.Bullet;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
+			recipe.AddIngredient(ItemID.MusketBall, 250);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this, 250);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class SoulboundBullet : SeekerBullet
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Soulbound Bullet");
+			Tooltip.SetDefault("A bullet bound with souls, Does summon damage\nHitting an enemy focuse them for your minions to attack\nIf below 20% health, you will leech small ammounts of life on hit\n"+Idglibrary.Idglib.ColorText(Color.Red,"Suffer self-damage when you miss and hit a tile"));
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Ammo/SoulboundBullet"); }
+		}
+		public override void SetDefaults()
+		{
+			item.damage = 50;
+			item.summon = true;
+			item.width = 8;
+			item.height = 8;
+			item.maxStack = 999;
+			item.consumable = true;
+			item.knockBack = 0f;
+			item.value = 20;
+			item.rare = ItemRarityID.Lime;
+			item.shoot = ModContent.ProjectileType<Projectiles.SoundboundBullet>();
+			item.shootSpeed = 6f;
+			item.ammo = AmmoID.Bullet;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Ectoplasm, 1);
+			recipe.AddIngredient(ItemID.MusketBall, 50);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this, 50);
+			recipe.AddRecipe();
+		}
+	}
+
 	public class TungstenBullet : ModItem
 	{
 		public override void SetStaticDefaults()

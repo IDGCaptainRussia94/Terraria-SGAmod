@@ -53,12 +53,6 @@ namespace SGAmod.Effects
 
             VertexBuffer vertexBuffer;
 
-            /*basicEffect.World = WVP.World();
-            basicEffect.View = WVP.View(Main.GameViewMatrix.Zoom);
-            basicEffect.Projection = WVP.Projection();
-            basicEffect.VertexColorEnabled = true;
-            basicEffect.TextureEnabled = true;
-            basicEffect.Texture = SGAmod.ExtraTextures[21];*/
             effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Main.GameViewMatrix.Zoom) * WVP.Projection());
             effect.Parameters["imageTexture"].SetValue(tex);
             effect.Parameters["coordOffset"].SetValue(coordOffset);
@@ -97,12 +91,6 @@ namespace SGAmod.Effects
 
                 Vector3 drawtop = (trailloc - Main.screenPosition).ToVector3();
                 Vector3 drawbottom = (prev2 - Main.screenPosition).ToVector3();
-
-                if (k == 1)
-                {
-                    //firstloc[0] = drawbottom+left;
-                    //firstloc[1] = drawbottom + right;
-                }
 
                 if (prevcoords[0] == Vector3.One)
                 {
@@ -161,17 +149,13 @@ namespace SGAmod.Effects
                     float angle = percent * MathHelper.Pi;
                     float angleNext = percentNext * MathHelper.Pi;
 
-                    //(1f - (k / (float)drawPoses.Count))
                     float thickness = trailThickness+trailThicknessIncrease;
-                    //thickness *= 2; 
 
                     Vector2 loc = drawPoses[0] + projsize;
                     Vector2 normal = Vector2.Normalize(loc - (drawPoses[1] + projsize));
 
                     float rotAngle = (-MathHelper.Pi / 2f) + (angle);
-                    float rotAngleNext = (-MathHelper.Pi / 2f) + (angleNext);
-
-                    //Idglib.DrawTether(SGAmod.ExtraTextures[21], loc, loc+ (normal.RotatedBy(rotAngle) * thickness), 1f, 0.25f, 1f, Color.White);
+                    float rotAngleNext = (-MathHelper.Pi / 2f) + (angleNext); //Idglib.DrawTether(SGAmod.ExtraTextures[21], loc, loc+ (normal.RotatedBy(rotAngle) * thickness), 1f, 0.25f, 1f, Color.White);
 
                     float tricknessAdd = 0f;// (float)Math.Max(-2f + Math.Sin(percent * (MathHelper.Pi)) * 2.5f, 0) * capsize.Y;
                     float tricknessAddNext = 0f;//(float)Math.Max(-2f + Math.Sin(percentNext * (MathHelper.Pi)) * 2.5f,0) * capsize.Y;

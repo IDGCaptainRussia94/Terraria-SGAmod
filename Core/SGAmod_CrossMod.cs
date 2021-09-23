@@ -270,8 +270,6 @@ namespace SGAmod
 			SGAmod.EnchantmentFocusCrystal.Add(ModContent.ItemType<EntropyTransmuter>(), new EnchantmentCraftingMaterial(15, 200, "One enchantment will always grant entropy bonuses"));
 			SGAmod.EnchantmentFocusCrystal.Add(ModContent.ItemType<CalamityRune>(), new EnchantmentCraftingMaterial(20, 200, "Enchantments may grant bonuses to Apocalypticals"));
 
-            Items.Placeable.TechPlaceable.LuminousAlterCraftingHint.InitLuminousCrafting();
-
 			//now I did come up with a way you can automate this, if you feed it a large enough stack, when it finishes the infusion it just yeets the new item onto the ground and starting working on the rest of the stack so you can convoy the items for example, this keeps up til there's either not enough items left or the conditions no longer match (IE it's now day)
 			//If the item were to be turned into air via the last stack, the new item takes its place on the Alter for you to pickup
 

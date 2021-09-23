@@ -77,6 +77,7 @@ float4 BasicEffect(VertexShaderOutput input) : COLOR
 	return pixel;
 }
 
+//Sets the alpha color based on luminosity
 float4 BasicEffectAlpha(VertexShaderOutput input) : COLOR
 {
 	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;

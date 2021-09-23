@@ -2374,7 +2374,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			vectors.Add(projectile.Center);
 			vectors.Add(hitspot);
 
-			TrailHelper trail = new TrailHelper("FadedBasicEffectPass", SGAmod.ExtraTextures[21]);
+			TrailHelper trail = new TrailHelper("FadedBasicEffectPass", Main.extraTexture[21]);
 			trail.projsize = Vector2.Zero;
 			trail.coordOffset = new Vector2(0, projectile.localAI[0] * -0.22f);
 			trail.coordMultiplier = new Vector2(1f, 120f);
@@ -2387,7 +2387,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			};
 			trail.DrawTrail(vectors, projectile.Center);
 
-			trail = new TrailHelper("FadedBasicEffectPass", SGAmod.ExtraTextures[21]);
+			trail = new TrailHelper("FadedBasicEffectPass", Main.extraTexture[21]);
 			trail.projsize = Vector2.Zero;
 			trail.coordOffset = new Vector2(0, projectile.localAI[0] * 0.22f);
 			trail.coordMultiplier = new Vector2(2f, 180f);

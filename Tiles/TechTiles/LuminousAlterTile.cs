@@ -422,6 +422,7 @@ namespace SGAmod.Tiles.TechTiles
             TagCompound baseCompound = base.Save();
             baseCompound.Add("chargingProcess", chargingProcess);
             baseCompound.Add("clientChargingTimer", (int)clientChargingTimer);
+
             return baseCompound;
 
         }
@@ -430,6 +431,8 @@ namespace SGAmod.Tiles.TechTiles
             TagCompound baseCompound = base.DoLoad(tag);
             chargingProcess = baseCompound.GetInt("chargingProcess");
             clientChargingTimer = (ushort)baseCompound.GetInt("clientChargingTimer");
+            SGAmod.LuminousAlterItems.TryGetValue(heldItem.type, out itemData);
+
 
             return baseCompound;
         }

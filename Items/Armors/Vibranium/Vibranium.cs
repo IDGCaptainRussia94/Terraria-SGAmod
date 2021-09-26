@@ -759,5 +759,4 @@ namespace SGAmod.Items.Armors.Vibranium
         }
 
 	}
-
 }

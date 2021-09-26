@@ -64,6 +64,7 @@ namespace SGAmod
 		public int ninjaStashLimit = 0;
 		public int molotovLimit = 0;
 		public float morespawns = 1f;
+		public int midasMoneyConsumed = 0;
 
 		//For holding Trap Weapons
 		public float SlowDownDefense = 0f;
@@ -624,6 +625,7 @@ namespace SGAmod
 			sgaplayer.activestacks = activestacks;
 			sgaplayer.dragonFriend = dragonFriend;
 			sgaplayer.armorToggleMode = armorToggleMode;
+			sgaplayer.midasMoneyConsumed = midasMoneyConsumed;
 
 			for (int i = 54; i < 58; i++)
 			{
@@ -651,7 +653,7 @@ namespace SGAmod
 				mismatch = true;
 			if (sgaplayer.ammoLeftInClip != ammoLeftInClip || sgaplayer.sufficate != sufficate || sgaplayer.PrismalShots != PrismalShots || sgaplayer.entropyCollected != entropyCollected || sgaplayer.DefenseFrame != DefenseFrame
 			|| sgaplayer.plasmaLeftInClip != plasmaLeftInClip || sgaplayer.Redmanastar != Redmanastar || sgaplayer.ExpertiseCollected != ExpertiseCollected || sgaplayer.ExpertiseCollectedTotal != ExpertiseCollectedTotal
-			 || sgaplayer.gunslingerLegendtarget != gunslingerLegendtarget || sgaplayer.activestacks != activestacks || sgaplayer.dragonFriend != dragonFriend || sgaplayer.armorToggleMode != armorToggleMode)
+			 || sgaplayer.gunslingerLegendtarget != gunslingerLegendtarget || sgaplayer.activestacks != activestacks || sgaplayer.dragonFriend != dragonFriend || sgaplayer.armorToggleMode != armorToggleMode || sgaplayer.midasMoneyConsumed != midasMoneyConsumed)
 				mismatch = true;
 
 
@@ -686,6 +688,8 @@ namespace SGAmod
 				packet.Write((short)gunslingerLegendtarget);
 				packet.Write((short)activestacks);
 				packet.Write(dragonFriend);
+				packet.Write(midasMoneyConsumed);
+
 				for (int i = 54; i < 58; i++)
 				{
 					packet.Write(ammoinboxes[i - 54]);
@@ -2273,6 +2277,7 @@ namespace SGAmod
 			tag["Drakenshopunlock"] = Drakenshopunlock;
 			tag["benchGodFavor"] = benchGodFavor;
 			tag["dragonFriend"] = dragonFriend;
+			tag["midasMoneyConsumed"] = midasMoneyConsumed;
 			if (!SGAmod.craftBlockPanel.ItemPanel.item.IsAir && benchGodFavor)
 			{
 				tag["BenchGodItemX"] = SGAmod.craftBlockPanel.ItemPanel.item.type;
@@ -2315,6 +2320,9 @@ namespace SGAmod
 
 			if (tag.ContainsKey("dragonFriend"))
 				dragonFriend = tag.GetBool("dragonFriend");
+
+			if (tag.ContainsKey("midasMoneyConsumed"))
+				midasMoneyConsumed = tag.GetInt("midasMoneyConsumed");
 
 			//SGAmod.craftBlockPanel.ItemPanel.item.TurnToAir();
 

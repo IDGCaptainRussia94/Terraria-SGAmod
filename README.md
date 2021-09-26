@@ -25,6 +25,23 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 
 Changelog:
 
+3.600d-(9/20/21)-Patch 11-Tech N Wreck: Beta
+
+-Added Assembly Star Extractinator recipe
+
+-a few sharkvern improvements
+
+-recipes for luminous crafting
+
+-IL patch that causes both breath and lava meters to show at the same time and it on top of each other
+
+-Luminous Alter will now try to output to hoppers below it on infusion
+
+-Hoppers can no longer interface with locked chests
+
+-Phaethon now drops the Star Metal Mold, so TPD can be skipped (TPS drops it only in MP now)
+
+
 
 3.600c-(9/20/21)-Patch 11-Tech N Wreck: Beta
 
@@ -81,7 +98,7 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
@@ -105,7 +122,7 @@ Changelog:
 
 -New resprites for the entire Novus set with a consistant palette! Thanks DeJuiceTD, and Rijam for making the armor frames! (previous armor has been added to Jubia's shop under its original filename: Unmaned)
 
--It is now possible to jump to floors in the Deeper Dungeons you have cleared via the new Deeper Dungeons Config (since this update sadly)
+-Added Extractinator crafting recipe to the Reverse Engineering Station.
 
 -Limbo has been given a loading screen
 
@@ -125,6 +142,8 @@ Changelog:
 -The way accessories boost percent damage taken on enemies has been changed, it now additive of the original damage rather than a stacking multiplier
 
 -Hellion's 2nd phase will now only start if the player is wearing a Soul of Secrets, allowing the 1st phase to be farmed and the player to get Souls of Bytes without having to face the 2nd phase right after
+
+-It is now possible to jump to floors in the Deeper Dungeons you have cleared via the new Deeper Dungeons Config (since this update sadly)
 
 -The Strange Portal has been given a head and can now be manually moved into different houses
 
@@ -278,7 +297,7 @@ Changelog:
 
 -Nerfed Terra Trident: Damage lowered to 38 from 50
 
--Nerfed Throwing gloves: Removed damage (and prefixes) on Grenadier's, lowered Riot Glove damage
+-Nerfed Throwing gloves: Removed damage on Grenadier's, lowered Riot Glove damage
 
 -Nerfed Plythe: Reduced crit chance
 
@@ -358,6 +377,8 @@ Changelog:
 -Rust Burn boosting acid burn on organic enemies
 
 -Prismic Banshee despawning during the night
+
+-Throwing gloves doing double damage
 
 -Kou Sash not listing that it makes Ninja Bombs ignore enemy immunities
 

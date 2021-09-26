@@ -1370,7 +1370,7 @@ namespace SGAmod.Items.Weapons.Technical
 				recipe.AddRecipeGroup("SGAmod:Tier1Bars", 1);
 				recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 1);
 				recipe.AddIngredient(ItemID.Glass, 5);
-				recipe.AddIngredient(ItemID.SandBlock, 5);
+				recipe.AddIngredient(ItemID.Lens, 1);
 				recipe.AddIngredient(ItemID.Glowstick, 3);
 				recipe.AddTile(TileID.WorkBenches);
 				recipe.SetResult(this, 5);

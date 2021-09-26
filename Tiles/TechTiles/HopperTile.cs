@@ -87,7 +87,7 @@ namespace SGAmod.Tiles.TechTiles
 					//Main.NewText(tile.type + " this type "+item.position);
 					if (tile.type == ModContent.TileType<HopperTile>() || tile.type == ModContent.TileType<ChestHopperTile>())
 					{
-						MoveItem(item, tilePosition, 0);
+						MoveItem(item, tilePosition, 0,ref item.stack);
 					}
 				}
 			}
@@ -95,7 +95,7 @@ namespace SGAmod.Tiles.TechTiles
 
 		public bool HopperInputItem(Item item, Point tilePos, int movementCount)
 		{
-			return MoveItem(item, tilePos, movementCount + 1);
+			return MoveItem(item, tilePos, movementCount + 1,ref item.stack);
 		}
 
 		public bool HopperExportItem(ref Item item, Point tilePos, int movementCount)
@@ -115,15 +115,60 @@ namespace SGAmod.Tiles.TechTiles
 			}
 		}
 
+		public static bool UpgradeCoins(Item item,Chest chest)
+        {
+			if (item.stack == item.maxStack)
+            {
+				switch (item.type)
+                {
+					case ItemID.CopperCoin:
+						item.type = ItemID.SilverCoin;
+						item.stack = 1;
+						goto upgradeLabel;
+
+					case ItemID.SilverCoin:
+						item.type = ItemID.GoldCoin;
+						item.stack = 1;
+						goto upgradeLabel;
+
+					case ItemID.GoldCoin:
+						item.type = ItemID.PlatinumCoin;
+						item.stack = 1;
+						goto upgradeLabel;
+
+					default:
+						break;
+				}
+            }
+			return false;
+
+			upgradeLabel:
+
+			for(int i = 0; i < Chest.maxItems; i += 1)
+            {
+				Item chestItem = chest.item[i];
+				if (chestItem.type == item.type && item != chestItem)
+                {
+					chestItem.stack += 1;
+					UpgradeCoins(chestItem,chest);
+
+					item.TurnToAir();
+					return true;
+                }
+
+            }
+			return false;
+        }
+
 		public static bool ExportFromChest(out Item item,out Point chestdata, Point checkCoords)
 		{
 			item = null;
 			chestdata = new Point(-1, -1);
 			int chester = Chest.FindChest(checkCoords.X, checkCoords.Y);
 			int i=0;
-			if (chester >= 0)
+			if (chester >= 0 && !Chest.isLocked(checkCoords.X, checkCoords.Y))
 			{
-				for (i = 0; i < 40; i++)
+				for (i = 0; i < Chest.maxItems; i++)
 				{
 					Item itemInChest = Main.chest[chester].item[i];
 					if (itemInChest.IsAir)
@@ -147,16 +192,22 @@ namespace SGAmod.Tiles.TechTiles
 			return false;
 		}
 
-		public static bool InputToChest(Item item,Point checkCoords)
-        {
+		public static bool InputToChest(Item item, Point checkCoords, ref int remainingStack)
+		{
+			Tile tile = Framing.GetTileSafely(checkCoords);
+
+			if (tile == null || !tile.active())
+				return false;
+
 			int chester = Chest.FindChest(checkCoords.X, checkCoords.Y);
-			if (chester >= 0)
+			if (chester >= 0 && !Chest.isLocked(checkCoords.X, checkCoords.Y))
 			{
 				int emptyslot = -1;
 				bool matchingType = false;
 				int ammountleft = item.stack;
+				int originalStacksize = item.stack;
 
-				for (int i = 0; i < 40; i++)
+				for (int i = 0; i < Chest.maxItems; i++)
 				{
 					Item itemInChest = Main.chest[chester].item[i];
 					if (itemInChest != null && itemInChest.IsAir)
@@ -166,7 +217,7 @@ namespace SGAmod.Tiles.TechTiles
 					}
 					if (itemInChest != null && itemInChest.type == item.type && item.maxStack > 1 && itemInChest.stack < itemInChest.maxStack)
 					{
-						ammountleft -= item.maxStack;
+						ammountleft -= itemInChest.maxStack - itemInChest.stack;
 						matchingType = true;
 						emptyslot = i;
 						break;
@@ -185,6 +236,10 @@ namespace SGAmod.Tiles.TechTiles
 						Item clonedItem = item.DeepClone();
 
 						Main.chest[chester].item[emptyslot] = clonedItem;
+
+						HopperTile.UpgradeCoins(Main.chest[chester].item[emptyslot], Main.chest[chester]);
+
+						remainingStack = 0;
 						item.TurnToAir();
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
 					}
@@ -193,17 +248,38 @@ namespace SGAmod.Tiles.TechTiles
 				{
 					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
+						int beforeAdd = Main.chest[chester].item[emptyslot].stack;
 						Main.chest[chester].item[emptyslot].stack += item.stack;
 						Main.chest[chester].item[emptyslot].stack = System.Math.Min(Main.chest[chester].item[emptyslot].stack, Main.chest[chester].item[emptyslot].maxStack);
+						int difference = (beforeAdd + originalStacksize) - 100;
+
+						int itembefore = item.type;
+
+						HopperTile.UpgradeCoins(Main.chest[chester].item[emptyslot],Main.chest[chester]);
+
+						/*if (difference > 0)
+						{
+							Item leftOvers = new Item();
+							leftOvers.SetDefaults(item.type);
+							leftOvers.stack = difference;
+
+							InputToChest(leftOvers, checkCoords,ref leftOvers.stack);
+							ammountleft = difference;
+						}*/
+
+						//NetMessage.SendData(MessageID.SyncItem, -1, -1, null, Main.chest[chester].item[emptyslot].whoAmI);
+
 					}
 					if (ammountleft > 0)
 					{
 						item.stack = ammountleft;
+						remainingStack = ammountleft;
 						if (Main.netMode != NetmodeID.MultiplayerClient)
 							NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
 					}
 					else
 					{
+						remainingStack = 0;
 						item.TurnToAir();
 						if (Main.netMode != NetmodeID.MultiplayerClient)
 							NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
@@ -218,7 +294,7 @@ namespace SGAmod.Tiles.TechTiles
 			return false;
 		}
 
-		public static bool MoveItem(Item item, Point tilePos, int movementCount)
+		public static bool MoveItem(Item item, Point tilePos, int movementCount,ref int remainingStack)
 		{
 			if (movementCount >= 100)
 				return false;
@@ -243,7 +319,8 @@ namespace SGAmod.Tiles.TechTiles
 					return (modTile as IHopperInterface).HopperInputItem(item, checkCoords, movementCount + 1);
 				}
 			}
-			return InputToChest(item, checkCoords);
+
+			return InputToChest(item, checkCoords,ref remainingStack);
 		}
 		public override bool Slope(int i, int j)
 		{
@@ -439,20 +516,29 @@ namespace SGAmod.Tiles.TechTiles
 
 					return;
 
-					DoExport:
+				DoExport:
 
-					if (clonedItem != null && HopperTile.MoveItem(clonedItem, coords, 0))
+					int remainingStack = clonedItem != null ? clonedItem.stack : 0;
+					if (clonedItem != null && HopperTile.MoveItem(clonedItem, coords, 0, ref remainingStack))
 					{
 						LuminousAlterTE.DebugText("Yet More Test");
 
 						if (ChestData.X >= 0)
 						{
+
+							//Main.NewText("Remaining stacks " + remainingStack);
+
 							if (Main.netMode != NetmodeID.MultiplayerClient)
 							{
-								Main.chest[ChestData.X].item[ChestData.Y].TurnToAir();
+								if (remainingStack > 0)
+									Main.chest[ChestData.X].item[ChestData.Y].stack = remainingStack>2 ? remainingStack+1 : remainingStack;
+								else
+									Main.chest[ChestData.X].item[ChestData.Y].TurnToAir();
 							}
 
+							if (remainingStack<1)
 							exporteditem.TurnToAir();
+
 							if (Main.netMode != NetmodeID.SinglePlayer)
 							{
 								NetMessage.SendData(MessageID.SyncItem, -1, -1, null, exporteditem.whoAmI);

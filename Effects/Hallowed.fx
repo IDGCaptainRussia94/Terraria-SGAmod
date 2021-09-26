@@ -122,7 +122,7 @@ float4 NoRainbowBlendFunction(float2 coords : TEXCOORD0) : COLOR0
 float4 FadeFunction(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 inputColor = tex2D(uImage0, coords);
-	float base = sin(coords.y * 3.14159265);
+	float base = saturate(pow(sin(coords.y * 3.14159265),rainbowScale));
 	return inputColor * (sin(coords.x * 3.14159265)*base)*alpha;
 }
 

@@ -58,6 +58,12 @@ namespace SGAmod
 		[Slider]
 		public float InfusionTime { get; set; }
 
+		[Label("Luminous Crafting recipes")]
+		//[ReloadRequired]
+		[Tooltip("Enables/Disables recipes added for Luminous Crafting as a helping guide, this is presented for compatibles reasons")]
+		[DefaultValue(true)]
+		public bool LuminousCraftingRecipes { get; set; }
+
 		[Label("Overpowered Mods")]
 		[ReloadRequired]
 		[Tooltip("Enables/Disables a stacking difficulty increase when playing with specific OP mods")]
@@ -86,6 +92,38 @@ namespace SGAmod
 		[Tooltip("Enables/Disables the nerfed Mana Regen")]
 		[DefaultValue(true)]
 		public bool ManaPotionChange { get; set; }
+
+		//This is the work of someone who gives 2 shits about netcode. (not me, mostly)
+		public static bool IsPlayerLocalServerOwner(int whoAmI)
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				return Netplay.Connection.Socket.GetRemoteAddress().IsLocalHost();
+			}
+
+			for (int i = 0; i < Main.maxPlayers; i++)
+			{
+				RemoteClient client = Netplay.Clients[i];
+				if (client.State == 10 && i == whoAmI && client.Socket.GetRemoteAddress().IsLocalHost())
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref string message)
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+				return true;
+
+			if (!IsPlayerLocalServerOwner(whoAmI))
+			{
+				message = "You are not the server owner so you can not change this config";
+				return false;
+			}
+			return base.AcceptClientChanges(pendingConfig, whoAmI, ref message);
+		}
 	}
 
 

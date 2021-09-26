@@ -1374,6 +1374,8 @@ namespace SGAmod.Dimensions.NPCs
 				Item.NewItem(npc.Center, ModContent.ItemType<Items.Accessories.PhaethonEye>());
             }
 
+			Item.NewItem(npc.Center, ModContent.ItemType<Items.StarMetalMold>());
+
 			SGAWorld.downedSpaceBoss = true;
 			SubworldCache.AddCache("SGAmod", "SGAWorld", "downedSpaceBoss", true,null);
 

@@ -30,7 +30,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Grenadier's Glove");
-			Tooltip.SetDefault("Throws hand grenades further, and increases their damage"+ disc);
+			Tooltip.SetDefault("Throws hand grenades further, and increases their damage\nCan be reforged"+ disc);
 		}
 
 		public static int FindGrenadeToThrow(Mod mod,Player player, int level)
@@ -157,7 +157,7 @@ namespace SGAmod.Items.Weapons
 			if (type!=ProjectileID.Beenade)
 			damage += (int)((float)basetype2.damage * player.Throwing().thrownDamage);
 
-			damage += (int)(basetype2.type == ItemID.MolotovCocktail || basetype2.type == ItemID.AleThrowingGlove || basetype2.type == ItemID.Bone || basetype2.type == ItemID.SpikyBall ? damage * 2f : 0);
+			damage += (int)(basetype2.type == ItemID.MolotovCocktail || basetype2.type == ItemID.AleThrowingGlove || basetype2.type == ItemID.Bone || basetype2.type == ItemID.SpikyBall ? damage * 1f : 0);
 
 
 			if (TrapDamageItems.SavingChanceMethod(player,true))
@@ -165,6 +165,7 @@ namespace SGAmod.Items.Weapons
 
 			Projectile proj = Main.projectile[Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI)];
 			proj.Throwing().thrown = true;
+			proj.thrown = false;
 			proj.ranged = false;
 			proj.friendly = true;
 			proj.hostile = false;
@@ -216,7 +217,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetDefaults();
 			item.useStyle = 1;
-			item.damage = 3;
+			item.damage = 5;
 			item.shoot = ModContent.ProjectileType<GrenadeNotAHook2>();
 			item.shootSpeed = 5.5f;
 			item.value = Item.buyPrice(0, 2, 50, 0);
@@ -1811,7 +1812,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ItemID.FallenStar, 8);
 			recipe.AddIngredient(ItemID.Meteorite, 4);
 			recipe.AddIngredient(ItemID.Shuriken, 25);
-			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this, 25);
 			recipe.AddRecipe();
 		}

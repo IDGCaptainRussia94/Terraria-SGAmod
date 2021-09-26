@@ -163,13 +163,13 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override string Texture
         {
-            get { return("SGAmod/NPCs/Sharkvern/SharkvernBody2"); }
+            get { return ("SGAmod/NPCs/Sharkvern/SharkvernBody2"); }
         }
 
         public override void SetDefaults()
         {
-            npc.width = 52;             
-            npc.height = 48;           
+            npc.width = 52;
+            npc.height = 48;
             npc.damage = 36;
             npc.defense = 25;
             npc.lifeMax = 27000;
@@ -183,10 +183,10 @@ namespace SGAmod.NPCs.Sharkvern
             npc.chaseable = false;
         }
 
-                public override bool PreAI()
+        public override bool PreAI()
         {
-        base.PreAI();
-        return false;
+            base.PreAI();
+            return false;
         }
 
         public override void HitEffect(int hitDirection, double damage)
@@ -208,21 +208,21 @@ namespace SGAmod.NPCs.Sharkvern
             if (npc.life > 0 && Main.netMode != 1 && Main.rand.Next(1) == 0)
             {
                 SharkvernHead jawsbrain = Main.npc[(int)npc.ai[3]].modNPC as SharkvernHead;
-                float percent=Main.npc[(int)npc.ai[3]].life;
-                float percent2=Main.npc[(int)npc.ai[3]].lifeMax;
-                if (jawsbrain.sergedout<1 && (percent/percent2)<0.8f){
-                    jawsbrain.sergedout=(int)(60f*(8f+((percent/percent2)*(Main.expertMode ? 15f : 25f))));
+                float percent = Main.npc[(int)npc.ai[3]].life;
+                float percent2 = Main.npc[(int)npc.ai[3]].lifeMax;
+                if (jawsbrain.sergedout < 1 && (percent / percent2) < 0.8f)
+                {
+                    jawsbrain.sergedout = (int)(60f * (8f + ((percent / percent2) * (Main.expertMode ? 15f : 25f))));
                     int randomSpawn = Main.rand.Next(0);
                     if (randomSpawn == 0)
                     {
                         randomSpawn = mod.NPCType("AquaSurge");
                     }
 
-                     int num660 = NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)(npc.position.Y + (float)npc.height), randomSpawn, 0, 0f, 0f, 0f, 0f, 255);
+                    int num660 = NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)(npc.position.Y + (float)npc.height), randomSpawn, 0, 0f, 0f, 0f, 0f, 255);
                 }
             }
         }
-
     }
 
 

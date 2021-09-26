@@ -69,7 +69,7 @@ namespace SGAmod
 			return true;
         }
 
-		static internal void BreathMeterHack(ILContext il)//Allows both lava and water meters to show up
+		static internal void BreathMeterHack(ILContext il)//Allows both lava and water meters to show up. If both are active, the lava meter is bumped up 24 pixels to not cover the same space
 		{
 			ILCursor c = new ILCursor(il);
 			c.Index = il.Instrs.Count - 10;
@@ -89,10 +89,11 @@ namespace SGAmod
 				//Main.NewText("breath Test");
 				return Main.player[Main.myPlayer].lavaTime >= Main.player[Main.myPlayer].lavaMax || Main.player[Main.myPlayer].ghost;
 			});
-			c.Emit(OpCodes.Brfalse_S, labal);
+			c.Emit(OpCodes.Brfalse_S, labal);//Branching if statement, if false, we jump past the return that stops the lava meter from showing
 			c.Emit(OpCodes.Ret);//And here we add our own "if than return" instead, with vanilla-recreated code and our own
 			c.MarkLabel(labal);
 
+			//Done with it, now we advance 2 myPlayers later to find a non-branched spot to inject the next bit of code
 			for (int ix = 0; ix < 2; ix += 1)
 			{
 				if (!c.TryGotoNext(MoveType.Before, i => i.MatchLdsfld<Main>("myPlayer")))
@@ -101,14 +102,15 @@ namespace SGAmod
 				}
 			}
 
+			//jump up one space so we're in a spot that's not on an evaluation stack so we can start a new one, this is a few instructions down from the previous patch code, but a safe spot
 			c.Index -= 1;
-			c.Emit(OpCodes.Ldloc, 1);
+			c.Emit(OpCodes.Ldloc, 1);//push Local var 1, the Vector2 known as 'value'
 			c.EmitDelegate<Func<Vector2,Vector2>>((Vector2 input) =>
 			{
 				return MoveLavaBreath(input);
 			});
 
-			c.Emit(OpCodes.Stloc, 1);
+			c.Emit(OpCodes.Stloc, 1);//set the 'value' Vector2 accordingly
 
 			return;
 

@@ -241,6 +241,7 @@ namespace SGAmod
 				int activestacks = reader.ReadInt16();
 				bool dragonFriend = reader.ReadBoolean();
 				bool armorToggleMode = reader.ReadBoolean();
+				int midasMoneyConsumed = reader.ReadInt32();
 
 				Logger.Debug("DEBUG both: Clone Client 10");
 				int[] ammos = { reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32() };
@@ -264,6 +265,7 @@ namespace SGAmod
 					sgaplayer.activestacks = (int)activestacks;
 					sgaplayer.dragonFriend = dragonFriend;
 					sgaplayer.armorToggleMode = armorToggleMode;
+					sgaplayer.midasMoneyConsumed = midasMoneyConsumed;
 
 					for (int i = 0; i < 4; i++)
 					{

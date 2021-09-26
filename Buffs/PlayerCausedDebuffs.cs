@@ -273,7 +273,36 @@ namespace SGAmod.Buffs
 		}
 	}
 
-	public class RustBurn : ModBuff
+	public class GildingAuraBuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Aureation Aura");
+			Description.SetDefault("Nearby NPCs are gilded with Midas");
+			Main.debuff[Type] = false;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoTimeDisplay[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = true;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Item_" + ItemID.GoldCoin;
+			return true;
+		}
+
+        public override void Update(Player player, ref int buffIndex)
+        {
+            foreach(NPC npc in Main.npc.Where(testby => testby.DistanceSQ(player.MountedCenter) < 600 * 600))
+            {
+				npc.AddBuff(BuffID.Midas, 2);
+			}
+        }
+
+    }
+
+		public class RustBurn : ModBuff
 	{
 		public static string RustText => Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) ? "Rustburn lowers defense by 25 and is effective against inorganic enemies\nInorganic enemies with Rustburn take even more damage from Acid Burn\nOrganic enemies only take a bit of damage over time" : "(Hold LEFT CONTROL for more info on Rust Burn)";
 		public override void SetDefaults()

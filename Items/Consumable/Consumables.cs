@@ -149,7 +149,7 @@ namespace SGAmod.Items.Consumable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mossy Salve");
-			Tooltip.SetDefault("'A nasty infection is better than bleeding out right?'\nStops Bleeding, Massive Bleeding, OnFire!, and Burning\nAlso heals 25 HP\n" + Idglib.ColorText(Color.Red, "However causes Swamp Rot infection and Murky Depths") +"\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each"));
+			Tooltip.SetDefault("'A nasty infection is better than bleeding out right?'\nTreats severe burn wounds, completely restoring your Lava Immunity Time\nStops Bleeding, Massive Bleeding, OnFire!, and Burning\nAlso heals 25 HP\n" + Idglib.ColorText(Color.Red, "However causes Swamp Rot infection and Murky Depths") +"\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each"));
 		}
 
 		public override void SetDefaults()
@@ -175,6 +175,8 @@ namespace SGAmod.Items.Consumable
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
 			sgaplayer.AddCooldownStack(60 * 60, 1);
+
+			player.lavaTime = player.lavaMax;
 
 			int[] buffs = { ModContent.BuffType<NPCs.Murk.PoisonStack>(), BuffID.Bleeding, BuffID.OnFire, BuffID.Burning, ModContent.BuffType<Buffs.MassiveBleeding>() };
 

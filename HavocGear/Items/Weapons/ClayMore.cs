@@ -35,7 +35,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Clay-More");
-			Tooltip.SetDefault("Launches Clay from the power's inventory at a distance\nEvery 10th clay launches a clay pot instead\nThe sword swings slower when launching clay");
+			Tooltip.SetDefault("Launches Clay from the player's inventory at a distance\nEvery 10th clay launches a clay pot instead\nThe sword swings slower when launching clay");
 		}
 
 		public override void AddRecipes()

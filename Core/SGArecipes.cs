@@ -180,7 +180,7 @@ namespace SGAmod
 
             bool canwemakeit = base.RecipeAvailable(recipe);
 
-            if (!TF2Emblem.CanCraftUp(recipe))
+            if (!TF2Emblem.CanCraftUp(recipe) || recipe.requiredItem[2].type == SGAmod.Instance.ItemType("AlterCraft_Time"))
                 return false;
 
             if (recipe.createItem.type == ModContent.ItemType<LaserMarker>())

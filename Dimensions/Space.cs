@@ -913,6 +913,7 @@ namespace SGAmod.Dimensions
             base.AI();
             if (projectile.ai[0] < 1)
             {
+                gems = new int[] { ItemID.Sapphire, ItemID.Ruby, ItemID.Emerald, ItemID.Topaz, ItemID.Amethyst, ItemID.Diamond, ItemID.Amber };
                 gemtype = Main.rand.Next((int)gems.Length);
                 projectile.ai[0] = gems[gemtype];
                 //Color[] colors = new Color[] { Color.Blue, Color.Red, Color.Lime, Color.Yellow, Color.Purple, Color.Aquamarine, Color.Orange };

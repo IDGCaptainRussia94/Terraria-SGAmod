@@ -767,7 +767,7 @@ namespace SGAmod.NPCs.Sharkvern
             else
             {
 
-                if (npc.life < (int)(npc.lifeMax * 0.75f))
+                if (npc.life < Phase2Percent)
                 {
                     if (doSharkRise < 10)
                         doSharkRise += 1;
@@ -1051,7 +1051,7 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "Terraria/Bubble";
+            texture = "SGAmod/Buffs/SharkvernDrowningDebuff";
             return true;
         }
 
@@ -1175,7 +1175,10 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override bool PreKill(int timeLeft)
         {
-            Projectile.NewProjectileDirect(projectile.Center, Vector2.UnitY * -20f, ModContent.ProjectileType<FlyingSharkProjBossProj>(), projectile.damage, 5f);
+            Player playerclosest = Main.player[Player.FindClosest(projectile.Center,1,1)];
+
+
+            Projectile.NewProjectileDirect(projectile.Center, Vector2.UnitY * -(20f+MathHelper.Clamp((playerclosest.Center.Y-projectile.Center.Y)/320f, 0f,50f)), ModContent.ProjectileType<FlyingSharkProjBossProj>(), projectile.damage, 5f);
 
             for (int i = 0; i < 40; i += 1)
             {

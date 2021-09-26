@@ -120,7 +120,7 @@ namespace SGAmod.NPCs.Sharkvern
 			npc.height = 48;
 			npc.damage = 0;
 			npc.defense = 0;
-			npc.lifeMax = 5000;
+			npc.lifeMax = 4000;
 			npc.noGravity = true;
 			//npc.HitSound = SoundID.NPCHit1;
 			//npc.DeathSound = SoundID.NPCDeath1;
@@ -128,6 +128,7 @@ namespace SGAmod.NPCs.Sharkvern
 			npc.value = 1500f;
 			npc.knockBackResist = 0f;
 			npc.aiStyle = -1;
+			npc.dontTakeDamage = true;
 		}
 
         public override void HitEffect(int hitDirection, double damage)
@@ -173,6 +174,7 @@ namespace SGAmod.NPCs.Sharkvern
 			int shark = NPC.FindFirstNPC(ModContent.NPCType<SharkvernHead>());
 			if (introEffect >= 1f)
 			{
+				npc.dontTakeDamage = false;
 				npc.ai[0]++;
 				if (P.active && !P.dead && shark >= 0 && Main.npc[shark].active)
 				{

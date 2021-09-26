@@ -716,40 +716,45 @@ namespace SGAmod
                  totalcount += coincount;
                  }
                  if (totalcount>0)*/
+                
+                if (ItemID.Sets.NeverShiny[item.type])
+                {
+                    sgaplayer.midasMoneyConsumed += (item.value*item.stack)/5;
 
+                    if (item.type == ItemID.CopperCoin)
+                    {
+                        Main.PlaySound(SoundID.CoinPickup, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.5f);
+                        if (sgaplayer.MidasIdol == 2)
+                            player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Campfire : BuffID.Swiftness, 60 * 5);
+                        else
+                            player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.MagicPower : BuffID.Titan, 60 * 3);
+                        return false;
+                    }
+                    if (item.type == ItemID.SilverCoin)
+                    {
+                        Main.PlaySound(SoundID.CoinPickup, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.6f);
+                        if (sgaplayer.MidasIdol == 2)
+                            player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Endurance : BuffID.Honey, 60 * 5);
+                        else
+                            player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Wrath : BuffID.Rage, 60 * 5);
+                        return false;
+                    }
+                    if (item.type == ItemID.GoldCoin)
+                    {
+                        Main.PlaySound(SoundID.CoinPickup, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.7f);
+                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.DryadsWard : BuffID.Ironskin, 60 * 10);
+                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Wrath : BuffID.Rage, 60 * 20);
+                        return false;
+                    }
+                    if (item.type == ItemID.PlatinumCoin)
+                    {
+                        Main.PlaySound(SoundID.CoinPickup, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.8f);
+                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.RapidHealing : BuffID.ShadowDodge, 60 * 30);
+                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.SolarShield2 : BuffID.IceBarrier, 60 * 30);
+                        return false;
+                    }
+                }
 
-                if (item.type == ItemID.CopperCoin)
-                {
-                    Main.PlaySound(38, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.6f);
-                    if (sgaplayer.MidasIdol == 2)
-                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Campfire : BuffID.Swiftness, 60 * 5);
-                    else
-                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.MagicPower : BuffID.Titan, 60 * 3);
-                    return false;
-                }
-                if (item.type == ItemID.SilverCoin)
-                {
-                    Main.PlaySound(38, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.6f);
-                    if (sgaplayer.MidasIdol == 2)
-                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Endurance : BuffID.Honey, 60 * 5);
-                    else
-                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Wrath : BuffID.Rage, 60 * 5);
-                    return false;
-                }
-                if (item.type == ItemID.GoldCoin)
-                {
-                    Main.PlaySound(38, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.6f);
-                    player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.DryadsWard : BuffID.Ironskin, 60 * 10);
-                    player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Wrath : BuffID.Rage, 60 * 20);
-                    return false;
-                }
-                if (item.type == ItemID.PlatinumCoin)
-                {
-                    Main.PlaySound(38, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.6f);
-                    player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.RapidHealing : BuffID.ShadowDodge, 60 * 30);
-                    player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.SolarShield2 : BuffID.IceBarrier, 60 * 30);
-                    return false;
-                }
 
             }
             return base.OnPickup(item, player);

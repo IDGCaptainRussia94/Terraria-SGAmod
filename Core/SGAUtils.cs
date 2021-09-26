@@ -321,7 +321,7 @@ namespace SGAmod
 
 					stackSize = recipe.createItem.stack;
 
-					if (stackSize <= item.stack && BlackListedItems.FirstOrDefault(search => search == item.type) == default || recipe.requiredItem[0].type != ModContent.ItemType<Items.Placeable.TechPlaceable.LuminousAlterItem>())
+					if (stackSize <= item.stack && BlackListedItems.FirstOrDefault(search => search == item.type) == default && recipe.requiredItem[2].type != SGAmod.Instance.ItemType("AlterCraft_Time"))
 					{
 
 						List<List<int>> isGroup = new List<List<int>>();

@@ -64,7 +64,9 @@ namespace SGAmod.NPCs
 
 		public override void NPCLoot()
 		{
+			if (Main.netMode != NetmodeID.SinglePlayer)
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("StarMetalMold"));
+
 			if (Main.expertMode)
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TPDCPU"));
 			List<int> types = new List<int>();

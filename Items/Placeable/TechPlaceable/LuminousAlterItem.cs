@@ -85,30 +85,33 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 			SGAmod.Instance.AddItem("AlterCraft_Time", new LuminousAlterCraftingHint("Time", "Seconds to infuse", "Terraria/Item_" + ItemID.Timer1Second));
 		}
 
-		public static void AddLuminousAlterRecipe(int catalyst,int outputItem,int time,int numIn = 1,int numOut = 1,Func<bool> Cond = default,string requiredText = "")
-        {
+		public static void AddLuminousAlterRecipe(int catalyst, int outputItem, int time, int numIn = 1, int numOut = 1, Func<bool> Cond = default, string requiredText = "")
+		{
 			SGAmod.LuminousAlterItems.Add(catalyst, new LuminousAlterItemClass(outputItem, time, numIn, numOut, Cond, requiredText));
 
-			ModRecipe modRecipe = new ModRecipe(SGAmod.Instance);
+			if (SGAConfig.Instance.LuminousCraftingRecipes)
+			{
 
-			modRecipe.AddIngredient(ModContent.ItemType<LuminousAlterItem>());
-			modRecipe.AddIngredient(catalyst, numIn);
+				ModRecipe modRecipe = new ModRecipe(SGAmod.Instance);
 
-			if (Cond == BloodSunCondition)
-			modRecipe.AddIngredient(SGAmod.Instance.ItemType("AlterCraft_BloodSun"));
-			else if (Cond == BlackSunCondition)
-				modRecipe.AddIngredient(SGAmod.Instance.ItemType("AlterCraft_Eclipse"));
-			else if (Cond == BloodmoonCondition)
-				modRecipe.AddIngredient(SGAmod.Instance.ItemType("AlterCraft_BloodMoon"));
-			else
-				modRecipe.AddIngredient(SGAmod.Instance.ItemType("AlterCraft_Moon"));
+				//modRecipe.AddIngredient(ModContent.ItemType<LuminousAlterItem>());
+				modRecipe.AddIngredient(catalyst, numIn);
 
-			modRecipe.AddIngredient(SGAmod.Instance.ItemType("AlterCraft_Time"), (int)Math.Ceiling(time / 60f));
-			modRecipe.AddTile(ModContent.TileType<Tiles.TechTiles.LuminousAlter>());
-			modRecipe.SetResult(outputItem, numOut);
-			modRecipe.AddRecipe();
+				if (Cond == BloodSunCondition)
+					modRecipe.AddIngredient(SGAmod.Instance.ItemType("AlterCraft_BloodSun"));
+				else if (Cond == BlackSunCondition)
+					modRecipe.AddIngredient(SGAmod.Instance.ItemType("AlterCraft_Eclipse"));
+				else if (Cond == BloodmoonCondition)
+					modRecipe.AddIngredient(SGAmod.Instance.ItemType("AlterCraft_BloodMoon"));
+				else
+					modRecipe.AddIngredient(SGAmod.Instance.ItemType("AlterCraft_Moon"));
 
+				modRecipe.AddIngredient(SGAmod.Instance.ItemType("AlterCraft_Time"), (int)Math.Ceiling(time / 60f));
+				modRecipe.AddTile(ModContent.TileType<Tiles.TechTiles.LuminousAlter>());
+				modRecipe.SetResult(outputItem, numOut);
+				modRecipe.AddRecipe();
 
+			}
 		}
 
 		public override bool CloneNewInstances => true;

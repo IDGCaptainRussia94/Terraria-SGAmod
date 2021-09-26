@@ -441,11 +441,9 @@ namespace SGAmod.Items.Consumable
 				Main.PlaySound(SoundID.Roar, player.position, 0);
 				return true;
 		}
-
-
 	}
 
-	public class Prettygel : BaseBossSummon
+	public class Prettygel : BaseBossSummon,IAuroraItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -463,7 +461,7 @@ namespace SGAmod.Items.Consumable
 			item.useStyle = 4;
 			item.noMelee = true; //so the item's animation doesn't do damage
 			item.value = 0;
-			item.rare = 9;
+			item.rare = ItemRarityID.Cyan;
 			item.UseSound = SoundID.Item1;
 		}
 

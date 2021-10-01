@@ -46,6 +46,10 @@ namespace SGAmod
 	{
 
 	}
+	interface ITrueMeleeProjectile
+	{
+
+	}
 	interface IDrawAdditive
 	{
 		void DrawAdditive(SpriteBatch spriteBatch);
@@ -66,9 +70,9 @@ namespace SGAmod
 	}
 	interface IHopperInterface
 	{
-		bool HopperInputItem(Item item,Point tilelocation,int movementCount);
+		bool HopperInputItem(Item item,Point tilelocation,int movementCount, ref bool testOnly);
 
-		bool HopperExportItem(ref Item item, Point tilelocation, int movementCount);
+		bool HopperExportItem(ref Item item, Point tilelocation, int movementCount, ref bool testOnly);
 	}	
 	interface ISGABoss
 	{

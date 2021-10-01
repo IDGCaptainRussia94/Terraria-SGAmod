@@ -87,6 +87,9 @@ namespace SGAmod.Dimensions
 
             if (heartBeat > 10000 && !player.dead)
             {
+                if (SGAPocketDim.WhereAmI == typeof(LimboDim))
+                LimboDim.heartBeats += 1;
+
                 SoundEffectInstance sound = Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Heartbeat").WithVolume(Math.Min(0.25f + (count / 250f), 1f)).WithPitchVariance(.05f), player.Center);
                 if (sound != null)
                 {

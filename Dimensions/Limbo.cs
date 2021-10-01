@@ -19,6 +19,8 @@ using SubworldLibrary;
 using SGAmod.Dimensions.NPCs;
 using SGAmod.Effects;
 using SGAmod.Items;
+using Terraria.Cinematics;
+using Steamworks;
 
 namespace SGAmod.Dimensions
 {
@@ -34,6 +36,10 @@ namespace SGAmod.Dimensions
         public static Texture2D[] staticeffects=new Texture2D[20];
         public override float maxSpawns => 5f;
         public override float spawnRate => 0.15f;
+
+        //public static Film warnings = new Film();
+        public static int heartBeats = 0;
+        public static HellionInsanity warningText;
 
         public override int? Music
         {
@@ -206,7 +212,8 @@ namespace SGAmod.Dimensions
                 Main.rockLayer = Main.maxTilesY + 2; //Hides the cavern layer way out of bounds
 
                 AGenPass(progress);
-
+                //warnings = new Film();
+                heartBeats = 0;
 
             }));
 
@@ -219,6 +226,59 @@ namespace SGAmod.Dimensions
         {
             Main.dayTime = false;
             Main.time = 40000;
+        }
+        private static void BlankFrame(FrameEventData evt)
+        {
+            //num
+        }
+        private static void TextSpawnFrame(FrameEventData evt)
+        {
+            //num
+        }
+
+        public static void PlayWarning()
+        {
+
+            if (!Main.dedServ)
+            {
+                Film warnings = new Film();
+                if (heartBeats == 0)
+                {
+                    warnings.AppendSequence(100, BlankFrame);
+                    LimboDim.warningText = new HellionInsanity("You", 100, 160);
+                    warnings.AppendSequence(1, TextSpawnFrame);
+
+                    warnings.AppendSequence(100, BlankFrame);
+                    LimboDim.warningText = new HellionInsanity("Shouldn't", 120, 160);
+                    warnings.AppendSequence(1, TextSpawnFrame);
+
+                    warnings.AppendSequence(100, BlankFrame);
+                    LimboDim.warningText = new HellionInsanity("Be", 140, 160);
+                    warnings.AppendSequence(1, TextSpawnFrame);
+
+                    warnings.AppendSequence(100, BlankFrame);
+                    LimboDim.warningText = new HellionInsanity("Here", 160, 160);
+                    warnings.AppendSequence(1, TextSpawnFrame);
+
+                    warnings.AppendSequence(100, BlankFrame);
+                    LimboDim.warningText = new HellionInsanity("LEAVE", 240, 160);
+                    LimboDim.warningText.scale = Vector2.One * 3f;
+                    LimboDim.warningText.angleAdder = 0;
+                    LimboDim.warningText.shaking = 24;
+                    LimboDim.warningText.angle = MathHelper.PiOver2;
+                    warnings.AppendSequence(1, TextSpawnFrame);
+
+                    goto playfilm;
+                }
+
+
+            playfilm:
+                CinematicManager.Instance.PlayFilm(warnings);
+
+            }
+
+            heartBeats += 1;
+
         }
 
 

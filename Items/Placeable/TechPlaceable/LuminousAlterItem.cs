@@ -50,6 +50,7 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 			AddLuminousAlterRecipe(ItemID.StoneBlock, ModContent.ItemType<Glowrock>(), 60 * 2, 1, 1);
 			AddLuminousAlterRecipe(ItemID.CrystalShard, ModContent.ItemType<OverseenCrystal>(), 60 * 20, 5, 1);
 
+			AddLuminousAlterRecipe(ModContent.ItemType<Weapons.SwordofTheBlueMoon>(), ModContent.ItemType<Weapons.TrueMoonlight>(), 60 * 600, 1, 1);
 			AddLuminousAlterRecipe(ItemID.RottenEgg, ModContent.ItemType<Weapons.RottenEggshels>(), 60 * 10, 10, 50);
 
 			string requiredText = "Eclipse/Blood Moon Required";

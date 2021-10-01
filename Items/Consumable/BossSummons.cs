@@ -357,8 +357,8 @@ namespace SGAmod.Items.Consumable
 						NPC.NewNPC((int)item.Center.X, (int)item.Center.Y, ModContent.NPCType<PrismBanshee>());
 						item.active = false;
                     }
-					//Main.NewText(item.ownTime);
 				}
+
 			}
 		}
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)

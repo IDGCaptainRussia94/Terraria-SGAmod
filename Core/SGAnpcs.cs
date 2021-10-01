@@ -1036,6 +1036,11 @@ namespace SGAmod
 					shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 5, 0, 0);
 					nextSlot++;
 
+					shop.item[nextSlot].SetDefaults(ModContent.ItemType<RussianRoulette>());
+					shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 5, 0, 0);
+					nextSlot++;
+
+
 					if (NPC.downedBoss2)
 					{
 						shop.item[nextSlot].SetDefaults(ModContent.ItemType<Jabbawacky>());

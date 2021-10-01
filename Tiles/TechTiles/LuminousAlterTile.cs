@@ -89,7 +89,7 @@ namespace SGAmod.Tiles.TechTiles
 
             return true;
         }
-        public bool HopperInputItem(Item item, Point tilePos, int movementCount)
+        public bool HopperInputItem(Item item, Point tilePos, int movementCount, ref bool testOnly)
         {
             LuminousAlterTE alter = FindAlterTE(tilePos.X, tilePos.Y);
             if (alter != null)
@@ -100,7 +100,7 @@ namespace SGAmod.Tiles.TechTiles
             return false;
         }
 
-        public bool HopperExportItem(ref Item item, Point tilePos, int movementCount)
+        public bool HopperExportItem(ref Item item, Point tilePos, int movementCount, ref bool testOnly)
         {
             LuminousAlterTE alter = FindAlterTE(tilePos.X, tilePos.Y);
             if (alter != null && !alter.heldItem.IsAir && !alter.AcceptItem(alter.heldItem))
@@ -353,7 +353,7 @@ namespace SGAmod.Tiles.TechTiles
             if (!playerItem.IsAir)
             {
                 itemData = tempItemData;
-                heldItem = playerItem.DeepClone();
+                heldItem = playerItem.Clone();
                 chargingProcess = 0;
                 playerItem.TurnToAir();
                 SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_CrystalCartImpact, Position.X * 16, Position.Y * 16);
@@ -377,7 +377,7 @@ namespace SGAmod.Tiles.TechTiles
                 if (!ejectOnly)
                 {
                     int item2 = Item.NewItem(Vector2.Zero, Vector2.Zero, heldItem.type, heldItem.stack);
-                    Main.item[item2] = heldItem.DeepClone();
+                    Main.item[item2] = heldItem.Clone();
                     Main.item[item2].favorited = false;
                     Main.item[item2].newAndShiny = false;
                     Main.item[item2].position = (Position.ToVector2() + new Vector2(0.5f, -2f)) * 16;
@@ -385,7 +385,7 @@ namespace SGAmod.Tiles.TechTiles
                 }
                 else
                 {
-                    thisOne = heldItem.DeepClone();
+                    thisOne = heldItem.Clone();
                 }
 
                 NetMessage.SendData(MessageID.SyncItem, -1, -1, null, thisOne.whoAmI);
@@ -461,7 +461,7 @@ namespace SGAmod.Tiles.TechTiles
             {
                 output = (new int[] { ItemID.FragmentSolar, ItemID.FragmentVortex, ItemID.FragmentNebula, ItemID.FragmentStardust})[Main.rand.Next(4)];
             }
-            int item2 = Item.NewItem(there, Vector2.Zero, output, itemData.stackMade);
+            int item2 = Item.NewItem(there, Vector2.Zero, output, Math.Max(itemData.stackMade,1));
             Main.item[item2].favorited = false;
             Main.item[item2].newAndShiny = true;
             //Main.item[item2].position = (Position.ToVector2() + new Vector2(0.5f, -2f)) * 16;
@@ -484,12 +484,16 @@ namespace SGAmod.Tiles.TechTiles
                 {
                     if (modTile != null && modTile is IHopperInterface)
                     {
-                        (modTile as IHopperInterface).HopperInputItem(Main.item[item2], checkCoords, 0);
+                        bool teststatus = false;
+                        Item clonedItem = Main.item[item2].Clone();
+                        Main.item[item2].TurnToAir();
+                        (modTile as IHopperInterface).HopperInputItem(clonedItem, checkCoords, 0, ref teststatus);
                     }
                 }
 
                 NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item2);
             }
+            HopperTile.CleanUpGlitchedItems();
         }
 
         public override void Update()
@@ -527,9 +531,9 @@ namespace SGAmod.Tiles.TechTiles
                     {
                         if (itemData != null)
                         {
-                            SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_WitherBeastAuraPulse, Position.X * 16, Position.Y * 16);
+                            SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_EtherianPortalIdleLoop, Position.X * 16, Position.Y * 16);
                             if (sound != null)
-                                sound.Pitch = MathHelper.Clamp(-0.75f + ((clientChargingTimer / (float)itemData.infusionTime) * 1.50f),-0.75f,0.75f);
+                                sound.Pitch = MathHelper.Clamp(-0.75f + ((chargingProcess / (float)itemData.infusionTime) * 2.10f),-0.80f,0.90f);
                         }
                     }
 

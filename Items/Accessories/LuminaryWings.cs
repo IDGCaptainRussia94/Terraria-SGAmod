@@ -106,6 +106,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("CirnoWings"), 1);
 			recipe.AddIngredient(mod.ItemType("DemonSteppers"), 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBooster"), 1);
+			recipe.AddIngredient(mod.ItemType("AuroraTearAwoken"), 2);
 			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 40);
 			recipe.AddIngredient(mod.ItemType("OmniSoul"), 30);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 25);

@@ -86,8 +86,7 @@ namespace SGAmod
 
 		public static bool IsTrueMelee(Projectile projectile, Player player)
         {
-			return (projectile.melee && player.heldProj == projectile.whoAmI || (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile));
-
+			return ((projectile.melee && player.heldProj == projectile.whoAmI) || (projectile.modProjectile != null && (projectile.modProjectile is IShieldBashProjectile || projectile.modProjectile is ITrueMeleeProjectile)));
 		}
 
 		public override void ModifyHitNPC(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)

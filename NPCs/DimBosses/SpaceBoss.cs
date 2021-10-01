@@ -454,7 +454,7 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				boss.phase += 1;
 				boss.npc.ai[3] = 1;
-				npc.ai[0] = boss.phase>3 ? 25000 : 10000;//Shields up, but if in 4th phase, go into the final phase and teleport away
+				npc.ai[0] = boss.phase > 3 ? 25000 : 10000;//Shields up, but if in 4th phase, go into the final phase and teleport away
 				return true;
 			}
 
@@ -2490,8 +2490,6 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			if (Main.dedServ)
-				return false;
 
 			Vector2 scale = new Vector2(MathHelper.Clamp((float)projectile.timeLeft / 20, 0f, 1f) * scale2, 1f);
 			Vector2 scalez2 = new Vector2(MathHelper.Clamp((float)projectile.timeLeft / 60, 0f, 1f) * scale2, 1f);
@@ -2544,6 +2542,21 @@ namespace SGAmod.Dimensions.NPCs
 				trail.DrawTrail(vectors, projectile.Center);
 
 			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+
+			Texture2D glowtex = ModContent.GetTexture("SGAmod/GlowOrb");
+
+			Main.spriteBatch.Draw(glowtex, projectile.Center - Main.screenPosition, null, Color.CornflowerBlue * Math.Min(scale.X*4f, 1f), (projectile.velocity).ToRotation() - ((float)Math.PI / 2f), glowtex.Size() / 2f, ((Vector2.One*0.25f)+Vector2.One * (0.15f * scale.X * (projectile.width / 64f)))*MathHelper.Clamp(projectile.timeLeft/30f,0f,1f), SpriteEffects.None, 0);
+
+			glowtex = ModContent.GetTexture("SGAmod/Glow");
+
+			Main.spriteBatch.Draw(glowtex, projectile.Center - Main.screenPosition, null, Color.White * Math.Min(scalez3.X*4f, 1f), (projectile.velocity).ToRotation() - ((float)Math.PI / 2f), glowtex.Size() / 2f, ((Vector2.One*1f)+Vector2.One * (1f * scalez3.X * (projectile.width / 64f)) * MathHelper.Clamp(projectile.timeLeft / 30f, 0f, 1f)), SpriteEffects.None, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 
 			//Idglib.DrawTether(lasers[(int)projectile.localAI[0] % 3], hitspot, projectile.Center, projectile.Opacity* Math.Min(scale2,1f), scale.X, scale.Y, Color.White);

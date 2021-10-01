@@ -55,7 +55,8 @@ namespace SGAmod.Items.Armors.Dev
 				{
 					Item itemxx = new Item();
 					itemxx.SetDefaults(ItemID.AnkhCharm);
-					player.VanillaUpdateVanityAccessory(itemxx);
+					bool falsebool = false; bool falsebool2 = false; bool falsebool3 = false;
+					player.VanillaUpdateAccessory(0,itemxx,false,ref falsebool,ref falsebool2, ref falsebool3);
 				}
 			}
 		}

@@ -209,7 +209,7 @@ namespace SGAmod.Items.Armors.JungleTemplar
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Jungle Templar Leggings");
-			Tooltip.SetDefault("15% increased Throwing crit chance\n20% boost to throwing item use speed while grounded\nMax Lava time is increased by 5 seconds\nBbeing submerged in lava grants +5 electric charge regen rate\n" + Idglib.ColorText(Color.Red, "5% less overall crit chance"));
+			Tooltip.SetDefault("15% increased Throwing crit chance\n20% boost to throwing item use speed while grounded\nMax Lava time is increased by 5 seconds\nBeing submerged in lava grants +5 electric charge regen rate\n" + Idglib.ColorText(Color.Red, "5% less overall crit chance"));
 		}
 		public override void SetDefaults()
 		{

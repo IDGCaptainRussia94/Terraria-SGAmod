@@ -8,6 +8,7 @@ using Terraria.ID;
 using Terraria.Enums;
 using Idglibrary;
 using SGAmod.Effects;
+using System.Linq;
 
 namespace SGAmod.Effects
 {
@@ -25,7 +26,9 @@ namespace SGAmod.Effects
         public bool connectEnds = false;
         public Vector2 coordOffset;
         public Vector2 coordMultiplier;
+        public bool perspective = false;
         public Vector2 capsize;
+        public float ZDistScaling = 0.01f;
         public Func<float, Color> color;
 
         public Texture tex;
@@ -50,10 +53,21 @@ namespace SGAmod.Effects
 
         public void DrawTrail(List<Vector2> drawPoses, Vector2 defaultloc = default)
         {
+            List<Vector3> drawPosesnew = new List<Vector3>();
+            foreach(Vector2 vec2 in drawPoses)
+            {
+                drawPosesnew.Add(vec2.ToVector3());
+            }
+
+            DrawTrail(drawPosesnew, defaultloc);
+        }
+
+            public void DrawTrail(List<Vector3> drawPoses, Vector2 defaultloc = default)
+        {
 
             VertexBuffer vertexBuffer;
 
-            effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Main.GameViewMatrix.Zoom) * WVP.Projection());
+            effect.Parameters["WorldViewProjection"].SetValue((perspective ? WVP.perspectiveView(Main.GameViewMatrix.Zoom) : WVP.View(Main.GameViewMatrix.Zoom)) * (perspective ? WVP.PerspectiveProjection() : WVP.Projection()));
             effect.Parameters["imageTexture"].SetValue(tex);
             effect.Parameters["coordOffset"].SetValue(coordOffset);
             effect.Parameters["coordMultiplier"].SetValue(coordMultiplier);
@@ -76,21 +90,25 @@ namespace SGAmod.Effects
                 float fraction = (float)(k-1) / (float)(totalcount-1);
                 float fractionPlus = (float)(k) / (float)(totalcount-1);
 
-                Vector2 trailloc = drawPoses[k] + projsize;
-                Vector2 prev2 = drawPoses[k - 1] + projsize;
+                Vector2 trailloc = new Vector2(drawPoses[k].X, drawPoses[k].Y) + projsize;
+                Vector2 prev2 = new Vector2(drawPoses[k - 1].X, drawPoses[k - 1].Y) + projsize;
                 if (prev2 == default)
                     prev2 = trailloc;
 
                 //You want prims, you get prims!
 
-                float thickness = trailThickness + (1f - (k / (float)drawPoses.Count)) * trailThicknessIncrease;
+                float sizeboost = perspective ? 1f : 1f+(ZDistScaling * drawPoses[k].Z);
+
+                float thickness = Math.Max(0,(trailThickness + (1f - (k / (float)drawPoses.Count)) * trailThicknessIncrease)*(sizeboost));
 
                 Vector2 normal = Vector2.Normalize(trailloc - prev2);
                 Vector3 left = (normal.RotatedBy(MathHelper.Pi / 2f) * (thickness)).ToVector3();
                 Vector3 right = (normal.RotatedBy(-MathHelper.Pi / 2f) * (thickness)).ToVector3();
 
-                Vector3 drawtop = (trailloc - Main.screenPosition).ToVector3();
-                Vector3 drawbottom = (prev2 - Main.screenPosition).ToVector3();
+                Vector3 updown = -Vector3.UnitZ * ((perspective ? drawPoses[k].Z : 0));
+
+                Vector3 drawtop = (trailloc - Main.screenPosition).ToVector3()+ updown;
+                Vector3 drawbottom = (prev2 - Main.screenPosition).ToVector3()+ updown;
 
                 if (prevcoords[0] == Vector3.One)
                 {
@@ -141,6 +159,10 @@ namespace SGAmod.Effects
 
             if (caps > 0)
             {
+
+                Vector2 loc = new Vector2(drawPoses[0].X, drawPoses[0].Y) + projsize;
+                Vector2 normal = Vector2.Normalize(loc - (new Vector2(drawPoses[1].X, drawPoses[1].Y) + projsize));
+
                 for (int capnum = 1; capnum < caps; capnum += 1)
                 {
                     float percent = ((capnum - 1f) / (caps - 1f));
@@ -150,9 +172,6 @@ namespace SGAmod.Effects
                     float angleNext = percentNext * MathHelper.Pi;
 
                     float thickness = trailThickness+trailThicknessIncrease;
-
-                    Vector2 loc = drawPoses[0] + projsize;
-                    Vector2 normal = Vector2.Normalize(loc - (drawPoses[1] + projsize));
 
                     float rotAngle = (-MathHelper.Pi / 2f) + (angle);
                     float rotAngleNext = (-MathHelper.Pi / 2f) + (angleNext); //Idglib.DrawTether(SGAmod.ExtraTextures[21], loc, loc+ (normal.RotatedBy(rotAngle) * thickness), 1f, 0.25f, 1f, Color.White);

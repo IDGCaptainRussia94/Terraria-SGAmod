@@ -149,10 +149,17 @@ namespace SGAmod
 
 						//Main.spriteBatch.Draw(heartTexture, new Vector2(0,0), null, Color.White, 0f, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), num6, SpriteEffects.None, 0f);
 
+						Color colorDye = Main.LocalPlayer.SGAPly().jellybruSet ? Color.HotPink : Color.White;
 
 						Main.spriteBatch.Draw(heartTexture, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, Color.White * 0.50f, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f, SpriteEffects.None, 0f);
 
-						Main.spriteBatch.Draw(heartTexture2, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, Color.White * energy, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f + (energy * 0.25f), SpriteEffects.None, 0f);
+						Main.spriteBatch.Draw(heartTexture2, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, colorDye * energy, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f + (energy * 0.25f), SpriteEffects.None, 0f);
+
+						int counter = (Main.LocalPlayer.miscCounter+i*73) / 4;
+						Rectangle glowrect = new Rectangle(0,(counter % 7)* (Main.glowMaskTexture[25].Height / 7), Main.glowMaskTexture[25].Width, Main.glowMaskTexture[25].Height / 7);
+
+						Main.spriteBatch.Draw(Main.glowMaskTexture[25], new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), glowrect, colorDye * energy, 0, glowrect.Size() / 2f, 0.75f + (energy * 0.25f), 
+							((counter % 14)>6 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | ((counter % 28) > 13 ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
 
 					}
 

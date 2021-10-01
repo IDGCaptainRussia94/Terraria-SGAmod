@@ -1460,12 +1460,10 @@ namespace SGAmod.NPCs
 		{
 			base.NPCLoot();
 		}
-
         public override string HeadTexture
 		{
 			get { return ("SGAmod/NPCs/SPinkyTrue_Head_Boss"); }
 		}
-
 		public override string Texture
 		{
 			get { return ("SGAmod/NPCs/SPinky"); }

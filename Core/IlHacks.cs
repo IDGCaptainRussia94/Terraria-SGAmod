@@ -29,9 +29,11 @@ namespace SGAmod
 			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
 			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
+
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
 			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
-			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;// Eh not used anyways
+			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
+            IL.Terraria.Player.ExtractinatorUse += Player_ExtractinatorUse;
 			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
@@ -69,6 +71,45 @@ namespace SGAmod
 			return true;
         }
 
+		private delegate bool ExtractorDelegate(ref int extractedType, ref int extractedAmmount);//Catches the IDs and stack size of extracts
+
+		private static void Player_ExtractinatorUse(ILContext il)//and it works!
+		{
+			ILCursor c = new ILCursor(il);
+			c.Index = il.Instrs.Count - 1;
+
+			if (!c.TryGotoPrev(MoveType.After, i => i.MatchBle(out _)))
+				goto Failed;
+
+				ILLabel label = c.DefineLabel();
+
+				c.Emit(OpCodes.Ldloca, 4);
+				c.Emit(OpCodes.Ldloca, 5);
+
+			c.EmitDelegate<ExtractorDelegate>((ref int extractedType,ref int extractedAmmount) =>
+			{
+				if (SGAmod.ExtractedItem.Item3)
+                {
+					SGAmod.ExtractedItem.Item1 = extractedType;
+					SGAmod.ExtractedItem.Item2 = extractedAmmount;
+					SGAmod.ExtractedItem.Item3 = false;
+					return true;
+				}
+				return false;
+			});
+			c.Emit(OpCodes.Brfalse_S, label);
+			c.Emit(OpCodes.Ret);
+			c.MarkLabel(label);
+
+
+
+			return;
+
+		Failed:
+			throw new Exception("IL Error Test");
+
+		}
+
 		static internal void BreathMeterHack(ILContext il)//Allows both lava and water meters to show up. If both are active, the lava meter is bumped up 24 pixels to not cover the same space
 		{
 			ILCursor c = new ILCursor(il);
@@ -82,7 +123,6 @@ namespace SGAmod
 			ILLabel labal = c.DefineLabel();
 
 			//c.MarkLabel(labal);
-			c.Remove();//Get rid of the return, so we can make our own
 
 			c.EmitDelegate<Func<bool>>(() =>
 			{
@@ -90,7 +130,9 @@ namespace SGAmod
 				return Main.player[Main.myPlayer].lavaTime >= Main.player[Main.myPlayer].lavaMax || Main.player[Main.myPlayer].ghost;
 			});
 			c.Emit(OpCodes.Brfalse_S, labal);//Branching if statement, if false, we jump past the return that stops the lava meter from showing
-			c.Emit(OpCodes.Ret);//And here we add our own "if than return" instead, with vanilla-recreated code and our own
+			c.Index += 1;//Jump over the Ret
+
+			//c.Emit(OpCodes.Ret);//And here we add our own "if than return" instead, with vanilla-recreated code and our own
 			c.MarkLabel(labal);
 
 			//Done with it, now we advance 2 myPlayers later to find a non-branched spot to inject the next bit of code
@@ -504,7 +546,7 @@ namespace SGAmod
 			HackTheMethod = typeof(LockOnHelper).GetMethod("SetActive", BindingFlags.NonPublic | BindingFlags.Static);
 			c.TryGotoNext(i => i.MatchCall(HackTheMethod));
 			//c.Index -= 1;
-			c.Emit(OpCodes.Pop);
+			c.Emit(OpCodes.Pop);//Using our own values here! So get rid of the one on the stack (PlayerInput.UsingGamepad), we recreate it below
 			c.EmitDelegate<Func<bool>>(() =>
 			{
 				return PlayerInput.UsingGamepad || Main.LocalPlayer.SGAPly().gamePadAutoAim > 0;//Let us decide if it works!
@@ -565,16 +607,16 @@ namespace SGAmod
 		static internal void TileInteractionHack(ILContext il)//Shoot modded Snowballs out of the (placed) Snowball Launcher!
 		{
 			ILCursor c = new ILCursor(il);
-			if (c.TryGotoNext(n => n.MatchLdcI4(949))) //Snowball Item
+			if (c.TryGotoNext(MoveType.After,n => n.MatchLdcI4(ItemID.Snowball))) //Snowball Item
 			{
-				c.Remove();
+				//c.Remove();
+				//c.Emit(OpCodes.Ldc_I4, 949);//Fallback id
 				c.Emit(OpCodes.Ldarg_0);
-				c.Emit(OpCodes.Ldc_I4, 949);//Fallback id
-				c.EmitDelegate<Func<Player, Int32, Int32>>((Player player, int sourceball) =>
+				c.EmitDelegate<Func<Int32, Player, Int32>>((int sourceball, Player player) =>
 				{
 					return player.HeldItem.ammo == AmmoID.Snowball ? player.HeldItem.type : sourceball;
 				});
-				c.TryGotoNext(n => n.MatchLdcI4(166));//Also Snowballa (Projectile)
+				c.TryGotoNext(n => n.MatchLdcI4(ProjectileID.SnowBallFriendly));//Also Snowballa (Projectile)
 				c.Remove();
 				c.Emit(OpCodes.Ldarg_0);
 				c.Emit(OpCodes.Ldc_I4, 166);//Fallback id

@@ -677,23 +677,115 @@ namespace SGAmod.Dimensions
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.DepthRead, RasterizerState.CullNone, null, identity);
                     Texture2D sun = Main.sunTexture;
 
-                    float closenessScale = 1f + ((float)Math.Pow(sunIsApprouching * 500f, 1.8f) / 800f);
-                    float closenessScale2 = 1f + ((float)Math.Pow(sunIsApprouching * 2500f, 1.5f) / 800f);
+                    float closenessScale = 1f + ((float)Math.Pow(((sunIsApprouching/30f)) * 500f, 4.80f) / 800f);
+                    float closenessScale2 = closenessScale + ((float)Math.Pow(sunIsApprouching * 2500f, 1.20f) / 800f);
 
                     Texture2D inner = SGAmod.Instance.GetTexture("Extra_57b");//Main.extraTexture[57];
 
 
                     Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
 
+                    Color lights = Color.Lerp(Color.White, Color.Orange, sunIsApprouching);
+
                     for (float i = 0; i < 1f; i += 0.10f)
                     {
-                        spriteBatch.Draw(inner, sunPosition, null, ((Color.White * 0.6f * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.5f) * 0.50f) * skyalpha, i * MathHelper.TwoPi, textureOrigin, (2.5f * (0.5f + 3.00f * (((Main.GlobalTime / 2f) + i) % 1f))) * closenessScale2, SpriteEffects.None, 0f);
+                        spriteBatch.Draw(inner, sunPosition, null, ((lights * 0.6f * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.5f) * 0.50f) * skyalpha, i * MathHelper.TwoPi, textureOrigin, (2.5f * (0.5f + 3.00f * (((Main.GlobalTime / 2f) + i) % 1f))) * closenessScale2, SpriteEffects.None, 0f);
                     }
 
                     Main.spriteBatch.End();
                     Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, identity);
 
-                    spriteBatch.Draw(sun, sunPosition, null, Color.White * skyalpha, 0, sun.Size() / 2f, 1.5f * closenessScale, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(sun, sunPosition, null, Color.Lerp(Color.White, Color.Orange, sunIsApprouching) * skyalpha, 0, sun.Size() / 2f, 1.5f * closenessScale, SpriteEffects.None, 0f);
+
+                    //texture mappedTexture;
+                    //float2 mappedTextureMultiplier;
+                    //float2 mappedTextureOffset;
+
+                    float alphaeffectSunShader = MathHelper.Clamp((closenessScale-1f)/3f, 0f, 1f);
+                    float alphaeffectSunRayShader = MathHelper.Clamp((closenessScale - 1.65f) / 3f, 0f, 1f);
+
+                    if (alphaeffectSunShader > 0)
+                    {
+                        Texture2D noise = ModContent.GetTexture("SGAmod/TiledPerlin");
+                        Vector2 sunspotmoved = sunPosition+new Vector2(1.6f, 1.6f);
+                        Main.spriteBatch.End();
+                        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, identity);
+
+                        Effect RadialEffect = SGAmod.RadialEffect;
+
+                        RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Stain"));
+                        RadialEffect.Parameters["alpha"].SetValue(alphaeffectSunShader);
+                        RadialEffect.Parameters["texOffset"].SetValue(new Vector2(0,-Main.GlobalTime * 0.275f));
+                        RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(1f, 0.5f));
+                        RadialEffect.Parameters["ringScale"].SetValue(0.24f);
+                        RadialEffect.Parameters["ringOffset"].SetValue(0.45f);
+                        RadialEffect.Parameters["ringColor"].SetValue(Color.Lerp(Color.Yellow, Color.Red, sunIsApprouching * 1.25f).ToVector3());
+                        RadialEffect.Parameters["tunnel"].SetValue(false);
+
+                        RadialEffect.CurrentTechnique.Passes["Radial"].Apply();
+
+                        spriteBatch.Draw(noise, sunspotmoved, null, Color.White, 0, noise.Size() / 2f, 0.320f * closenessScale, SpriteEffects.None, 0f);
+
+                        for (float ff = -1f; ff < 2; ff += 2)
+                        {
+                            RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("TrailEffect"));
+                            RadialEffect.Parameters["alpha"].SetValue(alphaeffectSunRayShader);
+                            RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.125f*ff, (-Main.GlobalTime+(ff>0 ? 343 : 0)) * 0.750f));
+                            RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(10f, 1.5f));
+                            RadialEffect.Parameters["ringScale"].SetValue(0.70f);
+                            RadialEffect.Parameters["ringOffset"].SetValue(0.40f);
+                            RadialEffect.Parameters["ringColor"].SetValue(Color.Lerp(Color.Yellow, Color.Red, sunIsApprouching / 1.10f).ToVector3());
+                            RadialEffect.Parameters["tunnel"].SetValue(false);
+
+                            RadialEffect.CurrentTechnique.Passes["RadialAlpha"].Apply();
+
+                            spriteBatch.Draw(noise, sunspotmoved, null, Color.White, 0, noise.Size() / 2f, 0.280f * closenessScale, SpriteEffects.None, 0f);
+                        }
+
+
+
+                        SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Lerp(Color.White,Color.Orange, sunIsApprouching*2f).ToVector4() * alphaeffectSunShader);
+                        SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(Main.blackTileTexture);
+                        SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(1f, 1f));
+                        SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(0, 0));
+                        SGAmod.SphereMapEffect.Parameters["softEdge"].SetValue(20f);
+
+                        SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMap"].Apply();
+
+                        spriteBatch.Draw(noise, sunspotmoved, null, Color.White, 0, noise.Size() / 2f, 0.132f * closenessScale, SpriteEffects.None, 0f);
+
+                        SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Red.ToVector4() * alphaeffectSunShader * 0.25f);
+                        SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(ModContent.GetTexture("SGAmod/TiledPerlin"));
+                        SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(0.5f, 0.5f));
+                        SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(Main.GlobalTime / 32f, 0));
+
+                        SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
+
+                        spriteBatch.Draw(noise, sunspotmoved, null, Color.White, 0, noise.Size() / 2f, 0.132f * closenessScale, SpriteEffects.None, 0f);
+
+                        SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Orange.ToVector4() * alphaeffectSunShader*0.25f);
+                        SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(ModContent.GetTexture("SGAmod/Voronoi"));
+                        SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(4f, 4f));
+                        SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(Main.GlobalTime / 20f, 0));
+
+                        SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
+
+                        spriteBatch.Draw(noise, sunspotmoved, null, Color.White, 0, noise.Size() / 2f, 0.132f * closenessScale, SpriteEffects.None, 0f);
+
+                        for (float f = 0.20f; f < 1f; f += 0.25f)
+                        {
+                            SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Lerp(Color.Yellow, Color.Red, sunIsApprouching/1.10f).ToVector4() * (f / 2f)* alphaeffectSunShader);
+                            SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(ModContent.GetTexture("SGAmod/TiledPerlin"));
+                            SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(f, f));
+                            SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(Main.GlobalTime / (10f + (f * 8f)), 0));
+
+                            SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
+
+                            spriteBatch.Draw(noise, sunspotmoved, null, Color.White, 0, noise.Size() / 2f, 0.132f * closenessScale, SpriteEffects.None, 0f);
+                        }
+
+                    }
+
                 }
 
                 Main.spriteBatch.End();
@@ -913,12 +1005,12 @@ namespace SGAmod.Dimensions
             base.AI();
             if (projectile.ai[0] < 1)
             {
-                gems = new int[] { ItemID.Sapphire, ItemID.Ruby, ItemID.Emerald, ItemID.Topaz, ItemID.Amethyst, ItemID.Diamond, ItemID.Amber };
+                gems = new int[] { ItemID.Amethyst, ItemID.Topaz, ItemID.Sapphire, ItemID.Emerald, ItemID.Ruby, ItemID.Diamond, ItemID.Amber };
                 gemtype = Main.rand.Next((int)gems.Length);
                 projectile.ai[0] = gems[gemtype];
-                //Color[] colors = new Color[] { Color.Blue, Color.Red, Color.Lime, Color.Yellow, Color.Purple, Color.Aquamarine, Color.Orange };
-                SGAmod.GemColors.TryGetValue(gemtype, out Color colorgem);
-                glowColor = Color.Lerp(colorgem, Color.White, 0.50f);
+                Color[] colors = new Color[] { Color.Purple, Color.Yellow, Color.Blue, Color.Lime, Color.Red, Color.Aquamarine, Color.Orange };
+                //SGAmod.GemColors.TryGetValue(gemtype, out Color colorgem);
+                glowColor = Color.Lerp(colors[gemtype], Color.White, 0.50f);
             }
         }
 

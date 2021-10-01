@@ -888,12 +888,7 @@ namespace SGAmod.Items.Weapons.Trap
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
-
-
-
 	}
-
-
 	public class JonesBoulderSummon : ModProjectile
 	{
 		public override void SetStaticDefaults()

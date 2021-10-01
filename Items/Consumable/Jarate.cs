@@ -42,7 +42,7 @@ namespace SGAmod.Items.Consumable
 			item.noUseGraphic = true;
 			item.noMelee = true;
 			item.value = Item.buyPrice(0, 0, 20, 0);
-			item.rare = 2;
+			item.rare = ItemRarityID.Yellow;
 		}
 
 		public override bool CanUseItem(Player player)

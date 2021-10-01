@@ -137,6 +137,11 @@ namespace SGAmod.NPCs.Wraiths
 			get { return "SGAmod/Items/Weapons/Caliburn/CaliburnTypeA"; }
 		}
 
+		public override string HeadTexture
+		{
+			get { return ("SGAmod/Items/Weapons/Caliburn/CaliburnType"+(new string[3] { "A", "B", "C"})[(int)npc.ai[2]]); }
+		}
+
 		public override string BossHeadTexture => "Terraria/UI/PVP_2";
 		public CaliburnGuardian()
 		{
@@ -336,6 +341,8 @@ namespace SGAmod.NPCs.Wraiths
 			appear = Math.Max(appear - 0.03f, Math.Min(appear+0.025f,0.50f));
 			trailingeffect();
 			npc.knockBackResist = 0.85f;
+			if (caliburnlevel>2)
+			npc.knockBackResist = 0f;
 			nohit += 1;
 
 			Player P = Main.player[npc.target];

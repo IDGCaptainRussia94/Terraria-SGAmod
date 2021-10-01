@@ -85,20 +85,36 @@ namespace SGAmod.Tiles.TechTiles
 				{
 					Tile tile = Framing.GetTileSafely(tilePosition.X, tilePosition.Y);
 					//Main.NewText(tile.type + " this type "+item.position);
-					if (tile.type == ModContent.TileType<HopperTile>() || tile.type == ModContent.TileType<ChestHopperTile>())
+					if (tile.type == ModContent.TileType<HopperTile>() || tile.type == ModContent.TileType<ChestHopperTile>() || tile.type == ModContent.TileType<ShiftingFunnelTile>())
 					{
-						MoveItem(item, tilePosition, 0,ref item.stack);
+
+						if (ModContent.GetModTile(tile.type) is ModTile modTile)
+						{
+							if (modTile != null && modTile is HopperTile)
+							{
+								bool teststatus = false;
+								(modTile as HopperTile).HopperMoveItem(item, tilePosition, 0, ref item.stack, ref teststatus);
+							}
+						}
+
+
+						//MoveItem(item, tilePosition, 0,ref item.stack,ref teststatus);
 					}
 				}
 			}
 		}
 
-		public bool HopperInputItem(Item item, Point tilePos, int movementCount)
-		{
-			return MoveItem(item, tilePos, movementCount + 1,ref item.stack);
+		public virtual bool HopperMoveItem(Item item, Point tilePos, int movementCount, ref int remainingStack, ref bool testOnly)
+        {
+			return MoveItem(item, tilePos, movementCount + 1, ref remainingStack, ref testOnly);
 		}
 
-		public bool HopperExportItem(ref Item item, Point tilePos, int movementCount)
+		public bool HopperInputItem(Item item, Point tilePos, int movementCount, ref bool testOnly )
+		{
+			return HopperMoveItem(item, tilePos, movementCount + 1,ref item.stack,ref testOnly);
+		}
+
+		public bool HopperExportItem(ref Item item, Point tilePos, int movementCount, ref bool testOnly)
 		{
 			return false;
 		}
@@ -117,23 +133,21 @@ namespace SGAmod.Tiles.TechTiles
 
 		public static bool UpgradeCoins(Item item,Chest chest)
         {
-			if (item.stack == item.maxStack)
+			int typetoboost = -1;
+			if (item.stack >= item.maxStack)
             {
 				switch (item.type)
                 {
 					case ItemID.CopperCoin:
-						item.type = ItemID.SilverCoin;
-						item.stack = 1;
+						typetoboost = ItemID.SilverCoin;
 						goto upgradeLabel;
 
 					case ItemID.SilverCoin:
-						item.type = ItemID.GoldCoin;
-						item.stack = 1;
+						typetoboost = ItemID.GoldCoin;
 						goto upgradeLabel;
 
 					case ItemID.GoldCoin:
-						item.type = ItemID.PlatinumCoin;
-						item.stack = 1;
+						typetoboost = ItemID.PlatinumCoin;
 						goto upgradeLabel;
 
 					default:
@@ -142,22 +156,43 @@ namespace SGAmod.Tiles.TechTiles
             }
 			return false;
 
-			upgradeLabel:
+		upgradeLabel:
 
-			for(int i = 0; i < Chest.maxItems; i += 1)
+			bool foundACoin = false;
+			item.TurnToAir();
+
+			for (int i = 0; i < Chest.maxItems; i += 1)
             {
 				Item chestItem = chest.item[i];
-				if (chestItem.type == item.type && item != chestItem)
+				if (chestItem.type == typetoboost)
                 {
 					chestItem.stack += 1;
+					chestItem.newAndShiny = true;
 					UpgradeCoins(chestItem,chest);
-
-					item.TurnToAir();
 					return true;
                 }
-
             }
-			return false;
+
+			//we make one if we can't find one
+			for (int i = 0; i < Chest.maxItems; i += 1)
+			{
+				Item chestItem = chest.item[i];
+				if (chestItem.IsAir)
+                {
+					Item coin = new Item();
+					coin.SetDefaults(typetoboost);
+					coin.stack = 1;
+					coin.newAndShiny = true;
+
+					chest.item[i] = coin;
+
+					UpgradeCoins(chestItem, chest);
+					return true;
+				}
+
+			}
+
+				return false;
         }
 
 		public static bool ExportFromChest(out Item item,out Point chestdata, Point checkCoords)
@@ -192,7 +227,7 @@ namespace SGAmod.Tiles.TechTiles
 			return false;
 		}
 
-		public static bool InputToChest(Item item, Point checkCoords, ref int remainingStack)
+		public static bool InputToChest(Item item, Point checkCoords, ref int remainingStack,bool testOnly=false)
 		{
 			Tile tile = Framing.GetTileSafely(checkCoords);
 
@@ -228,12 +263,15 @@ namespace SGAmod.Tiles.TechTiles
 				if (emptyslot < 0)
 					return false;
 
+				if (testOnly)
+					return true;
+
 
 				if (!matchingType)
 				{
 					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						Item clonedItem = item.DeepClone();
+						Item clonedItem = item.Clone();
 
 						Main.chest[chester].item[emptyslot] = clonedItem;
 
@@ -294,7 +332,7 @@ namespace SGAmod.Tiles.TechTiles
 			return false;
 		}
 
-		public static bool MoveItem(Item item, Point tilePos, int movementCount,ref int remainingStack)
+		public static bool MoveItem(Item item, Point tilePos, int movementCount,ref int remainingStack,ref bool testOnly)
 		{
 			if (movementCount >= 100)
 				return false;
@@ -316,11 +354,11 @@ namespace SGAmod.Tiles.TechTiles
 			{
 				if (modTile != null && modTile is IHopperInterface)
 				{
-					return (modTile as IHopperInterface).HopperInputItem(item, checkCoords, movementCount + 1);
+					return (modTile as IHopperInterface).HopperInputItem(item, checkCoords, movementCount + 1, ref testOnly);
 				}
 			}
 
-			return InputToChest(item, checkCoords,ref remainingStack);
+			return InputToChest(item, checkCoords,ref remainingStack, testOnly);
 		}
 		public override bool Slope(int i, int j)
 		{
@@ -495,22 +533,26 @@ namespace SGAmod.Tiles.TechTiles
 					Tile modtile = Framing.GetTileSafely(testcoords.X, testcoords.Y);
 					Item exporteditem = null;
 					Item clonedItem = null;
+					bool checkIfOnlyWeAreTesting = false;
 
 					if (ModContent.GetModTile(modtile.type) is ModTile modTile)
 					{
 						if (modTile != null && modTile is IHopperInterface)
 						{
-							if ((modTile as IHopperInterface).HopperExportItem(ref exporteditem, testcoords, 0))
+							if ((modTile as IHopperInterface).HopperExportItem(ref exporteditem, testcoords, 0,ref checkIfOnlyWeAreTesting))
 							{
-								clonedItem = exporteditem.DeepClone();
-								goto DoExport;
+								if (!checkIfOnlyWeAreTesting)
+								{
+									clonedItem = exporteditem.Clone();
+									goto DoExport;
+								}
 							}
 						}
 					}
 
 					if (HopperTile.ExportFromChest(out exporteditem, out ChestData, testcoords))
 					{
-						clonedItem = exporteditem.DeepClone();
+						clonedItem = exporteditem.Clone();
 						goto DoExport;
 					}
 
@@ -519,19 +561,19 @@ namespace SGAmod.Tiles.TechTiles
 				DoExport:
 
 					int remainingStack = clonedItem != null ? clonedItem.stack : 0;
-					if (clonedItem != null && HopperTile.MoveItem(clonedItem, coords, 0, ref remainingStack))
+					bool testOnly = false;
+					if (clonedItem != null && HopperTile.MoveItem(exporteditem, coords, 0, ref remainingStack, ref testOnly))
 					{
-						LuminousAlterTE.DebugText("Yet More Test");
+						LuminousAlterTE.DebugText("Yet More Test: ChestData is " + ChestData);
 
-						if (ChestData.X >= 0)
+						if (ChestData.X >= 0 && !testOnly)
 						{
-
-							//Main.NewText("Remaining stacks " + remainingStack);
+							Main.NewText("Remaining stacks " + remainingStack);
 
 							if (Main.netMode != NetmodeID.MultiplayerClient)
 							{
-								if (remainingStack > 0)
-									Main.chest[ChestData.X].item[ChestData.Y].stack = remainingStack>2 ? remainingStack+1 : remainingStack;
+								if ((Main.chest[ChestData.X].item[ChestData.Y].stack - remainingStack) > 0)
+									Main.chest[ChestData.X].item[ChestData.Y].stack -= (Main.chest[ChestData.X].item[ChestData.Y].stack-remainingStack);// remainingStack>2 ? remainingStack+1 : remainingStack;
 								else
 									Main.chest[ChestData.X].item[ChestData.Y].TurnToAir();
 							}

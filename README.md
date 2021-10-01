@@ -27,7 +27,7 @@ Changelog:
 
 3.600d-(9/20/21)-Patch 11-Tech N Wreck: Beta
 
--Added Assembly Star Extractinator recipe
+-Added Assembly Star Extractinator recipe, added Sifting Funnel, Expanded Hopper API
 
 -a few sharkvern improvements
 
@@ -40,6 +40,14 @@ Changelog:
 -Hoppers can no longer interface with locked chests
 
 -Phaethon now drops the Star Metal Mold, so TPD can be skipped (TPS drops it only in MP now)
+
+-Null Watchers can no longer see an invisible player
+
+-Spider Queen's chasing acid attack has been given a wider spread to make it easier to avoid
+
+-Various visual updates (Space beams have a starting point, Shield now has a fancy animated HUD effect)
+
+-Wrath of Caliburn is now far more knockback resistant
 
 
 
@@ -114,7 +122,7 @@ Changelog:
 
 -A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's fight and apperence has been tweaked (Prim shark! Vertex Shark! Trail Shark! With smooth lighting!), there's also an extra attack that was added
 
--Hoppers N Droppers, automate your Terraria!
+-Hoppers, Droppers, Sifting Funnels, hands on tech mod elements, and more; automate your Terraria!
 
 -New Amulet: Reservation Amulet, reserve a fraction of your HP to gain a protected regenerating shield!
 
@@ -148,6 +156,8 @@ Changelog:
 -The Strange Portal has been given a head and can now be manually moved into different houses
 
 -Cobalt Wraith now locks the hardmode forge, rather than the anvil
+
+-Wrath of Caliburn is now always immune to knockback
 
 -Cirno now enrages with a chance outside the snow biome and no longer becomes unhittable
 

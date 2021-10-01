@@ -1314,7 +1314,7 @@ namespace SGAmod.Items.Weapons
 			item.noMelee = true;
 			item.autoReuse = true;
 			item.value = Item.buyPrice(0, 0, 1, 0);
-			item.rare = 4;
+			item.rare = ItemRarityID.LightPurple;
 			item.ammo = AmmoID.Snowball;
 		}
 
@@ -1364,6 +1364,8 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Jarate Shuriken");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 4;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
 		}
 		public override string Texture
 		{
@@ -1391,8 +1393,6 @@ namespace SGAmod.Items.Weapons
 			projectile.friendly = true;
 			projectile.hostile = false;
 			projectile.extraUpdates = 1;
-			ProjectileID.Sets.TrailCacheLength[projectile.type] = 4;
-			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
 		}
 
 		public override bool PreKill(int timeLeft)
@@ -1465,7 +1465,7 @@ namespace SGAmod.Items.Weapons
 			item.noMelee = true;
 			item.autoReuse = true;
 			item.value = Item.buyPrice(0, 0, 1, 0);
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.shootSpeed = 25f;
 			item.shoot = mod.ProjectileType("UraniumSnowballsProg");
 			item.ammo = AmmoID.Snowball;
@@ -2093,7 +2093,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("The Jelly Brew");
-			Tooltip.SetDefault("Creates expanding neurotoxic bubbles on impact with enemy or solid tiles\nBubbles damage enemies and deflects incoming projectiles\nExplodes into neurotoxic fumes when another bubble is created or after 5 seconds\nStrike enemies with the bottle to mark them for the fumes to chase after");
+			Tooltip.SetDefault("Creates expanding Neurotoxic bubbles on impact with enemy or solid tiles\nBubbles damage enemies and deflects incoming projectiles\nExplodes into Neurotoxic fumes when another bubble is created or after 5 seconds\nStrike enemies with the bottle to mark them for the fumes to chase after");
 		}
 
 		public (string, string) DevName()
@@ -2105,12 +2105,21 @@ namespace SGAmod.Items.Weapons
 			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[2] > 0)
 			{
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Enpowerment bonus ---"));
-				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "PLACEHOLDER"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Damage is now enhanced by Magic Damage scaling"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Neurotoxic fumes do Magic Damage instead of Throwing"));
 			}
 			base.ModifyTooltips(tooltips);
 		}
 
-		public override void SetDefaults()
+        public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
+        {
+            if (player.SGAPly().jellybruSet)
+            {
+				add += player.magicDamage;
+			}
+        }
+
+        public override void SetDefaults()
 		{
 			item.useStyle = ItemUseStyleID.SwingThrow;
 			item.Throwing().thrown = true;
@@ -2409,7 +2418,7 @@ namespace SGAmod.Items.Weapons
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("TheJelly Brew Projectile Bubble");
+			DisplayName.SetDefault(" Neurotoxic Fume");
 		}
 		public override string Texture => "Terraria/Projectile_"+ProjectileID.SporeCloud;
 		int hitnpc = -1;
@@ -2439,6 +2448,13 @@ namespace SGAmod.Items.Weapons
 
 		public override void AI()
 		{
+			Player owner = Main.player[projectile.owner];
+			if (owner != null && owner.active && !owner.dead && owner.SGAPly().jellybruSet)
+            {
+				projectile.Throwing().thrown = false;
+				projectile.magic = true;
+			}
+
 			if (projectile.timeLeft < 30)
 				projectile.velocity *= 0.90f;
 

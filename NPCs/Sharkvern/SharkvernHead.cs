@@ -12,6 +12,8 @@ using Microsoft.Xna.Framework.Audio;
 using SGAmod.Effects;
 using SGAmod.Dimensions;
 using Terraria.DataStructures;
+using Terraria.GameContent.Shaders;
+using Terraria.Graphics.Effects;
 
 namespace SGAmod.NPCs.Sharkvern
 {
@@ -321,7 +323,6 @@ namespace SGAmod.NPCs.Sharkvern
                 }
             }
 
-
             if (ramwater == false)
             {
                 for (int i = minTilePosX - 5; i < maxTilePosX + 5; ++i)
@@ -553,7 +554,10 @@ namespace SGAmod.NPCs.Sharkvern
                             num1 = 20f;
                         npc.soundDelay = (int)num1;
 
-                        Tile tilehere = Framing.GetTileSafely(npc.Center.ToWorldCoordinates());
+                        Tile tilehere=null;
+                        Point coords = npc.Center.ToTileCoordinates();
+                        if (WorldGen.InWorld(coords.X, coords.Y))
+                        tilehere = Framing.GetTileSafely(npc.Center.ToTileCoordinates());
 
                         if (tilehere != null)
                         {
@@ -563,7 +567,11 @@ namespace SGAmod.NPCs.Sharkvern
                             }
                             else if (tilehere.liquid >= 50)
                             {
-                                Main.PlaySound(SoundID.Splash, (int)npc.position.X, (int)npc.position.Y, 1);
+                                SoundEffectInstance snd = Main.PlaySound(SoundID.Splash, (int)npc.position.X, (int)npc.position.Y, 1);
+                                if (snd != null)
+                                {
+                                    snd.Pitch = 0.50f;
+                                }
                             }
                         }
                     }
@@ -689,7 +697,7 @@ namespace SGAmod.NPCs.Sharkvern
                 }
             }
 
-            if (npc.life > (int)(npc.lifeMax * Phase2Percent))
+            if (npc.life > npc.lifeMax * Phase2Percent)
             {
                 averagey.Add((int)npc.Center.Y);
             }
@@ -767,7 +775,7 @@ namespace SGAmod.NPCs.Sharkvern
             else
             {
 
-                if (npc.life < Phase2Percent)
+                if (npc.life < npc.lifeMax*Phase2Percent)
                 {
                     if (doSharkRise < 10)
                         doSharkRise += 1;
@@ -1177,8 +1185,18 @@ namespace SGAmod.NPCs.Sharkvern
         {
             Player playerclosest = Main.player[Player.FindClosest(projectile.Center,1,1)];
 
+            if (!Main.dedServ)
+            {
+                WaterShaderData watershader = (WaterShaderData)Filters.Scene["WaterDistortion"].GetShader();
+                Vector2 ripplePos = projectile.Center;
+                Color waveData = Color.Magenta * 5f;
+                watershader.QueueRipple(ripplePos, waveData, Vector2.One * 32f, RippleShape.Circle, -(float)Math.PI / 2f);
+            }
 
-            Projectile.NewProjectileDirect(projectile.Center, Vector2.UnitY * -(20f+MathHelper.Clamp((playerclosest.Center.Y-projectile.Center.Y)/320f, 0f,50f)), ModContent.ProjectileType<FlyingSharkProjBossProj>(), projectile.damage, 5f);
+            float jumpHeight = ((playerclosest.Center.Y-500) - projectile.Center.Y);
+            Vector2 velo = new Vector2(0, (float)Math.Sqrt(-2.0f * 0.25f * jumpHeight));
+
+            Projectile.NewProjectileDirect(projectile.Center, Vector2.UnitY * -(velo), ModContent.ProjectileType<FlyingSharkProjBossProj>(), projectile.damage, 5f);
 
             for (int i = 0; i < 40; i += 1)
             {

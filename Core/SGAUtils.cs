@@ -700,7 +700,7 @@ namespace SGAmod
 		{
 			return listToClone.Select(item => (T)item.Clone()).ToList();
 		}
-		public static Vector3 ToVector3(this Vector2 vector)
+		public static Vector3 ToVector3(this Vector2 vector,bool keepz=false)
 		{
 			return new Vector3(vector.X, vector.Y, 0);
 		}
@@ -752,9 +752,65 @@ namespace SGAmod
 				int item = Item.NewItem(where, Vector2.Zero, subanditem[0]);
 				Main.item[item].velocity = new Vector2(Main.rand.NextFloat(-2f, 2f) * explodespeed, Main.rand.NextFloat(-0.75f, 0.75f) * explodespeed);
 				ammount -= subanditem[1];
-
-
 			}
+		}
+		public static float InverseLerp(float from, float to, float percent, bool clampedValue = false)
+		{
+			if (clampedValue)
+			{
+				if (from < to)
+				{
+					if (percent < from)
+					{
+						return 0f;
+					}
+					if (percent > to)
+					{
+						return 1f;
+					}
+				}
+				else
+				{
+					if (percent < to)
+					{
+						return 1f;
+					}
+					if (percent > from)
+					{
+						return 0f;
+					}
+				}
+			}
+			return (percent - from) / (to - from);
+		}
+
+		public static Vector2 SunPosition()
+		{
+			Color white = Color.White;
+
+			int bgTop = (int)((double)(0f - Main.screenPosition.Y) / (Main.worldSurface * 16.0 - 600.0) * 200.0);
+			if (Main.gameMenu || Main.netMode == NetmodeID.Server)
+			{
+				bgTop = -200;
+			}
+			float rotation3 = (float)(Main.GlobalTime / 54000.0) * 2f - 7.3f;
+
+			int num151 = (int)(Main.time / 54000.0 * (double)(Main.screenWidth + Main.sunTexture.Width * 2)) - Main.sunTexture.Width;
+			int num150 = 0;
+
+			double num144;
+			if (Main.time < 27000.0)
+			{
+				num144 = Math.Pow(1.0 - Main.time / 54000.0 * 2.0, 2.0);
+				num150 = (int)((double)bgTop + num144 * 250.0 + 180.0);
+			}
+			else
+			{
+				num144 = Math.Pow((Main.time / 54000.0 - 0.5) * 2.0, 2.0);
+				num150 = (int)((double)bgTop + num144 * 250.0 + 180.0);
+			}
+
+			return new Vector2((float)num151, (float)(num150 + Main.sunModY));
 
 		}
 

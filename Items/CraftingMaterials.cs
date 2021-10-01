@@ -274,6 +274,7 @@ namespace SGAmod.Items
 		{
 			DisplayName.SetDefault("Glowrock");
 			Tooltip.SetDefault("These rocks seem to give the Asteriods a glow; Curious.\nExtract it via an Extractinator for some goodies!\nIt also seems rather... radioactive\nDoesn't have much other use, outside of illegal interests");
+			ItemID.Sets.ExtractinatorMode[item.type] = item.type;
 		}
 		public override void SetDefaults()
 		{
@@ -283,7 +284,6 @@ namespace SGAmod.Items
 			item.useTime = 10;
 			item.useAnimation = 10;
 			item.useStyle = ItemUseStyleID.SwingThrow;
-			ItemID.Sets.ExtractinatorMode[base.item.type] = base.item.type;
 			item.useTurn = true;
 			item.autoReuse = true;
 			item.consumable = true;
@@ -1948,7 +1948,56 @@ namespace SGAmod.Items
 			get { return ("Terraria/Extra_57"); }
 		}
 
-		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
+
+			/*Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			//texture mappedTexture;
+			//float2 mappedTextureMultiplier;
+			//float2 mappedTextureOffset;
+
+			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Red.ToVector4() * 1f);
+			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(Main.blackTileTexture);
+			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(1f,1f));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(0, 0));
+
+			SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMap"].Apply();
+
+			spriteBatch.Draw(ModContent.GetTexture("SGAmod/TiledPerlin"), item.Center - Main.screenPosition, null, Color.White, 0, ModContent.GetTexture("SGAmod/Voronoi").Size() / 2f, 1f, SpriteEffects.None, 0f);
+
+			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Orange.ToVector4() * 1f);
+			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(ModContent.GetTexture("SGAmod/TiledPerlin"));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(0.20f,0.20f));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(Main.GlobalTime/32f,0));
+
+			SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
+
+			spriteBatch.Draw(ModContent.GetTexture("SGAmod/TiledPerlin"), item.Center-Main.screenPosition, null, Color.White, 0, ModContent.GetTexture("SGAmod/Voronoi").Size()/2f, 1f, SpriteEffects.None, 0f);
+
+			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Yellow.ToVector4() * 0.75f);
+			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(ModContent.GetTexture("SGAmod/TiledPerlin"));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(0.5f,0.5f));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(Main.GlobalTime / 8f, 0));
+
+			SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
+
+			spriteBatch.Draw(ModContent.GetTexture("SGAmod/TiledPerlin"), item.Center - Main.screenPosition, null, Color.White, 0, ModContent.GetTexture("SGAmod/Voronoi").Size() / 2f, 1f, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.White.ToVector4());
+			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(ModContent.GetTexture("SGAmod/Voronoi"));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(Vector2.One);
+			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(Vector2.One);*/
+
+
+			return true;
+        }
+
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 
 			Main.spriteBatch.End();

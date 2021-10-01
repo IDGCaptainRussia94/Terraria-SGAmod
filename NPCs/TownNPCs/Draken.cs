@@ -276,9 +276,9 @@ namespace SGAmod.NPCs.TownNPCs
 					friends = SteamFriends.GetFriendCount(EFriendFlags.k_EFriendFlagFriendshipRequested);
 					if (friends > 0)
 						chat.Add("Those " + friends + " people want to be your friend, I wish I had, real friends...", 1);
-
-
 				}
+
+
 				chat.Add("When I overheard the last group of people talking about a bounty, I ran away, and kept flying as far as I could.");
 				chat.Add("The last group of people I thought were my friends were going to sell me off as a bounty, I escaped when they were distracted. I just want to be treated like anyone else.");
 				chat.Add("I'm not sure what to think about all this...");

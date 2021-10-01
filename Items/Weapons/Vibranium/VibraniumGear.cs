@@ -62,7 +62,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Pulsar Perforator");
+			DisplayName.SetDefault("Quaser Kunai");
 			Tooltip.SetDefault("Throws resonant knives that bounce between targets, bypass defense, and leave a stacking DoT\nThe knives continue to bounce more against Irradiated targets\nWhen fully charged, emits a Gamma Ray burst in both directions\nThis inflicts Severe Radiation to hit enemies");
 		}
 
@@ -107,7 +107,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 							Projectile myProjectile = myProjectile1[0];
 							GammaBurstProjectileChargeUp chargeUp = myProjectile.modProjectile as GammaBurstProjectileChargeUp;
 
-							Texture2D texture = Main.itemTexture[item.type];
+							Texture2D texture = Main.projectileTexture[ModContent.ProjectileType<GammaBurstProjectile>()];
 							Vector2 origin = texture.Size() / 2f;
 							float timeAdvance = Main.GlobalTime * 2;
 							angle = drawInfo.drawPlayer.itemRotation + (drawInfo.drawPlayer.direction < 0 ? MathHelper.Pi : 0);
@@ -174,7 +174,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 
-			Texture2D inner = Main.itemTexture[item.type];
+			/*Texture2D inner = Main.itemTexture[item.type];
 
 			Vector2 slotSize = new Vector2(52f, 52f);
 			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
@@ -185,9 +185,9 @@ namespace SGAmod.Items.Weapons.Vibranium
 			for (int i = 0; i < angles.Length; i += 1)
 			{
 				spriteBatch.Draw(inner, drawPos, null, Color.White, angles[i], textureOrigin, Main.inventoryScale * 1.25f, SpriteEffects.None, 0f);
-			}
+			}*/
 
-			return false;
+			return true;
 		}
 		public override void AddRecipes()
 		{
@@ -212,7 +212,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 		{
 			DisplayName.SetDefault("Gamma Burst Charging");
 		}
-		public override string Texture => "SGAmod/Items/Weapons/Vibranium/QuasarKunai";
+		public override string Texture => "SGAmod/Projectiles/QuasarKunaiProj";
 		public override bool CanDamage()
 		{
 			return false;
@@ -337,7 +337,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 			projectile.localNPCHitCooldown = 30;
 			projectile.penetrate = 10;
 		}
-		public override string Texture => "Terraria/Projectile_" + ProjectileID.ThrowingKnife;
+		public override string Texture => "SGAmod/Projectiles/QuasarKunaiProj";
 
 		public override bool PreKill(int timeLeft)
 		{

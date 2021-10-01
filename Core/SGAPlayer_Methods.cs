@@ -126,7 +126,7 @@ namespace SGAmod
 				{
 					SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 93);
 					if (sound != null)
-						sound.Pitch += -0.5f + ((GetEnergyShieldAmmountAndRecharge.Item1 / GetEnergyShieldAmmountAndRecharge.Item2) * 1.25f);
+						sound.Pitch = MathHelper.Clamp(-0.8f + ((GetEnergyShieldAmmountAndRecharge.Item1 / (float)GetEnergyShieldAmmountAndRecharge.Item2) * 1.60f),-0.75f,0.80f);
 
 					energyShieldAmmountAndRecharge.Item3 = 60 * (tpdcpu ? shieldAmmounts.Item1 : shieldAmmounts.Item2);
 					energyShieldAmmountAndRecharge.Item1 -= takenshielddamage;

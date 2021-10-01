@@ -59,18 +59,18 @@ namespace SGAmod.Tiles.TechTiles
 			return coords;
 		}
 
-		public bool HopperInputItem(Item item, Point tilePos, int movementCount)
+		public bool HopperInputItem(Item item, Point tilePos, int movementCount,ref bool testOnly)
 		{
-			return DropperDropItem(item, tilePos);
+			return DropperDropItem(item, tilePos,ref testOnly);
 		}
 
-		public bool HopperExportItem(ref Item item, Point tilePos, int movementCount)
+		public bool HopperExportItem(ref Item item, Point tilePos, int movementCount,ref bool testOnly)
 		{
 
 			return false;
 		}
 
-		public static bool DropperDropItem(Item item, Point tilePos)
+		public static bool DropperDropItem(Item item, Point tilePos, ref bool testOnly)
 		{
 
 			Tile tile = Framing.GetTileSafely(tilePos.X, tilePos.Y);
@@ -78,16 +78,19 @@ namespace SGAmod.Tiles.TechTiles
 			if ((tile.frameY / 36) % 2 > 0)
 				return false;
 
+			if (testOnly)
+				return true;
+
 
 			Point coords = GetRealDropperCorner(tilePos, tile);
 			Vector2 offset = tileDirection[tile.frameX / 36].ToVector2();
 
-			Vector2 SpitFrom = ((coords).ToVector2() * 16) + (offset * 16) + (Vector2.One * 0);
+			Vector2 SpitFrom = ((coords).ToVector2() * 16) + (offset * 16) + (Vector2.One * 16);
 
 
-			int item2 = Item.NewItem(Vector2.Zero, Vector2.Zero, item.type, item.stack);
-			Main.item[item2].TurnToAir();
-			Main.item[item2] = item.DeepClone();
+			int item2 = Item.NewItem(SpitFrom, Vector2.Zero, item.type, item.stack);
+			//Main.item[item2].TurnToAir();
+			Main.item[item2] = item.Clone();
 			Main.item[item2].favorited = false;
 			Main.item[item2].newAndShiny = false;
 			Main.item[item2].position = SpitFrom;

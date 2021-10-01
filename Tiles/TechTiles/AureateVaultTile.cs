@@ -109,17 +109,18 @@ namespace SGAmod.Tiles.TechTiles
 			return coords;
 
 		}
-		public bool HopperInputItem(Item item, Point tilePos, int movementCount)
+		public bool HopperInputItem(Item item, Point tilePos, int movementCount, ref bool testOnly)
 		{
 			return false;
 		}
 
-		public bool HopperExportItem(ref Item item, Point tilePos, int movementCount)
+		public bool HopperExportItem(ref Item item, Point tilePos, int movementCount, ref bool testOnly)
 		{
 
 			Item coins = new Item();
 			coins.SetDefaults(ItemID.CopperCoin);
 			coins.stack = Main.rand.Next(10, 40);
+			coins.newAndShiny = true;
 
 			item = coins;
 

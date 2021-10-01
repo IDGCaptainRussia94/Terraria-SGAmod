@@ -327,9 +327,9 @@ namespace SGAmod.NPCs.SpiderQueen
 						npc.localAI[0] += 1f;
 						npc.localAI[1] = P.Center.X;
 						npc.localAI[2] = P.Center.Y;
-						if ((npc.ai[0] + 26) % (Main.expertMode ? 60 : 90) == 0)
+						if ((npc.ai[0] + 26) % (Main.expertMode ? 60 : 90) == 0)//Chase after the player and Squirt
 						{
-							Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 15, 8, 35 + phase * 5, phase + 1, true, 0, true, 1600);
+							Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 15, 8, 60 + phase * 10, phase + 1, true, 0, true, 1600);
 							Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 102, 0.25f, -0.25f);
 						}
 						npc.rotation = npc.rotation.AngleLerp((P.Center - npc.Center).ToRotation(), maxrotate);
@@ -371,11 +371,7 @@ namespace SGAmod.NPCs.SpiderQueen
 									npc.localAI[1] = P.Center.X;
 									npc.localAI[2] = P.Center.Y;
 								}
-
-
 							}
-
-
 						}
 
 

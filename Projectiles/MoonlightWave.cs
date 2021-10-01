@@ -137,7 +137,7 @@ namespace SGAmod.Projectiles
                     projectile.oldPos[i] = projectile.position;
             }
 
-            TrailHelper trail = new TrailHelper("BasicEffectPass", SGAmod.ExtraTextures[21]);
+            TrailHelper trail = new TrailHelper("BasicEffectPass", Main.extraTexture[21]);
             trail.projsize = projectile.Hitbox.Size() / 2f;
             trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
             trail.trailThickness = 13;

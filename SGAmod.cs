@@ -143,7 +143,10 @@ namespace SGAmod
 		public static bool anysubworld = false;
 		public static float overpoweredMod = 0f;
 		public static int vibraniumCounter = 0;
+		public static (int, int, bool) ExtractedItem = (-1,-1, false);
+
 		private int localtimer = 0;
+
 		public static List<PostDrawCollection> PostDraw;
 		public static RenderTarget2D drawnscreen;
 		public static RenderTarget2D postRenderEffectsTarget;
@@ -171,11 +174,14 @@ namespace SGAmod
 		public static byte SkillRun = 1;
 		public static int RecipeIndex = 0;
 		public static float fogAlpha = 1f;
+
 		public static Effect TrailEffect;
 		public static Effect HallowedEffect;
 		public static Effect TrippyRainbowEffect;
 		public static Effect FadeInEffect;
 		public static Effect RadialEffect;
+		public static Effect SphereMapEffect;
+
 		public static MusicStreamingOGG musicTest;
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
 
@@ -570,6 +576,8 @@ namespace SGAmod
 				TrippyRainbowEffect.Parameters["uProgress"].SetValue(0f);
 
 				RadialEffect = SGAmod.Instance.GetEffect("Effects/Radial");
+				SphereMapEffect = SGAmod.Instance.GetEffect("Effects/SphereMap");
+
 
 				GameShaders.Misc["SGAmod:DeathAnimation"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/EffectDeath")), "DeathAnimation").UseImage("Images/Misc/Perlin");
 				GameShaders.Misc["SGAmod:ShaderOutline"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/ShaderOutline")), "ShaderOutline").UseImage("Images/Misc/Perlin");
@@ -827,7 +835,7 @@ namespace SGAmod
 
 			recipe = new ModRecipe(this);
 			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.FossilOre, 5);
+			recipe.AddIngredient(ItemID.DesertFossil, 20);
 			recipe.AddIngredient(ItemID.Wire, 25);
 			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 10);
 			recipe.AddTile(tileType);

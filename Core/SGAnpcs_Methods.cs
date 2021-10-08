@@ -72,8 +72,8 @@ namespace SGAmod
 				ammo = ItemID.StarAnise;
 			if (player.HasItem(ItemID.BoneDagger))
 				ammo = ItemID.BoneDagger;
-			if (player.HasItem(ModContent.ItemType<ThrowingStars>()))
-				ammo = ModContent.ItemType<ThrowingStars>();
+			//if (player.HasItem(ModContent.ItemType<ThrowingStars>()))
+			//	ammo = ModContent.ItemType<ThrowingStars>();
 
 
 			if (ammo > 0)

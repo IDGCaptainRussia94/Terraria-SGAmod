@@ -18,14 +18,36 @@ Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Bind
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy and Seismic Resonator Ore Creator), Aurora Gear and finish Luminous Alter Tile Entity!
 -Add Hellion army bar, STILL!
 
-Todo-Aurora Gear, Finish Vibranium enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Add Dropper, Finish Luminious Alter (effects), Money Drain, upgradable drones and solar panels? (Laser orbital strike!)
+Todo-Aurora Gear, Finish Vibranium enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Finish Luminious Alter (effects), Money Drain Staff thingy, upgradable drones and solar panels? (Laser orbital strike!)
 Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
 
 
 Changelog:
 
-3.600d-(9/20/21)-Patch 11-Tech N Wreck: Beta
+3.600e-(9/20/21)-Patch 11-Tech N Wreck: Beta
+
+-Properly fixed Caliburn's correct Boss Head not being shown
+
+-Shadowspirit's eye now detects enemies (missed that one)
+
+-Limbo is extra spooky, text shows up after each heartbeat using scapped code from depression hellion
+
+-Improved FPS drops on opening Sharkvern's treasure bag and various boss fixed drops
+
+-(Finally) Fixed the annoying booster errors that happen when there's no floor below
+
+-Throwing Stars are now longer summoned by the Ninja Stash, they were already very strong on their own
+
+-Added Phalanx and Reflex Potions, they enchance shields via the original ideas sheet
+
+-Phaethon's final phase was updated: he launches 5 tethers in the final phase and starts shooting spinning shoots and lasers at the remaining tethers and the player as he loses his tethers
+
+-Added Liquidation Hopper, updated visuals on the chest hopper to adapt to light
+
+
+
+3.600d-(10/1/21)-Patch 11-Tech N Wreck: Beta
 
 -Added Assembly Star Extractinator recipe, added Sifting Funnel, Expanded Hopper API
 
@@ -106,7 +128,7 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Pulsar Perforator, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Uranium Filled Snowballs, Throwing Star, Sand Tosser, Radioactive Snowball Cannon, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals,Phalanx Potion,Reflex Potion, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
@@ -311,6 +333,8 @@ Changelog:
 
 -Nerfed Plythe: Reduced crit chance
 
+-Nerfed Crystal Comet: Increased Mana Cost, and moved later in progression
+
 -Nerfed Surt: now only grants more than 1 tick of On Fire! when near full charge, up to about 6 seconds of On Fire!
 
 -Nerfed Shooting Star: base damage massively lowered, this thing had more DPS than Enmity did!
@@ -344,7 +368,11 @@ Changelog:
 
 -Hopefully for the love of god, the Caliburn Shrines will no longer fail to generate a sword shrine
 
--Disallowed Tools in the Deeper Dungeon again, due to a mining glitch, use bombs to break everything you could mine before! Unless you have the Dungeon Splunker
+-Fixed the imfamous "can't mine' bug by Disallowing Tools in the Deeper Dungeon again, due to a mining glitch, use bombs to break everything you could mine before! Unless you have the Dungeon Splunker
+
+-Hellion Beams being invisible, and a little oversight that led to alot of unintentional lag in the fight
+
+-Nightmare Mode not being unlocked without a reload
 
 -Amulet of Diehard Cataclysm should now properly prevent Blackbelt and Shadow Dodges
 
@@ -357,10 +385,6 @@ Changelog:
 -Prefixes not being rolled
 
 -Tidal Charm not properly accounting for ALL breath boosts; leading to less defense with it on than without
-
--Hellion Beams being invisible, and a little oversight that led to alot of unintentional lag in the fight
-
--Nightmare Mode not being unlocked without a reload
 
 -Prismic Banshee and supreme pinky should not properly handle gravitation potion's effects properly on screen
 

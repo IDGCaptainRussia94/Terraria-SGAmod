@@ -612,11 +612,12 @@ namespace SGAmod.NPCs.Wraiths
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype, (Main.expertMode ? 30 : 15));
 			}
 
+			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 50 : 30, npc.Center);
 
-			for (int f = 0; f < (Main.expertMode ? 50 : 30); f += 1)
+			/*for (int f = 0; f < (Main.expertMode ? 50 : 30); f += 1)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0, types.Count)]);
-			}
+			}*/
 
 			Achivements.SGAAchivements.UnlockAchivement("Copper Wraith", Main.LocalPlayer);
 			if (SGAWorld.downedWraiths < 1)

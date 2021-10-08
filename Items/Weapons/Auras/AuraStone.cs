@@ -137,7 +137,6 @@ namespace SGAmod.Items.Weapons.Auras
 						player2.DelBuff(player.FindBuffIndex(BuffID.OgreSpit));
 				}
 			}
-
 		}
 
 		public override void AuraEffects(Player player,int type)

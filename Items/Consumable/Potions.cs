@@ -152,7 +152,6 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.BottledWater, 1);
 			recipe.AddIngredient(ItemID.Ale,1);
 			recipe.AddIngredient(null, "UnmanedOre", 2);
 			recipe.AddIngredient(null, "WraithFragment3", 1);
@@ -533,4 +532,83 @@ namespace SGAmod.Items.Consumable
 			recipe.AddRecipe();
 		}
 	}
+	public class PhalanxPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Phalanx Potion");
+			Tooltip.SetDefault("'Stronger Together'" +
+				"\nIncreases your blocking angle on all shields by 15%\nFor every player nearby that has a shield out, you gain 8 defense");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = 1;
+			item.value = 250;
+			item.useStyle = ItemRarityID.Green;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = ModContent.BuffType<PhalanxPotionBuff>();
+			item.buffTime = 60 * 300;
+		}
+
+		public override void AddRecipes()
+		{
+			for (int i = 0; i < 2; i += 1)
+			{
+				ModRecipe recipe = new ModRecipe(mod);
+				recipe.AddIngredient(ModContent.ItemType<BottledMud>(), 1);
+				recipe.AddIngredient(ModContent.ItemType<Biomass>(), 2);
+				recipe.AddIngredient(i == 0 ? ItemID.SilverOre : ItemID.TungstenOre, 3);
+				recipe.AddTile(TileID.Bottles);
+				recipe.SetResult(this, 1);
+				recipe.AddRecipe();
+			}
+		}
+	}
+
+	public class ReflexPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Reflex Potion");
+			Tooltip.SetDefault("Increases the period of time you can Just Block with your shield");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.LightPurple;
+			item.value = 500;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = ModContent.BuffType<ReflexPotionBuff>();
+			item.buffTime = 60 * 300;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Ale, 1);
+			recipe.AddIngredient(ModContent.ItemType<VirulentOre>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<Glowrock>(), 4);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
+
 }

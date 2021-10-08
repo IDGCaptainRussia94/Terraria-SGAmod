@@ -288,7 +288,6 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "Terraria/Item_" + ItemID.GoldCoin;
 			return true;
 		}
 

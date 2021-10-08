@@ -65,6 +65,7 @@ namespace SGAmod
 		public int molotovLimit = 0;
 		public float morespawns = 1f;
 		public int midasMoneyConsumed = 0;
+		public (int,byte) skylightLightInfused = (0,0);
 
 		//For holding Trap Weapons
 		public float SlowDownDefense = 0f;
@@ -175,6 +176,8 @@ namespace SGAmod
 		public float shieldDamageReduce = 0f;
 		public float shieldDamageBoost = 0f;
 		public float actionCooldownRate = 1f;
+		public int shieldBlockTime = 0;
+		public float shieldBlockAngle = 0;
 
 		public float ActionCooldownRate
         {
@@ -400,6 +403,9 @@ namespace SGAmod
 			IDGset = false;
 			jellybruSet = false;
 			vibraniumSet = false;
+
+			shieldBlockTime = 0;
+			shieldBlockAngle = 0;
 
 			if (valkyrieSet.Item1 || valkyrieSet.Item2 > 0)
 			{
@@ -1217,9 +1223,9 @@ namespace SGAmod
 							int minTilePosX = (int)(player.Center.X / 16.0) - 1;
 							int minTilePosY = (int)((player.Center.Y + 32f) / 16.0) - 1;
 							int whereisity;
-							whereisity = Idglib.RaycastDown(minTilePosX + 1, (int)MathHelper.Clamp(minTilePosY, 0,Main.maxTilesY));
-							if ((whereisity - minTilePosY > 4 + (player.velocity.Y * 1)) || player.velocity.Y < 0)
-								if (Collision.CanHitLine(player.Center, 32, 32, player.Center + new Vector2(0, -96), 32, 32))
+							//whereisity = Idglib.RaycastDown(minTilePosX + 1, (int)MathHelper.Clamp(minTilePosY, 0,Main.maxTilesY));
+							//if ((whereisity - minTilePosY > 4 + (player.velocity.Y * 1)) || player.velocity.Y < 0)
+								if (Collision.CanHitLine(player.Center, 32, 32, player.Center + new Vector2(0, (Vector2.Normalize(player.velocity).Y*64f)+(player.velocity.Y*2f)), 32, 32))
 									player.position.Y += 8 + (player.velocity.Y * 2);
 						}
 						else

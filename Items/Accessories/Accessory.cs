@@ -1246,6 +1246,7 @@ namespace SGAmod.Items.Accessories
 			if (!hideVisual)
             {
 				player.dangerSense = true;
+				player.detectCreature = true;
 				player.findTreasure = true;
 				player.nightVision = true;
 				player.sonarPotion = true;

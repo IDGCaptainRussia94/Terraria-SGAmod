@@ -1486,7 +1486,7 @@ namespace SGAmod.Items.Weapons
 
         public override bool AltFunctionUse(Player player)
         {
-            return player.SGAPly().AddCooldownStack(60*20,2);
+            return true;
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -1500,7 +1500,7 @@ namespace SGAmod.Items.Weapons
 				int thisoned = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, Main.myPlayer);
 				Main.projectile[thisoned].Throwing().thrown = true;
 				Main.projectile[thisoned].ranged = false;
-			if (player.altFunctionUse == 2)
+			if (player.altFunctionUse == 2 && player.SGAPly().AddCooldownStack(60 * 20, 2))
             {
 				Main.projectile[thisoned].ai[1] = 1;
 				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DrakinShot, (int)position.X, (int)position.Y);
@@ -1754,7 +1754,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Throwing Star");
-			Tooltip.SetDefault("'Throws a... fallen star'\nThrowing Stars pierce enemies infinitely but do cause immunity frames\nCan be used and summoned by the Ninja Stash when attacking");
+			Tooltip.SetDefault("'Throws a... fallen star'\nThrowing Stars pierce enemies infinitely but do cause immunity frames");
 		}
 
 		public override string Texture => "Terraria/Projectile_" + ProjectileID.HallowStar;
@@ -1874,15 +1874,18 @@ namespace SGAmod.Items.Weapons
 		public override void AI()
 		{
 			projectile.localAI[0] += 1f;
-			for (int num654 = 0; num654 < 2; num654++)
+			if (projectile.ai[1] == 0)
 			{
-				Vector2 movehere = Main.rand.NextVector2Circular(16, 16);
-				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000));
-				randomcircle.Normalize(); 
-				randomcircle *= (float)(num654 / 10.00);
-				int num655 = Dust.NewDust(projectile.Center + movehere, 0,0, 75, randomcircle.X * 2f, randomcircle.Y * 2f, 43, Color.Yellow, 2f);
-				Main.dust[num655].noGravity = true;
-				Main.dust[num655].noLight = true;
+				for (int num654 = 0; num654 < 2; num654++)
+				{
+					Vector2 movehere = Main.rand.NextVector2Circular(16, 16);
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000));
+					randomcircle.Normalize();
+					randomcircle *= (float)(num654 / 10.00);
+					int num655 = Dust.NewDust(projectile.Center + movehere, 0, 0, 75, randomcircle.X * 2f, randomcircle.Y * 2f, 43, Color.Yellow, 2f);
+					Main.dust[num655].noGravity = true;
+					Main.dust[num655].noLight = true;
+				}
 			}
 
 		}
@@ -1894,13 +1897,13 @@ namespace SGAmod.Items.Weapons
 			{
 				Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition + drawOrigin;
 				Color color = Color.Yellow * (1f - ((float)k / ((float)projectile.oldPos.Length)));
-				spriteBatch.Draw(Main.projectileTexture[projectile.type], drawPos, null, color * 1f, projectile.rotation + ((projectile.localAI[0]+k*4f)/8f), drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+				spriteBatch.Draw(Main.projectileTexture[projectile.type], drawPos, null, color * projectile.Opacity * 1f, projectile.rotation + ((projectile.localAI[0]+k*4f)/8f), drawOrigin, projectile.scale, SpriteEffects.None, 0f);
 			}
 
 			Texture2D texture = SGAmod.ExtraTextures[96];
-			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.Lime * 0.50f, 0, texture.Size() / 2f, 0.5f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.Lime * projectile.Opacity * 0.50f, 0, texture.Size() / 2f, 0.5f, SpriteEffects.None, 0f);
 
-			spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center - Main.screenPosition, null, Color.Pink, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center - Main.screenPosition, null, Color.Pink * projectile.Opacity, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
 
 			Texture2D texaz = SGAmod.ExtraTextures[110];
 
@@ -1909,13 +1912,309 @@ namespace SGAmod.Items.Weapons
 				for (float i = 1f; i < 3; i += 0.4f)
 				{
 					float scalerz = (0.85f + (float)Math.Cos(Main.GlobalTime * 1.25f * (Math.Abs(xx) + i)) * 0.3f)*0.45f;
-					spriteBatch.Draw(texaz, (projectile.Center + ((projectile.velocity.ToRotation() + (float)Math.PI / 1f)).ToRotationVector2() * (xx * 9f)) - Main.screenPosition, null, Color.Yellow * (0.5f / (i + xx)) * 0.25f, projectile.velocity.ToRotation() + (float)Math.PI / 2f, new Vector2(texaz.Width / 2f, texaz.Height / 4f), (new Vector2(1 + i, 1 + i * 1.5f) / (1f + Math.Abs(xx))) * scalerz * projectile.scale, SpriteEffects.None, 0f);
+					spriteBatch.Draw(texaz, (projectile.Center + ((projectile.velocity.ToRotation() + (float)Math.PI / 1f)).ToRotationVector2() * (xx * 9f)) - Main.screenPosition, null, Color.Yellow* projectile.Opacity * (0.5f / (i + xx)) * 0.25f, projectile.velocity.ToRotation() + (float)Math.PI / 2f, new Vector2(texaz.Width / 2f, texaz.Height / 4f), (new Vector2(1 + i, 1 + i * 1.5f) / (1f + Math.Abs(xx))) * scalerz * projectile.scale, SpriteEffects.None, 0f);
 				}
 			}
 
 			return false;
 		}
 	}
+
+	class SuperThrowingStars : ThrowingStars
+	{
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Super Star Thrower");
+			Tooltip.SetDefault("'Throws a literal star'\nStars inflict Lava Burn and spawn with orbiting flares\nCreates a powerful explosion when it hits a surface\ndoes not cause immunity frames");
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 9));
+		}
+
+		public override string Texture => "SGAmod/Items/Weapons/SuperThrowingStars";
+
+		public override void SetDefaults()
+		{
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.Throwing().thrown = true;
+			item.useTurn = true;
+			//ProjectileID.CultistBossLightningOrbArc
+			item.width = 8;
+			item.height = 8;
+			item.knockBack = 1;
+			item.maxStack = 999;
+			item.damage = 60;
+			item.crit = 20;
+			item.consumable = true;
+			item.UseSound = SoundID.Item1;
+			item.useAnimation = 45;
+			item.useTime = 45;
+			item.noUseGraphic = true;
+			item.noMelee = true;
+			item.autoReuse = true;
+			item.value = Item.buyPrice(0, 0, 2, 0);
+			item.rare = ItemRarityID.Yellow;
+			item.shootSpeed = 25f;
+			item.shoot = ModContent.ProjectileType<SuperThrowingStarsProg>();
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.Lerp(Color.Orange, Color.Red, 0.50f + (float)Math.Sin(Main.GlobalTime * 4f) / 2f);
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+
+			float rotation = MathHelper.ToRadians(0);
+			Vector2 perturbedSpeed = (new Vector2(speedX, speedY)).RotatedBy(MathHelper.Lerp(-rotation, rotation, Main.rand.NextFloat()));
+			int thisoned = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, Main.myPlayer);
+			//Main.projectile[thisoned].Throwing().thrown = true;
+			//Main.projectile[thisoned].ranged = false;
+			Main.projectile[thisoned].netUpdate = true;
+			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<ThrowingStars>(), 25);
+			recipe.AddIngredient(ItemID.FragmentSolar, 1);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 2);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this, 25);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class SuperThrowingStarsProg : ThrowingStarsProg
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Super Thrown Realistic Star");
+		}
+		public override string Texture => "Terraria/Item_" + ItemID.FallenStar;
+		int hitnpc = -1;
+		float TimeLeftScale => MathHelper.Clamp((projectile.timeLeft-5f) / 30f, 0f, 1f);
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.timeLeft = 600;
+			projectile.penetrate = -1;
+			projectile.tileCollide = true;
+			projectile.width = 96;
+			projectile.height = 96;
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = 30;
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			target.AddBuff(ModContent.BuffType<LavaBurn>(), 150);
+		}
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+			if (projectile.timeLeft > 30)
+            {
+				projectile.timeLeft = 30;
+			}
+			return false;
+        }
+
+        public override bool PreKill(int timeLeft)
+		{
+			return true;
+		}
+
+		public override void AI()
+		{
+			projectile.localAI[0] += 1;
+
+			if (projectile.localAI[0] < 60)
+			{
+				projectile.velocity *= 0.97f;
+			}
+
+			if (projectile.localAI[0] == 1)
+			{
+
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_BetsyFlameBreath, (int)projectile.Center.X, (int)projectile.Center.Y);
+				if (sound != null)
+					sound.Pitch = 0.525f;
+
+				for (int i = 0; i < 10; i += 1)
+				{
+					Projectile proj = Projectile.NewProjectileDirect(projectile.Center, Main.rand.NextVector2CircularEdge(16f, 16f) * Main.rand.NextFloat(1f, 2f), ModContent.ProjectileType<SuperThrowingStarsProg2>(), projectile.damage, projectile.knockBack, projectile.owner, projectile.whoAmI);
+					proj.netUpdate = true;
+				}
+			}
+
+			if (projectile.timeLeft == 29)
+			{
+
+				foreach(NPC npc in Main.npc.Where(testby => testby.active && (testby.Center - projectile.Center).LengthSquared() < (260 * 260)))
+                {
+					if (!npc.dontTakeDamage && !npc.friendly)
+					{
+						npc.StrikeNPC(projectile.damage * 4, projectile.knockBack * 16f, Math.Sign(npc.Center.X - projectile.Center.X));
+						Main.player[projectile.owner].addDPS(projectile.damage * 4);
+					}
+				}
+
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_BetsyFlameBreath, (int)projectile.Center.X, (int)projectile.Center.Y);
+				if (sound != null)
+					sound.Pitch = -0.525f;
+			}
+
+			if (TimeLeftScale < 1)
+			{
+				projectile.velocity /= 2f;
+			}
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			Texture2D texa = Main.itemTexture[ModContent.ItemType<SuperThrowingStars>()];
+
+			float scale = Math.Min(projectile.localAI[0] / 15f, 1f) * 5f;
+
+			/*Vector2 orig = new Vector2(texa.Width, texa.Height / 9);
+
+			spriteBatch.Draw(texa, projectile.Center - Main.screenPosition, new Rectangle(0, (int)(((Main.GlobalTime * 2f) % 9)*orig.Y), (int)orig.X, (int)orig.Y), Color.White, 0, orig/2f, 1f+(0.5f + ((1f - TimeLeftScale) * 0.50f)) * scale, SpriteEffects.None, 0f);*/
+
+			Projectile[] projj = Main.projectile.Where(testby => testby.type == projectile.type).OrderBy(testby => testby.whoAmI).ToArray();
+
+			texa = ModContent.GetTexture("SGAmod/GlowOrb");
+
+			if (projj.Length > 0 && projj[0] == projectile)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+				foreach(Projectile prog2 in projj)
+				spriteBatch.Draw(texa, prog2.Center - Main.screenPosition, null, Color.Yellow*0.40f* ((SuperThrowingStarsProg)prog2.modProjectile).TimeLeftScale, 0, texa.Size() / 2f, (0.20f + ((1f - ((SuperThrowingStarsProg)prog2.modProjectile).TimeLeftScale) * 0.15f)) * scale, SpriteEffects.None, 0f);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D texture = ModContent.GetTexture("SGAmod/Stain");
+			Texture2D texture2 = ModContent.GetTexture("SGAmod/Voronoi");
+			Texture2D texture3 = ModContent.GetTexture("SGAmod/TiledPerlin");
+
+
+			Effect RadialEffect = SGAmod.RadialEffect;
+
+			RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Stain"));
+			RadialEffect.Parameters["alpha"].SetValue(TimeLeftScale/2f);
+			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(0, -Main.GlobalTime * 0.575f));
+			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(5f, 0.5f));
+			RadialEffect.Parameters["ringScale"].SetValue(0.32f);
+			RadialEffect.Parameters["ringOffset"].SetValue(0.32f);
+			RadialEffect.Parameters["ringColor"].SetValue(Color.Yellow.ToVector3());
+			RadialEffect.Parameters["tunnel"].SetValue(false);
+
+			RadialEffect.CurrentTechnique.Passes["Radial"].Apply();
+
+			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.75f + ((1f - TimeLeftScale) * 0.50f)) * scale, SpriteEffects.None, 0f);
+
+			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Yellow.ToVector4()* TimeLeftScale);
+			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(texture);
+			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(0.25f,0.25f));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(-projectile.Center.X/64f, -projectile.Center.Y/64f));
+			SGAmod.SphereMapEffect.Parameters["softEdge"].SetValue(4f);
+
+			SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMap"].Apply();
+
+			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.25f + ((1f - TimeLeftScale) * 0.50f))* scale, SpriteEffects.None, 0f);
+
+			/*SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Orange.ToVector4() * TimeLeftScale*0.950f);
+			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(texture2);
+			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(0.5f, 0.5f));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(-projectile.Center.X / 64f, -projectile.Center.Y / 64f));
+			SGAmod.SphereMapEffect.Parameters["softEdge"].SetValue(20f);
+
+			SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
+
+			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.25f + ((1f - TimeLeftScale) * 0.50f)) * scale, SpriteEffects.None, 0f);*/
+
+			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Orange.ToVector4() * TimeLeftScale * 0.950f);
+			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(texture3);
+			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(0.5f,0.5f));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(-projectile.Center.X / 64f, -projectile.Center.Y / 64f));
+			SGAmod.SphereMapEffect.Parameters["softEdge"].SetValue(4f);
+
+			SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
+
+			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.25f + ((1f - TimeLeftScale) * 0.50f)) * scale, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+			return false;
+		}
+	}
+
+	public class SuperThrowingStarsProg2 : ThrowingStarsProg
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Thrown Star Flare");
+		}
+		public override string Texture => "Terraria/Item_" + ItemID.FallenStar;
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.tileCollide = false;
+			projectile.Opacity = 0f;
+			projectile.hide = true;
+		}
+
+		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
+		{
+			if (projectile.ai[1] != 0)
+				drawCacheProjsBehindProjectiles.Add(index);
+		}
+
+        public override void AI()
+		{
+			base.AI();
+
+
+			Projectile owner = Main.projectile[(int)projectile.ai[0]];
+
+			if (owner.active && owner.type == ModContent.ProjectileType<SuperThrowingStarsProg>() && owner.timeLeft>30)
+            {
+				if (projectile.localAI[0] == 2 || projectile.ai[1] == 0)
+				{
+					projectile.ai[1] = Main.rand.NextFloat(0.15f, 0.20f) * (Main.rand.NextBool() ? 1f : -1f);
+					projectile.Opacity = 0f;
+					projectile.netUpdate = true;
+				}
+				projectile.Opacity = Math.Min(projectile.Opacity + 0.10f, 1f);
+				projectile.tileCollide = false;
+				projectile.hide = true;
+
+				projectile.velocity = projectile.velocity.RotatedBy(projectile.ai[1]);
+				projectile.Center = owner.Center + ((Vector2.Normalize(projectile.velocity)*16f)+(projectile.velocity*MathHelper.Clamp(owner.localAI[0]/15f,0f,1f)*2f));
+			}
+            else
+            {
+				projectile.ai[1] = 0;
+				projectile.hide = false;
+				projectile.Opacity = Math.Min(projectile.Opacity + 0.10f,1f);
+				projectile.tileCollide = true;
+			}
+		}
+	}
+
 
 	class SoulPincher : ModItem
 	{

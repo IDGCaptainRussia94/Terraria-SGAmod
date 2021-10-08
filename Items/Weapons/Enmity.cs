@@ -149,13 +149,14 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("GalacticInferno"), 1);
 			recipe.AddIngredient(ItemID.TerraBlade, 1);
 			recipe.AddIngredient(mod.ItemType("CelestialFlare"), 1);
+			recipe.AddIngredient(mod.ItemType("Skylight"), 1);
 			recipe.AddIngredient(mod.ItemType("TrueMoonlight"), 1);
 			recipe.AddIngredient(mod.ItemType("SOATT"), 1);
 			recipe.AddIngredient(mod.ItemType("TrueCaliburn"), 1);
-			recipe.AddIngredient(ItemID.AviatorSunglasses, 1);
 			recipe.AddIngredient(mod.ItemType("ByteSoul"), 500);
 			recipe.AddIngredient(mod.ItemType("HellionSummon"), 1);
 			recipe.AddIngredient(mod.ItemType("CodeBreakerHead"), 1);
+			recipe.AddIngredient(ItemID.AviatorSunglasses, 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

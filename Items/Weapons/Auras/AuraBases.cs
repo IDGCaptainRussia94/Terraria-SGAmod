@@ -67,6 +67,7 @@ namespace SGAmod.Items.Weapons.Auras
 						if (((float)player.maxMinions - player.GetModPlayer<SGAPlayer>().GetMinionSlots) >= 1)
 						{
 							Main.projectile[i].ai[0] += 1f;
+							Main.projectile[i].damage = damage;
 							Main.projectile[i].netUpdate = true;
 						}
 					}

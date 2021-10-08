@@ -154,7 +154,9 @@ namespace SGAmod.Items.Weapons.Shields
 
 	public class CorrodedShieldProj : ModProjectile, IDrawAdditive
 	{
-		public int blocktimer = 1;
+		public int Blocktimer => blocktimer-player.SGAPly().shieldBlockTime;
+		private int blocktimer = 1;
+
 		protected virtual float BlockAngle => 0.75f;
 		protected virtual float BlockDamage => 0.25f;
 		protected virtual int BlockPeriod => 30;
@@ -288,8 +290,9 @@ namespace SGAmod.Items.Weapons.Shields
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 			float facing = facingleft ? AngleAdjust : -AngleAdjust;
 
-			if (blocktimer < BlockPeriod && blocktimer > 1)
-				Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f) * MathHelper.Clamp((30 - blocktimer) / 8f, 0f, 1f), (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale + 0.25f, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+			float alpha = MathHelper.Clamp((30 - Blocktimer) / 8f, 0f, 1f);
+			if (alpha>0f)
+				Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f) * alpha, (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale + 0.25f, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
 
 		}
 		public void DrawAdditive(SpriteBatch spriteBatch)
@@ -1641,7 +1644,7 @@ namespace SGAmod.Items.Weapons.Shields
 			foreach (Projectile proj2 in them)
 			{
 				AegisaltAetherstoneProj projha = (AegisaltAetherstoneProj)proj2.modProjectile;
-				if (projha.blocktimer < projha.TimeToCopy)
+				if (projha.Blocktimer < projha.TimeToCopy)
                 {
 					return false;
                 }
@@ -1691,9 +1694,9 @@ namespace SGAmod.Items.Weapons.Shields
 		protected override float BlockDamage => player.SGAPly().devempowerment[2] > 0 ? 0.50f : 0.25f;
 		protected override float BlockAngle => disabledTimer > 0 ? 10f : (player.SGAPly().devempowerment[2] > 0 ? 0.0f : 0.25f);
 
-		protected override float AlphaFade => MathHelper.Clamp(1f - Math.Min(disabledTimer / 20f, 0.75f), 0f, Math.Min(blocktimer / TimeToCopy, 1f));
+		protected override float AlphaFade => MathHelper.Clamp(1f - Math.Min(disabledTimer / 20f, 0.75f), 0f, Math.Min(Blocktimer / TimeToCopy, 1f));
 
-		protected override float HoldingDistance => MathHelper.Clamp(((blocktimer / TimeToCopy) * 32f) + Math.Abs(genCopy * 100), 0f, 32f);
+		protected override float HoldingDistance => MathHelper.Clamp(((Blocktimer / TimeToCopy) * 32f) + Math.Abs(genCopy * 100), 0f, 32f);
 
 		public bool copied = false;
 
@@ -1706,7 +1709,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public float disabledTimer = 0;
 		float AddAngleAmmount => (((MathHelper.Pi * 0.80f) / ((float)maxCopies)) * (genCopy > 0 ? 1f : -1f));
 
-		protected override float BlockAngleAdjust => (genCopy == 0 ? 0 : angleAdd + MathHelper.Clamp(blocktimer / TimeToCopy, 0f, 1f) * AddAngleAmmount) * spreadValue;
+		protected override float BlockAngleAdjust => (genCopy == 0 ? 0 : angleAdd + MathHelper.Clamp(Blocktimer / TimeToCopy, 0f, 1f) * AddAngleAmmount) * spreadValue;
 
 		public int genCopy = 0;
 		public float angleAdd = 0;
@@ -1729,7 +1732,7 @@ namespace SGAmod.Items.Weapons.Shields
 				projectile.timeLeft = 5;
 			}
 
-			if (!copied && blocktimer > TimeToCopy && Math.Abs(genCopy) < maxCopies)
+			if (!copied && Blocktimer > TimeToCopy && Math.Abs(genCopy) < maxCopies)
 			{
 				copied = true;
 				for (int i = -1; i < 2; i += 2)

@@ -233,6 +233,29 @@ namespace SGAmod.Dimensions
         }
         private static void TextSpawnFrame(FrameEventData evt)
         {
+            if (heartBeats==1)
+            LimboDim.warningText = new HellionInsanity("You", 100, 600);
+
+            if (heartBeats == 2)
+                LimboDim.warningText = new HellionInsanity("Shouldn't", 120, 600);
+
+            if (heartBeats == 3)
+                LimboDim.warningText = new HellionInsanity("Be", 140, 600);
+
+            if (heartBeats == 4)
+                LimboDim.warningText = new HellionInsanity("Here", 160, 600);
+
+            if (heartBeats == 5)
+            {
+                LimboDim.warningText = new HellionInsanity("LEAVE", 240, 600);
+                LimboDim.warningText.scale = Vector2.One * 1.5f;
+                LimboDim.warningText.angleAdder = 0;
+                LimboDim.warningText.shaking = 12;
+                LimboDim.warningText.flipped = MathHelper.Pi;
+                LimboDim.warningText.angle = -MathHelper.PiOver2;
+            }
+
+            DimDungeonsProxy.madness.Add(LimboDim.warningText);
             //num
         }
 
@@ -241,31 +264,11 @@ namespace SGAmod.Dimensions
 
             if (!Main.dedServ)
             {
+                Main.NewText(heartBeats);
                 Film warnings = new Film();
-                if (heartBeats == 0)
+                if (heartBeats != 2220)
                 {
-                    warnings.AppendSequence(100, BlankFrame);
-                    LimboDim.warningText = new HellionInsanity("You", 100, 160);
-                    warnings.AppendSequence(1, TextSpawnFrame);
-
-                    warnings.AppendSequence(100, BlankFrame);
-                    LimboDim.warningText = new HellionInsanity("Shouldn't", 120, 160);
-                    warnings.AppendSequence(1, TextSpawnFrame);
-
-                    warnings.AppendSequence(100, BlankFrame);
-                    LimboDim.warningText = new HellionInsanity("Be", 140, 160);
-                    warnings.AppendSequence(1, TextSpawnFrame);
-
-                    warnings.AppendSequence(100, BlankFrame);
-                    LimboDim.warningText = new HellionInsanity("Here", 160, 160);
-                    warnings.AppendSequence(1, TextSpawnFrame);
-
-                    warnings.AppendSequence(100, BlankFrame);
-                    LimboDim.warningText = new HellionInsanity("LEAVE", 240, 160);
-                    LimboDim.warningText.scale = Vector2.One * 3f;
-                    LimboDim.warningText.angleAdder = 0;
-                    LimboDim.warningText.shaking = 24;
-                    LimboDim.warningText.angle = MathHelper.PiOver2;
+                    warnings.AppendSequence(80, BlankFrame);
                     warnings.AppendSequence(1, TextSpawnFrame);
 
                     goto playfilm;

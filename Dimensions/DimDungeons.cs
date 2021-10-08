@@ -349,12 +349,12 @@ namespace SGAmod.Dimensions
 		public void Draw()
 		{
 			float alpha = MathHelper.Clamp((float)timeleft / 150f, 0f, Math.Min(addone / 100f, 1f));
-			Vector2 size = Main.fontDeathText.MeasureString(text);
+			Vector2 size = Main.fontDeathText.MeasureString(text)* scale;
 
 			Vector2 mathstuff = Main.rand.NextVector2Circular(shaking, shaking)+new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * distance;
 
-			Matrix mat = Matrix.CreateTranslation(-size.X / 2f, 0, 0) * Matrix.CreateRotationZ(angle - MathHelper.PiOver2 - flipped) * Matrix.CreateTranslation(mathstuff.X, mathstuff.Y, 0) *
-			Matrix.CreateTranslation((float)Main.screenWidth / 2f, (float)Main.screenHeight / 2f, 0) * Matrix.CreateScale((Main.screenWidth / 1920f) * scale.X, (Main.screenHeight / 1024f)* scale.Y, 0f);
+			Matrix mat = Matrix.CreateScale(scale.X, scale.Y,1f) * Matrix.CreateTranslation(-size.X / 2f, 0, 0) * Matrix.CreateRotationZ(angle - MathHelper.PiOver2 - flipped) * Matrix.CreateTranslation(mathstuff.X, mathstuff.Y, 0) *
+			Matrix.CreateTranslation((float)Main.screenWidth / 2f, (float)Main.screenHeight / 2f, 0) * Matrix.CreateScale((Main.screenWidth / 1920f), (Main.screenHeight / 1024f), 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, mat * Main.GameViewMatrix.ZoomMatrix);

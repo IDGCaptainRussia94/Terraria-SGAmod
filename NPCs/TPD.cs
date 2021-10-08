@@ -69,13 +69,19 @@ namespace SGAmod.NPCs
 
 			if (Main.expertMode)
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TPDCPU"));
+
 			List<int> types = new List<int>();
 			types.Insert(types.Count, ItemID.Ectoplasm);
 			types.Insert(types.Count, ItemID.ShroomiteBar); types.Insert(types.Count, ItemID.ChlorophyteBar); types.Insert(types.Count, ItemID.SpectreBar);
+
+			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
+
+			/*
 			for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0, types.Count)]);
-			}
+			}*/
+
 			Achivements.SGAAchivements.UnlockAchivement("TPD", Main.LocalPlayer);
 			if (!SGAWorld.downedTPD)
 			{

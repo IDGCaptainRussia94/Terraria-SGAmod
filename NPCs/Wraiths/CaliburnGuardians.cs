@@ -137,12 +137,12 @@ namespace SGAmod.NPCs.Wraiths
 			get { return "SGAmod/Items/Weapons/Caliburn/CaliburnTypeA"; }
 		}
 
-		public override string HeadTexture
+		public override string BossHeadTexture
 		{
 			get { return ("SGAmod/Items/Weapons/Caliburn/CaliburnType"+(new string[3] { "A", "B", "C"})[(int)npc.ai[2]]); }
 		}
 
-		public override string BossHeadTexture => "Terraria/UI/PVP_2";
+		//public override string BossHeadTexture => "Terraria/UI/PVP_2";
 		public CaliburnGuardian()
 		{
 			nohit = 60;

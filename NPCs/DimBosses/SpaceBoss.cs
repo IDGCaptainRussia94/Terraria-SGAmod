@@ -1,4 +1,4 @@
-
+//#define BossDebug
 using System.Linq;
 using System;
 using Terraria;
@@ -267,7 +267,7 @@ namespace SGAmod.Dimensions.NPCs
 
 				if (diff.Length() < 16f)
 				{
-					state = installgrab ? 200 : 101;
+					state = installgrab ? 200 : 101;//if we're installing, go to state 200
 
 					if (installgrab)
 					{
@@ -288,7 +288,7 @@ namespace SGAmod.Dimensions.NPCs
 				}
 			}
 
-			if (state == 101)//Hold Roid
+			if (state == 101)//Hold Roid for 30 frames before throwing it at the player
 			{
 				stateTimer += 1;
 				if (grabrock == null)
@@ -313,7 +313,7 @@ namespace SGAmod.Dimensions.NPCs
 				}
 			}
 
-			if (state == 200)//Hold Roid
+			if (state == 200)//Spawn Enemy Roid
 			{
 				stateTimer += 1;
 				if (grabrock == null)
@@ -827,7 +827,7 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				if (boss.npc.ai[3] == 1)
 				boss.healthphase -= 0.25f;
-				boss.LaunchTethers();
+				boss.LaunchTethers(boss.npc.ai[3] == 2 ? 5 : 3);
 			}
 
 			if (npc.ai[0] > 10120)
@@ -1074,21 +1074,45 @@ namespace SGAmod.Dimensions.NPCs
 				}
 			}
 
-			if (npc.ai[0] % 30 == 0 && ToEnemy.LengthSquared() > 1600 * 1600)
+			Player target = Main.player[npc.target];
+			bool withinDist = ToEnemy.LengthSquared() < 1600 * 1600;
+
+			if (npc.ai[0] % 30 == 0 && !withinDist)
 			{
-				Player target = Main.player[npc.target];
 				Vector2 place = target.Center + (Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(-400f, 400f)) + Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.Pi)) * 1800f;
 
 				Projectile.NewProjectile(place, Vector2.Normalize(ToEnemy) * Main.rand.NextFloat(2.5f, 3f), ModContent.ProjectileType<SpaceBossBasicShot>(), 30, 10);
 			}
 
-			if (npc.ai[0] % 30 == 0 && ToEnemy.LengthSquared() <= 1600 * 1600 && boss.shieldeffect<1)
-			{
-				Player target = Main.player[npc.target];
+			//boss.shieldeffect<1
 
-				for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.Pi)
+			if (boss.TetherAsteriods.Count() < 5)
+			{
+
+				if (withinDist)
 				{
-					Projectile.NewProjectile(npc.Center, Vector2.UnitX.RotatedBy((npc.ai[0] / 80f)+f) * 2, ModContent.ProjectileType<SpaceBossBasicShot>(), 30, 10);
+					if (npc.ai[0] % 30 == 0)
+					{
+						for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / (5f - (float)boss.TetherAsteriods.Count()))
+						{
+							Projectile.NewProjectile(npc.Center, Vector2.UnitX.RotatedBy((npc.ai[0] / 80f) + f) * 2, ModContent.ProjectileType<SpaceBossBasicShot>(), 30, 10);
+						}
+					}
+				}
+
+				int timer = 120 + boss.TetherAsteriods.Count() * 60;
+
+				if (npc.ai[0] % (120 + timer) == 0 && withinDist)
+				{
+					foreach (Projectile rock in boss.TetherAsteriods)
+					{
+						int prog = Projectile.NewProjectile(npc.Center, Vector2.Normalize(rock.Center - npc.Center)*32f, SGAmod.Instance.ProjectileType("SpaceBossBeam"), 50, 15f);
+					}
+				}
+
+				if ((npc.ai[0] + (timer / 2)) % (timer) == 0)
+				{
+					int prog = Projectile.NewProjectile(npc.Center, Vector2.Normalize((target.MountedCenter+ (target.velocity *2f))- npc.Center) * 32f, SGAmod.Instance.ProjectileType("SpaceBossBeam"), 50, 15f);
 				}
 			}
 
@@ -1425,8 +1449,10 @@ namespace SGAmod.Dimensions.NPCs
 		{
 			if (Sleeping)
 			{
+#if BossDebug
 				Main.NewText("I exist at " + npc.Center);
 				Main.NewText("you are at " + Main.LocalPlayer.Center);
+#endif
 			}
 
 

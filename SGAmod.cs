@@ -181,6 +181,8 @@ namespace SGAmod
 		public static Effect FadeInEffect;
 		public static Effect RadialEffect;
 		public static Effect SphereMapEffect;
+		public static Effect VoronoiEffect;
+
 
 		public static MusicStreamingOGG musicTest;
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
@@ -577,6 +579,8 @@ namespace SGAmod
 
 				RadialEffect = SGAmod.Instance.GetEffect("Effects/Radial");
 				SphereMapEffect = SGAmod.Instance.GetEffect("Effects/SphereMap");
+				VoronoiEffect = SGAmod.Instance.GetEffect("Effects/Voronoi");
+
 
 
 				GameShaders.Misc["SGAmod:DeathAnimation"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/EffectDeath")), "DeathAnimation").UseImage("Images/Misc/Perlin");

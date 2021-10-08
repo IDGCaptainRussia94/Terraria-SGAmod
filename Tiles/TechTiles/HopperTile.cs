@@ -442,6 +442,7 @@ namespace SGAmod.Tiles.TechTiles
 			}
 
 		}
+
 	}
 
 	public class ChestHopperTile : HopperTile, IHopperInterface
@@ -485,7 +486,7 @@ namespace SGAmod.Tiles.TechTiles
 				if (tile.frameX%36 == 0 && tile.frameY == 0)
 				{
 					Vector2 offset = zerooroffset + (new Vector2(i, j) * 16) + new Vector2(16, 16);
-					spriteBatch.Draw(curser, offset - Main.screenPosition, null, Color.White, 0, curser.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0f);
+					spriteBatch.Draw(curser, offset - Main.screenPosition, null, Color.White.MultiplyRGBA(Lighting.GetColor(i, j)), 0, curser.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0f);
 				}
 			}
 		}

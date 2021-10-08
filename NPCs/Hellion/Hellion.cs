@@ -21,6 +21,7 @@ using SGAmod.NPCs.TrueDraken;
 using System.Diagnostics;
 using SGAmod.Effects;
 using System.Linq;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.NPCs.Hellion
 {
@@ -135,7 +136,7 @@ namespace SGAmod.NPCs.Hellion
 
 
 				int portaltime = 450;
-				int proj = ProjectileID.SnowBallFriendly;
+				int snowballproj = ModContent.ProjectileType<HellionSnowball>();
 
 				//testing
 				//if (npc.ai[1] > 75600 && npc.ai[1] < 99999)
@@ -270,7 +271,7 @@ namespace SGAmod.NPCs.Hellion
 									return (time % 20 == 0 && time > rothere.X);
 								};
 
-								int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 50, portaltime, (hell.npc.Center - where).ToRotation(), proj, projectilepattern, 6f, 250- ((int)(angles[a] *0.250)));
+								int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 50, portaltime, (hell.npc.Center - where).ToRotation(), snowballproj, projectilepattern, 6f, 250- ((int)(angles[a] *0.250)));
 								(Main.projectile[ize2].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
 								(Main.projectile[ize2].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
 								Main.PlaySound(SoundID.Item, (int)Main.projectile[ize2].position.X, (int)Main.projectile[ize2].position.Y, 33, 0.25f, 0.5f);
@@ -322,7 +323,7 @@ namespace SGAmod.NPCs.Hellion
 							};
 							Func<float, bool> projectilepattern = (time) => (time > 30 && time % 15 == 0);
 
-							int ize = ParadoxMirror.SummonMirror(where, Vector2.Zero, 50, 320, MathHelper.ToRadians(90f), proj, projectilepattern, 5.25f, 300);
+							int ize = ParadoxMirror.SummonMirror(where, Vector2.Zero, 50, 320, MathHelper.ToRadians(90f), snowballproj, projectilepattern, 5.25f, 300);
 							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
 							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
 							Main.projectile[ize].aiStyle = -5;
@@ -372,7 +373,7 @@ namespace SGAmod.NPCs.Hellion
 							};
 							Func<float, bool> projectilepattern = (time) => (time > 30 && time % 4 == 0 && time%60<30);
 
-							int ize = ParadoxMirror.SummonMirror(where, Vector2.Zero, 50, 320, MathHelper.ToRadians(90f), proj, projectilepattern, 6f, 250);
+							int ize = ParadoxMirror.SummonMirror(where, Vector2.Zero, 50, 320, MathHelper.ToRadians(90f), snowballproj, projectilepattern, 6f, 250);
 							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
 							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
 							Main.projectile[ize].aiStyle = -5;
@@ -547,7 +548,7 @@ namespace SGAmod.NPCs.Hellion
 							}*/
 
 
-							int ize = ParadoxMirror.SummonMirror(where + hell.noescapeauraloc, MathHelper.ToRadians(direction).ToRotationVector2() * 24f, 50, 155, MathHelper.ToRadians(direction) + MathHelper.ToRadians(0), proj, projectilepattern, 0f, portaltime);
+							int ize = ParadoxMirror.SummonMirror(where + hell.noescapeauraloc, MathHelper.ToRadians(direction).ToRotationVector2() * 24f, 50, 155, MathHelper.ToRadians(direction) + MathHelper.ToRadians(0), snowballproj, projectilepattern, 0f, portaltime);
 							Main.projectile[ize].aiStyle = -5;
 							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
 							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
@@ -608,7 +609,7 @@ namespace SGAmod.NPCs.Hellion
 							};
 
 
-							int ize = ParadoxMirror.SummonMirror(where + hell.noescapeauraloc, MathHelper.ToRadians(direction).ToRotationVector2() * 24f, 50, 160, MathHelper.ToRadians(direction) + MathHelper.ToRadians(90), proj, projectilepattern, 0f, portaltime);
+							int ize = ParadoxMirror.SummonMirror(where + hell.noescapeauraloc, MathHelper.ToRadians(direction).ToRotationVector2() * 24f, 50, 160, MathHelper.ToRadians(direction) + MathHelper.ToRadians(90), snowballproj, projectilepattern, 0f, portaltime);
 							Main.projectile[ize].aiStyle = -5;
 							Main.projectile[ize].netUpdate = true;
 
@@ -2511,15 +2512,14 @@ namespace SGAmod.NPCs.Hellion
 			Vector2 drawPos = where - Main.screenPosition;
 			float inrc = Main.GlobalTime / 41f;
 
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
 			for (int i = 0; i < 360; i += 1)
 			{
 				float angle = (2f * (float)Math.PI / 360f * i) + (inrc*(i%2==1 ? 1f : -1f));
 				float dist = (float)dist2 * size;
 				Vector2 thisloc = new Vector2((float)(Math.Cos(angle) * dist), (float)(Math.Sin(angle) * dist));
-
-
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
 				Color glowingcolors1 = Main.hslToRgb((float)(((float)i / 360f) + Main.GlobalTime / 2f) % 1, 0.8f, 0.65f);
 
@@ -2528,7 +2528,7 @@ namespace SGAmod.NPCs.Hellion
 
 			}
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
 		}
 
@@ -3636,6 +3636,90 @@ namespace SGAmod.NPCs.Hellion
 		}
 
 
+	}
+
+	public class HellionSnowball : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Paradox Balls");
+		}
+		public override string Texture => "Terraria/Item_" + ItemID.Snowball;
+		int hitnpc = -1;
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			if (crit)
+			{
+				target.SGANPCs().IrradiatedExplosion(target, damage);
+			}
+			hitnpc = target.whoAmI;
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.SnowBallFriendly);
+			projectile.tileCollide = true;
+			projectile.friendly = false;
+			projectile.hostile = true;
+			projectile.aiStyle = -1;
+			projectile.tileCollide = false;
+			//ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
+			//ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			projectile.type = ProjectileID.SnowBallFriendly;
+
+			for (float num654 = 0; num654 < 8; num654 += 0.25f)
+			{
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); randomcircle *= (float)(num654 / 10.00);
+				int num655 = Dust.NewDust(projectile.position + Vector2.UnitX * -6f, projectile.width + 12, projectile.height + 12, DustID.AncientLight, 0, 0, 150, Main.hslToRgb(Main.rand.NextFloat(1f),1f,0.75f), 1.8f);
+				Main.dust[num655].noGravity = true;
+				Main.dust[num655].noLight = true;
+				Main.dust[num655].velocity = new Vector2(randomcircle.X * 12f, randomcircle.Y * 12f);
+			}
+
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 50);
+			if (sound != null)
+				sound.Pitch = -0.90f;
+
+			return true;
+		}
+
+        public override bool CanDamage()
+        {
+			return projectile.ai[0] > 60;
+
+		}
+
+        public override void AI()
+		{
+			if (projectile.ai[0] < 150 && projectile.velocity.Length() > 1)
+				projectile.ai[0] = 150;
+
+			projectile.ai[0] += 1;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Vector2 drawOrigin = new Vector2(Main.projectileTexture[projectile.type].Width * 0.5f, Main.projectileTexture[projectile.type].Height * 0.5f);
+			/*for (int k = projectile.oldPos.Length - 1; k > 0; k -= 1)
+			{
+				Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition + drawOrigin;
+				Color color = Color.Lime * (1f - ((float)k / ((float)projectile.oldPos.Length)));
+				spriteBatch.Draw(Main.projectileTexture[projectile.type], drawPos, null, color * 0.75f, projectile.rotation, drawOrigin, projectile.scale + 0.5f, SpriteEffects.None, 0f);
+			}*/
+
+			Texture2D texture = SGAmod.ExtraTextures[96];
+
+			Color color2 = Main.hslToRgb(((Main.GlobalTime / 2f) + (projectile.Center.X / 320)) % 1f,1f,0.75f)*MathHelper.Clamp((projectile.ai[0]-60)/20f,0.5f,1f);
+
+			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, color2 * 0.25f, 0, texture.Size() / 2f, (0.5f+(float)Math.Sin((projectile.Center.X/64f)+(Main.GlobalTime * 12f))*0.20f)* MathHelper.Clamp((projectile.ai[0] - 60) / 20f, 0f, 1f), SpriteEffects.None, 0f);
+
+			spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center + Main.rand.NextVector2Circular(4, 4) - Main.screenPosition, null, color2, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+			return false;
+		}
 	}
 
 

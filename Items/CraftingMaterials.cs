@@ -1951,50 +1951,39 @@ namespace SGAmod.Items
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
 
-			/*Main.spriteBatch.End();
+			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			//texture mappedTexture;
 			//float2 mappedTextureMultiplier;
 			//float2 mappedTextureOffset;
 
-			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Red.ToVector4() * 1f);
-			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(Main.blackTileTexture);
-			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(1f,1f));
-			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(0, 0));
+			/*texture _VoronoiTex;
+			float4 _CellColor = float4(1, .75, 0, 1); // Orange
+			float4 _EdgeColor = float4(1, .5, 0, 1); // Yellow-Orange
+			float2 _CellSize = float2(1.5, 2.0);
+			float _ScrollSpeed = 0.04;
+			float _FadeSpeed = 3;
+			float _ColorScale = 1.5652475842498528; // .7*sqrt(5)
+			float _Time; // Pass the time in seconds into here
+			*/
 
-			SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMap"].Apply();
+			Texture2D tex = ModContent.GetTexture("SGAmod/VoronoiSequenceBIG");
 
-			spriteBatch.Draw(ModContent.GetTexture("SGAmod/TiledPerlin"), item.Center - Main.screenPosition, null, Color.White, 0, ModContent.GetTexture("SGAmod/Voronoi").Size() / 2f, 1f, SpriteEffects.None, 0f);
+			SGAmod.VoronoiEffect.Parameters["_CellColor"].SetValue(Color.Black.ToVector4() * 1f);
+			SGAmod.VoronoiEffect.Parameters["_EdgeColor"].SetValue(Color.Lerp(Color.Orange,Color.Yellow,0.50f).ToVector4() * 1f);
+			SGAmod.VoronoiEffect.Parameters["_CellSize"].SetValue(new Vector2(1.5f,2f)*5f);
+			SGAmod.VoronoiEffect.Parameters["_ScrollSpeed"].SetValue(0f);
+			SGAmod.VoronoiEffect.Parameters["_FadeSpeed"].SetValue(3f);
+			SGAmod.VoronoiEffect.Parameters["_ColorScale"].SetValue(1.5652475842498528f);
+			SGAmod.VoronoiEffect.Parameters["_Time"].SetValue(Main.GlobalTime*1f);
 
-			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Orange.ToVector4() * 1f);
-			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(ModContent.GetTexture("SGAmod/TiledPerlin"));
-			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(0.20f,0.20f));
-			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(Main.GlobalTime/32f,0));
+			SGAmod.VoronoiEffect.CurrentTechnique.Passes["Star"].Apply();
 
-			SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
-
-			spriteBatch.Draw(ModContent.GetTexture("SGAmod/TiledPerlin"), item.Center-Main.screenPosition, null, Color.White, 0, ModContent.GetTexture("SGAmod/Voronoi").Size()/2f, 1f, SpriteEffects.None, 0f);
-
-			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Yellow.ToVector4() * 0.75f);
-			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(ModContent.GetTexture("SGAmod/TiledPerlin"));
-			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(0.5f,0.5f));
-			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(Main.GlobalTime / 8f, 0));
-
-			SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
-
-			spriteBatch.Draw(ModContent.GetTexture("SGAmod/TiledPerlin"), item.Center - Main.screenPosition, null, Color.White, 0, ModContent.GetTexture("SGAmod/Voronoi").Size() / 2f, 1f, SpriteEffects.None, 0f);
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.White.ToVector4());
-			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(ModContent.GetTexture("SGAmod/Voronoi"));
-			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(Vector2.One);
-			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(Vector2.One);*/
+			spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
 
 
-			return true;
+			return false;
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)

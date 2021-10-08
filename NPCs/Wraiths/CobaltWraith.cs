@@ -660,12 +660,14 @@ return true;
 			for (ammount = 0; ammount < 1; ammount += 1)
 				types.Insert(types.Count, ItemID.SoulofNight);
 
-			for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
+			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
+
+			/*for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0, types.Count)]);
-			}
+			}*/
 
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("WraithFragment4"), Main.expertMode ? 25 : 10);
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("WraithFragment4"), Main.expertMode ? 25 : 10);
 
 			Achivements.SGAAchivements.UnlockAchivement("Cobalt Wraith", Main.LocalPlayer);
 			if (SGAWorld.downedWraiths < 2)

@@ -12,27 +12,47 @@ using SGAmod.Effects;
 using SGAmod.Tiles.TechTiles;
 using Terraria.DataStructures;
 using System.Linq;
+using SGAmod.Buffs;
+using Terraria.Utilities;
 
 namespace SGAmod.Items.Weapons.Aurora
 {
 
     public class Skylight : ModItem, IAuroraItem
     {
+
+        public static Color[] SkyLightColors => new Color[]{Color.Orange,Color.Cyan,Color.Red,Color.Yellow };
+        public static int MaxSkylight => 8000;
+        public static int SkylightChargeRate => 30;
+        public static int SkylightCostPerSlash => 50;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Skylight");
-            Tooltip.SetDefault("Rend and Sunder all with the fury the heavens!");
+            Tooltip.SetDefault("Rend and Sunder all with the fury the heavens!\nPrimary channels energy from the celestial body in the sky\nOnce channeling, you cannot cancel for a short time\nYou can only channel when your energy is depleted\nSecondary launches a celestial slash");
             Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
+        }
+
+        public override bool Autoload(ref string name)
+        {
+            SGAPlayer.PostUpdateEquipsEvent += SkylightPlayerUpdate;
+            return true;
+        }
+
+        public void SkylightPlayerUpdate(SGAPlayer sgaply)
+        {
+            sgaply.skylightLightInfused = (Math.Max(sgaply.skylightLightInfused.Item1 - 1,0), sgaply.skylightLightInfused.Item2);
         }
 
         public override void SetDefaults()
         {
-            item.damage = 300;
+            item.damage = 400;
+            item.crit = 20;
             item.melee = true;
             item.width = 40;
             item.height = 40;
             item.useTime = 6;
-            item.useAnimation = 1;
+            item.useAnimation = 6;
             item.useStyle = 5;
             item.noMelee = true; //so the item's animation doesn't do damage
             item.knockBack = 5;
@@ -62,35 +82,95 @@ namespace SGAmod.Items.Weapons.Aurora
                     Texture2D texture = Main.itemTexture[item.type];
                     Vector2 origin = texture.Size() / 2f;
                     float timeAdvance = Main.GlobalTime * 2;
-                    angle = drawInfo.drawPlayer.itemRotation + (drawInfo.drawPlayer.direction < 0 ? MathHelper.Pi : 0);
+                    float itemrot = drawInfo.drawPlayer.itemRotation;
+                    float itemalpha = 1f;
                     Player drawPlayer = drawInfo.drawPlayer;
+                    float skylightInfuse = MathHelper.Clamp((drawPlayer.SGAPly().skylightLightInfused.Item1 / (float)Skylight.MaxSkylight) * 2f, 0f, 1f);
+                    //float skylightInfuse = drawPlayer.SGAPly().skylightLightInfused.Item1 / (float)Skylight.MaxSkylight;
 
-                    Vector2 drawHere = drawPlayer.MountedCenter + (angle.ToRotationVector2()) * 38 - Main.screenPosition;
+                    Projectile[] these = Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<SkylightSlashProj>() && testby.owner == drawPlayer.whoAmI).ToArray();
+                    these = these.OrderBy(testby => testby.timeLeft).ToArray();
 
-                    DrawData value = new DrawData(texture, drawHere, null, Color.White, MathHelper.PiOver4 + (drawInfo.drawPlayer.direction < 0 ? MathHelper.PiOver2 : 0) + angle, origin, 1f, drawInfo.spriteEffects, 0);
-                    Main.playerDrawData.Add(value);
-
-                    for (float i = 0f; i < MathHelper.TwoPi; i += MathHelper.TwoPi / 12f)
+                    if (true)
                     {
-                        DrawData value2 = new DrawData(texture, drawHere+ (i+Main.GlobalTime).ToRotationVector2()*0.20f, null, Color.Red * 0.02f, MathHelper.PiOver4+(drawInfo.drawPlayer.direction < 0 ? MathHelper.PiOver2 : 0) + angle, origin, 1f, drawInfo.spriteEffects, 0);
-                        Main.playerDrawData.Add(value2);
-                    }
 
-                    Terraria.Utilities.UnifiedRandom rando = new Terraria.Utilities.UnifiedRandom((int)(item.whoAmI * 4554));
-
-                    texture = Main.projectileTexture[ModContent.ProjectileType<SpecterangProj>()];
-
-                    for (float a = 4f; a < 16f; a += 2f)
-                    {
-                        for (float i = 0f; i < MathHelper.TwoPi; i += MathHelper.TwoPi / 4f)
+                        itemalpha = MathHelper.Clamp((drawPlayer.itemAnimation / (float)drawPlayer.itemAnimationMax) * 1.00f, 0f, 1f);
+                        if (these.Length > 0)
                         {
-                            float randomier = (float)Math.Sin(Main.GlobalTime* rando.NextFloat(-MathHelper.Pi * 0.5f, MathHelper.Pi * 0.5f))* rando.NextFloat(-MathHelper.Pi * -0.05f, MathHelper.Pi * 0.05f);
-                            DrawData value2 = new DrawData(texture, drawHere + (angle.ToRotationVector2()*a) + (i + Main.GlobalTime * 2f).ToRotationVector2(), null, Color.Red * 0.05f, MathHelper.PiOver2 + angle+ randomier, new Vector2(0,0) +texture.Size() / 2f, new Vector2(0.75f,1.25f), drawInfo.spriteEffects, 0);
+                            angle = (these[0].Center - drawInfo.drawPlayer.MountedCenter).ToRotation();// + (drawInfo.drawPlayer.direction < 0 ? MathHelper.Pi : 0);
+                        }
+                        if (drawPlayer.ownedProjectileCounts[ModContent.ProjectileType<SkylightChargeUpProj>()] > 0)
+                        {
+                            angle = itemrot + (drawInfo.drawPlayer.direction < 0 ? MathHelper.Pi : 0);
+                        }
+
+                        Vector2 drawHere = drawPlayer.MountedCenter + (angle.ToRotationVector2()) * 38 - Main.screenPosition;
+
+                        DrawData value = new DrawData(texture, drawHere, null, Color.White * itemalpha, MathHelper.PiOver4 + (drawInfo.drawPlayer.direction < 0 ? MathHelper.PiOver2 : 0) + angle, origin, 1f, drawInfo.spriteEffects, 0);
+                        Main.playerDrawData.Add(value);
+
+                        for (float i = 0f; i < MathHelper.TwoPi; i += MathHelper.TwoPi / 12f)
+                        {
+                            DrawData value2 = new DrawData(texture, drawHere + (i + Main.GlobalTime).ToRotationVector2() * 0.20f, null, SkyLightColors[drawPlayer.SGAPly().skylightLightInfused.Item2] * skylightInfuse * itemalpha * 0.02f, MathHelper.PiOver4 + (drawInfo.drawPlayer.direction < 0 ? MathHelper.PiOver2 : 0) + angle, origin, 1f, drawInfo.spriteEffects, 0);
                             Main.playerDrawData.Add(value2);
                         }
-                    }
 
+                        Terraria.Utilities.UnifiedRandom rando = new Terraria.Utilities.UnifiedRandom((int)(item.whoAmI * 4554));
+
+                        texture = Main.projectileTexture[ModContent.ProjectileType<SpecterangProj>()];
+
+                        for (float a = 4f; a < 16f; a += 2f)
+                        {
+                            for (float i = 0f; i < MathHelper.TwoPi; i += MathHelper.TwoPi / 4f)
+                            {
+                                float randomier = (float)Math.Sin(Main.GlobalTime * rando.NextFloat(-MathHelper.Pi * 0.5f, MathHelper.Pi * 0.5f)) * rando.NextFloat(-MathHelper.Pi * -0.05f, MathHelper.Pi * 0.05f);
+                                DrawData value2 = new DrawData(texture, drawHere + (angle.ToRotationVector2() * a) + (i + Main.GlobalTime * 2f).ToRotationVector2(), null, SkyLightColors[drawPlayer.SGAPly().skylightLightInfused.Item2] * skylightInfuse * itemalpha * 0.05f, MathHelper.PiOver2 + angle + randomier, new Vector2(0, 0) + texture.Size() / 2f, new Vector2(0.75f, 1.25f), drawInfo.spriteEffects, 0);
+                                Main.playerDrawData.Add(value2);
+                            }
+                        }
+                    }
                 };
+            }
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
+        {
+            SGAPlayer sgaply = Main.LocalPlayer.SGAPly();
+            if (sgaply.skylightLightInfused.Item1 > 0)
+            {
+                if (sgaply.skylightLightInfused.Item2 == 0)
+                {
+                    float stuff = MathHelper.Clamp((sgaply.skylightLightInfused.Item1 / (float)Skylight.MaxSkylight) * 2f, 0f, 1f);
+                    add += stuff * 0.50f;
+                }
+            }
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            SGAPlayer sgaply = Main.LocalPlayer.SGAPly();
+            if (sgaply.skylightLightInfused.Item1 > 0)
+            {
+                if (sgaply.skylightLightInfused.Item2 == 0)
+                {
+                    tooltips.Add(new TooltipLine(mod, "SkylightTooltip", Idglib.ColorText(Color.Orange, "Infused with the fury of the Sun")));
+                    tooltips.Add(new TooltipLine(mod, "SkylightTooltip", Idglib.ColorText(Color.Orange, "Attacks incinerate foes with Daybroken and Lava Burn")));
+                    tooltips.Add(new TooltipLine(mod, "SkylightTooltip", Idglib.ColorText(Color.Orange, "Improves damage by 50% based on remaining charge")));
+
+                }
+                if (sgaply.skylightLightInfused.Item2 == 1)
+                {
+                    tooltips.Add(new TooltipLine(mod, "SkylightTooltip", Idglib.ColorText(Color.Cyan, "Infused with the cursing rays of the Moon")));
+                    tooltips.Add(new TooltipLine(mod, "SkylightTooltip", Idglib.ColorText(Color.Cyan, "Attacks melt foes with Moonlight Curse")));
+                    tooltips.Add(new TooltipLine(mod, "SkylightTooltip", Idglib.ColorText(Color.Cyan, "Improves attack range by 100% based on remaining charge")));
+                }
+                if (sgaply.skylightLightInfused.Item2 == 2)
+                {
+                    tooltips.Add(new TooltipLine(mod, "SkylightTooltip", Idglib.ColorText(Color.Red, "Infused with the sanguine desires of the Blood Moon")));
+                    tooltips.Add(new TooltipLine(mod, "SkylightTooltip", Idglib.ColorText(Color.Red, "Attacks will life steal")));
+                    tooltips.Add(new TooltipLine(mod, "SkylightTooltip", Idglib.ColorText(Color.Red, "Improves attack range by 150% based on remaining charge and life lost")));
+                }
+
             }
 
         }
@@ -100,9 +180,28 @@ namespace SGAmod.Items.Weapons.Aurora
             return true;
         }
 
+        public override bool CanUseItem(Player player)
+        {
+            item.channel = true;
+            if (player.altFunctionUse == 2 || player.SGAPly().skylightLightInfused.Item1 > 0)
+            {
+                item.channel = false;
+            }
+
+            return true;
+        }
+
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            Projectile.NewProjectileDirect(position,new Vector2(speedX, speedY)*1f,ModContent.ProjectileType<SkylightSlashProj>(),damage,knockBack,player.whoAmI);
+
+            if (player.altFunctionUse == 2 || player.SGAPly().skylightLightInfused.Item1 > 0)
+            {
+                Projectile.NewProjectileDirect(position, new Vector2(speedX, speedY) * 1f, ModContent.ProjectileType<SkylightSlashProj>(), damage, knockBack, player.whoAmI);
+            }
+            else
+            {
+                Projectile.NewProjectileDirect(position, new Vector2(speedX, speedY) * 1f, ModContent.ProjectileType<SkylightChargeUpProj>(), damage, knockBack, player.whoAmI);
+            }
             return false;
         }
 
@@ -120,7 +219,149 @@ namespace SGAmod.Items.Weapons.Aurora
         }
     }
 
-    public class SkylightSlashProj : ModProjectile,IDrawAdditive,ITrueMeleeProjectile
+    public class SkylightChargeUpProj : ModProjectile, IDrawAdditive
+    {
+        public override string Texture => "SGAmod/Glow";
+
+        public override bool CanDamage()
+        {
+            return false;
+        }
+
+        Player Owner => Main.player[projectile.owner];
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Skylight Charging");
+        }
+
+        public override void SetDefaults()
+        {
+            //projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+            projectile.width = 32;
+            projectile.height = 32;
+            projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
+            projectile.hostile = false;
+            projectile.friendly = true;
+            projectile.tileCollide = false;
+            projectile.melee = true;
+            projectile.timeLeft = 200;
+            projectile.penetrate = -1;
+            projectile.usesLocalNPCImmunity = true;
+            projectile.localNPCHitCooldown = -1;
+        }
+
+        public override void AI()
+        {
+            Vector2 mousePos = Main.MouseWorld;
+            SGAPlayer sgaply = Owner.SGAPly();
+            Player player = Owner;
+
+            if (player.dead)
+            {
+                projectile.Kill();
+            }
+
+            if (projectile.timeLeft < 30 && (!player.channel || projectile.ai[0] > 0 || sgaply.skylightLightInfused.Item1>=Skylight.MaxSkylight))
+            {
+                projectile.ai[0] += 1;
+                projectile.netUpdate = true;
+            }
+
+            if (projectile.ai[1] == 0)
+            {
+                sgaply.skylightLightInfused.Item2 = 0;
+                if (!Main.dayTime)
+                    sgaply.skylightLightInfused.Item2 = (byte)(Main.bloodMoon ? 2 : 1);
+            }
+
+            if (projectile.ai[0] < 1)
+            {
+                sgaply.skylightLightInfused.Item1 = (int)MathHelper.Clamp(sgaply.skylightLightInfused.Item1+Skylight.SkylightChargeRate, 0,Skylight.MaxSkylight);
+                if (projectile.timeLeft<30)
+                projectile.timeLeft = 30;
+            }
+
+            // Multiplayer support here, only run this code if the client running it is the owner of the projectile
+            if (projectile.owner == Main.myPlayer)
+            {
+                Vector2 diff = mousePos - player.Center;
+                diff.Normalize();
+                projectile.velocity = diff;
+                if (projectile.ai[0] < 50f)
+                    projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
+                projectile.netUpdate = true;
+                projectile.Center = mousePos;
+            }
+
+            int dir = projectile.direction;
+            player.ChangeDir(dir);
+
+            projectile.Center = Owner.MountedCenter + new Vector2(0, -Owner.gravDir * 48f);
+
+            if (projectile.ai[0] < 1)
+            {
+                player.itemAnimationMax = 30;
+                if (player.itemTime < 30)
+                    player.itemTime = 30;
+                if (player.itemAnimation < 30)
+                    player.itemAnimation = 30;
+                player.itemRotation = (float)Math.Atan2(-32f * dir, 0f * dir);
+            }
+
+                projectile.ai[1] += 1;
+        }
+
+        public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+            Texture2D glow = ModContent.GetTexture("SGAmod/Glow");
+            Vector2[] spots = { projectile.Center, SGAUtils.SunPosition() + Main.screenPosition };
+
+            UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);
+
+            List<(float, float)> rots = new List<(float, float)>();
+
+            for (float f = 0; f < 1f; f += 0.05f)
+            {
+                rots.Add(((f + (Main.GlobalTime* rando.NextFloat(0.75f, 2f))) % 1f, rando.NextFloat(MathHelper.TwoPi) + (Main.GlobalTime * rando.NextFloat(-1f, 1f) * 0.01f)));
+            }
+
+            rots = rots.OrderBy(testby => testby.Item1).ToList();
+
+            foreach ((float, float) rotter in rots)
+            {
+                Color clorsz = Skylight.SkyLightColors[Owner.SGAPly().skylightLightInfused.Item2] * MathHelper.Clamp(projectile.ai[1] / 30f, 0f, Math.Min(projectile.timeLeft / 30f, 1f));
+                spriteBatch.Draw(glow, Vector2.Lerp(spots[0], spots[1], 1f-rotter.Item1) - Main.screenPosition, null, clorsz*MathHelper.Clamp(5f-(rotter.Item1*5f),0f,Math.Min((rotter.Item1 * 5f),1f)), rotter.Item2, glow.Size() / 2f, rotter.Item1, default, 0);
+            }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Texture2D tex = Main.projectileTexture[projectile.type];
+
+            Vector2[] spots = { projectile.Center, SGAUtils.SunPosition()+Main.screenPosition};
+            List<Vector2> trailPos = new List<Vector2>(spots);
+
+            TrailHelper trail = new TrailHelper("BasicEffectAlphaPass", ModContent.GetTexture("SGAmod/TrailEffect"));
+            //trail.projsize = projectile.Hitbox.Size() / 2f;
+            trail.coordOffset = new Vector2(0, Main.GlobalTime * 8f);
+            trail.coordMultiplier = new Vector2(1f, 3f);
+            trail.trailThickness = 8;
+            trail.trailThicknessIncrease = 12;
+            trail.perspective = false;
+            trail.strength = MathHelper.Clamp(projectile.Opacity, 0f, 1f) * 3f;
+            trail.color = delegate (float percent)
+            {
+                return Skylight.SkyLightColors[Owner.SGAPly().skylightLightInfused.Item2] * MathHelper.Clamp(projectile.ai[1]/30f,0f,Math.Min(projectile.timeLeft/30f,1f));
+            };
+            trail.DrawTrail(trailPos.ToList(), projectile.Center);
+
+            return false;
+
+        }
+    }
+
+        public class SkylightSlashProj : ModProjectile,IDrawAdditive,ITrueMeleeProjectile
     {
         private Vector2 skyhere;
         private Color color;
@@ -156,20 +397,31 @@ namespace SGAmod.Items.Weapons.Aurora
 
         public override bool CanDamage()
         {
-            return Math.Abs(projectile.timeLeft-TimeToHitWindow.Item2)>TimeToHitWindow.Item1;
+            return Math.Abs(projectile.timeLeft-TimeToHitWindow.Item2)<TimeToHitWindow.Item1;
         }
 
         Player Owner => Main.player[projectile.owner];
+        SGAPlayer Sgaply => Owner.SGAPly();
 
         float TimeLeft => 100f;
-        (int,int) TimeToHitWindow => (10,45);
+        (int,int) TimeToHitWindow => (15,55);
+
+        float BuffTimer => MathHelper.Clamp((Sgaply.skylightLightInfused.Item1 / (float)Skylight.MaxSkylight) * 5f, 0f, 1f);
 
         Vector3 TrueLocation
         {
             get
             {
                 Matrix swingAround = Matrix.CreateFromYawPitchRoll((-MathHelper.PiOver2*1.80f)+(MathHelper.Pi*(projectile.localAI[0]/ TimeLeft))*1.50f,0,0);
-                Matrix swingUpOrDown = swingAround*Matrix.CreateFromYawPitchRoll(0, projectile.ai[0], 0)*Matrix.CreateScale(new Vector3((projectile.velocity.Length()/1f),2f,1f));
+
+                float rangeboost = 1f;
+                if (Sgaply.skylightLightInfused.Item2 == 1)
+                    rangeboost = 1f+(BuffTimer * 1.00f);
+                if (Sgaply.skylightLightInfused.Item2 == 2)
+                    rangeboost = 1f + (1.50f*(BuffTimer * (1f-(Owner.statLife/(float)Owner.statLifeMax2))));
+
+
+                Matrix swingUpOrDown = swingAround*Matrix.CreateFromYawPitchRoll(0, projectile.ai[0], 0)*Matrix.CreateScale(new Vector3((projectile.velocity.Length()/1f)*rangeboost, 2f,1f));
 
                 Vector3 transformation = Vector3.Transform(Vector3.UnitX, swingUpOrDown) * 64f;
 
@@ -190,31 +442,61 @@ namespace SGAmod.Items.Weapons.Aurora
             }
         }
 
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            if (Sgaply.skylightLightInfused.Item1 > 0)
+            {
+                if (Sgaply.skylightLightInfused.Item2 == 0)
+                {
+                    target.AddBuff(BuffID.Daybreak, (int)(200f * BuffTimer));
+                    target.AddBuff(ModContent.BuffType<LavaBurn>(), (int)(200f * BuffTimer));
+                }
+                if (Sgaply.skylightLightInfused.Item2 == 1)
+                {
+                    target.AddBuff(ModContent.BuffType<MoonLightCurse>(), (int)(200f * BuffTimer));
+                }
+                if (Sgaply.skylightLightInfused.Item2 == 2)
+                {
+                    Projectile projectile2 = new Projectile();
+                    projectile2.Center = target.Center;
+                    projectile2.owner = projectile.owner;
+                    projectile2.vampireHeal((int)(80), target.Center);
+                }
+
+            }
+        }
+
 
         public override void AI()
         {
-
             projectile.localAI[0]++;
 
             if (projectile.ai[0] == 0)
             {
                 projectile.ai[0] = Main.rand.NextFloat(-MathHelper.Pi * 0.25f, MathHelper.Pi * 0.25f);
                 projectile.netUpdate = true;
+
+                Sgaply.skylightLightInfused.Item1 = Math.Max(Sgaply.skylightLightInfused.Item1- Skylight.SkylightCostPerSlash, 0);
+
                 for(int i = 0; i < oldPos.Length; i++)
                 {
                     oldPos[i] = TrueLocation-Vector3.Normalize(new Vector3(projectile.velocity.X, projectile.velocity.Y,0) * i*320f);
                 }
             }
 
-            if (projectile.timeLeft == 200)
+            if (projectile.timeLeft == 50)
             {
                 Main.PlaySound(SoundID.NPCHit, (int)projectile.Center.X, (int)projectile.Center.Y, 5, 0.25f, -0.85f);
             }
+
             if (skyhere == default && Main.netMode != NetmodeID.Server)
             {
+                Color otherColor = Skylight.SkyLightColors[Sgaply.skylightLightInfused.Item2];
+
+
                 float colorz = Main.rand.NextFloat();
-                color = Main.hslToRgb(colorz, 0.50f, 0.50f);
-                color2 = Main.hslToRgb((colorz + 0.10f) % 1f, 0.50f, 0.75f);
+                color = Color.Lerp(Main.hslToRgb(colorz, 0.60f, 0.80f),otherColor, BuffTimer);
+                color2 = Main.hslToRgb((colorz + 0.10f) % 1f, 0.40f, 0.90f);
                 skyhere = Main.screenPosition + new Vector2(Main.rand.Next(Main.screenWidth) + Main.rand.Next(-128, 129), Main.rand.Next(-200, 128));
             }
 

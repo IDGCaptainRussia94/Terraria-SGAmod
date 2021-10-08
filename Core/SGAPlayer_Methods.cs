@@ -546,7 +546,7 @@ namespace SGAmod
 							CorrodedShieldProj modShieldProj = proj.modProjectile as CorrodedShieldProj;
 							if (modShieldProj == null)
 								return false;
-							int blocktime = modShieldProj.blocktimer;
+							int blocktime = modShieldProj.Blocktimer;
 							bool blocking = modShieldProj.Blocking;
 							if (proj == null || blocktime < 2 || !blocking)
 								continue;// return false;
@@ -559,7 +559,7 @@ namespace SGAmod
 							float diff = Vector2.Dot(itavect, ang1);
 
 
-							if (diff > (proj.modProjectile as CorrodedShieldProj).BlockAnglePublic)
+							if (diff > (proj.modProjectile as CorrodedShieldProj).BlockAnglePublic-player.SGAPly().shieldBlockAngle)
 							{
 								if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
 									return true;

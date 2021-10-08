@@ -360,7 +360,7 @@ namespace SGAmod.Tiles.TechTiles
                 if (sound != null)
                     sound.Pitch += 0.50f;
 
-                if (Main.netMode == 1)
+                if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
                     NetMessage.SendTileSquare(Main.myPlayer, Position.X, Position.Y, 2);
                     NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, Position.X, Position.Y, Type, 0f, 0, 0, 0);
@@ -395,7 +395,7 @@ namespace SGAmod.Tiles.TechTiles
                 if (sound != null)
                     sound.Pitch -= 0.50f;
 
-                if (Main.netMode == 1)
+                if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
                     NetMessage.SendTileSquare(Main.myPlayer, Position.X, Position.Y, 2);
                     NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, Position.X, Position.Y, Type, 0f, 0, 0, 0);
@@ -523,6 +523,7 @@ namespace SGAmod.Tiles.TechTiles
                 }
             }
 
+            //This obviously doesn't show up, as Update is Server End only, need to find another way :/
             if (Main.netMode < NetmodeID.Server)
             {
                 if (clientChargingTimer > 0)

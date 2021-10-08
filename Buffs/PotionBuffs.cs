@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 using SGAmod.NPCs;
 using Idglibrary;
 using AAAAUThrowing;
+using System.Linq;
 
 namespace SGAmod.Buffs
 {
@@ -205,7 +206,55 @@ namespace SGAmod.Buffs
 			player.SGAPly().electricrechargerate += 1;
 			player.SGAPly().electricChargeReducedDelay *= 0.5f;
 		}
-	}	
+	}
+
+	public class PhalanxPotionBuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Phalanx Potion");
+			Description.SetDefault("Shield block angle is improved!\n+8 defense per nearby player holding a shield");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			canBeCleared = false;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			foreach(Player player2 in Main.player.Where(testby => testby.active && !testby.dead && (testby.Center-player.Center).LengthSquared()<600*600 && testby.HeldItem != null && testby.HeldItem.modItem != null && testby.HeldItem.modItem is IShieldItem))
+			{
+				player.statDefense += 8;
+            }
+			player.SGAPly().shieldBlockAngle += 0.15f;
+		}
+	}
+
+	public class ReflexPotionBuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Buff_" + BuffID.PaladinsShield;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Reflex Potion");
+			Description.SetDefault("React for longer with your shield to Just Block!");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			canBeCleared = false;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().shieldBlockTime += 10;
+		}
+	}
+
 	public class ConsumeHellBuff : ModBuff
 	{
 

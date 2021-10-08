@@ -754,6 +754,59 @@ namespace SGAmod
 				ammount -= subanditem[1];
 			}
 		}
+
+		public static int[] GetCoins(int ammount2)
+		{
+			int[] ammountsOfCoins = new int[4];
+			int ammount = ammount2/5;
+
+
+				/*subanditem = new int[] { ItemID.CopperCoin, 1 };
+				if (ammount >= 100)
+					subanditem = new int[] { ItemID.SilverCoin, 100 };
+				if (ammount >= 10000)
+					subanditem = new int[] { ItemID.GoldCoin, 10000 };
+				if (ammount >= 1000000)
+					subanditem = new int[] { ItemID.PlatinumCoin, 1000000 };*/
+
+				ammountsOfCoins[0] = ammount % 100;
+				ammountsOfCoins[1] = (ammount / 100) % 100;
+				ammountsOfCoins[2] = (ammount / 10000) % 100;
+				ammountsOfCoins[3] = (ammount / 1000000) % 100;
+			
+
+			return ammountsOfCoins;
+
+		}
+
+		public static void DropFixedItemQuanity(int[] itemtypes, int quanity, Vector2 position, Player player = default)
+		{
+			int[] itemtypes2 = new int[itemtypes.Length];
+
+			for (int i = 0; i < quanity; i += 1)
+			{
+				itemtypes2[Main.rand.Next(itemtypes.Length)] += 1;
+			}
+
+			if (player == default)
+			{
+
+				for (int i = 0; i < itemtypes2.Length; i += 1)
+				{
+					if (itemtypes2[i] > 0)
+						Item.NewItem(position, itemtypes[i], itemtypes2[i]);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < itemtypes2.Length; i += 1)
+				{
+					if (itemtypes2[i] > 0)
+						player.QuickSpawnItem(itemtypes[i], itemtypes2[i]);
+				}
+			}
+		}
+
 		public static float InverseLerp(float from, float to, float percent, bool clampedValue = false)
 		{
 			if (clampedValue)
@@ -784,15 +837,78 @@ namespace SGAmod
 			return (percent - from) / (to - from);
 		}
 
+		//A class made from Turing's Bezier Curve method, this time, with permission!
+		public class BezierCurveTuring
+		{
+			public bool wind = false;
+			public Vector2[] ControlPoints;
+
+			public BezierCurveTuring(params Vector2[] controlPoints)
+			{
+				this.ControlPoints = controlPoints;
+			}
+
+			public BezierCurveTuring(List<Vector2> controlPoints)
+			{
+				this.ControlPoints = controlPoints.ToArray();
+			}
+
+			public Vector2 BezierCurve(float T)
+			{
+				if (T < 0f)
+				{
+					T = 0f;
+				}
+				if (T > 1f)
+				{
+					T = 1f;
+				}
+				return PrivateBezierCurve(ControlPoints, 1f - T) + (wind ? new Vector2(T * Main.windSpeed * 128f * Main.maxRaining, 0) : Vector2.Zero);
+			}
+
+			private Vector2 PrivateBezierCurve(Vector2[] bezierPoints, float bezierProgress)
+			{
+				if (bezierPoints.Length == 1)
+				{
+					return bezierPoints[0];
+				}
+				Vector2[] array = new Vector2[bezierPoints.Length - 1];
+				for (int i = 0; i < bezierPoints.Length - 1; i++)
+				{
+					array[i] = bezierPoints[i] * bezierProgress + bezierPoints[i + 1] * (1f - bezierProgress);
+				}
+				return PrivateBezierCurve(array, bezierProgress);
+			}
+		}
 		public static Vector2 SunPosition()
 		{
-			Color white = Color.White;
 
 			int bgTop = (int)((double)(0f - Main.screenPosition.Y) / (Main.worldSurface * 16.0 - 600.0) * 200.0);
 			if (Main.gameMenu || Main.netMode == NetmodeID.Server)
 			{
 				bgTop = -200;
 			}
+
+			if (!Main.dayTime)
+            {
+				int num23 = (int)(Main.time / 32400.0 * (double)(Main.screenWidth + Main.moonTexture[0].Width * 2)) - Main.moonTexture[0].Width;
+				int num24 = 0;
+
+				if (Main.time < 16200.0)
+				{
+					double num28 = Math.Pow(1.0 - Main.time / 32400.0 * 2.0, 2.0);
+					num24 = (int)((double)bgTop + num28 * 250.0 + 180.0);
+				}
+				else
+				{
+					double num28 = Math.Pow((Main.time / 32400.0 - 0.5) * 2.0, 2.0);
+					num24 = (int)((double)bgTop + num28 * 250.0 + 180.0);
+				}
+
+				return new Vector2(num23, num24+Main.moonModY);
+
+			}
+
 			float rotation3 = (float)(Main.GlobalTime / 54000.0) * 2f - 7.3f;
 
 			int num151 = (int)(Main.time / 54000.0 * (double)(Main.screenWidth + Main.sunTexture.Width * 2)) - Main.sunTexture.Width;

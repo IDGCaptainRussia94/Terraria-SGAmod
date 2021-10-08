@@ -361,10 +361,14 @@ namespace SGAmod.NPCs.Wraiths
 				if (SGAWorld.downedWraiths > 2)
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("LuminiteWraithNotch"));
 			}
-			for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
+
+			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
+
+			/*for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0, types.Count)]);
-			}
+			}*/
+
 			Achivements.SGAAchivements.UnlockAchivement("Luminite Wraith", Main.LocalPlayer);
 			if (Main.expertMode)
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CosmicFragment"));

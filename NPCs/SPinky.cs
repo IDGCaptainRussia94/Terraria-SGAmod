@@ -1969,14 +1969,14 @@ namespace SGAmod.NPCs
 							itz = Idglib.Shattershots(npc.Center, P.Center.RotatedBy(MathHelper.ToRadians(180), npc.Center), new Vector2(0, 0), ProjectileID.SaucerMissile, 50, 15f, 180, 1, true, 0, false, 400);
 							itz[0].localAI[1] = -10;*/
 
-							if (generalcounter % 400 == 30)
+							if (generalcounter % 400 == 300)
 							{
 								Projectile proj = Projectile.NewProjectileDirect(npc.Center, Vector2.Zero, ModContent.ProjectileType<PinkyRingAttack>(), 150, 0f);
 								if (proj != null)
 								{
 									proj.ai[0] = Main.rand.Next(-300, 0);
-									(proj.modProjectile as PinkyRingAttack).maxTime = 250;
-									proj.timeLeft = 250;
+									(proj.modProjectile as PinkyRingAttack).maxTime = 600;
+									proj.timeLeft = 600;
 									(proj.modProjectile as PinkyRingAttack).ringSize = 36;
 									proj.netUpdate = true;
 								}
@@ -2792,7 +2792,7 @@ namespace SGAmod.NPCs
 
 		public override bool CanDamage()
 		{
-			return FlashTimer > 0 && projectile.timeLeft > 60 && projectile.localAI[0]>60;
+			return FlashTimer > 0 && projectile.timeLeft > 60 && projectile.localAI[0]>120;
 		}
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -2804,7 +2804,7 @@ namespace SGAmod.NPCs
 		{
 			Texture2D mainTex = Main.projectileTexture[projectile.type];
 			Effect RadialEffect = SGAmod.RadialEffect;
-			float alpha = MathHelper.Clamp(projectile.timeLeft / 60f, 0f, 0.50f+MathHelper.Clamp(FlashTimer,-0.25f,0.50f))*Math.Min((projectile.localAI[0]-30f)/30f,1f);
+			float alpha = MathHelper.Clamp(projectile.timeLeft / 60f, 0f, 0.50f+MathHelper.Clamp(FlashTimer,-0.25f,0.50f))*Math.Min((projectile.localAI[0]-0f)/20f,1f);
 			Vector2 half = mainTex.Size() / 2f;
 
 			Main.spriteBatch.End();

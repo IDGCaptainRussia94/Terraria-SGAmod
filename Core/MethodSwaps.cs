@@ -47,6 +47,7 @@ namespace SGAmod
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
 			On.Terraria.Player.AddBuff += Player_AddBuff;
+            On.Terraria.NPC.AddBuff += NPC_AddBuff;
             On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
 			On.Terraria.Player.DropSelectedItem += DontDropManifestedItems;
 			On.Terraria.Player.dropItemCheck += ManifestedPriority;
@@ -291,6 +292,16 @@ namespace SGAmod
 
 			}
 			orig(self);
+		}
+
+
+		private static void NPC_AddBuff(On.Terraria.NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
+		{
+			if (type == ModContent.BuffType<Buffs.DankSlow>() && self.buffImmune[BuffID.Poisoned])
+				return;
+
+			orig(self, type, time, quiet);
+
 		}
 
 		static private void Player_AddBuff(On.Terraria.Player.orig_AddBuff orig, Player self,int buff,int time,bool quiet)

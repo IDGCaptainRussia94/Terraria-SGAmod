@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using SGAmod.HavocGear.Items.Accessories;
 using SGAmod.HavocGear.Items.Weapons;
 using SGAmod.Items.Weapons;
@@ -118,10 +119,13 @@ namespace SGAmod.HavocGear.Items
 			types.Insert(types.Count, ItemID.SoulofFlight);
 			types.Insert(types.Count, ItemID.Coral);
 
+			/*
 			for (int f = 0; f < (Main.expertMode ? 150 : 75); f = f + 1)
 			{
 				player.QuickSpawnItem(types[Main.rand.Next(0, types.Count)]);
-			}
+			}*/
+
+			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 150 : 75,Vector2.Zero,player);
 
 			player.TryGettingDevArmor();
 			int lLoot = (Main.rand.Next(0, 4));

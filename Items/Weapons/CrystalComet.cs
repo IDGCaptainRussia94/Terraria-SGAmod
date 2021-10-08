@@ -32,7 +32,7 @@ namespace SGAmod.Items.Weapons
 			item.width = 24;
 			item.height = 24;
 			item.useTime = 40;
-			item.mana = 20;
+			item.mana = 50;
 			item.crit = 10;
 			item.useAnimation = 40;
 			item.useStyle = ItemUseStyleID.HoldingOut;
@@ -48,7 +48,8 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.CrystalStorm, 1); 
+			recipe.AddIngredient(ItemID.CrystalStorm, 1);
+			recipe.AddIngredient(ItemID.FragmentNebula, 8);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
 			recipe.AddTile(mod.TileType("PrismalStation"));
 			recipe.SetResult(this);

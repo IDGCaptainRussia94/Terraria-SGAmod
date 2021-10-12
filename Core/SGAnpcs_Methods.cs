@@ -148,7 +148,7 @@ namespace SGAmod
 					chance = 1;
 				if (projectile.magic)
 					chance = 2;
-				if (projectile.thrown)
+				if (projectile.thrown || projectile.Throwing().thrown)
 					chance = 3;
 			}
 			if (item != null)
@@ -165,7 +165,14 @@ namespace SGAmod
 			}
 			if (npc != null && (always || chance > -1))
 			{
-				if (always || Main.rand.Next(0, 100) < moddedplayer.apocalypticalChance[chance] && crit)
+
+				double chanceboost = 0;
+				if (projectile != null)
+                {
+					chanceboost += projectile.GetGlobalProjectile<SGAprojectile>().extraApocoChance;
+				}
+
+				if (always || Main.rand.Next(0, 100) < (moddedplayer.apocalypticalChance[chance]+chanceboost) && crit)
 				{
 					if (moddedplayer.HoE && projectile != null)
 					{
@@ -203,8 +210,6 @@ namespace SGAmod
 						pos += new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height));
 						SGAUtils.SpawnCoins(pos, ammount, 10f + Math.Min(3f * mul, 20f));
 					}
-
-
 
 					if (moddedplayer.dualityshades)
 					{
@@ -286,6 +291,27 @@ namespace SGAmod
 					}
 
 					damage = (int)(damage * (3f + (moddedplayer.apocalypticalStrength - 1f)));
+
+					if (moddedplayer.magatsuSet && npc.HasBuff(ModContent.BuffType<Watched>()))
+					{
+						Projectile.NewProjectile(npc.Center,Vector2.Zero,ModContent.ProjectileType<Items.Armors.Magatsu.ExplosionDarkSectorEye>(),0,0);
+
+						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_WyvernScream, (int)projectile.Center.X, (int)projectile.Center.Y);
+						if (sound != null)
+							sound.Pitch = 0.925f;
+
+						foreach (NPC enemy in Main.npc.Where(testby => testby.active && !testby.dontTakeDamage && !testby.friendly && testby != npc && (testby.Center-npc.Center).LengthSquared()<400*400))
+                        {
+							int damazz = Main.DamageVar(damage);
+							enemy.StrikeNPC(damazz, 16, -enemy.spriteDirection, true);
+
+							if (Main.netMode != 0)
+							{
+								NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, npc.whoAmI, damazz, 16f, (float)1, 0, 0, 0);
+							}
+						}
+
+					}
 
 					if (effectText)
 					CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.DarkRed, "Apocalyptical!", true, false);
@@ -547,6 +573,7 @@ namespace SGAmod
 				if (item.type == mod.ItemType("Powerjack"))
 				{
 					player.HealEffect(25, false);
+					player.netLife = true;
 					player.statLife += 25;
 					if (player.statLife > player.statLifeMax2)
 					{

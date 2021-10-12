@@ -65,6 +65,7 @@ namespace SGAmod
 		public int molotovLimit = 0;
 		public float morespawns = 1f;
 		public int midasMoneyConsumed = 0;
+		public int manaBoost = 0;
 		public (int,byte) skylightLightInfused = (0,0);
 
 		//For holding Trap Weapons
@@ -116,7 +117,7 @@ namespace SGAmod
 		public bool vibraniumSetPlatform = false; public bool vibraniumSetWall = false;
 		public bool mudbuff = false; public bool alkalescentHeart = false; public bool jabALot = false; public bool NoHitCharm = false; public int NoHitCharmTimer = 0;
 		public int Havoc = 0;
-		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public (bool,float,bool, float) valkyrieSet = (false,0,false,0); public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0); public (bool,bool) jungleTemplarSet = (false,false);
+		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public (bool,float,bool, float) valkyrieSet = (false,0,false,0); public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0); public (bool,bool) jungleTemplarSet = (false,false); public bool magatsuSet = false;
 		public float SpaceDiverWings = 0f;
 		public int gamePadAutoAim = 0;
 		public int tidalCharm = 0;
@@ -130,6 +131,7 @@ namespace SGAmod
 		public int ninjaSash = 0;
 		public int shinobj = 0;
 		public int soldierboost = 0;
+		public bool voidEmbrancers = false;
 		public FlaskOfBlaze flaskBuff = default;
 		public (bool,int) snakeEyes = (false,0);
 		public (float, float) auraBoosts = (0, 0);
@@ -364,6 +366,7 @@ namespace SGAmod
 				grippingglovestimer -= 1;
 			}
 
+			voidEmbrancers = false;
 			twinesoffate = false;
 			jabALot = false;
 			glacialStone = false;
@@ -420,6 +423,7 @@ namespace SGAmod
 			valkyrieSet.Item1 = false;
 			valkyrieSet.Item3 = false;
 
+			magatsuSet = false;
 
 			illuminantSet = (0, illuminantSet.Item2);
 			novusStackBoost = false;
@@ -1471,7 +1475,6 @@ namespace SGAmod
 					}
 				}
 
-
 			}
 
 			if (player.ownedProjectileCounts[mod.ProjectileType("TimeEffect")] < 1 && MatrixBuffp)
@@ -1559,6 +1562,8 @@ namespace SGAmod
 				skillMananger.PostUpdateEquips();
 
 			mspeed = player.meleeSpeed;
+			player.manaRegenBonus += manaBoost;
+			manaBoost = 0;
 			modcheckdelay = true;
 		}
 
@@ -1746,7 +1751,7 @@ namespace SGAmod
 				{
 					player.honeyWet = true;
 					player.wet = true;
-					foreach(Player player2 in Main.player.Where(playertest => playertest.active && !playertest.dead && playertest.team == player.team && playertest.Distance(player.Center)<160))
+					foreach(Player player2 in Main.player.Where(playertest => playertest.active && !playertest.dead && player.IsAlliedPlayer(playertest) && playertest.Distance(player.Center)<160))
 						player2.AddBuff(BuffID.Honey, 60 * 5);
 				}
 			}
@@ -1889,6 +1894,10 @@ namespace SGAmod
 			{
 				float power = (sga.toxicity * 3f) + player.thorns + (npc2.HasBuff(BuffID.Stinky) ? 2 : 0);
 				npc2.StrikeNPC((int)(damage * power), power, npc2.direction);
+				if (Main.netMode != 0)
+				{
+					NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, npc2.whoAmI, (int)(damage * power), 16f, (float)1, 0, 0, 0);
+				}
 			}
 			string[] aBunchOfSwearWords = { "Shit", "Fuck", "Bitch", "Cunt", "Asshole" };//no, I'm not using the N-word here, I have stadards unlike the low IQ people this item mimics
 			CombatText.NewText(new Rectangle((int)location.X, (int)location.Y, 0,0), Color.Red, aBunchOfSwearWords[Main.rand.Next(aBunchOfSwearWords.Length)], true, true);

@@ -9,9 +9,8 @@ using SGAmod.Items.Weapons.SeriousSam;
 
 namespace SGAmod.Items.Weapons
 {
-	public class FSRG : ModItem// Vibranium.VibraniumText
+	public class FSRG : Vibranium.VibraniumText
     {
-		private int varityshot=0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("F.S.R.G");
@@ -50,9 +49,6 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-
-			varityshot+=1;
-			varityshot%=3;
 
 			float speed=1.5f;
 			float numberProjectiles = 1;

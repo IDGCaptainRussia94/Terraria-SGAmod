@@ -2774,7 +2774,7 @@ namespace SGAmod.NPCs
 			projectile.damage = 20;
 		}
 
-		float FlashTimer => (float)Math.Sin((projectile.ai[0] / (float)flashTime) * MathHelper.TwoPi);
+		float FlashTimer => (float)Math.Sin((projectile.ai[0] / (float)flashTime) * MathHelper.TwoPi);		
 
 		public override void AI()
 		{

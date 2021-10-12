@@ -48,7 +48,7 @@ namespace SGAmod.Tiles.TechTiles
             //TileObjectData.newTile.StyleWrapLimit = 36;
             TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<LuminousAlterTE>().Hook_AfterPlacement, -1, 0, true);
             TileObjectData.addTile(Type);
-            adjTiles = new int[] { TileID.TinkerersWorkbench };
+            //adjTiles = new int[] { TileID.TinkerersWorkbench };
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Luminous Alter");
             //name.AddTranslation(GameCulture.Chinese, "烤炉");

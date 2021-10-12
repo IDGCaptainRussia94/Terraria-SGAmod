@@ -32,8 +32,8 @@ namespace SGAmod.Items.Weapons
 			item.width = 24;
 			item.height = 24;
 			item.useTime = 40;
-			item.mana = 50;
-			item.crit = 10;
+			item.mana = 60;
+			item.crit = 0;
 			item.useAnimation = 40;
 			item.useStyle = ItemUseStyleID.HoldingOut;
 			item.noMelee = true; //so the item's animation doesn't do damage
@@ -49,8 +49,8 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.CrystalStorm, 1);
-			recipe.AddIngredient(ItemID.FragmentNebula, 8);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 15);
 			recipe.AddTile(mod.TileType("PrismalStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

@@ -227,7 +227,7 @@ namespace SGAmod.Items.Consumable
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "BottledMud", 2);
 			recipe.AddIngredient(null, "VirulentOre", 2);
-			recipe.AddIngredient(null, "DankWood", 8);
+			recipe.AddIngredient(null, "DankWood", 6);
 			recipe.AddIngredient(null, "DankCore", 1);
 			recipe.AddIngredient(null, "VialofAcid", 4);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
@@ -563,11 +563,12 @@ namespace SGAmod.Items.Consumable
 			for (int i = 0; i < 2; i += 1)
 			{
 				ModRecipe recipe = new ModRecipe(mod);
+				recipe.AddIngredient(ItemID.IronskinPotion, 1);
 				recipe.AddIngredient(ModContent.ItemType<BottledMud>(), 1);
-				recipe.AddIngredient(ModContent.ItemType<Biomass>(), 2);
-				recipe.AddIngredient(i == 0 ? ItemID.SilverOre : ItemID.TungstenOre, 3);
+				recipe.AddIngredient(ModContent.ItemType<Glowrock>(), 4);
+				recipe.AddIngredient(i == 0 ? ItemID.SilverOre : ItemID.TungstenOre, 2);
 				recipe.AddTile(TileID.Bottles);
-				recipe.SetResult(this, 1);
+				recipe.SetResult(this, 2);
 				recipe.AddRecipe();
 			}
 		}
@@ -601,9 +602,9 @@ namespace SGAmod.Items.Consumable
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.SwiftnessPotion, 1);
 			recipe.AddIngredient(ItemID.Ale, 1);
-			recipe.AddIngredient(ModContent.ItemType<VirulentOre>(), 2);
-			recipe.AddIngredient(ModContent.ItemType<Glowrock>(), 4);
+			recipe.AddIngredient(ModContent.ItemType<Biomass>(), 2);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

@@ -103,7 +103,7 @@ namespace SGAmod.Dimensions.NPCs
             {
                 if (!sound)
                 {
-                    List<Player> players = Main.player.Where(playercheck => playercheck != null && playercheck.active && (!playercheck.invis || playercheck.itemTime>0) && !playercheck.dead && playercheck.Distance(watcher.npc.Center) < (distance+playercheck.SGAPly().watcherDebuff)
+                    List<Player> players = Main.player.Where(playercheck => playercheck != null && playercheck.active && (!playercheck.invis || playercheck.itemTime>0) && !playercheck.dead && !playercheck.SGAPly().magatsuSet && playercheck.Distance(watcher.npc.Center) < (distance+playercheck.SGAPly().watcherDebuff)
                    && (!checkwalls || Collision.CanHitLine(playercheck.Center, 1, 1, watcher.npc.Center, 1, 1))).ToList();
                     players = players.OrderBy(playercheck2 => playercheck2.Distance(watcher.npc.Center)).ToList();
 
@@ -339,6 +339,8 @@ namespace SGAmod.Dimensions.NPCs
     public class SpookyDarkSectorEye : ModProjectile, IPostEffectsDraw
     {
         public Player P;
+        public Vector2 lookat = default;
+        public float eyeDist = 4;
 
         public override string Texture
         {
@@ -390,7 +392,7 @@ namespace SGAmod.Dimensions.NPCs
             return false;
         }
 
-        public void PostEffectsDraw(SpriteBatch spriteBatch,float drawScale = 2f)
+        public virtual void PostEffectsDraw(SpriteBatch spriteBatch,float drawScale = 2f)
         {
 
             float alpha = 1f;
@@ -416,7 +418,7 @@ namespace SGAmod.Dimensions.NPCs
                 float scale = (1f + (projectile.ai[0] < 0 ? -projectile.ai[0] / drawScale : 0)) * (2f / drawScale);
 
                 spriteBatch.Draw(tex, drawPos, rect, Color.GreenYellow * coloralpha * 0.75f * alpha, projectile.rotation, drawOrigin, projectile.scale * 1f * scale, SpriteEffects.None, 0f);
-                spriteBatch.Draw(tex, drawPos + (P == null ? Vector2.Zero : (Vector2.Normalize(P.Center - projectile.Center) * 4)), recteye, Color.White * coloralpha * alpha, projectile.rotation, drawOrigin, projectile.scale * scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, drawPos + (lookat == default ? Vector2.Zero : (Vector2.Normalize(lookat - projectile.Center) * eyeDist)), recteye, Color.White * coloralpha * alpha, projectile.rotation, drawOrigin, projectile.scale * scale, SpriteEffects.None, 0f);
             }
         }
 
@@ -451,7 +453,6 @@ namespace SGAmod.Dimensions.NPCs
                 }
                 if (projectile.ai[0] < -120)
                 {
-
                     projectile.Kill();
                 }
 
@@ -477,6 +478,7 @@ namespace SGAmod.Dimensions.NPCs
             if (projectile.ai[0] > 600)
             {
                 P = Main.player[Player.FindClosest(projectile.Center, 1, 1)];
+                lookat = P.Center;
                 if (P != null && P.active && !P.dead)
                 {
                     projectile.velocity += ((P.Center - projectile.Center) * ((1f + projectile.ai[0] / 50f)) / 8000f) * Math.Min((projectile.ai[0] - 600) / 1000f, 1f);

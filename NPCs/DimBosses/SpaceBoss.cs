@@ -2001,6 +2001,9 @@ namespace SGAmod.Dimensions.NPCs
 		public void AlterSky(SpaceSky sky, int index, SpriteBatch spriteBatch, float minDepth, float maxDepth)
 		{
 
+			if (Sleeping && (Main.LocalPlayer.Center - npc.Center).LengthSquared() > 2000 * 2000)
+				return;
+
 			if (index == 1 && Activestate)
             {
 				Texture2D sunray = SGAmod.ExtraTextures[116];
@@ -2150,6 +2153,10 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
+			if (Sleeping && (Main.LocalPlayer.Center - npc.Center).LengthSquared() > 2000 * 2000)
+				return false;
+
+
 			Texture2D firerock = ModContent.GetTexture("SGAmod/Projectiles/FieryRock");
 			Texture2D rocksmall = mod.GetTexture("Dimensions/Space/OverseenHead");
 			Texture2D rocklarge = mod.GetTexture("Dimensions/Space/GlowAsteriod");

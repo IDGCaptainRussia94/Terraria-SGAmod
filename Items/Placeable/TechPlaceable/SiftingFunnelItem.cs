@@ -36,10 +36,10 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Extractinator, 1);
-			recipe.AddIngredient(ModContent.ItemType<HopperItem>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<HopperItem>(), 3);
 			recipe.AddIngredient(ItemID.MetalShelf, 10);
 			recipe.AddTile(ModContent.TileType<Tiles.ReverseEngineeringStation>());
-			recipe.SetResult(this, 1);
+			recipe.SetResult(this, 3);
 			recipe.AddRecipe();
 		}
 	}

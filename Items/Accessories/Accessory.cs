@@ -2036,14 +2036,14 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.SlimySaddle, 1);
-			recipe.AddIngredient(mod.ItemType("Entrophite"), 50);
+			recipe.AddIngredient(ModContent.ItemType<WovenEntrophite>(), 50);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.HardySaddle, 1);
-			recipe.AddIngredient(mod.ItemType("Entrophite"), 50);
+			recipe.AddIngredient(ModContent.ItemType<WovenEntrophite>(), 40);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -2166,8 +2166,8 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ModContent.ItemType<DiesIraeStone>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<OmegaSigil>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<MoneySign>(), 15);
-			recipe.AddIngredient(mod.ItemType("StygianCore"), 3);
-			recipe.AddIngredient(mod.ItemType("Entrophite"), 200);
+			recipe.AddIngredient(ModContent.ItemType<StygianCore>(), 3);
+			recipe.AddIngredient(ModContent.ItemType<WovenEntrophite>(), 100);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -2401,7 +2401,54 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	public class VoidEmbracers : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Void Em'Bracers");
+			Tooltip.SetDefault("'you don't shrivel up, you embrace your lost vitality'\nGrants 1 defense for every 25 HP lost\nGrants 1 defense for every 10 max HP lost");
+		}
 
+        public override bool Autoload(ref string name)
+        {
+			SGAPlayer.PostUpdateEquipsEvent += PostUpdateAccessories;
+			return true;
+        }
+
+        public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.Lime;
+			item.value = Item.buyPrice(0, 1, 0, 0);
+			item.accessory = true;
+		}
+
+        public override void UpdateAccessory(Player player, bool hideVisual)
+        {
+			player.SGAPly().voidEmbrancers = true;
+		}
+
+        private void PostUpdateAccessories(SGAPlayer sgaply)
+		{
+			if (sgaply.voidEmbrancers)
+			{
+				sgaply.player.statDefense += (int)(sgaply.player.GetModPlayer<IdgPlayer>().radationAmmount / 10f);
+				sgaply.player.statDefense += (int)((sgaply.player.statLifeMax2 - sgaply.player.statLife) / 25);
+			}
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<UnmanedBar>(), 8);
+			recipe.AddIngredient(ModContent.ItemType<WovenEntrophite>(), 40);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
 
 	public class DiesIraeStone : ModItem
 	{

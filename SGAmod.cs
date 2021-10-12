@@ -174,7 +174,6 @@ namespace SGAmod
 		public static byte SkillRun = 1;
 		public static int RecipeIndex = 0;
 		public static float fogAlpha = 1f;
-
 		public static Effect TrailEffect;
 		public static Effect HallowedEffect;
 		public static Effect TrippyRainbowEffect;
@@ -203,10 +202,11 @@ namespace SGAmod
 					SGAmod.filePath = "/home/" + userName + "/.local/share/Terraria/ModLoader/SGAmod";
 					return 1;
 				case PlatformID.MacOSX:
-					SGAmod.filePath = "/Users/" + userName + "/Library/Application Support/Terraria/ModLoader";
+					SGAmod.filePath = "/Users/" + userName + "/Library/Application Support/Terraria/ModLoader/SGAmod";
 					return 2;
 				default:
-					Logger.Error("SGAmod cannot detect your OS, files might not be saved in the right places");
+					SGAmod.filePath = Main.SavePath+ "/ModLoader/SGAmod";
+					Logger.Error("SGAmod cannot detect your OS, files might not be saved in the right places, trying default path");
 					break;
 			}
 			return -1;
@@ -429,7 +429,8 @@ namespace SGAmod
 			AddItem("MusicBox_Creepy", new SGAItemMusicBox("MusicBox_Creepy", "Creepy", "???", "Unknown"));
 			AddItem("MusicBox_Cirno", new SGAItemMusicBox("MusicBox_Cirno", "Cirno", "Algid Action", "Rijam"));
 			AddItem("MusicBox_Space", new SGAItemMusicBox("MusicBox_Space", "Space", "Asteriod Expanse", "Rijam"));
-			AddItem("MusicBox_SpaceBoss", new SGAItemMusicBox("MusicBox_SpaceBoss", "Space Boss", "Meteoroid Barrage", "Rijam"));
+			AddItem("MusicBox_SpaceBoss", new SGAItemMusicBox("MusicBox_SpaceBoss", "Phaethon", "Meteoroid Barrage", "Rijam"));
+			AddItem("MusicBox_Cratrosity", new SGAItemMusicBox("MusicBox_Cratrosity", "Cratrosity", "A Perilous Venture", "Rijam"));
 
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Murk"), ItemType("MusicBox_Boss2Remix"), TileType("MusicBox_Boss2Remix"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Swamp"), ItemType("MusicBox_Swamp"), TileType("MusicBox_Swamp"));
@@ -441,6 +442,7 @@ namespace SGAmod
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cirno_v2"), ItemType("MusicBox_Cirno"), TileType("MusicBox_Cirno"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space"), ItemType("MusicBox_Space"), TileType("MusicBox_Space"));
 			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space_Boss"), ItemType("MusicBox_SpaceBoss"), TileType("MusicBox_SpaceBoss"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cratrosity"), ItemType("MusicBox_Cratrosity"), TileType("MusicBox_Cratrosity"));
 
 			AddTile("PrismalBarTile", new BarTile("PrismalBar", "Prismal Bar", new Color(210, 0, 100)), "SGAmod/Tiles/PrismalBarTile");
 			AddTile("UnmanedBarTile", new BarTile("UnmanedBar", "Novus Bar", new Color(70, 0, 40)), "SGAmod/Tiles/UnmanedBarTile");
@@ -449,7 +451,8 @@ namespace SGAmod
 			AddTile("VirulentBarTile", new BarTile("VirulentBar", "Virulent Bar", new Color(21, 210, 20)), "SGAmod/Tiles/VirulentBarTile");
 			AddTile("CryostalBarTile", new BarTile("CryostalBar", "Cryostal Bar", new Color(21, 60, 100)), "SGAmod/Tiles/CryostalBarTile");
 			AddTile("DrakeniteBarTile", new BarTile("DrakeniteBar", "Drakenite Bar", new Color(0, 240, 0)), "SGAmod/Tiles/DrakeniteBarTile");
-			AddTile("StarMetalBarTile", new BarTile("StarMetalBar", "Star Metal Bar", new Color(0, 240, 0)), "SGAmod/Tiles/StarMetalBarTile");
+			AddTile("StarMetalBarTile", new BarTile("StarMetalBar", "Star Metal Bar", new Color(244, 232, 250)), "SGAmod/Tiles/StarMetalBarTile");
+			AddTile("WovenEntrophiteTile", new BarTile("WovenEntrophite", "Woven Entrophite", new Color(32, 0, 32)), "SGAmod/Tiles/WovenEntrophiteTile");
 
 			//AddGore("SGAmod/Gores/CirnoHeadGore",new CirnoHeadGore);
 

@@ -823,7 +823,10 @@ namespace SGAmod.NPCs.Hellion
 				hell.flyspeed = 0.5f;
 				npc.dontTakeDamage = true;
 				if (hell.noescapeaurasize > 300)
+				{
 					hell.noescapeaurasize -= 10;
+					hell.teleportNet = 20;
+				}
 				if (hell.noescapeauravisualsize > 0.25f)
 					hell.noescapeauravisualsize -= 0.25f;
 
@@ -916,7 +919,10 @@ namespace SGAmod.NPCs.Hellion
 				hell.flytopos = hell.noescapeauraloc - P.Center;
 
 				if (npc.ai[1] < 3010 && npc.Distance(hell.noescapeauraloc) > 32)
+				{
 					npc.ai[1] = 3010;
+					hell.teleportNet = 20;
+				}
 
 				if (npc.ai[1] < 3000)
 				{
@@ -1695,6 +1701,7 @@ namespace SGAmod.NPCs.Hellion
 		public bool haspickedlaser=false;
 		bool wasinarmyphase = false;
 		public int topazingattack=0;
+		public int teleportNet = 0;
 		public virtual bool rematch => false;
 
 			public Hellion()
@@ -2196,6 +2203,7 @@ namespace SGAmod.NPCs.Hellion
 				npc.active = false;
 			}
 
+			teleportNet = (int)Math.Max(teleportNet, 0);
 
 			//List<Projectile> itz = Idglib.Shattershots(npc.Center, npc.Center + npc.velocity, new Vector2(0, 0), mod.ProjectileType("HellionBeam"), 15, 1f, 0, 1, true, 0f, false, 200);
 
@@ -2744,7 +2752,9 @@ namespace SGAmod.NPCs.Hellion
 					{
 					//nopuritymount
 					//Fine, you can have this one
-					/*if (bluemod != null) {
+
+					if (bluemod != null)
+					{
 						if (thatplayer.mount.Active && thatplayer.mount.Type == bluemod.MountType("PurityShield"))
 						{
 							thatplayer.mount.Dismount(thatplayer);
@@ -2754,7 +2764,7 @@ namespace SGAmod.NPCs.Hellion
 								nopuritymount = true;
 							}
 						}
-					}*/
+					}
 
 					if (army.Count>0)
 						{
@@ -2771,53 +2781,62 @@ namespace SGAmod.NPCs.Hellion
 							thatplayer.AddBuff(buff, 10);
 						}
 
-						/*if (army.Count > 30 && phase == 1)
+					/*if (army.Count > 30 && phase == 1)
+					{
+						int buff = ModLoader.GetMod("IDGLibrary").GetBuff("NullExceptionDebuff").Type;
+
+						if (!thatplayer.HasBuff(buff))
+							thatplayer.AddBuff(buff, 60 * 12);
+
+						if (npc.ai[0]%60==0)
+							thatplayer.AddBuff(buff, 60*1);
+
+					}
+
+						if (army.Count > 30 && phase == 3)
 						{
 							int buff = ModLoader.GetMod("IDGLibrary").GetBuff("NullExceptionDebuff").Type;
 
 							if (!thatplayer.HasBuff(buff))
-								thatplayer.AddBuff(buff, 60 * 12);
+								thatplayer.AddBuff(buff, 60 * 5);
 
-							if (npc.ai[0]%60==0)
-								thatplayer.AddBuff(buff, 60*1);
+							if (npc.ai[0] % 60 == 0)
+								thatplayer.AddBuff(buff, 60 * 1);
 
-						}
+						}*/
 
-							if (army.Count > 30 && phase == 3)
-							{
-								int buff = ModLoader.GetMod("IDGLibrary").GetBuff("NullExceptionDebuff").Type;
-
-								if (!thatplayer.HasBuff(buff))
-									thatplayer.AddBuff(buff, 60 * 5);
-
-								if (npc.ai[0] % 60 == 0)
-									thatplayer.AddBuff(buff, 60 * 1);
-
-							}*/
-
-			if (!rematch || noescapeaurasize<1950)
+					if (!rematch || noescapeaurasize < 1950)
 					{
 						Vector2 gohere = (noescapeauraloc - thatplayer.Center);
 						if (gohere.Length() > noescapeaurasize)
 						{
-							thatplayer.buffImmune[BuffID.Frozen] = false;
-							thatplayer.buffImmune[BuffID.Stoned] = false;
-							if (!rematch)
+							if (teleportNet > 0)
 							{
-								thatplayer.AddBuff(BuffID.Frozen, 3);
-								thatplayer.AddBuff(BuffID.Stoned, 3);
-							}
-							float dist = gohere.Length() - noescapeaurasize;
-							gohere.Normalize();
-							if (rematch)
-							{
-								thatplayer.AddBuff(BuffID.Dazed, 3);
-								thatplayer.AddBuff(BuffID.Suffocation, 3);
-								thatplayer.velocity = ((gohere * (300f+(dist/500f))) / 30f);
+								thatplayer.AddBuff(ModContent.BuffType<Buffs.InvincibleBuff>(), 150);
+								thatplayer.Teleport(noescapeauraloc + new Vector2(0, 128), 1);
 							}
 							else
 							{
-								thatplayer.velocity += ((gohere * dist) / 30f);
+
+								thatplayer.buffImmune[BuffID.Frozen] = false;
+								thatplayer.buffImmune[BuffID.Stoned] = false;
+								if (!rematch)
+								{
+									thatplayer.AddBuff(BuffID.Frozen, 3);
+									thatplayer.AddBuff(BuffID.Stoned, 3);
+								}
+								float dist = gohere.Length() - noescapeaurasize;
+								gohere.Normalize();
+								if (rematch)
+								{
+									thatplayer.AddBuff(BuffID.Dazed, 3);
+									thatplayer.AddBuff(BuffID.Suffocation, 3);
+									thatplayer.velocity = ((gohere * (300f + (dist / 500f))) / 30f);
+								}
+								else
+								{
+									thatplayer.velocity += ((gohere * dist) / 30f);
+								}
 							}
 						}
 					}

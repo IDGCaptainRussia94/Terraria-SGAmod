@@ -32,6 +32,7 @@ using Terraria.Utilities;
 using System.Reflection;
 using AAAAUThrowing;
 using System.Threading;
+using SGAmod.Buffs;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -708,6 +709,13 @@ namespace SGAmod
 		{
 			return player.GetModPlayer<SGAPlayer>();
 		}
+		public static bool IsAlliedPlayer(this Player player,Player otherplayer)
+		{
+			bool allied = true;
+			allied &= (otherplayer.team == player.team);
+
+			return allied;
+		}
 		public static SGAprojectile SGAProj(this Projectile proj)
 		{
 			return proj.GetGlobalProjectile<SGAprojectile>();
@@ -720,6 +728,11 @@ namespace SGAmod
 		public static bool NoInvasion(NPCSpawnInfo spawnInfo)
 		{
 			return !spawnInfo.invasion && ((!Main.pumpkinMoon && !Main.snowMoon) || spawnInfo.spawnTileY > Main.worldSurface || Main.dayTime) && (!Main.eclipse || spawnInfo.spawnTileY > Main.worldSurface || !Main.dayTime);
+		}
+
+		public static bool BlackListedBuffs(this Player player,int index)
+		{
+			return player.buffType[index] != BuffID.PotionSickness && player.buffType[index] != ModContent.BuffType<MatrixBuff>() && player.buffType[index] != ModContent.BuffType<DragonsMight>();
 		}
 
 		public static float ArrowSpeed(this Player player)

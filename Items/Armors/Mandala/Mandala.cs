@@ -17,12 +17,12 @@ namespace SGAmod.Items.Armors.Mandala
 			//if (GetType() == typeof(ValkyrieHelm))
 				//SGAPlayer.PostUpdateEquipsEvent += SetBonus;
 
-			return false;
+			return true;
         }
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mandala Hood");
-			Tooltip.SetDefault("+1 minion slots and 15% increased Summon damage and Summon weapon use Speed\nAdditional 10 defense and minion slot in Subworlds");
+			Tooltip.SetDefault("+1 minion slot\n15% increased Summon Damage and Summon weapon Use Speed\nAdditional 10 defense and minion slot in Subworlds");
 		}
 		public override void SetDefaults()
 		{
@@ -57,13 +57,13 @@ namespace SGAmod.Items.Armors.Mandala
 		public override void UpdateVanity(Player player, EquipType type)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-			if (!Main.dedServ && !Main.dayTime)
-				sgaplayer.armorglowmasks[0] = "SGAmod/Items/GlowMasks/" + Name + "";
+			if (!Main.dedServ)
+				sgaplayer.armorglowmasks[0] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 60);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 40);
 			recipe.AddIngredient(ModContent.ItemType<OmniSoul>(), 6);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
@@ -77,7 +77,7 @@ namespace SGAmod.Items.Armors.Mandala
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mandala Chestplate");
-			Tooltip.SetDefault("+2 minion slots and 20% increased summon damage and Summon weapon use Speed\nAdditional life regen in Subworlds");
+			Tooltip.SetDefault("+2 minion slots\n20% increased Summon Damage and Summon weapon Use Speed\nAdditional life regen in Subworlds");
 		}
 		public override void SetDefaults()
 		{
@@ -103,10 +103,10 @@ namespace SGAmod.Items.Armors.Mandala
 		public override void UpdateVanity(Player player, EquipType type)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-			if (!Main.dedServ && !Main.dayTime)
+			if (!Main.dedServ)
 			{
-				sgaplayer.armorglowmasks[1] = "SGAmod/Items/GlowMasks/" + Name + "";
-				sgaplayer.armorglowmasks[2] = "SGAmod/Items/GlowMasks/" + Name + "Arms";
+				sgaplayer.armorglowmasks[1] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
+				sgaplayer.armorglowmasks[2] = "SGAmod/Items/GlowMasks/" + Name + "_GlowArms";
 			}
 		}
 	}
@@ -117,7 +117,7 @@ namespace SGAmod.Items.Armors.Mandala
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mandala Leggings");
-			Tooltip.SetDefault("+1 minion slots and 15% increased summon damage and Summon weapon use Speed\nAdditional flying speed and wing time in Subworlds");
+			Tooltip.SetDefault("+1 minion slot\n15% increased Summon Damage and Summon weapon use Speed\nAdditional flying speed and wing time in Subworlds");
 		}
 		public override void SetDefaults()
 		{
@@ -137,8 +137,8 @@ namespace SGAmod.Items.Armors.Mandala
 		public override void UpdateVanity(Player player, EquipType type)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-			if (!Main.dedServ && !Main.dayTime)
-				sgaplayer.armorglowmasks[3] = "SGAmod/Items/GlowMasks/" + Name + "";
+			if (!Main.dedServ)
+				sgaplayer.armorglowmasks[3] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
 		}
 	}
 

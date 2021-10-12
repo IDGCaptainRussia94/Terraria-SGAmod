@@ -48,7 +48,8 @@ namespace SGAmod.Items.Weapons.Auras
 			{
 				AuraMinionBorealis shoot = Main.projectile[thetarget].modProjectile as AuraMinionBorealis;
 				tooltips.Add(new TooltipLine(mod, "Bonuses", "Power Level: "+ shoot.thepower));
-				tooltips.Add(new TooltipLine(mod, "Bonuses", "Passive: Grants life Regen per Power Level"));
+				tooltips.Add(new TooltipLine(mod, "Bonuses", "Passive: Grants life and Mana Regen per Power Level"));
+				tooltips.Add(new TooltipLine(mod, "Bonuses", "Erases debuffs on allies if you are immune to them"));
 
 				if (shoot.thepower >= 1.0)
 					tooltips.Add(new TooltipLine(mod, "Bonuses", "Lv1: Applies Betsy's Curse to enemies"));
@@ -64,7 +65,7 @@ namespace SGAmod.Items.Weapons.Auras
 		{
 			item.damage = 0;
 			item.knockBack = 3f;
-			item.mana = 10;
+			item.mana = 20;
 			item.width = 32;
 			item.height = 32;
 			item.useTime = 36;
@@ -153,11 +154,19 @@ namespace SGAmod.Items.Weapons.Auras
 					}
 				}
 			}
-			if (type is Player alliedplayer && alliedplayer.team == player.team)
+			if (type is Player alliedplayer && player.IsAlliedPlayer(alliedplayer))
 			{
 				alliedplayer.lifeRegen += (int)(thepower*2f);
-			}
+				alliedplayer.SGAPly().manaBoost += (int)(thepower * 15f);
 
+				foreach (int buffonotherplayer in alliedplayer.buffType)
+                {
+					if (player.buffImmune[buffonotherplayer])
+                    {
+						alliedplayer.DelBuff(alliedplayer.FindBuffIndex(buffonotherplayer));
+					}
+                }
+			}
 		}
 
 		public override void AuraEffects(Player player, int type)
@@ -168,6 +177,10 @@ namespace SGAmod.Items.Weapons.Auras
 			{
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+            else
+            {
+				//player.SGAPly().manaBoost += (int)(thepower * 15000f);
 			}
 
 			UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);

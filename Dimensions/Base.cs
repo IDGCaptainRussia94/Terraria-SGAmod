@@ -149,7 +149,6 @@ namespace SGAmod.Dimensions
             if (SpaceBoss.film.IsActive)
             {
                 player.AddBuff(ModContent.BuffType<Buffs.InvincibleBuff>(), 2);
-                player.SGAPly().invincible = true;
             }
 
 

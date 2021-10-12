@@ -98,6 +98,7 @@ namespace SGAmod
 		public byte crimsonCatastrophe = 0;
 		private int nonStackingImpaled_;
 		public int PinkyMinion = 0;
+		public int watched = 0;
 		public List<DamageStack> damageStacks = new List<DamageStack>();
 
 		public int nonStackingImpaled
@@ -174,6 +175,7 @@ namespace SGAmod
 			Napalm = false;
 			petrified = false;
 			noMovement = Math.Max(noMovement-1,0);
+			watched = Math.Max(watched - 1,0);
 			Sodden = false;
 			lavaBurn = false;
 			SunderedDefense = false;

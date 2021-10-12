@@ -669,10 +669,15 @@ namespace SGAmod.Items
 	}
 	public class Entrophite : ModItem
 	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Entrophite");
+			Tooltip.SetDefault("Corrupted beyond the veils of life");
+		}
 		public override void SetDefaults()
 		{
 			item.value = 100;
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.width = 16;
 			item.height = 16;
 			item.maxStack = 999;
@@ -685,13 +690,43 @@ namespace SGAmod.Items
 			item.createTile = ModContent.TileType<Dimensions.Tiles.EntrophicOre>();
 		}
 
+	}
+
+	public class WovenEntrophite : ModItem
+	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Entrophite");
-			Tooltip.SetDefault("Corrupted beyond the veils of life");
+			DisplayName.SetDefault("Woven Entrophite");
+			Tooltip.SetDefault("Suprisingly strong, after being interlaced with souls");
+		}
+
+		public override void SetDefaults()
+		{
+			item.value = 250;
+			item.rare = ItemRarityID.Lime;
+			item.width = 16;
+			item.height = 16;
+			item.maxStack = 999;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = mod.TileType("WovenEntrophiteTile");
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<OmniSoul>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 10);
+			recipe.AddTile(TileID.Loom);
+			recipe.SetResult(this, 10);
+			recipe.AddRecipe();
 		}
 
 	}
+
 	public class AdvancedPlating : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -1019,7 +1054,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Star Metal Bar");
-			Tooltip.SetDefault("A bar made from the remnants of the cosmos");
+			Tooltip.SetDefault("'This bar is a glimming white sliver that shimmers with stars baring the color of pillars'");
 		}
 		public override void SetDefaults()
 		{
@@ -1968,7 +2003,7 @@ namespace SGAmod.Items
 			float _Time; // Pass the time in seconds into here
 			*/
 
-			Texture2D tex = ModContent.GetTexture("SGAmod/VoronoiSequenceBIG");
+			Texture2D tex = ModContent.GetTexture("SGAmod/VoronoiTexture");
 
 			SGAmod.VoronoiEffect.Parameters["_CellColor"].SetValue(Color.Black.ToVector4() * 1f);
 			SGAmod.VoronoiEffect.Parameters["_EdgeColor"].SetValue(Color.Lerp(Color.Orange,Color.Yellow,0.50f).ToVector4() * 1f);

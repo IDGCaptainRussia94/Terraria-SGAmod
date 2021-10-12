@@ -243,7 +243,11 @@ namespace SGAmod
             if ((head.type == ModContent.ItemType<Items.Armors.HallowedVisor>() || head.type == ModContent.ItemType<Items.Armors.AncientHallowedVisor>()) && body.type == ItemID.HallowedPlateMail && body.type == ItemID.HallowedGreaves)
             {
                 return "Hallowed";
-            }            
+            }
+            if (head.type == ModContent.ItemType<Items.Armors.Magatsu.MagatsuHood>() && body.type == ModContent.ItemType<Items.Armors.Magatsu.MagatsuRobes>() && legs.type == ModContent.ItemType<Items.Armors.Magatsu.MagatsuPants>())
+            {
+                return "Magatsu";
+            }
             if (head.type == ModContent.ItemType<Items.Armors.JungleTemplar.JungleTemplarHelmet>() && body.type == ModContent.ItemType<Items.Armors.JungleTemplar.JungleTemplarChestplate>() && legs.type == ModContent.ItemType<Items.Armors.JungleTemplar.JungleTemplarLeggings>())
             {
                 return "JungleTemplar";
@@ -365,6 +369,14 @@ namespace SGAmod
                 sgaplayer.ThrowingSpeed += 0.25f;
                 sgaplayer.Thrownsavingchance += 0.25f;
             }
+            if (set == "Magatsu")
+            {
+                player.setBonus = "+2% increased Apocalyptical Chance, +40% increased Apocalyptical Strength\nManifest your own N0ll Watchers to sense nearby enemies and 'watch' them\nYou get one watcher per free minion slot\nScoring an Apocalyptical against a watched enemy spreads a copy of damage nearby\nN0ll Watchers will consider you one of their own, and ignore you\nManifested weapon: Hive Eye's Guidance";
+
+                Items.Armors.Magatsu.MagatsuHood.SetBonus(sgaplayer);
+
+            }
+
             if (set == "JungleTemplar")
             {
                 string s = "Not Binded!";
@@ -391,8 +403,7 @@ namespace SGAmod
             }
             if (set == "Mandala")
             {
-                player.setBonus = "A minature Asteriod belt and Phaethon manifest around you\nAny debuffs applied to you are inflicted on enemies by your minions\nManifested weapon: Overseer's Tutelage";
-                player.buffImmune[BuffID.WindPushed] = true;
+                player.setBonus = "A minature Asteriod belt and Phaethon manifest around you\nAny debuffs you have are inflicted on enemies by your minions\nManifested weapon: Overseer's Tutelage";
                 //sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Desert.ManifestedSandTosser>();
             }
             if (set == "Valkyrie")
@@ -676,11 +687,13 @@ namespace SGAmod
                 if (sgaplayer.HeartGuard)
                 {
                     player.HealEffect(5);
+                    player.netLife = true;
                     player.statLife += 5;
                 }
                 if (sgaplayer.intimacy > 0 && player.HasBuff(BuffID.Lovestruck))
                 {
                     player.HealEffect(10);
+                    player.netLife = true;
                     player.statLife += 10;
                 }
             }
@@ -698,6 +711,7 @@ namespace SGAmod
                     if (player.statManaMax2 >= player.statManaMax2)
                     {
                         player.HealEffect(5);
+                        player.netLife = true;
                         player.statLife += 5;
                     }
 

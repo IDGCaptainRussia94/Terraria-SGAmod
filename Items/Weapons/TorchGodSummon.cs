@@ -21,7 +21,7 @@ namespace SGAmod.Items.Weapons
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Torch God's Summon");
-			Tooltip.SetDefault("Summons 2 torches per free minion slot; attacking with torches burns them out for 3 seconds\nBiome torches inflict debuffs, gain +10 damage per max minions, and +1 pierce per max Sentries");
+			Tooltip.SetDefault("Summons 2 torches per free minion slot; attacking with torches burns them out for 3 seconds\nGain +10 damage per max minions, and +1 pierce per max Sentries, Biome torches inflict debuffs\nTorches provide a small ammount of light in the fog");
 			Item.staff[item.type] = true;
 		}
 
@@ -346,17 +346,14 @@ namespace SGAmod.Items.Weapons
 				if (currentProjectile.active // Make sure the projectile is active
 				&& currentProjectile.owner == Main.myPlayer // Make sure the projectile's owner is the client's player
 				&& currentProjectile.type == projectile.type)
-				{ // Make sure the projectile is of the same type as this javelin
+				{
 
 					if (i == projectile.whoAmI)
 						us = maxus;
 					maxus += 1f;
 
 				}
-
 			}
-
-
 
 			if (!player.active || player.dead || ((us >= ((player.maxMinions - (player.SGAPly().GetMinionSlots)) * 2) || player.HeldItem.type != ModContent.ItemType<TorchGodSummon>()) && projectile.ai[1] < 1))
 			{
@@ -369,10 +366,8 @@ namespace SGAmod.Items.Weapons
 
 			projectile.Center = wegohere;
 
-			/*int dust = Dust.NewDust(projectile.Center, 0, 0, 185);
-			Main.dust[dust].scale = 0.75f;
-			Main.dust[dust].noGravity = true;*/
-
+			if (projectile.localAI[0]>-10)
+			SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(wegohere.X - Main.screenPosition.X, wegohere.Y - Main.screenPosition.Y, 128)));
 
 		}
 

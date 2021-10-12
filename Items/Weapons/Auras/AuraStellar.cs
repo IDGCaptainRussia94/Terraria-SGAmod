@@ -21,7 +21,7 @@ namespace SGAmod.Items.Weapons.Auras
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Main-Sequence Staff");
-			Tooltip.SetDefault("Summons a Miniature Sun above the player\nThe radiance burns all in the aura\nPlayers recive immunity to burning debuffs");
+			Tooltip.SetDefault("Summons a Miniature Sun above the player");//\nThe radiance burns all in the aura\nPlayers recive immunity to burning debuffs\nLights a large area out of the blinding fog");
 			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}
@@ -51,10 +51,11 @@ namespace SGAmod.Items.Weapons.Auras
 				tooltips.Add(new TooltipLine(mod, "Bonuses", "Power Level: "+ shoot.thepower));
 				tooltips.Add(new TooltipLine(mod, "Bonuses", "Passive: Protects players against burning Debuffs"));
 				tooltips.Add(new TooltipLine(mod, "Bonuses", "Each level scales the damage higher"));
+				tooltips.Add(new TooltipLine(mod, "Bonuses", "Each level scales a light that clears the fog"));
 
 
 				if (shoot.thepower >= 1.0)
-					tooltips.Add(new TooltipLine(mod, "Bonuses", "Lv1: THEY WILL BURN! Pushes away enemies"));
+					tooltips.Add(new TooltipLine(mod, "Bonuses", "Lv1: THEY WILL BURN!"));
 				if (shoot.thepower >= 2.0)
 					tooltips.Add(new TooltipLine(mod, "Bonuses", "Lv2: Applies Lava Burn to enemies"));
 				if (shoot.thepower >= 3.0)
@@ -89,7 +90,7 @@ namespace SGAmod.Items.Weapons.Auras
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.FieryShard>(), 20);
 			recipe.AddIngredient(ModContent.ItemType<StygianCore>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
 			recipe.AddIngredient(ItemID.FragmentSolar, 10);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
@@ -109,6 +110,12 @@ namespace SGAmod.Items.Weapons.Auras
 		public override float CalcAuraSize(Player player)
 		{
 			return (AuraSize * (float)Math.Pow((double)CalcAuraPowerReal(player), 0.60));
+		}
+
+		public override float CalcAuraPower(Player player)
+		{
+			float temp = 1f + (player.minionDamage * (projectile.minionSlots / 4f));
+			return temp;
 		}
 
 		public override void SetStaticDefaults()
@@ -138,11 +145,13 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public override void AuraAI(Player player)
 		{
-			Lighting.AddLight(projectile.Center, Color.Orange.ToVector3() * 0.78f);
+			SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(SunOffset.X - Main.screenPosition.X, SunOffset.Y - Main.screenPosition.Y, 640)));
+			Lighting.AddLight(projectile.Center, Color.Orange.ToVector3() * 1f);
 		}
-
 		Player player => Main.player[projectile.whoAmI];
 		Vector2 SunOffset => projectile.Center - new Vector2(0, player.gravDir * 128f);
+		Color SequenceColor => Color.Lerp(Color.Lerp(Color.Red, Color.Yellow, MathHelper.Clamp((timeLeftScale - 1f) / 2f, 0f, 1f)), Color.CornflowerBlue, MathHelper.Clamp((timeLeftScale - 2.5f) / 2f, 0f, 1f));
+
 
 		public override void InsideAura<T>(T type, Player player)
 		{
@@ -154,12 +163,14 @@ namespace SGAmod.Items.Weapons.Auras
 
 				for (float i = 0; i < 2f; i += 1f)
 				{
-					Vector2 loc2 = Vector2.Normalize(himas.Center - player.MountedCenter);
+					Vector2 loc2 = Vector2.Normalize(himas.Center - SunOffset);
 
 					int dustIndex = Dust.NewDust(himas.position, himas.width,himas.height, DustID.Fire, 0, 0, 150, default(Color), 1.5f);
 					Main.dust[dustIndex].velocity = loc2 * Main.rand.NextFloat(1f, 3f)* powerf;
 					Main.dust[dustIndex].noGravity = true;
 					Main.dust[dustIndex].alpha = 200;
+					Main.dust[dustIndex].color = SequenceColor;
+
 					//Main.dust[dustIndex].fadeIn = -1f;
 				}
 
@@ -175,7 +186,7 @@ namespace SGAmod.Items.Weapons.Auras
 					}
 				}
 			}
-			if (type is Player alliedplayer && alliedplayer.team == player.team)
+			if (type is Player alliedplayer && player.IsAlliedPlayer(alliedplayer))
 			{
 				int[] typesofdebuffs = new int[] { BuffID.OnFire, BuffID.Burning,ModContent.BuffType<ThermalBlaze>(), ModContent.BuffType<LavaBurnLight>(), ModContent.BuffType<LavaBurn>() };
 
@@ -201,13 +212,11 @@ namespace SGAmod.Items.Weapons.Auras
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
 			}
 
-			Color sequenceColor = Color.Lerp(Color.Lerp(Color.Red, Color.Yellow, MathHelper.Clamp((timeLeftScale-1f) / 2f, 0f, 1f)),Color.CornflowerBlue, MathHelper.Clamp((timeLeftScale-2.5f) / 2f, 0f, 1f));
-
 			if (type == 0)
 			{
 				timeLeftScale += (CalcAuraPowerReal(player) - timeLeftScale) / 30f;
 
-				Lighting.AddLight(projectile.Center, sequenceColor.ToVector3() * 0.75f);
+				Lighting.AddLight(projectile.Center, SequenceColor.ToVector3() * 0.75f);
 
 				for (float i = 0; i < 8f; i += 1f)
 				{
@@ -221,7 +230,7 @@ namespace SGAmod.Items.Weapons.Auras
 					Main.dust[dustIndex].noGravity = true;
 					Main.dust[dustIndex].alpha = 200;
 					//Main.dust[dustIndex].fadeIn = -1f;
-					Main.dust[dustIndex].color = sequenceColor;
+					Main.dust[dustIndex].color = SequenceColor;
 				}
 			}
 
@@ -250,7 +259,7 @@ namespace SGAmod.Items.Weapons.Auras
 						RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(5f, 0.5f));
 						RadialEffect.Parameters["ringScale"].SetValue(0.40f* scalaa);
 						RadialEffect.Parameters["ringOffset"].SetValue(0.22f);
-						RadialEffect.Parameters["ringColor"].SetValue((sequenceColor.ToVector3() * 2f)*0.75f);
+						RadialEffect.Parameters["ringColor"].SetValue((SequenceColor.ToVector3() * 2f)*0.75f);
 						RadialEffect.Parameters["tunnel"].SetValue(false);
 
 						RadialEffect.CurrentTechnique.Passes["RadialAlpha"].Apply();
@@ -265,14 +274,14 @@ namespace SGAmod.Items.Weapons.Auras
 				RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(3f, 0.75f));
 				RadialEffect.Parameters["ringScale"].SetValue(0.14f);
 				RadialEffect.Parameters["ringOffset"].SetValue(0.36f);
-				RadialEffect.Parameters["ringColor"].SetValue((sequenceColor.ToVector3()*2f)*0.75f);
+				RadialEffect.Parameters["ringColor"].SetValue((SequenceColor.ToVector3()*2f)*0.75f);
 				RadialEffect.Parameters["tunnel"].SetValue(false);
 
 				RadialEffect.CurrentTechnique.Passes["Radial"].Apply();
 				Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.75f + ((timeLeftScale) * 1.50f)) * 1f * scale, SpriteEffects.None, 0f);
 
 
-				SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(sequenceColor.ToVector4() * timeLeftScale);
+				SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(SequenceColor.ToVector4() * timeLeftScale);
 				SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(texture);
 				SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(1f, 1f));
 				SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(-Main.GlobalTime/2f,0));
@@ -282,7 +291,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 				Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.25f + ((timeLeftScale) * 0.50f)) * scale, SpriteEffects.None, 0f);
 
-				SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(sequenceColor.ToVector4() * timeLeftScale * 0.950f);
+				SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(SequenceColor.ToVector4() * timeLeftScale * 0.950f);
 				SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(texture3);
 				SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(1f, 1f));
 				SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(-Main.GlobalTime / 2.5f,0));
@@ -292,7 +301,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 				Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.25f + ((timeLeftScale) * 0.50f)) * scale, SpriteEffects.None, 0f);
 
-				SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(sequenceColor.ToVector4() * timeLeftScale * 0.500f);
+				SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(SequenceColor.ToVector4() * timeLeftScale * 0.500f);
 				SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(texture2);
 				SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(1f,1f));
 				SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(-Main.GlobalTime / 3.5f, 0));
@@ -316,7 +325,7 @@ namespace SGAmod.Items.Weapons.Auras
 					RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(5f, 5f));
 					RadialEffect.Parameters["ringScale"].SetValue(0.025f);
 					RadialEffect.Parameters["ringOffset"].SetValue(0.50f);
-					RadialEffect.Parameters["ringColor"].SetValue(sequenceColor.ToVector3() * 2f);
+					RadialEffect.Parameters["ringColor"].SetValue(SequenceColor.ToVector3() * 2f);
 					RadialEffect.Parameters["tunnel"].SetValue(false);
 
 

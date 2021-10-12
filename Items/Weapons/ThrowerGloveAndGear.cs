@@ -2060,8 +2060,13 @@ namespace SGAmod.Items.Weapons
                 {
 					if (!npc.dontTakeDamage && !npc.friendly)
 					{
-						npc.StrikeNPC(projectile.damage * 4, projectile.knockBack * 16f, Math.Sign(npc.Center.X - projectile.Center.X));
+						int ammount = projectile.damage * 4;
+						npc.StrikeNPC(ammount, projectile.knockBack * 16f, Math.Sign(npc.Center.X - projectile.Center.X));
 						Main.player[projectile.owner].addDPS(projectile.damage * 4);
+						if (Main.netMode != 0)
+						{
+							NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, npc.whoAmI, ammount, 16f, (float)1, 0, 0, 0);
+						}
 					}
 				}
 
@@ -2321,7 +2326,13 @@ namespace SGAmod.Items.Weapons
 					if (enemies.Count > 0)
 					{
 						NPC targetenemy = enemies[0];
-						targetenemy.StrikeNPC(projectile.damage * 5, 20f, Math.Sign(projectile.velocity.X));
+						int ammount = projectile.damage * 5;
+						targetenemy.StrikeNPC(ammount, 20f, Math.Sign(projectile.velocity.X));
+						Main.player[projectile.owner].addDPS(ammount);
+						if (Main.netMode != 0)
+						{
+							NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, targetenemy.whoAmI, ammount, 16f, (float)1, 0, 0, 0);
+						}
 						for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.Pi / 4f)
 						{
 							Projectile prog = Projectile.NewProjectileDirect(targetenemy.Center + Vector2.UnitX.RotatedBy(f) * 128f, Vector2.UnitX.RotatedBy(f) * -3f, projectile.type, 0, 0, projectile.owner);

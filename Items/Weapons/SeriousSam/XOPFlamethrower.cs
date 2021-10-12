@@ -66,7 +66,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			int numberProjectiles = 1;
 			Vector2 offset = new Vector2(speedX, speedY);
 			offset.Normalize();
-			offset *= 16f;
+			offset *= 24f;
 			position += offset;
 
 

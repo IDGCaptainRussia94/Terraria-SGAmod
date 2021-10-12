@@ -190,7 +190,8 @@ namespace SGAmod.Items.Consumable
 			}
 
 			player.HealEffect(25);
-            player.statLife += 25;
+			player.netLife = true;
+			player.statLife += 25;
 
 			player.AddBuff(ModContent.BuffType<NPCs.Murk.MurkyDepths>(),60* (Main.expertMode ? 15 : 30));
 			player.AddBuff(ModContent.BuffType<Buffs.PlaceHolderDebuff>(), 60 * 10);

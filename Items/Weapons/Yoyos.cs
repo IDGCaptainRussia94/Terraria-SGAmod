@@ -467,6 +467,7 @@ namespace SGAmod.Items.Weapons
         {
             if (target.life - damage < 0)
             {
+                Main.player[projectile.owner].netLife = true;
                 Main.player[projectile.owner].statLife += 50;
                 Main.player[projectile.owner].GetModPlayer<SGAPlayer>().creeperexplosion = 0;
             }
@@ -648,7 +649,7 @@ namespace SGAmod.Items.Weapons
         }
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Dimensions.NPCs.SpaceBoss.DarknessNebulaEffect(mod.GetTexture("GlowOrb"), 0f, projectile.Center, 0.25f, projectile.whoAmI, 10, -2f);
+            Dimensions.NPCs.SpaceBoss.DarknessNebulaEffect(mod.GetTexture("GlowOrb"), 0f, projectile.Center, 0.25f, projectile.whoAmI, 10, -5f);
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);

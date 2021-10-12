@@ -183,21 +183,25 @@ namespace SGAmod
 
 		}
 
-		public bool AddCooldownStack(int time, int count = 1)
+		public bool AddCooldownStack(int time, int count = 1, bool testOnly = false)
 		{
-			if (illuminantSet.Item1>4 && Main.rand.Next(4) == 0)
-            {
+			bool weHaveStacks = CooldownStacks.Count + (count - 1) < MaxCooldownStacks;
+			if (illuminantSet.Item1 > 4 && weHaveStacks && !testOnly && Main.rand.Next(4) == 0)
+			{
 				return true;
-            }
-			if (CooldownStacks.Count + (count - 1) < MaxCooldownStacks)
+			}
+			if (weHaveStacks)
 			{
 				//if (player.HasBuff(mod.BuffType("CondenserBuff")))
 				//	time = (int)((float)time * 1.15f);
 
-				time = (int)((float)time * ActionCooldownRate);
+				if (!testOnly)
+				{
+					time = (int)((float)time * ActionCooldownRate);
 
-				for (int i = 0; i < count; i += 1)
-					CooldownStacks.Add(new ActionCooldownStack(time, CooldownStacks.Count));
+					for (int i = 0; i < count; i += 1)
+						CooldownStacks.Add(new ActionCooldownStack(time, CooldownStacks.Count));
+				}
 				return true;
 			}
 			return false;
@@ -713,7 +717,7 @@ namespace SGAmod
 						//longerExpertDebuff
 						for (int i = 0; i < Player.MaxBuffs; i += 1)
 						{
-							if (player.buffType[i] != BuffID.PotionSickness && player.buffType[i] != mod.BuffType("MatrixBuff") && player.buffType[i] != mod.BuffType("DragonsMight"))
+							if (!player.BlackListedBuffs(i))
 							{
 								ModBuff buff = ModContent.GetModBuff(player.buffType[i]);
 								bool isdebuff = Main.debuff[player.buffType[i]];
@@ -735,6 +739,7 @@ namespace SGAmod
 					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Green, "Anticipated!", false, false);
 					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y - 48, player.width, player.height), Color.Green, "+" + anticipationLevel * 100 + "!", false, false);
 					player.AddBuff(mod.BuffType("BossHealingCooldown"), 120 * 60);
+					player.netLife = true;
 					player.statLife += anticipationLevel * 100;
 				}
 				Item helditem = player.HeldItem;

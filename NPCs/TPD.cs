@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Terraria.Graphics.Shaders;
 using Terraria.Graphics;
 using Idglibrary;
+using SGAmod.Items;
 
 namespace SGAmod.NPCs
 {
@@ -65,7 +66,11 @@ namespace SGAmod.NPCs
 		public override void NPCLoot()
 		{
 			if (Main.netMode != NetmodeID.SinglePlayer)
-			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("StarMetalMold"));
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<StarMetalMold>());
+				//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType <Glowrock>(),(int)(Main.rand.Next(60,100)*(Main.expertMode ? 0.6 : 1)));
+				//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType <OverseenCrystal>(), (int)(Main.rand.Next(25, 60) * (Main.expertMode ? 0.6 : 1)));
+			}
 
 			if (Main.expertMode)
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TPDCPU"));

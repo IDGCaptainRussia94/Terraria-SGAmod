@@ -33,6 +33,7 @@ namespace SGAmod
 		public int shortlightning = 0;
 		public bool stackedattack=false;
 		public bool rerouted = false;
+		public double extraApocoChance = 0;
 
 		/*private List<int> debuffs=new List<int>();
 		private List<int> debufftime=new List<int>();

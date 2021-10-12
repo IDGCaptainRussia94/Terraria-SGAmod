@@ -12,8 +12,13 @@ Github was moved: previous builds of the mod can be found over here: https://git
 
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners tf2/style things, Tech weapons have an "overclock" mechanic that changes up their gameplay while active and overhaul ideas (maybe?), spider queen can melt normal generated blocks (dirt and so)
-Cruciatus (damage over time debuff attack), Charon's Ferry (shadow tenticle mount thing), Spider body mount with legs?, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, Aura Borealis, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
+Cruciatus (damage over time debuff attack), Charon's Ferry (shadow tenticle mount thing), Spider body mount with legs?, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
 Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Binding Vudoo Clothier's Doll Magic, Mana Potion Pet (Blue Gusher), Clothier drop that forces dropped throwing items to attack enemies, Make Enchanted Fury/Seriph Shard a Clothier drop
+-Battery tank sentry, allows EC (Electric Charge) to be collected from Energy-storing TE tiles
+
+-Planned design plan: Trap damage overhaul that replies on tiles largely to do most of its damage, an "aura" granted by armors and accessories that allow these tiles to inherit player properities when enemies get hurt, and convert non-player owned trap projectiles into player owned ones that get enhanced
+-Tech damage and EC regen will be largely based on forming a tech-mod like base to generate electric charge (EC), storing it inside Tile Entiries, and allowing players to extract it manually or via the Battery tank sentry, moving EC to the player.
+As it currently stands, regen is effectively gimped and energizer batteries are the only viable way to effectively recharge it
 
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy and Seismic Resonator Ore Creator), Aurora Gear and finish Luminous Alter Tile Entity!
 -Add Hellion army bar, STILL!
@@ -25,7 +30,7 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 
 Changelog:
 
-3.600e-(9/20/21)-Patch 11-Tech N Wreck: Beta
+3.600e-(10/8/21)-Patch 11-Tech N Wreck: Beta
 
 -Properly fixed Caliburn's correct Boss Head not being shown
 
@@ -39,11 +44,21 @@ Changelog:
 
 -Throwing Stars are now longer summoned by the Ninja Stash, they were already very strong on their own
 
--Added Phalanx and Reflex Potions, they enchance shields via the original ideas sheet
-
--Phaethon's final phase was updated: he launches 5 tethers in the final phase and starts shooting spinning shoots and lasers at the remaining tethers and the player as he loses his tethers
+-Added Phalanx and Reflex Potions, they enchance shields via the original ideas sheet, added Main Sequence Staff and Super Star Thrower, added Void Em'Bracers
 
 -Added Liquidation Hopper, updated visuals on the chest hopper to adapt to light
+
+-Phaethon's final phase was updated: he launches 5 tethers in the final phase and starts shooting spinning shoots and lasers at the remaining tethers and the player as he loses his tethers, removed debug text
+
+-Aura Borealis Staff now also boosts mana regen
+
+-Updated Hellion's Snowballs to be a custom projectile that doesn't cheap hit, during the warm up period of her special moves that force you into a ring, you are teleported below the ring's center with 2.5 second of invincibility instead of stoned
+
+-Cratrosity Music box properly added, Cratrosity has been given a larger hitbox that can take damage, but deal no damage (core cannot be damaged directly now)
+
+-Added the Magatsu Armor
+
+-Nerfed Crystal Comet: (Cata ain't gonna like this one)
 
 
 
@@ -70,6 +85,8 @@ Changelog:
 -Various visual updates (Space beams have a starting point, Shield now has a fancy animated HUD effect)
 
 -Wrath of Caliburn is now far more knockback resistant
+
+-(I think) I added Draken's gores properly in this update
 
 
 
@@ -128,7 +145,7 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart, Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Prismic Star, Glowrock, Overseen Cystals,Phalanx Potion,Reflex Potion, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Main Sequence Staff, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
@@ -136,15 +153,17 @@ Changelog:
 
 -Added the following armor sets: The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! Fames set for throwers after Spider Queen. Hallowed Visor variant for Throwing. Jungle Templar for post Golem Throwing/Tech. Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And JellyBru's Dev Armor finally added!
 
--Venerable Catharsis, for a hefty Expertise cost from Draken after Moonlord you can make Normal Worlds into Expert Worlds.
+-Venerable Catharsis, for a hefty Expertise cost from Draken after Moonlord you can make Normal Worlds into Expert Worlds. No more being locked out of content!
 
 -Luminous Alter, use it to transmute various items overtime by infusing them with Starlight!
 
--A stronger post-L.Wraith Prismic Banshee that drops double loot, also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam! (hint: put fallen stars into the previous mentioned Luminous Alter)
+-New Potions: Phalanx Potion, Reflex Potion
+
+-A stronger post-L.Wraith Prismic Banshee that drops double loot (hint: put fallen stars into the previous mentioned Luminous Alter). Also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam!
 
 -A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's fight and apperence has been tweaked (Prim shark! Vertex Shark! Trail Shark! With smooth lighting!), there's also an extra attack that was added
 
--Hoppers, Droppers, Sifting Funnels, hands on tech mod elements, and more; automate your Terraria!
+-Hoppers, Droppers, Sifting Funnels, hands on tech mod elements, and more; automate your Terraria with content I felt was missing from Vanilla!
 
 -New Amulet: Reservation Amulet, reserve a fraction of your HP to gain a protected regenerating shield!
 
@@ -160,7 +179,7 @@ Changelog:
 
 -A few new music tracks, including one for Cratrosity (thanks again Rijam!)
 
--Many items have been given an equip sprite, Various Resprites, added many missing sprites, and smaller improvements; enjoy a far better looking Jackpot with glowing coins! (Debug SwampWall to fix Dank Shrines, normally not accessible)
+-Many items have been given an equip sprite, Various Resprites, added many missing sprites, and smaller improvements;  such as enjoying a far better looking Jackpot with glowing coins! (Debug SwampWall to fix Dank Shrines, normally not accessible, access via cheatsheet)
 
 
 --Changed:
@@ -333,7 +352,7 @@ Changelog:
 
 -Nerfed Plythe: Reduced crit chance
 
--Nerfed Crystal Comet: Increased Mana Cost, and moved later in progression
+-Nerfed Crystal Comet: Increased Mana Cost, and moved later in progression (Post new boss), removed extra crit chance
 
 -Nerfed Surt: now only grants more than 1 tick of On Fire! when near full charge, up to about 6 seconds of On Fire!
 

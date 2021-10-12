@@ -50,7 +50,11 @@ namespace SGAmod.Buffs
 		{
 			player.SGAPly().watcherDebuff += 500;
 		}
-	}
+        public override void Update(NPC npc, ref int buffIndex)
+        {
+			npc.SGANPCs().watched = 10;
+		}
+    }
 	public class NoFly : ModBuff
 	{
 		public override void SetDefaults()

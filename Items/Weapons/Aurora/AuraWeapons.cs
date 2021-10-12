@@ -361,7 +361,7 @@ namespace SGAmod.Items.Weapons.Aurora
         }
     }
 
-        public class SkylightSlashProj : ModProjectile,IDrawAdditive,ITrueMeleeProjectile
+        public class SkylightSlashProj : ModProjectile,IDrawAdditive, ITrueMeleeProjectile
     {
         private Vector2 skyhere;
         private Color color;

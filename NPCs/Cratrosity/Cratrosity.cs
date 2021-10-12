@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Idglibrary;
 using SGAmod.Items.Weapons;
 using Microsoft.Xna.Framework.Audio;
+using System.Linq;
 
 namespace SGAmod.NPCs.Cratrosity
 {
@@ -26,6 +27,7 @@ namespace SGAmod.NPCs.Cratrosity
 		public float compressvar = 1;
 		public float compressvargoal = 1;
 		public int doCharge = 0;
+		public bool init = false;
 		public int evilcratetype = WorldGen.crimson ? ItemID.CrimsonFishingCrate : ItemID.CorruptFishingCrate;
 		Vector2 theclostestcrate = new Vector2(0, 0);
 		public int[,] Cratestype = new int[,] {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -159,11 +161,40 @@ namespace SGAmod.NPCs.Cratrosity
 				return false;
 			}
 			else { return true; }
+		}
 
+        public override bool? CanBeHitByItem(Player player, Item item)
+        {
+			return false;
+        }
+        public override bool? CanBeHitByProjectile(Projectile projectile)
+        {
+			return false;
 		}
 
 		public override void AI()
 		{
+			bool newoneneeded = true;
+			if (NPC.CountNPCS(ModContent.NPCType<CratrosityHitBox>()) > 0)
+			{
+				foreach (NPC npc2 in Main.npc.Where(testby => testby.type == ModContent.NPCType<CratrosityHitBox>()))
+				{
+					if (npc2.realLife == npc.whoAmI && npc2.type == ModContent.NPCType<CratrosityHitBox>())
+					{
+						newoneneeded = false;
+						break;
+					}
+				}
+			}
+
+			if (newoneneeded)
+            {
+				//npc.dontTakeDamage = true;
+				int npc2 = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y,ModContent.NPCType<CratrosityHitBox>());
+				Main.npc[npc2].realLife = npc.whoAmI;
+				init = true;
+			}
+
 			doCharge -= 1;
 			Player P = Main.player[npc.target];
 			npc.localAI[0] -= 1;
@@ -592,7 +623,61 @@ namespace SGAmod.NPCs.Cratrosity
 
 
 	}
-	public class GlowingCopperCoin : ModProjectile,IDrawAdditive
+
+	public class CratrosityHitBox : ModNPC
+	{
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Cratrosity");
+			Main.npcFrameCount[npc.type] = 1;
+			NPCID.Sets.MustAlwaysDraw[npc.type] = true;
+		}
+
+		public override bool Autoload(ref string name)
+		{
+			return base.Autoload(ref name);
+		}
+
+		public override void SetDefaults()
+		{
+			npc.width = 160;
+			npc.height = 160;
+			npc.damage = 0;
+			npc.defense = 50;
+			npc.lifeMax = 5000000;
+			npc.HitSound = SoundID.NPCHit4;
+			npc.DeathSound = SoundID.NPCDeath37;
+			npc.knockBackResist = 0f;
+			npc.aiStyle = -1;
+			npc.hide = true;
+			//music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Evoland 2 OST - Track 46 (Ceres Battle)");
+			animationType = 0;
+			npc.noTileCollide = true;
+			npc.noGravity = true;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 0; }
+		}
+
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+        {
+			return false;
+        }
+
+        public override void AI()
+        {
+			if (npc.realLife >= 0)
+            {
+				npc.Center = Main.npc[npc.realLife].Center;
+				npc.defense = Main.npc[npc.realLife].defense;
+			}
+        }
+
+
+    }
+		public class GlowingCopperCoin : ModProjectile,IDrawAdditive
 	{
 		protected virtual int FakeID2 => ProjectileID.CopperCoin;
 		protected virtual Color GlowColor => new Color(184, 115, 51);

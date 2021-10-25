@@ -742,14 +742,15 @@ namespace SGAmod.NPCs.TownNPCs
 			itemsinshop = new[,]{
 			{ ModContent.ItemType<Items.EmptyCharm>(),50 },
 			{ ModContent.ItemType<Items.AssemblyStar>(),200 },
-			{ ModContent.ItemType<Items.Consumable.CaliburnCompess>(),300 },
+			{ ModContent.ItemType<Items.Consumables.CaliburnCompess>(),300 },
 			{ ModContent.ItemType<Items.Accessories.GrippingGloves>(),400 },
-			{ ModContent.ItemType<Items.Consumable.RedManaStar>(),500 },
+			{ ModContent.ItemType<Items.Consumables.RedManaStar>(),500 },
+			{ ModContent.ItemType<Items.Consumables.SoulJar>(),600 },
 			{ ModContent.ItemType<Items.Weapons.ThievesThrow>(),750 },
 
 			{ ItemID.Arkhalis,1000 },
 			{ ItemID.RodofDiscord,2000 },
-			{ ModContent.ItemType<Items.Consumable.Gong>(),2500 },
+			{ ModContent.ItemType<Items.Consumables.Gong>(),2500 },
 			//{ SGAmod.Instance.ItemType("EntropyTransmuter"),4000 },
 			{ ModContent.ItemType<Items.Accessories.PrimordialSkull>(),5000 },
 			{ ModContent.ItemType<Items.Accessories.MVMUpgrade>(),6000 },
@@ -854,6 +855,13 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}
+			if (modplayer.ExpertiseCollectedTotal >= 600)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("SoulJar"));
+				shop.item[nextSlot].shopCustomPrice = 20;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}			
 			if (modplayer.ExpertiseCollectedTotal >= 750)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("ThievesThrow"));

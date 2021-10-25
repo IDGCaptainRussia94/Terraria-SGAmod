@@ -43,7 +43,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 8);
+			recipe.AddIngredient(ItemID.LunarBar, 8);
 			recipe.AddIngredient(ItemID.FragmentVortex, 6);
 			recipe.AddIngredient(ItemID.FragmentNebula, 5);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 8);
@@ -132,7 +132,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 				player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * player.direction, projectile.velocity.X * player.direction);
 			}
 
-		if (projectile.ai[0]>10 && player.CheckMana(new Item(), 10,false,true))
+		if (projectile.ai[0]>10 && player.CheckMana(new Item(), 10,false,false))
 			{
 
 				if (projectile.ai[0]%20==0)
@@ -353,8 +353,12 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 			}
 		}
+        public override bool CanDamage()
+        {
+            return projectile.timeLeft == 58;
+        }
 
-		public override void SetDefaults()
+        public override void SetDefaults()
 		{
 			projectile.width = 128;
 			projectile.height = 128;

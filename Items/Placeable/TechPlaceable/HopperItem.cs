@@ -12,7 +12,7 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Liquidation Hopper");
-			Tooltip.SetDefault("Sells items into 10% of their worth and outputs the coins\nCan only process 10 items from a stack at a time\nRetains all previous functionality of a Hopper");
+			Tooltip.SetDefault("Sells items into 10% of their worth and outputs the coins\nCan only process 10 items from a stack at a time\nWill not function if the total value is under 10 copper\nRetains all previous functionality of a Hopper");
 		}
 		public override void SetDefaults()
 		{
@@ -67,7 +67,7 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<HopperItem>(), 1);
 			recipe.AddIngredient(ItemID.GoldCoin, 5);
-			recipe.AddTile(ModContent.TileType<Tiles.TechTiles.AureateVault>());
+			recipe.AddTile(ModContent.TileType<Tiles.ReverseEngineeringStation>());
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}

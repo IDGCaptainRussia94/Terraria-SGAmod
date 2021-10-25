@@ -24,7 +24,7 @@ using ReLogic.Graphics;
 using Terraria.Utilities;
 using SGAmod.Effects;
 using SGAmod.NPCs.Hellion;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 using SGAmod.NPCs.Murk;
 using SGAmod.Items;
 using Microsoft.Xna.Framework.Audio;

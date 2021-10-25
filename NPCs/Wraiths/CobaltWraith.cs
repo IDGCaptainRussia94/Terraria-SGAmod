@@ -731,7 +731,7 @@ return true;
 			else
 			{
 				if ((P.Center - npc.Center).Length() < 700)
-					npc.timeLeft = 250;
+					npc.timeLeft = Math.Max(npc.timeLeft, 500);
 				base.AI();
 				if (npc.ai[0] > 10) { npc.ai[0]++; }
 				if (npc.ai[0] == 1)

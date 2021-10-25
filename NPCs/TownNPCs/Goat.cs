@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 
 namespace SGAmod.NPCs.TownNPCs
 {

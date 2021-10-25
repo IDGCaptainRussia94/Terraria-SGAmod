@@ -68,12 +68,6 @@ namespace SGAmod
 		int ElectricChargePerUse();
 		int ElectricChargeWhileInUse();*/
 	}
-	interface IHopperInterface
-	{
-		bool HopperInputItem(Item item,Point tilelocation,int movementCount, ref bool testOnly);
-
-		bool HopperExportItem(ref Item item, Point tilelocation, int movementCount, ref bool testOnly);
-	}	
 	interface ISGABoss
 	{
 		string Trophy();

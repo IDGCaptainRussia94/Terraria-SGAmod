@@ -39,7 +39,7 @@ namespace SGAmod
                 SGAPlayer modplayer = player.GetModPlayer<SGAPlayer>();
                 int whichone = (int)Main.GlobalTime % 4;
                 string[] theones = { "Melee", "Ranged", "Magic", "Throwing" };
-                string text = modplayer.apocalypticalChance[whichone] + "% " + theones[whichone] + " Apocalyptical Chance";
+                string text = Math.Round(modplayer.apocalypticalChance[whichone],2) + "% " + theones[whichone] + " Apocalyptical Chance";
 
                 if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl))
                 {
@@ -371,7 +371,7 @@ namespace SGAmod
             }
             if (set == "Magatsu")
             {
-                player.setBonus = "+2% increased Apocalyptical Chance, +40% increased Apocalyptical Strength\nManifest your own N0ll Watchers to sense nearby enemies and 'watch' them\nYou get one watcher per free minion slot\nScoring an Apocalyptical against a watched enemy spreads a copy of damage nearby\nN0ll Watchers will consider you one of their own, and ignore you\nManifested weapon: Hive Eye's Guidance";
+                player.setBonus = "+2% increased Apocalyptical Chance, +40% increased Apocalyptical Strength\nManifest your own N0ll Watchers to sense nearby enemies and 'watch' them\nYou get one watcher per free minion slot\nScoring an Apocalyptical against a watched enemy spreads a copy of damage nearby\nN0ll Watchers will see you one of their own, and ignore you\nManifested weapon: Hive Eye's Guidance";
 
                 Items.Armors.Magatsu.MagatsuHood.SetBonus(sgaplayer);
 
@@ -446,7 +446,7 @@ namespace SGAmod
             }
             if (set == "MisterCreeper")
             {
-                player.setBonus = "Any sword that doesn't shoot a projectile is swung 50% faster and deals crits when you are falling downwards\nWhen you take damage, you launch a damaging high velocity grenade at what hit you\nThese grenades are launched even during immunity frames if your touching an enemy\nDrinking a healing potion launches a ton of bouncy grendes in all directions" +
+                player.setBonus = "Any sword that doesn't shoot a projectile is swung 50% faster and deals crits when you are falling downwards\nWhen you take damage, you launch a damaging high velocity grenade at what hit you\nThese grenades are launched even during immunity frames if your touching an enemy\nDrinking a healing potion launches a ton of bouncy grenades in all directions" +
                     "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 180 seconds") + "\nCreeper's explosive throw and Stormbreaker are empowered\n \n ";
                 sgaplayer.MisterCreeperset = true;
                 sgaplayer.devempowerment[1] = 3;

@@ -11,7 +11,7 @@ using SGAmod.Items;
 using SGAmod.Items.Accessories;
 using SGAmod.Items.Weapons;
 using SGAmod.Items.Weapons.Javelins;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
@@ -963,6 +963,9 @@ namespace SGAmod
 					if (SGAWorld.downedSPinky && SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths > 3 && Main.netMode > 0)
 					{
 						shop.item[nextSlot].SetDefaults(mod.ItemType("AncientFabricItem"));
+						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 1, 0, 0);
+						nextSlot++;
+						shop.item[nextSlot].SetDefaults(mod.ItemType("VibraniumCrystal"));
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 1, 0, 0);
 						nextSlot++;
 					}

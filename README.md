@@ -30,7 +30,84 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 
 Changelog:
 
-3.600e-(10/8/21)-Patch 11-Tech N Wreck: Beta
+3.600f-(10/25/21)-Patch 11-Tech N Wreck: Beta
+
+-Fixed placed bar tiles having the same colors, added missing Vibranium Bar Tile
+
+-Reduced tier 3 Caliburn Guardian damage from 50 to 35
+
+-Buffed all the low-block angle shields to make it easier to block projectiles with a wider angle
+
+-Hoppers will no longer insert hearts/stars and their holiday varients (also bubble pickups) into chests, they will instead dump them on the ground near the chest they would have gone into; should have did this sooner
+
+-Fixed Main Sequence Staff killing town NPCs (I think this was intentional as a downside when I 1st coded it... but yeah, too trollish)
+
+-Fixed VibraniumMask giving far too little melee Apoco chance
+
+-Started running various MP tests:
+-Fixed Main-Sequence Staff trying to access a texture server-end
+-Hoppers work, machines need custom packets, fml
+
+-added Magatsu Null Watcher resprites
+
+-Fixed Hellion's teleport net being permanent
+
+-Added Deific Healing Potions, they are dropped by Hellion's 2nd phase and can also be crafted with Souls of Byte
+
+-Contraband merchant was not selling vanilla potions, also Divinity Callers can't be unboxed unless you can normally craft them
+
+-Quasar Kunai damage lowered by 10, but knives do 15% more damage against Irradiated enemies
+
+-Fixed Tidal Charm working even when not equiped (giving defense per missing breath)
+
+-Force Field Shields now regen scaled to your 'natural' life regen boosts, so things like campfires make them faster and Hellion's Damnation debuff slower. As a price, regen speed has been reduced to 3 seconds (from 2-amulets) and 8 seconds (from 6-JellyBru)
+
+-Cratrosity's code has been refactored, no more stupidly massive arrays! Hazaah!
+
+-Jab-lins now record DPS done from the DOT damage of impaled enemies
+
+-Added proper sprites for Main Sequence Staff, Desolate Rift, and Amulets of Reservation by Rijam (Thank you again so much!)
+
+-Vibranium Bars can now be placed
+
+-Vibranium Crystals now generate in Near-orbit, they are sold in MP (I still have further plans for these)
+
+-Greatly Buffed the Plasmic Rail Gun's damage; this weapon should pack a punch for how long you have to charge it, honestly
+
+-Nerfed Quasar Cannon, this shouldn't be able to hit over time, only on the initial explosion. Furthermore, moved to Post-L.Wraith. Charge up can now activate potion usage
+
+-SBC Cannon/MK2 can now pierce and no longer explode on knockback (balance!)
+
+-Added SCREEN SHAKE, FINALLY! (search SGAmod.AddScreenShake to find all places it's added at, not alot atm)
+
+-Nerfed Sybarite Gem: coin drop chance is now 1/20 to prevent money dupping with the Philanthropist's Shower
+
+-Updated Philanthropist's Shower and Prosperity Staff to use the glowing coins instead of vanilla ones (I just like them more)
+
+-New changes to Hellion Phase 2:
+-Laser Reign locks Hellion in place for longer, and Lasers persist a shorter time
+-Cobalt Wraiths have been replaced with repair drones, and former repair drones are disabled
+-Homing Lasers (Healthy dose of lasers) rotates 25% slower
+-The Dark Mage projectiles have nearly no velocity, acting more like landmines
+-The laser array attack will now block hellion's ability to shoot other projectiles, be warned that the final phase version has a reduced wait time!
+-There are now several no-attack periods between hellion's various attacks to prevent cheap boxed-in hits
+-During Xemnas and Laser Hell, Hellion will start moving if she's stopped sooner, to not slow down the fight
+-Final desperation has effectively been cut in half, greatly reduced time, and a few other alterations
+-Final desperation has new moves for Nightmare
+-Sky Fractures have been changed to new projectiles for the later phases: accerating swords
+-Xemnas attack has been completely reworked, laser version is still the same. There is also now an attack delay after the attack
+-Drones no longer shoot lasers
+-Background is less opaque
+
+-New changes to Phaethon:
+-Orbiting overseen heads are now farther away (almost double), and shoot slower per phase with more delay between
+-Eol Attack (yes it's called that) now gives off light in the darkness
+
+-New changes to Supreme Pinky phase 2:
+-Core now resists 80% of piercing damage, but whenever slime dies it creates a homing projectile that flies back to the boss and deals 1000 damage to it; more builds are now viable to kill the boss imo
+
+
+3.600e-(10/12/21)-Patch 11-Tech N Wreck: Beta
 
 -Properly fixed Caliburn's correct Boss Head not being shown
 
@@ -50,7 +127,7 @@ Changelog:
 
 -Phaethon's final phase was updated: he launches 5 tethers in the final phase and starts shooting spinning shoots and lasers at the remaining tethers and the player as he loses his tethers, removed debug text
 
--Aura Borealis Staff now also boosts mana regen
+-Aura Borealis Staff now also boosts mana regen and chains debuff immunity
 
 -Updated Hellion's Snowballs to be a custom projectile that doesn't cheap hit, during the warm up period of her special moves that force you into a ring, you are teleported below the ring's center with 2.5 second of invincibility instead of stoned
 
@@ -145,7 +222,7 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Main Sequence Staff, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Main Sequence Staff, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
@@ -192,6 +269,8 @@ Changelog:
 
 -Hellion's 2nd phase will now only start if the player is wearing a Soul of Secrets, allowing the 1st phase to be farmed and the player to get Souls of Bytes without having to face the 2nd phase right after
 
+-The great Hellion rebalance and refactor! Hellion's beam has been given a visual overhaul to fix a bug where it was invisible (see fixed), Hellion gains defense and debuff immunity apon activating Tyrant's Glare (post Festive Moons/warped background phase), also Hellion's arena aura has been changed to something less flashy on the eyes and likely more GPU friendly, Skeletron Hands now do 150 contact damage, Hellion has more delay before moving again with the lasers, or shooting sky fractures, some other attacks changed in an effort to make them more fair, army enemies will now fly at the player more often, and much, much more
+
 -It is now possible to jump to floors in the Deeper Dungeons you have cleared via the new Deeper Dungeons Config (since this update sadly)
 
 -The Strange Portal has been given a head and can now be manually moved into different houses
@@ -205,10 +284,6 @@ Changelog:
 -Murk balance changes: spawns a fly every 3 (direct melee swing 5) hits, instead of chance. Slam has a longer delay, but mudballs do more damage, Spinning Stinger attack is telegraphed with delays, Orge Snot balls have been replaced with a less-sticky version that inflicts a stacking debuff
 
 -Boss checklists; be sure to check it AFTER each fight as well!
-
--Hellion gains defense and debuff immunity apon activating Tyrant's Glare (post Festive Moons/warped background phase)
-
--Hellion's beam has been given a visual overhaul to fix a bug where it was invisible (see fixed), also Hellion's arena aura has been changed to something less flashy on the eyes and likely more GPU friendly, Skeletron Hands now do 150 contact damage, Hellion has more delay before moving again with the lasers, or shooting sky fractures, some other attacks changed in an effort to make them more fair, army enemies will now fly at the player more often
 
 -Sharkvern's HP increased to 120000, body segments now take 25% (Tail 0%) reduced damage to peircing weapons, and no reduction to true melee projectiles (IE yoyos, spears), various changes have happened to the fight, and various balance changes as well
 
@@ -387,7 +462,7 @@ Changelog:
 
 -Hopefully for the love of god, the Caliburn Shrines will no longer fail to generate a sword shrine
 
--Fixed the imfamous "can't mine' bug by Disallowing Tools in the Deeper Dungeon again, due to a mining glitch, use bombs to break everything you could mine before! Unless you have the Dungeon Splunker
+-Fixed the imfamous "can't mine in overworld' bug by Disallowing Tools in the Deeper Dungeon again, due to a mining glitch, use bombs to break everything you could mine before! Unless you have the Dungeon Splunker
 
 -Hellion Beams being invisible, and a little oversight that led to alot of unintentional lag in the fight
 
@@ -460,6 +535,8 @@ Changelog:
 -Incorrect damage types involving the Mangrove Orbs
 
 -The Amulet of Diehard Cataclysm having a crafting recipe
+
+-Placed bar tiles having the same colors
 
 -Cirno refusing to spawn serverside, she now spawns on the client end of whoever summoned her and is synced from there
 

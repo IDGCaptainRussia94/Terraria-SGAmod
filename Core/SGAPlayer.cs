@@ -23,7 +23,7 @@ using SGAmod.NPCs.Murk;
 using SGAmod.NPCs.Sharkvern;
 using SGAmod.NPCs.SpiderQueen;
 using SGAmod.NPCs.Hellion;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 using CalamityMod;
 using AAAAUThrowing;
 using Terraria.Utilities;
@@ -1585,7 +1585,7 @@ namespace SGAmod
 					Main.projectile[itz[0].whoAmI].netUpdate = true;
 					if (Main.netMode == 2 && itz[0].whoAmI < 200)
 					{
-						NetMessage.SendData(27, -1, -1, null, itz[0].whoAmI, 0f, 0f, 0f, 0, 0, 0);
+						NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, itz[0].whoAmI, 0f, 0f, 0f, 0, 0, 0);
 					}
 
 					itz = Idglib.Shattershots(player.Center + new Vector2(Main.rand.Next(-15, 15), player.height), player.Center + new Vector2(0, player.height - 180), new Vector2(0, 0), ProjectileID.GeyserTrap, 30, 10f, 30, 1, true, 0, false, 400);
@@ -1596,7 +1596,7 @@ namespace SGAmod
 					Main.projectile[itz[0].whoAmI].netUpdate = true;
 					if (Main.netMode == 2 && itz[0].whoAmI < 200)
 					{
-						NetMessage.SendData(27, -1, -1, null, itz[0].whoAmI, 0f, 0f, 0f, 0, 0, 0);
+						NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, itz[0].whoAmI, 0f, 0f, 0f, 0, 0, 0);
 					}
 
 					GeyserInABottle = false;
@@ -2400,7 +2400,7 @@ namespace SGAmod
 		{
 			get
 			{
-				return "SGAmod/Items/Consumable/derg_bag";
+				return "SGAmod/Items/Consumables/derg_bag";
 			}
 		}
 

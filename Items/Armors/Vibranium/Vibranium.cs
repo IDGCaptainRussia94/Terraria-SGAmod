@@ -41,7 +41,7 @@ namespace SGAmod.Items.Armors.Vibranium
 			player.meleeDamage += 0.32f;
 			player.meleeCrit += 25;
 			SGAPlayer sgaplayer = player.GetModPlayer(mod,typeof(SGAPlayer).Name) as SGAPlayer;
-			float percentCharge = (sgaplayer.electricCharge / 20000f)*0.05f;
+			float percentCharge = (sgaplayer.electricCharge / 5000f)*1f;
 			sgaplayer.apocalypticalChance[0] += percentCharge;
 		}
 
@@ -437,7 +437,7 @@ namespace SGAmod.Items.Armors.Vibranium
 					};
 				}
 				trail.coordMultiplier = new Vector2(1f, (96 * 2) / 16f);
-				trail.coordOffset = new Vector2(0, -projectile.Center.X / 16);
+				trail.coordOffset = new Vector2(0, projectile.Center.X / 16);
 				trail.strength = ScaleProperty;
 				trail.trailThicknessIncrease = 0;
 				trail.DrawTrail(vects, projectile.Center);

@@ -6,7 +6,7 @@ using Idglibrary;
 using Terraria;
 using System;
 using SGAmod.Items.Accessories;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 using Terraria.DataStructures;
 
 namespace SGAmod.Items.Placeable.TechPlaceable

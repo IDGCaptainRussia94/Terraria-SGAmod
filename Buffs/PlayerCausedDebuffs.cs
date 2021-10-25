@@ -240,7 +240,7 @@ namespace SGAmod.Buffs
 	public class DankSlow : ModBuff
 	{
 
-		public static string DankText => Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) ? "Attacks may slow enemies\nConsecutive attacks will stack the debuff, making the slowing effect stronger, but this soft caps after a point\nDoes not affect Bosses and enemies who are immune to poisoned are also immune to Dank Slow" : "(Hold LEFT CONTROL for more info on Dank Slow)";
+		public static string DankText => Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) ? "Attacks may slow enemies\nConsecutive attacks will stack the debuff, making the slowing effect stronger, but this soft caps after a point\nDoes not affect Bosses or enemies who are immune to poisoned are also immune to Dank Slow" : "(Hold LEFT CONTROL for more info on Dank Slow)";
 		public override bool Autoload(ref string name, ref string texture)
 		{
 			texture = "SGAmod/Buffs/DankSlowDebuff";

@@ -10,6 +10,7 @@ using Terraria.Enums;
 using Terraria.ModLoader.IO;
 using System.IO;
 using SGAmod.Items.Placeable.TechPlaceable;
+using Idglibrary;
 
 namespace SGAmod.Tiles.TechTiles
 {
@@ -85,7 +86,7 @@ namespace SGAmod.Tiles.TechTiles
 				{
 					Tile tile = Framing.GetTileSafely(tilePosition.X, tilePosition.Y);
 					//Main.NewText(tile.type + " this type "+item.position);
-					if (tile.type == ModContent.TileType<HopperTile>() || tile.type == ModContent.TileType<ChestHopperTile>() || tile.type == ModContent.TileType<ShiftingFunnelTile>())
+					if (tile.type == ModContent.TileType<HopperTile>() || tile.type == ModContent.TileType<ChestHopperTile>() || tile.type == ModContent.TileType<ShiftingFunnelTile>() || tile.type == ModContent.TileType<LiquidationHopperTile>())
 					{
 
 						if (ModContent.GetModTile(tile.type) is ModTile modTile)
@@ -230,6 +231,23 @@ namespace SGAmod.Tiles.TechTiles
 		public static bool InputToChest(Item item, Point checkCoords, ref int remainingStack,bool testOnly=false)
 		{
 			Tile tile = Framing.GetTileSafely(checkCoords);
+
+			if (item.IsConsumablePickup())
+            {
+				int item2 = Item.NewItem((checkCoords.ToVector2())*16, Vector2.Zero, item.type, item.stack);
+				//Main.item[item2].TurnToAir();
+				Main.item[item2] = item.Clone();
+				Main.item[item2].favorited = false;
+				Main.item[item2].newAndShiny = true;
+
+				item.TurnToAir();
+
+				HopperTile.CleanUpGlitchedItems();
+
+				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
+				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item2);
+				return true;
+			}
 
 			if (tile == null || !tile.active())
 				return false;
@@ -483,10 +501,10 @@ namespace SGAmod.Tiles.TechTiles
 			Texture2D curser = Main.cursorTextures[7];
 			if (Main.tile[i, j].type == base.Type)
 			{
-				if (tile.frameX%36 == 0 && tile.frameY == 0)
+				if (tile.frameX%36 == 0 && tile.frameY%36 == 0)
 				{
 					Vector2 offset = zerooroffset + (new Vector2(i, j) * 16) + new Vector2(16, 16);
-					spriteBatch.Draw(curser, offset - Main.screenPosition, null, Color.White.MultiplyRGBA(Lighting.GetColor(i, j)), 0, curser.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0f);
+					spriteBatch.Draw(curser, offset - Main.screenPosition, null, (tile.frameY > 0 ? Color.Gray : Color.White).MultiplyRGBA(Lighting.GetColor(i, j)), 0, curser.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0f);
 				}
 			}
 		}
@@ -569,7 +587,7 @@ namespace SGAmod.Tiles.TechTiles
 
 						if (ChestData.X >= 0 && !testOnly)
 						{
-							Main.NewText("Remaining stacks " + remainingStack);
+							LuminousAlterTE.DebugText("Remaining stacks " + remainingStack);
 
 							if (Main.netMode != NetmodeID.MultiplayerClient)
 							{

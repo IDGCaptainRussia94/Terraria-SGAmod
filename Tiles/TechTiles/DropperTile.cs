@@ -10,6 +10,7 @@ using Terraria.Enums;
 using Terraria.ModLoader.IO;
 using System.IO;
 using SGAmod.Items.Placeable.TechPlaceable;
+using Idglibrary;
 
 namespace SGAmod.Tiles.TechTiles
 {

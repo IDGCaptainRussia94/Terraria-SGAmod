@@ -93,7 +93,7 @@ namespace SGAmod.NPCs.Cratrosity
 		npc.ai[0]+=Main.rand.Next(0,4);
 		if (myowner.ai[0]%10==0 && npc.ai[0]%300<90){
 		Player P = Main.player[myowner.target];
-		List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.PlatinumCoin,30,8,0,1,true,0,false,220);
+		List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height), ModContent.ProjectileType<GlowingPlatinumCoin>(), 30,8,0,1,true,0,false,220);
 		itz[0].aiStyle=5;
 		}}
 

@@ -24,7 +24,7 @@ namespace SGAmod.Tiles
             TileObjectData.addTile(Type);
             ModTranslation name = CreateMapEntryName();
             name.SetDefault(barname);
-            AddMapEntry(new Color(210, 0,100), name);
+            AddMapEntry(color, name);
             drop = itemID;
         }
 

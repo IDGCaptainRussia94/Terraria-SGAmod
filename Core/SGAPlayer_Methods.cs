@@ -552,6 +552,7 @@ namespace SGAmod
 								return false;
 							int blocktime = modShieldProj.Blocktimer;
 							bool blocking = modShieldProj.Blocking;
+
 							if (proj == null || blocktime < 2 || !blocking)
 								continue;// return false;
 

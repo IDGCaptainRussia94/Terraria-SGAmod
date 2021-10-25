@@ -43,7 +43,7 @@ using SGAmod.Items;
 using SGAmod.Items.Weapons;
 using SGAmod.Items.Armors;
 using SGAmod.Items.Accessories;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 using SGAmod.Items.Weapons.Caliburn;
 using SGAmod.Tiles;
 using SGAmod.UI;
@@ -186,7 +186,33 @@ namespace SGAmod
 		public static MusicStreamingOGG musicTest;
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
 
-		public int OSDetect()
+		protected static float _screenShake = 0;
+		public static float ScreenShake
+		{
+			get
+			{
+				return Math.Max(_screenShake, 0);
+
+			}
+			set
+			{
+				_screenShake = value;
+			}
+		}
+		public static void AddScreenShake(float ammount, float distance = -1, Vector2 origin = default)
+		{
+			if (Main.dedServ)
+				return;
+
+			if (origin != default)
+			{
+				ammount *= MathHelper.Clamp((1f - (Vector2.Distance(origin, Main.LocalPlayer.Center) / distance)), 0f, 1f);
+			}
+
+			_screenShake += ammount;
+		}
+
+	public int OSDetect()
 		{
 			OperatingSystem os = Environment.OSVersion;
 			PlatformID pid = os.Platform;
@@ -452,6 +478,7 @@ namespace SGAmod
 			AddTile("CryostalBarTile", new BarTile("CryostalBar", "Cryostal Bar", new Color(21, 60, 100)), "SGAmod/Tiles/CryostalBarTile");
 			AddTile("DrakeniteBarTile", new BarTile("DrakeniteBar", "Drakenite Bar", new Color(0, 240, 0)), "SGAmod/Tiles/DrakeniteBarTile");
 			AddTile("StarMetalBarTile", new BarTile("StarMetalBar", "Star Metal Bar", new Color(244, 232, 250)), "SGAmod/Tiles/StarMetalBarTile");
+			AddTile("VibraniumBarTile", new BarTile("VibraniumBar", "Vibranium Bar", new Color(181, 85, 127)), "SGAmod/Tiles/VibraniumBarTile");
 			AddTile("WovenEntrophiteTile", new BarTile("WovenEntrophite", "Woven Entrophite", new Color(32, 0, 32)), "SGAmod/Tiles/WovenEntrophiteTile");
 
 			//AddGore("SGAmod/Gores/CirnoHeadGore",new CirnoHeadGore);
@@ -483,6 +510,10 @@ namespace SGAmod
 			CoinsAndProjectiles.Add(ProjectileID.CopperCoin, ItemID.CopperCoin); CoinsAndProjectiles.Add(ProjectileID.SilverCoin, ItemID.SilverCoin); 
 			CoinsAndProjectiles.Add(ProjectileID.GoldCoin, ItemID.GoldCoin); CoinsAndProjectiles.Add(ProjectileID.PlatinumCoin, ItemID.PlatinumCoin);
 
+			CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingCopperCoinPlayer>(), ItemID.CopperCoin); CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingSilverCoinPlayer>(), ItemID.SilverCoin); 
+			CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingGoldCoinPlayer>(), ItemID.GoldCoin); CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingPlatinumCoinPlayer>(), ItemID.PlatinumCoin);
+
+
 			SGAmod.otherimmunes = new int[3];
 			SGAmod.otherimmunes[0] = BuffID.Daybreak;
 			SGAmod.otherimmunes[1] = this.BuffType("ThermalBlaze");
@@ -501,9 +532,6 @@ namespace SGAmod
 			OSType = OSDetect();
 			SGAmod.PostDraw = new List<PostDrawCollection>();
 			//On.Terraria.GameInput.LockOnHelper.SetActive += GameInput_LockOnHelper_SetActive;
-
-			SGAMethodSwaps.Apply();
-			SGAILHacks.Patch();
 
 			if (!Main.dedServ)
 			{
@@ -595,6 +623,9 @@ namespace SGAmod
 			SkyManager.Instance["SGAmod:HellionSky"] = new HellionSky();
 			Overlays.Scene["SGAmod:SGAHUD"] = new SGAHUD();
 			Overlays.Scene["SGAmod:CirnoBlizzard"] = new SimpleOverlay("Images/Misc/Noise", new BlizzardShaderData("FilterBlizzardBackground").UseColor(0.2f, 1f, 0.2f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/Noise", 0, null).UseIntensity(0.7f).UseImageScale(new Vector2(3f, 0.75f), 0), EffectPriority.High, RenderLayers.Landscape);
+
+			SGAMethodSwaps.Apply();
+			SGAILHacks.Patch();
 
 			//On.Terraria.Player.AdjTiles += Player_AdjTiles;
 		}
@@ -842,11 +873,21 @@ namespace SGAmod
 
 			recipe = new ModRecipe(this);
 			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<ManaBattery>(), 1);
+			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 6);
+			recipe.AddIngredient(ItemID.Wire, 20);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.MetalDetector);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ItemID.MetalDetector, 1);
 			recipe.AddIngredient(ItemID.DesertFossil, 20);
 			recipe.AddIngredient(ItemID.Wire, 25);
-			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 10);
+			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 8);
 			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.Extractinator);
+			recipe.SetResult(ItemID.Extractinator,1);
 			recipe.AddRecipe();
 
 			int[] moonlorditems = { ItemID.Terrarian, ItemID.LunarFlareBook, ItemID.RainbowCrystalStaff, ItemID.SDMG, ItemID.StarWrath, ItemID.Meowmere, ItemID.LastPrism, ItemID.MoonlordTurretStaff, ItemID.FireworksLauncher,ModContent.ItemType<SoulPincher>() };
@@ -1203,6 +1244,27 @@ namespace SGAmod
         {
 			ModifyTransformMatrixEvent?.Invoke(ref Transform);
 
+			if (ScreenShake > 0)
+			{
+				//(Vector2)(typeof(SpriteViewMatrix).GetField("_translation", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Transform));
+
+				/*Matrix transMatrix = (Matrix)(typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Transform));
+				transMatrix = transMatrix * Matrix.CreateTranslation(-new Vector3(Main.screenWidth,Main.screenHeight,0)/2) * Matrix.CreateRotationZ(MathHelper.PiOver2) * Matrix.CreateTranslation((new Vector3(Main.screenWidth, Main.screenHeight, 0) / 2)+(Main.rand.NextVector2Circular(ScreenShake, ScreenShake).ToVector3()));*/
+
+				//int width = Main.graphics.GraphicsDevice.Viewport.Width;
+				//int height = Main.graphics.GraphicsDevice.Viewport.Height;
+
+				/*transMatrix = Matrix.CreateLookAt(Vector3.Zero, Vector3.UnitZ, Vector3.Up) * Matrix.CreateTranslation(width / 2, height / -2, 0) * Matrix.CreateRotationZ(MathHelper.Pi) * Matrix.CreateScale(Main.GameViewMatrix.Zoom.X, Main.GameViewMatrix.Zoom.Y, 1f) * Matrix.CreateTranslation((new Vector3(Main.screenPosition.X, Main.screenPosition.Y, 0) / 2));
+				transMatrix = transMatrix* Matrix.CreatePerspectiveFieldOfView(1f, width / (float)height, 0.00001f,100000);*/
+
+				//typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Transform, transMatrix);
+
+				//typeof(SpriteViewMatrix).GetField("_translation", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Main.GameViewMatrix, readonlyvector2 + Main.rand.NextVector2Circular(ScreenShake, ScreenShake));
+				//typeof(SpriteViewMatrix).GetMethod("Rebuild", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Main.GameViewMatrix, null);
+
+				Main.screenPosition += Main.rand.NextVector2Circular(ScreenShake, ScreenShake);
+			}
+
 			if (SGADimPlayer.staticHeartBeat >= 0)
 			{
 				float zoom1 = Math.Max(0, (float)Math.Sin(MathHelper.Pi * (SGADimPlayer.staticHeartBeat / 15f)));
@@ -1268,6 +1330,12 @@ namespace SGAmod
 			{
 				SGAmod.musicTest.CheckBuffer();
 			}
+
+			if (_screenShake > 0)
+			{
+				_screenShake -= 1;
+			}
+
 #if Dimensions
 			proxydimmod.PostUpdateEverything();
 			MakeRenderTarget();
@@ -1311,8 +1379,6 @@ namespace SGAmod
 		}
 
 	}
-
-
 
 
 

@@ -114,7 +114,7 @@ namespace SGAmod.NPCs
 		}
 		/*public override string Texture
 		{
-			get { return ("SGAmod/Items/Consumable/PrismaticBansheeStar"); }
+			get { return ("SGAmod/Items/Consumables/PrismaticBansheeStar"); }
 		}*/
 
         public override void NPCLoot()
@@ -1240,7 +1240,7 @@ namespace SGAmod.NPCs
 		}
 		public override string Texture
 		{
-			get { return ("SGAmod/Items/Consumable/PrismaticBansheeStar"); }
+			get { return ("SGAmod/Items/Consumables/PrismaticBansheeStar"); }
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)

@@ -104,8 +104,14 @@ namespace SGAmod.Items.Weapons
 			projectile.ai[1] /= 5f;
 			damage = (int)(damage*(Owner.channel ? MathHelper.Clamp(projectile.ai[1] / (120f / Owner.meleeSpeed), 0.33f,1f) : 1f) *projectile.velocity.Length());
 			if (projectile.ai[1] < 30)
+			{
 				damage = (int)(damage * 0.50);
-			damage = (int)(damage*0.25f);
+				damage = (int)(damage * 0.25f);
+            }
+            else
+            {
+				SGAmod.AddScreenShake((float)Math.Pow(damage,0.75f)*0.025f,720, target.Center);
+			}
 
 		}
 

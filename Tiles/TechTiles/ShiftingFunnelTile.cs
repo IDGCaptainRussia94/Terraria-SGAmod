@@ -11,6 +11,7 @@ using Terraria.ModLoader.IO;
 using System.IO;
 using SGAmod.Items.Placeable.TechPlaceable;
 using System;
+using Idglibrary;
 
 namespace SGAmod.Tiles.TechTiles
 {
@@ -53,15 +54,35 @@ namespace SGAmod.Tiles.TechTiles
 				finalTransfer &= MoveItem(coins, tilePos, movementCount + 1, ref remainingStack, ref testIfWeCanDoIt);
 			}
 
-			if (!finalTransfer)
+			if (!finalTransfer || item.value == 0)
 				return false;
 
 			int stackMax = Math.Min(item.stack, 10);
+			float reducedItemWorth = (item.value / 10f);
+
+			if (stackMax*reducedItemWorth<10)
+			{
+				return false;
+			}
+
+
+			/*while (stackMax * reducedItemWorth < 10)
+			{
+				stackMax += 1;
+				if (stackMax > item.stack)
+				{
+					Main.NewText("Too worthless: " + stackMax * reducedItemWorth);
+					Main.NewText("stack: " + stackMax);
+
+					return false;
+				}
+			}*/
+			  
 
 			for (int i = 0; i < stackMax; i += 1)
 			{
 				Item coins = new Item();
-				int[] worth = SGAUtils.GetCoins((item.value / 10)* stackMax);
+				int[] worth = SGAUtils.GetCoins((int)reducedItemWorth);
 
 				int[] typeofcoin = {ItemID.CopperCoin, ItemID.SilverCoin, ItemID.GoldCoin, ItemID.PlatinumCoin };
 				bool dontTestCoins = false;
@@ -95,7 +116,7 @@ namespace SGAmod.Tiles.TechTiles
 			Texture2D tex = Main.tileTexture[tile.type];
 
 			Vector2 offset = zerooroffset + (new Vector2(i, j) * 16);
-			spriteBatch.Draw(tex, offset - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY,16,16), (Color.Yellow.MultiplyRGBA(Lighting.GetColor(i,j)))*1f, 0, Vector2.Zero, new Vector2(1f, 1f), SpriteEffects.None, 0f);
+			spriteBatch.Draw(tex, offset - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY,16,16), (Color.Yellow.MultiplyRGBA(Lighting.GetColor(i,j))).MultiplyRGBA(tile.actColor(Color.White)), 0, Vector2.Zero, new Vector2(1f, 1f), SpriteEffects.None, 0f);
 		}
 
         public override void DrawEffects(int x, int y, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
@@ -117,12 +138,12 @@ namespace SGAmod.Tiles.TechTiles
 			Tile tile = Framing.GetTileSafely(i, j);
 			Texture2D coinTexture = Main.coinTexture[2];
 			int texHeight = coinTexture.Height / 8;
-			Rectangle rect = new Rectangle(0, (int)((Main.GlobalTime*8) % 8) * texHeight, coinTexture.Width, texHeight);
 
 			if (Main.tile[i, j].type == base.Type)
 			{
-				if (tile.frameX % 36 == 0 && tile.frameY == 0)
+				if (tile.frameX % 36 == 0 && tile.frameY % 36 == 0)
 				{
+					Rectangle rect = new Rectangle(0, (int)((Main.GlobalTime * (tile.frameY>0 ? 3f : 8f)) % 8) * texHeight, coinTexture.Width, texHeight);
 					Vector2 offset = zerooroffset + (new Vector2(i, j) * 16) + new Vector2(16, 16);
 					spriteBatch.Draw(coinTexture, offset - Main.screenPosition, rect, Color.White.MultiplyRGBA(Lighting.GetColor(i, j)), 0, new Vector2(coinTexture.Width,texHeight)/2, new Vector2(1f, 1f), SpriteEffects.None, 0f);
 				}

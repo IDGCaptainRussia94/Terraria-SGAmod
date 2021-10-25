@@ -605,6 +605,17 @@ namespace SGAmod
 			return player.buffTime[buffindex] > 2 && Main.debuff[bufftype] && !Main.buffNoTimeDisplay[bufftype] && !Main.vanityPet[bufftype] && !vitalbuff;
 		}
 
+		public static bool IsDigitsOnly(string str)
+		{
+			foreach (char c in str)
+			{
+				if (c < '0' || c > '9')
+					return false;
+			}
+
+			return true;
+		}
+
 
 		public static int ItemToMusic(int itemtype)
 		{
@@ -746,6 +757,11 @@ namespace SGAmod
 				return false;
 
 			return player.ConsumeItem(item, reverseOrder);
+		}
+
+		public static bool IsConsumablePickup(this Item item)
+		{
+			return item.type == ItemID.Heart || item.type == ItemID.Star || item.type == ItemID.CandyApple || item.type == ItemID.SoulCake || item.type == ItemID.CandyCane || item.type == ItemID.SugarPlum || item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3 || item.type == ModContent.ItemType<Dimensions.BubblePickup>();
 		}
 
 		public static void SpawnCoins(Vector2 where, int ammount2, float explodespeed = 0f)

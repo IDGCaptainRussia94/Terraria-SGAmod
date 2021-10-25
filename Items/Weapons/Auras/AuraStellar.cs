@@ -159,26 +159,27 @@ namespace SGAmod.Items.Weapons.Auras
 			{
 				float powerf = CalcAuraPowerReal(player);
 				NPC himas = (type as NPC);
-				himas.SGANPCs().nonStackingImpaled = (int)(projectile.damage* powerf);
-
-				for (float i = 0; i < 2f; i += 1f)
-				{
-					Vector2 loc2 = Vector2.Normalize(himas.Center - SunOffset);
-
-					int dustIndex = Dust.NewDust(himas.position, himas.width,himas.height, DustID.Fire, 0, 0, 150, default(Color), 1.5f);
-					Main.dust[dustIndex].velocity = loc2 * Main.rand.NextFloat(1f, 3f)* powerf;
-					Main.dust[dustIndex].noGravity = true;
-					Main.dust[dustIndex].alpha = 200;
-					Main.dust[dustIndex].color = SequenceColor;
-
-					//Main.dust[dustIndex].fadeIn = -1f;
-				}
+				himas.SGANPCs().nonStackingImpaled = (int)(projectile.damage * powerf);
 
 				if (!(himas.townNPC || himas.friendly))
 				{
+
+					for (float i = 0; i < 2f; i += 1f)
+					{
+						Vector2 loc2 = Vector2.Normalize(himas.Center - SunOffset);
+
+						int dustIndex = Dust.NewDust(himas.position, himas.width, himas.height, DustID.Fire, 0, 0, 150, default(Color), 1.5f);
+						Main.dust[dustIndex].velocity = loc2 * Main.rand.NextFloat(1f, 3f) * powerf;
+						Main.dust[dustIndex].noGravity = true;
+						Main.dust[dustIndex].alpha = 200;
+						Main.dust[dustIndex].color = SequenceColor;
+
+						//Main.dust[dustIndex].fadeIn = -1f;
+					}
+
 					if (thepower >= 2)
 					{
-						himas.AddBuff(ModContent.BuffType<Buffs.LavaBurn>(),3);
+						himas.AddBuff(ModContent.BuffType<Buffs.LavaBurn>(), 3);
 					}
 					if (thepower >= 3)
 					{
@@ -188,7 +189,7 @@ namespace SGAmod.Items.Weapons.Auras
 			}
 			if (type is Player alliedplayer && player.IsAlliedPlayer(alliedplayer))
 			{
-				int[] typesofdebuffs = new int[] { BuffID.OnFire, BuffID.Burning,ModContent.BuffType<ThermalBlaze>(), ModContent.BuffType<LavaBurnLight>(), ModContent.BuffType<LavaBurn>() };
+				int[] typesofdebuffs = new int[] { BuffID.OnFire, BuffID.Burning, ModContent.BuffType<ThermalBlaze>(), ModContent.BuffType<LavaBurnLight>(), ModContent.BuffType<LavaBurn>() };
 
 				foreach (int typeofbuff in typesofdebuffs)
 				{
@@ -236,11 +237,11 @@ namespace SGAmod.Items.Weapons.Auras
 
 			UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);
 
-			Texture2D mainTex = mod.GetTexture("Extra_57b");
-			Vector2 halfsize = mainTex.Size() / 2f;
-
 			if (type == 1)
 			{
+
+				Texture2D mainTex = mod.GetTexture("Extra_57b");
+				Vector2 halfsize = mainTex.Size() / 2f;
 
 				Effect RadialEffect = SGAmod.RadialEffect;
 				float scale = (1f+ CalcAuraPowerReal(player)*0.25f)*0.50f;
@@ -370,7 +371,6 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AuraBorealisBuff";
 			return base.Autoload(ref name, ref texture);
 		}
 

@@ -398,8 +398,8 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<Snowfall>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<Consumable.DivineShower>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<Consumable.Jarate>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<Consumables.DivineShower>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<Consumables.Jarate>(), 5);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

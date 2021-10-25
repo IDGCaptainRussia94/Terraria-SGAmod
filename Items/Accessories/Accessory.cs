@@ -920,7 +920,7 @@ namespace SGAmod.Items.Accessories
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("[i: " + ModContent.ItemType<Rainbowheart>() + "]");
+			DisplayName.SetDefault("[i: " + item.type + "]");
 			Tooltip.SetDefault("'Our fires burn hotter than the golden sun'\nRadiation Resistance now also allow you to resist Limbo Fading\nAll effects of the Blazing Heart and Alkalescent Heart");
 		}
         public override string Texture => "SGAmod/GreyHeart";
@@ -1713,7 +1713,7 @@ namespace SGAmod.Items.Accessories
 			{
 				s = key;
 			}
-			tooltips.Add(new TooltipLine(mod, "DemonSteppersSpeed", "Toggle the speed boost with the 'Walk Mode' hotkey ("+ s+")"));
+			tooltips.Add(new TooltipLine(mod, "DemonSteppersSpeed", "Toggle the speed boost with the 'Walk Mode' hotkey (" + s+")"));
 		}
 
         public override void SetDefaults()
@@ -1933,7 +1933,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Herald of Pestilence");
-			Tooltip.SetDefault("'The 1st seal is broken'\nGrants 50% increased Apocalyptical Strength\nAnd 3% magic Apocalyptical Chance while mounted\n" + Idglib.ColorText(Color.Red, "But may inflict bleeding randomly"));
+			Tooltip.SetDefault("'The 1st seal is broken'\nGrants 50% increased Apocalyptical Strength\nAnd 3% magic Apocalyptical Chance while mounted\n" + Idglib.ColorText(Color.Red, "But may inflict self-bleeding randomly"));
 		}
 
 		public override void SetDefaults()
@@ -2270,28 +2270,31 @@ namespace SGAmod.Items.Accessories
 		}
 
 		public void DefenseBoost(SGAPlayer sgaply)
-        {
-			Player player = sgaply.player;
-			int defensegiven = 8;
-			defensegiven += SGAWorld.downedWraiths * 2;
-			if (SGAWorld.downedSpiderQueen)
-				defensegiven += 3;
-			if (SGAWorld.downedMurk > 1)
-				defensegiven += SGAWorld.GennedVirulent ? 6 : 3;
-			if (SGAWorld.downedSharkvern)
-				defensegiven += 3;
-			if (SGAWorld.downedCratrosity)
-				defensegiven += 3;
-			if (SGAWorld.downedTPD)
-				defensegiven += 3;
-			if (SGAWorld.downedHarbinger)
-				defensegiven += 3;
-			if (SGAWorld.downedCratrosityPML)
-				defensegiven += 3;
-			if (SGAWorld.downedSPinky)
-				defensegiven += 3;
+		{
+			if (sgaply.tidalCharm >= 2)
+			{
+				Player player = sgaply.player;
+				int defensegiven = 8;
+				defensegiven += SGAWorld.downedWraiths * 2;
+				if (SGAWorld.downedSpiderQueen)
+					defensegiven += 3;
+				if (SGAWorld.downedMurk > 1)
+					defensegiven += SGAWorld.GennedVirulent ? 6 : 3;
+				if (SGAWorld.downedSharkvern)
+					defensegiven += 3;
+				if (SGAWorld.downedCratrosity)
+					defensegiven += 3;
+				if (SGAWorld.downedTPD)
+					defensegiven += 3;
+				if (SGAWorld.downedHarbinger)
+					defensegiven += 3;
+				if (SGAWorld.downedCratrosityPML)
+					defensegiven += 3;
+				if (SGAWorld.downedSPinky)
+					defensegiven += 3;
 
-			player.statDefense += Math.Max((int)((1f - ((float)player.breath / (float)player.breathMax)) * defensegiven), 0);
+				player.statDefense += Math.Max((int)((1f - ((float)player.breath / (float)player.breathMax)) * defensegiven), 0);
+			}
 
 		}
 

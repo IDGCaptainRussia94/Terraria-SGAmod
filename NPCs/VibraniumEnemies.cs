@@ -11,7 +11,7 @@ using Idglibrary;
 using Terraria.Utilities;
 using System.Linq;
 using Microsoft.Xna.Framework.Audio;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 
 namespace SGAmod.NPCs
 {

@@ -164,6 +164,8 @@ namespace SGAmod.NPCs
 						Main.dust[dust].noGravity = true;
 					}
 
+					SGAmod.AddScreenShake(48f, 1600, npc.Center);
+
 					foreach (Player p in Main.player.Where(testby => testby.active && testby.Distance(npc.Center) < 320))
 					{
 						p.velocity += Vector2.Normalize(p.Center - npc.Center) * 24f;
@@ -506,6 +508,10 @@ namespace SGAmod.NPCs
 						Main.projectile[proj].timeLeft = 250;
 
 						npc2.StrikeNPC(100000, 0, 0, noEffect: true);
+						if (Main.netMode != NetmodeID.SinglePlayer)
+						{
+							NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, npc2.whoAmI, 100000, 0f, (float)1, 0, 0, 0);
+						}
 
 						npc.ai[0] = 6355;
 						break;
@@ -628,6 +634,11 @@ namespace SGAmod.NPCs
 			{
 				RippleBoom.MakeShockwave(npc.Center, 12f, 3f, 20f, 200, 2f, true);
 				npc.StrikeNPCNoInteraction(100000, 0, 0, true, true);
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, npc.whoAmI, 100000, 0f, (float)1, 0, 0, 0);
+				}
+
 			}
 
 		}
@@ -1127,16 +1138,16 @@ namespace SGAmod.NPCs
 						{
 							Vector2 vecta = new Vector2(npc2.localAI[1], npc2.localAI[2]);
 
-							int dust = Dust.NewDust(vecta-new Vector2(npc2.width,npc2.height)/2f, npc2.width, npc2.height, DustID.PurpleCrystalShard);
+							int dust = Dust.NewDust(vecta - new Vector2(npc2.width, npc2.height) / 2f, npc2.width, npc2.height, DustID.PurpleCrystalShard);
 							Main.dust[dust].scale = 3.5f;
 							Main.dust[dust].noGravity = true;
-							Main.dust[dust].velocity = Main.rand.NextVector2Circular(2f,6f);
+							Main.dust[dust].velocity = Main.rand.NextVector2Circular(2f, 6f);
 							continue;
 
 						}
 
 
-							npc2.localAI[3] = MathHelper.Clamp(npc2.localAI[3] - 1, -1000, 10000);
+						npc2.localAI[3] = MathHelper.Clamp(npc2.localAI[3] - 1, -1000, 10000);
 						float dister = rando.NextFloat(180f, 320f) * (npc.ai[3] > 0 && npc.ai[1] == 0 ? 0.1f : 1f);
 						Vector2 gothere = Vector2.UnitX.RotatedBy(sganpc.PinkyMinion * rando.NextFloat(0.025f, 0.12f) * (rando.NextBool() ? 1f : -1f)) * dister;
 						gothere += npc.Center + npc.velocity;
@@ -1148,13 +1159,19 @@ namespace SGAmod.NPCs
 							npc2.velocity *= 0.96f;
 						}
 						npc2.velocity *= 0.99f;
-						npc2.position += (npc.velocity) * (1f - (Math.Max(npc2.localAI[3],0) / 120f));
+						npc2.position += (npc.velocity) * (1f - (Math.Max(npc2.localAI[3], 0) / 120f));
 
 					}
 				}
 				else
 				{
+					if (npc.life>((int)npc.lifeMax*0.25f) && npc2.lifeMax > 1)
+					{
+						Projectile.NewProjectile(npc2.Center,Vector2.Normalize(npc2.Center- npc.Center) *10f,ModContent.ProjectileType<PinkyMinionKilledProj>(),1000,0);
+					}
+
 					SupremeArmy.RemoveAt(i);
+
 				}
 			}
 		}
@@ -2611,7 +2628,13 @@ namespace SGAmod.NPCs
 		public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			if (GetType() == typeof(SPinkyTrue))
+			{
+				if ((projectile.penetrate <0 || projectile.penetrate >2) && npc.ai[1] != 10)
+                {
+					damage = (int)(damage * 0.20f);
+				}
 				return;
+			}
 
 			if (GetType() == typeof(SPinkyClone))
 			{
@@ -3003,6 +3026,140 @@ namespace SGAmod.NPCs
         }
 	}
 
+	public class PinkyMinionKilledProj : ModProjectile
+	{
+
+		float scalePercent => MathHelper.Clamp(projectile.timeLeft / 10f, 0f, Math.Min(projectile.localAI[0]/3f, 0.75f));
+		Vector2 startingloc = default;
+		public override void SetDefaults()
+		{
+			projectile.width = 8;
+			projectile.height = 8;
+			projectile.aiStyle = -1;
+			projectile.penetrate = -1;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 300;
+		}
+
+		public override string Texture
+		{
+			get { return "SGAmod/HavocGear/Projectiles/BoulderBlast"; }
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("S-Pinky Minion killed");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 10;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+
+		public override void AI()
+		{
+			if (startingloc == default)
+			{
+				startingloc = projectile.Center;
+			}
+
+			projectile.localAI[0] += 0.25f;
+
+			List<Point> weightedPoints2 = new List<Point>();
+
+			//foreach (NPC npc in Main.npc.Where(testby => testby.type != ModContent.NPCType<SPinkyTrue>()))
+				//weightedPoints2.Add(new Point(npc.whoAmI, 1000000));
+
+			NPC[] findnpc = SGAUtils.ClosestEnemies(projectile.Center,1500,checkWalls: false,checkCanChase: false)?.ToArray();
+			findnpc = findnpc != null ? findnpc.Where(testby => testby.type == ModContent.NPCType<SPinkyTrue>()).ToArray() : null;
+
+			if (findnpc != null && findnpc.Count() > 0 && findnpc[0].type == ModContent.NPCType<SPinkyTrue>())
+            {
+				projectile.velocity *= 0.94f;
+				if (projectile.localAI[0] > 8f)
+				{
+					NPC target = findnpc[0];
+					int dist = 60 * 60;
+					Vector2 distto = target.Center - projectile.Center;
+					projectile.velocity += Vector2.Normalize(distto).RotatedBy(MathHelper.Clamp(1f-(projectile.localAI[0] - 8f) / 5f, 0f, 1f) * 0.85f) * 3.20f;
+					projectile.velocity = Vector2.Normalize(projectile.velocity) * MathHelper.Clamp(projectile.velocity.Length(), 0f, 32f+ projectile.localAI[0]);
+
+					if (projectile.timeLeft > 10 && projectile.ai[0] < 1 && distto.LengthSquared() < dist)
+					{
+						target.StrikeNPC((int)projectile.damage, 0, 1);
+						if (Main.netMode != NetmodeID.SinglePlayer)
+						{
+							NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, target.whoAmI, projectile.damage, 0f, (float)1, 0, 0, 0);
+						}
+
+						for (int i = 0; i < 32; i += 1)
+						{
+							Vector2 position = new Vector2(6, 6) + new Vector2(Main.rand.Next(12), Main.rand.Next(12));
+							int num128 = Dust.NewDust(projectile.Center + position, 0, 0, DustID.t_Marble, 0, 0, 240, Color.Pink, scalePercent);
+							Main.dust[num128].noGravity = true;
+							Main.dust[num128].color = Color.Pink;
+							Main.dust[num128].velocity = (Vector2.Normalize(position) * 6f) + (projectile.velocity * 2.5f);
+						}
+
+						SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 86);
+						if (sound != null)
+							sound.Pitch += 0.50f;
+
+						projectile.ai[0] += 1;
+						projectile.timeLeft = (int)MathHelper.Clamp(projectile.timeLeft, 0, 10);
+						projectile.netUpdate = true;
+					}
+				}
+            }
+            else
+            {
+				projectile.timeLeft = (int)MathHelper.Clamp(projectile.timeLeft, 0, 10);
+			}
+
+			projectile.velocity *= 0.97f;
+
+			if (projectile.ai[0] > 0)
+            {
+				projectile.ai[0] += 1;
+			}
+
+			int num126 = Dust.NewDust(projectile.position - new Vector2(2, 2), Main.rand.Next(4), Main.rand.Next(4), DustID.t_Marble, 0, 0, 240, Color.Pink, scalePercent);
+			Main.dust[num126].noGravity = true;
+			Main.dust[num126].velocity = projectile.velocity * 0.5f;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			for (int i = 0; i < projectile.oldPos.Length; i += 1)//dumb hack to get the trails to not appear at 0,0
+			{
+				if (projectile.oldPos[i] == default)
+					projectile.oldPos[i] = projectile.position;
+			}
+
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+			UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);
+			float colorz = rando.NextFloat();
+			trail.color = delegate (float percent)
+			{
+				return Color.Lerp(Main.hslToRgb((colorz+(percent/4f))%1f,1f,0.75f), Color.Pink, MathHelper.Clamp(projectile.ai[0] / 7f, 0f, 1f));
+			};
+			trail.projsize = projectile.Hitbox.Size() / 2f;
+			trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
+			trail.trailThickness = 4 + MathHelper.Clamp(projectile.ai[0], 0f, 30f);
+			trail.trailThicknessIncrease = 6;
+			//trail.capsize = new Vector2(6f, 0f);
+			trail.strength = scalePercent;
+			trail.DrawTrail(projectile.oldPos.ToList(), projectile.Center);
+
+			Texture2D mainTex = Main.itemTexture[ItemID.Gel];
+
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Main.hslToRgb(colorz % 1f, 1f, 0.75f) * trail.strength, 0, mainTex.Size()/2f, 2f + MathHelper.Clamp(projectile.ai[0], 0f, 30f)*0.10f, default, 0);
+
+			return false;
+		}
+	}
 
 
 }

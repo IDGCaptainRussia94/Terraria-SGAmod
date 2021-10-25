@@ -39,7 +39,7 @@ using SGAmod.Items;
 using SGAmod.Items.Weapons;
 using SGAmod.Items.Armors;
 using SGAmod.Items.Accessories;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 using SGAmod.Items.Weapons.Caliburn;
 using SGAmod.UI;
 using Terraria.Achievements;

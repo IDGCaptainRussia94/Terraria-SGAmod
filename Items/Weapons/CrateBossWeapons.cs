@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
 using AAAAUThrowing;
+using SGAmod.NPCs.Cratrosity;
 
 namespace SGAmod.Items.Weapons
 {
@@ -108,7 +109,7 @@ namespace SGAmod.Items.Weapons
 			if (player.CountItem(types[taketype]) > 0)
 			{
 				player.ConsumeItem(types[taketype]);
-				float[,] typesproj = { { (float)ProjectileID.CopperCoin, 1f }, { (float)ProjectileID.SilverCoin, 1.5f }, { (float)ProjectileID.GoldCoin, 2.25f }, { (float)ProjectileID.PlatinumCoin, 5f } };
+				float[,] typesproj = { { ModContent.ProjectileType<GlowingCopperCoinPlayer>(), 1f }, { ModContent.ProjectileType<GlowingSilverCoinPlayer>(), 1.5f }, { ModContent.ProjectileType<GlowingGoldCoinPlayer>(), 2.25f }, { ModContent.ProjectileType<GlowingPlatinumCoinPlayer>(), 5f } };
 
 				int numberProjectiles = 8 + Main.rand.Next(7);
 				for (int index = 0; index < numberProjectiles; index = index + 1)
@@ -128,6 +129,8 @@ namespace SGAmod.Items.Weapons
 					float SpeedX = (num16 * morespeed) + (float)Main.rand.Next(-40, 41) * 0.02f;
 					float SpeedY = (num17 * morespeed) + (float)Main.rand.Next(-40, 41) * 0.02f;
 					int thisone = Projectile.NewProjectile(vector2_1.X, vector2_1.Y, SpeedX, SpeedY, (int)typesproj[taketype, 0], (int)(typesproj[taketype, 1] * (float)damage), knockBack, Main.myPlayer, 0.0f, 0f);
+					Main.projectile[thisone].friendly = true;
+					Main.projectile[thisone].hostile = false;
 					Main.projectile[thisone].magic = true;
 					Main.projectile[thisone].ranged = false;
 					IdgProjectile.AddOnHitBuff(thisone, BuffID.Midas, 60 * 10);
@@ -351,7 +354,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prosperity Rod");
-			Tooltip.SetDefault("Summons Midas Portals to shower your enemies in wealth, painfully\nOrdering your minions to attack a target will move the center of the circle to the target and the portals will gain an extra weaker attack VS the closest enemy\nAttacks inflict Midas\n'money money, it acts so funny...'");
+			Tooltip.SetDefault("Summons Midas Portals to shower your enemies in wealth, painfully\nOrdering your minions to attack a target will move the center of the circle to the target\nThe portals will gain an extra weaker attack VS the closest enemy\nAttacks inflict Midas\n'money money, it acts so funny...'");
 			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}
@@ -490,12 +493,14 @@ namespace SGAmod.Items.Weapons
 					if (projectile.ai[0] % 20 == 0)
 					{
 						Main.PlaySound(18, (int)projectile.Center.X, (int)projectile.Center.Y, 0, 1f, 0.25f);
-						int thisoned = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, ProjectileID.GoldCoin, projectile.damage, projectile.knockBack, Main.player[projectile.owner].whoAmI);
+						int thisoned = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, ModContent.ProjectileType<GlowingGoldCoin>(), projectile.damage, projectile.knockBack, Main.player[projectile.owner].whoAmI);
 						Main.projectile[thisoned].minion = true;
 						Main.projectile[thisoned].velocity = (them.Center - projectile.Center);
 						Main.projectile[thisoned].velocity.Normalize(); Main.projectile[thisoned].velocity *= 12f; Main.projectile[thisoned].velocity = Main.projectile[thisoned].velocity.RotateRandom(MathHelper.ToRadians(15));
 						Main.projectile[thisoned].penetrate = 1;
 						Main.projectile[thisoned].ranged = false;
+						Main.projectile[thisoned].friendly = true;
+						Main.projectile[thisoned].hostile = false;
 						Main.projectile[thisoned].netUpdate = true;
 						IdgProjectile.AddOnHitBuff(thisoned, BuffID.Midas, 60 * 5);
 						IdgProjectile.Sync(thisoned);
@@ -511,12 +516,14 @@ namespace SGAmod.Items.Weapons
 						if (projectile.ai[0] % 35 == 0)
 						{
 							Main.PlaySound(18, (int)projectile.Center.X, (int)projectile.Center.Y, 0, 0.75f, -0.5f);
-							int thisoned = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, ProjectileID.SilverCoin, (int)((float)projectile.damage * 0.75f), projectile.knockBack, Main.player[projectile.owner].whoAmI);
+							int thisoned = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, ModContent.ProjectileType<GlowingSilverCoin>(), (int)((float)projectile.damage * 0.75f), projectile.knockBack, Main.player[projectile.owner].whoAmI);
 							Main.projectile[thisoned].minion = true;
 							Main.projectile[thisoned].velocity = (oldthem.Center - projectile.Center);
 							Main.projectile[thisoned].velocity.Normalize(); Main.projectile[thisoned].velocity *= 10f; Main.projectile[thisoned].velocity = Main.projectile[thisoned].velocity.RotateRandom(MathHelper.ToRadians(15));
 							Main.projectile[thisoned].penetrate = 1;
 							Main.projectile[thisoned].ranged = false;
+							Main.projectile[thisoned].friendly = true;
+							Main.projectile[thisoned].hostile = false;
 							Main.projectile[thisoned].netUpdate = true;
 							IdgProjectile.AddOnHitBuff(thisoned, BuffID.Midas, 60 * 2);
 							IdgProjectile.Sync(thisoned);
@@ -665,6 +672,65 @@ namespace SGAmod.Items.Weapons
 			}
 		}
 
+	}
+
+	public class GlowingCopperCoinPlayer : GlowingCopperCoin, IDrawAdditive
+	{
+		protected override int FakeID2 => ProjectileID.CopperCoin;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Copper Coin");
+		}
+
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+			projectile.friendly = true;
+			projectile.hostile = false;
+        }
+        public override string Texture
+		{
+			get { return "Terraria/Coin_" + 0; }
+		}
+	}
+	public class GlowingSilverCoinPlayer : GlowingCopperCoinPlayer, IDrawAdditive
+	{
+		protected override int FakeID2 => ProjectileID.SilverCoin;
+		protected override Color GlowColor => Color.Silver;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Silver Coin");
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 1; }
+		}
+	}
+	public class GlowingGoldCoinPlayer : GlowingCopperCoinPlayer, IDrawAdditive
+	{
+		protected override int FakeID2 => ProjectileID.GoldCoin;
+		protected override Color GlowColor => Color.Gold;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Gold Coin");
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 2; }
+		}
+	}
+	public class GlowingPlatinumCoinPlayer : GlowingCopperCoinPlayer, IDrawAdditive
+	{
+		protected override int FakeID2 => ProjectileID.PlatinumCoin;
+		protected override Color GlowColor => new Color(229, 228, 226);
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Platinum Coin");
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 3; }
+		}
 	}
 
 }

@@ -372,13 +372,13 @@ namespace SGAmod.Items
 			recipe.SetResult(ModContent.GetInstance<PrismalOre>(),8);
 			recipe.AddRecipe();
 
-			recipe = new ModRecipe(mod);
+			/*recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 4);
 			recipe.AddIngredient(ItemID.CrystalShard, 1);
 			recipe.AddIngredient(this, 2);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ModContent.GetInstance<VibraniumCrystal>(), 1);
-			recipe.AddRecipe();
+			recipe.AddRecipe();*/
 
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 10);
@@ -410,7 +410,7 @@ namespace SGAmod.Items
 			recipe.AddIngredient(ItemID.SoulofSight, 1);
 			recipe.AddIngredient(this, 5);
 			recipe.AddTile(tileType);
-			recipe.SetResult(ModContent.GetInstance<Consumable.DivineShower>(), 1);
+			recipe.SetResult(ModContent.GetInstance<Consumables.DivineShower>(), 1);
 			recipe.AddRecipe();
 
 			/*ModRecipe recipe = new ModRecipe(mod);
@@ -473,6 +473,13 @@ namespace SGAmod.Items
 			item.height = 16;
 			item.value = 500;
 			item.rare = ItemRarityID.Red;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = mod.TileType("VibraniumCrystalTile");
 		}
         public override bool Autoload(ref string name)
         {
@@ -509,8 +516,15 @@ namespace SGAmod.Items
 			item.maxStack = 999;
 			item.width = 16;
 			item.height = 16;
-			item.value = 1000;
+			item.value = 2500;
 			item.rare = ItemRarityID.Purple;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = mod.TileType("VibraniumBarTile");
 		}
 		public override void AddRecipes()
 		{
@@ -1605,7 +1619,7 @@ namespace SGAmod.Items
 		}
 		public override string Texture
 		{
-			get { return "SGAmod/Items/Consumable/HopefulHeartItem"; }
+			get { return "SGAmod/Items/Consumables/HopefulHeartItem"; }
 		}
 		public override bool CanPickup(Player player)
         {
@@ -2003,12 +2017,12 @@ namespace SGAmod.Items
 			float _Time; // Pass the time in seconds into here
 			*/
 
-			Texture2D tex = ModContent.GetTexture("SGAmod/VoronoiTexture");
+			Texture2D tex = ModContent.GetTexture("SGAmod/voronoinoalpha");
 
 			SGAmod.VoronoiEffect.Parameters["_CellColor"].SetValue(Color.Black.ToVector4() * 1f);
 			SGAmod.VoronoiEffect.Parameters["_EdgeColor"].SetValue(Color.Lerp(Color.Orange,Color.Yellow,0.50f).ToVector4() * 1f);
-			SGAmod.VoronoiEffect.Parameters["_CellSize"].SetValue(new Vector2(1.5f,2f)*5f);
-			SGAmod.VoronoiEffect.Parameters["_ScrollSpeed"].SetValue(0f);
+			SGAmod.VoronoiEffect.Parameters["_CellSize"].SetValue(new Vector2(1.5f,2f)*1f);
+			SGAmod.VoronoiEffect.Parameters["_ScrollSpeed"].SetValue(Main.GlobalTime/4000f);
 			SGAmod.VoronoiEffect.Parameters["_FadeSpeed"].SetValue(3f);
 			SGAmod.VoronoiEffect.Parameters["_ColorScale"].SetValue(1.5652475842498528f);
 			SGAmod.VoronoiEffect.Parameters["_Time"].SetValue(Main.GlobalTime*1f);

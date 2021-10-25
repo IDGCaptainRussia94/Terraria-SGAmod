@@ -14,6 +14,110 @@ using System.Linq;
 
 namespace SGAmod.NPCs.Cratrosity
 {
+	public class CratrosityInstancedCrate
+    {
+		public int crateType;
+		public int crateRing;
+		public float crateAngle=0;
+		public float crateDist;
+		public Vector2 crateVector;
+		public int crateState = 0;
+		public int crateTimer = 0;
+		public Cratrosity boss;
+
+		public CratrosityInstancedCrate(Cratrosity boss,int crateType,float crateDist,int crateRing)
+        {
+			this.crateType = crateType;
+			this.crateDist = crateDist;
+			this.crateRing = crateRing;
+			this.boss = boss;
+		}
+
+		public bool Update()
+        {
+			crateTimer += 1;
+			return true;
+		}
+
+		public void Release(float cratehp)
+        {
+			NPC npc = boss.npc;
+			Mod mod = boss.mod;
+			int crateToSpawn = mod.NPCType("CratrosityCrate" + crateType.ToString());
+			if (crateType == ModContent.ItemType<HavocGear.Items.DankCrate>())
+				crateToSpawn = mod.NPCType("CratrosityCrateDankCrate");
+
+			int spawnedint = NPC.NewNPC((int)crateVector.X, (int)crateVector.Y, crateToSpawn);
+			NPC spawned = Main.npc[spawnedint];
+			Item cratetypeitem = new Item();
+			cratetypeitem.SetDefaults(crateType);
+
+			spawned.value = cratetypeitem.value;
+			spawned.damage = (int)spawned.damage * (npc.damage / boss.defaultdamage);
+			if (crateType == ItemID.WoodenCrate)
+			{
+				spawned.aiStyle = 10;
+				spawned.knockBackResist = 0.98f;
+				spawned.lifeMax = (int)cratehp / 5;
+				spawned.life = (int)cratehp / 5;
+				spawned.damage = (int)50 * (npc.damage / boss.defaultdamage);
+				return;
+			}
+			if (crateType == ItemID.IronCrate)
+			{
+				spawned.aiStyle = 23;
+				spawned.knockBackResist = 0.99f;
+				spawned.lifeMax = (int)(cratehp * 0.30);
+				spawned.life = (int)(cratehp * 0.30);
+				spawned.damage = (int)60 * (npc.damage / boss.defaultdamage);
+				return;
+			}
+			if (crateType == ItemID.DungeonFishingCrate || crateType == ItemID.JungleFishingCrate)
+			{
+				spawned.aiStyle = crateType == ItemID.DungeonFishingCrate ? 56 : 86;
+				spawned.knockBackResist = crateType == ItemID.DungeonFishingCrate ? 0.92f : 0.96f;
+				spawned.lifeMax = crateType == ItemID.DungeonFishingCrate ? (int)(cratehp * 0.4) : (int)(cratehp * 0.30);
+				spawned.life = crateType == ItemID.DungeonFishingCrate ? (int)(cratehp * 0.4) : (int)(cratehp * 0.30);
+				spawned.damage = (crateType == ItemID.DungeonFishingCrate ? (int)(80) : (int)(80)) * ((int)npc.damage / boss.defaultdamage);
+				return;
+			}
+			if (crateType == ItemID.HallowedFishingCrate || crateType == Cratrosity.EvilCrateType)
+			{
+				spawned.aiStyle = crateType == ItemID.HallowedFishingCrate ? 63 : 62;
+				spawned.knockBackResist = crateType == ItemID.HallowedFishingCrate ? 0.92f : 0.96f;
+				spawned.lifeMax = crateType == ItemID.HallowedFishingCrate ? (int)(cratehp * 0.60) : (int)(cratehp * 0.45);
+				spawned.life = crateType == ItemID.HallowedFishingCrate ? (int)(cratehp * 0.60) : (int)(cratehp * 0.45);
+				spawned.damage = (crateType == ItemID.HallowedFishingCrate ? (int)(100) : (int)(40)) * ((int)npc.damage / boss.defaultdamage);
+				return;
+			}
+			if (crateType == ModContent.ItemType<HavocGear.Items.DankCrate>())
+			{
+				spawned.aiStyle = 49;
+				spawned.knockBackResist = 0.85f;
+				spawned.lifeMax = (int)(cratehp * 0.65);
+				spawned.life = (int)(cratehp * 0.65);
+				spawned.damage = (int)(45 * (npc.damage / boss.defaultdamage));
+				return;
+			}
+			//if (layer == 0)
+			//{
+				spawned.knockBackResist = crateType == ItemID.HallowedFishingCrate ? 0.92f : 0.96f;
+				spawned.lifeMax = (int)(cratehp * 0.65);
+				spawned.life = (int)(cratehp * 0.65);
+			//}
+		}
+
+		public void Draw(SpriteBatch spriteBatch,Color drawColor)
+        {
+			Texture2D texture = Main.itemTexture[crateType];
+			Vector2 drawPos = crateVector - Main.screenPosition;
+			spriteBatch.Draw(texture, drawPos, null, drawColor, crateAngle, texture.Size() / 2f, new Vector2(1, 1), SpriteEffects.None, 0f);
+		}
+
+	}
+
+
+
 	[AutoloadBossHead]
 	public class Cratrosity : ModNPC, ISGABoss
 	{
@@ -28,31 +132,13 @@ namespace SGAmod.NPCs.Cratrosity
 		public float compressvargoal = 1;
 		public int doCharge = 0;
 		public bool init = false;
-		public int evilcratetype = WorldGen.crimson ? ItemID.CrimsonFishingCrate : ItemID.CorruptFishingCrate;
+		public static int EvilCrateType => WorldGen.crimson ? ItemID.CrimsonFishingCrate : ItemID.CorruptFishingCrate;
 		Vector2 theclostestcrate = new Vector2(0, 0);
-		public int[,] Cratestype = new int[,] {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-		public int[] Cratesperlayer = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		public float[,] Cratesdist = new float[,] {{0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f},
-{0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f},
-{0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f},
-{0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f},
-{0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f}};
-		public Vector2[,] Cratesvector = new Vector2[,] {{new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0)},
-{new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0)},
-{new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0)},
-{new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0)},
-{new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0),new Vector2(0,0)}};
-		public double[,] Cratesangle = new double[,] {{0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
-{0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
-{0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
-{0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
-{0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0}};
+		public int[] Cratesperlayer = new int[5] { 0, 0, 0, 0, 0};
+		public List<List<CratrosityInstancedCrate>> cratesPerRing = new List<List<CratrosityInstancedCrate>>();
 		public int postmoonlord = 0;
 		public float nonaispin = 0f;
+		public bool firstTimeSetup = true;
 
 		public override void SetStaticDefaults()
 		{
@@ -72,7 +158,7 @@ namespace SGAmod.NPCs.Cratrosity
 			npc.height = 24;
 			npc.damage = 50;
 			npc.defense = 50;
-			npc.lifeMax = 5000;
+			npc.lifeMax = 10000;
 			npc.HitSound = SoundID.NPCHit4;
 			npc.DeathSound = SoundID.NPCDeath37;
 			npc.knockBackResist = 0f;
@@ -97,7 +183,7 @@ namespace SGAmod.NPCs.Cratrosity
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
-			npc.lifeMax = (int)(npc.lifeMax * 0.625f * bossLifeScale);
+			npc.lifeMax = (int)(npc.lifeMax * 0.75f * bossLifeScale);
 			npc.damage = (int)(npc.damage * 0.6f);
 		}
 
@@ -413,7 +499,7 @@ namespace SGAmod.NPCs.Cratrosity
 			(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.GoldenCrate.ToString()))) * 6 +
 			(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.DungeonFishingCrate.ToString()))) * 10 +
 			(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.JungleFishingCrate.ToString()))) * 10 +
-			(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + evilcratetype.ToString()))) * 10 +
+			(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + EvilCrateType.ToString()))) * 10 +
 			(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.HallowedFishingCrate.ToString()))) * 10 +
 			NPC.CountNPCS(mod.NPCType("CratrosityCrateDankCrate")) * 10 +
 			(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.FloatingIslandFishingCrate.ToString()))) * (30);
@@ -427,89 +513,110 @@ namespace SGAmod.NPCs.Cratrosity
 
 		public virtual void OrderOfTheCrates(Player P)
 		{
+			if (firstTimeSetup)
+            {
+				for (int layer = 0; layer < phase; layer++)
+				{
+					Cratesperlayer[layer] = 4 + (layer * 4);
+					List<CratrosityInstancedCrate> cratesInThisLayer = new List<CratrosityInstancedCrate>();
+
+					for (int i = 0; i < Cratesperlayer[layer]; i = i + 1)
+					{
+						int crateType = ItemID.WoodenCrate;
+						if (layer == 3)
+						{
+							crateType = ItemID.IronCrate;
+							if (npc.ai[3] > 300000 && i % 2 == 0)
+							{
+								crateType = ModContent.ItemType<HavocGear.Items.DankCrate>();
+							}
+							else if (npc.ai[3] > 100000 && i % 2 == 0)
+							{
+								crateType = ItemID.HallowedFishingCrate;
+							}
+							else
+							{
+								if (npc.ai[3] < -100000 && i % 2 == 0)
+								{
+									crateType = EvilCrateType;
+								}
+							}
+						}
+						if (layer == 2)
+						{
+							crateType = (i % 2 == 0) ? ItemID.JungleFishingCrate : ItemID.DungeonFishingCrate;
+						}
+						if (layer == 1)
+						{
+							crateType = (i % 2 == 0) ? ItemID.HallowedFishingCrate : (EvilCrateType);
+						}
+						if (layer == 0)
+						{
+							crateType = ItemID.FloatingIslandFishingCrate;
+						}
+						cratesInThisLayer.Add(new CratrosityInstancedCrate(this, crateType, 8, layer));
+					}
+					cratesPerRing.Add(cratesInThisLayer);
+
+				}
+				firstTimeSetup = false;
+			}
+
+
 			nonaispin = nonaispin + 1f;
 			compressvar += (compressvargoal - compressvar) / 20;
 			float themaxdist = 99999f;
-			for (int a = 0; a < phase; a = a + 1)
+			for (int layer = 0; layer < phase; layer++)
 			{
-				Cratesperlayer[a] = 4 + (a * 4);
-				for (int i = 0; i < Cratesperlayer[a]; i = i + 1)
+				for (int index = 0; index < cratesPerRing[layer].Count; index++)
 				{
-					Cratesangle[a, i] = (a % 2 == 0 ? 1 : -1) * ((nonaispin * 0.01f) * (1f + a / 3f)) + 2.0 * Math.PI * ((i / (double)Cratesperlayer[a]));
-					Cratesdist[a, i] = compressvar * 20f + ((float)a * 20f) * compressvar;
+					Main.NewText(index);
+					CratrosityInstancedCrate crate = cratesPerRing[layer][index];
+
+					if (!crate.Update())
+						continue;
+
+					crate.crateAngle = (layer % 2 == 0 ? 1 : -1) * ((nonaispin * 0.01f) * (1f + layer / 3f)) + MathHelper.TwoPi * ((index / (float)cratesPerRing[layer].Count));
+					crate.crateDist = compressvar * 20f + ((float)layer * 20f) * compressvar;
+					//Cratesangle[a, i] = (a % 2 == 0 ? 1 : -1) * ((nonaispin * 0.01f) * (1f + a / 3f)) + 2.0 * Math.PI * ((i / (double)Cratesperlayer[a]));
+					//Cratesdist[a, i] = compressvar * 20f + ((float)a * 20f) * compressvar;
 
 					float theexpand = 0f;
 
 					if (themode > 0)
 					{
-						theexpand = (((i / 1f) * (a + 1f))) * (themode / 30f);
+						theexpand = (((index / 1f) * (layer + 1f))) * (themode / 30f);
 					}
-					Cratesvector[a, i] += ((Cratesdist[a, i] * (new Vector2((float)Math.Cos(Cratesangle[a, i]), (float)Math.Sin(Cratesangle[a, i]))) + npc.Center) - Cratesvector[a, i]) / (theexpand + (Math.Max((((compressvar) - 1) * (2 + (a * 1))), 1)));
-					float sinner = npc.ai[0] + ((float)(i * 5) + (a * 14));
+
+					crate.crateVector += ((crate.crateDist * (new Vector2((float)Math.Cos(crate.crateAngle), (float)Math.Sin(crate.crateAngle))) + npc.Center) - crate.crateVector) / (theexpand + (Math.Max((((compressvar) - 1) * (2 + (layer * 1))), 1)));
+					//if (index)
+					//crate.crateVector += Main.rand.NextVector2Circular(32, 32);
+
+					float sinner = npc.ai[0] + ((float)(index * 5) + (layer * 14));
 					float sinner2 = (float)(10f + (Math.Sin(sinner / 30f) * 7f));
+
 					if (compressvar > 1.01)
 					{
 						int[] projtype = { ModContent.ProjectileType<GlowingPlatinumCoin>(), ModContent.ProjectileType<GlowingPlatinumCoin>(), ModContent.ProjectileType<GlowingPlatinumCoin>(), ModContent.ProjectileType<GlowingGoldCoin>(), ModContent.ProjectileType<GlowingSilverCoin>(), ModContent.ProjectileType<GlowingCopperCoin>() };
 						int[] projdamage = { 25, 30, 30, 50, 60, 60 };
 						float[] projspeed = { 1f, 1f, 1f, 9f, 8f, 7f };
-						if (a == phase - 1)
+						if (layer == phase - 1)
 						{
-							if (sinner2 < 4 && (npc.ai[0] + (i * 4)) % 30 == 0)
+							if (sinner2 < 4 && (npc.ai[0] + (index * 4)) % 30 == 0)
 							{
-								List<Projectile> itz = Idglib.Shattershots(Cratesvector[a, i], P.position, new Vector2(P.width, P.height), projtype[a + 1], (int)((double)npc.damage * ((double)projdamage[a + 1] / (double)defaultdamage)), projspeed[a + 1], 0, 1, true, 0, false, 110);
-								if (projtype[a + 1] == ModContent.ProjectileType<GlowingPlatinumCoin>()) { itz[0].aiStyle = 18; IdgProjectile.AddOnHitBuff(itz[0].whoAmI, BuffID.ShadowFlame, 60 * 10); }
+								List<Projectile> itz = Idglib.Shattershots(crate.crateVector, P.position, new Vector2(P.width, P.height), projtype[layer + 1], (int)((double)npc.damage * ((double)projdamage[layer + 1] / (double)defaultdamage)), projspeed[layer + 1], 0, 1, true, 0, false, 110);
+								if (projtype[layer + 1] == ModContent.ProjectileType<GlowingPlatinumCoin>()) { itz[0].aiStyle = 18; IdgProjectile.AddOnHitBuff(itz[0].whoAmI, BuffID.ShadowFlame, 60 * 10); }
 							}
 						}
 
-						Cratesvector[a, i] += ((P.Center - Cratesvector[a, i]) / (sinner2)) * ((Math.Max(compressvar - 1, 0) * 1));
+						crate.crateVector += ((P.Center - crate.crateVector) / (sinner2)) * ((Math.Max(compressvar - 1, 0) * 1));
 					}
-					float dist = (P.Center - Cratesvector[a, i]).Length();
+					float dist = (P.Center - crate.crateVector).Length();
 					if (dist < themaxdist)
 					{
 						themaxdist = dist;
-						theclostestcrate = Cratesvector[a, i];
+						theclostestcrate = crate.crateVector;
 					}
-					//}
-					Cratestype[a, i] = ItemID.WoodenCrate;
-					if (a == 3)
-					{
-						Cratestype[a, i] = ItemID.IronCrate;
-						if (npc.ai[3] > 300000 && i % 2 == 0)
-						{
-							Cratestype[a, i] = ModContent.ItemType<HavocGear.Items.DankCrate>();
-						}
-						else if (npc.ai[3] > 100000 && i % 2 == 0)
-						{
-							Cratestype[a, i] = ItemID.HallowedFishingCrate;
-						}
-						else
-						{
-							if (npc.ai[3] < -100000 && i % 2 == 0)
-							{
-								Cratestype[a, i] = evilcratetype;
-							}
-						}
-					}
-					if (a == 2)
-					{
-						Cratestype[a, i] = (i % 2 == 0) ? ItemID.JungleFishingCrate : ItemID.DungeonFishingCrate;
-					}
-					if (a == 1)
-					{
-						Cratestype[a, i] = (i % 2 == 0) ? ItemID.HallowedFishingCrate : (evilcratetype);
-					}
-					if (a == 0)
-					{
-						Cratestype[a, i] = ItemID.FloatingIslandFishingCrate;
-					}
-
-					if (!(npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active || Main.dayTime))
-					{
-						//if (npc.ai[0]%600<350){
-						//if ((npc.ai[0]/100)%Cratesperlayer[a]==i){
-						//List<Projectile> projs=SgaLib.Shattershots(Cratesvector[a,i],P.position,new Vector2(P.width,P.height),ProjectileID.CopperCoin,35,12,0,1,true,0,true,150);
-					}
-
 				}
 			}
 
@@ -529,69 +636,19 @@ namespace SGAmod.NPCs.Cratrosity
 		private bool? CanBeHitByPlayer(Player P){
 		return true;
 		}*/
+
 		public virtual void CrateRelease(int layer)
 		{
-			double cratehp = npc.lifeMax * 0.50;
-			for (int i = 0; i < Cratesperlayer[layer]; i = i + 1)
-			{
-				int crateToSpawn = mod.NPCType("CratrosityCrate" + Cratestype[layer, i].ToString());
-				if (Cratestype[layer, i] == ModContent.ItemType<HavocGear.Items.DankCrate>())
-					 crateToSpawn = mod.NPCType("CratrosityCrateDankCrate");
+			float cratehp = npc.lifeMax * 0.50f;
+			List<CratrosityInstancedCrate> cratesInThisLayer = cratesPerRing[layer];
 
-					int spawnedint = NPC.NewNPC((int)Cratesvector[layer, i].X, (int)Cratesvector[layer, i].Y, crateToSpawn);
-				NPC spawned = Main.npc[spawnedint];
-				spawned.value = Cratestype[layer, i];
-				spawned.damage = (int)spawned.damage * (npc.damage / defaultdamage);
-				if (Cratestype[layer, i] == ItemID.WoodenCrate)
-				{
-					spawned.aiStyle = 10;
-					spawned.knockBackResist = 0.98f;
-					spawned.lifeMax = (int)cratehp / 5;
-					spawned.life = (int)cratehp / 5;
-					spawned.damage = (int)50 * (npc.damage / defaultdamage);
-				}
-				if (Cratestype[layer, i] == ItemID.IronCrate)
-				{
-					spawned.aiStyle = 23;
-					spawned.knockBackResist = 0.99f;
-					spawned.lifeMax = (int)(cratehp * 0.30);
-					spawned.life = (int)(cratehp * 0.30);
-					spawned.damage = (int)60 * (npc.damage / defaultdamage);
-				}
-				if (Cratestype[layer, i] == ItemID.DungeonFishingCrate || Cratestype[layer, i] == ItemID.JungleFishingCrate)
-				{
-					spawned.aiStyle = Cratestype[layer, i] == ItemID.DungeonFishingCrate ? 56 : 86;
-					spawned.knockBackResist = Cratestype[layer, i] == ItemID.DungeonFishingCrate ? 0.92f : 0.96f;
-					spawned.lifeMax = Cratestype[layer, i] == ItemID.DungeonFishingCrate ? (int)(cratehp * 0.4) : (int)(cratehp * 0.30);
-					spawned.life = Cratestype[layer, i] == ItemID.DungeonFishingCrate ? (int)(cratehp * 0.4) : (int)(cratehp * 0.30);
-					spawned.damage = (Cratestype[layer, i] == ItemID.DungeonFishingCrate ? (int)(80) : (int)(80)) * ((int)npc.damage / defaultdamage);
-				}
-				if (Cratestype[layer, i] == ItemID.HallowedFishingCrate || Cratestype[layer, i] == evilcratetype)
-				{
-					spawned.aiStyle = Cratestype[layer, i] == ItemID.HallowedFishingCrate ? 63 : 62;
-					spawned.knockBackResist = Cratestype[layer, i] == ItemID.HallowedFishingCrate ? 0.92f : 0.96f;
-					spawned.lifeMax = Cratestype[layer, i] == ItemID.HallowedFishingCrate ? (int)(cratehp * 0.60) : (int)(cratehp * 0.45);
-					spawned.life = Cratestype[layer, i] == ItemID.HallowedFishingCrate ? (int)(cratehp * 0.60) : (int)(cratehp * 0.45);
-					spawned.damage = (Cratestype[layer, i] == ItemID.HallowedFishingCrate ? (int)(100) : (int)(40)) * ((int)npc.damage / defaultdamage); ;
-				}
-				if (Cratestype[layer, i] == ModContent.ItemType<HavocGear.Items.DankCrate>())
-				{
-					spawned.aiStyle = 49;
-					spawned.knockBackResist = 0.85f;
-					spawned.lifeMax = (int)(cratehp * 0.65);
-					spawned.life = (int)(cratehp * 0.65);
-					spawned.damage = (int)(45 * (npc.damage / defaultdamage));
-				}
-				if (layer == 0)
-				{
-					spawned.knockBackResist = Cratestype[layer, i] == ItemID.HallowedFishingCrate ? 0.92f : 0.96f;
-					spawned.lifeMax = (int)(cratehp * 0.65);
-					spawned.life = (int)(cratehp * 0.65);
-				}
-				//CratrosityCrate crate=npc.modNPC();
-				//CratrosityCrate crate=(CratrosityCrate)spawned.modNPC;
-				//crate.cratetype=Cratestype[layer,i];
+			for (int i = 0; i < cratesInThisLayer.Count; i = i + 1)
+			{
+				cratesInThisLayer[i].Release(cratehp);
 			}
+			npc.lifeMax = (int)(npc.lifeMax * 0.75f);
+			npc.life = npc.lifeMax;
+			cratesPerRing.RemoveAt(layer);
 		}
 
 		public override void OnHitPlayer(Player player, int damage, bool crit)
@@ -601,21 +658,27 @@ namespace SGAmod.NPCs.Cratrosity
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			for (int a = 0; a < phase; a = a + 1)
+			if (firstTimeSetup)
+				return false;
+
+			for (int layer = 0; layer < phase; layer++)
 			{
-				for (int i = 0; i < Cratesperlayer[a]; i = i + 1)
+				List<CratrosityInstancedCrate> cratesInThisLayer = cratesPerRing[layer];
+				for (int i = 0; i < cratesInThisLayer.Count; i++)
 				{
-					Color glowingcolors1 = Main.hslToRgb((float)(npc.ai[0] / 30) % 1, 1f, 0.9f);
+					Point there = (cratesInThisLayer[i].crateVector / 16).ToPoint();
+					cratesInThisLayer[i].Draw(spriteBatch,Lighting.GetColor(there.X, there.Y,lightColor));
+					//Color glowingcolors1 = Main.hslToRgb((float)(npc.ai[0] / 30) % 1, 1f, 0.9f);
 					//Texture2D texture = mod.GetTexture("Items/IronSafe");
-					Texture2D texture = Main.itemTexture[Cratestype[a, i]];
+					//Texture2D texture = Main.itemTexture[Cratestype[a, i]];
 					//Main.getTexture("Terraria/Item_" + ItemID.IronCrate);
 					//Vector2 drawPos = npc.Center-Main.screenPosition;
-					Vector2 drawPos = Cratesvector[a, i] - Main.screenPosition;
-					spriteBatch.Draw(texture, drawPos, null, lightColor, (float)Cratesangle[a, i], new Vector2(16, 16), new Vector2(1, 1), SpriteEffects.None, 0f);
+					//Vector2 drawPos = Cratesvector[a, i] - Main.screenPosition;
+					//spriteBatch.Draw(texture, drawPos, null, lightColor, (float)Cratesangle[a, i], new Vector2(16, 16), new Vector2(1, 1), SpriteEffects.None, 0f);
 				}
 			}
 
-			Texture2D mainTex = GetType() == typeof(Cratrogeddon) ? Main.itemTexture[ItemID.GoldenCrate] : Main.itemTexture[ItemID.GoldenCrate];
+			Texture2D mainTex = GetType() == typeof(Cratrogeddon) ? mod.GetTexture("NPCs/Cratrosity/TitanCrate") : Main.itemTexture[ItemID.GoldenCrate];
 			Main.spriteBatch.Draw(mainTex, npc.Center - Main.screenPosition, null, lightColor, npc.rotation, mainTex.Size() / 2f, npc.scale, default, 0);
 
 			return false;
@@ -672,8 +735,15 @@ namespace SGAmod.NPCs.Cratrosity
             {
 				npc.Center = Main.npc[npc.realLife].Center;
 				npc.defense = Main.npc[npc.realLife].defense;
+				ModNPC modnpc = Main.npc[npc.realLife].modNPC;
+				if (modnpc != null)
+				{
+					Cratrosity crate = Main.npc[npc.realLife].modNPC as Cratrosity;
+					npc.width = 80 + (crate.phase * 16);
+					npc.height = 80 + (crate.phase * 16);
+				}
 			}
-        }
+		}
 
 
     }

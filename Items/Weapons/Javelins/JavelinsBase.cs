@@ -612,7 +612,9 @@ namespace SGAmod.Items.Weapons.Javelins
 
                         JavelinProj.JavelinOnHit(himz,projectile,ref damageperc);
 
-                        himz.StrikeNPC((int)(projectile.damage*damageperc),0,1);
+                        int theDamage = (int)(projectile.damage * damageperc);
+                        himz.StrikeNPC(theDamage, 0,1);
+                        Main.player[projectile.owner].addDPS(theDamage);
 
                         if (Main.netMode != NetmodeID.SinglePlayer)
                         {

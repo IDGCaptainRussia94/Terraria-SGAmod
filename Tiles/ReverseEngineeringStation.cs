@@ -36,7 +36,7 @@ namespace SGAmod.Tiles
         {
             Main.LocalPlayer.showItemIconText = "";
             Main.LocalPlayer.showItemIcon = true;
-            Main.LocalPlayer.showItemIcon2 = ModContent.ItemType<Items.Consumable.Debug1>();
+            Main.LocalPlayer.showItemIcon2 = ModContent.ItemType<Items.Consumables.Debug1>();
 
             if (!Main.LocalPlayer.HeldItem.IsAir && !Main.LocalPlayer.HeldItem.favorited)
             {

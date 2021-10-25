@@ -41,7 +41,7 @@ namespace SGAmod.Items.Weapons.Aurora
 
         public void SkylightPlayerUpdate(SGAPlayer sgaply)
         {
-            sgaply.skylightLightInfused = (Math.Max(sgaply.skylightLightInfused.Item1 - 1,0), sgaply.skylightLightInfused.Item2);
+            //sgaply.skylightLightInfused = (Math.Max(sgaply.skylightLightInfused.Item1 - 1,0), sgaply.skylightLightInfused.Item2);
         }
 
         public override void SetDefaults()

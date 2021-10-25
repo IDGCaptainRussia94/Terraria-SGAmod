@@ -331,7 +331,7 @@ namespace SGAmod.Items.Armors.Magatsu
             if (alpha <= 0)
                 return;
 
-            Texture2D tex = ModContent.GetTexture("SGAmod/Dimensions/NPCs/NullWatcher");
+            Texture2D tex = ModContent.GetTexture("SGAmod/Items/Armors/Magatsu/MagatsuNullWatcher");
             Rectangle rect = new Rectangle(0, (tex.Height / 7) * (2+(int)(Math.Min(projectile.ai[1]/250f,4))), tex.Width, tex.Height / 7);
             Rectangle recteye = new Rectangle(0, 0, tex.Width, tex.Height / 7);
 

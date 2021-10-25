@@ -929,14 +929,14 @@ namespace SGAmod.Dimensions.NPCs
 				//RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 24f, 80, 1f, true);
 			}
 
-
 			if (boss.npc.ai[3] == 1)
 			{
 				if (boss.phase < 4)
 				{
 					for (int i = 0; i < Math.Min(boss.phase,3) * 2; i += 1)
 					{
-						NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<OverseenHeadBossShield>(),ai0: boss.phase>3 ? 1 : 0, ai2: -i * 50, ai3: 200 + i * 40);
+						int phaseCounter = -i * (50 + (boss.phase * 20));
+						NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<OverseenHeadBossShield>(),ai0: boss.phase>3 ? 1 : 0, ai2: phaseCounter, ai3: 200 + i * 40);
 					}
 				}
 				boss.npc.ai[3] = 0;
@@ -2900,6 +2900,8 @@ namespace SGAmod.Dimensions.NPCs
 			Main.dust[dust].velocity = Vector2.Normalize(offset) * (float)(1f * Main.rand.NextFloat(0f, 3f));
 			Main.dust[dust].noGravity = true;
 
+			SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(projectile.Center.X, projectile.Center.Y, 48)));
+
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -3042,6 +3044,28 @@ namespace SGAmod.Dimensions.NPCs
 			DisplayName.SetDefault("Overseen Watcher");
 		}
 
+		int MaxTime
+		{
+			get
+			{
+				int npc = NPC.FindFirstNPC(ModContent.NPCType<SpaceBoss>());
+
+				if (npc >=0)
+				{
+					NPC npc2 = Main.npc[npc];
+
+					if (npc2.active)
+                    {
+						SpaceBoss boss = npc2.modNPC as SpaceBoss;
+						return 300 + ((boss.phase - 1) * 250);
+					}
+
+				}
+				return 300;
+
+			}
+		}
+
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
@@ -3086,17 +3110,17 @@ namespace SGAmod.Dimensions.NPCs
 			//AI type 1
 			if (npc.ai[0] < 2)
 			{
-				npc.Center = target.Center + Vector2.UnitX.RotatedBy(npc.localAI[2]) * (100f + npc.ai[3]);
+				npc.Center = target.Center + Vector2.UnitX.RotatedBy(npc.localAI[2]) * (180f + npc.ai[3]);
 
-				if (npc.ai[2] % 300 < 200)
+				if (npc.ai[2] % MaxTime < 200)
 				{
 					int dust = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y) + (Vector2.UnitX.RotatedBy(npc.rotation) * -8f) + Main.rand.NextVector2Circular(4f, 4f), 0, 0, DustID.BlueCrystalShard);
-					Main.dust[dust].scale = (npc.ai[2] % 300) / 200f;
-					Main.dust[dust].velocity = Vector2.UnitX.RotatedBy(npc.rotation) * -((((npc.ai[2] % 300) / 200f) * 2f) + 4f);
+					Main.dust[dust].scale = (npc.ai[2] % MaxTime) / 200f;
+					Main.dust[dust].velocity = Vector2.UnitX.RotatedBy(npc.rotation) * -((((npc.ai[2] % MaxTime) / 200f) * 2f) + 4f);
 					Main.dust[dust].noGravity = true;
 				}
 
-				if (npc.ai[2] % 300 == 200)
+				if (npc.ai[2] % MaxTime == 200)
 				{
 
 					if (npc.ai[0] == 1)
@@ -3118,7 +3142,7 @@ namespace SGAmod.Dimensions.NPCs
 					npc.netUpdate = true;
 				}
 
-				if (npc.ai[2] % 300 == 299 && npc.ai[0] == 0)
+				if (npc.ai[2] % MaxTime == 299 && npc.ai[0] == 0)
 				{
 					npc.ai[1] = Main.rand.NextFloat(MathHelper.TwoPi);
 					npc.netUpdate = true;
@@ -3148,7 +3172,7 @@ namespace SGAmod.Dimensions.NPCs
 		{
 			base.PreDraw(spriteBatch, drawColor);
 
-			float scaleeffect = 1f-(Math.Abs(((npc.ai[2]) % 300) - 200f) / 90f);
+			float scaleeffect = 1f-(Math.Abs(((npc.ai[2]) % MaxTime) - 200f) / 90f);
 
 			if (scaleeffect > 0)
 			{

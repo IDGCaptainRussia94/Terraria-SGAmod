@@ -63,14 +63,14 @@ namespace SGAmod.Items.Weapons.Vibranium
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Quaser Kunai");
-			Tooltip.SetDefault("Throws resonant knives that bounce between targets, bypass defense, and leave a stacking DoT\nThe knives continue to bounce more against Irradiated targets\nWhen fully charged, emits a Gamma Ray burst in both directions\nThis inflicts Severe Radiation to hit enemies");
+			Tooltip.SetDefault("Throws resonant knives that bounce between targets, bypass defense, and leave a stacking DoT\nThe knives bounce more against Irradiated targets and do 15% more damage\nWhen fully charged, emits a Gamma Ray burst in both directions\nThis inflicts Severe Radiation to hit enemies");
 		}
 
 		public override string Texture => "SGAmod/Items/Weapons/Vibranium/QuasarKunai";
 
 		public override void SetDefaults()
 		{
-			item.damage = 120;
+			item.damage = 110;
 			item.crit = 10;
 			item.width = 32;
 			item.height = 32;
@@ -351,7 +351,10 @@ namespace SGAmod.Items.Weapons.Vibranium
 		{
 			damage += (int)(target.defense / 2);
 			if (target.HasBuff(ModContent.BuffType<Buffs.RadioDebuff>()))
+			{
+				damage += (int)(damage * 1.15f);
 				projectile.penetrate += 1;
+			}
 		}
 		public override bool? CanHitNPC(NPC target)
 		{

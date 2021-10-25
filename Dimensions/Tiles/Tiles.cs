@@ -124,6 +124,17 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMerge[TileID.Meteorite][(ushort)mod.TileType("AstrialLuminite")] = true;
 			Main.tileMerge[(ushort)mod.TileType("AstrialLuminite")][TileID.Meteorite] = true;
 
+			Main.tileMerge[(ushort)mod.TileType("VibraniumCrystalTile")][(ushort)mod.TileType("Spacerock")] = true;
+			Main.tileMerge[(ushort)mod.TileType("Spacerock")][(ushort)mod.TileType("VibraniumCrystalTile")] = true;
+
+			Main.tileMerge[(ushort)mod.TileType("VibraniumCrystalTile")][(ushort)mod.TileType("Spacerock2")] = true;
+			Main.tileMerge[(ushort)mod.TileType("Spacerock2")][(ushort)mod.TileType("VibraniumCrystalTile")] = true;
+
+			Main.tileMerge[(ushort)mod.TileType("VibraniumCrystalTile")][TileID.Meteorite] = true;
+			Main.tileMerge[TileID.Meteorite][(ushort)mod.TileType("VibraniumCrystalTile")] = true;
+
+			TileID.Sets.ChecksForMerge[Type] = true;
+
 			minPick = 100;
 			soundType = SoundID.Tink;
 			soundStyle = 0;
@@ -150,6 +161,7 @@ namespace SGAmod.Dimensions.Tiles
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("");
 			AddMapEntry(Color.DarkRed, name);
+			TileID.Sets.ChecksForMerge[Type] = true;
 		}
 	}
 
@@ -167,6 +179,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = true;
 			Main.tileLighted[Type] = true;
+			TileID.Sets.ChecksForMerge[Type] = true;
 			minPick = SGAConfig.Instance.EarlyLuminite ? 225 : 200;
 			soundType = SoundID.Tink;
 			soundStyle = 0;
@@ -222,6 +235,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMerge[Type][(ushort)mod.TileType("Fabric")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("AnicentFabric")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("EntrophicOre")] = true;
+			TileID.Sets.ChecksForMerge[Type] = true;
 			minPick = 100;
 			soundType = SoundID.NPCHit;
 			soundStyle = 5;
@@ -262,6 +276,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMerge[Type][(ushort)mod.TileType("AnicentFabric")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("HopeOre")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("HardenedFabric")] = true;
+			TileID.Sets.ChecksForMerge[Type] = true;
 			minPick = 200;
 			soundType = 7;
 			mineResist = 3f;
@@ -293,6 +308,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMerge[Type][(ushort)mod.TileType("EntrophicOre")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("HopeOre")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("AnicentFabric")] = true;
+			TileID.Sets.ChecksForMerge[Type] = true;
 			minPick = 240;
 			soundType = 7;
 			mineResist = 5f;
@@ -330,6 +346,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMerge[Type][(ushort)mod.TileType("HopeOre")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("EntrophicOre")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("HardenedFabric")] = true;
+			TileID.Sets.ChecksForMerge[Type] = true;
 			minPick = 240;
 			soundType = 7;
 			mineResist = 25f;
@@ -373,6 +390,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMerge[Type][(ushort)mod.TileType("EntrophicOre")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("HopeOre")] = true;
 			Main.tileMerge[Type][(ushort)mod.TileType("HardenedFabric")] = true;
+			TileID.Sets.ChecksForMerge[Type] = true;
 			minPick = 0;
 			soundType = 7;
 			mineResist = 0.5f;

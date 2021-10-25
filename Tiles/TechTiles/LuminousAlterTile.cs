@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Audio;
 using System.IO;
 using Terraria.ModLoader.IO;
 using SGAmod.Items.Placeable.TechPlaceable;
+using Idglibrary;
 
 namespace SGAmod.Tiles.TechTiles
 {
@@ -69,7 +70,7 @@ namespace SGAmod.Tiles.TechTiles
                 return;
             }
 
-            Main.LocalPlayer.showItemIcon2 = ModContent.ItemType<Items.Consumable.Debug1>();
+            Main.LocalPlayer.showItemIcon2 = ModContent.ItemType<Items.Consumables.Debug1>();
             //nil
         }
 
@@ -326,7 +327,7 @@ namespace SGAmod.Tiles.TechTiles
         public ushort clientChargingTimer = 0;
         private LuminousAlterItemClass tempItemData;
         public LuminousAlterItemClass itemData;
-        public int ProcessRate => 60;
+        public virtual int ProcessRate => 60;
         public static void DebugText(string text)
         {
             //Main.NewText(text);
@@ -347,7 +348,7 @@ namespace SGAmod.Tiles.TechTiles
             return false;
         }
 
-        public override bool InsertItem(Item item,Player player)
+        public override bool InsertItem(Item item, Player player)
         {
             Item playerItem = item;
             if (!playerItem.IsAir)
@@ -363,8 +364,10 @@ namespace SGAmod.Tiles.TechTiles
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
                     NetMessage.SendTileSquare(Main.myPlayer, Position.X, Position.Y, 2);
-                    NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, Position.X, Position.Y, Type, 0f, 0, 0, 0);
+                    //NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, Position.X, Position.Y, Type, 0f, 0, 0, 0);
+                    NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, ID, Position.X, Position.Y);
                 }
+                HopperTile.CleanUpGlitchedItems();
                 return true;
             }
             return false;
@@ -395,11 +398,11 @@ namespace SGAmod.Tiles.TechTiles
                 if (sound != null)
                     sound.Pitch -= 0.50f;
 
-                if (Main.netMode == NetmodeID.MultiplayerClient)
-                {
+                //if (Main.netMode == NetmodeID.MultiplayerClient)
+                //{
                     NetMessage.SendTileSquare(Main.myPlayer, Position.X, Position.Y, 2);
                     NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, Position.X, Position.Y, Type, 0f, 0, 0, 0);
-                }
+                //}
                 return thisOne;
             }
             return null;
@@ -407,14 +410,16 @@ namespace SGAmod.Tiles.TechTiles
 
         public override void NetSend(BinaryWriter writer, bool lightSend)
         {
-            ItemIO.Send(heldItem, writer);
-            writer.Write(chargingProcess);
+            ItemIO.Send(heldItem, writer,true);
+            writer.Write((int)chargingProcess);
+            writer.Write((ushort)clientChargingTimer);
         }
 
         public override void NetReceive(BinaryReader reader, bool lightReceive)
         {
-            ItemIO.Receive(heldItem, reader);
-            chargingProcess = reader.ReadUInt16();
+            ItemIO.Receive(heldItem, reader,true);
+            chargingProcess = reader.ReadInt32();
+            clientChargingTimer = reader.ReadUInt16();
         }
 
         public override TagCompound Save()
@@ -517,9 +522,10 @@ namespace SGAmod.Tiles.TechTiles
                             if (chargingProcess>0)
                             clientChargingTimer = 150;
                         }
+                        //NetMessage.SendTileSquare(Main.myPlayer, Position.X, Position.Y, 2);
+                        //NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, Position.X, Position.Y, Type, 0f, 0, 0, 0);
+                        NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, ID, Position.X, Position.Y);
                     }
-                    //NetMessage.SendTileSquare(Main.myPlayer, Position.X, Position.Y, 2);
-                    NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, Position.X, Position.Y, Type, 0f, 0, 0, 0);
                 }
             }
 

@@ -92,22 +92,22 @@ namespace SGAmod.NPCs.Cratrosity
 				int timer = 3000000 - pmlphasetimer;
 				Vector2 playerdiff = P.MountedCenter - npc.Center;
 				nonaispin = nonaispin + 0.6f;
-				for (int a = 0; a < phase; a = a + 1)
+				for (int layer = 0; layer < phase; layer++)
 				{
-					Cratesperlayer[a] = 4 + (a * 4);
-					for (int i = 0; i < Cratesperlayer[a]; i = i + 1)
+					for (int index = 0; index < cratesPerRing[layer].Count; index++)
 					{
+						CratrosityInstancedCrate crate = cratesPerRing[layer][index];
 
-						Vector2 anglediff = P.MountedCenter - Cratesvector[a, i];
+						Vector2 anglediff = P.MountedCenter - crate.crateVector;
 						//Cratesangle[a, i] = (a % 2 == 0 ? 1 : -1) * ((nonaispin * 0.01f) * (1f + a / 3f)) + 2.0 * Math.PI * ((i / (double)Cratesperlayer[a]));
 						//Cratesdist[a, i] = compressvar * 20f + ((float)a * 20f) * compressvar;
-						int adder = (((a* Cratesperlayer[a]) + i) * 10);
+						int adder = (((layer * cratesPerRing[layer].Count) + index) * 10);
 						float crateangle2 = anglediff.ToRotation();
 						if ((timer + adder)%600 >= 300 && timer >= 600)
 						{
 							if ((timer + adder) % 600 == 300)
 							{
-								Cratesangle[a, i] = crateangle2;
+								crate.crateAngle = crateangle2;
 
 								SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageAttack, npc.Center);
 								if (sound != null)
@@ -118,7 +118,7 @@ namespace SGAmod.NPCs.Cratrosity
 								for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 12f)
 								{
 									Vector2 offset = f.ToRotationVector2();
-									int dust = Dust.NewDust(Cratesvector[a, i] + (offset * 32f), 0, 0, DustID.GoldFlame);
+									int dust = Dust.NewDust(crate.crateVector + (offset * 32f), 0, 0, DustID.GoldFlame);
 									Main.dust[dust].scale = 1.5f;
 									Main.dust[dust].noGravity = true;
 									Main.dust[dust].velocity = f.ToRotationVector2() * 4f;
@@ -127,23 +127,23 @@ namespace SGAmod.NPCs.Cratrosity
 							if ((timer + adder) % 600 > 330)
 							{
 								int counterdist = ((timer + adder) % 600)-330;
-								float cratevelocitybutcastedasfloat = (float)Cratesangle[a, i];
-								Vector2 disttoplayer = P.MountedCenter - Cratesvector[a, i];
+								float cratevelocitybutcastedasfloat = crate.crateAngle;
+								Vector2 disttoplayer = P.MountedCenter - crate.crateVector;
 								Vector2 velo = cratevelocitybutcastedasfloat.ToRotationVector2();
 								if (disttoplayer.LengthSquared()>200*200)
-								Cratesangle[a, i] = (cratevelocitybutcastedasfloat.AngleLerp(disttoplayer.ToRotation(), 0.010f));
+									crate.crateAngle = (cratevelocitybutcastedasfloat.AngleLerp(disttoplayer.ToRotation(), 0.010f));
 
-								Cratesvector[a, i] += velo * MathHelper.Clamp(counterdist/120f,0f,1f)*60f;
+								crate.crateVector += velo * MathHelper.Clamp(counterdist/120f,0f,1f)*60f;
 
 								for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 2f)
 								{
-									int dust = Dust.NewDust(Cratesvector[a, i] - new Vector2(16,16), 32, 32, DustID.GoldFlame);
+									int dust = Dust.NewDust(crate.crateVector - new Vector2(16,16), 32, 32, DustID.GoldFlame);
 									Main.dust[dust].scale = 1f;
 									Main.dust[dust].noGravity = true;
 									Main.dust[dust].velocity = (velo+Main.rand.NextVector2Circular(4f,4f)) * 1f;
 								}
 
-								Point point = Cratesvector[a, i].ToPoint();
+								Point point = crate.crateVector.ToPoint();
 								Rectangle rect = new Rectangle(point.X - 16, point.Y - 16, 32, 32);
 								foreach(Player player in Main.player.Where(testby => testby.Hitbox.Intersects(rect)))
                                 {
@@ -156,20 +156,21 @@ namespace SGAmod.NPCs.Cratrosity
 						else
 						{
 							//Cratesangle[a, i] = (float)(Cratesangle[a, i])
-							float dist = ((i*a)+i)*32f;
+							float dist = ((index * layer)+index)*32f;
 
 							Vector2 goHere = (npc.Center + (Vector2.UnitX).RotatedBy(anglediff.ToRotation()) * dist);
 
-							float crateangle = (float)Cratesangle[a, i];
+							float crateangle = crate.crateAngle;
 							if ((timer + adder) > 150)
 							{
-								Cratesangle[a, i] = (crateangle.AngleLerp((goHere - Cratesvector[a, i]).ToRotation(), 0.025f));
+								crate.crateAngle = (crateangle.AngleLerp((goHere - crate.crateVector).ToRotation(), 0.025f));
 							}
 
-							Cratesvector[a, i] += crateangle.ToRotationVector2()*(1f+Math.Min((goHere - Cratesvector[a, i]).Length()*0.01f,40f));
+							crate.crateVector += crateangle.ToRotationVector2()*(1f+Math.Min((goHere - crate.crateVector).Length()*0.01f,40f));
 						}
-						Vector2 it = new Vector2(P.Center.X - Cratesvector[a, i].X, P.Center.Y - Cratesvector[a, i].Y);
-						it.Normalize();
+
+						//Vector2 it = new Vector2(P.Center.X - crate.crateVector.X, P.Center.Y - crate.crateVector.Y);
+						//it.Normalize();
 
 					}
 				}
@@ -336,7 +337,7 @@ namespace SGAmod.NPCs.Cratrosity
 (int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.GoldenCrate.ToString()))) +
 (int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.DungeonFishingCrate.ToString()))) +
 (int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.JungleFishingCrate.ToString()))) +
-(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + evilcratetype.ToString()))) +
+(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + Cratrosity.EvilCrateType.ToString()))) +
 (int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.HallowedFishingCrate.ToString()))) +
 (int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.FloatingIslandFishingCrate.ToString())));
 				val += NPC.CountNPCS(mod.NPCType("CratrosityCrateOfWitheredWeapon")) +
@@ -445,7 +446,7 @@ namespace SGAmod.NPCs.Cratrosity
 				if (myowner.ai[0] % 150 == 140)
 				{
 					Player P = Main.player[myowner.target];
-					List<Projectile> itz = Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ProjectileID.PlatinumCoin, 45, 8, 0, 1, true, 0, false, 220);
+					List<Projectile> itz = Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ModContent.ProjectileType<GlowingPlatinumCoin>(), 45, 8, 0, 1, true, 0, false, 220);
 					itz[0].aiStyle = 5;
 				}
 			}

@@ -587,6 +587,8 @@ namespace SGAmod.Items.Weapons
             item.UseSound = SoundID.Item19;
         }
 
+        public override string Texture => "SGAmod/Items/Weapons/RiftYoyo";
+
         public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI, 0.0f, 0.0f);
@@ -627,6 +629,8 @@ namespace SGAmod.Items.Weapons
             projectile.melee = true;
             projectile.scale = 1f;
         }
+
+        public override string Texture => "SGAmod/Projectiles/RiftYoyoProj";
 
         public override bool CanDamage()
         {

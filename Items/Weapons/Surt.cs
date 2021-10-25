@@ -524,12 +524,13 @@ namespace SGAmod.Items.Weapons
 					HalfVector2 half = new HalfVector2(projectile.Center.X, projectile.Center.Y);
 					projectile.localAI[0] = ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
 					projectile.localAI[1] = 1;
-				}
+				SGAmod.AddScreenShake(24f, 320, projectile.Center);
+			}
 			projectile.scale += 0.2f;
 
 			projectile.ai[0] += 1;
 
-			Vector2 basepoint = (new HalfVector2() { PackedValue = ReLogic.Utilities.ReinterpretCast.FloatAsUInt(projectile.localAI[0]) }.ToVector2()) + new Vector2(0, 8);
+			Vector2 basepoint = (new HalfVector2() { PackedValue = ReLogic.Utilities.ReinterpretCast.FloatAsUInt(projectile.localAI[0]) }.ToVector2()) + new Vector2(0, -8);
 
 
 			Lighting.AddLight(basepoint, 2f*(Color.Yellow.ToVector3()*((float)projectile.timeLeft / 24f)));

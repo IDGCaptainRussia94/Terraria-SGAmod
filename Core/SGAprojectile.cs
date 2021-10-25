@@ -160,7 +160,7 @@ namespace SGAmod
 				SGAPlayer sgaply = owner.SGAPly();
 				if (sgaply != null && sgaply.SybariteGem)
 				{
-					if (Main.rand.Next(0, 4) == 0)
+					if (Main.rand.Next(0, 20) == 0)
 					{
 						int itemid;
 						if (SGAmod.CoinsAndProjectiles.TryGetValue(projectile.type, out itemid))

@@ -180,8 +180,8 @@ namespace SGAmod.NPCs.Wraiths
 				npc.ai[3] = 2;
 				npc.lifeMax = 3500;
 				npc.value = 100000f;
-				npc.damage = 50;
-				npc.defDamage = 50;
+				npc.damage = 35;
+				npc.defDamage = 35;
 				npc.defense = 10;
 			}
 			if (caliburnlevel > 2)

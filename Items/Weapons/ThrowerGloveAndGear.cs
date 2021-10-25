@@ -11,7 +11,7 @@ using AAAAUThrowing;
 using SGAmod.Items.Weapons;
 using SGAmod.HavocGear.Items.Weapons;
 using Terraria.Utilities;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 using Terraria.DataStructures;
 using SGAmod.Buffs;
 using System.Linq;
@@ -2070,6 +2070,8 @@ namespace SGAmod.Items.Weapons
 					}
 				}
 
+				SGAmod.AddScreenShake(32f, 420, projectile.Center);
+
 				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_BetsyFlameBreath, (int)projectile.Center.X, (int)projectile.Center.Y);
 				if (sound != null)
 					sound.Pitch = -0.525f;
@@ -2561,7 +2563,7 @@ namespace SGAmod.Items.Weapons
 
 			for (int k = projectile.oldPos.Length - 1; k > 0; k -= 1)
 			{
-				Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition;
+				Vector2 drawPos = projectile.oldPos[k]+(projectile.Hitbox.Size()/2f) - Main.screenPosition;
 				Color color = Color.PaleTurquoise * (1f - ((float)k / ((float)projectile.oldPos.Length)));
 				spriteBatch.Draw(Main.projectileTexture[projectile.type], drawPos, null, color * 0.75f, projectile.rotation, drawOrigin, projectile.scale + 0.5f, SpriteEffects.None, 0f);
 			}

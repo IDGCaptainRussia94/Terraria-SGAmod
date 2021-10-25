@@ -23,7 +23,7 @@ using SGAmod.Effects;
 using SGAmod.Items;
 using System.Linq;
 using SGAmod.Dimensions.NPCs;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 
 namespace SGAmod.Dimensions
 {
@@ -258,6 +258,8 @@ namespace SGAmod.Dimensions
                 if (rand.Next(-50, Math.Max(-10, 300 - where.Y)) > 0)
                     IDGWorldGen.TileRunner(where.X, where.Y, 4, 15, SGAmod.Instance.TileType("AstrialLuminite"), false, rand: rand);
 
+                if (rand.Next((height - 300) - 50, Math.Max((height - 300) - 10, height)) < where.Y)
+                    IDGWorldGen.TileRunner(where.X, where.Y, 4, 15, SGAmod.Instance.TileType("VibraniumCrystalTile"), false, rand: rand);
 
             }
 
@@ -267,7 +269,7 @@ namespace SGAmod.Dimensions
         public static Vector2 Gaussian2D(float rand1, float rand2)
         {
             var al1 = Math.Sqrt(-2 * Math.Log(rand1)); // part one
-            var al2 = 2 * MathHelper.Pi * rand2; // part two
+            var al2 = MathHelper.TwoPi * rand2; // part two
             float x = (float)(al1 * Math.Cos(al2));
             float y = (float)(al1 * Math.Sin(al2));
             return new Vector2(x, y);
@@ -530,7 +532,8 @@ namespace SGAmod.Dimensions
 
         public override Color OnTileColor(Color inColor)
         {
-            return Main.hslToRgb(0, 0, 0.20f);
+            Color colorsa = Color.Lerp(Main.hslToRgb(0, 0, 0.20f), Color.OrangeRed, MathHelper.Clamp((sunIsApprouching - 0.15f) * 1.25f, 0f, 1f));
+            return colorsa;
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth)

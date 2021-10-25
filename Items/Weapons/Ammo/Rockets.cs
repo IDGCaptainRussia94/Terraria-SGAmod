@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 using SGAmod.Items.Weapons;
 
 namespace SGAmod.Items.Weapons.Ammo

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
 using SGAmod.Items;
 using Terraria.GameContent.UI;
+using SGAmod.Items.Consumables.LootBoxes;
 
 namespace SGAmod.NPCs.TownNPCs
 {
@@ -297,32 +298,32 @@ namespace SGAmod.NPCs.TownNPCs
 			//if (Main.LocalPlayer.HasItem(ItemID.AncientCloth))
 			//{
 
-			shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxVanillaPotions>());
+			shop.item[nextSlot].SetDefaults(ModContent.ItemType<LootBoxVanillaPotions>());
 			shop.item[nextSlot].shopCustomPrice = randz.Next(3, 7);
 			shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.DesertFossilCurrencyCustomCurrencyID;
 			nextSlot++;
 
 			if (NPC.CountNPCS(ModContent.NPCType<Dimensions.NPCs.DungeonPortal>()) > 0)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxDeeperDungeons>());
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<LootBoxDeeperDungeons>());
 				shop.item[nextSlot].shopCustomPrice = Main.netMode == NetmodeID.MultiplayerClient ? randz.Next(4, 12) : randz.Next(20, 45);
 				shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.DesertFossilCurrencyCustomCurrencyID;
+				nextSlot++;
 			}
-			nextSlot++;
 
 			if (!Main.hardMode)
 				return;
 
 			if (randz.Next(10) < 8)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxAccessories>());
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<LootBoxAccessories>());
 				shop.item[nextSlot].shopCustomPrice = randz.Next(4, 9);
 				shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.AncientClothCurrencyCustomCurrencyID;
 				nextSlot++;
 			}
 			if (randz.Next(10) < 8)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxPotions>());
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<LootBoxVanillaPotions>());
 				shop.item[nextSlot].shopCustomPrice = 1 + randz.Next(1, 3);
 				shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.AncientClothCurrencyCustomCurrencyID;
 				nextSlot++;
@@ -330,7 +331,7 @@ namespace SGAmod.NPCs.TownNPCs
 
 			if (randz.Next(10) < 8)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxVanillaHardmodePotions>());
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<LootBoxVanillaHardmodePotions>());
 				shop.item[nextSlot].shopCustomPrice = 1 + randz.Next(1, 3);
 				shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.AncientClothCurrencyCustomCurrencyID;
 				nextSlot++;
@@ -338,14 +339,14 @@ namespace SGAmod.NPCs.TownNPCs
 
 			if (randz.Next(10) < 8)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxAccessories>());
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<LootBoxAccessories>());
 				shop.item[nextSlot].shopCustomPrice = randz.Next(30, 51);
 				shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.GlowrockCustomCurrencyID;
 				nextSlot++;
 			}
 			if (randz.Next(10) < 8)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxPotions>());
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<LootBoxPotions>());
 				shop.item[nextSlot].shopCustomPrice = randz.Next(8, 29);
 				shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.GlowrockCustomCurrencyID;
 				nextSlot++;
@@ -353,7 +354,7 @@ namespace SGAmod.NPCs.TownNPCs
 
 			if (randz.Next(10) < 8)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxVanillaHardmodePotions>());
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<LootBoxVanillaHardmodePotions>());
 				shop.item[nextSlot].shopCustomPrice = randz.Next(8, 29);
 				shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.GlowrockCustomCurrencyID;
 				nextSlot++;
@@ -365,7 +366,7 @@ namespace SGAmod.NPCs.TownNPCs
 
 			if (Main.LocalPlayer.HasItem(ModContent.ItemType<OverseenCrystal>()))
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumable.LootBoxes.LootBoxAccessoriesEX>());
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<LootBoxAccessoriesEX>());
 				shop.item[nextSlot].shopCustomPrice = 100;
 				shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.OverseenCrystalCustomCurrencyID;
 				nextSlot++;

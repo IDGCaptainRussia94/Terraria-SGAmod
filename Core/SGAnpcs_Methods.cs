@@ -318,7 +318,11 @@ namespace SGAmod
 					if (SGAConfigClient.Instance.EpicApocalypticals)
 					{
 						if (effectShockwave)
-						RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 10f, 60, 1f);
+						{
+							RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 10f, 60, 1f);
+							if (SGAmod.ScreenShake<32)
+							SGAmod.AddScreenShake(24f, 1200, player.Center);
+						}
 						if (effectSound)
 							Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/crit_hit").WithVolume(.7f).WithPitchVariance(.25f), npc.Center);
 					}
@@ -753,10 +757,18 @@ namespace SGAmod
 
 			}
 
+			/*if (PinkyMinion>0)
+            {
+				if ((npc.life-damage)<1 && ((projectile.penetrate<5 && projectile.penetrate >= 0) || projectile == null))
+				{
+					NPC[] findnpc = SGAUtils.ClosestEnemies(npc.Center, 1500, checkWalls: false, checkCanChase: false)?.ToArray();
+					findnpc = findnpc != null ? findnpc.Where(testby => testby.type == ModContent.NPCType<NPCs.SPinkyTrue>()).ToArray() : null;
 
-
+					if (findnpc != null && findnpc.Count()>0 && findnpc[0].type == ModContent.NPCType<NPCs.SPinkyTrue>())
+					Projectile.NewProjectile(npc.Center, Vector2.Normalize(findnpc[0].Center - npc.Center) * 10f, ModContent.ProjectileType<NPCs.PinkyMinionKilledProj>(), 500, 0);
+				}
+			}*/
 		}
-
 	}
 
 

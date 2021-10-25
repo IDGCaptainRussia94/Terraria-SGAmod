@@ -14,6 +14,7 @@ using System;
 using Terraria.Utilities;
 using System.Collections.Generic;
 using System.Linq;
+using Idglibrary;
 
 namespace SGAmod.Tiles.TechTiles
 {

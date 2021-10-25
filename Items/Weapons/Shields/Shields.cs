@@ -157,7 +157,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public int Blocktimer => blocktimer-player.SGAPly().shieldBlockTime;
 		private int blocktimer = 1;
 
-		protected virtual float BlockAngle => 0.75f;
+		protected virtual float BlockAngle => 0.5f;
 		protected virtual float BlockDamage => 0.25f;
 		protected virtual int BlockPeriod => 30;
 		protected virtual float AngleAdjust => 0f;
@@ -510,7 +510,7 @@ namespace SGAmod.Items.Weapons.Shields
 	public class MagishieldProj : DankWoodShieldProj, IDrawAdditive
 	{
 		protected override float BlockDamage => 1f - (1f / ((player.magicDamage * 2) - 1f));
-		protected override float BlockAngle => 0.30f;
+		protected override float BlockAngle => base.BlockAngle;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("MagishieldProj");
@@ -783,6 +783,9 @@ namespace SGAmod.Items.Weapons.Shields
 				{
 					if (limit > count)
 						break;
+
+					SGAmod.AddScreenShake(28f, 320, npc.Center);
+
 					SoundEffectInstance sound = Main.PlaySound(SoundID.Item70, npc.Center);
 					if (sound != null)
 					{

@@ -18,7 +18,7 @@ using SGAmod.Items;
 
 namespace SGAmod.NPCs
 {
-
+	[AutoloadBossHead]
 	public class SPinkyTrue : SPinky, ISGABoss
 	{
 		int realcounter;
@@ -61,7 +61,9 @@ namespace SGAmod.NPCs
 			attackPhaseTime = 1200;
 		}
 
-		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        public override string BossHeadTexture => "SGAmod/NPCs/SPinkyTrue_Head_Boss";
+
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
 			if (npc.ai[0] < 400)
 				return false;

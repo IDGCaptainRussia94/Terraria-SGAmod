@@ -1588,7 +1588,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Plasmic Rail Gun");
-			Tooltip.SetDefault("Charges up a powerful piercing railgun shot\nHyper charged plasma melts enemies in lavaburn at max charge\nRequires Plasma Cells and Electric Charge to fire\nYou can fire a weaker beam if you run out of Plasma\nRight click to zoom out");
+			Tooltip.SetDefault("Charges up a powerful piercing railgun shot\nHyper charged plasma melts targets from a long range\nRequires Plasma Cells and Electric Charge to fire\nYou can fire a weaker beam if you run out of Plasma\nRight click to zoom out");
 			SGAmod.UsesPlasma.Add(SGAmod.Instance.ItemType("PlasmaGun"), 1000);
 		}
 
@@ -1780,8 +1780,8 @@ namespace SGAmod.HavocGear.Items.Weapons
 				int type = ModContent.ProjectileType<PlasmaBeam>();
 				Vector2 center = projectile.Center-Vector2.Normalize(perturbedSpeed)*32f;
 				int prog = Projectile.NewProjectile(center.X, center.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, projectile.knockBack, player.whoAmI);
-				if (projectile.ai[0] >= chargeuptime)
-				IdgProjectile.AddOnHitBuff(prog, ModContent.BuffType<LavaBurn>(), (int)(120 + (perc * 300f)));
+				//if (projectile.ai[0] >= chargeuptime)
+				//IdgProjectile.AddOnHitBuff(prog, ModContent.BuffType<LavaBurn>(), (int)(120 + (perc * 300f)));
 
 				player.velocity -= perturbedSpeed;
 

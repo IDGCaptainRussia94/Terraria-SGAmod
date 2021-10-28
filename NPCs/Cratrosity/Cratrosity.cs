@@ -258,12 +258,12 @@ namespace SGAmod.NPCs.Cratrosity
 			return false;
 		}
 
-		public override void AI()
-		{
+        public override bool PreAI()
+        {
 			bool newoneneeded = true;
 			if (NPC.CountNPCS(ModContent.NPCType<CratrosityHitBox>()) > 0)
 			{
-				foreach (NPC npc2 in Main.npc.Where(testby => testby.type == ModContent.NPCType<CratrosityHitBox>()))
+				foreach (NPC npc2 in Main.npc.Where(testby => testby.active && testby.type == ModContent.NPCType<CratrosityHitBox>()))
 				{
 					if (npc2.realLife == npc.whoAmI && npc2.type == ModContent.NPCType<CratrosityHitBox>())
 					{
@@ -274,15 +274,25 @@ namespace SGAmod.NPCs.Cratrosity
 			}
 
 			if (newoneneeded)
-            {
+			{
 				//npc.dontTakeDamage = true;
-				int npc2 = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y,ModContent.NPCType<CratrosityHitBox>());
+				int npc2 = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<CratrosityHitBox>());
 				Main.npc[npc2].realLife = npc.whoAmI;
+				Main.npc[npc2].netUpdate = true;
+				//Main.NewText("new one");
 				init = true;
 			}
 
+			return true;
+        }
+
+		public Player Target => Main.player[npc.target];
+
+        public override void AI()
+		{
+
 			doCharge -= 1;
-			Player P = Main.player[npc.target];
+			Player P = Target;
 			npc.localAI[0] -= 1;
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active || Main.dayTime)
 			{
@@ -570,7 +580,6 @@ namespace SGAmod.NPCs.Cratrosity
 			{
 				for (int index = 0; index < cratesPerRing[layer].Count; index++)
 				{
-					Main.NewText(index);
 					CratrosityInstancedCrate crate = cratesPerRing[layer][index];
 
 					if (!crate.Update())
@@ -732,17 +741,32 @@ namespace SGAmod.NPCs.Cratrosity
         public override void AI()
         {
 			if (npc.realLife >= 0)
-            {
+			{
+				if (npc.realLife < 1)
+                {
+					//npc.StrikeNPCNoInteraction(100000, 0, 0, noEffect: true);
+					return;
+				}
+				npc.dontTakeDamage = Main.npc[npc.realLife].dontTakeDamage;
 				npc.Center = Main.npc[npc.realLife].Center;
 				npc.defense = Main.npc[npc.realLife].defense;
 				ModNPC modnpc = Main.npc[npc.realLife].modNPC;
 				if (modnpc != null)
 				{
-					Cratrosity crate = Main.npc[npc.realLife].modNPC as Cratrosity;
-					npc.width = 80 + (crate.phase * 16);
-					npc.height = 80 + (crate.phase * 16);
+					if (!Main.npc[npc.realLife].modNPC.GetType().IsSubclassOf(typeof(Cratrosity)))
+					{
+						//npc.StrikeNPCNoInteraction(100000, 0, 0, noEffect: true);
+						return;
+					}
+					else
+					{
+						Cratrosity crate = Main.npc[npc.realLife].modNPC as Cratrosity;
+						npc.width = 80 + (crate.phase * 16);
+						npc.height = 80 + (crate.phase * 16);
+					}
 				}
 			}
+			//Main.NewText("exists "+ npc.Center);
 		}
 
 

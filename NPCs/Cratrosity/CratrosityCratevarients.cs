@@ -75,7 +75,7 @@ namespace SGAmod.NPCs.Cratrosity
 		}
 
 	}
-	public class CratrosityCrate3206: CratrosityCrate
+	public class CratrosityCrate3206 : CratrosityCrate
 	{
 		protected override int CrateIndex => ItemID.FloatingIslandFishingCrate;
 		public override string Texture

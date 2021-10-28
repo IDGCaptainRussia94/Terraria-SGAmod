@@ -311,16 +311,22 @@ namespace SGAmod.Items.Weapons
 			projectile.Center = owner.Center + new Vector2(-24f + (owner.direction == 1 ? 10f : -5f), -16f);
 			if (owner.itemAnimation < 8)
 				projectile.Center += new Vector2(0, (int)((8.0 - (double)owner.itemAnimation) * 2.5));
+			if (owner.itemAnimation < 1) 
+			{
+				projectile.Kill();
+			}
 
-			//if (owner.timeLeft < 2)
-			//	projectile.Kill();
+
+				//if (owner.timeLeft < 2)
+				//	projectile.Kill();
 
 
-			projectile.rotation += (((float)(Math.PI / -4.0)) - projectile.rotation) / 6f; 
-			if (projectile.timeLeft == 80)
+				projectile.rotation += (((float)(Math.PI / -4.0)) - projectile.rotation) / 6f; 
+			if (projectile.timeLeft == 110)
 			{
 				int dist = 1200 * 1200;
-				foreach (NPC him in Main.npc.Where(testby => testby.active && (testby.GetGlobalNPC<SGAnpcs>().InfinityWarStormbreakerint > 0 && testby.GetGlobalNPC<SGAnpcs>().DosedInGas || testby.dripping) && (testby.Center - owner.Center).LengthSquared() < dist))
+				int nummaxbolts = 5;
+				foreach (NPC him in Main.npc.Where(testby => testby.active && (testby.GetGlobalNPC<SGAnpcs>().InfinityWarStormbreakerint > -0 || testby.GetGlobalNPC<SGAnpcs>().DosedInGas || testby.dripping) && (testby.Center - owner.Center).LengthSquared() < dist).OrderBy(testby => (testby.Center - owner.Center).LengthSquared()).Take(nummaxbolts))
 				{
 					if (owner.SGAPly().ConsumeElectricCharge(100, 150))
 					{

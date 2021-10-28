@@ -145,8 +145,9 @@ namespace SGAmod.NPCs.Cratrosity
 
 								Point point = crate.crateVector.ToPoint();
 								Rectangle rect = new Rectangle(point.X - 16, point.Y - 16, 32, 32);
-								foreach(Player player in Main.player.Where(testby => testby.Hitbox.Intersects(rect)))
+								foreach(Player player in Main.player.Where(testby => testby.active && !testby.dead && testby.Hitbox.Intersects(rect)))
                                 {
+									if (player!= null)
 									player.Hurt(PlayerDeathReason.ByCustomReason(player.name + "Got smashed"), npc.damage*2, npc.direction);
                                 }
 
@@ -227,7 +228,7 @@ namespace SGAmod.NPCs.Cratrosity
 
 		public override void AI()
 		{
-			Player P = Main.player[npc.target];
+			Player P = Target;
 			Cratrosity origin = npc.modNPC as Cratrosity;
 			pmlphasetimer--;
 			npc.dontTakeDamage = false;

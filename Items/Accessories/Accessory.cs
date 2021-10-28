@@ -562,7 +562,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Midas Insignia");
-			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin\ndefensive/movement buffs while facing left, offensive buffs while facing right, gold and platinum coins give you both\nIncreased damage with the more coins you have in your inventory (this caps at 25% at 10 platinum)\n15% increased damage against enemies afflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are consumed in the process"));
+			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin\ndefensive/movement buffs while facing left, offensive buffs while facing right, gold and platinum coins give you both\nIncreased damage with the more coins you have in your inventory (this caps at 25% at 10 platinum)\n15% increased damage against enemies afflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are sacrificed to the Planes of Wealth"));
 		}
 
 		public override void SetDefaults()
@@ -575,17 +575,16 @@ namespace SGAmod.Items.Accessories
 			item.expert = true;
 		}
 
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "sacrificedMoney", Main.LocalPlayer.SGAPly().midasMoneyConsumed/(float)Item.buyPrice(1)+" platinum collected"));
+		}
+
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			bool left = player.direction < 0;//player.Center.X > (Main.maxTilesX * 16) / 2f;
+			bool left = player.direction < 0;
 			int coincount = player.CountItem(ItemID.CopperCoin) + (player.CountItem(ItemID.SilverCoin) * 100) + (player.CountItem(ItemID.GoldCoin) * 10000) + (player.CountItem(ItemID.PlatinumCoin) * 1000000);
 			float howmuch = Math.Min(0.25f, (coincount / 10000000f) / 4f);
-			/*player.magicDamage += howmuch;
-			player.rangedDamage += howmuch;
-			player.Throwing().thrownDamage += howmuch;
-			player.minionDamage += howmuch;
-			player.meleeDamage += howmuch;
-			SGAmod.BoostModdedDamage(player, howmuch, 0);*/
 			player.BoostAllDamage(howmuch, 5);
 			if (GetType() == typeof(CorperateEpiphany))
 				player.GetModPlayer<SGAPlayer>().MidasIdol = hideVisual ? 3 : left ? 1 : 2;

@@ -73,7 +73,7 @@ namespace SGAmod.Items.Armors.Acid
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 16);
 			recipe.AddRecipeGroup("SGAmod:NoviteNovusBars", 8);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
@@ -119,7 +119,7 @@ namespace SGAmod.Items.Armors.Acid
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 15);
+			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 24);
 			recipe.AddRecipeGroup("SGAmod:NoviteNovusBars", 10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
@@ -160,7 +160,7 @@ namespace SGAmod.Items.Armors.Acid
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 8);
+			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 12);
 			recipe.AddRecipeGroup("SGAmod:NoviteNovusBars", 6);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);

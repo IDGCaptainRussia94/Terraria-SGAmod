@@ -20,7 +20,7 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Deeper Dungeons Loot : Contraband Crate!");
-			Tooltip.SetDefault("'Totally banned in Norway... Aparently also in Terraria'\nWill contain an item exclusive to the Deeper Dungeons");
+			Tooltip.SetDefault(defaultText + "Will contain an item exclusive to the Deeper Dungeons");
 		}
 
 		public override string Texture
@@ -93,7 +93,7 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hardmode Potions : Contraband Crate!");
-			Tooltip.SetDefault("'Totally banned in Norway... Aparently also in Terraria'\nWill contain a random ammount of one type of Vanilla hardmode potion\nMay contain Super Healing or Super Mana potions");
+			Tooltip.SetDefault(defaultText+"Will contain a random ammount of one type of Vanilla hardmode potion\nMay contain Super Healing or Super Mana potions");
 		}
 
 		public override string Texture
@@ -168,7 +168,7 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Potions : Contraband Crate!");
-			Tooltip.SetDefault("'Totally banned in Norway... Aparently also in Terraria'\nWill contain a random ammount of one type of Vanilla prehardmode potion\nMay contain Greater Healing or Greater Mana potions");
+			Tooltip.SetDefault(defaultText+"Will contain a random ammount of one type of Vanilla prehardmode potion\nMay contain Greater Healing or Greater Mana potions");
 		}
 
 		public override string Texture
@@ -254,7 +254,7 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("SGAmod Potions : Contraband Crate!");
-			Tooltip.SetDefault("'Totally banned in Norway... Aparently also in Terraria'\nWill contain a random ammount of one type of SGAmod potion\nIncludes a few consumables as well");
+			Tooltip.SetDefault(defaultText+"Will contain a random ammount of one type of SGAmod potion\nIncludes a few consumables as well");
 		}
 
 		public override string Texture
@@ -345,7 +345,7 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vanilla EX : Contraband Crate!");
-			Tooltip.SetDefault("'100%, absolutely, totally banned in Norway... Aparently also in Terraria'\nWill contain a random high tier vanilla item");
+			Tooltip.SetDefault(defaultText+"Will contain a random high tier vanilla item");
 		}
 
 		public override string Texture
@@ -417,10 +417,11 @@ namespace SGAmod.Items.Consumables.LootBoxes
 
 	public class LootBoxAccessories : LootBox
 	{
+		protected string defaultText = "'Totally banned in Norway... Apparently also in Terraria'\n";
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("SGAmod Accessories : Contraband Crate!");
-			Tooltip.SetDefault("'Totally banned in Norway... Aparently also in Terraria'\nWill contain a random SGAmod accessory");
+			Tooltip.SetDefault(defaultText+"Will contain a random SGAmod accessory");
 		}
 
 		public override string Texture

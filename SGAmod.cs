@@ -530,12 +530,15 @@ namespace SGAmod
 			//SkillTestKey = RegisterHotKey("(Debug) Skill Tree Key", "T");
 
 			OSType = OSDetect();
+			_ =Core.WinForm.WinHandled;
+
 			SGAmod.PostDraw = new List<PostDrawCollection>();
 			//On.Terraria.GameInput.LockOnHelper.SetActive += GameInput_LockOnHelper_SetActive;
 
 			if (!Main.dedServ)
 			{
 				SGAmod.MakeRenderTarget(true);
+				ShadowParticle.Load();
 				//RenderTarget2D ss=new RenderTarget2D()
 				DrakeniteBar.CreateTextures();
 				LoadOrUnloadTextures(true);
@@ -660,6 +663,7 @@ namespace SGAmod
 
 			if (!Main.dedServ)
 			{
+				ShadowParticle.Unload();
 				if (SGAmod.ParadoxMirrorTex != null)
 					SGAmod.ParadoxMirrorTex.Dispose();
 				if (SGAmod.hellionLaserTex != null)
@@ -1320,11 +1324,14 @@ namespace SGAmod
 			NullWatcher.watchers.Clear();
 		}
 #endif
-		int test = 0;
+
+		public delegate void PostUpdateEverythingDelegate();
+		public static event PostUpdateEverythingDelegate PostUpdateEverythingEvent;
 		public override void PostUpdateEverything()
 		{
 			//test++;
 			Terraria.Cinematics.CinematicManager.Instance.Update(new GameTime());
+			PostUpdateEverythingEvent?.Invoke();
 			//Main.NewText(test);
 			if (SGAmod.musicTest != null && SGAmod.musicTest.IsPlaying)
 			{

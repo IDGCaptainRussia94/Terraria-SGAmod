@@ -764,7 +764,7 @@ namespace SGAmod.Items.Consumables
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("BottledMud"), 5);
 			recipe.AddIngredient(mod.ItemType("VialofAcid"), 15);
-			recipe.AddIngredient(mod.ItemType("Biomass"), 20);
+			recipe.AddIngredient(mod.ItemType("Biomass"), 10);
 			recipe.AddIngredient(ItemID.Bunny, 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 5);

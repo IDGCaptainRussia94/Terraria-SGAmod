@@ -188,7 +188,7 @@ namespace SGAmod.Items.Weapons
 			float numberProjectiles = 1;
 			float rotation = MathHelper.ToRadians(8);
 			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 45f;
-			float rooffset = player.direction*MathHelper.PiOver2*-0.15f;
+			float rooffset = player.direction * MathHelper.PiOver2 * -0.15f;
 
 			for (int i = 0; i < numberProjectiles; i++)
 			{
@@ -257,7 +257,7 @@ namespace SGAmod.Items.Weapons
 	}
 
 	public class AvariceCoin : NPCs.Cratrosity.GlowingGoldCoin
-    {
+	{
 
 		int fakeid = ProjectileID.GoldCoin;
 		public int guyihit = -10;
@@ -606,7 +606,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Midas Portal");
-			Description.SetDefault("Portals to planes of wealth will fight for you");
+			Description.SetDefault("Portals from Planes of Wealth will fight for you");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
 		}
@@ -668,7 +668,7 @@ namespace SGAmod.Items.Weapons
 		{
 			if (target.HasBuff(BuffID.Midas))
 			{
-				target.value += (int)(item.value * (player.SGAPly().MidasIdol>0 ? 0.20f : 0.05f));
+				target.value += (int)(item.value * (player.SGAPly().MidasIdol > 0 ? 0.20f : 0.05f));
 			}
 		}
 
@@ -682,13 +682,13 @@ namespace SGAmod.Items.Weapons
 			DisplayName.SetDefault("Avarice Copper Coin");
 		}
 
-        public override void SetDefaults()
-        {
-            base.SetDefaults();
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
 			projectile.friendly = true;
 			projectile.hostile = false;
-        }
-        public override string Texture
+		}
+		public override string Texture
 		{
 			get { return "Terraria/Coin_" + 0; }
 		}

@@ -176,6 +176,7 @@ namespace SGAmod.Items.Accessories
 			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl))
 			{
 				tooltips.Add(new TooltipLine(mod, "Tf2Elem", Idglib.ColorText(Color.Orange, "Emblems gain experience as you slay enemies, gradually gaining their stats")));
+				tooltips.Add(new TooltipLine(mod, "Tf2Elem", Idglib.ColorText(Color.Orange, "XP gained is relative to the ammount of money enemies would drop")));
 				tooltips.Add(new TooltipLine(mod, "Tf2Elem", Idglib.ColorText(Color.Orange, "At max experience, they fully gain their listed stats")));
 				tooltips.Add(new TooltipLine(mod, "Tf2Elem", Idglib.ColorText(Color.Orange, "Emblems can only be crafted into their higher ranks at max experience")));
 			}
@@ -206,16 +207,6 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			//player.GetModPlayer<SGAPlayer>().Havoc = 1;
-			/*player.Throwing().thrownCrit += 5;
-			player.rangedCrit += 5;
-			player.meleeCrit += 5;
-			player.magicCrit += 5;
-			player.magicDamage += 0.05f;
-			player.rangedDamage += 0.05f;
-			player.meleeDamage += 0.05f;
-			player.minionDamage += 0.05f;
-			player.Throwing().thrownDamage += 0.05f;*/
 			GrantBuffs(player,hideVisual);
 			player.SGAPly().tf2emblemLevel = 1;
 		}

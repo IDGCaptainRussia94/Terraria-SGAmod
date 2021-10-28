@@ -176,7 +176,6 @@ namespace SGAmod.NPCs.Hellion
 
         public void WormHead(Player player)
         {
-
             if (Main.netMode != 1)
             {
                 //make parts
@@ -242,7 +241,7 @@ namespace SGAmod.NPCs.Hellion
                             }
                             else
                             {
-                                Vector2 aplay = -theplayerdir; theplayerdir.Normalize();
+                                Vector2 aplay = -theplayerdir+new Vector2(0,0.01f); theplayerdir.Normalize();
                                 theplayerdir = player.Center - (npc.Center + (theplayerdir * 400f));
                             }
 
@@ -283,8 +282,8 @@ namespace SGAmod.NPCs.Hellion
                     acceeratedist = 150000f;
                     friction = 0.93f;
 
-
-                    Vector2 thehelldir = player.Center - (Hellion.GetHellion().npc.Center);
+                    Vector2 hellcenter = Hellion.GetHellion().npc.Center;
+                    Vector2 thehelldir = player.Center - (hellcenter);
 
                     NPC master = Main.npc[(int)npc.ai[3]];
 
@@ -399,8 +398,6 @@ namespace SGAmod.NPCs.Hellion
                 if (noact > 0)
                     acceerate = 0.025f;
 
-
-
                 float dist = theplayerdir.Length();
                 theplayerdir.Normalize();
                 if (nomove < 1)
@@ -428,6 +425,9 @@ namespace SGAmod.NPCs.Hellion
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
+            if (npc.localAI[3] < 300)
+                return false;
+
             return (nomove > 0 || phase < 2);
         }
 
@@ -557,6 +557,50 @@ namespace SGAmod.NPCs.Hellion
 
         public override bool PreAI()
         {
+            npc.localAI[3] += phase > 0 && noact > 0 ? 1 : (phase > 1 ? 3 : 1);
+            npc.dontTakeDamage = false;
+            if (npc.localAI[3] < 300)
+            {
+                npc.dontTakeDamage = true;
+                if (phase < 1)
+                {
+                    npc.ai[0] -= 1;
+                    noact = Math.Max(noact, 5);
+                }
+            }
+
+            if (phase > 0 && noact > 0)
+            {
+                UnifiedRandom rando = new UnifiedRandom(npc.whoAmI);
+                npc.localAI[3] -= 1;
+                npc.localAI[3] = Math.Min(npc.localAI[3] * 0.99f, phase > 1 ? rando.Next(300,1500) : 500);
+            }
+
+            if (phase < 2 || noact>200)
+            {
+                /*for (int i = 0; i < 3; i++)
+                {
+                    if (Main.rand.Next(phase > 0 ? 120 : 0, 300) < npc.localAI[3])
+                    {
+                        float scale = MathHelper.Clamp((npc.localAI[3]) / 300f, 0f, 1f);
+                        Vector2 spread = Main.rand.NextVector2Circular(640f, 640f) * (1.05f - scale);
+
+                        ShadowParticle part = new ShadowParticle(
+                            npc.Center + spread,
+                            (npc.velocity) + Main.rand.NextVector2Circular(4f, 4f),
+                            Vector2.One * scale * 0.16f,
+                            30,
+                            new Vector2(-0.01f, -0.01f),
+                            new Vector2(0.975f, 0.975f),
+                            Main.rand.NextFloat(MathHelper.TwoPi),
+                            1f,
+                            0.05f
+                            );
+                        part.alphaBoost += scale * 0.25f;
+                        ShadowParticle.AddParticle(part);
+                    }
+                }*/
+            }
 
             chargewarning = 0;
             nomove -= 1;
@@ -566,57 +610,60 @@ namespace SGAmod.NPCs.Hellion
                 aioffset = (int)npc.ai[0];
                 npc.ai[0] = 0;
 
-                Texture2D atex;
-
-                if (npc.ai[2] > Math.PI)
+                if (!Main.dedServ)
                 {
-                    rotoffset = 90f;
-                    atex = ModContent.GetTexture("SGAmod/NPCs/Sharkvern/SharkvernHead");
-                }
-                else
-                {
-                    /*int[,] spritetype = { { 223,180 },{ 224,0 },{ 516,0 },{ 67,0 },{ 24,0 },{15,0 },{819,0 },{ }
+                    Texture2D atex;
 
-
-                    };*/
-                    atex = SGAmod.HellionGores[Main.rand.Next(0, SGAmod.HellionGores.Count)];
-
-                    rotoffset = Main.rand.Next(0, 360);
-                    npc.scale = Main.rand.NextFloat(1.5f, 2.5f);
-
-                }
-
-                tex = new Texture2D(Main.graphics.GraphicsDevice, atex.Width, atex.Height);
-
-                var datacolors2 = new Color[atex.Width * atex.Height];
-                atex.GetData(datacolors2);
-                tex.SetData(datacolors2);
-
-                int width = 20; int height = 300;
-
-                armtex = new Texture2D(Main.graphics.GraphicsDevice, width, height);
-                var dataColors = new Color[width * height];
-
-
-                //
-
-
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x += 1)
+                    if (npc.ai[2] > Math.PI)
                     {
-                        int output = 32;
+                        rotoffset = 90f;
+                        atex = ModContent.GetTexture("SGAmod/NPCs/Sharkvern/SharkvernHead");
+                    }
+                    else
+                    {
+                        /*int[,] spritetype = { { 223,180 },{ 224,0 },{ 516,0 },{ 67,0 },{ 24,0 },{15,0 },{819,0 },{ }
 
-                        int inta = Main.rand.Next((int)x * -5, (int)x * 5);
-                        output += inta;
 
-                        dataColors[(int)x + y * width] = Main.hslToRgb((((y) + x) / 100f) % 1f, 0.75f, 0.5f);
+                        };*/
+                        atex = SGAmod.HellionGores[Main.rand.Next(0, SGAmod.HellionGores.Count)];
+
+                        rotoffset = Main.rand.Next(0, 360);
+                        npc.scale = Main.rand.NextFloat(1.5f, 2.5f);
+
                     }
 
+                    tex = new Texture2D(Main.graphics.GraphicsDevice, atex.Width, atex.Height);
+
+                    var datacolors2 = new Color[atex.Width * atex.Height];
+                    atex.GetData(datacolors2);
+                    tex.SetData(datacolors2);
+
+                    int width = 20; int height = 300;
+
+                    armtex = new Texture2D(Main.graphics.GraphicsDevice, width, height);
+                    var dataColors = new Color[width * height];
+
+
+                    //
+
+
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x += 1)
+                        {
+                            int output = 32;
+
+                            int inta = Main.rand.Next((int)x * -5, (int)x * 5);
+                            output += inta;
+
+                            dataColors[(int)x + y * width] = Main.hslToRgb((((y) + x) / 100f) % 1f, 0.75f, 0.5f);
+                        }
+
+                    }
+
+                    armtex.SetData(dataColors);
+
                 }
-
-                armtex.SetData(dataColors);
-
             }
             noact -= 1;
 
@@ -659,6 +706,7 @@ namespace SGAmod.NPCs.Hellion
 
                 if (owner.life < (int)(owner.lifeMax * HellionCore.beginphase[1]) && phase == 1)
                 {
+                    npc.localAI[3] += 10000;
                     phase = 2;
                     noact = 300;
                     npc.ai[0] = aioffset * 3;
@@ -675,14 +723,32 @@ namespace SGAmod.NPCs.Hellion
 
             }
 
-            if (Main.netMode != 1)
+            if (!Main.npc[(int)npc.ai[1]].active || Main.npc[(int)npc.ai[1]].type != mod.NPCType("HellionWorm"))
             {
-                if (!Main.npc[(int)npc.ai[1]].active || Main.npc[(int)npc.ai[1]].type != mod.NPCType("HellionWorm"))
+                /*if (Main.rand.Next(200, 300) < npc.localAI[3])
+                {
+                    float scale = MathHelper.Clamp((npc.localAI[3]) / 300f, 0f, 1f);
+                    Vector2 spread = Main.rand.NextVector2Circular(64f, 64f) * (1.25f - scale);
+                    ShadowParticle.AddParticle(new ShadowParticle(
+                        npc.Center + spread,
+                        (npc.velocity) + Main.rand.NextVector2Circular(2f, 2f),
+                        Vector2.One * scale * 0.36f,
+                        30,
+                        new Vector2(-0.01f, -0.01f),
+                        new Vector2(0.975f, 0.975f),
+                        Main.rand.NextFloat(MathHelper.TwoPi),
+                        1f,
+                        0.05f
+                        ));
+                }*/
+
+                if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
                     //npc.life = 0;
                     //npc.HitEffect(0, 10.0);
                     //npc.active = false;
                     WormHead(player);
+
                     return false;
                 }
             }
@@ -714,42 +780,62 @@ namespace SGAmod.NPCs.Hellion
 
         public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
         {
+            DrawMe(spriteBatch, drawColor);
+            return false;
+        }
+
+        public void DrawMe(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor, float scale = 1f)
+        {
 
             Idglib.coloroverride = Color.White;
 
             NPC myowner = Main.npc[(int)npc.ai[3]];
 
-            if (Main.player[npc.target] != null)
-            {
-                Vector2 there = (Main.player[npc.target].Center - npc.Center);
-                float dist = there.Length();
-                spriteBatch.Draw(Main.blackTileTexture, npc.Center - Main.screenPosition, new Rectangle(0, 0, 1, 8), Color.Red * MathHelper.Clamp((float)chargewarning / 90f, 0f, 1f), there.ToRotation(), new Vector2(0, 4), new Vector2(dist, (float)chargewarning / 30f), SpriteEffects.None, 0f);
+            float alpha = MathHelper.Clamp((npc.localAI[3] - 150) / 150f, 0.0f, 1f);
 
+            //if (scale >= 0f)
+            //{
 
-            }
-
-            if (armtex != null && phase > 1 && noact < 200)
-            {
-                int aval = noact;
-                if (aval < 5)
-                    aval = 5;
-                if (myowner != null && myowner.active && Main.rand.Next(0, aval) < 30)
+                if (chargewarning > 0 && Main.player[npc.target] != null)
                 {
-                    Idglib.DrawSkeletronLikeArms(spriteBatch, armtex, npc.Center, myowner.Center, 0f, 0f, MathHelper.Clamp((myowner.Center.X - npc.Center.X) * 0.02f, -1, 1));
-                    Vector2 drawPos = ((Idglib.skeletronarmjointpos - Main.screenPosition)) + new Vector2(0f, 0f);
-                    Texture2D texture = mod.GetTexture("NPCs/TPD");
-                    spriteBatch.Draw(texture, drawPos, null, Main.DiscoColor, npc.spriteDirection + (npc.ai[0] * 0.4f), new Vector2(16, 16), new Vector2(Main.rand.Next(15, 35) / 4f, Main.rand.Next(15, 35) / 4f), SpriteEffects.None, 0f);
-
+                    Vector2 there = (Main.player[npc.target].Center - npc.Center);
+                    float dist = there.Length();
+                    spriteBatch.Draw(Main.blackTileTexture, (npc.Center - Main.screenPosition), new Rectangle(0, 0, 1, 8), Color.Red * MathHelper.Clamp((float)chargewarning / 90f, 0f, 1f), there.ToRotation(), new Vector2(0, 4), new Vector2(dist, (float)chargewarning / 30f), SpriteEffects.None, 0f);
                 }
-            }
 
-            if (tex != null)
-            {
-                Texture2D texture = tex;//Main.npcTexture[npc.type];
-                Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-                Main.spriteBatch.Draw(texture, npc.Center - Main.screenPosition, new Rectangle?(), drawColor, npc.rotation + MathHelper.ToRadians(rotoffset), origin, npc.scale, localdist.X > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
-            }
-            return false;
+                if (armtex != null && phase > 1 && noact < 200)
+                {
+                int aval = noact>0 ? 0 : (int)npc.localAI[3];
+                    if (aval < 5)
+                        aval = 5;
+                    if (myowner != null && myowner.active && Main.rand.Next(aval, aval+200) > 250)
+                    {
+                        Idglib.DrawSkeletronLikeArms(spriteBatch, armtex, npc.Center, myowner.Center, 0f, 0f, MathHelper.Clamp((myowner.Center.X - npc.Center.X) * 0.02f, -1, 1));
+                        Vector2 drawPos = ((Idglib.skeletronarmjointpos - Main.screenPosition)) + new Vector2(0f, 0f);
+                        Texture2D texture = mod.GetTexture("NPCs/TPD");
+                        spriteBatch.Draw(texture, drawPos, null, Main.DiscoColor, npc.spriteDirection + (npc.ai[0] * 0.4f), new Vector2(16, 16), new Vector2(Main.rand.Next(15, 35) / 4f, Main.rand.Next(15, 35) / 4f), SpriteEffects.None, 0f);
+                    }
+                }
+           // }
+            //else
+            //{
+
+                if (tex != null)
+                {
+                    float distort = 1f - MathHelper.Clamp((npc.localAI[3] - 0) / 300f, 0f, 1f);
+
+                    Texture2D texture = tex;//Main.npcTexture[npc.type];
+                    Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+
+                    Vector2 offset = Vector2.Zero;
+                    for (int i = 0; i < 1 + (alpha < 1 ? 10 : 0); i += 1)
+                    {
+                        if (alpha < 1)
+                            offset = Main.rand.NextVector2Circular(distort * 960f, distort * 960f);
+                        Main.spriteBatch.Draw(texture, (npc.Center + offset - Main.screenPosition) * scale, new Rectangle?(), drawColor * alpha, npc.rotation + MathHelper.ToRadians(rotoffset), origin, npc.scale * scale, localdist.X > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+                    }
+                }
+            //}
         }
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
         {
@@ -1000,7 +1086,8 @@ namespace SGAmod.NPCs.Hellion
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Hellion.HellionTeleport(spriteBatch, npc.Center, 1f, 96);
+            float clamper = MathHelper.Clamp((npc.localAI[0]-60)/60f,0f,1f);
+            Hellion.HellionTeleport(spriteBatch, npc.Center, clamper, 96*clamper);
             return false;
         }
 
@@ -1086,6 +1173,37 @@ namespace SGAmod.NPCs.Hellion
                 HellionTaunt("NO U, normie difficulty");
                 npc.active = false;
             }
+
+            npc.localAI[0] += 1;
+
+            if (npc.localAI[0] < 150)
+            {
+                for (int f = 0; f < 6; f++)
+                {
+                    float scale2 = (float)Math.Sin((npc.localAI[0] * MathHelper.Pi) / 150);
+                    if (Main.rand.Next(0, 30) < scale2 * 45f)
+                    {
+                        float direction = f + (npc.localAI[0] / 60f);
+                        //float scale = MathHelper.Clamp((npc.localAI[0]) / 300f, 0f, 1f);
+                        Vector2 spread = Vector2.UnitX.RotatedBy((direction / 6f)*MathHelper.TwoPi)*(1f-scale2)*640f;
+
+                        ShadowParticle part = new ShadowParticle(
+                            npc.Center + spread,
+                            (npc.velocity) + Main.rand.NextVector2Circular(4f, 4f),
+                            Vector2.One * scale2 * 0.75f,
+                            30,
+                            new Vector2(-0.01f, -0.01f),
+                            new Vector2(0.975f, 0.975f),
+                            Main.rand.NextFloat(MathHelper.TwoPi),
+                            1f,
+                            0.05f
+                            );
+                        part.alphaBoost += scale2 * 0.25f;
+                        ShadowParticle.AddParticle(part);
+                    }
+                }
+            }
+
             Player P = Main.player[npc.target];
             if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
             {
@@ -1101,7 +1219,13 @@ namespace SGAmod.NPCs.Hellion
             }
             else
             {
-                AdvancePhases();
+                if (npc.localAI[3] == 0)
+                {
+                    manualmovement = 200;
+                    npc.Center = P.Center + new Vector2(0, -256f);
+                    npc.localAI[3] = 1;
+                }
+                    AdvancePhases();
                 npc.netUpdate = true;
                 npc.timeLeft = 99999;
                 manualmovement -= 1;
@@ -1137,7 +1261,7 @@ namespace SGAmod.NPCs.Hellion
                         Main.npc[(int)npc2].ai[3] = npc.whoAmI;
                         Main.npc[(int)npc2].ai[0] = i;
                         if (i % 20 == 0)
-                            Main.npc[(int)npc2].ai[2] = ((float)Math.PI * 2f) + MathHelper.ToRadians(i * (360 / 60));
+                            Main.npc[(int)npc2].ai[2] = (MathHelper.TwoPi) + MathHelper.ToRadians(i * (360 / 60));
                         Main.npc[(int)npc2].ai[1] = latestNPC;
                         Main.npc[(int)npc2].netUpdate = true;
                         latestNPC = npc2;

@@ -172,6 +172,16 @@ namespace SGAmod
 				fargos.Call("AddSummon", 16f, "SGAmod", "Prettygel", (Func<bool>)(() => SGAWorld.downedSPinky), Item.buyPrice(0, 15, 0, 0));
 				fargos.Call("AddSummon", 17.5f, "SGAmod", "HellionSummon", (Func<bool>)(() => SGAWorld.downedHellion > 0), Item.buyPrice(5, 0, 0, 0));
 			}
+
+			Mod census = ModLoader.GetMod("Census");
+			if (census != null)
+			{
+				census.Call("TownNPCCondition", base.NPCType("Dergon"), "Aquire atleast 1 Expertise");
+				census.Call("TownNPCCondition", base.NPCType("ContrabandMerchant"), "Found loitering around your town at night");
+				census.Call("TownNPCCondition", base.NPCType("DungeonPortal"), "Discover in the Dungeon");
+				census.Call("TownNPCCondition", base.NPCType("Goat"), "Defeat Hellion atleast once across any playthrough, carries over into new games");
+			}
+
 			Mod bossList = ModLoader.GetMod("BossChecklist");
 			if (bossList != null)
 			{
@@ -253,9 +263,15 @@ namespace SGAmod
 				yabhb.Call("hbStart");
 				yabhb.Call("hbFinishMultiple", NPCType("SPinkyClone"), NPCType("SPinkyClone"));
 				yabhb.Call("hbStart");
+				yabhb.Call("hbForceSmall", true);
+				yabhb.Call("hbFinishMultiple", ModContent.NPCType<CratrosityCrateDankCrate>(), ModContent.NPCType<CratrosityCrate2334>(), ModContent.NPCType<CratrosityCrate2335>(), ModContent.NPCType<CratrosityCrate2336>(), ModContent.NPCType<CratrosityCrate3203>(), ModContent.NPCType<CratrosityCrate3204>(), ModContent.NPCType<CratrosityCrate3205>(), ModContent.NPCType<CratrosityCrate3206>(), ModContent.NPCType<CratrosityCrate3207>(), ModContent.NPCType<CratrosityCrate3208>());
+
+				yabhb.Call("hbStart");
 				yabhb.Call("hbFinishMultiple", NPCType("Harbinger"), NPCType("Harbinger"));
+
 				yabhb.Call("RegisterHealthBarMini", NPCType("PrismBanshee"));
 				yabhb.Call("RegisterHealthBarMini", NPCType("CirnoHellion"));
+				yabhb.Call("RegisterMechHealthBar", NPCType("TPD"));
 			}
 
 			SGAmod.EnchantmentCatalyst.Add(ItemID.Amethyst, new EnchantmentCraftingMaterial(2, 50, "Produces a weak, but stable enchantment"));

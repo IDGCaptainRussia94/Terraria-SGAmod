@@ -32,6 +32,7 @@
     <Reference Include="SubworldLibrary">
       <HintPath>..\..\Mod Reader\SubworldLibrary\SubworldLibrary.XNA.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="ThoriumMod">
       <HintPath>..\..\Mod Reader\ThoriumMod\ThoriumMod.XNA.dll</HintPath>
     </Reference>

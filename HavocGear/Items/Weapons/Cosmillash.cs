@@ -26,8 +26,8 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.mana = 12;
 			item.width = 22;
 			item.height = 22;
-			item.useTime = 20;
-			item.useAnimation = 20;
+			item.useTime = 30;
+			item.useAnimation = 30;
 			item.useStyle = 5;
 			item.knockBack = 10;
 			item.value = 1000000;

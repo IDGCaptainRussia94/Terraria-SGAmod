@@ -772,6 +772,31 @@ namespace SGAmod.NPCs.Hellion
 				hell.manualmovement = 60;
 			}
 
+			//Phase advance
+			if (npc.ai[1] > 660 && npc.ai[1] < 799)
+			{
+				if (npc.ai[1] < 665)
+					npc.ai[1] = 0;
+
+				npc.dontTakeDamage = true;
+
+				if (npc.ai[1] == 770)
+				{
+					string str = "Is that all you got?";
+					hell.HellionTaunt(str);
+				}
+				if (npc.ai[1] == 700)
+				{
+					//RippleBoom.MakeShockwave(npc.Center, 15f, 3f, 100f, 200, 1.5f, true);
+					Main.PlaySound(SoundID.Zombie, (int)npc.Center.X, (int)npc.Center.Y, 105, 1f, -0.5f);
+					RippleBoom.MakeShockwave(npc.Center, 8f, 2f, 20f, 100, 1f, true);
+					npc.netUpdate = true;
+					Main.PlaySound(SoundID.Zombie, (int)npc.Center.X, (int)npc.Center.Y, 105, 1f, -0.5f);
+				}
+
+				hell.manualmovement = 90;
+			}
+
 			//Tyrant's grasp
 			if (npc.ai[1] > 800 && npc.ai[1] < 999)
 			{
@@ -801,7 +826,6 @@ namespace SGAmod.NPCs.Hellion
 				}
 
 				hell.manualmovement = 90;
-
 			}
 
 			//Rematch pause
@@ -1159,8 +1183,8 @@ namespace SGAmod.NPCs.Hellion
 						{
 							float val = current;
 							val = (projpos - Hellion.GetHellion().noescapeauraloc).ToRotation();
-							if (time > 50)
-								val = current;
+							//if (time < 100)
+							//	val = current;
 
 							return val;
 						};
@@ -1171,7 +1195,7 @@ namespace SGAmod.NPCs.Hellion
 							Vector2 instore = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * wheretogo.X;
 
 							Vector2 gothere = Hellion.GetHellion().noescapeauraloc + instore;
-							Vector2 slideover = gothere - projpos;
+							Vector2 slideover = (gothere - projpos);//.RotatedBy((playerpos-projpos).ToRotation().AngleLerp((playerpos - projpos).ToRotation(), 0.005f));
 							current = slideover / 2f;
 
 							current /= 1.125f;
@@ -1186,7 +1210,7 @@ namespace SGAmod.NPCs.Hellion
 						};
 						Func<float, bool> projectilepattern = (time) => (time == 20);
 
-						int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 75, 250, MathHelper.ToRadians(90f), mod.ProjectileType("HellionBeam"), projectilepattern, 1f, 150, true);
+						int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 75, 170, MathHelper.ToRadians(90f), mod.ProjectileType("HellionBeam"), projectilepattern, 1f, 150, true);
 						(Main.projectile[ize2].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
 						(Main.projectile[ize2].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
 						Main.PlaySound(SoundID.Item, (int)Main.projectile[ize2].position.X, (int)Main.projectile[ize2].position.Y, 33, 0.25f, 0.5f);
@@ -1223,7 +1247,10 @@ namespace SGAmod.NPCs.Hellion
 						Func<Vector2, Vector2, float, Vector2, Vector2> projectilemoving = delegate (Vector2 playerpos, Vector2 projpos, float time, Vector2 current)
 						{
 							Vector2 wheretogo = new Vector2(wheretogo2.X, wheretogo2.Y);
-							float angle = MathHelper.ToRadians((wheretogo.Y + (-time * 1.5f * wheretogo.X)));
+
+							float veladd = MathHelper.Clamp((time - 220f) / 80f, -2f, 4f);
+
+							float angle = MathHelper.ToRadians((wheretogo.Y + (-time * veladd * wheretogo.X)));
 							Vector2 instore = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 200f;
 
 							Vector2 gothere = Hellion.GetHellion().noescapeauraloc + instore;
@@ -1878,6 +1905,8 @@ namespace SGAmod.NPCs.Hellion
 		public int topazingattack=0;
 		public int noAttackPeriod = 0;
 		public int teleportNet = 0;
+
+		public virtual bool ArmyVersion => false;
 		public virtual bool rematch => false;
 
 			public Hellion()
@@ -2167,7 +2196,7 @@ namespace SGAmod.NPCs.Hellion
 				string[] text2 = { "", "Goblin Army! Come Forth!", "", "Snow Legion/Pirate Army! Come Forth!","","Festive Moons! Come Forth!" };
 				Hellion hell = Hellion.instance;
 				hell.armytimer += 1;
-				if (hell.phase == 5 && !hell.rematch)
+				if (hell.ArmyVersion && hell.phase == 5 && !hell.rematch)
 					Main.dayTime = false;
 
 				if (hell.npc.ai[1] == -90)
@@ -2224,25 +2253,40 @@ namespace SGAmod.NPCs.Hellion
 				if (npc.life < npc.lifeMax * 0.40f && phase == 3 && npc.ai[1] < 1)
 				{
 					phase = 5;
-					npc.ai[1] = -300;
-					npc.netUpdate = true;
-					PopulateArmy();
+					if (ArmyVersion)
+					{
+						npc.ai[1] = -300;
+						npc.netUpdate = true;
+						PopulateArmy();
+					}
+					else
+					{//Do FNF thing here
+
+					}
 					return;
 				}
 
 				if (npc.life < npc.lifeMax * 0.60f && phase == 2 && npc.ai[1] < 1)
 				{
 					phase = 3;
-					npc.ai[1] = -300;
-					npc.netUpdate = true;
-					PopulateArmy();
+					if (ArmyVersion)
+					{
+						npc.ai[1] = -300;
+						npc.netUpdate = true;
+						PopulateArmy();
+                    }
+                    else
+                    {//Do touhou thing here
+
+                    }
 					return;
 				}
 			}
 
 			if (npc.life < npc.lifeMax * 0.75f && phase == 1 && npc.ai[1] < 1)//Do either Laser Hell or Xemnas
-			//if (npc.life < npc.lifeMax * 0.9975f && phase == 0 && npc.ai[1] < 1)
 			{
+				HellionTaunt("Time for bigger guns...");
+				manualmovement = Math.Max(manualmovement, 120);
 				npc.knockBackResist = 0f;
 				phase = 2;
 				npc.ai[1] = 2050;// Main.rand.Next(0, 2) == 0 ? 2050 : 3050;
@@ -2255,9 +2299,17 @@ namespace SGAmod.NPCs.Hellion
 				if (npc.life < npc.lifeMax * 0.90f && phase == 0 && npc.ai[1] < 1)
 				{
 					phase = 1;
-					npc.ai[1] = -300;
-					npc.netUpdate = true;
-					PopulateArmy();
+					if (ArmyVersion)
+					{
+						npc.ai[1] = -300;
+						npc.netUpdate = true;
+						PopulateArmy();
+                    }
+                    else
+                    {
+						npc.ai[1] = 798;
+						npc.netUpdate = true;
+					}
 					return;
 				}
 			}
@@ -3890,7 +3942,7 @@ namespace SGAmod.NPCs.Hellion
 
 		public override bool PreKill(int timeLeft)
 		{
-			projectile.type = ProjectileID.SnowBallFriendly;
+			/*projectile.type = ProjectileID.SnowBallFriendly;
 
 			for (float num654 = 0; num654 < 8; num654 += 0.25f)
 			{
@@ -3904,6 +3956,7 @@ namespace SGAmod.NPCs.Hellion
 			SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 50);
 			if (sound != null)
 				sound.Pitch = -0.90f;
+			*/
 
 			return true;
 		}

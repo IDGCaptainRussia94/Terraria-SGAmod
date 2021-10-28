@@ -520,8 +520,14 @@ namespace SGAmod.Items.Armors.Vibranium
 							Projectile.NewProjectile(projectile.Center, npctarget.Center - projectile.Center, ModContent.ProjectileType<VibraniumZapEffect>(), 0, 0);
 							SoundEffectInstance snd = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 91);
 
-							npctarget.StrikeNPC(projectile.damage,0f,player.direction);
-							player.addDPS(projectile.damage);
+							int damazz = (Main.DamageVar((float)projectile.damage));
+							npctarget.StrikeNPC(damazz, 0f,player.direction);
+							player.addDPS(damazz);
+
+							if (Main.netMode != 0)
+							{
+								NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, npctarget.whoAmI, damazz, 16f, (float)1, 0, 0, 0);
+							}
 
 							if (snd != null)
 							{

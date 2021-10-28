@@ -41,7 +41,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "DankWood", 15);
 			recipe.AddIngredient(null, "DankCore", 1);
-			recipe.AddIngredient(null, "VialofAcid", 5);
+			recipe.AddIngredient(null, "VialofAcid", 8);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

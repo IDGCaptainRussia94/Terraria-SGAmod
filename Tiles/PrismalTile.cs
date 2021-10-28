@@ -19,13 +19,27 @@ namespace SGAmod.Tiles
             Main.tileValue[Type] = 200;
             TileID.Sets.Ore[Type] = true;
             minPick = 250;
-            soundType = SoundID.Tink;
-            soundStyle = 1;
+            soundType = SoundID.Item;
+            soundStyle = 50;
             drop = mod.ItemType("VibraniumCrystal");
             mineResist = 2.50f;
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Vibranium Crystal");
             AddMapEntry(new Color(255, 60, 60), name);
+        }
+
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+        {
+            int typr = DustID.RedsWingsRun;
+
+            int dust = Dust.NewDust(new Vector2(i, j)*16, 16, 16, typr);
+            Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+            Vector2 normvel = Main.rand.NextVector2Circular(6f, 6f);
+            Color Rainbow = Color.Red;
+            Main.dust[dust].color = Rainbow;
+            Main.dust[dust].scale = 1f;
+            Main.dust[dust].velocity = ((randomcircle / 1f) + (-normvel));
+            Main.dust[dust].noGravity = true;
         }
 
         public override bool CanExplode(int i, int j)

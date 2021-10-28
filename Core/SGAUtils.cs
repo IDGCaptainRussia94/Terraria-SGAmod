@@ -759,9 +759,14 @@ namespace SGAmod
 			return player.ConsumeItem(item, reverseOrder);
 		}
 
+		public static bool IsDummy(this NPC npc)
+        {
+			return npc.immortal;
+		}
+
 		public static bool IsConsumablePickup(this Item item)
 		{
-			return item.type == ItemID.Heart || item.type == ItemID.Star || item.type == ItemID.CandyApple || item.type == ItemID.SoulCake || item.type == ItemID.CandyCane || item.type == ItemID.SugarPlum || item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3 || item.type == ModContent.ItemType<Dimensions.BubblePickup>();
+			return item.type == ItemID.Heart || item.type == ItemID.Star || item.type == ItemID.CandyApple || item.type == ItemID.SoulCake || item.type == ItemID.CandyCane || item.type == ItemID.SugarPlum || item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3 || item.type == ModContent.ItemType<Dimensions.BubblePickup>() && item.type == ModContent.ItemType<Items.Weapons.CookiePickup>();
 		}
 
 		public static void SpawnCoins(Vector2 where, int ammount2, float explodespeed = 0f)

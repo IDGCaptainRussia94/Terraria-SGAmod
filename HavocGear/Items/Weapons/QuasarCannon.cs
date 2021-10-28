@@ -132,7 +132,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 				player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * player.direction, projectile.velocity.X * player.direction);
 			}
 
-		if (projectile.ai[0]>10 && player.CheckMana(new Item(), 10,false,false))
+		if (projectile.ai[0]>10 && player.CheckMana(new Item(), 12,false,false))
 			{
 
 				if (projectile.ai[0]%20==0)
@@ -142,7 +142,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 				{
 
 					if (projectile.ai[0] % 20 == 0)
-						player.CheckMana(new Item(), 8,true,false);
+						player.CheckMana(new Item(), 10,true,false);
 
 		for (num315 = 0; num315 < 2; num315 = num315 + 1)
 			{
@@ -201,7 +201,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 				{
 					int proj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, perturbedSpeed.X, perturbedSpeed.Y, mod.ProjectileType("QuasarCannonShot"), projectile.damage, projectile.knockBack, player.whoAmI);
 					Main.projectile[proj].penetrate = 1;
-					Main.projectile[proj].ai[0] = projectile.ai[0];
+					Main.projectile[proj].ai[0] = projectile.ai[0]*1.10f;
 					Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Wave_Beam_Charge_Shot").WithVolume(.7f).WithPitchVariance(.25f), projectile.Center);
 				}
 

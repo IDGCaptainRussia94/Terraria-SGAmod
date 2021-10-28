@@ -62,8 +62,6 @@ Changelog:
 
 -Force Field Shields now regen scaled to your 'natural' life regen boosts, so things like campfires make them faster and Hellion's Damnation debuff slower. As a price, regen speed has been reduced to 3 seconds (from 2-amulets) and 8 seconds (from 6-JellyBru)
 
--Cratrosity's code has been refactored, no more stupidly massive arrays! Hazaah!
-
 -Jab-lins now record DPS done from the DOT damage of impaled enemies
 
 -Added proper sprites for Main Sequence Staff, Desolate Rift, and Amulets of Reservation by Rijam (Thank you again so much!)
@@ -72,9 +70,9 @@ Changelog:
 
 -Vibranium Crystals now generate in Near-orbit, they are sold in MP (I still have further plans for these)
 
--Greatly Buffed the Plasmic Rail Gun's damage; this weapon should pack a punch for how long you have to charge it, honestly
+-Greatly Buffed the Plasmic Rail Gun's damage; this weapon should pack a punch for how long you have to charge it, honestly. However the Lava Burn aspect was removed as it didn't really add much to the weapon
 
--Nerfed Quasar Cannon, this shouldn't be able to hit over time, only on the initial explosion. Furthermore, moved to Post-L.Wraith. Charge up can now activate potion usage
+-Rebalanced Quasar Cannon: AOE is 10% larger, but now consumes 2 more mana per charge-up; also fixed the explosion as this shouldn't be able to hit over time, only on the initial explosion. Furthermore, moved to Post-L.Wraith. Charge up can now activate potion usage
 
 -SBC Cannon/MK2 can now pierce and no longer explode on knockback (balance!)
 
@@ -83,6 +81,14 @@ Changelog:
 -Nerfed Sybarite Gem: coin drop chance is now 1/20 to prevent money dupping with the Philanthropist's Shower
 
 -Updated Philanthropist's Shower and Prosperity Staff to use the glowing coins instead of vanilla ones (I just like them more)
+
+-Fixed Stormbreaker's alt fire almost never working, and nerfed the max bolts it can summon to 5
+
+-Nerfed Cosmillash's firerate to 30 (from 20)
+
+-Added Census Support
+
+-Added Autoclicker (Souls of Byte-tier Summon)
 
 -New changes to Hellion Phase 2:
 -Laser Reign locks Hellion in place for longer, and Lasers persist a shorter time
@@ -103,8 +109,13 @@ Changelog:
 -Orbiting overseen heads are now farther away (almost double), and shoot slower per phase with more delay between
 -Eol Attack (yes it's called that) now gives off light in the darkness
 
+-New Changes to Cratrosity:
+-Cratrosity's code has been refactored, no more stupidly massive arrays! Hazaah!
+-Has more HP, but loses a percent of it after each phase (also applies to Cratogeddon, which makes the fight easier)
+
 -New changes to Supreme Pinky phase 2:
 -Core now resists 80% of piercing damage, but whenever slime dies it creates a homing projectile that flies back to the boss and deals 1000 damage to it; more builds are now viable to kill the boss imo
+-Fixed map icon
 
 
 3.600e-(10/12/21)-Patch 11-Tech N Wreck: Beta
@@ -121,7 +132,7 @@ Changelog:
 
 -Throwing Stars are now longer summoned by the Ninja Stash, they were already very strong on their own
 
--Added Phalanx and Reflex Potions, they enchance shields via the original ideas sheet, added Main Sequence Staff and Super Star Thrower, added Void Em'Bracers
+-Added Phalanx and Reflex Potions, they enchance shields via the original ideas sheet, added Main Sequence Staff and Super Star Thrower, added Void Em'Bracers, Finished Skylight
 
 -Added Liquidation Hopper, updated visuals on the chest hopper to adapt to light
 
@@ -222,13 +233,13 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Main Sequence Staff, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
--A new Town NPC: The Conbrand Merchant, he is interested in trading you "Contraband Crates" for rare materials, find him hanging around after-dark in your town
+-A new Town NPC: The Contraband Merchant, he is interested in trading you "Contraband Crates" for rare materials, find him hanging around after-dark in your town
 
--Added the following armor sets: The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! Fames set for throwers after Spider Queen. Hallowed Visor variant for Throwing. Jungle Templar for post Golem Throwing/Tech. Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And JellyBru's Dev Armor finally added!
+-Added several new armor sets: The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! Set Fames set for throwers after Spider Queen. Hallowed Visor variant for Throwing. Magatsu for summoner hybrid armor with Apocalypticals, Jungle Templar for post Golem Throwing/Tech. Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And finally JellyBru's Dev Armor added! (finally!)
 
 -Venerable Catharsis, for a hefty Expertise cost from Draken after Moonlord you can make Normal Worlds into Expert Worlds. No more being locked out of content!
 
@@ -240,7 +251,7 @@ Changelog:
 
 -A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's fight and apperence has been tweaked (Prim shark! Vertex Shark! Trail Shark! With smooth lighting!), there's also an extra attack that was added
 
--Hoppers, Droppers, Sifting Funnels, hands on tech mod elements, and more; automate your Terraria with content I felt was missing from Vanilla!
+-Hoppers, Droppers, Sifting Funnels, Mod Grinders, and more. Hands on tech mod elements to automate your Terraria with content I felt was missing from Vanilla!
 
 -New Amulet: Reservation Amulet, reserve a fraction of your HP to gain a protected regenerating shield!
 

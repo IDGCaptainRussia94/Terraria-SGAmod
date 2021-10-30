@@ -31,6 +31,7 @@ namespace SGAmod.Dimensions
         public Point16 Offset;
         public int roomIndex;
         public MazeRoom ConnectedRoom = default;
+        public Point16 Position => loc + Offset;
 
         public MazeRoom previousRoom = default;
         public MazeRoom(Point16 loc, int gen,Point16 Offset, int roomIndex, bool deadEnd = false)
@@ -191,7 +192,8 @@ namespace SGAmod.Dimensions
         Rectangle BossRoomInside;
         Point16 currentPosition;
         Point16 startingPoint;
-        HashSet<MazeRoom> mazePainter;
+        //HashSet<MazeRoom> mazePainter;
+        List<MazeRoom> mazePainter;
         List<MazeRoom> mazeRooms;
 
         public virtual void AGenPass(GenerationProgress prog)
@@ -247,7 +249,7 @@ namespace SGAmod.Dimensions
 
             gen = 0;
 
-            mazePainter = new HashSet<MazeRoom>();
+            mazePainter = new List<MazeRoom>();// HashSet<MazeRoom>();
             mazeRooms = new List<MazeRoom>();
 
             MazeGenerator(currentPosition, 0, 20000, prog);
@@ -296,7 +298,12 @@ namespace SGAmod.Dimensions
 
             RoomFiller();
 
+            PokeExits(5);
+
             BossBox();
+
+            Main.spawnTileX = width / 2;
+            Main.spawnTileY = 100;
 
             //Celular Crap
 
@@ -333,6 +340,7 @@ namespace SGAmod.Dimensions
 
         ResetMove:
             //And now, we gen a maze with depth first!
+            //Ah Adamantite, my good friend! Please help me keep track of where we've been!
 
             while (mazeStack.Count > 0 && index < maxsize)
             {
@@ -370,7 +378,8 @@ namespace SGAmod.Dimensions
 
                     //Place down some stuff to mark this area so we don't move back here
                     IDGWorldGen.PlaceMulti(checkHere.ToPoint(), TileID.Adamantite, roomsize * 3);
-
+                    
+                    //Draw line and connect the dots
                     Point check1 = (currentPosition + Flow(currentPosition, flowSize)).ToPoint();
                     Point check2 = (checkHere + Flow(checkHere, flowSize)).ToPoint();
                     foreach (Point there in IDGWorldGen.GetLine(check1, check2))
@@ -424,6 +433,45 @@ namespace SGAmod.Dimensions
             Main.spawnTileX = spawnRoom.loc.X + spawnRoom.Offset.X;
             Main.spawnTileY = spawnRoom.loc.Y + spawnRoom.Offset.Y;*/
 
+        }
+
+        private void PokeExits(int numExits)
+        {
+            int buffersmoller = height - 10;
+            int distanceToCenter = (buffersmoller * buffersmoller);
+
+            Vector2 center = new Vector2(width / 2, height / 2);
+
+            roomsize = 5;
+
+            foreach (MazeRoom outermostRooms in mazeRooms.Where(testby => testby.gen>maxGen*0.75f).OrderBy(testby => 0-(new Vector2(testby.loc.X, testby.loc.Y) - new Vector2(width / 2, height / 2)).LengthSquared()).Take(numExits))
+            {
+                Point check1 = outermostRooms.loc.ToPoint();
+                Point pointvec = (Vector2.Normalize(check1.ToVector2() - center) * 32).ToPoint();
+                Point check2 = new Point(check1.X+pointvec.X, check1.Y+pointvec.Y);
+
+
+
+                for (int xx = -roomsize; xx <= roomsize; xx += 1)
+                {
+                    for (int yy = -roomsize; yy <= roomsize; yy += 1)
+                    {
+                        foreach (Point there in IDGWorldGen.GetLine(check1, check2))
+                        {
+                            Point16 there2 = new Point16(there.X+xx, there.Y+yy);
+                            if (InsideMap(there2.X, there2.Y))
+                            {
+                                Tile tileline = Main.tile[there2.X, there2.Y];
+                                if (tileline.active())
+                                {
+                                    tileline.active(false);
+                                    tileline.type = 0;// TileID.AmberGemspark;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void MazePainter()
@@ -482,6 +530,9 @@ namespace SGAmod.Dimensions
 
             EvilSegmentRooms(CorruptionRooms,0);
 
+            EvilSegmentRooms(CrimsonRooms, 1);
+
+
             foreach (MazeRoom mazeRoom in InnerRooms)
             {
                 if (mazeRoom.deadEnd)
@@ -519,19 +570,20 @@ namespace SGAmod.Dimensions
 
             CorruptionRoomAngleAverage = (Vector2.Normalize(CorruptionRoomAngleAverage) * 500f) + Middle.ToVector2();
 
-            List<MazeRoom> CorruptionRoomsBossArena = new List<MazeRoom>();
-            while (CorruptionRoomsBossArena.Count < 10)
+            List<MazeRoom> MiniBossRoomsBossArena = new List<MazeRoom>();
+            while (MiniBossRoomsBossArena.Count < 10)
             {
-                CorruptionRoomsBossArena = ListOfRooms.FindAll(testby => (testby.loc.ToVector2() - CorruptionRoomAngleAverage).Length() < bossArenaSize).ToList();
+                MiniBossRoomsBossArena = ListOfRooms.FindAll(testby => (testby.loc.ToVector2() - CorruptionRoomAngleAverage).Length() < bossArenaSize).ToList();
                 bossArenaSize += 4;
             }
+
             Vector2 AveragePoint = Vector2.Zero;
 
             List<Point> ArenaPoints = new List<Point>();
             int minx = width, miny = height, maxx = 0, maxy = 0;
 
             //Do Room Carve out
-            foreach (MazeRoom room in CorruptionRoomsBossArena)
+            foreach (MazeRoom room in MiniBossRoomsBossArena)
             {
                 AveragePoint += room.loc.ToVector2();
                 //IDGWorldGen.PlaceMulti(room.loc.ToPoint(), TileID.Cloud, 8);
@@ -539,14 +591,15 @@ namespace SGAmod.Dimensions
                 minx = Math.Min(minx, room.loc.X); miny = Math.Min(miny, room.loc.Y);
                 maxx = Math.Max(maxx, room.loc.X); maxy = Math.Max(maxy, room.loc.Y);
                 ArenaPoints.Add(room.loc.ToPoint());
-                int sizer2 = 8;
                 for (int i = 0; i < 2; i += 1)
                 {
-                    int sizer = sizer2 - i * 2;
-                    foreach (MazeRoom room2 in CorruptionRoomsBossArena)
+                    foreach (MazeRoom room2 in MiniBossRoomsBossArena)
                     {
                         foreach (Point there in IDGWorldGen.GetLine(room.loc.ToPoint(), room2.loc.ToPoint()))
                         {
+                            int sizer2 = 8;
+                            int sizer = sizer2 - i * 2;
+
                             for (int x = -sizer; x <= sizer; x += 1)
                             {
                                 for (int y = -sizer; y <= sizer; y += 1)
@@ -555,13 +608,13 @@ namespace SGAmod.Dimensions
                                     if (i < 1)
                                     {
                                         if (tile.active())
-                                            tile.type = TileID.AmethystGemspark;
+                                            tile.type = type == 0 ? TileID.AmethystGemspark : TileID.AmberGemspark;
                                     }
                                     else
                                     {
                                         tile.active(false);
                                         if (tile.wall == 0)
-                                            tile.wall = WallID.AmethystGemsparkOff;
+                                            tile.wall = type == 0 ? WallID.AmethystGemsparkOff : WallID.AmberGemsparkOff;
                                     }
                                 }
                             }
@@ -569,17 +622,20 @@ namespace SGAmod.Dimensions
                     }
                 }
             }
-            AveragePoint /= CorruptionRoomsBossArena.Count;
+
+            AveragePoint /= MiniBossRoomsBossArena.Count;
             List<MazeRoom> ListofOrderedRooms  = ListOfRooms.OrderBy(testby => UniRand.Next(ListOfRooms.Count)).ToList();
             ListofOrderedRooms.Insert(0, new MazeRoom(AveragePoint.ToPoint16(), 0, new Point16(0, 0), 0, true));
 
+            //place orbs/hearts
             int index = 0;
-            /*foreach (MazeRoom lootroom in ListofOrderedRooms)
+            int heart = type == 0 ? 0 : 1;
+            foreach (MazeRoom lootroom in ListofOrderedRooms)
             {
                 if (index < 3)
                 {
-                    //IDGWorldGen.PlaceMulti(lootroom.loc.ToPoint(), TileID.AmethystGemspark, 5, WallID.AmethystGemspark);
-                    //IDGWorldGen.PlaceMulti(lootroom.loc.ToPoint(), -1, 3, WallID.AmethystGemspark);
+                    IDGWorldGen.PlaceMulti(lootroom.loc.ToPoint(), type == 0 ? TileID.AmethystGemspark : TileID.AmberGemspark, 5, type == 0 ? WallID.AmethystGemspark : WallID.AmberGemspark);
+                    IDGWorldGen.PlaceMulti(lootroom.loc.ToPoint(), -1, 3, type == 0 ? WallID.AmethystGemspark : WallID.AmberGemspark);
                     for (int num36 = 0; num36 < 2; num36++)
                     {
                         for (int num37 = 0; num37 < 2; num37++)
@@ -590,13 +646,14 @@ namespace SGAmod.Dimensions
                             Main.tile[num38, num39].slope(0);
                             Main.tile[num38, num39].halfBrick(halfBrick: false);
                             Main.tile[num38, num39].type = 31;
-                            Main.tile[num38, num39].frameX = (short)(num36 * 18 + 36 * 0);
+                            Main.tile[num38, num39].frameX = (short)(num36 * 18 + 36 * heart);
                             Main.tile[num38, num39].frameY = (short)(num37 * 18 + 36 * 0);
                         }
                     }
                 }
+
                 index += 1;
-            }*/
+            }
 
         }
 

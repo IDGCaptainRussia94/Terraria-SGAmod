@@ -83,7 +83,7 @@ namespace SGAmod
 				}
 				else
 				{
-					Main.spriteBatch.Draw(beam, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, color * Math.Min(1f, tempcolor)*0.5f, rotation, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(1920, 1080) * 10f * scaleBased, SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(beam, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, color * Math.Min(1f, tempcolor)*1f, rotation, new Vector2(beam.Width / 2, beam.Height / 2), new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(1920, 1080) * 10f * scaleBased, SpriteEffects.None, 0f);
 				}
 			}
 

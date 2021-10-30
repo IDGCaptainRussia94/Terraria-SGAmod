@@ -31,6 +31,16 @@ sampler imageSampler = sampler_state
     AddressU = Wrap;
     AddressV = Wrap;
 };
+float2 rainbowCoordMultiplier;
+float2 rainbowCoordOffset;
+float3 rainbowColor;
+texture rainbowTexture;
+sampler rainbowSampler = sampler_state
+{
+    Texture = (rainbowTexture);
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
 
 //These following 2 functions came from here https://www.chilliant.com/rgb2hsv.html (Copyright © 2002-2020 Ian Taylor)
 //While not to the extent as in Hallowed.fx, This code also has been modified slightly to meet my needs for this shader
@@ -51,6 +61,20 @@ sampler imageSampler = sampler_state
   progress = (1-progress)%1;
 
     float3 RGB = HUEtoRGB(((HSV.x*rainbowScale)+(progress))%1);
+    return ((RGB - 1) * HSV.y + 1) * HSV.z;
+  }
+
+
+
+
+
+
+
+    float3 HSVtoRGBFromTexture(VertexShaderOutput input,float2 coords,float3 HSV)
+  {
+  	float4 pixel = (tex2D(rainbowSampler, rainbowCoordOffset + input.TextureCoordinates * rainbowCoordMultiplier) * input.Color)*strength;
+
+    float3 RGB = HUEtoRGB(((pixel.r+HSV.x)*rainbowScale)%1);
     return ((RGB - 1) * HSV.y + 1) * HSV.z;
   }
 
@@ -77,6 +101,27 @@ float4 BasicEffect(VertexShaderOutput input) : COLOR
 	return pixel;
 }
 
+//Applies a rainbow overlay
+float4 RainbowEffect(VertexShaderOutput input) : COLOR
+{
+    float2 coords = coordOffset + input.TextureCoordinates * coordMultiplier;
+	float4 pixel = (tex2D(imageSampler, coords) * input.Color)*strength;
+	float4 rainpixel = (float4(HSVtoRGBFromTexture(input,coords,rainbowColor),1.0) * input.Color)*strength;
+	pixel = saturate(pixel*rainpixel);
+	return pixel;
+}
+
+//Sets the alpha color based on luminosity and applies a rainbow overlay
+float4 RainbowEffectAlpha(VertexShaderOutput input) : COLOR
+{
+    float2 coords = coordOffset + input.TextureCoordinates * coordMultiplier;
+	float4 pixel = (tex2D(imageSampler, coords) * input.Color)*strength;
+	float4 rainpixel = (float4(HSVtoRGBFromTexture(input,coords,rainbowColor),1.0) * input.Color)*strength;
+	float luma = (pixel.r+pixel.g+pixel.b)/3.0;
+	pixel = saturate(pixel*rainpixel);
+	return pixel*luma;
+}
+
 //Sets the alpha color based on luminosity
 float4 BasicEffectAlpha(VertexShaderOutput input) : COLOR
 {
@@ -86,7 +131,7 @@ float4 BasicEffectAlpha(VertexShaderOutput input) : COLOR
 	return pixel*luma;
 }
 
-//Same as above, but now faded on the X axis
+//Faded on the X axis
 float4 BasicEffectFaded(VertexShaderOutput input) : COLOR
 {
 	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
@@ -133,7 +178,17 @@ technique BasicColorDrawing
 		VertexShader = compile vs_2_0 MainVS();
 		PixelShader = compile ps_2_0 BasicEffect();
 	}	
-		pass BasicEffectAlphaPass
+		pass RainbowEffectPass
+	{
+		VertexShader = compile vs_2_0 MainVS();
+		PixelShader = compile ps_2_0 RainbowEffect();
+	}				
+	pass RainbowEffectAlphaPass
+	{
+		VertexShader = compile vs_2_0 MainVS();
+		PixelShader = compile ps_2_0 RainbowEffectAlpha();
+	}			
+	pass BasicEffectAlphaPass
 	{
 		VertexShader = compile vs_2_0 MainVS();
 		PixelShader = compile ps_2_0 BasicEffectAlpha();

@@ -23,11 +23,6 @@ namespace SGAmod.Items.Consumables.LootBoxes
 			Tooltip.SetDefault(defaultText + "Will contain an item exclusive to the Deeper Dungeons");
 		}
 
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.LockBox); }
-		}
-
 		public override void SetDefaults()
 		{
 			item.width = 14;
@@ -81,8 +76,8 @@ namespace SGAmod.Items.Consumables.LootBoxes
 			WR.Add(new LootBoxContents(itemtype, 1), 1);
 			foreach (int itemtype in Dimensions.DeeperDungeon.RareItems)
 				WR.Add(new LootBoxContents(itemtype, 1), 0.25);
-			foreach (int itemtype in Dimensions.DeeperDungeon.ShadowItems)
-				WR.Add(new LootBoxContents(itemtype, 1), 0.40);
+			//foreach (int itemtype in Dimensions.DeeperDungeon.ShadowItems)
+				//WR.Add(new LootBoxContents(itemtype, 1), 0.40);
 
 			loots.Add(WR.Get());
 		}
@@ -94,11 +89,6 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		{
 			DisplayName.SetDefault("Hardmode Potions : Contraband Crate!");
 			Tooltip.SetDefault(defaultText+"Will contain a random ammount of one type of Vanilla hardmode potion\nMay contain Super Healing or Super Mana potions");
-		}
-
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.LockBox); }
 		}
 
 		public override void SetDefaults()
@@ -169,11 +159,6 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		{
 			DisplayName.SetDefault("Potions : Contraband Crate!");
 			Tooltip.SetDefault(defaultText+"Will contain a random ammount of one type of Vanilla prehardmode potion\nMay contain Greater Healing or Greater Mana potions");
-		}
-
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.LockBox); }
 		}
 
 		public override void SetDefaults()
@@ -255,11 +240,6 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		{
 			DisplayName.SetDefault("SGAmod Potions : Contraband Crate!");
 			Tooltip.SetDefault(defaultText+"Will contain a random ammount of one type of SGAmod potion\nIncludes a few consumables as well");
-		}
-
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.LockBox); }
 		}
 
 		public override void SetDefaults()
@@ -348,11 +328,6 @@ namespace SGAmod.Items.Consumables.LootBoxes
 			Tooltip.SetDefault(defaultText+"Will contain a random high tier vanilla item");
 		}
 
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.LockBox); }
-		}
-
 		public override void SetDefaults()
 		{
 			item.width = 14;
@@ -422,11 +397,6 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		{
 			DisplayName.SetDefault("SGAmod Accessories : Contraband Crate!");
 			Tooltip.SetDefault(defaultText+"Will contain a random SGAmod accessory");
-		}
-
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.LockBox); }
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)

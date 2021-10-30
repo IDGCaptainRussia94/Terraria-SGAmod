@@ -14,7 +14,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("F.S.R.G");
-			Tooltip.SetDefault("'Furious Sting-Ray Gun'\nRapidly fires multi-hitting flaming stingers that cause no immunity frames\nThese inflict Gourged and leave behind poison clouds\nStingers are most effective against larger enemies\n80% to not consume ammo");
+			Tooltip.SetDefault("'Furious Sting-Ray Gun'\nRapidly fires multi-hitting flaming stingers that cause no immunity frames\nThese inflict Gourged and leave behind poison clouds\nStingers are most effective against larger enemies\n75% to not consume ammo");
 		}
 
 		public override void SetDefaults()
@@ -23,13 +23,13 @@ namespace SGAmod.Items.Weapons
 			item.ranged = true;
 			item.width = 32;
 			item.height = 62;
-			item.useTime = 8;
-			item.useAnimation = 8;
+			item.useTime = 10;
+			item.useAnimation = 10;
 			item.useStyle = 5;
 			item.noMelee = true;
 			item.knockBack = 2;
 			item.value = 750000;
-			item.rare = 11;
+			item.rare = ItemRarityID.Purple;
 			item.UseSound = SoundID.Item99;
 			item.autoReuse = true;
 			item.shoot = 10;
@@ -39,7 +39,7 @@ namespace SGAmod.Items.Weapons
 
         public override bool ConsumeAmmo(Player player)
         {
-			return Main.rand.Next(100) < 20;
+			return Main.rand.Next(100) < 25;
         }
 
         public override Vector2? HoldoutOffset()

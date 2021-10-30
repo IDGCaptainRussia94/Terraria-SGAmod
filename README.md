@@ -40,7 +40,7 @@ Changelog:
 
 -Hoppers will no longer insert hearts/stars and their holiday varients (also bubble pickups) into chests, they will instead dump them on the ground near the chest they would have gone into; should have did this sooner
 
--Fixed Main Sequence Staff killing town NPCs (I think this was intentional as a downside when I 1st coded it... but yeah, too trollish)
+-Fixed Main Sequence Staff killing town NPCs (I think this was intentional as a downside when I 1st coded it... but yeah, too trollish), also does only 10% against enemies with shared life
 
 -Fixed VibraniumMask giving far too little melee Apoco chance
 
@@ -90,7 +90,19 @@ Changelog:
 
 -Added Autoclicker (Souls of Byte-tier Summon)
 
--New changes to Hellion Phase 2:
+-Nerfed F.S.R.G: fire rate increased to 10 (from 8), 80% to not consume ammo reduced to 75%
+
+-Implimented Chain-Mining for asteriods; when you mine an asteriod, all nearby asteriods are mined for half your pickaxe power
+
+-Fixed Vibranium Hood doing double damage (this was a bug)
+
+-Possessed Asteriods can rarely spawn naturally In Near Orbit now (4% to replace asteriods when they naturally spawn)
+
+-Deeper Dungeons Contraband Crate no longer contains Shadow Chest items, only Deeper Dungeons exclusive content now
+
+-Made some updates to Limborinth because I'm bad at focusing on what I should be doing
+
+-New changes to Helen Hellion Weygold:
 -Laser Reign locks Hellion in place for longer, and Lasers persist a shorter time
 -Cobalt Wraiths have been replaced with repair drones, and former repair drones are disabled
 -Homing Lasers (Healthy dose of lasers) rotates 25% slower
@@ -103,18 +115,29 @@ Changelog:
 -Sky Fractures have been changed to new projectiles for the later phases: accerating swords
 -Xemnas attack has been completely reworked, laser version is still the same. There is also now an attack delay after the attack
 -Drones no longer shoot lasers
--Background is less opaque
+-Shadow effect for the last stretch of the fight
+-Base Defense raised to 50 (from 0)
+-DPS drones are now immune to damage for 180 ticks after spawning, to give them a chance to leave
+-Tyrant overhauls alot of Hellion's basic attacks when it activates, it also now activates ASAP in Nightmare mode and stacks later
+-Several basic moves have different movement in later phases
+-Skeletron Hands are now a 1-time summon at 90% Health, and need to be killed to advance the fight
+-Army phases removed (infact, disabled for now as an option), need to add new attacks to take their place thou
+
+-New changes to Hellion Core:
+-Warm up periods and animations where the worm can't be hurt or do contact damage
+-New intro
 
 -New changes to Phaethon:
 -Orbiting overseen heads are now farther away (almost double), and shoot slower per phase with more delay between
 -Eol Attack (yes it's called that) now gives off light in the darkness
+-Overseen Asteriods are now damagable, but tanky to a degree to make it hard to kill them with on-tier gear
 
 -New Changes to Cratrosity:
 -Cratrosity's code has been refactored, no more stupidly massive arrays! Hazaah!
 -Has more HP, but loses a percent of it after each phase (also applies to Cratogeddon, which makes the fight easier)
 
 -New changes to Supreme Pinky phase 2:
--Core now resists 80% of piercing damage, but whenever slime dies it creates a homing projectile that flies back to the boss and deals 1000 damage to it; more builds are now viable to kill the boss imo
+-Core now resists 80% of piercing damage, but whenever a slime dies it creates a homing projectile that flies back to the boss and deals 1000 damage to it; more builds are now viable to kill the boss imo
 -Fixed map icon
 
 

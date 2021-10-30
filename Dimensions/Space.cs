@@ -599,7 +599,6 @@ namespace SGAmod.Dimensions
                 RasterizerState rasterizerState = new RasterizerState();
                 rasterizerState.CullMode = CullMode.None;
                 Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
-
                 effect.CurrentTechnique.Passes[type == 0 ? "BasicEffectPass" : "BasicEffectAlphaPass"].Apply();
                 Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
 
@@ -855,7 +854,7 @@ namespace SGAmod.Dimensions
 
         void DrawAsteriodGlow(SpriteBatch spriteBatch, Color lightColor);
 
-        void MineAsteriod(Item pickaxe);
+        void MineAsteriod(Item pickaxe,bool ChainMine);
         void AsteriodLoot();
 
 
@@ -1117,6 +1116,18 @@ namespace SGAmod.Dimensions
 
 
                 Projectile proj = Projectile.NewProjectileDirect(player.Center + chosenspot, velocity, projtype, 0, 0);
+
+                if (Main.rand.Next(0, 100) <= 4)
+                {
+                    int npc = NPC.NewNPC((int)proj.Center.X, (int)proj.Center.Y, ModContent.NPCType<OverseenHeadAsteriod>());
+                    MineableAsteriod grabrock = proj.modProjectile as MineableAsteriod;
+                    grabrock.npc = npc;
+                    grabrock.projectile.damage = 40;
+                    grabrock.projectile.timeLeft = 99999;
+                    grabrock.projectile.hostile = true;
+                    grabrock.projectile.friendly = false;
+                    grabrock.projectile.ignoreWater = false;
+                }
             }
 
         }
@@ -1150,13 +1161,29 @@ namespace SGAmod.Dimensions
 
         public void DrawAsteriod(SpriteBatch spriteBatch, Color lightColor) => _DrawAsteriod(spriteBatch, lightColor);
         public void DrawAsteriodGlow(SpriteBatch spriteBatch, Color lightColor) => _DrawAsteriodGlow(spriteBatch, lightColor);
-        public void MineAsteriod(Item pickaxe) => _MineAsteriod(pickaxe);
+        public void MineAsteriod(Item pickaxe, bool chainMine = true) => _MineAsteriod(pickaxe, chainMine);
         public void AsteriodLoot() => _AsteriodLoot();
 
-        protected virtual void _MineAsteriod(Item pickaxe)
+        protected virtual void _MineAsteriod(Item pickaxe,bool chainMine=true)
         {
             int minedamage = pickaxe.pick;
             asteriodHealth -= minedamage;
+
+            if (chainMine)
+            {
+                int dist = 64 * 64;
+                foreach (Projectile asteriod in Main.projectile.Where(testby => testby.active && testby.whoAmI != projectile.whoAmI && testby.modProjectile != null && testby.modProjectile is IMineableAsteriod && (testby.Center-projectile.Center).LengthSquared()<dist).OrderBy(testby => (testby.Center - projectile.Center).LengthSquared()))
+                {
+                    if (projectile.whoAmI != asteriod.whoAmI)
+                    {
+                        IMineableAsteriod asteriod2 = asteriod.modProjectile as IMineableAsteriod;
+                        Item copyPick = pickaxe.Clone();
+                        copyPick.pick /= 2;
+                        asteriod2.MineAsteriod(copyPick, false);
+                    }
+                }
+
+            }
 
             if (asteriodHealth < 1)
             {
@@ -1431,14 +1458,19 @@ namespace SGAmod.Dimensions
         public override void SetDefaults()
         {
             base.SetDefaults();
-            npc.dontTakeDamage = true;
+            npc.dontTakeDamage = false;
+            npc.defense = 100;
+            npc.life = 2000;
+            npc.lifeMax = 2000;
             npc.damage = 0;
             timer = 5;
         }
 
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
         {
-            return false;
+            scale += 0.250f;
+            position += new Vector2(0,16f);
+            return true;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)

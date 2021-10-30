@@ -40,6 +40,7 @@ namespace SGAmod
 			IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;
 			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
             IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
+			IL.Terraria.Main.DoDraw += DrawBehindVoidLayers;
 
 			//IL.Terraria.Lighting.AddLight_int_int_float_float_float += AddLightHack;
 
@@ -70,6 +71,20 @@ namespace SGAmod
 			item.velocity *= 0.98f;
 			return true;
         }
+
+		private static void DrawBehindMoonMan()
+        {
+			NPCs.Hellion.ShadowParticle.Draw();
+		}
+
+		private static void DrawBehindVoidLayers(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+			c.TryGotoNext(n => n.MatchLdfld<Main>("DrawCacheNPCsMoonMoon"));
+			c.Index--;
+
+			c.EmitDelegate<Action>(DrawBehindMoonMan);
+		}
 
 		private delegate bool ExtractorDelegate(ref int extractedType, ref int extractedAmmount);//Catches the IDs and stack size of extracts
 

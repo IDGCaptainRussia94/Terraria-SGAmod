@@ -204,7 +204,7 @@ namespace SGAmod.NPCs.Hellion
                 //do ai
 
                 Vector2 theplayerdir = player.Center - (npc.Center);
-                float maxspeed = 75f;
+                float maxspeed = 100f;
                 float friction = 0.97f;
                 float acceerate = 0.4f;
                 float acceeratedist = 4000f;
@@ -282,10 +282,10 @@ namespace SGAmod.NPCs.Hellion
                     acceeratedist = 150000f;
                     friction = 0.93f;
 
-                    Vector2 hellcenter = Hellion.GetHellion().npc.Center;
-                    Vector2 thehelldir = player.Center - (hellcenter);
-
                     NPC master = Main.npc[(int)npc.ai[3]];
+
+                    Vector2 hellcenter = master.Center;
+                    Vector2 thehelldir = player.Center - (hellcenter);
 
                     Vector2 aplay = thehelldir;
                     aplay.Normalize();
@@ -409,6 +409,13 @@ namespace SGAmod.NPCs.Hellion
                     if (npc.velocity.Length() > maxspeed)
                         npc.velocity = theplayerdir * maxspeed;
 
+                    if (npc.velocity.Length() > maxspeed/2 && maxspeed >= 25f && phase>1)
+                    {
+                        if (npc.localAI[3]>0)
+                        npc.localAI[3] = Math.Min(npc.localAI[3]*0.96f, 300);
+                        npc.localAI[3] = MathHelper.Max(npc.localAI[3]-10,-200);
+                    }
+
                 }
 
                 npc.velocity *= friction;
@@ -506,8 +513,8 @@ namespace SGAmod.NPCs.Hellion
             };
             Func<float, bool> projectilepattern = (time) => (time % 70 == 0);
 
-            int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 30, 250, wheretogo2.Y, phase < 1 ? ProjectileID.NebulaLaser : ProjectileID.DesertDjinnCurse,
-                projectilepattern, phase < 1 ? 15f : 3f, 200);
+            int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 20, 250, wheretogo2.Y, phase < 1 ? ModContent.ProjectileType<HellionCorePlasmaAttack>() : ProjectileID.DesertDjinnCurse,
+                projectilepattern, phase < 1 ? 12f : 3f, phase < 1 ? 600 : 200);
             (Main.projectile[ize2].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
             (Main.projectile[ize2].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
             Main.PlaySound(SoundID.Item, (int)Main.projectile[ize2].position.X, (int)Main.projectile[ize2].position.Y, 45, 0.25f, 0.5f);
@@ -805,15 +812,18 @@ namespace SGAmod.NPCs.Hellion
 
                 if (armtex != null && phase > 1 && noact < 200)
                 {
+                Idglib.coloroverride = Color.White* alpha;
                 int aval = noact>0 ? 0 : (int)npc.localAI[3];
+
                     if (aval < 5)
                         aval = 5;
+
                     if (myowner != null && myowner.active && Main.rand.Next(aval, aval+200) > 250)
                     {
                         Idglib.DrawSkeletronLikeArms(spriteBatch, armtex, npc.Center, myowner.Center, 0f, 0f, MathHelper.Clamp((myowner.Center.X - npc.Center.X) * 0.02f, -1, 1));
                         Vector2 drawPos = ((Idglib.skeletronarmjointpos - Main.screenPosition)) + new Vector2(0f, 0f);
                         Texture2D texture = mod.GetTexture("NPCs/TPD");
-                        spriteBatch.Draw(texture, drawPos, null, Main.DiscoColor, npc.spriteDirection + (npc.ai[0] * 0.4f), new Vector2(16, 16), new Vector2(Main.rand.Next(15, 35) / 4f, Main.rand.Next(15, 35) / 4f), SpriteEffects.None, 0f);
+                        spriteBatch.Draw(texture, drawPos, null, Main.DiscoColor* alpha, npc.spriteDirection + (npc.ai[0] * 0.4f), new Vector2(16, 16), new Vector2(Main.rand.Next(15, 35) / 4f, Main.rand.Next(15, 35) / 4f), SpriteEffects.None, 0f);
                     }
                 }
            // }
@@ -1368,7 +1378,7 @@ namespace SGAmod.NPCs.Hellion
                         };
                         Func<float, bool> projectilepattern = (time) => (time > 120 && time % 30 == 0);
 
-                        int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 50, 240, wheretogo2.Y, ProjectileID.NebulaLaser, projectilepattern, 15f, 400);
+                        int ize2 = ParadoxMirror.SummonMirror(where, Vector2.Zero, 50, 240, wheretogo2.Y, ModContent.ProjectileType<HellionCorePlasmaAttack>(), projectilepattern, 15f, 800);
                         (Main.projectile[ize2].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
                         (Main.projectile[ize2].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
                         Main.PlaySound(SoundID.Item, (int)Main.projectile[ize2].position.X, (int)Main.projectile[ize2].position.Y, 33, 0.25f, 0.5f);
@@ -1592,6 +1602,103 @@ namespace SGAmod.NPCs.Hellion
 
         }
 
+    }
+
+
+    public class HellionCorePlasmaAttack : ModProjectile
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Hellion's Plasma");
+        }
+        public override string Texture => "Terraria/Projectile_" + ProjectileID.NebulaBolt;
+
+        public override void SetDefaults()
+        {
+            projectile.CloneDefaults(ProjectileID.SnowBallFriendly);
+            projectile.tileCollide = true;
+            projectile.friendly = false;
+            projectile.hostile = true;
+            projectile.aiStyle = -1;
+            projectile.tileCollide = false;
+            projectile.extraUpdates = 3;
+            projectile.timeLeft = 600;
+            projectile.usesLocalNPCImmunity = true;
+            projectile.localNPCHitCooldown = -1;
+            projectile.penetrate = -1;
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
+            ProjectileID.Sets.TrailingMode[projectile.type] = 2;
+        }
+
+        public override void AI()
+        {
+            projectile.localAI[0] += 1;
+            projectile.ai[0] += 1;
+
+            if (projectile.ai[0] == 1)
+            {
+                var snd = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 68);
+                if (snd!= null)
+                {
+                    snd.Pitch = -0.5f;
+                }
+            }
+
+            projectile.position -= projectile.velocity * (1f - MathHelper.Clamp((projectile.ai[0] - 120) / 120f, 0.10f, 1f));
+
+            projectile.rotation = projectile.velocity.ToRotation();
+
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+
+            Texture2D texture = Main.projectileTexture[projectile.type];
+            Texture2D textureGlow = ModContent.GetTexture("SGAmod/Glow");
+
+            float realVelocity = (MathHelper.Clamp((projectile.ai[0] - 300) / 300, 0f, 1f));
+            float realAlpha = MathHelper.Clamp(projectile.localAI[0] / 300, 0f, 1f);
+            float timeLeft = Math.Min(projectile.timeLeft / 50f, 1f);
+
+            Vector2 drawOrigin2 = texture.Size() / 2f;
+            Vector2 drawOrigin3 = textureGlow.Size() / 2f;
+
+            Color color = Color.White;
+            Color color2 = Color.Purple;
+
+            float alpha = MathHelper.Clamp(projectile.localAI[0] / 30f, 0f, 1f);
+
+            float scale = 2f - MathHelper.Clamp(projectile.localAI[0] / 70f, 0f, 1f);
+
+            float scaledpre = MathHelper.Clamp((projectile.localAI[0] - 20) / 45f, 0f, 1f)*scale;
+
+            float detail = 1f;// + projectile.velocity.Length();
+
+            float maxtrail = (float)(projectile.oldPos.Length - 15f);
+            float maxtrail2 = (float)(projectile.oldPos.Length - 1f);
+
+            for (float f = maxtrail2; f >= 3f; f -= 0.25f)
+            {
+                Vector2 pos = Vector2.Lerp(projectile.oldPos[(int)f - 1], projectile.oldPos[(int)f], f%1f);
+                float rot = projectile.oldRot[(int)f - 1];
+                spriteBatch.Draw(texture, pos + (projectile.Hitbox.Size() / 2f) - Main.screenPosition, null, color * timeLeft * (1f / detail) * (1f - (f / maxtrail2)) * alpha, rot + MathHelper.PiOver2, drawOrigin2, new Vector2(0.2f, 2.0f)*scaledpre, SpriteEffects.None, 0f);
+            }
+
+            for (float f = maxtrail; f >= 1f; f -= 0.5f)
+            {
+                Vector2 pos = Vector2.Lerp(projectile.oldPos[(int)f - 1], projectile.oldPos[(int)f], f % 1f);
+                float rot = projectile.oldRot[(int)f - 1];
+                spriteBatch.Draw(texture, pos + (projectile.Hitbox.Size() / 2f) - Main.screenPosition, null, color * timeLeft * (1f / detail) * (1f - (f / maxtrail))* alpha, rot + MathHelper.PiOver2, drawOrigin2, scaledpre, SpriteEffects.None, 0f);
+            }
+            for (float f = maxtrail; f >= 1f; f -= 0.5f)
+            {
+                Vector2 pos = Vector2.Lerp(projectile.oldPos[(int)f - 1], projectile.oldPos[(int)f], f % 1f);
+                float rot = projectile.oldRot[(int)f - 1];
+                spriteBatch.Draw(textureGlow, pos + (projectile.Hitbox.Size() / 2f) - Main.screenPosition, null, color2 * timeLeft * (0.75f / detail) * (1f - (f / maxtrail))* alpha, rot + MathHelper.PiOver2, drawOrigin3, new Vector2(0.4f, 1.0f)* scaledpre, SpriteEffects.None, 0f);
+            }
+
+            return false;
+        }
     }
 
 

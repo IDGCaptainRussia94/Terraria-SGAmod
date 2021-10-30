@@ -21,6 +21,7 @@ namespace SGAmod.Tiles
             minPick = 250;
             soundType = SoundID.Item;
             soundStyle = 50;
+            dustType = -1;
             drop = mod.ItemType("VibraniumCrystal");
             mineResist = 2.50f;
             ModTranslation name = CreateMapEntryName();
@@ -30,16 +31,18 @@ namespace SGAmod.Tiles
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
-            int typr = DustID.RedsWingsRun;
-
-            int dust = Dust.NewDust(new Vector2(i, j)*16, 16, 16, typr);
-            Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-            Vector2 normvel = Main.rand.NextVector2Circular(6f, 6f);
-            Color Rainbow = Color.Red;
-            Main.dust[dust].color = Rainbow;
-            Main.dust[dust].scale = 1f;
-            Main.dust[dust].velocity = ((randomcircle / 1f) + (-normvel));
-            Main.dust[dust].noGravity = true;
+            int typr = 182;
+            for (int xi = 0; xi < 20; xi += 1)
+            {
+                int dust = Dust.NewDust(new Vector2(i, j) * 16, 16, 16, typr);
+                Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+                Vector2 normvel = Main.rand.NextVector2Circular(6f, 6f);
+                Color Rainbow = Color.White;
+                Main.dust[dust].color = Rainbow;
+                Main.dust[dust].scale = 0.75f;
+                Main.dust[dust].velocity = ((randomcircle / 1f) + (-normvel));
+                Main.dust[dust].noGravity = true;
+            }
         }
 
         public override bool CanExplode(int i, int j)

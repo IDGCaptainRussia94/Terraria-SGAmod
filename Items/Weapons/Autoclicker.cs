@@ -19,7 +19,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Autoclicker");
-			Tooltip.SetDefault("Clicks may spawn a cookie, more likely with more max sentry summons\nCan pickup the cookie to gain health and a speed buff\n"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds each"));
+			Tooltip.SetDefault("Summons Cursers to click on enemies\nClicks may spawn a cookie, more likely with more max sentry summons\nCan pickup the cookie to gain health and a speed buff\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds each"));
 			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}
@@ -28,15 +28,17 @@ namespace SGAmod.Items.Weapons
 		{
 			item.damage = 100;
 			item.knockBack = 5f;
-			item.mana = 12;
+			item.mana = 5;
 			item.width = 32;
 			item.height = 32;
 			item.useTime = 4;
+			item.noUseGraphic = true;
 			item.useAnimation = 4;
 			item.useStyle = 1;
 			item.value = Item.buyPrice(0, 20, 0, 0);
 			item.rare = ItemRarityID.Cyan;
-			item.UseSound = SoundID.Item44;
+			item.noUseGraphic = true;
+			//item.UseSound = Main.soundt;
 
 			// These below are needed for a minion weapon
 			item.noMelee = true;
@@ -44,11 +46,13 @@ namespace SGAmod.Items.Weapons
 			item.buffType = ModContent.BuffType<AutoclickerMinionBuff>();
 			// No buffTime because otherwise the item tooltip would say something like "1 minute duration"
 			item.shoot = ModContent.ProjectileType<AutoclickerMinion>();
+			item.shootSpeed = 32f;
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			// This is needed so the buff that keeps your minion alive and allows you to despawn it properly applies
+			Main.PlaySound(SoundID.MenuTick,(int)player.Center.X, (int)player.Center.Y,0);
 			player.AddBuff(item.buffType, 2);
 
 			/*foreach (Projectile proj in Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<AutoclickerMinion>()))
@@ -146,6 +150,8 @@ namespace SGAmod.Items.Weapons
 
 			Player player = ThePlayer;
 
+			int attackrate = 40;
+
 
 			if (player.dead || !player.active)
 			{
@@ -157,7 +163,6 @@ namespace SGAmod.Items.Weapons
 			}
 			Vector2 there = player.Center;
 			float dist = projectile.ai[1]<1 ? 64 : 8f;
-			int attackrate = 40;
 			projectile.localAI[0] += 1;
 			projectile.ai[0] += 1;
 			projectile.ai[1] -= 1;
@@ -180,6 +185,7 @@ namespace SGAmod.Items.Weapons
 
 				}
 			}
+			projectile.localAI[1] = id/maxus;
 
 			NPC them = null;
 			Entity focusOn = player;
@@ -202,7 +208,7 @@ namespace SGAmod.Items.Weapons
 				}
 			}
 
-			float angles = ((id / (float)maxus) * MathHelper.TwoPi)+player.SGAPly().timer/150f;
+			float angles = ((id / (float)maxus) * MathHelper.TwoPi)-player.SGAPly().timer/150f;
 			Vector2 here = new Vector2((float)Math.Cos(angles), (float)Math.Sin(angles)) * dist;
 			Vector2 where = there + here;
 			Vector2 todist = (where - projectile.Center);// +(focusOn != null ? focusOn.velocity : Vector2.Zero);
@@ -250,7 +256,7 @@ namespace SGAmod.Items.Weapons
 				projectile.rotation = projectile.rotation.AngleLerp(lookat, 0.15f);
 				if (them != null)
 				{
-					if (player.SGAPly().timer % (int)(attackrate * (ClickerBoost ? 0.5f : 1f)) == (int)((id * (attackrate / maxus)))*(ClickerBoost ? 0.5f : 1f))
+					if (player.SGAPly().timer % (int)(attackrate * (ClickerBoost ? 0.5f : 1f)) == (int)(((id * (attackrate / maxus)))*(ClickerBoost ? 0.5f : 1f)))
 					{
 						DoClick();
 					}
@@ -261,14 +267,17 @@ namespace SGAmod.Items.Weapons
 						if (!them.IsDummy() && Main.rand.Next(500) < player.maxTurrets)
                         {
 							bool cookieNearby = false;
-							foreach(Item item in Main.item.Where(testby => testby.active && testby.type == ModContent.ItemType<CookiePickup>() && (testby.Center-them.Center).LengthSquared()<1500*1500))
+							foreach(Item item in Main.item.Where(testby => testby.active && testby.type == ModContent.ItemType<ClickerCookie>() && (testby.Center-them.Center).LengthSquared()<1500*1500))
                             {
 								cookieNearby = true;
 							}
 							if (!cookieNearby)
-							Item.NewItem(them.Center, ModContent.ItemType<CookiePickup>(),prefixGiven: PrefixID.Menacing,noGrabDelay: true);
+							Item.NewItem(them.Center, ModContent.ItemType<ClickerCookie>(),prefixGiven: PrefixID.Menacing,noGrabDelay: true);
                         }
-						Projectile.NewProjectile(them.Center, projectile.rotation.ToRotationVector2(), ModContent.ProjectileType<AutoclickerClickProj>(), (int)(projectile.damage*(ClickerBoost ? 0.60f : 1f)),projectile.knockBack,projectile.owner);
+						int damage = (int)(projectile.damage * (ClickerBoost ? 0.60f : 1f));
+						//them.SGANPCs().AddDamageStack(damage,60*5);
+						Projectile.NewProjectile(them.Center, projectile.rotation.ToRotationVector2(), ModContent.ProjectileType<AutoclickerClickProj>(), damage,projectile.knockBack,projectile.owner);
+
 
 						/*int damazz = (Main.DamageVar((float)projectile.damage));
 						them.StrikeNPC(damazz, projectile.knockBack, them.direction, false, false);
@@ -314,7 +323,7 @@ namespace SGAmod.Items.Weapons
 			{
 				for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 12f)
 				{
-					spriteBatch.Draw(tex, drawPos + Vector2.UnitX.RotatedBy(f) * 3f, null, Main.DiscoColor * 0.25f, projectile.rotation + MathHelper.PiOver2, drawOrigin, projectile.scale / 2f, SpriteEffects.None, 0f);
+					spriteBatch.Draw(tex, drawPos + Vector2.UnitX.RotatedBy(f) * 3f, null, Main.hslToRgb((projectile.localAI[1] + (Main.GlobalTime/3f))%1f,1f,0.75f) * 0.32f, projectile.rotation + MathHelper.PiOver2, drawOrigin, projectile.scale / 2f, SpriteEffects.None, 0f);
 				}
 			}
 			spriteBatch.Draw(tex, drawPos, null, color, projectile.rotation+MathHelper.PiOver2, drawOrigin, projectile.scale/2f, SpriteEffects.None, 0f);
@@ -330,6 +339,7 @@ namespace SGAmod.Items.Weapons
 		{
 			DisplayName.SetDefault("Autoclicker");
 		}
+
 		public override string Texture => "Terraria/Item_" + ItemID.SugarCookie;
 
 		public sealed override void SetDefaults()
@@ -338,6 +348,7 @@ namespace SGAmod.Items.Weapons
 			projectile.height = 72;
 			projectile.tileCollide = false;
 			projectile.friendly = true;
+			projectile.hide = true;
 			projectile.minion = true;
 			// Needed so the minion doesn't despawn on collision with enemies or tiles
 			projectile.penetrate = 1;
@@ -358,7 +369,7 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
-	public class CookiePickup : ModItem
+	public class ClickerCookie : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -366,13 +377,18 @@ namespace SGAmod.Items.Weapons
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 			ItemID.Sets.ItemIconPulse[item.type] = true;
 		}
-        public override string Texture => "Terraria/Item_"+ItemID.SugarCookie;
-        public override void SetDefaults()
+		public override string Texture => "SGAmod/Items/Consumables/ClickerCookie";
+		public override void SetDefaults()
         {
 			item.maxStack = 1;
         }
 
-        public override bool CanPickup(Player player)
+		public override void GrabRange(Player player, ref int grabRange)
+		{
+			grabRange += 160;
+		}
+
+		public override bool CanPickup(Player player)
         {
 			return (player.SGAPly().AddCooldownStack(30, 1, true));
         }
@@ -399,14 +415,12 @@ namespace SGAmod.Items.Weapons
 
         Texture2D inner = Main.itemTexture[ModContent.ItemType<AssemblyStar>()];
 
-			Vector2 slotSize = new Vector2(52f, 52f);
-			Vector2 position = item.Center-(slotSize * Main.inventoryScale / 2f - inner.Size() * scale / 2f);
-			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+			Vector2 drawPos = item.position-Main.screenPosition;
 			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);
 
 			for (float i = 0; i < 1f; i += 0.20f)
 			{
-				spriteBatch.Draw(inner, drawPos, null, Color.Yellow * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.75f, i * MathHelper.TwoPi, textureOrigin, Main.inventoryScale * (0.5f + 1.75f * (((Main.GlobalTime / 2f) + i) % 1f)), SpriteEffects.None, 0f);
+				spriteBatch.Draw(inner, drawPos-Vector2.UnitY.RotatedBy(rotation)*10f, null, Color.Yellow * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.25f, i * MathHelper.TwoPi, textureOrigin,(0.5f + 1.75f * (((Main.GlobalTime / 2f) + i) % 1f))*1f, SpriteEffects.None, 0f);
 			}
 
 			return true;

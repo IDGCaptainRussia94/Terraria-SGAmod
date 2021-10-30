@@ -1331,7 +1331,8 @@ namespace SGAmod
 		{
 			//test++;
 			Terraria.Cinematics.CinematicManager.Instance.Update(new GameTime());
-			PostUpdateEverythingEvent?.Invoke();
+			ShadowParticle.UpdateAll();
+			 PostUpdateEverythingEvent?.Invoke();
 			//Main.NewText(test);
 			if (SGAmod.musicTest != null && SGAmod.musicTest.IsPlaying)
 			{

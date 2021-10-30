@@ -142,10 +142,13 @@ namespace SGAmod.Items.Armors.Vibranium
 
 		private void UpdateSetBonus(SGAPlayer sgaply)
 		{
-			Player player = sgaply.player;
-			if (!player.dead && player.armor[0].type == ModContent.ItemType<VibraniumHood>() && player.ownedProjectileCounts[ModContent.ProjectileType<VibraniumWispMinion>()]<1)
+			if (GetType() == typeof(VibraniumHood))
 			{
-				Projectile.NewProjectile(player.Center,Vector2.Zero,ModContent.ProjectileType<VibraniumWispMinion>(),100,2f,player.whoAmI);
+				Player player = sgaply.player;
+				if (!player.dead && player.armor[0].type == ModContent.ItemType<VibraniumHood>() && player.ownedProjectileCounts[ModContent.ProjectileType<VibraniumWispMinion>()] < 1)
+				{
+					Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<VibraniumWispMinion>(), 100, 2f, player.whoAmI);
+				}
 			}
 
 		}
@@ -517,7 +520,7 @@ namespace SGAmod.Items.Armors.Vibranium
 
 							Vector2 there = npctarget.Center - projectile.Center;
 
-							Projectile.NewProjectile(projectile.Center, npctarget.Center - projectile.Center, ModContent.ProjectileType<VibraniumZapEffect>(), 0, 0);
+							Projectile.NewProjectile(projectile.Center, ((npctarget.position+new Vector2(Main.rand.Next(0,npctarget.width), Main.rand.Next(0, npctarget.height))) - projectile.Center), ModContent.ProjectileType<VibraniumZapEffect>(), 0, 0);
 							SoundEffectInstance snd = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 91);
 
 							int damazz = (Main.DamageVar((float)projectile.damage));

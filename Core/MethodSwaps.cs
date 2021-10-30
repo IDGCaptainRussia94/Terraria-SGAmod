@@ -39,7 +39,6 @@ namespace SGAmod
 			On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
 			On.Terraria.GameContent.Events.DD2Event.SpawnMonsterFromGate += CrucibleArenaMaster.DD2PortalOverrides;
 			On.Terraria.GameContent.UI.Elements.UICharacterListItem.DrawSelf += Menu_UICharacterListItem;
-            On.Terraria.Main.DrawNPCs += Main_DrawNPCs;
 
 			//Unused until more relevant
 			//On.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += CtorModWorlData;
@@ -59,12 +58,6 @@ namespace SGAmod
 			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
-
-        private static void Main_DrawNPCs(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
-        {
-            NPCs.Hellion.ShadowParticle.Draw();
-			orig(self, behindTiles);
-        }
 
         private static void Player_UpdateLifeRegen(On.Terraria.Player.orig_UpdateLifeRegen orig, Player self)
         {

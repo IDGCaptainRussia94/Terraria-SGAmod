@@ -26,8 +26,6 @@ namespace SGAmod.Items.Weapons.Auras
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}
 
-        public override string Texture => "SGAmod/Items/Weapons/Aurora/AuraBorealisStaff";
-
         public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			base.ModifyTooltips(tooltips);
@@ -159,7 +157,7 @@ namespace SGAmod.Items.Weapons.Auras
 			{
 				float powerf = CalcAuraPowerReal(player);
 				NPC himas = (type as NPC);
-				himas.SGANPCs().nonStackingImpaled = (int)(projectile.damage * powerf);
+				himas.SGANPCs().nonStackingImpaled = (int)(projectile.damage * powerf*(himas.realLife>=0 ? 0.10f : 1f));
 
 				if (!(himas.townNPC || himas.friendly))
 				{
@@ -213,6 +211,8 @@ namespace SGAmod.Items.Weapons.Auras
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
 			}
 
+			float trueScale = (float)Math.Pow(timeLeftScale, 0.75);
+
 			if (type == 0)
 			{
 				timeLeftScale += (CalcAuraPowerReal(player) - timeLeftScale) / 30f;
@@ -244,7 +244,7 @@ namespace SGAmod.Items.Weapons.Auras
 				Vector2 halfsize = mainTex.Size() / 2f;
 
 				Effect RadialEffect = SGAmod.RadialEffect;
-				float scale = (1f+ CalcAuraPowerReal(player)*0.25f)*0.50f;
+				float scale = 1f;// (1f+ CalcAuraPowerReal(player)*0.25f)*0.50f;
 
 				Texture2D texture = ModContent.GetTexture("SGAmod/Stain");
 				Texture2D texture2 = ModContent.GetTexture("SGAmod/Voronoi");
@@ -265,7 +265,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 						RadialEffect.CurrentTechnique.Passes["RadialAlpha"].Apply();
 
-						Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.75f + ((timeLeftScale) * 1.50f)) * 2f * scale, SpriteEffects.None, 0f);
+						Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.75f + ((trueScale) * 1.50f)) * 2f * scale, SpriteEffects.None, 0f);
 					}
 				}
 
@@ -279,7 +279,7 @@ namespace SGAmod.Items.Weapons.Auras
 				RadialEffect.Parameters["tunnel"].SetValue(false);
 
 				RadialEffect.CurrentTechnique.Passes["Radial"].Apply();
-				Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.75f + ((timeLeftScale) * 1.50f)) * 1f * scale, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.75f + ((trueScale) * 1.50f)) * 1f * scale, SpriteEffects.None, 0f);
 
 
 				SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(SequenceColor.ToVector4() * timeLeftScale);
@@ -290,7 +290,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 				SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMap"].Apply();
 
-				Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.25f + ((timeLeftScale) * 0.50f)) * scale, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.25f + ((trueScale) * 0.50f)) * scale, SpriteEffects.None, 0f);
 
 				SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(SequenceColor.ToVector4() * timeLeftScale * 0.950f);
 				SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(texture3);
@@ -300,7 +300,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 				SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
 
-				Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.25f + ((timeLeftScale) * 0.50f)) * scale, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.25f + ((trueScale) * 0.50f)) * scale, SpriteEffects.None, 0f);
 
 				SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(SequenceColor.ToVector4() * timeLeftScale * 0.500f);
 				SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(texture2);
@@ -310,7 +310,7 @@ namespace SGAmod.Items.Weapons.Auras
 
 				SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
 
-				Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.25f + ((timeLeftScale) * 0.50f)) * scale, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(texture, SunOffset - Main.screenPosition, null, Color.White, 0, texture.Size() / 2f, (0.25f + ((trueScale) * 0.50f)) * scale, SpriteEffects.None, 0f);
 
 				//Main.spriteBatch.End();
 				//Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);

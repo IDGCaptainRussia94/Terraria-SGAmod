@@ -296,14 +296,15 @@ namespace SGAmod.Dimensions
                         if (NullBossArenaSpot == default)
                         {
                             Idglib.Chat("There's no turning back now...", 120, 15, 15);
-                            NullBossArenaSpot = player.Center;
                         }
+                        NullBossArenaSpot = player.Center;
                     }
                     else
                     {
                         if (NullBossArenaSpot != default)
                         {
-                            player.Center = NullBossArenaSpot;
+                            //player.velocity = Vector2.Normalize(NullBossArenaSpot - player.Center)*12f;
+                            //player.Center = NullBossArenaSpot;
                         }
                     }
                 }

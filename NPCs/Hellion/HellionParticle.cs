@@ -29,7 +29,7 @@ namespace SGAmod.NPCs.Hellion
             shadowSurfaceShaderApplied = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
             shadowHellion = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
             
-            SGAmod.PostUpdateEverythingEvent += UpdateAll;
+            //SGAmod.PostUpdateEverythingEvent += UpdateAll;
         }
 
         public static void Unload()
@@ -155,10 +155,12 @@ namespace SGAmod.NPCs.Hellion
             //Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
+            int fogtype = NPC.CountNPCS(ModContent.NPCType<HellionCore>())>0 ? 0 : 1;
+
             Color fogTo = Color.DarkMagenta;
             Color fogFrom = Color.Black;
             float edging = 0.10f;
-            int smokecount = 5;
+            int smokecount = fogtype == 0 ? 16 : 32;
 
             foreach (ShadowParticle particle in particles)
             {
@@ -180,7 +182,7 @@ namespace SGAmod.NPCs.Hellion
             ShadowEffect.Parameters["screenSize"].SetValue(shadowSurface.Size());
             //Color.DarkMagenta
             //Color.Black
-            ShadowEffect.Parameters["colorFrom"].SetValue((fogTo).ToVector4());
+            ShadowEffect.Parameters["colorFrom"].SetValue((fogTo).ToVector4()*(fogtype == 0 ? 1f : 0.01f));
             ShadowEffect.Parameters["colorTo"].SetValue((fogFrom).ToVector4()*1f);
             ShadowEffect.Parameters["colorOutline"].SetValue((Color.Transparent).ToVector4()*1f);
 
@@ -212,39 +214,78 @@ namespace SGAmod.NPCs.Hellion
 
                 Effect effect = SGAmod.TrailEffect;
 
-                effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Vector2.One) * WVP.Projection());
-                effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("TiledPerlin"));
-                effect.Parameters["coordOffset"].SetValue(parallex);
-                effect.Parameters["coordMultiplier"].SetValue(new Vector2(1f,1f));
-                effect.Parameters["strength"].SetValue(1f);
+                Terraria.Utilities.UnifiedRandom rando = new Terraria.Utilities.UnifiedRandom(1);
 
-                VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
-                VertexBuffer vertexBuffer;
+                float timer = rando.NextFloat(MathHelper.TwoPi);
 
-                Vector3 screenPos = new Vector3(-16, 0, 0);
-                float skymove = ((Math.Max(Main.screenPosition.Y - 8000, 0)) / (Main.maxTilesY * 16f));
+                for (int i = 0; i < 12; i += 1)
+                {
 
-                Color colorsa = Color.Lerp(fogFrom,fogTo,0.50f);
+                    float alpha = 1f;// MathHelper.Clamp(0.40f + (float)Math.Sin(((SGAWorld.modtimer / 35f) + rando.NextFloat(MathHelper.TwoPi)) * rando.NextFloat(0.25f, 0.75f))*0.80f, 0f, 1f);
+                    //if (alpha <= 0 && i > 0)
+                    //    continue;
 
-                vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-16, 0, 0), colorsa, new Vector2(0, 0));
-                vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
-                vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
+                    Matrix rotation = Matrix.CreateRotationZ(timer);
+                    Matrix rotation2 = Matrix.CreateRotationZ((-timer));
+                    Matrix rotation3 = Matrix.CreateRotationZ((timer - MathHelper.Pi));
 
-                vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight, 0), colorsa, new Vector2(1, 1));
-                vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
-                vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
+                    Matrix rotationOffset = Matrix.CreateTranslation(-shadowSurface.Width / 2, -shadowSurface.Height / 2, 0)*Matrix.CreateScale(3,3f,1f)*rotation*Matrix.CreateTranslation(shadowSurface.Width / 2, shadowSurface.Height / 2, 0);
 
-                vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
-                vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+                    if (i > 0)
+                    {
+                        Vector2 pos2 = ((Main.screenPosition / ((8000f + (i * 4000f))) * 1f) + new Vector2(rando.NextFloat(1f), rando.NextFloat(1f)));
+                        Vector2 pos = -Vector2.One+new Vector2(pos2.X%1f, pos2.Y%1f) *2f;
+                        Matrix rotationOffset2 = Matrix.CreateTranslation(pos.X, pos.Y, 0)* rotation2;
+                        parallex = Vector2.Transform(Vector2.One/2f, rotationOffset2);
 
-                Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+                    }
+                    if (fogtype == 1)
+                    {
+                        effect.Parameters["rainbowCoordOffset"].SetValue(new Vector2(rando.NextFloat(1f), rando.NextFloat(1f)));
+                        effect.Parameters["rainbowCoordMultiplier"].SetValue(new Vector2(1f, 1f));
+                        effect.Parameters["rainbowColor"].SetValue(new Vector3(SGAWorld.modtimer / 300f, 1f, 0.75f));
+                        effect.Parameters["rainbowScale"].SetValue(1f);
+                        effect.Parameters["rainbowTexture"].SetValue(SGAmod.Instance.GetTexture("TiledPerlin"));
+                    }
 
-                RasterizerState rasterizerState = new RasterizerState();
-                rasterizerState.CullMode = CullMode.None;
-                Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+                    effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Vector2.One) * WVP.Projection());
+                    effect.Parameters["imageTexture"].SetValue(i<1 ? SGAmod.Instance.GetTexture("TiledPerlin") : SGAmod.Instance.GetTexture("Space"));
+                    effect.Parameters["coordOffset"].SetValue(parallex);
+                    effect.Parameters["coordMultiplier"].SetValue(i < 1 ? new Vector2(2f, 1.5f)*3f : (new Vector2(3f, 2f)+ new Vector2(rando.NextFloat(-0.5f,0.5f), rando.NextFloat(-0.5f, 0.5f)))*3f);
+                    effect.Parameters["strength"].SetValue(i == 0 ? 0.50f : (1.75f* alpha)/(1f+(i/4f)));
 
-                effect.CurrentTechnique.Passes["BasicEffectPass"].Apply();
-                Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+                    VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
+                    VertexBuffer vertexBuffer;
+
+                    Vector3 screenPos = new Vector3(-16, 0, 0);
+
+                    Color colorsa = fogtype == 0 ? Color.Lerp(fogFrom, fogTo, 0.50f) : Color.White;
+
+                    if (i > 0)
+                    {
+                        colorsa = fogtype == 0 ? Color.Lerp(fogTo, fogFrom, (float)i / 16f) : Color.White * (1f-((float)i / 48f));
+                    }
+
+                    vertices[0] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(-16, 0, 0), rotationOffset), colorsa, new Vector2(0, 0));
+                    vertices[1] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(-16, Main.screenHeight, 0), rotationOffset), colorsa, new Vector2(0, 1));
+                    vertices[2] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), rotationOffset), colorsa, new Vector2(1, 0));
+
+                    vertices[3] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight, 0), rotationOffset), colorsa, new Vector2(1, 1));
+                    vertices[4] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(-16, Main.screenHeight, 0), rotationOffset), colorsa, new Vector2(0, 1));
+                    vertices[5] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), rotationOffset), colorsa, new Vector2(1, 0));
+
+                    vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+                    vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+                    Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+                    RasterizerState rasterizerState = new RasterizerState();
+                    rasterizerState.CullMode = CullMode.None;
+                    Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+
+                    effect.CurrentTechnique.Passes[i < 1 ? (fogtype == 1 ? "RainbowEffectPass" : "BasicEffectPass") : (fogtype == 1 ? "RainbowEffectAlphaPass" : "BasicEffectAlphaPass")].Apply();
+                    Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+                }
 
                 
                 Main.spriteBatch.End();

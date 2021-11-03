@@ -1546,7 +1546,7 @@ namespace SGAmod
 					}
 					if (Main.rand.Next(0, 3) == 0 && NPC.CountNPCS(mod.NPCType("Dergon")) > 0)
 					{
-						string[] lines = { "I'm sure the dragon is worth alot on the black market, just need to find the right person",
+						string[] lines = { "I'm sure the dragon is worth a lot on the black market, just need to find the right person",
 						"How much do you think he could get for selling the dragon? People would pay well for beasts like him."};
 						chat = lines[Main.rand.Next(lines.Length)];
 					}

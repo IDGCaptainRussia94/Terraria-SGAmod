@@ -963,7 +963,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Solar Shield");
-			Tooltip.SetDefault("Grows in power when held, growth scales with your melee speed\nIncreases block angle and reduces damage up to 3 levels\nBlocking an attack creates a solar explosion\nPerforming a Just Block sets the shield to level 3\nGain a fiery bash-dash with atleast a level 2 shield");
+			Tooltip.SetDefault("Grows in power when held, growth scales with your melee speed\nIncreases block angle and reduces damage up to 3 levels\nBlocking an attack creates a solar explosion\nPerforming a Just Block sets the shield to level 3\nGain a fiery bash-dash with at least a level 2 shield");
 			Item.staff[item.type] = true;
 		}
 

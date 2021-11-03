@@ -15,7 +15,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lance a-lot");
-			Tooltip.SetDefault("What's better than a lance? How about ALOT of them");
+			Tooltip.SetDefault("'What's better than a lance? How about A LOT of them'");
 		}
 
 		public override void SetDefaults()

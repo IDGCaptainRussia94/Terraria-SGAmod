@@ -218,12 +218,12 @@ namespace SGAmod.NPCs.TownNPCs
 			{
 				chat.Add("Please help! I don't want to die!", 15.0);
 				chat.Add("It hurts, so much...", 15.0);
-				chat.Add("(Load Wimpering)", 15.0);
+				chat.Add("(Loud Whimpering)", 15.0);
 			}
 			else
 			{
 				chat.Add("Um... Hi...");
-				chat.Add("(Quiet Wimpering)");
+				chat.Add("(Quiet Whimpering)");
 				chat.Add("...");
 				chat.Add("Is it safe out now?");
 				if (expgathered < 200)
@@ -257,7 +257,7 @@ namespace SGAmod.NPCs.TownNPCs
 				{
 					chat.Add("Jubia! They're here! Thank you [i: " + ItemID.LifeCrystal + "]",2);
 					chat.Add("Jubia! I [i: " + ItemID.LifeFruit + "] the Goat",2);
-					chat.Add("Jubia is the only person who ever truely helped me... Except for you of course", 2);
+					chat.Add("Jubia is the only person who ever truly helped me... Except for you of course", 2);
 					chat.Add("I want to [i: " + ItemID.BetsyWings + "] Hug my goat", 2);
                 }
                 else
@@ -292,15 +292,15 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("I am not weak...");
 				chat.Add("People are wrong about our kind...");
 				chat.Add("Where did my keys go?");
-				chat.Add("Croteam has released Serious Sam 4, my Human thinks its alright, kinda underwelming and kept like a filler title");
+				chat.Add("Croteam has released Serious Sam 4, my Human thinks its alright, kinda underwhelming and kept like a filler title");
 				chat.Add("Please don't point those blades at me...");
 				chat.Add("'Rawr <3'");
 				chat.Add("I cannot roar, I just make a cute whining sound.");
-				chat.Add("I have uneasy thoughts about my flesh desolving down gullets.");
+				chat.Add("I have uneasy thoughts about my flesh dissolving down gullets.");
 				chat.Add("What is it?");
 				chat.Add("My glowing flank? Even I don't know how I came to have this, I've had it for as long as I can remember.");
 				chat.Add("Is there no true peace for any of us?");
-				chat.Add("Do you know what it's like to be hunted? Depite doing nothing wrong at all?");
+				chat.Add("Do you know what it's like to be hunted? Despite doing nothing wrong at all?");
 				chat.Add("I do not wish to be slain, please don't let anyone kill me :(");
 				chat.Add("I've heard stories of how Dragons slept on massive piles of gold, that both sounds very uncomfortable and I would never steal from anyone.");
 				chat.Add("I may be a dragon, but I feel... Different. I don't understand why our most of kind is so greedy and selfish. Worse yet, I'm judged no different...");
@@ -311,12 +311,12 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("Sometimes I can still hear the voices inside my head, talking in a deep directive voice...");
 				chat.Add("I don't feel up to talking much right now.");
 				chat.Add("What can I do to make people not hate me for what I am?");
-				chat.Add("Raw vension tastes flavorless, is this how our kind always ate?");
+				chat.Add("Raw venison tastes flavorless, is this how our kind always ate?");
 				chat.Add("I hope you are not afraid, please don't be afraid of me.");
 				chat.Add("Please protect me, I feel the others want to mount my head like a trophy.");
 				chat.Add("All those trophies you have, of monsters... Am I monster?");
 				chat.Add("Why are you looking at me like that? Is there something on my snout?");
-				chat.Add("You think I look nice? Well from what i heard: my 'sprites' were a paid commission, and they wern't cheap. Thank you eitherway!");
+				chat.Add("You think I look nice? Well from what I heard: my 'sprites' were a paid commission, and they weren't cheap. Thank you either way!");
 				chat.Add("Often I feel timid but then I talk about things that I can only relate as Meta, it's very strange.");
 				chat.Add("I remember a time, when all everyone would say, the sounds would echo: 'Button 2'");
 				chat.Add("I often look at my claws; I was clearly meant to hurt and kill, but I don't want to be like the stories...");
@@ -347,7 +347,7 @@ namespace SGAmod.NPCs.TownNPCs
 							NPC him = new NPC();
 							him.SetDefaults(Main.npc[guys[0]].type);
 							chat.Add("I don't trust the "+ him.GetGivenOrTypeNetName()+ "; they're clearly planning something...", 500);
-							chat.Add(him.GetGivenOrTypeNetName() + " is scareing me.", 5);
+							chat.Add(him.GetGivenOrTypeNetName() + " is scaring me.", 5);
 							chat.Add("It's going to take a good deal of convincing that this isn't some kind of setup to corner me", 500);
 
 							if (guys.Count > 1)
@@ -407,7 +407,7 @@ namespace SGAmod.NPCs.TownNPCs
 				}
 				if (SGAWorld.downedSpiderQueen)
 				{
-					chat.Add("You died a good favor to the world by ridding that giant spider, I can only feel remorse for those who became her dinner... Eaten alive...", 2.0);
+					chat.Add("You did a good favor to the world by ridding that giant spider, I can only feel remorse for those who became her dinner... Eaten alive...", 2.0);
 				}
 				if (SGAWorld.downedSharkvern)
 				{
@@ -423,7 +423,7 @@ namespace SGAmod.NPCs.TownNPCs
 				}
 				if (NPC.downedMartians)
 				{
-					chat.Add("More creatures from other worlds, thankfully atleast they were not those I was afraid of...", 1.0);
+					chat.Add("More creatures from other worlds, thankfully at least they were not those I was afraid of...", 1.0);
 				}
 				if (SGAWorld.downedHarbinger)
 				{
@@ -451,7 +451,7 @@ namespace SGAmod.NPCs.TownNPCs
 						if (SGAWorld.downedWraiths > 3)
 						{
 							chat.Add("It's getting stronger, and closer, and whatever it is... It's not good! That last Wraith said something about a master and I'm very worried...", 2.0);
-							chat.Add("This is very concerning, these powerful foes were mearly messengers to their so called master, could their master be my enslaver? Please no!", 2.0);
+							chat.Add("This is very concerning, these powerful foes were merely messengers to their so called master, could their master be my enslaver? Please no!", 2.0);
 						}
 					}
 				}
@@ -467,12 +467,12 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("One day, they might find us... I surely hope not.");
 				if (!Main.dayTime)
 				{
-					chat.Add("Atleast I have somewhere nice to stay during the night.");
+					chat.Add("At least I have somewhere nice to stay during the night.");
 					chat.Add("zzzz... Oh, do you need something?");
 					chat.Add("'no, what is happening! no!' OH! I'm sorry, just these same nightmares again.");
 					chat.Add("Every night I dream of some women destroying entire planets, and I'm flying away, watching entire worlds burn...");
 					chat.Add("I'm trying to sleep please...");
-					chat.Add("Do you even sleep at all? I never see you get into bed, only just touch it and hear a popup sound.");
+					chat.Add("Do you even sleep at all? I never see you get into bed, only just touch it and hear a pop up sound.");
 				}
 				chat.Add("Could you help make this land a little safer? I can offer you what I found on my previous adventures.", 2.0);
 				chat.Add("Hello...", 2.0);
@@ -526,7 +526,7 @@ namespace SGAmod.NPCs.TownNPCs
 						button2 = "Why?";
 						break;
 					case 3:
-						button2 = "(try to confort him)";
+						button2 = "(try to comfort him)";
 						break;
 					case 4:
 						button2 = "You are not weak";
@@ -551,19 +551,19 @@ namespace SGAmod.NPCs.TownNPCs
 					switch (confort)
 					{
 						case 0:
-							Main.npcChatText = "I've had... Nightmares. Terrible nightmares, I can remember being in this lab, I remember hearing voices. They talked about how they were making a weapon, to kill people. Even after I escaped I learned of the cruelity our kind had brought to these worlds, we killed innocent lives, we were no different than the monsters you slay...";
+							Main.npcChatText = "I've had... Nightmares. Terrible nightmares, I can remember being in this lab, I remember hearing voices. They talked about how they were making a weapon, to kill people. Even after I escaped I learned of the cruelty our kind had brought to these worlds, we killed innocent lives, we were no different than the monsters you slay...";
 							confort = 1;
 							break;
 						case 1:
-							Main.npcChatText = "Is it? I've had a few people try to take my life, just to claim they slain a dragon, a monster, and became heroes because our kind is destined to die. How else am I not suppose to think I'm some kind of monster when your own town wants to kill me, hang my head in the town hall, and then tanner my scalied hide!";
+							Main.npcChatText = "Is it? I've had a few people try to take my life, just to claim they slain a dragon, a monster, and became heroes because our kind is destined to die. How else am I not suppose to think I'm some kind of monster when your own town wants to kill me, hang my head in the town hall, and then tanner my scaled hide!";
 							confort = 2;
 							break;
 						case 2:
-							Main.npcChatText = "I.. I don't know ok? I'm just, afraid ok?? I'm afraid of dying without ever finding out the truth, the party, the balloons, all of it... It just brings back memories of... of people cheering while a dragon is barely grasping for life, bleeding out and fading from existance; worse yet, they did nothing wrong. We died because we existed. I can't trust them, not after having already been betrayed by people I thought were my friends!";
+							Main.npcChatText = "I.. I don't know ok? I'm just, afraid ok?? I'm afraid of dying without ever finding out the truth, the party, the balloons, all of it... It just brings back memories of... of people cheering while a dragon is barely grasping for life, bleeding out and fading from existence; worse yet, they did nothing wrong. We died because we existed. I can't trust them, not after having already been betrayed by people I thought were my friends!";
 							confort = 3;
 							break;
 						case 3:
-							Main.npcChatText = "Thank you, I appericate the hug, but I'm still afraid. People think we're big, strong, and can take on armies, but I'm just too weak...";
+							Main.npcChatText = "Thank you, I appreciate the hug, but I'm still afraid. People think we're big, strong, and can take on armies, but I'm just too weak...";
 							confort = 4;
 							break;
 						case 4:
@@ -678,7 +678,7 @@ namespace SGAmod.NPCs.TownNPCs
 				}
 
 				if (SGAWorld.downedWraiths < 4 && NPC.downedAncientCultist)
-					chat = "Yet Another creature has stolen knowledge from you, this time the Anicent Manipulator AND made you lose your knowledge to craft Luminite Bars, yes I know this is getting old but this is the last one, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment3") + "] made with lunar fragments and the previous summoning item. Rematch will unlock Luminite bars but require defeating Moonlord first.";
+					chat = "Yet Another creature has stolen knowledge from you, this time the Ancient Manipulator AND made you lose your knowledge to craft Luminite Bars, yes I know this is getting old but this is the last one, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment3") + "] made with lunar fragments and the previous summoning item. Rematch will unlock Luminite bars but require defeating Moon Lord first.";
 
 				if (!SGAWorld.downedHarbinger && NPC.downedGolemBoss)
 				{
@@ -688,7 +688,7 @@ namespace SGAmod.NPCs.TownNPCs
 				}
 
 				if (!SGAWorld.downedTPD && NPC.downedGolemBoss)
-					chat = "In the night skies I sense those mechanical creations again, but worse... I have only seen a glimpse of their apperence and the best I could describe them as is a [i:" + mod.ItemType("Mechacluskerf") + "]";
+					chat = "In the night skies I sense those mechanical creations again, but worse... I have only seen a glimpse of their appearance and the best I could describe them as is a [i:" + mod.ItemType("Mechacluskerf") + "]";
 
 				if (!SGAWorld.downedCratrosity && NPC.downedPlantBoss)
 				{
@@ -711,19 +711,19 @@ namespace SGAmod.NPCs.TownNPCs
 				if (SGAWorld.downedWraiths == 1 && Main.hardMode)
 					chat = "Hmmm... Another strange creation has done something worse this time, they have stolen your knowledge to make a hardmode anvil, you can fight it by using a [i:" + mod.ItemType("WraithCoreFragment2") + "] which is as made from tier 1 hardmode ores and the previous summoning item";
 				if (!SGAWorld.GennedVirulent && Main.rand.Next(0, 2) == 0 && Main.hardMode)
-					chat = "Murk has returned, more powerful than ever, but at the same time that very power is seeping out of his gelatin body. Prehaps it could be released into the jungle... Take a [i:" + mod.ItemType("RoilingSludge") + "] to the jnugle and find out";
+					chat = "Murk has returned, more powerful than ever, but at the same time that very power is seeping out of his gelatin body. Perhaps it could be released into the jungle... Take a [i:" + mod.ItemType("RoilingSludge") + "] to the jungle and find out";
 				if (!SGAWorld.downedCirno && Main.rand.Next(0, 2) == 0 && Main.hardMode)
-					chat = "The snowy lands are colder than usually and I can feel iceflakes forming on my own wings, let alone yours, a strong being of ice is hampering our ability to fly, craft a core of its power, a [i:" + mod.ItemType("Nineball") + "] with Ice Fairy dusts and souls and take it to the frosty plains during the day";
+					chat = "The snowy lands are colder than usually and I can feel ice flakes forming on my own wings, let alone yours, a strong being of ice is hampering our ability to fly, craft a core of its power, a [i:" + mod.ItemType("Nineball") + "] with Ice Fairy dusts and souls and take it to the frosty plains during the day";
 
 				if (SGAWorld.downedMurk<2)
-					chat = "The dank structures' walls are protected by a strong, fly swaming, roiling creature in the jungle, prehaps a [i:" + mod.ItemType("RoilingSludge") + "] may attract its fly swamps, and its wrath";
+					chat = "The dank structures' walls are protected by a strong, fly swarming, roiling creature in the jungle, perhaps a [i:" + mod.ItemType("RoilingSludge") + "] may attract its fly swamps, and its wrath";
 				if (!SGAWorld.downedSpiderQueen)
-					chat = "A highly voracious creature lurks below the surface, I fear it might eat a small dragon like me whole, go and find it please, I think an [i:" + mod.ItemType("AcidicEgg") + "] will lure it from its feasting to comfront you";
+					chat = "A highly voracious creature lurks below the surface, I fear it might eat a small dragon like me whole, go and find it please, I think an [i:" + mod.ItemType("AcidicEgg") + "] will lure it from its feasting to confront you";
 				if (SGAWorld.downedCaliburnGuardians<3 && Main.rand.Next(0,3)==0 && Main.LocalPlayer.SGAPly().ExpertiseCollectedTotal>=300)
-					chat = "I've noticed 3 structures below the surface that warrent investigation, I have found a [i: " + mod.ItemType("CaliburnCompess") + "] that may help you with that.";
+					chat = "I've noticed 3 structures below the surface that warrant investigation, I have found a [i: " + mod.ItemType("CaliburnCompess") + "] that may help you with that.";
 
 				if (SGAWorld.downedWraiths == 0)
-					chat = "I'd be careful using the furnace if I were you, something is watching... Prehaps you can lure it out beforehand with a [i:" + mod.ItemType("WraithCoreFragment") + "] before it catches you off guard, I heard these can be made with copper/tin ore and fallen stars";
+					chat = "I'd be careful using the furnace if I were you, something is watching... Perhaps you can lure it out beforehand with a [i:" + mod.ItemType("WraithCoreFragment") + "] before it catches you off guard, I heard these can be made with copper/tin ore and fallen stars";
 
 				if (SGAWorld.downedHellion > 1)
 					chat = "You've done it, thank you [i: " + ItemID.Heart + "]!";

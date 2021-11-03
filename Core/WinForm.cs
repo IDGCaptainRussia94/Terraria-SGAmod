@@ -47,12 +47,12 @@ namespace SGAmod.Core
         {
             get
             {
-                if (SGAmod.OSType != 0 || Main.dedServ)
+                if (Main.dedServ || Environment.Is64BitProcess)// || SGAmod.OSType != 0)
                     return false;
 
                 bool didItWork = false;
 
-                //This is the SLR(Andy) method of grabbing the windows form, Sir ARK's requires a DLL import which... uh, won't work on MACs
+                //This is the SLR(Andy) method of grabbing the windows form, Sir AFK's requires a DLL import which... uh, won't work on MACs (corrected me, his updated method does infact work!)
                 //Will have a MAC user test this later
 
                 Form windowForm = default;

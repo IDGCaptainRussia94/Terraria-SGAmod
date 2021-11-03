@@ -445,8 +445,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			if (boss.goingDark < -60 * 150 && boss.specialCooldown < 1 && boss.phase > 1)
 			{
-				ChooseableAttacks.Add((int)SpaceBossAttackTypes.ShadowNebula);
-				ChooseableAttacks.Add((int)SpaceBossAttackTypes.ShadowNebula);
+				for(int i=0;i<3;i++)
 				ChooseableAttacks.Add((int)SpaceBossAttackTypes.ShadowNebula);
 			}
 
@@ -1647,8 +1646,6 @@ namespace SGAmod.Dimensions.NPCs
 			npc.velocity *= 0.98f;
 			SpaceDim.crystalAsteriods = false;
 
-
-
 		}
 
 		public static Vector3 cutscenestartpos;
@@ -2093,7 +2090,7 @@ namespace SGAmod.Dimensions.NPCs
 
 						Vector2 pos = Vector2.Lerp(sky.sunPosition, npc.Center-Main.screenPosition, prog.Item1);
 
-						spriteBatch.Draw(tex, pos+(prog.Item4*prog.Item1), null, (Color.Lerp(Color.Yellow, Color.Blue,prog.Item1) * (prog.Item2)*(shieldeffect/15f))* sky.skyalpha, angle, starhalf, (0.25f + prog.Item1 * 0.5f), SpriteEffects.None, 0f);
+						spriteBatch.Draw(tex, pos+(prog.Item4 * prog.Item1), null, (Color.Lerp(Color.Yellow, Color.Blue,prog.Item1) * (prog.Item2)*(shieldeffect/15f))* sky.skyalpha, angle, starhalf, (0.25f + prog.Item1 * 0.5f), SpriteEffects.None, 0f);
 
 						index2 += 1;
 					}
@@ -2103,51 +2100,11 @@ namespace SGAmod.Dimensions.NPCs
 
 				float alphaik = ((1f - sky.darkalpha) * 0.50f * darknessAura)*MathHelper.Clamp(1f-(npc.ai[0]-100000f)/180f,0f,1f);
 
-				DarknessNebulaEffect(sunGlow, (sky.darkalpha * 5f) * 6f,npc.Center,alphaik,npc.whoAmI,10);
-
-				/*if (alphaik > 0 && screenPos!=null)
+				if (sky.darkalpha < 1 && (sky.darkalpha > 0 || (new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) - (npc.Center - Main.screenPosition)).LengthSquared() < 1440000))
 				{
-					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
-
-
-					stain = mod.GetTexture("Doom_Harbinger_Resprite_pupil");
-
-					List<(float, float, float)> ordering = new List<(float, float, float)>();
-
-					UnifiedRandom rando = new UnifiedRandom(npc.whoAmI);
-
-					for (float f = 0f; f < 1f; f += 1f / (float)screenPos.Length)
-					{
-						float prog = MathHelper.Clamp((f + (Main.GlobalTime * 0.25f)) % (1f), 0f, 1f);
-						float alpha = MathHelper.Clamp((prog * 5f) * MathHelper.Clamp(1.5f - (prog * 1.5f), 0f, 1f), 0f, 1f);
-						ordering.Add((prog, alpha, rando.NextFloat(MathHelper.TwoPi)));
-					}
-					ordering = ordering.OrderBy(testby => testby.Item1).ToList();
-					float scalee = ((sky.darkalpha*5f) * 6f);
-
-					int index2 = 0;
-
-					foreach ((float, float, float) prog in ordering)
-					{
-						//float prog = MathHelper.Clamp((f+(Main.GlobalTime*0.25f))%(1f),0f,1f);
-						shader.UseColor(Color.Lerp(Color.White, Color.Blue, MathHelper.Clamp(prog.Item1 * 2f - 1f, 0f, 1f)).ToVector3());
-						shader.UseOpacity(1f);
-						shader.Apply(null, new DrawData?(value28));
-
-						float angle = prog.Item3;
-
-						Vector2 pos = npc.Center - Main.screenPosition;// Vector2.Lerp(npc.Center-Main.screenPosition,new Vector2(Main.screenWidth, Main.screenHeight)/2f, prog.Item1 / 5f);
-
-						spriteBatch.Draw(sunGlow, pos, null, Color.White * (prog.Item2 * alphaik), angle, half, (scalee) +(0.05f + prog.Item1 * 1.25f), SpriteEffects.None, 0f);
-
-						index2 += 1;
-					}
-				}*/
-
+					DarknessNebulaEffect(sunGlow, (sky.darkalpha * 5f) * 6f, npc.Center, alphaik, npc.whoAmI, 10);
+				}
 			}
-
-
 		}
 
 
@@ -2944,7 +2901,6 @@ namespace SGAmod.Dimensions.NPCs
 	public class SpaceBossBasicShot : SpaceBossHomingShot
 	{
 		int extraparticles => 0;
-		Effect effect => SGAmod.TrailEffect;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overseer's Shot");
@@ -3037,6 +2993,27 @@ namespace SGAmod.Dimensions.NPCs
 
 	}
 
+	public class SpaceBossBasicShotAccelerate : SpaceBossBasicShot
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Overseer's Accelerating Shot");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 120;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		public override string Texture => "Terraria/Projectile_538";
+
+		public override void AI()
+		{
+			base.AI();
+
+			projectile.localAI[1] += 1;
+			projectile.position -= projectile.velocity * (1f - MathHelper.Clamp(projectile.localAI[1] / 150f, 0f, 1f));
+
+		}
+	}
+
 	public class OverseenHeadBossShield : OverseenHead
 	{
 		public override void SetStaticDefaults()
@@ -3069,6 +3046,8 @@ namespace SGAmod.Dimensions.NPCs
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
+			npc.life = 100000;
+			npc.lifeMax = 100000;
 			npc.dontTakeDamage = true;
 			npc.damage = 0;
 			npc.aiStyle = -1;
@@ -3123,13 +3102,14 @@ namespace SGAmod.Dimensions.NPCs
 				if (npc.ai[2] % MaxTime == 200)
 				{
 
-					if (npc.ai[0] == 1)
+					/*if (npc.ai[0] == 1)
 					{
-						Projectile.NewProjectile(npc.Center, (npc.rotation + MathHelper.Pi).ToRotationVector2() * 5f, ModContent.ProjectileType<SpaceBossBasicShot>(), 30, 10f);
-					}
+						Projectile.NewProjectile(npc.Center, (npc.rotation + MathHelper.Pi).ToRotationVector2() * 5f, ModContent.ProjectileType<SpaceBossBasicShotAccelerate>(), 30, 10f);
+					}*/
+
 					if (npc.ai[0] == 0)
 					{
-						Projectile.NewProjectile(npc.Center, (npc.ai[1] + MathHelper.Pi).ToRotationVector2() * 5f, ModContent.ProjectileType<SpaceBossBasicShot>(), 30, 10f);
+						Projectile.NewProjectile(npc.Center, (npc.ai[1] + MathHelper.Pi).ToRotationVector2() * 5f, ModContent.ProjectileType<SpaceBossBasicShotAccelerate>(), 30, 10f);
 					}
 
 					SoundEffectInstance snd = Main.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 7);

@@ -266,9 +266,14 @@ namespace SGAmod
 		[Slider]
 		public int HellionSkyDetail { get; set; }
 
+		[Label("Hellion's Shadow Fog")]
+		[Tooltip("Enable/Disable the Shadow Fog on Hellion; highly recommended for lower-end PCs")]
+		[DefaultValue(true)]
+		public bool HellionFog { get; set; }
+
 		[Label("Murk-lite")]
 		[Tooltip("Disables the fog from drawing during Murk's fight, and uses a dust indicator instead")]
-		[DefaultValue(true)]
+		[DefaultValue(false)]
 		public bool Murklite { get; set; }
 
 		[Label("Extra Blending Details")]
@@ -280,6 +285,11 @@ namespace SGAmod
 		[Tooltip("Enables/Disables The Solar Dye on the rocks shot by the Lava Rocks Gun, may improve performance")]
 		[DefaultValue(false)]
 		public bool LavaBlending { get; set; }
+
+		[Label("Avarice Lord Pixelate")]
+		[Tooltip("Whether to use a pixel or downscaled option on the Avarice Lord wings")]
+		[DefaultValue(false)]
+		public bool AvariceLordWings { get; set; }
 
 		[Header("Subworlds Patch")]
 		[Label("Remove Lava Background")]

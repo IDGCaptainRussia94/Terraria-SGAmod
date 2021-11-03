@@ -1,7 +1,7 @@
 author = IDGCaptainRussia
 version = 3.600
 displayName = SGAmod: [c/ff00ff:Tech N Wreck] Beta
-buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, Effects\fxcompiler, *.xcf, *.idg, *.MD, *.csproj, *.user, obj\*, bin\*
+buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, .zip, Effects\fxcompiler, *.xcf, *.idg, *.MD, *.csproj, *.user, obj\*, bin\*, vs\*, git\*
 includePDB = true
 hideCode = true
 homepage = https://discord.gg/aGy34Xw

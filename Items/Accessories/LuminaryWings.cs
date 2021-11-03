@@ -11,7 +11,7 @@ using Terraria.GameContent.Generation;
 namespace SGAmod.Items.Accessories
 {
 	[AutoloadEquip(EquipType.Wings)]
-	public class LuminaryWings : DemonSteppers
+	public class LuminaryWings : DemonSteppers,IAuroraItem
 	{
 		int frameCounter = 0;
 
@@ -29,7 +29,7 @@ namespace SGAmod.Items.Accessories
 			item.height = 38;
 			item.value = 2500000;
 			item.accessory = true;
-			item.rare = 11;
+			item.rare = ItemRarityID.Purple;
 			item.expert = true;
 			item.wingSlot = wingslo;
 		}
@@ -76,6 +76,8 @@ namespace SGAmod.Items.Accessories
 		public override bool WingUpdate(Player player, bool hideVisual)
 		{
 			frameCounter += 1;
+			if (!player.controlJump)
+				return false;
 
 			int y_bottom_edge = (int)(player.position.Y + (float)player.height + 16f) / 16;
 			int x_edge = (int)(player.Center.X) / 16;
@@ -119,17 +121,32 @@ namespace SGAmod.Items.Accessories
 		public override void VerticalWingSpeeds(Player player, ref float ascentWhenFalling, ref float ascentWhenRising,
 			ref float maxCanAscendMultiplier, ref float maxAscentMultiplier, ref float constantAscend)
 		{
+
 			ascentWhenFalling = 0.85f;
 			ascentWhenRising = 0.35f;
 			maxCanAscendMultiplier = 1.5f;
 			maxAscentMultiplier = 1.5f;
 			constantAscend = 0.435f;
+			if (player.SGAPly().Walkmode)
+			{
+				ascentWhenFalling /=2;
+				ascentWhenRising /= 2;
+				maxCanAscendMultiplier /= 2;
+				maxAscentMultiplier /= 2;
+				constantAscend  /=2;
+			}
 		}
 
 		public override void HorizontalWingSpeeds(Player player, ref float speed, ref float acceleration)
 		{
 			speed = 12f;
 			acceleration *= 6f;
+			if (player.SGAPly().Walkmode)
+            {
+				speed /= 2f;
+				acceleration /= 2f;
+			}
+
 		}
 	}
 }

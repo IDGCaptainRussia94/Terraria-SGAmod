@@ -69,6 +69,17 @@ float4 FadeInFunction(float2 coords : TEXCOORD0) : COLOR0
 	return color*alpha;
 }
 
+float4 NoAlphaFunction(float2 coords : TEXCOORD0) : COLOR0
+{
+	float4 color = tex2D(uImage0, coords);
+    	if (!any(color))
+		return color;
+        
+        color = float4(color.rgb,1.0);
+
+	return color*alpha;
+}
+
 technique Technique1
 {
     pass FadePass
@@ -82,6 +93,10 @@ technique Technique1
         pass SmoothYFadePass
     {
         PixelShader = compile ps_2_0 SmoothYFadeFunction();
+    }
+            pass NoAlphaPass
+    {
+        PixelShader = compile ps_2_0 NoAlphaFunction();
     }
 
 }

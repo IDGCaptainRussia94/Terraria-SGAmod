@@ -99,18 +99,19 @@ namespace SGAmod
 		private int nonStackingImpaled_;
 		public int PinkyMinion = 0;
 		public int watched = 0;
+		public static bool dropFork = false;
 		public List<DamageStack> damageStacks = new List<DamageStack>();
 
 		public int nonStackingImpaled
 		{
-            get
-            {
+			get
+			{
 				return nonStackingImpaled_;
-            }
-            set
-            {
+			}
+			set
+			{
 				nonStackingImpaled_ = Math.Max(value, nonStackingImpaled_);
-            }
+			}
 		}
 		internal int IrradiatedAmmount_;
 		public int IrradiatedAmmount
@@ -174,8 +175,8 @@ namespace SGAmod
 			InfinityWarStormbreaker = false;
 			Napalm = false;
 			petrified = false;
-			noMovement = Math.Max(noMovement-1,0);
-			watched = Math.Max(watched - 1,0);
+			noMovement = Math.Max(noMovement - 1, 0);
+			watched = Math.Max(watched - 1, 0);
 			Sodden = false;
 			lavaBurn = false;
 			SunderedDefense = false;
@@ -212,7 +213,7 @@ namespace SGAmod
 				ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.SilverAndBlackDye);
 				shader.UseOpacity(1f);
 				shader.UseSaturation(1f);
-				shader.UseColor(1f,1f,1f);
+				shader.UseColor(1f, 1f, 1f);
 				shader.UseSecondaryColor(0f, 0f, 0f);
 				DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), new Vector2(Main.GlobalTime * 6, 0), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle((int)(Main.GlobalTime * 4f), 0, 64, 64)), Microsoft.Xna.Framework.Color.White, Main.GlobalTime * 30f, new Vector2(256f, 256f), 1f, SpriteEffects.None, 0);
 				shader.Apply(null, new DrawData?(value9));
@@ -254,8 +255,8 @@ namespace SGAmod
 			return base.PreDraw(npc, spriteBatch, drawColor);
 		}
 
-        public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
-        {
+		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
+		{
 			if (petrified)
 			{
 				Main.spriteBatch.End();
@@ -264,7 +265,7 @@ namespace SGAmod
 			//blank
 		}
 
-        public override bool CheckActive(NPC npc)
+		public override bool CheckActive(NPC npc)
 		{
 			if (HellionArmy)
 			{
@@ -273,7 +274,7 @@ namespace SGAmod
 				return false;
 
 			}
-			if (PinkyMinion>0 && NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()))
+			if (PinkyMinion > 0 && NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()))
 			{
 				if (npc.timeLeft < 3)
 					npc.StrikeNPCNoInteraction(9999999, 1, 1);
@@ -297,13 +298,13 @@ namespace SGAmod
 
 		public override void SetDefaults(NPC npc)
 		{
-			if (SGAmod.overpoweredMod>0)
+			if (SGAmod.overpoweredMod > 0)
 			{
 				if (!npc.friendly)
 				{
 					npc.life += (int)(npc.life * (1f + SGAmod.overpoweredMod));
 					npc.lifeMax += (int)(npc.lifeMax * (1f + SGAmod.overpoweredMod));
-					npc.damage = npc.damage +(int)(1f + SGAmod.overpoweredMod);
+					npc.damage = npc.damage + (int)(1f + SGAmod.overpoweredMod);
 				}
 
 			}
@@ -364,7 +365,7 @@ namespace SGAmod
 				int tier = 2;
 				if (npc.HasBuff(ModContent.BuffType<RustBurn>()) && RustBurn.IsInorganic(npc))
 					tier = 3;
-				npc.lifeRegen -= 20 + Math.Min(tier*150, npc.defense * tier);
+				npc.lifeRegen -= 20 + Math.Min(tier * 150, npc.defense * tier);
 				if (damage < 5)
 					damage = 5;
 			}
@@ -442,7 +443,7 @@ namespace SGAmod
 			{
 				if (damageStacks.Count > 0)
 				{
-					for(int i=0;i<damageStacks.Count;i+=1)
+					for (int i = 0; i < damageStacks.Count; i += 1)
 					{
 						impaled += damageStacks[i].damage;
 						if (damageStacks[i].Update())
@@ -458,7 +459,7 @@ namespace SGAmod
 					damage = Math.Max(impaled / 4, damage);
 				}
 			}
-			Endjump:
+		Endjump:
 			//ResetEffects seems to be called after projectile AI it seems, but this works, for now
 			impaled = 0;
 			nonStackingImpaled_ = 0;
@@ -500,7 +501,7 @@ namespace SGAmod
 			}
 
 			if (IrradiatedAmmount > 0)
-            {
+			{
 				for (int i = 0; i < Math.Min(10, IrradiatedAmmount / 10); i += 1)
 				{
 					if (Main.rand.Next(100) < 1)
@@ -754,10 +755,10 @@ namespace SGAmod
 
 			CrucibleArenaMaster.UpdatePortal(npc);
 
-			if (PinkyMinion<1 && NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()) && (npc.type == NPCID.BlueSlime || npc.type == NPCID.GreenSlime || npc.type == NPCID.PurpleSlime || npc.type == NPCID.YellowSlime || npc.type == NPCID.RedSlime || npc.type == NPCID.BlackSlime))
+			if (PinkyMinion < 1 && NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()) && (npc.type == NPCID.BlueSlime || npc.type == NPCID.GreenSlime || npc.type == NPCID.PurpleSlime || npc.type == NPCID.YellowSlime || npc.type == NPCID.RedSlime || npc.type == NPCID.BlackSlime))
 			{
 				PinkyMinion = 1;
-				npc.aiStyle=-1;
+				npc.aiStyle = -1;
 			}
 
 			if (petrified)
@@ -766,8 +767,8 @@ namespace SGAmod
 				npc.velocity.X *= 0.85f;
 				return false;
 			}
-			if (noMovement>0)
-            {
+			if (noMovement > 0)
+			{
 				npc.velocity *= 0.85f;
 				return false;
 			}
@@ -862,7 +863,7 @@ namespace SGAmod
 				if (hell != null)
 				{
 					Player ply = Main.player[hell.npc.target];
-					hellionTimer += hellionTimer>=0 ? 1 : 1;
+					hellionTimer += hellionTimer >= 0 ? 1 : 1;
 					if (hellionTimer % 5 == 0)
 					{
 						if (!Collision.CanHitLine(npc.Center, 1, 1, Main.player[hell.npc.target].Center, 1, 1) && npc.aiStyle < 15 && npc.aiStyle > -1)
@@ -870,7 +871,7 @@ namespace SGAmod
 							hellionTimer += 200;
 						}
 					}
-					if (hellionTimer > 100+(hell.phase*200))
+					if (hellionTimer > 100 + (hell.phase * 200))
 						hellionTimer = -300;
 
 					if (hellionTimer < 0)
@@ -1064,7 +1065,7 @@ namespace SGAmod
 
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 
-			if (sgaplayer.intimacy>0)
+			if (sgaplayer.intimacy > 0)
 			{
 				shop.item[nextSlot].SetDefaults(ItemID.LovePotion);
 				shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 25, 0);
@@ -1095,7 +1096,7 @@ namespace SGAmod
 					foreach (Item item in shop.item)
 					{
 						if (item.shopCustomPrice != null)
-						item.value = (int)(item.shopCustomPrice * 0.85);
+							item.value = (int)(item.shopCustomPrice * 0.85);
 					}
 				}
 			}
@@ -1191,15 +1192,14 @@ namespace SGAmod
 			}
 
 
-				if (HellionArmy)
+			if (HellionArmy)
+			{
+				if (Hellion.GetHellion() != null)
 				{
-					if (Hellion.GetHellion() != null)
-					{
-						if (Hellion.GetHellion().armyspawned > 5)
-							Hellion.GetHellion().armyspawned -= 2;
-					}
+					if (Hellion.GetHellion().armyspawned > 5)
+						Hellion.GetHellion().armyspawned -= 2;
 				}
-			//}
+			}
 
 
 			if (npc.type == NPCID.CultistBoss && SGAWorld.downedWraiths < 3)
@@ -1207,6 +1207,20 @@ namespace SGAmod
 				NPCLoader.blockLoot.Add(ItemID.LunarCraftingStation);
 				if (Main.netMode != 1)
 					SGAWorld.stolecrafting = -500;
+			}
+
+			if (npc.type == NPCID.MoonLordCore && Main.rand.Next(10) < 1)
+			{
+				dropFork = true;
+				NPCLoader.blockLoot.Add(ItemID.LunarFlareBook);
+				NPCLoader.blockLoot.Add(ItemID.FireworksLauncher);
+				NPCLoader.blockLoot.Add(ItemID.LastPrism);
+				NPCLoader.blockLoot.Add(ItemID.RainbowCrystalStaff);
+				NPCLoader.blockLoot.Add(ItemID.MoonlordTurretStaff);
+				NPCLoader.blockLoot.Add(ItemID.SDMG);
+				NPCLoader.blockLoot.Add(ItemID.StarWrath);
+				NPCLoader.blockLoot.Add(ItemID.Meowmere);
+				NPCLoader.blockLoot.Add(ItemID.Terrarian);
 			}
 
 			if (SGAWorld.NightmareHardcore > 0)
@@ -1307,8 +1321,11 @@ namespace SGAmod
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < FistOfMoonlord>());
 				if (Main.rand.Next(10) < (Main.expertMode ? 2 : 1))
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SwordofTheBlueMoon>());
-				if (Main.rand.Next(6) < 1 && !Main.expertMode)
+				if (dropFork && !Main.expertMode)
+				{
+					dropFork = false;
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<SoulPincher>());
+				}
 
 				if (SGAWorld.downedCratrosity)
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SalvagedCrate>());

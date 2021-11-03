@@ -833,15 +833,21 @@ namespace SGAmod.NPCs.Hellion
 					RippleBoom.MakeShockwave(npc.Center, 8f, 2f, 20f, 100, 3f, true);
 					CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.DarkRed, "TYRANT'S GLARE!", true, false);
 					hell.HellionTaunt("No need to hold back anymore!");
-					if (hell.tyrant < 1)
-                    {
+
+					if (hell.npc.life<npc.lifeMax*0.32)
+					{
 						npc.defense += 100;
 						npc.defDefense += 100;
-						for(int i=0;i < npc.buffImmune.Length;i+=1)
-                        {
+					}
+
+					if (hell.tyrant < 1)
+					{
+						for (int i = 0; i < npc.buffImmune.Length; i += 1)
+						{
 							npc.buffImmune[i] = true;
 						}
 					}
+
 					hell.tyrant = 1;
 					npc.netUpdate = true;
 					Main.PlaySound(SoundID.Roar, (int)npc.Center.X, (int)npc.Center.Y, 2, 1f, -0.5f);
@@ -973,7 +979,7 @@ namespace SGAmod.NPCs.Hellion
 
 
 				int portaltime = 350;
-				bool phase2 = hell.phase > 2;
+				bool phase2 = hell.phase < 3;
 				int proj = phase2 ? mod.ProjectileType("HellionBeam") : mod.ProjectileType("HellionBolt");
 				if (hell.phase > 2)
                 {
@@ -987,7 +993,7 @@ namespace SGAmod.NPCs.Hellion
 					Vector2 where = npc.Center;
 					float angle = MathHelper.ToRadians(npc.ai[1] * ((npc.ai[1] % 12 == 0) ? 1.91f : -1.91f) * 2f);
 					if (phase2)
-						angle = npc.ai[0] * 0.02f;
+						angle = npc.ai[0] * 0.022f;
 
 					float disttogo = 500 - (npc.ai[1] - 1800);
 
@@ -1724,10 +1730,10 @@ namespace SGAmod.NPCs.Hellion
 				rand.Add("Homing Lasers", 2);
 			if (hell.phase > -1 && !hell.haspickedlaser)
 				rand.Add("Laser Reign", 2);			
-			if (npc.ai[1] < 1 && (npc.life<npc.lifeMax * 0.30) && hell.tyrant <SGAWorld.NightmareHardcore+1)
+			if (npc.ai[1] < 1 && (npc.life<npc.lifeMax * 0.30) && hell.tyrant < 1)
 				rand.Add("Tyrant Grasp", 10);
-			if (SGAWorld.NightmareHardcore>0 && hell.tyrant < 1)
-				rand.Add("Tyrant Grasp", 100);
+			//if (SGAWorld.NightmareHardcore>0 && hell.tyrant < 2 && npc.life < npc.lifeMax * 0.75)
+				//rand.Add("Tyrant Grasp", 100);
 
 			rand.Add("Taunt", 0.75);
 			if (reroll<1)
@@ -1990,6 +1996,15 @@ namespace SGAmod.NPCs.Hellion
 			npc.netAlways = true;
 			npc.GetGlobalNPC<SGAnpcs>().TimeSlowImmune = true;
 			dpswarning = false;
+
+			if (SGAWorld.NightmareHardcore > 0)
+			{
+				for (int i = 0; i < npc.buffImmune.Length; i += 1)
+				{
+					npc.buffImmune[i] = true;
+				}
+				npc.knockBackResist = 0f;
+			}
 
 			if (HellionAttacks.Checkpoint > 0)
 			{
@@ -2461,7 +2476,7 @@ namespace SGAmod.NPCs.Hellion
 			if (phase < 3)
 			{
 				if (npc.ai[0] % 900 > 740)
-					attack = 2;
+					attack = 7;//2
 				if (phase > 0)
 				{
 					if (npc.ai[0] % 400 > 200 && attack == 1)
@@ -3780,9 +3795,27 @@ namespace SGAmod.NPCs.Hellion
 			vectors.Add(hitspot);
 			vectors.Add(projectile.Center);
 
-			TrailHelper trail = new TrailHelper("FadedBasicEffectPass", Main.extraTexture[21]);
+			Texture2D beam = mod.GetTexture("TrailEffect");
+
+			TrailHelper trail = new TrailHelper("BasicEffectAlphaPass", beam);
 			trail.projsize = Vector2.Zero;
-			trail.coordOffset = new Vector2(0, -Main.GlobalTime*3f);
+			trail.coordOffset = new Vector2(0, Main.GlobalTime * 7.5f);
+			trail.coordMultiplier = new Vector2(1f, 2000f/projectile.velocity.Length());
+			trail.doFade = false;
+			trail.trailThickness = 28 * scale.X;
+			trail.strength = 1.5f;
+			trail.color = delegate (float percent)
+			{
+				return Color.Lerp(colortex, Color.White, 0.20f);
+			};
+			trail.trailThicknessIncrease = 0;
+			trail.DrawTrail(vectors, projectile.Center);
+
+			beam = Main.extraTexture[21];
+
+			trail = new TrailHelper("FadedBasicEffectPass", beam);
+			trail.projsize = Vector2.Zero;
+			trail.coordOffset = new Vector2(0, Main.GlobalTime*3f);
 			trail.coordMultiplier = new Vector2(1f, 30f);
 			trail.doFade = false;
 			trail.trailThickness = 16*scale.X;

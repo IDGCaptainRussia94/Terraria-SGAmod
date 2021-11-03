@@ -151,13 +151,19 @@ namespace SGAmod
 
 						Color colorDye = Main.LocalPlayer.SGAPly().jellybruSet ? Color.HotPink : Color.White;
 
+						//Zap!
+						int counter = (Main.LocalPlayer.miscCounter + i * 73) / 4;
+						Rectangle glowrect = new Rectangle(0, (counter % 7) * (Main.glowMaskTexture[25].Height / 7), Main.glowMaskTexture[25].Width, Main.glowMaskTexture[25].Height / 7);
+
+						Main.spriteBatch.Draw(Main.glowMaskTexture[25], new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), glowrect, Color.Lerp(colorDye,Color.Black,0f) * energy, MathHelper.Pi, glowrect.Size() / 2f, 0.75f + (energy * 0.25f),
+							((counter % 14) > 6 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | ((counter % 28) > 13 ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
+
+						//Hearts
 						Main.spriteBatch.Draw(heartTexture, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, Color.White * 0.50f, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f, SpriteEffects.None, 0f);
 
 						Main.spriteBatch.Draw(heartTexture2, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, colorDye * energy, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f + (energy * 0.25f), SpriteEffects.None, 0f);
 
-						int counter = (Main.LocalPlayer.miscCounter+i*73) / 4;
-						Rectangle glowrect = new Rectangle(0,(counter % 7)* (Main.glowMaskTexture[25].Height / 7), Main.glowMaskTexture[25].Width, Main.glowMaskTexture[25].Height / 7);
-
+						//Zap again!
 						Main.spriteBatch.Draw(Main.glowMaskTexture[25], new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), glowrect, colorDye * energy, 0, glowrect.Size() / 2f, 0.75f + (energy * 0.25f), 
 							((counter % 14)>6 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | ((counter % 28) > 13 ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
 
@@ -213,9 +219,11 @@ namespace SGAmod
 					float angle = MathHelper.ToRadians(i+((sizeup ? 400f : -400f)*MathHelper.Clamp(1f- ((float)sga.lockoneffect/70f), 0f,1f)));
 					Vector2 hereas = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * (180f+MathHelper.Clamp(300- sga.lockoneffect*4,0,300));
 
+					Texture2D arrow = ModContent.GetTexture("SGAmod/MatrixArrow");
+
 					Vector2 drawPos = ((hereas * (sizeup ? 1f : 1f)*Main.essScale) + target.Center) - Main.screenPosition;
-					int sizer = (sizeup ? 8 : 4);
-					Main.spriteBatch.Draw(Main.blackTileTexture, drawPos, new Rectangle(0, 0, 50, sizer * 2), Color.Red*MathHelper.Clamp((float)sga.lockoneffect/70f,0f,1f), MathHelper.ToRadians(i), new Vector2(50, sizer), new Vector2(1, 1), SpriteEffects.None, 0f);
+					float sizer = (sizeup ? 0.5f : 1f);
+					Main.spriteBatch.Draw(arrow, drawPos, null, Main.hslToRgb(((i/360f)-Main.GlobalTime*1f)%1f,1f,0.75f)*MathHelper.Clamp((float)sga.lockoneffect/70f,0f,1f), MathHelper.ToRadians(i)+MathHelper.Pi, new Vector2(arrow.Width* sizer, arrow.Height/2), new Vector2(1, 1), SpriteEffects.None, 0f);
 
 				}
 			}

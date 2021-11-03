@@ -64,6 +64,25 @@ namespace SGAmod
                 return SGArecipes.EnforceDuplicatesInRecipe(this);
         }
     }
+    public class DragonClawsRecipe : ModRecipe
+    {
+        public DragonClawsRecipe(Mod mod) : base(mod)
+        {
+
+        }
+        public override void OnCraft(Item item)
+        {
+            Main.LocalPlayer.QuickSpawnItem(ModContent.ItemType<DraconicClawNecklace>());
+        }
+
+        public override bool RecipeAvailable()
+        {
+            return SGArecipes.EnforceDuplicatesInRecipe(this);
+        }
+
+
+    }
+
     class ShadowJavelinRecipe : ModRecipe
     {
 

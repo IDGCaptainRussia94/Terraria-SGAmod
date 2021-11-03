@@ -1494,8 +1494,8 @@ namespace SGAmod.Dimensions
             npc.CloneDefaults(NPCID.MeteorHead);
 
             npc.knockBackResist = 0.25f;
-            npc.life *= 5;
-            npc.lifeMax *= 5;
+            npc.life *= 3;
+            npc.lifeMax *= 3;
             //npc.defense += 15;
             //npc.defDamage += 15;
 

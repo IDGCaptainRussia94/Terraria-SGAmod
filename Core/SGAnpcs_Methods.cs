@@ -107,19 +107,6 @@ namespace SGAmod
 		{
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
 
-			if (moddedplayer.gunslingerLegendtarget > -1)
-			{
-				if (npc.whoAmI == moddedplayer.gunslingerLegendtarget)
-				{
-					damage = (int)((float)damage * 1.50f);
-				}
-				else
-				{
-					damage = (int)((float)damage * 0.25f);
-				}
-
-			}
-
 			if (crit)
 			{
 				if (moddedplayer.ninjaStashLimit < 600)
@@ -375,6 +362,12 @@ namespace SGAmod
 			}
 
 		}
+
+		public delegate void DoModifiesLateDelegate(NPC npc, Player player, Projectile projectile, Item item, ref int sourcedamage, ref int damage, ref float knockback, ref bool crit);
+
+		public static event DoModifiesLateDelegate DoModifiesLateEvent;
+
+
 		public void DoModifies(NPC npc, Player player, Projectile projectile, Item item, ref int sourcedamage, ref float knockback, ref bool crit)
 		{
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
@@ -547,6 +540,7 @@ namespace SGAmod
 				}
 			}
 
+			DoModifiesLateEvent?.Invoke(npc,player,projectile,item, ref sourcedamage, ref damage, ref knockback,ref crit);
 
 			LifeSteal(npc, player, ref damage, ref knockback, ref crit);
 			OnCrit(npc, projectile, player, item, ref damage, ref knockback, ref crit);

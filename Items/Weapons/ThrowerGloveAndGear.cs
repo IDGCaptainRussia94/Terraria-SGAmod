@@ -1439,8 +1439,8 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Uranium Filled Snowballs");
-			Tooltip.SetDefault("'Excuse me? Yeah, this is a thing'\nSnowballs leave behind Irradiated pools, infecting enemies\nEnemies killed while Irradiated explode, crits force an explosion\nRight click to throw an empowered shot that sticks to enemies\n"+ Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 20 seconds each")
-				+"\n"+ Idglib.ColorText(Color.Red,"You suffer Radiation 2 while holding these")+"\n"+Idglib.ColorText(Color.Red,"Radiation 1 if only in inventory"));
+			Tooltip.SetDefault("'Excuse me? Yeah, this is a thing'\nSnowballs leave behind Irradiated pools, infecting enemies\nEnemies killed while Irradiated explode, crits force an explosion\nRight click to throw an empowered shot that sticks to enemies\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 20 seconds each"));
+			//	+"\n"+ Idglib.ColorText(Color.Red,"You suffer Radiation 2 while holding these")+"\n"+Idglib.ColorText(Color.Red,"Radiation 1 if only in inventory"));
 		}
 
         public override string Texture => "Terraria/Item_"+ItemID.Snowball;

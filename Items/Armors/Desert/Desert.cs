@@ -155,9 +155,8 @@ namespace SGAmod.Items.Armors.Desert
 			item.noMelee = true;
 			item.useAmmo = AmmoID.Sand;
 		}
-		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-		{
-
+		public static void DrawManifestedItem(Item item,SpriteBatch spriteBatch, Vector2 position, Rectangle frame,float scale)
+        {
 			Texture2D inner = Main.itemTexture[item.type];
 
 			Vector2 slotSize = new Vector2(52f, 52f);
@@ -169,6 +168,11 @@ namespace SGAmod.Items.Armors.Desert
 			{
 				spriteBatch.Draw(inner, drawPos, null, Color.White * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.75f, i * MathHelper.TwoPi, textureOrigin, Main.inventoryScale * (0.5f + 3.00f * (((Main.GlobalTime / 2f) + i) % 1f)), SpriteEffects.None, 0f);
 			}
+
+		}
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			DrawManifestedItem(item,spriteBatch, position, frame, scale);
 
 			return true;
 		}

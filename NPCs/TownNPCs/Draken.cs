@@ -742,6 +742,8 @@ namespace SGAmod.NPCs.TownNPCs
 			itemsinshop = new[,]{
 			{ ModContent.ItemType<Items.EmptyCharm>(),50 },
 			{ ModContent.ItemType<Items.AssemblyStar>(),200 },
+			{ ModContent.ItemType<Items.Tools.UniversalBait>(),250 },
+
 			{ ModContent.ItemType<Items.Consumables.CaliburnCompess>(),300 },
 			{ ModContent.ItemType<Items.Accessories.GrippingGloves>(),400 },
 			{ ModContent.ItemType<Items.Consumables.RedManaStar>(),500 },
@@ -834,6 +836,13 @@ namespace SGAmod.NPCs.TownNPCs
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}		
+			if (modplayer.ExpertiseCollectedTotal >= 250 && NPC.CountNPCS(NPCID.Angler)>0)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("UniversalBait"));
+				shop.item[nextSlot].shopCustomPrice = 3;
+				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+				nextSlot++;
+			}				
 			if (modplayer.ExpertiseCollectedTotal >= 300)
 			{
 				shop.item[nextSlot].SetDefaults(mod.ItemType("CaliburnCompess"));

@@ -273,7 +273,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Glowrock");
-			Tooltip.SetDefault("These rocks seem to give the Asteriods a glow; Curious.\nExtract it via an Extractinator for some goodies!\nIt also seems rather... radioactive\nDoesn't have much other use, outside of illegal interests");
+			Tooltip.SetDefault("These rocks seem to give the Asteriods a glow; Curious.\nExtract it via an Extractinator for some goodies!\nDoesn't have much other use, outside of illegal interests");
 			ItemID.Sets.ExtractinatorMode[item.type] = item.type;
 		}
 		public override void SetDefaults()
@@ -338,7 +338,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overseen Crystal");
-			Tooltip.SetDefault("Celestial Shards manifested from Phaethon's creators; resonates with charged forgotten spirits\nMay be used to fuse several strong materials together with ease\nDrat, it's also even more radioactive!\nSurely a shady dealer will also be interested in trading for these...");
+			Tooltip.SetDefault("Celestial Shards manifested from Phaethon's creators; resonates with charged forgotten spirits\nMay be used to fuse several strong materials together with ease\nSurely a shady dealer will also be interested in trading for these...");
 		}
 		public override void SetDefaults()
 		{
@@ -459,7 +459,7 @@ namespace SGAmod.Items
 		}
 
 	}
-	public class VibraniumCrystal : ModItem
+	public class VibraniumCrystal : ModItem,IRadioactiveItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -485,7 +485,18 @@ namespace SGAmod.Items
         {
             return SGAmod.VibraniumUpdate;
         }
-    }
+
+		public int RadioactiveHeld()
+		{
+			return 3;
+		}
+
+		public int RadioactiveInventory()
+		{
+			return 3;
+		}
+
+	}
 	public class VibraniumPlating : VibraniumCrystal
 	{
 		public override void SetStaticDefaults()

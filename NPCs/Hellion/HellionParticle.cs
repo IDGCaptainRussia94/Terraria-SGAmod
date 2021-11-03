@@ -25,11 +25,20 @@ namespace SGAmod.NPCs.Hellion
         {
             ShadowEffect = SGAmod.Instance.GetEffect("Effects/Shadow");
             particles = new List<ShadowParticle>();
-            shadowSurface = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
-            shadowSurfaceShaderApplied = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
-            shadowHellion = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
-            
-            //SGAmod.PostUpdateEverythingEvent += UpdateAll;
+            SGAmod.RenderTargetsEvent += SGAmod_RenderTargetsEvent;
+            SGAmod.RenderTargetsCheckEvent += SGAmod_RenderTargetsCheckEvent;
+        }
+
+        private static void SGAmod_RenderTargetsCheckEvent(ref bool yay)
+        {
+            yay &= !((shadowHellion == null || shadowHellion.IsDisposed) || (shadowSurfaceShaderApplied == null || shadowSurfaceShaderApplied.IsDisposed) || (shadowSurface == null || shadowSurface.IsDisposed));
+        }
+
+        private static void SGAmod_RenderTargetsEvent()
+        {
+                shadowSurface = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+                shadowSurfaceShaderApplied = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+                shadowHellion = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
         }
 
         public static void Unload()
@@ -38,11 +47,8 @@ namespace SGAmod.NPCs.Hellion
                 ShadowEffect.Dispose();
             if (!shadowSurface.IsDisposed)
                 shadowSurface.Dispose();
-            if (!shadowSurface.IsDisposed)
-                shadowSurface.Dispose();
             if (!shadowHellion.IsDisposed)
                 shadowHellion.Dispose();
-
         }
 
         public ShadowParticle(Vector2 position,Vector2 velocity, Vector2 scale, int timeLeft, Vector2 scaleToAdd = default, Vector2 friction = default, float rotation = 0, float fadePercent = 1f, float rotationAdd = 0f)
@@ -122,6 +128,8 @@ namespace SGAmod.NPCs.Hellion
 
         public static void AddParticle(ShadowParticle particle)
         {
+            if (!SGAConfigClient.Instance.HellionFog)
+                return;
             particles.Insert(0,particle);
         }
 
@@ -138,7 +146,6 @@ namespace SGAmod.NPCs.Hellion
                 particle.Update();
             }
 
-            if (shadowParticlesDrawTime>0)
             DrawToRenderTarget();
         }
 

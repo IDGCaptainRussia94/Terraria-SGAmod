@@ -134,6 +134,14 @@ namespace SGAmod.Tiles.TechTiles
 
 		public static bool UpgradeCoins(Item item,Chest chest)
         {
+			if (SGAUtils.UpdateCoins(chest, item.value))
+            {
+				item.TurnToAir();
+				return true;
+			}
+			return false;
+
+			/*
 			int typetoboost = -1;
 			if (item.stack >= item.maxStack)
             {
@@ -194,6 +202,7 @@ namespace SGAmod.Tiles.TechTiles
 			}
 
 				return false;
+			*/
         }
 
 		public static bool ExportFromChest(out Item item,out Point chestdata, Point checkCoords)

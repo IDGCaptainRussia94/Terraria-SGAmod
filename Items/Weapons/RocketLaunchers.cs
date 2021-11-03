@@ -417,7 +417,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Radioactive Snowball Cannon");
-			Tooltip.SetDefault("'Sure Brain, sure...\nEnriches normal snowballs with radioactive isotopes" + "\n" + Idglib.ColorText(Color.Red, "You suffer Radiation 2 while holding this") + "\n" + Idglib.ColorText(Color.Red, "Radiation 1 if only in inventory"));
+			Tooltip.SetDefault("'Sure Brain, sure...\nEnriches normal snowballs with radioactive isotopes");// + "\n" + Idglib.ColorText(Color.Red, "You suffer Radiation 2 while holding this") + "\n" + Idglib.ColorText(Color.Red, "Radiation 1 if only in inventory"));
 		}
 
 		public override void SetDefaults()

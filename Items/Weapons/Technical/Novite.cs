@@ -121,7 +121,7 @@ namespace SGAmod.Items.Weapons.Technical
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Blaster");
-			Tooltip.SetDefault("Firing a piercing bolt of electricity\nConsumes Electric Charge, 50 up front, 200 over time to charge up\nHold the fire button to charge a stronger, more accurate shot\nCan deal up to 3X damage and chain once at max charge");
+			Tooltip.SetDefault("Fires a piercing bolt of electricity\nConsumes Electric Charge, 50 up front, 200 over time to charge up\nHold the fire button to charge a stronger, more accurate shot\nCan deal up to 3X damage and chain once at max charge");
 		}
 
 		public override void SetDefaults()
@@ -134,7 +134,7 @@ namespace SGAmod.Items.Weapons.Technical
 			item.useAnimation = 15;
 			item.useStyle = 5;
 			item.noMelee = true;
-			item.knockBack = 2;
+			item.knockBack = 0;
 			item.value = Item.buyPrice(0, 0, 25, 0);
 			item.rare = 2;
 			//item.UseSound = SoundID.Item99;
@@ -163,9 +163,9 @@ namespace SGAmod.Items.Weapons.Technical
 		{
 			float rotation = MathHelper.ToRadians(0);
 			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 8f;
-			if (player.ownedProjectileCounts[mod.ProjectileType("NovaBlasterCharging")] < 1)
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<NovaBlasterCharging>()] < 1)
 			{
-				int proj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, mod.ProjectileType("NovaBlasterCharging"), damage, knockBack, player.whoAmI);
+				int proj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, ModContent.ProjectileType<NovaBlasterCharging>(), damage, knockBack, player.whoAmI);
 				player.SGAPly().ConsumeElectricCharge(50, 100);
 			}
 			return false;
@@ -180,6 +180,10 @@ namespace SGAmod.Items.Weapons.Technical
 		public virtual float velocity => 32f;
 		public virtual float spacing => 24f;
 		public virtual int fireRate => 5;
+		public virtual int FireCount => 1;
+		//public virtual float ForcedLock => 1f;
+		public virtual (float,float) AimSpeed => (1f,0f);
+		public int firedCount = 0;
 		protected Player player;
 		public override void SetStaticDefaults()
 		{
@@ -280,7 +284,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 			projectile.Center += projectile.velocity;
 
-			int prog = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, perturbedSpeed.X, perturbedSpeed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)((float)projectile.damage * (1f + (perc * 2f))), 3f, player.whoAmI, perc >= 0.99f ? 1 : 0, 0.50f + (perc * 0.20f));
+			int prog = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, perturbedSpeed.X, perturbedSpeed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)((float)projectile.damage * (1f + (perc * 2f))), projectile.knockBack, player.whoAmI, perc >= 0.99f ? 1 : 0, 0.50f + (perc * 0.20f));
 			Main.projectile[prog].localAI[0] = (perc * 0.90f);
 			Main.projectile[prog].magic = true;
 			Main.projectile[prog].melee = false;
@@ -289,6 +293,7 @@ namespace SGAmod.Items.Weapons.Technical
 			IdgProjectile.Sync(prog);
 			Main.PlaySound(SoundID.Item91, player.Center);
 
+			if (firedCount>=FireCount)
 			projectile.Kill();
 		}
 
@@ -306,15 +311,20 @@ namespace SGAmod.Items.Weapons.Technical
 			if (player.dead)
 				projectile.Kill();
 			projectile.timeLeft = 2;
-			player.itemTime = 6;
-			player.itemAnimation = 6;
+
+			/*if (firedCount < FireCount && channeling)
+			{
+				player.itemTime = 6;
+				player.itemAnimation = 6;
+			}*/
+
 			Vector2 direction = (Main.MouseWorld - player.MountedCenter);
 			Vector2 directionmeasure = direction;
 			direction.Normalize();
 
 			bool cantchargeup = false;
 
-			if (projectile.ai[0] < chargeuptime + 1)
+			if (projectile.ai[0] < chargeuptime + 1 && firedCount<1)
 			{
 				if (DoChargeUp())
 					projectile.ai[0] += 1;
@@ -323,40 +333,48 @@ namespace SGAmod.Items.Weapons.Technical
 			}
 
 			bool channeling = ((player.channel || (projectile.ai[0] < 5 && !cantchargeup)) && !player.noItems && !player.CCed);
-			projectile.Center = player.MountedCenter + direction * spacing;
+			bool aiming = true;// firedCount < FireCount;
 
-			if (channeling)
+			if (aiming || channeling)
 			{
 				Vector2 mousePos = Main.MouseWorld;
 				if (projectile.owner == Main.myPlayer)
 				{
 					Vector2 diff = mousePos - player.MountedCenter;
 					diff.Normalize();
-					projectile.velocity = diff;
+					projectile.velocity = Vector2.Lerp(Vector2.Normalize(projectile.velocity),diff, channeling ? AimSpeed.Item1 : AimSpeed.Item2);
 					projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
 					projectile.netUpdate = true;
 					projectile.Center = mousePos;
 				}
 				int dir = projectile.direction;
 				player.ChangeDir(dir);
-				player.itemTime = fireRate;
-				player.itemAnimation = fireRate;
 
 				player.itemRotation = (float)Math.Atan2(projectile.velocity.Y * dir, projectile.velocity.X * dir);
 				projectile.Center = player.MountedCenter + projectile.velocity * velocity;
+
+				if (channeling)
+				{
+					player.itemTime = fireRate;
+					player.itemAnimation = fireRate;
+				}
 			}
 
+			projectile.Center = player.MountedCenter + Vector2.Normalize(projectile.velocity) * spacing;
 
 			if (projectile.ai[0] > 10)
 			{
 
 				ChargeUpEffects();
 
-				if (!channeling)
+
+
+				if (!channeling && player.itemTime<fireRate && firedCount < FireCount)
 				{
-					player.itemTime = fireRate;
-					player.itemAnimation = fireRate;
-					FireWeapon(direction);
+					firedCount += 1;
+					player.itemTime = fireRate*(firedCount< FireCount ? 2 : 1);
+					player.itemAnimation = fireRate * (firedCount < FireCount ? 2 : 1);
+					FireWeapon(Vector2.Normalize(projectile.velocity));
 				}
 
 			}

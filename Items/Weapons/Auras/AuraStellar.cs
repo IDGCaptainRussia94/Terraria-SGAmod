@@ -157,7 +157,7 @@ namespace SGAmod.Items.Weapons.Auras
 			{
 				float powerf = CalcAuraPowerReal(player);
 				NPC himas = (type as NPC);
-				himas.SGANPCs().nonStackingImpaled = (int)(projectile.damage * powerf*(himas.realLife>=0 ? 0.10f : 1f));
+				himas.SGANPCs().impaled += (int)(projectile.damage * powerf*(himas.realLife>=0 ? 0.10f : 1f));
 
 				if (!(himas.townNPC || himas.friendly))
 				{

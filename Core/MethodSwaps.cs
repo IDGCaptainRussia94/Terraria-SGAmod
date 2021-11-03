@@ -51,12 +51,45 @@ namespace SGAmod
             On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
 			On.Terraria.Player.DropSelectedItem += DontDropManifestedItems;
 			On.Terraria.Player.dropItemCheck += ManifestedPriority;
-			On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
+            On.Terraria.UI.ItemSlot.LeftClick_ItemArray_int_int += ItemSlot_LeftClick_refItem_int;
+            On.Terraria.UI.ItemSlot.RightClick_ItemArray_int_int += ItemSlot_RightClick_refItem_int;
+		  On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
 			On.Terraria.Player.ItemFitsWeaponRack += NoPlacingManifestedItemOnItemRack;
+			On.Terraria.Main.SetDisplayMode += RecreateRenderTargetsOnScreenChange;
 			//On.Terraria.Main.Update += Main_Update;
 
 			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
+		}
+
+		public static void RecreateRenderTargetsOnScreenChange(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
+		{
+			SGAmod.CreateRenderTarget2Ds(width, height, fullscreen);
+			orig(width, height, fullscreen);
+		}
+
+		public static bool BlockManifest(Item inv)
+        {
+			if (inv != null && inv.modItem != null && inv.modItem is IManifestedItem)
+				return true;
+			return false;
+		}
+
+        private static void ItemSlot_RightClick_refItem_int(On.Terraria.UI.ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv, int context = 0, int slot = 0)
+        {
+			if (BlockManifest(inv[slot]))
+				return;
+
+			orig(inv, context, slot);
+		}
+
+        private static void ItemSlot_LeftClick_refItem_int(On.Terraria.UI.ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context = 0, int slot = 0)
+        {
+			if (BlockManifest(inv[slot]))
+				return;
+
+			orig(inv, context, slot);
+
 		}
 
         private static void Player_UpdateLifeRegen(On.Terraria.Player.orig_UpdateLifeRegen orig, Player self)
@@ -207,6 +240,7 @@ namespace SGAmod
 
 		static private void ManifestedPriority(On.Terraria.Player.orig_dropItemCheck orig, Player self)
 		{
+
 			if (Main.mouseItem.type > ItemID.None && !Main.playerInventory && Main.mouseItem.modItem != null && Main.mouseItem.modItem is IManifestedItem)
 			{
 				for (int k = 49; k > 0; k--)

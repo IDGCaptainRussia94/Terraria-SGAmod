@@ -26,6 +26,7 @@ namespace SGAmod.Items.Weapons
 			item.width = 16;
 			item.height = 16;
 			item.damage = 14;
+			item.crit = 5;
 			item.melee = true;
 			item.noMelee = true;
 			item.useTurn = true;
@@ -425,6 +426,7 @@ namespace SGAmod.Items.Weapons
 			item.width = 12;
 			item.height = 12;
 			item.damage = 32;
+			item.crit = 5;
 			item.melee = true;
 			item.noMelee = true;
 			item.useTurn = true;
@@ -561,6 +563,7 @@ namespace SGAmod.Items.Weapons
 			item.width = 10;
 			item.height = 10;
 			item.damage = 50;
+			item.crit = 5;
 			item.melee = true;
 			item.noMelee = true;
 			item.useTurn = true;
@@ -719,7 +722,8 @@ namespace SGAmod.Items.Weapons
 		{
 			item.width = 10;
 			item.height = 10;
-			item.damage = 28;
+			item.damage = 42;
+			item.crit = 5;
 			item.melee = true;
 			item.noMelee = true;
 			item.useTurn = true;
@@ -735,7 +739,7 @@ namespace SGAmod.Items.Weapons
 			item.value = Item.buyPrice(gold: 1);
 			item.rare = ItemRarityID.Green;
 			item.shoot = ModContent.ProjectileType<CoralrangProj>();
-			item.shootSpeed = 7f;
+			item.shootSpeed = 32f;
 		}
 		public override bool CanUseItem(Player player)
 		{
@@ -805,6 +809,7 @@ namespace SGAmod.Items.Weapons
 			projectile.penetrate = 1;
 			projectile.melee = true;
 			projectile.scale = 1f;
+			projectile.extraUpdates = 0;
 		}
 
 		public override void SendExtraAI(System.IO.BinaryWriter writer)
@@ -835,6 +840,17 @@ namespace SGAmod.Items.Weapons
 
 		public override void AI()
 		{
+
+			if (projectile.ai[1]>0)
+			projectile.ai[1] += 2.5f;
+
+			if (projectile.ai[0] > 0)
+            {
+				Player P = Main.player[projectile.owner];
+				Vector2 dist = P.Center - projectile.Center;
+				projectile.velocity += Vector2.Normalize(dist) *MathHelper.Clamp(dist.Length()/180f,0f,1f);
+            }
+
 			for (int k = 0; k < orbitors.Length; k += 1)
 			{
 				if (spinners[k] == default)

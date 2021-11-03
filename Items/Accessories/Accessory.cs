@@ -162,7 +162,7 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.FireGauntlet, 1);
-			recipe.AddIngredient(ModContent.ItemType < GlacialStone>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<GlacialStone>(), 1);
 			recipe.AddIngredient(ItemID.SharkToothNecklace, 1);
 			recipe.AddIngredient(ItemID.DestroyerEmblem, 1);
 			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 12);
@@ -208,7 +208,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.LunarBar, 12);
 			recipe.AddIngredient(ItemID.YoyoBag, 1);
 			recipe.AddIngredient(ItemID.RainbowString, 1);
-			recipe.AddIngredient(ModContent.ItemType <YoyoTricks>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<YoyoTricks>(), 1);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -577,7 +577,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "sacrificedMoney", Main.LocalPlayer.SGAPly().midasMoneyConsumed/(float)Item.buyPrice(1)+" platinum collected"));
+			tooltips.Add(new TooltipLine(mod, "sacrificedMoney", Main.LocalPlayer.SGAPly().midasMoneyConsumed / (float)Item.buyPrice(1) + " platinum collected"));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -810,7 +810,7 @@ namespace SGAmod.Items.Accessories
 			player.GetModPlayer<SGAPlayer>().JavelinSpearHeadBundle = true;
 			player.GetModPlayer<SGAPlayer>().JavelinBaseBundle = true;
 			if (!hideVisual)
-			ModContent.GetInstance<Jabbawacky>().UpdateAccessory(player, hideVisual);
+				ModContent.GetInstance<Jabbawacky>().UpdateAccessory(player, hideVisual);
 		}
 
 		public override void AddRecipes()
@@ -852,7 +852,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.GetModPlayer<SGAPlayer>().FieryheartBuff = Math.Max(player.GetModPlayer<SGAPlayer>().FieryheartBuff,5);
+			player.GetModPlayer<SGAPlayer>().FieryheartBuff = Math.Max(player.GetModPlayer<SGAPlayer>().FieryheartBuff, 5);
 			player.statLifeMax2 += (int)(player.SGAPly().ExpertiseCollectedTotal / (GetType() == typeof(Blazingheart) ? 150f : 200f));
 		}
 	}
@@ -897,7 +897,7 @@ namespace SGAmod.Items.Accessories
 
 			for (float i = 0; i < 1f; i += 0.20f)
 			{
-				spriteBatch.Draw(inner, drawPos, null, Color.White * (1f-((i+(Main.GlobalTime/2f)) % 1f))*0.75f, i*MathHelper.TwoPi, textureOrigin, Main.inventoryScale * (0.5f + 1.75f*(((Main.GlobalTime/2f)+ i) % 1f)), SpriteEffects.None, 0f);
+				spriteBatch.Draw(inner, drawPos, null, Color.White * (1f - ((i + (Main.GlobalTime / 2f)) % 1f)) * 0.75f, i * MathHelper.TwoPi, textureOrigin, Main.inventoryScale * (0.5f + 1.75f * (((Main.GlobalTime / 2f) + i) % 1f)), SpriteEffects.None, 0f);
 			}
 			//Main.spriteBatch.End();
 			//Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
@@ -922,8 +922,8 @@ namespace SGAmod.Items.Accessories
 			DisplayName.SetDefault("[i: " + item.type + "]");
 			Tooltip.SetDefault("'Our fires burn hotter than the golden sun'\nRadiation Resistance now also allow you to resist Limbo Fading\nAll effects of the Blazing Heart and Alkalescent Heart");
 		}
-        public override string Texture => "SGAmod/GreyHeart";
-        public override void SetDefaults()
+		public override string Texture => "SGAmod/GreyHeart";
+		public override void SetDefaults()
 		{
 			item.width = 40;
 			item.height = 40;
@@ -936,12 +936,12 @@ namespace SGAmod.Items.Accessories
 			item.summon = true;
 			item.knockBack = 1f;
 		}
-        public override Color? GetAlpha(Color lightColor)
-        {
-            return Main.hslToRgb(Main.GlobalTime % 1f, 1f, 0.75f);
-        }
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb(Main.GlobalTime % 1f, 1f, 0.75f);
+		}
 
-        public override void UpdateAccessory(Player player, bool hideVisual)
+		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			base.UpdateAccessory(player, hideVisual);
 			player.SGAPly().FieryheartBuff = 30;
@@ -963,7 +963,7 @@ namespace SGAmod.Items.Accessories
 			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));
 			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, Main.GlobalTime / 1f, Main.GlobalTime / 2f));
 			hallowed.Parameters["overlayAlpha"].SetValue(1f);
-			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2.5f,2.5f,0f));
+			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2.5f, 2.5f, 0f));
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
 			hallowed.Parameters["rainbowScale"].SetValue(1f);
 			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1, 1));
@@ -992,7 +992,7 @@ namespace SGAmod.Items.Accessories
 			hallowed.Parameters["overlayScale"].SetValue(new Vector2(0.5f, 0.5f));
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
-			spriteBatch.Draw(inner2, drawPos, null, Color.White,0, inner2.Size()/2f, Main.inventoryScale*1, SpriteEffects.None, 0f);
+			spriteBatch.Draw(inner2, drawPos, null, Color.White, 0, inner2.Size() / 2f, Main.inventoryScale * 1, SpriteEffects.None, 0f);
 
 			hallowed.Parameters["rainbowScale"].SetValue(1f);
 			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1, 1));
@@ -1210,11 +1210,11 @@ namespace SGAmod.Items.Accessories
 			item.defense = 0;
 			item.accessory = true;
 			item.height = 14;
-			item.value = Item.buyPrice(0,2,0,0);
+			item.value = Item.buyPrice(0, 2, 0, 0);
 			item.rare = ItemRarityID.Green;
 			item.expert = true;
 		}
-	}	
+	}
 	public class PhaethonEye : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -1225,7 +1225,7 @@ namespace SGAmod.Items.Accessories
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 
-        public override string Texture => "SGAmod/Doom_Harbinger_Resprite_pupil";
+		public override string Texture => "SGAmod/Doom_Harbinger_Resprite_pupil";
 		public override void SetDefaults()
 		{
 			item.maxStack = 1;
@@ -1243,7 +1243,7 @@ namespace SGAmod.Items.Accessories
 			player.SGAPly().phaethonEye = 3;
 
 			if (!hideVisual)
-            {
+			{
 				player.dangerSense = true;
 				player.detectCreature = true;
 				player.findTreasure = true;
@@ -1259,19 +1259,19 @@ namespace SGAmod.Items.Accessories
 			{
 				Texture2D texture = Main.itemTexture[item.type];
 				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
-				spriteBatch.Draw(texture, item.Center + new Vector2(0, 0) - Main.screenPosition, null, Color.White * 0.75f, 0f, textureOrigin, 2.25f- Main.essScale, SpriteEffects.None, 0f);
+				spriteBatch.Draw(texture, item.Center + new Vector2(0, 0) - Main.screenPosition, null, Color.White * 0.75f, 0f, textureOrigin, 2.25f - Main.essScale, SpriteEffects.None, 0f);
 				spriteBatch.Draw(texture, item.Center + new Vector2(0, 0) - Main.screenPosition, null, Color.White * 0.75f, 0f, textureOrigin, 0.75f * Main.essScale, SpriteEffects.None, 0f);
 			}
 			return false;
 		}
-        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-        {
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
 			if (!Main.gameMenu)
 			{
 				Texture2D texture = Main.itemTexture[item.type];
 				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
-				Vector2 loc = position+new Vector2(13f, 13f) * Main.inventoryScale;
-				spriteBatch.Draw(texture, loc, null, Color.White*0.75f, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
+				Vector2 loc = position + new Vector2(13f, 13f) * Main.inventoryScale;
+				spriteBatch.Draw(texture, loc, null, Color.White * 0.75f, 0f, textureOrigin, 1f, SpriteEffects.None, 0f);
 				spriteBatch.Draw(texture, loc, null, Color.White * 0.75f, 0f, textureOrigin, 0.75f * Main.essScale, SpriteEffects.None, 0f);
 			}
 			return false;
@@ -1340,16 +1340,16 @@ namespace SGAmod.Items.Accessories
 			for (int i = 0; i < 16; i += 1)
 			{
 				float percent = 1f - (projectile.timeLeft / 90f);
-				float dist = percent * (72f-((72f/(1f+(projectile.ai[0])*2f)))+unirand.NextFloat(32, 160f)+(float)Math.Pow(MathHelper.Clamp(projectile.ai[0]-50,0f,1000),1.1));
+				float dist = percent * (72f - ((72f / (1f + (projectile.ai[0]) * 2f))) + unirand.NextFloat(32, 160f) + (float)Math.Pow(MathHelper.Clamp(projectile.ai[0] - 50, 0f, 1000), 1.1));
 
-				float angle = unirand.NextFloat(MathHelper.TwoPi) - ((percent*(projectile.ai[0]-20f)) * (unirand.NextFloat(0.01f, 0.2f)));
+				float angle = unirand.NextFloat(MathHelper.TwoPi) - ((percent * (projectile.ai[0] - 20f)) * (unirand.NextFloat(0.01f, 0.2f)));
 
 
 				for (float f = 0; f < 0.1f; f += 0.01f)
 				{
-					Vector2 offseteffect = Vector2.One.RotatedBy(angle-f) * dist;
+					Vector2 offseteffect = Vector2.One.RotatedBy(angle - f) * dist;
 
-					spriteBatch.Draw(tex, projectile.Center + offseteffect - Main.screenPosition, null, Color.White*0.60f * MathHelper.Clamp((float)Math.Sin(percent * MathHelper.Pi) * 2f, 0f, 1f)*(1f-(f*10f)), angle, size, new Vector2(1f, 1f), projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+					spriteBatch.Draw(tex, projectile.Center + offseteffect - Main.screenPosition, null, Color.White * 0.60f * MathHelper.Clamp((float)Math.Sin(percent * MathHelper.Pi) * 2f, 0f, 1f) * (1f - (f * 10f)), angle, size, new Vector2(1f, 1f), projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 				}
 			}
 
@@ -1357,7 +1357,30 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
-		public class CalamityRune : SybariteGem
+	public class DraconicClawNecklace : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Draconic Claw Necklace");
+			Tooltip.SetDefault("'The trimmed claws make a good trophy...'\nEnhances max flight time of Avarice Lord\nAlso effectively infinite flight by holding up\n"+Idglib.ColorText(Color.Red, "this will drain HP from you  , if you have health to spare...")+"\n+50 Armor Penetration with Avarice Lord");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 18;
+			item.value = Item.sellPrice(0, 15, 0, 0);
+			item.rare = ItemRarityID.Red;
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<DergWingsPlayer>().draconicBoost = true;
+		}
+	}
+
+	public class CalamityRune : SybariteGem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -1713,6 +1736,10 @@ namespace SGAmod.Items.Accessories
 				s = key;
 			}
 			tooltips.Add(new TooltipLine(mod, "DemonSteppersSpeed", "Toggle the speed boost with the 'Walk Mode' hotkey (" + s+")"));
+			if (item.wingSlot>0)
+            {
+				tooltips.Add(new TooltipLine(mod, "DemonSteppersSpeed", "Also effects the flying speed"));
+			}
 		}
 
         public override void SetDefaults()
@@ -2867,7 +2894,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gunslinger of Song and Legend");
-			Tooltip.SetDefault("'Riding high, in the sky...'\n'Its that time; its high Noon'\nPress the 'Gunslinger Legend' key to challenge the enemy nearest your mouse curser to a duel\nYou do 50% increased damage against this target, but 75% reduced damage to anything else\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds") + "\nCombines the Effects of:\n-Sparing Spurs and Peacekeeper's Duster\n-Gunsmith's Belt of Tools and Dueling Deity's Shades");
+			Tooltip.SetDefault("'Riding high, in the sky...'\n'Its that time; its high Noon'");
 		}
 
 		public override void SetDefaults()
@@ -2877,6 +2904,43 @@ namespace SGAmod.Items.Accessories
 			item.rare = ItemRarityID.Cyan;
 			item.value = Item.sellPrice(0, 75, 0, 0);
 			item.accessory = true;
+		}
+
+        public override bool Autoload(ref string name)
+        {
+            SGAnpcs.DoModifiesLateEvent += SGAnpcs_DoModifiesLateEvent;
+			return true;
+        }
+
+        private void SGAnpcs_DoModifiesLateEvent(NPC npc, Player player, Projectile projectile, Item item, ref int sourcedamage, ref int damage, ref float knockback, ref bool crit)
+        {
+			SGAPlayer moddedplayer = player.SGAPly();
+			if (moddedplayer.gunslingerLegend && moddedplayer.gunslingerLegendtarget > -1)
+			{
+				if (npc.whoAmI == moddedplayer.gunslingerLegendtarget)
+				{
+					damage = (int)((float)damage * 1.75f);
+				}
+				else
+				{
+					damage = (int)((float)damage * 0.25f);
+				}
+			}
+		}
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			string s = "Not Binded!";
+			foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+			{
+				s = key;
+			}
+			tooltips.Add(new TooltipLine(mod, "GunSlingerLegendTooltip", "Press the 'Gunslinger Legend' hotkey to challenge the enemy nearest your mouse curser to a duel (" + s + ")"));
+			tooltips.Add(new TooltipLine(mod, "GunSlingerLegendTooltip", "You do 75% increased damage against this target, but 75% reduced damage to anything else"));
+			tooltips.Add(new TooltipLine(mod, "GunSlingerLegendTooltip", Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds")));
+			tooltips.Add(new TooltipLine(mod, "GunSlingerLegendTooltip", "Combines the Effects of:"));
+			tooltips.Add(new TooltipLine(mod, "GunSlingerLegendTooltip", "-Sparing Spurs and Peacekeeper's Duster"));
+			tooltips.Add(new TooltipLine(mod, "GunSlingerLegendTooltip", "-Gunsmith's Belt of Tools and Dueling Deity's Shades"));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)

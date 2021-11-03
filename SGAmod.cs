@@ -96,7 +96,7 @@ namespace SGAmod
 	{
 
 		public const bool VibraniumUpdate = true;
-		public const bool EngieUpdate = false;
+		public const bool EngieUpdate = true;
 		public const bool ArmorButtonUpdate = false;
 		public const bool EnchantmentsUpdate = false;
 
@@ -537,9 +537,9 @@ namespace SGAmod
 
 			if (!Main.dedServ)
 			{
-				SGAmod.MakeRenderTarget(true);
 				ShadowParticle.Load();
-				//RenderTarget2D ss=new RenderTarget2D()
+
+				CreateRenderTarget2Ds(Main.screenWidth,Main.screenHeight,false,true);
 				DrakeniteBar.CreateTextures();
 				LoadOrUnloadTextures(true);
 				SkillTree.SKillUI.InitThings();
@@ -633,14 +633,14 @@ namespace SGAmod
 			//On.Terraria.Player.AdjTiles += Player_AdjTiles;
 		}
 
-        /*private void Player_AdjTiles(On.Terraria.Player.orig_AdjTiles orig, Player self)
+		/*private void Player_AdjTiles(On.Terraria.Player.orig_AdjTiles orig, Player self)
 		{
 			//orig.Invoke(self);
 			//self.adjTile[TileID.WorkBenches] = true;
 
 		}*/
 
-        public override uint ExtraPlayerBuffSlots => 40;
+		public override uint ExtraPlayerBuffSlots => 40;
 
 		public override void Unload()
 		{
@@ -1286,7 +1286,7 @@ namespace SGAmod
 			SGAmod.CustomUIMenu.ToggleUI(flag);
 		}
 
-		public static void MakeRenderTarget(bool forced = false)
+		/*public static void MakeRenderTarget(bool forced = false)
         {
 			if (Main.netMode == NetmodeID.Server || Main.dedServ)
 				return;
@@ -1317,9 +1317,43 @@ namespace SGAmod
 				postRenderEffectsTargetCopy = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth/2, Main.screenHeight/2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
 
 			}
+		}*/
+
+		public delegate void RenderTargetsDelegate();
+		public static event RenderTargetsDelegate RenderTargetsEvent;
+		public static void CreateRenderTarget2Ds(int width, int height, bool fullscreen,bool initialize=false)
+		{
+			if (Main.dedServ)
+				return;
+
+			if ((!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight)) || initialize)
+			{
+				SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
+				SGAmod.postRenderEffectsTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.PreserveContents);
+					SGAmod.postRenderEffectsTargetCopy = new RenderTarget2D(Main.graphics.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
+				RenderTargetsEvent?.Invoke();
+			}
 		}
+
+		public delegate void RenderTargetsCheckDelegate(ref bool yay);
+		public static event RenderTargetsCheckDelegate RenderTargetsCheckEvent;
+
+		public static bool CheckRenderTarget2Ds()
+        {
+			bool dontneedthem = true;
+			if (SGAmod.postRenderEffectsTarget == null || SGAmod.postRenderEffectsTarget.IsDisposed)
+				dontneedthem &= false;
+				if (SGAmod.postRenderEffectsTarget == null || SGAmod.postRenderEffectsTarget.IsDisposed)
+				dontneedthem &= false;
+
+			RenderTargetsCheckEvent?.Invoke(ref dontneedthem);
+
+			return dontneedthem;
+
+		}
+
 #if Dimensions
-        public override void MidUpdatePlayerNPC()
+		public override void MidUpdatePlayerNPC()
         {
 			NullWatcher.watchers.Clear();
 		}
@@ -1346,7 +1380,9 @@ namespace SGAmod
 
 #if Dimensions
 			proxydimmod.PostUpdateEverything();
-			MakeRenderTarget();
+
+			//if (!Main.dedServ && !CheckRenderTarget2Ds())
+			//	SGAmod.CreateRenderTarget2Ds(Main.screenWidth, Main.screenHeight, false,true);
 #endif
 
 			vibraniumCounter = Math.Max(vibraniumCounter - 1, 0);

@@ -813,6 +813,8 @@ namespace SGAmod
 
 		public override void PostUpdateRunSpeeds()
 		{
+			//SGAUtils.UpdateCoins(Main.LocalPlayer.bank,15);
+
 			if (Noviteset > 0 && electricChargeMax > 0)
 			{
 
@@ -2357,6 +2359,17 @@ namespace SGAmod
 
 		public override void CatchFish(Item fishingRod, Item bait, int power, int liquidType, int poolSize, int worldLayer, int questFish, ref int caughtType, ref bool junk)
 		{
+			if (bait.type == ModContent.ItemType<Items.Tools.UniversalBait>())
+            {
+				Main.NewText("tester");
+				int fish = Items.Tools.UniversalBait.GetFish();
+				if (fish > -1)
+				{
+					Main.NewText("tester 2");
+					caughtType = fish;
+					return;
+				}
+			}
 			if (junk)
 			{
 				return;

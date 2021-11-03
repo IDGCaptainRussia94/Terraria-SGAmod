@@ -30,7 +30,62 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 
 Changelog:
 
-3.600f-(10/25/21)-Patch 11-Tech N Wreck: Beta
+3.600g-(11/2/21)-Patch 11-Tech N Wreck: Beta
+
+-Nerfed Autoclicker: Minion auto attack Range reduced, grabbing a cookie gives it the original range
+
+-Buffed Coralrang: Increased range, speed, and damage
+
+-Buffed most Boomerangs: have extra 5% crit chance
+
+-Reworked the Charging weapons system
+
+-Electric arcs no longer cause immunity frames
+
+-Engie armor reintroduced! Grenade Launcher finished and is now source-accurate to Risk of Rain 2
+
+-Disabled the Auto-stack IL patch for now on MACs because it seems to crash Turing's game
+
+-Added the Sirian Gun, a proper upgrade to the Novite Blaster, Novite blaster removed from V.S.B's crafting recipe
+
+-Luminary Wings are now alot slower in walk mode
+
+-Updated various visuals
+
+-Buffed Gunslinger of Song and Legend: damage bonus increased to 75%, also updated the visual effect
+
+-Main Sequence Staff Sun doesn't scale as big now
+
+-Manifested items can no longer be picked up out of your inventory with left and right clicks
+
+-Added the Universal Bait to Draken's shop when the angler is present; it catches whatever fish in any water that the player needs that day
+
+-Improved hopper money coins with Luiafk code
+
+-Fixed the lootboxes not using their custom sprites
+
+-Added 'True Dragon Wings', a weaker, non-expert alt to the Luminary Wings (renamed to Avarice Lord)
+
+-Added the Draconic Claw Necklace, a secret bonus item that enhances the Avarice Lord if you craft it with Betsy Wings
+
+-Updated the various RenderTarget2Ds to properly adapt when the game window is resized
+
+-Murk-lite is now disabled by default
+
+-Added Lime tooltips for all radioactive items, Vibranium Crystals are now very radioactive
+
+-Reduced health of Overseen Heads
+
+-New changes to Helen Hellion Weygold:
+-Removed Perma-Tyrant mode in nightmare mode for now
+-Nightmare mode Hellion is immune to all debuffs and knockback at the start of the fight
+-Xemnas varients have been reversed, uses the laser in the 1st 3 phases, than the swords in the rest, also lasers now circle the area twice
+
+-New changes to Phaethon:
+-Orbiting overseen heads's projectiles now have a slight acceleration delay
+
+
+3.600f-(10/30/21)-Patch 11-Tech N Wreck: Beta
 
 -Fixed placed bar tiles having the same colors, added missing Vibranium Bar Tile
 
@@ -125,6 +180,7 @@ Changelog:
 
 -New changes to Hellion Core:
 -Warm up periods and animations where the worm can't be hurt or do contact damage
+-(forgot), arms fade out at high speeds in phase 3
 -New intro
 
 -New changes to Phaethon:
@@ -256,7 +312,7 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, True Dragon Wings, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 

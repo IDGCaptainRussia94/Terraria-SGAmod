@@ -150,6 +150,21 @@ namespace SGAmod
                     tooltips.Add(new TooltipLine(mod, "Manifested Item", Idglib.ColorText(Color.Yellow, "This item is a manifestion of your armor set, bound to you")));
                 }
 
+                if (item.modItem is IRadioactiveItem radactive)
+                {
+                    string tt = "This is a placeholder sprite";
+                    Color c = Main.hslToRgb(0f, 0.75f, 0.7f);
+                    tooltips.Add(new TooltipLine(mod, "RadioactiveItemText", Idglib.ColorText(Color.Lime, "This item is Radioactive")));
+                    if (radactive.RadioactiveHeld() > 0)
+                    {
+                        tooltips.Add(new TooltipLine(mod, "RadioactiveItemText", Idglib.ColorText(Color.Lime, "You suffer Radiation "+ radactive.RadioactiveHeld()+" while holding this")));
+                    }
+                    if (radactive.RadioactiveInventory() > 0)
+                    {
+                        tooltips.Add(new TooltipLine(mod, "RadioactiveItemText", Idglib.ColorText(Color.Lime, "You suffer Radiation " + radactive.RadioactiveInventory() + " while this is in your inventory")));
+                    }
+                }
+
                 int ammoclip = Main.LocalPlayer.SGAPly().IsRevolver(item);
                 if (ammoclip > 0)
                 {
@@ -339,7 +354,7 @@ namespace SGAmod
                     s = key;
                 }
                 player.setBonus = "Hold JUMP to hover at an expense to Electric Charge\nManifested weapon: Engie Controls\nPress the 'Toggle Recipe' (" + s + ") Hotkey to toggle jetpack mode";
-                //sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Engineer.ManifestedEngieControls>();
+                sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Engineer.ManifestedEngieControls>();
             }
             if (set == "Blazewyrm")
             {

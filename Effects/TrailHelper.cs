@@ -53,13 +53,7 @@ namespace SGAmod.Effects
 
         public void DrawTrail(List<Vector2> drawPoses, Vector2 defaultloc = default)
         {
-            List<Vector3> drawPosesnew = new List<Vector3>();
-            foreach(Vector2 vec2 in drawPoses)
-            {
-                drawPosesnew.Add(vec2.ToVector3());
-            }
-
-            DrawTrail(drawPosesnew, defaultloc);
+            DrawTrail(drawPoses.Select(testby => testby.ToVector3()).ToList(), defaultloc);
         }
 
             public void DrawTrail(List<Vector3> drawPoses, Vector2 defaultloc = default)

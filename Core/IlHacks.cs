@@ -37,7 +37,10 @@ namespace SGAmod
 			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
-			IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;
+
+			if (SGAmod.OSType < 1)//Only windows
+			IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
+
 			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
             IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
 			IL.Terraria.Main.DoDraw += DrawBehindVoidLayers;

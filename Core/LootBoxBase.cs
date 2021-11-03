@@ -22,11 +22,6 @@ namespace SGAmod
 			Tooltip.SetDefault("'Totally banned in Norway'\nAlso, your not suppose to have this!");
 		}
 
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.LockBox); }
-		}
-
 		public override bool Autoload(ref string name)
 		{
 			return !(GetType()==typeof(LootBox));

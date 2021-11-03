@@ -242,7 +242,7 @@ namespace SGAmod.NPCs.TownNPCs
 				chat.Add("Nothing for sale while the sun shines, it's blistering bright glow...");
 				chat.Add("If you'll excuse me, I need to pack up and leave.");
 				chat.Add("I'll be back another night, but my time is up for now.");
-				chat.Add("Your a bit late aren't ya?");
+				chat.Add("You're a bit late aren't ya?");
 			}
 
 			return chat; // chat is implicitly cast to a string. You can also do "return chat.Get();" if that makes you feel better

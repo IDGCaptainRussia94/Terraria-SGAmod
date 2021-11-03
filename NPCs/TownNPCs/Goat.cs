@@ -137,12 +137,12 @@ namespace SGAmod.NPCs.TownNPCs
 			chat.Add("I love Draken so much");
 			chat.Add("Only the best goat for the best derg");
 			chat.Add("[i: " + ModContent.ItemType<YellowHeart>() + "] the Derg");
-			chat.Add("I never felt true plutonic love til I met Draken");
+			chat.Add("I never felt true platonic love til I met Draken");
 			if (Main.dayTime)
 			{
 				chat.Add(Main.raining ? "Rain rain, go away, come back another day" : "today is beautiful");
 				chat.Add("Thankfully it isn't too hot");
-				chat.Add(Main.raining ? "Atleast it's cool out" : "What a lovely day");
+				chat.Add(Main.raining ? "At least it's cool out" : "What a lovely day");
 			}
 			else
 			{

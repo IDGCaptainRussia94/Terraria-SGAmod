@@ -279,6 +279,8 @@ namespace SGAmod
 			{
 				censusMod.Call("TownNPCCondition", NPCType("Dergon"), "Obtain at least 1 Expertise");
 				censusMod.Call("TownNPCCondition", NPCType("Goat"), "Unlock Nightmare Mode");
+				censusMod.Call("TownNPCCondition", NPCType("Contraband Merchant"), "Spawns at night and leaves at dawn");
+				censusMod.Call("TownNPCCondition", NPCType("Strange Portal"), "Defeat Skeletron and enter the Dungeon");
 			}
 
 			SGAmod.EnchantmentCatalyst.Add(ItemID.Amethyst, new EnchantmentCraftingMaterial(2, 50, "Produces a weak, but stable enchantment"));

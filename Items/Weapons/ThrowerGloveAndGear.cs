@@ -549,16 +549,10 @@ namespace SGAmod.Items.Weapons
 									IdgNPC.AddBuffBypass(npc.whoAmI,mod.BuffType("SnapFade"), (int)((float)projectile.damage / 500f));
 								}
 							}
-
 						}
 					}
-
-
 				}
-
-
 			}
-
 		}
 
 		public override void SetDefaults()

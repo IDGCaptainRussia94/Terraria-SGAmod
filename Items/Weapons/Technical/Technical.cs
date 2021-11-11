@@ -2126,6 +2126,21 @@ namespace SGAmod.HavocGear.Items.Weapons
 			};
 			trail.DrawTrail(vectors, projectile.Center);
 
+			Texture2D glowStar = mod.GetTexture("Extra_57b");
+			Vector2 glowSize = glowStar.Size();
+
+			Terraria.Utilities.UnifiedRandom random = new Terraria.Utilities.UnifiedRandom(projectile.whoAmI);
+
+			float alphaIK = MathHelper.Clamp(projectile.timeLeft / 32f, 0f, 1f);
+
+			for (float ff = 1f; ff > 0.25f; ff -= 0.05f)
+			{
+				float explodeSize = ((2f - ff)* scale.X)*0.60f;
+				Color color = Color.Lerp(Color.Blue, Color.MediumPurple, alphaIK);
+				float rot = random.NextFloat(0.05f, 0.15f) * (random.NextBool() ? 1f : -1f) * (Main.GlobalTime * 8f);
+				spriteBatch.Draw(glowStar, projectile.Center - Main.screenPosition, null, color * alphaIK * 0.75f, random.NextFloat(MathHelper.TwoPi) + rot, glowSize / 2f, (new Vector2(random.NextFloat(0.15f, 0.50f), 0.5f) + new Vector2(ff, ff))* explodeSize, SpriteEffects.None, 0);
+			}
+
 			return false;
 		}
 

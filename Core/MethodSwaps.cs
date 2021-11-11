@@ -47,20 +47,22 @@ namespace SGAmod
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
 			On.Terraria.Player.AddBuff += Player_AddBuff;
-            On.Terraria.NPC.AddBuff += NPC_AddBuff;
-            On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
+			On.Terraria.NPC.AddBuff += NPC_AddBuff;
+			On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
 			On.Terraria.Player.DropSelectedItem += DontDropManifestedItems;
 			On.Terraria.Player.dropItemCheck += ManifestedPriority;
-            On.Terraria.UI.ItemSlot.LeftClick_ItemArray_int_int += ItemSlot_LeftClick_refItem_int;
-            On.Terraria.UI.ItemSlot.RightClick_ItemArray_int_int += ItemSlot_RightClick_refItem_int;
-		  On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
+			On.Terraria.UI.ItemSlot.LeftClick_ItemArray_int_int += ItemSlot_LeftClick_refItem_int;
+			On.Terraria.UI.ItemSlot.RightClick_ItemArray_int_int += ItemSlot_RightClick_refItem_int;
+			On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
 			On.Terraria.Player.ItemFitsWeaponRack += NoPlacingManifestedItemOnItemRack;
 			On.Terraria.Main.SetDisplayMode += RecreateRenderTargetsOnScreenChange;
+			//On.Terraria.Main.DrawTiles += Main_DrawTiles;
 			//On.Terraria.Main.Update += Main_Update;
 
 			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
+
 
 		public static void RecreateRenderTargetsOnScreenChange(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
 		{
@@ -69,22 +71,22 @@ namespace SGAmod
 		}
 
 		public static bool BlockManifest(Item inv)
-        {
+		{
 			if (inv != null && inv.modItem != null && inv.modItem is IManifestedItem)
 				return true;
 			return false;
 		}
 
-        private static void ItemSlot_RightClick_refItem_int(On.Terraria.UI.ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv, int context = 0, int slot = 0)
-        {
+		private static void ItemSlot_RightClick_refItem_int(On.Terraria.UI.ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv, int context = 0, int slot = 0)
+		{
 			if (BlockManifest(inv[slot]))
 				return;
 
 			orig(inv, context, slot);
 		}
 
-        private static void ItemSlot_LeftClick_refItem_int(On.Terraria.UI.ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context = 0, int slot = 0)
-        {
+		private static void ItemSlot_LeftClick_refItem_int(On.Terraria.UI.ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context = 0, int slot = 0)
+		{
 			if (BlockManifest(inv[slot]))
 				return;
 
@@ -92,8 +94,8 @@ namespace SGAmod
 
 		}
 
-        private static void Player_UpdateLifeRegen(On.Terraria.Player.orig_UpdateLifeRegen orig, Player self)
-        {
+		private static void Player_UpdateLifeRegen(On.Terraria.Player.orig_UpdateLifeRegen orig, Player self)
+		{
 			SGAPlayer sgaply = self.SGAPly();
 			if (sgaply.jungleTemplarSet.Item2)
 			{
@@ -113,13 +115,13 @@ namespace SGAmod
 
 		}
 
-        public static void Main_Update(On.Terraria.Main.orig_Update orig,Main mainer, GameTime time)
-        {
+		public static void Main_Update(On.Terraria.Main.orig_Update orig, Main mainer, GameTime time)
+		{
 			//if (!Main.gameMenu)
 			//Main.rand = new Terraria.Utilities.UnifiedRandom(10);
 			orig(mainer, time);
 
-			if (Main.menuMode<3)
+			if (Main.menuMode < 3)
 			{
 				SGAWorld.highestDimDungeonFloor = 0;
 			}
@@ -134,31 +136,31 @@ namespace SGAmod
 				amount = (int)(amount * 0.50f);
 				return orig(self, item, amount, pay, blockQuickMana) && self.SGAPly().ConsumeElectricCharge(amount, amount, true, pay);
 			}
-			return orig(self,item, amount, pay, blockQuickMana);
+			return orig(self, item, amount, pay, blockQuickMana);
 		}
 
 		private static bool Player_CheckMana(On.Terraria.Player.orig_CheckMana_int_bool_bool orig, Player self, int amount, bool pay, bool blockQuickMana)
-        {
+		{
 			Main.NewText("test");
-            if (self.armor[0].type == ModContent.ItemType<VibraniumHeadgear>())
-            {
-				amount = (int)(amount *0.50f);
-				return orig(self, amount, pay, blockQuickMana) && self.SGAPly().ConsumeElectricCharge(amount,amount,true,pay);
+			if (self.armor[0].type == ModContent.ItemType<VibraniumHeadgear>())
+			{
+				amount = (int)(amount * 0.50f);
+				return orig(self, amount, pay, blockQuickMana) && self.SGAPly().ConsumeElectricCharge(amount, amount, true, pay);
 			}
 			return orig(self, amount, pay, blockQuickMana);
-        }
+		}
 		public static void AddLight(On.Terraria.Lighting.orig_AddLight_int_int_float_float_float orig, int i, int j, float R, float G, float B)
 		{
 			Main.time = 6000;
 		}
 
-        //Neat trick from scalie to detour a Constructor to prepare modded data from the twld file
-        readonly static Dictionary<UIWorldListItem, TagCompound> SGAmodData = new Dictionary<UIWorldListItem, TagCompound>();
+		//Neat trick from scalie to detour a Constructor to prepare modded data from the twld file
+		readonly static Dictionary<UIWorldListItem, TagCompound> SGAmodData = new Dictionary<UIWorldListItem, TagCompound>();
 		private static void CtorModWorlData(On.Terraria.GameContent.UI.Elements.UIWorldListItem.orig_ctor orig, UIWorldListItem self, WorldFileData data, int snapPointIndex)
 		{
 			orig(self, data, snapPointIndex);
 
-			string path = data.Path.Replace(".wld",".twld");
+			string path = data.Path.Replace(".wld", ".twld");
 			TagCompound tag;
 
 			try
@@ -185,18 +187,18 @@ namespace SGAmod
 			if (SGAmodData.TryGetValue(self, out var tag3) && tag3 != null)
 			{
 				if (tag3.ContainsKey("highestDimDungeonFloor"))
-				floors = tag3.GetByte("highestDimDungeonFloor");
+					floors = tag3.GetByte("highestDimDungeonFloor");
 			}
 
 			string text = "Floors completed: " + (int)floors;
 
-			Utils.DrawBorderString(spriteBatch, text, pos + new Vector2(-Main.fontMouseText.MeasureString(text).X-8, 5), Color.DeepSkyBlue); ;
+			Utils.DrawBorderString(spriteBatch, text, pos + new Vector2(-Main.fontMouseText.MeasureString(text).X - 8, 5), Color.DeepSkyBlue); ;
 		}
 
 
 
-			//Some Reflection Stuff, this first method swap came from scalie because lets be honest, who else is gonna figure this stuff out? Vanilla is a can of worms and BS at times. Credit due to him
-			static private readonly FieldInfo _playerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
+		//Some Reflection Stuff, this first method swap came from scalie because lets be honest, who else is gonna figure this stuff out? Vanilla is a can of worms and BS at times. Credit due to him
+		static private readonly FieldInfo _playerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
 		static private readonly FieldInfo _player = typeof(UICharacter).GetField("_player", BindingFlags.NonPublic | BindingFlags.Instance);
 
 		static private void Menu_UICharacterListItem(On.Terraria.GameContent.UI.Elements.UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
@@ -288,7 +290,7 @@ namespace SGAmod
 			return orig(Position, Velocity, Width, Height, fallThrough, fall2, gravDir);
 		}
 
-			static private void Player_CheckDrowning(On.Terraria.Player.orig_CheckDrowning orig, Player self)
+		static private void Player_CheckDrowning(On.Terraria.Player.orig_CheckDrowning orig, Player self)
 		{
 			// 'orig' is a delegate that lets you call back into the original method.
 			// 'self' is the 'this' parameter that would have been passed to the original method.
@@ -297,25 +299,25 @@ namespace SGAmod
 			{
 				sgaply.permaDrown = true;
 				if (sgaply.timer % 2 == 0)
-				self.breathCD += (int)(sgaply.beserk[1] * 1.25f)-1;
+					self.breathCD += (int)(sgaply.beserk[1] * 1.25f) - 1;
 				//if (self.breathCD > 300)
 				//{
-					//self.breathCD = 0;
-					//self.breath = (int)MathHelper.Clamp(self.breath - 1, 0, self.breathMax);
+				//self.breathCD = 0;
+				//self.breath = (int)MathHelper.Clamp(self.breath - 1, 0, self.breathMax);
 
-					if (self.breath < 1 && sgaply.timer%5==0)
+				if (self.breath < 1 && sgaply.timer % 5 == 0)
+				{
+					int lifeLost = Math.Max(2 + (int)sgaply.beserk[1] + sgaply.drownRate, 1);
+					self.statLife -= lifeLost;
+					CombatText.NewText(new Rectangle((int)self.position.X, (int)self.position.Y, self.width, self.height), CombatText.LifeRegen, lifeLost, false, true);
+
+					if (self.statLife <= 0)
 					{
-					int lifeLost = Math.Max(2+(int)sgaply.beserk[1]+sgaply.drownRate,1);
-						self.statLife -= lifeLost;
-						CombatText.NewText(new Rectangle((int)self.position.X, (int)self.position.Y, self.width, self.height), CombatText.LifeRegen, lifeLost, false, true);
-
-						if (self.statLife <= 0)
-						{
-							self.statLife = 0;
-							self.KillMe(PlayerDeathReason.ByOther(1), 10.0, 0, false);
-						}
-
+						self.statLife = 0;
+						self.KillMe(PlayerDeathReason.ByOther(1), 10.0, 0, false);
 					}
+
+				}
 				//}
 
 				if (self.breath < 1)
@@ -338,22 +340,22 @@ namespace SGAmod
 
 		}
 
-		static private void Player_AddBuff(On.Terraria.Player.orig_AddBuff orig, Player self,int buff,int time,bool quiet)
+		static private void Player_AddBuff(On.Terraria.Player.orig_AddBuff orig, Player self, int buff, int time, bool quiet)
 		{
 			// 'orig' is a delegate that lets you call back into the original method.
 			// 'self' is the 'this' parameter that would have been passed to the original method.
 
 			SGAPlayer sgaply = self.SGAPly();
 
-			if (sgaply.phaethonEye>0 && Main.debuff[buff] && time>60)
+			if (sgaply.phaethonEye > 0 && Main.debuff[buff] && time > 60 && !Main.buffNoTimeDisplay[buff] && buff != BuffID.PotionSickness)
 			{
 				if (Main.rand.Next(3) == 0 && sgaply.AddCooldownStack(time))
 				{
-					Projectile.NewProjectile(self.Center, Vector2.Zero, ModContent.ProjectileType<Items.Accessories.PhaethonEyeProcEffect>(),0,0,self.whoAmI);
+					Projectile.NewProjectile(self.Center, Vector2.Zero, ModContent.ProjectileType<Items.Accessories.PhaethonEyeProcEffect>(), 0, 0, self.whoAmI);
 					return;
 				}
 			}
-			orig(self,buff,time,quiet);
+			orig(self, buff, time, quiet);
 
 		}
 
@@ -404,7 +406,7 @@ namespace SGAmod
 					{
 						if (npc.modNPC != null && npc.modNPC is NPCs.Sharkvern.SharkvernCloudMiniboss cloud)
 						{
-							cloud.Draw(Main.spriteBatch,Lighting.GetColor((int)npc.Center.X >> 4, (int)npc.Center.Y >> 4,Color.White));
+							cloud.Draw(Main.spriteBatch, Lighting.GetColor((int)npc.Center.X >> 4, (int)npc.Center.Y >> 4, Color.White));
 						}
 					}
 				}
@@ -430,15 +432,63 @@ namespace SGAmod
 					}
 				}
 			}
-				Main.spriteBatch.End();
-			
+			Main.spriteBatch.End();
+
 		}
 		static private SoundEffectInstance Main_PlaySound(On.Terraria.Main.orig_PlaySound_int_int_int_int_float_float orig, int type, int x = -1, int y = -1, int Style = 1, float volumeScale = 1f, float pitchOffset = 0f)
 		{
-            Dimensions.NPCs.NullWatcher.SoundChecks(new Vector2(x, y));
+			Dimensions.NPCs.NullWatcher.SoundChecks(new Vector2(x, y));
 			return orig(type, x, y, Style, volumeScale, pitchOffset);
 
 		}
+
+
+		private static void Main_DrawTiles(On.Terraria.Main.orig_DrawTiles orig, Main self, bool solidOnly, int waterStyleOverride)
+		{
+			bool startnew = false;
+
+			if (SGAmod.BeforeTilesAdditiveToDraw.Count > 0)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				startnew = true;
+
+				foreach (CustomSpecialDrawnTiles stile in SGAmod.BeforeTilesAdditiveToDraw)
+				{
+					stile.CustomDraw(Main.spriteBatch, stile.position);
+				}
+			}
+
+			if (SGAmod.BeforeTilesToDraw.Count > 0)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				startnew = true;
+
+				foreach (CustomSpecialDrawnTiles stile in SGAmod.BeforeTilesToDraw)
+				{
+					stile.CustomDraw(Main.spriteBatch, stile.position);
+				}
+			}
+
+			if (startnew)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.CreateScale(1, 1, 1));
+			}
+			orig(self, solidOnly, waterStyleOverride);
+
+			SGAmod.BeforeTilesToDraw = new List<CustomSpecialDrawnTiles>(SGAmod.BeforeTiles);
+			SGAmod.BeforeTilesAdditiveToDraw = new List<CustomSpecialDrawnTiles>(SGAmod.BeforeTilesAdditive);
+			SGAmod.AfterTilesAdditiveToDraw = new List<CustomSpecialDrawnTiles>(SGAmod.AfterTilesAdditive);
+			SGAmod.AfterTilesToDraw = new List<CustomSpecialDrawnTiles>(SGAmod.AfterTiles);
+
+			SGAmod.BeforeTiles.Clear();
+			SGAmod.BeforeTilesAdditive.Clear();
+			SGAmod.AfterTilesAdditive.Clear();
+			SGAmod.AfterTiles.Clear();
+
+		}
+
 	}
 }
-

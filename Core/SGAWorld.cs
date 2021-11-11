@@ -74,6 +74,19 @@ namespace SGAmod
         public static bool tidalCharmUnlocked = false;
         public static int[] oretypesprehardmode = { TileID.Copper, TileID.Iron, TileID.Silver, TileID.Gold };
         public static int[] oretypeshardmode = { TileID.Cobalt, TileID.Mythril, TileID.Adamantite };
+
+        public delegate bool CutsceneActiveDelegate(ref bool vara);
+        public static event CutsceneActiveDelegate CutsceneActiveEvent;
+        public static bool CutsceneActive
+        {
+            get
+            {
+                bool active = false;
+                active = CutsceneActiveEvent.Invoke(ref active);
+                return active;
+            }
+
+        }
         public static ModWorld Instance;
 
 

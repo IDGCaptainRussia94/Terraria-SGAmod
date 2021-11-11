@@ -406,6 +406,9 @@ namespace SGAmod.Dimensions.NPCs
 	{
 		SpaceBoss boss;
 		NPC npc;
+		public List<int> deckOfAttacks = new List<int>();
+
+
 		public SpaceBossAI(SpaceBoss boss)
         {
 			this.boss = boss;
@@ -420,47 +423,63 @@ namespace SGAmod.Dimensions.NPCs
 			ShadowNebula,
 			EolAttack,
 			InstallRoids,
+			Shield,
+		}
+
+		public void DrawDeck()
+        {
+			deckOfAttacks.Clear();
+
+			//2 sets
+			for (int i = 0; i < 2; i += 1)
+			{
+				deckOfAttacks.Add((int)SpaceBossAttackTypes.XBeams);
+
+				deckOfAttacks.Add((int)SpaceBossAttackTypes.EolAttack);
+
+				deckOfAttacks.Add((int)SpaceBossAttackTypes.TossRoids);
+
+				if (boss.phase >= 1)
+				{
+					for (int xx = 0; xx < 2; xx += 1)
+					{
+						deckOfAttacks.Add((int)SpaceBossAttackTypes.InstallRoids);
+					}
+
+				}
+
+				//Shuffle
+				deckOfAttacks = deckOfAttacks.OrderBy(testby => Main.rand.Next()).ToList();
+			}
+
+			//Always put this one at the start
+			if (boss.goingDark < -60 * 150 && boss.specialCooldown < 1 && boss.phase > 1 && Main.expertMode)
+			{
+				deckOfAttacks.Insert(0,(int)SpaceBossAttackTypes.ShadowNebula);
+			}
+
+			deckOfAttacks.Add((int)SpaceBossAttackTypes.Shield);
 		}
 
 		public bool ChooseAttack()
 		{
 
-			List<int> ChooseableAttacks = new List<int>();
-
-			ChooseableAttacks.Add((int)SpaceBossAttackTypes.XBeams);
-
-			ChooseableAttacks.Add((int)SpaceBossAttackTypes.EolAttack);
-
-			ChooseableAttacks.Add((int)SpaceBossAttackTypes.TossRoids);
-
-			if (boss.phase >= 1)
-			{
-				for (int i = 0; i < 4; i += 1)
-				{
-					ChooseableAttacks.Add((int)SpaceBossAttackTypes.InstallRoids);
-				}
-			}
-
-
-
-			if (boss.goingDark < -60 * 150 && boss.specialCooldown < 1 && boss.phase > 1)
-			{
-				for(int i=0;i<3;i++)
-				ChooseableAttacks.Add((int)SpaceBossAttackTypes.ShadowNebula);
-			}
-
 			if (npc.life / (float)npc.lifeMax < boss.healthphase)//Heal if phase requires it
 			{
-				boss.phase += 1;
+				boss.phase += 1;//Advance phase
 				boss.npc.ai[3] = 1;
 				npc.ai[0] = boss.phase > 3 ? 25000 : 10000;//Shields up, but if in 4th phase, go into the final phase and teleport away
+				DrawDeck();//Draw new deck of attacks
 				return true;
 			}
 
-			if (npc.ai[0] > 1200 && npc.ai[0] < 10000)//Do special move
+			if (npc.ai[0] > 1200 && npc.ai[0] < 10000)//Draw from the deck
 			{
+
 			tryagain:
-				int attack = ChooseableAttacks[Main.rand.Next(ChooseableAttacks.Count)];
+
+				int attack = deckOfAttacks[0];//Top card
+				deckOfAttacks.RemoveAt(0);//Discard drawn card
 
 				if (attack == (int)SpaceBossAttackTypes.ShadowNebula)//Choose: Shadow Nebula
 				{
@@ -469,7 +488,7 @@ namespace SGAmod.Dimensions.NPCs
 					return true;
 				}
 
-				if (ToEnemy.Length() > 3200)//Heal if too far away
+				if (ToEnemy.Length() > 3200)//Heal if too far away, regardless of what is drawn (Shadow Nebula will take priority thouu)
 				{
 					npc.ai[0] = 10000;//Shields up
 					return true;
@@ -485,8 +504,7 @@ namespace SGAmod.Dimensions.NPCs
 					}
 					else
 					{
-						ChooseableAttacks.Add((int)SpaceBossAttackTypes.Nothing);
-						ChooseableAttacks.RemoveAll(testby => testby == (int)SpaceBossAttackTypes.XBeams);
+						//Can't perform, try again
 						goto tryagain;
 					}
 				}
@@ -501,8 +519,7 @@ namespace SGAmod.Dimensions.NPCs
 					}
 					else
 					{
-						ChooseableAttacks.Add((int)SpaceBossAttackTypes.Nothing);
-						ChooseableAttacks.RemoveAll(testby => testby == (int)SpaceBossAttackTypes.EolAttack);
+						//Can't perform, try again
 						goto tryagain;
 					}
 				}
@@ -518,15 +535,23 @@ namespace SGAmod.Dimensions.NPCs
 					}
 					else
 					{
-						ChooseableAttacks.Add((int)SpaceBossAttackTypes.Nothing);
-						ChooseableAttacks.RemoveAll(testby => testby == (int)SpaceBossAttackTypes.InstallRoids);
+						//Can't perform, try again
 						goto tryagain;
 					}
 				}
 
 				if (attack == (int)SpaceBossAttackTypes.TossRoids)//Choose: Toss Roids
 				{
-					npc.ai[0] = 10500;//Toss Roids
+					npc.ai[0] = 10500;//Toss Roids, can always perform
+					return true;
+				}
+
+
+				if (attack == (int)SpaceBossAttackTypes.Shield)//Choose: Shield
+				{
+					//npc.ai[0] = 10000;//Shield, only at the end of the deck will we ever choose this
+					DrawDeck();//Draw new deck of attacks
+					goto tryagain;//On 2nd thought, nah, not yet atleast, maybe I'll do something special here later
 					return true;
 				}
 
@@ -683,6 +708,7 @@ namespace SGAmod.Dimensions.NPCs
 				if (sound != null)
 				{
 					sound.Pitch = 0.5f;
+					sound.Volume = 1.0f;
 				}
 			}
 
@@ -930,7 +956,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			if (boss.npc.ai[3] == 1)
 			{
-				if (boss.phase < 4)
+				if (boss.phase < 4 && Main.expertMode)
 				{
 					for (int i = 0; i < Math.Min(boss.phase,3) * 2; i += 1)
 					{
@@ -1003,7 +1029,7 @@ namespace SGAmod.Dimensions.NPCs
 
 		public void StateMove()
 		{
-			float movementSpeed = 0.25f + (boss.phase / 20f);
+			float movementSpeed = 0.25f + (Main.expertMode ? (boss.phase / 20f) : 0);
 			boss.state = 2;
 			npc.rotation += npc.velocity.X * 0.002f;
 
@@ -1014,7 +1040,7 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				if (npc.velocity.Length() < 4f)
 					boss.timeHere += 1;
-				if (boss.timeHere > 10 + (npc.life / (float)npc.lifeMax) * 60)
+				if (boss.timeHere > 80)// + (npc.life / (float)npc.lifeMax) * 60)
 				{
 					SecureArea();
 				}
@@ -1076,7 +1102,7 @@ namespace SGAmod.Dimensions.NPCs
 			Player target = Main.player[npc.target];
 			bool withinDist = ToEnemy.LengthSquared() < 1600 * 1600;
 
-			if (npc.ai[0] % 30 == 0 && !withinDist)
+			if (npc.ai[0] % (Main.expertMode ? 30 : 60) == 0 && !withinDist)
 			{
 				Vector2 place = target.Center + (Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(-400f, 400f)) + Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.Pi)) * 1800f;
 
@@ -1090,7 +1116,7 @@ namespace SGAmod.Dimensions.NPCs
 
 				if (withinDist)
 				{
-					if (npc.ai[0] % 30 == 0)
+					if (npc.ai[0] % (Main.expertMode ? 30 : 80) == 0)
 					{
 						for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / (5f - (float)boss.TetherAsteriods.Count()))
 						{
@@ -1099,7 +1125,7 @@ namespace SGAmod.Dimensions.NPCs
 					}
 				}
 
-				int timer = 120 + boss.TetherAsteriods.Count() * 60;
+				int timer = (Main.expertMode ? 320 : 120) + boss.TetherAsteriods.Count() * 60;
 
 				if (npc.ai[0] % (120 + timer) == 0 && withinDist)
 				{
@@ -1154,13 +1180,14 @@ namespace SGAmod.Dimensions.NPCs
 					boss.visitedEmptySpaces.AddRange(SpaceDim.EmptySpaces);
 				}
 
+				DrawDeck();
+
 				SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)npc.Center.X, (int)npc.Center.Y, 57);
 				if (sound != null)
 				{
 					sound.Volume = 0.99f;
 					sound.Pitch -= 0.75f;
 				}
-
 			}
 
 			foreach(SpaceBossEye eye in boss.Eyes)
@@ -1278,6 +1305,9 @@ namespace SGAmod.Dimensions.NPCs
 	{
 		public string Trophy() => "SpaceBossTrophy";
 		public bool Chance() => false;
+		public string RelicName() => "Doom_Harbinger";
+		public void NoHitDrops(){}
+
 		public bool TossRoids => (int)npc.ai[0] > 10600 && (int)npc.ai[0] < 10800;
 
 		public float darknessAura = 0.25f;
@@ -1311,10 +1341,13 @@ namespace SGAmod.Dimensions.NPCs
 
 		public int goingDark = -60 * 300;
 
+		public static bool CutSceneActive(ref bool cam) => cam || SpaceBoss.film.IsActive;
+
 		public override bool Autoload(ref string name)
 		{
 			name = "Phaethon";
 			SGAmod.ModifyTransformMatrixEvent += MoveCamera;
+			SGAWorld.CutsceneActiveEvent += CutSceneActive;
 			return mod.Properties.Autoload;
 		}
 
@@ -1333,7 +1366,7 @@ namespace SGAmod.Dimensions.NPCs
 			npc.aiStyle = -1;
 			npc.damage = 0;
 			npc.noGravity = true;
-			npc.defense = 0;
+			npc.defense = 30;
 			npc.HitSound = SoundID.NPCHit7;
 			npc.DeathSound = SoundID.NPCDeath7;
 			npc.knockBackResist = 0.5f;
@@ -1347,6 +1380,12 @@ namespace SGAmod.Dimensions.NPCs
 			npc.dontTakeDamage = true;
 			npc.noTileCollide = true;
 			npc.knockBackResist = 0f;
+
+			for(int i = BuffID.Count; i < Main.buffNoSave.Length; i += 1)
+            {
+				npc.buffImmune[i] = true;
+            }
+
 			instance = this;
 		}
 
@@ -2408,7 +2447,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			return false;
 		}
-	}
+    }
 
 	public class SpaceBossBeam : HellionBeam
     {
@@ -2817,7 +2856,10 @@ namespace SGAmod.Dimensions.NPCs
 		public override void AI()
 		{
 			projectile.localAI[0] += 1;
-			float homing = MathHelper.Clamp((projectile.localAI[0])/300,0,0.05f) *(projectile.timeLeft/500f);
+			float homing = MathHelper.Clamp((projectile.localAI[0])/300,0,0.05f) *MathHelper.Clamp((projectile.timeLeft-200)/160f, 0f,1f);
+			if (!Main.expertMode)
+				homing = MathHelper.Clamp((projectile.localAI[0]) / 300, 0, 0.05f) * MathHelper.Clamp((projectile.timeLeft - 500) / 200f, 0f, 1f);
+
 			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y * projectile.spriteDirection, (double)projectile.velocity.X * projectile.spriteDirection) + 1.57f;
 
 			base.AI();

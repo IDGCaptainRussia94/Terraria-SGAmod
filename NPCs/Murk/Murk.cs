@@ -20,9 +20,11 @@ namespace SGAmod.NPCs.Murk
     public class Murk : ModNPC, ISGABoss
     {
         public string Trophy() => "MurkTrophy";
-        int perhit = 0;
         public bool Chance() => Main.rand.Next(0, 10) == 0;
+        public string RelicName() => "Murk";
+        public void NoHitDrops() { }
 
+        int perhit = 0; 
         int counter = 0;
         public int gasshift = 0;
         public int gastimer = 0;

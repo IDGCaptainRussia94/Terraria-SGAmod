@@ -16,6 +16,8 @@ namespace SGAmod.NPCs.SpiderQueen
 	{
 		public string Trophy() => "SpiderQueenTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
+		public string RelicName() => "Spider_Queen";
+		public void NoHitDrops() { }
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Spider Queen");
@@ -343,12 +345,14 @@ namespace SGAmod.NPCs.SpiderQueen
 					else
 					{
 						//Acid Spin Attack
-						if (npc.ai[0] % 1200 == 601) {
+						if (npc.ai[0] % 1200 == 601)
+						{
 							npc.ai[0] += 1;
 							npc.ai[3] = 60;
 							Main.PlaySound(SoundID.NPCHit, (int)npc.Center.X, (int)npc.Center.Y, 37, 0.50f, -0.25f);
 						}
-						if (npc.ai[0] % 1200 > 602) {
+						if (npc.ai[0] % 1200 > 602)
+						{
 							float angle1; float angle2;
 							GetAngleDifferenceBlushiMagic(new Vector2(npc.localAI[1], npc.localAI[2]), out angle1, out angle2);
 							float rotSpeed = angle2 > angle1 ? 0.05f : -0.05f;
@@ -429,7 +433,7 @@ namespace SGAmod.NPCs.SpiderQueen
 			{
 				for (int i = 0; i < legs.Count; i += 1)
 				{
-					legs[i].legUpdate(npc.Center, npc.rotation, legdists,npc.velocity, charge);
+					legs[i].LegUpdate(npc.Center, npc.rotation, legdists,npc.velocity, charge);
 				}
 			}
 
@@ -516,7 +520,7 @@ namespace SGAmod.NPCs.SpiderQueen
 			this.side = side;
 		}
 
-		public void legUpdate(Vector2 SpiderLoc, float SpiderAngle, float maxdistance,Vector2 SpiderVel,bool charge)
+		public void LegUpdate(Vector2 SpiderLoc, float SpiderAngle, float maxdistance,Vector2 SpiderVel,bool charge)
 		{
 			bool spin = maxdistance < 94;
 			this.maxdistance = maxdistance;

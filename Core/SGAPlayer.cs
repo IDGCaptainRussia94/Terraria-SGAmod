@@ -67,6 +67,8 @@ namespace SGAmod
 		public int midasMoneyConsumed = 0;
 		public int manaBoost = 0;
 		public (int,byte) skylightLightInfused = (0,0);
+		public (int, int) PolarityHarbPower = (0, 0);
+
 
 		//For holding Trap Weapons
 		public float SlowDownDefense = 0f;
@@ -180,6 +182,8 @@ namespace SGAmod
 		public float actionCooldownRate = 1f;
 		public int shieldBlockTime = 0;
 		public float shieldBlockAngle = 0;
+
+		public string MoneyCollected => (midasMoneyConsumed / (float)Item.buyPrice(1)) + " platinum collected";
 
 		public float ActionCooldownRate
         {
@@ -1654,6 +1658,8 @@ namespace SGAmod
 
 			if (realIFrames > 0)
 				return false;
+
+			SGAnpcs.PlayersGotHit();
 
 			if (damageSource.SourceNPCIndex > -1)
 			{

@@ -18,7 +18,7 @@ namespace SGAmod.Core
 
         public static void MakeTexture()
         {
-            Texture2D atex = ModContent.GetTexture("SGAmod/NPCs/Hellion/GlowArrow");
+            Texture2D atex = ModContent.GetTexture("SGAmod/Extra_60b");
             Texture2D tex = new Texture2D(Main.graphics.GraphicsDevice, atex.Width, atex.Height);
 
             var datacolors2 = new Color[atex.Width * atex.Height];
@@ -36,7 +36,7 @@ namespace SGAmod.Core
 
             atex.SetData(datacolors2);
 
-            using (FileStream MS = File.Create(SGAmod.filePath + "/GlowArrow.png"))
+            using (FileStream MS = File.Create(SGAmod.filePath + "/Extra_60AlphaBlend.png"))
             {
                 atex.SaveAsPng(MS, tex.Width, tex.Height);
             }
@@ -47,6 +47,7 @@ namespace SGAmod.Core
         {
             get
             {
+                //MakeTexture();
                 if (Main.dedServ || Environment.Is64BitProcess)// || SGAmod.OSType != 0)
                     return false;
 

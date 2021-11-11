@@ -240,8 +240,8 @@ namespace SGAmod.Items.Armors.Engineer
         {
             EngineerModes ^= 4;
             CombatText.NewText(new Rectangle(player.Hitbox.X, player.Hitbox.Y - 8, 0, player.Hitbox.Width), Color.Orange, "Jetpack " + ((EngineerModes & 4)!=0 ? "ACTIVE" : "inactive"), false, false);
-            Main.NewText("Bit test: " + EngineerModes);
-            Main.NewText("Bit Test: " + (EngineerModes&4));
+            //Main.NewText("Bit test: " + EngineerModes);
+            //Main.NewText("Bit Test: " + (EngineerModes&4));
         }
         public void HandleEngineerArmor()
         {

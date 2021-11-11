@@ -510,6 +510,8 @@ namespace SGAmod.NPCs.Wraiths
 	{
 		public string Trophy() => GetType() == typeof(CobaltWraith) ? "CobaltWraithTrophy" : "CopperWraithTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
+		public string RelicName() => GetType() == typeof(CobaltWraith) ? "Cobalt_Wraith" : "Copper_Wraith";
+		public void NoHitDrops() { }
 
 		public int level = 0;
 		public Vector2 OffsetPoints = new Vector2(0f, 0f);

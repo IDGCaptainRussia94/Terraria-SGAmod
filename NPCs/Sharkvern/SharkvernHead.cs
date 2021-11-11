@@ -22,8 +22,11 @@ namespace SGAmod.NPCs.Sharkvern
     {
 
         public string Trophy() => "SharkvernTrophy";
-        private float Phase2Percent => RainFight ? 0.80f : 0.75f;
         public bool Chance() => Main.rand.Next(0, 10) == 0;
+        public string RelicName() => "Sharkvern";
+        public void NoHitDrops() { }
+
+        private float Phase2Percent => RainFight ? 0.80f : 0.75f;
 
         public int sergedout=0;
         public int rage=0;

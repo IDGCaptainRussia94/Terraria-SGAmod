@@ -97,6 +97,7 @@ namespace SGAmod.Dimensions
                 {
                     sound.Pitch = -0.75f + (float)Math.Min(Math.Atan(count / 25f), 1.7f);
                 }
+
                 NullWatcher.DoAwarenessChecks(600 + count * 5, false, true, player.Center);
                 heartBeat = 0;
                 staticHeartBeat = 30;
@@ -146,7 +147,7 @@ namespace SGAmod.Dimensions
 
         public override void PreUpdate()
         {
-            if (SpaceBoss.film.IsActive)
+            if (SGAWorld.CutsceneActive)
             {
                 player.AddBuff(ModContent.BuffType<Buffs.InvincibleBuff>(), 2);
             }

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -41,6 +42,111 @@ namespace SGAmod.Items.Accessories
 			wingsSurface = new RenderTarget2D(Main.graphics.GraphicsDevice, 160,240, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
 			wingsSurfacePre = new RenderTarget2D(Main.graphics.GraphicsDevice, 160, 240, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
 		}
+
+		public static PlayerLayer DergWings => new PlayerLayer("SGAmod", "AltWings", PlayerLayer.Wings, delegate (PlayerDrawInfo drawInfo)
+		{
+			Player drawPlayer = drawInfo.drawPlayer;
+			SGAmod mod = SGAmod.Instance;
+			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
+
+			//better version, from Qwerty's Mod
+			Color color = drawInfo.bodyColor;
+
+			float angle = drawPlayer.legRotation;
+
+			int joy = Math.Max(0, modply.JoyrideShake);
+
+			float nalzs = Main.rand.NextFloat(-joy, joy) / 2f;
+			float nalzs2 = Main.rand.NextFloat(-joy / 1f, 0);
+
+			Texture2D texture;
+			int drawX;
+			int drawY;
+			Vector2 org;
+
+			float stealth = (0.2f + drawPlayer.stealth * 0.8f) * Math.Max(0.10f, ((float)drawInfo.bodyColor.A / 255f));
+
+			int num = drawPlayer.bodyFrame.Y / 56;
+			if (num >= Main.OffsetsPlayerHeadgear.Length)
+				num = 0;
+			Vector2 adderPos = new Vector2(Main.OffsetsPlayerHeadgear[num].X, drawPlayer.gfxOffY + Main.OffsetsPlayerHeadgear[num].Y) + drawPlayer.bodyPosition;
+
+			#region RenderTarget2D
+			if (SGAConfigClient.Instance.AvariceLordWings)
+			{
+				drawX = (int)(drawPlayer.MountedCenter.X);
+				drawY = (int)(drawPlayer.MountedCenter.Y);
+
+				texture = Items.Accessories.TrueDragonWings.wingsSurface;
+
+				org = texture.Size() / 2f;
+
+				Vector2 whereat2 = (new Vector2(drawX, drawY).RotatedBy(drawPlayer.fullRotation, drawPlayer.MountedCenter));
+				color = Lighting.GetColor((int)(whereat2.X / 16f), (int)(whereat2.Y / 16f)) * stealth;
+
+				DrawData data2 = new DrawData(texture, whereat2 + adderPos - Main.screenPosition, null, color, (float)drawPlayer.fullRotation + angle, org, 2f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+
+				data2.shader = (int)drawPlayer.cWings;
+
+				Main.playerDrawData.Add(data2);
+				return;
+			}
+			#endregion
+
+
+			#region ScaledDraw
+
+			for (int i = 1; i >= 0; i -= 1)
+			{
+
+				drawX = (int)((drawPlayer.MountedCenter.X + (-8 + i * 16f) * drawPlayer.direction));
+				drawY = (int)((drawPlayer.MountedCenter.Y + nalzs2 - 2f));
+				if (i < 1)
+					drawY += 8;
+
+				texture = ModContent.GetTexture("SGAmod/Items/Accessories/BetsyWings/BetsyWings" + (i < 1 ? "Front" : "Back"));
+
+				int wingIndex = drawPlayer.GetModPlayer<Items.Accessories.DergWingsPlayer>().wingFrames / 4;
+
+				Point textureframe = new Point(texture.Width / 2, texture.Height / 5);
+
+				int wingindexmod = wingIndex % 9;
+
+				int wingX = (wingindexmod / 5) % 2;
+				int wingY = wingindexmod % 5;
+
+				float flyingAngle = drawPlayer.GetModPlayer<Items.Accessories.DergWingsPlayer>().flyingAngle.Item1;
+
+				Vector2 scale = new Vector2(0.5f, 0.5f) * new Vector2(0.25f + ((flyingAngle) * 0.25f), 0.5f + ((flyingAngle) * 0.25f));
+
+				org = (i > 0 ? new Vector2(drawPlayer.direction < 0 ? textureframe.X - 38 : 38, 164) : new Vector2(drawPlayer.direction < 0 ? textureframe.X - 222 : 222, 188)) + new Vector2(wingindexmod * 2 * drawPlayer.direction, wingindexmod * 2);
+
+				if (drawPlayer.direction < 0)
+				{
+					drawX -= (int)((i < 1 ? 16 : -16) * scale.X);
+				}
+				else
+				{
+					drawX -= (int)((i > 0 ? 16 : -16) * scale.X);
+				}
+
+				Rectangle erect = new Rectangle((wingX) * textureframe.X, (wingY) * textureframe.Y, textureframe.X, textureframe.Y);
+
+				angle = 0;// (((-0.5f + i)*(MathHelper.Pi*0.5f))* ((1f- flyingAngle) *0.2f)+(float)(0f - Math.Pow(Math.Abs(drawPlayer.velocity.X)*0.015f,0.75f))* (1f-flyingAngle)) *drawPlayer.direction;
+
+				Vector2 whereat3 = (new Vector2(drawX, drawY).RotatedBy(drawPlayer.fullRotation, drawPlayer.MountedCenter));
+				color = Lighting.GetColor((int)(whereat3.X / 16f), (int)(whereat3.Y / 16f)) * stealth;
+
+				DrawData data3 = new DrawData(texture, whereat3 + adderPos - Main.screenPosition, erect, color, (float)drawPlayer.fullRotation + angle, org, scale, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+
+				data3.shader = (int)drawPlayer.cWings;
+
+				Main.playerDrawData.Add(data3);
+			}
+
+			#endregion
+
+		});
 
 		public static void DrawWings(Player drawPlayer)
 		{
@@ -148,7 +254,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Avarice Lord's Wings");
-			Tooltip.SetDefault("'Improved, and the Finest draconic wings;\nJust trimmed the hands off 1st...'\nHold DOWN to reduce vertical but increase horizontal movement\nHold UP to gain boosts into the air whenever you flap");
+			Tooltip.SetDefault("'The Finest draconic wings;\nJust trimmed the hands off 1st...'\nHold DOWN to reduce vertical but increase horizontal movement\nHold UP to gain boosts into the air whenever you flap");
 			Main.itemTexture[ModContent.ItemType<TrueDragonWings>()] = Main.itemTexture[ItemID.BetsyWings];
 		}
 
@@ -207,7 +313,7 @@ namespace SGAmod.Items.Accessories
 					drakeplayer.flyingAngle.Item2 = 4;
 				}
 
-				if ((drakeplayer.wingFrames) % (9 * 4) == 4 * 2)
+				if ((drakeplayer.wingFrames) % (9 * 4) == 4 * 3)
 				{
 
 					if ((player.wingTime > 0 || drakeplayer.draconicBoost) && player.controlUp)//Not Vanity
@@ -228,7 +334,7 @@ namespace SGAmod.Items.Accessories
 
         public override void UpdateVanity(Player player, EquipType type)
 		{
-			if (player.wingTime < 1 && player.controlJump && player.wings == item.wingSlot)
+			if (player.wingTime < 1 && player.velocity.Y != 0 && player.controlJump && player.wings == item.wingSlot)
 			{
 				player.GetModPlayer<DergWingsPlayer>().wingFrames = 4 * 10;
 				player.GetModPlayer<DergWingsPlayer>().flyingAngle.Item2 = 4;
@@ -247,7 +353,7 @@ namespace SGAmod.Items.Accessories
 					player.GetModPlayer<DergWingsPlayer>().flyingAngle.Item2 = 2;
 				}
 
-				if ((player.GetModPlayer<DergWingsPlayer>().wingFrames) % (9*4) == 4*2)
+				if ((player.GetModPlayer<DergWingsPlayer>().wingFrames) % (9*4) == 4*3)
                 {
 					var snd = Main.PlaySound(SoundID.Item,(int)player.MountedCenter.X, (int)player.MountedCenter.Y, 32);
 					snd.Pitch = 0.80f;
@@ -273,8 +379,8 @@ namespace SGAmod.Items.Accessories
 		public override void VerticalWingSpeeds(Player player, ref float ascentWhenFalling, ref float ascentWhenRising,
 			ref float maxCanAscendMultiplier, ref float maxAscentMultiplier, ref float constantAscend)
 		{
-			ascentWhenFalling = 0.45f;
-			ascentWhenRising = 0.65f;
+			ascentWhenFalling = 0.3f;
+			ascentWhenRising = 0.45f;
 			maxCanAscendMultiplier = 1.65f;
 			maxAscentMultiplier = 4f;
 			constantAscend = 0.045f;

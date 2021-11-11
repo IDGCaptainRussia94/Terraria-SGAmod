@@ -15,7 +15,7 @@ namespace SGAmod.Effects
     //No steal, thanks please, and thank Boffin for the shader! (The rest of the code is mine)
     public class TrailHelper
     {
-        Effect effect => SGAmod.TrailEffect;
+        Effect Effect => SGAmod.TrailEffect;
         public Vector2 projsize;
         public float trailThickness = 1f;
         public float trailThicknessIncrease = 1f;
@@ -26,10 +26,18 @@ namespace SGAmod.Effects
         public bool connectEnds = false;
         public Vector2 coordOffset;
         public Vector2 coordMultiplier;
+        public Vector2 rainbowCoordOffset;
+        public Vector2 rainbowCoordMultiplier;
+        public Vector3 rainbowColor;
         public bool perspective = false;
+        public float strengthPow = 0f;
         public Vector2 capsize;
         public float ZDistScaling = 0.01f;
+        public float rainbowScale = 1f;
+        public Texture2D rainbowTexture;
         public Func<float, Color> color;
+        public Func<float, Color> colorPerSegment;
+        public Func<float,float> trailThicknessFunction;
 
         public Texture tex;
         public TrailHelper(string pass,Texture2D tex2,Color color2 = default)
@@ -39,6 +47,9 @@ namespace SGAmod.Effects
             this.pass = pass;
             coordOffset = Vector2.Zero;
             coordMultiplier = Vector2.One;
+            rainbowCoordOffset = Vector2.Zero;
+            rainbowCoordMultiplier = Vector2.One;
+            rainbowColor = Vector3.One;
             strength = 1f;
             capsize = new Vector2(0,64f);
             if (color2 == default)
@@ -61,12 +72,19 @@ namespace SGAmod.Effects
 
             VertexBuffer vertexBuffer;
 
-            effect.Parameters["WorldViewProjection"].SetValue((perspective ? WVP.perspectiveView(Main.GameViewMatrix.Zoom) : WVP.View(Main.GameViewMatrix.Zoom)) * (perspective ? WVP.PerspectiveProjection() : WVP.Projection()));
-            effect.Parameters["imageTexture"].SetValue(tex);
-            effect.Parameters["coordOffset"].SetValue(coordOffset);
-            effect.Parameters["coordMultiplier"].SetValue(coordMultiplier);
-            effect.Parameters["strength"].SetValue(strength);
-            effect.Parameters["yFade"].SetValue(yFade);
+            Effect.Parameters["WorldViewProjection"].SetValue((perspective ? WVP.perspectiveView(Main.GameViewMatrix.Zoom) : WVP.View(Main.GameViewMatrix.Zoom)) * (perspective ? WVP.PerspectiveProjection() : WVP.Projection()));
+            Effect.Parameters["imageTexture"].SetValue(tex);
+            Effect.Parameters["coordOffset"].SetValue(coordOffset);
+            Effect.Parameters["coordMultiplier"].SetValue(coordMultiplier);
+            Effect.Parameters["strength"].SetValue(strength);
+            Effect.Parameters["yFade"].SetValue(yFade);
+            Effect.Parameters["strengthPow"].SetValue(strengthPow);
+
+            Effect.Parameters["rainbowCoordOffset"].SetValue(rainbowCoordOffset);
+            Effect.Parameters["rainbowCoordMultiplier"].SetValue(rainbowCoordMultiplier);
+            Effect.Parameters["rainbowColor"].SetValue(rainbowColor);
+            Effect.Parameters["rainbowScale"].SetValue(rainbowScale);
+            Effect.Parameters["rainbowTexture"].SetValue(rainbowTexture);
 
             int totalcount = drawPoses.Count;
             int caps = (int)capsize.X;
@@ -83,6 +101,7 @@ namespace SGAmod.Effects
             {
                 float fraction = (float)(k-1) / (float)(totalcount-1);
                 float fractionPlus = (float)(k) / (float)(totalcount-1);
+                float invertFrac = 1f - (k / (float)totalcount);
 
                 Vector2 trailloc = new Vector2(drawPoses[k].X, drawPoses[k].Y) + projsize;
                 Vector2 prev2 = new Vector2(drawPoses[k - 1].X, drawPoses[k - 1].Y) + projsize;
@@ -93,11 +112,15 @@ namespace SGAmod.Effects
 
                 float sizeboost = perspective ? 1f : 1f+(ZDistScaling * drawPoses[k].Z);
 
-                float thickness = Math.Max(0,(trailThickness + (1f - (k / (float)drawPoses.Count)) * trailThicknessIncrease)*(sizeboost));
+                float thickness = 0;
+                if (trailThicknessFunction == default)
+                    thickness = Math.Max(0, (trailThickness + invertFrac * trailThicknessIncrease) * (sizeboost));
+                else
+                    thickness = trailThicknessFunction(invertFrac) * (sizeboost);
 
                 Vector2 normal = Vector2.Normalize(trailloc - prev2);
                 Vector3 left = (normal.RotatedBy(MathHelper.Pi / 2f) * (thickness)).ToVector3();
-                Vector3 right = (normal.RotatedBy(-MathHelper.Pi / 2f) * (thickness)).ToVector3();
+                Vector3 right = -left;// (normal.RotatedBy(-MathHelper.Pi / 2f) * (thickness)).ToVector3();
 
                 Vector3 updown = -Vector3.UnitZ * ((perspective ? drawPoses[k].Z : 0));
 
@@ -118,8 +141,8 @@ namespace SGAmod.Effects
 
             repeater:
 
-                Color valuecol1 = color(fraction);
-                Color valuecol2 = color(fractionPlus);
+                Color valuecol1 = colorPerSegment != default ? colorPerSegment(k-1) : color(fraction);
+                Color valuecol2 = colorPerSegment != default ? colorPerSegment(k) : color(fractionPlus);
 
                 float fadeTo = doFade ? 0f : 1f;
                 Color colortemp = Color.Lerp(valuecol1, valuecol1 * fadeTo, fraction);
@@ -166,8 +189,10 @@ namespace SGAmod.Effects
                     float angleNext = percentNext * MathHelper.Pi;
 
                     float thickness = trailThickness+trailThicknessIncrease;
+                    if (trailThicknessFunction != default)
+                        thickness = trailThicknessFunction(1f);
 
-                    float rotAngle = (-MathHelper.Pi / 2f) + (angle);
+                        float rotAngle = (-MathHelper.Pi / 2f) + (angle);
                     float rotAngleNext = (-MathHelper.Pi / 2f) + (angleNext); //Idglib.DrawTether(SGAmod.ExtraTextures[21], loc, loc+ (normal.RotatedBy(rotAngle) * thickness), 1f, 0.25f, 1f, Color.White);
 
                     float tricknessAdd = 0f;// (float)Math.Max(-2f + Math.Sin(percent * (MathHelper.Pi)) * 2.5f, 0) * capsize.Y;
@@ -177,7 +202,7 @@ namespace SGAmod.Effects
                     Vector3 leftNextStep = (normal.RotatedBy(rotAngleNext) * (thickness + tricknessAddNext)).ToVector3();
                     Vector3 locv3 = (loc-Main.screenPosition).ToVector3();
 
-                    Color color2 = color(0f);
+                    Color color2 = colorPerSegment != default ? colorPerSegment(0) : color(0f);
                     Vector2 texCoord = new Vector2((float)Math.Sin(percent * MathHelper.Pi)/2f, 0f);
                     Vector2 texCoordNext = new Vector2((float)Math.Sin(percentNext*MathHelper.Pi)/2f,0f);
 
@@ -199,8 +224,14 @@ namespace SGAmod.Effects
 
 
 
-            effect.CurrentTechnique.Passes[pass].Apply();
+            Effect.CurrentTechnique.Passes[pass].Apply();
             Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, ((totalcount + 1) * 2)+(caps));
+
+            Effect.Parameters["coordOffset"].SetValue(Vector2.Zero);
+            Effect.Parameters["coordMultiplier"].SetValue(Vector2.One);
+            Effect.Parameters["strength"].SetValue(1f);
+            Effect.Parameters["yFade"].SetValue(1f);
+            Effect.Parameters["strengthPow"].SetValue(0f);
 
         }
     }

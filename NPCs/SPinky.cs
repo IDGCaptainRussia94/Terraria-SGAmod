@@ -1495,6 +1495,8 @@ namespace SGAmod.NPCs
 	{
 		public string Trophy() => "SupremePinkyTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0 && ((GetType() == typeof(SPinky) || !Main.expertMode) || (GetType() == typeof(SPinkyTrue)));
+		public string RelicName() => GetType() == typeof(SPinkyTrue) ? "SPinky" : "NOU";
+		public void NoHitDrops() { }
 
 		protected float getHitEffect = 0f;
 		protected int aicounter = 0;
@@ -2839,7 +2841,7 @@ namespace SGAmod.NPCs
 			RadialEffect.Parameters["alpha"].SetValue(0.80f*alpha);
 			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.125f, -Main.GlobalTime * 0.175f));
 			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(2f, 2f));
-			RadialEffect.Parameters["ringScale"].SetValue(0.075f*((80f/ (float)projectile.width) * ((float)ringSize/64f)));
+			RadialEffect.Parameters["ringScale"].SetValue(0.075f*((80f/ (float)projectile.width) * ((float)ringSize/64f))* alpha);
 			RadialEffect.Parameters["ringOffset"].SetValue((1f-(projectile.timeLeft/(float)maxTime))*0.9f);
 			RadialEffect.Parameters["ringColor"].SetValue(Color.Pink.ToVector3());
 			RadialEffect.Parameters["tunnel"].SetValue(false);
@@ -2852,7 +2854,7 @@ namespace SGAmod.NPCs
 			RadialEffect.Parameters["alpha"].SetValue(1.25f * alpha);
 			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * -0.125f, -Main.GlobalTime * 0.175f));
 			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(2f, 2f));
-			RadialEffect.Parameters["ringScale"].SetValue(0.05f * ((80f / (float)projectile.width) * ((float)ringSize / 64f)));
+			RadialEffect.Parameters["ringScale"].SetValue(0.05f * ((80f / (float)projectile.width) * ((float)ringSize / 64f)) * alpha);
 			RadialEffect.Parameters["ringColor"].SetValue(Color.Magenta.ToVector3());
 
 			RadialEffect.CurrentTechnique.Passes["Radial"].Apply();
@@ -3031,7 +3033,10 @@ namespace SGAmod.NPCs
 	public class PinkyMinionKilledProj : ModProjectile
 	{
 
-		float scalePercent => MathHelper.Clamp(projectile.timeLeft / 10f, 0f, Math.Min(projectile.localAI[0]/3f, 0.75f));
+		protected virtual float ScalePercent => MathHelper.Clamp(projectile.timeLeft / 10f, 0f, Math.Min(projectile.localAI[0]/3f, 0.75f));
+		protected virtual int EnemyType => ModContent.NPCType<SPinkyTrue>();
+		protected virtual float SpinRate => 1f;
+
 		Vector2 startingloc = default;
 		public override void SetDefaults()
 		{
@@ -3060,6 +3065,35 @@ namespace SGAmod.NPCs
 			return false;
 		}
 
+		public virtual void ReachedTarget(NPC target)
+        {
+			target.StrikeNPC((int)projectile.damage, 0, 1);
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, target.whoAmI, projectile.damage, 0f, (float)1, 0, 0, 0);
+			}
+
+			for (int i = 0; i < 32; i += 1)
+			{
+				Vector2 position = new Vector2(6, 6) + new Vector2(Main.rand.Next(12), Main.rand.Next(12));
+				int num128 = Dust.NewDust(projectile.Center + position, 0, 0, DustID.t_Marble, 0, 0, 240, Color.Pink, ScalePercent);
+				Main.dust[num128].noGravity = true;
+				Main.dust[num128].color = Color.Pink;
+				Main.dust[num128].velocity = (Vector2.Normalize(position) * 6f) + (projectile.velocity * 2.5f);
+			}
+
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 86);
+			if (sound != null)
+				sound.Pitch += 0.50f;
+
+			projectile.ai[0] += 1;
+			projectile.timeLeft = (int)MathHelper.Clamp(projectile.timeLeft, 0, 10);
+			projectile.netUpdate = true;
+
+		}
+
+
+
 		public override void AI()
 		{
 			if (startingloc == default)
@@ -3075,9 +3109,9 @@ namespace SGAmod.NPCs
 				//weightedPoints2.Add(new Point(npc.whoAmI, 1000000));
 
 			NPC[] findnpc = SGAUtils.ClosestEnemies(projectile.Center,1500,checkWalls: false,checkCanChase: false)?.ToArray();
-			findnpc = findnpc != null ? findnpc.Where(testby => testby.type == ModContent.NPCType<SPinkyTrue>()).ToArray() : null;
+			findnpc = findnpc != null ? findnpc.Where(testby => testby.type == EnemyType).ToArray() : null;
 
-			if (findnpc != null && findnpc.Count() > 0 && findnpc[0].type == ModContent.NPCType<SPinkyTrue>())
+			if (findnpc != null && findnpc.Count() > 0 && findnpc[0].type == EnemyType)
             {
 				projectile.velocity *= 0.94f;
 				if (projectile.localAI[0] > 8f)
@@ -3085,33 +3119,12 @@ namespace SGAmod.NPCs
 					NPC target = findnpc[0];
 					int dist = 60 * 60;
 					Vector2 distto = target.Center - projectile.Center;
-					projectile.velocity += Vector2.Normalize(distto).RotatedBy(MathHelper.Clamp(1f-(projectile.localAI[0] - 8f) / 5f, 0f, 1f) * 0.85f) * 3.20f;
+					projectile.velocity += Vector2.Normalize(distto).RotatedBy((MathHelper.Clamp(1f-(projectile.localAI[0] - 8f) / 5f, 0f, 1f) * 0.85f)*SpinRate) * 3.20f;
 					projectile.velocity = Vector2.Normalize(projectile.velocity) * MathHelper.Clamp(projectile.velocity.Length(), 0f, 32f+ projectile.localAI[0]);
 
 					if (projectile.timeLeft > 10 && projectile.ai[0] < 1 && distto.LengthSquared() < dist)
 					{
-						target.StrikeNPC((int)projectile.damage, 0, 1);
-						if (Main.netMode != NetmodeID.SinglePlayer)
-						{
-							NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, target.whoAmI, projectile.damage, 0f, (float)1, 0, 0, 0);
-						}
-
-						for (int i = 0; i < 32; i += 1)
-						{
-							Vector2 position = new Vector2(6, 6) + new Vector2(Main.rand.Next(12), Main.rand.Next(12));
-							int num128 = Dust.NewDust(projectile.Center + position, 0, 0, DustID.t_Marble, 0, 0, 240, Color.Pink, scalePercent);
-							Main.dust[num128].noGravity = true;
-							Main.dust[num128].color = Color.Pink;
-							Main.dust[num128].velocity = (Vector2.Normalize(position) * 6f) + (projectile.velocity * 2.5f);
-						}
-
-						SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 86);
-						if (sound != null)
-							sound.Pitch += 0.50f;
-
-						projectile.ai[0] += 1;
-						projectile.timeLeft = (int)MathHelper.Clamp(projectile.timeLeft, 0, 10);
-						projectile.netUpdate = true;
+						ReachedTarget(target);
 					}
 				}
             }
@@ -3127,7 +3140,7 @@ namespace SGAmod.NPCs
 				projectile.ai[0] += 1;
 			}
 
-			int num126 = Dust.NewDust(projectile.position - new Vector2(2, 2), Main.rand.Next(4), Main.rand.Next(4), DustID.t_Marble, 0, 0, 240, Color.Pink, scalePercent);
+			int num126 = Dust.NewDust(projectile.position - new Vector2(2, 2), Main.rand.Next(4), Main.rand.Next(4), DustID.t_Marble, 0, 0, 240, Color.Pink, ScalePercent);
 			Main.dust[num126].noGravity = true;
 			Main.dust[num126].velocity = projectile.velocity * 0.5f;
 		}
@@ -3152,7 +3165,7 @@ namespace SGAmod.NPCs
 			trail.trailThickness = 4 + MathHelper.Clamp(projectile.ai[0], 0f, 30f);
 			trail.trailThicknessIncrease = 6;
 			//trail.capsize = new Vector2(6f, 0f);
-			trail.strength = scalePercent;
+			trail.strength = ScalePercent;
 			trail.DrawTrail(projectile.oldPos.ToList(), projectile.Center);
 
 			Texture2D mainTex = Main.itemTexture[ItemID.Gel];

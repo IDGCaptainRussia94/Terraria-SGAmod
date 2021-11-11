@@ -88,6 +88,7 @@ namespace SGAmod
 		public bool lavaBurn = false;
 		public bool TimeSlowImmune = false;
 		public bool dotImmune = false;
+		public float dotResist = 1f;
 		public int reducedDefense = 0;
 		bool fireimmunestate = false;
 		bool[] otherimmunesfill = new bool[3];
@@ -99,6 +100,7 @@ namespace SGAmod
 		private int nonStackingImpaled_;
 		public int PinkyMinion = 0;
 		public int watched = 0;
+		public bool NoHit = true;
 		public static bool dropFork = false;
 		public List<DamageStack> damageStacks = new List<DamageStack>();
 
@@ -455,8 +457,11 @@ namespace SGAmod
 				if (impaled > 0)
 				{
 					if (npc.lifeRegen > 0) npc.lifeRegen = 0;
-					npc.lifeRegen -= impaled;
-					damage = Math.Max(impaled / 4, damage);
+
+					int damageDot = (int)((npc.realLife > 0 ? (impaled * 0.10f) : impaled) * dotResist);
+
+					npc.lifeRegen -= damageDot;
+					damage = Math.Max(damageDot / 4, damage);
 				}
 			}
 		Endjump:
@@ -1228,14 +1233,14 @@ namespace SGAmod
 				npc.value *= (int)(SGAWorld.NightmareHardcore * 1.50);
 				if (Main.rand.Next(0, 100) < 10)
 					npc.NPCLoot();
-
 			}
-
 			return true;
 		}
 
 		public override void NPCLoot(NPC npc)
 		{
+
+			DropRelic(npc);
 
 			for (int playerid = 0; playerid < Main.maxPlayers; playerid += 1)
 			{
@@ -1362,7 +1367,7 @@ namespace SGAmod
 				if (npc.HitSound == SoundID.NPCHit1)//Yup... lol
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.Leather);
 			}
-			if (SGAWorld.tf2cratedrops)
+			if (SGAWorld.tf2cratedrops && npc.lifeMax>50)
 			{
 				int craterates = SGAWorld.downedCratrosity == false ? (Main.hardMode ? 300 : 1500) : (Main.hardMode ? 30 : 200);
 

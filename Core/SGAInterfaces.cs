@@ -72,6 +72,11 @@ namespace SGAmod
 	{
 		string Trophy();
 		bool Chance();
+
+		string RelicName();
+
+		void NoHitDrops();
+
 	}
 
 }

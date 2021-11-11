@@ -17,7 +17,7 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "sacrificedMoney", Main.LocalPlayer.SGAPly().midasMoneyConsumed / (float)Item.buyPrice(1) + " platinum collected"));
+			tooltips.Add(new TooltipLine(mod, "sacrificedMoney", Main.LocalPlayer.SGAPly().MoneyCollected));
 		}
 		public override void SetDefaults()
 		{

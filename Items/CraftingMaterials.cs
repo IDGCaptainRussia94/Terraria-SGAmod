@@ -815,11 +815,11 @@ namespace SGAmod.Items
 
 		public override void SetDefaults()
 		{
-			item.maxStack = 10;
+			item.maxStack = 20;
 			item.width = 26;
 			item.height = 14;
 			item.value = Item.sellPrice(0,0,50,0);
-			item.rare = 8;
+			item.rare = ItemRarityID.Yellow;
 		}
 		public override void AddRecipes()
 		{
@@ -883,7 +883,8 @@ namespace SGAmod.Items
 			Tooltip.SetDefault("'Shards of Heaven'");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
-		public override void PostUpdate()
+        public override string Texture => "SGAmod/Items/IlluminantEssence";
+        public override void PostUpdate()
 		{
 			Lighting.AddLight(item.Center, Color.HotPink.ToVector3() * 0.55f * Main.essScale);
 		}
@@ -1900,7 +1901,11 @@ namespace SGAmod.Items
 			DisplayName.SetDefault("Lession 1: Pedant of Doubt");
 			Tooltip.SetDefault("'And there without, is not without doubt, of your failure...'\nPlace your inventory to allow Reality's Sunder summon Hellion at post Goblin Army\n" + Idglib.ColorText(Color.Red, "Hellion will not drop her crown, and will drop 25% less items\nWill consume one when summoned"));
 		}
-		public override void SetDefaults()
+        public override bool Autoload(ref string name)
+        {
+			return false;
+        }
+        public override void SetDefaults()
 		{
 			item.width = 40;
 			item.height = 40;

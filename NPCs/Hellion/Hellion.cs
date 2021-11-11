@@ -825,6 +825,14 @@ namespace SGAmod.NPCs.Hellion
 				if (npc.ai[1] < 805)
 					npc.ai[1] = 0;
 
+				if (npc.ai[1] < 860)
+					npc.ai[1] += 0.5f;
+
+				if (npc.ai[1] > 830)
+                {
+					ShadowParticle.StarAlpha = 0;
+				}
+
 				if (npc.ai[1] == 970)
 					hell.HellionTaunt("I won't go easy!");
 				if (npc.ai[1] == 900)
@@ -1326,6 +1334,9 @@ namespace SGAmod.NPCs.Hellion
 		{
 			Mod mod = SGAmod.Instance;
 			Hellion hell = Hellion.GetHellion();
+			if (hell == null)
+				return;
+
 			NPC npc = hell.npc;
 
 			float extremeness = 1f;
@@ -1921,7 +1932,9 @@ namespace SGAmod.NPCs.Hellion
 	{
 		public string Trophy() => "HellionTrophy";
 		public bool Chance() => GetType() != typeof(HellionCore);
-		
+		public string RelicName() => "Hellion";
+		public void NoHitDrops() { }
+
 		private float[] oldRot = new float[12];
 		private Vector2[] oldPos = new Vector2[12];
 		public float appear = 0.5f;
@@ -2610,7 +2623,7 @@ namespace SGAmod.NPCs.Hellion
 				if (Math.Abs(npc.velocity.X)>4)
 				npc.spriteDirection = npc.velocity.X > 0 ? -1 : 1;
 
-				flytopos = new Vector2(0, -400);
+				flytopos = new Vector2(0, -360);
 				flyspeed = 1f;
 				flydamper = 0.95f;
 				npc.dontTakeDamage = (army.Count > 0 || introtimer < 200) || (npc.life<(float)npc.lifeMax*0.10 && tyrant<1) || NPC.CountNPCS(NPCID.SkeletronHand)>0;
@@ -4124,6 +4137,7 @@ namespace SGAmod.NPCs.Hellion
 					projectile.timeLeft = Math.Min(projectile.timeLeft, 60);
 				}else if (hell == null)
                 {
+					if (GetType() != typeof(CalburnSwordAttack))
 					projectile.timeLeft = Math.Min(projectile.timeLeft, 60);
 				}
 			}

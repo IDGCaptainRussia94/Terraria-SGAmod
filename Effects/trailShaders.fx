@@ -22,6 +22,7 @@ float strength;
 float rainbowScale;
 float rainbowProgress;
 float yFade;
+float strengthPow;
 
 //custom passes
 texture imageTexture;
@@ -92,13 +93,19 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 }
 
-
-//Recreated Basic Effect
-float4 BasicEffect(VertexShaderOutput input) : COLOR
+float4 ColorPow(float4 color)
 {
-	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
-	pixel = saturate(pixel);
-	return pixel;
+
+if (strengthPow>0)
+{
+
+float4 color2 = color;
+float luma = (color2.r+color2.g+color2.b)/3.0;
+color2 = color*pow(luma,strengthPow);
+
+return color2;
+}
+return color;
 }
 
 //Applies a rainbow overlay
@@ -122,13 +129,61 @@ float4 RainbowEffectAlpha(VertexShaderOutput input) : COLOR
 	return pixel*luma;
 }
 
+//The 2 above but now a fade on the X axis
+//Applies a rainbow overlay
+float4 RainbowEffectFaded(VertexShaderOutput input) : COLOR
+{
+    float2 coords = coordOffset + input.TextureCoordinates * coordMultiplier;
+	float4 pixel = (tex2D(imageSampler, coords) * input.Color)*strength;
+	float4 rainpixel = (float4(HSVtoRGBFromTexture(input,coords,rainbowColor),1.0) * input.Color)*strength;
+	pixel = saturate(pixel*rainpixel);
+	return pixel* (min(sin(input.TextureCoordinates.x * 3.14159265)*yFade,1.0000000));
+}
+
+//Sets the alpha color based on luminosity and applies a rainbow overlay
+float4 RainbowEffectAlphaFaded(VertexShaderOutput input) : COLOR
+{
+    float2 coords = coordOffset + input.TextureCoordinates * coordMultiplier;
+	float4 pixel = (tex2D(imageSampler, coords) * input.Color)*strength;
+	float4 rainpixel = (float4(HSVtoRGBFromTexture(input,coords,rainbowColor),1.0) * input.Color)*strength;
+	float luma = (pixel.r+pixel.g+pixel.b)/3.0;
+	pixel = saturate(pixel*rainpixel);
+	return pixel*luma* (min(sin(input.TextureCoordinates.x * 3.14159265)*yFade,1.0000000));
+}
+
+//Recreated Basic Effect
+float4 BasicEffect(VertexShaderOutput input) : COLOR
+{
+	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
+	pixel = saturate(pixel);
+	return ColorPow(pixel);
+}
+
+//Sets the alpha color based on luminosity and returns a black color
+float4 BasicEffectDark(VertexShaderOutput input) : COLOR
+{
+	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
+	float luma = (pixel.r+pixel.g+pixel.b)/3.0;
+	//pixel = saturate(pixel);
+	return float4(0,0,0,luma);
+}
+
 //Sets the alpha color based on luminosity
 float4 BasicEffectAlpha(VertexShaderOutput input) : COLOR
 {
 	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
 	float luma = (pixel.r+pixel.g+pixel.b)/3.0;
 	pixel = saturate(pixel);
-	return pixel*luma;
+	return ColorPow(pixel)*luma;
+}
+
+//Sets the alpha color based on luminosity and fades on X
+float4 BasicEffectAlphaFaded(VertexShaderOutput input) : COLOR
+{
+	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
+	float luma = (pixel.r+pixel.g+pixel.b)/3.0;
+	pixel = saturate(pixel);
+	return ColorPow(pixel)*luma*(min(sin(input.TextureCoordinates.x * 3.14159265)*yFade,1.0000000));
 }
 
 //Faded on the X axis
@@ -136,7 +191,7 @@ float4 BasicEffectFaded(VertexShaderOutput input) : COLOR
 {
 	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
 	pixel = saturate(pixel);
-	return pixel * sin(input.TextureCoordinates.x * 3.14159265);
+	return ColorPow(pixel) * (min(sin(input.TextureCoordinates.x * 3.14159265)*yFade,1.0000000));
 }
 
 //Same as above, but now faded on the Y axis
@@ -144,8 +199,14 @@ float4 BasicEffectFadedY(VertexShaderOutput input) : COLOR
 {
 	float4 pixel = (tex2D(imageSampler, coordOffset + input.TextureCoordinates * coordMultiplier) * input.Color)*strength;
 	pixel = saturate(pixel);
-	return pixel * (min(sin(input.TextureCoordinates.y * 3.14159265)*yFade,1.0000000));
+	return ColorPow(pixel) * (min(sin(input.TextureCoordinates.y * 3.14159265)*yFade,1.0000000));
 }
+
+
+
+
+
+
 
 //Simple color gradient fade
 float4 MainPS(VertexShaderOutput input) : COLOR
@@ -188,10 +249,30 @@ technique BasicColorDrawing
 		VertexShader = compile vs_2_0 MainVS();
 		PixelShader = compile ps_2_0 RainbowEffectAlpha();
 	}			
+	pass FadedRainbowEffectPass
+	{
+		VertexShader = compile vs_2_0 MainVS();
+		PixelShader = compile ps_2_0 RainbowEffectFaded();
+	}				
+	pass FadedRainbowEffectAlphaPass
+	{
+		VertexShader = compile vs_2_0 MainVS();
+		PixelShader = compile ps_2_0 RainbowEffectAlphaFaded();
+	}		
 	pass BasicEffectAlphaPass
 	{
 		VertexShader = compile vs_2_0 MainVS();
 		PixelShader = compile ps_2_0 BasicEffectAlpha();
+	}	
+	pass BasicEffectDarkPass
+	{
+		VertexShader = compile vs_2_0 MainVS();
+		PixelShader = compile ps_2_0 BasicEffectDark();
+	}			
+	pass FadedBasicEffectAlphaPass
+	{
+		VertexShader = compile vs_2_0 MainVS();
+		PixelShader = compile ps_2_0 BasicEffectAlphaFaded();
 	}	
 		pass FadedBasicEffectPass
 	{

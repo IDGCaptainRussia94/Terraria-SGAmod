@@ -103,6 +103,29 @@ namespace SGAmod
 
 		}
 
+		public static void PlayersGotHit()
+		{
+			foreach (SGAnpcs sganpc in Main.npc.Where(testby => testby.active).Select(testby => testby.SGANPCs()))
+			{
+				sganpc.NoHit = false;
+			}
+		}
+
+		public void DropRelic(NPC npc)
+		{
+			if (Main.expertMode && NoHit && npc.modNPC != null)
+			{
+				if (npc.modNPC is ISGABoss iboss)
+				{
+					if (npc.GetType() != typeof(HellionCore))
+					{
+						iboss.NoHitDrops();
+						Items.Placeable.Relics.SGAPlacableRelic.AttemptDropRelic(npc.modNPC);
+					}
+				}
+			}
+		}
+
 		public void OnCrit(NPC npc, Projectile projectile, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
@@ -283,7 +306,14 @@ namespace SGAmod
 					{
 						Projectile.NewProjectile(npc.Center,Vector2.Zero,ModContent.ProjectileType<Items.Armors.Magatsu.ExplosionDarkSectorEye>(),0,0);
 
-						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_WyvernScream, (int)projectile.Center.X, (int)projectile.Center.Y);
+						Point location;
+
+						if (projectile != null)
+							location = new Point((int)projectile.Center.X, (int)projectile.Center.Y);
+						else
+							location = new Point((int)npc.Center.X, (int)npc.Center.Y);
+
+						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_WyvernScream, (int)location.X, (int)location.Y);
 						if (sound != null)
 							sound.Pitch = 0.925f;
 
@@ -637,6 +667,16 @@ namespace SGAmod
 			}
 
 			SGAWorld.overalldamagedone = ((int)damage) + SGAWorld.overalldamagedone;
+
+			if (item != null)
+            {
+				if (moddedplayer.FieryheartBuff > 0 && projectile.owner == player.whoAmI)
+				{
+					if (!npc.buffImmune[BuffID.Daybreak] || moddedplayer.FieryheartBuff > 15)
+						IdgNPC.AddBuffBypass(npc.whoAmI, 189, 1 * (20 + (int)(player.SGAPly().ExpertiseCollectedTotal / 250f)));
+				}
+			}
+
 			if (projectile != null)
 			{
 				if (moddedplayer.FieryheartBuff > 0 && projectile.owner == player.whoAmI && projectile.friendly)

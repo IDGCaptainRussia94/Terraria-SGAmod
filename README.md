@@ -21,11 +21,12 @@ Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Bind
 As it currently stands, regen is effectively gimped and energizer batteries are the only viable way to effectively recharge it
 
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy and Seismic Resonator Ore Creator), Aurora Gear and finish Luminous Alter Tile Entity!
--Add Hellion army bar, STILL!
+-Add Hellion army bar, STILL! (canned)
 
 Todo-Aurora Gear, Finish Vibranium enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Finish Luminious Alter (effects), Money Drain Staff thingy, upgradable drones and solar panels? (Laser orbital strike!)
 Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
+-WoF yoyo that leeches out HP from enemies into the yoyo, heals the player when it retracts
 
 
 Changelog:
@@ -76,6 +77,41 @@ Changelog:
 
 -Reduced health of Overseen Heads
 
+-Updated Shadowspirit's Eye to alpha upgrade the compass to do the alch-like NPC of detecting rare creatures accross the map (Pheathon is marked as rare), Shadowspirit's Eye can no longer block Potion Sickness
+
+-Soul Jars were moved later in Draken's shop (1250 Max Expertise), and cost a bit more
+
+-Added the Polarity Halberd; combo and ranged-laser focused melee weapon somewhat akin to the Sky Dragon's Fury
+
+-Various rebalances to the Skylight
+
+-Fixed a critical mistake in the BoostDamage that caused melee to have low crit chance (such as when you wore tf2 emblems)
+
+-Soul Jars now (again) require enemies to be at 10% or lower max health to capture essence
+
+-Worm/shared HP enemies now resist 90% damage over time
+
+-Split Demon Steppers and Luminary Wings apart, may revert this! Let me know how you feel about it!
+
+-Plasma Cells now stack to 20
+
+-Removed WIP Hellion Checkpoints (code for them is still present)
+
+-Fixed Census support and updated the descriptions a bit
+
+-Added 1.4-style relics; they are awarded for no-hitting bosses in expert or higher
+
+-Rmoved mentions of a Magatsu Manifested item as this armor set does not really need one
+
+-Fixed Blink Teleporting working on mounts sometimes (leading to some BS moments when you need specific movements)
+
+-Buffed Dies Irae Stone: now also triggers on SoC bonks
+
+-Added Rage Potion counterpart for Skylight
+
+-New changes to Wrath of Caliburn:
+-Completely reworked, is now effectively a full boss with a 'real' fight
+
 -New changes to Helen Hellion Weygold:
 -Removed Perma-Tyrant mode in nightmare mode for now
 -Nightmare mode Hellion is immune to all debuffs and knockback at the start of the fight
@@ -83,6 +119,23 @@ Changelog:
 
 -New changes to Phaethon:
 -Orbiting overseen heads's projectiles now have a slight acceleration delay
+-EoL homing attacks now decay completely and stop homing after a few seconds
+-Now stays in a position for a little over a second regardless of how much HP is missing; should make keeping up with him easier (movement speed is unchanged)
+-Now uses a shuffled deck-drawing system to determine attacks
+-Now has 30 defense
+-Now immune to all modded debuffs (not vanilla)
+
+-Various Normal Changes for the boss:
+--Homing shots stop homing much sooner
+--Shadow Nebula doesn't happen
+--Overseen shield-phase enemies do not spawn
+--Does not move faster at lower HP
+--Less projectiles in the final phase
+
+-New changes to Prismic Banshee:
+-Spirits drop a special type of essence, picking it up spawns a shot that flies to the mini-boss, getting 10 disables the hand and leaves the core exposed
+-Gained a new attack when hands are disabled, The rematch version can use this move whenever
+-Added health difference and no-speed up death ray for normal
 
 
 3.600f-(10/30/21)-Patch 11-Tech N Wreck: Beta
@@ -312,7 +365,7 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, True Dragon Wings, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, True Dragon Wings, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 

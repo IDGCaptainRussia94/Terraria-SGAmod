@@ -15,6 +15,8 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System.Reflection;
 using Terraria.GameInput;
+using MonoMod.RuntimeDetour.HookGen;
+using static MonoMod.Cil.ILContext;
 
 namespace SGAmod
 {
@@ -37,6 +39,9 @@ namespace SGAmod
 			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
+			IL.Terraria.Player.DashMovement += EoCBonkInjection;
+
+			IL.Terraria.ModifyPreAINPC
 
 			if (SGAmod.OSType < 1)//Only windows
 			IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
@@ -69,17 +74,63 @@ namespace SGAmod
 			*/
 		}
 
-		public static bool SpacePhysics(Item item)
-        {
-			item.velocity *= 0.98f;
-			return true;
-        }
-
-		private static void DrawBehindMoonMan()
-        {
-			NPCs.Hellion.ShadowParticle.Draw();
+		public static event Manipulator ModifyPreAINPC
+		{
+			add
+			{
+				HookEndpointManager.Modify((MethodBase)typeof(NPCLoader).GetMethod("PreAI", SGAmod.UniversalBindingFlags), (Delegate)(object)value);
+			}
+			remove
+			{
+				HookEndpointManager.Unmodify((MethodBase)typeof(NPCLoader).GetMethod("PreAI", SGAmod.UniversalBindingFlags), (Delegate)(object)value);
+			}
 		}
 
+		//Adds extra functionality to the EoC Shield Bonk
+		private delegate void BonkDelegate(Player ply, int npcid, ref float damage, ref float knockback, ref bool crit);
+		static internal void EoCBonkInjection(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+
+			//MethodInfo ApplyDamageToNPC = typeof(Player).GetMethod("ApplyDamageToNPC", BindingFlags.Public | BindingFlags.Instance);
+			if (c.TryGotoNext(MoveType.After,i=> i.MatchLdfld<Entity>("whoAmI"), i => i.MatchLdsfld<Main>("myPlayer"), i => i.MatchBneUn(out _)))
+			{
+				c.Emit(OpCodes.Ldarg_0);//player
+				c.Emit(OpCodes.Ldloc, 1);//npc id
+				c.Emit(OpCodes.Ldloca, 4);//bonk damage (30f) (passed as 'ref' keyword)
+				c.Emit(OpCodes.Ldloca, 5);//bonk knockback (passed as 'ref' keyword)
+				c.Emit(OpCodes.Ldloca, 6);//crit (passed as 'ref' keyword)
+				c.EmitDelegate<BonkDelegate>((Player ply, int npcid,ref float damage, ref float knockback,ref bool crit) => DoShieldBonkCode(ply, npcid, ref damage, ref knockback,ref crit));
+				return;
+			}
+
+			throw new Exception("IL Error Test");
+
+		}
+
+		private static void DoShieldBonkCode(Player ply, int npcid, ref float damage, ref float knockback, ref bool crit)
+		{
+			if (Main.myPlayer != ply.whoAmI && npcid >= 0)
+				return;
+
+			NPC npc = Main.npc[npcid];
+
+			if (!npc.active)
+				return;
+
+			int intdamage = (int)damage;
+
+			if (ply.SGAPly().diesIraeStone)
+			{
+				Item shieldEoC = ply.armor.First(testby => testby.type == ItemID.EoCShield);
+
+				if (shieldEoC != null)
+					npc.SGANPCs().DoApoco(npc, null, ply, shieldEoC, ref intdamage, ref knockback, ref crit, 4, true);
+			}
+
+		}
+
+		//Draws Hellion's Stary effect in the same layer as Moonlord's
 		private static void DrawBehindVoidLayers(ILContext il)
 		{
 			ILCursor c = new ILCursor(il);
@@ -87,6 +138,10 @@ namespace SGAmod
 			c.Index--;
 
 			c.EmitDelegate<Action>(DrawBehindMoonMan);
+		}
+		private static void DrawBehindMoonMan()
+		{
+			NPCs.Hellion.ShadowParticle.Draw();
 		}
 
 		private delegate bool ExtractorDelegate(ref int extractedType, ref int extractedAmmount);//Catches the IDs and stack size of extracts
@@ -179,7 +234,7 @@ namespace SGAmod
 
 		}
 
-		public static Vector2 MoveLavaBreath(Vector2 input)
+		private static Vector2 MoveLavaBreath(Vector2 input)
         {
 			int index = Main.myPlayer;
 			Vector2 pos = input + new Vector2(0, Main.player[index].breath < Main.player[index].breathMax ? -(24) : 0);

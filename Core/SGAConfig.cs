@@ -37,13 +37,13 @@ namespace SGAmod
 		public bool EarlyLuminite { get; set; }
 
 		[Label("Dark Sector")]
-		[Tooltip("Enables/Disables the Dark Sector to appear when loading a post-mechs world. [c/ff000: This will moderately break mod progression!]")]
+		[Tooltip("Enables/Disables the Dark Sector to appear when loading a post-mechs world. [This will moderately break mod progression!]")]
 		[DefaultValue(true)]
 		public bool DarkSector { get; set; }
 
 		[Label("Dank Shrines")]
 		[ReloadRequired]
-		[Tooltip("Enables/Disables Dank Shrines on World Generation. [c/ff000: This will moderately break mod progression!]")]
+		[Tooltip("Enables/Disables Dank Shrines on World Generation. [This will moderately break mod progression!]")]
 		[DefaultValue(true)]
 		public bool DankShrines { get; set; }
 

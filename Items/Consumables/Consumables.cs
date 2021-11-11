@@ -1312,7 +1312,7 @@ namespace SGAmod.Items.Consumables
 
 
 			NPC target = Main.npc[Idglib.FindClosestTarget(0, projectile.Center, new Vector2(0f, 0f), true, true, true, projectile)];
-			if (target != null && target.life<(int)(target.lifeMax*10.10))
+			if (target != null && target.life<(int)(target.lifeMax*0.10))
 			{
 				if (new Rectangle((int)projectile.position.X, (int)projectile.position.Y, projectile.width, projectile.height).Intersects
 					(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height)))

@@ -592,7 +592,7 @@ namespace SGAmod
 			player.minionDamage += damage;
 			thrownPlayer.thrownDamage += damage;
 
-			player.meleeCrit = crit; if (player.meleeCrit < 0) player.meleeCrit = 0;
+			player.meleeCrit += crit; if (player.meleeCrit < 0) player.meleeCrit = 0;
 			player.rangedCrit += crit; if (player.rangedCrit < 0) player.rangedCrit = 0;
 			player.magicCrit += crit; if (player.magicCrit < 0) player.magicCrit = 0;
 			thrownPlayer.thrownCrit += crit; if (thrownPlayer.thrownCrit < 0) thrownPlayer.thrownCrit = 0;

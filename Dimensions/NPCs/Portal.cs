@@ -118,7 +118,7 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override string TownNPCName()
 		{
-			return "Strange Portal";
+			return "";
 		}
 
 		public override string Texture

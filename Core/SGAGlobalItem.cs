@@ -386,7 +386,7 @@ namespace SGAmod
             }
             if (set == "Magatsu")
             {
-                player.setBonus = "+2% increased Apocalyptical Chance, +40% increased Apocalyptical Strength\nManifest your own N0ll Watchers to sense nearby enemies and 'watch' them\nYou get one watcher per free minion slot\nScoring an Apocalyptical against a watched enemy spreads a copy of damage nearby\nN0ll Watchers will see you one of their own, and ignore you\nManifested weapon: Hive Eye's Guidance";
+                player.setBonus = "+2% increased Apocalyptical Chance, +40% increased Apocalyptical Strength\nManifest your own N0ll Watchers to sense nearby enemies and 'watch' them\nYou get one watcher per free minion slot\nScoring an Apocalyptical against a watched enemy spreads a copy of damage nearby\nN0ll Watchers will see you as one of their own, and won't give chase";
 
                 Items.Armors.Magatsu.MagatsuHood.SetBonus(sgaplayer);
 

@@ -14,6 +14,7 @@ namespace SGAmod.Buffs
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
+			Main.buffNoTimeDisplay[Type] = true;
 			longerExpertDebuff = false;
 		}
 
@@ -51,7 +52,7 @@ namespace SGAmod.Buffs
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Shield Break");
-			Description.SetDefault("No Electric Charge Regen\nTaking off an Energy Shield will hurt the player");
+			Description.SetDefault("No Electric Charge/Barrier Regen\nTaking off an Energy Shield will hurt the player");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;

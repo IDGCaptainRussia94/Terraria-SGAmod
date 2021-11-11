@@ -15,6 +15,21 @@ namespace SGAmod.NPCs.Hellion
         public static RenderTarget2D shadowSurfaceShaderApplied;
         public static RenderTarget2D shadowHellion;
         public static int shadowParticlesDrawTime = 0;
+        protected static float starAlpha = 1f;
+        public static float StarAlpha
+        {
+            get
+            {
+                return starAlpha;
+            }
+            set
+            {
+                starAlpharesetTime = 30;
+                starAlpha = value;
+            }
+
+        }
+        public static int starAlpharesetTime = 0;
 
 
         public static Effect ShadowEffect;
@@ -139,6 +154,9 @@ namespace SGAmod.NPCs.Hellion
             particles = new List<ShadowParticle>(particles).Where(testby => testby.active).ToList();
 
             shadowParticlesDrawTime -= 1;
+            starAlpharesetTime -= 1;
+            if (starAlpharesetTime < 1 && starAlpha != 1f)
+                starAlpha += (1f- starAlpha) / 60f;
 
             foreach (ShadowParticle particle in particles)
             {
@@ -228,7 +246,7 @@ namespace SGAmod.NPCs.Hellion
                 for (int i = 0; i < 12; i += 1)
                 {
 
-                    float alpha = 1f;// MathHelper.Clamp(0.40f + (float)Math.Sin(((SGAWorld.modtimer / 35f) + rando.NextFloat(MathHelper.TwoPi)) * rando.NextFloat(0.25f, 0.75f))*0.80f, 0f, 1f);
+                    float alpha = 1f*starAlpha;// MathHelper.Clamp(0.40f + (float)Math.Sin(((SGAWorld.modtimer / 35f) + rando.NextFloat(MathHelper.TwoPi)) * rando.NextFloat(0.25f, 0.75f))*0.80f, 0f, 1f);
                     //if (alpha <= 0 && i > 0)
                     //    continue;
 

@@ -15,6 +15,8 @@ namespace SGAmod.NPCs
 	{
 		public string Trophy() => "DoomHarbingerTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
+		public string RelicName() => "Doom_Harbinger";
+		public void NoHitDrops() { }
 
 		int oldtype=0;
 		int [] orbitors=new int[20];

@@ -176,10 +176,10 @@ namespace SGAmod
 			Mod census = ModLoader.GetMod("Census");
 			if (census != null)
 			{
-				census.Call("TownNPCCondition", base.NPCType("Dergon"), "Aquire atleast 1 Expertise");
-				census.Call("TownNPCCondition", base.NPCType("ContrabandMerchant"), "Found loitering around your town at night");
-				census.Call("TownNPCCondition", base.NPCType("DungeonPortal"), "Discover in the Dungeon");
-				census.Call("TownNPCCondition", base.NPCType("Goat"), "Defeat Hellion atleast once across any playthrough, carries over into new games");
+				census.Call("TownNPCCondition", ModContent.NPCType<NPCs.TownNPCs.Draken>(), "Obtain atleast 1 Expertise");
+				census.Call("TownNPCCondition", ModContent.NPCType<NPCs.TownNPCs.ContrabandMerchant>(), "Found loitering around your town at night, leaves at dawn");
+				census.Call("TownNPCCondition", ModContent.NPCType<Dimensions.NPCs.DungeonPortal>(), "Defeat Skeletron and found within in the Dungeon afterwards");
+				census.Call("TownNPCCondition", ModContent.NPCType<NPCs.TownNPCs.Goat>(), "Unlock Nightmare Mode");
 			}
 
 			Mod bossList = ModLoader.GetMod("BossChecklist");
@@ -202,7 +202,7 @@ namespace SGAmod
 
 				bossList.Call("AddBoss", 6.5f, ModContent.NPCType<Cirno>(), this, "Cirno", (Func<bool>)(() => SGAWorld.downedCirno), new List<int>() { ModContent.ItemType<Nineball>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CirnoWings>(), ModContent.ItemType<CryostalBar>(), ModContent.ItemType<IceScepter>(), ModContent.ItemType<Snowfall>(), ModContent.ItemType<RubiedBlade>(), ModContent.ItemType<Starburster>(), ModContent.ItemType<IcicleFall>() }, "Use a [i:" + ItemType("Nineball") + "] in in the snow biome during the day", "Cirno retains their title of 'The Strongest'");
 
-				bossList.Call("AddMiniBoss", 9.1f, ModContent.NPCType<CaliburnGuardianHardmode>(), this, "Wrath of Caliburn", (Func<bool>)(() => SGAWorld.downedCaliburnGuardianHardmode), new List<int>() { ModContent.ItemType<CaliburnCompess>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CaliburnTypeA>(), ModContent.ItemType<CaliburnTypeB>(), ModContent.ItemType<CaliburnTypeC>() }, "Use a [i:" + ItemType("CaliburnCompess") + "] in Dank Shrines in hardmode", "The Caliburn Spirit returns to its slumber");
+				bossList.Call("AddBoss", 9.1f, ModContent.NPCType<CaliburnGuardianHardmode>(), this, "Wrath of Caliburn", (Func<bool>)(() => SGAWorld.downedCaliburnGuardianHardmode), new List<int>() { ModContent.ItemType<CaliburnCompess>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<CaliburnTypeA>(), ModContent.ItemType<CaliburnTypeB>(), ModContent.ItemType<CaliburnTypeC>() }, "Use a [i:" + ItemType("CaliburnCompess") + "] in Dank Shrines in hardmode", "The Caliburn Spirit returns to its slumber");
 
 				bossList.Call("AddBoss", 9.5f, ModContent.NPCType<SharkvernHead>(), this, "Sharkvern", (Func<bool>)(() => SGAWorld.downedSharkvern), new List<int>() { ModContent.ItemType<ConchHorn>() }, new List<int>() { ModContent.ItemType<SharkvernMask>(), SGAmod.Instance.ItemType("SharkvernTrophy") }, new List<int>() { ModContent.ItemType<SerratedTooth>(), ModContent.ItemType<SharkTooth>(), ModContent.ItemType<Jaws>(), ModContent.ItemType<SnappyShark>(), ModContent.ItemType<SkytoothStorm>(), ModContent.ItemType<SharkBait>(), ItemID.Starfish, ItemID.Seashell, ItemID.Coral, ItemID.SharkFin, ItemID.SoulofFlight }, "Use a [i:" + ItemType("ConchHorn") + "] at the ocean", "The Sharkvern retreats back into seclusion", "SGAmod/NPCs/Sharkvern/SharkvernWhole");
 

@@ -80,6 +80,18 @@ float4 NoAlphaFunction(float2 coords : TEXCOORD0) : COLOR0
 	return color*alpha;
 }
 
+float4 ColorToAlphaFunction(float2 coords : TEXCOORD0) : COLOR0
+{
+	float4 color = tex2D(uImage0, coords);
+    	if (!any(color))
+		return color;
+        float luma = (color.r+color.g+color.b)/3.0;
+        
+        color = float4(color.rgb*fadeColor,luma);
+
+	return color*alpha;
+}
+
 technique Technique1
 {
     pass FadePass
@@ -97,6 +109,10 @@ technique Technique1
             pass NoAlphaPass
     {
         PixelShader = compile ps_2_0 NoAlphaFunction();
+    }
+                pass ColorToAlphaPass
+    {
+        PixelShader = compile ps_2_0 ColorToAlphaFunction();
     }
 
 }

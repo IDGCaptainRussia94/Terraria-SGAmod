@@ -124,6 +124,9 @@ namespace SGAmod.NPCs.Cratrosity
 		public string Trophy() => GetType() == typeof(Cratrosity) ? "CratrosityTrophy" : "CratrogeddonTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
 
+		public string RelicName() => GetType() == typeof(Cratrosity) ? "Cratrosity" : "Cratrogeddon";
+		public void NoHitDrops() { }
+
 		public Vector2 offsetype = new Vector2(0, 0);
 		public int phase = 5;
 		public int defaultdamage = 60;

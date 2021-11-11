@@ -577,7 +577,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "sacrificedMoney", Main.LocalPlayer.SGAPly().midasMoneyConsumed / (float)Item.buyPrice(1) + " platinum collected"));
+			tooltips.Add(new TooltipLine(mod, "sacrificedMoney", Main.LocalPlayer.SGAPly().MoneyCollected));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -1221,7 +1221,7 @@ namespace SGAmod.Items.Accessories
 		{
 			DisplayName.SetDefault("Shadowspirit's Eye");
 			Tooltip.SetDefault("'an eye of Phaethon, grants its wearing protection of the cosmos...'" +
-				"\nGrants a 1/3 chance of converting debuffs into Action Cooldown Stacks\nLethal damage is converted into an Action Cooldown Stack\nGrants ALL sense potion effects (hide to disable)");
+				"\nGrants a 1/3 chance of converting debuffs into Action Cooldown Stacks\nLethal damage is converted into an Action Cooldown Stack\nGrants ALL sense potion effects (hide to disable)\nUpgrades the Caliburn Compass to detect Rare creatures from anywhere");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 
@@ -1362,7 +1362,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Draconic Claw Necklace");
-			Tooltip.SetDefault("'The trimmed claws make a good trophy...'\nEnhances max flight time of Avarice Lord\nAlso effectively infinite flight by holding up\n"+Idglib.ColorText(Color.Red, "this will drain HP from you  , if you have health to spare...")+"\n+50 Armor Penetration with Avarice Lord");
+			Tooltip.SetDefault("'The trimmed claws make a good trophy...'\nEnhances max flight time of Avarice Lord\nAlso effectively infinite flight by holding up\n"+Idglib.ColorText(Color.Red, "this will drain HP from you , if you have health to spare...")+"\n+50 Armor Penetration with Avarice Lord");
 		}
 
 		public override void SetDefaults()
@@ -1731,7 +1731,7 @@ namespace SGAmod.Items.Accessories
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
 			string s = "Not Binded!";
-			foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+			foreach (string key in SGAmod.WalkHotKey.GetAssignedKeys())
 			{
 				s = key;
 			}
@@ -2484,7 +2484,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dies Irae Stone");
-			Tooltip.SetDefault("'Judgement is at hand this day...'\nJust Blocking enemy contact damage with SGAmod Shields triggers Apocalypticals");
+			Tooltip.SetDefault("'Judgement is at hand this day...'\nJust Blocking enemy contact damage with SGAmod Shields triggers Apocalypticals\nShield of Cthulhu bonking also triggers Apocalypticals");
 		}
 
 		public override void SetDefaults()

@@ -18,7 +18,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Luminary Wings");
-			Tooltip.SetDefault("A gift from the heavens for a worthy vessel, grants superior wingtime and speed!\nEffects of Demon Steppers, (Most of) Cirno's Wings, and Prismal Booster\n(hide this accessory to disable Booster)\nYour movement speed is greatly increased and your max fall speed is doubled");
+			Tooltip.SetDefault("'A gift from the heavens for a worthy vessel.' Grants superior wingtime!\nEffects of (Most of) Cirno's Wings, and Prismal Booster (hide this accessory to disable Booster)\nYour movement speed is increased and your max fall speed is doubled");
 		}
 
 		public override void SetDefaults()
@@ -28,7 +28,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 26;
 			item.height = 38;
 			item.value = 2500000;
-			item.accessory = true;
+			item.accessory = true; 
 			item.rare = ItemRarityID.Purple;
 			item.expert = true;
 			item.wingSlot = wingslo;
@@ -46,7 +46,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			base.UpdateAccessory(player, true);
+			//base.UpdateAccessory(player, true);
 			Lighting.AddLight(player.Center, Color.HotPink.ToVector3() * 2.5f * Main.essScale);
 			(mod.GetItem("CirnoWings") as CirnoWings).UpdateAccessoryLocal(player, true, false);
 			if (!hideVisual)
@@ -105,8 +105,8 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			//recipe.AddIngredient(mod.ItemType("DemonSteppers"), 1);
 			recipe.AddIngredient(mod.ItemType("CirnoWings"), 1);
-			recipe.AddIngredient(mod.ItemType("DemonSteppers"), 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBooster"), 1);
 			recipe.AddIngredient(mod.ItemType("AuroraTearAwoken"), 2);
 			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 40);
@@ -124,23 +124,23 @@ namespace SGAmod.Items.Accessories
 
 			ascentWhenFalling = 0.85f;
 			ascentWhenRising = 0.35f;
-			maxCanAscendMultiplier = 1.5f;
-			maxAscentMultiplier = 1.5f;
-			constantAscend = 0.435f;
+			maxCanAscendMultiplier = player.jumpSpeedBoost > 0 ? 1.50f : 2.25f;
+			maxAscentMultiplier = player.jumpSpeedBoost > 0 ? 1.50f : 2.25f;
+			constantAscend = 0.235f;
 			if (player.SGAPly().Walkmode)
 			{
-				ascentWhenFalling /=2;
+				ascentWhenFalling /= 2;
 				ascentWhenRising /= 2;
 				maxCanAscendMultiplier /= 2;
 				maxAscentMultiplier /= 2;
-				constantAscend  /=2;
+				constantAscend /= 2;
 			}
 		}
 
 		public override void HorizontalWingSpeeds(Player player, ref float speed, ref float acceleration)
 		{
 			speed = 12f;
-			acceleration *= 6f;
+			acceleration *= 8f;
 			if (player.SGAPly().Walkmode)
             {
 				speed /= 2f;

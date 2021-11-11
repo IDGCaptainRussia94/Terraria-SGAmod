@@ -23,6 +23,8 @@ namespace SGAmod.NPCs
 	{
 		public string Trophy() => "CirnoTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
+		public string RelicName() => "Cirno";
+		public void NoHitDrops() { }
 
 		int aicounter = 0;
 		int frameid = 0;
@@ -210,11 +212,11 @@ namespace SGAmod.NPCs
 				aicounter = aicounter + 1;
 
 				Vector2 playerloc = P.Center;
-				if (GetType() == typeof(CirnoHellion) && Hellion.Hellion.GetHellion() != null)
+				/*if (GetType() == typeof(CirnoHellion) && Hellion.Hellion.GetHellion() != null)
 				{
 					playerloc = Hellion.Hellion.GetHellion().npc.Center;
 					npc.dontTakeDamage = true;
-				}
+				}*/
 
 				Vector2 dist = playerloc - npc.Center;
 
@@ -1274,7 +1276,7 @@ return false;
 
 	}
 
-		public class CirnoHellion : Cirno
+		/*public class CirnoHellion : Cirno
 	{
 		public override void SetStaticDefaults()
 		{
@@ -1318,7 +1320,7 @@ return false;
 			bossBag = mod.ItemType("CirnoBag");
 			npc.value = Item.buyPrice(0, 15, 0, 0);
 		}
-	}
+	}*/
 
 }
 

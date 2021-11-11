@@ -264,7 +264,6 @@ namespace SGAmod.Dimensions
 
             if (!Main.dedServ)
             {
-                Main.NewText(heartBeats);
                 Film warnings = new Film();
                 if (heartBeats != 2220)
                 {

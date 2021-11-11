@@ -182,8 +182,21 @@ namespace SGAmod
 		public static Effect SphereMapEffect;
 		public static Effect VoronoiEffect;
 
+		public static List<CustomSpecialDrawnTiles> BeforeTilesAdditive = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> BeforeTiles = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> AfterTiles = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> AfterTilesAdditive = new List<CustomSpecialDrawnTiles>();
+
+		public static List<CustomSpecialDrawnTiles> BeforeTilesAdditiveToDraw = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> BeforeTilesToDraw = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> AfterTilesToDraw = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> AfterTilesAdditiveToDraw = new List<CustomSpecialDrawnTiles>();
+
 
 		public static MusicStreamingOGG musicTest;
+
+		public static readonly BindingFlags UniversalBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
 
 		protected static float _screenShake = 0;
@@ -276,6 +289,33 @@ namespace SGAmod
 		public static List<Texture2D> HellionGores;
 		public static List<Texture2D> HellionTextures;
 		public static List<Texture2D> ExtraTextures;
+
+		private void AddMusicBoxes()
+		{
+			AddItem("MusicBox_Boss2Remix", new SGAItemMusicBox("MusicBox_Boss2Remix", "Murk", "Boss 2 Remix", "Unknown"));
+			AddItem("MusicBox_Swamp", new SGAItemMusicBox("MusicBox_Swamp", "Dank Shrine", "The Swamp of Ebag sah'now", "Skyre Ventes"));
+			AddItem("MusicBox_Caliburn", new SGAItemMusicBox("MusicBox_Caliburn", "Caliburn Guardians", "Guardians Down Below", "Rijam"));
+			AddItem("MusicBox_Wraith", new SGAItemMusicBox("MusicBox_Wraith", "Wraiths", "First Night", "Musicman"));
+			AddItem("MusicBox_SpiderQueen", new SGAItemMusicBox("MusicBox_SpiderQueen", "Spider Queen", "Acidic Affray", "Musicman"));
+			AddItem("MusicBox_Sharkvern", new SGAItemMusicBox("MusicBox_Sharkvern", "Sharkvern", "Freak of Nature", "Musicman"));
+			AddItem("MusicBox_Creepy", new SGAItemMusicBox("MusicBox_Creepy", "Creepy", "???", "Unknown"));
+			AddItem("MusicBox_Cirno", new SGAItemMusicBox("MusicBox_Cirno", "Cirno", "Algid Action", "Rijam"));
+			AddItem("MusicBox_Space", new SGAItemMusicBox("MusicBox_Space", "Space", "Asteriod Expanse", "Rijam"));
+			AddItem("MusicBox_SpaceBoss", new SGAItemMusicBox("MusicBox_SpaceBoss", "Phaethon", "Meteoroid Barrage", "Rijam"));
+			AddItem("MusicBox_Cratrosity", new SGAItemMusicBox("MusicBox_Cratrosity", "Cratrosity", "A Perilous Venture", "Rijam"));
+
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Murk"), ItemType("MusicBox_Boss2Remix"), TileType("MusicBox_Boss2Remix"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Swamp"), ItemType("MusicBox_Swamp"), TileType("MusicBox_Swamp"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Swamp_Remix"), ItemType("MusicBox_Caliburn"), TileType("MusicBox_Caliburn"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Copperig"), ItemType("MusicBox_Wraith"), TileType("MusicBox_Wraith"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SpiderQueen"), ItemType("MusicBox_SpiderQueen"), TileType("MusicBox_SpiderQueen"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Shark"), ItemType("MusicBox_Sharkvern"), TileType("MusicBox_Sharkvern"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/creepy"), ItemType("MusicBox_Creepy"), TileType("MusicBox_Creepy"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cirno_v2"), ItemType("MusicBox_Cirno"), TileType("MusicBox_Cirno"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space"), ItemType("MusicBox_Space"), TileType("MusicBox_Space"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space_Boss"), ItemType("MusicBox_SpaceBoss"), TileType("MusicBox_SpaceBoss"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cratrosity"), ItemType("MusicBox_Cratrosity"), TileType("MusicBox_Cratrosity"));
+		}
 
 		public static void LoadOrUnloadTextures(bool load)
 		{
@@ -446,30 +486,6 @@ namespace SGAmod
 
 			//LuminousAlterCraftingHint.InitLuminousCrafting();
 
-			AddItem("MusicBox_Boss2Remix", new SGAItemMusicBox("MusicBox_Boss2Remix", "Murk","Boss 2 Remix","Unknown"));
-			AddItem("MusicBox_Swamp", new SGAItemMusicBox("MusicBox_Swamp", "Dank Shrine", "The Swamp of Ebag sah'now", "Skyre Ventes"));
-			AddItem("MusicBox_Caliburn", new SGAItemMusicBox("MusicBox_Caliburn", "Caliburn Guardians", "Guardians Down Below", "Rijam"));
-			AddItem("MusicBox_Wraith", new SGAItemMusicBox("MusicBox_Wraith", "Wraiths", "First Night", "Musicman"));
-			AddItem("MusicBox_SpiderQueen", new SGAItemMusicBox("MusicBox_SpiderQueen", "Spider Queen", "Acidic Affray", "Musicman"));
-			AddItem("MusicBox_Sharkvern", new SGAItemMusicBox("MusicBox_Sharkvern", "Sharkvern", "Freak of Nature", "Musicman"));
-			AddItem("MusicBox_Creepy", new SGAItemMusicBox("MusicBox_Creepy", "Creepy", "???", "Unknown"));
-			AddItem("MusicBox_Cirno", new SGAItemMusicBox("MusicBox_Cirno", "Cirno", "Algid Action", "Rijam"));
-			AddItem("MusicBox_Space", new SGAItemMusicBox("MusicBox_Space", "Space", "Asteriod Expanse", "Rijam"));
-			AddItem("MusicBox_SpaceBoss", new SGAItemMusicBox("MusicBox_SpaceBoss", "Phaethon", "Meteoroid Barrage", "Rijam"));
-			AddItem("MusicBox_Cratrosity", new SGAItemMusicBox("MusicBox_Cratrosity", "Cratrosity", "A Perilous Venture", "Rijam"));
-
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Murk"), ItemType("MusicBox_Boss2Remix"), TileType("MusicBox_Boss2Remix"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Swamp"), ItemType("MusicBox_Swamp"), TileType("MusicBox_Swamp"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Swamp_Remix"), ItemType("MusicBox_Caliburn"), TileType("MusicBox_Caliburn"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Copperig"), ItemType("MusicBox_Wraith"), TileType("MusicBox_Wraith"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SpiderQueen"), ItemType("MusicBox_SpiderQueen"), TileType("MusicBox_SpiderQueen"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Shark"), ItemType("MusicBox_Sharkvern"), TileType("MusicBox_Sharkvern"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/creepy"), ItemType("MusicBox_Creepy"), TileType("MusicBox_Creepy"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cirno_v2"), ItemType("MusicBox_Cirno"), TileType("MusicBox_Cirno"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space"), ItemType("MusicBox_Space"), TileType("MusicBox_Space"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space_Boss"), ItemType("MusicBox_SpaceBoss"), TileType("MusicBox_SpaceBoss"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cratrosity"), ItemType("MusicBox_Cratrosity"), TileType("MusicBox_Cratrosity"));
-
 			AddTile("PrismalBarTile", new BarTile("PrismalBar", "Prismal Bar", new Color(210, 0, 100)), "SGAmod/Tiles/PrismalBarTile");
 			AddTile("UnmanedBarTile", new BarTile("UnmanedBar", "Novus Bar", new Color(70, 0, 40)), "SGAmod/Tiles/UnmanedBarTile");
 			AddTile("NoviteBarTile", new BarTile("NoviteBar", "Novite Bar", new Color(240, 221, 168)), "SGAmod/Tiles/NoviteBarTile");
@@ -483,7 +499,9 @@ namespace SGAmod
 
 			//AddGore("SGAmod/Gores/CirnoHeadGore",new CirnoHeadGore);
 
+			AddMusicBoxes();
 			SGAPlacablePainting.SetupPaintings();
+            Items.Placeable.Relics.SGAPlacableRelic.AddRelics();
 			ClipWeaponReloading.SetupRevolverHoldingTypes();
             Items.Placeable.TechPlaceable.LuminousAlterCraftingHint.CreateRecipeItems();
 
@@ -1416,6 +1434,7 @@ namespace SGAmod
 					}
 
 				}
+
 			}
 
 			SGAmod.fogAlpha = 1f;
@@ -1449,6 +1468,23 @@ namespace SGAmod
 				}
 			}
 		}
+
+	}
+
+	public class CustomSpecialDrawnTiles
+    {
+		public Vector2 position;
+		public Action<SpriteBatch,Vector2> CustomDraw = delegate (SpriteBatch spriteBatch,Vector2 thisposition)
+		{
+
+		};
+
+		public CustomSpecialDrawnTiles(Vector2 place)
+        {
+
+
+        }
+
 
 	}
 

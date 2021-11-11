@@ -629,7 +629,7 @@ namespace SGAmod
 
 		public bool DashBlink()
 		{
-			if (noModTeleport || maxblink < 1)
+			if (noModTeleport || maxblink < 1 || player.mount != null)
 				return false;
 
 

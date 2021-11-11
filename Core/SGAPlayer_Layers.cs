@@ -276,111 +276,6 @@ namespace SGAmod
 
 		});
 
-		public static PlayerLayer DergWings => new PlayerLayer("SGAmod", "AltWings", PlayerLayer.Wings, delegate (PlayerDrawInfo drawInfo)
-		{
-			Player drawPlayer = drawInfo.drawPlayer;
-			SGAmod mod = SGAmod.Instance;
-			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
-
-			//better version, from Qwerty's Mod
-			Color color = drawInfo.bodyColor;
-
-			float angle = 0;
-
-			int joy = Math.Max(0, modply.JoyrideShake);
-
-			float nalzs = Main.rand.NextFloat(-joy, joy) / 2f;
-			float nalzs2 = Main.rand.NextFloat(-joy / 1f, 0);
-
-			Texture2D texture;
-			int drawX;
-			int drawY;
-			Vector2 org;
-
-			float stealth = (0.2f + drawPlayer.stealth * 0.8f) * Math.Max(0.10f, ((float)drawInfo.bodyColor.A / 255f));
-
-			int num = drawPlayer.bodyFrame.Y / 56;
-			if (num >= Main.OffsetsPlayerHeadgear.Length)
-				num = 0;
-			Vector2 adderPos = new Vector2(Main.OffsetsPlayerHeadgear[num].X, drawPlayer.gfxOffY + Main.OffsetsPlayerHeadgear[num].Y);
-
-			#region RenderTarget2D
-			if (SGAConfigClient.Instance.AvariceLordWings)
-			{
-				drawX = (int)(drawPlayer.MountedCenter.X);
-				drawY = (int)(drawPlayer.MountedCenter.Y);
-
-				texture = Items.Accessories.TrueDragonWings.wingsSurface;
-
-				org = texture.Size() / 2f;
-
-				Vector2 whereat2 = (new Vector2(drawX, drawY).RotatedBy(drawPlayer.fullRotation, drawPlayer.MountedCenter));
-				color = Lighting.GetColor((int)(whereat2.X / 16f), (int)(whereat2.Y / 16f)) * stealth;
-
-				DrawData data2 = new DrawData(texture, whereat2 + adderPos - Main.screenPosition, null, color, (float)drawPlayer.fullRotation + angle, org, 2f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
-
-				data2.shader = (int)drawPlayer.cWings;
-
-				Main.playerDrawData.Add(data2);
-				return;
-			}
-			#endregion
-
-
-			#region ScaledDraw
-
-			for (int i = 1; i >= 0; i -= 1)
-			{
-
-				drawX = (int)((drawPlayer.MountedCenter.X + (-8 + i*16f)*drawPlayer.direction));
-				drawY = (int)((drawPlayer.MountedCenter.Y + nalzs2 - 2f));
-				if (i < 1)
-					drawY += 8;
-
-				texture = ModContent.GetTexture("SGAmod/Items/Accessories/BetsyWings/BetsyWings"+(i<1 ? "Front" : "Back"));
-
-				int wingIndex = drawPlayer.GetModPlayer<Items.Accessories.DergWingsPlayer>().wingFrames/4;
-
-				Point textureframe = new Point(texture.Width / 2, texture.Height / 5);
-
-				int wingindexmod = wingIndex % 9;
-
-				int wingX = (wingindexmod / 5)%2;
-				int wingY = wingindexmod % 5;
-
-				float flyingAngle = drawPlayer.GetModPlayer<Items.Accessories.DergWingsPlayer>().flyingAngle.Item1;
-
-				Vector2 scale = new Vector2(0.5f, 0.5f) * new Vector2(0.25f + ((flyingAngle) * 0.25f), 0.5f + ((flyingAngle) * 0.25f));
-
-				org = (i > 0 ? new Vector2(drawPlayer.direction < 0 ? textureframe.X-38 : 38, 164) : new Vector2(drawPlayer.direction< 0 ? textureframe.X - 222 : 222, 188))+new Vector2(wingindexmod*2*drawPlayer.direction, wingindexmod*2);
-
-				if (drawPlayer.direction < 0)
-				{
-					drawX -= (int)((i < 1 ? 16 : -16) * scale.X);
-				}
-                else
-                {
-					drawX -= (int)((i > 0 ? 16 : -16)* scale.X);
-				}
-
-				Rectangle erect = new Rectangle((wingX) * textureframe.X, (wingY) * textureframe.Y, textureframe.X, textureframe.Y);
-
-				angle = 0;// (((-0.5f + i)*(MathHelper.Pi*0.5f))* ((1f- flyingAngle) *0.2f)+(float)(0f - Math.Pow(Math.Abs(drawPlayer.velocity.X)*0.015f,0.75f))* (1f-flyingAngle)) *drawPlayer.direction;
-
-				Vector2 whereat3 = (new Vector2(drawX, drawY).RotatedBy(drawPlayer.fullRotation, drawPlayer.MountedCenter));
-				color = Lighting.GetColor((int)(whereat3.X / 16f), (int)(whereat3.Y / 16f)) * stealth;
-
-				DrawData data3 = new DrawData(texture, whereat3 + adderPos - Main.screenPosition, erect, color, (float)drawPlayer.fullRotation + angle, org, scale, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
-
-				data3.shader = (int)drawPlayer.cWings;
-
-				Main.playerDrawData.Add(data3);
-			}
-
-			#endregion
-
-		});
-
 		public override void ModifyDrawInfo(ref PlayerDrawInfo drawInfo)
 		{
 			//drawInfo.
@@ -405,7 +300,7 @@ namespace SGAmod
 				Texture2D texture = ModContent.GetTexture(modply.armorglowmasks[index]);
 
 				int drawX = (int)((drawInfo.position.X + drawPlayer.bodyPosition.X + 10) - Main.screenPosition.X);
-				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
+				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) + drawPlayer.gfxOffY - Main.screenPosition.Y);//gravDir 
 				DrawData data;
 				if (index == 3)
 					data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.legFrame.Y, drawPlayer.legFrame.Width, drawPlayer.legFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.legFrame.Width / 2, drawPlayer.legFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
@@ -424,7 +319,7 @@ namespace SGAmod
 						{
 							float distance = (2f + (float)Math.Sin(Main.GlobalTime * 3f) * 2f)+(20f * (modply.valkyrieSet.Item4-0.25f));
 							float drawX2 = (float)(drawX + Math.Cos(Main.GlobalTime + f) * distance);
-							float drawY2 = (float)(drawY + Math.Sin(Main.GlobalTime + f) * distance);
+							float drawY2 = (float)(drawY + Math.Sin(Main.GlobalTime + f) * distance)+drawPlayer.gfxOffY;
 
 							Color colorz = Color.White * MathHelper.Clamp(drawPlayer.buffTime[indexer] / 200f, 0f, 1f);
 
@@ -468,14 +363,12 @@ namespace SGAmod
 					if (sgaplayer.CustomWings == 1)
 					{
 						JoyriderWings.visible = true;
-						//layers.RemoveAt(wingsLayer);
 						layers.Insert(wingsLayer, JoyriderWings);
 					}
 					if (sgaplayer.CustomWings == 2)
 					{
-						DergWings.visible = true;
-						//layers.RemoveAt(wingsLayer);
-						layers.Insert(wingsLayer, DergWings);
+                        Items.Accessories.TrueDragonWings.DergWings.visible = true;
+						layers.Insert(wingsLayer, Items.Accessories.TrueDragonWings.DergWings);
 					}
 				}
 			}

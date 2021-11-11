@@ -25,6 +25,8 @@ namespace SGAmod
 		//Welcome to Russia's collection of vanilla hacking nonsense!
 		internal static void Patch()
         {
+			PrivateClassEdits.ApplyPatches();
+
 			IL.Terraria.Main.Update += RemoveUpdateCinematic;
 			IL.Terraria.Player.AdjTiles += ForcedAdjTilesHack;
 			IL.Terraria.Player.Update += SwimInAirHack;
@@ -40,8 +42,6 @@ namespace SGAmod
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 			IL.Terraria.Player.DashMovement += EoCBonkInjection;
-
-			IL.Terraria.ModifyPreAINPC
 
 			if (SGAmod.OSType < 1)//Only windows
 			IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
@@ -72,18 +72,6 @@ namespace SGAmod
 			//IL.Terraria.Player.PickTile -= PickPowerOverride;
 			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
 			*/
-		}
-
-		public static event Manipulator ModifyPreAINPC
-		{
-			add
-			{
-				HookEndpointManager.Modify((MethodBase)typeof(NPCLoader).GetMethod("PreAI", SGAmod.UniversalBindingFlags), (Delegate)(object)value);
-			}
-			remove
-			{
-				HookEndpointManager.Unmodify((MethodBase)typeof(NPCLoader).GetMethod("PreAI", SGAmod.UniversalBindingFlags), (Delegate)(object)value);
-			}
 		}
 
 		//Adds extra functionality to the EoC Shield Bonk

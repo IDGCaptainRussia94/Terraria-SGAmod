@@ -109,6 +109,8 @@ Changelog:
 
 -Added Rage Potion counterpart for Skylight
 
+-Added cute li'l draken to the mod menu
+
 -New changes to Wrath of Caliburn:
 -Completely reworked, is now effectively a full boss with a 'real' fight
 

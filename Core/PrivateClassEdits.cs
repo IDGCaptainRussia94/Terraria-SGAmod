@@ -31,14 +31,18 @@ namespace SGAmod
 
 		internal static void ApplyPatches()
 		{
-
 			typeUIModItem = Assembly.GetAssembly(typeof(Main)).GetType("Terraria.ModLoader.UI.UIModItem");
 
 			ModifyUIModManipulator += ModifyUIModILPatch;
 		}
 
+		internal static void RemovePatches()
+		{
+			ModifyUIModManipulator -= ModifyUIModILPatch;
+		}
 
-	public static event Manipulator ModifyUIModManipulator
+
+		public static event Manipulator ModifyUIModManipulator
 	{
 		add
 		{

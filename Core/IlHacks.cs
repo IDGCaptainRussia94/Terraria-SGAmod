@@ -61,6 +61,7 @@ namespace SGAmod
 
         internal static void Unpatch()
 		{
+			PrivateClassEdits.RemovePatches();
 			/*IL.Terraria.Player.AdjTiles -= ForcedAdjTilesHack;
 			IL.Terraria.Player.Update -= SwimInAirHack;
 			IL.Terraria.GameInput.LockOnHelper.Update -= CurserHack;

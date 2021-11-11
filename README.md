@@ -31,7 +31,7 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 
 Changelog:
 
-3.600g-(11/2/21)-Patch 11-Tech N Wreck: Beta
+3.600g-(11/11/21)-Patch 11-Tech N Wreck: Beta
 
 -Nerfed Autoclicker: Minion auto attack Range reduced, grabbing a cookie gives it the original range
 
@@ -83,7 +83,7 @@ Changelog:
 
 -Added the Polarity Halberd; combo and ranged-laser focused melee weapon somewhat akin to the Sky Dragon's Fury
 
--Various rebalances to the Skylight
+-Various rebalances to the Skylight, added eclipse
 
 -Fixed a critical mistake in the BoostDamage that caused melee to have low crit chance (such as when you wore tf2 emblems)
 

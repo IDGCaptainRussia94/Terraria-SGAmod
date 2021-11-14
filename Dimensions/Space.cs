@@ -1571,7 +1571,7 @@ namespace SGAmod.Dimensions
         }
 
     }
-    public class BubblePickup : EnchantedBubble
+    public class BubblePickup : EnchantedBubble, IConsumablePickup
     {
         public override void SetStaticDefaults()
         {

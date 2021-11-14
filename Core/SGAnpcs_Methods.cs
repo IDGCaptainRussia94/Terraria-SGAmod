@@ -59,19 +59,9 @@ namespace SGAmod
         {
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
 
-			int ammo = 0;
-			if (player.HasItem(ItemID.Shuriken))
-				ammo = ItemID.Shuriken;
-			if (player.HasItem(ItemID.ThrowingKnife))
-				ammo = ItemID.ThrowingKnife;
-			if (player.HasItem(ItemID.PoisonedKnife))
-				ammo = ItemID.PoisonedKnife;
-			if (player.HasItem(ItemID.FrostDaggerfish))
-				ammo = ItemID.FrostDaggerfish;
-			if (player.HasItem(ItemID.StarAnise))
-				ammo = ItemID.StarAnise;
-			if (player.HasItem(ItemID.BoneDagger))
-				ammo = ItemID.BoneDagger;
+			int ammo = -1;
+			moddedplayer.LookForThrowingGear(ref ammo);
+
 			//if (player.HasItem(ModContent.ItemType<ThrowingStars>()))
 			//	ammo = ModContent.ItemType<ThrowingStars>();
 

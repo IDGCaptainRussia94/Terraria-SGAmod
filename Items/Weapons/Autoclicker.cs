@@ -19,7 +19,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Autoclicker");
-			Tooltip.SetDefault("Summons Cursers to click on enemies\nClicks may spawn a cookie, more likely with more max sentry summons\nCan pickup the cookie to gain health, minion range, and a click rate buff\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds each"));
+			Tooltip.SetDefault("Summons Cursers to click on enemies\nClicks may spawn a cookie when this item is held, more likely with more max sentry summons\nCan pickup the cookie to gain health, minion range, and a click rate buff\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds each"));
 			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}
@@ -264,7 +264,7 @@ namespace SGAmod.Items.Weapons
 					{
 						Main.PlaySound(SoundID.MenuTick, (int)projectile.Center.X, (int)projectile.Center.Y, 0);
 
-						if (!them.IsDummy() && Main.rand.Next(500) < player.maxTurrets)
+						if (!them.IsDummy() && Main.rand.Next(500) < player.maxTurrets && player.HeldItem.type == ModContent.ItemType<Autoclicker>())
                         {
 							bool cookieNearby = false;
 							int range = 900 + (ClickerBoost ? 600 : 0);
@@ -370,7 +370,7 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
-	public class ClickerCookie : ModItem
+	public class ClickerCookie : ModItem, IConsumablePickup
 	{
 		public override void SetStaticDefaults()
 		{

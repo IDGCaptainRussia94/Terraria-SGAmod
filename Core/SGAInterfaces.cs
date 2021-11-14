@@ -30,6 +30,10 @@ namespace SGAmod
 	{
 
 	}
+	interface IRadioactiveDebuffText
+	{
+
+	}
 	interface IShieldBashProjectile
 	{
 
@@ -43,6 +47,18 @@ namespace SGAmod
 
     }
 	interface IJablinItem
+	{
+
+	}
+	interface IMangroveSet
+	{
+
+	}
+	interface INonDestructableProjectile
+	{
+
+	}
+	interface IConsumablePickup
 	{
 
 	}
@@ -61,6 +77,7 @@ namespace SGAmod
 	}
 	interface IHitScanItem
 	{
+
 	}
 	interface ITechItem
 	{

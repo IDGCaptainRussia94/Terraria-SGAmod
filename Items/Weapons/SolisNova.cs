@@ -199,7 +199,7 @@ namespace SGAmod.Items.Weapons
 					for (int i = 0; i < Main.maxNPCs; i += 1)
 					{
 						NPC guy = Main.npc[i];
-						if (guy != null && guy.active && !guy.friendly && !guy.townNPC && guy.CanBeChasedBy())
+						if (guy != null && guy.active && !guy.friendly && !guy.townNPC && guy.CanBeChasedBy() && !guy.IsDummy())
 						{
 							Vector2 there = guy.Center - projectile.Center;
 							there.Normalize();

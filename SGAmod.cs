@@ -181,6 +181,8 @@ namespace SGAmod
 		public static Effect RadialEffect;
 		public static Effect SphereMapEffect;
 		public static Effect VoronoiEffect;
+		public static Effect CataEffect;
+
 
 		public static List<CustomSpecialDrawnTiles> BeforeTilesAdditive = new List<CustomSpecialDrawnTiles>();
 		public static List<CustomSpecialDrawnTiles> BeforeTiles = new List<CustomSpecialDrawnTiles>();
@@ -632,6 +634,7 @@ namespace SGAmod
 				RadialEffect = SGAmod.Instance.GetEffect("Effects/Radial");
 				SphereMapEffect = SGAmod.Instance.GetEffect("Effects/SphereMap");
 				VoronoiEffect = SGAmod.Instance.GetEffect("Effects/Voronoi");
+				CataEffect = SGAmod.Instance.GetEffect("Effects/CataLogo");
 
 
 
@@ -677,6 +680,7 @@ namespace SGAmod
 			SGAmod.musicTest.Dispose();
 
 			SGAILHacks.Unpatch();
+            Items.Weapons.CataLogo.Unload();
 
 
 			if (!Main.dedServ)

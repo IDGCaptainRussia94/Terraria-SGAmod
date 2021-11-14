@@ -928,7 +928,7 @@ namespace SGAmod
 						npc.immune[i] = Math.Max(npc.immune[i] - 3, 0);
 				}
 			}
-			if (TimeSlow > 0 && !TimeSlowImmune)
+			if (TimeSlow > 0 && !npc.IsDummy() && !TimeSlowImmune)
 			{
 				npc.position -= npc.velocity - (npc.velocity / (1 + TimeSlow));
 			}
@@ -1317,6 +1317,14 @@ namespace SGAmod
 				{
 					if (interfacenpc.Chance())
 						Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(interfacenpc.Trophy()));
+				}
+			}
+
+			if (npc.type == NPCID.CultistBoss)
+			{
+				if (NPC.CountNPCS(NPCID.CultistBossClone) >= 6 && npc.SGANPCs().NoHit)
+				{
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<NuclearOption>());
 				}
 			}
 

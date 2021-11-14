@@ -40,9 +40,10 @@ namespace SGAmod
 			On.Terraria.GameContent.Events.DD2Event.SpawnMonsterFromGate += CrucibleArenaMaster.DD2PortalOverrides;
 			On.Terraria.GameContent.UI.Elements.UICharacterListItem.DrawSelf += Menu_UICharacterListItem;
 
-			//Unused until more relevant
-			//On.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += CtorModWorlData;
-			//On.Terraria.GameContent.UI.Elements.UIWorldListItem.DrawSelf += Menu_UICWorldListItem;
+            //Unused until more relevant
+            On.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += CtorModWorlData;
+            On.Terraria.GameContent.UI.Elements.UIWorldListItem.DrawSelf += Menu_UICWorldListItem;
+            On.Terraria.GameContent.UI.States.UIWorldSelect.ctor += UIWorldSelect_ClearData;
 
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
@@ -62,7 +63,6 @@ namespace SGAmod
 			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
-
 
 		public static void RecreateRenderTargetsOnScreenChange(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
 		{
@@ -160,6 +160,9 @@ namespace SGAmod
 		{
 			orig(self, data, snapPointIndex);
 
+			if (!SGAConfigClient.Instance.PlayerWorldData)
+				return;
+
 			string path = data.Path.Replace(".wld", ".twld");
 			TagCompound tag;
 
@@ -182,17 +185,37 @@ namespace SGAmod
 		private static void Menu_UICWorldListItem(On.Terraria.GameContent.UI.Elements.UIWorldListItem.orig_DrawSelf orig, UIWorldListItem self, SpriteBatch spriteBatch)
 		{
 			orig(self, spriteBatch);
-			Vector2 pos = self.GetDimensions().ToRectangle().TopRight();
 			int floors = -1;
+
 			if (SGAmodData.TryGetValue(self, out var tag3) && tag3 != null)
 			{
+				Vector2 pos = self.GetDimensions().ToRectangle().TopRight();
+				Vector2 pos2 = self.GetDimensions().ToRectangle().BottomRight();
+
+				bool darknessUnlocked = false;
+
 				if (tag3.ContainsKey("highestDimDungeonFloor"))
 					floors = tag3.GetByte("highestDimDungeonFloor");
+				if (tag3.ContainsKey("darknessVision"))
+					darknessUnlocked = tag3.GetBool("darknessVision");
+
+
+				string text = "Floors completed: " + (floors < 0 ? "None" : ""+(int)floors);
+				Utils.DrawBorderString(spriteBatch, text, pos + new Vector2(-Main.fontMouseText.MeasureString(text).X - 8, 5), Color.DeepSkyBlue);
+
+				if (darknessUnlocked)
+				{
+					Texture2D DarknessText = ModContent.GetTexture("SGAmod/Items/WatchersOfNull");
+					spriteBatch.Draw(DarknessText, pos2 - new Vector2(self.IsFavorite ? 24 : 48, 16), new Rectangle(0, 0, DarknessText.Width, DarknessText.Height / 13), Color.White, 0, new Vector2(DarknessText.Width, DarknessText.Height/13)/2f, 1f, SpriteEffects.None, 0f);
+				}
+
 			}
 
-			string text = "Floors completed: " + (int)floors;
-
-			Utils.DrawBorderString(spriteBatch, text, pos + new Vector2(-Main.fontMouseText.MeasureString(text).X - 8, 5), Color.DeepSkyBlue); ;
+		}
+		private static void UIWorldSelect_ClearData(On.Terraria.GameContent.UI.States.UIWorldSelect.orig_ctor orig, Terraria.GameContent.UI.States.UIWorldSelect self)
+		{
+			orig(self);
+			SGAmodData.Clear();
 		}
 
 
@@ -204,6 +227,10 @@ namespace SGAmod
 		static private void Menu_UICharacterListItem(On.Terraria.GameContent.UI.Elements.UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
 		{
 			orig(self, spriteBatch);
+
+			if (!SGAConfigClient.Instance.PlayerWorldData)
+				return;
+
 			Vector2 origin = new Vector2(self.GetDimensions().X, self.GetDimensions().Y);
 
 			//hooray double reflection, fuck you vanilla-Scalie
@@ -212,6 +239,7 @@ namespace SGAmod
 
 			Player player = (Player)_player.GetValue(character);
 			SGAPlayer sgaPly = player.SGAPly();
+			bool drakenUnlocked = sgaPly.dragonFriend;
 
 			if (sgaPly == null) { return; }
 			if (sgaPly.nightmareplayer)
@@ -231,6 +259,22 @@ namespace SGAmod
 
 				//Hmmm color hearts
 				spriteBatch.Draw(SGAmod.Instance.GetTexture("GreyHeart"), origin + new Vector2(80, 37), color3 * (0.50f + (float)Math.Cos(Main.GlobalTime * 2f) / 2f));
+			}
+
+			if (drakenUnlocked)
+			{
+				Texture2D DergonHeadTex = ModContent.GetTexture("SGAmod/NPCs/TownNPCs/Dergon_Head");
+				CalculatedStyle style = self.GetDimensions();
+				Vector2 offset = style.Position() + new Vector2(style.Width, style.Height);
+				float heartBeat = (Main.GlobalTime) % 1f;
+				if (Main.GlobalTime%2>=1)
+					heartBeat = 1f-((Main.GlobalTime) % 1f);
+
+				Vector2 drawerPos = offset - new Vector2(self.IsFavorite ? 16 : 48, 16);
+
+				spriteBatch.Draw(Main.heartTexture, drawerPos, null, Color.White, 0, Main.heartTexture.Size()/2f, 1.5f+MathHelper.SmoothStep(-1f,1f,(heartBeat) /2f), SpriteEffects.None, 0f);
+				spriteBatch.Draw(DergonHeadTex, drawerPos, null, Color.White, 0, DergonHeadTex.Size()/2f, 1f, SpriteEffects.None, 0f);
+
 			}
 
 		}

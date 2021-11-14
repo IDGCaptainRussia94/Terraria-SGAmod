@@ -48,8 +48,8 @@ namespace SGAmod.Items.Weapons.Aurora
 
         public override void SetDefaults()
         {
-            item.damage = 400;
-            item.crit = 10;
+            item.damage = 320;
+            item.crit = 0;
             item.melee = true;
             item.width = 40;
             item.height = 40;
@@ -57,7 +57,7 @@ namespace SGAmod.Items.Weapons.Aurora
             item.useAnimation = 6;
             item.useStyle = 5;
             item.noMelee = true; //so the item's animation doesn't do damage
-            item.knockBack = 5;
+            item.knockBack = 1;
             item.channel = false;
             item.noMelee = true;
             item.noUseGraphic = true;
@@ -220,7 +220,8 @@ namespace SGAmod.Items.Weapons.Aurora
                 recipe.AddIngredient(ItemID.Arkhalis, 1);
                 recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
                 recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 10);
-                recipe.AddIngredient(ItemID.LunarBar, 8);
+                recipe.AddIngredient(ModContent.ItemType<MoneySign>(), 12);
+                recipe.AddIngredient(ModContent.ItemType<StarMetalBar>(), 16);
                 recipe.AddIngredient(i == 0 ? ItemID.WrathPotion : ItemID.RagePotion, 1);
                 recipe.AddTile(ModContent.TileType<LuminousAlter>());
                 recipe.SetResult(this);
@@ -1000,7 +1001,7 @@ namespace SGAmod.Items.Weapons.Aurora
             if (player.PolarityHarbPower.Item1 > 0)
             {
                 player.player.lifeRegen += (int)(player.PolarityHarbPower.Item1 / 20f);
-                player.player.statLifeMax2 += (int)(player.PolarityHarbPower.Item1 / 7.5f);
+                player.player.statLifeMax2 += (int)(player.PolarityHarbPower.Item1 / 6f);
             }
         }
 

@@ -22,7 +22,7 @@ namespace SGAmod
 		}
 	public bool inttime=false;
 	public bool enhancedbees=false;
-	public bool splittingcoins=false;
+	public bool grazed=false;
 	public bool raindown=false;
 		public bool acid = false;
 		public float damageReduce = 1f;

@@ -226,8 +226,8 @@ namespace SGAmod.Dimensions.NPCs
 			//button = Language.GetTextValue("LegacyInterface.28");
 			if (Main.netMode < 1)
 				button = "Enter";
-			else
-				button = "Buy Loot";
+			//else
+				//button = "Buy Loot";
 
 		}
 
@@ -300,7 +300,7 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown)
 		{
-			cooldown = 5;
+			cooldown = 5000;
 			randExtraCooldown = 10;
 		}
 

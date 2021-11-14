@@ -3220,7 +3220,7 @@ namespace SGAmod.NPCs.Hellion
 
 	}
 
-		public class ParadoxMirror : ModProjectile
+		public class ParadoxMirror : ModProjectile, INonDestructableProjectile
 	{
 		float[] angles = new float[20];
 		float[] dist = new float[20];
@@ -3677,7 +3677,7 @@ namespace SGAmod.NPCs.Hellion
 
 	}
 
-		public class HellionBeam : ProjectileLaserBase
+		public class HellionBeam : ProjectileLaserBase, INonDestructableProjectile
 	{
 
 		protected float scale2 = 0f;
@@ -3850,7 +3850,7 @@ namespace SGAmod.NPCs.Hellion
 
 	}
 
-	public class HellionCascadeShot : ElementalCascadeShot
+	public class HellionCascadeShot : ElementalCascadeShot, INonDestructableProjectile
 	{
 		public override int stopmoving => 1500;
 		public override int fadeinouttime => 75;
@@ -3884,7 +3884,7 @@ namespace SGAmod.NPCs.Hellion
 
 	}
 
-	public class HellionCascadeShot2 : HellionCascadeShot
+	public class HellionCascadeShot2 : HellionCascadeShot, INonDestructableProjectile
 	{
 		public override int stopmoving => 600;
 		public override int fadeinouttime => 75;

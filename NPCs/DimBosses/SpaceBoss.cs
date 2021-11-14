@@ -2190,7 +2190,7 @@ namespace SGAmod.Dimensions.NPCs
 					TrailHelper trail = new TrailHelper("FadedBasicEffectPass", Main.sunTexture);
 					trail.projsize = Vector2.Zero;
 					trail.coordOffset = new Vector2(0, 0f);
-					trail.coordMultiplier = new Vector2(1f, 1f);
+					trail.coordMultiplier = new Vector2(1f, 0.5f);
 					trail.trailThickness = 16;
 					trail.trailThicknessIncrease = -12;
 					trail.doFade = false;
@@ -2270,6 +2270,8 @@ namespace SGAmod.Dimensions.NPCs
 
 			//Tetheroids
 
+			int index2 = 0;
+
 			foreach (Projectile asteriod in TetherAsteriods)
             {
 				UnifiedRandom rand = new UnifiedRandom(asteriod.whoAmI);
@@ -2321,11 +2323,28 @@ namespace SGAmod.Dimensions.NPCs
 				trail.trailThickness = 16;
 				trail.trailThicknessIncrease = -12;
 				trail.doFade = false;
+
+				float offset = (index2 * MathHelper.TwoPi)/2.731f;
+
 				trail.color = delegate (float percent)
 				{
-					return (npc.ai[0] > 999 ? Color.CornflowerBlue : Color.White) * (1f-MathHelper.Clamp((percent-0.7f)*4f,0f,1f));
+					Color scrColor = (npc.ai[0] > 999 ? Color.CornflowerBlue : Color.White);
+					float sinner = (float)Math.Sin(offset + ((Main.GlobalTime * 4f)) + ((1f-percent) * MathHelper.TwoPi));
+					float wave = Math.Max(sinner,0);
+					Color finalColor = Color.Lerp(Color.Transparent,scrColor * 0.75f, (wave));
+
+					if (npc.ai[0] > 999)
+						finalColor = Color.Lerp(scrColor * 0.50f, scrColor * 1f, (wave));
+
+					return finalColor * (1f - MathHelper.Clamp((percent - 0f) * 1f, 0f, 1f));
+				};
+				trail.trailThicknessFunction = delegate (float percent)
+				{
+					float sinner = (float)Math.Sin(offset + ((Main.GlobalTime * 4f)) + (percent * MathHelper.TwoPi));
+					return 16f + ((float)(Math.Max(sinner,0) * 12f)* (1f-percent)) -(12f*percent);
 				};
 				trail.DrawTrail(toThem, npc.Center);
+				index2 += 1;
 
 			}
 
@@ -2449,8 +2468,8 @@ namespace SGAmod.Dimensions.NPCs
 		}
     }
 
-	public class SpaceBossBeam : HellionBeam
-    {
+	public class SpaceBossBeam : HellionBeam, INonDestructableProjectile
+	{
 
 		public int timeWarning = 150;
 		protected float scale3 = 0f;

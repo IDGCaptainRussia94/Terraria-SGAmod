@@ -20,28 +20,6 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		{
 			return GetType() != typeof(SeriousSamWeapon);
 		}
-
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
-		{
-			// Get the vanilla damage tooltip
-			TooltipLine tt = tooltips.FirstOrDefault(x => x.Name == "Damage" && x.mod == "Terraria");
-			if (tt != null)
-			{
-				string[] thetext = tt.text.Split(' ');
-				string newline = "";
-				List<string> valuez = new List<string>();
-				foreach (string text2 in thetext)
-				{
-					valuez.Add(text2 + " ");
-				}
-				valuez.Insert(1, "Technological ");
-				foreach (string text3 in valuez)
-				{
-					newline += text3;
-				}
-				tt.text = newline;
-			}
-		}
 	}
 
 

@@ -11,8 +11,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SGAmod.HavocGear.Items.Weapons
 {
-	public class MossYoyo : MangroveBow,IDankSlowText
-	{
+	public class MossYoyo : MangroveBow,IDankSlowText, IMangroveSet
+    {
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Quagmire");
@@ -645,7 +645,7 @@ namespace SGAmod.Items.Weapons
             {
                 npc.Center += Collision.TileCollision(npc.position, Vector2.Normalize(projectile.Center - npc.Center) * 4f*(npc.knockBackResist+0.25f), npc.width, npc.height);
 
-                if ((npc.Center - projectile.Center).LengthSquared() < 50000)
+                if (!npc.IsDummy() && (npc.Center - projectile.Center).LengthSquared() < 50000)
                 {
                     npc.SGANPCs().nonStackingImpaled = Math.Max(npc.SGANPCs().nonStackingImpaled, projectile.damage);
                 }

@@ -31,6 +31,7 @@ using Microsoft.Xna.Framework.Audio;
 using SGAmod.Dimensions.NPCs;
 using SGAmod.NPCs;
 using SGAmod.NPCs.Sharkvern;
+using SGAmod.NPCs.Wraiths;
 
 namespace SGAmod.Dimensions
 {
@@ -147,7 +148,8 @@ namespace SGAmod.Dimensions
 
         public override void PreUpdate()
         {
-            if (SGAWorld.CutsceneActive)
+            //if (SGAWorld.CutsceneActive)
+            if (SpaceBoss.film.IsActive || CaliburnGuardianHardmode.film.IsActive)
             {
                 player.AddBuff(ModContent.BuffType<Buffs.InvincibleBuff>(), 2);
             }

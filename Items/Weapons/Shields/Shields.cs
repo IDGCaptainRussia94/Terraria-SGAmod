@@ -581,6 +581,11 @@ namespace SGAmod.Items.Weapons.Shields
 
 		public override bool CanUseItem(Player player)
 		{
+			return CanRoDTeleport(player);
+		}
+
+		public static bool CanRoDTeleport(Player player)
+        {
 			Vector2 vector27 = default(Vector2);
 			vector27.X = (float)Main.mouseX + Main.screenPosition.X;
 			if (player.gravDir == 1f)
@@ -604,9 +609,8 @@ namespace SGAmod.Items.Weapons.Shields
 			return false;
 		}
 
-
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
-		{
+		public static void RoDTeleport(Player player,int teletype = 0)
+        {
 			Vector2 vector27 = default(Vector2);
 			vector27.X = (float)Main.mouseX + Main.screenPosition.X;
 			//Just RoD stuff
@@ -620,11 +624,11 @@ namespace SGAmod.Items.Weapons.Shields
 			}
 
 
-			player.Teleport(vector27, 1);
+			player.Teleport(vector27, teletype);
 			NetMessage.SendData(MessageID.Teleport, -1, -1, null, 0, player.whoAmI, vector27.X, vector27.Y, 1);
 
 			//More RoD stuff
-			if (player.chaosState)
+			if (player.chaosState && teletype == 0)
 			{
 				player.statLife -= player.statLifeMax2 / 7;
 				PlayerDeathReason damageSource = PlayerDeathReason.ByOther(13);
@@ -641,6 +645,14 @@ namespace SGAmod.Items.Weapons.Shields
 			}
 
 			player.AddBuff(BuffID.ChaosState, 360);
+
+
+		}
+
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			RoDTeleport(player,2);
 			return false;
 		}
 

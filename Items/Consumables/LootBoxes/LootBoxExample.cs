@@ -73,11 +73,11 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		protected override void FillLootBox(WeightedRandom<LootBoxContents> WR)
 		{
 			foreach(int itemtype in Dimensions.DeeperDungeon.CommonItems)
-			WR.Add(new LootBoxContents(itemtype, 1), 1);
+			WR.Add(new LootBoxContents(itemtype, itemtype == ModContent.ItemType<Weapons.Megido>() ? Main.rand.Next(4,13) : 1), 1);
 			foreach (int itemtype in Dimensions.DeeperDungeon.RareItems)
 				WR.Add(new LootBoxContents(itemtype, 1), 0.25);
-			//foreach (int itemtype in Dimensions.DeeperDungeon.ShadowItems)
-				//WR.Add(new LootBoxContents(itemtype, 1), 0.40);
+			foreach (int itemtype in Dimensions.DeeperDungeon.ShadowItems.Where(testby => testby>ItemID.Count))
+				WR.Add(new LootBoxContents(itemtype, 1), 0.40);
 
 			loots.Add(WR.Get());
 		}

@@ -347,8 +347,8 @@ namespace SGAmod.NPCs.Cratrosity
 							{
 								List<Projectile> itz = Idglib.Shattershots(theclostestcrate, P.Center + new Vector2(0, P.Center.Y > theclostestcrate.Y ? 600 : -600), new Vector2(0, 0), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (25.00 / defaultdamage)), 10, 0, 1, true, 0, true, 200);
 								SGAprojectile modeproj = itz[0].GetGlobalProjectile<SGAprojectile>();
-								modeproj.splittingcoins = true;
-								modeproj.splithere = P.Center;
+								//modeproj.splittingcoins = true;
+								//modeproj.splithere = P.Center;
 							}
 							if (phase < 4)
 							{

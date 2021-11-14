@@ -1291,7 +1291,7 @@ namespace SGAmod.NPCs
 		}
 	}
 
-	public class IlluminantEssenceBoss : IlluminantEssence
+	public class IlluminantEssenceBoss : IlluminantEssence, IConsumablePickup
 	{
 		public override void SetStaticDefaults()
 		{

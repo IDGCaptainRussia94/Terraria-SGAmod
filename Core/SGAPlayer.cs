@@ -119,7 +119,7 @@ namespace SGAmod
 		public bool vibraniumSetPlatform = false; public bool vibraniumSetWall = false;
 		public bool mudbuff = false; public bool alkalescentHeart = false; public bool jabALot = false; public bool NoHitCharm = false; public int NoHitCharmTimer = 0;
 		public int Havoc = 0;
-		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public (bool,float,bool, float) valkyrieSet = (false,0,false,0); public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0); public (bool,bool) jungleTemplarSet = (false,false); public bool magatsuSet = false;
+		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public (bool,float,bool, float) valkyrieSet = (false,0,false,0); public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0); public (bool,bool) jungleTemplarSet = (false,false); public bool magatsuSet = false; public bool desertSet = false;
 		public float SpaceDiverWings = 0f;
 		public int gamePadAutoAim = 0;
 		public int tidalCharm = 0;
@@ -166,6 +166,7 @@ namespace SGAmod
 		public int breathingdelay = 0;
 		public int sufficate = 200;
 		public int finalGem = 0;
+		public int sandStormTimer = 0;
 
 		//Stat Related
 		public float UseTimeMul = 1f;
@@ -404,12 +405,14 @@ namespace SGAmod
 			SpaceDiverset = false;
 			acidSet = (false, false);
 			jungleTemplarSet = (false,false);
+			desertSet = false;
 			potionsicknessincreaser = 0;
 			Blazewyrmset = false;
 			Mangroveset = false;
 			IDGset = false;
 			jellybruSet = false;
 			vibraniumSet = false;
+			sandStormTimer = Math.Max(sandStormTimer - 1, 0);
 
 			shieldBlockTime = 0;
 			shieldBlockAngle = 0;
@@ -1976,6 +1979,11 @@ namespace SGAmod
 					Items.Armors.JungleTemplar.JungleTemplarHelmet.ActivatePrecurserPower(this);
 				}
 
+				if (desertSet)
+				{
+					Items.Armors.Desert.DesertHelmet.ActivateSandySwiftness(this);
+				}
+
 				if (vibraniumSet)
 				{
 					if (player.controlTorch)
@@ -2038,7 +2046,7 @@ namespace SGAmod
 			}
 			if (SGAmod.GunslingerLegendHotkey.JustPressed)
 			{
-				if (gunslingerLegend && CooldownStacks.Count < MaxCooldownStacks)
+				if (gunslingerLegend && AddCooldownStack(60 * 30,testOnly: true))
 				{
 					float dist = 999999;
 					int theone = -1;
@@ -2063,7 +2071,7 @@ namespace SGAmod
 					{
 						if (AddCooldownStack(60 * 30))
 						{
-							Main.PlaySound(SoundID.Item91, player.Center);
+							Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/P5Targeted").WithVolume(.7f).WithPitchVariance(.10f), player.Center);
 							gunslingerLegendtarget = theone;
 							gunslingerLegendtargettype = theonetype;
 							lockoneffect = 0;

@@ -61,6 +61,33 @@ namespace SGAmod
             }
 
         }
+        public static string techtext
+        {
+            get
+            {
+                Player player = Main.LocalPlayer;
+                SGAPlayer modplayer = player.GetModPlayer<SGAPlayer>();
+
+                string text = "";
+
+                if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl))
+                {
+                    text += "\nTech Weapons have their damage boosted by your tech multiplier";
+                    text += "\nIf Electric Charge falls below 50% your damage will be reduced";
+                    text += "\nDamage can fall down to -50% damage at no charge";
+                    text += "\nAll Tech Weapons consume a small ammount of Electric Charge on use";
+
+                }
+                else
+                {
+                    text += " (Hold LEFT CONTROL for more info)";
+
+                }
+                return text;
+
+            }
+
+        }
 
         public override bool CanUseItem(Item item, Player player)
         {
@@ -135,12 +162,12 @@ namespace SGAmod
                 if (ishavocitem > 0)
                 {
                     Color c = Main.hslToRgb(0.9f, 0.5f, 0.35f);
-                    tooltips.Add(new TooltipLine(mod, "Havoc Item", Idglib.ColorText(c, "Former Havoc mod item")));
+                    tooltips.Add(new TooltipLine(mod, "HavocItem", Idglib.ColorText(c, "Former Havoc mod item")));
                 }
                 if (SGAmod.UsesPlasma.ContainsKey(item.type))
                 {
                     Color c = Main.hslToRgb(0.7f, 0.15f, 0.7f);
-                    tooltips.Add(new TooltipLine(mod, "Plasma Item", Idglib.ColorText(c, "This weapon uses plasma cells for recharging")));
+                    tooltips.Add(new TooltipLine(mod, "PlasmaItem", Idglib.ColorText(c, "This weapon uses plasma cells for recharging")));
                 }
 
                 if (item.modItem is IManifestedItem)
@@ -148,6 +175,11 @@ namespace SGAmod
                     string tt = "This is a placeholder sprite";
                     Color c = Main.hslToRgb(0f, 0.75f, 0.7f);
                     tooltips.Add(new TooltipLine(mod, "Manifested Item", Idglib.ColorText(Color.Yellow, "This item is a manifestion of your armor set, bound to you")));
+                }
+                if (item.modItem is IMangroveSet)
+                {
+                    tooltips.Add(new TooltipLine(mod, "MangroveSet", "Having more of the mangrove weapon set in your inventory improves the damage"));
+                    tooltips.Add(new TooltipLine(mod, "MangroveSet", "Up to 50% with all the weapons"));
                 }
 
                 if (item.modItem is IRadioactiveItem radactive)
@@ -188,6 +220,8 @@ namespace SGAmod
                     Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
                     tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, dev.Item1 + "'s "+(dev.Item2+ (dev.Item2 != "" ? " " : "")) + "dev weapon")));
                 }
+
+
             }
 
             if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore>0))
@@ -219,6 +253,29 @@ namespace SGAmod
                     tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "A very strong being has locked it away from your possession, talk to the guide")));
                 }
             }
+
+            if (item?.modItem is ITechItem)//Tech items
+            {
+                // Get the vanilla damage tooltip
+                TooltipLine tt = tooltips.FirstOrDefault(x => x.Name == "Damage" && x.mod == "Terraria");
+                if (tt != null)
+                {
+                    string[] thetext = tt.text.Split(' ');
+                    string newline = "";
+                    List<string> valuez = new List<string>();
+                    foreach (string text2 in thetext)
+                    {
+                        valuez.Add(text2 + " ");
+                    }
+                    valuez.Insert(1, "Technological ");
+                    foreach (string text3 in valuez)
+                    {
+                        newline += text3;
+                    }
+                    tt.text = newline;
+                }
+            }
+
         }
 
         public override string IsArmorSet(Item head, Item body, Item legs)
@@ -311,11 +368,20 @@ namespace SGAmod
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
             if (set == "Desert")
             {
-                player.setBonus = "Immunity to Mighty Winds and increased throwing velocity in a Sandstorm\nManifested weapon: Sand Tosser";
-                player.buffImmune[BuffID.WindPushed] = true;
-                if (Sandstorm.Happening && player.ZoneDesert)
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
                 {
-                    player.Throwing().thrownVelocity += 0.20f;
+                    s = key;
+                }
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") to Summon up a short-lived Sandstorm\n---"+Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 45 seconds")+ "\nIncreased movement, 10% crit, and 35% extra throwing velocity in a Sandstorm\nImmunity to Mighty Winds\nManifested weapon: Sand Tosser";
+                player.buffImmune[BuffID.WindPushed] = true;
+                sgaplayer.desertSet = true;
+                if (Sandstorm.Happening && player.ZoneSandstorm)
+                {
+                    player.Throwing().thrownVelocity += 0.35f;
+                    player.Throwing().thrownCrit += 10;
+                    player.moveSpeed += 3f;
+                    player.accRunSpeed += 4f;
                 }
                 sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Desert.ManifestedSandTosser>();
             }
@@ -343,7 +409,7 @@ namespace SGAmod
                     s = key;
                 }
 
-                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Hunger of Fames for a short time\nAll throwing weapons get coated in acid for the 1st hit, but resets your life regeneration" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds") + "\nPoison, Venom, and Acid Burn all lower enemy defence by an extra 5\n ";
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Hunger of Fames for a short time\nAll throwing weapons get coated in acid for the 1st hit, but resets your life regeneration" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stacks, adds 60 seconds") + "\nPoison, Venom, and Acid Burn all lower enemy defence by an extra 5\n ";
                 sgaplayer.acidSet = (true, sgaplayer.acidSet.Item2);
             }
             if (set == "Engineer")
@@ -892,15 +958,54 @@ namespace SGAmod
 
         public override void ModifyWeaponDamage(Item item, Player player, ref float add, ref float mult, ref float flat)
         {
-            if (item.useAmmo > 0 && player.SGAPly().russianRoulette)
+            SGAPlayer sgaply = player.SGAPly();
+            if (item.useAmmo > 0 && sgaply.russianRoulette)
             {
                 add += item?.modItem is Items.Weapons.RevolverBase ? 1f : 0.5f;
+            }
+
+            if (item.modItem != null)
+            {
+
+                if (item.modItem is ITechItem)
+                {
+                    add += sgaply.techdamage * (MathHelper.Clamp((sgaply.electricCharge / (float)sgaply.electricChargeMax)*4f, 0f,1.5f)-0.5f);
+                }
+
+                if (item.modItem is IMangroveSet)
+                {
+                    List<int> mangroves = new List<int>();
+                    mangroves.Add(mod.ItemType("MangroveStriker"));
+                    mangroves.Add(mod.ItemType("MangroveShiv"));
+                    mangroves.Add(mod.ItemType("MangroveStaff"));
+                    mangroves.Add(mod.ItemType("MangroveBow"));
+                    mangroves.Add(mod.ItemType("MossYoyo"));
+
+                    float bonusdamage = 0;
+
+                    foreach (int itemtype in mangroves)
+                    {
+                        if (player.CountItem(itemtype) > 0)
+                        {
+                            if (itemtype != item.type)
+                            {
+                                bonusdamage += 0.125f;
+                            }
+                        }
+                    }
+                    add += bonusdamage;
+                }
             }
         }
 
         public override bool Shoot(Item item, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
+
+            if (item?.modItem is ITechItem)
+            {
+                sgaplayer.ConsumeElectricCharge(5+(int)((damage * sgaplayer.techdamage) * 0.02f), 30);
+            }
 
             if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister)
             {

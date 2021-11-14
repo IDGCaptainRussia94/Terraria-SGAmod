@@ -766,7 +766,8 @@ namespace SGAmod
 
 		public static bool IsConsumablePickup(this Item item)
 		{
-			return item.type == ItemID.Heart || item.type == ItemID.Star || item.type == ItemID.CandyApple || item.type == ItemID.SoulCake || item.type == ItemID.CandyCane || item.type == ItemID.SugarPlum || item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3 || item.type == ModContent.ItemType<Dimensions.BubblePickup>() && item.type == ModContent.ItemType<Items.Weapons.ClickerCookie>();
+			bool iConsumablePickup = item.modItem != null && item.modItem is IConsumablePickup;
+			return item.type == ItemID.Heart || item.type == ItemID.Star || item.type == ItemID.CandyApple || item.type == ItemID.SoulCake || item.type == ItemID.CandyCane || item.type == ItemID.SugarPlum || item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3 || iConsumablePickup;
 		}
 
 		public static void SpawnCoins(Vector2 where, int ammount2, float explodespeed = 0f)

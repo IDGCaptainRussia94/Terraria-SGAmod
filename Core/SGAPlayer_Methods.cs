@@ -186,25 +186,35 @@ namespace SGAmod
 		public bool AddCooldownStack(int time, int count = 1, bool testOnly = false)
 		{
 			bool weHaveStacks = CooldownStacks.Count + (count - 1) < MaxCooldownStacks;
-			if (illuminantSet.Item1 > 4 && weHaveStacks && !testOnly && Main.rand.Next(4) == 0)
-			{
-				return true;
-			}
-			if (weHaveStacks)
-			{
-				//if (player.HasBuff(mod.BuffType("CondenserBuff")))
-				//	time = (int)((float)time * 1.15f);
 
-				if (!testOnly)
+			bool worked = false;
+
+
+			for (int i = 0; i < count; i += 1)
+			{
+
+				bool illuSet = illuminantSet.Item1 > 4 && weHaveStacks && !testOnly && Main.rand.Next(4) == 0;
+
+				if (illuSet)
 				{
-					time = (int)((float)time * ActionCooldownRate);
-
-					for (int i = 0; i < count; i += 1)
-						CooldownStacks.Add(new ActionCooldownStack(time, CooldownStacks.Count));
+					worked = true;
+					continue;
 				}
-				return true;
+				if (weHaveStacks)
+				{
+					//if (player.HasBuff(mod.BuffType("CondenserBuff")))
+					//	time = (int)((float)time * 1.15f);
+
+					if (!testOnly)
+					{
+						int time2 = (int)((float)time * ActionCooldownRate);
+
+						CooldownStacks.Add(new ActionCooldownStack(time2, CooldownStacks.Count));
+					}
+					worked = true;
+				}
 			}
-			return false;
+			return worked && weHaveStacks;
 			
 		}
 
@@ -424,6 +434,24 @@ namespace SGAmod
 				}
 			}
 			return false;
+		}
+
+		public void LookForThrowingGear(ref int type)
+        {
+			int[] typesToCheck = { ItemID.Shuriken, ItemID.ThrowingKnife, ItemID.PoisonedKnife, ItemID.FrostDaggerfish, ItemID.StarAnise, ItemID.BoneDagger };
+
+			for(int i = 0; i < player.inventory.Length; i += 1)
+            {
+				Item item = player.inventory[i];
+
+				var counter = typesToCheck.Where(testby => testby == item.type);
+
+				if (counter.Count() > 0)
+                {
+					type = counter.ToArray()[0];
+					break;
+				}
+            }
 		}
 
 		public void UpgradeTF2()

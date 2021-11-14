@@ -16,7 +16,7 @@ using SGAmod.Effects;
 namespace SGAmod.Items.Weapons
 {
 
-	public class AvaliScythe : SeriousSamWeapon
+	public class AvaliScythe : SeriousSamWeapon,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -251,7 +251,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class CyberScythe : AvaliScythe
+	public class CyberScythe : AvaliScythe,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{

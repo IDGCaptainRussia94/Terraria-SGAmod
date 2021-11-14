@@ -271,11 +271,25 @@ namespace SGAmod.Items.Placeable.Relics
 				Texture2D tex = ModContent.GetTexture(texstr);
 				Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
 				Vector2 location = (new Vector2(i, j) * 16) + new Vector2(8, 8) + zerooroffset;
-				Vector2 offset2 = new Vector2(16, -6 + (float)Math.Sin((Main.GlobalTime * 2f) + (i / 2.79f) + (j / 1.353f)) * 6f);
+				float sinwave = (float)Math.Sin((Main.GlobalTime * 2f) + (i / 2.79f) + (j / 1.353f));
+				Vector2 offset2 = new Vector2(16, -6 + sinwave * 6f);
 
 				Vector2 endloc = location + offset2;
 
 				spriteBatch.Draw(tex, new Vector2((int)endloc.X, (int)endloc.Y) - Main.screenPosition, null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1, 1, 1));
+
+				float timer = ((sinwave / 4f)+ 0.5f) %1f;
+
+				SGAmod.FadeInEffect.Parameters["fadeColor"].SetValue(2f);
+				SGAmod.FadeInEffect.Parameters["alpha"].SetValue(MathHelper.Clamp(0f + (float)Math.Sin(timer * MathHelper.TwoPi) * 1f, 0f, 1f) * 0.75f);
+				SGAmod.FadeInEffect.CurrentTechnique.Passes["ColorToAlphaPass"].Apply();
+				
+				spriteBatch.Draw(tex, new Vector2((int)endloc.X, (int)endloc.Y) - Main.screenPosition, null, Color.White*1f, 0f, tex.Size() / 2f, 1.00f+ (timer)*0.32f, SpriteEffects.None, 0f);
+				//*MathHelper.Clamp(0.5f+(float)Math.Sin(Main.GlobalTime)*0.75f,0f,1f)*0.20f
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.CreateScale(1, 1, 1));
 
 			}
 

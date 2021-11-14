@@ -132,13 +132,13 @@ namespace SGAmod.NPCs.TownNPCs
 				if (Math.Abs(npc.velocity.X) < 0.25f)
 				{
 					timing = 0;
-					drawPos.Y += 2f;
+					//drawPos.Y += 2f;
 				}
 				else
 				{
 					timing += 1;
-					if (timing > 0 && timing < 4)
-						drawPos.Y += 2f;
+					//if (timing > 0 && timing < 4)
+						//drawPos.Y += 2f;
 				}
 
 				timing *= ((tex.Height) / 7);
@@ -887,7 +887,7 @@ namespace SGAmod.NPCs.TownNPCs
 			}
 			if (modplayer.ExpertiseCollectedTotal >= 2000)
 			{
-				shop.item[nextSlot].SetDefaults(ItemID.RodofDiscord);
+				shop.item[nextSlot].SetDefaults(Main.dayTime ? ModContent.ItemType<Items.Tools.RodOfTeleportation>() : ItemID.RodofDiscord);
 				shop.item[nextSlot].shopCustomPrice = 100;
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;

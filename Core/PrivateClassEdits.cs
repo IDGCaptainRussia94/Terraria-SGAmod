@@ -25,24 +25,78 @@ namespace SGAmod
 
 	public static class PrivateClassEdits
 	{
-		//Monomod IL patches, learned thanks to a "specific" dev who's serving a not-worth-it mod
+		//Monomod IL patches, learned thanks to a "specific" very talented dev who's serving a not-worth-it mod
 
 		public static Type typeUIModItem;
 
 		internal static void ApplyPatches()
 		{
-			typeUIModItem = Assembly.GetAssembly(typeof(Main)).GetType("Terraria.ModLoader.UI.UIModItem");
+			typeUIModItem = Assembly.GetAssembly(typeof(Main)).GetType("Terraria.ModLoader.UI.UIModItem");//This class is off-limits to us (internal), even to ON and IL, so we have to grab it directly from Main's assembly
 
 			ModifyUIModManipulator += ModifyUIModILPatch;
+			ModifyZoneSandstormPropertydManipulator += ModifyPlayerSandstormPropertyPatch;
+
 		}
 
 		internal static void RemovePatches()
 		{
 			ModifyUIModManipulator -= ModifyUIModILPatch;
+			ModifyZoneSandstormPropertydManipulator -= ModifyPlayerSandstormPropertyPatch;
 		}
 
 
-		public static event Manipulator ModifyUIModManipulator
+
+
+
+
+		//Overrides the ZoneSandstorm property in Player to be true when the armor set ability is active
+		#region Sandstorm Edits
+		public static event Manipulator ModifyZoneSandstormPropertydManipulator
+		{
+			add
+			{
+				HookEndpointManager.Modify(typeof(Player).GetProperty("ZoneSandstorm", SGAmod.UniversalBindingFlags).GetMethod, (Delegate)(object)value);
+			}
+			remove
+			{
+				HookEndpointManager.Unmodify(typeof(Player).GetProperty("ZoneSandstorm", SGAmod.UniversalBindingFlags).GetMethod, (Delegate)(object)value);
+			}
+		}
+
+		private static void ModifyPlayerSandstormPropertyPatch(ILContext context)
+		{
+			ILCursor c = new ILCursor(context);
+			ILLabel label = c.DefineLabel();
+
+			//effectively, looks like this:
+			//
+			//if (PlayerIsInSandstormMethod(player))
+			//return true;
+			//
+			//rest of original code below
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<PlayerIsInSandstormDelegate>(PlayerIsInSandstormMethod);
+			c.Emit(OpCodes.Brfalse_S, label);
+			c.Emit(OpCodes.Ldc_I4_1);
+			c.Emit(OpCodes.Ret);
+			c.MarkLabel(label);
+		}
+
+		private delegate bool PlayerIsInSandstormDelegate(Player ply);
+
+		private static bool PlayerIsInSandstormMethod(Player ply)
+		{
+			SGAPlayer sgaply = ply.SGAPly();
+
+			return sgaply.desertSet && sgaply.sandStormTimer > 0;
+		}
+#endregion
+
+        //This part adds the (soon to be) animated Icon, and walking dragon to the mod list :3
+        #region ModUI Edits
+
+
+        public static event Manipulator ModifyUIModManipulator
 	{
 		add
 		{
@@ -59,10 +113,10 @@ namespace SGAmod
 			ILCursor c = new ILCursor(context);
 
 			MethodInfo HackTheMethod = typeof(Terraria.UI.UIElement).GetMethod("Draw", SGAmod.UniversalBindingFlags);
-			if (c.TryGotoNext(MoveType.After, i => i.MatchCall(HackTheMethod)))
+			if (c.TryGotoNext(MoveType.After, i => i.MatchCall(HackTheMethod)))//We move the curser just past base.Draw, so we can draw OVER the original Item. Tinkering with UI's is not going to be easy in the slightest, so drawing on top of them is most optimal; but this is simple enough
 			{
-				c.Emit(OpCodes.Ldarg, 0);
-				c.Emit(OpCodes.Ldarg, 1);
+				c.Emit(OpCodes.Ldarg, 0);//The "UIModItem" class, we can't access this class normally so we need to use reflection to get its values (see below), so here we only push the instance onto the stack
+				c.Emit(OpCodes.Ldarg, 1);//Spritebatch, I'm going to assume Main.spriteBatch won't work here, so I'm pushing this just in case
 
 				c.EmitDelegate<UIModDelegate>(UIDrawMethod);
 				return;
@@ -86,7 +140,7 @@ namespace SGAmod
 					int frame = (int)(Main.GlobalTime*8f)%7;
 
 				Vector2 offset = new Vector2(180, style.Height-10);
-					offset.Y += -frame*0.5f;//sprite is slightly offset
+					//offset.Y += -frame*0.5f;//sprite is slightly offset
 
 
 				Vector2 frameSize = new Vector2(Draken.Width, Draken.Height);
@@ -100,9 +154,9 @@ namespace SGAmod
 				sb.Draw(Draken, style.Position()+ offset, rect, Color.White, 0, new Vector2(frameSize.X, frameSize.Y / 7f) / 2f, 0.50f, backAndForth, 0f);
 			}
 		}
+        #endregion
 
-
-		/*public static IEnumerable<Type> GetEveryMethodDerivedFrom(Type baseType, Assembly assemblyToSearch)
+        /*public static IEnumerable<Type> GetEveryMethodDerivedFrom(Type baseType, Assembly assemblyToSearch)
 	{
 		Type[] types = assemblyToSearch.GetTypes();
 		foreach (Type type in types)
@@ -113,5 +167,5 @@ namespace SGAmod
 			}
 		}
 	}*/
-	}
+    }
 }

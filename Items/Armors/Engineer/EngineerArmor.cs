@@ -33,6 +33,7 @@ namespace SGAmod.Items.Armors.Engineer
             item.width = 28;
             item.height = 28;
             item.value = 0;
+            item.rare = ItemRarityID.Orange;
             item.defense = 4;
         }
         public override void UpdateEquip(Player player)
@@ -76,6 +77,7 @@ namespace SGAmod.Items.Armors.Engineer
             item.width = 34;
             item.height = 20;
             item.value = Item.buyPrice(0,0,silver: 50);
+            item.rare = ItemRarityID.Orange;
             item.defense = 8;
         }
         public override void UpdateEquip(Player player)
@@ -115,6 +117,7 @@ namespace SGAmod.Items.Armors.Engineer
             item.width = 30;
             item.height = 20;
             item.value = 0;
+            item.rare = ItemRarityID.Orange;
             item.defense = 3;
         }
         public override void UpdateEquip(Player player)

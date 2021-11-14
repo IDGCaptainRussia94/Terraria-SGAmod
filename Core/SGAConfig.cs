@@ -249,6 +249,16 @@ namespace SGAmod
 		[Slider]
 		public int HUDDisplacement { get; set; }
 
+		[Label("Avarice Lord Pixelate")]
+		[Tooltip("Whether to use a pixel or downscaled option on the Avarice Lord wings")]
+		[DefaultValue(false)]
+		public bool AvariceLordWings { get; set; }
+
+		[Label("Player/World Addons")]
+		[Tooltip("Whether to load the player and world data, this will cause a small pause on the world select screen")]
+		[DefaultValue(false)]
+		public bool PlayerWorldData { get; set; }
+
 		[Header("Performance")]
 		[Label("Fog Detail")]
 		[Tooltip("Adjust the detail of the darkness fog effect; Higher is more detailed, but also more demanding")]
@@ -285,11 +295,6 @@ namespace SGAmod
 		[Tooltip("Enables/Disables The Solar Dye on the rocks shot by the Lava Rocks Gun, may improve performance")]
 		[DefaultValue(false)]
 		public bool LavaBlending { get; set; }
-
-		[Label("Avarice Lord Pixelate")]
-		[Tooltip("Whether to use a pixel or downscaled option on the Avarice Lord wings")]
-		[DefaultValue(false)]
-		public bool AvariceLordWings { get; set; }
 
 		[Header("Subworlds Patch")]
 		[Label("Remove Lava Background")]

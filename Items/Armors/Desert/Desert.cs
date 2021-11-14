@@ -18,6 +18,20 @@ namespace SGAmod.Items.Armors.Desert
 			DisplayName.SetDefault("Nomadic Hood");
 			Tooltip.SetDefault("5% increased throwing crit chance");
 		}
+
+		public static void ActivateSandySwiftness(SGAPlayer sgaply)
+        {
+			if (sgaply.AddCooldownStack(60 * 45))
+			{
+				sgaply.player.AddBuff(ModContent.BuffType<SandySwiftnessBuff>(), 60 * 16);
+				sgaply.sandStormTimer = 30;
+				var snd = Main.PlaySound(SoundID.DD2_BookStaffCast,(int)sgaply.player.Center.X, (int)sgaply.player.Center.Y);
+				if (snd != null)
+                {
+					snd.Pitch = -0.50f;
+                }
+			}
+		}
 		public override void SetDefaults()
 		{
 			item.width = 18;
@@ -34,7 +48,7 @@ namespace SGAmod.Items.Armors.Desert
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.HardenedSand, 20);
-			recipe.AddIngredient(ItemID.Feather, 2);
+			recipe.AddIngredient(ItemID.Feather, 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -70,7 +84,7 @@ namespace SGAmod.Items.Armors.Desert
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.HardenedSand, 10);
-			recipe.AddIngredient(ItemID.Cobweb, 25);
+			recipe.AddIngredient(ItemID.Cactus, 25);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -82,7 +96,7 @@ namespace SGAmod.Items.Armors.Desert
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Nomadic Leggings");
+			DisplayName.SetDefault("Nomadic Pants");
 			Tooltip.SetDefault("20% increase to movement speed on sand");
 		}
 		public override void SetDefaults()
@@ -194,7 +208,68 @@ namespace SGAmod.Items.Armors.Desert
 			IdgProjectile.Sync(probg);
 			return false;
 		}
-
 	}
 
+	public class SandySwiftnessBuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Sandy Swiftness");
+			Description.SetDefault("The desert winds aid your beconing call!");
+			Main.debuff[Type] = false;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = false;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/SandySwiftnessBuff";
+			return true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+
+			if (!Terraria.GameContent.Events.Sandstorm.Happening)
+			{
+				typeof(Terraria.GameContent.Events.Sandstorm).GetMethod("StartSandstorm", SGAmod.UniversalBindingFlags).Invoke(null, new object[0]);
+				//Terraria.GameContent.Events.Sandstorm.Happening = true;
+				Terraria.GameContent.Events.Sandstorm.TimeLeft = player.buffTime[buffIndex] + 30;
+				//typeof(Terraria.GameContent.Events.Sandstorm).GetMethod("ChangeSeverityIntentions", SGAmod.UniversalBindingFlags).Invoke(null,new object[0]);
+				if (Main.netMode != 1)
+				{
+					NetMessage.SendData(MessageID.WorldData, -1, -1, null, 0, 0f, 0f, 0f, 0, 0, 0);
+				}
+			}
+
+			SGAPlayer sgaply = player.SGAPly();
+			sgaply.sandStormTimer = (int)MathHelper.Max(sgaply.sandStormTimer, 10);
+
+			if (sgaply.sandStormTimer > 10)
+			{
+				int timerSand = sgaply.sandStormTimer - 10;
+				for (int i = 1; i < 8+ timerSand; i++)
+				{
+					Vector2 offset = Main.rand.NextVector2CircularEdge(timerSand, timerSand) * 2f;
+					int dust = Dust.NewDust(player.Hitbox.TopLeft() + Main.rand.NextVector2CircularEdge(timerSand, timerSand)*2f, player.Hitbox.Width, player.Hitbox.Height, timerSand > 0 ? 269 : 268);
+					Main.dust[dust].scale = (i+ (20-timerSand)/6f) / 5f;
+					Main.dust[dust].noGravity = true;
+					Main.dust[dust].alpha = 75;
+					Main.dust[dust].velocity = (Vector2.Normalize(offset) /4f)+((player.velocity * Main.rand.NextFloat(0.0f, (8f - i) * 0.25f))+ (offset/4f) + (new Vector2(Main.windSpeed * 100f, 0)*(timerSand>0 ? 0f : 1f)) + Vector2.UnitX.RotatedBy(-MathHelper.PiOver2 + Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(1f, 3f));
+				}
+			}
+
+			for (int i = 1; i < 8; i++)
+			{
+				int dust = Dust.NewDust(player.Hitbox.TopLeft() + new Vector2(0, 0), player.Hitbox.Width, player.Hitbox.Height, 268);
+				Main.dust[dust].scale = i/4f;
+				Main.dust[dust].noGravity = true;
+				Main.dust[dust].alpha = 150;
+				Main.dust[dust].velocity = (player.velocity * Main.rand.NextFloat(0.0f, (8f-i)*0.25f))+new Vector2(Main.windSpeed*100f,0) + Vector2.UnitX.RotatedBy(-MathHelper.PiOver2 + Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(1f, 3f);
+			}
+			
+
+		}
+	}
 }

@@ -24,7 +24,7 @@ namespace SGAmod
 	{
 		//Welcome to Russia's collection of vanilla hacking nonsense!
 		internal static void Patch()
-        {
+		{
 			PrivateClassEdits.ApplyPatches();
 
 			IL.Terraria.Main.Update += RemoveUpdateCinematic;
@@ -37,17 +37,19 @@ namespace SGAmod
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
 			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
 			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
-            IL.Terraria.Player.ExtractinatorUse += Player_ExtractinatorUse;
+			IL.Terraria.Player.ExtractinatorUse += Player_ExtractinatorUse;
 			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 			IL.Terraria.Player.DashMovement += EoCBonkInjection;
 
+			IL.Terraria.GameContent.Events.Sandstorm.EmitDust += ForceSandStormEffects;
+
 			if (SGAmod.OSType < 1)//Only windows
-			IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
+				IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
 
 			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
-            IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
+			IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
 			IL.Terraria.Main.DoDraw += DrawBehindVoidLayers;
 
 			//IL.Terraria.Lighting.AddLight_int_int_float_float_float += AddLightHack;
@@ -59,7 +61,7 @@ namespace SGAmod
 			}
 		}
 
-        internal static void Unpatch()
+		internal static void Unpatch()
 		{
 			PrivateClassEdits.RemovePatches();
 			/*IL.Terraria.Player.AdjTiles -= ForcedAdjTilesHack;
@@ -73,6 +75,54 @@ namespace SGAmod
 			//IL.Terraria.Player.PickTile -= PickPowerOverride;
 			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
 			*/
+		}
+
+		//This patch fources the sandstorm visual effect to play when the sandstormTimer is above 0
+		private static bool PlayerSandstormDelegate()
+		{
+			SGAPlayer sgaply = Main.LocalPlayer.SGAPly();
+
+			return sgaply.desertSet && sgaply.sandStormTimer>0;
+		}
+
+		private static void ForceSandStormEffects(ILContext il)
+		{
+			ILCursor c = new ILCursor(il); 
+			if (c.TryGotoNext(MoveType.After,i => i.MatchStloc(2)))
+            {
+				c.EmitDelegate<Func<bool>>(PlayerSandstormDelegate);
+				c.Emit(OpCodes.Stloc, 2);//Force 'flag' to the above condition
+
+				ILLabel label2 = c.DefineLabel();
+				c.EmitDelegate<Func<bool>>(PlayerSandstormDelegate);
+				c.Emit(OpCodes.Brfalse, label2);//If the above is false, we jump ahead
+
+				c.Emit(OpCodes.Ldc_I4, 500);//TOO MUCH SAND!
+				c.Emit(OpCodes.Stloc, 0);//TOO MUCH!
+				c.MarkLabel(label2);
+
+			}
+			else
+            {
+				throw new Exception("IL Error Test");
+				return;
+            }
+
+			//Branch over the ret part, move past the branch
+			MethodInfo methodToLookFor = typeof(Terraria.GameContent.Events.Sandstorm).GetMethod("HandleEffectAndSky", BindingFlags.Public | BindingFlags.Static);
+			ILLabel label = c.DefineLabel();
+			if (c.TryGotoNext(MoveType.After, i => i.MatchCall(methodToLookFor)))
+			{
+				//c.Emit(OpCodes.Ldc_I4, 1);//true
+				c.EmitDelegate<Func<bool>>(PlayerSandstormDelegate);
+				c.Emit(OpCodes.Brtrue, label);//If the above is true, we jump ahead
+				if (c.TryGotoNext(MoveType.After, i => i.MatchRet()))
+				{
+					c.MarkLabel(label);
+					return;
+				}
+			}
+			throw new Exception("IL Error Test 2");
 		}
 
 		//Adds extra functionality to the EoC Shield Bonk

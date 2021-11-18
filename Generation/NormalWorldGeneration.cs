@@ -169,6 +169,7 @@ namespace SGAmod.Generation
         {
             Tile tstart = Framing.GetTileSafely(placementspot);
             int heighestTile = Main.maxTilesY;
+            int lowestTile = 0;
 
             List<Vector2> deways = new List<Vector2>();
             List<Vector2> dewaysMainroom = new List<Vector2>();
@@ -202,11 +203,22 @@ namespace SGAmod.Generation
             {
                 if ((int)deways[aaa].Y < heighestTile)
                     heighestTile = (int)deways[aaa].Y;
+                if ((int)deways[aaa].Y > lowestTile)
+                    lowestTile = (int)deways[aaa].Y;
 
                 Tile tile = Framing.GetTileSafely((int)deways[aaa].X, (int)deways[aaa].Y);
                 tile.active(false);
+
             }
 
+            foreach (Vector2 point in deways.Where(testby => testby.Y > lowestTile - 150))
+            {
+                if (point.Y + WorldGen.genRand.Next(150)> lowestTile)
+                {
+                    Tile tile = Framing.GetTileSafely((int)point.X, (int)point.Y);
+                    tile.liquid = 20;
+                }
+            }
             HashSet<Point16> removes = new HashSet<Point16>();
             foreach (Vector2 point in deways.Where(testby => testby.Y < heighestTile + 3))
             {
@@ -232,6 +244,17 @@ namespace SGAmod.Generation
 
             for (int aaa = 0; aaa < deways.Count; aaa++)
             {
+                if (WorldGen.genRand.Next(0, 100) <20)
+                {
+                    Tile tile = Framing.GetTileSafely((int)deways[aaa].X, (int)deways[aaa].Y + 1);
+                    if (tile.active())
+                    {
+                        string[] onts = new string[] { "SwampGrassGrow", "SwampGrassGrow2", "SwampGrassGrow3" };
+                        WorldGen.PlaceObject((int)deways[aaa].X, (int)deways[aaa].Y, SGAmod.Instance.TileType(onts[Main.rand.Next(onts.Length)]), true);
+                    }
+
+                }
+
                 if (WorldGen.genRand.Next(0, 100) < 5)
                 {
                     Tile tile = Framing.GetTileSafely((int)deways[aaa].X, (int)deways[aaa].Y - 1);

@@ -254,10 +254,16 @@ namespace SGAmod
 		[DefaultValue(false)]
 		public bool AvariceLordWings { get; set; }
 
-		[Label("Player/World Addons")]
-		[Tooltip("Whether to load the player and world data, this will cause a small pause on the world select screen")]
-		[DefaultValue(false)]
+		[Label("Display Player/World Addons")]
+		[Tooltip("Whether to load the player and world data, this will cause a small pause on the player & world select screen")]
+		[DefaultValue(true)]
 		public bool PlayerWorldData { get; set; }
+
+		[Label("Replace TML Logo")]
+		[Tooltip("Whether to replace the TML/Title logo with SGAmod's 2 logos")]
+		[DefaultValue(false)]
+		[ReloadRequired]
+		public bool LogoReplace { get; set; }
 
 		[Header("Performance")]
 		[Label("Fog Detail")]

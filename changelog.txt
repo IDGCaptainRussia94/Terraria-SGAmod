@@ -1,6 +1,6 @@
 Changelog:
 
-3.600h-(11/11/21)-Patch 11-Tech N Wreck: Beta
+3.600h-(11/16/21)-Patch 11-Tech N Wreck: Beta
 
 -Changelog has been moved to its own file
 
@@ -10,7 +10,7 @@ Changelog:
 
 -Buffed Polarity Halberd: ammount of max life you can gain has been increased
 
--Added Almighty Spellcards: Megido, Morning Star
+-Added Almighty SMT Spellcards: Megido, Megidola, Morning Star (Megido is found in Deeper Dungeons in stacks, it is both a unique drop, and also pulled from the 'rare' pool of generic items as well)
 
 -Fixed dummies being dragged by Desolate Rift/Other sources that affect npc speed
 
@@ -30,9 +30,43 @@ Changelog:
 
 -Added the Nuclear Option, Cata's 2nd dedicated item (drops from no-hitting cultist when he has 6 dopplegangers active)
 
--Reverted a change to allow Lootcrates to pull from Shadow items again, but now vanilla items are ignored
+-Reverted a change to allow Loot crates to pull from Shadow items again, but now vanilla items are ignored
 
 -Nerfed Autoclicker: can now only spawn cookies while the item is selected
+
+-Fixed a bug where the Sybarite Gem wasn't being properly used by the Corperate Epiphany
+
+-Added Ring of Untouchable Avarice; the 1st Boss-specific no-hit reward! (Cratrosity)
+
+-Nerfed Photosynthesizer and further upgrades: the bonus damage per damage type is now 5% instead of 10%
+
+-Nightmare Mode now gives a 20% chance to drop double loot, but no longer a chance to drop further loot
+
+-Updated Cratrosity's coin damage values and fixed one attack doing more damage with copper than platinum
+
+-Deeper Dungeons has some smoothed Ice via the same code used for the asteriods, no more square ice!
+
+-Black Leeches no longer do contact damage, but will stick to the player, him him, and apply damage over time if they touch him
+
+-Added Elite Bat (former outsourced enemy) and Splunker Jellyfish
+
+-Added various other missing features from Havoc, Dank Grass now grows in the Dank Shrines
+
+-Added offical Logos by Rijam; they change the title screen textures with a config option to disable it
+
+-Dank shrines now spawn with grass, grow grass, and are semi-flooded near the bottom
+
+-Added the Entropic Relocator (Tnemunom's idea), to remove (and relocate) Dark Sectors
+
+-Dark Sectors use a different sprite, some subtle coloring effects, and no longer use negative blending... Now, if only I could do the same for the fog effect
+
+-Nerfed Shadeflare: reduced fire rate
+
+-Added FireFox Greatbow and Skye Hook; the last of the Aurora Gear (finally, hook is unfinished thou)
+
+-Fixed Seraphim Shard being majorly laggy
+
+-More stupid IL patches
 
 -New changes to Phaethon:
 -Updated visuals on the tethers
@@ -377,7 +411,7 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, True Dragon Wings, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, True Dragon Wings, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault, and many others I likely forgot
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
@@ -391,11 +425,13 @@ Changelog:
 
 -New Potions: Phalanx Potion, Reflex Potion
 
+-Relics and other rewards added for no-hitting bosses!
+
+-Hoppers, Droppers, Sifting Funnels, Mod Grinders, and more. Hands on tech mod elements to automate your Terraria with content I felt was missing from Vanilla!
+
 -A stronger post-L.Wraith Prismic Banshee that drops double loot (hint: put fallen stars into the previous mentioned Luminous Alter). Also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam!
 
 -A stronger rematch against Sharkvern is now possible by using the Conch while it is raining, after you've beaten him once (doing so fully unlocks Tidal Charm), Sharkvern's fight and apperence has been tweaked (Prim shark! Vertex Shark! Trail Shark! With smooth lighting!), there's also an extra attack that was added
-
--Hoppers, Droppers, Sifting Funnels, Mod Grinders, and more. Hands on tech mod elements to automate your Terraria with content I felt was missing from Vanilla!
 
 -New Amulet: Reservation Amulet, reserve a fraction of your HP to gain a protected regenerating shield!
 

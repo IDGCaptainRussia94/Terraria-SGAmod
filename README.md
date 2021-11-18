@@ -125,6 +125,7 @@ And [USER=56363]@TheRandomMidget[/USER] for permission to port havoc content (in
 
 Dsurion123 (https://www.furaffinity.net/user/dsurion123/) for the new icon
 
+DRKV333, while you had no direct involvement, your involvement with me, in helping me code has proved invaluable in the long run, also... Effectively Dredon but you've released mods people can play, lol.
 
 [USER=2644]@zadum4ivii[/USER] : used and edited your stove code because I'm garbage at making multi-tiles :p
 

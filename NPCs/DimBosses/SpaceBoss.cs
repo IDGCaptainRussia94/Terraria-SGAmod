@@ -1303,8 +1303,8 @@ namespace SGAmod.Dimensions.NPCs
 
 	public class SpaceBoss : ModNPC, ISGABoss
 	{
-		public string Trophy() => "SpaceBossTrophy";
-		public bool Chance() => false;
+		public string Trophy() => "DoomHarbingerTrophy";
+		public bool Chance() => Main.rand.Next(0, 10) == 0;
 		public string RelicName() => "Doom_Harbinger";
 		public void NoHitDrops(){}
 
@@ -2272,6 +2272,8 @@ namespace SGAmod.Dimensions.NPCs
 
 			int index2 = 0;
 
+			bool fightActive = npc.ai[0] > 999;
+
 			foreach (Projectile asteriod in TetherAsteriods)
             {
 				UnifiedRandom rand = new UnifiedRandom(asteriod.whoAmI);
@@ -2317,7 +2319,7 @@ namespace SGAmod.Dimensions.NPCs
 
 				toThem.Reverse();
 
-				TrailHelper trail = new TrailHelper("FadedBasicEffectPass", npc.ai[0]>999 ? mod.GetTexture("TiledPerlin") : Main.extraTexture[21]);
+				TrailHelper trail = new TrailHelper("FadedBasicEffectPass", !fightActive ? mod.GetTexture("TiledPerlin") : Main.extraTexture[21]);
 				trail.projsize = Vector2.Zero;
 				trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
 				trail.trailThickness = 16;
@@ -2328,13 +2330,13 @@ namespace SGAmod.Dimensions.NPCs
 
 				trail.color = delegate (float percent)
 				{
-					Color scrColor = (npc.ai[0] > 999 ? Color.CornflowerBlue : Color.White);
+					Color scrColor = (!fightActive ? Color.CornflowerBlue : Color.White);
 					float sinner = (float)Math.Sin(offset + ((Main.GlobalTime * 4f)) + ((1f-percent) * MathHelper.TwoPi));
 					float wave = Math.Max(sinner,0);
 					Color finalColor = Color.Lerp(Color.Transparent,scrColor * 0.75f, (wave));
 
-					if (npc.ai[0] > 999)
-						finalColor = Color.Lerp(scrColor * 0.50f, scrColor * 1f, (wave));
+					if (!fightActive)
+						finalColor = Color.Lerp(scrColor * 0.75f, scrColor * 1.25f, MathHelper.SmoothStep(0f,1f, wave));
 
 					return finalColor * (1f - MathHelper.Clamp((percent - 0f) * 1f, 0f, 1f));
 				};
@@ -2443,19 +2445,19 @@ namespace SGAmod.Dimensions.NPCs
 						if (npc.ai[0] < 1000)
 						{
 							float effect = MathHelper.Clamp((Main.GlobalTime / 4f) % 1.50f, 0f, 1f);
-							spriteBatch.Draw(noise, (npc.Center + loc) - Main.screenPosition, null, ((npc.ai[0] > 999 ? Color.White : Color.PaleTurquoise) * 0.25f * shieldAlpha) * (1f - (effect)), angle, noise.Size() / 2f, ((new Vector2(200f, 150f) / noisesize) * (1f + effect * 5.00f)) * scale, SpriteEffects.None, 0f);
+							spriteBatch.Draw(noise, (npc.Center + loc) - Main.screenPosition, null, ((fightActive ? Color.White : Color.PaleTurquoise) * 0.25f * shieldAlpha) * (1f - (effect)), angle, noise.Size() / 2f, ((new Vector2(200f, 150f) / noisesize) * (1f + effect * 5.00f)) * scale, SpriteEffects.None, 0f);
 							continue;
 						}
 					}
 
 					if (count == 0)
 					{
-						spriteBatch.Draw(noise, (npc.Center + loc) - Main.screenPosition, null, (npc.ai[0] > 999 ? Color.Blue : Color.PaleTurquoise) * shieldAlpha, angle, noise.Size() / 2f, (new Vector2(200f, 150f) / noisesize) * scale, SpriteEffects.None, 0f);
-						spriteBatch.Draw(noise, (npc.Center + loc) - Main.screenPosition, null, (npc.ai[0] > 999 ? Color.Blue : Color.PaleTurquoise) * shieldAlpha, angle, noise.Size() / 2f, (-new Vector2(200f, 150f) / noisesize) * scale, SpriteEffects.None, 0f);
+						spriteBatch.Draw(noise, (npc.Center + loc) - Main.screenPosition, null, (fightActive ? Color.Blue : Color.PaleTurquoise) * shieldAlpha, angle, noise.Size() / 2f, (new Vector2(200f, 150f) / noisesize) * scale, SpriteEffects.None, 0f);
+						spriteBatch.Draw(noise, (npc.Center + loc) - Main.screenPosition, null, (fightActive ? Color.Blue : Color.PaleTurquoise) * shieldAlpha, angle, noise.Size() / 2f, (-new Vector2(200f, 150f) / noisesize) * scale, SpriteEffects.None, 0f);
 					}
 					else
 					{
-						spriteBatch.Draw(noise, (npc.Center + loc) - Main.screenPosition, null, (npc.ai[0] > 999 ? Color.White : Color.CadetBlue) * 0.40f * shieldAlpha, angle, noise.Size() / 2f, (new Vector2(200f, 150f) / noisesize) * scale, SpriteEffects.None, 0f);
+						spriteBatch.Draw(noise, (npc.Center + loc) - Main.screenPosition, null, (fightActive ? Color.White : Color.CadetBlue) * 0.40f * shieldAlpha, angle, noise.Size() / 2f, (new Vector2(200f, 150f) / noisesize) * scale, SpriteEffects.None, 0f);
 					}
 					count += 1;
 				}

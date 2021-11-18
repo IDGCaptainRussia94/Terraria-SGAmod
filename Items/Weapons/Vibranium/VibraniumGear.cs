@@ -58,7 +58,7 @@ namespace SGAmod.Items.Weapons.Vibranium
         }
 	}
 		
-		public class QuasarKunai : VibraniumText
+		public class QuasarKunai : VibraniumText, IRadioactiveDebuffText
 	{
 		public override void SetStaticDefaults()
 		{

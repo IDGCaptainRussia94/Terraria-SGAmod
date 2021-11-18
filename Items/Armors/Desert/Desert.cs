@@ -2,8 +2,10 @@ using AAAAUThrowing;
 using Idglibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -117,9 +119,22 @@ namespace SGAmod.Items.Armors.Desert
 					Tile tile = Framing.GetTileSafely(therePoint);
 					if (WorldGen.InWorld(therePoint.X, therePoint.Y) && tile.active() && (TileID.Sets.Conversion.Sand[tile.type] || TileID.Sets.Conversion.HardenedSand[tile.type]))
 					{
-						//Main.NewText("tests");
-						player.moveSpeed += 1.20f;
-						player.accRunSpeed += 1.20f;
+						if (Math.Abs(player.velocity.X) > 1)
+						{
+							//Main.NewText("tests");
+							player.moveSpeed += 1.20f;
+							player.accRunSpeed += 1.20f;
+
+							for (int ii = 0; ii < 3; ii += 1)
+							{
+								Vector2 pos = new Vector2(player.position.X, player.position.Y + player.Hitbox.Size().Y-4);
+								int dust = Dust.NewDust(pos, (int)player.Hitbox.Size().X, 4, DustID.Sandstorm, (player.velocity.X) + Math.Sign(player.direction) * -6f, Main.rand.NextFloat(-4f,-1f), 0, Color.Yellow, 1f);
+								int slot = 2;
+								Main.dust[dust].shader = GameShaders.Armor.GetSecondaryShader(player.dye[slot].dye, player);
+								Main.dust[dust].noGravity = false;
+							}
+						}
+
 						break;
 					}
 				}

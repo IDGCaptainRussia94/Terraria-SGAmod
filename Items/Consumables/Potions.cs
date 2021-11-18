@@ -9,6 +9,7 @@ using Idglibrary;
 using SGAmod.HavocGear.Items;
 using SGAmod.Buffs;
 using Microsoft.Xna.Framework.Graphics;
+using SGAmod.Tiles;
 //using SubworldLibrary;
 
 namespace SGAmod.Items.Consumables
@@ -225,8 +226,8 @@ namespace SGAmod.Items.Consumables
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Ale,1);
-			recipe.AddIngredient(null, "UnmanedOre", 2);
-			recipe.AddIngredient(null, "WraithFragment3", 1);
+			recipe.AddIngredient(ModContent.ItemType <UnmanedOre>(), 2);
+			recipe.AddIngredient(ModContent.ItemType <WraithFragment3>(), 1);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
@@ -263,7 +264,7 @@ namespace SGAmod.Items.Consumables
 			recipe.AddIngredient(ItemID.BottledWater,2);
 			recipe.AddIngredient(ItemID.Sunflower, 1);
 			recipe.AddIngredient(ItemID.ManaCrystal, 1);
-			recipe.AddIngredient(null, "MurkyGel", 4);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Biomass>(), 4);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
@@ -297,12 +298,12 @@ namespace SGAmod.Items.Consumables
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "BottledMud", 2);
-			recipe.AddIngredient(null, "VirulentOre", 2);
-			recipe.AddIngredient(null, "DankWood", 6);
-			recipe.AddIngredient(null, "DankCore", 1);
-			recipe.AddIngredient(null, "VialofAcid", 4);
-			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.AddIngredient(ModContent.ItemType < BottledMud>(), 2);
+			recipe.AddIngredient(ModContent.ItemType <HavocGear.Items.VirulentOre>(), 2);
+			recipe.AddIngredient(ModContent.ItemType < DankWood>(), 6);
+			recipe.AddIngredient(ModContent.ItemType < DankCore>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < VialofAcid>(), 4);
+			recipe.AddTile(ModContent.TileType<ReverseEngineeringStation>());
 			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
 		}
@@ -335,7 +336,7 @@ namespace SGAmod.Items.Consumables
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "BottledMud", 1);
+			recipe.AddIngredient(ModContent.ItemType < BottledMud>(), 1);
 			recipe.AddRecipeGroup("Wood", 5);
 			recipe.AddIngredient(ItemID.Acorn, 2);
 			recipe.AddIngredient(ItemID.TungstenOre, 1);
@@ -344,7 +345,7 @@ namespace SGAmod.Items.Consumables
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "BottledMud", 1);
+			recipe.AddIngredient(ModContent.ItemType < BottledMud>(), 1);
 			recipe.AddRecipeGroup("Wood", 3);
 			recipe.AddIngredient(ItemID.Acorn, 1);
 			recipe.AddIngredient(ItemID.SilverOre, 1);
@@ -383,10 +384,10 @@ namespace SGAmod.Items.Consumables
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.BottledWater,3);
-			recipe.AddIngredient(null, "Entrophite", 15);
-			recipe.AddIngredient(null, "StygianCore", 1);
-			recipe.AddIngredient(null, "FieryShard", 2);
-			recipe.AddIngredient(null, "UnmanedOre", 5);
+			recipe.AddIngredient(ModContent.ItemType < Entrophite>(), 15);
+			recipe.AddIngredient(ModContent.ItemType < StygianCore>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < FieryShard>(), 2);
+			recipe.AddIngredient(ModContent.ItemType < UnmanedOre>(), 5);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 3);
 			recipe.AddRecipe();
@@ -422,7 +423,7 @@ namespace SGAmod.Items.Consumables
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.BottledWater, 1);
 			recipe.AddIngredient(ItemID.Sunflower);
-			recipe.AddIngredient(null, "NoviteOre", 1);
+			recipe.AddIngredient(ModContent.ItemType < NoviteOre>(), 1);
 			recipe.AddIngredient(ItemID.Meteorite);
 			recipe.AddIngredient(ItemID.RainCloud);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
@@ -461,7 +462,7 @@ namespace SGAmod.Items.Consumables
 			recipe.AddIngredient(ItemID.BottledWater, 2);
 			recipe.AddIngredient(ItemID.StrangeBrew);
 			recipe.AddIngredient(ItemID.CookedMarshmallow);
-			recipe.AddIngredient(null, "FrigidShard", 2);
+			recipe.AddIngredient(ModContent.ItemType <FrigidShard>(), 2);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
@@ -503,7 +504,7 @@ namespace SGAmod.Items.Consumables
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.RestorationPotion, 2);
 			recipe.AddIngredient(ItemID.StrangeBrew);
-			recipe.AddIngredient(null, "ManaBattery", 1);
+			recipe.AddIngredient(ModContent.ItemType <ManaBattery>(), 1);
 			recipe.AddIngredient(ItemID.ChlorophyteOre, 4);
 			recipe.AddTile(TileID.AlchemyTable);
 			recipe.SetResult(this, 2);
@@ -541,10 +542,10 @@ namespace SGAmod.Items.Consumables
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.RestorationPotion,2);
-			recipe.AddIngredient(null, "OmniSoul", 2);
-			recipe.AddIngredient(null, "Fridgeflame", 2);
-			recipe.AddIngredient(null, "MurkyGel", 3);
-			recipe.AddIngredient(mod.ItemType("Entrophite"), 20);
+			recipe.AddIngredient(ModContent.ItemType < OmniSoul>(), 2);
+			recipe.AddIngredient(ModContent.ItemType < Fridgeflame>(), 2);
+			recipe.AddIngredient(ModContent.ItemType < MurkyGel>(), 3);
+			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 20);
 			recipe.AddTile(TileID.AlchemyTable);
 			recipe.SetResult(this,2);
 			recipe.AddRecipe();
@@ -596,9 +597,9 @@ namespace SGAmod.Items.Consumables
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.BottledHoney, 2);
-			recipe.AddIngredient(null, "CryostalBar", 1);
-			recipe.AddIngredient(null, "IceFairyDust", 1);
-			recipe.AddIngredient(null, "Fridgeflame", 3);
+			recipe.AddIngredient(ModContent.ItemType < CryostalBar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < IceFairyDust>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < Fridgeflame>(), 3);
 			recipe.AddTile(TileID.AlchemyTable);
 			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
@@ -675,8 +676,9 @@ namespace SGAmod.Items.Consumables
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.SwiftnessPotion, 1);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.MoistSand>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Weapons.SwampSeeds>(), 1);
 			recipe.AddIngredient(ItemID.Ale, 1);
-			recipe.AddIngredient(ModContent.ItemType<Biomass>(), 2);
 			recipe.AddTile(TileID.Bottles);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

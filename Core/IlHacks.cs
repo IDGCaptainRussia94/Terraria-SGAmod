@@ -606,6 +606,33 @@ namespace SGAmod
 		{
 			ILCursor c = new ILCursor(il);
 
+			ILLabel babel = c.DefineLabel();
+			FieldInfo HackTheField = typeof(Player).GetField("statManaMax2", BindingFlags.Public | BindingFlags.Instance);
+			FieldInfo HackTheField2 = typeof(Player).GetField("statDefense", BindingFlags.Public | BindingFlags.Instance);
+			
+			//This part allows me to break the 400 hardcoded limit through a SGAPlayer field
+			SwimInAirHackDelegate manaUnchained = delegate (bool stackbool, Player player)
+			{
+				SGAPlayer sgaply = player.SGAPly();
+				bool manaUnchainedvar = sgaply.manaUnchained;
+
+				return manaUnchainedvar;
+			};
+
+			c.TryGotoNext(MoveType.Before,i => i.MatchLdfld(HackTheField));
+			c.TryGotoNext(MoveType.Before, i => i.MatchLdfld(HackTheField));
+
+			c.Index -= 1;
+			//c.MoveBeforeLabels();
+			c.Emit(OpCodes.Ldc_I4_0);//false, just thrown here for the delegate
+			c.Emit(OpCodes.Ldarg_0);//Push Player
+			c.EmitDelegate<SwimInAirHackDelegate>(manaUnchained);//Emit the above delegate
+			c.Emit(OpCodes.Brtrue, babel);
+			c.TryGotoNext(MoveType.Before,i => i.MatchLdfld(HackTheField2));
+			c.Index -= 1;
+			c.MoveAfterLabels();
+			c.MarkLabel(babel);
+
 			c.Index = il.Instrs.Count - 1;
 
 			MethodInfo HackTheMethod = typeof(Collision).GetMethod("LavaCollision", BindingFlags.Public | BindingFlags.Static);

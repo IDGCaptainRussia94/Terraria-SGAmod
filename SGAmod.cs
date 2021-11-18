@@ -194,6 +194,7 @@ namespace SGAmod
 		public static List<CustomSpecialDrawnTiles> AfterTilesToDraw = new List<CustomSpecialDrawnTiles>();
 		public static List<CustomSpecialDrawnTiles> AfterTilesAdditiveToDraw = new List<CustomSpecialDrawnTiles>();
 
+		public static (Texture2D, Texture2D) oldLogo;
 
 		public static MusicStreamingOGG musicTest;
 
@@ -503,9 +504,9 @@ namespace SGAmod
 
 			AddMusicBoxes();
 			SGAPlacablePainting.SetupPaintings();
-            Items.Placeable.Relics.SGAPlacableRelic.AddRelics();
+			Items.Placeable.Relics.SGAPlacableRelic.AddRelics();
 			ClipWeaponReloading.SetupRevolverHoldingTypes();
-            Items.Placeable.TechPlaceable.LuminousAlterCraftingHint.CreateRecipeItems();
+			Items.Placeable.TechPlaceable.LuminousAlterCraftingHint.CreateRecipeItems();
 
 			//MusicStreamingMP3 musicTest = new MusicStreamingMP3("tmod:SGAmod/Sounds/Music/Swamp.mp3");
 
@@ -527,10 +528,10 @@ namespace SGAmod
 			SGAmod.GemColors.Add(ItemID.Topaz, Color.Yellow); SGAmod.GemColors.Add(ItemID.Amethyst, Color.Purple); SGAmod.GemColors.Add(ItemID.Diamond, Color.Aquamarine);
 			SGAmod.GemColors.Add(ItemID.Amber, Color.Orange);
 
-			CoinsAndProjectiles.Add(ProjectileID.CopperCoin, ItemID.CopperCoin); CoinsAndProjectiles.Add(ProjectileID.SilverCoin, ItemID.SilverCoin); 
+			CoinsAndProjectiles.Add(ProjectileID.CopperCoin, ItemID.CopperCoin); CoinsAndProjectiles.Add(ProjectileID.SilverCoin, ItemID.SilverCoin);
 			CoinsAndProjectiles.Add(ProjectileID.GoldCoin, ItemID.GoldCoin); CoinsAndProjectiles.Add(ProjectileID.PlatinumCoin, ItemID.PlatinumCoin);
 
-			CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingCopperCoinPlayer>(), ItemID.CopperCoin); CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingSilverCoinPlayer>(), ItemID.SilverCoin); 
+			CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingCopperCoinPlayer>(), ItemID.CopperCoin); CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingSilverCoinPlayer>(), ItemID.SilverCoin);
 			CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingGoldCoinPlayer>(), ItemID.GoldCoin); CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingPlatinumCoinPlayer>(), ItemID.PlatinumCoin);
 
 
@@ -550,7 +551,7 @@ namespace SGAmod
 			//SkillTestKey = RegisterHotKey("(Debug) Skill Tree Key", "T");
 
 			OSType = OSDetect();
-			_ =Core.WinForm.WinHandled;
+			_ = Core.WinForm.WinHandled;
 
 			SGAmod.PostDraw = new List<PostDrawCollection>();
 			//On.Terraria.GameInput.LockOnHelper.SetActive += GameInput_LockOnHelper_SetActive;
@@ -559,7 +560,7 @@ namespace SGAmod
 			{
 				ShadowParticle.Load();
 
-				CreateRenderTarget2Ds(Main.screenWidth,Main.screenHeight,false,true);
+				CreateRenderTarget2Ds(Main.screenWidth, Main.screenHeight, false, true);
 				DrakeniteBar.CreateTextures();
 				LoadOrUnloadTextures(true);
 				SkillTree.SKillUI.InitThings();
@@ -583,6 +584,10 @@ namespace SGAmod
 				}
 
 
+				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidoSnd", new Sounds.Custom.MegidoSnd());
+				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidolaonSnd", new Sounds.Custom.MegidolaonSnd());
+
+
 			}
 
 			AddItem("Nightmare", NPCs.TownNPCs.Nightmare.instance);
@@ -602,9 +607,9 @@ namespace SGAmod
 			//Oh, and the Sky code was originally from Zokalon, so I'm mentioning that too! Thanks guys!
 			if (!Main.dedServ)
 			{
-			Filters.Scene["SGAmod:ProgramSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0.4f), EffectPriority.High);
-			Filters.Scene["SGAmod:HellionSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0f), EffectPriority.High);
-			Filters.Scene["SGAmod:CirnoBlizzard"] = new Filter(new BlizzardShaderData("FilterBlizzardForeground").UseColor(1f, 1f, 1f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/Noise", 0, null).UseIntensity(0.9f).UseImageScale(new Vector2(8f, 2.75f), 0), EffectPriority.High);
+				Filters.Scene["SGAmod:ProgramSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0.4f), EffectPriority.High);
+				Filters.Scene["SGAmod:HellionSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0f), EffectPriority.High);
+				Filters.Scene["SGAmod:CirnoBlizzard"] = new Filter(new BlizzardShaderData("FilterBlizzardForeground").UseColor(1f, 1f, 1f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/Noise", 0, null).UseIntensity(0.9f).UseImageScale(new Vector2(8f, 2.75f), 0), EffectPriority.High);
 
 				Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/Shockwave"));
 				Filters.Scene["SGAmod:Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
@@ -651,6 +656,14 @@ namespace SGAmod
 			SGAMethodSwaps.Apply();
 			SGAILHacks.Patch();
 
+			if (!Main.dedServ && SGAConfigClient.Instance.LogoReplace)
+			{
+				oldLogo.Item1 = Main.logoTexture.CreateTexture(Main.graphics.GraphicsDevice, Main.logo2Texture.Bounds);
+				oldLogo.Item2 = Main.logo2Texture.CreateTexture(Main.graphics.GraphicsDevice, Main.logo2Texture.Bounds);
+
+				Main.logoTexture = ModContent.GetTexture("SGAmod/logo_double");
+				Main.logo2Texture = ModContent.GetTexture("SGAmod/logo_space1_double");
+			}
 			//On.Terraria.Player.AdjTiles += Player_AdjTiles;
 		}
 
@@ -690,6 +703,13 @@ namespace SGAmod
 					SGAmod.ParadoxMirrorTex.Dispose();
 				if (SGAmod.hellionLaserTex != null)
 					SGAmod.hellionLaserTex.Dispose();
+
+				if (oldLogo != default)
+				{
+					Main.logoTexture = oldLogo.Item1;
+					Main.logo2Texture = oldLogo.Item2;
+				}
+
 				//LoadOrUnloadTextures(false);
 			}
 			NightmareUnlocked = false;
@@ -1385,6 +1405,7 @@ namespace SGAmod
 		public static event PostUpdateEverythingDelegate PostUpdateEverythingEvent;
 		public override void PostUpdateEverything()
 		{
+
 			//test++;
 			Terraria.Cinematics.CinematicManager.Instance.Update(new GameTime());
 			ShadowParticle.UpdateAll();

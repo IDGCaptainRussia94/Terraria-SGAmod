@@ -125,7 +125,10 @@ namespace SGAmod.NPCs.Cratrosity
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
 
 		public string RelicName() => GetType() == typeof(Cratrosity) ? "Cratrosity" : "Cratrogeddon";
-		public void NoHitDrops() { }
+		public void NoHitDrops()
+		{
+			Item.NewItem(npc.position,npc.Hitbox.Size(),ModContent.ItemType<Items.Accessories.AvariceRing>());
+		}
 
 		public Vector2 offsetype = new Vector2(0, 0);
 		public int phase = 5;
@@ -337,7 +340,7 @@ namespace SGAmod.NPCs.Cratrosity
 							npc.velocity = new Vector2(-theammount * ((GetType() == typeof(Cratrogeddon)) ? 15 : 10), 0);
 							if (npc.ai[0] % 15 == 0)
 							{
-								List<Projectile> itz = Idglib.Shattershots(npc.Center, P.Center + new Vector2(0, P.Center.Y > npc.Center.Y ? 600 : -600), new Vector2(0, 0), ModContent.ProjectileType<GlowingCopperCoin>(), (int)(npc.damage * (20.00 / defaultdamage)), 10, 0, 1, true, 0, true, 100);
+								List<Projectile> itz = Idglib.Shattershots(npc.Center, P.Center + new Vector2(0, P.Center.Y > npc.Center.Y ? 600 : -600), new Vector2(0, 0), ModContent.ProjectileType<GlowingCopperCoin>(), (int)(npc.damage * (10.00 / defaultdamage)), 10, 0, 1, true, 0, true, 100);
 							}
 							if (npc.ai[0] % 40 == 0)
 							{
@@ -345,7 +348,7 @@ namespace SGAmod.NPCs.Cratrosity
 							}
 							if (((npc.ai[0] + 20) % 40 == 0) && Main.expertMode)
 							{
-								List<Projectile> itz = Idglib.Shattershots(theclostestcrate, P.Center + new Vector2(0, P.Center.Y > theclostestcrate.Y ? 600 : -600), new Vector2(0, 0), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (25.00 / defaultdamage)), 10, 0, 1, true, 0, true, 200);
+								List<Projectile> itz = Idglib.Shattershots(theclostestcrate, P.Center + new Vector2(0, P.Center.Y > theclostestcrate.Y ? 600 : -600), new Vector2(0, 0), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (20.00 / defaultdamage)), 10, 0, 1, true, 0, true, 200);
 								SGAprojectile modeproj = itz[0].GetGlobalProjectile<SGAprojectile>();
 								//modeproj.splittingcoins = true;
 								//modeproj.splithere = P.Center;
@@ -354,7 +357,7 @@ namespace SGAmod.NPCs.Cratrosity
 							{
 								if (npc.ai[0] % 8 == 0)
 								{
-									Idglib.Shattershots(npc.Center, npc.Center + new Vector2(-npc.velocity.X, 0), new Vector2(0, 0), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (25.00 / defaultdamage)), 25, 0, 1, true, 0, false, 40);
+									Idglib.Shattershots(npc.Center, npc.Center + new Vector2(-npc.velocity.X, 0), new Vector2(0, 0), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (20.00 / defaultdamage)), 25, 0, 1, true, 0, false, 40);
 								}
 							}
 							themode = 300;
@@ -410,7 +413,7 @@ namespace SGAmod.NPCs.Cratrosity
 								{
 									if (npc.ai[0] % 30 == 0)
 									{
-										Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ModContent.ProjectileType<GlowingCopperCoin>(), (int)(npc.damage * (20f / (float)defaultdamage)), 10, 0, 1, true, 0, true, 150);
+										Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ModContent.ProjectileType<GlowingCopperCoin>(), (int)(npc.damage * (10f / (float)defaultdamage)), 10, 0, 1, true, 0, true, 150);
 									}
 									break;
 								}
@@ -418,7 +421,7 @@ namespace SGAmod.NPCs.Cratrosity
 								{
 									if (npc.ai[0] % 10 == 0)
 									{
-										Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (25f / (float)defaultdamage)), 14, 0, 1, true, 0, true, 100);
+										Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (20f / (float)defaultdamage)), 14, 0, 1, true, 0, true, 100);
 									}
 									break;
 								}
@@ -430,7 +433,7 @@ namespace SGAmod.NPCs.Cratrosity
 									}
 									if (npc.ai[0] % 8 == 0 && Main.expertMode)
 									{
-										List<Projectile> itz = Idglib.Shattershots(npc.Center, npc.Center + new Vector2(0, -5), new Vector2(0, 0), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (25f / (float)defaultdamage)), 7, 360, 2, true, npc.ai[0] / 20, true, 300);
+										List<Projectile> itz = Idglib.Shattershots(npc.Center, npc.Center + new Vector2(0, -5), new Vector2(0, 0), ModContent.ProjectileType<GlowingSilverCoin>(), (int)(npc.damage * (20f / (float)defaultdamage)), 7, 360, 2, true, npc.ai[0] / 20, true, 300);
 									}
 									break;
 								}
@@ -610,7 +613,7 @@ namespace SGAmod.NPCs.Cratrosity
 					if (compressvar > 1.01)
 					{
 						int[] projtype = { ModContent.ProjectileType<GlowingPlatinumCoin>(), ModContent.ProjectileType<GlowingPlatinumCoin>(), ModContent.ProjectileType<GlowingPlatinumCoin>(), ModContent.ProjectileType<GlowingGoldCoin>(), ModContent.ProjectileType<GlowingSilverCoin>(), ModContent.ProjectileType<GlowingCopperCoin>() };
-						int[] projdamage = { 25, 30, 30, 50, 60, 60 };
+						int[] projdamage = { 60, 50, 40, 30, 20, 10 };
 						float[] projspeed = { 1f, 1f, 1f, 9f, 8f, 7f };
 						if (layer == phase - 1)
 						{

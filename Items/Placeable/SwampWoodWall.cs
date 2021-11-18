@@ -23,8 +23,6 @@ namespace SGAmod.Items.Placeable
 			item.consumable = true;
 			item.createWall = mod.WallType("SwampWall");
 		}
-
-		public override string Texture => "Terraria/Item_" + ItemID.LivingWoodWall;
 	}
 
 		public class SwampWoodWall : ModItem

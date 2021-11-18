@@ -518,7 +518,7 @@ namespace SGAmod.NPCs.Wraiths
 		{
 			npc.dontTakeDamage = true;
 
-			if (SpecialStateTimer < 140)
+			if (SpecialStateTimer < (Leader ? 140 : 160))
 			{
 				appear *= 0.75f;
 				appear -= 0.02f;
@@ -530,7 +530,9 @@ namespace SGAmod.NPCs.Wraiths
 
 			float easeIn = MathHelper.Clamp(SpecialStateTimer / timeMax, 0f, 1f);
 
-			Vector2 playerPos = P.Center + new Vector2(leftOrRight * 240f, -240f);
+			float xpos = MathHelper.SmoothStep(0f, 1f, MathHelper.Clamp((SpecialStateTimer - 150) / 45f, 0f, 1f));
+
+			Vector2 playerPos = P.Center + new Vector2(leftOrRight * (240f* xpos), -240f);
 
 			npc.Center += (playerPos - npc.Center) * MathHelper.SmoothStep(0f, 1f, -5f+(easeIn * 10f));
 			npc.velocity *= 0.950f;

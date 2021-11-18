@@ -58,6 +58,8 @@ namespace SGAmod.Buffs
 	public class RadioDebuff : ModBuff
 	{
 
+		public static string RadioactiveDebuffText => Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) ? "Irradiated enemies explode on death, doing damage around them based on their max HP\nDeals extra damage if exposed to radiation sources for longer" : "(Hold LEFT CONTROL for more info on Irradiated)";
+
 		public override bool Autoload(ref string name, ref string texture)
 		{
 			texture = "SGAmod/Buffs/BuffTemplate";

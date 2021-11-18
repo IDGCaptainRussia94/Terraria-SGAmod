@@ -447,6 +447,28 @@ namespace SGAmod.Dimensions
                 thetile.active(false);
             }
 
+            //Smooth Ice chunks
+            prog.Message = "Smoothing (possible) Ice";
+
+            for (int passes = 0; passes < 4; passes += 1)
+            {
+                for (int y = 0; y < Main.maxTilesY; y += 1)
+                {
+                    for (int x = 0; x < Main.maxTilesX; x += 1)
+                    {
+                        if (Main.tile[x, y].type != TileID.BreakableIce)
+                            continue;
+
+                        if (GetTilesAround(x, y, 1) > UniRand.Next(3, 6))
+                            Main.tile[x, y].active(true);
+                        else
+                            Main.tile[x, y].active(false);
+                    }
+                }
+            }
+
+
+
             //Add the chests and deco to loot rooms
 
 

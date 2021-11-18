@@ -38,6 +38,10 @@ namespace SGAmod
 	{
 
 	}
+	interface INoHitItem
+	{
+
+	}
 	interface IAuroraItem
 	{
 

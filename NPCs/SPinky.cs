@@ -935,6 +935,12 @@ namespace SGAmod.NPCs
 						npc2.ai[0] += 1;
 					if (sganpc.PinkyMinion > 5)
 					{
+						if (npc.ai[1] == 10)
+						{
+							npc2.chaseable = false;
+                        }
+						npc2.SpawnedFromStatue = true;
+
 						UnifiedRandom rando = new UnifiedRandom(npc2.whoAmI - 7500);
 						//Fly out attack, come back, boomerang style
 						if (npc2.ai[0] == 1)

@@ -1424,7 +1424,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	class UraniumSnowballs : JarateShurikens, IRadioactiveItem
+	class UraniumSnowballs : JarateShurikens, IRadioactiveItem, IRadioactiveDebuffText
 	{
 		public int RadioactiveHeld() => 2;
 		public int RadioactiveInventory() => 1;

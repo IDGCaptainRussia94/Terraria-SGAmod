@@ -104,6 +104,8 @@ namespace SGAmod
 		public int creeperexplosion = 0;
 		public bool DankShrineZone = false;
 		public byte ShadowSectorZone = 0;
+		public DarkSector ShadowSector = default;
+
 		public bool noModTeleport = false;
 		private Projectile[] projectileslunarslime = new Projectile[15];
 		public static Dictionary<int, int> ShieldTypes = new Dictionary<int, int>();
@@ -114,6 +116,7 @@ namespace SGAmod
 
 		//Accessory related
 		public bool CirnoWings = false;
+		public bool manaUnchained = false;
 		public bool SerratedTooth = false;
 		public int grippinggloves = 0; public int grippingglovestimer = 0;
 		public bool vibraniumSetPlatform = false; public bool vibraniumSetWall = false;
@@ -147,6 +150,7 @@ namespace SGAmod
 		public bool restorationFlower = false;
 		public bool tpdcpu = false;
 		public bool aversionCharm = false;
+		public bool avariceRing = false;
 		public int devpower = 0;
 		public bool EALogo = false;
 		public bool graniteMagnet = false;
@@ -183,6 +187,7 @@ namespace SGAmod
 		public float actionCooldownRate = 1f;
 		public int shieldBlockTime = 0;
 		public float shieldBlockAngle = 0;
+		public int disabledAccessories = 0;
 
 		public string MoneyCollected => (midasMoneyConsumed / (float)Item.buyPrice(1)) + " platinum collected";
 
@@ -342,7 +347,9 @@ namespace SGAmod
 			if (!Shieldbreak || energyShieldAmmountAndRecharge.Item3 > 1)
 				energyShieldAmmountAndRecharge.Item3 -= 1;
 
-
+			disabledAccessories = Math.Max(disabledAccessories - 1, 0);
+			avariceRing = false;
+			manaUnchained = false;
 			snakeEyes = (false, snakeEyes.Item2);
 			enchantedShieldPolish = false;
 			diesIraeStone = false;
@@ -572,6 +579,7 @@ namespace SGAmod
 				if (sector.PlayerInside(player))
 				{
 					ShadowSectorZone = 5;
+					ShadowSector = sector;
 					SGADimPlayer dimplayer = player.GetModPlayer<SGADimPlayer>();
 					dimplayer.noLightGrow = 180;
 					dimplayer.lightSize += (int)((400f - (float)dimplayer.lightSize) / 600f);
@@ -956,15 +964,35 @@ namespace SGAmod
 
 		//Really should do more event stuff like this ^
 
-		public override void PostUpdateEquips()
+		public static void PostPostUpdateEquips(Player player)//COMPLETELY after everything else (well, after all other modded accessories)
 		{
-			if (finalGem > 0)
+			SGAPlayer sgaply = player.SGAPly();
+			//Main.NewText("TextTewst");
+			if (sgaply.finalGem > 0)
 			{
-				for(int index = 0; index < 7; index += 1)
+				for (int index = 0; index < 7; index += 1)
 				{
 					player.ownedLargeGems[index] = true;
 				}
 			}
+
+			if (sgaply.NoFly)
+			{
+				player.wingTimeMax = player.wingTimeMax / 10;
+			}
+
+			if (sgaply.HeavyCrates)
+			{
+				player.runAcceleration /= 3f;
+			}
+			if (player.HasBuff(ModContent.BuffType<TechnoCurse>()))
+			{
+				sgaply.techdamage = Math.Max(sgaply.techdamage-0.50f,0);
+			}
+		}
+
+		public override void PostUpdateEquips()
+		{
 			//Minecarts-
 
 			//player.powerrun = true;
@@ -1070,11 +1098,6 @@ namespace SGAmod
 				player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff(buffTier[indexer]).Type, 2);
 			}
 
-			if (player.HasBuff(mod.BuffType("TechnoCurse")))
-			{
-				techdamage /= 2f;
-			}
-
 			ShuffleYourFeetElectricCharge();
 
 			DashBlink();
@@ -1108,9 +1131,8 @@ namespace SGAmod
 				//Overlays.Scene.Activate("SGAmod:SGAHUD");
 			}
 
-
-
 			CharmingAmuletCode();
+
 			if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore>0))
 				player.statManaMax2 = Math.Max(player.statManaMax2-50,0);
 
@@ -1342,28 +1364,6 @@ namespace SGAmod
 				{
 					player.AddBuff(mod.BuffType("HeavyCrates"), 2, true);
 				}
-			}
-
-			if (HeavyCrates)
-			{
-				player.runAcceleration /= 3f;
-			}
-
-			if (Lockedin)
-			{
-				lockedelay += 1;
-				if (lockedelay > 30)
-					player.position = new Vector2(Math.Min(Math.Max(player.position.X, Locked.X), Locked.X + Locked.Y), player.position.Y);
-				player.position = new Vector2(player.position.X, player.position.Y);
-			}
-			else
-			{
-				lockedelay = 0;
-			}
-
-			if (NoFly)
-			{
-				player.wingTimeMax = player.wingTimeMax / 10;
 			}
 
 			if (CirnoWings == true)
@@ -1772,6 +1772,8 @@ namespace SGAmod
 
 			if (TakeShieldHit(ref damage))
 				return false;
+
+			player.GetModPlayer<CataNukePlayer>().charge /= 2;
 
 			return true;
 		}

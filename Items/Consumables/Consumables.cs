@@ -17,6 +17,10 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.GameContent.Events;
 using System.Collections.ObjectModel;
+using SGAmod.HavocGear.Items;
+using SGAmod.Tiles;
+using SGAmod.Dimensions;
+using Terraria.Utilities;
 
 namespace SGAmod.Items.Consumables
 {
@@ -62,11 +66,11 @@ namespace SGAmod.Items.Consumables
         public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("LaserMarker"), 8);
-			recipe.AddIngredient(mod.ItemType("EnergizerBattery"), 3);
-			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 6);
+			recipe.AddIngredient(ModContent.ItemType<Weapons.Technical.LaserMarker>(), 8);
+			recipe.AddIngredient(ModContent.ItemType < EnergizerBattery>(), 3);
+			recipe.AddIngredient(ModContent.ItemType < AdvancedPlating>(), 6);
 			recipe.AddIngredient(ItemID.MeteoriteBar, 4);
-			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.AddTile(ModContent.TileType<ReverseEngineeringStation>());
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
@@ -363,9 +367,9 @@ namespace SGAmod.Items.Consumables
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("VirulentBar"), 3);
-			recipe.AddIngredient(mod.ItemType("CryostalBar"), 3);
-			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 3);
+			recipe.AddIngredient(ModContent.ItemType <VirulentBar>(), 3);
+			recipe.AddIngredient(ModContent.ItemType <CryostalBar>(), 3);
+			recipe.AddIngredient(ModContent.ItemType<WraithFragment4>(), 3);
 			recipe.AddIngredient(ItemID.FallenStar, 1);
 			recipe.AddTile(TileID.CrystalBall);
 			recipe.SetResult(this, 1);
@@ -762,9 +766,10 @@ namespace SGAmod.Items.Consumables
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("BottledMud"), 5);
-			recipe.AddIngredient(mod.ItemType("VialofAcid"), 15);
-			recipe.AddIngredient(mod.ItemType("Biomass"), 10);
+			recipe.AddIngredient(ModContent.ItemType < BottledMud>(), 5);
+			recipe.AddIngredient(ModContent.ItemType < VialofAcid>(), 15);
+			recipe.AddIngredient(ModContent.ItemType <HavocGear.Items.Biomass>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.MoistSand>(), 6);
 			recipe.AddIngredient(ItemID.Bunny, 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 5);
@@ -1323,6 +1328,293 @@ namespace SGAmod.Items.Consumables
 			}
 		}
 
+	}
+
+	public class EntropicRelocator : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Entropic Relocator");
+			Tooltip.SetDefault("Throw into a Dark Sector to consume it, destroying it over time\nA new one will generate somewhere else in your world when finished");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 30;
+			item.consumable = true;
+			item.width = 40;
+			item.height = 40;
+			item.useTime = 72;
+			item.useAnimation = 72;
+			item.useStyle = 4;
+			item.noMelee = true; //so the item's animation doesn't do damage
+			item.value = 0;
+			item.noUseGraphic = true;
+			item.rare = ItemRarityID.LightRed;
+			item.UseSound = SoundID.Item1;
+			item.shoot = ProjectileID.SnowBallFriendly;
+			item.shootSpeed = 10f;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return player.SGAPly().ShadowSectorZone > 0;
+		}
+		public override bool UseItem(Player player)
+		{
+			return true;
+		}
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			type = ModContent.ProjectileType<EntropicRelocatorProj>();
+			return true;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Bomb, 1);
+			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 30);
+			recipe.AddIngredient(ModContent.ItemType<StygianCore>(), 1);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class EntropicRelocatorProj : ModProjectile
+	{
+		DarkSector sector = default;
+		int timer = 0;
+		float percent = 0f;
+		int max = 0;
+		int consumeTimer = 0;
+		List<(float, float, Vector2)> suckedInDarkness = new System.Collections.Generic.List<(float, float, Vector2)>();
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Entropic Relocator Proj");
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Consumables/EntropicRelocator"); }
+		}
+
+        public override bool PreKill(int timeLeft)
+        {
+			return true;
+        }
+
+        public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Grenade);
+			projectile.width = 32;
+			projectile.height = 32;
+
+			projectile.tileCollide = true;
+			projectile.friendly = false;
+			projectile.hostile = false;
+			projectile.timeLeft = 800;
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 3;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+        public override bool CanDamage()
+        {
+			return false;
+        }
+
+        public override bool PreAI()
+        {
+			Player player = Main.player[projectile.owner];
+
+			if (player.SGAPly().ShadowSectorZone > 0 && timer < 5)
+			{
+				sector = player.SGAPly().ShadowSector;
+				max = sector.sectors.Count;
+			}
+			timer += 1;
+
+			int trueTimer = timer - 100;
+
+			if (trueTimer > 200 && projectile.timeLeft > 3 && sector != null)
+			{
+				consumeTimer -= 1;
+				if (sector.sectors.Count > 0 || suckedInDarkness.Count > 0)
+				{
+					if (trueTimer > 1100)
+					{
+						trueTimer = 1100;
+					}
+					suckedInDarkness = suckedInDarkness.Select(testby => (testby.Item1 - (6f+(1f- percent)*12f), testby.Item2, testby.Item3)).Where(testby => testby.Item1 > 0).ToList();
+					if (suckedInDarkness.Where(testby => testby.Item1 < 12).Count() > 0)
+						consumeTimer = 15;
+				}
+
+				percent = sector.sectors.Count / (float)max;
+
+				projectile.rotation = projectile.rotation.AngleLerp(0, 0.10f);
+				projectile.velocity /= 1.25f;
+
+				for (int i = 0; i < 8; i += 1)
+				{
+					Vector2 randomcircle = Main.rand.NextVector2Circular(1f,1f)*((1.25f - percent)) * 320f;
+					int num655 = Dust.NewDust(projectile.Center + randomcircle,0, 0, 90, 0,0, 150, Color.Red, 0.50f);
+					Main.dust[num655].velocity = -Vector2.Normalize(randomcircle)*3f;
+					Main.dust[num655].noGravity = true;
+
+				}
+
+				if (timer % 30 == 0 && trueTimer<1150 && consumeTimer>0)
+				{
+					Projectile proj = Projectile.NewProjectileDirect(projectile.Center, Main.rand.NextVector2Circular(trueTimer / 800f, trueTimer / 800f), ModContent.ProjectileType<ExplosionRelocatorEye>(), 0, 0, player.whoAmI);
+					if (proj != null)
+					{
+						proj.localAI[1] = (1.15f-percent)*12f;
+						var snd = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 3);
+						if (snd != null)
+                        {
+							snd.Pitch = -0.80f + (percent * 1.50f);
+						}
+					}
+				}
+
+				projectile.timeLeft = 5;
+
+				for (int iii = 0; iii < 1; iii += 1)
+				{
+					if (sector.sectors.Count > 0)
+					{
+						DarkSectorTile tile = sector.sectors[sector.sectors.Count - 1];
+						Vector2 tilePos = new Vector2(tile.position.X * 16, tile.position.Y * 16);
+
+						Vector2 distTo = (tilePos - projectile.Center);
+						float len = (tilePos - projectile.Center).Length();
+
+
+						/*for (float i = 0; i < (tilePos - projectile.Center).Length(); i += 32)
+						{
+							Vector2 randomcircle = Main.rand.NextVector2Circular(2f, 2f);
+							int num655 = Dust.NewDust(projectile.Center + (Vector2.Normalize(distTo) * i) + randomcircle, 0, 0, 90, randomcircle.X * 2f, randomcircle.Y * 2f, 150, Color.Red, 1.0f);
+							Main.dust[num655].noGravity = true;
+						}*/
+
+						for (int i = 0; i < 24; i += 1)
+						{
+							Vector2 randomcircle = Main.rand.NextVector2Circular(32f, 32f);
+							int num655 = Dust.NewDust(tilePos + randomcircle, 0, 0, 90, randomcircle.X * 0.5f, randomcircle.Y * 0.5f, 150, Color.Red, 0.8f);
+							Main.dust[num655].noGravity = true;
+						}
+
+						for (int iiix = 16; iiix < 80; iiix += 36)
+						{
+							Vector2 offsetGaussian = SpaceDim.Gaussian2D(Main.rand.NextFloat(), Main.rand.NextFloat()) * (iiix);
+							suckedInDarkness.Add((len, len, tilePos));
+						}
+
+						//tile.purity = true;
+						sector.sectors.Remove(tile);
+						//tile.position = new Point16((int)(projectile.Center.X / 32), (int)(projectile.Center.Y / 32));
+					}
+				}
+
+				if (trueTimer > 1200)
+                {
+					DimDingeonsWorld.darkSectors.Remove(sector);
+					Projectile proj = Projectile.NewProjectileDirect(projectile.Center, Vector2.Zero, ModContent.ProjectileType<ExplosionRelocatorEye>(), 0, 0, player.whoAmI);
+					proj.timeLeft = 450;
+					proj.localAI[1] = 25f;
+
+					var snd = Main.PlaySound(SoundID.NPCKilled, (int)projectile.Center.X, (int)projectile.Center.Y, 59);
+					if (snd != null)
+					{
+						snd.Pitch = -0.85f;
+					}
+
+					SGAWorld.darkSectorInt++;
+					projectile.timeLeft = Math.Min(projectile.timeLeft, 2);
+				}
+
+				return false;
+            }
+            else
+            {
+				if (trueTimer > 200)
+				projectile.timeLeft = Math.Min(projectile.timeLeft, 2);
+			}
+
+			return true;
+		}
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+			Texture2D bomber = Main.projectileTexture[projectile.type];
+			Vector2 drawPos = projectile.Center;
+			Texture2D glow = ModContent.GetTexture("SGAmod/Glow");
+			Vector2 glowCenter = glow.Size()/2f;
+
+			foreach ((float, float, Vector2) suckedin in suckedInDarkness)
+			{
+				Vector2 vec = suckedin.Item3 - projectile.Center;
+				Vector2 center = drawPos + Vector2.Normalize(vec) * suckedin.Item1;
+				float alphaScale = MathHelper.Clamp(suckedin.Item1 / 320f, 0f, 1f);
+				spriteBatch.Draw(glow, center - Main.screenPosition, null, Color.Black * alphaScale * 0.25f, 0, glowCenter, 2f+(2f * alphaScale), SpriteEffects.None, 0f);
+			}
+
+			spriteBatch.Draw(bomber, drawPos - Main.screenPosition, null, lightColor, projectile.rotation, new Vector2(bomber.Width/2f, bomber.Height/1.5f), projectile.scale, SpriteEffects.None, 0f);
+
+
+			return false;
+        }
+
+    }
+
+	public class ExplosionRelocatorEye : Armors.Magatsu.ExplosionDarkSectorEye, IPostEffectsDraw
+	{
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Voided Relocator Explosion");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.extraUpdates = 2;
+			projectile.timeLeft = 120;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			return false;
+		}
+
+		public override void PostEffectsDraw(SpriteBatch spriteBatch, float drawScale = 2f)
+		{
+
+			float alpha = Math.Min((projectile.timeLeft) / 30f, 1f);
+
+			if (alpha <= 0)
+				return;
+
+			Texture2D tex = ModContent.GetTexture("SGAmod/Dimensions/NPCs/NullWatcher");
+			Rectangle rect = new Rectangle(0, (tex.Height / 7) * (2 + (int)(Math.Min(projectile.localAI[0] / 15f, 4))), tex.Width, tex.Height / 7);
+			Rectangle recteye = new Rectangle(0, 0, tex.Width, tex.Height / 7);
+
+			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 7) / 2f;
+
+			float scale = (2f - (projectile.timeLeft / 60f)) * projectile.localAI[1];
+
+			for (int k = 0; k < 1; k++)//projectile.oldPos.Length
+			{
+				Vector2 drawPos = (projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, projectile.gfxOffY)) / drawScale;
+				float coloralpha = ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+
+				spriteBatch.Draw(tex, drawPos, rect, Color.GreenYellow * coloralpha * 0.75f * alpha, projectile.rotation, drawOrigin, projectile.scale * 1f * scale, SpriteEffects.None, 0f);
+				spriteBatch.Draw(tex, drawPos + Vector2.Zero, recteye, Color.White * coloralpha * 0.75f * alpha, projectile.rotation, drawOrigin, projectile.scale * scale, SpriteEffects.None, 0f);
+			}
+
+		}
 	}
 
 }

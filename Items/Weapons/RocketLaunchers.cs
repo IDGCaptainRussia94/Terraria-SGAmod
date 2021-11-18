@@ -409,7 +409,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class RadioactiveSnowballCannon : ModItem, IRadioactiveItem
+	public class RadioactiveSnowballCannon : ModItem, IRadioactiveItem, IRadioactiveDebuffText
 	{
 		public int RadioactiveHeld() => 2;
 		public int RadioactiveInventory() => 1;

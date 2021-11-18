@@ -1008,8 +1008,54 @@ namespace SGAmod
 				NetMessage.SendData(MessageID.SyncPlayerChestIndex, -1, p.whoAmI, null, p.whoAmI, chest);
 		}
 
-		//Adapted from Vanilla Terraria
-		public static void DrawFishingLine(Vector2 start, Vector2 end, Vector2 Velocity, Vector2 offset, float reel)
+
+		public static void SpelunkerGlow(Vector2 here,int range = 32)//Literally from vanilla (Splunker Glowsticks)
+		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
+			int num169 = range;
+			Vector2 there = here;//Main.player[Main.myPlayer].Center
+			if ((here - there).Length() < (float)(num169 * 16))
+			{
+				int num170 = (int)here.X / 16;
+				int num171 = (int)here.Y / 16;
+				for (int num172 = num170 - num169; num172 <= num170 + num169; num172++)
+				{
+					for (int num173 = num171 - num169; num173 <= num171 + num169; num173++)
+					{
+						if (Main.rand.Next(4) != 0 || !(new Vector2(num170 - num172, num171 - num173).Length() < (float)num169) || num172 <= 0 || num172 >= Main.maxTilesX - 1 || num173 <= 0 || num173 >= Main.maxTilesY - 1 || Main.tile[num172, num173] == null || !Main.tile[num172, num173].active())
+						{
+							continue;
+						}
+						bool flag3 = false;
+						if (Main.tile[num172, num173].type == 185 && Main.tile[num172, num173].frameY == 18)
+						{
+							if (Main.tile[num172, num173].frameX >= 576 && Main.tile[num172, num173].frameX <= 882)
+							{
+								flag3 = true;
+							}
+						}
+						else if (Main.tile[num172, num173].type == 186 && Main.tile[num172, num173].frameX >= 864 && Main.tile[num172, num173].frameX <= 1170)
+						{
+							flag3 = true;
+						}
+						if (flag3 || Main.tileSpelunker[Main.tile[num172, num173].type] || (Main.tileAlch[Main.tile[num172, num173].type] && Main.tile[num172, num173].type != 82))
+						{
+							int num174 = Dust.NewDust(new Vector2(num172 * 16, num173 * 16), 16, 16, 204, 0f, 0f, 150, default(Color), 0.3f);
+							Main.dust[num174].fadeIn = 0.75f;
+							Dust dust28 = Main.dust[num174];
+							Dust dust2 = dust28;
+							dust2.velocity *= 0.1f;
+							Main.dust[num174].noLight = true;
+						}
+					}
+				}
+			}
+		}
+
+			//Adapted from Vanilla Terraria
+			public static void DrawFishingLine(Vector2 start, Vector2 end, Vector2 Velocity, Vector2 offset, float reel)
 		{
 			float pPosX = start.X;
 			float pPosY = start.Y;

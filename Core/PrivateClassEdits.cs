@@ -25,7 +25,7 @@ namespace SGAmod
 
 	public static class PrivateClassEdits
 	{
-		//Monomod IL patches, learned thanks to a "specific" very talented dev who's serving a not-worth-it mod
+		//This class is comprised of more direct version of Monomod IL patches/ON Detours to classes that you normally 'should not' have access to (and by extention, should not be) patching, learned thanks to a very "specific", very talented dev who's serving a not-worth-it mod
 
 		public static Type typeUIModItem;
 
@@ -35,6 +35,7 @@ namespace SGAmod
 
 			ModifyUIModManipulator += ModifyUIModILPatch;
 			ModifyZoneSandstormPropertydManipulator += ModifyPlayerSandstormPropertyPatch;
+			BlockModdedAccessoriesManipulator += BlockModdedAccessoriesPatch;
 
 		}
 
@@ -42,14 +43,60 @@ namespace SGAmod
 		{
 			ModifyUIModManipulator -= ModifyUIModILPatch;
 			ModifyZoneSandstormPropertydManipulator -= ModifyPlayerSandstormPropertyPatch;
+			BlockModdedAccessoriesManipulator += BlockModdedAccessoriesPatch;
 		}
 
 
 
 
+		//Shutdown player accessories: vanilla and modded Post-Update ones, testing and unused atm: may not keep! (this may be going too far)
+		//Also runs post-post updates, after all other mods
+		#region Blocked Modded Accessories From Updating
+		public static event Manipulator BlockModdedAccessoriesManipulator
+		{
+			add
+			{
+				HookEndpointManager.Modify(typeof(PlayerHooks).GetMethod("PostUpdateEquips", SGAmod.UniversalBindingFlags), (Delegate)(object)value);
+			}
+			remove
+			{
+				HookEndpointManager.Unmodify(typeof(PlayerHooks).GetMethod("PostUpdateEquips", SGAmod.UniversalBindingFlags), (Delegate)(object)value);
+			}
+		}
 
+		private static void BlockModdedAccessoriesPatch(ILContext context)
+		{
+			ILCursor c = new ILCursor(context);
+			ILLabel label = c.DefineLabel();
 
-		//Overrides the ZoneSandstorm property in Player to be true when the armor set ability is active
+			//effectively, looks like this:
+			//
+			//if (PlayerIsInSandstormMethod(player))
+			//return;
+			//
+			//rest of original code below
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<PlayerIsInSandstormDelegate>(BlockModdedAccessoriesMethod);
+			c.Emit(OpCodes.Brfalse_S, label);
+			c.Emit(OpCodes.Ret);
+			c.MarkLabel(label);
+
+			c.Index = c.Instrs.Count - 1;
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<Action<Player>>((Player player) =>
+			{
+				SGAPlayer.PostPostUpdateEquips(player);
+			});
+		}
+
+		private static bool BlockModdedAccessoriesMethod(Player ply)
+		{
+			SGAPlayer sgaply = ply.SGAPly();
+			return sgaply.disabledAccessories>0;
+		}
+		#endregion
+
+		//Overrides the ZoneSandstorm property in Player to be true when the armor set ability is active (The visuals patch for this is in ILHacks.cs)
 		#region Sandstorm Edits
 		public static event Manipulator ModifyZoneSandstormPropertydManipulator
 		{

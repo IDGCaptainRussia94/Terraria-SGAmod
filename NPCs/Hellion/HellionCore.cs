@@ -25,57 +25,6 @@ namespace SGAmod.NPCs.Hellion
     using Terraria.ID;
     using Terraria.ModLoader;
 
-
-    /*public class Batthing : ModNPC
-    {
-
-        Texture2D tex;
-        Texture2D armtex;
-        float rotoffset = 0f;
-        int aioffset = 9990;
-        int noact = 0;
-        int nomove = 0;
-        int slowedspeed = 0;
-
-        public Vector2 localdist;
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Hellion Core Arm");
-        }
-
-        int counter = 0;
-        public override void AI()
-        {
-            if (npc.target < 0 || npc.target == byte.MaxValue || Main.player[npc.target].dead)
-            {
-                npc.TargetClosest(true);
-            }
-                counter += 1;
-
-            Player ply = Main.player[npc.target];
-            if (counter % 1000 < 750)
-            {
-                if (counter % 200 == 0)
-                {
-                    Vector2 angle = ply.Center - npc.Center;
-                    angle.Normalize();
-                    npc.velocity = angle * 12f;
-
-                }
-            }
-            else
-            {
-                npc.velocity /= 5f;
-                if (counter%70==0)
-                    NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)npc.position.Y + npc.height / 2, NPCID.CaveBat, npc.whoAmI, 0f, 0f, 0f, 0f, 255);
-
-            }
-        }
-
-
-
-    }*/
-
     public class HellionWorm : ModNPC
     {
 

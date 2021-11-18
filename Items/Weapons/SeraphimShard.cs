@@ -198,7 +198,6 @@ namespace SGAmod.Items.Weapons
 			//if (projectile.owner == null || projectile.owner < 0)
 			//return;
 
-
 			player = Main.player[projectile.owner];
 			if (player.dead || !player.active)
 			{
@@ -208,6 +207,7 @@ namespace SGAmod.Items.Weapons
 			{
 				projectile.timeLeft = 2;
 			}
+
 			bool toplayer = true;
 			Vector2 gothere = player.Center+new Vector2(player.direction*-32,0);
 			projectile.localAI[0] += 1;
@@ -219,11 +219,15 @@ namespace SGAmod.Items.Weapons
 			projectile.ai[0] -= 1;
 
 			List<NPC> closestnpcs = new List<NPC>();
+			
 			for(int i = 0; i < Main.maxNPCs; i += 1)
 			{
-				bool colcheck= Collision.CheckAABBvLineCollision(Main.npc[i].position, new Vector2(Main.npc[i].width, Main.npc[i].height), Main.npc[i].Center,projectile.Center)
-					&& Collision.CanHitLine(Main.npc[i].Center,0,0, projectile.Center,0,0);
-				if (Main.npc[i].active && !Main.npc[i].friendly && !Main.npc[i].townNPC && !Main.npc[i].dontTakeDamage && Main.npc[i].CanBeChasedBy() && colcheck
+				//bool colcheck= Collision.CheckAABBvLineCollision(Main.npc[i].position, new Vector2(Main.npc[i].width, Main.npc[i].height), Main.npc[i].Center,projectile.Center)
+				//	&& Collision.CanHitLine(Main.npc[i].Center,0,0, projectile.Center,0,0);
+
+				if (Main.npc[i].active && !Main.npc[i].friendly && !Main.npc[i].townNPC && !Main.npc[i].dontTakeDamage && Main.npc[i].CanBeChasedBy() &&
+					Collision.CheckAABBvLineCollision(Main.npc[i].position, new Vector2(Main.npc[i].width, Main.npc[i].height), Main.npc[i].Center, projectile.Center)
+					&& Collision.CanHitLine(Main.npc[i].Center, 0, 0, projectile.Center, 0, 0)
 					&& (Main.npc[i].Center-player.Center).Length()< SeekDist)
 					closestnpcs.Add(Main.npc[i]);
 			}

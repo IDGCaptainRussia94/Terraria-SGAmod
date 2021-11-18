@@ -51,11 +51,13 @@ namespace SGAmod.Items.Placeable.Relics
 			DisplayName.SetDefault("Relic: " + name);
 		}
 
+		public static Color RelicColor => Color.Lerp(Color.Red, Color.Lerp(Color.Red, Color.White, 0.75f), 0.5f + (float)Math.Sin(Main.GlobalTime));
+
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			foreach (TooltipLine line in tooltips)
 			{
-				line.overrideColor = Color.Lerp(Color.Red, Color.Lerp(Color.Red, Color.White, 0.75f), 0.5f + (float)Math.Sin(Main.GlobalTime));
+				line.overrideColor = RelicColor;
 
 			}
 			tooltips.Add(new TooltipLine(mod, "Relic", "Awarded for No-Hitting " + name));

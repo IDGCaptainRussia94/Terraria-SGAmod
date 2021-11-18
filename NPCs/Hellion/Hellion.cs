@@ -3638,7 +3638,7 @@ namespace SGAmod.NPCs.Hellion
 
 	}
 
-	public class HellionTeleport : ModProjectile
+	public class HellionTeleport : ModProjectile, INonDestructableProjectile
 	{
 
 		float scale2 = 0f;

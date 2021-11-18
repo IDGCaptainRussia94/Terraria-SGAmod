@@ -237,7 +237,7 @@ namespace SGAmod.Items.Accessories
 		{
 			base.UpdateAccessory(player, hideVisual);
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-			sgaply.Dankset = 3;
+			sgaply.Dankset = 4;
 		}
 		public override void AddRecipes()
 		{
@@ -523,6 +523,30 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+
+	public class AvariceRing : ModItem, INoHitItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Ring Of Untouchable Avarice");
+			Tooltip.SetDefault("Enemies you kill drop double loot if you no-hit them");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.Yellow;
+			item.value = Item.buyPrice(0, 50, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+				player.SGAPly().avariceRing = true;
+		}
+
+	}
 	public class SybariteGem : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -594,14 +618,14 @@ namespace SGAmod.Items.Accessories
 
 	}
 
-	public class CorperateEpiphany : IdolOfMidas
+	public class CorperateEpiphany : IdolOfMidas, INoHitItem
 	{
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Corporate Epiphany");
 			Tooltip.SetDefault("'Money Money Money!'\n'Must be funny? In a rich man's world?'\n" +
-				"Combined Effects of Idol of Midas, Sybarite Gem, and Omni-Magnet (hide to disable Idol of Midas's coin collecting)\n" +
+				"Combined Effects of Idol of Midas, Sybarite Gem, Avarice Ring, and Omni-Magnet (hide to disable Idol of Midas's coin collecting)\n" +
 				"Includes EALogo's ability. but only while worn as an accessory");
 		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -629,19 +653,21 @@ namespace SGAmod.Items.Accessories
 			base.UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<OmniMagnet>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<EALogo>().UpdateInventory(player);
-			ModContent.GetInstance<SybariteGem>().UpdateInventory(player);
+			ModContent.GetInstance<SybariteGem>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<AvariceRing>().UpdateAccessory(player, hideVisual);
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("IdolOfMidas"), 1);
-			recipe.AddIngredient(mod.ItemType("SybariteGem"), 1);
-			recipe.AddIngredient(mod.ItemType("EALogo"), 1);
-			recipe.AddIngredient(mod.ItemType("OmniMagnet"), 1);
-			recipe.AddIngredient(mod.ItemType("MoneySign"), 15);
-			recipe.AddIngredient(mod.ItemType("Entrophite"), 200);
-			recipe.AddIngredient(mod.ItemType("StygianCore"), 3);
-			recipe.AddIngredient(mod.ItemType("CalamityRune"), 2);
+			recipe.AddIngredient(ModContent.ItemType<IdolOfMidas>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < SybariteGem>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < AvariceRing>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < EALogo>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < OmniMagnet>(), 1);
+			recipe.AddIngredient(ModContent.ItemType <MoneySign>(), 15);
+			recipe.AddIngredient(ModContent.ItemType <Entrophite>(), 200);
+			recipe.AddIngredient(ModContent.ItemType <StygianCore>(), 3);
+			recipe.AddIngredient(ModContent.ItemType <CalamityRune>(), 2);
 			recipe.AddIngredient(ItemID.GoldDust, 200);
 			recipe.AddIngredient(ItemID.PlatinumCoin, 10);
 			recipe.AddTile(TileID.LunarCraftingStation);

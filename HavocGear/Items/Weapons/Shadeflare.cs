@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using SGAmod.Items;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +12,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shadeflare");
-			Tooltip.SetDefault("Unleashes torrents of shadowflame arrows");
+			Tooltip.SetDefault("Unleashes torrents of Shadowflame Arrows");
 		}
 
 		public override void SetDefaults()
@@ -22,7 +22,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.width = 32;
 			item.height = 62;
 			item.useTime = 15;
-			item.useAnimation = 15;
+			item.useAnimation = 20;
 			item.useStyle = 5;
 			item.noMelee = true;
 			item.knockBack = 4;
@@ -45,7 +45,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			recipe.AddIngredient(ItemID.ShadowFlameBow, 1);
 			recipe.AddIngredient(ItemID.DarkShard, 1);
 			recipe.AddIngredient(ItemID.FragmentVortex, 8);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
+			recipe.AddIngredient(ModContent.ItemType<StarMetalBar>(), 16);
 			recipe.AddIngredient(ItemID.SoulofNight, 8);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);

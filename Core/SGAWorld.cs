@@ -61,6 +61,7 @@ namespace SGAmod
         public static int dungeonlevel = 0;
         public static bool portalcanmovein = false;
         public static bool darknessVision = false;
+        public static int darkSectorInt = 0;
         public static NoiseGenerator WorldNoise;
 
         public static int SnapCooldown = 0;
@@ -381,6 +382,8 @@ namespace SGAmod
             tag["downedCaliburnGuardians"] = downedCaliburnGuardians;
             tag["downedCaliburnGuardiansPoints"] = downedCaliburnGuardiansPoints;
             tag["downedCaliburnGuardianHardmode"] = downedCaliburnGuardianHardmode;
+            tag["darkSectorInt"] = darkSectorInt;
+
             int x = 0;
             for (x = 0; x < questvars.Length; x++)
             {
@@ -444,6 +447,7 @@ namespace SGAmod
             if (tag.ContainsKey("GennedVirulent")) { GennedVirulent = tag.GetBool("GennedVirulent"); }
             if (tag.ContainsKey("tidalCharmUnlocked")) { GennedVirulent = tag.GetBool("tidalCharmUnlocked"); }
             if (tag.ContainsKey("downedPrismBansheeByte")) { downedPrismBanshee = tag.GetByte("downedPrismBansheeByte"); }
+            if (tag.ContainsKey("darkSectorInt")) { darkSectorInt = tag.GetInt("darkSectorInt"); }
 
             //if (!SGAmod.exitingSubworld)
             if (tag.ContainsKey("highestDimDungeonFloor")) { highestDimDungeonFloor = Math.Max(tag.GetByte("highestDimDungeonFloor"), highestDimDungeonFloor); }
@@ -508,6 +512,7 @@ namespace SGAmod
             writer.Write(bossprgressor);
             writer.Write(modtimer);
             writer.Write((short)NightmareHardcore);
+            writer.Write((short)darkSectorInt);
 
             for (x = 0; x < questvars.Length; x++)
             {
@@ -556,6 +561,7 @@ namespace SGAmod
             bossprgressor = reader.ReadInt32();
             modtimer = reader.ReadInt32();
             NightmareHardcore = reader.ReadInt16();
+            darkSectorInt = (int)reader.ReadInt16();
 
             for (x = 0; x < questvars.Length; x++)
             {

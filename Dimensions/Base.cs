@@ -1186,11 +1186,11 @@ namespace SGAmod.Dimensions
             };
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, blind, SamplerState.PointWrap, DepthStencilState.DepthRead, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.DepthRead, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
             Vector2 size = new Vector2(60, 60);
             foreach (DarkSector sector in DimDingeonsWorld.darkSectors)
             {
-                sector.Draw(size, ModContent.GetTexture("SGAmod/Extra_49c"));
+                sector.Draw(size, ModContent.GetTexture("SGAmod/Glow"));
             }
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
@@ -1205,11 +1205,11 @@ namespace SGAmod.Dimensions
             {
                 if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && SGAConfig.Instance.DarkSector && darkSectors.Count < 1 && SGAWorld.modtimer > 150)
                 {
-                    UnifiedRandom rando = new UnifiedRandom(Main.worldName.GetHashCode());
+                    UnifiedRandom rando = new UnifiedRandom(Main.worldName.GetHashCode() + SGAWorld.darkSectorInt);
 
                     Point randomspot = new Point(rando.Next(300, Main.maxTilesX - 600), rando.Next((int)(Main.maxTilesY * 0.25), Main.maxTilesY - 300));
 
-                    new DarkSector(randomspot.X, randomspot.Y, seed: Main.worldName.GetHashCode());
+                    new DarkSector(randomspot.X, randomspot.Y, seed: Main.worldName.GetHashCode()+SGAWorld.darkSectorInt);
 
                 }
             }

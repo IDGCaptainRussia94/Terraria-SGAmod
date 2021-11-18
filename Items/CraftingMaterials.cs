@@ -16,6 +16,37 @@ using Terraria.Utilities;
 
 namespace SGAmod.HavocGear.Items
 {
+	public class MoistSand : ModItem
+	{
+		public override void SetDefaults()
+		{
+			item.width = 16;
+			item.height = 16;
+			item.maxStack = 999;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = 1;
+			item.consumable = true;
+			item.createTile = mod.TileType("MoistSand");
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Moist Sand");
+			Tooltip.SetDefault("'expect nothing else from sand thrown into water'");
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<MoistSand>());
+			recipe.AddTile(TileID.Furnaces);
+			recipe.SetResult(ItemID.SandBlock, 1);
+			recipe.AddRecipe();
+		}
+
+	}
 	public class BottledMud : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -30,7 +61,7 @@ namespace SGAmod.HavocGear.Items
 			item.height = 14;
 			item.maxStack = 99;
 			item.value = 50;
-			item.rare = 1;
+			item.rare = ItemRarityID.Blue;
 		}
 
 		public override void AddRecipes()
@@ -72,8 +103,8 @@ namespace SGAmod.HavocGear.Items
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "BiomassBar");
-			recipe.AddIngredient(null, "VirulentOre", 3);
+			recipe.AddIngredient(ModContent.ItemType<BiomassBar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<VirulentOre>(), 3);
 			recipe.AddTile(TileID.Hellforge);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
@@ -137,9 +168,10 @@ namespace SGAmod.HavocGear.Items
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "Biomass", 5);
-			recipe.AddIngredient(null, "MurkyGel",2);
-			recipe.AddIngredient(null, "DecayedMoss", 1);
+			recipe.AddIngredient(ModContent.ItemType < Biomass>(), 5);
+			recipe.AddIngredient(ModContent.ItemType < MurkyGel>(),2);
+			recipe.AddIngredient(ModContent.ItemType<DecayedMoss>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<MoistSand>(), 1);
 			recipe.AddTile(TileID.Furnaces);
 			recipe.SetResult(this, 3);
 			recipe.AddRecipe();

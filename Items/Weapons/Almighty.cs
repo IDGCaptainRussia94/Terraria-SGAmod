@@ -15,6 +15,7 @@ using System.Linq;
 using Terraria.Utilities;
 using SGAmod.Effects;
 using AAAAUThrowing;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Weapons
 {
@@ -64,14 +65,14 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Megido");
-			Tooltip.SetDefault("Targets 4 nearby enemies on use\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds"));
+			Tooltip.SetDefault("Targets 4 enemies nearby your curser on use\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds"));
 		}
 		public override string Texture => "Terraria/Item_" + ItemID.Darkness;
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
 
-			item.damage = 75;
+			item.damage = 150;
 			item.width = 48;
 			item.height = 48;
 			item.useTurn = true;
@@ -103,12 +104,12 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Megido").WithVolume(.7f).WithPitchVariance(.15f), player.Center);
+			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/MegidoSnd").WithVolume(.7f).WithPitchVariance(.15f), player.Center);
 			player.SGAPly().AddCooldownStack(60 * 30);
 
 			for (int i = 0; i < 4; i += 1)
 			{
-				NPC[] findnpc = SGAUtils.ClosestEnemies(player.Center, 1500, checkWalls: false, checkCanChase: true)?.ToArray();
+				NPC[] findnpc = SGAUtils.ClosestEnemies(player.Center, 1500,Main.MouseWorld, checkWalls: false, checkCanChase: true)?.ToArray();
 				NPC target = findnpc[i % findnpc.Count()];
 
 				Projectile proj = Projectile.NewProjectileDirect(player.Center, Vector2.UnitX.RotatedBy(MathHelper.PiOver4 + (i * (MathHelper.TwoPi / 4f))) * 8f, ModContent.ProjectileType<MegidoProj>(), damage, knockBack, player.whoAmI, 0, target.whoAmI);
@@ -297,7 +298,8 @@ namespace SGAmod.Items.Weapons
 				Main.spriteBatch.Draw(mainTex, projectile.oldPos[(int)i]+projectile.Hitbox.Size()/2f - Main.screenPosition, null, Color.Lerp(Color.Blue,colorz,i) * trail.strength, 0, mainTex.Size() / 2f, blobSize*(sizer), default, 0);
 			}*/
 
-			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, colorz * trail.strength, 0, mainTex.Size() / 2f, blobSize, default, 0);
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lerp(colorz, Color.Black, 0.40f) * trail.strength, 0, mainTex.Size() / 2f, blobSize, default, 0);
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lerp(colorz,Color.White,0.25f)*0.75f * trail.strength, 0, mainTex.Size() / 2f, blobSize*0.75f, default, 0);
 
 			UnifiedRandom random = new UnifiedRandom(projectile.whoAmI);
 			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 32f)
@@ -312,6 +314,256 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
+	public class Megidola : Megido
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Megidola");
+			Tooltip.SetDefault("Targets 3 enemies nearby your curser on use and spawns orbs near them\nEach of these orbs zap nearby enemies 4 times for the listed damage\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 45 seconds"));
+		}
+		public override string Texture => "Terraria/Item_" + ItemID.Darkness;
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+
+			item.damage = 320;
+			item.width = 48;
+			item.height = 48;
+			item.useTurn = true;
+			item.rare = ItemRarityID.Orange;
+			item.value = 500;
+			item.useStyle = 1;
+			item.useAnimation = 50;
+			item.useTime = 50;
+			item.knockBack = 8;
+			item.autoReuse = false;
+			item.noUseGraphic = true;
+			item.consumable = true;
+			item.noMelee = true;
+			item.shootSpeed = 2f;
+			item.maxStack = 30;
+			item.shoot = ModContent.ProjectileType<MegidolaProj>();
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			if (player.SGAPly().AddCooldownStack(200, 2, testOnly: true))
+			{
+				NPC[] findnpc = SGAUtils.ClosestEnemies(player.Center, 1500, checkWalls: false, checkCanChase: true)?.ToArray();
+				if (findnpc != null && findnpc.Length > 0)
+					return true;
+			}
+			return false;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<Megido>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<OmniSoul>(), 1);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			//Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Megido").WithVolume(1.0f).WithPitchVariance(.15f), player.Center);
+		player.SGAPly().AddCooldownStack(60 * 45, 2);
+
+			for (int i = 0; i < 3; i += 1)
+			{
+				NPC[] findnpc = SGAUtils.ClosestEnemies(player.Center, 1500, Main.MouseWorld, checkWalls: false, checkCanChase: true)?.ToArray();
+				NPC target = findnpc[i % findnpc.Count()];
+
+				Projectile proj = Projectile.NewProjectileDirect(target.Center + Vector2.UnitX.RotatedBy(Main.rand.NextFloat(MathHelper.TwoPi)) * Main.rand.NextFloat(72f, 160f), Vector2.Zero, ModContent.ProjectileType<MegidolaProj>(), damage, knockBack, player.whoAmI);
+				proj.ai[0] = -12f * i;
+				proj.netUpdate = true;
+			}
+
+			return false;
+		}
+	}
+
+	public class MegidolaProj : MegidoProj
+	{
+		Vector2 startingloc = default;
+		public override void SetDefaults()
+		{
+			projectile.width = 8;
+			projectile.height = 8;
+			projectile.aiStyle = -1;
+			projectile.penetrate = -1;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 72;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Megidola Proj");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 10;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		public override void AI()
+		{
+			if (startingloc == default)
+			{
+				startingloc = projectile.Center;
+			}
+
+			if (projectile.ai[0]%4 == 0 && projectile.ai[0]>16 && projectile.ai[0] < 32)
+            {
+				List<NPC> enemies = SGAUtils.ClosestEnemies(projectile.Center, 640, projectile.Center,checkWalls: false);
+				if (enemies != null && enemies.Count > 0)
+				{
+					NPC target = enemies[((int)projectile.ai[1])%enemies.Count];
+
+					Projectile proj = Projectile.NewProjectileDirect(projectile.Center, target.Center - projectile.Center, ModContent.ProjectileType<MegidolaLaserProj>(), projectile.damage, projectile.knockBack, projectile.owner);
+					proj.ai[1] = target.whoAmI;
+					proj.netUpdate = true;
+
+					//var snd2 = Main.PlaySound(50, (int)projectile.Center.X, (int)projectile.Center.Y, mod.GetSoundSlot(SoundType.Custom, "Sounds/Custom/Megido"));
+					//snd.PlaySound(ref snd2,1f,0f,SoundType.Custom);
+
+					SoundEffectInstance snd = Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/MegidoSnd"), projectile.Center);
+					if (snd != null)
+						snd.Pitch = -0.75f+(projectile.ai[1]/4f);
+					//	snd.PlaySound(ref snd2, 1f, 0f, SoundType.Custom);
+
+					projectile.ai[1]++;
+					projectile.netUpdate = true;
+				}
+
+            }
+
+			if (projectile.ai[0] < 1)
+				projectile.timeLeft += 1;
+
+			projectile.localAI[0] += 1f;
+			projectile.ai[0] += 1;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			float alpha = MathHelper.Clamp(projectile.ai[0] / 12f, 0f, 1f);
+			alpha *= MathHelper.Clamp((projectile.timeLeft+20) / 8f, 0f, 1f);
+			float blobSize = (MathHelper.Clamp(projectile.ai[0]/2f, 0f, 8f) * 0.1f);
+			blobSize *= MathHelper.Clamp(projectile.timeLeft / 10f, 0f, 1f);
+
+			Texture2D mainTex = SGAmod.ExtraTextures[96];
+			Color colorz = Color.Turquoise;
+
+
+			//blob orb
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, colorz * alpha, 0, mainTex.Size() / 2f, blobSize, default, 0);
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lerp(colorz, Color.Black,50) * alpha, 0, mainTex.Size() / 2f, blobSize*0.85f, default, 0);
+
+
+			UnifiedRandom random = new UnifiedRandom(projectile.whoAmI);
+			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 32f)
+			{
+				float rotter = random.NextFloat(0.05f, 0.125f) * (random.NextBool() ? -5f : 5f)*Main.GlobalTime;
+				float angle = random.NextFloat(MathHelper.TwoPi)+ rotter;
+				Vector2 loc = Vector2.UnitX.RotatedBy(angle) * (random.NextFloat(6f, 26f) * blobSize);
+
+				Main.spriteBatch.Draw(mainTex, projectile.Center + loc - Main.screenPosition, null, Color.Lerp(Color.Turquoise, Color.Black, 0.50f) * 0.50f * alpha, angle, mainTex.Size() / 2f, new Vector2(blobSize / 12f, blobSize / 6f), default, 0);
+			}
+
+			return false;
+		}
+	}
+
+	public class MegidolaLaserProj : MegidoProj
+	{
+		Vector2 startingloc = default;
+		Vector2 hitboxchoose = default;
+		public override void SetDefaults()
+		{
+			projectile.width = 8;
+			projectile.height = 8;
+			projectile.aiStyle = -1;
+			projectile.penetrate = -1;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 16;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Megidola Laser Proj");
+		}
+
+		public override void AI()
+		{
+			NPC enemy = Main.npc[(int)projectile.ai[1]];
+
+			if (startingloc == default)
+			{
+				startingloc = projectile.Center;
+			}
+			
+			projectile.localAI[0] += 1f;
+			projectile.ai[0] += 1;
+
+			if (enemy != null && enemy.active && projectile.localAI[1] < 1)
+            {
+				if (hitboxchoose == default)
+                {
+					hitboxchoose = new Vector2(Main.rand.Next(enemy.width), Main.rand.Next(enemy.height));
+                }
+				projectile.velocity = (enemy.position+hitboxchoose) - projectile.Center;
+
+				if (projectile.ai[0] == 8)
+				{
+					int damage = Main.DamageVar(projectile.damage) + enemy.defense / 2;
+					CheckApoco(ref damage, enemy, projectile);
+					enemy.StrikeNPC(damage, 0, 1, false);
+					SGAmod.AddScreenShake(6f, 2400, enemy.Center);
+					Main.player[projectile.owner].addDPS(damage);
+				}
+			}
+            else
+            {
+				projectile.localAI[1]++;
+			}
+
+			projectile.position -= projectile.velocity;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			float alpha = MathHelper.Clamp(projectile.ai[0] / 6f, 0f, 1f)* MathHelper.Clamp(projectile.timeLeft / 6f, 0f, 1f);
+
+			Vector2[] points = new Vector2[] { startingloc, startingloc+projectile.velocity };
+
+			TrailHelper trail = new TrailHelper("BasicEffectAlphaPass", mod.GetTexture("SmallLaser"));
+			//UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);
+			Color colorz = Color.DarkCyan;
+			Color colorz2 = Color.Turquoise;
+			trail.color = delegate (float percent)
+			{
+				return Color.Lerp(colorz, colorz2, percent);
+			};
+			trail.projsize = Vector2.Zero;
+			trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
+			trail.coordMultiplier = new Vector2(1f, 1f);
+			trail.doFade = false;
+			trail.trailThickness = 16;
+			trail.trailThicknessIncrease = 0;
+			//trail.capsize = new Vector2(6f, 0f);
+			trail.strength = alpha*2f;
+			trail.DrawTrail(points.ToList(), projectile.Center);
+
+			Texture2D mainTex = SGAmod.ExtraTextures[96];
+			Main.spriteBatch.Draw(mainTex, startingloc + projectile.velocity - Main.screenPosition, null, Color.Lerp(colorz2, Color.Black, 0.40f)*1f, 0, mainTex.Size() / 2f, alpha * 0.50f, default, 0);
+			Main.spriteBatch.Draw(mainTex, startingloc + projectile.velocity - Main.screenPosition, null, Color.Lerp(colorz2, Color.White, 0.25f) * 0.75f, 0, mainTex.Size() / 2f, alpha * 0.32f, default, 0);
+
+
+			return false;
+		}
+	}
+
+
+
 	public class MorningStar : Megido
 	{
 		public override void SetStaticDefaults()
@@ -322,7 +574,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
-			item.damage = 5000;
+			item.damage = 500;
 			item.width = 48;
 			item.height = 48;
 			item.useTurn = true;
@@ -352,7 +604,6 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			//Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Megido").WithVolume(.7f).WithPitchVariance(.15f), player.Center);
 			player.SGAPly().AddCooldownStack(60 * 150, 4);
 
 			int pushYUp = -1;
@@ -440,7 +691,7 @@ namespace SGAmod.Items.Weapons
 
 						if (enemy.Hitbox.Intersects(rect))
 						{
-							int damage = (int)((Main.DamageVar((projectile.damage)) + enemy.defense / 2) / (endhit ? 1f : 10f));
+							int damage = (int)((Main.DamageVar((projectile.damage)) + enemy.defense / 2) * (endhit ? 10f : 1f));
 							CheckApoco(ref damage, enemy, projectile);
 							enemy.StrikeNPC(damage, 0, 1, false);
 							Main.player[projectile.owner].addDPS(damage);
@@ -615,10 +866,10 @@ namespace SGAmod.Items.Weapons
 		public int charge = 0;
 		public int ChargeMax => 100000;
 		public float ChargePercent => (float)charge / (float)ChargeMax;
-		public int ChargeSpeed => HeldNuke ? (int)(Math.Min(player.lifeRegen, 20) * MathHelper.Clamp(player.lifeRegenTime / 300f, 0f, 5f)) : 0;
+		public int ChargeSpeed => (int)((Math.Min(player.lifeRegen/2, 20) * MathHelper.Clamp(player.lifeRegenTime / 400f, 0f, 5f)*(HeldNuke ? 1f : 0.25f))* 1f);
 
 		public bool HasNuke => player.HasItem(ModContent.ItemType<NuclearOption>());
-		public bool HeldNuke => player.HeldItem.type == ModContent.ItemType<NuclearOption>()
+		public bool HeldNuke => player.HeldItem.type == ModContent.ItemType<NuclearOption>();
 
 
 		public override void ResetEffects()
@@ -641,7 +892,7 @@ namespace SGAmod.Items.Weapons
 						{
 							snd.Pitch = -0.75f;
 						}
-						charge += 100 + (proj.damage * 10);
+						charge += 500 + (proj.damage * 15);
 					}
 				}
 				charge = (int)MathHelper.Clamp(charge + ChargeSpeed, 0f, ChargeMax);
@@ -653,12 +904,12 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
-	public class NuclearOption : Megido
+	public class NuclearOption : Megido, IRadioactiveDebuffText
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Nuclear Option");
-			Tooltip.SetDefault("'Unleash the full raw, unfiltered, cataclysmic wrath of the british...'\nCharges up by grazing projectiles while holding this item\nSends out a initial shockwave, afterwords only the fireball does damage\nAt 50% or higher, activate to unleash a Nuclear Explosion\nVaporizes most projectiles, and has more range and damage at higher charge");
+			Tooltip.SetDefault("'Unleash the full raw, unfiltered, cataclysmic wrath of the british...'\nCharges up by holding this item, based off life regen and by grazing projectiles\nWill charge up very slowly if not actively held\nAt 50% charge or higher, activate to unleash a Nuclear Explosion\nSends out a initial shockwave, afterwords only the fireball does damage\nVaporizes most projectiles, and has more range and damage at higher charge\n" + Idglib.ColorText(Color.Red, "Getting hurt and losing health will halve your current charge"));
 		}
 
         public override string Texture => "SGAmod/Items/Weapons/NuclearOption";
@@ -804,16 +1055,18 @@ namespace SGAmod.Items.Weapons
 			projectile.localAI[0] += 1;
 			if (projectile.localAI[0] == 1)
 			{
-				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Megidolaon").WithVolume(1f).WithPitchVariance(.15f), projectile.Center);
+				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/MegidolaonSnd").WithVolume(1f).WithPitchVariance(.15f), projectile.Center);
 				SGAmod.AddScreenShake(64f, 2400, projectile.Center);
 			}
 			float lenn = 512 * (projectile.ai[1]* projectile.ai[1]) +(projectile.ai[0]<60 ? projectile.ai[0]*25 : 0)+(OverallScale.X * 16f);
 
 			if (projectile.ai[0] % 10 == 0 && projectile.timeLeft>30)
 			{
-				foreach (Projectile proj in Main.projectile.Where(testby => testby.active && testby != projectile && testby.owner >= 255 && testby.hostile && !testby.friendly && (testby.Center - projectile.Center).Length() < lenn))
+				foreach (Projectile proj in Main.projectile.Where(testby => testby.active && testby.hostile && !testby.friendly && (testby.Center - projectile.Center).Length() < lenn))
 				{
-					if (proj.timeLeft > 3 && !proj.SGAProj().raindown && proj.whoAmI != projectile.whoAmI && proj.damage>0 && proj.owner >= 255 && proj.hostile && !proj.friendly && (proj.modProjectile == null || (proj.modProjectile != null && !(proj.modProjectile is INonDestructableProjectile))))
+					bool canDelete = (proj.modProjectile != null && ((proj.modProjectile is INonDestructableProjectile) || (proj.modProjectile is Dimensions.IMineableAsteriod)));
+
+					if (proj.timeLeft > 3 && !proj.SGAProj().raindown && proj.whoAmI != projectile.whoAmI && proj.damage>0 && proj.hostile && !proj.friendly && (proj.modProjectile == null && !canDelete))
 					{
 						proj.SGAProj().raindown = true;
 						proj.timeLeft = 3;
@@ -836,13 +1089,14 @@ namespace SGAmod.Items.Weapons
 					CheckApoco(ref damage, npc, projectile);
 					npc.StrikeNPC(damage, 0, 1, false);
 					player.addDPS(damage);
+					npc.SGANPCs().IrradiatedAmmount = Math.Min(npc.SGANPCs().IrradiatedAmmount + 30, projectile.damage * 3);
 					npc.AddBuff(ModContent.BuffType<Buffs.RadioDebuff>(), 60 * 20);
 
 					if (projectile.ai[1] >= 1f)
 					{
 						if (SGAmod.Calamity.Item1)
 						{
-							if (npc.modNPC != null && npc.modNPC.mod.Name == "Calamity")
+							if (npc.modNPC != null && npc.modNPC.mod.Name == "CalamityMod")
 							{
 								npc.life = 1;
 								npc.StrikeNPC(666, 1337, 1, true);
@@ -871,8 +1125,8 @@ namespace SGAmod.Items.Weapons
 
 			if (projectile.timeLeft > 30)
             {
-				if (SGAmod.ScreenShake<8)
-				SGAmod.AddScreenShake(5f, projectile.timeLeft*5, projectile.Center);
+				if (SGAmod.ScreenShake<10)
+				SGAmod.AddScreenShake(5f, 720+(projectile.timeLeft*4), projectile.Center);
 			}
 
 			float scaleUpeffect = 1f;
@@ -1001,8 +1255,6 @@ namespace SGAmod.Items.Weapons
 
 
 
-
-
 	public class CataLogo
 	{
 		public static RenderTarget2D cataSurface;
@@ -1026,6 +1278,9 @@ namespace SGAmod.Items.Weapons
 
 		public static void Unload()
 		{
+			if (!hasLoaded)
+				return;
+
 			if (!cataSurface.IsDisposed)
 				cataSurface.Dispose();
 			if (!cataEffect.IsDisposed)

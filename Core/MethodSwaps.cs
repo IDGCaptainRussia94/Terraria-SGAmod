@@ -57,6 +57,10 @@ namespace SGAmod
 			On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
 			On.Terraria.Player.ItemFitsWeaponRack += NoPlacingManifestedItemOnItemRack;
 			On.Terraria.Main.SetDisplayMode += RecreateRenderTargetsOnScreenChange;
+
+
+            On.Terraria.Player.UpdateEquips += BlockVanillaAccessories;
+
 			//On.Terraria.Main.DrawTiles += Main_DrawTiles;
 			//On.Terraria.Main.Update += Main_Update;
 
@@ -64,7 +68,13 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
-		public static void RecreateRenderTargetsOnScreenChange(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
+        private static void BlockVanillaAccessories(On.Terraria.Player.orig_UpdateEquips orig, Player self, int i)
+        {
+			if (self.SGAPly().disabledAccessories<1)
+			orig(self, i);
+        }
+
+        public static void RecreateRenderTargetsOnScreenChange(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
 		{
 			SGAmod.CreateRenderTarget2Ds(width, height, fullscreen);
 			orig(width, height, fullscreen);

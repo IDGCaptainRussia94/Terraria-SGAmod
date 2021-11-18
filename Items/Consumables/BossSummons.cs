@@ -15,6 +15,7 @@ using SGAmod.Items.Weapons;
 using SGAmod.NPCs;
 using Terraria.Localization;
 using Microsoft.Xna.Framework.Audio;
+using SGAmod.HavocGear.Items;
 
 namespace SGAmod.Items.Consumables
 {
@@ -402,9 +403,10 @@ namespace SGAmod.Items.Consumables
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 5);
-			recipe.AddIngredient(mod.ItemType("BottledMud"), 5);
-			recipe.AddIngredient(ItemID.Gel, 30);
+			recipe.AddIngredient(ModContent.ItemType<WraithFragment3>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<MoistSand>(), 10);
+			recipe.AddIngredient(ItemID.MudBlock, 10);
+			recipe.AddIngredient(ItemID.Gel, 20);
 			recipe.AddIngredient(ItemID.Bone, 5);
 			recipe.AddTile(TileID.Furnaces);
 			recipe.SetResult(this);

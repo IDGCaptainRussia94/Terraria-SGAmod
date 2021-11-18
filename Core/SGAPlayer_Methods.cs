@@ -189,7 +189,6 @@ namespace SGAmod
 
 			bool worked = false;
 
-
 			for (int i = 0; i < count; i += 1)
 			{
 

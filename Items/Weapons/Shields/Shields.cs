@@ -628,7 +628,7 @@ namespace SGAmod.Items.Weapons.Shields
 			NetMessage.SendData(MessageID.Teleport, -1, -1, null, 0, player.whoAmI, vector27.X, vector27.Y, 1);
 
 			//More RoD stuff
-			if (player.chaosState && teletype == 0)
+			if (player.chaosState && teletype == 1)
 			{
 				player.statLife -= player.statLifeMax2 / 7;
 				PlayerDeathReason damageSource = PlayerDeathReason.ByOther(13);
@@ -652,7 +652,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			RoDTeleport(player,2);
+			RoDTeleport(player,1);
 			return false;
 		}
 

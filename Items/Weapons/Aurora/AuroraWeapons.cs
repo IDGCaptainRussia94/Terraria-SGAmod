@@ -16,6 +16,7 @@ using SGAmod.Buffs;
 using Terraria.Utilities;
 using Microsoft.Xna.Framework.Audio;
 using static SGAmod.SGAUtils;
+using AAAAUThrowing;
 
 namespace SGAmod.Items.Weapons.Aurora
 {
@@ -872,6 +873,373 @@ namespace SGAmod.Items.Weapons.Aurora
              //stuff
         }
     }
+
+    public class FireFoxGreatbow : ModItem, IAuroraItem
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("FireFox Greatbow");
+            Tooltip.SetDefault("Launches 2 Sky Foxes that move in sin wave patterms\nAfter striking an enemy, a trail of arrows are left behind that rapidly seek out that enemy");
+            Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
+        }
+
+        public override void SetDefaults()
+        {
+            item.ranged = true;
+            item.damage = 750;
+            item.width = 40;
+            item.height = 40;
+            item.useTime = 20;
+            item.useAnimation = 20;
+            item.channel = false;
+            item.autoReuse = true;
+            item.useStyle = 5;
+            item.noMelee = true;
+            item.knockBack = 6;
+            item.value = Item.sellPrice(0, 10, 0, 0);
+            item.rare = ItemRarityID.Cyan;
+            item.noUseGraphic = true;
+            item.shoot = ModContent.ProjectileType<FireFoxProj>();
+            item.shootSpeed = 1f;
+            item.useAmmo = AmmoID.Arrow;
+
+            if (!Main.dedServ)
+            {
+                item.GetGlobalItem<ItemUseGlow>().GlowColor = delegate (Item item, Player player)
+                {
+                    return Color.Transparent;
+                };
+
+                item.GetGlobalItem<ItemUseGlow>().glowTexture = Main.itemTexture[item.type];
+
+                item.GetGlobalItem<ItemUseGlow>().CustomDraw = delegate (Item item, PlayerDrawInfo drawInfo, Vector2 position, float angle, Color glowcolor)
+                {
+                    Player drawPlayer = drawInfo.drawPlayer;
+                    Vector2 drawHere = drawPlayer.MountedCenter + ((angle - (MathHelper.PiOver4+(drawPlayer.direction < 0 ? MathHelper.PiOver2 : 0))).ToRotationVector2()) * 16 - Main.screenPosition;
+                    Texture2D texture = Main.itemTexture[item.type];
+
+                    DrawData value = new DrawData(texture, drawHere, null, Color.White * 1f,(drawInfo.drawPlayer.direction < 0 ? MathHelper.PiOver2 : 0)- MathHelper.PiOver4 + angle, texture.Size()/2f, 1f, drawInfo.spriteEffects, 0);
+                    Main.playerDrawData.Add(value);
+                };
+            }
+        }
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+            Vector2 speed = new Vector2(speedX, speedY);
+            var snd = Main.PlaySound(SoundID.DD2_BetsyFireballShot, (int)position.X, (int)position.Y);
+            if (snd != null)
+            {
+                snd.Pitch = 0.75f;
+            }
+            for (int i = -1; i < 2; i += 2)
+            {
+                Projectile proj = Projectile.NewProjectileDirect(position, Vector2.Normalize(speed) * 10f, ModContent.ProjectileType<FireFoxProj>(), damage, knockBack, player.whoAmI, i, type);
+            }
+            return false;
+        }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemID.Phantasm, 1);
+            recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
+            recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 12);
+            recipe.AddIngredient(ItemID.LunarBar, 8);
+            recipe.AddIngredient(ItemID.ArcheryPotion, 1);
+            recipe.AddTile(ModContent.TileType<LuminousAlter>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+
+        }
+    }
+
+    public class FireFoxProj : ModProjectile
+    {
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Foxbow");
+        }
+        public override void SetDefaults()
+        {
+            Projectile refProjectile = new Projectile();
+            refProjectile.SetDefaults(ProjectileID.BoneArrow);
+            projectile.friendly = true;
+            projectile.hostile = false;
+            projectile.light = 0.5f;
+            projectile.width = 64;
+            projectile.height = 64;
+            projectile.ranged = true;
+            projectile.timeLeft = 300;
+            projectile.extraUpdates = 1;
+            projectile.tileCollide = false;
+            projectile.penetrate = 999;
+            projectile.arrow = true;
+
+            projectile.usesLocalNPCImmunity = true;
+            projectile.localNPCHitCooldown = -1;
+
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 75;
+            ProjectileID.Sets.TrailingMode[projectile.type] = 2;
+        }
+
+        public override bool CanDamage()
+        {
+            return projectile.penetrate > 998;
+        }
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            projectile.ai[0] = target.whoAmI+500;
+            ShotArrows();
+        }
+
+        public override void AI()
+        {
+            projectile.localAI[0]++;
+            projectile.spriteDirection = (projectile.velocity.X == 0 ? 1 : Math.Sign(projectile.velocity.X));
+            projectile.rotation = projectile.velocity.ToRotation();
+
+            if (!CanDamage())
+            {
+                projectile.localAI[1] += 1;
+                projectile.Opacity -= 1 / 60f;
+            }
+
+            if (projectile.localAI[1]>20 && projectile.localAI[1] % 16 == 0)
+            {
+                Projectile.NewProjectileDirect(projectile.Center, projectile.velocity.RotatedBy(Main.rand.NextFloat(-MathHelper.PiOver2,MathHelper.PiOver2)*0.60f)*3f, ModContent.ProjectileType<FireFoxArrowProj>(), projectile.damage/4, projectile.knockBack, projectile.owner, projectile.ai[0]-500, projectile.ai[1]);
+            }
+
+            //if ((int)projectile.localAI[0] % 3 == 0)
+            //{
+            //List<NPC> targets = SGAUtils.ClosestEnemies(projectile.Center, 860);
+
+            //if (targets != null && targets.Count > 0)
+            //{
+            //NPC totarget = targets[0];
+            //Vector2 diff = totarget.Center - projectile.Center;
+
+            if (Math.Abs(projectile.ai[0]) < 2)
+            {
+                float speed = projectile.velocity.Length();
+
+                float speeder = (float)Math.Sin((projectile.localAI[0] + MathHelper.PiOver2) / 17f) * projectile.ai[0];
+                projectile.Center += Vector2.Normalize(projectile.velocity).RotatedBy(MathHelper.PiOver2) * speeder * 6f;
+                projectile.rotation += speeder / 1f;
+
+            }
+
+            /*for (int i = 0; i < 32; i += 8)
+            {
+                Vector2 randomcircle = Main.rand.NextVector2Circular(i + 8, i + 8);
+                int num655 = Dust.NewDust(projectile.Center + randomcircle, 0, 0, DustID.AncientLight, 0,0, 150, Main.hslToRgb(Main.rand.NextFloat()%1f,1f,0.5f)*1f, 0.32f);
+                Main.dust[num655].noGravity = true;
+            }*/
+
+            //projectile.velocity = projectile.velocity.ToRotation().AngleTowards(diff.ToRotation(), 0.025f * projectile.Opacity).ToRotationVector2() * speed;
+            //}
+            //}
+
+            projectile.Opacity *= MathHelper.Clamp(projectile.timeLeft / 150f, -1f, 1f);
+
+            if (projectile.Opacity <= 0.01f)
+            {
+                projectile.timeLeft = (int)Math.Min(projectile.timeLeft, 2);
+            }
+        }
+
+        public void ShotArrows()
+        {
+            if (projectile.penetrate < 500)
+                return;
+
+            projectile.penetrate = 400;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+
+            for (int i = 0; i < projectile.oldPos.Length; i++)
+            {
+                if (projectile.oldPos[i] == default)
+                {
+                    projectile.oldPos[i] = projectile.Center-Vector2.Normalize(projectile.velocity)*i;
+                }
+            }
+
+            TrailHelper trail = new TrailHelper("FadedRainbowEffectPass", ModContent.GetTexture("SGAmod/TiledPerlin"));
+            trail.coordMultiplier = new Vector2(0.25f, 1f);// projectile.velocity.Length());
+            trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
+            trail.trailThickness = 16;
+            trail.projsize = projectile.Hitbox.Size() / 2f;
+            trail.strengthPow = 2f;
+            trail.strength = 0.75f * projectile.Opacity;
+            trail.trailThicknessIncrease = 8;
+            trail.capsize = new Vector2(6, 6);
+
+            trail.rainbowCoordOffset = new Vector2((Main.GlobalTime + projectile.whoAmI) * 0.05f, Main.GlobalTime * -1.25f);
+            trail.rainbowCoordMultiplier = new Vector2(0.5f, 1.25f);
+            trail.rainbowColor = new Vector3((Main.GlobalTime+(projectile.whoAmI*7.173f)) / 3f, 1f, 0.75f);
+            trail.rainbowTexture = SGAmod.PearlIceBackground;// SGAmod.Instance.GetTexture("Voronoi");
+
+            trail.color = delegate (float percent)
+            {
+                Color traillengthcol = Color.Lerp(Color.CornflowerBlue, Color.CadetBlue, percent);
+                return Color.Lerp(Color.White, Color.White, percent);
+            };
+            trail.DrawTrail(projectile.oldPos.Select(testby => Vector2.Normalize((projectile.velocity)*8f)+testby).ToList());
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            Effect hallowed = SGAmod.HallowedEffect;
+
+            Texture2D tex = Main.projectileTexture[projectile.type];
+
+            hallowed.Parameters["prismAlpha"].SetValue(1f);
+            hallowed.Parameters["overlayTexture"].SetValue(SGAmod.PearlIceBackground);
+            hallowed.Parameters["overlayAlpha"].SetValue(0.20f);
+            hallowed.Parameters["overlayStrength"].SetValue(new Vector3(1.5f, 0.15f, 0f));
+            hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+
+            hallowed.Parameters["alpha"].SetValue(0.5f*projectile.Opacity);
+            hallowed.Parameters["prismColor"].SetValue(Color.White.ToVector3());
+            hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, (-Main.GlobalTime+projectile.whoAmI) / 1f, (Main.GlobalTime+ projectile.whoAmI*7.31f
+                ) / 4f));
+            hallowed.Parameters["rainbowScale"].SetValue(0.765f);
+            hallowed.Parameters["overlayScale"].SetValue(new Vector2(0.2f, 0.2f));
+            hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation + MathHelper.PiOver2 - (projectile.spriteDirection * MathHelper.PiOver2),new Vector2(tex.Width/2f, tex.Height/2f), projectile.scale, projectile.spriteDirection>0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            SGAmod.FadeInEffect.Parameters["fadeColor"].SetValue(2f);
+            SGAmod.FadeInEffect.Parameters["alpha"].SetValue(projectile.Opacity*0.25f);
+            SGAmod.FadeInEffect.CurrentTechnique.Passes["ColorToAlphaPass"].Apply();
+
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation + MathHelper.PiOver2 - (projectile.spriteDirection * MathHelper.PiOver2), new Vector2(tex.Width / 2f, tex.Height / 2f), projectile.scale*1.2f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+
+            return false;
+        }
+
+
+    }
+
+    public class FireFoxArrowProj : ModProjectile
+    {
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Foxbow Arrow");
+        }
+        public override void SetDefaults()
+        {
+            Projectile refProjectile = new Projectile();
+            refProjectile.SetDefaults(ProjectileID.BoneArrow);
+            projectile.friendly = true;
+            projectile.hostile = false;
+            projectile.light = 0.5f;
+            projectile.width = 64;
+            projectile.height = 64;
+            projectile.ranged = true;
+            projectile.timeLeft = 300;
+            projectile.extraUpdates = 0;
+            projectile.tileCollide = false;
+            projectile.penetrate = 1;
+            projectile.arrow = true;
+
+            projectile.usesLocalNPCImmunity = true;
+            projectile.localNPCHitCooldown = -1;
+
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 75;
+            ProjectileID.Sets.TrailingMode[projectile.type] = 2;
+        }
+
+        public override string Texture => "Terraria/Projectile_"+ProjectileID.CrystalVileShardHead;
+
+        public override bool CanDamage()
+        {
+            return false;// projectile.localAI[0]>60;
+        }
+
+        public override bool PreKill(int timeLeft)
+        {
+            return true;
+        }
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            //nil
+        }
+
+        public override void AI()
+        {
+            projectile.localAI[0]++;
+
+            projectile.rotation = MathHelper.Clamp(projectile.localAI[0]/1.25f,0f,MathHelper.TwoPi*5f) +projectile.velocity.ToRotation();
+
+            if (projectile.localAI[0] < 40 || projectile.timeLeft<=30)
+            {
+                projectile.velocity *= 0.94f;
+            }
+            else
+            {
+                NPC totarget = Main.npc[(int)projectile.ai[0]];
+                bool exists = totarget != null && totarget.active && totarget.life > 0;
+
+                if (!exists)
+                {
+                    /*List<NPC> targets = SGAUtils.ClosestEnemies(projectile.Center, 240);
+                    if (targets!= null && targets.Count > 0)
+                    {
+                        totarget = targets[0];
+                        projectile.ai[0] = totarget.whoAmI;
+                    }*/
+                    projectile.timeLeft = 30;
+                }
+
+                    if (exists)
+                    {
+                        projectile.velocity = Vector2.Normalize(projectile.velocity) * MathHelper.Clamp(projectile.velocity.Length() + 0.5f, 0f, 32);
+                    Vector2 diff = totarget.Center - projectile.Center;
+                    float speed = projectile.velocity.Length();
+                        projectile.velocity = projectile.velocity.ToRotation().AngleTowards(diff.ToRotation(), (0.01f+(speed/150f)) * projectile.Opacity).ToRotationVector2()* speed;
+
+                    float dot = Vector2.Dot(Vector2.Normalize(diff), Vector2.Normalize(projectile.velocity));
+                    if (projectile.timeLeft > 30 && Vector2.Dot(Vector2.Normalize(diff), Vector2.Normalize(projectile.velocity))>0.99f)
+                    {
+                        Projectile.NewProjectileDirect(projectile.Center, Vector2.Normalize(projectile.velocity)*64f, (int)projectile.ai[1], projectile.damage,projectile.knockBack, projectile.owner);
+                        projectile.timeLeft = 0;
+                    }
+
+                }
+            }
+
+            projectile.Opacity = MathHelper.Clamp(projectile.timeLeft / 30f, 0f, Math.Min(projectile.localAI[0]/10f,1f));
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Texture2D tex = Main.projectileTexture[projectile.type];
+            Texture2D tex2 = Main.itemTexture[ItemID.JestersArrow];
+
+            spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, Color.White * projectile.Opacity, projectile.rotation-MathHelper.PiOver2, tex2.Size() / 2f, projectile.scale * 1f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * projectile.Opacity, projectile.rotation, tex.Size() / 2f, projectile.scale * 0.5f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+
+
+            return false;
+        }
+
+
+    }
+
 
     public class PolarityHalberd : ModItem, IAuroraItem
     {
@@ -1847,5 +2215,328 @@ namespace SGAmod.Items.Weapons.Aurora
     }
 
 
+    public class SkyeHook : ModItem, IAuroraItem
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Skye Hook");
+            Tooltip.SetDefault("'Don't get lied to about wanting the moon again'\nWear as a grapple hook to pull yourself towards the sun/moon\nDoesn't reset wing time");
+        }
+
+        public override void SetDefaults()
+        {
+            item.CloneDefaults(ItemID.AmethystHook);
+            item.noUseGraphic = true;
+            item.damage = 0;
+            item.Throwing().thrown = true;
+            item.knockBack = 7f;
+            item.useStyle = 5;
+            //item.shootSpeed = 10f;
+            //item.shoot = 230;
+            item.width = 18;
+            item.rare = ItemRarityID.Cyan;
+            item.height = 28;
+            item.UseSound = SoundID.Item20;
+            item.useAnimation = 20;
+            item.useTime = 20;
+            item.rare = 1;
+            item.noMelee = true;
+            item.value = 20000;
+
+            item.shootSpeed = 18f; // how quickly the hook is shot.
+            item.shoot = ModContent.ProjectileType<SkyeHookProjectile>();
+        }
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+            Projectile.NewProjectile(position, new Vector2(speedX, speedY)*0f, ModContent.ProjectileType<SkyeHookProjectile>(), 150 + damage, knockBack,player.whoAmI);
+            return false;
+            //return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+        }
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemID.LunarHook, 1);
+            recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
+            recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 12);
+            recipe.AddTile(ModContent.TileType<LuminousAlter>());
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+
+        }
+    }
+
+    public class SkyeHookProjectile : ModProjectile
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Skye Hook");
+        }
+
+        public override string Texture => "Terraria/Projectile_"+ProjectileID.GemHookDiamond;
+
+        public override void SetDefaults()
+        {
+            /*	this.netImportant = true;
+				this.name = "Gem Hook";
+				this.width = 18;
+				this.height = 18;
+				this.aiStyle = 7;
+				this.friendly = true;
+				this.penetrate = -1;
+				this.tileCollide = false;
+				this.timeLeft *= 10;
+			*/
+            projectile.CloneDefaults(ProjectileID.GemHookAmethyst);
+            projectile.damage = 0;
+            projectile.Throwing().thrown = true;
+        }
+
+        // Use this hook for hooks that can have multiple hooks mid-flight: Dual Hook, Web Slinger, Fish Hook, Static Hook, Lunar Hook
+        public override bool? CanUseGrapple(Player player)
+        {
+            int hooksOut = 0;
+            for (int l = 0; l < 1000; l++)
+            {
+                if (Main.projectile[l].active && Main.projectile[l].owner == Main.myPlayer && Main.projectile[l].type == projectile.type)
+                {
+                    hooksOut++;
+                }
+            }
+            if (hooksOut > 2) // This hook can have 3 hooks out.
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public override bool? SingleGrappleHook(Player player)
+        {
+        	return true;
+        }
+
+        public override void UseGrapple(Player player, ref int type)
+        {
+
+        }
+
+        public override float GrappleRange()
+        {
+            return 200f;
+        }
+
+        public override void NumGrappleHooks(Player player, ref int numHooks)
+        {
+            numHooks = 1;
+        }
+
+        // default is 11, Lunar is 24
+        public override void GrappleRetreatSpeed(Player player, ref float speed)
+        {
+            speed = 14f;
+        }
+
+        public override void GrapplePullSpeed(Player player, ref float speed)
+        {
+            speed = 12;
+        }
+
+        public override bool CanDamage()
+        {
+            return false;
+        }
+
+        public override bool PreAI()
+        {
+
+            projectile.position -= projectile.velocity;
+            Vector2 sunmoonpos = Main.screenPosition+SGAUtils.SunPosition();
+            Player player = Main.player[projectile.owner];
+            Vector2 diff = sunmoonpos - projectile.Center;
+            Vector2 diff2 = sunmoonpos - player.Center;
+            Vector2 diff3 = Main.MouseWorld - sunmoonpos;
+            float speed = 24f;
+
+            if (projectile.damage < 1)
+            {
+                if (diff.Length() > 24 && projectile.ai[0] == 0)
+                {
+                    projectile.Center += Vector2.Normalize(diff) * 32;
+                    if (diff.Length() < 96)
+                        projectile.ai[0] = 2f;
+
+                }
+                else
+                {
+                    if (projectile.ai[0] != 1)
+                    {
+                        projectile.Center = sunmoonpos - Vector2.Normalize(diff2) * 24f;
+                        projectile.ai[0] = 2f;
+                        float speedx = MathHelper.Clamp((diff2.Length() - 96) / 120f, 0f, 1f);
+                        Vector2 tilecol = Collision.TileCollision(player.position, Vector2.Normalize(diff2) * speed * speedx, player.width, player.height, gravDir: (int)player.gravDir);
+                        //player.Center += tilecol / 2;
+                        player.velocity = tilecol;
+                        if (player.controlJump)
+                        {
+                            projectile.Kill();
+                            player.velocity = tilecol/2f;
+                        }
+                        //Main.player[projectile.owner].grappling[Main.player[projectile.owner].grapCount] = projectile.whoAmI;
+                    }
+                }
+                projectile.rotation = diff2.ToRotation();
+            }
+            else
+            {
+                if (projectile.ai[0] == 0)
+                {
+                    projectile.Center += Vector2.Normalize(diff) * 32;
+                    if (diff.Length() < 96)
+                    {
+                        projectile.ai[0] = 5;
+                        projectile.rotation = diff3.ToRotation();
+                        projectile.localAI[1] = projectile.rotation;
+                    }
+
+                    projectile.rotation = diff2.ToRotation();
+                }
+                if (projectile.ai[0] == 5)
+                {
+
+                    projectile.localAI[0] += 1;
+
+                    float percent = projectile.localAI[0] / 60f;
+                    float percent2 = percent * percent;
+
+                    //float percent3 = MathHelper.Clamp(2f-projectile.localAI[0] / 60f,0f,1f);
+                    //float percent4 = percent3 * percent3;
+
+                    float sizer = (float)Math.Sin((percent / 120f) * MathHelper.Pi);
+
+                    projectile.rotation = projectile.rotation.AngleTowards(diff3.ToRotation(), 0.20f * percent2);
+
+                    Vector2 gotox = sunmoonpos + projectile.rotation.ToRotationVector2() * (percent2 * diff3.Length());
+                    projectile.Center = gotox;
+
+                    if (percent2 > 0.30f)
+                    {
+                        Projectile.NewProjectile(projectile.Center, Vector2.Normalize(gotox), ModContent.ProjectileType<HookSunDamage>(),projectile.damage,projectile.knockBack,projectile.owner,MathHelper.Clamp(percent2, 0f,1f)*320f);
+                        if (SGAmod.ScreenShake<12f)
+                        SGAmod.AddScreenShake(MathHelper.Clamp(percent2, 0f, 1f) * 6f,960,projectile.Center);
+                    }
+
+                    if (percent2 >= 1f)
+                    {
+                        projectile.ai[0] = 6;
+                        projectile.localAI[0] = 0;
+                    }
+                }
+
+                if (projectile.ai[0] == 6)
+                {
+                    Vector2 topos = player.MountedCenter - projectile.Center;
+                    projectile.localAI[0] += 12;
+                    projectile.Center += Vector2.Normalize(topos) * MathHelper.Clamp(projectile.localAI[0] / 180f, 0f, 1f) * 64f;
+                    if (topos.Length() < 72)
+                    {
+                        projectile.Kill();
+                    }
+                }
+
+            }
+
+            return false;
+        }
+
+        public override bool PreDrawExtras(SpriteBatch spriteBatch)
+        {
+            Player player = Main.player[projectile.owner];
+            TrailHelper trail = new TrailHelper("FadedRainbowEffectPass", ModContent.GetTexture("SGAmod/SmallLaser"));
+            trail.coordMultiplier = new Vector2(1f, 3f);// projectile.velocity.Length());
+            trail.coordOffset = new Vector2(0, Main.GlobalTime * 1f);
+            trail.trailThickness = 6;
+            //trail.projsize = projectile.Hitbox.Size() / 2f;
+            trail.strengthPow = 2f;
+            trail.strength = 1f * projectile.Opacity;
+            trail.doFade = false;
+
+            trail.rainbowCoordOffset = new Vector2((Main.GlobalTime + projectile.whoAmI) * 0.05f, Main.GlobalTime * -1.25f);
+            trail.rainbowCoordMultiplier = new Vector2(0.5f, 1.25f);
+            trail.rainbowColor = new Vector3((Main.GlobalTime + (projectile.whoAmI * 7.173f)) / 3f, 1f, 0.75f);
+            trail.rainbowTexture = SGAmod.Instance.GetTexture("Voronoi");
+
+            trail.color = delegate (float percent)
+            {
+                Color traillengthcol = Color.Lerp(Color.CornflowerBlue, Color.CadetBlue, percent);
+                return Color.Lerp(Color.White, Color.White, percent);
+            };
+            Vector2[] origin = new Vector2[] {projectile.Center, player.MountedCenter};
+            trail.DrawTrail(origin.ToList());
+
+            return false;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+
+            Texture2D tex = Main.projectileTexture[projectile.type];
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation+MathHelper.PiOver2, tex.Size()/2f, projectile.scale * 1f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+
+            if (projectile.ai[0] == 5)
+            {
+                float percent = projectile.localAI[0] / 60f;
+                percent = percent * percent;
+
+                //float sizer = (float)Math.Sin((percent / 120f) * MathHelper.Pi);
+
+                Texture2D sun = Main.sunTexture;
+                spriteBatch.Draw(sun, projectile.Center - Main.screenPosition, null, Color.White*MathHelper.Clamp(percent*8f,0f,1f), 0, sun.Size() / 2f, projectile.scale * 1f+(percent*7f), SpriteEffects.None, 0);
+            }
+
+            return false;
+        }
+    }
+
+    public class HookSunDamage : ModProjectile
+    {
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Sun Damage");
+        }
+
+        public override string Texture => "Terraria/Item_" + ItemID.SugarCookie;
+
+        public sealed override void SetDefaults()
+        {
+            projectile.width = 72;
+            projectile.height = 72;
+            projectile.tileCollide = false;
+            projectile.friendly = true;
+            projectile.Throwing().thrown = true;
+            // Needed so the minion doesn't despawn on collision with enemies or tiles
+            projectile.penetrate = -1;
+            projectile.knockBack = 8;
+            projectile.timeLeft = 2;
+            projectile.usesIDStaticNPCImmunity = true;
+            projectile.idStaticNPCHitCooldown = 60;
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            return (targetHitbox.Center.ToVector2() - projectile.Center).LengthSquared() < projectile.ai[0]* projectile.ai[0];
+        }
+
+        // Here you can decide if your minion breaks things like grass or pots
+        public override bool? CanCutTiles()
+        {
+            return false;
+        }
+
+        // This is mandatory if your minion deals contact damage (further related stuff in AI() in the Movement region)
+        public override bool MinionContactDamage()
+        {
+            return false;
+        }
+    }
 
 }

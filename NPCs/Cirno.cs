@@ -822,7 +822,7 @@ namespace SGAmod.NPCs
 			if (target is Player)
 			{
 				Player targetasplayer = target as Player;
-				if (targetasplayer.ownedProjectileCounts[mod.ProjectileType("SnowfallCloud")] > 0)
+				if (targetasplayer != null && targetasplayer.ownedProjectileCounts[mod.ProjectileType("SnowfallCloud")] > 0)
 				{
 					projectile.Kill();
 				}

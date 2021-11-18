@@ -23,6 +23,7 @@ using Terraria.DataStructures;
 using SGAmod.Items.Armors.Dev;
 using SGAmod.Items;
 using SGAmod.Tiles.TechTiles;
+using SGAmod.HavocGear.Items;
 
 namespace SGAmod
 {
@@ -182,6 +183,10 @@ namespace SGAmod
                     tooltips.Add(new TooltipLine(mod, "MangroveSet", "Up to 50% with all the weapons"));
                 }
 
+                if (item.modItem is INoHitItem)
+                {
+                    tooltips.Add(new TooltipLine(mod, "NoHitItem",Idglib.ColorText(Items.Placeable.Relics.SGAPlacableRelic.RelicColor,"No-hit exclusive")));
+                }
                 if (item.modItem is IRadioactiveItem radactive)
                 {
                     string tt = "This is a placeholder sprite";
@@ -213,7 +218,10 @@ namespace SGAmod
                 {
                     tooltips.Add(new TooltipLine(mod, "DankSlowText", DankSlow.DankText));
                 }
-
+                if (item.modItem is IRadioactiveDebuffText)
+                {
+                    tooltips.Add(new TooltipLine(mod, "RadioactiveDebuffText", RadioDebuff.RadioactiveDebuffText));
+                }
                 if (item?.modItem is IDevItem)
                 {
                     (string, string) dev = ((IDevItem)item.modItem).DevName();
@@ -637,7 +645,7 @@ namespace SGAmod
 
             if (sgaplayer.Dankset > 0)
             {
-                damage = (int)(damage + (damage * ((player.magicDamage + player.minionDamage + player.rangedDamage + player.meleeDamage + player.Throwing().thrownDamage) - 5f) * 0.10f));
+                damage = (int)(damage + (damage * ((player.magicDamage + player.minionDamage + player.rangedDamage + player.meleeDamage + player.Throwing().thrownDamage) - 5f) * (sgaplayer.Dankset > 3 ? 0.05f : 0.10f)));
             }
 
             if (sgaplayer.IDGset && sgaplayer.digiStacks > 0 && item.ranged)
@@ -969,7 +977,8 @@ namespace SGAmod
 
                 if (item.modItem is ITechItem)
                 {
-                    add += sgaply.techdamage * (MathHelper.Clamp((sgaply.electricCharge / (float)sgaply.electricChargeMax)*4f, 0f,1.5f)-0.5f);
+                    float floaterdam = (sgaply.techdamage * (MathHelper.Clamp((sgaply.electricCharge / (float)sgaply.electricChargeMax) * 4f, 0f, 1f)));
+                    add = Math.Max(add+(floaterdam - 1f),0f);
                 }
 
                 if (item.modItem is IMangroveSet)
@@ -1004,7 +1013,7 @@ namespace SGAmod
 
             if (item?.modItem is ITechItem)
             {
-                sgaplayer.ConsumeElectricCharge(5+(int)((damage * sgaplayer.techdamage) * 0.02f), 30);
+                sgaplayer.ConsumeElectricCharge(5+(int)((damage * sgaplayer.techdamage) * 1f), 60);
             }
 
             if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister)
@@ -1098,6 +1107,25 @@ namespace SGAmod
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
         {
+            if (item.type == ItemID.SandBlock && item.velocity.Y == 0 && item.wet && Main.rand.Next(100)<1)
+            {
+                int item2 = Item.NewItem(item.Center, ModContent.ItemType<MoistSand>(), 1);
+                Item item3 = Main.item[item2];
+                if (item3 != null && item3.active)
+                {
+                    //item3.velocity = Vector2.Zero;
+                    item3.noGrabDelay = 0;
+                    if (Main.netMode != NetmodeID.SinglePlayer)
+                    {
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
+                    }
+                    item.stack--;
+
+                    if (item.stack < 1)
+                        item.TurnToAir();
+                    return;
+                }
+            }
             HopperTile.HandleItemHoppers(item);
         }
 

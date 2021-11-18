@@ -47,6 +47,42 @@ namespace SGAmod.Items.Consumables
 
 	}
 
+	public class Debug8 : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug-Clear Cooldown Stacks");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.rare = 8;
+			item.value = 1000;
+			item.useStyle = 2;
+			item.useAnimation = 8;
+			item.useTime = 8;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item9;
+		}
+		public override bool UseItem(Player player)
+		{
+			foreach(ActionCooldownStack stack in player.SGAPly().CooldownStacks)
+            {
+				stack.timeleft = 1;
+			}
+
+			return false;
+
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Item_" + BuffID.Titan; }
+		}
+
+	}
+
 	public class Debug7 : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -253,7 +289,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug-reset SGA Player Save Data");
-			Tooltip.SetDefault("Holding this item activates a debug Shader");
+			Tooltip.SetDefault("Use this item if your getting 'null List' errors on killing enemies\nHolding this item activates a trippy Shader");
 		}
 
 		public override void SetDefaults()

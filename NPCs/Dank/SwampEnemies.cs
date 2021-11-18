@@ -173,11 +173,12 @@ namespace SGAmod.NPCs.Dank
 
     public class BlackLeech : ModNPC
     {
+        Vector2 offset = default;
         public override void SetDefaults()
         {
             npc.width = 18;
             npc.height = 8;
-            npc.damage = 7;
+            npc.damage = 0;
             npc.defense = 2;
             npc.lifeMax = 5;
             npc.noTileCollide = false;
@@ -204,6 +205,12 @@ namespace SGAmod.NPCs.Dank
             Player player = Main.player[npc.target]; npc.TargetClosest(true);
             if (npc.ai[0] == 0f)
             {
+                if (npc.Hitbox.Intersects(player.Hitbox))
+                {
+                    offset = player.Center - npc.Center;
+                    npc.ai[0] = 1f;
+                }
+
                 if (npc.wet)
                 {
                     npc.noGravity = true;
@@ -256,7 +263,11 @@ namespace SGAmod.NPCs.Dank
             { 
                 if (npc.ai[0] == 1f)
                 {
-                    npc.position = player.position;
+                    player.AddBuff(BuffID.Bleeding, 360);
+                    player.AddBuff(BuffID.Dazed, 20);
+                    player.AddBuff(ModContent.BuffType<Buffs.MassiveBleeding>(), 3);
+                    npc.Center = player.MountedCenter+offset;
+                    npc.velocity = Vector2.Zero;
                 }
             }
         }

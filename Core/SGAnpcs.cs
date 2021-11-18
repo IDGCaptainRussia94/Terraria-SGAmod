@@ -1214,7 +1214,7 @@ namespace SGAmod
 					SGAWorld.stolecrafting = -500;
 			}
 
-			if (npc.type == NPCID.MoonLordCore && Main.rand.Next(10) < 1)
+			if (npc.type == NPCID.MoonLordCore && Main.rand.Next(10) < 1 && !Main.expertMode)
 			{
 				dropFork = true;
 				NPCLoader.blockLoot.Add(ItemID.LunarFlareBook);
@@ -1228,19 +1228,11 @@ namespace SGAmod
 				NPCLoader.blockLoot.Add(ItemID.Terrarian);
 			}
 
-			if (SGAWorld.NightmareHardcore > 0)
-			{
-				npc.value *= (int)(SGAWorld.NightmareHardcore * 1.50);
-				if (Main.rand.Next(0, 100) < 10)
-					npc.NPCLoot();
-			}
 			return true;
 		}
 
 		public override void NPCLoot(NPC npc)
 		{
-
-			DropRelic(npc);
 
 			for (int playerid = 0; playerid < Main.maxPlayers; playerid += 1)
 			{
@@ -1317,14 +1309,6 @@ namespace SGAmod
 				{
 					if (interfacenpc.Chance())
 						Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(interfacenpc.Trophy()));
-				}
-			}
-
-			if (npc.type == NPCID.CultistBoss)
-			{
-				if (NPC.CountNPCS(NPCID.CultistBossClone) >= 6 && npc.SGANPCs().NoHit)
-				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<NuclearOption>());
 				}
 			}
 
@@ -1513,6 +1497,35 @@ namespace SGAmod
 				if (npc.type == NPCID.SkeletronHead || npc.type == NPCID.Spazmatism || npc.type == NPCID.Retinazer || npc.type == NPCID.TheDestroyer || npc.type == NPCID.TheDestroyerBody || npc.type == NPCID.TheDestroyerTail)
 					return false;
 			}
+
+			if (npc.type == NPCID.CultistBoss)
+			{
+				if (NPC.CountNPCS(NPCID.CultistBossClone) >= 6 && npc.SGANPCs().NoHit)
+				{
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<NuclearOption>());
+				}
+			}
+
+			if (npc.lastInteraction != 255 && !npc.IsDummy())
+			{
+
+				DropRelic(npc);
+
+				Player ply = Main.player[npc.lastInteraction];
+				if (NoHit && ply.SGAPly().avariceRing)
+                {
+					npc.NPCLoot();
+				}
+
+				if (SGAWorld.NightmareHardcore > 0)
+				{
+					npc.value *= (int)(SGAWorld.NightmareHardcore * 1.50);
+					if (Main.rand.Next(0, 100) < 20)
+						npc.NPCLoot();
+				}
+
+			}
+
 			return base.SpecialNPCLoot(npc);
 		}
 

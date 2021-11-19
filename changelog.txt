@@ -1,6 +1,24 @@
 Changelog:
 
-3.600h-(11/16/21)-Patch 11-Tech N Wreck: Beta
+3.600i-(11/18/21)-Patch 11-Tech N Wreck: Beta
+
+-Fixed a stitching issue with the trail helper
+
+-Lowered Hellion's ring detail (and to a lesser degree: Supreme Pinky's) to increase performance; the quailty loss is barely noticable
+
+-Fixed an issue where life regen was completely removed from the jungle Templar Set during its ability if you had no electric charge
+
+-Buffed Quasar Kunai: Crit up to 20%, attack speed increased by 2 frames. Also fixed a damage error from adding the damage twice
+
+-New changes to Helen Hellion Weygold:
+-Tyrant mode now uses a deck-system, to do moves in a specific order, including special moves
+-Topazing/Demon Scythes are now aimed at the player, meaning you can't just stand still during them anymore
+
+
+
+
+
+3.600h-(11/18/21)-Patch 11-Tech N Wreck: Beta
 
 -Changelog has been moved to its own file
 
@@ -404,6 +422,10 @@ Changelog:
 
 -Removed Debug Text
 
+-Updated Firefox Greatbow projectile visuals
+
+-Added a config option to disable Primitive Trails... if you want that
+
 
 Changelog:
 
@@ -411,13 +433,13 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, True Dragon Wings, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault, and many others I likely forgot
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Skye Hook, Firefox Greatbow, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, True Dragon Wings, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault, and many others I likely forgot
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
 -A new Town NPC: The Contraband Merchant, he is interested in trading you "Contraband Crates" for rare materials, find him hanging around after-dark in your town
 
--Added several new armor sets: The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! Set Fames set for throwers after Spider Queen. Hallowed Visor variant for Throwing. Magatsu for summoner hybrid armor with Apocalypticals, Jungle Templar for post Golem Throwing/Tech. Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And finally JellyBru's Dev Armor added! (finally!)
+-Added several new armor sets: The Nomadic armor set, an early pre-boss desert themed thrower set made from easy to get materials! Set Fames set for throwers after Spider Queen. Hallowed Visor variant for Throwing. Magatsu for summoner hybrid armor with Apocalypticals, Jungle Templar for post Golem Throwing/Tech. Mandala is subworld focused Summoner armor. Valkyrie Armor serves as the Pillar Tier Thrower armor made from Aurora Tears, Illuminant Armor drops from Supreme Pinky, Vibranium armor for all classes (enemies not yet added), And finally JellyBru's Dev Armor added! (finally!)
 
 -Venerable Catharsis, for a hefty Expertise cost from Draken after Moonlord you can make Normal Worlds into Expert Worlds. No more being locked out of content!
 

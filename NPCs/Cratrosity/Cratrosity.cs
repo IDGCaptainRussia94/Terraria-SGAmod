@@ -336,6 +336,8 @@ namespace SGAmod.NPCs.Cratrosity
 						}
 						else
 						{
+							if (phase < 1)
+								theclostestcrate = Vector2.Zero;
 
 							npc.velocity = new Vector2(-theammount * ((GetType() == typeof(Cratrogeddon)) ? 15 : 10), 0);
 							if (npc.ai[0] % 15 == 0)

@@ -1632,7 +1632,7 @@ namespace SGAmod.NPCs
 			float inrc = Main.GlobalTime / 30f;
 
 			List<Vector2> vects = new List<Vector2>();
-			int maxDetail = 180;
+			int maxDetail = 120;
 			for (int i = 0; i < maxDetail; i += 1)
 			{
 				float angle = ((i/ (float)maxDetail)*MathHelper.TwoPi)+inrc;

@@ -116,9 +116,8 @@ namespace SGAmod
 					self.velocity = Vector2.Zero;
 					orig(self);
 					self.velocity = playervel;
+					return;
 				}
-
-				return;
 			}
 
 			orig(self);

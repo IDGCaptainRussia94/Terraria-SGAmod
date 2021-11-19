@@ -47,6 +47,33 @@ namespace SGAmod.Items.Consumables
 
 	}
 
+	public class Debug9 : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug-Disable Armor/Accesories in inventory");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.rare = 8;
+			item.value = 1000;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item9;
+		}
+        public override void UpdateInventory(Player player)
+        {
+			player.SGAPly().disabledAccessories = Math.Max(player.SGAPly().disabledAccessories,4);
+        }
+        public override string Texture
+		{
+			get { return "Terraria/Item_" + BuffID.NoBuilding; }
+		}
+
+	}
+
 	public class Debug8 : ModItem
 	{
 		public override void SetStaticDefaults()

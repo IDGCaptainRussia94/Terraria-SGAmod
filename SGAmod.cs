@@ -58,6 +58,7 @@ using Microsoft.Xna.Framework.Audio;
 using SGAmod.Dimensions.NPCs;
 using SGAmod.Items.Placeable.Paintings;
 using Terraria.ModLoader.Audio;
+using System.Net;
 
 #if Dimensions
 using SGAmod.Dimensions;
@@ -201,6 +202,8 @@ namespace SGAmod
 		public static readonly BindingFlags UniversalBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
+
+		public static int hellionMusicGrabState = 0;
 
 		protected static float _screenShake = 0;
 		public static float ScreenShake
@@ -457,6 +460,45 @@ namespace SGAmod
 
 			}
 
+		public void AttemptGrabMusicAsync(object callContext)
+        {
+			Logger.Debug("Attempting music grab...");
+			WebClient downloader = new WebClient();
+			using (downloader)
+			{
+				try
+				{
+					downloader.DownloadFile("https://cdn.discordapp.com/attachments/599884595562938410/911378690439532564/Catastrophic_Circuitry.ogg", filePath + "Hellion.ogg");
+					Logger.Debug("File seems to have been downloaded?");
+					hellionMusicGrabState = 1;
+				}
+				catch (ArgumentException ae)
+				{
+					Logger.Debug(ae.GetType().FullName + ae.Message);
+					hellionMusicGrabState = -1;
+				}
+				catch (WebException webEx)
+				{
+					Logger.Debug(webEx.GetType().FullName + webEx.Message);
+					Logger.Debug("Destination not found!");
+					hellionMusicGrabState = -1;
+				}
+				catch (NotSupportedException supportEx)
+				{
+					Logger.Debug(supportEx.GetType().FullName);
+					Logger.Debug(supportEx.Message);
+					hellionMusicGrabState = -1;
+				}
+				catch (Exception allExp)
+				{
+					Logger.Debug(allExp.GetType().FullName + allExp.Message);
+					hellionMusicGrabState = -1;
+				}
+			}
+
+
+		}
+
 		public override void Load()
 		{
 #if Dimensions
@@ -587,14 +629,18 @@ namespace SGAmod
 				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidoSnd", new Sounds.Custom.MegidoSnd());
 				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidolaonSnd", new Sounds.Custom.MegidolaonSnd());
 
-
+                System.Threading.ThreadPool.QueueUserWorkItem(AttemptGrabMusicAsync, Logger);
 			}
 
 			AddItem("Nightmare", NPCs.TownNPCs.Nightmare.instance);
 
 			if (Directory.Exists(filePath))
 			{
-				SGAmod.NightmareUnlocked = true;
+				if (FileExists(filePath + "/It's not over yet.txt"))
+				{
+					SGAmod.NightmareUnlocked = true;
+					Logger.Debug("Directory and file found: Nightmare Mode has been unlocked");
+				}
 				//if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
 				//{
 				//Main.PlaySound(29, -1,-1, 105, 1f, -0.6f);

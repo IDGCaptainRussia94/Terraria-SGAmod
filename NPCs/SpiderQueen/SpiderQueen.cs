@@ -286,7 +286,7 @@ namespace SGAmod.NPCs.SpiderQueen
 					phase = 2;
 				npc.dontTakeDamage = false;
 				bool sighttoplayer = (Collision.CanHitLine(new Vector2(npc.Center.X, npc.Center.Y), 6, 6, new Vector2(P.Center.X, P.Center.Y), 6, 6));
-				bool underground = (int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+				bool underground = Items.Consumables.AcidicEgg.Underground((int)npc.Center.Y);//(int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
 				if (!underground)
 				{
 					npc.dontTakeDamage = true;

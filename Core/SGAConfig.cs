@@ -282,6 +282,11 @@ namespace SGAmod
 		[Slider]
 		public int HellionSkyDetail { get; set; }
 
+		[Label("Primitive Trails")]
+		[Tooltip("When set to false, stops all Primitive Trails from drawing; will greatly increase performance, but may make some bosses/weapons difficult to see properly")]
+		[DefaultValue(true)]
+		public bool PrimTrails { get; set; }
+
 		[Label("Hellion's Shadow Fog")]
 		[Tooltip("Enable/Disable the Shadow Fog on Hellion; highly recommended for lower-end PCs")]
 		[DefaultValue(true)]

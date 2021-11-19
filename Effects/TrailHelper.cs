@@ -59,7 +59,6 @@ namespace SGAmod.Effects
                     return Color.White;
                 };
             }
-
         }
 
         public void DrawTrail(List<Vector2> drawPoses, Vector2 defaultloc = default)
@@ -69,6 +68,9 @@ namespace SGAmod.Effects
 
             public void DrawTrail(List<Vector3> drawPoses, Vector2 defaultloc = default)
         {
+
+            if (!SGAConfigClient.Instance.PrimTrails)
+                goto theend;
 
             VertexBuffer vertexBuffer;
 
@@ -97,11 +99,14 @@ namespace SGAmod.Effects
 
             VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[((fractiontotal + 1) * 6)+(caps * 3)];
 
+            float totalcount2 = (float)(totalcount - 1 + (connectEnds ? 1 : 0));
+
             for (k = 1; k < totalcount; k += 1)
             {
-                float fraction = (float)(k-1) / (float)(totalcount-1);
-                float fractionPlus = (float)(k) / (float)(totalcount-1);
-                float invertFrac = 1f - (k / (float)totalcount);
+
+                float fraction = (k-1) / totalcount2;
+                float fractionPlus = k / totalcount2;
+                float invertFrac = 1f - (k / totalcount2);
 
                 Vector2 trailloc = new Vector2(drawPoses[k].X, drawPoses[k].Y) + projsize;
                 Vector2 prev2 = new Vector2(drawPoses[k - 1].X, drawPoses[k - 1].Y) + projsize;
@@ -165,6 +170,8 @@ namespace SGAmod.Effects
                     drawtopright = firstloc[1];
                     prevcoords = new Vector3[2] { drawtop + left, drawtop + right };
                     k += 1;
+                    fraction = (k - 1) / totalcount2;
+                    fractionPlus = k / totalcount2;
                     goto repeater;
                 }
 
@@ -226,6 +233,8 @@ namespace SGAmod.Effects
 
             Effect.CurrentTechnique.Passes[pass].Apply();
             Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, ((totalcount + 1) * 2)+(caps));
+
+            theend:
 
             Effect.Parameters["coordOffset"].SetValue(Vector2.Zero);
             Effect.Parameters["coordMultiplier"].SetValue(Vector2.One);

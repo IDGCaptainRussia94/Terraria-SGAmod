@@ -115,7 +115,7 @@ float4 RainbowEffect(VertexShaderOutput input) : COLOR
 	float4 pixel = (tex2D(imageSampler, coords) * input.Color)*strength;
 	float4 rainpixel = (float4(HSVtoRGBFromTexture(input,coords,rainbowColor),1.0) * input.Color)*strength;
 	pixel = saturate(pixel*rainpixel);
-	return pixel;
+	return ColorPow(pixel);
 }
 
 //Sets the alpha color based on luminosity and applies a rainbow overlay
@@ -126,7 +126,7 @@ float4 RainbowEffectAlpha(VertexShaderOutput input) : COLOR
 	float4 rainpixel = (float4(HSVtoRGBFromTexture(input,coords,rainbowColor),1.0) * input.Color)*strength;
 	float luma = (pixel.r+pixel.g+pixel.b)/3.0;
 	pixel = saturate(pixel*rainpixel);
-	return pixel*luma;
+	return ColorPow(pixel)*luma;
 }
 
 //The 2 above but now a fade on the X axis
@@ -137,7 +137,7 @@ float4 RainbowEffectFaded(VertexShaderOutput input) : COLOR
 	float4 pixel = (tex2D(imageSampler, coords) * input.Color)*strength;
 	float4 rainpixel = (float4(HSVtoRGBFromTexture(input,coords,rainbowColor),1.0) * input.Color)*strength;
 	pixel = saturate(pixel*rainpixel);
-	return pixel* (min(sin(input.TextureCoordinates.x * 3.14159265)*yFade,1.0000000));
+	return ColorPow(pixel) * (min(sin(input.TextureCoordinates.x * 3.14159265)*yFade,1.0000000));
 }
 
 //Sets the alpha color based on luminosity and applies a rainbow overlay
@@ -148,7 +148,7 @@ float4 RainbowEffectAlphaFaded(VertexShaderOutput input) : COLOR
 	float4 rainpixel = (float4(HSVtoRGBFromTexture(input,coords,rainbowColor),1.0) * input.Color)*strength;
 	float luma = (pixel.r+pixel.g+pixel.b)/3.0;
 	pixel = saturate(pixel*rainpixel);
-	return pixel*luma* (min(sin(input.TextureCoordinates.x * 3.14159265)*yFade,1.0000000));
+	return ColorPow(pixel)*luma* (min(sin(input.TextureCoordinates.x * 3.14159265)*yFade,1.0000000));
 }
 
 //Recreated Basic Effect

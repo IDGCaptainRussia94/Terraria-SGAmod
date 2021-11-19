@@ -943,6 +943,7 @@ namespace SGAmod.Items.Weapons.Aurora
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.Phantasm, 1);
+            recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Weapons.MangroveBow>(), 1);
             recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
             recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 12);
             recipe.AddIngredient(ItemID.LunarBar, 8);
@@ -956,7 +957,8 @@ namespace SGAmod.Items.Weapons.Aurora
 
     public class FireFoxProj : ModProjectile
     {
-
+        List<(Vector2,int)> foxTail = new List<(Vector2, int)>();
+        float lastrot = 0;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Foxbow");
@@ -1009,7 +1011,7 @@ namespace SGAmod.Items.Weapons.Aurora
 
             if (projectile.localAI[1]>20 && projectile.localAI[1] % 16 == 0)
             {
-                Projectile.NewProjectileDirect(projectile.Center, projectile.velocity.RotatedBy(Main.rand.NextFloat(-MathHelper.PiOver2,MathHelper.PiOver2)*0.60f)*3f, ModContent.ProjectileType<FireFoxArrowProj>(), projectile.damage/4, projectile.knockBack, projectile.owner, projectile.ai[0]-500, projectile.ai[1]);
+                Projectile.NewProjectileDirect(projectile.Center, projectile.velocity.RotatedBy(Main.rand.NextFloat(-MathHelper.PiOver2,MathHelper.PiOver2)*0.60f)*3f, ModContent.ProjectileType<FireFoxArrowProj>(), projectile.damage / 10, projectile.knockBack, projectile.owner, projectile.ai[0]-500, projectile.ai[1]);
             }
 
             //if ((int)projectile.localAI[0] % 3 == 0)
@@ -1027,7 +1029,7 @@ namespace SGAmod.Items.Weapons.Aurora
 
                 float speeder = (float)Math.Sin((projectile.localAI[0] + MathHelper.PiOver2) / 17f) * projectile.ai[0];
                 projectile.Center += Vector2.Normalize(projectile.velocity).RotatedBy(MathHelper.PiOver2) * speeder * 6f;
-                projectile.rotation += speeder / 1f;
+                projectile.rotation += speeder / 2f;
 
             }
 
@@ -1043,6 +1045,11 @@ namespace SGAmod.Items.Weapons.Aurora
             //}
 
             projectile.Opacity *= MathHelper.Clamp(projectile.timeLeft / 150f, -1f, 1f);
+
+            lastrot = projectile.rotation;
+
+            foxTail.Add(((projectile.Center) + lastrot.ToRotationVector2() * -6f, 12));
+            foxTail = foxTail.Select(testby => (testby.Item1, testby.Item2 - 1)).Where(testby => testby.Item2 > 0).ToList();
 
             if (projectile.Opacity <= 0.01f)
             {
@@ -1074,14 +1081,14 @@ namespace SGAmod.Items.Weapons.Aurora
             trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
             trail.trailThickness = 16;
             trail.projsize = projectile.Hitbox.Size() / 2f;
-            trail.strengthPow = 2f;
-            trail.strength = 0.75f * projectile.Opacity;
+            trail.strengthPow = 1.25f;
+            trail.strength = 1.25f * projectile.Opacity;
             trail.trailThicknessIncrease = 8;
             trail.capsize = new Vector2(6, 6);
 
             trail.rainbowCoordOffset = new Vector2((Main.GlobalTime + projectile.whoAmI) * 0.05f, Main.GlobalTime * -1.25f);
             trail.rainbowCoordMultiplier = new Vector2(0.5f, 1.25f);
-            trail.rainbowColor = new Vector3((Main.GlobalTime+(projectile.whoAmI*7.173f)) / 3f, 1f, 0.75f);
+            trail.rainbowColor = new Vector3((Main.GlobalTime+(projectile.whoAmI*7.173f)) / 3f, 0.32f, 0.75f);
             trail.rainbowTexture = SGAmod.PearlIceBackground;// SGAmod.Instance.GetTexture("Voronoi");
 
             trail.color = delegate (float percent)
@@ -1090,6 +1097,36 @@ namespace SGAmod.Items.Weapons.Aurora
                 return Color.Lerp(Color.White, Color.White, percent);
             };
             trail.DrawTrail(projectile.oldPos.Select(testby => Vector2.Normalize((projectile.velocity)*8f)+testby).ToList());
+
+
+
+            TrailHelper foxtailtrail = new TrailHelper("FadedRainbowEffectPass", ModContent.GetTexture("SGAmod/Stain"));
+            foxtailtrail.coordMultiplier = new Vector2(0.25f, 1f);// projectile.velocity.Length());
+            foxtailtrail.coordOffset = new Vector2(0,0);
+            foxtailtrail.strengthPow = 2.25f;
+            foxtailtrail.strength = 4.00f * MathHelper.Clamp(projectile.Opacity*2f,0f,1f);
+            foxtailtrail.doFade = false;
+
+            foxtailtrail.rainbowCoordOffset = new Vector2(0, Main.GlobalTime * -0.360f);
+            foxtailtrail.rainbowCoordMultiplier = new Vector2(0.05f, 0.25f);
+            foxtailtrail.rainbowColor = new Vector3((Main.GlobalTime + (projectile.whoAmI * 7.173f)) / 3f, 0.250f, 0.75f);
+            foxtailtrail.rainbowTexture = ModContent.GetTexture("SGAmod/TiledPerlin");
+
+            foxtailtrail.color = delegate (float percent)
+            {
+                float percet = (((percent/2f) + projectile.whoAmI*0.73983f) - (Main.GlobalTime/5f));
+                return Main.hslToRgb((10000+percet) % 1f,1f,0.75f) * (1f-MathHelper.Clamp(percent*1f,0f,1f));
+            };
+            foxtailtrail.trailThicknessFunction = delegate (float percent)
+            {
+                float scaler = (MathHelper.Clamp(percent * 2f, 0f, 1f))*6f;
+                //scaler *= MathHelper.Clamp(percent * 12f, 0f, 1f);
+                return scaler;
+            };
+
+            foxtailtrail.DrawTrail(foxTail.Select(testby => testby.Item1+((lastrot + MathHelper.PiOver2).ToRotationVector2() * 0f)).Reverse().ToList());
+
+
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -1104,7 +1141,7 @@ namespace SGAmod.Items.Weapons.Aurora
             hallowed.Parameters["overlayStrength"].SetValue(new Vector3(1.5f, 0.15f, 0f));
             hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
 
-            hallowed.Parameters["alpha"].SetValue(0.5f*projectile.Opacity);
+            hallowed.Parameters["alpha"].SetValue(1f*projectile.Opacity);
             hallowed.Parameters["prismColor"].SetValue(Color.White.ToVector3());
             hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, (-Main.GlobalTime+projectile.whoAmI) / 1f, (Main.GlobalTime+ projectile.whoAmI*7.31f
                 ) / 4f));
@@ -1974,7 +2011,6 @@ namespace SGAmod.Items.Weapons.Aurora
             trail.coordMultiplier = new Vector2(0.25f, 1f);// projectile.velocity.Length());
             trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
             trail.trailThickness = 12;
-            trail.strengthPow = 4f;
             trail.strength = trailAlpha*0.50f* alpha;
             trail.trailThicknessIncrease = 6;
 
@@ -2220,14 +2256,14 @@ namespace SGAmod.Items.Weapons.Aurora
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Skye Hook");
-            Tooltip.SetDefault("'Don't get lied to about wanting the moon again'\nWear as a grapple hook to pull yourself towards the sun/moon\nDoesn't reset wing time");
+            Tooltip.SetDefault("'Don't get lied to about wanting the moon again'\nGrab the sun/moon and flail it at your mouse\nRequires you to be on the surface to attack\nWear as a grapple hook to pull yourself towards the sun/moon\nDoesn't reset wing time");
         }
 
         public override void SetDefaults()
         {
             item.CloneDefaults(ItemID.AmethystHook);
             item.noUseGraphic = true;
-            item.damage = 0;
+            item.damage = 2000;
             item.Throwing().thrown = true;
             item.knockBack = 7f;
             item.useStyle = 5;
@@ -2246,9 +2282,13 @@ namespace SGAmod.Items.Weapons.Aurora
             item.shootSpeed = 18f; // how quickly the hook is shot.
             item.shoot = ModContent.ProjectileType<SkyeHookProjectile>();
         }
+        public override bool CanUseItem(Player player)
+        {
+            return player.ownedProjectileCounts[ModContent.ProjectileType<SkyeHookProjectile>()] < 1 && !Consumables.AcidicEgg.Underground(player);
+        }
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            Projectile.NewProjectile(position, new Vector2(speedX, speedY)*0f, ModContent.ProjectileType<SkyeHookProjectile>(), 150 + damage, knockBack,player.whoAmI);
+            Projectile.NewProjectile(position, new Vector2(speedX, speedY)*0f, ModContent.ProjectileType<SkyeHookProjectile>(), damage, knockBack,player.whoAmI,ai1: 1);
             return false;
             //return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
@@ -2356,7 +2396,7 @@ namespace SGAmod.Items.Weapons.Aurora
             Vector2 diff3 = Main.MouseWorld - sunmoonpos;
             float speed = 24f;
 
-            if (projectile.damage < 1)
+            if (projectile.ai[1] == 0)
             {
                 if (diff.Length() > 24 && projectile.ai[0] == 0)
                 {
@@ -2378,7 +2418,7 @@ namespace SGAmod.Items.Weapons.Aurora
                         if (player.controlJump)
                         {
                             projectile.Kill();
-                            player.velocity = tilecol/2f;
+                            player.velocity = tilecol / 2f;
                         }
                         //Main.player[projectile.owner].grappling[Main.player[projectile.owner].grapCount] = projectile.whoAmI;
                     }
@@ -2395,6 +2435,8 @@ namespace SGAmod.Items.Weapons.Aurora
                         projectile.ai[0] = 5;
                         projectile.rotation = diff3.ToRotation();
                         projectile.localAI[1] = projectile.rotation;
+                        projectile.ai[1] = Main.dayTime ? 1 : 2;
+                        projectile.netUpdate = true;
                     }
 
                     projectile.rotation = diff2.ToRotation();
@@ -2414,24 +2456,59 @@ namespace SGAmod.Items.Weapons.Aurora
 
                     projectile.rotation = projectile.rotation.AngleTowards(diff3.ToRotation(), 0.20f * percent2);
 
+                    Vector2 pastPos = projectile.Center;
                     Vector2 gotox = sunmoonpos + projectile.rotation.ToRotationVector2() * (percent2 * diff3.Length());
                     projectile.Center = gotox;
 
                     if (percent2 > 0.30f)
                     {
-                        Projectile.NewProjectile(projectile.Center, Vector2.Normalize(gotox), ModContent.ProjectileType<HookSunDamage>(),projectile.damage,projectile.knockBack,projectile.owner,MathHelper.Clamp(percent2, 0f,1f)*320f);
-                        if (SGAmod.ScreenShake<12f)
-                        SGAmod.AddScreenShake(MathHelper.Clamp(percent2, 0f, 1f) * 6f,960,projectile.Center);
+                        Projectile.NewProjectile(projectile.Center, Vector2.Normalize(gotox), ModContent.ProjectileType<HookSunDamage>(), (int)(projectile.damage*(projectile.ai[1] == 2 ? 1.5f : 1f)), projectile.knockBack * (projectile.ai[1] == 2 ? 1.5f : 1f), projectile.owner, MathHelper.Clamp(percent2, 0f, 1f) * (360f * (projectile.ai[1] == 2 ? 0.75f : 1f)));
+                        if (SGAmod.ScreenShake < 12f)
+                            SGAmod.AddScreenShake(MathHelper.Clamp(percent2, 0f, 1f) * 6f, 960, projectile.Center);
                     }
 
                     if (percent2 >= 1f)
                     {
                         projectile.ai[0] = 6;
+                        projectile.netUpdate = true;
+                        Vector2 velo = (gotox - pastPos);
+                        projectile.velocity = (Vector2.Normalize(velo) * (MathHelper.Clamp(velo.Length(), 24f, 64f) * 0.45f));
                         projectile.localAI[0] = 0;
                     }
                 }
 
                 if (projectile.ai[0] == 6)
+                {
+
+                    projectile.localAI[0] += 1;
+                    projectile.velocity *= 0.999f;
+                    projectile.position += projectile.velocity;
+
+                    float percent = projectile.localAI[0] / 60f;
+                    float percent2 = percent * percent;
+
+                    projectile.rotation = (projectile.Center - player.Center).ToRotation();
+
+                    Vector2 gotox = sunmoonpos;// + projectile.rotation.ToRotationVector2() * (percent2 * diff3.Length());
+                    projectile.Center += (gotox- projectile.Center)* MathHelper.SmoothStep(0f,1f, percent2);
+
+                    if (percent2 < 0.60f)
+                    {
+                        Projectile.NewProjectile(projectile.Center, Vector2.Normalize(gotox), ModContent.ProjectileType<HookSunDamage>(), (int)(projectile.damage * (projectile.ai[1] == 2 ? 1.5f : 1f)), projectile.knockBack * (projectile.ai[1] == 2 ? 1.5f : 1f), projectile.owner, MathHelper.Clamp(percent2, 0f, 1f) * (360f * (projectile.ai[1] == 2 ? 0.75f : 1f)));
+                        if (SGAmod.ScreenShake < 12f)
+                            SGAmod.AddScreenShake(MathHelper.Clamp(percent2, 0f, 1f) * 6f, 960, projectile.Center);
+                    }
+
+                    if (percent2 >= 1f)
+                    {
+                        projectile.ai[0] = 7;
+                        projectile.netUpdate = true;
+                        projectile.localAI[0] = 0;
+                    }
+                }
+
+
+                if (projectile.ai[0] == 7)
                 {
                     Vector2 topos = player.MountedCenter - projectile.Center;
                     projectile.localAI[0] += 12;
@@ -2455,7 +2532,6 @@ namespace SGAmod.Items.Weapons.Aurora
             trail.coordOffset = new Vector2(0, Main.GlobalTime * 1f);
             trail.trailThickness = 6;
             //trail.projsize = projectile.Hitbox.Size() / 2f;
-            trail.strengthPow = 2f;
             trail.strength = 1f * projectile.Opacity;
             trail.doFade = false;
 
@@ -2481,15 +2557,28 @@ namespace SGAmod.Items.Weapons.Aurora
             Texture2D tex = Main.projectileTexture[projectile.type];
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation+MathHelper.PiOver2, tex.Size()/2f, projectile.scale * 1f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
 
-            if (projectile.ai[0] == 5)
+            if (projectile.ai[0] == 5 || projectile.ai[0] == 6)
             {
                 float percent = projectile.localAI[0] / 60f;
                 percent = percent * percent;
 
+                if (projectile.ai[0] == 6)
+                    percent = 1f - percent;
+
                 //float sizer = (float)Math.Sin((percent / 120f) * MathHelper.Pi);
 
                 Texture2D sun = Main.sunTexture;
+                Texture2D moon = Main.moonTexture[Main.moonType];
+
+                if (projectile.ai[1] == 1)
                 spriteBatch.Draw(sun, projectile.Center - Main.screenPosition, null, Color.White*MathHelper.Clamp(percent*8f,0f,1f), 0, sun.Size() / 2f, projectile.scale * 1f+(percent*7f), SpriteEffects.None, 0);
+                if (projectile.ai[1] == 2)
+                {
+                    Rectangle rect = new Rectangle(0, 0, moon.Width, moon.Height / 8);
+                    spriteBatch.Draw(moon, projectile.Center - Main.screenPosition, rect, Color.White * MathHelper.Clamp(percent * 8f, 0f, 1f), 0, rect.Size() / 2f, projectile.scale * 1f + (percent * 7f), SpriteEffects.None, 0);
+                }
+
+
             }
 
             return false;
@@ -2517,6 +2606,7 @@ namespace SGAmod.Items.Weapons.Aurora
             projectile.penetrate = -1;
             projectile.knockBack = 8;
             projectile.timeLeft = 2;
+            projectile.hide = true;
             projectile.usesIDStaticNPCImmunity = true;
             projectile.idStaticNPCHitCooldown = 60;
         }

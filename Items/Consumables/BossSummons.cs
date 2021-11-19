@@ -280,13 +280,14 @@ namespace SGAmod.Items.Consumables
 			item.consumable = true;
 		}
 
-		public static bool underground(Entity player) => (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+		public static bool Underground(Entity player) => (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+		public static bool Underground(int here) => (int)((double)((here / 16f)) - Main.worldSurface * 2.0) > 0;
 
 		public override bool CanUseItem(Player player)
 		{
 			//bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
 
-			if (underground(player) && !NPC.AnyNPCs(mod.NPCType("SpiderQueen")))
+			if (Underground(player) && !NPC.AnyNPCs(mod.NPCType("SpiderQueen")))
 			{
 				return true;
 			}
@@ -340,7 +341,7 @@ namespace SGAmod.Items.Consumables
 				Point tilePosition = new Point((int)(item.Center.X / 16), ((int)(item.Center.Y) / 16) + 2);
 				Tile tile = Framing.GetTileSafely(tilePosition.X, tilePosition.Y);
 				//Main.NewText(tile.type + " this type "+item.position);
-				if (tile.type == TileID.Pearlstone && AcidicEgg.underground(item))
+				if (tile.type == TileID.Pearlstone && AcidicEgg.Underground(item))
 				{
 					item.ownTime += 2;
 

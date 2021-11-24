@@ -42,7 +42,7 @@ namespace SGAmod.Items.Weapons.Trap
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dart Trap 'gun'");
-			Tooltip.SetDefault("Atleast those traps might be of some use in a fight now" +
+			Tooltip.SetDefault("'At least those traps might be of some use in a fight now'" +
 				"\nUses Darts as ammo, launches dart trap darts\nTrap Darts Pierce infinitely, but don't crit or count as player damage (they won't activate on damage buffs, for example)");
 		}
 

@@ -158,7 +158,7 @@ namespace SGAmod.Items.Mounts
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Slide Cube");
-			Description.SetDefault("atleast you won't lose your footing! Where your going is another story");
+			Description.SetDefault("At least you won't lose your footing! Where your going is another story");
 			Main.buffNoTimeDisplay[Type] = true;
 			Main.buffNoSave[Type] = true;
 		}

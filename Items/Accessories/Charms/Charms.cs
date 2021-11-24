@@ -31,7 +31,7 @@ namespace SGAmod.Items.Accessories.Charms
 			item.rare = ItemRarityID.Green;
 			item.accessory = true;
 			item.mountType = 6;
-			item.rare = ItemRarityID.Quest;
+			item.rare = ItemRarityID.Cyan;
 		}
 
 		public override Color? GetAlpha(Color lightColor)

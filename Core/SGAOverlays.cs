@@ -599,7 +599,81 @@ namespace SGAmod
 	}
 
 
+	public class SGAScreenExplosionsOverlay : Overlay
+	{
+		public SGAScreenExplosionsOverlay() : base(EffectPriority.VeryHigh, RenderLayers.All) { }
 
+		public override void Update(GameTime gameTime)
+		{
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			if (IsVisible())
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+
+				foreach (ScreenExplosion explosion in SGAmod.screenExplosions)
+				{
+					float warmupTime = Math.Min(explosion.time / explosion.warmupTime, 1f);
+					float timeLeft = MathHelper.Clamp(explosion.timeLeft / explosion.decayTime, 0f, warmupTime);
+
+					float timeLeftDirect = explosion.time / (float)explosion.timeLeftMax;
+					if (explosion.timeLeft < 2)
+						continue;
+
+					float maxstr = explosion.strength;
+					if (explosion.strengthBasedOnPercent != default)
+                    {
+						maxstr = explosion.strengthBasedOnPercent(timeLeftDirect);
+						//Main.NewText(maxstr);
+					}
+					Vector2 halfOfScreen = SGAmod.screenExplosionCopy.Size() / 2f;
+
+					Vector2 center = new Vector2(Main.screenWidth, Main.screenHeight) / 2f;
+					Vector2 screenCenter = Main.screenPosition + center;
+					Vector2 dist = (screenCenter - explosion.where);
+
+					float distFade = MathHelper.Clamp((explosion.distance- dist.Length()) / 480f, 0f, 1f);
+
+					for (float str = 1f; str < 1f+(maxstr* warmupTime); str += 0.05f)
+					{
+						Vector2 offset = center + dist * (str-1f);
+
+						float fadeLater = (1f - ((str - 1f) / (maxstr-1f)));
+
+						spriteBatch.Draw(SGAmod.screenExplosionCopy, offset, null, Color.White * distFade* fadeLater*explosion.alpha * timeLeft,0, halfOfScreen, 1f+((str-1f)*explosion.perscreenscale* timeLeft), SpriteEffects.None, 0f);
+
+					}
+					//Main.NewText("twese");
+					//spriteBatch.Draw(Main.sunTexture, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.White, 0, halfOfScreen, 1.15f, SpriteEffects.None, 0f);
+				}
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Matrix.Identity);
+			}
+		}
+
+		public override void Activate(Vector2 position, params object[] args) { }
+
+		public override void Deactivate(params object[] args) { }
+
+		public override bool IsVisible()
+		{
+			bool draw = false;
+			if (!Main.gameMenu && Main.LocalPlayer != null && SGAmod.Instance != null && SGAmod.screenExplosions.Count>0)
+			{
+				//if (Main.LocalPlayer.HeldItem.type == SGAmod.Instance.ItemType("Expertise"))
+				draw = true;
+            }
+            else
+            {
+				Overlays.Scene.Deactivate("SGAmod:ScreenExplosions");
+			}
+
+			return draw;
+		}
+	}
 
 	public class SGAHUD : Overlay
 	{

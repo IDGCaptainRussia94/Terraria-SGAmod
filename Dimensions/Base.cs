@@ -602,6 +602,10 @@ namespace SGAmod.Dimensions
             }
 
         }
+        public virtual void DoUpdates()
+        {
+
+        }
         public virtual bool IsSpike(int it,int type = 0)
         {
             bool match = (it == SGAmod.Instance.TileType("UnmanedBarTile") || it == SGAmod.Instance.TileType("NoviteBarTile") || it == SGAmod.Instance.TileType("BiomassBarTile"));
@@ -1090,10 +1094,15 @@ namespace SGAmod.Dimensions
                     ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.TwilightDye);
                     shader.UseOpacity(1f);
                     shader.UseSaturation(1f);
-                    DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), new Vector2(Main.GlobalTime * 6, 0), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle((int)(Main.GlobalTime * 64f) * (DrawOverride.swaptargets == 0 ? 1 : -1), 0, 64, 64)), Microsoft.Xna.Framework.Color.White, Main.GlobalTime * 30f, new Vector2(256f, 256f), 1f, SpriteEffects.None, 0);
+                    shader.UseColor(0.4f,0f,0.1f);
+                    DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), new Vector2(Main.GlobalTime * 6, 0), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle((int)(Main.GlobalTime * 24f) * (DrawOverride.swaptargets == 0 ? 1 : -1), 0, 64, 64)), Microsoft.Xna.Framework.Color.Purple, Main.GlobalTime * 30f, new Vector2(256f, 256f), 1f, SpriteEffects.None, 0);
                     shader.Apply(null, new DrawData?(value9));
 
-                    Main.spriteBatch.Draw(SGAmod.postRenderEffectsTargetCopy, Main.rand.NextVector2Circular(8, 24).RotatedByRandom((double)MathHelper.TwoPi), null, Color.White * 0.50f, 0, new Vector2(0, 0), new Vector2(2f, 2f), SpriteEffects.None, 0f);
+                    for (float f = 0; f < 1f; f += 0.25f)
+                    {
+                        float perce = (f + Main.GlobalTime/3f) % 1f;
+                        Main.spriteBatch.Draw(SGAmod.postRenderEffectsTargetCopy, SGAmod.postRenderEffectsTargetCopy.Size(), null, Color.White * 0.50f*(1f- perce), 0, SGAmod.postRenderEffectsTargetCopy.Size()/2f, new Vector2(2f, 2f)* (1f+MathHelper.SmoothStep(0f,1f, perce) /16f), SpriteEffects.None, 0f);
+                    }
 
                     Main.spriteBatch.End();
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
@@ -1220,7 +1229,11 @@ namespace SGAmod.Dimensions
             }
 
             if (SGAPocketDim.WhereAmI != null)
+            {
                 SGAmod.cachedata = true;
+                if (SLWorld.currentSubworld is SGAPocketDim subSandvich)
+                    subSandvich.DoUpdates();
+            }
 
             DimDingeonsWorld.Instance = this;
             if (SGAPocketDim.WhereAmI==null)

@@ -879,7 +879,7 @@ namespace SGAmod.Items.Weapons.Aurora
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("FireFox Greatbow");
-            Tooltip.SetDefault("Launches 2 Sky Foxes that move in sin wave patterms\nAfter striking an enemy, a trail of arrows are left behind that rapidly seek out that enemy");
+            Tooltip.SetDefault("Launches a pair of Sky Foxes that move in sin wave patterms\nAfter striking an enemy, a trail of arrows are left behind that rapidly seek out that enemy");
             Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
         }
 
@@ -1011,7 +1011,7 @@ namespace SGAmod.Items.Weapons.Aurora
 
             if (projectile.localAI[1]>20 && projectile.localAI[1] % 16 == 0)
             {
-                Projectile.NewProjectileDirect(projectile.Center, projectile.velocity.RotatedBy(Main.rand.NextFloat(-MathHelper.PiOver2,MathHelper.PiOver2)*0.60f)*3f, ModContent.ProjectileType<FireFoxArrowProj>(), projectile.damage / 10, projectile.knockBack, projectile.owner, projectile.ai[0]-500, projectile.ai[1]);
+                Projectile.NewProjectileDirect(projectile.Center, projectile.velocity.RotatedBy(Main.rand.NextFloat(-MathHelper.PiOver2,MathHelper.PiOver2)*0.60f)*3f, ModContent.ProjectileType<FireFoxArrowProj>(), projectile.damage / 3, projectile.knockBack, projectile.owner, projectile.ai[0]-500, projectile.ai[1]);
             }
 
             //if ((int)projectile.localAI[0] % 3 == 0)
@@ -2255,8 +2255,8 @@ namespace SGAmod.Items.Weapons.Aurora
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Skye Hook");
-            Tooltip.SetDefault("'Don't get lied to about wanting the moon again'\nGrab the sun/moon and flail it at your mouse\nRequires you to be on the surface to attack\nWear as a grapple hook to pull yourself towards the sun/moon\nDoesn't reset wing time");
+            DisplayName.SetDefault("Oranos Skye Hook");
+            Tooltip.SetDefault("'Don't get lied to about wanting the moon again'\nGrab the sun/moon and flail it towards your mouse\nMoon does more damage/knockback, Sun hits a larger area\nRequires you to be on the surface to attack\nWear as a grapple hook to pull yourself towards the sun/moon\nDoesn't reset wing time");
         }
 
         public override void SetDefaults()
@@ -2272,9 +2272,9 @@ namespace SGAmod.Items.Weapons.Aurora
             item.width = 18;
             item.rare = ItemRarityID.Cyan;
             item.height = 28;
-            item.UseSound = SoundID.Item20;
-            item.useAnimation = 20;
-            item.useTime = 20;
+            item.UseSound = SoundID.Item15;
+            item.useAnimation = 200;
+            item.useTime = 200;
             item.rare = 1;
             item.noMelee = true;
             item.value = 20000;
@@ -2297,6 +2297,7 @@ namespace SGAmod.Items.Weapons.Aurora
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.LunarHook, 1);
             recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
+            recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
             recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 12);
             recipe.AddTile(ModContent.TileType<LuminousAlter>());
             recipe.SetResult(this);
@@ -2398,6 +2399,7 @@ namespace SGAmod.Items.Weapons.Aurora
 
             if (projectile.ai[1] == 0)
             {
+                projectile.velocity = Vector2.Zero;
                 if (diff.Length() > 24 && projectile.ai[0] == 0)
                 {
                     projectile.Center += Vector2.Normalize(diff) * 32;
@@ -2409,8 +2411,16 @@ namespace SGAmod.Items.Weapons.Aurora
                 {
                     if (projectile.ai[0] != 1)
                     {
+                        if (projectile.ai[0] < 3)
+                        {
+                            var snd = Main.PlaySound(SoundID.DD2_BallistaTowerShot, (int)projectile.Center.X, (int)projectile.Center.Y);
+                            if (snd != null)
+                            {
+                                snd.Pitch = 0.90f;
+                            }
+                        }
                         projectile.Center = sunmoonpos - Vector2.Normalize(diff2) * 24f;
-                        projectile.ai[0] = 2f;
+                        projectile.ai[0] = 3f;
                         float speedx = MathHelper.Clamp((diff2.Length() - 96) / 120f, 0f, 1f);
                         Vector2 tilecol = Collision.TileCollision(player.position, Vector2.Normalize(diff2) * speed * speedx, player.width, player.height, gravDir: (int)player.gravDir);
                         //player.Center += tilecol / 2;
@@ -2427,6 +2437,8 @@ namespace SGAmod.Items.Weapons.Aurora
             }
             else
             {
+                player.itemTime = 5;
+                player.itemAnimation = 5;
                 if (projectile.ai[0] == 0)
                 {
                     projectile.Center += Vector2.Normalize(diff) * 32;
@@ -2436,6 +2448,11 @@ namespace SGAmod.Items.Weapons.Aurora
                         projectile.rotation = diff3.ToRotation();
                         projectile.localAI[1] = projectile.rotation;
                         projectile.ai[1] = Main.dayTime ? 1 : 2;
+                        var snd = Main.PlaySound(SoundID.DD2_BallistaTowerShot, (int)projectile.Center.X, (int)projectile.Center.Y);
+                        if (snd != null)
+                        {
+                            snd.Pitch = 0.90f;
+                        }
                         projectile.netUpdate = true;
                     }
 
@@ -2474,6 +2491,13 @@ namespace SGAmod.Items.Weapons.Aurora
                         Vector2 velo = (gotox - pastPos);
                         projectile.velocity = (Vector2.Normalize(velo) * (MathHelper.Clamp(velo.Length(), 24f, 64f) * 0.45f));
                         projectile.localAI[0] = 0;
+
+                        var snd = Main.PlaySound(SoundID.DD2_BetsyFireballImpact, (int)projectile.Center.X, (int)projectile.Center.Y);
+                        if (snd != null)
+                        {
+                            snd.Pitch = -0.75f;
+                        }
+                        SGAmod.AddScreenShake(24f, 800, projectile.Center);
                     }
                 }
 
@@ -2537,8 +2561,8 @@ namespace SGAmod.Items.Weapons.Aurora
 
             trail.rainbowCoordOffset = new Vector2((Main.GlobalTime + projectile.whoAmI) * 0.05f, Main.GlobalTime * -1.25f);
             trail.rainbowCoordMultiplier = new Vector2(0.5f, 1.25f);
-            trail.rainbowColor = new Vector3((Main.GlobalTime + (projectile.whoAmI * 7.173f)) / 3f, 1f, 0.75f);
-            trail.rainbowTexture = SGAmod.Instance.GetTexture("Voronoi");
+            trail.rainbowColor = new Vector3((Main.GlobalTime + (projectile.whoAmI * 7.173f)) / 3f, 0.5f, 0.75f);
+            trail.rainbowTexture = SGAmod.PearlIceBackground;
 
             trail.color = delegate (float percent)
             {
@@ -2571,11 +2595,91 @@ namespace SGAmod.Items.Weapons.Aurora
                 Texture2D moon = Main.moonTexture[Main.moonType];
 
                 if (projectile.ai[1] == 1)
-                spriteBatch.Draw(sun, projectile.Center - Main.screenPosition, null, Color.White*MathHelper.Clamp(percent*8f,0f,1f), 0, sun.Size() / 2f, projectile.scale * 1f+(percent*7f), SpriteEffects.None, 0);
+                {
+                    float sunalpha = MathHelper.Clamp(percent * 8f, 0f, 1f);
+                    float percent2 = percent * percent;
+
+                    spriteBatch.Draw(sun, projectile.Center - Main.screenPosition, null, Color.White * MathHelper.Clamp(percent * 8f, 0f, 1f) * MathHelper.Clamp(2f - (percent2*2f),0f,1f), 0, sun.Size() / 2f, projectile.scale * 1f + (percent * 7f), SpriteEffects.None, 0); ;
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+                    Effect RadialEffect = SGAmod.RadialEffect;
+
+                    RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Stain"));
+                    RadialEffect.Parameters["alpha"].SetValue(percent2*2f);
+                    RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.375f, -Main.GlobalTime * 0.275f));
+                    RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(4f, 0.25f));
+                    RadialEffect.Parameters["ringScale"].SetValue(0.44f);
+                    RadialEffect.Parameters["ringOffset"].SetValue(0.22f);
+                    RadialEffect.Parameters["ringColor"].SetValue(Color.Orange.ToVector3());
+                    RadialEffect.Parameters["tunnel"].SetValue(false);
+
+                    RadialEffect.CurrentTechnique.Passes["RadialAlpha"].Apply();
+
+                    float percent3 = percent2;// MathHelper.SmoothStep(0f,1f,MathHelper.Clamp(percent2*2f,0f,1f));
+
+                    spriteBatch.Draw(sun, projectile.Center - Main.screenPosition, null, Color.White * MathHelper.Clamp(percent2 * 4f, 0f, 1f), 0, sun.Size() / 2f, projectile.scale * 1f + (percent3 * 15f), SpriteEffects.None, 0);
+
+                    RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Stain"));
+                    RadialEffect.Parameters["texOffset"].SetValue(new Vector2(0.50f+ Main.GlobalTime * 0.375f, -Main.GlobalTime * 0.275f));
+                    RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(6f, 0.5f));
+                    RadialEffect.Parameters["ringScale"].SetValue(0.26f);
+                    RadialEffect.Parameters["ringOffset"].SetValue(0.32f);
+                    RadialEffect.Parameters["ringColor"].SetValue(Color.Yellow.ToVector3());
+                    RadialEffect.Parameters["alpha"].SetValue(percent2*0.75f);
+
+                    RadialEffect.CurrentTechnique.Passes["RadialAlpha"].Apply();
+
+                    spriteBatch.Draw(sun, projectile.Center - Main.screenPosition, null, Color.White * MathHelper.Clamp(percent2 * 4f, 0f, 1f), 0, sun.Size() / 2f, projectile.scale * 1f + (percent3 * 15f), SpriteEffects.None, 0);
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+
+                    Texture2D noise = ModContent.GetTexture("SGAmod/TiledPerlin");
+
+                    SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Lerp(Color.White, Color.Orange, (MathHelper.Clamp(percent * 2f, 0f, 1f))).ToVector4() * percent2);
+                    SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(Main.blackTileTexture);
+                    SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(1f, 1f));
+                    SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(-Main.GlobalTime * 1f, 0f));
+                    SGAmod.SphereMapEffect.Parameters["softEdge"].SetValue(20f);
+
+                    SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMap"].Apply();
+
+                    spriteBatch.Draw(sun, projectile.Center - Main.screenPosition, null, Color.White * MathHelper.Clamp(percent2 * 4f, 0f, 1f), 0, sun.Size() / 2f, projectile.scale * 1f + (percent2 * 3f), SpriteEffects.None, 0);
+
+                    SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Red.ToVector4() * percent2);
+                    SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(noise);
+                    SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(0.5f, 0.5f));
+                    SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(-Main.GlobalTime * 1.25f,0f));
+
+                    SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
+
+                    spriteBatch.Draw(sun, projectile.Center - Main.screenPosition, null, Color.White * MathHelper.Clamp(sunalpha * 4f, 0f, 1f), 0, sun.Size() / 2f, projectile.scale * 1f + (percent2 * 3f), SpriteEffects.None, 0);
+
+                    noise = ModContent.GetTexture("SGAmod/Voronoi");
+
+                    SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(Color.Yellow.ToVector4() * percent2*0.75f);
+                    SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(noise);
+                    SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(0.75f, 0.75f));
+                    SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(-Main.GlobalTime * 1.15f, 0f));
+
+                    SGAmod.SphereMapEffect.CurrentTechnique.Passes["SphereMapAlpha"].Apply();
+
+                    spriteBatch.Draw(sun, projectile.Center - Main.screenPosition, null, Color.White * MathHelper.Clamp(sunalpha * 4f, 0f, 1f), 0, sun.Size() / 2f, projectile.scale * 1f + (percent2 * 3f), SpriteEffects.None, 0);
+
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+                }
+
                 if (projectile.ai[1] == 2)
                 {
                     Rectangle rect = new Rectangle(0, 0, moon.Width, moon.Height / 8);
                     spriteBatch.Draw(moon, projectile.Center - Main.screenPosition, rect, Color.White * MathHelper.Clamp(percent * 8f, 0f, 1f), 0, rect.Size() / 2f, projectile.scale * 1f + (percent * 7f), SpriteEffects.None, 0);
+
                 }
 
 

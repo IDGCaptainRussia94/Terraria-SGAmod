@@ -31,6 +31,9 @@ namespace SGAmod
 
 		internal static void ApplyPatches()
 		{
+			SGAmod.Instance.Logger.Debug("Doing some Monomod Hook Endpoint nonsense... Jesus christ this is alot of vanilla hacking");
+
+
 			typeUIModItem = Assembly.GetAssembly(typeof(Main)).GetType("Terraria.ModLoader.UI.UIModItem");//This class is off-limits to us (internal), even to ON and IL, so we have to grab it directly from Main's assembly
 
 			ModifyUIModManipulator += ModifyUIModILPatch;

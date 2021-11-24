@@ -33,9 +33,10 @@ namespace SGAmod.HavocGear.Items.Weapons
 
         public override bool UseItem(Player player)
         {
-            if (Main.tile[Player.tileTargetX, Player.tileTargetY].type == ModContent.TileType<Tiles.MoistStone>())
+            if (Main.tile[Player.tileTargetX, Player.tileTargetY+1].type == ModContent.TileType<Tiles.MoistStone>() && !Main.tile[Player.tileTargetX, Player.tileTargetY + 1].active())
             {
-                Main.tile[Player.tileTargetX, Player.tileTargetY].type = (ushort)mod.TileType("SwampGrass");
+				string[] onts = new string[] { "SwampGrassGrow", "SwampGrassGrow2", "SwampGrassGrow3" };
+				Main.tile[Player.tileTargetX, Player.tileTargetY].type = (ushort)mod.TileType(onts[Main.rand.Next(onts.Length)]);
             }
             else
             {

@@ -282,7 +282,7 @@ namespace SGAmod.Dimensions.NPCs
 				if (Main.netMode < 1)
 				{
 					if (SGAPocketDim.WhereAmI == null)
-						SGAWorld.dungeonlevel = SGAConfigDeeperDungeon.Instance?.SetDungeonFloors.floor ?? 0;
+						SGAWorld.dungeonlevel = SGAConfigDeeperDungeon.Instance.SetDungeonFloors != null ? SGAConfigDeeperDungeon.Instance.SetDungeonFloors.floor : 0;
 					SGAPocketDim.EnterSubworld(mod.GetType().Name + "_DeeperDungeon", true);
 				}
 				else

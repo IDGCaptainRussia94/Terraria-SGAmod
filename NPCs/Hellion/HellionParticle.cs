@@ -174,18 +174,23 @@ namespace SGAmod.NPCs.Hellion
 
             RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
 
+
+            //Draw additive white particles
+
             Main.graphics.GraphicsDevice.SetRenderTarget(shadowSurface);
             Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
             //Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
+            //Gains a different look when the Hellion Core spawns it
             int fogtype = NPC.CountNPCS(ModContent.NPCType<HellionCore>())>0 ? 0 : 1;
 
             Color fogTo = Color.DarkMagenta;
             Color fogFrom = Color.Black;
             float edging = 0.10f;
             int smokecount = fogtype == 0 ? 16 : 32;
+
 
             foreach (ShadowParticle particle in particles)
             {
@@ -195,6 +200,8 @@ namespace SGAmod.NPCs.Hellion
             }
 
             Main.spriteBatch.End();
+
+            //Now, draw the interior effect using the above as texture mask
 
             Main.graphics.GraphicsDevice.SetRenderTarget(shadowSurfaceShaderApplied);
             Main.graphics.GraphicsDevice.Clear(Color.Transparent);
@@ -233,7 +240,7 @@ namespace SGAmod.NPCs.Hellion
                 Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
                 //Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);// Main.GameViewMatrix.TransformationMatrix);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
 
                 Vector2 parallex = new Vector2(0, 0);
 
@@ -246,9 +253,13 @@ namespace SGAmod.NPCs.Hellion
                 for (int i = 0; i < 12; i += 1)
                 {
 
-                    float alpha = 1f*starAlpha;// MathHelper.Clamp(0.40f + (float)Math.Sin(((SGAWorld.modtimer / 35f) + rando.NextFloat(MathHelper.TwoPi)) * rando.NextFloat(0.25f, 0.75f))*0.80f, 0f, 1f);
+                    //Used to pulse in and out, didn't think it was needed in the end thou
+                    float alpha = 1f*starAlpha;
+                    #region oldcode
+                    // MathHelper.Clamp(0.40f + (float)Math.Sin(((SGAWorld.modtimer / 35f) + rando.NextFloat(MathHelper.TwoPi)) * rando.NextFloat(0.25f, 0.75f))*0.80f, 0f, 1f);
                     //if (alpha <= 0 && i > 0)
                     //    continue;
+                    #endregion
 
                     Matrix rotation = Matrix.CreateRotationZ(timer);
                     Matrix rotation2 = Matrix.CreateRotationZ((-timer));
@@ -291,13 +302,13 @@ namespace SGAmod.NPCs.Hellion
                         colorsa = fogtype == 0 ? Color.Lerp(fogTo, fogFrom, (float)i / 16f) : Color.White * (1f-((float)i / 48f));
                     }
 
-                    vertices[0] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(-16, 0, 0), rotationOffset), colorsa, new Vector2(0, 0));
-                    vertices[1] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(-16, Main.screenHeight, 0), rotationOffset), colorsa, new Vector2(0, 1));
-                    vertices[2] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), rotationOffset), colorsa, new Vector2(1, 0));
+                    vertices[0] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(-16, -16, 0), rotationOffset), colorsa, new Vector2(0, 0));
+                    vertices[1] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(-16, Main.screenHeight+16, 0), rotationOffset), colorsa, new Vector2(0, 1));
+                    vertices[2] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(Main.screenWidth + 16, -16, 0), rotationOffset), colorsa, new Vector2(1, 0));
 
-                    vertices[3] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight, 0), rotationOffset), colorsa, new Vector2(1, 1));
-                    vertices[4] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(-16, Main.screenHeight, 0), rotationOffset), colorsa, new Vector2(0, 1));
-                    vertices[5] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), rotationOffset), colorsa, new Vector2(1, 0));
+                    vertices[3] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight+16, 0), rotationOffset), colorsa, new Vector2(1, 1));
+                    vertices[4] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(-16, Main.screenHeight+16, 0), rotationOffset), colorsa, new Vector2(0, 1));
+                    vertices[5] = new VertexPositionColorTexture(Vector3.Transform(screenPos + new Vector3(Main.screenWidth + 16, -16, 0), rotationOffset), colorsa, new Vector2(1, 0));
 
                     vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
                     vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
@@ -316,6 +327,8 @@ namespace SGAmod.NPCs.Hellion
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
+                //originally, the worms were drawn INSIDE the rendertarget, but this has since been changed
+                #region oldcode
                 /*foreach(NPC hellionarm in Main.npc.Where(testby => testby.active && (testby.type == ModContent.NPCType<HellionCore>() || testby.type == ModContent.NPCType<HellionMonolog>())))
                 {
                     Hellion.HellionTeleport(Main.spriteBatch, (Main.screenPosition+hellionarm.Center)/2f, 0.5f, 48);
@@ -323,12 +336,11 @@ namespace SGAmod.NPCs.Hellion
                 }*/
 
                 //Main.spriteBatch.Draw(hellionTex, -reallyHellion.velocity + new Vector2(0, 10) + (reallyHellion.Center - Main.screenPosition) / 2f, null, Color.White * (settings != null ? settings.HelliontransparencyRate : 0.15f), 0, hellionTex.Size() / 2f, 0.50f, SpriteEffects.None, 0f);
+                #endregion
+
                 Main.spriteBatch.End();
                 
             }
-
-
-            //Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
             Main.graphics.GraphicsDevice.SetRenderTargets(binds);
 

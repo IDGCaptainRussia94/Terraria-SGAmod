@@ -265,12 +265,20 @@ namespace SGAmod
 		[ReloadRequired]
 		public bool LogoReplace { get; set; }
 
+		[Label("Screen Shake Multiplier")]
+		[Tooltip("Adjust the intensity of screen shakes")]
+		[Increment(0.01f)]
+		[Range(0f, 2f)]
+		[DefaultValue(1f)]
+		[Slider]
+		public int ScreenShakeMul { get; set; }
+
 		[Header("Performance")]
 		[Label("Fog Detail")]
 		[Tooltip("Adjust the detail of the darkness fog effect; Higher is more detailed, but also more demanding")]
-		[Increment(1)]
-		[Range(5, 100)]
-		[DefaultValue(30)]
+		[Increment(0.01f)]
+		[Range(0f, 2f)]
+		[DefaultValue(1f)]
 		[Slider]
 		public int FogDetail { get; set; }
 
@@ -281,6 +289,11 @@ namespace SGAmod
 		[DefaultValue(200)]
 		[Slider]
 		public int HellionSkyDetail { get; set; }
+
+		[Label("Screen Godray Flashes")]
+		[Tooltip("Enable or Disable Godray-like screen explosions")]
+		[DefaultValue(true)]
+		public bool ScreenFlashExplosions { get; set; }
 
 		[Label("Primitive Trails")]
 		[Tooltip("When set to false, stops all Primitive Trails from drawing; will greatly increase performance, but may make some bosses/weapons difficult to see properly")]

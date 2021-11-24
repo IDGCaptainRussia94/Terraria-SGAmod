@@ -310,7 +310,7 @@ namespace SGAmod.Buffs
 		{
 			DisplayName.SetDefault("Rust Burn");
 			Description.SetDefault("Slowness is happening");
-			Main.debuff[Type] = true;
+			Main.debuff[Type] = true; 
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
 			longerExpertDebuff = true;

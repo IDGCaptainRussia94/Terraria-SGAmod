@@ -207,6 +207,9 @@ namespace SGAmod.NPCs.TownNPCs
 			shop.item[nextSlot].SetDefaults(mod.ItemType("JoyfulShroom"));
 			shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 10, 0, 0);
 			nextSlot += 1;			
+			shop.item[nextSlot].SetDefaults(mod.ItemType("AvariceRingWeaker"));
+			shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 75, 0, 0);
+			nextSlot += 1;			
 			shop.item[nextSlot].SetDefaults(mod.ItemType("NoHitCharmlv1"));
 			shop.item[nextSlot].shopCustomPrice = Item.buyPrice(1, 0, 0, 0);
 			nextSlot += 1;

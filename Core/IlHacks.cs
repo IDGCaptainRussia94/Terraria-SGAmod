@@ -25,7 +25,7 @@ namespace SGAmod
 		//Welcome to Russia's collection of vanilla hacking nonsense!
 		internal static void Patch()
 		{
-			PrivateClassEdits.ApplyPatches();
+			SGAmod.Instance.Logger.Debug("Loading an unhealthy ammount of IL patches");
 
 			IL.Terraria.Main.Update += RemoveUpdateCinematic;
 			IL.Terraria.Player.AdjTiles += ForcedAdjTilesHack;
@@ -59,6 +59,8 @@ namespace SGAmod
 				IL.Terraria.Main.DrawBackground += RemoveLavabackground;
 				IL.Terraria.Main.OldDrawBackground += RemoveOldLavabackground;
 			}
+			
+			PrivateClassEdits.ApplyPatches();
 		}
 
 		internal static void Unpatch()

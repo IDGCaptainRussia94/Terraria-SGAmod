@@ -1012,7 +1012,7 @@ namespace SGAmod.NPCs.Wraiths
 		public float appear = 0f;
 		public float afterGlow = 1f;
 		public int nohit;
-		public static bool debugMode => true;
+		public static bool debugMode => false;
 		protected virtual int caliburnlevel => SGAWorld.downedCaliburnGuardians;
 
 		protected virtual void ExtraDraw(SpriteBatch spriteBatch, Texture2D swordtex,int layer)

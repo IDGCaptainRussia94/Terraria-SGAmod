@@ -22,6 +22,7 @@ using System.Diagnostics;
 using SGAmod.Effects;
 using System.Linq;
 using Microsoft.Xna.Framework.Audio;
+using System.Net;
 
 namespace SGAmod.NPCs.Hellion
 {
@@ -60,10 +61,97 @@ namespace SGAmod.NPCs.Hellion
 				}
 
 				helltext.Add("#Helen 'Helion' Weygold");
-				File.WriteAllLines(SGAmod.filePath + "/It's not over yet.txt",helltext.ToArray());
+				File.WriteAllLines(SGAmod.filePath + "/Itsnotoveryet.txt", helltext.ToArray());
 
 				Process.Start(@"" + SGAmod.filePath + "");
 			}
+
+		}
+
+		public static void CheckAndLoadMusic()
+        {
+				System.Threading.ThreadPool.QueueUserWorkItem(HellionAttacks.AttemptGrabMusicAsync, SGAmod.Instance.Logger);
+		}
+
+		public static void LoadMusic()
+        {
+
+			//SGAmod.hellionTheme = (new MusicStreamingOGGPlus(SGAmod.filePath + "/Hellion.ogg"));
+			SGAmod.hellionTheme = (new MusicStreamingOGGPlus("tmod:SGAmod/Sounds/Music/CatastrophicCircuitry.ogg"));
+			//SGAmod.musicTest = new MusicStreamingOGGPlus("tmod:SGAmod/Sounds/Music/creepy.ogg");
+			if (SGAmod.hellionTheme != null)
+			{
+				SGAmod.Instance.Logger.Debug("Hellion Theme Loaded");
+				SGAmod.hellionMusicGrabState = 2;
+				SGAmod.hellionTheme.volumeScale = 0.60f;
+				SGAmod.hellionTheme.pitch = -0.99f;
+				SGAmod.hellionTheme.volume = 0.001f;
+				SGAmod.hellionTheme.doMusic = delegate ()
+				{
+					Hellion hell = Hellion.GetHellion();
+					bool themExist = hell != null;
+					if (themExist)
+					{
+						SGAmod.hellionTheme.pitchGoal = hell.GetType() == typeof(HellionCore) ? -0.80f : 0f;
+						for (int fade = 0; fade < Main.musicFade.Length; fade++)
+						{
+							Main.musicFade[fade] *= (1f - SGAmod.hellionTheme.volume);
+						}
+					}
+					SGAmod.hellionTheme.volumeGoal = themExist ? 1f : 0f;
+					return themExist;
+				};
+			}
+
+		}
+
+		public static void AttemptGrabMusicAsync(object callContext)
+		{
+
+			//if (Directory.GetFiles(SGAmod.filePath).Where(testby => testby.Contains("CatastrophicCircuitry.ogg")).Count() > 0)
+			//{
+				LoadMusic();
+				return;
+			//}
+
+			//This part isn't actively used
+
+			SGAmod.Instance.Logger.Debug("Attempting music grab...");
+			WebClient downloader = new WebClient();
+			using (downloader)
+			{
+				try
+				{
+					downloader.DownloadFile("https://cdn.discordapp.com/attachments/599884595562938410/911596499463442462/CompressedLoopingTheme.ogg", SGAmod.filePath + "/Hellion.ogg");
+					SGAmod.Instance.Logger.Debug("File seems to have been downloaded, moving on");
+					SGAmod.hellionMusicGrabState = 1;
+					LoadMusic();
+
+				}
+				catch (ArgumentException ae)
+				{
+					SGAmod.Instance.Logger.Debug(ae.GetType().FullName + ae.Message);
+					SGAmod.hellionMusicGrabState = -1;
+				}
+				catch (WebException webEx)
+				{
+					SGAmod.Instance.Logger.Debug(webEx.GetType().FullName + webEx.Message);
+					SGAmod.Instance.Logger.Debug("Destination not found!");
+					SGAmod.hellionMusicGrabState = -1;
+				}
+				catch (NotSupportedException supportEx)
+				{
+					SGAmod.Instance.Logger.Debug(supportEx.GetType().FullName);
+					SGAmod.Instance.Logger.Debug(supportEx.Message);
+					SGAmod.hellionMusicGrabState = -1;
+				}
+				catch (Exception allExp)
+				{
+					SGAmod.Instance.Logger.Debug(allExp.GetType().FullName + allExp.Message);
+					SGAmod.hellionMusicGrabState = -1;
+				}
+			}
+
 
 		}
 
@@ -955,7 +1043,10 @@ namespace SGAmod.NPCs.Hellion
 			//Xemnas (desp 1)
 			if (npc.ai[1] > 1000 && npc.ai[1] < 2060)
 			{
-				if (npc.ai[1] < 1002)
+				bool phase2 = hell.phase < 3;
+
+
+				if (npc.ai[1] < (phase2 ? 1200 : 1002))
 					npc.ai[1] = 0;
 
 				hell.flyspeed = MathHelper.Clamp((1f-(npc.ai[1]-1960))/200f,0f,1f);
@@ -987,8 +1078,7 @@ namespace SGAmod.NPCs.Hellion
 					hell.HellionTaunt("Vanish!");
 
 
-				int portaltime = 350;
-				bool phase2 = hell.phase < 3;
+				int portaltime = 240;
 				int proj = phase2 ? mod.ProjectileType("HellionBeam") : mod.ProjectileType("HellionBolt");
 				if (hell.phase > 2)
                 {
@@ -997,7 +1087,7 @@ namespace SGAmod.NPCs.Hellion
 
 
 
-				if (npc.ai[1] % (phase2 ? 8 : 2) == 0 && npc.ai[1] < (phase2 ? 1700 : 1800) && npc.ai[1] > 1450)
+				if (npc.ai[1] % (phase2 ? 8 : 2) == 0 && npc.ai[1] < (phase2 ? 1850 : 1800) && npc.ai[1] > (phase2 ? 1450 : 1400))
 				{
 					Vector2 where = npc.Center;
 					float angle = MathHelper.ToRadians(npc.ai[1] * ((npc.ai[1] % 12 == 0) ? 1.91f : -1.91f) * 2f);
@@ -1019,7 +1109,8 @@ namespace SGAmod.NPCs.Hellion
 						float val = current;
 						if (time < 200)
 						{
-							if (phase2)
+							bool phase2check = phase2;
+							if (phase2check && false)
 							{
 								if (time < 100)
 									val = current.AngleLerp((playerpos - projpos).ToRotation(), 0.15f);
@@ -1083,10 +1174,10 @@ namespace SGAmod.NPCs.Hellion
 						if (Hellion.GetHellion() != null)
 						{
 							Vector2 gothere = Hellion.GetHellion().npc.Center;
-							if (time == 330)
+							if (time == 60)
 								Main.PlaySound(SoundID.Item, (int)(gothere).X, (int)(gothere).Y, 33, 0.25f, 0.5f);
 						}
-						return (time == 330);
+						return (time == 60);
 					};
 
                     }
@@ -1106,7 +1197,7 @@ namespace SGAmod.NPCs.Hellion
 
 					if (phase2)
 					{
-						int ize = ParadoxMirror.SummonMirror(where + wheretogo * 2f, Vector2.Zero, proj == mod.ProjectileType("HellionBeam") ? 165 : 65, portaltime, 0f, proj, projectilepattern, 10f, proj == mod.ProjectileType("HellionBeam") ? 180 : 300);
+						int ize = ParadoxMirror.SummonMirror(where + wheretogo * 2f, Vector2.Zero, proj == mod.ProjectileType("HellionBeam") ? 165 : 65, portaltime, 0f, proj, projectilepattern, 10f, proj == mod.ProjectileType("HellionBeam") ? portaltime-60 : 300);
 						Main.projectile[ize].ai[1] = (npc.ai[0] / 90f) % 1f;
 						Main.projectile[ize].aiStyle = -2;
 						(Main.projectile[ize].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
@@ -1742,7 +1833,7 @@ namespace SGAmod.NPCs.Hellion
 				rand.Add("Homing Lasers", 2);
 			if (hell.phase > -1 && !hell.haspickedlaser)
 				rand.Add("Laser Reign", 2);			
-			if (npc.ai[1] < 1 && (npc.life<npc.lifeMax * 10.30) && hell.tyrant < 1)
+			if (npc.ai[1] < 1 && (npc.life<npc.lifeMax * 0.30) && hell.tyrant < 1)
 				rand.Add("Tyrant Grasp", 10);
 			//if (SGAWorld.NightmareHardcore>0 && hell.tyrant < 2 && npc.life < npc.lifeMax * 0.75)
 				//rand.Add("Tyrant Grasp", 100);
@@ -2331,7 +2422,7 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (!rematch)
 			{
-				if (npc.life < npc.lifeMax * 10.40f && phase < 5 && npc.ai[1] < 1)
+				if (npc.life < npc.lifeMax * 0.40f && phase < 5 && npc.ai[1] < 1)
 				{
 					phase = 5;
 					if (ArmyVersion)
@@ -2370,7 +2461,7 @@ namespace SGAmod.NPCs.Hellion
 				manualmovement = Math.Max(manualmovement, 120);
 				npc.knockBackResist = 0f;
 				phase = 2;
-				npc.ai[1] = 2050;// Main.rand.Next(0, 2) == 0 ? 2050 : 3050;
+				npc.ai[1] = Main.rand.Next(0, 2) == 0 ? 2050 : 3050;
 				npc.netUpdate = true;
 				return;
 			}

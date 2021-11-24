@@ -24,6 +24,10 @@ namespace SGAmod
 
 		private static void drawit(Matrix zoomitz, float rotation = 0f, float scale = 1f)
 		{
+			int width = SGAConfigClient.Instance.HellionSkyDetail; int height = SGAConfigClient.Instance.HellionSkyDetail;
+			if (width == 0)
+				return;
+
 			if (Hellion.GetHellion() != null)
 			{
 				if (Hellion.GetHellion().GetType() == typeof(HellionFinal))
@@ -36,9 +40,6 @@ namespace SGAmod
 
 			float tempcolor = SGAmod.HellionSkyalpha;
 
-			int width = SGAConfigClient.Instance.HellionSkyDetail; int height = SGAConfigClient.Instance.HellionSkyDetail;
-			if (width == 0)
-				return;
 
 
 			if (tempcolor > 0)
@@ -151,7 +152,7 @@ namespace SGAmod
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
 
-				//HellionSky.drawit(Main.GameViewMatrix.ZoomMatrix);
+				HellionSky.drawit(Main.GameViewMatrix.ZoomMatrix);
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);

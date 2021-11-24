@@ -119,7 +119,21 @@ namespace SGAmod.Items.Armors.Mandala
 			DisplayName.SetDefault("Mandala Leggings");
 			Tooltip.SetDefault("+1 minion slot\n15% increased Summon Damage and Summon weapon use Speed\nAdditional flying speed and wing time in Subworlds");
 		}
-		public override void SetDefaults()
+        public override bool Autoload(ref string name)
+        {
+            SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostPostUpdateEquipsEvent;
+			return true;
+        }
+        private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer player)
+        {
+            if (!player.player.armor[2].IsAir && player.player.armor[2].type == item.type)
+            {
+				player.player.wingTime += 60;
+				player.player.wingTimeMax += 60;
+			}
+		}
+
+        public override void SetDefaults()
 		{
 			item.width = 18;
 			item.height = 18;

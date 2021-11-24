@@ -153,7 +153,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mossy Salve");
-			Tooltip.SetDefault("'A nasty infection is better than bleeding out right?'\nTreats severe burn wounds, completely restoring your Lava Immunity Time\nStops Bleeding, Massive Bleeding, OnFire!, and Burning\nAlso heals 25 HP\n" + Idglib.ColorText(Color.Red, "However causes Swamp Rot infection and Murky Depths") +"\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each"));
+			Tooltip.SetDefault("'A nasty infection is better than bleeding out right?'\nTreats severe burn wounds, completely restoring your Lava Immunity Time\nStops Bleeding, Massive Bleeding, OnFire!, and Burning\nAlso heals 25 HP\n" + Idglib.ColorText(Color.Red, "However causes an infection of Swamp Rot and Murky Depths") +"\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each"));
 		}
 
 		public override void SetDefaults()
@@ -182,7 +182,7 @@ namespace SGAmod.Items.Consumables
 
 			player.lavaTime = player.lavaMax;
 
-			int[] buffs = { ModContent.BuffType<NPCs.Murk.PoisonStack>(), BuffID.Bleeding, BuffID.OnFire, BuffID.Burning, ModContent.BuffType<Buffs.MassiveBleeding>() };
+			int[] buffs = { BuffID.Bleeding, BuffID.OnFire, BuffID.Burning, ModContent.BuffType<Buffs.MassiveBleeding>() };
 
 			foreach(int buff in buffs)
             {
@@ -198,11 +198,11 @@ namespace SGAmod.Items.Consumables
 			player.statLife += 25;
 
 			player.AddBuff(ModContent.BuffType<NPCs.Murk.MurkyDepths>(),60* (Main.expertMode ? 15 : 30));
-			player.AddBuff(ModContent.BuffType<Buffs.PlaceHolderDebuff>(), 60 * 10);
-			if (player.FindBuffIndex(ModContent.BuffType<Buffs.PlaceHolderDebuff>()) >= 0)
+			sgaplayer.StackDebuff(ModContent.BuffType<NPCs.Murk.PoisonStack>(), 60 * 10);
+			/*if (player.FindBuffIndex(ModContent.BuffType<Buffs.PlaceHolderDebuff>()) >= 0)
 			{
 				player.buffType[player.FindBuffIndex(ModContent.BuffType<Buffs.PlaceHolderDebuff>())] = ModContent.BuffType<NPCs.Murk.PoisonStack>();
-			}
+			}*/
 
 			Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 3, 1f, -0.50f);
 

@@ -150,7 +150,7 @@ namespace SGAmod
 		public bool restorationFlower = false;
 		public bool tpdcpu = false;
 		public bool aversionCharm = false;
-		public bool avariceRing = false;
+		public byte avariceRing = 0;
 		public int devpower = 0;
 		public bool EALogo = false;
 		public bool graniteMagnet = false;
@@ -348,7 +348,7 @@ namespace SGAmod
 				energyShieldAmmountAndRecharge.Item3 -= 1;
 
 			disabledAccessories = Math.Max(disabledAccessories - 1, 0);
-			avariceRing = false;
+			avariceRing = 0;
 			manaUnchained = false;
 			snakeEyes = (false, snakeEyes.Item2);
 			enchantedShieldPolish = false;
@@ -962,11 +962,14 @@ namespace SGAmod
 
 		public static event PostUpdateEquipsDelegate PostCharmsUpdateEquipsEvent;
 
+		public static event PostUpdateEquipsDelegate PostPostUpdateEquipsEvent;
+
 		//Really should do more event stuff like this ^
 
 		public static void PostPostUpdateEquips(Player player)//COMPLETELY after everything else (well, after all other modded accessories)
 		{
 			SGAPlayer sgaply = player.SGAPly();
+			PostPostUpdateEquipsEvent?.Invoke(sgaply);
 			//Main.NewText("TextTewst");
 			if (sgaply.finalGem > 0)
 			{
@@ -1773,7 +1776,7 @@ namespace SGAmod
 			if (TakeShieldHit(ref damage))
 				return false;
 
-			player.GetModPlayer<CataNukePlayer>().charge /= 2;
+			player.GetModPlayer<CataNukePlayer>().Charge /= 2;
 
 			return true;
 		}

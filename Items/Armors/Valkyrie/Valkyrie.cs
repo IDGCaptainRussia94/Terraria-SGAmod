@@ -23,7 +23,7 @@ namespace SGAmod.Items.Armors.Valkyrie
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Valkyrie Helm");
-			Tooltip.SetDefault("15% increased throwing damage and velocity, and 25% increased crit chance\nGrants life regeneration");
+			Tooltip.SetDefault("15% increased throwing damage, and 20% increased crit chance and velocity\nGrants life regeneration");
 		}
 		public override void SetDefaults()
 		{
@@ -70,7 +70,7 @@ namespace SGAmod.Items.Armors.Valkyrie
 
 				if (!sgaplayer.valkyrieSet.Item3)
 				sgaplayer.valkyrieSet.Item2 += (System.Math.Min(player.lifeRegen, player.lifeRegenTime * 0.01f) - sgaplayer.valkyrieSet.Item2)/30f;
-				player.Throwing().thrownDamage += (sgaplayer.valkyrieSet.Item2+(sgaplayer.valkyrieSet.Item3 ? player.lifeRegen : 0)) * 0.03f;
+				player.Throwing().thrownDamage += (sgaplayer.valkyrieSet.Item2+(sgaplayer.valkyrieSet.Item3 ? player.lifeRegen : 0)) * 0.02f;
 
 				if (player.Male)
 					player.endurance += 0.15f;
@@ -90,9 +90,9 @@ namespace SGAmod.Items.Armors.Valkyrie
 		public override void UpdateEquip(Player player)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod,typeof(SGAPlayer).Name) as SGAPlayer;
-			player.Throwing().thrownVelocity += 0.15f;
+			player.Throwing().thrownVelocity += 0.25f;
 			player.Throwing().thrownDamage += 0.15f;
-			player.Throwing().thrownCrit += 25;
+			player.Throwing().thrownCrit += 20;
 		}
 		public override void UpdateVanity(Player player, EquipType type)
 		{
@@ -119,7 +119,7 @@ namespace SGAmod.Items.Armors.Valkyrie
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Valkyrie Breastplate");
-			Tooltip.SetDefault("20% increased throwing damage, velocity, and throwing attack speed\n75% chance to not consume Throwing Items\nGrants life regeneration");
+			Tooltip.SetDefault("10% increased throwing damage, velocity, and throwing attack speed\n75% chance to not consume Throwing Items\nGrants life regeneration");
 		}
 		public override void SetDefaults()
 		{
@@ -132,8 +132,8 @@ namespace SGAmod.Items.Armors.Valkyrie
 		}
 		public override void UpdateEquip(Player player)
 		{
-			player.Throwing().thrownVelocity += 0.20f;
-			player.Throwing().thrownDamage += 0.20f;
+			player.Throwing().thrownVelocity += 0.10f;
+			player.Throwing().thrownDamage += 0.10f;
 			player.SGAPly().Thrownsavingchance += 0.75f;
 			player.SGAPly().ThrowingSpeed += 0.20f;
 		}
@@ -155,7 +155,7 @@ namespace SGAmod.Items.Armors.Valkyrie
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Valkyrie Leggings");
-			Tooltip.SetDefault("15% increased throwing damage\n25% increase to movement speed\nFlight time and movement speed improved by 15% at night\nGrants life regeneration");
+			Tooltip.SetDefault("10% increased throwing damage\n25% increase to movement speed\nFlight time and movement speed improved by 15% at night\nGrants life regeneration");
 		}
 		public override void SetDefaults()
 		{
@@ -170,7 +170,7 @@ namespace SGAmod.Items.Armors.Valkyrie
 		{
 			player.moveSpeed += 1.25f*(!Main.dayTime ? 1.15f : 1f);
 			player.accRunSpeed += 1.5f * (!Main.dayTime ? 1.15f : 1f);
-			player.Throwing().thrownDamage += 0.15f;
+			player.Throwing().thrownDamage += 0.10f;
 
 			if (!Main.dayTime)
 			player.wingTimeMax = (int)(player.wingTimeMax * 1.15f);

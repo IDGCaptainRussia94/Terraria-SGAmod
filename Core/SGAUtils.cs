@@ -92,7 +92,7 @@ namespace SGAmod
 	//IDG's homebrew take at an AStar pathfinder!
 	public class AStarPathFinder
 	{
-		public static bool Debug => true;
+		public static bool Debug => false;
 		private Point16[] RoseCompass = { new Point16(1, 0), new Point16(1, -1), new Point16(0, -1), new Point16(-1, -1), new Point16(-1, 0), new Point16(-1, 1), new Point16(0, 1), new Point16(1, 1) };
 		private int[] RoosCompassDist = { 10, 14 };
 
@@ -761,7 +761,7 @@ namespace SGAmod
 
 		public static bool IsDummy(this NPC npc)
         {
-			return npc.immortal;
+			return npc.immortal || npc.type == NPCID.TargetDummy;
 		}
 
 		public static bool IsConsumablePickup(this Item item)
@@ -1568,21 +1568,24 @@ namespace SGAmod
 
 		public static void MakeShockwave(Vector2 position2, float rippleSize, float rippleCount, float expandRate, int timeleft = 200, float size = 1f, bool important = false)
 		{
-			if (!Main.dedServ)
+			if (!Main.dedServ && !Main.gameMenu)
 			{
 				if (!Filters.Scene["SGAmod:Shockwave"].IsActive() || important)
 				{
 					int prog = Projectile.NewProjectile(position2, Vector2.Zero, SGAmod.Instance.ProjectileType("RippleBoom"), 0, 0f);
 					Projectile proj = Main.projectile[prog];
-					RippleBoom modproj = proj.modProjectile as RippleBoom;
-					modproj.rippleSize = rippleSize;
-					modproj.rippleCount = rippleCount;
-					modproj.expandRate = expandRate;
-					modproj.size = size;
-					proj.timeLeft = timeleft - 10;
-					modproj.maxtime = timeleft;
-					proj.netUpdate = true;
-					Filters.Scene.Activate("SGAmod:Shockwave", proj.Center, new object[0]).GetShader().UseColor(rippleCount, rippleSize, expandRate).UseTargetPosition(proj.Center);
+					if (proj != null && proj.active)
+					{
+						RippleBoom modproj = proj.modProjectile as RippleBoom;
+						modproj.rippleSize = rippleSize;
+						modproj.rippleCount = rippleCount;
+						modproj.expandRate = expandRate;
+						modproj.size = size;
+						proj.timeLeft = timeleft - 10;
+						modproj.maxtime = timeleft;
+						proj.netUpdate = true;
+						Filters.Scene.Activate("SGAmod:Shockwave", proj.Center, new object[0]).GetShader().UseColor(rippleCount, rippleSize, expandRate).UseTargetPosition(proj.Center);
+					}
 				}
 			}
 

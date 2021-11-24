@@ -221,7 +221,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Avarice");
-			Tooltip.SetDefault("Throw coins that influx on one enemy\nInflicts Midas and Shadowflame on enemies\n'Greed is it's own corruption'");
+			Tooltip.SetDefault("Throw coins that influx on one enemy, losing 50% damage per hit\nInflicts Midas on the 1st hit, and Shadowflame on 2nd hit\nHitting the 3rd will inflict Mircotransactions\nthis depletes enemy health and wealth\n'Greed is it's own corruption'");
 		}
 
 		public override void SetDefaults()
@@ -314,9 +314,13 @@ namespace SGAmod.Items.Weapons
 				guyihit = target.whoAmI;
 			cooldown = 15;
 			projectile.tileCollide = false;
+			projectile.damage /= 2;
 			target.immune[projectile.owner] = 2;
-			target.AddBuff(BuffID.ShadowFlame, 60 * 10);
 			target.AddBuff(BuffID.Midas, 60 * 10);
+			if (projectile.penetrate < 3)
+			target.AddBuff(BuffID.ShadowFlame, 60 * 10);
+			if (projectile.penetrate<2)
+				target.AddBuff(ModContent.BuffType<Buffs.Microtransactions>(), 60 * 10);
 			projectile.netUpdate = true;
 		}
 

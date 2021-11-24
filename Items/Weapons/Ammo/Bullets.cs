@@ -171,7 +171,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Soulbound Bullet");
-			Tooltip.SetDefault("A bullet bound with souls, Does summon damage\nHitting an enemy focuse them for your minions to attack\nIf below 20% health, you will leech small ammounts of life on hit\n"+Idglibrary.Idglib.ColorText(Color.Red,"Suffer self-damage when you miss and hit a tile"));
+			Tooltip.SetDefault("A bullet bound with souls, Does summon damage\nHitting an enemy focuses them for your minions to attack\nIf below 20% health, you will leech small ammounts of life on hit\n"+Idglibrary.Idglib.ColorText(Color.Red,"Suffer self-damage when you miss and hit a tile"));
 		}
 		public override string Texture
 		{

@@ -89,6 +89,8 @@ namespace SGAmod
 		public bool TimeSlowImmune = false;
 		public bool dotImmune = false;
 		public float dotResist = 1f;
+		public float pierceResist = 1f;
+		public float overallResist = 1;
 		public int reducedDefense = 0;
 		bool fireimmunestate = false;
 		bool[] otherimmunesfill = new bool[3];
@@ -269,6 +271,12 @@ namespace SGAmod
 
 		public override bool CheckActive(NPC npc)
 		{
+
+			if ((npc.type == NPCID.SkeletronPrime || npc.type == NPCID.TheDestroyer || npc.type == NPCID.Spazmatism || npc.type == NPCID.Retinazer) && NPC.CountNPCS(ModContent.NPCType<TPD>())>0)
+            {
+				return false;
+            }
+
 			if (HellionArmy)
 			{
 				if (npc.timeLeft < 3)
@@ -314,8 +322,8 @@ namespace SGAmod
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
 		{
-			if (dotImmune)
-				goto Endjump;
+			//if (dotImmune)
+			//	goto Endjump;
 
 			if (!npc.townNPC && !npc.friendly && npc.HasBuff(BuffID.Lovestruck))
 			{
@@ -834,10 +842,12 @@ namespace SGAmod
 			{
 				if (Main.netMode != 2)
 				{
-					if (counter % 150 == 0 && npc.value > Item.buyPrice(0, 0, 50, 0))
+					if (!npc.dontTakeDamage && counter % 30 == 0 && npc.value >= Item.buyPrice(0, 0, 25, 0))
 					{
 						npc.value -= Item.buyPrice(0, 0, 25, 0);
-						Item.NewItem(npc.position, new Vector2(npc.width, npc.height), 25, noGrabDelay: true);
+						npc.StrikeNPC(Item.buyPrice(0, 0, 1, 0), 0, 1, false);
+						Main.PlaySound(SoundID.Coins, (int)npc.Center.X, (int)npc.Center.Y, 0, 1f, 0.25f);
+						Item.NewItem(npc.position, new Vector2(npc.width, npc.height),ItemID.SilverCoin ,Main.rand.Next(25,36), noGrabDelay: true);
 					}
 				}
 			}
@@ -1365,7 +1375,7 @@ namespace SGAmod
 
 				var setting = SGAConfig.Instance.CrateFieldDropChance;
 
-				if ((Main.rand.Next(0, (int)(craterates * (setting != null ? setting.rate/100f : 1f))) == 0))
+				if ((Main.rand.Next(0, (int)(craterates * (setting != null ? (201-setting.rate)/25f : 1f))) == 0))
 				{
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateBase"));
 				}
@@ -1512,8 +1522,8 @@ namespace SGAmod
 				DropRelic(npc);
 
 				Player ply = Main.player[npc.lastInteraction];
-				if (NoHit && ply.SGAPly().avariceRing)
-                {
+				if (NoHit && ply.SGAPly().avariceRing == 2 || (ply.SGAPly().avariceRing == 1 && Main.rand.Next(5) == 0))
+				{
 					npc.NPCLoot();
 				}
 

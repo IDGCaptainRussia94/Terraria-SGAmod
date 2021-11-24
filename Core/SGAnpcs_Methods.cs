@@ -396,6 +396,13 @@ namespace SGAmod
 			Projectile held = null;
 			if (projectile != null)
 			{
+				float resist = npc.SGANPCs().pierceResist;
+				if ((projectile.penetrate < 0 || projectile.penetrate > 3) && resist < 1)
+				{
+					damage = (int)(damage * resist);
+					sourcedamage = damage;
+				}
+
 
 				if (crit && moddedplayer.molotovLimit>0 && projectile.Throwing().thrown)
 				{
@@ -406,7 +413,7 @@ namespace SGAmod
 				held = Main.projectile[player.heldProj];
 
 				if (projectile.trap)
-					damage += (int)(sourcedamage * (player.GetModPlayer<SGAPlayer>().TrapDamageMul-1f));
+					damage += (int)(sourcedamage * (player.SGAPly().TrapDamageMul-1f));
 			}
 
 			DoApoco(npc, projectile, player, item, ref damage, ref knockback, ref crit);

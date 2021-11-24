@@ -152,6 +152,8 @@ namespace SGAmod
 		public static RenderTarget2D drawnscreen;
 		public static RenderTarget2D postRenderEffectsTarget;
 		public static RenderTarget2D postRenderEffectsTargetCopy;
+		public static RenderTarget2D screenExplosionCopy;
+
 		public static (Texture2D, Texture2D) VanillaHearts;
 		public static (Texture2D, Texture2D) OGVanillaHearts;
 
@@ -183,6 +185,7 @@ namespace SGAmod
 		public static Effect SphereMapEffect;
 		public static Effect VoronoiEffect;
 		public static Effect CataEffect;
+		public static Effect TextureBlendEffect;
 
 
 		public static List<CustomSpecialDrawnTiles> BeforeTilesAdditive = new List<CustomSpecialDrawnTiles>();
@@ -197,27 +200,53 @@ namespace SGAmod
 
 		public static (Texture2D, Texture2D) oldLogo;
 
-		public static MusicStreamingOGG musicTest;
+		public static MusicStreamingOGGPlus musicTest;
 
 		public static readonly BindingFlags UniversalBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
 
 		public static int hellionMusicGrabState = 0;
+		public static MusicStreamingOGGPlus hellionTheme = default;
 
 		protected static float _screenShake = 0;
+
 		public static float ScreenShake
 		{
 			get
 			{
-				return Math.Max(_screenShake, 0);
+				if (Main.gameMenu)
+					return 0;
 
+				return Math.Max(_screenShake* (SGAConfigClient.Instance.ScreenShakeMul), 0);
 			}
 			set
 			{
 				_screenShake = value;
 			}
 		}
+
+		public static List<ScreenExplosion> screenExplosions = new List<ScreenExplosion>();
+
+		public static ScreenExplosion AddScreenExplosion(Vector2 here,int time,float str, float distance = 3200)
+        {
+			if (Main.dedServ)
+				return null;
+
+			if (!SGAConfigClient.Instance.ScreenFlashExplosions)
+				return null;
+
+			ScreenExplosion explode = new ScreenExplosion(here, time, str);
+
+			Vector2 centerpos = Main.LocalPlayer.Center;
+
+			//explode.strength = explode.strength *= MathHelper.Clamp((here- centerpos).Length()/ distance,0f,1f);
+			screenExplosions.Add(explode);
+
+			Overlays.Scene.Activate("SGAmod:ScreenExplosions");
+			return explode;
+		}
+
 		public static void AddScreenShake(float ammount, float distance = -1, Vector2 origin = default)
 		{
 			if (Main.dedServ)
@@ -231,7 +260,8 @@ namespace SGAmod
 			_screenShake += ammount;
 		}
 
-	public int OSDetect()
+
+		public int OSDetect()
 		{
 			OperatingSystem os = Environment.OSVersion;
 			PlatformID pid = os.Platform;
@@ -288,6 +318,7 @@ namespace SGAmod
 			proxydimmod.PreSaveAndQuit();
 #endif
 			Overlays.Scene.Deactivate("SGAmod:SGAHUD");
+			Overlays.Scene.Deactivate("SGAmod:ScreenExplosions");
 			Overlays.Scene.Deactivate("SGAmod:CirnoBlizzard");
 			Filters.Scene["SGAmod:CirnoBlizzard"].Deactivate();
 		}
@@ -460,45 +491,6 @@ namespace SGAmod
 
 			}
 
-		public void AttemptGrabMusicAsync(object callContext)
-        {
-			Logger.Debug("Attempting music grab...");
-			WebClient downloader = new WebClient();
-			using (downloader)
-			{
-				try
-				{
-					downloader.DownloadFile("https://cdn.discordapp.com/attachments/599884595562938410/911378690439532564/Catastrophic_Circuitry.ogg", filePath + "Hellion.ogg");
-					Logger.Debug("File seems to have been downloaded?");
-					hellionMusicGrabState = 1;
-				}
-				catch (ArgumentException ae)
-				{
-					Logger.Debug(ae.GetType().FullName + ae.Message);
-					hellionMusicGrabState = -1;
-				}
-				catch (WebException webEx)
-				{
-					Logger.Debug(webEx.GetType().FullName + webEx.Message);
-					Logger.Debug("Destination not found!");
-					hellionMusicGrabState = -1;
-				}
-				catch (NotSupportedException supportEx)
-				{
-					Logger.Debug(supportEx.GetType().FullName);
-					Logger.Debug(supportEx.Message);
-					hellionMusicGrabState = -1;
-				}
-				catch (Exception allExp)
-				{
-					Logger.Debug(allExp.GetType().FullName + allExp.Message);
-					hellionMusicGrabState = -1;
-				}
-			}
-
-
-		}
-
 		public override void Load()
 		{
 #if Dimensions
@@ -593,13 +585,13 @@ namespace SGAmod
 			//SkillTestKey = RegisterHotKey("(Debug) Skill Tree Key", "T");
 
 			OSType = OSDetect();
-			_ = Core.WinForm.WinHandled;
 
 			SGAmod.PostDraw = new List<PostDrawCollection>();
 			//On.Terraria.GameInput.LockOnHelper.SetActive += GameInput_LockOnHelper_SetActive;
 
 			if (!Main.dedServ)
 			{
+				_ = Core.WinForm.WinHandled;
 				ShadowParticle.Load();
 
 				CreateRenderTarget2Ds(Main.screenWidth, Main.screenHeight, false, true);
@@ -629,16 +621,29 @@ namespace SGAmod
 				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidoSnd", new Sounds.Custom.MegidoSnd());
 				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidolaonSnd", new Sounds.Custom.MegidolaonSnd());
 
-                System.Threading.ThreadPool.QueueUserWorkItem(AttemptGrabMusicAsync, Logger);
 			}
 
 			AddItem("Nightmare", NPCs.TownNPCs.Nightmare.instance);
 
+			if (!Directory.Exists(SGAmod.filePath))
+			{
+				Directory.CreateDirectory(SGAmod.filePath);
+			}
+
 			if (Directory.Exists(filePath))
 			{
-				if (FileExists(filePath + "/It's not over yet.txt"))
+				//foreach(string filename in Directory.GetFiles(filePath))
+				//Logger.Debug("files: " + filename);
+
+				if (!Main.dedServ)
+				{
+					HellionAttacks.CheckAndLoadMusic();
+				}
+
+				if (Directory.GetFiles(filePath).Where(testby => testby.Contains("Itsnotoveryet.txt")).Count()>0)
 				{
 					SGAmod.NightmareUnlocked = true;
+
 					Logger.Debug("Directory and file found: Nightmare Mode has been unlocked");
 				}
 				//if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
@@ -686,6 +691,7 @@ namespace SGAmod
 				SphereMapEffect = SGAmod.Instance.GetEffect("Effects/SphereMap");
 				VoronoiEffect = SGAmod.Instance.GetEffect("Effects/Voronoi");
 				CataEffect = SGAmod.Instance.GetEffect("Effects/CataLogo");
+				TextureBlendEffect = SGAmod.Instance.GetEffect("Effects/TextureBlend");
 
 
 
@@ -697,6 +703,8 @@ namespace SGAmod
 			SkyManager.Instance["SGAmod:ProgramSky"] = new ProgramSky();
 			SkyManager.Instance["SGAmod:HellionSky"] = new HellionSky();
 			Overlays.Scene["SGAmod:SGAHUD"] = new SGAHUD();
+			Overlays.Scene["SGAmod:ScreenExplosions"] = new SGAScreenExplosionsOverlay();
+
 			Overlays.Scene["SGAmod:CirnoBlizzard"] = new SimpleOverlay("Images/Misc/Noise", new BlizzardShaderData("FilterBlizzardBackground").UseColor(0.2f, 1f, 0.2f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/Noise", 0, null).UseIntensity(0.7f).UseImageScale(new Vector2(3f, 0.75f), 0), EffectPriority.High, RenderLayers.Landscape);
 
 			SGAMethodSwaps.Apply();
@@ -720,7 +728,7 @@ namespace SGAmod
 
 		}*/
 
-		public override uint ExtraPlayerBuffSlots => 40;
+		public override uint ExtraPlayerBuffSlots => 50;
 
 		public override void Unload()
 		{
@@ -735,8 +743,19 @@ namespace SGAmod
 			SGAmod.EnchantmentFocusCrystal = null;
 			SubworldCache.UnloadCache();
 
-			if (SGAmod.musicTest != null)
-			SGAmod.musicTest.Dispose();
+			if (SGAmod.musicTest != default)
+			{
+				if (SGAmod.musicTest.IsPlaying)
+					SGAmod.musicTest.Stop(AudioStopOptions.Immediate);
+				SGAmod.musicTest.Dispose();
+			}
+
+			if (SGAmod.hellionTheme != default)
+			{
+				if (SGAmod.hellionTheme.IsPlaying)
+				SGAmod.hellionTheme.Stop(AudioStopOptions.Immediate);
+				SGAmod.hellionTheme.Dispose();
+			}
 
 			SGAILHacks.Unpatch();
             Items.Weapons.CataLogo.Unload();
@@ -1419,6 +1438,8 @@ namespace SGAmod
 				SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
 				SGAmod.postRenderEffectsTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.PreserveContents);
 					SGAmod.postRenderEffectsTargetCopy = new RenderTarget2D(Main.graphics.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
+					SGAmod.screenExplosionCopy = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+
 				RenderTargetsEvent?.Invoke();
 			}
 		}
@@ -1455,16 +1476,60 @@ namespace SGAmod
 			//test++;
 			Terraria.Cinematics.CinematicManager.Instance.Update(new GameTime());
 			ShadowParticle.UpdateAll();
+			RaysOfControlOrb.UpdateAll();
+
 			 PostUpdateEverythingEvent?.Invoke();
 			//Main.NewText(test);
+
+
 			if (SGAmod.musicTest != null && SGAmod.musicTest.IsPlaying)
 			{
 				SGAmod.musicTest.CheckBuffer();
+			}
+			if (SGAmod.hellionTheme != default)
+			{
+				bool active = hellionTheme.doMusic();
+
+				if (SGAmod.hellionTheme.IsPlaying)
+				{
+					hellionTheme.CheckBuffer();
+                }
+                else
+                {
+					if (active)
+						hellionTheme.StartPlus(hellionTheme.volume);
+
+				}
 			}
 
 			if (_screenShake > 0)
 			{
 				_screenShake -= 1;
+			}
+
+			if (screenExplosions.Count > 0)
+            {
+				foreach(ScreenExplosion explosion in screenExplosions)
+                {
+					explosion.Update();
+                }
+				screenExplosions = screenExplosions.Where(testby => testby.timeLeft > 0).ToList();
+
+				RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
+
+				Main.graphics.GraphicsDevice.SetRenderTarget(screenExplosionCopy);
+				Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+				//Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
+
+				Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One, default, 0);
+
+				Main.spriteBatch.End();
+
+				Main.graphics.GraphicsDevice.SetRenderTargets(binds);
+
+
 			}
 
 #if Dimensions
@@ -1558,5 +1623,100 @@ namespace SGAmod
 
 
 	}
+
+	public class MusicStreamingOGGPlus : MusicStreamingOGG
+    {
+		public float volume = 1f;
+		public float volumeGoal = 1f;
+		public float volumeChangeRate = 0.005f;
+
+		public float pitch = 0f;
+		public float pitchGoal = 1f;
+		public float pitchChangeRate = 0.005f;
+
+		public float volumeScale = 0.01f;
+		private bool initCheck = false;
+
+		public MusicStreamingOGGPlus(string path)
+	: base(path)
+		{
+		}
+		public bool StartPlus(float volume = 0f)
+		{
+			if (Main.musicVolume <= 0f)
+				return false;
+
+			initCheck = true;
+			Play();
+
+			this.volume = MathHelper.Clamp(volume, 0f, 1f);
+			this.SetVariable("Volume", volume * Main.musicVolume);
+			return true;
+
+		}
+
+		public Func<bool> doMusic =	delegate() { return false; };
+
+		public override void CheckBuffer()
+		{
+
+			base.CheckBuffer();
+			if (initCheck)
+            {
+				initCheck = false;
+				return;
+			}
+
+			if (volume < 0)
+			{
+				Reset();
+				volume = 0;
+				Stop(AudioStopOptions.Immediate);
+				return;
+			}
+
+			volume += Math.Sign(volumeGoal - volume) * volumeChangeRate;
+			this.SetVariable("Volume", volume * volumeScale * Main.musicVolume);
+
+			pitch += Math.Sign(pitchGoal - pitch) * pitchChangeRate;
+			this.SetVariable("Pitch", pitch);
+
+		}
+
+
+	}
+
+	public class ScreenExplosion
+	{
+		public Vector2 where;
+		public int time = 0;
+		public int timeLeft = 0;
+		public int timeLeftMax = 0;
+		public float strength = 16f;
+		public float decayTime = 16f;
+		public float warmupTime = 16f;
+		public float distance = 1600f;
+		public float alpha = 0.10f;
+		public float perscreenscale = 1.15f;
+		public Func<float,float> strengthBasedOnPercent;
+
+
+		public ScreenExplosion(Vector2 there, int time, float str, float decayTime = 16)
+		{
+			where = there;
+			this.time = 0;
+			this.timeLeft = time;
+			this.timeLeftMax = time;
+			this.strength = str;
+			this.decayTime = decayTime;
+		}
+		public void Update()
+		{
+			timeLeft -= 1;
+			time += 1;
+		}
+
+	}
+
 
 }

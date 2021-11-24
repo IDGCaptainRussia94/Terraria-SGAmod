@@ -49,6 +49,20 @@ namespace SGAmod.Items.Armors.Vibranium
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("VibraniumBar"), 8);
+			if (GetType() == typeof(VibraniumHeadgear))
+				recipe.AddIngredient(ModContent.ItemType<ManaBattery>(), 2);
+			if (GetType() == typeof(VibraniumHelmet))
+				recipe.AddIngredient(ItemID.MechanicalLens, 1);
+			if (GetType() == typeof(VibraniumMask))
+			{
+				recipe.AddIngredient(ModContent.ItemType<WraithFragment3>(), 6);
+				recipe.AddIngredient(ModContent.ItemType<WraithFragment4>(), 10);
+			}
+			if (GetType() == typeof(VibraniumHood))
+				recipe.AddIngredient(ModContent.ItemType<StygianCore>(), 1);
+			if (GetType() == typeof(VibraniumHat))
+				recipe.AddIngredient(ModContent.ItemType<PlasmaCell>(), 2);
+
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

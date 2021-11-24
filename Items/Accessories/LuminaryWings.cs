@@ -129,11 +129,11 @@ namespace SGAmod.Items.Accessories
 			constantAscend = 0.235f;
 			if (player.SGAPly().Walkmode)
 			{
-				ascentWhenFalling /= 2;
-				ascentWhenRising /= 2;
-				maxCanAscendMultiplier /= 2;
-				maxAscentMultiplier /= 2;
-				constantAscend /= 2;
+				ascentWhenFalling /= 3f;
+				ascentWhenRising /= 5f;
+				maxCanAscendMultiplier /= 1.25f;
+				maxAscentMultiplier /= 1.25f;
+				constantAscend /= 1.25f;
 			}
 		}
 

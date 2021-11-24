@@ -17,7 +17,7 @@ namespace SGAmod.NPCs
 {
 	public class ResonantWisp : ModNPC
 	{
-		int shooting = 0;
+		int buffed = 0;
 		AStarPathFinder astar;
 		public List<PathNode> Path = new List<PathNode>();
 		public override void SetStaticDefaults()
@@ -32,9 +32,9 @@ namespace SGAmod.NPCs
 		{
 			npc.width = 48;
 			npc.height = 48;
-			npc.damage = 0;
+			npc.damage = 100;
 			npc.defense = 0;
-			npc.lifeMax = 5000;
+			npc.lifeMax = 1200;
 			//npc.HitSound = SoundID.NPCHit1;
 			//npc.DeathSound = SoundID.NPCDeath1;
 			npc.value = 0f;
@@ -44,7 +44,7 @@ namespace SGAmod.NPCs
 			animationType = 0;
 			npc.noTileCollide = true;
 			npc.noGravity = true;
-			npc.value = 2500f;
+			npc.value = 1500f;
 			npc.netAlways = true;
 		}
 
@@ -52,6 +52,7 @@ namespace SGAmod.NPCs
 
         public override void NPCLoot()
 		{
+			if (buffed == 2)
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("VibraniumCrystal"), Main.rand.Next(3, 6));
 		}
 
@@ -76,7 +77,12 @@ namespace SGAmod.NPCs
 
 			foreach(Player player in Main.player.Where(testby => npc.Distance(testby.MountedCenter) < damage))
             {
-				player.SGAPly().StackDebuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type, (int)((60f * 3f)*(damage/npc.Distance(player.MountedCenter))));
+				float dist = npc.Distance(player.MountedCenter);
+				//float dister = (1f-MathHelper.Clamp(dist/(1200f*(float)buffed),0f,1f));
+				if (dist < 200)
+				{
+					player.SGAPly().StackDebuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type, (int)((60f * 3f)));
+				}
             }
 
         }
@@ -98,7 +104,7 @@ namespace SGAmod.NPCs
 			npc.localAI[0] += 1;
 
 			npc.spriteDirection = npc.velocity.X > 0 ? -1 : 1;
-			Main.NewText((int)astar.state + " " + npc.ai[1] + " " + npc.ai[0]+" "+ Path.Count);
+			//Main.NewText((int)astar.state + " " + npc.ai[1] + " " + npc.ai[0]+" "+ Path.Count);
 
 			Player P = Main.player[npc.target];
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
@@ -107,6 +113,36 @@ namespace SGAmod.NPCs
 			}
 			else
 			{
+				if (buffed == 0)
+				{
+					bool bigtool = Main.player.Where(testby => testby.active && !testby.dead && testby.inventory.Where(testby2 => !testby2.IsAir && testby2.pick > 230).Count()>0).Count()>0;
+					buffed = bigtool ? 2 : 1;
+					if (buffed == 2)
+					{
+						npc.life *= 5;
+						npc.lifeMax *= 5;
+						npc.knockBackResist = 0f;
+						npc.value *= 4;
+					}
+				}
+
+				if (npc.localAI[0] % 60 == 0)
+				{
+					if (Collision.CanHitLine(P.MountedCenter, 1, 1, npc.Center, 1, 1))
+					{
+						Vector2 dist = P.Center- npc.Center;
+
+						if (dist.Length() < 200+(buffed * 200))
+						{
+							Projectile.NewProjectile(npc.Center, dist, ModContent.ProjectileType<Items.Armors.Vibranium.VibraniumZapEffect>(), 0, 0);
+							SoundEffectInstance snd = Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 91);
+							P.AddBuff(BuffID.WitheredArmor, 60 * 5);
+							P.AddBuff(BuffID.WitheredWeapon, 60 * 5);
+							P.SGAPly().StackDebuff(ModLoader.GetMod("IDGLibrary").GetBuff("Radiation" + (buffed == 2 ? "Two" : "One")).Type, 60*6);
+						}
+					}
+				}
+
 				//Lets just assume netAlways can handle locations please?
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
@@ -172,7 +208,7 @@ namespace SGAmod.NPCs
 
 						if (npc.Distance(gothere) > 16)
 						{
-							npc.velocity = Vector2.Normalize(gothere - npc.Center) * 4;
+							npc.velocity = Vector2.Normalize(gothere - npc.Center) * (buffed==2 ? 16 : 4);
 						}
 						else
 						{
@@ -186,7 +222,7 @@ namespace SGAmod.NPCs
 				}
 			//}
 
-			npc.velocity *= 0.92f;
+			npc.velocity *= (buffed == 2 ? 0.72f : 0.92f);
 
 		}
 

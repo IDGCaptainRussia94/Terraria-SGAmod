@@ -27,9 +27,10 @@ Todo-Aurora Gear, Finish Vibranium enemies, Seismic Resonantor to create the ore
 Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
 -WoF yoyo that leeches out HP from enemies into the yoyo, heals the player when it retracts (moonlord upgrade too)
+-Concussion (thing) accessory that grants bonus damage based off your knockback VS enemy knockback resistance, or just if enemy is immune to knockback
 
 -"boring" swords:
--Dank Wood Sword, Machete, Rusted Blade, Claymore (maybe),Mudmore, Mangrove Striker,Thermal Blade, Rubied Blade, Curcuit Breaker Blade (maybe), Celestial Flare (maybe)
+-Dank Wood Sword, Machete, Rusted Blade, Claymore (maybe),Mudmore, Mangrove Striker,Thermal Blade, Rubied Blade, Curcuit Breaker Blade (maybe), Sword of a Thousand Truths (hhmhhmmm), Celestial Flare (maybe)
 
 
 

@@ -612,7 +612,7 @@ return true;
 			get { return ("SGAmod/NPCs/TPD"); }
 		}
 
-		//public override string BossHeadTexture => "Terraria/Item_" + ItemID.CobaltHelmet;
+		public override string BossHeadTexture => "SGAmod/NPCs/Wraiths/CobaltWraith_Head_Boss";
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{

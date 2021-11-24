@@ -359,7 +359,8 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<Megido>(), 2);
-			recipe.AddIngredient(ModContent.ItemType<OmniSoul>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<WovenEntrophite>(), 10);
+			//recipe.AddIngredient(ModContent.ItemType<OmniSoul>(), 1);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -614,6 +615,16 @@ namespace SGAmod.Items.Weapons
 
 			return false;
 		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<Megidola>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 6);
+			recipe.AddRecipeGroup("SGAmod:CelestialFragments",4);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
 	}
 
 	public class MorningStarProj : MegidoProj
@@ -675,6 +686,30 @@ namespace SGAmod.Items.Weapons
 				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/MorningStar").WithVolume(1f).WithPitchVariance(.15f), projectile.Center);
 			}
 
+			if (projectile.ai[0] == 180)
+            {
+				ScreenExplosion explode = SGAmod.AddScreenExplosion(projectile.Center, projectile.timeLeft, 2f, 1600);
+				if (explode != null)
+				{
+					explode.warmupTime = 16;
+					explode.decayTime = 64;
+					explode.strengthBasedOnPercent = delegate (float percent)
+					{
+						return 2f+MathHelper.Clamp((percent-0.5f)*2f,0f,1f)*1f;
+					};
+				}
+			}
+
+			/*if (projectile.timeLeft == 300)
+			{
+				ScreenExplosion explode = SGAmod.AddScreenExplosion(projectile.Center, 300, 1.25f, 2400);
+				if (explode != null)
+				{
+					explode.warmupTime = 200;
+					explode.decayTime = 64;
+				}
+			}*/
+
 			if (projectile.ai[0] > 180)
 			{
 				bool endhit = projectile.timeLeft == 30;
@@ -709,7 +744,10 @@ namespace SGAmod.Items.Weapons
 
 					boomOfClouds.Add(boomer);
 				}
-				foreach (CloudBoom cb in boomOfClouds.Where(testby => testby.timeLeft > 0))
+
+				boomOfClouds = boomOfClouds.Where(testby => testby.timeLeft > 0).ToList();
+
+				foreach (CloudBoom cb in boomOfClouds)
 				{
 					cb.Update();
 				}
@@ -861,12 +899,461 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
+	public class RaysOfControl : Megido
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Rays Of Control");
+			Tooltip.SetDefault("'Unleash the wrath of all of mankind's greatest sins in 1 unholy blast'\n" + Idglib.ColorText(Color.Orange, "Requires 5 Cooldown stacks, adds 200 seconds"));
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.damage = 25000;
+			item.width = 48;
+			item.height = 48;
+			item.useTurn = true;
+			item.rare = ItemRarityID.Red;
+			item.value = 500;
+			item.useStyle = 1;
+			item.useAnimation = 50;
+			item.useTime = 50;
+			item.knockBack = 8;
+			item.autoReuse = false;
+			item.noUseGraphic = true;
+			item.consumable = true;
+			item.noMelee = true;
+			item.shootSpeed = 2f;
+			item.maxStack = 30;
+			item.shoot = ModContent.ProjectileType<RaysOfControlProj>();
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			if (true || player.SGAPly().AddCooldownStack(100, 5, testOnly: true))
+			{
+				return true;
+			}
+			return false;
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			//player.SGAPly().AddCooldownStack(60 * 200, 5);
+
+			position = player.Center - new Vector2(0,320);
+
+			Projectile proj = Projectile.NewProjectileDirect(position, Vector2.Zero, ModContent.ProjectileType<RaysOfControlProj>(), damage, knockBack, player.whoAmI);
+
+
+			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<MorningStar>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<ByteSoul>(), 6);
+			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 6);
+			recipe.AddIngredient(ModContent.ItemType<StygianCore>(), 1);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class RaysOfControlProj : MegidoProj
+	{
+		public class CloudBoom
+		{
+			public Vector2 position;
+			public Vector2 speed;
+			public float angle;
+			public int cloudType;
+			public Vector2 scale = new Vector2(1f, 1f);
+
+			public int timeLeft = 20;
+			public int timeLeftMax = 20;
+			public CloudBoom(Vector2 position, Vector2 speed, float angle, int cloudtype)
+			{
+				this.position = position;
+				this.speed = speed;
+				this.angle = angle;
+				this.cloudType = cloudtype;
+			}
+			public void Update()
+			{
+				timeLeft -= 1;
+				position += speed;// *(timeLeft/(float)timeLeftMax);
+			}
+		}
+
+		public class BeamOfLight
+		{
+			public List<Vector2> positions;
+
+			public int timeLeft = 20;
+			public int timeLeftMax = 20;
+			public float random;
+			public Func<float, float> thickness;
+
+			public BeamOfLight(List<Vector2> positions)
+			{
+				this.positions = positions;
+				random = Main.rand.NextFloat();
+			}
+			public void Update()
+			{
+				timeLeft -= 1;
+			}
+		}
+
+		public List<CloudBoom> boomOfClouds = new List<CloudBoom>();
+		public List<BeamOfLight> controlRays = new List<BeamOfLight>();
+
+		public override void SetDefaults()
+		{
+			projectile.width = 8;
+			projectile.height = 8;
+			projectile.aiStyle = -1;
+			projectile.penetrate = -1;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 300;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Rays Of Control Proj");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 10;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+
+
+		public override void AI()
+		{
+			Player player = Main.player[projectile.owner];
+
+			if (!Main.dedServ)
+			{
+				RaysOfControlOrb.Load();
+				RaysOfControlOrb.oneUpdate = true;
+
+				Vector2 offset = Vector2.UnitX.RotatedBy(Main.rand.NextFloat(MathHelper.TwoPi));
+				float timeIn = 1f - MathHelper.Clamp(projectile.ai[0] / 90f, 0f, 1f);
+				float timeIn2 = 1f - MathHelper.Clamp(projectile.ai[0] / 110f, 0f, 1f);
+
+				RaysOfControlOrb.OrbParticles orbFliesIn = new RaysOfControlOrb.OrbParticles(Vector2.Zero + offset * timeIn * 320f,
+					(-offset * timeIn * 24f) + Main.rand.NextVector2Circular(4f, 4f) * timeIn2,
+					Main.rand.NextFloat(MathHelper.TwoPi),
+					Color.Red);
+
+				RaysOfControlOrb.OrbParticles orbinMiddle = new RaysOfControlOrb.OrbParticles(Vector2.Zero,
+	Main.rand.NextVector2Circular(4f, 4f),
+	Main.rand.NextFloat(MathHelper.TwoPi),
+	Color.Red);
+
+				orbinMiddle.timeLeft = 4;
+				orbinMiddle.timeLeftMax = 4;
+				RaysOfControlOrb.partices.Add(orbinMiddle);
+				orbFliesIn.scale = Vector2.One * (1f - timeIn2);
+				RaysOfControlOrb.partices.Add(orbFliesIn);
+
+				//CataLogo.DrawToRenderTarget();
+			}
+
+			projectile.ai[0] += 1;
+			projectile.localAI[0] += 1;
+
+			if (projectile.ai[0] == 1)
+			{
+				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/RaysOfControl").WithVolume(1f).WithPitchVariance(.15f), projectile.Center);
+				ScreenExplosion explode = SGAmod.AddScreenExplosion(projectile.Center, projectile.timeLeft-60, 2f, 4800);
+				if (explode != null)
+				{
+					explode.warmupTime = 1;
+					explode.decayTime = 64;
+					explode.strengthBasedOnPercent = delegate (float percent)
+					{
+						float timer = projectile.ai[0] - 120;
+						return MathHelper.Clamp((projectile.ai[0] - 120)/60f, 0f, 1f);// * MathHelper.Clamp(projectile.timeLeft/150f, 0f, 1f);
+					};
+				}
+			}
+
+			//if (projectile.localAI[0])
+			//SGAmod.AddScreenExplosion(projectile.Center, 18, projectile.localAI[0]/60f, 1600);
+
+			if (projectile.ai[0] < 80 && projectile.ai[0] > 10 && projectile.ai[0] % 3 == 0)
+			{
+				List<Vector2> spots = new List<Vector2>();
+
+				float direction = Main.rand.NextFloat(MathHelper.TwoPi);
+				float direction2 = 0;
+				Vector2 rando = direction.ToRotationVector2();
+
+				Vector2 centerPoint = projectile.Center + rando * (projectile.localAI[0] * 1.25f);
+				float rotteradd = (0.005f + Main.rand.NextFloat(0.025f)) * (Main.rand.NextBool() ? 1f : -1f);
+				float rotscaler = 4f;
+
+				for (float f = 0; f < 48; f += 1f)
+				{
+					spots.Add(centerPoint);
+				}
+				for (float f = 0; f < 1600; f += 20f)
+				{
+					spots.Add(centerPoint + rando.RotatedBy(direction2) * f);
+					direction2 += rotteradd * rotscaler;
+					rotscaler *= 0.96f;
+				}
+				spots.Reverse();
+				BeamOfLight beam = new BeamOfLight(spots);
+				beam.timeLeft = 32;
+				beam.timeLeftMax = 32;
+				beam.thickness = delegate (float percent)
+				{
+					float size = MathHelper.SmoothStep(0f, 1f, (float)Math.Sin(percent * (MathHelper.Pi - 0.5f)));
+
+					//float size = MathHelper.SmoothStep(0f,1f,MathHelper.Clamp(1f - (Math.Abs(percent - percent) * 3f), 0f, 1f));
+
+					return size * 32f;
+				};
+				controlRays.Add(beam);
+
+			}
+
+			if (projectile.ai[0] > 120)
+            {
+				float timer = projectile.ai[0] - 120;
+
+				for (int i = 0; i < 5; i += 1)
+				{
+					float scaleUpeffect = 1f + (float)Math.Pow(timer / 20f, 1.5f);
+					float scaleUpeffect2 = 1f / (1f + timer / 4f);
+					float scaleUpeffect3 = 1f + (float)Math.Pow(timer / 20f, 3f);
+
+					float growscale = scaleUpeffect3;
+					if (scaleUpeffect3 > 32f)
+						scaleUpeffect3 = 32f;
+
+					Vector2 velocity = new Vector2(Main.rand.NextFloat(-24f, 24f), -16f);// -12f+(-(scaleUpeffect - 4f) * 4f));
+					Vector2 offset = new Vector2(Main.rand.Next(Main.screenWidth), Main.screenHeight + Main.rand.NextFloat(160f,320f));
+
+					//Vector2 centerboom = Vector2.SmoothStep(Vector2.Zero, offset, MathHelper.Clamp(timer / 120f, 0f, 1f));
+
+					CloudBoom boomer = new CloudBoom(offset, velocity, 0, Main.rand.Next(1, 7));
+					boomer.scale = new Vector2(0.5f,1f)+((new Vector2(0.32f, 0.5f) * ((scaleUpeffect) * 1.25f))/6f);
+					boomer.timeLeft = Main.rand.Next(16,16+ (int)scaleUpeffect3);
+					boomer.timeLeftMax = boomer.timeLeft;
+
+					boomOfClouds.Add(boomer);
+
+				}
+
+				if (!Main.dedServ)
+				{
+					RaysOfControlOrb.Load();
+					RaysOfControlOrb.oneUpdate = true;
+
+					Vector2 offset2 = Vector2.UnitX.RotatedBy(Main.rand.NextFloat(MathHelper.TwoPi));
+					float timeIn = MathHelper.Clamp(timer / 60f, 0f, 1f);
+					float timeIn2 = MathHelper.Clamp(timer / 70f, 0f, 1f);
+
+					RaysOfControlOrb.OrbParticles orbFliesOut = new RaysOfControlOrb.OrbParticles(Vector2.Zero,
+						(offset2 * timeIn * 0f),
+						Main.rand.NextFloat(MathHelper.TwoPi),
+						Color.Red);
+					orbFliesOut.scale = new Vector2(4f,1f)* timeIn;
+					orbFliesOut.angle = offset2.ToRotation();
+
+					RaysOfControlOrb.partices.Add(orbFliesOut);
+
+					//CataLogo.DrawToRenderTarget();
+				}
+
+
+			}
+
+
+
+
+
+			controlRays = controlRays.Where(testby => testby.timeLeft > 0).ToList();
+			boomOfClouds = boomOfClouds.Where(testby => testby.timeLeft > 0).ToList();
+
+			foreach (BeamOfLight ray in controlRays)
+			{
+				ray.Update();
+			}
+
+			foreach (CloudBoom boomOfClouds in boomOfClouds)
+			{
+				boomOfClouds.Update();
+				boomOfClouds.speed.Y -= (projectile.ai[0] - 120)/60f;
+			}
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			float alpha = 1f;
+			UnifiedRandom random = new UnifiedRandom(projectile.whoAmI);
+			Texture2D statTex = ModContent.GetTexture("SGAmod/Extra_57b");
+			Texture2D beamTex = ModContent.GetTexture("SGAmod/LightBeam");
+			Texture2D glowOrb = Main.itemTexture[ModContent.ItemType<StygianCore>()];// ModContent.GetTexture("SGAmod/GlowOrb");
+			Texture2D glowOrb2 = ModContent.GetTexture("SGAmod/GlowOrb");
+			Vector2 offsetbeam = new Vector2(beamTex.Width / 2f, beamTex.Height / 4f);
+
+			Vector2 starHalf = statTex.Size() / 2f;
+			Vector2 orbHalf = glowOrb.Size() / 2f;
+
+			float timeLeft = MathHelper.Clamp(projectile.timeLeft / 30f, 0f, 1f);
+			float timeStartUp = MathHelper.SmoothStep(0f,1f,MathHelper.Clamp(projectile.localAI[0] / 60f, 0f, 1f))* timeLeft;
+			float orbAlpha = MathHelper.Clamp((timeStartUp * 1.25f), 0f, 1f) * timeLeft;
+			Color orbColor = Color.White;
+
+
+			foreach (BeamOfLight ray in controlRays)
+			{
+				float beamtimeleft = ray.timeLeft / (float)ray.timeLeftMax;
+				TrailHelper trail = new TrailHelper("FadedBasicEffectPass", Main.extraTexture[21]);
+				Color colorz = Color.Aqua;
+
+				trail.coordOffset = new Vector2(0, (beamtimeleft+((Main.GlobalTime)*3f))*3f);
+				trail.coordMultiplier = new Vector2(1f, 4f);
+
+				trail.strength = 2f* timeStartUp*MathHelper.Clamp(beamtimeleft*2f,0f,1f);// (1f-MathHelper.Clamp(beamtimeleft*4f,0f,1f));
+				trail.trailThickness = 128f;
+				trail.strengthPow = 1f;
+				trail.doFade = false;
+
+				float alphafloat = beamtimeleft;// (float)(Math.Sin(beamtimeleft*MathHelper.Pi)*4f)-2f;
+
+				trail.color = delegate (float percent)
+				{
+					float beamoutside = 1f - (Math.Abs(beamtimeleft - (1f-percent))*1f);
+					float alphafat = alphafloat;
+					float alphacol = MathHelper.SmoothStep(0f, 1f, MathHelper.Clamp(Math.Max(beamoutside, 0), 0f, 1f));
+					return Color.Red * alphacol*MathHelper.Clamp((float)Math.Sin(percent*MathHelper.Pi)*1f,0f,1f);
+
+				};
+
+				trail.trailThicknessFunction = delegate (float percent)
+				{
+					float beamoutside = 1f-Math.Abs((beamtimeleft)-percent);
+					float alphafat = alphafloat;
+
+
+					float percentofwidth = MathHelper.Clamp(Math.Max(beamoutside, 0),0f,1f);
+					float width = MathHelper.CatmullRom(0f, 0.1f, 0.4f, 6f, percentofwidth);
+
+					float alphacol = 0f+ width * MathHelper.Clamp(32f+ projectile.localAI[0],0f,80f);
+					return (alphacol);
+				};
+				trail.DrawTrail(ray.positions, projectile.Center);
+			}
+
+
+				Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+
+			Effect hallowed = SGAmod.HallowedEffect;
+			//for (float i = 0; i < MathHelper.TwoPi; i += MathHelper.TwoPi / 12f)
+			//{
+				Vector2 orbScale = new Vector2(4f, 4f) * timeStartUp;
+
+			//hallowed.Parameters["alpha"].SetValue(0.750f * orbAlpha);
+			//hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+			//Main.spriteBatch.Draw(glowOrb, projectile.Center+(i.ToRotationVector2()*8f* orbScale.X) - Main.screenPosition, null, orbColor * orbAlpha, i, orbHalf, orbScale, default, 0);
+
+			float scaleUpeffect = 1f + (float)Math.Pow(MathHelper.Max((projectile.ai[0] - 120) / 30f,0),3f);
+
+			float alphaboom = MathHelper.Clamp(1.05f- ((scaleUpeffect-1f)/20f),0,1f);
+			float alphaboom2 = MathHelper.Clamp((projectile.ai[0]-120f)/60f, 0, 1f);
+			float alphaboom4 = MathHelper.Clamp((projectile.ai[0] - 100f) / 72, 0, 1f);
+			float alphaboomfinal = MathHelper.Clamp((projectile.ai[0] - 240f) / 60f, 0, 1f);
+			float alphaboomfinal2 = 1f- alphaboomfinal;
+
+
+			Vector2 boomCenter = RaysOfControlOrb.orbSurface.Size() / 2f;
+
+			Main.spriteBatch.Draw(glowOrb2, projectile.Center - Main.screenPosition, null, Color.Wheat * orbAlpha * alphaboom2, 0, glowOrb2.Size() / 2f, orbScale * scaleUpeffect, default, 0);
+
+			Color cloudColor = Color.Lerp(Color.Maroon, Color.Wheat, MathHelper.Clamp((projectile.ai[0] - 120f) / 300f, 0, 1f))* alphaboomfinal2;
+
+			foreach (CloudBoom cb in boomOfClouds)
+			{
+				Texture2D cloudTex = ModContent.GetTexture("SGAmod/NPCs/Hellion/Clouds" + cb.cloudType);
+				Vector2 pos = cb.position;
+				float angle = cb.angle;
+
+				float timeleft = cb.timeLeft;
+				float timeleftperc = cb.timeLeft / (float)cb.timeLeftMax;
+				float timeleftpercinvert = 1f - timeleftperc;
+
+				float finalAlpha = MathHelper.Clamp(timeleftperc * 6f, 0f, Math.Min(timeleftpercinvert * 16f, 1f)) * 0.25f* alphaboom4*(1f- alphaboom);
+
+				Vector2 scale = cb.scale;
+
+				Main.spriteBatch.Draw(cloudTex, pos, null, cloudColor * orbAlpha * finalAlpha, angle, cloudTex.Size()/2f, scale, default, 0);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			float alphaboom1b = MathHelper.Clamp(1.15f - ((scaleUpeffect - 1f) / 64f), 0, 1f);
+
+			if (alphaboom<1f)
+			Main.spriteBatch.Draw(RaysOfControlOrb.orbSurface, projectile.Center - Main.screenPosition, null, Color.Black * orbAlpha * alphaboom1b * alphaboomfinal2, 0, boomCenter, orbScale * scaleUpeffect, default, 0);
+
+
+			Main.spriteBatch.Draw(RaysOfControlOrb.orbSurface, projectile.Center - Main.screenPosition, null, orbColor * orbAlpha* alphaboom* alphaboomfinal2, 0, boomCenter, orbScale* scaleUpeffect, default, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Main.spriteBatch.Draw(glowOrb2, projectile.Center - Main.screenPosition, null, orbColor * orbAlpha * alphaboomfinal, 0, glowOrb2.Size() / 2f, orbScale * scaleUpeffect, default, 0);
+
+			//}
+
+
+			//Main.spriteBatch.End();
+			//Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			return false;
+		}
+	}
+
+
 	public class CataNukePlayer : ModPlayer
 	{
-		public int charge = 0;
+		private int _charge = 0;
+		public int Charge
+        {
+            get
+            {
+				int charger = _charge;
+				if (!IdgNPC.bossAlive)
+					charger = Math.Min(charger, ChargeMax / 2);
+				return charger;
+            }
+            set
+            {
+				_charge = value;
+            }
+
+        }
+
 		public int ChargeMax => 100000;
-		public float ChargePercent => (float)charge / (float)ChargeMax;
-		public int ChargeSpeed => (int)((Math.Min(player.lifeRegen/2, 20) * MathHelper.Clamp(player.lifeRegenTime / 400f, 0f, 5f)*(HeldNuke ? 1f : 0.25f))* 1f);
+		public float ChargePercent => (float)Charge / (float)ChargeMax;
+		public int ChargeSpeed => (int)(((10+Math.Min(player.lifeRegen / 3, 10)) * MathHelper.Clamp(player.lifeRegenTime / 400f, 0f, 5f)*(HeldNuke ? 1f : 0.25f))* 1f);
 
 		public bool HasNuke => player.HasItem(ModContent.ItemType<NuclearOption>());
 		public bool HeldNuke => player.HeldItem.type == ModContent.ItemType<NuclearOption>();
@@ -892,14 +1379,14 @@ namespace SGAmod.Items.Weapons
 						{
 							snd.Pitch = -0.75f;
 						}
-						charge += 500 + (proj.damage * 15);
+						Charge += 500 + (proj.damage * 15);
 					}
 				}
-				charge = (int)MathHelper.Clamp(charge + ChargeSpeed, 0f, ChargeMax);
+				Charge = (int)MathHelper.Clamp(Charge + ChargeSpeed, 0f, ChargeMax);
 			}
 			else
 			{
-				charge = 0;
+				Charge = 0;
 			}
 		}
 	}
@@ -909,7 +1396,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Nuclear Option");
-			Tooltip.SetDefault("'Unleash the full raw, unfiltered, cataclysmic wrath of the british...'\nCharges up by holding this item, based off life regen and by grazing projectiles\nWill charge up very slowly if not actively held\nAt 50% charge or higher, activate to unleash a Nuclear Explosion\nSends out a initial shockwave, afterwords only the fireball does damage\nVaporizes most projectiles, and has more range and damage at higher charge\n" + Idglib.ColorText(Color.Red, "Getting hurt and losing health will halve your current charge"));
+			Tooltip.SetDefault("'Unleash the full raw, unfiltered, cataclysmic wrath of the british...'\nCharges up by holding this item, based off life regen and by grazing projectiles\nWill charge up very slowly if not actively held\nAt 50% charge or higher, activate to unleash a Nuclear Explosion\nSends out a initial shockwave, afterwords only the fireball does damage\nVaporizes most projectiles, and has more range and damage at higher charge\n" + Idglib.ColorText(Color.Red, "Getting hurt and losing health will halve your current charge")+"\n"+Idglib.ColorText(Color.Red, "Only charges up to half outside of boss fights"));
 		}
 
         public override string Texture => "SGAmod/Items/Weapons/NuclearOption";
@@ -938,7 +1425,7 @@ namespace SGAmod.Items.Weapons
 
         public override bool CanUseItem(Player player)
 		{
-			if (player.GetModPlayer<CataNukePlayer>().ChargePercent>0.50f)
+			if (player.GetModPlayer<CataNukePlayer>().ChargePercent>=0.50f)
 			{
 				return true;
 			}
@@ -952,7 +1439,7 @@ namespace SGAmod.Items.Weapons
 			float perc = (player.GetModPlayer<CataNukePlayer>().ChargePercent * player.GetModPlayer<CataNukePlayer>().ChargePercent);
 			Projectile proj = Projectile.NewProjectileDirect(player.Center, Vector2.Zero, ModContent.ProjectileType<NuclearOptionProj>(), (int)(damage* perc), knockBack, player.whoAmI);
 			proj.ai[1] = player.GetModPlayer<CataNukePlayer>().ChargePercent;
-			player.GetModPlayer<CataNukePlayer>().charge = 0;
+			player.GetModPlayer<CataNukePlayer>().Charge = 0;
 			proj.netUpdate = true;
 			return false;
 		}
@@ -1253,7 +1740,129 @@ namespace SGAmod.Items.Weapons
 
 
 
+	public class RaysOfControlOrb
+	{
+		public class OrbParticles
+		{
+			public Vector2 position;
+			public Vector2 speed;
+			public float angle;
+			public Vector2 scale = new Vector2(1f, 1f);
+			public Color color;
 
+			public int timeAdd = 0;
+			public int timeLeft = 20;
+			public int timeLeftMax = 20;
+			public OrbParticles(Vector2 position, Vector2 speed, float angle,Color color)
+			{
+				this.position = position;
+				this.speed = speed;
+				this.angle = angle;
+				this.color = color;
+			}
+			public void Update()
+			{
+				timeLeft -= 1;
+				position += speed;
+				timeAdd++;
+			}
+
+		}
+
+		public static RenderTarget2D orbSurface;
+
+		public static bool hasLoaded = false;
+		public static bool oneUpdate = false;
+		public static float progress = 0f;
+
+		public static List<OrbParticles> partices = new List<OrbParticles>();
+		public static int timeLeft = 0;
+
+		public static void UpdateAll()
+        {
+			if (partices.Count>0 || timeLeft > 0)
+            {
+				partices = partices.Where(testby => testby.timeLeft > 0).ToList();
+				foreach(OrbParticles particle in partices)
+                {
+					particle.Update();
+				}
+			}
+		}
+
+
+		public static void Load()
+		{
+			if (hasLoaded)
+				return;
+
+			orbSurface = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.blackTileTexture.Width * 32, Main.blackTileTexture.Height * 32, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+			hasLoaded = true;
+		}
+
+		public static void Unload()
+		{
+			if (!hasLoaded)
+				return;
+
+			if (!orbSurface.IsDisposed)
+				orbSurface.Dispose();
+			/*if (!cataEffect.IsDisposed)
+				cataEffect.Dispose();
+			if (!radialEffect.IsDisposed)
+				radialEffect.Dispose();*/
+		}
+
+		public static void DrawToRenderTarget()
+		{
+			if (Main.dedServ || !hasLoaded || !oneUpdate)
+				return;
+
+			Texture2D glowOrb = Main.itemTexture[ModContent.ItemType<StygianCore>()];// ModContent.GetTexture("SGAmod/GlowOrb");
+
+			oneUpdate = false;
+
+			RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
+
+			Main.graphics.GraphicsDevice.SetRenderTarget(orbSurface);
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+			//Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
+
+			Effect effect = SGAmod.TextureBlendEffect;
+
+			effect.Parameters["Texture"].SetValue(SGAmod.Instance.GetTexture("TiledPerlin"));
+			effect.Parameters["noiseTexture"].SetValue(glowOrb);// SGAmod.Instance.GetTexture("Extra_49c"));
+			effect.Parameters["coordMultiplier"].SetValue(new Vector2(1f,1f));
+			effect.Parameters["coordOffset"].SetValue(new Vector2(0f, 0f));
+			effect.Parameters["noiseMultiplier"].SetValue(new Vector2(1f, 1f));
+			effect.Parameters["noiseOffset"].SetValue(new Vector2(0f, 0f));
+			effect.Parameters["noiseProgress"].SetValue(Main.GlobalTime);
+			effect.Parameters["textureProgress"].SetValue(Main.GlobalTime*2f);
+			effect.Parameters["strength"].SetValue(0.25f);
+
+			foreach (OrbParticles particle in partices)
+			{
+				float timeLeft = particle.timeLeft / (float)particle.timeLeftMax;
+				float strength = MathHelper.Clamp(timeLeft * 3f, 0f, Math.Min(particle.timeAdd * 3f, 1f));
+
+				effect.Parameters["colorTo"].SetValue(particle.color.ToVector4());
+				effect.Parameters["colorFrom"].SetValue(Color.Black.ToVector4());
+				effect.Parameters["strength"].SetValue(strength);
+
+				effect.CurrentTechnique.Passes["TextureBlend"].Apply();
+				Main.spriteBatch.Draw(glowOrb, orbSurface.Size()/2f+particle.position, null, Color.White, particle.angle, glowOrb.Size() / 2f, particle.scale, default, 0);
+			}
+
+			Main.spriteBatch.End();
+
+			Main.graphics.GraphicsDevice.SetRenderTargets(binds);
+
+			progress = 0f;
+		}
+
+	}
 
 	public class CataLogo
 	{
@@ -1267,6 +1876,8 @@ namespace SGAmod.Items.Weapons
 
 		public static void Load()
 		{
+			RaysOfControlOrb.Load();
+
 			if (hasLoaded)
 				return;
 
@@ -1278,19 +1889,22 @@ namespace SGAmod.Items.Weapons
 
 		public static void Unload()
 		{
+			RaysOfControlOrb.Unload();
+
 			if (!hasLoaded)
 				return;
 
 			if (!cataSurface.IsDisposed)
 				cataSurface.Dispose();
-			if (!cataEffect.IsDisposed)
+			/*if (!cataEffect.IsDisposed)
 				cataEffect.Dispose();
 			if (!radialEffect.IsDisposed)
-				radialEffect.Dispose();
+				radialEffect.Dispose();*/
 		}
 
 		public static void DrawToRenderTarget()
 		{
+			RaysOfControlOrb.DrawToRenderTarget();
 			if (Main.dedServ || !hasLoaded || !oneUpdate)
 				return;
 

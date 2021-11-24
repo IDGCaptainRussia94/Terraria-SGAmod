@@ -33,13 +33,17 @@ namespace SGAmod.Items.Weapons.Vibranium
 
 				Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
 
+				float percother = 0.50f + (float)Math.Sin(Main.GlobalTime / 0.5f) / 2.5f;
+				Color color = Color.Lerp(Color.Lerp(Color.Red, Color.Blue, percother), Color.Gray, 0.35f);
+
 				hallowed.Parameters["alpha"].SetValue(0.5f);
-				hallowed.Parameters["prismColor"].SetValue(Color.Lerp(Color.Lerp(Color.Red, Color.Blue, 0.50f + (float)Math.Sin(Main.GlobalTime / 0.5f) / 2.5f),Color.Gray,0.35f).ToVector3());
-				hallowed.Parameters["rainbowScale"].SetValue(0.25f);
-				hallowed.Parameters["overlayScale"].SetValue(new Vector2(4,2));
-				hallowed.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Doom_Harbinger_Resprite_pupil"));
-				hallowed.Parameters["overlayProgress"].SetValue(new Vector3((float)Math.Sin(Main.GlobalTime * 8f)>0 ? Main.GlobalTime * 2f : -Main.GlobalTime * 2f, 0.5f, Main.GlobalTime * 3f));
-				hallowed.Parameters["overlayAlpha"].SetValue(0.33f);
+				hallowed.Parameters["prismAlpha"].SetValue(0.75f);
+				hallowed.Parameters["prismColor"].SetValue(color.ToVector3());
+				hallowed.Parameters["rainbowScale"].SetValue(5f);
+				hallowed.Parameters["overlayScale"].SetValue(new Vector2(2,1));
+				hallowed.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("SmallLaser"));
+				hallowed.Parameters["overlayProgress"].SetValue(new Vector3(Main.GlobalTime/4f,0f, Main.GlobalTime * 1f));
+				hallowed.Parameters["overlayAlpha"].SetValue(1.50f);
 				hallowed.Parameters["overlayStrength"].SetValue(new Vector3(1f, 0f, 0f));
 				hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
 				hallowed.CurrentTechnique.Passes["Prism"].Apply();
@@ -70,8 +74,8 @@ namespace SGAmod.Items.Weapons.Vibranium
 
 		public override void SetDefaults()
 		{
-			item.damage = 115;
-			item.crit = 20;
+			item.damage = 160;
+			item.crit = 10;
 			item.width = 32;
 			item.height = 32;
 			item.useTime = 6;
@@ -278,7 +282,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 					{
 						projectile.ai[0] += 1;
 						for (float f = 0; f <= MathHelper.Pi; f += MathHelper.Pi)
-							Projectile.NewProjectile(projectile.Center, projectile.velocity.RotatedBy(f), ModContent.ProjectileType<GammBurstBeam>(), projectile.damage* 2 * (int)MaxKnives, projectile.knockBack * 3f, projectile.owner);
+							Projectile.NewProjectile(projectile.Center, projectile.velocity.RotatedBy(f), ModContent.ProjectileType<GammBurstBeam>(), projectile.damage* 1 * (int)MaxKnives, projectile.knockBack * 3f, projectile.owner);
 
 						SoundEffectInstance sound2 = Main.PlaySound(SoundID.DD2_DrakinShot, projectile.Center);
 						if (sound2 != null)
@@ -352,7 +356,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 			damage += (int)(target.defense / 2);
 			if (target.HasBuff(ModContent.BuffType<Buffs.RadioDebuff>()))
 			{
-				damage = (int)(damage * 1.15f);
+				damage = (int)(damage * 1.25f);
 				projectile.penetrate += 1;
 			}
 		}

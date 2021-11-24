@@ -89,13 +89,7 @@ namespace SGAmod.Items.Armors.Dev
 						Main.PlaySound(29, (int)player.position.X, (int)player.position.Y, 105, 1f, -0.6f);
 					}
 					InitEffects();
-
-
-
-
 				}
-
-
 			}
 		}
 		public override void UpdateEquip(Player player)
@@ -186,22 +180,37 @@ namespace SGAmod.Items.Armors.Dev
 			item.vanity = true;
 		}
 
-		public override void InitEffects()
+        public override bool Autoload(ref string name)
+        {
+            SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostPostUpdateEquipsEvent;
+			return true;
+        }
+
+		private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer sgaplayer)
+		{
+			Player player = sgaplayer.player;
+			if (!player.armor[2].vanity && player.armor[2].type == item.type)
+			{
+				player.wingTimeMax = (int)(player.wingTimeMax * 1.20f);
+			}
+		}
+
+        public override void InitEffects()
 		{
 			item.defense = 30;
 			item.rare = 10;
 		}
 		public override void AddEffects(Player player)
 		{
-			player.moveSpeed += 2f;
-			player.accRunSpeed += 2f;
-			player.wingTimeMax = (int)(player.wingTimeMax*1.20f);
+			player.moveSpeed += 3f;
+			player.accRunSpeed += 3f;
 			player.GetModPlayer<SGAPlayer>().Noselfdamage = true;
 			player.BoostAllDamage(-0.10f,-10);
 
 			player.Throwing().thrownCrit += 10;
 			player.meleeCrit += 10;
-			player.meleeDamage += 0.10f; player.Throwing().thrownDamage += 0.10f;
+			player.meleeDamage += 0.10f;
+			player.Throwing().thrownDamage += 0.10f;
 
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)

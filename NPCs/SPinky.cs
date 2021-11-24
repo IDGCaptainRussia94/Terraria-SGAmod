@@ -1219,9 +1219,11 @@ namespace SGAmod.NPCs
 					{
 						//if (SupremeArmy.FirstOrDefault(testby2 => testby2.type == npc2.type) == default)
 						//{
-						npc2.life = (int)(npc.lifeMax * 0.04f);
-						npc2.lifeMax = (int)(npc.lifeMax * 0.04f);
+						npc2.life = (int)(npc.lifeMax * 0.030f);
+						npc2.lifeMax = (int)(npc.lifeMax * 0.030f);
 						npc2.knockBackResist = 0f;
+						npc2.SGANPCs().dotResist = 0.50f;
+						npc2.SGANPCs().pierceResist = 0.50f;
 						if (npc2.ai[0] != 1)
                         {
 							npc2.Center = npc.Center;

@@ -1650,7 +1650,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hopeful Heart");
-			Tooltip.SetDefault("'There is always hope in the darkness...'\nRestores 30 lost max HP when picked up\nCannot be picked up while a boss is alive");
+			Tooltip.SetDefault("'There is always hope in the darkness...'\nRestores 30 lost max HP when picked up\nIs collected if your barely missing any life instead\nCannot be picked up while a boss is alive");
 		}
 
 		public override void SetDefaults()
@@ -1671,7 +1671,7 @@ namespace SGAmod.Items
         }
         public override bool OnPickup(Player player)
         {
-			if (Main.rand.Next(0, 10) == 0)
+			if (player.GetModPlayer<IdgPlayer>().radationAmmount<5)
             {
 				return true;
 			}

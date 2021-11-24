@@ -24,6 +24,8 @@ using SGAmod.Items;
 using System.Linq;
 using SGAmod.Dimensions.NPCs;
 using SGAmod.Items.Consumables;
+using SGAmod.Tiles;
+using SGAmod.NPCs;
 
 namespace SGAmod.Dimensions
 {
@@ -279,6 +281,32 @@ namespace SGAmod.Dimensions
 
         GenerationProgress proggers;
 
+        public void ChooseEnemies()
+        {
+            EnemySpawnsOverride = delegate (IDictionary<int, float> pool, NPCSpawnInfo spawnInfo, SGAPocketDim pocket)
+            {
+                    //UnifiedRandom UniRand2 = new UnifiedRandom(pocket.enemyseed);
+                    for (int i = 0; i < pool.Count; i += 1)
+                {
+                    pool[i] = 0f;
+
+                }
+                    if (spawnInfo.spawnTileType == ModContent.TileType<VibraniumCrystalTile>())
+                pool[ModContent.NPCType<ResonantWisp>()] = 5f;
+                pool[ModContent.NPCType<OverseenHead>()] = 1f;
+                pool[NPCID.MartianDrone] = 0.25f;
+                pool[NPCID.MartianTurret] = 0.2f;
+
+                pocket.chooseenemies = true;
+                return 1;
+            };
+        }
+
+        public override void DoUpdates()
+        {
+            ChooseEnemies();
+        }
+
         public virtual void AGenPass(GenerationProgress prog)
         {
             proggers = prog;
@@ -305,30 +333,12 @@ namespace SGAmod.Dimensions
             prog.Message = "Leaving Atmosphere...";
             int tileheight = UniRand.Next(250, 400);
 
-            if (!chooseenemies)
-            {
-                EnemySpawnsOverride = delegate (IDictionary<int, float> pool, NPCSpawnInfo spawnInfo, SGAPocketDim pocket)
-                {
-                    UnifiedRandom UniRand2 = new UnifiedRandom(pocket.enemyseed);
-                    for (int i = 0; i < pool.Count; i += 1)
-                    {
-                        pool[i] = 0f;
+            ChooseEnemies();
 
-                    }
-                    pool[ModContent.NPCType<OverseenHead>()] = 1f;
-                    pool[NPCID.MartianDrone] = 0.25f;
-                    pool[NPCID.MartianTurret] = 0.2f;
+             //Perlin Noise Gen
+             //Base Terrain Fill
 
-                    pocket.chooseenemies = true;
-                    return 1;
-                };
-            }
-
-
-            //Perlin Noise Gen
-            //Base Terrain Fill
-
-            Noisegen = new NoiseGenerator(DimDungeonsProxy.DungeonSeeds);
+             Noisegen = new NoiseGenerator(DimDungeonsProxy.DungeonSeeds);
 
             Noisegen.Amplitude = 1.75;
             Noisegen.Frequency *= 0.40;
@@ -867,7 +877,7 @@ namespace SGAmod.Dimensions
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Mineable Gem Asteriod");
+            DisplayName.SetDefault("Mineable Overseen Asteriod");
         }
 
         public override void SetDefaults()
@@ -895,7 +905,7 @@ namespace SGAmod.Dimensions
 
         protected override void _DrawAsteriod(SpriteBatch spriteBatch, Color lightColor)
         {
-
+             
             Texture2D tex = Main.itemTexture[ModContent.ItemType<OverseenCrystal>()];
 
             Vector2 vec = tex.Size() / 2f;
@@ -909,7 +919,7 @@ namespace SGAmod.Dimensions
             {
                 Vector2 offset = Vector2.One.RotatedBy(rand.NextFloat(MathHelper.TwoPi));
 
-                spriteBatch.Draw(tex, drawPos + (offset * (projectile.width + 4) * (projectile.width < 20 ? (rand.NextFloat(0.75f, 1f)) : (rand.NextFloat(0.50f, 0.80f)))).RotatedBy(projectile.rotation), null, colormix * rand.NextFloat(0.45f, 0.65f), projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, drawPos + (offset * (projectile.width + 4) * (projectile.width < 20 ? (rand.NextFloat(0.60f, 0.80f)) : (rand.NextFloat(0.40f, 0.60f)))).RotatedBy(projectile.rotation), null, colormix * rand.NextFloat(0.45f, 0.65f), projectile.rotation + (MathHelper.PiOver2) + offset.ToRotation(), vec, projectile.scale, SpriteEffects.None, 0f);
             }
 
             base._DrawAsteriod(spriteBatch, lightColor);
@@ -1355,10 +1365,20 @@ namespace SGAmod.Dimensions
             int vanitytype = (3 + (vanityLook % 3));
             Texture2D tex;
 
+            Color blending = Color.White;
+
             if (projectile.width < 20)
                 tex = mod.GetTexture(vanityLook < 10 ? (vanityLook < 5 ? "Dimensions/Space/MeteorSmall2" : "Dimensions/Space/MeteorSmall") : "Dimensions/Space/MeteorSmall" + (3 + (vanityLook % 3)));
             else
                 tex = mod.GetTexture(vanityLook < 10 ? (vanityLook < 5 ? "Dimensions/Space/MeteorLarge2" : "Dimensions/Space/MeteorLarge") : "Dimensions/Space/MeteorLarge" + (3 + (vanityLook % 3)));
+
+            if (GetType() == typeof(MineableAsteriodOverseenCrystal))
+            {
+                if (projectile.width < 20)
+                    blending = Color.PaleTurquoise;
+                else
+                    tex = mod.GetTexture((new string[3] { "Dimensions/Space/GlowAsteriod", "Dimensions/Space/GlowAsteriodalt", "Dimensions/Space/GlowAsteriodalt2" })[vanityLook%3]);
+            }
 
             //Main.spriteBatch.End();
             //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, Main.DefaultSamplerState, DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
@@ -1372,7 +1392,7 @@ namespace SGAmod.Dimensions
             //Main.spriteBatch.End();
             //Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
-            spriteBatch.Draw(tex, drawPos, size, lightColor, projectile.rotation, drawOrigin / 2f, projectile.scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, drawPos, size, lightColor.MultiplyRGB(blending), projectile.rotation, drawOrigin / 2f, projectile.scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, drawPos, sizeOutline, Color.Red * (miningTargeted / 20f), projectile.rotation, drawOrigin / 2f, projectile.scale, SpriteEffects.None, 0f);
         }
 

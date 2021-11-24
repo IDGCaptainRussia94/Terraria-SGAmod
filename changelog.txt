@@ -1,6 +1,38 @@
 Changelog:
 
-3.600i-(11/18/21)-Patch 11-Tech N Wreck: Beta
+3.600j-(11/18/21)-Patch 11-Tech N Wreck: Beta
+
+-Attempted a handful of loading fixes, including one regarding the space boss and recipe browser
+
+-Nerfed Nuclear Option: can only charge up to half when a boss is not alive
+
+-Fixed the screenshake config being WAY out of bounds
+
+-Fixed crate drop rates being inverted from what they said on the config
+
+-Fine tuned the corona visuals on the Skye Hook a bit more
+
+-Wraiths should all have proper boss-heads now
+
+-Fixed Cratrogeddon's special crates STILL not using their custom sprites, base damage of boss raised to 80 (from 50)
+
+-Redid the Vibranium tooltip Text effect
+
+-Buffed Firefox Greatbow: arrow arrow improved from 10% to 66% of weapon's damaging listing
+
+-disabled Caliburn Guardian debug mode
+
+-Changed the vertical speed values on the Luminary Wings to make them not crap during walkmode
+
+-(hopefully) Fixed null dungeon level error with the strange portal
+
+-New changes to Helen Hellion Weygold:
+-Updated Xemnas Laser attack: now targets center, is shorter, and faster paced
+-Will now choose either Xemnas or Laser Hell for the phase 3 transition
+
+
+
+3.600i-(11/22/21)-Patch 11-Tech N Wreck: Beta
 
 -Fixed a stitching issue with the trail helper
 
@@ -8,13 +40,65 @@ Changelog:
 
 -Fixed an issue where life regen was completely removed from the jungle Templar Set during its ability if you had no electric charge
 
--Buffed Quasar Kunai: Crit up to 20%, attack speed increased by 2 frames. Also fixed a damage error from adding the damage twice
+-Buffed Quasar Kunai: Damage increased to 160, bonus damage increased to 25%, attack speed increased by 2 frames. Also fixed a damage error from adding the damage twice, Gamma Ray Burst damage halved
+
+-Implimented a rather, dare I say 'Sus-y' method of adding music I don't have permission to into the mod: Hellion has a temp theme that is downloaded off the internet because I am really getting tired of Boss1... However I want to get player concent before this happened ingame
+-^scratch that, got permission from the dude off discord! It's now loaded from WITHIN the mod (but still using the funny custom ogg loading)
+
+-Fixed the planting issues with Dank Seeds
+
+-Nerfed Valkyrie Armor: damage reduced in various areas across the board, also crit reduced
+
+-Hopefully stopped mechs during Twin Prime Destroyers fight from despawning
+
+-Added weaker Avarice Ring to the Goat
+
+-Fixed a major issue with the Hoppers converting all items into money
+
+-Hopefully fixed being unable to Blink Teleport
+
+-Changed the Null astetic with its after image effect a bit
+
+-Buffed Nuclear Option: has a passive recharge and less based off max life regen
+
+-Reworked Avarice: projectiles lose 50% of their damage per hit (100% on 1st, 50% on 2nd hit, 25% on 3rd hit), but now on the 3rd hit it inflicts Microtransactions: that damages enemy money values, drops more money on the ground and deals damage over time if they are still worth something
+
+-Reworked Aura Borealis Staff: Applies Rust Burn at level 2 instead of Daybroken
+
+-Buffed Mister Creeper's Business Casual: movement speed slightly increased
+
+-Fixed the wing time bonus not being applied on IDGCaptainRussia94's Dragon Dressings and Mister Creeper's Business Casual
+
+-Hopeful Hearts are now collected when missing little life, akin to what the wiki currently says instead of random chance
+
+-Added Godray-screen explosion effects! (only used in a few specific places, as several at once can get messy)
+
+-Added config to scale Screen Shake and enable/disable the recently added Godray screen explosions
+
+-Added Resonant Wisps to Space; they get buffed and only drop crystals if the player has a stronger than Lunar Pickaxe (IE the braxsaw)
+
+-Added Blue Asteriod varients for the Overseen Crystal Asteriods
+
+-Supreme Pinky's slimes now resist 50% of DoT damage from non-debuffs and 50% of piercing damage. Slime minion health has been slightly lowered to account for this
+
+-Skye Hook renamed to Oranos Skye Hook, and visuals improved
+
+-Fixed Mossy Salve not properly applying Swamp Rot
+
+-Removed Debug Text
+
+-Updated Firefox Greatbow projectile visuals
+
+-Added a config option to disable Primitive Trails... if you want that
+
+-Nightmare mode is now detected by the txt file, not the directory anymore
 
 -New changes to Helen Hellion Weygold:
 -Tyrant mode now uses a deck-system, to do moves in a specific order, including special moves
 -Topazing/Demon Scythes are now aimed at the player, meaning you can't just stand still during them anymore
 
-
+-New changes to Phaethon:
+-When the softcap is reached, Phaethon completely stops taking damage and suffering from debuffs, both direct and DoT
 
 
 
@@ -420,12 +504,6 @@ Changelog:
 
 -Jelly Bru Armor eating up too much HP
 
--Removed Debug Text
-
--Updated Firefox Greatbow projectile visuals
-
--Added a config option to disable Primitive Trails... if you want that
-
 
 Changelog:
 
@@ -433,7 +511,8 @@ Changelog:
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Skye Hook, Firefox Greatbow, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, True Dragon Wings, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault, and many others I likely forgot
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Skye Hook, Firefox Greatbow, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, True Dragon Wings, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
+-Almighty SMT Spellcards: Megido, Megidola, Megidolaon, Morning Star, and may have forgotten some items
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
@@ -447,7 +526,7 @@ Changelog:
 
 -New Potions: Phalanx Potion, Reflex Potion
 
--Relics and other rewards added for no-hitting bosses!
+-1.4-like Relics and other rewards added for no-hitting bosses!
 
 -Hoppers, Droppers, Sifting Funnels, Mod Grinders, and more. Hands on tech mod elements to automate your Terraria with content I felt was missing from Vanilla!
 
@@ -480,7 +559,7 @@ Changelog:
 
 -The way accessories boost percent damage taken on enemies has been changed, it now additive of the original damage rather than a stacking multiplier
 
--Hellion's 2nd phase will now only start if the player is wearing a Soul of Secrets, allowing the 1st phase to be farmed and the player to get Souls of Bytes without having to face the 2nd phase right after
+-Hellion's 2nd phase will now only start if the player is wearing a Soul of Secrets, allowing the 1st phase to be farmed and the player to get Souls of Bytes without having to face the 2nd phase right after, Meaning the Core and the Phase 2 are effectively seperate bosses now
 
 -The great Hellion rebalance and refactor! Hellion's beam has been given a visual overhaul to fix a bug where it was invisible (see fixed), Hellion gains defense and debuff immunity apon activating Tyrant's Glare (post Festive Moons/warped background phase), also Hellion's arena aura has been changed to something less flashy on the eyes and likely more GPU friendly, Skeletron Hands now do 150 contact damage, Hellion has more delay before moving again with the lasers, or shooting sky fractures, some other attacks changed in an effort to make them more fair, army enemies will now fly at the player more often, and much, much more
 

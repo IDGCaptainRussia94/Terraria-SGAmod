@@ -656,7 +656,7 @@ namespace SGAmod
 
 		public bool DashBlink()
 		{
-			if (noModTeleport || maxblink < 1 || player.mount != null)
+			if (noModTeleport || maxblink < 1 || (player.mount != null && player.mount.Active))
 				return false;
 
 

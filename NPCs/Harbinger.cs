@@ -80,7 +80,7 @@ namespace SGAmod.NPCs
 					if (SGAWorld.downedHarbinger == false)
 					{
 						Idglib.Chat("Your end is nigh...", 15, 15, 150);
-						Idglib.Chat("Robbed figures have been seen near the dungeon.", 20, 20, 125);
+						//Idglib.Chat("Robbed figures have been seen near the dungeon.", 20, 20, 125);
 						SGAWorld.downedHarbinger = true;
 					}
 				}

@@ -33,6 +33,8 @@ namespace SGAmod
 		//Lite edition, for the heavy booze see ILHacks.cs
 		internal static void Apply()
 		{
+			SGAmod.Instance.Logger.Debug("Loading too many ON Detours");
+
 			On.Terraria.Player.NinjaDodge += Player_NinjaDodge;
 			On.Terraria.Player.CheckDrowning += Player_CheckDrowning;
 			On.Terraria.Main.DrawDust += Main_DrawAdditive;
@@ -49,6 +51,8 @@ namespace SGAmod
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
 			On.Terraria.Player.AddBuff += Player_AddBuff;
 			On.Terraria.NPC.AddBuff += NPC_AddBuff;
+            On.Terraria.NPC.StrikeNPC += NPC_StrikeNPC;
+            On.Terraria.NPC.UpdateNPC_BuffApplyDOTs += NPC_UpdateNPC_BuffApplyDOTs;
 			On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
 			On.Terraria.Player.DropSelectedItem += DontDropManifestedItems;
 			On.Terraria.Player.dropItemCheck += ManifestedPriority;
@@ -66,6 +70,27 @@ namespace SGAmod
 
 			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
+		}
+
+        private static void NPC_UpdateNPC_BuffApplyDOTs(On.Terraria.NPC.orig_UpdateNPC_BuffApplyDOTs orig, NPC self)
+        {
+			bool valuetest = self.SGANPCs().dotImmune;
+
+			if (!valuetest)
+			orig(self);
+		}
+
+        private static double NPC_StrikeNPC(On.Terraria.NPC.orig_StrikeNPC orig, NPC self, int Damage, float knockBack, int hitDirection, bool crit, bool noEffect, bool fromNet)
+        {
+			float resist = self.SGANPCs().overallResist;
+
+			if (resist != 1)
+				Damage = (int)(Damage * resist);
+
+			if (resist>0)
+			return orig(self,Damage,knockBack,hitDirection, crit, noEffect,fromNet);
+			return 0.0;
+
 		}
 
         private static void BlockVanillaAccessories(On.Terraria.Player.orig_UpdateEquips orig, Player self, int i)

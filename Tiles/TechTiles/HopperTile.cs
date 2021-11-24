@@ -134,14 +134,17 @@ namespace SGAmod.Tiles.TechTiles
 
 		public static bool UpgradeCoins(Item item,Chest chest)
         {
-			if (SGAUtils.UpdateCoins(chest, item.value))
-            {
-				item.TurnToAir();
-				return true;
+			if (item.type == ItemID.CopperCoin || item.type == ItemID.SilverCoin || item.type == ItemID.GoldCoin || item.type == ItemID.PlatinumCoin)
+			{
+				if (SGAUtils.UpdateCoins(chest, item.value))
+				{
+					item.TurnToAir();
+					return true;
+				}
 			}
 			return false;
-
 			/*
+			
 			int typetoboost = -1;
 			if (item.stack >= item.maxStack)
             {

@@ -80,7 +80,6 @@ namespace SGAmod.Items.Placeable.Relics
 					itemtype = "Relic_Item_Caliburn_C";
 			}
 
-			Main.NewText(itemtype);
 			Item.NewItem(modnpc.npc.position, modnpc.npc.Hitbox.Size(), SGAmod.Instance.ItemType(itemtype));
 		}
 
@@ -198,7 +197,6 @@ namespace SGAmod.Items.Placeable.Relics
 		{
 			if (Main.tile[i, j].type == base.Type)
 			{
-				//Main.NewText("test");
 				string texstr = "SGAmod/Items/Placeable/Relics/Tiles/RelicBase";//"SGAmod/Tiles/BiomassBarTile"
 
 

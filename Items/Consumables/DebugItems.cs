@@ -134,7 +134,7 @@ namespace SGAmod.Items.Consumables
 		public override bool UseItem(Player player)
 		{
 			//Main.NewText(SGAmod.musicTest != null);
-			SGAmod.musicTest = new MusicStreamingOGG("tmod:SGAmod/Sounds/Music/creepy.ogg");
+			SGAmod.musicTest = new MusicStreamingOGGPlus("tmod:SGAmod/Sounds/Music/creepy.ogg");
 			//if (!SGAmod.musicTest.IsPlaying)
 			//{
 			SGAmod.musicTest.Reset();

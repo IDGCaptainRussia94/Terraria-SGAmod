@@ -169,6 +169,7 @@ namespace SGAmod.Dimensions.NPCs
 		public MineableAsteriod grabrock;
 		public float whiten = 0;
 		public float bossRockDist;
+		public int variation = 0;
 
 		public float Rotation
         {
@@ -200,8 +201,9 @@ namespace SGAmod.Dimensions.NPCs
 			this.bossOffset = offset;
 			randomrotation = Main.rand.NextFloat(MathHelper.TwoPi);
 			randomRotation2 = Main.rand.NextFloat(-0.1f,0.1f);
-			scale = Main.rand.NextFloat(0.5f,0.8f);
+			scale = Main.rand.NextFloat(0.50f,0.75f);
 			bossRockDist = Main.rand.NextFloat(8f,72f);
+			variation = Main.rand.Next();
 		}
 
 		public void UpdateRotation(float phi)
@@ -1125,7 +1127,7 @@ namespace SGAmod.Dimensions.NPCs
 					}
 				}
 
-				int timer = (Main.expertMode ? 320 : 120) + boss.TetherAsteriods.Count() * 60;
+				int timer = (Main.expertMode ? 160 : 320) + boss.TetherAsteriods.Count() * 60;
 
 				if (npc.ai[0] % (120 + timer) == 0 && withinDist)
 				{
@@ -1169,6 +1171,12 @@ namespace SGAmod.Dimensions.NPCs
             {
 				npc.chaseable = false;
 			}
+
+			npc.SGANPCs().overallResist = boss.DamageSoftCap <= 0.10f ? 0f : 1f;
+			npc.SGANPCs().dotImmune = boss.DamageSoftCap <= 0.75f;
+
+			//Main.NewText(boss.DamageSoftCap);
+
 			if (npc.ai[0] == 310)
 			{
 				//Turn on!
@@ -1341,6 +1349,8 @@ namespace SGAmod.Dimensions.NPCs
 
 		public int goingDark = -60 * 300;
 
+		public float DamageSoftCap => 1f - MathHelper.Clamp(((npc.lifeMax * healthphase) - npc.life) / 1000f, 0f, 1f);
+
 		public static bool CutSceneActive(ref bool cam) => cam || SpaceBoss.film.IsActive;
 
 		public override bool Autoload(ref string name)
@@ -1461,8 +1471,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			if (npc.life < npc.lifeMax * healthphase)
             {
-				float damagescale = 1f-MathHelper.Clamp(((npc.lifeMax * healthphase)- npc.life)/1000f,0f,1f);
-				damage = (int)(damage * damagescale);
+				damage = (int)(damage * DamageSoftCap);
 			}
 
 			if (thing is Projectile proj)
@@ -2160,7 +2169,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			Vector2 firerockorig = firerock.Size() / 2f;
 			Vector2 rocksmallorig = new Vector2(rocksmall.Width, rocksmall.Height / 2f);
-			Vector2 rocklargeorig = new Vector2(rocklarge.Width, rocklarge.Height);
+			Vector2 rocklargeorig = new Vector2(rocklarge.Width, rocklarge.Height/2f);
 			Vector2 eyetexorig = eyetex.Size()/2f;
 
 
@@ -2253,6 +2262,7 @@ namespace SGAmod.Dimensions.NPCs
 			foreach (SpaceBossRock rock in Rocks)
 			{
 				Vector2 poz = rock.Position - Main.screenPosition;
+				Texture2D smolRock = ModContent.GetTexture((new string[3]{ "SGAmod/Dimensions/Space/GlowAsteriod","SGAmod/Dimensions/Space/GlowAsteriodalt","SGAmod/Dimensions/Space/GlowAsteriodalt2"})[rock.variation%3]);
 				int size = 80;
 				if (poz.X > -size && poz.X < Main.screenWidth + size && poz.Y > -size && poz.Y < Main.screenHeight + size)
 				{
@@ -2264,7 +2274,9 @@ namespace SGAmod.Dimensions.NPCs
 
 					fadeIn.CurrentTechnique.Passes["FadeIn"].Apply();
 
-					spriteBatch.Draw(rocklarge, rock.Position - Main.screenPosition, null, rock.color, rock.Rotation, rocklargeorig / 2f, rock.scale, SpriteEffects.None, 0f);
+					Rectangle rect = new Rectangle(0, 0, smolRock.Width, smolRock.Height / 2);
+
+					spriteBatch.Draw(smolRock, rock.Position - Main.screenPosition, rect, rock.color, rock.Rotation, rect.Size() / 2f, rock.scale, SpriteEffects.None, 0f); ;
 				}
 			}
 
@@ -2355,7 +2367,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			ArmorShaderData stardustsshader = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye);
 
-			DrawData value8 = new DrawData(rocklarge, new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 320, 320)), Microsoft.Xna.Framework.Color.White, npc.rotation, firerockorig, npc.scale, SpriteEffects.None, 0);
+			DrawData value8 = new DrawData(rocklarge, new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 320, 160)), Microsoft.Xna.Framework.Color.White, npc.rotation, firerockorig, npc.scale, SpriteEffects.None, 0);
 			stardustsshader.UseColor(Color.CornflowerBlue.ToVector3());
 			stardustsshader.UseOpacity(0.5f);
 			stardustsshader.Apply(null,new DrawData?(value8));
@@ -2652,6 +2664,19 @@ namespace SGAmod.Dimensions.NPCs
 			if (projectile.ai[0] > 300)
             {
 				projectile.localAI[0] += 4f;
+			}
+			if (projectile.ai[0] == 60)
+            {
+				ScreenExplosion explode = SGAmod.AddScreenExplosion(projectile.Center, 340, 2f, 1600);
+				if (explode != null)
+				{
+					explode.warmupTime = 64;
+					explode.decayTime = 64;
+					explode.strengthBasedOnPercent = delegate (float percent)
+					{
+						return 2f + MathHelper.Clamp((percent - 0.75f) * 2f, 0f, 1f) * 1f;
+					};
+				}
 			}
 		}
 

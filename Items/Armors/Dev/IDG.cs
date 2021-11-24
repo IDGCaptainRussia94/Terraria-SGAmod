@@ -174,7 +174,23 @@ namespace SGAmod.Items.Armors.Dev
 				item.defense = 20;
 				item.rare = 10;
 			}
-			public override void AddEffects(Player player)
+
+		public override bool Autoload(ref string name)
+		{
+			SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostPostUpdateEquipsEvent;
+			return true;
+		}
+
+		private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer sgaplayer)
+		{
+			Player player = sgaplayer.player;
+			if (!player.armor[2].vanity && player.armor[2].type == item.type)
+			{
+				player.wingTimeMax = (int)(player.wingTimeMax * 1.20f);
+			}
+		}
+
+		public override void AddEffects(Player player)
 			{
 				player.moveSpeed += 2f;
 				player.accRunSpeed += 2f;

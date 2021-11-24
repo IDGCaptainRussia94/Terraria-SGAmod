@@ -14,6 +14,7 @@ using Terraria.Localization;
 using SGAmod.Items.Weapons;
 using SGAmod.Buffs;
 using Terraria.Utilities;
+using System.Linq;
 
 namespace SGAmod.Items.Accessories
 {
@@ -220,7 +221,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Photosynthesizer");
-			Tooltip.SetDefault("Increased life regen while on the surface at day\n10% of the sum of all damage types is added to your current weapon's attack\nBeing near mud greatly increases your stats and life regen");
+			Tooltip.SetDefault("Increased life regen while on the surface at day\n5% of the sum of all damage types is added to your current weapon's attack\nBeing near mud greatly increases your stats and life regen");
 		}
 
 		public override void SetDefaults()
@@ -524,11 +525,11 @@ namespace SGAmod.Items.Accessories
 
 	}
 
-	public class AvariceRing : ModItem, INoHitItem
+	public class AvariceRing : AvariceRingWeaker, INoHitItem
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Ring Of Untouchable Avarice");
+			DisplayName.SetDefault("Absolute Ring Of Untouchable Avarice");
 			Tooltip.SetDefault("Enemies you kill drop double loot if you no-hit them");
 		}
 
@@ -543,10 +544,38 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-				player.SGAPly().avariceRing = true;
+				player.SGAPly().avariceRing = 2;
+		}
+	}
+	public class AvariceRingWeaker : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Ring Of Untouchable Avarice");
+			Tooltip.SetDefault("'A silver replica of the real ring...'\nEnemies you kill drop double loot 20% of the time, if you no-hit them");
 		}
 
+		public override bool CanEquipAccessory(Player player, int slot)
+		{
+			return player.armor.Where(testby => testby.type == ModContent.ItemType<AvariceRing>() || testby.type == ModContent.ItemType<AvariceRingWeaker>()).Count() < 1;
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.Yellow;
+			item.value = Item.buyPrice(0, 50, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().avariceRing = 1;
+		}
 	}
+
+
 	public class SybariteGem : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -3028,7 +3057,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shin Sash");
-			Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nEBombed enemies are highly likely to miss (Ninja Dodge)\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") + "\nThrowing damage is increased by 10% and crit chance by 5%\nEffects of Ninja Sash and Thrower Pouch");
+			Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nSmoke bombed enemies are highly likely to miss (Ninja Dodge)\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") + "\nThrowing damage is increased by 10% and crit chance by 5%\nEffects of Ninja Sash and Thrower Pouch");
 		}
 
 		public override void SetDefaults()

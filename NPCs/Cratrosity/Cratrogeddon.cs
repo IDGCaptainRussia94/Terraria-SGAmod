@@ -49,7 +49,7 @@ namespace SGAmod.NPCs.Cratrosity
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
-			npc.damage = 50;
+			npc.damage = 80;
 			npc.defense = 50;
 			npc.lifeMax = 40000;
 			npc.value = Item.buyPrice(1, 0, 0, 0);
@@ -415,10 +415,10 @@ namespace SGAmod.NPCs.Cratrosity
 			return;
 		}
 
-		public override string Texture
+		/*public override string Texture
 		{
 			get { return "Terraria/Buff_" + BuffType; }
-		}
+		}*/
 
 
 		public override void AI()

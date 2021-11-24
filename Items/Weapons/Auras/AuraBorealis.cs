@@ -54,9 +54,12 @@ namespace SGAmod.Items.Weapons.Auras
 				if (shoot.thepower >= 1.0)
 					tooltips.Add(new TooltipLine(mod, "Bonuses", "Lv1: Applies Betsy's Curse to enemies"));
 				if (shoot.thepower >= 2.0)
-					tooltips.Add(new TooltipLine(mod, "Bonuses", "Lv2: Applies Daybroken to enemies"));
+				{
+					tooltips.Add(new TooltipLine(mod, "Bonuses", "Lv2: Applies Rust Burn to enemies"));
+					tooltips.Add(new TooltipLine(mod, "Bonuses", Buffs.RustBurn.RustText));
+				}
 				if (shoot.thepower >= 3.0)
-					tooltips.Add(new TooltipLine(mod, "Bonuses", "Lv3: Applies Moonlight Curse to enemies (replaces Daybroken)"));
+					tooltips.Add(new TooltipLine(mod, "Bonuses", "Lv3: Applies Moonlight Curse to enemies)"));
 
 			}
 		}
@@ -150,7 +153,12 @@ namespace SGAmod.Items.Weapons.Auras
 					himas.AddBuff(BuffID.BetsysCurse, 3);
 					if (thepower >= 2)
 					{
-						himas.AddBuff(thepower >= 3 ? ModContent.BuffType<Buffs.MoonLightCurse>() : BuffID.Daybreak, 3);
+						Buffs.RustBurn.ApplyRust(himas,3);
+						himas.AddBuff(ModContent.BuffType<Buffs.RustBurn>(), 3);
+					}
+					if (thepower >= 3)
+					{
+						himas.AddBuff(ModContent.BuffType<Buffs.MoonLightCurse>(), 3);
 					}
 				}
 			}

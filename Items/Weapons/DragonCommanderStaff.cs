@@ -19,8 +19,10 @@ using Terraria.Utilities;
 namespace SGAmod.Items.Weapons
 {
 
-	public class DragonCommanderStaff : ModItem, IHitScanItem, IDevItem
+	public class DragonCommanderStaff : ModItem, IHitScanItem, IDevItem, IHellionDrop
 	{
+		int IHellionDrop.HellionDropAmmount() => 1;
+		int IHellionDrop.HellionDropType() => ModContent.ItemType<DragonCommanderStaff>();
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dragon Commander");

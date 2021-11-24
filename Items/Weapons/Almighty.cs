@@ -152,16 +152,17 @@ namespace SGAmod.Items.Weapons
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
 		}
 
-		public void CheckApoco(ref int damage,NPC npc,Projectile proj)
+		public void CheckApoco(ref int damage,NPC npc,Projectile proj,bool always=false)
         {
 			float kb = 0f;
 			bool crit = false;
 			double[] highestApoco = Main.player[projectile.owner].SGAPly().apocalypticalChance.OrderBy(testby => 10000 - testby).ToArray();
+			damage += npc.defense / 2;
 
 			if (npc.realLife >= 0)
 				damage = (int)(damage * 0.10f);
 
-			if (Main.rand.NextFloat(100f)< highestApoco[0])
+			if (always || Main.rand.NextFloat(100f)< highestApoco[0])
 			npc.SGANPCs().DoApoco(npc, proj, Main.player[projectile.owner], null, ref damage, ref kb, ref crit,2,true);
         }
 
@@ -515,7 +516,7 @@ namespace SGAmod.Items.Weapons
 
 				if (projectile.ai[0] == 8)
 				{
-					int damage = Main.DamageVar(projectile.damage) + enemy.defense / 2;
+					int damage = Main.DamageVar(projectile.damage);
 					CheckApoco(ref damage, enemy, projectile);
 					enemy.StrikeNPC(damage, 0, 1, false);
 					SGAmod.AddScreenShake(6f, 2400, enemy.Center);
@@ -575,7 +576,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
-			item.damage = 500;
+			item.damage = 1000;
 			item.width = 48;
 			item.height = 48;
 			item.useTurn = true;
@@ -726,8 +727,8 @@ namespace SGAmod.Items.Weapons
 
 						if (enemy.Hitbox.Intersects(rect))
 						{
-							int damage = (int)((Main.DamageVar((projectile.damage)) + enemy.defense / 2) * (endhit ? 10f : 1f));
-							CheckApoco(ref damage, enemy, projectile);
+							int damage = (int)((Main.DamageVar((projectile.damage))) * (endhit ? 5f : 1f));
+							CheckApoco(ref damage, enemy, projectile, endhit);
 							enemy.StrikeNPC(damage, 0, 1, false);
 							Main.player[projectile.owner].addDPS(damage);
 						}
@@ -899,12 +900,14 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
-	public class RaysOfControl : Megido
+	public class RaysOfControl : Megido,IHellionDrop
 	{
+		int IHellionDrop.HellionDropAmmount() => 1 + Main.rand.Next(3);
+		int IHellionDrop.HellionDropType() => ModContent.ItemType<RaysOfControl>();
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rays Of Control");
-			Tooltip.SetDefault("'Unleash the wrath of all of mankind's greatest sins in 1 unholy blast'\n" + Idglib.ColorText(Color.Orange, "Requires 5 Cooldown stacks, adds 200 seconds"));
+			Tooltip.SetDefault("'Unleash the wrath of all of mankind's greatest sins in one unholy blast'\n" + Idglib.ColorText(Color.Orange, "Requires 5 Cooldown stacks, adds 200 seconds"));
 		}
 
 		public override void SetDefaults()
@@ -931,7 +934,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool CanUseItem(Player player)
 		{
-			if (true || player.SGAPly().AddCooldownStack(100, 5, testOnly: true))
+			if (player.SGAPly().AddCooldownStack(100, 5, testOnly: true))
 			{
 				return true;
 			}
@@ -940,7 +943,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			//player.SGAPly().AddCooldownStack(60 * 200, 5);
+			player.SGAPly().AddCooldownStack(60 * 200, 5);
 
 			position = player.Center - new Vector2(0,320);
 
@@ -954,6 +957,7 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<MorningStar>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<DrakeniteBar>(), 2);
 			recipe.AddIngredient(ModContent.ItemType<ByteSoul>(), 6);
 			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 6);
 			recipe.AddIngredient(ModContent.ItemType<StygianCore>(), 1);
@@ -961,8 +965,7 @@ namespace SGAmod.Items.Weapons
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
-
-	}
+    }
 
 	public class RaysOfControlProj : MegidoProj
 	{
@@ -1154,6 +1157,11 @@ namespace SGAmod.Items.Weapons
 
 				if (!Main.dedServ)
 				{
+					if (projectile.ai[0] < 160)
+                    {
+						SGAmod.AddScreenShake(2, 2600, projectile.Center);
+					}
+
 					RaysOfControlOrb.Load();
 					RaysOfControlOrb.oneUpdate = true;
 
@@ -1176,8 +1184,29 @@ namespace SGAmod.Items.Weapons
 
 			}
 
+			if (projectile.ai[0] == 150 || (projectile.ai[0]>150 && projectile.ai[0] <260 && projectile.ai[0]%10==0))
+			{
+				bool bigboom = projectile.ai[0] == 150;
 
+				if (!Main.dedServ && Main.myPlayer == player.whoAmI)
+				SGAmod.AddScreenShake(bigboom ? 30 : 5,600, player.MountedCenter);
 
+				foreach (NPC enemy in Main.npc.Where(testby => testby.active && !testby.friendly && !testby.dontTakeDamage))
+				{
+					Vector2 oldpos = projectile.Center;
+					if ((enemy.Hitbox.Center()-projectile.Center).Length()<6000)
+					{
+						projectile.Center = enemy.Hitbox.Center();
+						int vardamage = (int)(projectile.damage * (bigboom ? 1f : 0.15f));
+						int damage = (int)((Main.DamageVar(vardamage) * (projectile.ai[0] == 150 ? 0.5f : 1f)));
+						CheckApoco(ref damage, enemy, projectile, projectile.ai[0] == 150);
+						enemy.StrikeNPC(damage, 0, 1, false);
+						Main.player[projectile.owner].addDPS(damage);
+					}
+					projectile.Center = oldpos;
+				}
+
+			}
 
 
 			controlRays = controlRays.Where(testby => testby.timeLeft > 0).ToList();
@@ -1572,7 +1601,7 @@ namespace SGAmod.Items.Weapons
 
 				foreach (NPC npc in Main.npc.Where(testby => testby.active && !testby.friendly && !testby.dontTakeDamage && (testby.Center - projectile.Center).Length() < lenn))
 				{
-					int damage = Main.DamageVar(projectile.damage)+npc.defense/2;
+					int damage = Main.DamageVar(projectile.damage);
 					CheckApoco(ref damage, npc, projectile);
 					npc.StrikeNPC(damage, 0, 1, false);
 					player.addDPS(damage);

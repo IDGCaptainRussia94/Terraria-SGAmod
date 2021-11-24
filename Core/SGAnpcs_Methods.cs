@@ -172,7 +172,7 @@ namespace SGAmod
 					chanceboost += projectile.GetGlobalProjectile<SGAprojectile>().extraApocoChance;
 				}
 
-				if (always || Main.rand.Next(0, 100) < (moddedplayer.apocalypticalChance[chance]+chanceboost) && crit)
+				if (always || (crit && Main.rand.Next(0, 100) < (moddedplayer.apocalypticalChance[chance]+chanceboost)))
 				{
 					if (moddedplayer.HoE && projectile != null)
 					{
@@ -259,6 +259,8 @@ namespace SGAmod
 
 					if (moddedplayer.RadSuit)
                     {
+						//IrradiatedAmmount = Math.Max(IrradiatedAmmount, 25);
+
 						IrradiatedExplosion(npc, (int)(damage * 1f * moddedplayer.apocalypticalStrength));
 
 						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageHealImpact, (int)npc.Center.X, (int)npc.Center.Y);

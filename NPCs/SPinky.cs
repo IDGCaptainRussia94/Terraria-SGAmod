@@ -1502,7 +1502,7 @@ namespace SGAmod.NPCs
 	public class SPinky : ModNPC, ISGABoss
 	{
 		public string Trophy() => "SupremePinkyTrophy";
-		public bool Chance() => Main.rand.Next(0, 10) == 0 && ((GetType() == typeof(SPinky) || !Main.expertMode) || (GetType() == typeof(SPinkyTrue)));
+		public bool Chance() => Main.rand.Next(0, 10) == 0 && ((GetType() == typeof(SPinky) && !Main.expertMode) || (GetType() == typeof(SPinkyTrue)));
 		public string RelicName() => GetType() == typeof(SPinkyTrue) ? "SPinky" : "NOU";
 		public void NoHitDrops() { }
 
@@ -2908,7 +2908,9 @@ namespace SGAmod.NPCs
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(Main.extraTexture[60], startpos - Main.screenPosition, null, color * MathHelper.Clamp(projectile.timeLeft / (float)timeleft, 0f, 0.75f), there, (Main.extraTexture[60].Size() / 2f) + new Vector2(0, 12), new Vector2(GetType() == typeof(Murk.MurkTelegraphedAttack) ? 0.25f : 0.75f, projectile.ai[0]* projectile.damage), SpriteEffects.None, 0f);
+			Vector2 scale = projectile.Hitbox.Size()/16f;
+
+			spriteBatch.Draw(Main.extraTexture[60], startpos - Main.screenPosition, null, color * MathHelper.Clamp(projectile.timeLeft / (float)timeleft, 0f, 0.75f), there, (Main.extraTexture[60].Size() / 2f) + new Vector2(0, 12), scale*(new Vector2(GetType() == typeof(Murk.MurkTelegraphedAttack) ? 0.25f : 0.75f, projectile.ai[0]* projectile.damage)), SpriteEffects.None, 0f);
 			//}
 
 			Main.spriteBatch.End();

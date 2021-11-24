@@ -288,8 +288,10 @@ namespace SGAmod.Items.Weapons
 	}
 
 
-	class GucciGauntlet : ThrowerGlove
+	class GucciGauntlet : ThrowerGlove, IHellionDrop
 	{
+		int IHellionDrop.HellionDropAmmount() => 1;
+		int IHellionDrop.HellionDropType() => ModContent.ItemType<GucciGauntlet>();
 		public override int level => 3;
 
 		public override void SetStaticDefaults()

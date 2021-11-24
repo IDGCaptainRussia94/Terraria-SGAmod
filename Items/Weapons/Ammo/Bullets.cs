@@ -242,8 +242,10 @@ namespace SGAmod.Items.Weapons.Ammo
 		}
 	}
 
-	public class AimBotBullet : ModItem
+	public class AimBotBullet : ModItem, IHellionDrop
 	{
+		int IHellionDrop.HellionDropAmmount() => 500 + Main.rand.Next(501);
+		int IHellionDrop.HellionDropType() => ModContent.ItemType<AimBotBullet>();
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Aim-Bot Bullet");

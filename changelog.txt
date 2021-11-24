@@ -22,13 +22,31 @@ Changelog:
 
 -disabled Caliburn Guardian debug mode
 
--Changed the vertical speed values on the Luminary Wings to make them not crap during walkmode
+-Changed the vertical speed values on the Luminary Wings to make them not crap during walkmode, but still fast and agile enough more precise movements
 
 -(hopefully) Fixed null dungeon level error with the strange portal
+
+-Added (and finished) Rays of Control
+
+-Acidic Egg now uses a demon altar
+
+-Buffed Morning Star: damage increased to 500, final hit does an apoco hit at 5X damage (increase of 10X)
+
+-Fixed S-Pinky dropping trophies in their 1st phase in expert mode
+
+-Buffed Vibranium Breastplate: grants some passive recharge rate
+
+-Buffed Hellion Cascade: hits 3 times as fast now (10 frames VS 30), reworked damage
+
+-Hellion will now drop a random post-Hellion item on defeat, excluding Enmity
 
 -New changes to Helen Hellion Weygold:
 -Updated Xemnas Laser attack: now targets center, is shorter, and faster paced
 -Will now choose either Xemnas or Laser Hell for the phase 3 transition
+
+-New changes to Hellion Core:
+-Phase 1's laser spam chase been changed to a new pattern and attack
+-Phase 3's cursed fireball charges has been replaced with the hands doing a fast-telegraphed slam attack at the player
 
 
 

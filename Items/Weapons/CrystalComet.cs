@@ -153,8 +153,11 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class ShootingStar : CrystalComet
+	public class ShootingStar : CrystalComet, IHellionDrop
 	{
+		int IHellionDrop.HellionDropAmmount() => 1;
+		int IHellionDrop.HellionDropType() => ModContent.ItemType<ShootingStar>();
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shooting Star");

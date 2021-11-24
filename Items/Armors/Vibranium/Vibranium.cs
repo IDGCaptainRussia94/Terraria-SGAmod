@@ -226,7 +226,7 @@ namespace SGAmod.Items.Armors.Vibranium
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Breastplate");
-			Tooltip.SetDefault("10% faster item use times\n+1% (1.5% summon) increased damage and 0.5% crit chance per 1000 Electric Charge\nGrants 25% increased radiation resistance and 500% increased recover rate\n+5000 Max Electric Charge");
+			Tooltip.SetDefault("10% faster item use times\n+1% (1.5% summon) increased damage and 0.5% crit chance per 1000 Electric Charge\nGrants 25% increased radiation resistance and 500% increased recover rate\n+5000 Max Electric Charge and +5 Recharge Rate");
 		}
         public override bool Autoload(ref string name)
         {
@@ -252,6 +252,7 @@ namespace SGAmod.Items.Armors.Vibranium
 			player.minionDamage += percentCharge * 0.5f;
 
 			player.SGAPly().electricChargeMax += 5000;
+			player.SGAPly().electricrechargerate += 5;
 			player.GetModPlayer<IdgPlayer>().radresist += 0.25f;
 			player.GetModPlayer<IdgPlayer>().radationRecover += 0.04f;
 		}		

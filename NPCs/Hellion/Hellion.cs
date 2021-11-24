@@ -23,6 +23,7 @@ using SGAmod.Effects;
 using System.Linq;
 using Microsoft.Xna.Framework.Audio;
 using System.Net;
+using System.Reflection;
 
 namespace SGAmod.NPCs.Hellion
 {
@@ -3313,10 +3314,26 @@ namespace SGAmod.NPCs.Hellion
 					HellionAttacks.HellionWelcomesYou();
 				}
 				Achivements.SGAAchivements.UnlockAchivement("Hellion", Main.LocalPlayer);
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("ByteSoul"), 300);
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("DrakeniteBar"), Main.rand.Next(45, 60));
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CodeBreakerHead"), 1);
+				Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, mod.ItemType("ByteSoul"), 300);
+				Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, mod.ItemType("DrakeniteBar"), Main.rand.Next(45, 60));
+				Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, mod.ItemType("CodeBreakerHead"), 1);
+
+			List<(int,int)> HellionItems = new List<(int, int)>();
+			Assembly hellionsAss = SGAmod.Instance.Code;
+
+			foreach (Type helltype in hellionsAss.GetTypes())
+			{
+				if (helltype.GetInterfaces().Contains(typeof(IHellionDrop)))
+				{
+					IHellionDrop ihelldrop = (hellionsAss.CreateInstance(helltype.FullName) as IHellionDrop);
+					HellionItems.Add((ihelldrop.HellionDropType(), ihelldrop.HellionDropAmmount()));
+				}
 			}
+
+			HellionItems = HellionItems.OrderBy(testby => Main.rand.Next()).ToList();
+
+			Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, HellionItems[0].Item1, HellionItems[0].Item2);
+		}
 			public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 			{
 				npc.lifeMax = (int)(npc.lifeMax * 0.625f * bossLifeScale);
@@ -3573,7 +3590,7 @@ namespace SGAmod.NPCs.Hellion
 			if (type == ProjectileID.DemonScythe)
             {
 				Projectile.NewProjectile(projectile.Center, projectile.localAI[0].ToRotationVector2() * 1f, ModContent.ProjectileType<PinkyWarning>(), 5, 2f);
-			}
+			}		
 			Main.projectile[prog].friendly = projectile.friendly;
 			Main.projectile[prog].hostile = projectile.hostile;
 			Main.projectile[prog].tileCollide = false;

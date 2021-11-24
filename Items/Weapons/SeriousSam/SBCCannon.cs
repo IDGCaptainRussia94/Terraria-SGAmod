@@ -535,8 +535,10 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 	}
 
-	public class SBCCannonMK2 : SBCCannon, ITechItem
+	public class SBCCannonMK2 : SBCCannon, ITechItem, IHellionDrop
 	{
+		int IHellionDrop.HellionDropAmmount() => 1;
+		int IHellionDrop.HellionDropType() => ModContent.ItemType<SBCCannonMK2>();
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("SBC Cannon MK2");

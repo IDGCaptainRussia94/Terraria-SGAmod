@@ -1676,6 +1676,7 @@ namespace SGAmod
 			}
 
 			volume += Math.Sign(volumeGoal - volume) * volumeChangeRate;
+			this.volume = MathHelper.Clamp(volume, 0f, 1f);
 			this.SetVariable("Volume", volume * volumeScale * Main.musicVolume);
 
 			pitch += Math.Sign(pitchGoal - pitch) * pitchChangeRate;

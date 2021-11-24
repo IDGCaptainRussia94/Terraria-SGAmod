@@ -1479,12 +1479,12 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
-	public class RadSuit : SybariteGem
+	public class RadSuit : SybariteGem,IRadioactiveDebuffText
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rad Suit");
-			Tooltip.SetDefault("'Deflects punching at a molecular level!'\nGrants 50% increased radiation resistance and immunity to Radiation One\nYou create bursts of Radiation on enemies when you score an Apocalyptical\nEnemies killed while Irradiated explode\nDamage done is boosted by your Apocalyptical Strength");
+			Tooltip.SetDefault("'Deflects punching at a molecular level!'\nGrants 50% increased radiation resistance and immunity to Radiation One\nYou create bursts of Radiation on enemies when you score an Apocalyptical\n"+Idglib.ColorText(Color.Red, "But only on enemies who are irradiated")+"\nDamage done is boosted by your Apocalyptical Strength");
 		}
 		public override string Texture
 		{

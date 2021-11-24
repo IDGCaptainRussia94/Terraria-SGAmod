@@ -32,7 +32,7 @@ namespace SGAmod.Items.Weapons.Aurora
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Skylight");
-            Tooltip.SetDefault("Rend and Sunder all with the fury the heavens!\nPrimary channels energy from the celestial body in the sky\nOnce channeling, you cannot cancel for a short time\nYou can only channel when your energy is depleted\nLaunches celestial slashs that apply stacking damage over time");
+            Tooltip.SetDefault("'Rend and Sunder all with the fury of the heavens!'\nPrimary channels energy from the celestial body in the sky\nOnce channeling, you cannot cancel for a short time\nYou can only channel when your energy is depleted\nLaunches celestial slashs that apply stacking damage over time");
             Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
         }
 

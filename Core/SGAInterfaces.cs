@@ -58,6 +58,13 @@ namespace SGAmod
 	{
 
 	}
+	interface IHellionDrop
+	{
+		int HellionDropAmmount();
+		int HellionDropType();
+
+
+	}
 	interface INonDestructableProjectile
 	{
 

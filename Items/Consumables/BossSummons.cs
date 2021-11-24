@@ -263,7 +263,7 @@ namespace SGAmod.Items.Consumables
 			recipe.AddIngredient(ItemID.RottenEgg, 1);
 			recipe.AddIngredient(ItemID.Cobweb, 25);
 			recipe.AddRecipeGroup("SGAmod:EvilBossMaterials", 5);
-			recipe.AddTile(TileID.WorkBenches);
+			recipe.AddTile(TileID.DemonAltar);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}

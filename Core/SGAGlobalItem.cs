@@ -275,7 +275,7 @@ namespace SGAmod
                     {
                         valuez.Add(text2 + " ");
                     }
-                    valuez.Insert(1, "Technological ");
+                    valuez.Insert(1, "technological ");
                     foreach (string text3 in valuez)
                     {
                         newline += text3;
@@ -336,7 +336,7 @@ namespace SGAmod
             {
                 return "SpaceDiver";
             }
-            if (head.type == ModContent.ItemType<Items.Armors.Mandala.MandalaHood>() || body.type == ModContent.ItemType<Items.Armors.Mandala.MandalaChestplate>() || legs.type == ModContent.ItemType<Items.Armors.Mandala.MandalaLeggings>())
+            if (head.type == ModContent.ItemType<Items.Armors.Mandala.MandalaHood>() && body.type == ModContent.ItemType<Items.Armors.Mandala.MandalaChestplate>() && legs.type == ModContent.ItemType<Items.Armors.Mandala.MandalaLeggings>())
             {
                 return "Mandala";
             }
@@ -492,8 +492,9 @@ namespace SGAmod
             }
             if (set == "Mandala")
             {
-                player.setBonus = "A minature Asteriod belt and Phaethon manifest around you\nAny debuffs you have are inflicted on enemies by your minions\nManifested weapon: Overseer's Tutelage";
-                //sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Desert.ManifestedSandTosser>();
+                player.setBonus = "Makes you a disciple of the Shadowspirits\nOne will follow you and grant you its powers\nManifested weapon: Overseer's Tutelage";
+                sgaplayer.mandalaSet.Item1 = true;
+                sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Mandala.ManifestedMandalaControls>();
             }
             if (set == "Valkyrie")
             {
@@ -1135,14 +1136,6 @@ namespace SGAmod
             {
                 item.maxStack = 29;
             }
-            if (item.modItem!=null && item.modItem is IManifestedItem)
-            {
-                if (player.inventory[player.selectedItem] != item)
-                {
-                    item.active = false;
-                    item.TurnToAir();
-                }
-            }
 
             string[] buffTier = { "", "RadiationOne", "RadiationTwo", "RadiationThree" };
 
@@ -1153,6 +1146,16 @@ namespace SGAmod
 
                 if (indexer > 0)
                     player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff(buffTier[indexer]).Type, 2);
+            }
+
+            if (item.modItem != null && item.modItem is IManifestedItem)
+            {
+                if (player.inventory[player.selectedItem] != item)
+                {
+                    item.active = false;
+                    //item.TurnToAir();
+                    item.type = 0;
+                }
             }
 
         }

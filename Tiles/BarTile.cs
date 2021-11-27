@@ -13,6 +13,7 @@ namespace SGAmod.Tiles
         public override void SetDefaults()
         {
             TileID.Sets.Ore[Type] = true;
+            if (!drakenite)
             Main.tileShine[Type] = 2100;
             Main.tileSolid[Type] = true;
             Main.tileSolidTop[Type] = true;
@@ -28,21 +29,29 @@ namespace SGAmod.Tiles
             drop = itemID;
         }
 
+        bool drakenite = false;
         int itemID => SGAmod.Instance.ItemType(internalname);
         string internalname;
         string barname;
         Color color;
 
-        public BarTile(string internalname2,string barname,Color color)
+        public BarTile(string internalname2,string barname,Color color,bool drakenite=false)
         {
             internalname = internalname2;
             this.barname = barname;
             this.color = color;
+            this.drakenite = drakenite;
         }
 
         public override bool Autoload(ref string name, ref string texture)
         {
             return false;
+        }
+
+        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+        {
+            if (Main.tile[i,j].type == mod.TileType("DrakeniteBarTile"))
+            Dimensions.Tiles.Fabric.DrawStatic(this, i, j, spriteBatch,drakenite: true);
         }
 
     }

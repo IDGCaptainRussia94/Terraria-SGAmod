@@ -1,6 +1,6 @@
 Changelog:
 
-3.600j-(11/18/21)-Patch 11-Tech N Wreck: Beta
+3.600j-(11/24/21)-Patch 11-Tech N Wreck: Beta
 
 -Attempted a handful of loading fixes, including one regarding the space boss and recipe browser
 
@@ -26,11 +26,11 @@ Changelog:
 
 -(hopefully) Fixed null dungeon level error with the strange portal
 
--Added (and finished) Rays of Control
+-Added (and finished) Rays of Control, it's so OP and I love it
 
--Acidic Egg now uses a demon altar
+-Acidic Egg now required a demon altar to craft
 
--Buffed Morning Star: damage increased to 500, final hit does an apoco hit at 5X damage (increase of 10X)
+-Buffed Morning Star: damage increased to 1000, final hit does an apoco hit at 5X damage, cooldown stack time increased to 200 seconds (from 150)
 
 -Fixed S-Pinky dropping trophies in their 1st phase in expert mode
 
@@ -39,6 +39,24 @@ Changelog:
 -Buffed Hellion Cascade: hits 3 times as fast now (10 frames VS 30), reworked damage
 
 -Hellion will now drop a random post-Hellion item on defeat, excluding Enmity
+
+-Drakenite Bar Tiles have a rainbow static
+
+-Fixed Valkyrie Leggings also not applying their nighttime flight bonus
+
+-(hopefully) fixed the Manifested Weapon error
+
+-Nerfed Prosperity Rod: Damage lowered
+
+-Added Debug item for Cata to allow unlimited abuse of the Nuclear Option
+
+-Updated Radiation in IDGlib to only restore 25% of your lost HP when you die to it (there's also a different death message for Limbo Fading)
+
+-Fixed Gunslinger Legend using the wrong hotkey tooltip
+
+-Finished and Added Mandala Armor
+
+-Gave Phaethon's main eye more flair to go along with the Mandala one
 
 -New changes to Helen Hellion Weygold:
 -Updated Xemnas Laser attack: now targets center, is shorter, and faster paced
@@ -79,7 +97,7 @@ Changelog:
 
 -Buffed Nuclear Option: has a passive recharge and less based off max life regen
 
--Reworked Avarice: projectiles lose 50% of their damage per hit (100% on 1st, 50% on 2nd hit, 25% on 3rd hit), but now on the 3rd hit it inflicts Microtransactions: that damages enemy money values, drops more money on the ground and deals damage over time if they are still worth something
+-Reworked Avarice: projectiles lose 50% of their damage per hit (100% on 1st, 50% on 2nd hit, 25% on 3rd hit), Midas on 1st, Shadowflame on 2nd, but now on the 3rd hit it inflicts Microtransactions: that damages enemy money values, drops more money on the ground and deals damage over time if they are still worth something
 
 -Reworked Aura Borealis Staff: Applies Rust Burn at level 2 instead of Daybroken
 
@@ -316,7 +334,9 @@ Changelog:
 
 -Fixed Main Sequence Staff killing town NPCs (I think this was intentional as a downside when I 1st coded it... but yeah, too trollish), also does only 10% against enemies with shared life
 
--Fixed VibraniumMask giving far too little melee Apoco chance
+-Fixed Vibranium Mask giving far too little melee Apoco chance
+
+-(may have) been the update I added the Sirius Gun
 
 -Started running various MP tests:
 -Fixed Main-Sequence Staff trying to access a texture server-end
@@ -527,9 +547,12 @@ Changelog:
 
 3.600a-(9/13/21)-Patch 11-Tech N Wreck: Beta
 
+Guess who's back!?! SGAmod returns a year later with the largest update to drop yet! Featuring many improves and vast effort to overhaul and modernize the mod to new personal higher standards while still retaining that original random content mod fun aspect!
+Hope you enjoy, it's been half a year in the making!
+
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Skye Hook, Firefox Greatbow, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, True Dragon Wings, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Sirius Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Oranos Skye Hook, Firefox Greatbow, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, Avarice Lord Wings, Draconic Claw Necklace, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault, Deific Healing Potion
 -Almighty SMT Spellcards: Megido, Megidola, Megidolaon, Morning Star, and may have forgotten some items
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
@@ -542,11 +565,13 @@ Changelog:
 
 -Luminous Alter, use it to transmute various items overtime by infusing them with Starlight!
 
--New Potions: Phalanx Potion, Reflex Potion
+-New Potions: Phalanx Potion, Reflex Potion: enhance your held shield-play
 
 -1.4-like Relics and other rewards added for no-hitting bosses!
 
 -Hoppers, Droppers, Sifting Funnels, Mod Grinders, and more. Hands on tech mod elements to automate your Terraria with content I felt was missing from Vanilla!
+
+-Entropic Relocator (Tnemunom's idea), to remove (and relocate) Dark Sectors
 
 -A stronger post-L.Wraith Prismic Banshee that drops double loot (hint: put fallen stars into the previous mentioned Luminous Alter). Also the Prismic Banshee has been given a brand new original look! Thanks JellyBru and Rijam!
 
@@ -563,6 +588,8 @@ Changelog:
 -Limbo has been given a loading screen
 
 -Added alot of missing debuff icons
+
+-Added Godray-screen explosion effects! (only used in a few specific places, as several at once can get messy)
 
 -A few new music tracks, including one for Cratrosity (thanks again Rijam!)
 
@@ -595,7 +622,7 @@ Changelog:
 
 -Boss checklists; be sure to check it AFTER each fight as well!
 
--Sharkvern's HP increased to 120000, body segments now take 25% (Tail 0%) reduced damage to peircing weapons, and no reduction to true melee projectiles (IE yoyos, spears), various changes have happened to the fight, and various balance changes as well
+-Sharkvern's HP increased to 120000, body segments now take 25% (Tail 0%) reduced damage to piercing weapons, and no reduction to true melee projectiles (IE yoyos, spears), various changes have happened to the fight, and various balance changes as well
 
 -Sharkvern and their storm effects can no longer drown an underground player
 
@@ -617,6 +644,12 @@ Changelog:
 
 -Traveling Merchant's SGAmod items are a bit more common
 
+-Limbo is now a bit extra spooky
+
+-Transmutation Powder can now be thrown on Novus/Novite ore items on the ground in addition to tiles
+
+-Changed the Null astetic with its after image effect a bit
+
 -Cratrosity now properly uses texture pack crates
 
 -All damage and crit boosts now affect Thorium modded damage types
@@ -634,6 +667,8 @@ Changelog:
 -Ancient Fabric is now sold by the Merchant in multiplayer
 
 -Added a tooltip for auras
+
+-Deeper Dungeons has some smoothed Ice via the same code used for the asteriods, no more square ice!
 
 -Aura Weapons now only affect players on the same team
 
@@ -673,9 +708,15 @@ Changelog:
 
 -Portable 'Makeshift' Spear Trap and Portable Spear Trap have gained a new functionality to allow them to act as grapple guns
 
+-Laser Markers can be made with colors via different gemstones, and are visually improved
+
+-Dark Sectors use a different sprite, some subtle coloring effects, and no longer use negative blending... Now, if only I could do the same for the fog effect
+
 -Rebalanced Maldal: Has a different effect that won't hurt the player
 
--Rebalanced Sticky Situation: now has 3.75% (30 => 112) more damage, instead of the projectile doing more damage
+-Rebalanced Sticky Situation: now has 3.75X (30 => 112) more damage, instead of the projectile doing more damage
+
+-Reworked Avarice: projectiles lose 50% of their damage per hit (100% on 1st, 50% on 2nd hit, 25% on 3rd hit), Midas on 1st, Shadowflame on 2nd, but now on the 3rd hit it inflicts Microtransactions: that damages enemy money values, drops more money on the ground and deals damage over time if they are still worth something
 
 -Buffed Radiation Cure Potion: now grants life recovery during boss fights, but at a greatly reduced rate
 
@@ -719,7 +760,11 @@ Changelog:
 
 -Buffed High Noon: Damage bonus increased to 10%, bullet to 6%
 
+-Buffed Dies Irae Stone: now also triggers on SoC bonks
+
 -Buffed all consumable Jab-lins: as they now have a chance to drop again after expiring
+
+-Buffed all the low-block angle shields: Easier to block projectiles with a wider angle
 
 -Nerfed Mister Creeper's Armor Set: all damage types that are not melee and throwing get a -10% damage and crit chance per armor piece
 
@@ -763,7 +808,7 @@ Changelog:
 
 -Removed the flavor icons on the mod's name, especially the statues, they made searching up the mod impractically... Difficult. I'll re-add them in the description where they won't matter as much, also rewrote the description because it was dated
 
--Various visual updates here and there
+-Various visual updates here and there, likely alot of stuff I'm forgetting
 
 
 --Fixed
@@ -800,11 +845,15 @@ Changelog:
 
 -Calburn's defeat message, it now says you can break moist stone only after you've beaten all 3 of them
 
--Cyber Scythe's max range growing smaller with melee speed instead of larger
+-Cyber Scythe's max range shrinking with melee speed instead of growing
 
 -Rustwork Blade can now be used to craft the Big Bang, and now only displays its extra text once
 
+-A bug where the Sybarite Gem wasn't being properly used by the Corperate Epiphany
+
 -Hopefully Limbo no longer displays mountains in it
+
+-Hopefully stopped mechs during Twin Prime Destroyers fight from despawning
 
 -Granite/Cobalt magnet should no longer cause items to get stuck on platforms
 
@@ -846,6 +895,8 @@ Changelog:
 
 -The Amulet of Diehard Cataclysm having a crafting recipe
 
+-Wing time bonuses not being applied on IDGCaptainRussia94's Dragon Dressings and Mister Creeper's Business Casual
+
 -Placed bar tiles having the same colors
 
 -Cirno refusing to spawn serverside, she now spawns on the client end of whoever summoned her and is synced from there
@@ -865,6 +916,8 @@ Changelog:
 -Novus Bars when placed being called Unmaned
 
 -Frigid Shard floating
+
+-Blink Teleporting working on mounts sometimes (leading to some BS moments when you need specific movements)
 
 -(this may have been this update I don't remember) mining under Caliburn shrines, breaking them
 

@@ -529,7 +529,7 @@ namespace SGAmod
 			AddTile("BiomassBarTile", new BarTile("BiomassBar", "Biomass Bar", new Color(40, 150, 40)), "SGAmod/Tiles/BiomassBarTile");
 			AddTile("VirulentBarTile", new BarTile("VirulentBar", "Virulent Bar", new Color(21, 210, 20)), "SGAmod/Tiles/VirulentBarTile");
 			AddTile("CryostalBarTile", new BarTile("CryostalBar", "Cryostal Bar", new Color(21, 60, 100)), "SGAmod/Tiles/CryostalBarTile");
-			AddTile("DrakeniteBarTile", new BarTile("DrakeniteBar", "Drakenite Bar", new Color(0, 240, 0)), "SGAmod/Tiles/DrakeniteBarTile");
+			AddTile("DrakeniteBarTile", new BarTile("DrakeniteBar", "Drakenite Bar", new Color(0, 240, 0),true), "SGAmod/Tiles/DrakeniteBarTile");
 			AddTile("StarMetalBarTile", new BarTile("StarMetalBar", "Star Metal Bar", new Color(244, 232, 250)), "SGAmod/Tiles/StarMetalBarTile");
 			AddTile("VibraniumBarTile", new BarTile("VibraniumBar", "Vibranium Bar", new Color(181, 85, 127)), "SGAmod/Tiles/VibraniumBarTile");
 			AddTile("WovenEntrophiteTile", new BarTile("WovenEntrophite", "Woven Entrophite", new Color(32, 0, 32)), "SGAmod/Tiles/WovenEntrophiteTile");

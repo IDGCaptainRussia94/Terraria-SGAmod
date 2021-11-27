@@ -515,7 +515,7 @@ namespace SGAmod
 
 			if (IrradiatedAmmount > 0)
 			{
-				for (int i = 0; i < Math.Min(10, IrradiatedAmmount / 10); i += 1)
+				for (int i = 0; i < Math.Min(12, IrradiatedAmmount / 32); i += 1)
 				{
 					if (Main.rand.Next(100) < 1)
 					{

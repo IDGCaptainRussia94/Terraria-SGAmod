@@ -47,6 +47,29 @@ namespace SGAmod.Items.Consumables
 
 	}
 
+	public class Debug10 : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug-Cataclysmic Mothron Head to Unlimited Brit Power of supreme Manifest Destiny");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 666;
+			item.height = 666;
+			item.rare = 6;
+			item.value = 66666;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item9;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Gore_687"; }
+		}
+
+	}
+
 	public class Debug9 : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -65,7 +88,7 @@ namespace SGAmod.Items.Consumables
 		}
         public override void UpdateInventory(Player player)
         {
-			player.SGAPly().disabledAccessories = Math.Max(player.SGAPly().disabledAccessories,4);
+			player.SGAPly().disabledAccessories = Math.Max(player.SGAPly().disabledAccessories,16);
         }
         public override string Texture
 		{

@@ -1976,7 +1976,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ModContent.ItemType<ThrowingStars>(), 25);
 			recipe.AddIngredient(ItemID.FragmentSolar, 1);
 			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 2);
-			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this, 25);
 			recipe.AddRecipe();
 		}

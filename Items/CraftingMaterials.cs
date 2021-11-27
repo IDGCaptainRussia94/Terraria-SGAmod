@@ -2019,11 +2019,10 @@ namespace SGAmod.Items
 
 	public class FinalGem : ModItem
 	{
-		protected virtual Color color => Color.Lime;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Final Gem");
-			Tooltip.SetDefault("While in your inventory, empowers the Gucci Guantlet to its true full power");
+			Tooltip.SetDefault("While in your inventory, empowers the Gucci Guantlet to its true full power\nFavorite to disable all the gems");
 		}
 		public override void SetDefaults()
 		{
@@ -2037,6 +2036,7 @@ namespace SGAmod.Items
 		}
         public override void UpdateInventory(Player player)
         {
+			if (!item.favorited)
 			player.SGAPly().finalGem = 3;
         }
 

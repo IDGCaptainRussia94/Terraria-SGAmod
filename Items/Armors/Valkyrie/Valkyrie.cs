@@ -17,9 +17,13 @@ namespace SGAmod.Items.Armors.Valkyrie
         public override bool Autoload(ref string name)
         {
 			if (GetType() == typeof(ValkyrieHelm))
+			{
 				SGAPlayer.PostUpdateEquipsEvent += SetBonus;
+                SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostPostUpdateEquipsEvent;
+			}
 			return true;
         }
+
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Valkyrie Helm");
@@ -74,9 +78,17 @@ namespace SGAmod.Items.Armors.Valkyrie
 
 				if (player.Male)
 					player.endurance += 0.15f;
-				else
-					player.wingTimeMax = (int)(player.wingTimeMax * 1.20f);
 
+			}
+		}
+		private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer sgaplayer)
+		{
+			if (sgaplayer.valkyrieSet.Item1)
+			{
+				Player player = sgaplayer.player;
+
+				if (!player.Male)
+					player.wingTimeMax = (int)(player.wingTimeMax * 1.20f);
 			}
 		}
 		public Color ArmorGlow(Player player, int index)
@@ -157,7 +169,14 @@ namespace SGAmod.Items.Armors.Valkyrie
 			DisplayName.SetDefault("Valkyrie Leggings");
 			Tooltip.SetDefault("10% increased throwing damage\n25% increase to movement speed\nFlight time and movement speed improved by 15% at night\nGrants life regeneration");
 		}
-		public override void SetDefaults()
+
+        public override bool Autoload(ref string name)
+        {
+            SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostPostUpdateEquipsEvent;
+			return true;
+        }
+
+        public override void SetDefaults()
 		{
 			item.width = 18;
 			item.height = 18;
@@ -166,14 +185,18 @@ namespace SGAmod.Items.Armors.Valkyrie
 			item.defense = 15;
 			item.lifeRegen = 2;
 		}
+		private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer player)
+		{
+			if (!Main.dayTime && player.player.armor[2].type == ModContent.ItemType<ValkyrieLeggings>())
+				player.player.wingTimeMax = (int)(player.player.wingTimeMax * 1.15f);
+		}
+
 		public override void UpdateEquip(Player player)
 		{
 			player.moveSpeed += 1.25f*(!Main.dayTime ? 1.15f : 1f);
 			player.accRunSpeed += 1.5f * (!Main.dayTime ? 1.15f : 1f);
 			player.Throwing().thrownDamage += 0.10f;
 
-			if (!Main.dayTime)
-			player.wingTimeMax = (int)(player.wingTimeMax * 1.15f);
 		}
 		public override void UpdateVanity(Player player, EquipType type)
 		{

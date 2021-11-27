@@ -399,70 +399,83 @@ namespace SGAmod.Dimensions.Tiles
 			//drop = mod.ItemType("Moist Stone");
 			AddMapEntry(new Color(50, 50, 50));
 		}
+		public static void DrawStatic(object me, int x, int y, SpriteBatch spriteBatch,bool drakenite=false)
+		{
+			//if (Main.tile[x, y].type == base.Type)
+			//{
+			Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
+			Vector2 drawOffset = new Vector2((float)(x * 16), (float)(y * 16)) + zerooroffset;
+			//spriteBatch.Draw(Main.blackTileTexture, drawOffset);
+			//spriteBatch.Draw(Main.blackTileTexture, drawOffset, new Rectangle(0, 0, 16, 16), Color.Purple, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
+			int chance = 20;
+
+			Color light = Lighting.GetColor(x, y);
+
+			Color basecolor = Color.White;
+			float basealpha = 1f;
+			float alphamin = 0.15f;
+			float alphamax = 0.3f;
+			int glowchance = 50;
+			if (me.GetType() == typeof(HardenedFabric))
+			{
+				basecolor = new Color(55, 55, 55);
+				basealpha = 1f;
+				chance = 15;
+				alphamin = 0.25f;
+				alphamax = 0.5f;
+			}
+			if (me.GetType() == typeof(AncientFabric))
+			{
+				basecolor = Color.Red;
+				basealpha = 1f;
+				chance = 40;
+				alphamin = 0.75f;
+				alphamax = 1f;
+			}
+			if (me.GetType() == typeof(EntrophicOre))
+			{
+				basecolor = Color.Purple;
+				basealpha = 1f;
+				chance = 1;
+				alphamin = 0.9f;
+				alphamax = 1f;
+				glowchance = 1;
+			}
+			if (me.GetType() == typeof(HopeOre))
+			{
+				basecolor = Color.Goldenrod;
+				basealpha = 1f;
+				chance = 2;
+				alphamin = 0.5f;
+				alphamax = 1f;
+				glowchance = 2;
+			}
+			if (drakenite)
+			{
+				basecolor = Main.hslToRgb(((x/22f)+(y/16f)+Main.GlobalTime/2f) %1f,1f,0.50f);
+				basealpha = 2f;
+				chance = 0;
+				alphamin = 1f;
+				alphamax = 1f;
+				glowchance = 1;
+			}
+			if (Main.rand.Next(0, 100) < chance)
+				return;
+
+			//stem.Drawing.Color basiccolor = System.Drawing.Color.FromArgb(lightblack.R, lightblack.G, lightblack.B);
+
+			float brightness = Math.Max((float)light.R, Math.Max((float)light.G, (float)light.B)) / 255f;
+
+			float alpha = Main.rand.Next(0, glowchance) == 0 ? Main.rand.NextFloat(alphamin, alphamax) : brightness;
+
+			if (alpha > 0f)
+				spriteBatch.Draw(LimboDim.staticeffects[Main.rand.Next(0, LimboDim.staticeffects.Length)], drawOffset - Main.screenPosition, Color.Lerp(light, basecolor, basealpha) * alpha);
+		}
+		//}
 		public override void PostDraw(int x, int y, SpriteBatch spriteBatch)
 		{
-			if (Main.tile[x, y].type == base.Type)
-			{
-				Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
-				Vector2 drawOffset = new Vector2((float)(x * 16), (float)(y * 16)) + zerooroffset;
-				//spriteBatch.Draw(Main.blackTileTexture, drawOffset);
-				//spriteBatch.Draw(Main.blackTileTexture, drawOffset, new Rectangle(0, 0, 16, 16), Color.Purple, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-
-				int chance = 20;
-
-				Color light = Lighting.GetColor(x, y);
-
-				Color basecolor = Color.White;
-				float basealpha = 1f;
-				float alphamin = 0.15f;
-				float alphamax = 0.3f;
-				int glowchance = 50;
-				if (GetType() == typeof(HardenedFabric))
-				{
-					basecolor = new Color(55,55,55);
-					basealpha = 1f;
-					chance = 15;
-					alphamin = 0.25f;
-					alphamax = 0.5f;
-				}
-				if (GetType() == typeof(AncientFabric))
-				{
-					basecolor = Color.Red;
-					basealpha = 1f;
-					chance = 40;
-					alphamin = 0.75f;
-					alphamax = 1f;
-				}				
-				if (GetType() == typeof(EntrophicOre))
-				{
-					basecolor = Color.Purple;
-					basealpha = 1f;
-					chance = 1;
-					alphamin = 0.9f;
-					alphamax = 1f;
-					glowchance = 1;
-				}
-				if (GetType() == typeof(HopeOre))
-				{
-					basecolor = Color.Goldenrod;
-					basealpha = 1f;
-					chance = 2;
-					alphamin = 0.5f;
-					alphamax = 1f;
-					glowchance = 2;
-				}
-				if (Main.rand.Next(0, 100) < chance)
-					return;
-
-				//stem.Drawing.Color basiccolor = System.Drawing.Color.FromArgb(lightblack.R, lightblack.G, lightblack.B);
-
-				float brightness = Math.Max((float)light.R, Math.Max((float)light.G, (float)light.B))/255f;
-
-				float alpha = Main.rand.Next(0, glowchance) == 0 ? Main.rand.NextFloat(alphamin, alphamax) : brightness;
-
-				if (alpha > 0f)
-					spriteBatch.Draw(LimboDim.staticeffects[Main.rand.Next(0, LimboDim.staticeffects.Length)], drawOffset- Main.screenPosition, Color.Lerp(light, basecolor, basealpha) * alpha);
-			}
+			DrawStatic(this, x, y, spriteBatch);
 		}
 	}
 }

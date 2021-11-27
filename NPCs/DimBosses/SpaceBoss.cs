@@ -2403,6 +2403,19 @@ namespace SGAmod.Dimensions.NPCs
 				Vector2 eyepos = Vector2.Normalize(eye.currentLook) * (eye.EyeDistance * eye.eyeMaxDistance);
 				float scaleeye = MathHelper.Clamp(eye.sleep, 0f, 1f);
 
+				if (eye.customID == 1)
+                {
+					float glowEye = MathHelper.Clamp((npc.ai[0] - 90) / 60f, 0f, 1f);
+					if (glowEye > 0)
+					{
+						for (float f = 0; f < 1f; f += 1 / 10f)
+						{
+							float scale2 = ((MathHelper.Clamp((float)Math.Sin(((npc.localAI[0] + (f * 60f)) * MathHelper.TwoPi) / 60), 0f, 1f))) * ((f / 2f) + 0.75f);
+							spriteBatch.Draw(eyetex, (eye.BasePosition) + (eye.offset + eyepos) - Main.screenPosition, null, EyeColor * (f / 2f) * 0.50f, 0, eyetexorig, ((eye.eyeScale * 1f) + scale2) * glowEye, SpriteEffects.None, 0);
+						}
+					}
+				}
+
 				if (scaleeye > 0 && !eye.exploded)
 					spriteBatch.Draw(eyetex, (eye.BasePosition) + (eye.offset + eyepos) - Main.screenPosition, null, EyeColor * 0.50f, 0, eyetexorig, new Vector2(0.75f,0.75f*scaleeye) * (eye.eyeScale * Main.essScale), SpriteEffects.None, 0f);
 			}

@@ -34,7 +34,7 @@ namespace SGAmod.Items.Weapons
 				{
 					valuez.Add(text2 + " ");
 				}
-				valuez.Insert(1, "Trap ");
+				valuez.Insert(1, "trap ");
 				foreach (string text3 in valuez)
 				{
 					newline += text3;

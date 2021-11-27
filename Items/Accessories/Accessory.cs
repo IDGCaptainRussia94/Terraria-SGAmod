@@ -2986,7 +2986,7 @@ namespace SGAmod.Items.Accessories
         public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			string s = "Not Binded!";
-			foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+			foreach (string key in SGAmod.GunslingerLegendHotkey.GetAssignedKeys())
 			{
 				s = key;
 			}

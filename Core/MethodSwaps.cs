@@ -89,6 +89,7 @@ namespace SGAmod
 
 			if (resist>0)
 			return orig(self,Damage,knockBack,hitDirection, crit, noEffect,fromNet);
+
 			return 0.0;
 
 		}

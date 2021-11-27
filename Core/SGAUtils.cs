@@ -598,6 +598,10 @@ namespace SGAmod
 			thrownPlayer.thrownCrit += crit; if (thrownPlayer.thrownCrit < 0) thrownPlayer.thrownCrit = 0;
 			SGAmod.BoostModdedDamage(player, damage, crit);
 		}
+		public static bool IsValidEnemy(this NPC npc)
+		{
+			return npc.active && !npc.dontTakeDamage && !npc.townNPC && !npc.friendly;
+		}
 		public static bool IsValidDebuff(Player player, int buffindex)
 		{
 			int bufftype = player.buffType[buffindex];
@@ -667,7 +671,7 @@ namespace SGAmod
 				{
 					bool colcheck = !checkWalls || (Collision.CheckAABBvLineCollision(Main.npc[i].position, new Vector2(Main.npc[i].width, Main.npc[i].height), Main.npc[i].Center, Center)
 	&& Collision.CanHitLine(Main.npc[i].Center, 0, 0, Center, 0, 0));
-					if (!Main.npc[i].friendly && !Main.npc[i].townNPC && !Main.npc[i].dontTakeDamage && (!checkCanChase || Main.npc[i].CanBeChasedBy()) && colcheck
+					if (Main.npc[i].IsValidEnemy() && (!checkCanChase || Main.npc[i].CanBeChasedBy()) && colcheck
 					&& squaredDist < maxdist)
 					{
 						closestnpcs.Add(Main.npc[i]);

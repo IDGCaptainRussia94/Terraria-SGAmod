@@ -122,7 +122,7 @@ namespace SGAmod
 		public bool vibraniumSetPlatform = false; public bool vibraniumSetWall = false;
 		public bool mudbuff = false; public bool alkalescentHeart = false; public bool jabALot = false; public bool NoHitCharm = false; public int NoHitCharmTimer = 0;
 		public int Havoc = 0;
-		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public (bool,float,bool, float) valkyrieSet = (false,0,false,0); public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0); public (bool,bool) jungleTemplarSet = (false,false); public bool magatsuSet = false; public bool desertSet = false;
+		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public (bool,float,bool, float) valkyrieSet = (false,0,false,0); public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0); public (bool,bool) jungleTemplarSet = (false,false); public bool magatsuSet = false; public bool desertSet = false; public (bool,int) mandalaSet = (false,0);
 		public float SpaceDiverWings = 0f;
 		public int gamePadAutoAim = 0;
 		public int tidalCharm = 0;
@@ -419,6 +419,7 @@ namespace SGAmod
 			IDGset = false;
 			jellybruSet = false;
 			vibraniumSet = false;
+			mandalaSet = (false, mandalaSet.Item2);
 			sandStormTimer = Math.Max(sandStormTimer - 1, 0);
 
 			shieldBlockTime = 0;
@@ -1013,7 +1014,7 @@ namespace SGAmod
 
 			if (player.SGAPly().manifestedWeaponType > 0)
 			{
-				if (player.inventory[player.selectedItem].IsAir)
+				if (player.inventory[player.selectedItem].IsAir && player.selectedItem<58)
 				{
 					Item newItem = new Item();
 					newItem.SetDefaults(player.SGAPly().manifestedWeaponType);
@@ -1983,7 +1984,10 @@ namespace SGAmod
 				{
 					Items.Armors.JungleTemplar.JungleTemplarHelmet.ActivatePrecurserPower(this);
 				}
-
+				if (mandalaSet.Item1)
+				{
+					Items.Armors.Mandala.MandalaHood.SwapModes(this);
+				}
 				if (desertSet)
 				{
 					Items.Armors.Desert.DesertHelmet.ActivateSandySwiftness(this);

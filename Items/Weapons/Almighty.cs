@@ -571,7 +571,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Morning Star");
-			Tooltip.SetDefault("Calls down Lucifer's signature move to bring massive destruction in a wide area\n" + Idglib.ColorText(Color.Orange, "Requires 4 Cooldown stacks, adds 150 seconds"));
+			Tooltip.SetDefault("Calls down Lucifer's signature move to bring massive destruction in a wide area\n" + Idglib.ColorText(Color.Orange, "Requires 4 Cooldown stacks, adds 200 seconds"));
 		}
 		public override void SetDefaults()
 		{
@@ -606,7 +606,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			player.SGAPly().AddCooldownStack(60 * 150, 4);
+			player.SGAPly().AddCooldownStack(60 * 200, 4);
 
 			int pushYUp = -1;
 			player.FindSentryRestingSpot(item.shoot, out var worldX, out var worldY, out pushYUp);
@@ -621,7 +621,7 @@ namespace SGAmod.Items.Weapons
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<Megidola>(), 2);
 			recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 6);
-			recipe.AddRecipeGroup("SGAmod:CelestialFragments",4);
+			recipe.AddRecipeGroup("SGAmod:CelestialFragments",3);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -718,7 +718,7 @@ namespace SGAmod.Items.Weapons
 					SGAmod.AddScreenShake(6f, 3200, projectile.Center);
 				if ((projectile.ai[0] % 10 == 0 && projectile.timeLeft > 30) || endhit)
 				{
-					foreach (NPC enemy in Main.npc.Where(testby => testby.active && !testby.friendly && !testby.dontTakeDamage))
+					foreach (NPC enemy in Main.npc.Where(testby => testby.IsValidEnemy()))
 					{
 						Rectangle rect = new Rectangle((int)projectile.Center.X - 240, (int)projectile.Center.Y - 1000, 480, 1200);
 						if (endhit)
@@ -907,7 +907,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rays Of Control");
-			Tooltip.SetDefault("'Unleash the wrath of all of mankind's greatest sins in one unholy blast'\n" + Idglib.ColorText(Color.Orange, "Requires 5 Cooldown stacks, adds 200 seconds"));
+			Tooltip.SetDefault("'Unleash the wrath of all of mankind's greatest sins in one unholy blast'\n" + Idglib.ColorText(Color.Orange, "Requires 5 Cooldown stacks, adds 300 seconds"));
 		}
 
 		public override void SetDefaults()
@@ -943,7 +943,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			player.SGAPly().AddCooldownStack(60 * 200, 5);
+			player.SGAPly().AddCooldownStack(60 * 300, 5);
 
 			position = player.Center - new Vector2(0,320);
 
@@ -1191,7 +1191,7 @@ namespace SGAmod.Items.Weapons
 				if (!Main.dedServ && Main.myPlayer == player.whoAmI)
 				SGAmod.AddScreenShake(bigboom ? 30 : 5,600, player.MountedCenter);
 
-				foreach (NPC enemy in Main.npc.Where(testby => testby.active && !testby.friendly && !testby.dontTakeDamage))
+				foreach (NPC enemy in Main.npc.Where(testby => testby.IsValidEnemy()))
 				{
 					Vector2 oldpos = projectile.Center;
 					if ((enemy.Hitbox.Center()-projectile.Center).Length()<6000)
@@ -1369,7 +1369,7 @@ namespace SGAmod.Items.Weapons
             get
             {
 				int charger = _charge;
-				if (!IdgNPC.bossAlive)
+				if (!IdgNPC.bossAlive && !UnlimitedPower)
 					charger = Math.Min(charger, ChargeMax / 2);
 				return charger;
             }
@@ -1380,9 +1380,11 @@ namespace SGAmod.Items.Weapons
 
         }
 
+		public bool UnlimitedPower => player.HasItem(ModContent.ItemType<Consumables.Debug10>());
+
 		public int ChargeMax => 100000;
 		public float ChargePercent => (float)Charge / (float)ChargeMax;
-		public int ChargeSpeed => (int)(((10+Math.Min(player.lifeRegen / 3, 10)) * MathHelper.Clamp(player.lifeRegenTime / 400f, 0f, 5f)*(HeldNuke ? 1f : 0.25f))* 1f);
+		public int ChargeSpeed => (int)(((10+Math.Min(player.lifeRegen / 3, 10)) * MathHelper.Clamp(player.lifeRegenTime / 400f, 0f, 5f)*(HeldNuke ? 1f : 0.25f))* (UnlimitedPower ? 100f : 1f));
 
 		public bool HasNuke => player.HasItem(ModContent.ItemType<NuclearOption>());
 		public bool HeldNuke => player.HeldItem.type == ModContent.ItemType<NuclearOption>();
@@ -1599,7 +1601,7 @@ namespace SGAmod.Items.Weapons
 					}
 				}
 
-				foreach (NPC npc in Main.npc.Where(testby => testby.active && !testby.friendly && !testby.dontTakeDamage && (testby.Center - projectile.Center).Length() < lenn))
+				foreach (NPC npc in Main.npc.Where(testby => testby.IsValidEnemy() && (testby.Center - projectile.Center).Length() < lenn))
 				{
 					int damage = Main.DamageVar(projectile.damage);
 					CheckApoco(ref damage, npc, projectile);

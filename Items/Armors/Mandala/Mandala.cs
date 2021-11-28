@@ -404,7 +404,7 @@ namespace SGAmod.Items.Armors.Mandala
                 this.player = player;
 
 
-                SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageSummonSkeleton, (int)position.X, (int)position.Y);
+                SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_GhastlyGlaiveImpactGhost, (int)position.X, (int)position.Y);
                 if (sound != null)
                 {
                     sound.Pitch = -0.5f;
@@ -619,7 +619,7 @@ namespace SGAmod.Items.Armors.Mandala
             projectile.minion = true;
             projectile.minionSlots = 0f;
             projectile.netImportant = true;
-            projectile.penetrate = -1;
+            projectile.penetrate = 1;
             projectile.usesLocalNPCImmunity = true;
             projectile.localNPCHitCooldown = 1;
             aiType = 0;
@@ -676,6 +676,7 @@ namespace SGAmod.Items.Armors.Mandala
                     projectile.velocity += (Vector2.Normalize(difference) * MathHelper.Clamp(difference.Length() - 128f, 0f, 1280f)) * 0.05f*lerpSpeed;
                 };
 
+                //Updates for when arms became "inactive" due to a lack of minion slots, (Update resets despawnTimer to 10, which isn't called here)
                 foreach (MandalaArm arm in arms) { arm.despawnTimer--; }
                 arms = arms.Where(testby => testby.despawnTimer > 0).ToList();
 
@@ -686,6 +687,7 @@ namespace SGAmod.Items.Armors.Mandala
 
                     Vector2 offset = -Vector2.UnitX.RotatedBy(eyeCurrentLook.ToRotation()+(((percent+ percentOne/2f) - 0.50f) * (MathHelper.Pi * 0.75f)));
 
+                    //Manage arms, else spawn new ones if we have room
                     if (i < arms.Count)
                     {
                         MandalaArm arm = arms[i];
@@ -702,6 +704,7 @@ namespace SGAmod.Items.Armors.Mandala
                     }
                 }
 
+                //Spawns asteriods over time
                 if (projectile.localAI[0] % 80 == 0 && Owner.ownedProjectileCounts[ModContent.ProjectileType<MandalaAsteriodProj>()]<10+Owner.maxTurrets*2)
                 {
                     float widrheight = Main.rand.NextFloat(240f, 640f);
@@ -711,6 +714,8 @@ namespace SGAmod.Items.Armors.Mandala
             }
             else
             {
+                //Up up and away!
+
                 projectile.localAI[1] += 1;
                 projectile.velocity -= Vector2.UnitY * (projectile.localAI[1] / 48f);
 
@@ -723,6 +728,17 @@ namespace SGAmod.Items.Armors.Mandala
                 }
 
             }
+
+            //Flashlight functionality
+            for(float eyeeffect=0; eyeeffect<1f; eyeeffect += 0.01f)
+            {
+                float invert = 1f - eyeeffect;
+                float lightit = 0.50f + eyeeffect / 2f;
+                float lightit2 = MathHelper.Clamp(invert*3f,0f,1f);
+                Vector2 lighter = DrawPosition + Vector2.Normalize(eyeCurrentLook) * eyeeffect*640f;
+                Lighting.AddLight(lighter+projectile.velocity, Color.White.ToVector3()*lightit* lightit2*1.00f);
+            }
+           // Lighting.AddLight(DrawPosition, Color.White.ToVector3());
 
             projectile.velocity *= friction;
 
@@ -757,6 +773,7 @@ namespace SGAmod.Items.Armors.Mandala
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
+            projectile.penetrate += 1;
             if (SGAmod.ScreenShake<16)
             SGAmod.AddScreenShake(12f, 2000, target.Center);
             SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_MonkStaffGroundImpact, (int)target.Center.X, (int)target.Center.Y);
@@ -771,6 +788,7 @@ namespace SGAmod.Items.Armors.Mandala
             //base.DrawBehind(index, drawCacheProjsBehindNPCsAndTiles, drawCacheProjsBehindNPCs, drawCacheProjsBehindProjectiles, drawCacheProjsOverWiresUI);
         }
 
+        //Beams and glowing are drawn under the player
         public override bool PreDrawExtras(SpriteBatch spriteBatch)
         {
             float alpha2 = MathHelper.Clamp((projectile.localAI[0] - 0) / 60f, 0f, 1f) * MathHelper.Clamp(projectile.timeLeft / 60f, 0f, 1f);
@@ -785,7 +803,7 @@ namespace SGAmod.Items.Armors.Mandala
             foreach (Projectile asteriod in Asteriods)
             {
                 float alphaglow = MathHelper.Clamp(asteriod.localAI[0] / 60f, 0f, Math.Min(asteriod.timeLeft / 60f, 1f))*alpha2;
-                spriteBatch.Draw(glowOrb, asteriod.Center - Main.screenPosition, null, Color.Turquoise * 0.40f* alphaglow, 0, sizer, projectile.scale*0.20f, SpriteEffects.None, 0);
+                spriteBatch.Draw(glowOrb, asteriod.Center - Main.screenPosition, null, Color.Lerp(Color.White, Color.Aqua, 0.50f) * 0.40f* alphaglow, 0, sizer, projectile.scale*0.20f, SpriteEffects.None, 0);
             }
 
             foreach (MandalaArm arm in arms)
@@ -862,7 +880,8 @@ namespace SGAmod.Items.Armors.Mandala
 
             foreach (Projectile Asteriod in Asteriods)
             {
-                (Asteriod.modProjectile as MandalaAsteriodProj).DoDraw(spriteBatch, lightColor*alpha);
+                Color asteriodColor = Lighting.GetColor(((int)Asteriod.Center.X) >> 4, ((int)Asteriod.Center.Y) >> 4, Color.White);
+                (Asteriod.modProjectile as MandalaAsteriodProj).DoDraw(spriteBatch, asteriodColor * alpha);
             }
 
             Texture2D tex = asteriods[0];
@@ -999,8 +1018,8 @@ namespace SGAmod.Items.Armors.Mandala
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             projectile.penetrate += 1;
-            if (SGAmod.ScreenShake < 16)
-                SGAmod.AddScreenShake(12f, 1600, target.Center);
+            if (SGAmod.ScreenShake < 12)
+                SGAmod.AddScreenShake(12f, 1200, target.Center);
             SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_MonkStaffGroundImpact, (int)target.Center.X, (int)target.Center.Y);
             if (sound != null)
             {

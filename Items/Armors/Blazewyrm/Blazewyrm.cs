@@ -19,7 +19,7 @@ namespace SGAmod.Items.Armors.Blazewyrm
 			item.width = 18;
 			item.height = 18;
 			item.value = 10000;
-			item.rare = 5;
+			item.rare = ItemRarityID.Pink;
 			item.defense = 10;
 		}
 
@@ -65,7 +65,7 @@ namespace SGAmod.Items.Armors.Blazewyrm
 			item.width = 18;
 			item.height = 18;
 			item.value = 10000;
-			item.rare = 8;
+			item.rare = ItemRarityID.Pink;
 			item.defense = 14;
 		}
 		public override void UpdateEquip(Player player)
@@ -108,7 +108,7 @@ namespace SGAmod.Items.Armors.Blazewyrm
 			item.width = 18;
 			item.height = 18;
 			item.value = 10000;
-			item.rare = 5;
+			item.rare = ItemRarityID.Pink;
 			item.defense = 8;
 		}
 

@@ -306,8 +306,8 @@ namespace SGAmod.Dimensions
                     {
                         if (NullBossArenaSpot != default)
                         {
-                            //player.velocity = Vector2.Normalize(NullBossArenaSpot - player.Center)*12f;
-                            //player.Center = NullBossArenaSpot;
+                            player.velocity = Vector2.Normalize(NullBossArenaSpot - player.Center)*12f;
+                            player.Center = NullBossArenaSpot;
                         }
                     }
                 }

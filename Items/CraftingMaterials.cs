@@ -171,6 +171,7 @@ namespace SGAmod.HavocGear.Items
 			recipe.AddIngredient(ModContent.ItemType < Biomass>(), 5);
 			recipe.AddIngredient(ModContent.ItemType < MurkyGel>(),2);
 			recipe.AddIngredient(ModContent.ItemType<DecayedMoss>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<Weapons.SwampSeeds>(), 2);
 			recipe.AddIngredient(ModContent.ItemType<MoistSand>(), 1);
 			recipe.AddTile(TileID.Furnaces);
 			recipe.SetResult(this, 3);

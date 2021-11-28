@@ -1,6 +1,31 @@
+
 Changelog:
 
-3.600j-(11/24/21)-Patch 11-Tech N Wreck: Beta
+3.600k-(11/27/21)-Patch 11-Tech N Wreck: Beta
+
+-Reworked Specterang: damage lowed to 30, projectile acts and damages much faster
+
+-Fixed a spritebatch issue with the Skye Hook
+
+-Gave the Mandala summon a spotlight effect, changes some sounds and adjusted a few things
+
+-Replaced AquaSG's temp music used for Hellion with a new version he provided me: it's longer and has a better beat!
+
+-Buffed Engineer Armor: acceleration is increased while hovering
+
+-New changes to Hellion Core:
+-Will attempt to keep some distance outside of dashing in the 1st phase
+-Arms use their own cooldown and have a bit of a delay in the 3rd phase
+
+-New changes to Helen Hellion Weygold:
+-Attacked the Touhou clock (thing) attack
+-Added the FNF attack
+
+
+
+Changelog:
+
+3.600j-(11/26/21)-Patch 11-Tech N Wreck: Beta
 
 -Attempted a handful of loading fixes, including one regarding the space boss and recipe browser
 

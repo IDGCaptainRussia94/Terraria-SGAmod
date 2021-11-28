@@ -2669,14 +2669,13 @@ namespace SGAmod.Items.Weapons.Aurora
 
                     spriteBatch.Draw(sun, projectile.Center - Main.screenPosition, null, Color.White * MathHelper.Clamp(sunalpha * 4f, 0f, 1f), 0, sun.Size() / 2f, projectile.scale * 1f + (percent2 * 3f), SpriteEffects.None, 0);
 
-
-                    Main.spriteBatch.End();
-                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
-
                 }
 
                 if (projectile.ai[1] == 2)
                 {
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
                     Rectangle rect = new Rectangle(0, 0, moon.Width, moon.Height / 8);
                     spriteBatch.Draw(moon, projectile.Center - Main.screenPosition, rect, Color.White * MathHelper.Clamp(percent * 8f, 0f, 1f), 0, rect.Size() / 2f, projectile.scale * 1f + (percent * 7f), SpriteEffects.None, 0);
 
@@ -2684,6 +2683,10 @@ namespace SGAmod.Items.Weapons.Aurora
 
 
             }
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
 
             return false;
         }

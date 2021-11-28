@@ -491,6 +491,26 @@ namespace SGAmod
 
 			}
 
+		public void UnLoadMusic(bool unload)
+        {
+			if (unload)
+			{
+				if (SGAmod.musicTest != default && SGAmod.hellionTheme != null)
+				{
+					if (SGAmod.musicTest.IsPlaying)
+						SGAmod.musicTest.Stop(AudioStopOptions.Immediate);
+					SGAmod.musicTest.Dispose();
+				}
+
+				if (SGAmod.hellionTheme != default && SGAmod.hellionTheme != null)
+				{
+					if (SGAmod.hellionTheme.IsPlaying)
+						SGAmod.hellionTheme.Stop(AudioStopOptions.Immediate);
+					SGAmod.hellionTheme.Dispose();
+				}
+			}
+		}
+
 		public override void Load()
 		{
 #if Dimensions
@@ -598,6 +618,7 @@ namespace SGAmod
 				DrakeniteBar.CreateTextures();
 				LoadOrUnloadTextures(true);
 				SkillTree.SKillUI.InitThings();
+				UnLoadMusic(false);
 
 				CustomUIMenu = new SGACustomUIMenu();
 				CustomUIMenu.Activate();
@@ -743,26 +764,14 @@ namespace SGAmod
 			SGAmod.EnchantmentFocusCrystal = null;
 			SubworldCache.UnloadCache();
 
-			if (SGAmod.musicTest != default)
-			{
-				if (SGAmod.musicTest.IsPlaying)
-					SGAmod.musicTest.Stop(AudioStopOptions.Immediate);
-				SGAmod.musicTest.Dispose();
-			}
-
-			if (SGAmod.hellionTheme != default)
-			{
-				if (SGAmod.hellionTheme.IsPlaying)
-				SGAmod.hellionTheme.Stop(AudioStopOptions.Immediate);
-				SGAmod.hellionTheme.Dispose();
-			}
 
 			SGAILHacks.Unpatch();
             Items.Weapons.CataLogo.Unload();
 
 
 			if (!Main.dedServ)
-			{
+			{			
+				UnLoadMusic(true);
 				ShadowParticle.Unload();
 				if (SGAmod.ParadoxMirrorTex != null)
 					SGAmod.ParadoxMirrorTex.Dispose();

@@ -37,6 +37,7 @@ namespace SGAmod.Tiles.TechTiles
         }
         public override void SetDefaults()
 		{
+			TileID.Sets.DrawsWalls[Type] = true;
 			Main.tileFrameImportant[Type] = true;
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 			Main.tileLavaDeath[Type] = false;

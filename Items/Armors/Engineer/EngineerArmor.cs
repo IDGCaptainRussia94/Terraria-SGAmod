@@ -314,7 +314,7 @@ namespace SGAmod.Items.Armors.Engineer
 
                         player.fallStart = (int)(player.position.Y / 16f);
                         player.maxRunSpeed += 5; //Only a bit faster run speed
-                        player.runAcceleration += 2f;
+                        player.runAcceleration += 0.5f;
                     }
                     return;
                 }

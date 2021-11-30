@@ -117,6 +117,9 @@ namespace SGAmod.Items.Weapons.Shields
 
 		public override int ChoosePrefix(UnifiedRandom rand)
 		{
+			if (!CanBlock)
+				return base.ChoosePrefix(rand);
+
 			switch (rand.Next(9))
 			{
 				case 1:
@@ -157,6 +160,8 @@ namespace SGAmod.Items.Weapons.Shields
 		public int Blocktimer => blocktimer-player.SGAPly().shieldBlockTime;
 		private int blocktimer = 1;
 
+		protected virtual bool CanBlock => true;
+		protected virtual float VisualAngle => 0;
 		protected virtual float BlockAngle => 0.5f;
 		protected virtual float BlockDamage => 0.25f;
 		protected virtual int BlockPeriod => 30;
@@ -284,6 +289,10 @@ namespace SGAmod.Items.Weapons.Shields
 		}
 		protected virtual void DrawAdd()
 		{
+
+			if (!CanBlock)
+				return;
+
 			bool facingleft = projectile.velocity.X > 0;
 			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
 			Texture2D texture = MyTexture;
@@ -292,7 +301,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 			float alpha = MathHelper.Clamp((30 - Blocktimer) / 8f, 0f, 1f);
 			if (alpha>0f)
-				Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f) * alpha, (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale + 0.25f, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+				Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f) * alpha, (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi)+ VisualAngle, origin, projectile.scale + 0.25f, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
 
 		}
 		public void DrawAdditive(SpriteBatch spriteBatch)
@@ -306,7 +315,7 @@ namespace SGAmod.Items.Weapons.Shields
 			Texture2D texture = MyTexture;
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 			float facing = facingleft ? AngleAdjust : -AngleAdjust;
-			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor * AlphaFade * projectile.Opacity, (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor * AlphaFade * projectile.Opacity, (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi) + VisualAngle, origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
 		}
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{

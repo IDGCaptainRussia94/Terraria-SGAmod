@@ -1,7 +1,11 @@
 
 Changelog:
+3.600l-(11/30/21)-Patch 11-Tech N Wreck: Beta
 
-3.600k-(11/27/21)-Patch 11-Tech N Wreck: Beta
+
+
+
+3.600k-(11/30/21)-Patch 11-Tech N Wreck: Beta
 
 -Reworked Specterang: damage lowed to 30, projectile acts and damages much faster
 
@@ -12,6 +16,24 @@ Changelog:
 -Replaced AquaSG's temp music used for Hellion with a new version he provided me: it's longer and has a better beat!
 
 -Buffed Engineer Armor: acceleration is increased while hovering
+
+-Fixed Cobalt and Granite Magnet having gliched use animations
+
+-Laser markers and magnets should hopefully not be able to get shield prefixes now
+
+-During Hellion's phase fight, you get a (de)buff that gives you unlimited flight effectively, but being too low on flight time will drain life slowly over time
+
+-Reality's Runder is now only uncraftable until the 3 bosses are beaten
+
+-Fixed Hoppers and hopper-functionality tiles not drawing walls behind them
+
+-Luminous Altar's height limit is now the surface; will stop working if below the world's surface
+
+-Removed old debug spam
+
+-Mandala's summon will now only use the resprited Asteriods
+
+-Added Boss Checklist hacks: Hellion has a very *special* page for her 2nd phase
 
 -New changes to Hellion Core:
 -Will attempt to keep some distance outside of dashing in the 1st phase
@@ -669,8 +691,6 @@ Hope you enjoy, it's been half a year in the making!
 
 -Traveling Merchant's SGAmod items are a bit more common
 
--Limbo is now a bit extra spooky
-
 -Transmutation Powder can now be thrown on Novus/Novite ore items on the ground in addition to tiles
 
 -Changed the Null astetic with its after image effect a bit
@@ -736,6 +756,10 @@ Hope you enjoy, it's been half a year in the making!
 -Laser Markers can be made with colors via different gemstones, and are visually improved
 
 -Dark Sectors use a different sprite, some subtle coloring effects, and no longer use negative blending... Now, if only I could do the same for the fog effect
+
+-Limbo is now a bit extra spooky
+
+-Null Watchers can no longer see an invisible player
 
 -Rebalanced Maldal: Has a different effect that won't hurt the player
 

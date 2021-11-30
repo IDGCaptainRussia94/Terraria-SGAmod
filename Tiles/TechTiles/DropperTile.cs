@@ -152,12 +152,12 @@ namespace SGAmod.Tiles.TechTiles
 			Tile tile = Framing.GetTileSafely(i, j);
 			Point coords = GetRealDropperCorner(new Point(i, j), tile);
 
-			SGAmod.Instance.Logger.Warn("Tile xy: " + (i) + " - " + (j));
+			//SGAmod.Instance.Logger.Warn("Tile xy: " + (i) + " - " + (j));
 			for (int x = 0; x < 3; x += 1)
 			{
 				for (int y = 1; y < 4; y += 1)
 				{
-					SGAmod.Instance.Logger.Warn("Tile here: " + (coords.X + x) + " - " + (coords.Y - y));
+					//SGAmod.Instance.Logger.Warn("Tile here: " + (coords.X + x) + " - " + (coords.Y - y));
 					Tile tilehere = Framing.GetTileSafely(coords.X + x, coords.Y - y);
 					ModTile modtile = TileLoader.GetTile(tilehere.type);
 					if (Chest.FindChestByGuessing(coords.X + x, coords.Y - y) >= 0 || tilehere.type == TileID.Containers || (modtile != null && modtile.chest != ""))

@@ -281,7 +281,7 @@ namespace SGAmod.Items.Consumables
 		}
 
 		public static bool Underground(Entity player) => (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
-		public static bool Underground(int here) => (int)((double)((here / 16f)) - Main.worldSurface * 2.0) > 0;
+		public static bool Underground(int here) => (int)((double)((here / 16f)*2.0) - Main.worldSurface * 2.0) > 0;
 
 		public override bool CanUseItem(Player player)
 		{

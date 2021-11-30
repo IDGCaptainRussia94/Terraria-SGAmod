@@ -19,6 +19,7 @@ using MonoMod.RuntimeDetour.HookGen;
 using static MonoMod.Cil.ILContext;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI;
+using SGAmod.NPCs.Hellion;
 
 namespace SGAmod
 {
@@ -218,4 +219,6 @@ namespace SGAmod
 		}
 	}*/
     }
+
+
 }

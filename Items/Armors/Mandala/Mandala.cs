@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -651,7 +652,7 @@ namespace SGAmod.Items.Armors.Mandala
             punching -= 1;
             throwing -= 1;
 
-            if (Owner.active && !Owner.dead && projectile.localAI[1]<1 && Owner.SGAPly().mandalaSet.Item1)
+            if (Owner.active && !Owner.dead && projectile.localAI[1] < 1 && Owner.SGAPly().mandalaSet.Item1)
             {
                 projectile.timeLeft = 60;
 
@@ -663,29 +664,29 @@ namespace SGAmod.Items.Armors.Mandala
                 eyeCurrentLook = Vector2.SmoothStep(eyeCurrentLook, eyeLookAt, 0.20f);
 
 
-                Vector2 idealspot = Owner.MountedCenter + Vector2.Normalize(eyeCurrentLook) * (64f * (Owner.SGAPly().mandalaSet.Item2%2 == 0 ? 1f : -1f));
+                Vector2 idealspot = Owner.MountedCenter + Vector2.Normalize(eyeCurrentLook) * (64f * (Owner.SGAPly().mandalaSet.Item2 % 2 == 0 ? 1f : -1f));
                 Vector2 difference = idealspot - projectile.Center;
 
                 float lerpSpeed = MathHelper.Clamp(projectile.localAI[0] / 160f, 0f, 1f);
 
-                projectile.Center += (idealspot - projectile.Center) * 0.10f* lerpSpeed;
+                projectile.Center += (idealspot - projectile.Center) * 0.10f * lerpSpeed;
                 projectile.rotation = ((float)Math.Sin(projectile.localAI[0] / 32f) * 10f);
 
                 if (difference.Length() > 128f)
                 {
-                    projectile.velocity += (Vector2.Normalize(difference) * MathHelper.Clamp(difference.Length() - 128f, 0f, 1280f)) * 0.05f*lerpSpeed;
+                    projectile.velocity += (Vector2.Normalize(difference) * MathHelper.Clamp(difference.Length() - 128f, 0f, 1280f)) * 0.05f * lerpSpeed;
                 };
 
                 //Updates for when arms became "inactive" due to a lack of minion slots, (Update resets despawnTimer to 10, which isn't called here)
                 foreach (MandalaArm arm in arms) { arm.despawnTimer--; }
                 arms = arms.Where(testby => testby.despawnTimer > 0).ToList();
 
-                for(int i = 0; i < ArmsCount; i += 1)
+                for (int i = 0; i < ArmsCount; i += 1)
                 {
                     float percent = (float)i / (float)ArmsCount;
                     float percentOne = 1f / (float)ArmsCount;
 
-                    Vector2 offset = -Vector2.UnitX.RotatedBy(eyeCurrentLook.ToRotation()+(((percent+ percentOne/2f) - 0.50f) * (MathHelper.Pi * 0.75f)));
+                    Vector2 offset = -Vector2.UnitX.RotatedBy(eyeCurrentLook.ToRotation() + (((percent + percentOne / 2f) - 0.50f) * (MathHelper.Pi * 0.75f)));
 
                     //Manage arms, else spawn new ones if we have room
                     if (i < arms.Count)
@@ -698,17 +699,17 @@ namespace SGAmod.Items.Armors.Mandala
                     }
                     else
                     {
-                        MandalaArm arm = new MandalaArm(Owner.MountedCenter + (offset * 640f)+Main.rand.NextVector2Circular(960f, 960f), Owner, i, ArmsCount);
+                        MandalaArm arm = new MandalaArm(Owner.MountedCenter + (offset * 640f) + Main.rand.NextVector2Circular(960f, 960f), Owner, i, ArmsCount);
 
                         arms.Add(arm);
                     }
                 }
 
                 //Spawns asteriods over time
-                if (projectile.localAI[0] % 80 == 0 && Owner.ownedProjectileCounts[ModContent.ProjectileType<MandalaAsteriodProj>()]<10+Owner.maxTurrets*2)
+                if (projectile.localAI[0] % 80 == 0 && Owner.ownedProjectileCounts[ModContent.ProjectileType<MandalaAsteriodProj>()] < 10 + Owner.maxTurrets * 2)
                 {
                     float widrheight = Main.rand.NextFloat(240f, 640f);
-                    Projectile.NewProjectileDirect(Owner.MountedCenter+Main.rand.NextVector2Circular(widrheight, widrheight),Main.rand.NextVector2Circular(2,2),ModContent.ProjectileType<MandalaAsteriodProj>(),0,12,projectile.owner);
+                    Projectile.NewProjectileDirect(Owner.MountedCenter + Main.rand.NextVector2Circular(widrheight, widrheight), Main.rand.NextVector2Circular(2, 2), ModContent.ProjectileType<MandalaAsteriodProj>(), 0, 12, projectile.owner);
                 }
 
             }
@@ -722,23 +723,38 @@ namespace SGAmod.Items.Armors.Mandala
                 foreach (MandalaArm arm in arms)
                 {
                     float percent = (float)arm.index / (float)arms.Count;
-                    arm.followPosition += ((DrawPosition + Vector2.UnitX.RotatedBy(percent*MathHelper.TwoPi) * 96f)- arm.followPosition)/16f;
+                    arm.followPosition += ((DrawPosition + Vector2.UnitX.RotatedBy(percent * MathHelper.TwoPi) * 96f) - arm.followPosition) / 16f;
                     arm.Update(this);
 
                 }
 
             }
 
+
+            float alphalight = MathHelper.Clamp((projectile.localAI[0] - 20) / 40f, 0f, 1f) * MathHelper.Clamp(projectile.timeLeft / 60f, 0f, 1f);
             //Flashlight functionality
-            for(float eyeeffect=0; eyeeffect<1f; eyeeffect += 0.01f)
+
+            for (float eyeeffect = 0; eyeeffect < 1f; eyeeffect += 0.01f)
             {
                 float invert = 1f - eyeeffect;
                 float lightit = 0.50f + eyeeffect / 2f;
-                float lightit2 = MathHelper.Clamp(invert*3f,0f,1f);
-                Vector2 lighter = DrawPosition + Vector2.Normalize(eyeCurrentLook) * eyeeffect*640f;
-                Lighting.AddLight(lighter+projectile.velocity, Color.White.ToVector3()*lightit* lightit2*1.00f);
+                float lightit2 = MathHelper.Clamp(invert * 3f, 0f, 1f);
+                Vector2 lighter = DrawPosition + Vector2.Normalize(eyeCurrentLook) * eyeeffect * 640f;
+
+                (Point16, Point16) herethere = ((DrawPosition / 16).ToPoint16(), (lighter / 16).ToPoint16());
+
+                if (Utils.PlotLine(herethere.Item1, herethere.Item2, (x, y) => Framing.GetTileSafely(x, y).collisionType != 1))
+                {
+                Lighting.AddLight(lighter + projectile.velocity, Color.White.ToVector3() * lightit * lightit2 * alphalight);
+                }
+                else
+                {
+                    break;
+                }
             }
-           // Lighting.AddLight(DrawPosition, Color.White.ToVector3());
+
+
+            // Lighting.AddLight(DrawPosition, Color.White.ToVector3());
 
             projectile.velocity *= friction;
 
@@ -966,7 +982,7 @@ namespace SGAmod.Items.Armors.Mandala
             projectile.localAI[0] += 1;
             if (projectile.localAI[0] == 1)
             {
-                projectile.localAI[1] = Main.rand.Next(5);
+                projectile.localAI[1] = Main.rand.Next(3);
                 rotationSpeed = (Main.rand.NextFloat(1f, 3f) * (Main.rand.NextBool() ? 1f : -1f)) * 0.01f;
                 scale = Main.rand.NextFloat(0.6f, 0.8f);
                 projectile.netUpdate = true;
@@ -1006,11 +1022,11 @@ namespace SGAmod.Items.Armors.Mandala
 
         public override bool PreKill(int timeLeft)
         {
-            SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_MonkStaffGroundImpact, (int)projectile.Center.X, (int)projectile.Center.Y);
+            /*SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_MonkStaffGroundImpact, (int)projectile.Center.X, (int)projectile.Center.Y);
             if (sound != null)
             {
                 sound.Pitch = -0.85f;
-            }
+            }*/
 
             return true;
         }
@@ -1041,7 +1057,7 @@ namespace SGAmod.Items.Armors.Mandala
 
         public void DoDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D[] asteriods = new Texture2D[5] { ModContent.GetTexture("SGAmod/Dimensions/Space/MeteorLarge"), ModContent.GetTexture("SGAmod/Dimensions/Space/MeteorLarge2"), ModContent.GetTexture("SGAmod/Dimensions/Space/MeteorLarge3"), ModContent.GetTexture("SGAmod/Dimensions/Space/MeteorLarge4"), ModContent.GetTexture("SGAmod/Dimensions/Space/MeteorLarge5") };
+            Texture2D[] asteriods = new Texture2D[3] {ModContent.GetTexture("SGAmod/Dimensions/Space/MeteorLarge3"), ModContent.GetTexture("SGAmod/Dimensions/Space/MeteorLarge4"), ModContent.GetTexture("SGAmod/Dimensions/Space/MeteorLarge5") };
 
             float alpha = MathHelper.Clamp((projectile.localAI[0] - 20) / 40f, 0f, 1f) * MathHelper.Clamp(projectile.timeLeft / 60f, 0f, 1f);
 

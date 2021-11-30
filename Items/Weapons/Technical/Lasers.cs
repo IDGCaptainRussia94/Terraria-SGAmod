@@ -153,6 +153,7 @@ namespace SGAmod.Items.Weapons.Technical
 		protected int MyLaser = default;
 		public Vector2 EndPoint = default;
 		public Color gemColor = Color.Black;
+		protected override bool CanBlock => false;
 		public override bool CloneNewInstances => true;
 		public override ModProjectile Clone()
 		{

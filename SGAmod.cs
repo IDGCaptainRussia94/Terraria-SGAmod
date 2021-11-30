@@ -766,7 +766,9 @@ namespace SGAmod
 
 
 			SGAILHacks.Unpatch();
-            Items.Weapons.CataLogo.Unload();
+			BCLEntries.Unload();
+
+			Items.Weapons.CataLogo.Unload();
 
 
 			if (!Main.dedServ)
@@ -1486,6 +1488,8 @@ namespace SGAmod
 			Terraria.Cinematics.CinematicManager.Instance.Update(new GameTime());
 			ShadowParticle.UpdateAll();
 			RaysOfControlOrb.UpdateAll();
+
+			//Main.worldSurface -= 0.25;
 
 			 PostUpdateEverythingEvent?.Invoke();
 			//Main.NewText(test);

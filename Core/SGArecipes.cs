@@ -207,7 +207,7 @@ namespace SGAmod
                 ((LaserMarker)recipe.createItem.modItem).gemType = recipe.requiredItem[0].type;
             }
 
-            if (recipe.createItem.type == mod.ItemType("HellionSummon") && SGAWorld.downedHellion < 1)
+            if (recipe.createItem.type == mod.ItemType("HellionSummon") && !(SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths > 3))
                 canwemakeit = false;
             //if ((((recipe.createItem.type==ItemID.MythrilAnvil || recipe.requiredTile.Any(tile => tile == TileID.MythrilAnvil)) || recipe.createItem.type==ItemID.OrichalcumAnvil) && (SGAWorld.downedWraiths<2))
             if ((recipe.createItem.type==ItemID.LunarBar && SGAWorld.downedWraiths<4))

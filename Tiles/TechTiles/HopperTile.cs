@@ -21,6 +21,7 @@ namespace SGAmod.Tiles.TechTiles
 		protected virtual int DropItem => ModContent.ItemType<HopperItem>();
 		public override void SetDefaults()
 		{
+			TileID.Sets.DrawsWalls[Type] = true;
 			Main.tileFrameImportant[Type] = true;
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 			Main.tileLavaDeath[Type] = false;
@@ -112,7 +113,7 @@ namespace SGAmod.Tiles.TechTiles
 
 		public bool HopperInputItem(Item item, Point tilePos, int movementCount, ref bool testOnly )
 		{
-			return HopperMoveItem(item, tilePos, movementCount + 1,ref item.stack,ref testOnly);
+			return HopperMoveItem(item, tilePos, movementCount, ref item.stack,ref testOnly);
 		}
 
 		public bool HopperExportItem(ref Item item, Point tilePos, int movementCount, ref bool testOnly)

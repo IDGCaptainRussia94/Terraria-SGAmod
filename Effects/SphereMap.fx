@@ -13,7 +13,7 @@ sampler mappedTexturesampler = sampler_state
     AddressV = Wrap;
 };
 
-//(back)ported from this to HLSL, I did not originally write this:
+//(back)ported from this to HLSL, I (IDGCaptainRussia94) did not originally write this:
 //https://www.shadertoy.com/view/wdSXRz
 //Thank you!
 

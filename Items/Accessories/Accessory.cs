@@ -4443,6 +4443,7 @@ namespace SGAmod.Items.Accessories
 
 	public class GraniteMagnetProj : Weapons.Technical.LaserMarkerProj
     {
+		protected override float VisualAngle => -MathHelper.PiOver2;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("GraniteMagnetProj");
@@ -4527,12 +4528,15 @@ namespace SGAmod.Items.Accessories
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
+			base.PreDraw(spriteBatch, drawColor);
 
+			/*
 			bool facingleft = projectile.velocity.X > 0;
 			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
 			Texture2D texture = Main.projectileTexture[projectile.type];
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor * projectile.Opacity, projectile.rotation + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+			*/
 
 			return false;
 		}

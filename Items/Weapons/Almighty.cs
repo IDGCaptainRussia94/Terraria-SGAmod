@@ -65,7 +65,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Megido");
-			Tooltip.SetDefault("Targets 4 enemies nearby your curser on use\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds"));
+			Tooltip.SetDefault("Targets 4 enemies nearby your cursor on use\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds"));
 		}
 		public override string Texture => "Terraria/Item_" + ItemID.Darkness;
 		public override void SetDefaults()
@@ -320,7 +320,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Megidola");
-			Tooltip.SetDefault("Targets 3 enemies nearby your curser on use and spawns orbs near them\nEach of these orbs zap nearby enemies 4 times for the listed damage\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 45 seconds"));
+			Tooltip.SetDefault("Targets 3 enemies nearby your cursor on use and spawns orbs near them\nEach of these orbs zap nearby enemies 4 times for the listed damage\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 45 seconds"));
 		}
 		public override string Texture => "Terraria/Item_" + ItemID.Darkness;
 		public override void SetDefaults()
@@ -1427,7 +1427,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Nuclear Option");
-			Tooltip.SetDefault("'Unleash the full raw, unfiltered, cataclysmic wrath of the british...'\nCharges up by holding this item, based off life regen and by grazing projectiles\nWill charge up very slowly if not actively held\nAt 50% charge or higher, activate to unleash a Nuclear Explosion\nSends out a initial shockwave, afterwords only the fireball does damage\nVaporizes most projectiles, and has more range and damage at higher charge\n" + Idglib.ColorText(Color.Red, "Getting hurt and losing health will halve your current charge")+"\n"+Idglib.ColorText(Color.Red, "Only charges up to half outside of boss fights"));
+			Tooltip.SetDefault("'Unleash the full raw, unfiltered, cataclysmic wrath of the British...'\nCharges up by holding this item, based off life regen and by grazing projectiles\nWill charge up very slowly if not actively held\nAt 50% charge or higher, activate to unleash a Nuclear Explosion\nSends out a initial shock wave, afterwards only the fireball does damage\nVaporizes most projectiles, and has more range and damage at higher charge\n" + Idglib.ColorText(Color.Red, "Getting hurt and losing health will halve your current charge")+"\n"+Idglib.ColorText(Color.Red, "Only charges up to half outside of boss fights"));
 		}
 
         public override string Texture => "SGAmod/Items/Weapons/NuclearOption";

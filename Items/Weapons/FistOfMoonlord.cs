@@ -18,7 +18,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fist Of Moon Lord");
-			Tooltip.SetDefault("'Punches shit into next week'\nHold attack to direct Moonlord's arm, release to let go\nThe fist does more damage when let go");
+			Tooltip.SetDefault("'Punches shit into next week'\nHold attack to direct Moon Lord's arm, release to let go\nThe fist does more damage when let go");
 			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(15, 2));
 		}
 		public override void SetDefaults()

@@ -433,7 +433,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("The Jakob");
-			Tooltip.SetDefault("Right click to fan the hammer-rapidly fire the remaining clip with less accuracy\n'If it took more than 1 shot, you wern't using a Jakobs!'");
+			Tooltip.SetDefault("Right click to fan the hammer-rapidly fire the remaining clip with less accuracy\n'If it took more than 1 shot, you weren't using a Jakob's!'");
 			SGAmod.UsesClips.Add(SGAmod.Instance.ItemType("TheJacob"), 6);
 		}
 

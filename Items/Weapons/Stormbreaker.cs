@@ -19,7 +19,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Stormbreaker");
-			Tooltip.SetDefault("Left click to guide the Stormbreaker at enemies and deal an additional Squareroot of their max life on hit\nRight click to hold the hammer up and smite your foes, Consumes 100 Electric Charge per foe to be smited\nfoes must be marked via primary fire (40% chance if immune) or wet to be smited\n2 more bolts are summoned during a rainstorm, but overall are less accurate\n'atleast it's not yet another Infinity Gauntlet'");
+			Tooltip.SetDefault("Left click to guide the Stormbreaker at enemies and deal an additional square-root of their max life on hit\nRight click to hold the hammer up and smite your foes, Consumes 100 Electric Charge per foe to be smited\nFoes must be marked via primary fire (40% chance if immune) or wet to be smited\n2 more bolts are summoned during a rainstorm, but overall are less accurate\n'At least it's not yet another Infinity Gauntlet'");
 		}
 
 		public (string, string) DevName()

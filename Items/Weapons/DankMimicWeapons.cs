@@ -514,7 +514,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Gnat Minions");
-			Description.SetDefault("Buzz Swarm Dungpile Buzz!");
+			Description.SetDefault("Buzz Swarm Dung Pile Buzz!");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
 		}
@@ -689,7 +689,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Horse Fly Minions");
-			Description.SetDefault("Buzz Swarm Dungpile Buzz BUZZ!");
+			Description.SetDefault("Buzz Swarm Dung Pile Buzz BUZZ!");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
 		}

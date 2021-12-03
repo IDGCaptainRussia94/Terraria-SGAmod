@@ -61,7 +61,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Jaws");
-			Tooltip.SetDefault("Throws a yoyo with spinning teeth that halve enemy defense\nthe teeth break on tiles or after they hit enemies enough times");
+			Tooltip.SetDefault("Throws a yoyo with spinning teeth that halve enemy defense\nThe teeth break on tiles or after they hit enemies enough times");
 		}
 
 		public override void SetDefaults()

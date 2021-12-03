@@ -16,7 +16,7 @@ namespace SGAmod.Items.Weapons.Auras
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Berserker Aura Staff");
-			Tooltip.SetDefault("Summons Beserker Gauntlets around the player to boost their attack power\nBut in your rage, you forget to breath");
+			Tooltip.SetDefault("Summons Berserker Gauntlets around the player to boost their attack power\nBut in your rage, you forget to breath");
 			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}
@@ -177,7 +177,7 @@ namespace SGAmod.Items.Weapons.Auras
 	{
 		public override void SetDefaults()
 		{
-			DisplayName.SetDefault("Beserker Aura");
+			DisplayName.SetDefault("Berserker Aura");
 			Description.SetDefault("The Aura enrages your attacks, but you forget to breath");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;

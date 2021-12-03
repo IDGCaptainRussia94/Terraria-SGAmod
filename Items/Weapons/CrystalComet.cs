@@ -161,7 +161,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shooting Star");
-			Tooltip.SetDefault("Controls a very inspirational Star\nReleases a nova of stars when hitting past your mouse curser\nSpeeds up the longer you use the item\n'The more you know!'");
+			Tooltip.SetDefault("Controls a very inspirational Star\nReleases a nova of stars when hitting past your mouse cursor\nSpeeds up the longer you use the item\n'The more you know!'");
 		}
 
 		public override void SetDefaults()

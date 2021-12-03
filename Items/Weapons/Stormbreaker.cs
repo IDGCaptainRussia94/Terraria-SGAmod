@@ -31,7 +31,7 @@ namespace SGAmod.Items.Weapons
 		{
 			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[1] > 0)
 			{
-				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Enpowerment bonus ---"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Empowerment bonus ---"));
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "10% increased damage on Primary"));
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Secondary will always summon lightning as if it were raining"));
 			}

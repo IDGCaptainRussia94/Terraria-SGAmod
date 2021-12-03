@@ -32,7 +32,7 @@ namespace SGAmod.Items.Weapons.Aurora
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Skylight");
-            Tooltip.SetDefault("'Rend and Sunder all with the fury of the heavens!'\nPrimary channels energy from the celestial body in the sky\nOnce channeling, you cannot cancel for a short time\nYou can only channel when your energy is depleted\nLaunches celestial slashs that apply stacking damage over time");
+            Tooltip.SetDefault("'Rend and Sunder all with the fury of the heavens!'\nPrimary channels energy from the celestial body in the sky\nOnce channeling, you cannot cancel for a short time\nYou can only channel when your energy is depleted\nLaunches celestial slashes that apply stacking damage over time");
             Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
         }
 
@@ -879,7 +879,7 @@ namespace SGAmod.Items.Weapons.Aurora
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("FireFox Greatbow");
-            Tooltip.SetDefault("Launches a pair of Sky Foxes that move in sin wave patterms\nAfter striking an enemy, a trail of arrows are left behind that rapidly seek out that enemy");
+            Tooltip.SetDefault("Launches a pair of Sky Foxes that move in sin wave patterns\nAfter striking an enemy, a trail of arrows are left behind that rapidly seek out that enemy");
             Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
         }
 

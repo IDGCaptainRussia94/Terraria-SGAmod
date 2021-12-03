@@ -307,7 +307,7 @@ namespace SGAmod.Items.Weapons.Trap
 		{
 			DisplayName.SetDefault("FlameTrap 'Thrower'");
 			Tooltip.SetDefault("'Of course the hottest flames are found within the temple dedicated to the sun'\nSprays fire that remains in place for a couple of seconds" +
-				"\nUses Gel as ammo, 50% chance to not consume gel\nPress Alt Fire to spray the flames in a wide arc instead\nCounts as trap damage, pierces infinitely, but dooesn't crit");
+				"\nUses Gel as ammo, 50% chance to not consume gel\nPress Alt Fire to spray the flames in a wide arc instead\nCounts as trap damage, pierces infinitely, but doesn't crit");
 		}
 
 		public override bool ConsumeAmmo(Player player)

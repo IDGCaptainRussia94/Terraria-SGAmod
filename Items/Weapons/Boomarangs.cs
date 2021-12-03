@@ -138,7 +138,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Specterang");
-			Tooltip.SetDefault("Throws a ghostly Boomarang that passes through enemies and walls\nLeaves behind ghostly images of itself that damages enemies");
+			Tooltip.SetDefault("Throws a ghostly Boomerang that passes through enemies and walls\nLeaves behind ghostly images of itself that damages enemies");
 		}
 
 		public override void SetDefaults()
@@ -553,7 +553,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fridgeflamarang");
-			Tooltip.SetDefault("Throws an Icey and Flaming Boomerang pair guided by a light that split apart on hit\nUsable only when less than 4 Boomerangs are active");
+			Tooltip.SetDefault("Throws an Icy and Flaming Boomerang pair guided by a light that split apart on hit\nUsable only when less than 4 Boomerangs are active");
 		}
 
 		public override void SetDefaults()

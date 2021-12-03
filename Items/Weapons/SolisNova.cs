@@ -19,7 +19,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Solis Nova");
-			Tooltip.SetDefault("Conjures the power of a gravitational Galaxy through channeling mana\nAfter charging enough, gains the ability to slow enemies down and pull them in\nGravity is based on Galaxy size, enemy distance, and enemy knockback resistance\nWhen fully charged, releasing dispurses the nebula over a massive area\n'fear the mighty pull of the Pastel-Colored Galaxy!'");
+			Tooltip.SetDefault("Conjures the power of a gravitational Galaxy through channeling mana\nAfter charging enough, gains the ability to slow enemies down and pull them in\nGravity is based on Galaxy size, enemy distance, and enemy knockback resistance\nWhen fully charged, releasing disperses the nebula over a massive area\n'fear the mighty pull of the Pastel-Colored Galaxy!'");
 		}
 
 		public override void SetDefaults()

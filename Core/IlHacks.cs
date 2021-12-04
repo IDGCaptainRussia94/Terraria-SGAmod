@@ -35,6 +35,7 @@ namespace SGAmod
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
 
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
+			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += AdjustLifeRegen;
 			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
 			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
 			IL.Terraria.Player.ExtractinatorUse += Player_ExtractinatorUse;
@@ -59,11 +60,11 @@ namespace SGAmod
 				IL.Terraria.Main.DrawBackground += RemoveLavabackground;
 				IL.Terraria.Main.OldDrawBackground += RemoveOldLavabackground;
 			}
-			
+
 			PrivateClassEdits.ApplyPatches();
 		}
 
-		internal static void Unpatch()
+        internal static void Unpatch()
 		{
 			PrivateClassEdits.RemovePatches();
 			/*IL.Terraria.Player.AdjTiles -= ForcedAdjTilesHack;
@@ -79,7 +80,44 @@ namespace SGAmod
 			*/
 		}
 
-		//This patch fources the sandstorm visual effect to play when the sandstormTimer is above 0
+		private delegate int NPCLifeRegenAdjustDelegate(NPC npc, int lifeRegen);
+		private static int NPCLifeRegenAdjustMethod(NPC npc, int lifeRegen)
+		{
+			//dotResist
+			SGAnpcs sganpc = npc.SGANPCs();
+			if (sganpc.dotResist != 1)
+			{
+				npc.lifeRegen = (int)(npc.lifeRegen * sganpc.dotResist);
+				return (int)(lifeRegen * sganpc.dotResist);
+			}
+
+			return lifeRegen;
+		}
+
+		//Adjusts the DoT npcs take right before the code that really deals the damage happens
+		private static void AdjustLifeRegen(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+			//if (c.TryGotoNext(MoveType.After, i => i.MatchCall((MethodBase)typeof(NPCLoader).GetConstructor(new Type[2]
+			//{
+			//typeof(GlobalNPC[]),typeof(int)}))))
+
+			if (c.TryGotoNext(MoveType.After, i => i.MatchCall(typeof(NPCLoader).GetMethod("UpdateLifeRegen"))))
+			{
+				c.Emit(OpCodes.Ldarg_0);
+				c.Emit(OpCodes.Ldloc, 0);
+				c.EmitDelegate<NPCLifeRegenAdjustDelegate>(NPCLifeRegenAdjustMethod);
+				c.Emit(OpCodes.Stloc, 0);
+				return;
+			}
+
+
+
+			throw new Exception("IL Error Test");
+			return;
+		}
+
+		//This patch forces the sandstorm visual effect to play when the sandstormTimer is above 0
 		private static bool PlayerSandstormDelegate()
 		{
 			SGAPlayer sgaply = Main.LocalPlayer.SGAPly();

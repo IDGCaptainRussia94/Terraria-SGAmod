@@ -568,11 +568,11 @@ namespace SGAmod.Items.Armors.Vibranium
 						foreach (Projectile proj in Main.projectile.Where(testby => testby.active && !testby.friendly && testby.hostile && (testby.Center - player.Center).LengthSquared() < dist && testby.GetGlobalProjectile<SGAprojectile>().damageReduceTime <= 0).OrderBy(testby => (testby.Center - player.Center).LengthSquared()))
 						{
 
-							if (!sgaply.ConsumeElectricCharge((int)(proj.damage * (playerheldsummon ? 0.75f : 1.5f)), 60) || index > player.maxTurrets)
+							if (!sgaply.ConsumeElectricCharge((int)(proj.damage * (playerheldsummon ? 0.60f : 1.25f)), 60) || index > player.maxTurrets)
 								continue;
 
 							SGAprojectile sgaproj = proj.GetGlobalProjectile<SGAprojectile>();
-							sgaproj.damageReduce = 10f;
+							sgaproj.damageReduce = 3f;
 							sgaproj.damageReduceTime = 180;
 
 							Vector2 there = proj.Center - projectile.Center;

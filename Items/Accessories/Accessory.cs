@@ -3343,12 +3343,13 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Command Chip");
-			Tooltip.SetDefault("Increases your max number of sentries");
+			Tooltip.SetDefault("Increases your max number of sentries\nImproves Max Electric Charge by 1000");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.maxTurrets += 1;
+			player.SGAPly().electricChargeMax += 1000;
 		}
 
 		public override void SetDefaults()

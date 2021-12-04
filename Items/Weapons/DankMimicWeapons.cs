@@ -226,6 +226,7 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 1;
 			item.value = Item.buyPrice(0, 1, 0, 0);
 			item.rare = 4;
+			item.noMelee = true;
 			item.UseSound = SoundID.Item44;
 
 			// These below are needed for a minion weapon
@@ -569,6 +570,7 @@ namespace SGAmod.Items.Weapons
 			item.value = Item.buyPrice(0, 2, 50, 0);
 			item.rare = ItemRarityID.LightPurple;
 			item.UseSound = SoundID.Item44;
+			item.noMelee = true;
 
 			// These below are needed for a minion weapon
 			item.noMelee = true;

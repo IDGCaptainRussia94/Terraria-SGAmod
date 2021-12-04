@@ -641,17 +641,43 @@ namespace SGAmod
 
 				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidoSnd", new Sounds.Custom.MegidoSnd());
 				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidolaonSnd", new Sounds.Custom.MegidolaonSnd());
+				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/RoR2sndTurretFire", new Sounds.Custom.RoR2sndTurretFire());
 
 			}
 
 			AddItem("Nightmare", NPCs.TownNPCs.Nightmare.instance);
 
-			if (!Directory.Exists(SGAmod.filePath))
+			bool failedToMakeDirectoy = false;
+
+			try
 			{
-				Directory.CreateDirectory(SGAmod.filePath);
+				if (!Directory.Exists(SGAmod.filePath))
+				{
+					Directory.CreateDirectory(SGAmod.filePath);
+				}
+            }
+			catch (IOException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
+			}
+			catch (UnauthorizedAccessException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
+			}
+			catch (ArgumentException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
+			}		
+			catch (NotSupportedException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
 			}
 
-			if (Directory.Exists(filePath))
+			if (failedToMakeDirectoy || Directory.Exists(filePath))
 			{
 				//foreach(string filename in Directory.GetFiles(filePath))
 				//Logger.Debug("files: " + filename);
@@ -661,11 +687,11 @@ namespace SGAmod
 					HellionAttacks.CheckAndLoadMusic();
 				}
 
-				if (Directory.GetFiles(filePath).Where(testby => testby.Contains("Itsnotoveryet.txt")).Count()>0)
+				if (failedToMakeDirectoy || Directory.GetFiles(filePath).Where(testby => testby.Contains("Itsnotoveryet.txt")).Count()>0)
 				{
 					SGAmod.NightmareUnlocked = true;
 
-					Logger.Debug("Directory and file found: Nightmare Mode has been unlocked");
+					Logger.Debug(failedToMakeDirectoy ? "Directory not able to be made" : "Directory and file found" + ": Nightmare Mode has been unlocked");
 				}
 				//if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
 				//{
@@ -1553,6 +1579,7 @@ namespace SGAmod
 #endif
 
 			vibraniumCounter = Math.Max(vibraniumCounter - 1, 0);
+			SGAPlayer.centerOverrideTimerIsActive = Math.Max(SGAPlayer.centerOverrideTimerIsActive - 1, 0);
 			SGAWorld.modtimer += 1;
 			PrismShardHinted.ApplyPrismOnce = false;
 

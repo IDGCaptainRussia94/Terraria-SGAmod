@@ -2,7 +2,45 @@
 Changelog:
 3.600l-(11/30/21)-Patch 11-Tech N Wreck: Beta
 
+-Added a Failsafe to unlock nightmare mode and the like if the directory cannot be created
 
+-Added the Engineering Rod
+
+-Nerfed Engineer Armor: the hovering speed boost is ONLY applied if your close enough to the ground to hover, also fixed issues when going into water
+
+-Life regen is entirely disabled during boss fights in Nightmare Mode (with the exception of 1 armor set's special ability); have fun!
+
+-Doom Harbinger no longer awards Expertise: this is now awarded by Phaethon
+
+-Buffed Jungle Templar: Gravity increase is reduced to half when not falling downwards, you fall 50% faster
+
+-Added Boyfriend's Mic
+
+-Fixed Repair/DPS Wraiths not drawing correctly
+
+-Buffed Novite Command Chip: now gives 1000 Max Electric Charge
+
+-Nerfed Vibranium Hood: greatly reduced the effectiveness of the damage reduction wisp, Electric charge cost slightly lowered
+
+-The Watched debuff now cancels out invisibility and the Magatsu Set's bonus
+
+-Removed Luminous Altar debug text
+
+-Added Godmode anti-cheat for hellion: you don't get drops if you used godmode at any point during her fight
+
+-Reworked Shadeflare: now charges up over time, opening a portal from the bow which fires barrages of both increasingly piercing Shadowflame arrows or ammo arrows
+
+-Nerfed Wrath Arrows: 2nd explosion now does far less damage, requires hellfire arrows to be made
+
+-Fixed Draconic Claw Necklace: No longer takes life when flying up in a mount
+
+-Added various missing buff icons/serphim shard has a fixed sprite, thx again Rijam!
+
+-New changes to Helen Hellion Weygold:
+-After using the 1-of-2 desperation attacks for the 1st time, hellion will become able to take damage during those, resisting 80% of damage and DoT debuffs from them (they no longer completely stall the fight)
+-During desperation attacks, now gives a debuff that gives infinite flight, but will take life (when above 100 life) if wing time is too low or the player is mounted
+-Reduced the damage of the FNF attack to 40 from 50, pattern changed to make it easier to do
+-Doesn't like the use of Cheat Sheet/HERO's Mod Godemode
 
 
 3.600k-(11/30/21)-Patch 11-Tech N Wreck: Beta
@@ -23,7 +61,7 @@ Changelog:
 
 -During Hellion's phase fight, you get a (de)buff that gives you unlimited flight effectively, but being too low on flight time will drain life slowly over time
 
--Reality's Runder is now only uncraftable until the 3 bosses are beaten
+-Reality's Sunder is now only uncraftable until the 3 bosses are beaten
 
 -Fixed Hoppers and hopper-functionality tiles not drawing walls behind them
 
@@ -34,6 +72,8 @@ Changelog:
 -Mandala's summon will now only use the resprited Asteriods
 
 -Added Boss Checklist hacks: Hellion has a very *special* page for her 2nd phase
+
+-Added a bunch of stupid Window captions that have a 20% of being picked
 
 -New changes to Hellion Core:
 -Will attempt to keep some distance outside of dashing in the 1st phase
@@ -592,15 +632,15 @@ Changelog:
 
 Changelog:
 
-3.600a-(9/13/21)-Patch 11-Tech N Wreck: Beta
+3.600-(9/13/21)-Patch 11-Tech N Wreck
 
 Guess who's back!?! SGAmod returns a year later with the largest update to drop yet! Featuring many improves and vast effort to overhaul and modernize the mod to new personal higher standards while still retaining that original random content mod fun aspect!
 Hope you enjoy, it's been half a year in the making!
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Sirius Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Oranos Skye Hook, Firefox Greatbow, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Sand Tosser, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, Avarice Lord Wings, Draconic Claw Necklace, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault, Deific Healing Potion
--Almighty SMT Spellcards: Megido, Megidola, Megidolaon, Morning Star, and may have forgotten some items
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Sirius Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Oranos Skye Hook, Firefox Greatbow, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Boyfriend's Mic, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, Avarice Lord Wings, Draconic Claw Necklace, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault, Deific Healing Potion, And more, explore to find the rest!
+-Almighty SMT Spellcards: Megido, Megidola, Megidolaon, Morning Star, Rays of Control
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus!
 
@@ -713,6 +753,8 @@ Hope you enjoy, it's been half a year in the making!
 
 -Added a tooltip for auras
 
+-Updated Philanthropist's Shower and Prosperity Staff to use the glowing coins instead of vanilla ones (I just like them more)
+
 -Deeper Dungeons has some smoothed Ice via the same code used for the asteriods, no more square ice!
 
 -Aura Weapons now only affect players on the same team
@@ -765,6 +807,8 @@ Hope you enjoy, it's been half a year in the making!
 
 -Rebalanced Sticky Situation: now has 3.75X (30 => 112) more damage, instead of the projectile doing more damage
 
+-Reworked Shadeflare: now charges up over time, opening a portal from the bow which fires barrages of both increasingly piercing Shadowflame arrows or ammo arrows
+
 -Reworked Avarice: projectiles lose 50% of their damage per hit (100% on 1st, 50% on 2nd hit, 25% on 3rd hit), Midas on 1st, Shadowflame on 2nd, but now on the 3rd hit it inflicts Microtransactions: that damages enemy money values, drops more money on the ground and deals damage over time if they are still worth something
 
 -Buffed Radiation Cure Potion: now grants life recovery during boss fights, but at a greatly reduced rate
@@ -797,6 +841,8 @@ Hope you enjoy, it's been half a year in the making!
 
 -Buffed Jarate: Enemies remain Sodden for 3X as long now
 
+-Nerfed Wrath Arrows: 2nd explosion now does far less damage, requires hellfire arrows to be made
+
 -Buffed Mister Creeper's Slick Suit: Throwing damage increased to 32% (from 25%), endurance increased to 20% (from 15%)
 
 -Buffed T.P.D.C.P.U: Now grants complete immunity to Shield Break
@@ -814,6 +860,8 @@ Hope you enjoy, it's been half a year in the making!
 -Buffed all consumable Jab-lins: as they now have a chance to drop again after expiring
 
 -Buffed all the low-block angle shields: Easier to block projectiles with a wider angle
+
+-Buffed Novite Command Chip: now gives 1000 Max Electric Charge
 
 -Nerfed Mister Creeper's Armor Set: all damage types that are not melee and throwing get a -10% damage and crit chance per armor piece
 
@@ -834,6 +882,8 @@ Hope you enjoy, it's been half a year in the making!
 -Nerfed Crystal Comet: Increased Mana Cost, and moved later in progression (Post new boss), removed extra crit chance
 
 -Nerfed Surt: now only grants more than 1 tick of On Fire! when near full charge, up to about 6 seconds of On Fire!
+
+-Nerfed Prosperity Rod: Damage lowered
 
 -Nerfed Shooting Star: base damage massively lowered, this thing had more DPS than Enmity did!
 

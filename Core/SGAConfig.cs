@@ -265,6 +265,14 @@ namespace SGAmod
 		[ReloadRequired]
 		public bool LogoReplace { get; set; }
 
+		[Label("Change Window Caption")]
+		[Tooltip("A chance (out of 100) to change the game's window caption to some funny SGAmod ones")]
+		[Increment(5)]
+		[Range(0, 100)]
+		[DefaultValue(20)]
+		[ReloadRequired]
+		public int CaptionChance { get; set; }
+
 		[Label("Screen Shake Multiplier")]
 		[Tooltip("Adjust the intensity of screen shakes")]
 		[Increment(0.01f)]

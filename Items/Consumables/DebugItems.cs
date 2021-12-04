@@ -40,7 +40,14 @@ namespace SGAmod.Items.Consumables
 			item.UseSound = SoundID.Item9;
 			item.consumable = true;
 		}
-		public override string Texture
+        public override bool UseItem(Player player)
+        {
+			SGAPlayer.centerOverrideTimerIsActive = 300;
+			player.SGAPly().centerOverrideTimer = 300;
+			//PrivateClassEdits.CrashPatch();
+			return true;
+        }
+        public override string Texture
 		{
 			get { return "Terraria/Heart2"; }
 		}
@@ -88,7 +95,7 @@ namespace SGAmod.Items.Consumables
 		}
         public override void UpdateInventory(Player player)
         {
-			player.SGAPly().disabledAccessories = Math.Max(player.SGAPly().disabledAccessories,16);
+			player.SGAPly().disabledAccessories = Math.Max(player.SGAPly().disabledAccessories,600);
         }
         public override string Texture
 		{

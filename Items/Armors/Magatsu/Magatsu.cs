@@ -321,7 +321,6 @@ namespace SGAmod.Items.Armors.Magatsu
 
 		public override void PostEffectsDraw(SpriteBatch spriteBatch, float drawScale = 2f)
         {
-
             float alpha = 1f;
             if (projectile.ai[0] < 1000 && projectile.localAI[0] >= 0)
                 alpha = Math.Max((projectile.localAI[0] - 60) / 200f, 0);
@@ -351,5 +350,136 @@ namespace SGAmod.Items.Armors.Magatsu
         }
 
     }
+
+	public class MagatsuDecoy : ModNPC, IPostEffectsDraw
+	{
+
+		public override bool Autoload(ref string name)
+		{
+			name = "Magatsu Decoy";
+			return mod.Properties.Autoload;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			// DisplayName automatically assigned from .lang files, but the commented line below is the normal approach.
+			// DisplayName.SetDefault("Example Person");
+			Main.npcFrameCount[npc.type] = 1;
+			NPCID.Sets.ExtraFramesCount[npc.type] = 1;
+			NPCID.Sets.AttackFrameCount[npc.type] = 1;
+			NPCID.Sets.DangerDetectRange[npc.type] = 0;
+			NPCID.Sets.AttackType[npc.type] = 0;
+			NPCID.Sets.AttackTime[npc.type] = 90;
+			NPCID.Sets.AttackAverageChance[npc.type] = 30;
+			NPCID.Sets.HatOffsetY[npc.type] = 4;
+		}
+
+		public override void SetDefaults()
+		{
+			npc.townNPC = true;
+			npc.friendly = true;
+			npc.width = 32;
+			npc.height = 50;
+			npc.aiStyle = -1;
+			npc.damage = 0;
+			npc.noGravity = true;
+			npc.defense = 50;
+			npc.lifeMax = 500;
+			npc.HitSound = SoundID.NPCHit1;
+			npc.DeathSound = SoundID.NPCDeath1;
+			npc.knockBackResist = 0.75f;
+			//npc.immortal = true;
+			//animationType = NPCID.Guide;
+			npc.noGravity = true;
+			npc.homeless = true;
+			//npc.rarity = 1;
+
+		}
+		public override string Texture
+		{
+			get
+			{
+				return "SGAmod/Projectiles/FieryRock";
+			}
+		}
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        {
+			return false;
+        }
+
+		public override bool PreAI()
+		{
+			npc.localAI[0] += 1f;
+			//npc.ai[0] = 0;
+			//npc.ai[1] = 0;
+			//npc.ai[2] = 0;
+			//npc.ai[3] = 0;
+			npc.velocity /= 1.1f;
+
+			Main.NewText(npc.ai[3]);
+
+			if (npc.localAI[0]>150)
+				npc.life -= 1;
+
+			if (npc.ai[3] >= -90)
+            {
+				Player owner = Main.player[(int)npc.ai[3]];
+
+				if (owner.dead)
+                {
+					npc.life = 0;
+					return false;
+                }
+
+				if (owner.active)
+                {
+					SGAPlayer.centerOverrideTimerIsActive = 5;
+					owner.SGAPly().centerOverrideTimer = (int)Math.Max(owner.SGAPly().centerOverrideTimer,3);
+					owner.SGAPly().centerOverridePosition = npc.Center;
+                }
+
+            }
+
+			return true;
+		}
+
+        public void PostEffectsDraw(SpriteBatch spriteBatch, float drawScale = 2f)
+		{
+			int framesTotal = 20;
+			int frame = 0;
+
+			Texture2D texHead = Main.playerTextures[0, 0];
+			Texture2D texBody = Main.playerTextures[0, 3];
+			Texture2D texlegs = Main.playerTextures[0, 10];
+
+			Vector2 drawPos = ((npc.Center - Main.screenPosition));
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D[] texes = new Texture2D[] { texlegs, texBody, texHead };
+
+			Terraria.Utilities.UnifiedRandom rand = new Terraria.Utilities.UnifiedRandom(npc.whoAmI);
+
+			float trans = MathHelper.Clamp(npc.localAI[0] / 64f, 0f, 1f);
+			float smooth = MathHelper.SmoothStep(128f, 0f, trans);
+
+			for (int i = 0; i < 3; i += 1)
+			{
+				Vector2 loc = Vector2.UnitX.RotatedBy((rand.NextFloat(0.30f, 0.65f)*Main.GlobalTime * (rand.NextBool() ? 1f : -1f))+rand.NextFloat(MathHelper.TwoPi))*(rand.NextFloat(1f, 2f)) *(smooth);
+				Texture2D tex = texes[i];
+				Rectangle rect = new Rectangle(0, 0, tex.Width, tex.Height / 20);
+				Rectangle rect2 = new Rectangle(0, frame * rect.Height, tex.Width, rect.Height);
+
+				spriteBatch.Draw(tex, (drawPos+ loc)/ 2, rect2, Color.Black* trans, 0, rect.Size() / 2f, npc.scale/2, SpriteEffects.FlipHorizontally, 0f);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+	}
+
 
 }

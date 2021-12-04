@@ -20,20 +20,21 @@ using static MonoMod.Cil.ILContext;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI;
 using SGAmod.NPCs.Hellion;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace SGAmod
 {
 
 	public static class PrivateClassEdits
 	{
-		//This class is comprised of more direct version of Monomod IL patches/ON Detours to classes that you normally 'should not' have access to (and by extention, should not be) patching, learned thanks to a very "specific", very talented dev who's serving a not-worth-it mod
+		//This class is comprised of more direct version of Monomod IL patches/ON Detour Hooks to classes that you normally 'should not' have access to (and by extention, should not be) patching, learned thanks to a very "specific", very talented dev who's serving a not-worth-it mod
 
 		public static Type typeUIModItem;
 
 		internal static void ApplyPatches()
 		{
 			SGAmod.Instance.Logger.Debug("Doing some Monomod Hook Endpoint nonsense... Jesus christ this is alot of vanilla hacking");
-
 
 			typeUIModItem = Assembly.GetAssembly(typeof(Main)).GetType("Terraria.ModLoader.UI.UIModItem");//This class is off-limits to us (internal), even to ON and IL, so we have to grab it directly from Main's assembly
 
@@ -50,13 +51,10 @@ namespace SGAmod
 			BlockModdedAccessoriesManipulator += BlockModdedAccessoriesPatch;
 		}
 
-
-
-
-		//Shutdown player accessories: vanilla and modded Post-Update ones, testing and unused atm: may not keep! (this may be going too far)
-		//Also runs post-post updates, after all other mods
-		#region Blocked Modded Accessories From Updating
-		public static event Manipulator BlockModdedAccessoriesManipulator
+        //Shutdown player accessories: vanilla and modded Post-Update ones, testing and unused atm: may not keep! (this may be going too far)
+        //Also runs post-post updates, after all other mods
+        #region Blocked Modded Accessories From Updating
+        public static event Manipulator BlockModdedAccessoriesManipulator
 		{
 			add
 			{
@@ -205,9 +203,9 @@ namespace SGAmod
 				sb.Draw(Draken, style.Position()+ offset, rect, Color.White, 0, new Vector2(frameSize.X, frameSize.Y / 7f) / 2f, 0.50f, backAndForth, 0f);
 			}
 		}
-        #endregion
+		#endregion
 
-        /*public static IEnumerable<Type> GetEveryMethodDerivedFrom(Type baseType, Assembly assemblyToSearch)
+		/*public static IEnumerable<Type> GetEveryMethodDerivedFrom(Type baseType, Assembly assemblyToSearch)
 	{
 		Type[] types = assemblyToSearch.GetTypes();
 		foreach (Type type in types)
@@ -218,7 +216,100 @@ namespace SGAmod
 			}
 		}
 	}*/
-    }
+
+		//Cheat Sheetgode
+		#region CheatyStuff
+
+		public static void LoadAntiCheats()
+		{
+			var _ = ApplyCheatyHeroPatches;
+		}
+
+		internal static bool ApplyCheatyHeroPatches
+		{
+			get
+			{
+				if (SGAmod.CheatSheetMod.Item1)
+				{
+					Assembly assybcl = SGAmod.CheatSheetMod.Item2.GetType().Assembly;
+					string typeofit = "";
+					Type godModeCS = null;
+
+					foreach (Type typea in assybcl.GetTypes())
+					{
+						SGAmod.Instance.Logger.Debug(typea.Name);
+						if (typea.Name == "GodMode")
+							godModeCS = typea;
+					}
+
+					HellionAttacks.CSGodmodeOn = godModeCS.GetProperty("Enabled", SGAmod.UniversalBindingFlags).GetMethod;
+
+					HookEndpointManager.Add(HellionAttacks.CSGodmodeOn, (hook_CSGodModeDetour)DetourCSGodmode);
+				}
+
+				if (SGAmod.HerosMod.Item1)
+				{
+					Assembly assybcl = SGAmod.HerosMod.Item2.GetType().Assembly;
+					string typeofit = "";
+					Type godModeCS = null;
+
+					foreach (Type typea in assybcl.GetTypes())
+					{
+						SGAmod.Instance.Logger.Debug(typea.Name);
+						if (typea.Name == "GodModeService")
+							godModeCS = typea;
+					}
+
+					HellionAttacks.HMGodmodeOn = godModeCS.GetProperty("Enabled", SGAmod.UniversalBindingFlags).GetMethod;
+
+					HookEndpointManager.Add(HellionAttacks.HMGodmodeOn, (hook_CSGodModeDetour)DetourCSGodmode);
+				}
+
+				return false;
+			}
+		}
+
+		private delegate bool orig_CSGodModeDetour();
+		private delegate bool hook_CSGodModeDetour(orig_CSGodModeDetour orig);
+		private static bool DetourCSGodmode(orig_CSGodModeDetour orig)
+		{
+			if (HellionAttacks.AntiCheatActive)
+				return false;
+
+			return orig();
+		}
+		#endregion
+
+
+
+		//This crashes the game... Very unsafe Detour lol (there's an unobtainable item that calls this code)
+		#region StupidCrashingDetourThisWasDumbDontDoThis
+
+		private static void LoadDumbPatch(object callContext)
+		{
+			Thread.Sleep(1000);
+			HookEndpointManager.Add(typeof(Entity).GetProperty("Center", SGAmod.UniversalBindingFlags).SetMethod, (hook_CenterDetour)DetourCenter);
+		}
+			public static void CrashPatch()
+		{
+
+			ThreadPool.QueueUserWorkItem(LoadDumbPatch, SGAmod.Instance.Logger);
+			Thread.Sleep(3000);
+		}
+
+		private delegate void orig_CenterDetour(Entity self,Vector2 value);
+		private delegate void hook_CenterDetour(orig_CenterDetour orig, Entity self, Vector2 value);
+		private static void DetourCenter(orig_CenterDetour orig, Entity self, Vector2 value)
+		{
+			//SGAmod.Instance.Logger.Debug("does this run?");
+			orig(self, value);
+			self.position += Main.rand.NextVector2Circular(32,32);
+
+			//return new Vector2(self.position.X + (float)(self.width / 2), self.position.Y + (float)(self.height / 2));
+		}
+		#endregion
+
+	}
 
 
 }

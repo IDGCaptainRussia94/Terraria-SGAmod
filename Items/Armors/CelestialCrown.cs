@@ -12,7 +12,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hellion's Crown");
-			Tooltip.SetDefault("'Became one with the pure chaotic code...'");
+			Tooltip.SetDefault("'Become one with the pure chaotic code...'");
 		}
 		public override void SetDefaults()
 		{

@@ -237,7 +237,7 @@ namespace SGAmod.Buffs
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "Terraria/Buff_" + BuffID.PaladinsShield;
+			//texture = "Terraria/Buff_" + BuffID.PaladinsShield;
 			return true;
 		}
 		public override void SetDefaults()

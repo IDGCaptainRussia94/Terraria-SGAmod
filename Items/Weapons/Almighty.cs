@@ -479,6 +479,10 @@ namespace SGAmod.Items.Weapons
 	{
 		Vector2 startingloc = default;
 		Vector2 hitboxchoose = default;
+		protected Color color1 = Color.DarkCyan;
+		protected Color color2 = Color.Turquoise;
+		protected virtual float AppearTime => 6f;
+
 		public override void SetDefaults()
 		{
 			projectile.width = 8;
@@ -504,7 +508,7 @@ namespace SGAmod.Items.Weapons
 			}
 			
 			projectile.localAI[0] += 1f;
-			projectile.ai[0] += 1;
+			//projectile.ai[0] += 1;
 
 			if (enemy != null && enemy.active && projectile.localAI[1] < 1)
             {
@@ -514,7 +518,7 @@ namespace SGAmod.Items.Weapons
                 }
 				projectile.velocity = (enemy.position+hitboxchoose) - projectile.Center;
 
-				if (projectile.ai[0] == 8)
+				if (projectile.localAI[0] == 8)
 				{
 					int damage = Main.DamageVar(projectile.damage);
 					CheckApoco(ref damage, enemy, projectile);
@@ -533,14 +537,14 @@ namespace SGAmod.Items.Weapons
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			float alpha = MathHelper.Clamp(projectile.ai[0] / 6f, 0f, 1f)* MathHelper.Clamp(projectile.timeLeft / 6f, 0f, 1f);
+			float alpha = MathHelper.Clamp(projectile.localAI[0] / AppearTime, 0f, 1f)* MathHelper.Clamp(projectile.timeLeft / AppearTime, 0f, 1f);
 
 			Vector2[] points = new Vector2[] { startingloc, startingloc+projectile.velocity };
 
 			TrailHelper trail = new TrailHelper("BasicEffectAlphaPass", mod.GetTexture("SmallLaser"));
 			//UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);
-			Color colorz = Color.DarkCyan;
-			Color colorz2 = Color.Turquoise;
+			Color colorz = color1;
+			Color colorz2 = color2;
 			trail.color = delegate (float percent)
 			{
 				return Color.Lerp(colorz, colorz2, percent);
@@ -1871,6 +1875,7 @@ namespace SGAmod.Items.Weapons
 			effect.Parameters["noiseOffset"].SetValue(new Vector2(0f, 0f));
 			effect.Parameters["noiseProgress"].SetValue(Main.GlobalTime);
 			effect.Parameters["textureProgress"].SetValue(Main.GlobalTime*2f);
+			effect.Parameters["noiseBlendPercent"].SetValue(1f);
 			effect.Parameters["strength"].SetValue(0.25f);
 
 			foreach (OrbParticles particle in partices)

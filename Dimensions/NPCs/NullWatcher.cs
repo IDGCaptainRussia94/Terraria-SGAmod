@@ -103,7 +103,7 @@ namespace SGAmod.Dimensions.NPCs
             {
                 if (!sound)
                 {
-                    List<Player> players = Main.player.Where(playercheck => playercheck != null && playercheck.active && (!playercheck.invis || playercheck.itemTime>0) && !playercheck.dead && !playercheck.SGAPly().magatsuSet && playercheck.Distance(watcher.npc.Center) < (distance+playercheck.SGAPly().watcherDebuff)
+                    List<Player> players = Main.player.Where(playercheck => playercheck != null && playercheck.active && !playercheck.dead && (((!playercheck.invis || playercheck.itemTime > 0) && !playercheck.SGAPly().magatsuSet) || playercheck.SGAPly().watcherDebuff>=500) && playercheck.Distance(watcher.npc.Center) < (distance+playercheck.SGAPly().watcherDebuff)
                    && (!checkwalls || Collision.CanHitLine(playercheck.Center, 1, 1, watcher.npc.Center, 1, 1))).ToList();
                     players = players.OrderBy(playercheck2 => playercheck2.Distance(watcher.npc.Center)).ToList();
 

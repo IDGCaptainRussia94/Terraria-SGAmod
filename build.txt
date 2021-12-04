@@ -8,6 +8,6 @@ homepage = https://discord.gg/aGy34Xw
 hideResources = true
 includeSource = true
 modReferences = Idglibrary,AAAAUThrowing,SubworldLibrary
-weakReferences = CalamityMod@1.4.2.101,IridiumMod,ThoriumMod,BossChecklist
+weakReferences = CalamityMod@1.4.2.101,IridiumMod,ThoriumMod,BossChecklist,HEROsMod,CheatSheet
 sortAfter = Idglibrary,AAAAUThrowing
 sortBefore = IridiumMod

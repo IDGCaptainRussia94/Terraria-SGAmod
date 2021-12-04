@@ -75,7 +75,12 @@ namespace SGAmod.Items.Armors.JungleTemplar
 			{
 				if (sgaplayer.player.velocity.Y != 0)
                 {
-					sgaplayer.player.velocity += Vector2.UnitY*sgaplayer.player.gravDir * Player.defaultGravity * 0.5f;
+					float gravity = sgaplayer.player.velocity.Y > 0.50f ? 0.50f : 0.25f;
+					sgaplayer.player.velocity += Vector2.UnitY * sgaplayer.player.gravDir * Player.defaultGravity * gravity;
+					if (gravity > 0.25f)
+					{
+						sgaplayer.player.maxFallSpeed += 5;
+                    }
                 }
                 else
                 {

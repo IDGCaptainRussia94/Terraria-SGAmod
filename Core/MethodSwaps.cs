@@ -50,8 +50,9 @@ namespace SGAmod
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
 			On.Terraria.Player.AddBuff += Player_AddBuff;
-			On.Terraria.NPC.AddBuff += NPC_AddBuff;
-            On.Terraria.NPC.StrikeNPC += NPC_StrikeNPC;
+			On.Terraria.NPC.AddBuff += SmartBuffs;
+            On.Terraria.NPC.UpdateNPC += NPC_UpdateNPC;
+			On.Terraria.NPC.StrikeNPC += NPC_StrikeNPC;
             On.Terraria.NPC.UpdateNPC_BuffApplyDOTs += NPC_UpdateNPC_BuffApplyDOTs;
 			On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
 			On.Terraria.Player.DropSelectedItem += DontDropManifestedItems;
@@ -70,6 +71,28 @@ namespace SGAmod
 
 			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
+		}
+
+        private static void NPC_UpdateNPC(On.Terraria.NPC.orig_UpdateNPC orig, NPC self, int i)
+        {
+			if (self.target >= 0 && Main.player[self.target].active)
+            {
+				SGAPlayer sgaply = Main.player[self.target].SGAPly();
+				if (sgaply.centerOverrideTimer > 0)
+				{
+					Vector2 newPos = sgaply.centerOverridePosition;
+					if ((newPos - self.Center).LengthSquared() < 2560000)
+					{
+						Vector2 oldPos = sgaply.player.MountedCenter;
+						sgaply.player.MountedCenter = newPos;
+						orig(self, i);
+						sgaply.player.MountedCenter = oldPos;
+						return;
+					}
+				}
+			}
+
+			orig(self, i);
 		}
 
         private static void NPC_UpdateNPC_BuffApplyDOTs(On.Terraria.NPC.orig_UpdateNPC_BuffApplyDOTs orig, NPC self)
@@ -145,6 +168,9 @@ namespace SGAmod
 					return;
 				}
 			}
+
+			if (sgaply.nightmareplayer && IdgNPC.bossAlive)
+				return;
 
 			orig(self);
 
@@ -410,7 +436,7 @@ namespace SGAmod
 		}
 
 
-		private static void NPC_AddBuff(On.Terraria.NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
+		private static void SmartBuffs(On.Terraria.NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
 		{
 			if (type == ModContent.BuffType<Buffs.DankSlow>() && self.buffImmune[BuffID.Poisoned])
 				return;

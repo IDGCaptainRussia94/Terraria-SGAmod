@@ -375,6 +375,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cookie");
+			Tooltip.SetDefault("'Yes, this is literally Minecraft's cookie sprite'");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 			ItemID.Sets.ItemIconPulse[item.type] = true;
 		}
@@ -439,25 +440,24 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "Terraria/Buff_"+BuffID.SugarRush;
+			texture = "SGAmod/Buffs/AutoclickerSpeedBuff";
 			return true;
 		}
 	}
-
 
 	public class AutoclickerMinionBuff : ModBuff
 	{
 		public override void SetDefaults()
 		{
-			DisplayName.SetDefault("Autoclicker");
-			Description.SetDefault("Portals from Planes of Wealth will fight for you");
+			DisplayName.SetDefault("Auto Clickers");
+			Description.SetDefault("'I can't believe its not Clicker Class!'");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
 		}
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/MidasMinionBuff";
+			texture = "SGAmod/Buffs/AutoclickerMinionBuff";
 			return true;
 		}
 

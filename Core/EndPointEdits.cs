@@ -178,29 +178,61 @@ namespace SGAmod
 		private delegate void UIModDelegate(object instance,SpriteBatch sb);
 
 		private static void UIDrawMethod(object instance, SpriteBatch sb)
-        {
+		{
 			string modName = (string)(typeUIModItem.GetProperty("ModName", SGAmod.UniversalBindingFlags).GetValue(instance));
-			CalculatedStyle style = (CalculatedStyle)(typeUIModItem.GetMethod("GetInnerDimensions", SGAmod.UniversalBindingFlags).Invoke(instance,new object[] { }));
+			CalculatedStyle style = (CalculatedStyle)(typeUIModItem.GetMethod("GetInnerDimensions", SGAmod.UniversalBindingFlags).Invoke(instance, new object[] { }));
 
 			if (modName == "SGAmod")
 			{
 
-				Texture2D Draken = ModContent.GetTexture("SGAmod/NPCs/TownNPCs/Dergon");
-					int frame = (int)(Main.GlobalTime*8f)%7;
+				//Button
 
-				Vector2 offset = new Vector2(180, style.Height-10);
-					//offset.Y += -frame*0.5f;//sprite is slightly offset
+				Texture2D credits = SGAmod.ExtraTextures[117];
+				Vector2 buttonOffset = new Vector2(style.Width - 112, style.Height - 38);
+				Rectangle boxSize = new Rectangle(credits.Width / 2, 0, credits.Width / 2, credits.Height / 2);
+				Vector2 pos = style.Position() + buttonOffset;
+				Rectangle inBox = new Rectangle((int)pos.X, (int)pos.Y, boxSize.Width, boxSize.Height);
+
+				sb.Draw(credits, style.Position() + buttonOffset, boxSize, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+
+
+				if (inBox.Contains((int)Main.MouseScreen.X, (int)Main.MouseScreen.Y))
+				{
+					instance.GetType().GetField("_tooltip", SGAmod.UniversalBindingFlags).SetValue(instance,"SGAmod Credits");
+					Microsoft.Xna.Framework.Input.MouseState mouseState = Microsoft.Xna.Framework.Input.Mouse.GetState();
+					if (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+					{
+						Credits.CreditsManager.queuedCredits = true;
+						//Credits.CreditsManager.RollCredits();
+					}
+				}
+
+
+				//DynamicSpriteFontExtensionMethods.DrawString(sb, line.font, strrole, line.position, line.Colors.Item1, 0, new Vector2(strSize1.X, 0) / 2f, 1f, SpriteEffects.None, 0);
+
+
+
+
+				//Dergon
+
+				Texture2D Draken = ModContent.GetTexture("SGAmod/NPCs/TownNPCs/Dergon");
+				int frame = (int)(Main.GlobalTime * 8f) % 7;
+
+				Vector2 offset = new Vector2(180, style.Height - 10);
+				//offset.Y += -frame*0.5f;//sprite is slightly offset
 
 
 				Vector2 frameSize = new Vector2(Draken.Width, Draken.Height);
 
 				Rectangle rect = new Rectangle(0, (int)(frame * (frameSize.Y / 7)), (int)frameSize.X, (int)(frameSize.Y / 7));
 
-				SpriteEffects backAndForth = Main.GlobalTime % 50 < 25 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+				SpriteEffects backAndForth = Main.GlobalTime % 30 < 15 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-				offset += new Vector2((Main.GlobalTime % 50)+(Main.GlobalTime % 50 < 25 ? 0 : ((Main.GlobalTime - 25) % 25)*-2), 0)*10f;
+				offset += new Vector2((Main.GlobalTime % 30) + (Main.GlobalTime % 30 < 15 ? 0 : ((Main.GlobalTime - 15) % 15) * -2), 0) * 15f;
 
-				sb.Draw(Draken, style.Position()+ offset, rect, Color.White, 0, new Vector2(frameSize.X, frameSize.Y / 7f) / 2f, 0.50f, backAndForth, 0f);
+				sb.Draw(Draken, style.Position() + offset, rect, Color.White, 0, new Vector2(frameSize.X, frameSize.Y / 7f) / 2f, 0.50f, backAndForth, 0f);
+
+
 			}
 		}
 		#endregion
@@ -217,7 +249,7 @@ namespace SGAmod
 		}
 	}*/
 
-		//Cheat Sheetgode
+		//Cheat Heroesgode
 		#region CheatyStuff
 
 		public static void LoadAntiCheats()
@@ -279,8 +311,6 @@ namespace SGAmod
 			return orig();
 		}
 		#endregion
-
-
 
 		//This crashes the game... Very unsafe Detour lol (there's an unobtainable item that calls this code)
 		#region StupidCrashingDetourThisWasDumbDontDoThis

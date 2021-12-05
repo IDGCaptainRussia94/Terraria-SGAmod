@@ -32,6 +32,7 @@ sampler imageSampler = sampler_state
     AddressU = Wrap;
     AddressV = Wrap;
 };
+
 float2 rainbowCoordMultiplier;
 float2 rainbowCoordOffset;
 float3 rainbowColor;

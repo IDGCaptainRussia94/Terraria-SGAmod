@@ -2765,8 +2765,8 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (!rematch)
 			{
-				if (npc.life < npc.lifeMax * 0.999f && phase < 5 && npc.ai[1] < 1)
-					//if (npc.life < npc.lifeMax * 0.40f && phase < 5 && npc.ai[1] < 1)
+				//if (npc.life < npc.lifeMax * 0.999f && phase < 5 && npc.ai[1] < 1)
+					if (npc.life < npc.lifeMax * 0.40f && phase < 5 && npc.ai[1] < 1)
 				{
 					phase = 5;
 					if (ArmyVersion)

@@ -65,7 +65,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Megido");
-			Tooltip.SetDefault("Targets 4 enemies nearby your curser on use\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds"));
+			Tooltip.SetDefault("Targets 4 enemies nearby your curser on use\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 20 seconds"));
 		}
 		public override string Texture => "Terraria/Item_" + ItemID.Darkness;
 		public override void SetDefaults()
@@ -105,7 +105,7 @@ namespace SGAmod.Items.Weapons
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/MegidoSnd").WithVolume(.7f).WithPitchVariance(.15f), player.Center);
-			player.SGAPly().AddCooldownStack(60 * 30);
+			player.SGAPly().AddCooldownStack(60 * 20);
 
 			for (int i = 0; i < 4; i += 1)
 			{
@@ -320,18 +320,18 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Megidola");
-			Tooltip.SetDefault("Targets 3 enemies nearby your curser on use and spawns orbs near them\nEach of these orbs zap nearby enemies 4 times for the listed damage\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 45 seconds"));
+			Tooltip.SetDefault("Targets 3 enemies nearby your curser on use and spawns orbs near them\nEach of these orbs zap nearby enemies 4 times for the listed damage\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 40 seconds"));
 		}
 		public override string Texture => "Terraria/Item_" + ItemID.Darkness;
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
 
-			item.damage = 320;
+			item.damage = 350;
 			item.width = 48;
 			item.height = 48;
 			item.useTurn = true;
-			item.rare = ItemRarityID.Orange;
+			item.rare = ItemRarityID.LightPurple;
 			item.value = 500;
 			item.useStyle = 1;
 			item.useAnimation = 50;
@@ -370,7 +370,7 @@ namespace SGAmod.Items.Weapons
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			//Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Megido").WithVolume(1.0f).WithPitchVariance(.15f), player.Center);
-		player.SGAPly().AddCooldownStack(60 * 45, 2);
+		player.SGAPly().AddCooldownStack(60 * 40, 2);
 
 			for (int i = 0; i < 3; i += 1)
 			{
@@ -568,6 +568,340 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
+	public class Megidolaon : Megido
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Megidolaon");
+			Tooltip.SetDefault("Calls down a big boom on the ground below where you use it\n" + Idglib.ColorText(Color.Orange, "Requires 3 Cooldown stacks, adds 45 seconds"));
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.damage = 2500;
+			item.width = 48;
+			item.height = 48;
+			item.useTurn = true;
+			item.rare = ItemRarityID.Yellow;
+			item.value = 500;
+			item.useStyle = 1;
+			item.useAnimation = 50;
+			item.useTime = 50;
+			item.knockBack = 8;
+			item.autoReuse = false;
+			item.noUseGraphic = true;
+			item.consumable = true;
+			item.noMelee = true;
+			item.shootSpeed = 2f;
+			item.maxStack = 30;
+			item.shoot = ModContent.ProjectileType<MegidolaonProj>();
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			if (player.SGAPly().AddCooldownStack(100, 3, testOnly: true))
+			{
+				return true;
+			}
+			return false;
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			player.SGAPly().AddCooldownStack(60 * 45, 3);
+
+			int pushYUp = -1;
+			player.FindSentryRestingSpot(item.shoot, out var worldX, out var worldY, out pushYUp);
+
+			Projectile proj = Projectile.NewProjectileDirect(new Vector2(worldX, worldY), Vector2.Zero, ModContent.ProjectileType<MegidolaonProj>(), damage, knockBack, player.whoAmI);
+
+
+			return false;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<Megidola>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 6);
+			recipe.AddIngredient(ItemID.BeetleHusk, 2);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class MegidolaonProj : MegidoProj
+	{
+		public class CloudBoom
+		{
+			public Vector2 position;
+			public Vector2 speed;
+			public float angle;
+			public int cloudType;
+			public Vector2 scale = new Vector2(1f, 1f);
+
+			public int timeLeft = 20;
+			public int timeLeftMax = 20;
+			public CloudBoom(Vector2 position, Vector2 speed, float angle, int cloudtype)
+			{
+				this.position = position;
+				this.speed = speed;
+				this.angle = angle;
+				this.cloudType = cloudtype;
+			}
+			public void Update()
+			{
+				timeLeft -= 1;
+				position += speed;
+			}
+
+		}
+
+		public List<CloudBoom> boomOfClouds = new List<CloudBoom>();
+
+		public override void SetDefaults()
+		{
+			projectile.width = 8;
+			projectile.height = 8;
+			projectile.aiStyle = -1;
+			projectile.penetrate = -1;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 300;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Megidolaon Proj");
+		}
+
+		public override void AI()
+		{
+			Player player = Main.player[projectile.owner];
+
+			projectile.ai[0] += 1;
+			projectile.localAI[0] += 1;
+			if (projectile.localAI[0] == 5)
+			{
+				SGAmod.AddScreenShake(20f, 2000, projectile.Center);
+
+				ScreenExplosion explode = SGAmod.AddScreenExplosion(projectile.Center, projectile.timeLeft+40, 2f, 1200);
+				if (explode != null)
+				{
+					explode.warmupTime = 16;
+					explode.decayTime = 180;
+					explode.strengthBasedOnPercent = delegate (float percent)
+					{
+						return 2f;
+					};
+				}
+
+				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/MegidolaonSnd").WithVolume(1f).WithPitchVariance(.15f), projectile.Center);
+			}
+
+			/*if (projectile.timeLeft == 300)
+			{
+				ScreenExplosion explode = SGAmod.AddScreenExplosion(projectile.Center, 300, 1.25f, 2400);
+				if (explode != null)
+				{
+					explode.warmupTime = 200;
+					explode.decayTime = 64;
+				}
+			}*/
+
+			if (projectile.ai[0] > 5 && projectile.timeLeft > 30)
+			{
+				if (SGAmod.ScreenShake < 16)
+					SGAmod.AddScreenShake(MathHelper.Clamp(projectile.timeLeft / 150f, 0f, 1f) * 6f, 2000 * MathHelper.Clamp(projectile.timeLeft / 200f, 0f, 1f), projectile.Center);
+				if (projectile.ai[0] % 10 == 0 && projectile.timeLeft > 30)
+				{
+					int dist = (int)((500 * 500) * ScaleUpeffect * BoomScaleup);
+					foreach (NPC enemy in Main.npc.Where(testby => testby.IsValidEnemy() && testby.Center.Y < projectile.Center.Y && (testby.Center - projectile.Center).LengthSquared() < dist))
+					{
+						bool crit = true;
+						int damage = (int)(Main.DamageVar(projectile.damage));
+						if (projectile.localNPCImmunity[enemy.whoAmI] < 100)
+						{
+							projectile.localNPCImmunity[enemy.whoAmI] = 99999;
+						}
+						else
+						{
+							crit = false;
+							damage = (int)(damage / 10f);
+						}
+						CheckApoco(ref damage, enemy, projectile, false);
+						enemy.StrikeNPC(damage, 0, 1, crit);
+						Main.player[projectile.owner].addDPS(damage);
+					}
+				}
+			}
+
+			if (projectile.ai[0] > 5)
+			{
+				for (int i = 0; i < 12*(ScalePercent*3f); i += 1)
+				{
+					float maxspread = 256;
+					Vector2 locSpawn = Main.rand.NextVector2Circular(maxspread, 30f);
+
+					float xPercent = ((locSpawn.X) / (maxspread))*1f;
+
+					/*
+					if (xPercent < 0)
+						xPercent = Math.Max(xPercent + 0.75f, 0);
+					if (xPercent > 0)
+						xPercent = Math.Min(xPercent - 0.75f, 0);
+					*/
+
+
+
+					Vector2 velocity = (-Vector2.UnitY) * Main.rand.NextFloat(1f, 4f);// * (0.45f + (ScaleUpeffect / 3f));
+					CloudBoom boomer = new CloudBoom(new Vector2(Main.rand.NextFloat(-maxspread, maxspread),24f+ locSpawn.Y), velocity.RotatedBy(xPercent*MathHelper.PiOver2*0.32f), Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.Next(1, 7));
+					boomer.scale = Vector2.One * (0.25f) * new Vector2(Main.rand.NextFloat(0.50f, 0.75f), Main.rand.NextFloat(0.75f, 1f));
+
+					boomOfClouds.Add(boomer);
+				}
+
+				boomOfClouds = boomOfClouds.Where(testby => testby.timeLeft > 0).ToList();
+
+				foreach (CloudBoom cb in boomOfClouds)
+				{
+					cb.Update();
+				}
+			}
+		}
+
+		float ScaleUpeffect => 0.60f + projectile.localAI[0] / 300f;
+		float BoomScaleup => 1f - (1f / ((projectile.localAI[0] / 30f) + 1f));
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D beamTex = ModContent.GetTexture("SGAmod/LightBeam");
+			Texture2D glowOrb = ModContent.GetTexture("SGAmod/GlowOrb");
+			Vector2 offsetbeam = new Vector2(beamTex.Width / 2f, beamTex.Height / 4f);
+			float timeLeft = MathHelper.Clamp(projectile.timeLeft / 30f, 0f, 1f);
+			float timeLeft2 = MathHelper.Clamp(projectile.timeLeft / 200f, 0f, 1f);
+			UnifiedRandom random = new UnifiedRandom(projectile.whoAmI);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			//Boom flash
+
+			float orbExplosion = (projectile.localAI[0]-5) / 4f;
+			float orbAlpha = MathHelper.Clamp(2f - ((projectile.localAI[0]-5) / 8f), 0f, 1f);
+
+			if (orbAlpha>0 && projectile.localAI[0]>4)
+			Main.spriteBatch.Draw(glowOrb, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.White, Color.Turquoise, 0.50f)* orbAlpha, 0, glowOrb.Size()/2f, orbExplosion, default, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			//Sky Beam
+			Vector2 beamscale = new Vector2(1f, 3f);
+			float beamAlpha = MathHelper.Clamp((projectile.localAI[0]) / 4f, 0f, 1f) * (1f - MathHelper.Clamp((projectile.localAI[0] - 3) / 20f, 0f, 1f));
+			Main.spriteBatch.Draw(beamTex, projectile.Center + new Vector2(0,-1200) - Main.screenPosition, null, Color.Lerp(Color.White, Color.Aqua, 0.50f)*timeLeft, 0, offsetbeam, beamscale*new Vector2(beamAlpha,2f), default, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			float scaleup = (projectile.scale * BoomScaleup) * (1f + ScaleUpeffect) * 1f;
+
+			Texture2D noise = ModContent.GetTexture("SGAmod/TiledPerlin");
+
+			float flashBoomGrow = MathHelper.Clamp((projectile.localAI[0] - 5) / 20f, 0f, 1f);
+			float flashBoomColor = MathHelper.Clamp((projectile.localAI[0] - 5) / 60f, 0f, 1f);
+			float flashBoomColor2 = MathHelper.Clamp((projectile.localAI[0] - 5) / 300f, 0f, 1f);
+
+			//Big Booms (Alpha Blend)
+
+			Color whiteMix = Color.Lerp(Color.White, Color.DarkTurquoise, 0.25f);
+			Color boomColor = Color.Lerp(whiteMix, Color.Lerp(Color.Turquoise, Color.DarkTurquoise, timeLeft2), flashBoomColor);
+			Color boomColor2 = Color.Lerp(whiteMix, Color.Lerp(Color.Lerp(Color.Turquoise,Color.White, 0.0050f), Color.DarkTurquoise, timeLeft2/2f), flashBoomColor);
+
+			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(boomColor.ToVector4()* timeLeft2* flashBoomGrow);
+			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(ModContent.GetTexture("SGAmod/TiledPerlin"));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(2f, 0.5f));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(0,Main.GlobalTime * 1f));
+			SGAmod.SphereMapEffect.Parameters["softEdge"].SetValue(2f);
+			SGAmod.SphereMapEffect.Parameters["softHalf"].SetValue(new Vector2(8f,0.50f));
+
+			SGAmod.SphereMapEffect.CurrentTechnique.Passes["HalfSphereMap"].Apply();
+
+			spriteBatch.Draw(noise, projectile.Center - Main.screenPosition, null, Color.White * timeLeft, 0, noise.Size() / 2f, scaleup, SpriteEffects.None, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			
+			//Big Booms (Additive)
+
+			SGAmod.SphereMapEffect.Parameters["colorBlend"].SetValue(boomColor2.ToVector4()*2f * timeLeft2 * flashBoomGrow);
+			SGAmod.SphereMapEffect.Parameters["mappedTexture"].SetValue(ModContent.GetTexture("SGAmod/TiledPerlin"));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(1f, 0.25f));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(0.50f, Main.GlobalTime * 0.60f));
+			SGAmod.SphereMapEffect.Parameters["softEdge"].SetValue(4f);
+			SGAmod.SphereMapEffect.Parameters["softHalf"].SetValue(new Vector2(8f, 0.50f));
+
+			SGAmod.SphereMapEffect.CurrentTechnique.Passes["HalfSphereMapAlpha"].Apply();
+
+			spriteBatch.Draw(noise, projectile.Center - Main.screenPosition, null, Color.White * timeLeft, 0, noise.Size() / 2f, scaleup, SpriteEffects.None, 0);
+
+			SGAmod.SphereMapEffect.Parameters["mappedTextureMultiplier"].SetValue(new Vector2(0.5f, 0.45f));
+			SGAmod.SphereMapEffect.Parameters["mappedTextureOffset"].SetValue(new Vector2(0.50f, Main.GlobalTime * 0.20f));
+			SGAmod.SphereMapEffect.Parameters["softEdge"].SetValue(3f);
+			SGAmod.SphereMapEffect.CurrentTechnique.Passes["HalfSphereMapAlpha"].Apply();
+
+			spriteBatch.Draw(noise, projectile.Center - Main.screenPosition, null, Color.White * timeLeft, 0, noise.Size() / 2f, scaleup, SpriteEffects.None, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			//Black Clouds
+
+			Color BlackColors = Color.Lerp(Color.White,Color.Lerp(Color.DarkTurquoise, Color.Black, flashBoomColor2), BoomScaleup);
+											//Color.Lerp(Color.DarkTurquoise,Color.Black,0.25f)*0.75f;// 
+
+			float boomScale = MathHelper.Clamp(timeLeft2 * 1.5f, 0f, 1f);
+
+			foreach (CloudBoom cb in boomOfClouds.Where(testby => testby.timeLeft > 0))
+			{
+				Texture2D cloudTex = ModContent.GetTexture("SGAmod/NPCs/Hellion/Clouds" + cb.cloudType);
+				float cbalpha = MathHelper.Clamp((cb.timeLeft / (float)cb.timeLeftMax)*6f, 0f, 1f);
+				float cloudfadeAlpha = Math.Min((cb.timeLeftMax - cb.timeLeft) / 6f, 1f) * 1f;
+				float cloudSideAlpha = MathHelper.Clamp(2.4f-Math.Abs(cb.position.X) / 120f,0f,1f);
+
+				Vector2 posser = projectile.Center + cb.position* scaleup;
+
+				Main.spriteBatch.Draw(cloudTex, posser - Main.screenPosition, null, BlackColors.MultiplyRGBA(new Color(1f,1f,1f, boomScale * cbalpha * cloudfadeAlpha)) * cloudSideAlpha, cb.angle, cloudTex.Size() / 2f, cb.scale* (1f+(scaleup-1f)), default, 0);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			//Glowing inside of clouds
+
+			Color glowingColors = Color.Lerp(Color.White, Color.Lerp(Color.White, Color.DarkTurquoise, flashBoomColor2), BoomScaleup);
+			//Color.Lerp(Color.DarkTurquoise,Color.Black,0.25f)*0.75f;
+
+			foreach (CloudBoom cb in boomOfClouds.Where(testby => testby.timeLeft > 0))
+			{
+				Texture2D cloudTex = ModContent.GetTexture("SGAmod/NPCs/Hellion/Clouds" + cb.cloudType);
+				float cbalpha = MathHelper.Clamp((cb.timeLeft / (float)cb.timeLeftMax)*6f, 0f, 1f);
+				float cloudfadeAlpha = Math.Min((cb.timeLeftMax - cb.timeLeft) / 6f, 1f) * 1f;
+				float cloudSideAlpha = MathHelper.Clamp(2.4f - Math.Abs(cb.position.X) / 120f, 0f, 1f);
+
+				Vector2 posser = projectile.Center + cb.position* scaleup;
+
+				Main.spriteBatch.Draw(cloudTex, posser - Main.screenPosition, null, glowingColors.MultiplyRGBA(new Color(1f,1f,1f, boomScale * cbalpha * cloudfadeAlpha*0.25f))* cloudSideAlpha, cb.angle, cloudTex.Size() / 2f, (cb.scale* (1f+(scaleup-1f)))*0.50f, default, 0);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			return false;
+		}
+	}
+
 
 
 	public class MorningStar : Megido
@@ -575,7 +909,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Morning Star");
-			Tooltip.SetDefault("Calls down Lucifer's signature move to bring massive destruction in a wide area\n" + Idglib.ColorText(Color.Orange, "Requires 4 Cooldown stacks, adds 200 seconds"));
+			Tooltip.SetDefault("Calls down Lucifer's signature move to bring massive destruction in a wide area\n" + Idglib.ColorText(Color.Orange, "Requires 4 Cooldown stacks, adds 80 seconds"));
 		}
 		public override void SetDefaults()
 		{
@@ -610,7 +944,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			player.SGAPly().AddCooldownStack(60 * 200, 4);
+			player.SGAPly().AddCooldownStack(60 * 80, 4);
 
 			int pushYUp = -1;
 			player.FindSentryRestingSpot(item.shoot, out var worldX, out var worldY, out pushYUp);
@@ -623,7 +957,7 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<Megidola>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<Megidolaon>(), 2);
 			recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 6);
 			recipe.AddRecipeGroup("SGAmod:CelestialFragments",3);
 			recipe.AddTile(TileID.LunarCraftingStation);
@@ -911,7 +1245,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rays Of Control");
-			Tooltip.SetDefault("'Unleash the wrath of all of mankind's greatest sins in one unholy blast'\n" + Idglib.ColorText(Color.Orange, "Requires 5 Cooldown stacks, adds 300 seconds"));
+			Tooltip.SetDefault("'Unleash the wrath of all of mankind's greatest sins in one unholy blast'\n" + Idglib.ColorText(Color.Orange, "Requires 5 Cooldown stacks, adds 120 seconds"));
 		}
 
 		public override void SetDefaults()
@@ -947,7 +1281,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			player.SGAPly().AddCooldownStack(60 * 300, 5);
+			player.SGAPly().AddCooldownStack(60 * 120, 5);
 
 			position = player.Center - new Vector2(0,320);
 

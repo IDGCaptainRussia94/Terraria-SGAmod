@@ -126,7 +126,7 @@ namespace SGAmod
 		public static string filePath = "C:/Users/" + userName + "/Documents/My Games/Terraria/ModLoader/SGAmod";
 		public static Texture2D hellionLaserTex;
 		public static Texture2D ParadoxMirrorTex;
-		public static Texture2D PrismBansheeTex;
+		//public static Texture2D PrismBansheeTex;
 		public static Texture2D RadSuitHeadTex;
 		public static Texture2D PlatformTex;
 		public static Texture2D PearlIceBackground;
@@ -144,6 +144,8 @@ namespace SGAmod
 		public static bool anysubworld = false;
 		public static float overpoweredMod = 0f;
 		public static int vibraniumCounter = 0;
+		public static bool ForceDrawOverride = false;
+		public static GameTime lastTime = new GameTime();
 		public static (int, int, bool) ExtractedItem = (-1,-1, false);
 
 		private int localtimer = 0;
@@ -421,9 +423,10 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_" + TileID.Crystals));//114
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.DetonatingBubble));//115
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.MedusaHeadRay));//116
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/UI/Settings_Inputs_2"));//117
 
+				//Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 
-				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 				Texture2D PlatTex = ModContent.GetTexture("Terraria/Tiles_"+TileID.Asphalt);
 				PearlIceBackground = ModContent.GetTexture("Terraria/Background_206");
 
@@ -435,9 +438,9 @@ namespace SGAmod
 				item.SetDefaults(ItemID.SWATHelmet);
 				Texture2D RadTex2 = ModContent.GetTexture("Terraria/Armor_Head_" + item.headSlot);
 
-				int height = queenTex.Height;
+				//int height = queenTex.Height;
 				//RadSuitHeadTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, 0, RadTex.Width, RadTex.Height));
-				PrismBansheeTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, height-(height / 6), queenTex.Width, height / 6));
+				//PrismBansheeTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, height-(height / 6), queenTex.Width, height / 6));
 				PlatformTex = PlatTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(18*5,0, 16, 16));
 
 				Texture2D tex = new Texture2D(Main.graphics.GraphicsDevice, RadTex.Width, RadTex.Height);
@@ -482,7 +485,7 @@ namespace SGAmod
 				HellionTextures = null;
 				HellionGores = null;
 				ExtraTextures = null;
-				PrismBansheeTex.Dispose();
+				//PrismBansheeTex.Dispose();
 				RadSuitHeadTex.Dispose();
 				PlatformTex.Dispose();
 				PearlIceBackground.Dispose();

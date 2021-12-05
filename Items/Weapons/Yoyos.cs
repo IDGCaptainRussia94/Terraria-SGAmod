@@ -643,10 +643,10 @@ namespace SGAmod.Items.Weapons
             Player player = Main.player[projectile.owner];
             foreach (NPC npc in Main.npc.Where(testby => testby.active && !testby.friendly && !testby.dontTakeDamage && testby.chaseable && (projectile.Center - testby.Center).LengthSquared() < 60000))
             {
-                npc.Center += Collision.TileCollision(npc.position, Vector2.Normalize(projectile.Center - npc.Center) * 4f*(npc.knockBackResist+0.25f), npc.width, npc.height);
-
                 if (!npc.IsDummy() && (npc.Center - projectile.Center).LengthSquared() < 50000)
                 {
+                    npc.Center += Collision.TileCollision(npc.position, Vector2.Normalize(projectile.Center - npc.Center) * 4f*(npc.knockBackResist+0.25f), npc.width, npc.height);
+
                     npc.SGANPCs().nonStackingImpaled = Math.Max(npc.SGANPCs().nonStackingImpaled, projectile.damage);
                 }
             }

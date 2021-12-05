@@ -54,6 +54,37 @@ namespace SGAmod.Items.Consumables
 
 	}
 
+	public class Debug11 : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug-Start Credits");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.rare = 8;
+			item.value = 1000;
+			item.useStyle = 2;
+			item.useAnimation = 8;
+			item.useTime = 8;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item9;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Xmas_0"; }
+		}
+
+		public override bool UseItem(Player player)
+		{
+			Credits.CreditsManager.RollCredits();
+			return true;
+		}
+	}
+
 	public class Debug10 : ModItem
 	{
 		public override void SetStaticDefaults()

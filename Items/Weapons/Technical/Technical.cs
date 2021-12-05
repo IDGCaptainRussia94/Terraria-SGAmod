@@ -2158,7 +2158,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 80;
+			item.damage = 75;
 			item.ranged = true;
 			item.width = 32;
 			item.height = 62;

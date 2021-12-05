@@ -25,7 +25,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Boyfriend's Mic");
-			Tooltip.SetDefault("'So, I heard you like funking on a friday night...'\nChallenge everyone around you to a beatdown of beats\nDeals damage per note hit to random enemies, per Max Sentries, halved for each enemy\nScoring SICK beats spawns hearts and awards more points\nSICK beats also become crits\nDeals your score to ALL enemies near you on completion\nRequires atleast 4 minion slots, spawns an arrow for each slot\n" + Idglib.ColorText(Color.Red, "You will be unable to use other items while rapping"));
+			Tooltip.SetDefault("'So, I heard you like funking on a friday night...'\nChallenge everyone around you to a beatdown of beats\nDeals damage per note hit to random enemies, per Max Sentries, halved for each enemy\nScoring SICK beats spawns hearts and awards more points\nSICK beats also become crits\nDeals your score to ALL enemies near you on completion\nRequires atleast 4 minion slots, spawns an arrow for each slot, each arrow has 8 notes\n" + Idglib.ColorText(Color.Red, "You will be unable to use other items while rapping"));
 			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}

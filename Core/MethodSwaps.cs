@@ -24,6 +24,7 @@ using Terraria.IO;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using System.IO;
+using SGAmod.Credits;
 
 namespace SGAmod
 {
@@ -62,15 +63,57 @@ namespace SGAmod
 			On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
 			On.Terraria.Player.ItemFitsWeaponRack += NoPlacingManifestedItemOnItemRack;
 			On.Terraria.Main.SetDisplayMode += RecreateRenderTargetsOnScreenChange;
+			On.Terraria.Player.UpdateEquips += BlockVanillaAccessories;
 
-
-            On.Terraria.Player.UpdateEquips += BlockVanillaAccessories;
+			if (SGAConfig.Instance.QuestionableDetours)
+			{
+				On.Terraria.Main.DoUpdate += OverrideCreditsUpdate;
+				On.Terraria.Main.Draw += Main_Draw;
+			}
 
 			//On.Terraria.Main.DrawTiles += Main_DrawTiles;
 			//On.Terraria.Main.Update += Main_Update;
 
 			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
+		}
+
+        private static void Main_Draw(On.Terraria.Main.orig_Draw orig, Main self, GameTime gameTime)
+        {
+			if (CreditsManager.CreditsActive && !SGAmod.ForceDrawOverride)
+            {
+				CreditsManager.DrawCredits(gameTime);
+				return;
+            }
+
+			orig(self, gameTime);
+		}
+
+        private static void OverrideCreditsUpdate(On.Terraria.Main.orig_DoUpdate orig, Main self, GameTime gameTime)
+        {
+			SGAmod.lastTime = gameTime;
+			if (Credits.CreditsManager.queuedCredits)
+            {
+				Credits.CreditsManager.RollCredits();
+				Credits.CreditsManager.queuedCredits = false;
+
+			}
+			if (CreditsManager.CreditsActive)
+			{
+				CreditsManager.UpdateCredits(gameTime);
+				return;
+			}
+			orig(self, gameTime);
+			/*
+			 * if (SGAmod.DrawCreditsMouseTooltip)
+			{
+				SpriteBatch sb = Main.spriteBatch;
+				sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
+				Utils.DrawBorderString(sb, "SGAmod Credits", new Vector2(100,100), Color.White);
+				sb.End();
+				//SGAmod.DrawCreditsMouseTooltip = false;
+			}
+			*/
 		}
 
         private static void NPC_UpdateNPC(On.Terraria.NPC.orig_UpdateNPC orig, NPC self, int i)

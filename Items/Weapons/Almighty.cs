@@ -65,7 +65,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Megido");
-			Tooltip.SetDefault("Targets 4 enemies nearby your cursor on use\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 30 seconds"));
+			Tooltip.SetDefault("Targets 4 enemies nearby your cursor on use\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 20 seconds"));
 		}
 		public override string Texture => "Terraria/Item_" + ItemID.Darkness;
 		public override void SetDefaults()

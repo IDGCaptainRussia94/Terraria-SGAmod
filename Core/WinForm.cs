@@ -55,8 +55,8 @@ namespace SGAmod.Core
                 bool didItWork = false;
 
                 Random rand = new Random();
-
-                if (rand.Next(100) < 20)
+                int chance = SGAConfigClient.Instance.CaptionChance != null ? SGAConfigClient.Instance.CaptionChance : 20;
+                if (rand.Next(100) < chance)
                 {
                     string[] stringsOfMessages = new string[] {"SGAmod: one 'Hell'ion of a time!",
                     "SGAmod: Coming soon: Viperdrive! By 'Atlas' (it's state of the art!)",

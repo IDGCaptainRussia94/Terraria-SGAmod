@@ -335,7 +335,7 @@ namespace SGAmod.Tiles.TechTiles
         public override bool AcceptItem(Item item)
         {
             LuminousAlterItemClass findClass;
-            Main.NewText(Items.Consumables.AcidicEgg.Underground(Position.Y*16));
+            //Main.NewText(Items.Consumables.AcidicEgg.Underground(Position.Y*16));
             if (item != null && !Items.Consumables.AcidicEgg.Underground(Position.Y * 16) && Collision.CanHitLine((Position.ToVector2()*16),1,1,new Vector2(Position.X*16,0),1,1) && SGAmod.LuminousAlterItems.TryGetValue(item.type, out findClass))
             {
                 if (item.stack >= findClass.stackCost && findClass.SpecialCondition())

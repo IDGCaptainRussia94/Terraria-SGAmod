@@ -669,7 +669,7 @@ namespace SGAmod
 
 			if (item != null)
             {
-				if (moddedplayer.FieryheartBuff > 0 && projectile.owner == player.whoAmI)
+				if (moddedplayer.FieryheartBuff > 0)
 				{
 					if (!npc.buffImmune[BuffID.Daybreak] || moddedplayer.FieryheartBuff > 15)
 						IdgNPC.AddBuffBypass(npc.whoAmI, 189, 1 * (20 + (int)(player.SGAPly().ExpertiseCollectedTotal / 250f)));

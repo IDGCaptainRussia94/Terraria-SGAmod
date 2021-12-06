@@ -79,6 +79,7 @@ namespace SGAmod.Dimensions.NPCs
 			//npc.immortal = true;
 			animationType = NPCID.Guide;
 			npc.homeless = true;
+			npc.SGANPCs().overallResist = 0;
 			//npc.rarity = 1;
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 2) % 1f, 0.5f, 0.35f);
 
@@ -148,7 +149,7 @@ namespace SGAmod.Dimensions.NPCs
 				Color color = Color.Lerp(drawColor,Color.White,0.5f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Texture, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Texture, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
 			for (float valez = 34f; valez > 4f; valez -= 0.2f)
 			{
@@ -156,7 +157,7 @@ namespace SGAmod.Dimensions.NPCs
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
 			for (float valez = 0.1f; valez < 10f; valez += 0.2f)
 			{

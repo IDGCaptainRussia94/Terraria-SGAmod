@@ -466,7 +466,7 @@ namespace SGAmod
 				{
 					if (npc.lifeRegen > 0) npc.lifeRegen = 0;
 
-					int damageDot = (int)((npc.realLife > 0 ? (impaled * 0.10f) : impaled) * dotResist);
+					int damageDot = (int)((npc.realLife > 0 ? (impaled * 0.10f) : impaled));
 
 					npc.lifeRegen -= damageDot;
 					damage = Math.Max(damageDot / 4, damage);

@@ -188,6 +188,9 @@ namespace SGAmod
 		public int shieldBlockTime = 0;
 		public float shieldBlockAngle = 0;
 		public int disabledAccessories = 0;
+		public int centerOverrideTimer = 0;
+		public static int centerOverrideTimerIsActive = 0;
+		public Vector2 centerOverridePosition = default;
 
 		public string MoneyCollected => (midasMoneyConsumed / (float)Item.buyPrice(1)) + " platinum collected";
 
@@ -348,6 +351,11 @@ namespace SGAmod
 				energyShieldAmmountAndRecharge.Item3 -= 1;
 
 			disabledAccessories = Math.Max(disabledAccessories - 1, 0);
+			centerOverrideTimer = Math.Max(centerOverrideTimer - 1, -300);
+			if (centerOverrideTimer < 1)
+			{
+				centerOverridePosition = player.MountedCenter;
+			}
 			avariceRing = 0;
 			manaUnchained = false;
 			snakeEyes = (false, snakeEyes.Item2);
@@ -877,6 +885,7 @@ namespace SGAmod
 
 		public override void PreUpdate()
 		{
+
 			if (Main.netMode != NetmodeID.Server)
 			{
 				if (benchGodItem.X > -100)
@@ -2080,7 +2089,7 @@ namespace SGAmod
 					{
 						if (AddCooldownStack(60 * 30))
 						{
-							Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/P5Targeted").WithVolume(.7f).WithPitchVariance(.10f), player.Center);
+							Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/P5Targeted").WithVolume(1f).WithPitchVariance(.10f), player.Center);
 							gunslingerLegendtarget = theone;
 							gunslingerLegendtargettype = theonetype;
 							lockoneffect = 0;

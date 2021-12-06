@@ -66,6 +66,8 @@ namespace SGAmod
 	{
 		public static (bool,Mod) Calamity = (false,null);
 		public static (bool,Mod) Thorium = (false, null);
+		public static (bool, Mod) HerosMod = (false, null);
+		public static (bool, Mod) CheatSheetMod = (false, null);
 
 
 		public static void BoostModdedDamage(Player player, float damage, int crit)
@@ -146,9 +148,18 @@ namespace SGAmod
 
 			Mod cal = ModLoader.GetMod("CalamityMod");
 			Mod thor = ModLoader.GetMod("ThoriumMod");
+			Mod cheat = ModLoader.GetMod("CheatSheet");
+			Mod heroes = ModLoader.GetMod("HEROsMod");
 
 			Calamity = (cal != null, cal);
 			Thorium = (thor != null, thor);
+			HerosMod = (heroes != null, heroes);
+			CheatSheetMod = (cheat != null, cheat);
+
+			if (HerosMod.Item1 || CheatSheetMod.Item1)
+            {
+				PrivateClassEdits.LoadAntiCheats();
+			}
 
 			overpoweredMod = ((ModLoader.GetMod("AFKPETS") != null ? 0.5f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0) + (ModLoader.GetMod("Luiafk") != null ? 2f : 0) + (ModLoader.GetMod("FargowiltasSouls") != null ? 2.5f : 0));
 							   //Why do people still use Luiafk in legit playthroughs? I donno...

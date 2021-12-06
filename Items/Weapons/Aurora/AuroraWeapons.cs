@@ -1899,10 +1899,7 @@ namespace SGAmod.Items.Weapons.Aurora
 
             }
 
-            Vector2 pos = projectile.Center;// + Vector2.UnitX.RotatedBy(projectile.rotation) * 4f;
-
-            //if (projectile.numUpdates == 0)
-            //{
+            Vector2 pos = projectile.Center;
 
             if (trailAlpha <= 0)
             {

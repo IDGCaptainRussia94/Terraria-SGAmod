@@ -75,7 +75,7 @@ namespace SGAmod.Items.Armors.Vibranium
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Helmet");
-			Tooltip.SetDefault("60% increased ranged damage and 10% crit chance\n30% reduced damage on bullet/arrow/rockets types\nWhenever ammo is consumed, you gain their damage as Electric Charge\n2% increased ranged Apocalyptical Chance");
+			Tooltip.SetDefault("30% increased ranged damage and 10% crit chance\n30% increased damage on non-bullet/arrow/rockets weapons\nWhenever ammo is consumed, you gain 20% percentage of their damage as Electric Charge\n2% increased ranged Apocalyptical Chance");
 		}
 		public override void SetDefaults()
 		{
@@ -87,12 +87,12 @@ namespace SGAmod.Items.Armors.Vibranium
 		}
 		public override void UpdateEquip(Player player)
 		{
-			player.rangedDamage += 0.60f;
+			player.rangedDamage += 0.30f;
 			player.rangedCrit += 10;
 
-			player.bulletDamage -= 0.30f;
-			player.rocketDamage -= 0.30f;
-			player.arrowDamage -= 0.30f;
+			//player.bulletDamage -= 0.20f;
+			//player.rocketDamage -= 0.20f;
+			//player.arrowDamage -= 0.20f;
 
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.apocalypticalChance[1] += 2f;
@@ -568,11 +568,11 @@ namespace SGAmod.Items.Armors.Vibranium
 						foreach (Projectile proj in Main.projectile.Where(testby => testby.active && !testby.friendly && testby.hostile && (testby.Center - player.Center).LengthSquared() < dist && testby.GetGlobalProjectile<SGAprojectile>().damageReduceTime <= 0).OrderBy(testby => (testby.Center - player.Center).LengthSquared()))
 						{
 
-							if (!sgaply.ConsumeElectricCharge((int)(proj.damage * (playerheldsummon ? 0.75f : 1.5f)), 60) || index > player.maxTurrets)
+							if (!sgaply.ConsumeElectricCharge((int)(proj.damage * (playerheldsummon ? 0.60f : 1.25f)), 60) || index > player.maxTurrets)
 								continue;
 
 							SGAprojectile sgaproj = proj.GetGlobalProjectile<SGAprojectile>();
-							sgaproj.damageReduce = 10f;
+							sgaproj.damageReduce = 3f;
 							sgaproj.damageReduceTime = 180;
 
 							Vector2 there = proj.Center - projectile.Center;

@@ -290,7 +290,7 @@ namespace SGAmod
 			addtolist(NPCID.DD2Betsy, 700);
 			addtolist(NPCID.CultistBoss, 500);//5000
 			addtolistmodded("TPD", 800);
-			addtolistmodded("Harbinger", 700);
+			addtolistmodded("SpaceBoss", 700);
 			addtolist(NPCID.LunarTowerNebula, 200);
 			addtolist(NPCID.LunarTowerSolar, 200);
 			addtolist(NPCID.LunarTowerStardust, 200);

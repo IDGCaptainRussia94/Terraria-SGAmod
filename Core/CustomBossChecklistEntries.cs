@@ -129,13 +129,13 @@ namespace SGAmod
 
 				//Main.NewText(bossName);
 
-				sb.Draw(Main.blackTileTexture, Vector2.Zero, pageRect, Main.DiscoColor, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+				sb.Draw(Main.blackTileTexture, Vector2.Zero, pageRect, Main.DiscoColor * (hidden ? 1f : 0f), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 
 
-				Hellion.HellionTeleport(sb, (pageRect.Size() / 2f) + Main.screenPosition, 1.25f, 160f, false,0.50f);
+				Hellion.HellionTeleport(sb, (pageRect.Size() / 2f) + Main.screenPosition, 1.25f, 128f, false,0.25f);
 				Hellion.HellionTeleport(sb, (pageRect.Size()/2f) + Main.screenPosition, 1f, 96f, false);
 
-				sb.Draw(tex, Vector2.Zero + (pageRect.Size()/2f) + new Vector2(0, (float)Math.Sin(Main.GlobalTime) * 16f), null, hidden ? Color.Black : Main.DiscoColor, 0, tex.Size() / 2f, 1, SpriteEffects.None, 0f);
+				sb.Draw(tex, Vector2.Zero + (pageRect.Size()/2f) + new Vector2(0, (float)Math.Sin(Main.GlobalTime) * 16f), null, hidden ? Color.Black : Color.White, 0, tex.Size() / 2f, 1, SpriteEffects.None, 0f);
 
 				maskedColor = Main.DiscoColor;
 			};

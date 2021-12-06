@@ -134,8 +134,8 @@ namespace SGAmod.Items.Armors.Engineer
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 6);
-            recipe.AddIngredient(mod.ItemType("HopperItem"), 2);
+            recipe.AddIngredient(ModContent.ItemType<AdvancedPlating>(), 6);
+            recipe.AddIngredient(ModContent.ItemType <Placeable.TechPlaceable.HopperItem>(), 2);
             recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
             recipe.SetResult(this, 1);
             recipe.AddRecipe();
@@ -215,7 +215,7 @@ namespace SGAmod.Items.Armors.Engineer
                 Tile tile = Framing.GetTileSafely(playerpos.X + offset, playerpos.Y + i);
                 if (WorldGen.InWorld(playerpos.X + offset, playerpos.Y + i))
                 {
-                    if ((tile.active() && Main.tileSolid[tile.type]) || tile.liquid >= 32)
+                    if ((tile.active() && Main.tileSolid[tile.type]) || (tile.liquid >= 32 && !player.wet))
                     {
                         if (touchpoint == default)
                         {
@@ -294,27 +294,31 @@ namespace SGAmod.Items.Armors.Engineer
                         if (touchpoint != default)
                         {
                             touchpoint.Y = ((touchpoint.Y / average) + highest) / 2f;
-                            //Dust.NewDustPerfect(touchpoint + new Vector2(Main.rand.Next(0, 16), 0), ModContent.DustType<BioLumen>(), Vector2.Zero, 120, Color.Red, 2f);
-                            if (middleheight < 8 && Main.rand.Next(2, 8) > middleheight)
+                            float scale = (8f - middleheight);
+                            if (scale < 8)
                             {
-                                float scale = (8f - middleheight);
-                                Dust dust = Dust.NewDustPerfect(new Vector2(touchpoint.X + Main.rand.Next(0, 16), middletouch), ModContent.DustType<AdaptedEngieSmokeEffect>(), new Vector2((Main.rand.NextFloat(-8, 8) * scale) - player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
-                                dust.color = new Color(196, 179, 143);
-                            }
-                            if (middleheight < 7)
-                            {
-                                float velocityammount = 15f / (((float)touchpoint.Y) - ((float)player.Center.Y));
-                                player.velocity.Y -= (velocityammount + 0.2f);
-                            }
+                                //Dust.NewDustPerfect(touchpoint + new Vector2(Main.rand.Next(0, 16), 0), ModContent.DustType<BioLumen>(), Vector2.Zero, 120, Color.Red, 2f);
+                                if (middleheight < 8 && Main.rand.Next(2, 8) > middleheight)
+                                {
+                                    Dust dust = Dust.NewDustPerfect(new Vector2(touchpoint.X + Main.rand.Next(0, 16), middletouch), ModContent.DustType<AdaptedEngieSmokeEffect>(), new Vector2((Main.rand.NextFloat(-8, 8) * scale) - player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
+                                    dust.color = new Color(196, 179, 143);
+                                }
+                                if (middleheight < 7)
+                                {
+                                    float velocityammount = 15f / (((float)touchpoint.Y) - ((float)player.Center.Y));
+                                    player.velocity.Y -= (velocityammount + 0.2f);
+                                }
 
-                            if (player.velocity.Y > 0)
-                                player.velocity.Y /= 1.05f;
+                                if (player.velocity.Y > 0)
+                                    player.velocity.Y /= 1.05f;
+
+                                player.maxRunSpeed += 5; //Only a bit faster run speed
+                                player.runAcceleration += 0.5f;
+                            }
 
                         }
 
                         player.fallStart = (int)(player.position.Y / 16f);
-                        player.maxRunSpeed += 5; //Only a bit faster run speed
-                        player.runAcceleration += 0.5f;
                     }
                     return;
                 }

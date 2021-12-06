@@ -42,7 +42,6 @@ namespace SGAmod
 		public bool DarkSector { get; set; }
 
 		[Label("Dank Shrines")]
-		[ReloadRequired]
 		[Tooltip("Enables/Disables Dank Shrines on World Generation. [This will moderately break mod progression!]")]
 		[DefaultValue(true)]
 		public bool DankShrines { get; set; }
@@ -75,6 +74,12 @@ namespace SGAmod
 		[ReloadRequired]
 		[DefaultValue(false)]
 		public bool BestPrefixes { get; set; }
+
+		[Label("Update/Draw Detours")]
+		[ReloadRequired]
+		[Tooltip("Enables/Disables Core Monogame detours, turning these may be required to get better logs/stablize the game\nThese are used for SGAmod's credit sequence")]
+		[DefaultValue(true)]
+		public bool QuestionableDetours { get; set; }
 
 		[Header("Vanilla Changes")]
 		[Label("Improved Golem")]
@@ -264,6 +269,14 @@ namespace SGAmod
 		[DefaultValue(false)]
 		[ReloadRequired]
 		public bool LogoReplace { get; set; }
+
+		[Label("Change Window Caption")]
+		[Tooltip("A chance (out of 100) to change the game's window caption to some funny SGAmod ones")]
+		[Increment(5)]
+		[Range(0, 100)]
+		[DefaultValue(20)]
+		[ReloadRequired]
+		public int CaptionChance { get; set; }
 
 		[Label("Screen Shake Multiplier")]
 		[Tooltip("Adjust the intensity of screen shakes")]

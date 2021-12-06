@@ -352,14 +352,14 @@ namespace SGAmod.NPCs.Hellion
 
                                 int delay = (int)(npc.ai[0] + aioffset * 8);
 
-                                if ((delay) % 180 == 0 && handsAttack < -180 && (npc.localAI[3] < 300))
+                                if ((delay) % 180 == 0 && handsAttack < -180 && (npc.localAI[3] >= 300))
                                 {
                                     Vector2 thingz = player.Center - npc.Center;
                                     thingz.Normalize();
                                     chargeAt = thingz * 120f;
                                     //npc.velocity += thingz * 85f;
                                     Idglib.Shattershots(npc.Center, player.Center, new Vector2(0, 0), ModContent.ProjectileType<HellionCoreArmWarning>(), 2, 12, 160, 1, true, 0, false, 60);
-                                    handsAttack = 60;
+                                    handsAttack = 100;
                                 }
 
                                 if (handsAttack == 40)
@@ -1536,6 +1536,7 @@ namespace SGAmod.NPCs.Hellion
             NPC master = Main.npc[(int)npc.ai[1]];
             Player P = Main.player[npc.target];
             Hellion hell = Hellion.GetHellion();
+            npc.localAI[0] += 1;
 
             if (hell == null)
             {
@@ -1644,6 +1645,7 @@ namespace SGAmod.NPCs.Hellion
 
         public override void SetDefaults()
         {
+            if (GetType() != typeof(Items.Weapons.Technical.EngineerSentryShotProj))
             projectile.CloneDefaults(ProjectileID.SnowBallFriendly);
             projectile.tileCollide = true;
             projectile.friendly = false;

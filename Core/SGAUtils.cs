@@ -563,6 +563,30 @@ namespace SGAmod
 			}
 		}*/
 
+		public static void FindSentryRestingSpotBetter(this Player player,Vector2 position, out int worldX, out int worldY, out int pushYUp)
+		{
+			bool flag = false;
+			int num = (int)(position.X) / 16;
+			int i = (int)(position.Y) / 16;
+			if (player.gravDir == -1f)
+			{
+				//i = (int)(Main.screenPosition.Y + (float)Main.screenHeight - (float)Main.mouseY) / 16;
+			}
+			worldX = num * 16 + 8;
+			pushYUp = 26;
+
+			if (!flag)
+			{
+				for (; i < Main.maxTilesY - 10 && Main.tile[num, i] != null && !WorldGen.SolidTile2(num, i) && Main.tile[num - 1, i] != null && !WorldGen.SolidTile2(num - 1, i) && Main.tile[num + 1, i] != null && !WorldGen.SolidTile2(num + 1, i); i++)
+				{
+				}
+				i++;
+			}
+			i--;
+			pushYUp -= 14;
+			worldY = i * 16;
+		}
+
 
 		//Again, from Joost used with written permission, thanks man
 		public static Vector2 PredictiveAim(float speed, Vector2 origin, Vector2 target, Vector2 targetVelocity, bool ignoreY)
@@ -1275,7 +1299,7 @@ namespace SGAmod
 			Vector3 predictedAimingPosition = targetPosition;
 
 			// trans target position relate to local player's view position for simplifying equations
-			Vector3 p1 = targetPosition;
+			Vector3 p1 = position- targetPosition;
 
 			// equations about predict time t
 			//

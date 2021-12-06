@@ -474,7 +474,7 @@ namespace SGAmod
                     s = key;
                 }
 
-                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Precurser's Power for a short time\nRepairs wounds at full speed even while moving, but consumes Electric Charge\nAlso during this, throwing damage is increased by Tech Damage scaling" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 80 seconds") + "\nYou gain the ability to run as if on Asphalt\nReflect 3X damage and gain knockback immunity while grounded" + Idglib.ColorText(Color.Red, "Gravity is increased, wings are less effective, Shield Break can happen")+ "\n" + Idglib.ColorText(Color.Red, "User is submerged in lava at low Electric Charge") + "\nGain an additional free Cooldown Stack";
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Precurser's Power for a short time\nRepairs wounds at full speed even while moving, but consumes Electric Charge\nAlso during this, throwing damage is increased by Tech Damage scaling" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 80 seconds") + "\nYou gain the ability to run as if on Asphalt, also and fall down faster\nReflect 3X damage and gain knockback immunity while grounded" + Idglib.ColorText(Color.Red, "Gravity is increased, wings are less effective, Shield Break can happen")+ "\n" + Idglib.ColorText(Color.Red, "User is submerged in lava at low Electric Charge") + "\nGain an additional free Cooldown Stack";
 
                 sgaplayer.MaxCooldownStacks += 1;
                 sgaplayer.jungleTemplarSet.Item1 = true;
@@ -772,7 +772,7 @@ namespace SGAmod
 
             if (item.type == ItemID.Heart || item.type == ItemID.CandyApple || item.type == ItemID.CandyCane)
             {
-                if (player.HasItem(mod.ItemType("EALogo")))
+                if (sgaplayer.EALogo)
                     player.QuickSpawnItem(ItemID.SilverCoin, 8);
                 if (sgaplayer.HeartGuard)
                 {
@@ -789,7 +789,7 @@ namespace SGAmod
             }
             if (item.type == ItemID.Star || item.type == ItemID.SugarPlum || item.type == ItemID.SoulCake)
             {
-                if (player.HasItem(mod.ItemType("EALogo")))
+                if (sgaplayer.EALogo)
                     player.QuickSpawnItem(ItemID.SilverCoin, 4);
 
                 if (player.SGAPly().starCollector && player.HasBuff(BuffID.ManaSickness))
@@ -903,7 +903,7 @@ namespace SGAmod
         {
             if (item.ammo > -1 && player.armor[0].type == ModContent.ItemType<VibraniumHelmet>())
             {
-                player.SGAPly().AddElectricCharge(item.damage);
+                player.SGAPly().AddElectricCharge(item.damage/5);
             }
         }
 
@@ -970,6 +970,12 @@ namespace SGAmod
             SGAPlayer sgaply = player.SGAPly();
             if (item.useAmmo > 0 && sgaply.russianRoulette)
             {
+                if (item.useAmmo != AmmoID.Rocket && item.useAmmo != AmmoID.Bullet && item.useAmmo != AmmoID.Arrow)
+                {
+                    if (player.armor[0].type == ModContent.ItemType<VibraniumHelmet>())
+                        add += 0.30f;
+                }
+
                 add += item?.modItem is Items.Weapons.RevolverBase ? 1f : 0.5f;
             }
 

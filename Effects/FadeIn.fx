@@ -91,6 +91,28 @@ float4 ColorToAlphaFunction(float2 coords : TEXCOORD0) : COLOR0
 
 	return color*alpha;
 }
+float4 LumaRecolorFunction(float2 coords : TEXCOORD0) : COLOR0
+{
+	float4 color = tex2D(uImage0, coords);
+    	if (!any(color))
+		return color;
+        float luma = (color.r+color.g+color.b)/3.0;
+        
+        color = float4(fadeColor.rgb*(0.5+(luma/2.0)),color.a);
+
+	return color*alpha;
+}
+float4 LumaRecolorAlphaFunction(float2 coords : TEXCOORD0) : COLOR0
+{
+	float4 color = tex2D(uImage0, coords);
+    	if (!any(color))
+		return color;
+        float luma = (color.r+color.g+color.b)/3.0;
+        
+        color = float4(fadeColor.rgb*(0.5+(luma/2.0)),luma);
+
+	return color*luma*alpha;
+}
 
 technique Technique1
 {
@@ -114,5 +136,12 @@ technique Technique1
     {
         PixelShader = compile ps_2_0 ColorToAlphaFunction();
     }
-
+                pass LumaRecolorPass
+    {
+        PixelShader = compile ps_2_0 LumaRecolorFunction();
+    }                
+    pass LumaRecolorAlphaPass
+    {
+        PixelShader = compile ps_2_0 LumaRecolorAlphaFunction();
+    }
 }

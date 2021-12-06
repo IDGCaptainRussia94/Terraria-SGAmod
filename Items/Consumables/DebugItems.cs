@@ -40,11 +40,49 @@ namespace SGAmod.Items.Consumables
 			item.UseSound = SoundID.Item9;
 			item.consumable = true;
 		}
-		public override string Texture
+        public override bool UseItem(Player player)
+        {
+			SGAPlayer.centerOverrideTimerIsActive = 300;
+			player.SGAPly().centerOverrideTimer = 300;
+			//PrivateClassEdits.CrashPatch();
+			return true;
+        }
+        public override string Texture
 		{
 			get { return "Terraria/Heart2"; }
 		}
 
+	}
+
+	public class Debug11 : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug-Start Credits");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.rare = 8;
+			item.value = 1000;
+			item.useStyle = 2;
+			item.useAnimation = 8;
+			item.useTime = 8;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item9;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Xmas_0"; }
+		}
+
+		public override bool UseItem(Player player)
+		{
+			Credits.CreditsManager.RollCredits();
+			return true;
+		}
 	}
 
 	public class Debug10 : ModItem
@@ -88,7 +126,7 @@ namespace SGAmod.Items.Consumables
 		}
         public override void UpdateInventory(Player player)
         {
-			player.SGAPly().disabledAccessories = Math.Max(player.SGAPly().disabledAccessories,16);
+			player.SGAPly().disabledAccessories = Math.Max(player.SGAPly().disabledAccessories,600);
         }
         public override string Texture
 		{

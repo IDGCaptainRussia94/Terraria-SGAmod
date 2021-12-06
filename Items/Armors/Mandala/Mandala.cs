@@ -42,6 +42,10 @@ namespace SGAmod.Items.Armors.Mandala
 			item.defense = 12;
 			item.lifeRegen = 0;
 		}
+        public override bool DrawHead()
+        {
+            return GetType() == typeof(MandalaHood) ? false : true;
+        }
         public static void SwapModes(SGAPlayer sgaplayer)
         {
             sgaplayer.mandalaSet.Item2 += 1;

@@ -40,7 +40,7 @@ namespace SGAmod.Buffs
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Watched");
-			Description.SetDefault("Tread Carefully...");
+			Description.SetDefault("You are exposed, tread carefully...");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;

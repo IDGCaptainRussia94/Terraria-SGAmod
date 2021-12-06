@@ -126,7 +126,7 @@ namespace SGAmod
 		public static string filePath = "C:/Users/" + userName + "/Documents/My Games/Terraria/ModLoader/SGAmod";
 		public static Texture2D hellionLaserTex;
 		public static Texture2D ParadoxMirrorTex;
-		public static Texture2D PrismBansheeTex;
+		//public static Texture2D PrismBansheeTex;
 		public static Texture2D RadSuitHeadTex;
 		public static Texture2D PlatformTex;
 		public static Texture2D PearlIceBackground;
@@ -144,6 +144,8 @@ namespace SGAmod
 		public static bool anysubworld = false;
 		public static float overpoweredMod = 0f;
 		public static int vibraniumCounter = 0;
+		public static bool ForceDrawOverride = false;
+		public static GameTime lastTime = new GameTime();
 		public static (int, int, bool) ExtractedItem = (-1,-1, false);
 
 		private int localtimer = 0;
@@ -421,9 +423,10 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_" + TileID.Crystals));//114
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.DetonatingBubble));//115
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.MedusaHeadRay));//116
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/UI/Settings_Inputs_2"));//117
 
+				//Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 
-				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 				Texture2D PlatTex = ModContent.GetTexture("Terraria/Tiles_"+TileID.Asphalt);
 				PearlIceBackground = ModContent.GetTexture("Terraria/Background_206");
 
@@ -435,9 +438,9 @@ namespace SGAmod
 				item.SetDefaults(ItemID.SWATHelmet);
 				Texture2D RadTex2 = ModContent.GetTexture("Terraria/Armor_Head_" + item.headSlot);
 
-				int height = queenTex.Height;
+				//int height = queenTex.Height;
 				//RadSuitHeadTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, 0, RadTex.Width, RadTex.Height));
-				PrismBansheeTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, height-(height / 6), queenTex.Width, height / 6));
+				//PrismBansheeTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, height-(height / 6), queenTex.Width, height / 6));
 				PlatformTex = PlatTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(18*5,0, 16, 16));
 
 				Texture2D tex = new Texture2D(Main.graphics.GraphicsDevice, RadTex.Width, RadTex.Height);
@@ -482,7 +485,7 @@ namespace SGAmod
 				HellionTextures = null;
 				HellionGores = null;
 				ExtraTextures = null;
-				PrismBansheeTex.Dispose();
+				//PrismBansheeTex.Dispose();
 				RadSuitHeadTex.Dispose();
 				PlatformTex.Dispose();
 				PearlIceBackground.Dispose();
@@ -641,17 +644,43 @@ namespace SGAmod
 
 				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidoSnd", new Sounds.Custom.MegidoSnd());
 				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidolaonSnd", new Sounds.Custom.MegidolaonSnd());
+				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/RoR2sndTurretFire", new Sounds.Custom.RoR2sndTurretFire());
 
 			}
 
 			AddItem("Nightmare", NPCs.TownNPCs.Nightmare.instance);
 
-			if (!Directory.Exists(SGAmod.filePath))
+			bool failedToMakeDirectoy = false;
+
+			try
 			{
-				Directory.CreateDirectory(SGAmod.filePath);
+				if (!Directory.Exists(SGAmod.filePath))
+				{
+					Directory.CreateDirectory(SGAmod.filePath);
+				}
+            }
+			catch (IOException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
+			}
+			catch (UnauthorizedAccessException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
+			}
+			catch (ArgumentException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
+			}		
+			catch (NotSupportedException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
 			}
 
-			if (Directory.Exists(filePath))
+			if (failedToMakeDirectoy || Directory.Exists(filePath))
 			{
 				//foreach(string filename in Directory.GetFiles(filePath))
 				//Logger.Debug("files: " + filename);
@@ -661,11 +690,11 @@ namespace SGAmod
 					HellionAttacks.CheckAndLoadMusic();
 				}
 
-				if (Directory.GetFiles(filePath).Where(testby => testby.Contains("Itsnotoveryet.txt")).Count()>0)
+				if (failedToMakeDirectoy || Directory.GetFiles(filePath).Where(testby => testby.Contains("Itsnotoveryet.txt")).Count()>0)
 				{
 					SGAmod.NightmareUnlocked = true;
 
-					Logger.Debug("Directory and file found: Nightmare Mode has been unlocked");
+					Logger.Debug(failedToMakeDirectoy ? "Directory not able to be made" : "Directory and file found" + ": Nightmare Mode has been unlocked");
 				}
 				//if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
 				//{
@@ -1553,6 +1582,7 @@ namespace SGAmod
 #endif
 
 			vibraniumCounter = Math.Max(vibraniumCounter - 1, 0);
+			SGAPlayer.centerOverrideTimerIsActive = Math.Max(SGAPlayer.centerOverrideTimerIsActive - 1, 0);
 			SGAWorld.modtimer += 1;
 			PrismShardHinted.ApplyPrismOnce = false;
 

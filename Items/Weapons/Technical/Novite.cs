@@ -402,7 +402,7 @@ namespace SGAmod.Items.Weapons.Technical
 			item.useStyle = 1;
 			item.noMelee = true;
 			item.knockBack = 2f;
-			item.value = Item.buyPrice(0, 0, 75, 0);
+			item.value = Item.buyPrice(0, 0, 25, 0);
 			item.rare = 1;
 			item.autoReuse = false;
 			item.shootSpeed = 0f;

@@ -69,7 +69,7 @@ namespace SGAmod.Items.Accessories
 			int num = drawPlayer.bodyFrame.Y / 56;
 			if (num >= Main.OffsetsPlayerHeadgear.Length)
 				num = 0;
-			Vector2 adderPos = new Vector2(Main.OffsetsPlayerHeadgear[num].X, drawPlayer.gfxOffY + Main.OffsetsPlayerHeadgear[num].Y) + drawPlayer.bodyPosition;
+			Vector2 adderPos = new Vector2(Main.OffsetsPlayerHeadgear[num].X, drawPlayer.gfxOffY + Main.OffsetsPlayerHeadgear[num].Y)* (int)drawPlayer.gravDir+ drawPlayer.bodyPosition;
 
 			#region RenderTarget2D
 			if (SGAConfigClient.Instance.AvariceLordWings)
@@ -84,7 +84,7 @@ namespace SGAmod.Items.Accessories
 				Vector2 whereat2 = (new Vector2(drawX, drawY).RotatedBy(drawPlayer.fullRotation, drawPlayer.MountedCenter));
 				color = Lighting.GetColor((int)(whereat2.X / 16f), (int)(whereat2.Y / 16f)) * stealth;
 
-				DrawData data2 = new DrawData(texture, whereat2 + adderPos - Main.screenPosition, null, color, (float)drawPlayer.fullRotation + angle, org, 2f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+				DrawData data2 = new DrawData(texture, whereat2 + adderPos - Main.screenPosition, null, color, (float)drawPlayer.fullRotation + angle, org, 2f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None), 0);
 
 				data2.shader = (int)drawPlayer.cWings;
 
@@ -100,9 +100,9 @@ namespace SGAmod.Items.Accessories
 			{
 
 				drawX = (int)((drawPlayer.MountedCenter.X + (-8 + i * 16f) * drawPlayer.direction));
-				drawY = (int)((drawPlayer.MountedCenter.Y + nalzs2 - 2f));
+				drawY = (int)((drawPlayer.MountedCenter.Y + (nalzs2 - 2f)*drawPlayer.gravDir));
 				if (i < 1)
-					drawY += 8;
+					drawY += 8 * (int)drawPlayer.gravDir;
 
 				texture = ModContent.GetTexture("SGAmod/Items/Accessories/BetsyWings/BetsyWings" + (i < 1 ? "Front" : "Back"));
 
@@ -289,7 +289,7 @@ namespace SGAmod.Items.Accessories
 				{
 					player.wingTimeMax += 180;
 					player.armorPenetration += 50;
-					if (player.controlUp)
+					if (player.controlUp && ((player.mount != null && !player.mount.Active) || player.mount == null))
 					{
 						if (player.statLife <= 50)
 						{

@@ -6,6 +6,8 @@ float2 mappedTextureMultiplier;
 float2 mappedTextureOffset;
 float4 colorBlend;
 float softEdge;
+float2 softHalf;
+
 sampler mappedTexturesampler = sampler_state
 {
     Texture = (mappedTexture);
@@ -83,6 +85,37 @@ float4 SphereMapAlphaFunction(float2 fragCoord : TEXCOORD0) : COLOR0
 
 }
 
+float4 HalfSphereMapFunction(float2 fragCoord : TEXCOORD0) : COLOR0
+{
+
+	float4 fragColor = SphereMapFunction(fragCoord);
+
+    //float4 trans = float4(fragColor.r,fragColor.g,fragColor.b,0);
+
+    float offset = (fragCoord.y-softHalf.y)*softHalf.x;
+
+    float4 finalFragColor = fragColor*clamp(1.0-offset,0.0,1.0);//lerp(fragColor,trans,clamp(offset,0.0,1.0));
+
+    return finalFragColor;
+
+}
+
+float4 HalfSphereMapAlphaFunction(float2 fragCoord : TEXCOORD0) : COLOR0
+{
+
+	float4 fragColor = SphereMapAlphaFunction(fragCoord);
+
+    //float4 trans = float4(fragColor.r,fragColor.g,fragColor.b,0);
+
+    float offset = (fragCoord.y-softHalf.y)*softHalf.x;
+
+    float4 finalFragColor = fragColor*clamp(1.0-offset,0.0,1.0);//lerp(fragColor,trans,clamp(offset,0.0,1.0));
+
+    return finalFragColor;
+
+}
+
+
 technique Technique1
 {
         pass SphereMap
@@ -92,5 +125,13 @@ technique Technique1
             pass SphereMapAlpha
     {
         PixelShader = compile ps_2_0 SphereMapAlphaFunction();
+    }
+            pass HalfSphereMap
+    {
+        PixelShader = compile ps_2_0 HalfSphereMapFunction();
+    }
+                pass HalfSphereMapAlpha
+    {
+        PixelShader = compile ps_2_0 HalfSphereMapAlphaFunction();
     }
 }

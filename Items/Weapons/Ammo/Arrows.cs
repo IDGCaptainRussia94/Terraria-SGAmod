@@ -185,7 +185,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
 			item.knockBack = 4f;
 			item.value = 500;
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.shoot = mod.ProjectileType("WraithArrow");   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 18f;                  //The speed of the projectile
 			item.ammo = AmmoID.Arrow;              //The ammo class this ammo belongs to.
@@ -194,13 +194,13 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ShadowJavelinRecipe(mod);
-			recipe.AddIngredient(ItemID.WoodenArrow, 100);
+			recipe.AddIngredient(ItemID.HellfireArrow, 250);
 			recipe.AddIngredient(ItemID.WrathPotion, 1);
 			recipe.AddIngredient(ItemID.DefenderMedal, 5);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 2);
 			recipe.AddIngredient(mod.ItemType("OmegaSigil"), 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
-			recipe.SetResult(this, 100);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}
@@ -230,10 +230,10 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("DankWood"), 15);
+			recipe.AddIngredient(mod.ItemType("DankWood"), 25);
 			recipe.AddIngredient(mod.ItemType("DankCore"), 1);
 			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this, 100);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}

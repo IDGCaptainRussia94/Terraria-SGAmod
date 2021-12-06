@@ -320,7 +320,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Megidola");
-			Tooltip.SetDefault("Targets 3 enemies nearby your cursor on use and spawns orbs near them\nEach of these orbs zap nearby enemies 4 times for the listed damage\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 45 seconds"));
+			Tooltip.SetDefault("Targets 3 enemies nearby your cursor on use and spawns orbs near them\nEach of these orbs zap nearby enemies 4 times for the listed damage\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 40 seconds"));
 		}
 		public override string Texture => "Terraria/Item_" + ItemID.Darkness;
 		public override void SetDefaults()

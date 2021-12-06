@@ -29,7 +29,7 @@ namespace SGAmod
 	public class BLCCustomDraw
 	{
 		public Action<object, SpriteBatch, Color, object, Rectangle> customDrawEntry = default;
-	public BLCCustomDraw(Action<object, SpriteBatch, Color, object, Rectangle> customDrawEntry)
+		public BLCCustomDraw(Action<object, SpriteBatch, Color, object, Rectangle> customDrawEntry)
 		{
 			this.customDrawEntry = customDrawEntry;
 		}
@@ -47,21 +47,21 @@ namespace SGAmod
 		public static RenderTarget2D BookBossTexture;
 		public static bool loadedChecklist = false;
 		public static Rectangle bookSize;
-		public static (BLCCustomDraw,object,SpriteBatch,Color,object,Rectangle) lastEntry = default;
+		public static (BLCCustomDraw, object, SpriteBatch, Color, object, Rectangle) lastEntry = default;
 
 		public static void Load()
-        {
+		{
 			if (Main.dedServ)
 				return;
 
 			AddHellionEntry();
 			loadedChecklist = true;
-            SGAmod.PostUpdateEverythingEvent += DrawRenderTargets;
+			SGAmod.PostUpdateEverythingEvent += DrawRenderTargets;
 
 		}
 
-        private static void DrawRenderTargets()
-        {
+		private static void DrawRenderTargets()
+		{
 			if (Main.dedServ)
 				return;
 
@@ -87,8 +87,8 @@ namespace SGAmod
 			}
 		}
 
-        public static void Unload()
-        {
+		public static void Unload()
+		{
 			if (!loadedChecklist || Main.dedServ)
 				return;
 
@@ -99,7 +99,7 @@ namespace SGAmod
 		}
 
 		public static bool MakeBookRenderTarget()
-        {
+		{
 			if (bookSize != default)
 			{
 				if (BookBossTexture == null || BookBossTexture.IsDisposed)
@@ -115,7 +115,7 @@ namespace SGAmod
 
 
 		public static void AddHellionEntry()
-        {
+		{
 			Action<object, SpriteBatch, Color, object, Rectangle> hellDraw = delegate (object instance, SpriteBatch sb, Color maskedColor, object selectedBoss, Rectangle pageRect)
 			{
 				string bossName = (string)(selectedBoss.GetType().GetField("internalName", SGAmod.UniversalBindingFlags).GetValue(selectedBoss));
@@ -132,10 +132,10 @@ namespace SGAmod
 				sb.Draw(Main.blackTileTexture, Vector2.Zero, pageRect, Main.DiscoColor * (hidden ? 1f : 0f), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 
 
-				Hellion.HellionTeleport(sb, (pageRect.Size() / 2f) + Main.screenPosition, 1.25f, 128f, false,0.25f);
-				Hellion.HellionTeleport(sb, (pageRect.Size()/2f) + Main.screenPosition, 1f, 96f, false);
+				Hellion.HellionTeleport(sb, (pageRect.Size() / 2f) + Main.screenPosition, 1.25f, 128f, false, 0.25f);
+				Hellion.HellionTeleport(sb, (pageRect.Size() / 2f) + Main.screenPosition, 1f, 96f, false);
 
-				sb.Draw(tex, Vector2.Zero + (pageRect.Size()/2f) + new Vector2(0, (float)Math.Sin(Main.GlobalTime) * 16f), null, hidden ? Color.Black : Color.White, 0, tex.Size() / 2f, 1, SpriteEffects.None, 0f);
+				sb.Draw(tex, Vector2.Zero + (pageRect.Size() / 2f) + new Vector2(0, (float)Math.Sin(Main.GlobalTime) * 16f), null, hidden ? Color.Black : Color.White, 0, tex.Size() / 2f, 1, SpriteEffects.None, 0f);
 
 				maskedColor = Main.DiscoColor;
 			};
@@ -156,7 +156,11 @@ namespace SGAmod
 		public static Type BossLogPanel;
 		public static Type BossInfo;
 		public static Type BossLogUI;
+		public static Type TableOfContents;
+
 		public static MethodInfo BossLogUIDraw;
+		public static MethodInfo TableOfContentsDraw;
+
 
 		internal static bool ApplyPatches
 		{
@@ -165,21 +169,26 @@ namespace SGAmod
 				Assembly assybcl = ModLoader.GetMod("BossChecklist").GetType().Assembly;
 				string typeofit = "";
 
-				foreach(Type typea in assybcl.GetTypes())
-                {
+				foreach (Type typea in assybcl.GetTypes())
+				{
 					SGAmod.Instance.Logger.Debug(typea.Name);
 					if (typea.Name == "BossLogPanel")
-				BossLogPanel = typea;
+						BossLogPanel = typea;
 					if (typea.Name == "BossInfo")
-						BossInfo = typea;	
+						BossInfo = typea;
 					if (typea.Name == "BossLogUI")
-						BossLogUI = typea;	
+						BossLogUI = typea;
+					if (typea.Name == "TableOfContents")
+						TableOfContents = typea;
+
 				}
 
 
 				BossLogUIDraw = BossLogPanel.GetMethod("Draw", SGAmod.UniversalBindingFlags);
+				TableOfContentsDraw = TableOfContents.GetMethod("Draw", SGAmod.UniversalBindingFlags);
 
 				ModifyBossListDrawManipulator += ModifyBossListDrawILPatch;
+				ModifyTableOfContentsManipulator += ModifyTableOfContentsILPatch;
 
 				BCLEntries.Load();
 
@@ -190,6 +199,7 @@ namespace SGAmod
 		internal static void RemovePatches()
 		{
 			ModifyBossListDrawManipulator -= ModifyBossListDrawILPatch;
+			ModifyTableOfContentsManipulator -= ModifyTableOfContentsILPatch;
 		}
 
 		#region BCL Page Edits
@@ -210,7 +220,7 @@ namespace SGAmod
 		{
 			ILCursor c = new ILCursor(context);
 
-			Type[] collectionOfTypes = new Type[] { typeof(Texture2D), typeof(Vector2), typeof(Rectangle?), typeof(Color), typeof(float),typeof(Vector2), typeof(float), typeof(SpriteEffects), typeof(float) };
+			Type[] collectionOfTypes = new Type[] { typeof(Texture2D), typeof(Vector2), typeof(Rectangle?), typeof(Color), typeof(float), typeof(Vector2), typeof(float), typeof(SpriteEffects), typeof(float) };
 			MethodInfo HackTheMethod = typeof(SpriteBatch).GetMethod("Draw", SGAmod.UniversalBindingFlags, null, collectionOfTypes, null);
 			MethodInfo HackTheMethod2 = BossLogUI.GetMethod("MaskBoss", SGAmod.UniversalBindingFlags);
 
@@ -223,45 +233,82 @@ namespace SGAmod
 				if (c.TryGotoNext(MoveType.After, iii => iii.MatchCall(HackTheMethod2)))//The 'masked' color caller
 				{
 
-                }
-                else
-                {
+				}
+				else
+				{
 					goto failed;
 				}
 			}
+
+
+
 			c.Index += 1;
-				c.Emit(OpCodes.Ldarg, 0);//the UI itself
-				c.Emit(OpCodes.Ldarg, 1);//the spriteBatch
-				c.Emit(OpCodes.Ldloc, 48);//The 'masked' color
-				c.Emit(OpCodes.Ldloc, 0);//The 'selectedBoss' BossInfo
-				c.Emit(OpCodes.Ldloc, 1);//Page rectangle
-			//c.Emit(OpCodes.Ldloc, 40);//Boss Texture
+			c.Emit(OpCodes.Ldarg, 0);//the UI itself
+			c.Emit(OpCodes.Ldarg, 1);//the spriteBatch
+			c.Emit(OpCodes.Ldloc, 48);//The 'masked' color
+			c.Emit(OpCodes.Ldloc, 0);//The 'selectedBoss' BossInfo
+			c.Emit(OpCodes.Ldloc, 1);//Page rectangle
+									 //c.Emit(OpCodes.Ldloc, 40);//Boss Texture
 
 			c.EmitDelegate<CustomBossListDelegate>(CustomBossListDrawMethod);
-				
-				c.Emit(OpCodes.Brfalse, label);
+
+			c.Emit(OpCodes.Brfalse, label);
+			c.MarkLabel(label);
+
+			SGAmod.Instance.Logger.Debug("Placed BCL IL patch");
+
+
+			if (c.TryGotoNext(MoveType.After, i => i.MatchCallvirt(HackTheMethod)))//Spritebatch.Draw
+			{
+				c.MoveBeforeLabels();
 				c.MarkLabel(label);
+				SGAmod.Instance.Logger.Debug("Placed BCL label");
+			}
+			else
+			{
+				goto failed;
+			}
 
-				SGAmod.Instance.Logger.Debug("Placed BCL IL patch");
+			//if (c.TryGotoNext(MoveType.After, i => i.MatchStloc(43)))
+			//{
+			//if (c.TryGotoNext(MoveType.After, i => i.MatchLdfld(BossInfo.GetField("internalName",SGAmod.UniversalBindingFlags))))
+			//{
+			//if (c.TryGotoNext(MoveType.After, i => i.MatchLdstr("")))
+			//{
+			
+			/*if (c.TryGotoNext(MoveType.Before, i => i.MatchLdstr("")))
+			{
+				ILLabel label2 = c.DefineLabel();
 
-				
-				if (c.TryGotoNext(MoveType.After, i => i.MatchCallvirt(HackTheMethod)))//Spritebatch.Draw
-				{
-					c.MoveBeforeLabels();
-					c.MarkLabel(label);
-					SGAmod.Instance.Logger.Debug("Placed BCL label");
-					return;
-				}
-				
+				//c.MoveAfterLabels();
+				c.Emit(OpCodes.Ldarg_0);//the UI itself
+				c.EmitDelegate<TableOfContentsDelegate>(ErasePageText);
+				c.Emit(OpCodes.Brtrue, label2);
+				c.Emit(OpCodes.Ret);
+				c.MarkLabel(label2);
+				return;
+			}
+
+				throw new NotImplementedException();
+
+			*/
+
 			failed:
 
-			SGAmod.Instance.Logger.Error("Boss Checklist patch failed");
+				SGAmod.Instance.Logger.Error("Boss Checklist patch failed");
 
 		}
 
 		private delegate bool CustomBossListDelegate(object instance, SpriteBatch sb, Color maskedColor, object selectedBoss, Rectangle pageRect);//,Texture2D tex);
 
-		private static bool CustomBossListDrawMethod(object instance, SpriteBatch sb,Color maskedColor, object selectedBoss, Rectangle pageRect)//, Texture2D tex)
+		//private delegate string CustomBossListStringDelegate(object instance,string text);
+
+		private static bool ErasePageText(object instance)
+		{
+			return true;
+		}
+
+		private static bool CustomBossListDrawMethod(object instance, SpriteBatch sb, Color maskedColor, object selectedBoss, Rectangle pageRect)//, Texture2D tex)
 		{
 			Vector2 center = pageRect.Center();
 
@@ -301,7 +348,7 @@ namespace SGAmod
 					//entryDrawData.customDrawEntry(instance, sb, maskedColor, selectedBoss, pageRect);
 
 					if (BCLEntries.BookBossTexture != null)
-					sb.Draw(BCLEntries.BookBossTexture, pageRect.TopLeft(), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+						sb.Draw(BCLEntries.BookBossTexture, pageRect.TopLeft(), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 
 					return false;
 
@@ -313,12 +360,90 @@ namespace SGAmod
 
 			return true;
 
-				//Texture2D Draken = ModContent.GetTexture("SGAmod/NPCs/TownNPCs/Dergon");
+			//Texture2D Draken = ModContent.GetTexture("SGAmod/NPCs/TownNPCs/Dergon");
 
-				//sb.Draw(Draken, style.Position() + offset, rect, Color.White, 0, new Vector2(frameSize.X, frameSize.Y / 7f) / 2f, 0.50f, backAndForth, 0f);
+			//sb.Draw(Draken, style.Position() + offset, rect, Color.White, 0, new Vector2(frameSize.X, frameSize.Y / 7f) / 2f, 0.50f, backAndForth, 0f);
 		}
-		#endregion
-	}
+        #endregion
 
+
+        #region Table Of Contents Edits
+        public static event Manipulator ModifyTableOfContentsManipulator
+		{
+			add
+			{
+				HookEndpointManager.Modify(TableOfContentsDraw, (Delegate)(object)value);
+			}
+			remove
+			{
+				HookEndpointManager.Unmodify(TableOfContentsDraw, (Delegate)(object)value);
+			}
+		}
+
+		private static void ModifyTableOfContentsILPatch(ILContext context)
+		{
+			ILCursor c = new ILCursor(context);
+
+			MethodInfo HackTheMethod = typeof(Terraria.UI.UIElement).GetMethod("Draw", SGAmod.UniversalBindingFlags);
+
+			ILLabel label = c.DefineLabel();
+
+			/*if (c.TryGotoNext(MoveType.After, iii => iii.MatchCall(HackTheMethod)))//The 'masked' color caller
+			{
+
+			}
+			else
+			{
+				goto failed;
+			}*/
+
+			c.Emit(OpCodes.Ldarg, 0);//the Table Of Contents itself
+
+			c.EmitDelegate<TableOfContentsDelegate>(TableOfContentsDrawMethod);
+
+			c.Emit(OpCodes.Brfalse, label);
+			c.Emit(OpCodes.Ret);
+			c.MarkLabel(label);
+
+			SGAmod.Instance.Logger.Debug("Placed BCL TableOfContents IL patch");
+			return;
+			
+
+		failed:
+
+			SGAmod.Instance.Logger.Error("Boss Checklist patch failed");
+		}
+
+
+		private delegate bool TableOfContentsDelegate(object instance);
+
+		private static bool TableOfContentsDrawMethod(object instance)
+		{
+			string bossName = (string)TableOfContents.GetField("bossName", SGAmod.UniversalBindingFlags).GetValue(instance);
+			if (bossName == "                                                                                                                                                              hi")
+			{
+				string bossText = GlitchedHellionString;
+				typeof(UIText).GetField("_text", SGAmod.UniversalBindingFlags).SetValue(instance, bossText);
+				TableOfContents.GetField("displayName", SGAmod.UniversalBindingFlags).SetValue(instance, bossText);
+			}
+			//Main.NewText(bossName);
+
+			return false;
+		}
+
+		public static string GlitchedHellionString
+        {
+            get
+            {
+				string bossText = "";
+				for (int i = 0; i < 20; i += 1)
+				{
+					bossText += (char)(33 + Main.rand.Next(15));
+				}
+				return bossText;
+			}
+        }
+        #endregion
+    }
 
 }

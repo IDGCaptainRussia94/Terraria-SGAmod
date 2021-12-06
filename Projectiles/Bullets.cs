@@ -341,7 +341,7 @@ namespace SGAmod.Projectiles
 			projectile.friendly = true;
 			projectile.tileCollide = true;
 			projectile.ranged = true;
-			projectile.timeLeft = 3000;
+			projectile.timeLeft = 900;
 			projectile.extraUpdates = 4;
 			projectile.penetrate = 2;
 			projectile.usesLocalNPCImmunity = true;

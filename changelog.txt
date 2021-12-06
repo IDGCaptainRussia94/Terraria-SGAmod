@@ -2,8 +2,6 @@
 Changelog:
 3.600m-(12/3/21)-Patch 11-Tech N Wreck: Beta
 
--Prehaps the last one!
-
 -Added Megidolaon (finally!), reduced the cooldown on the stacks on all of the SMT almighty cards
 
 -Nerfed Big Dakka: slightly lowered damage
@@ -19,6 +17,21 @@ Changelog:
 -Reworked Vibranium Helmet: now gives 30% boost to ranged damage, and extra 30% boost to non-bullet/arrow/rocket ammo weapons, electric charge recovery per consumed damage has been reduced to 20%
 
 -Added the Credits Sequence! Currently only accessible from the main menu
+
+-Shadowspirit's Eye should no longer be able to stop all blacklisted buffs from being cancelled
+
+-Nerfed Engineering Rod: Damage lowered to 25 (from 32)
+
+-Fixed Relics using grass as their tile dust
+
+-Added dye support for the engineer boosters (uses chestplate dye, but will priortize using wing dye if present)
+
+-Added another Boss Checklist patch: Hellion Core is now glitchy on the table of contents
+
+-New changes to Murk:
+-Prehardmode Killer Fly Swamp summon doesn't shoot Stingers
+-Gains DR during gas phases
+
 
 
 3.600l-(12/3/21)-Patch 11-Tech N Wreck: Beta

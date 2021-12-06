@@ -495,7 +495,7 @@ namespace SGAmod
 
 			SGAPlayer sgaply = self.SGAPly();
 
-			if (sgaply.phaethonEye > 0 && Main.debuff[buff] && time > 60 && !Main.buffNoTimeDisplay[buff] && buff != BuffID.PotionSickness)
+			if (sgaply.phaethonEye > 0 && Main.debuff[buff] && time > 60 && !SGAUtils.BlackListedBuffs(buff))
 			{
 				if (Main.rand.Next(3) == 0 && sgaply.AddCooldownStack(time))
 				{

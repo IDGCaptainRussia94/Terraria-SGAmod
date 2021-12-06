@@ -13,6 +13,7 @@ using Idglibrary;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Items.Weapons.Technical;
 using SGAmod.Items.Weapons.SeriousSam;
+using Terraria.Graphics.Shaders;
 
 //What's mine is mine to reuse, maybe next time make me sign a binding contract
 //Sigh, hopefully we can reach a compromise, I really want to keep this...
@@ -302,6 +303,10 @@ namespace SGAmod.Items.Armors.Engineer
                                 {
                                     Dust dust = Dust.NewDustPerfect(new Vector2(touchpoint.X + Main.rand.Next(0, 16), middletouch), ModContent.DustType<AdaptedEngieSmokeEffect>(), new Vector2((Main.rand.NextFloat(-8, 8) * scale) - player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
                                     dust.color = new Color(196, 179, 143);
+
+                                    dust.shader = GameShaders.Armor.GetSecondaryShader((int)player.dye[1].dye, player);
+                                    if (player.cWings > 0)
+                                        dust.shader = GameShaders.Armor.GetSecondaryShader(player.cWings, player);
                                 }
                                 if (middleheight < 7)
                                 {
@@ -462,6 +467,9 @@ namespace SGAmod.Items.Armors.Engineer
 
                                 Vector2 drawhere = player.position + info.bodyOrigin + bodyoffset + partoffset;
                                 DrawData drawarm = new DrawData(ShoulderMounts[i], drawhere - Main.screenPosition, null, info.middleArmorColor, rotationangles[i] * facingdirection.X, spriteoriginlocal, Vector2.One, direction, 0);
+                                drawarm.shader = (int)player.dye[1].dye;
+                                if (player.cWings>0)
+                                drawarm.shader = (int)player.cWings;
 
                                 Main.playerDrawData.Add(drawarm);
                             }
@@ -495,6 +503,10 @@ namespace SGAmod.Items.Armors.Engineer
                             float transformanimation = ((float)EngineerTransform / MaxTransform) * (MathHelper.Pi/2f);
                             drawGL = new DrawData(ShoulderMounts[2], drawhere - Main.screenPosition, null, info.middleArmorColor, (rotationangles[2]+transformanimation) * facingdirection.X, spriteoriginlocal, Vector2.One, direction, 0);
                         }
+
+                        drawGL.shader = (int)player.dye[1].dye;
+                        if (player.cWings > 0)
+                            drawGL.shader = (int)player.cWings;
 
                         Main.playerDrawData.Add(drawGL);
 

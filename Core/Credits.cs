@@ -30,6 +30,7 @@ namespace SGAmod.Credits
         public static float delayTimer = 60;
         public static float colorAnimation = 1f;
         public static int timePassed = 0;
+        public static float previousMusicVolume=1f;
         public static bool CreditsActive
         {
             get
@@ -48,7 +49,7 @@ namespace SGAmod.Credits
 
         public static void AddCreditEntries()
         {
-            Vector2 top = new Vector2(Main.screenWidth / 2f, Main.screenHeight + 64);
+            Vector2 top = new Vector2(Main.screenWidth / 2f, Main.screenHeight + 48);
 
             CreditsLine line = new CreditsLine(("", "", ""), top+new Vector2(0,96));
             line.delayTimer = 55;
@@ -70,6 +71,7 @@ namespace SGAmod.Credits
 
             line = new CreditsLineRainbowFlavor(("IDGCaptainRussia94", "Owner, Director, Lead Coder", "'I'm not weird, your too normal'"), top);
             line._colors.Item3 = Color.Lime;
+            line.bufferSpace += 64;
             line.customDrawData = delegate (CreditsLine liner)
             {
                 int frame = (int)(CreditsManager.timePassed/7f) % 7;
@@ -82,9 +84,11 @@ namespace SGAmod.Credits
                 Main.spriteBatch.Draw(Draken, liner.position + new Vector2(0, -24), rect, Color.White, 0, rect.Size() / 2f, 1f, default, 0);
 
                 Texture2D dev = SGAmod.Instance.GetTexture("Items/Weapons/DragonCommanderStaff");
-                Main.spriteBatch.Draw(dev, liner.position + new Vector2(120, 54f), null, Color.White, 0, dev.Size() / 2f, 1f, SpriteEffects.FlipHorizontally, 0);
+                Main.spriteBatch.Draw(dev, liner.position + new Vector2(0, 122), null, Color.White, 0, dev.Size() / 2f, 1f, SpriteEffects.None, 0);
                 dev = SGAmod.Instance.GetTexture("Items/Weapons/DragonRevolver");
-                Main.spriteBatch.Draw(dev, liner.position + new Vector2(-112, 50), null, Color.White, 0, dev.Size() / 2f, 1f, default, 0);
+                Main.spriteBatch.Draw(dev, liner.position + new Vector2(120, 50), null, Color.White, 0, dev.Size() / 2f, 1f, default, 0);
+                dev = SGAmod.Instance.GetTexture("Items/Armors/Dev/IDGSet");
+                Main.spriteBatch.Draw(dev, liner.position + new Vector2(-108, 54), null, Color.White, 0, dev.Size() / 2f, 1f, default, 0);
 
             };            
             creditsToSpawn.Add(line);
@@ -111,8 +115,8 @@ namespace SGAmod.Credits
             line._colors.Item3 = Color.LightGoldenrodYellow;
             creditsToSpawn.Add(line);
 
-            line = new CreditsLine(("Maskano", "Spriter", "'The other active spriter!'"), top);
-            line._colors.Item3 = Color.Blue;
+            line = new CreditsLine(("Maskano", "Spriter", "'this is the best LSD mod i've worked on'"), top);
+            line._colors.Item3 = Color.Teal;
             creditsToSpawn.Add(line);
 
             line = new CreditsLine(("Musicman", "Composer", "'Universe Curse not included!'"), top);
@@ -356,7 +360,8 @@ namespace SGAmod.Credits
                 return;
 
             queuedCredits = false;
-            delayTimer = 60;
+            delayTimer = 0;
+            previousMusicVolume = Main.musicVolume;
             colorAnimation = 1;
             timePassed = 0;
             creditsRolling = true;
@@ -372,6 +377,7 @@ namespace SGAmod.Credits
             SGAmod.ForceDrawOverride = true;
             //sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
             typeof(Main).GetMethod("DoDraw", SGAmod.UniversalBindingFlags).Invoke(Main.instance, new object[1] { SGAmod.lastTime });
+
             //sb.End();
             SGAmod.ForceDrawOverride = false;
 
@@ -411,6 +417,7 @@ namespace SGAmod.Credits
                 return;
 
             creditsRolling = false;
+            Main.musicVolume = previousMusicVolume;
             credits.Clear();
             creditsToSpawn.Clear();
             creditsRenderTarget.Dispose();
@@ -429,7 +436,10 @@ namespace SGAmod.Credits
 
             colorAnimation = MathHelper.SmoothStep(0.2f, colorAnimation, 0.9f);
 
+            Main.musicVolume = MathHelper.Clamp(Main.musicVolume+((-0.10f - Main.musicVolume)-Main.musicVolume) *0.005f, 0f, 1f);
+
             typeof(Main).GetMethod("DoUpdate_AnimateDiscoRGB", SGAmod.UniversalBindingFlags).Invoke(Main.instance, new object[0]);
+            typeof(Main).GetMethod("UpdateAudio", SGAmod.UniversalBindingFlags).Invoke(Main.instance, new object[0]);
 
             foreach (CreditsLine line in credits)
             {

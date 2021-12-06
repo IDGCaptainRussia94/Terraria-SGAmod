@@ -168,7 +168,7 @@ namespace SGAmod.Items.Placeable.Relics
 			Main.tileLavaDeath[Type] = false;
 			Main.tileTable[Type] = false;
 			Main.tileShine2[Type] = true;
-			dustType = DustID.Grass;
+			dustType = 57;
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
 			TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 18 };
 			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);

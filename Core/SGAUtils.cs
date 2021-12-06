@@ -771,7 +771,11 @@ namespace SGAmod
 
 		public static bool BlackListedBuffs(this Player player,int index)
 		{
-			return player.buffType[index] != BuffID.PotionSickness && player.buffType[index] != ModContent.BuffType<MatrixBuff>() && player.buffType[index] != ModContent.BuffType<DragonsMight>();
+			return player.buffType[index] == BuffID.PotionSickness || player.buffType[index] == ModContent.BuffType<MatrixBuff>() || player.buffType[index] == ModContent.BuffType<DragonsMight>();
+		}
+		public static bool BlackListedBuffs(int index)
+		{
+			return index == BuffID.PotionSickness || index == ModContent.BuffType<MatrixBuff>() || index == ModContent.BuffType<DragonsMight>();
 		}
 
 		public static float ArrowSpeed(this Player player)

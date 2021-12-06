@@ -26,6 +26,7 @@ using System.Net;
 using System.Reflection;
 using ReLogic.Graphics;
 using MonoMod.RuntimeDetour.HookGen;
+using Terraria.Cinematics;
 
 namespace SGAmod.NPCs.Hellion
 {
@@ -3692,6 +3693,16 @@ namespace SGAmod.NPCs.Hellion
 		{
 			get { return "Terraria/NPC_" + NPCID.Stylist; }
 		}
+		private void FilmStartCredits(FrameEventData evt)
+		{
+			Credits.CreditsManager.queuedCredits = true;
+			//Main.screenPosition = scenecam;
+		}
+		private void FilmBlankCredits(FrameEventData evt)
+		{
+			//nothing
+		}
+		public static Film filmCredits;
 		public override void NPCLoot()
 		{
 			if (godmodeAntiCheat)
@@ -3705,6 +3716,12 @@ namespace SGAmod.NPCs.Hellion
 				SGAWorld.downedHellion = 2;
 				HellionAttacks.HellionWelcomesYou();
 			}
+
+			filmCredits = new Film();
+			filmCredits.AppendSequence(240, FilmBlankCredits);
+			filmCredits.AppendSequence(1, FilmStartCredits);
+			CinematicManager.Instance.PlayFilm(filmCredits);
+
 			Achivements.SGAAchivements.UnlockAchivement("Hellion", Main.LocalPlayer);
 			Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, mod.ItemType("ByteSoul"), 300);
 			Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, mod.ItemType("DrakeniteBar"), Main.rand.Next(45, 60));

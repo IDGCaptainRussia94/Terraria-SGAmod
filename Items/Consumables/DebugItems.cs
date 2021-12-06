@@ -80,7 +80,7 @@ namespace SGAmod.Items.Consumables
 
 		public override bool UseItem(Player player)
 		{
-			Credits.CreditsManager.RollCredits();
+			Credits.CreditsManager.queuedCredits = true;
 			return true;
 		}
 	}

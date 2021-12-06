@@ -25,7 +25,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override void SetDefaults()
 		{
-			item.damage = 32;
+			item.damage = 25;
 			item.summon = true;
 			item.sentry = true;
 			item.width = 24;

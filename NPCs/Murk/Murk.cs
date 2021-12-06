@@ -164,9 +164,10 @@ namespace SGAmod.NPCs.Murk
                 dustype = 184;
 
             npc.noGravity = false;
-
+            npc.SGANPCs().overallResist = 1f;
             if (gasshift > 0)
             {
+                npc.SGANPCs().overallResist = 0.5f;
 
                 float scaledSize = 1.5f+MathHelper.Clamp((Math.Abs(npc.localAI[0])-400)/200f,0f,0.5f);
                 Vector2 center = npc.Center;
@@ -1246,7 +1247,7 @@ namespace SGAmod.NPCs.Murk
             else
             {
 
-                if (this.GetType() == typeof(BossFlyMiniboss1) && npc.ai[2]%300==0 && npc.ai[0]>700 && Main.expertMode)
+                if (this.GetType() == typeof(BossFlyMiniboss1) && npc.ai[2]%300==0 && npc.ai[0]>700 && Main.expertMode && (NPC.CountNPCS(ModContent.NPCType<Murk>())<1 || Main.hardMode))
                 {
 
                     Player target = Main.player[npc.target];

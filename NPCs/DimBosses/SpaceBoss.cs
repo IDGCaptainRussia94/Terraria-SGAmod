@@ -1007,7 +1007,7 @@ namespace SGAmod.Dimensions.NPCs
 			}
 			boss.timeHere = 0;
 
-			Main.NewText("RocksAreas left " + boss.visitedEmptySpaces.Count);
+			//Main.NewText("RocksAreas left " + boss.visitedEmptySpaces.Count);
 
 			//Spawn Guys
 

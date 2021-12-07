@@ -226,9 +226,9 @@ namespace SGAmod
 
 				Rectangle rect = new Rectangle(0, (int)(frame * (frameSize.Y / 7)), (int)frameSize.X, (int)(frameSize.Y / 7));
 
-				SpriteEffects backAndForth = Main.GlobalTime % 30 < 15 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+				SpriteEffects backAndForth = Main.GlobalTime % 38 < 19 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-				offset += new Vector2((Main.GlobalTime % 30) + (Main.GlobalTime % 30 < 15 ? 0 : ((Main.GlobalTime - 15) % 15) * -2), 0) * 15f;
+				offset += new Vector2((Main.GlobalTime % 38) + (Main.GlobalTime % 38 < 19 ? 0 : ((Main.GlobalTime - 19) % 19) * -2), 0) * 12;
 
 				sb.Draw(Draken, style.Position() + offset, rect, Color.White, 0, new Vector2(frameSize.X, frameSize.Y / 7f) / 2f, 0.50f, backAndForth, 0f);
 

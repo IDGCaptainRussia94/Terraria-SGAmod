@@ -1,6 +1,22 @@
 
 Changelog:
-3.600m-(12/3/21)-Patch 11-Tech N Wreck: Beta
+3.600n-(12/6/21)-Patch 11-Tech N Wreck: Beta
+
+-Really the last one?
+
+-Disabled test code in the credits
+
+-Hellion now only rolls the credits on the 1st defeat per world
+
+-Removed Phaethon debug messages
+
+-Fixed the Credits screen purpling-out on losing focus with the window
+
+-Added various QoL elements to the Credits, added more flair to various entries
+
+
+
+3.600m-(12/6/21)-Patch 11-Tech N Wreck: Beta
 
 -Added Megidolaon (finally!), reduced the cooldown on the stacks on all of the SMT almighty cards
 

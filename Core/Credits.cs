@@ -15,13 +15,14 @@ namespace SGAmod.Credits
         public static List<CreditsLine> credits = new List<CreditsLine>();
         public static List<CreditsLine> creditsToSpawn = new List<CreditsLine>();
         public static RenderTarget2D creditsRenderTarget;
+        public static Texture2D ScreenTexture;
         public static bool queuedCredits = false;
         public static float ScrollSpeed
         {
             get
             {
                 Microsoft.Xna.Framework.Input.KeyboardState keyState = Microsoft.Xna.Framework.Input.Keyboard.GetState();
-                float speed = 1f * (keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Down) ? 0.25f : 1f) * (keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Up) ? 40f : 1f);
+                float speed = 1f * (keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Down) ? 0.25f : 1f) * (keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Up) ? 10f : 1f);
                 return speed;
             }
         }
@@ -149,6 +150,15 @@ namespace SGAmod.Credits
 
             line = new CreditsLine(("PhilBill44", "Former Spriter", "'Godspeed!'"), top);
             line._colors.Item3 = Color.Silver;
+            line.delayTimer += 12;
+            line.bufferSpace += 96;
+            line.customDrawData = delegate (CreditsLine liner)
+            {
+                Texture2D dev = SGAmod.Instance.GetTexture("iconOld");
+                Main.spriteBatch.Draw(dev, liner.position + new Vector2(0, 140), null, Color.White, 0, dev.Size() / 2f, 1f, default, 0);
+                dev = SGAmod.Instance.GetTexture("Items/Weapons/WaveBeam");
+                Main.spriteBatch.Draw(dev, liner.position + new Vector2(62, 60), null, Color.White, 0, dev.Size() / 2f, 1f, default, 0);
+            };
             creditsToSpawn.Add(line);
 
             line = new CreditsLine(("Daim", "Former Spriter", "'Legend'"), top);
@@ -173,6 +183,13 @@ namespace SGAmod.Credits
 
             line = new CreditsLine(("Dsurion123", "Commissioned Sprites", "'Thanks for the new mod icon!'"), top);
             line._colors.Item3 = Color.Red;
+            line.delayTimer += 12;
+            line.bufferSpace += 96;
+            line.customDrawData = delegate (CreditsLine liner)
+            {
+                Texture2D dev = SGAmod.Instance.GetTexture("icon");
+                Main.spriteBatch.Draw(dev, liner.position + new Vector2(0, 140), null, Color.White, 0, dev.Size() / 2f, 1f, default, 0);
+            };
             creditsToSpawn.Add(line);
 
             line = new CreditsLine(("Zoomo", "Commissioned Sprites", "'Would recommended for commissions!'"), top);
@@ -257,6 +274,19 @@ namespace SGAmod.Credits
 
             line = new CreditsLine(("Jubia", "", "'Best Goat'"), top);
             line._colors.Item2 = Color.AntiqueWhite;
+            line.customDrawData = delegate (CreditsLine liner)
+            {
+                int totalFrames = Main.npcFrameCount[Terraria.ID.NPCID.Guide];
+                int frame = (int)(CreditsManager.timePassed / 7f) % totalFrames;
+
+                 Texture2D Jubia = SGAmod.Instance.GetTexture("NPCs/TownNPCs/Goat");
+                Vector2 frameSize = new Vector2(Jubia.Width, Jubia.Height);
+
+                Rectangle rect = new Rectangle(0, (int)(frame * (frameSize.Y / totalFrames)), (int)frameSize.X, (int)(frameSize.Y / totalFrames));
+
+                Main.spriteBatch.Draw(Jubia, liner.position + new Vector2(64, 32), rect, Color.White, 0, rect.Size() / 2f, 1f, SpriteEffects.FlipHorizontally, 0);
+
+            };            
             line.delayTimer = 20;
             creditsToSpawn.Add(line);
 
@@ -371,13 +401,11 @@ namespace SGAmod.Credits
             AddCreditEntries();
 
 
-            SpriteBatch sb = Main.spriteBatch;
             GraphicsDevice GD = Main.graphics.GraphicsDevice;
 
             SGAmod.ForceDrawOverride = true;
             //sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
             typeof(Main).GetMethod("DoDraw", SGAmod.UniversalBindingFlags).Invoke(Main.instance, new object[1] { SGAmod.lastTime });
-
             //sb.End();
             SGAmod.ForceDrawOverride = false;
 
@@ -386,27 +414,18 @@ namespace SGAmod.Credits
 
                 GD.GetBackBufferData(screenData);
 
-                Texture2D ScreenTexture = new Texture2D(GD, GD.PresentationParameters.BackBufferWidth, GD.PresentationParameters.BackBufferHeight, false, GD.PresentationParameters.BackBufferFormat);
+                ScreenTexture = new Texture2D(GD, GD.PresentationParameters.BackBufferWidth, GD.PresentationParameters.BackBufferHeight, false, GD.PresentationParameters.BackBufferFormat);
 
                 ScreenTexture.SetData(screenData);
 
-                RenderTargetBinding[] binds = GD.GetRenderTargets();
-                Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTarget);
-
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
-                Main.spriteBatch.Draw(ScreenTexture, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
-                sb.End();
-
-                GD.SetRenderTargets(binds);
-
 
                 //save to disk 
-                System.IO.Stream stream = System.IO.File.OpenWrite(SGAmod.filePath + "/test.jpg");
+                //System.IO.Stream stream = System.IO.File.OpenWrite(SGAmod.filePath + "/test.jpg");
 
-                ScreenTexture.SaveAsJpeg(stream, ScreenTexture.Width, ScreenTexture.Height);
-                stream.Dispose();
+               // ScreenTexture.SaveAsJpeg(stream, ScreenTexture.Width, ScreenTexture.Height);
+                //stream.Dispose();
 
-                ScreenTexture.Dispose();
+                //ScreenTexture.Dispose();
 
 
         }
@@ -418,9 +437,12 @@ namespace SGAmod.Credits
 
             creditsRolling = false;
             Main.musicVolume = previousMusicVolume;
+            queuedCredits = false;
             credits.Clear();
             creditsToSpawn.Clear();
             creditsRenderTarget.Dispose();
+            if (ScreenTexture != null)
+            ScreenTexture.Dispose();
         }
 
 
@@ -448,6 +470,14 @@ namespace SGAmod.Credits
 
             credits = credits.Where(testby => testby.position.Y > -testby.bufferSpace).ToList();
 
+            Microsoft.Xna.Framework.Input.KeyboardState keyState = Microsoft.Xna.Framework.Input.Keyboard.GetState();
+            if (keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
+            {
+                credits.Clear();
+                creditsToSpawn.Clear();
+                return;
+            }
+
             if (delayTimer < 1)
             {
                 SpawnCreditLine();
@@ -461,6 +491,15 @@ namespace SGAmod.Credits
             GraphicsDevice GD = Main.graphics.GraphicsDevice;
             SpriteBatch sb = Main.spriteBatch;
             RenderTargetBinding[] binds = GD.GetRenderTargets();
+
+            Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTarget);
+
+            /*
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
+            if (ScreenTexture != null && !ScreenTexture.IsDisposed)
+            Main.spriteBatch.Draw(ScreenTexture, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+            sb.End();
+            */
 
             Main.graphics.GraphicsDevice.SetRenderTarget(creditsRenderTarget);
             Main.graphics.GraphicsDevice.Clear(Color.Transparent);
@@ -493,6 +532,18 @@ namespace SGAmod.Credits
 
             }
 
+            float fadeInAlpha = MathHelper.Clamp(timePassed/150f,0f,1f);
+
+            string hinttex = "Hold Arrow keys to scroll";
+            Vector2 hinttexSize1 = Main.fontCombatText[1].MeasureString(hinttex);
+
+            DynamicSpriteFontExtensionMethods.DrawString(sb, Main.fontCombatText[1], hinttex, new Vector2(creditsRenderTarget.Width, creditsRenderTarget.Height), Color.White*fadeInAlpha, 0, new Vector2(hinttexSize1.X+64, hinttexSize1.Y), 1f, SpriteEffects.None, 0);
+
+            hinttex = "Escape to Skip";
+
+            DynamicSpriteFontExtensionMethods.DrawString(sb, Main.fontCombatText[1], hinttex, new Vector2(0, creditsRenderTarget.Height), Color.White * fadeInAlpha, 0, new Vector2(-64, hinttexSize1.Y), 1f, SpriteEffects.None, 0);
+
+
             sb.End();
 
             GD.SetRenderTargets(binds);
@@ -504,7 +555,9 @@ namespace SGAmod.Credits
             SpriteBatch sb = Main.spriteBatch;
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
 
-            Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, null, Color.White.MultiplyRGBA(new Color(colorAnimation, colorAnimation, colorAnimation, 1f)), 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+            if (ScreenTexture != null && !ScreenTexture.IsDisposed)
+                Main.spriteBatch.Draw(ScreenTexture, Vector2.Zero, null, Color.White.MultiplyRGBA(new Color(colorAnimation, colorAnimation, colorAnimation, 1f)), 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+
             Main.spriteBatch.Draw(creditsRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
 
             sb.End();

@@ -16,6 +16,7 @@ Check out the #portals-SGAmod to get links to the Forum Page (outdated), the Wik
 You could also google and find the homepage, wiki, and github as well if discord isn't your fancy.
 And finally, many parts of content in this mod is (still) placeholder sprites due to a lack of active spriters and my inability to make them from scratch, if your a spriter and like what you see, be sure to contact me and we can work something out!
 
+This mod has issues reloading/unloading, but will work fine if you restart your game thou, justs a heads up!
 
 Changelog:
 

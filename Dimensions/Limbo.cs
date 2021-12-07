@@ -20,7 +20,7 @@ using SGAmod.Dimensions.NPCs;
 using SGAmod.Effects;
 using SGAmod.Items;
 using Terraria.Cinematics;
-using Steamworks;
+
 
 namespace SGAmod.Dimensions
 {

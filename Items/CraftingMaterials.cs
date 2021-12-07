@@ -2066,7 +2066,7 @@ namespace SGAmod.Items
 			float _Time; // Pass the time in seconds into here
 			*/
 
-			Texture2D tex = ModContent.GetTexture("SGAmod/voronoinoalpha");
+			Texture2D tex = ModContent.GetTexture("SGAmod/voronoismol");
 
 			SGAmod.VoronoiEffect.Parameters["_CellColor"].SetValue(Color.Black.ToVector4() * 1f);
 			SGAmod.VoronoiEffect.Parameters["_EdgeColor"].SetValue(Color.Lerp(Color.Orange,Color.Yellow,0.50f).ToVector4() * 1f);

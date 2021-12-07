@@ -34,7 +34,7 @@ namespace SGAmod.Dimensions
         public override int width => 3200;
         public override int height => 800;
         public override bool saveSubworld => false;
-        public override float spawnRate => 4.0f;
+        public override float spawnRate => 7.50f;
 
         public override string DimName => "Near Terrarian Orbit";
 
@@ -292,7 +292,7 @@ namespace SGAmod.Dimensions
 
                 }
                     if (spawnInfo.spawnTileType == ModContent.TileType<VibraniumCrystalTile>())
-                pool[ModContent.NPCType<ResonantWisp>()] = 5f;
+                pool[ModContent.NPCType<ResonantWisp>()] = 50f;
                 pool[ModContent.NPCType<OverseenHead>()] = 1f;
                 pool[NPCID.MartianDrone] = 0.25f;
                 pool[NPCID.MartianTurret] = 0.2f;
@@ -1127,7 +1127,7 @@ namespace SGAmod.Dimensions
 
                 Projectile proj = Projectile.NewProjectileDirect(player.Center + chosenspot, velocity, projtype, 0, 0);
 
-                if (Main.rand.Next(0, 100) <= 4)
+                if (Main.rand.Next(0, 100) <= 2)
                 {
                     int npc = NPC.NewNPC((int)proj.Center.X, (int)proj.Center.Y, ModContent.NPCType<OverseenHeadAsteriod>());
                     MineableAsteriod grabrock = proj.modProjectile as MineableAsteriod;
@@ -1538,7 +1538,11 @@ namespace SGAmod.Dimensions
         {
             //TileID.ExposedGems
             npc.type = NPCID.MeteorHead;
-            Item.NewItem(npc.position, npc.width, npc.height, ModContent.ItemType<Glowrock>(), Main.rand.Next(1, 4));
+            if (GetType() == typeof(OverseenHeadBossShield))
+                Item.NewItem(npc.position, npc.width, npc.height, ItemID.Heart);
+            else
+                Item.NewItem(npc.position, npc.width, npc.height, ModContent.ItemType<Glowrock>(), Main.rand.Next(1, 4));
+
             return true;
         }
         public override string Texture => "SGAmod/Dimensions/Space/OverseenHead";

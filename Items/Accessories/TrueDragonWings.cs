@@ -255,7 +255,7 @@ namespace SGAmod.Items.Accessories
 		{
 			DisplayName.SetDefault("Avarice Lord's Wings");
 			Tooltip.SetDefault("'The Finest draconic wings;\nJust trimmed the hands off 1st...'\nHold DOWN to reduce vertical but increase horizontal movement\nHold UP to gain boosts into the air whenever you flap");
-			Main.itemTexture[ModContent.ItemType<TrueDragonWings>()] = Main.itemTexture[ItemID.BetsyWings];
+			//Main.itemTexture[ModContent.ItemType<TrueDragonWings>()] = Main.itemTexture[ItemID.BetsyWings];
 		}
 
 		public override void SetDefaults()

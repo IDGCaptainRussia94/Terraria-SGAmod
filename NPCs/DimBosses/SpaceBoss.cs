@@ -1122,7 +1122,8 @@ namespace SGAmod.Dimensions.NPCs
 					{
 						for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / (5f - (float)boss.TetherAsteriods.Count()))
 						{
-							Projectile.NewProjectile(npc.Center, Vector2.UnitX.RotatedBy((npc.ai[0] / 80f) + f) * 2, ModContent.ProjectileType<SpaceBossBasicShot>(), 30, 10);
+							Vector2 velo = Vector2.UnitX.RotatedBy((npc.ai[0] / 80f) + f);
+							Projectile.NewProjectile(npc.Center+ velo*24f, velo * 2, ModContent.ProjectileType<SpaceBossBasicShotAccelerate>(), 30, 10);
 						}
 					}
 				}
@@ -1311,9 +1312,9 @@ namespace SGAmod.Dimensions.NPCs
 
 	public class SpaceBoss : ModNPC, ISGABoss
 	{
-		public string Trophy() => "DoomHarbingerTrophy";
+		public string Trophy() => "PhaethonTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
-		public string RelicName() => "Doom_Harbinger";
+		public string RelicName() => "Phaethon";
 		public void NoHitDrops(){}
 
 		public bool TossRoids => (int)npc.ai[0] > 10600 && (int)npc.ai[0] < 10800;
@@ -2868,7 +2869,7 @@ namespace SGAmod.Dimensions.NPCs
 
         public override string Texture => "Terraria/Projectile_538";
 
-        public override void SetDefaults()
+		public override void SetDefaults()
 		{
 			projectile.width = 24;
 			projectile.height = 24;
@@ -2965,26 +2966,54 @@ namespace SGAmod.Dimensions.NPCs
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 
-			float alphaFade = MathHelper.Clamp(projectile.timeLeft / 120f, 0f, 1f);
+			bool inrange = false;
+			int bufferRange = 64;
 
 			for (int i = 0; i < projectile.oldPos.Length; i += 1)//dumb hack to get the trails to not appear at 0,0
 			{
-				if (projectile.oldPos[i] == default)
+				//Main.NewText(projectile.oldPos[i]);
+				if (projectile.localAI[0] < 2)
 					projectile.oldPos[i] = projectile.position;
+
+				if (i % 25 == 0)
+                {
+					Rectangle rect = new Rectangle((int)Main.screenPosition.X- bufferRange, (int)Main.screenPosition.Y - bufferRange, Main.screenWidth+ bufferRange, Main.screenHeight+ bufferRange);
+					if (rect.Contains(projectile.oldPos[i].ToPoint()))
+					{
+						inrange = true;
+						break;
+					}
+                }
+			}
+			if (!inrange)
+				return false;
+
+			float alphaFade = MathHelper.Clamp(projectile.timeLeft / 120f, 0f, 1f);
+			float alphaFade2 = alphaFade * MathHelper.Clamp(projectile.ai[0] / 8f, 0f, 1f);
+
+			int maxLength = (int)(Math.Min((projectile.localAI[0] / 75f), 1f) * projectile.oldPos.Length);
+
+			List<Vector2> positions = new List<Vector2>();
+			for (int i = 0; i < maxLength; i += 1)//dumb hack to get the trails to not appear at 0,0
+			{
+				if (projectile.localAI[0] < 2)
+					projectile.oldPos[i] = projectile.position;
+
+				positions.Add(projectile.oldPos[i].X == 0 ? projectile.oldPos[maxLength-1] : projectile.oldPos[i]);
 			}
 
-			TrailHelper trail = new TrailHelper("FadedBasicEffectPass", SGAmod.Instance.GetTexture("TiledPerlin"));
-			trail.coordMultiplier = new Vector2(0.25f, projectile.velocity.Length());
+				TrailHelper trail = new TrailHelper("FadedBasicEffectPass", SGAmod.Instance.GetTexture("TiledPerlin"));
+			trail.coordMultiplier = new Vector2(0.25f, projectile.velocity.Length()* (maxLength/(float)projectile.oldPos.Length));
 			trail.coordOffset = new Vector2(0, Main.GlobalTime * -2f);
 			trail.projsize = projectile.Hitbox.Size() / 2f;
 			trail.trailThickness = 12;
 			trail.trailThicknessIncrease = 5;
 			trail.color = delegate (float percent)
 			{
-				return Color.Lerp(Color.CornflowerBlue, Color.CadetBlue,percent)* alphaFade;
+				return Color.Lerp(Color.CornflowerBlue, Color.CadetBlue,percent)* alphaFade2;
 			};
 
-			trail.DrawTrail(projectile.oldPos.ToList(), projectile.Center);
+			trail.DrawTrail(positions, projectile.Center);
 
 
 
@@ -2999,9 +3028,10 @@ namespace SGAmod.Dimensions.NPCs
 
 	}
 
-	public class SpaceBossBasicShot : SpaceBossHomingShot
+	public class SpaceBossBasicShot : SpaceBossHomingShot,IDrawAdditive
 	{
 		int extraparticles => 0;
+		Vector2 startOrg = default;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overseer's Shot");
@@ -3048,7 +3078,7 @@ namespace SGAmod.Dimensions.NPCs
 				Main.dust[dust].scale = 2f - Math.Abs(num475) / 4f;
 				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
 				Main.dust[dust].velocity = (randomcircle / 3f);
-				Main.dust[dust].velocity += (projectile.velocity * (num475 / 5f));
+				Main.dust[dust].velocity += (projectile.velocity * (num475 / 1f));
 				Main.dust[dust].noGravity = true;
 			}
 
@@ -3058,6 +3088,11 @@ namespace SGAmod.Dimensions.NPCs
 		public override void AI()
 		{
 			projectile.localAI[0] += 1;
+
+			if (projectile.localAI[0]==1)
+            {
+				startOrg = projectile.Center;
+			}
 
 			if (projectile.ai[0] < 15f)
 			{
@@ -3070,6 +3105,33 @@ namespace SGAmod.Dimensions.NPCs
 			Main.dust[dust].alpha = 150;
 			Main.dust[dust].velocity = Vector2.Normalize(offset) * (float)(1f * Main.rand.NextFloat(0f, 3f));
 			Main.dust[dust].noGravity = true;
+
+		}
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+			if (GetType() != typeof(SpaceBossBasicShotAccelerate))
+				return;
+
+			Texture2D glow = ModContent.GetTexture("SGAmod/LightBeam");
+			Vector2 origin = new Vector2(glow.Width / 2, glow.Height * 0.15f);
+			float rotation = projectile.velocity.ToRotation()-MathHelper.PiOver2;
+
+			float alphaFade = MathHelper.Clamp(projectile.timeLeft / 60f, 0f, 1f)*MathHelper.Clamp(projectile.localAI[0] / 20f, 0f, 1f-MathHelper.Clamp((projectile.localAI[0]-80f)/50f,0f,1f));
+			if (alphaFade <= 0)
+				return;
+
+			for(float f = -MathHelper.Pi; f <= MathHelper.Pi; f += MathHelper.Pi / 6f)
+            {
+				float scaleColor = (1f - Math.Abs(f / MathHelper.TwoPi)) * 1f;
+				float anglef = f * ((projectile.localAI[0]-40) / 20f);
+				Vector2 scale = new Vector2(alphaFade * 0.20f, MathHelper.SmoothStep(0f, 1f, projectile.localAI[0] / 80f) * scaleColor * 1.50f);
+				float colorScale = MathHelper.Clamp(((projectile.localAI[0] - 40) - Math.Abs(f * 4f)) / 60f,0f,1f);
+				spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, Color.Lerp(Color.White,Color.Blue, colorScale) * alphaFade* scaleColor * 2f, rotation+(anglef / 3f), origin, scale * 0.40f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+			}
+
+			spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, Color.Blue * alphaFade * 2f, rotation, origin, new Vector2(0.20f+alphaFade, MathHelper.SmoothStep(0f, 2f, projectile.localAI[0] / 320f) *6f)*0.40f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+			spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, Color.White * alphaFade * 2f, rotation, origin, new Vector2(0.05f + alphaFade*0.75f, MathHelper.SmoothStep(0f, 2f, projectile.localAI[0] / 320f) * 6f) * 0.30f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 
 		}
 
@@ -3089,12 +3151,13 @@ namespace SGAmod.Dimensions.NPCs
 				index += 1;
 			}
 			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.White * alphaFade * 1f, 0, origin, 1f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+
 			return false;
 		}
 
 	}
 
-	public class SpaceBossBasicShotAccelerate : SpaceBossBasicShot
+	public class SpaceBossBasicShotAccelerate : SpaceBossBasicShot, IDrawAdditive
 	{
 		public override void SetStaticDefaults()
 		{

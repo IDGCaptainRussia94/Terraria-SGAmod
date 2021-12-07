@@ -1,6 +1,12 @@
 
 Changelog:
-3.600n-(12/6/21)-Patch 11-Tech N Wreck: Beta
+3.600o-(12/7/21)-Patch 11-Tech N Wreck: Beta
+
+-Proper Sprite for Avarice Lord's Wings
+
+
+
+3.600n-(12/7/21)-Patch 11-Tech N Wreck: Beta
 
 -Really the last one?
 
@@ -13,6 +19,24 @@ Changelog:
 -Fixed the Credits screen purpling-out on losing focus with the window
 
 -Added various QoL elements to the Credits, added more flair to various entries
+
+-Pull accepted Rijam's typeo fix
+
+-Buffed Megidola: cooldown time reduced to 30 seconds (from 40)
+
+-Fixed Engie's dyes not quite working as expected
+
+-Reduced Infested Asteriod spawn chance and enemy spawn rates in Near Orbit
+
+-Added Phaethon Relic and trophy (thx, once again, Rijam!)
+
+-Did the GoG Fix
+
+-New changes to Phaethon:
+-The Overseen heads that spawn in boss transition phases will drop a heart on death instead of glowrock, allowing you to heal up a bit between phases
+-Made the Overseer shots more pretty, I guess
+-Added some attempts at optimization code to the homing shots
+-Final phase circling shots have been replaced with the accelerating versions
 
 
 
@@ -43,6 +67,8 @@ Changelog:
 -Added dye support for the engineer boosters (uses chestplate dye, but will priortize using wing dye if present)
 
 -Added another Boss Checklist patch: Hellion Core is now glitchy on the table of contents
+
+-Hopefully fixed the GoG issue with the mod
 
 -New changes to Murk:
 -Prehardmode Killer Fly Swamp summon doesn't shoot Stingers

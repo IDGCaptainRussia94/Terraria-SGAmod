@@ -103,6 +103,7 @@ namespace SGAmod
 
 		public static SGAmod Instance;
 		public static string SteamID;
+		public static bool isGoG = false;
 		public static bool SkillUIActive = false;
 		public static int ScrapCustomCurrencyID;
 		public static CustomCurrencySystem ScrapCustomCurrencySystem;
@@ -424,6 +425,7 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.DetonatingBubble));//115
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.MedusaHeadRay));//116
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/UI/Settings_Inputs_2"));//117
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_"+ TileID.Torches));//118
 
 				//Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 
@@ -519,7 +521,11 @@ namespace SGAmod
 #if Dimensions
 			proxydimmod.Load();
 #endif
-			SteamID = Main.dedServ || Main.netMode == NetmodeID.Server ? "" : (string)(typeof(ModLoader).GetProperty("SteamID64", BindingFlags.Static | BindingFlags.NonPublic)).GetValue(null);
+
+			Type installVarifier = Assembly.GetAssembly(typeof(Main)).GetType("Terraria.ModLoader.Engine.InstallVerifier");
+			isGoG = (bool)installVarifier.GetField("IsGoG").GetValue(null);
+
+			SteamID = Main.dedServ || Main.netMode == NetmodeID.Server || !isGoG ? "" : (string)(typeof(ModLoader).GetProperty("SteamID64", BindingFlags.Static | BindingFlags.NonPublic)).GetValue(null);
 			/*FieldInfo fild= typeof(CalamityPlayer).GetField("throwingDamage", BindingFlags.Instance | BindingFlags.Public);
 
 			object modp = Main.LocalPlayer.GetModPlayer(ModLoader.GetMod("CalamityMod"), "CalamityPlayer");

@@ -50,7 +50,9 @@ namespace SGAmod.Credits
 
         public static void AddCreditEntries()
         {
-            Vector2 top = new Vector2(Main.screenWidth / 2f, Main.screenHeight + 48);
+            int Width = Main.screenWidth/2;
+            int Height = Main.screenHeight + 48;
+            Vector2 top = new Vector2(Width, Height);
 
             CreditsLine line = new CreditsLine(("", "", ""), top+new Vector2(0,96));
             line.delayTimer = 55;
@@ -320,6 +322,11 @@ namespace SGAmod.Credits
             line.delayTimer = 20;
             creditsToSpawn.Add(line);
 
+            line = new CreditsLine(("paniq", "", "'For their Shadertoy Sphere shader, which I backported to HLSL 2.0'"), top);
+            line._colors.Item2 = Color.WhiteSmoke;
+            line.delayTimer = 20;
+            creditsToSpawn.Add(line);
+
             line = new CreditsLine(("DRKV333", "", "'While you had no direct involvement, your wisdom did!'"), top);
             line._colors.Item2 = Color.WhiteSmoke;
             line.delayTimer = 20;
@@ -361,7 +368,7 @@ namespace SGAmod.Credits
             creditsToSpawn.Add(line);
 
             line = new CreditsLine(("", "", ""), top);
-            line.delayTimer = 100;
+            line.delayTimer = 75;
             creditsToSpawn.Add(line);
 
             line = new CreditsLineRainbowFlavor(("Thank you, for playing my mod!", "And of course... You!", "IDG"), top);
@@ -532,7 +539,7 @@ namespace SGAmod.Credits
 
             }
 
-            float fadeInAlpha = MathHelper.Clamp(timePassed/150f,0f,1f);
+            float fadeInAlpha = MathHelper.Clamp(timePassed / 150f,0f,1f);
 
             string hinttex = "Hold Arrow keys to scroll";
             Vector2 hinttexSize1 = Main.fontCombatText[1].MeasureString(hinttex);
@@ -551,12 +558,16 @@ namespace SGAmod.Credits
 
         public static void DrawCredits(GameTime gameTime)
         {
+            //Vector2 standardSize = new Vector2(Main.screenWidth/1980f, Main.screenHeight/1080f);
             //Main.spriteBatch.End();
             SpriteBatch sb = Main.spriteBatch;
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
 
             if (ScreenTexture != null && !ScreenTexture.IsDisposed)
-                Main.spriteBatch.Draw(ScreenTexture, Vector2.Zero, null, Color.White.MultiplyRGBA(new Color(colorAnimation, colorAnimation, colorAnimation, 1f)), 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+            {
+                Vector2 standardSize = new Vector2(Main.screenWidth / (float)ScreenTexture.Width, Main.screenHeight / (float)ScreenTexture.Height);
+                Main.spriteBatch.Draw(ScreenTexture, Vector2.Zero, null, Color.White.MultiplyRGBA(new Color(colorAnimation, colorAnimation, colorAnimation, 1f)), 0, Vector2.Zero, Vector2.One* standardSize, SpriteEffects.None, 0f);
+            }
 
             Main.spriteBatch.Draw(creditsRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
 

@@ -301,8 +301,12 @@ namespace SGAmod.Items.Armors.Engineer
                                 //Dust.NewDustPerfect(touchpoint + new Vector2(Main.rand.Next(0, 16), 0), ModContent.DustType<BioLumen>(), Vector2.Zero, 120, Color.Red, 2f);
                                 if (middleheight < 8 && Main.rand.Next(2, 8) > middleheight)
                                 {
-                                    Dust dust = Dust.NewDustPerfect(new Vector2(touchpoint.X + Main.rand.Next(0, 16), middletouch), ModContent.DustType<AdaptedEngieSmokeEffect>(), new Vector2((Main.rand.NextFloat(-8, 8) * scale) - player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
+                                    Vector2 speed = new Vector2((Main.rand.NextFloat(-8, 8) * scale) - player.velocity.X, Main.rand.NextFloat(-1, 1));
+                                    Dust dust = Dust.NewDustPerfect(new Vector2(touchpoint.X + Main.rand.Next(0, 16), middletouch), ModContent.DustType<AdaptedEngieSmokeEffect>(), speed, 120, Color.Gray, scale / 2f);
                                     dust.color = new Color(196, 179, 143);
+
+                                    //int num316 = Dust.NewDust(new Vector2(player.position.X, player.position.Y), player.width, player.height, ModContent.DustType<AdaptedEngieSmokeEffect>(), player.velocity.X * 0.1f, (player.velocity.Y) * 0.1f, 250, Color.White, 4.5f);
+                                    //Main.dust[num316].shader = GameShaders.Armor.GetSecondaryShader((int)player.dye[0].dye, player);
 
                                     dust.shader = GameShaders.Armor.GetSecondaryShader((int)player.dye[1].dye, player);
                                     if (player.cWings > 0)
@@ -547,6 +551,7 @@ namespace SGAmod.Items.Armors.Engineer
             dust.color *= 0.982f;
             dust.scale *= 0.982f;
             dust.velocity *= 0.97f;
+
             if (dust.scale <= 0.2)
             {
                 dust.active = false;

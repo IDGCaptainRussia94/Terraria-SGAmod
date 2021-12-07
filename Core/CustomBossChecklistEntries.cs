@@ -92,7 +92,7 @@ namespace SGAmod
 			if (!loadedChecklist || Main.dedServ)
 				return;
 
-			if (!BookBossTexture.IsDisposed)
+			if (BookBossTexture != null && !BookBossTexture.IsDisposed)
 				BookBossTexture.Dispose();
 
 

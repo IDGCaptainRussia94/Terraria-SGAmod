@@ -293,12 +293,6 @@ namespace SGAmod.Items.Weapons
 
 			float blobSize = (MathHelper.Clamp(projectile.localAI[0], 0f, 4f) * 0.1f) + (MathHelper.Clamp(projectile.ai[0], 0f, 30f) * 0.150f);
 
-			/*for (float i = projectile.oldPos.Length/2f; i >= 0; i -= 1f)
-			{
-				float sizer = 1f-(i / (float)projectile.oldPos.Length);
-				Main.spriteBatch.Draw(mainTex, projectile.oldPos[(int)i]+projectile.Hitbox.Size()/2f - Main.screenPosition, null, Color.Lerp(Color.Blue,colorz,i) * trail.strength, 0, mainTex.Size() / 2f, blobSize*(sizer), default, 0);
-			}*/
-
 			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lerp(colorz, Color.Black, 0.40f) * trail.strength, 0, mainTex.Size() / 2f, blobSize, default, 0);
 			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lerp(colorz,Color.White,0.25f)*0.75f * trail.strength, 0, mainTex.Size() / 2f, blobSize*0.75f, default, 0);
 
@@ -320,7 +314,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Megidola");
-			Tooltip.SetDefault("Targets 3 enemies nearby your cursor on use and spawns orbs near them\nEach of these orbs zap nearby enemies 4 times for the listed damage\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 40 seconds"));
+			Tooltip.SetDefault("Targets 3 enemies nearby your cursor on use and spawns orbs near them\nEach of these orbs zap nearby enemies 4 times for the listed damage\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 30 seconds"));
 		}
 		public override string Texture => "Terraria/Item_" + ItemID.Darkness;
 		public override void SetDefaults()
@@ -370,7 +364,7 @@ namespace SGAmod.Items.Weapons
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			//Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Megido").WithVolume(1.0f).WithPitchVariance(.15f), player.Center);
-		player.SGAPly().AddCooldownStack(60 * 40, 2);
+		player.SGAPly().AddCooldownStack(60 * 30, 2);
 
 			for (int i = 0; i < 3; i += 1)
 			{

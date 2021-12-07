@@ -373,7 +373,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D textureTorch = Main.tileTexture[TileID.Torches];
+			Texture2D textureTorch = SGAmod.ExtraTextures[118];
 
 			if (textureTorch != null)
 			{

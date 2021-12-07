@@ -265,7 +265,7 @@ namespace SGAmod.NPCs.TownNPCs
 					chat.Add("Where's my lovely Goat? :(");
 				}
 
-				if (SGAmod.SteamID != "")
+				if (SGAmod.SteamID != "" && !SGAmod.isGoG)
                 {
 					int friends = SteamFriends.GetFriendCount(EFriendFlags.k_EFriendFlagImmediate);
 					if (friends>0)

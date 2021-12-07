@@ -21,7 +21,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Maldal");
-			Tooltip.SetDefault("Floods your screen with files that explode when they touch an enemy!\nNot useable while your files are on the system");
+			Tooltip.SetDefault("Floods your screen with files that explode when they touch an enemy!\nNot usable while your files are on the system");
 			Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
 		}
 

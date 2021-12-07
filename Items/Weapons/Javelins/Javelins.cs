@@ -21,7 +21,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override int Penetrate => 8;
         public override float Speartype => 10;
         public override int[] Usetimes => new int[] { 25, 15 };
-        public override string[] Normaltext => new string[] { "A twisted form of thrown bloodlust that explodes your foe's blood out from their wounds", "Throws 3 Jab-lins that inflict area damage against foes that are Massively Bleeding", "In Addition, crits against enemies afficted with Everlasting Suffering", "On proc the Bleeding and Everlasting Suffering are removed, with a delay before retrigger", "Doesn't effect the enemy the Jab-lin is stuck to", "Primary Fire flies far and fast, and inflicts Massive Bleeding", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
+        public override string[] Normaltext => new string[] { "A twisted form of thrown blood lust that explodes your foe's blood out from their wounds", "Throws 3 Jab-lins that inflict area damage against foes that are Massively Bleeding", "In Addition, crits against enemies afflicted with Everlasting Suffering", "On proc the Bleeding and Everlasting Suffering are removed, with a delay before retrigger", "Doesn't effect the enemy the Jab-lin is stuck to", "Primary Fire flies far and fast, and inflicts Massive Bleeding", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Crimson Catastrophe");
@@ -420,7 +420,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override int Penetrate => 5;
         public override float Speartype => 7;
         public override int[] Usetimes => new int[] { 25, 7 };
-        public override string[] Normaltext => new string[] { "Made from evil Jab-lins and the dark essence emited by a shadow key, attacks may inflict shadowflame","The Shadow Key is NOT consumed on craft!", "Javelins accelerates forward, is not affected by gravity until it hits a target" };
+        public override string[] Normaltext => new string[] { "Made from evil Jab-lins and the dark essence emitted by a shadow key, attacks may inflict Shadowflame","The Shadow Key is NOT consumed on craft!", "Javelins accelerates forward, is not affected by gravity until it hits a target" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Shadow Jab-lin");
@@ -628,7 +628,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override float Throwspeed => 6f;
         public override float Speartype => 1;
         public override int[] Usetimes => new int[] { 40, 15 };
-        public override string[] Normaltext => new string[] { "Made from cold materials, attacks may inflict frostburn" };
+        public override string[] Normaltext => new string[] { "Made from cold materials, attacks may inflict Frostburn" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Ice Jab-lin");

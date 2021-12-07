@@ -1286,7 +1286,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Jarate Shuriken");
-			Tooltip.SetDefault("Throws a fan of 5 'yellow' Snowballs outwards\nThese inflict Ichored and Sodden\nRequires and consumes 5 of the item per use");
+			Tooltip.SetDefault("Throws a fan of 5 'yellow' Snowballs outwards\nThese inflict Ichor and Sodden\nRequires and consumes 5 of the item per use");
 		}
 
 		public override void SetDefaults()
@@ -1922,7 +1922,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Super Star Thrower");
-			Tooltip.SetDefault("'Throws a literal star'\nStars inflict Lava Burn and spawn with orbiting flares\nCreates a powerful explosion when it hits a surface\ndoes not cause immunity frames");
+			Tooltip.SetDefault("'Throws a literal star'\nStars inflict Lava Burn and spawn with orbiting flares\nCreates a powerful explosion when it hits a surface\nDoes not cause immunity frames");
 			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 9));
 		}
 
@@ -2226,7 +2226,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Lunar Fork");
-			Tooltip.SetDefault("Throws a lunar fork that does an extra 500% damage to the most healthy enemy nearby\n'Moonlord's favorite!'");
+			Tooltip.SetDefault("Throws a lunar fork that does an extra 500% damage to the most healthy enemy nearby\n'Moon Lord's favorite!'");
 		}
 
 		public override void SetDefaults()
@@ -2412,7 +2412,7 @@ namespace SGAmod.Items.Weapons
 		{
 			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[2] > 0)
 			{
-				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Enpowerment bonus ---"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Empowerment bonus ---"));
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Damage is now enhanced by Magic Damage scaling"));
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Neurotoxic fumes do Magic Damage instead of Throwing"));
 			}
@@ -2837,7 +2837,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Shark Bait");
-			Tooltip.SetDefault("'Contains many yummy snacks a Sharvern needs in their diet!'\nThrows a bucket of Shark Bait, which erupts into fish\nFish may spawn hungry sharks\nProduces more fish when thrown into water\nDoubles as fishing bait");
+			Tooltip.SetDefault("'Contains many yummy snacks a Sharkvern needs in their diet!'\nThrows a bucket of Shark Bait, which erupts into fish\nFish may spawn hungry sharks\nProduces more fish when thrown into water\nDoubles as fishing bait");
 		}
 
 		public override void SetDefaults()

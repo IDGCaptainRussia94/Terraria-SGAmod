@@ -21,7 +21,7 @@ namespace SGAmod.Items.Weapons
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Torch God's Summon");
-			Tooltip.SetDefault("Summons 2 torches per free minion slot; attacking with torches burns them out for 3 seconds\nGain +10 damage per max minions, and +1 pierce per max Sentries, Biome torches inflict debuffs\nTorches provide a small ammount of light in the fog");
+			Tooltip.SetDefault("Summons 2 torches per free minion slot; attacking with torches burns them out for 3 seconds\nGain +10 damage per max minions, and +1 pierce per max Sentries, Biome torches inflict debuffs\nTorches provide a small amount of light in the fog");
 			Item.staff[item.type] = true;
 		}
 

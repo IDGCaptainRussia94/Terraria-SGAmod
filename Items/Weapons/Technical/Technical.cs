@@ -27,7 +27,7 @@ namespace SGAmod.Items.Weapons.Technical
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tactical SMG Rifle");
-			Tooltip.SetDefault("Adjustable Machinegun!\nVery Fast! But no ammo saving chance and causes very bad recoil if held down for too long.\nRight click to toggle firemodes");
+			Tooltip.SetDefault("Adjustable Machine Gun!\nVery Fast! But no ammo saving chance and causes very bad recoil if held down for too long.\nRight click to toggle fire modes");
 		}
 
 		public override void SetDefaults()
@@ -2153,7 +2153,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Big Dakka");
-			Tooltip.SetDefault("Rapidly fires 2 pairs of bullets from the smaller chambers\ncontinue holding to charge up the central barrel to fire a homing shot that unleashes fiery death!\n75% to not consume ammo per bullet fired");
+			Tooltip.SetDefault("Rapidly fires 2 pairs of bullets from the smaller chambers\nContinue holding to charge up the central barrel to fire a homing shot that unleashes fiery death!\n75% to not consume ammo per bullet fired");
 		}
 
 		public override void SetDefaults()

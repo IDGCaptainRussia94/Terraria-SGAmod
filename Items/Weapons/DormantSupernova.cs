@@ -15,7 +15,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dormant Supernova");
-			Tooltip.SetDefault("Mana charged into this modifed Novus staff can open a rift in the cosmos at its tip, from which countless novus bolts will appear\nHold left click to keep the portal open, increasing its rate of fire, but also consuming more mana");
+			Tooltip.SetDefault("Mana charged into this modified Novus staff can open a rift in the cosmos at its tip, from which countless novus bolts will appear\nHold left click to keep the portal open, increasing its rate of fire, but also consuming more mana");
 			Item.staff[item.type] = true; 
 		}
 		

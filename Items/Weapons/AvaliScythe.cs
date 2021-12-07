@@ -256,7 +256,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cyber Scythe");
-			Tooltip.SetDefault("Spins a duo-Cybernetic Scythe around the player\nThe blades expand to reach your mouse curser's distance\nDoes more damage further out and hits more often as it charges up" +
+			Tooltip.SetDefault("Spins a duo-Cybernetic Scythe around the player\nThe blades expand to reach your mouse cursor's distance\nDoes more damage further out and hits more often as it charges up" +
 				"\nAfter holding for a short while, release to throw the weapon\nWhen thrown, Does throwing damage and deals more\nConsumes Electric Charge; requires more the longer you charge it up");
 			Item.staff[item.type] = true;
 		}

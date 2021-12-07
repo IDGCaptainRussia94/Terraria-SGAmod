@@ -14,7 +14,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novus Arrow");
-			Tooltip.SetDefault("Arrows slighty home in on nearby enemies");
+			Tooltip.SetDefault("Arrows slightly home in on nearby enemies");
 		}
 		public override string Texture
 		{
@@ -52,7 +52,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Notchvos Arrow");
-			Tooltip.SetDefault("Improved arrows that better home in on nearby enemies\nArrows travel in the reverse direction after hitting an enemy\ncan hit a total of 2 times, ignores invulnerability frames");
+			Tooltip.SetDefault("Improved arrows that better home in on nearby enemies\nArrows travel in the reverse direction after hitting an enemy\nCan hit a total of 2 times, ignores invulnerability frames");
 		}
 		public override string Texture
 		{
@@ -169,7 +169,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Wrath Arrow");
-			Tooltip.SetDefault("Inflicts Betsy's Curse, and explodes like Aerial Bane Arrows on hit (no extra arrows are spawned however)\nBecause of course we need this too :-p");
+			Tooltip.SetDefault("Inflicts Betsy's Curse, and explodes like Aerial Bane Arrows on hit (no extra arrows are spawned however)\n'Because of course we need this too :-p'");
 		}
 		public override string Texture
 		{

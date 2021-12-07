@@ -16,7 +16,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Wave Beam");
-			Tooltip.SetDefault("Fires 2 helix shots that pass through tiles\nhold fire to charge a shot that does 15X damage with increased crit chance, homes in slighty, and stuns enemies\nworm enemies are unaffected by stun and bosses are stunned briefly\nAlso try Metroid mod by PhilBill44! (Godspeed Phil, godspeed!)");
+			Tooltip.SetDefault("Fires 2 helix shots that pass through tiles\nHold fire to charge a shot that does 15X damage with increased crit chance, homes in slightly, and stuns enemies\nWorm enemies are unaffected by stun and bosses are stunned briefly\n'Also try Metroid mod by PhilBill44! (Godspeed Phil, godspeed!)'");
 		}
 
 		public (string,string) DevName()

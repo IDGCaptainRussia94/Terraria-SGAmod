@@ -67,7 +67,7 @@ namespace SGAmod.Items.Weapons.Shields
 		{
 			DisplayName.SetDefault("Corroded Shield");
 			Tooltip.SetDefault("'A treasure belonging to a former adventurer you'd rather not use but it looks useful'" +
-				"\nAttack with the shield to bash-dash, gaining IFrames and hit enemies are Acid Burned\nCan only hit 5 targets, bash-dash ends prematurally after the 5th");
+				"\nAttack with the shield to bash-dash, gaining IFrames and hit enemies are Acid Burned\nCan only hit 5 targets, bash-dash ends prematurely after the 5th");
 			Item.staff[item.type] = true;
 		}
 
@@ -703,7 +703,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Earthbreaker Shield");
-			Tooltip.SetDefault("Bulwark of Gaia, defence of her wrath!\nBash-Dash throws the player down for a ground slam, impaling 5 nearby enemies\nImpaled enemies are immobile and lose 10 defence for 15 seconds\nEnemies can not be impaled again til they recover their defence\nPerforming a Just Block impales 3 nearby enemies");
+			Tooltip.SetDefault("Bulwark of Gaia, defense of her wrath!\nBash-Dash throws the player down for a ground slam, impaling 5 nearby enemies\nImpaled enemies are immobile and lose 10 defense for 15 seconds\nEnemies can not be impaled again until they recover their defense\nPerforming a Just Block impales 3 nearby enemies");
 			Item.staff[item.type] = true;
 		}
 
@@ -1166,7 +1166,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Captain America's Shield");
-			Tooltip.SetDefault("Performing a Just Block grants a fews seconds of Striking Moment\nCharge up to enable a powerful bash-dash!\nThis bash-dash may be cancelled early by unequiping the shield\nAlt Fire lets you throw the shield, which will bounce between nearby enemies\nYou cannot use your shield while it is thrown, gains +1 bounces per 30 defense\n'Stars and Stripes!'");
+			Tooltip.SetDefault("Performing a Just Block grants a fews seconds of Striking Moment\nCharge up to enable a powerful bash-dash!\nThis bash-dash may be canceled early by unequiping the shield\nAlt Fire lets you throw the shield, which will bounce between nearby enemies\nYou cannot use your shield while it is thrown, gains +1 bounces per 30 defense\n'Stars and Stripes!'");
 			Item.staff[item.type] = true;
 		}
 
@@ -1655,9 +1655,9 @@ namespace SGAmod.Items.Weapons.Shields
 		{
 			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[2] > 0)
 			{
-				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Enpowerment bonus ---"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Empowerment bonus ---"));
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Damage, shield regen rate, block percent and angle are greatly improved"));
-				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Bash does damage at interverals"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Bash does damage at intervals"));
 			}
 			base.ModifyTooltips(tooltips);
 		}

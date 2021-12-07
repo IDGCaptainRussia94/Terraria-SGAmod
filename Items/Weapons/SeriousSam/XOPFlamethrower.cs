@@ -14,7 +14,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("XOP Flamethrower");
-            Tooltip.SetDefault("Spreads sticky flames that ignore enemy defense, bounce off walls\nFlames don't intefere with your other weapons, and burn even fire immune enemies\nImmune enemies will burn for only half as long");
+            Tooltip.SetDefault("Spreads sticky flames that ignore enemy defense, bounce off walls\nFlames don't interfere with your other weapons, and burn even fire immune enemies\nImmune enemies will burn for only half as long");
 		}
 
         public override void SetDefaults()

@@ -291,7 +291,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Non-Stationary Snowball Launcher");
-			Tooltip.SetDefault("A frosty gattling gun in the palm of your... hands" +
+			Tooltip.SetDefault("'A frosty gatling gun in the palm of your... hands'" +
 				"\nRapidly fires snowballs from your inventory" + "\nCan only fire in in a forward arc" +
 	"\nCounts as trap damage, doesn't crit");
 			SGAmod.NonStationDefenses.Add(SGAmod.Instance.ItemType("NonStationarySnowballLauncher"), SGAmod.Instance.ProjectileType("NonStationarySnowballLauncherHolding"));

@@ -556,7 +556,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Draken Defense");
-			Description.SetDefault("damage reduced to damage^0.90\nand massively boosted life regen");
+			Description.SetDefault("Damage reduced to damage^0.90\nand massively boosted life regen");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
 			Main.debuff[Type] = true;

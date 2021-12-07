@@ -18,7 +18,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Elemental Cascade");
-			Tooltip.SetDefault("Unleashes 4 elemental beams in cardinal directions towards the mouse cursor, swapping elements with each fire\nthe beams bounce off walls and are non solid until they stop moving, and deal different debuffs to enemies");
+			Tooltip.SetDefault("Unleashes 4 elemental beams in cardinal directions towards the mouse cursor, swapping elements with each fire\nThe beams bounce off walls and are non solid until they stop moving, and deal different debuffs to enemies");
 			Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
 		}
 
@@ -96,7 +96,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lunar Cascade");
-			Tooltip.SetDefault("Unleashes several beams in a complete circle around the player that travel far and effectively melt enemies\nthe beams bounce off walls and are non solid until they stop moving\nBeams deal different powerful debuffs to enemies");
+			Tooltip.SetDefault("Unleashes several beams in a complete circle around the player that travel far and effectively melt enemies\nThe beams bounce off walls and are non solid until they stop moving\nBeams deal different powerful debuffs to enemies");
 			Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
 		}
 
@@ -169,7 +169,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hellion's Cascade");
-			Tooltip.SetDefault("Unleashes several beams in a complete spiral around the player that travel far, absolutely melting enemies\nthe beams pass through walls and are non solid until they stop moving\nBeams deal different very powerful debuffs to enemies");
+			Tooltip.SetDefault("Unleashes several beams in a complete spiral around the player that travel far, absolutely melting enemies\nThe beams pass through walls and are non solid until they stop moving\nBeams deal different very powerful debuffs to enemies");
 			Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
 		}
 

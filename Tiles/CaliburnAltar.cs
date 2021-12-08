@@ -9,8 +9,8 @@ using Terraria.ObjectData;
 using Idglibrary;
 
 namespace SGAmod.Tiles
-{  
-        public class CaliburnAltar : ModTile
+{
+    public class CaliburnAltar : ModTile
     {
         public virtual string myitem => "CaliburnTypeA";
         public virtual int summontype => 0;
@@ -64,7 +64,7 @@ namespace SGAmod.Tiles
                         return true;
                     }
 
-                    if ((Main.player[z].Center - new Vector2(i*16, j*16)).Length() < 160)
+                    if ((Main.player[z].Center - new Vector2(i * 16, j * 16)).Length() < 160)
                     {
                         if (Main.player[z].statLife >= 200 && NPC.CountNPCS(mod.NPCType("CaliburnGuardian")) < 1)
                         {
@@ -118,7 +118,7 @@ namespace SGAmod.Tiles
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
-            Player him=null;
+            Player him = null;
             /*for (int z = 0; z < Main.maxPlayers; z += 1)
             {
                 if (Main.player[z].active && !Main.player[z].dead)
@@ -129,7 +129,7 @@ namespace SGAmod.Tiles
                     }
                 }
             }*/
-            if (SGAWorld.downedCaliburnGuardiansPoints>0 && !fail)
+            if (SGAWorld.downedCaliburnGuardiansPoints > 0 && !fail)
             {
                 //him.Hurt(new PlayerDeathReason(), 1, him.direction, false, true);
 
@@ -137,7 +137,7 @@ namespace SGAmod.Tiles
                 {
                     //Item.NewItem(i * 16, j * 16, 48, 48, mod.ItemType(myitem), 1, false, 0, false, false);
                     NPC npc = new NPC();
-                    npc.DropItemInstanced(new Vector2(i * 16, j * 16), new Vector2(48, 48), mod.ItemType(myitem),1,false);
+                    npc.DropItemInstanced(new Vector2(i * 16, j * 16), new Vector2(48, 48), mod.ItemType(myitem), 1, false);
                     SGAWorld.downedCaliburnGuardiansPoints -= 1;
                     if (Main.netMode == NetmodeID.Server)
                     {
@@ -168,8 +168,9 @@ namespace SGAmod.Tiles
         {
             base.SetDefaults();
         }
-    enum MessageType : byte
-    {
-        ClientNPC
+        enum MessageType : byte
+        {
+            ClientNPC
+        }
     }
 }

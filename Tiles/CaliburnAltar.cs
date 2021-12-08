@@ -168,9 +168,9 @@ namespace SGAmod.Tiles
         {
             base.SetDefaults();
         }
-        enum MessageType : byte
-        {
-            ClientNPC
-        }
+    }
+    enum MessageType : byte
+    {
+        ClientNPC
     }
 }

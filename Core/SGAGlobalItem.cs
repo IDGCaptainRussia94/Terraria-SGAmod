@@ -926,7 +926,7 @@ namespace SGAmod
 
             if (item.summon)
             {
-                usetimetemp *= (1f + sgaplayer.summonweaponspeed);
+                usetimetemp *= (sgaplayer.summonweaponspeed);
             }
             if ((item.Throwing().thrown || item.thrown) && item.type != ItemID.Beenade) {
                 usetimetemp *= sgaplayer.ThrowingSpeed;

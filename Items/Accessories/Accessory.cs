@@ -3478,6 +3478,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.PygmyNecklace, 1);
 			recipe.AddIngredient(ModContent.ItemType< PrismalBar>(), 10);
 			recipe.AddIngredient(ModContent.ItemType<AuraclesInsight>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 32);
 
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this, 1);

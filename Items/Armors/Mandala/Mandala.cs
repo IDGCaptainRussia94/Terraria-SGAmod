@@ -150,7 +150,7 @@ namespace SGAmod.Items.Armors.Mandala
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mandala Leggings");
-			Tooltip.SetDefault("+1 minion slot\n10% increased Summon Damage and Summon weapon use Speed\nAdditional flying speed and wing time in Subworlds");
+			Tooltip.SetDefault("+1 minion slot\n8% increased Summon Damage and Summon weapon use Speed\nAdditional flying speed and wing time in Subworlds");
 		}
         public override bool Autoload(ref string name)
         {
@@ -181,7 +181,7 @@ namespace SGAmod.Items.Armors.Mandala
 		public override void UpdateEquip(Player player)
 		{
 			player.maxMinions += 1;
-			player.minionDamage += 0.10f;
+			player.minionDamage += 0.08f;
 			player.SGAPly().summonweaponspeed += 0.10f;
 		}
 		public override void UpdateVanity(Player player, EquipType type)
@@ -354,6 +354,9 @@ namespace SGAmod.Items.Armors.Mandala
 
         public List<Projectile> Asteriods => Main.projectile.Where(testby => testby.active && testby.owner == Owner.whoAmI && testby.type == ModContent.ProjectileType<MandalaAsteriodProj>()).ToList();
         public List<Projectile> GrabbableAsteriods => Asteriods.Where(testby => testby.localAI[0] > 30 && testby.timeLeft > 60 && testby.velocity.LengthSquared()<5 && testby.ai[0] < 2 && testby.damage < 1).ToList();
+        Player Owner => Main.player[projectile.owner];
+        int ArmsCount => Owner.maxMinions;
+        public int PunchRate => (int)(100/Owner.SGAPly().summonweaponspeed);
 
         public class MandalaArm
         {
@@ -558,8 +561,9 @@ namespace SGAmod.Items.Armors.Mandala
 
                         if (owner.throwing > 0)
                         {
-                            int offset = (int)(player.SGAPly().timer + ((owner.PunchRate) * Percent));
-                            if (offset % (owner.PunchRate) == 0)
+                            int slowerThrowing = (int)(owner.PunchRate * 1.25f);
+                            int offset = (int)(player.SGAPly().timer + (slowerThrowing * Percent));
+                            if (offset % slowerThrowing == 0)
                             {
                                 Projectile[] rocks = owner.GrabbableAsteriods.Where(testby => (testby.Center-player.Center).LengthSquared()< 409600).OrderBy(testby => (testby.Center - Position).LengthSquared()).ToArray();
 
@@ -644,11 +648,6 @@ namespace SGAmod.Items.Armors.Mandala
             punching = reader.ReadInt32();
             throwing = reader.ReadInt32();
         }
-
-        Player Owner => Main.player[projectile.owner];
-        int ArmsCount => Owner.maxMinions;
-        public int PunchRate => 80;
-
         public override void AI()
         {
             float friction = 0.90f;
@@ -794,8 +793,8 @@ namespace SGAmod.Items.Armors.Mandala
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             projectile.penetrate += 1;
-            if (SGAmod.ScreenShake<16)
-            SGAmod.AddScreenShake(12f, 2000, target.Center);
+            if (SGAmod.ScreenShake<12)
+            SGAmod.AddScreenShake(16f, 1200, target.Center);
             SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_MonkStaffGroundImpact, (int)target.Center.X, (int)target.Center.Y);
             if (sound != null)
             {

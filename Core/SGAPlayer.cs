@@ -214,7 +214,7 @@ namespace SGAmod
 
 		public bool Noselfdamage = false;
 		public float UseTimeMulPickaxe = 1f;
-		public float summonweaponspeed = 0f;
+		public float summonweaponspeed = 1f;
 		public float TrapDamageMul = 1f; public float TrapDamageAP = 0f;
 		public float ThrowingSpeed = 1f; public float Thrownsavingchance = 0f;
 		public Vector2 Locked = new Vector2(100, 300);
@@ -525,7 +525,7 @@ namespace SGAmod
 			morespawns = 1f;
 			damagetaken = 1f;
 			drownRate = 0;
-			summonweaponspeed = 0f;
+			summonweaponspeed = 1f;
 			SlowDownReset -= 1;
 			timer += 1;
 			mudbuff = false;

@@ -4,6 +4,16 @@ Changelog:
 
 -Proper Sprite for Avarice Lord's Wings
 
+-Fixed Caliburn Shrines being destroyed by lava
+
+-Hoppers (and variants) can now only be placed on top of walls
+
+-Fixed the textures for Touch God's Summon not being loaded
+
+-Rebalanced Mandala Armor: summon damage reduced to a 30% increase (from 32%), overseer's tutelage is now affected by summon weapon speed, attack rate has been reduced slightly to compensate for the armor's boosts to summon weapon speed, asteriods are thrown at a 25% slower rate
+
+-Nerfed Prismal Necklace: Now required Overseen Crystals: IE is post Pheathon
+
 
 
 3.600n-(12/7/21)-Patch 11-Tech N Wreck: Beta
@@ -734,6 +744,8 @@ Hope you enjoy, it's been half a year in the making!
 
 -Hoppers, Droppers, Sifting Funnels, Mod Grinders, and more. Hands on tech mod elements to automate your Terraria with content I felt was missing from Vanilla!
 
+-Literal Credits; see everyone who was involved with this mod, now, and in the past!
+
 -Entropic Relocator (Tnemunom's idea), to remove (and relocate) Dark Sectors
 
 -A stronger post-L.Wraith Prismic Banshee that drops double loot (hint: put fallen stars into the previous mentioned Luminous Alter). Also the Prismic Banshee has been given a new mechanic and attack, on top that: has also been given a brand new original look! Thanks JellyBru and Rijam!
@@ -1095,6 +1107,8 @@ Hope you enjoy, it's been half a year in the making!
 -Virulent Ore placing the wrong tile, due to me forgoting to undo a testing thing
 
 -Sticky Situation being unobtainable
+
+-Caliburn Shrines being destroyed by lava
 
 -Tornado's homing shots not being counted as homing
 

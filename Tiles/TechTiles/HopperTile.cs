@@ -37,6 +37,7 @@ namespace SGAmod.Tiles.TechTiles
 			TileObjectData.newTile.StyleHorizontal = false;
 			TileObjectData.newTile.DrawYOffset = 0;
 
+			TileObjectData.newTile.AnchorWall = true;
 			TileObjectData.newTile.AnchorTop = AnchorData.Empty;
 			TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
 			if (GetType() == typeof(ChestHopperTile))

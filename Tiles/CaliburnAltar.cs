@@ -24,6 +24,7 @@ namespace SGAmod.Tiles
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 18 };
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.StyleHorizontal = false;
+            TileObjectData.newTile.LavaDeath = false;
             TileID.Sets.CanBeClearedDuringGeneration[Type] = false;
             //TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<BannerRackTE>().Hook_AfterPlacement, -1, 0, true);
             //TileObjectData.newTile.StyleWrapLimit = 36;

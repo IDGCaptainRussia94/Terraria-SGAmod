@@ -155,22 +155,7 @@ namespace SGAmod.Tiles
         public override int summontype => 1;
         public override void SetDefaults()
         {
-            Main.tileFrameImportant[Type] = true;
-            Main.tileLavaDeath[Type] = false;
-            Main.tileTable[Type] = false;
-            dustType = DustID.Grass;
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 20 };
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.StyleHorizontal = false;
-            TileObjectData.newTile.LavaDeath = false;
-            TileObjectData.newTile.WaterDeath = false;
-            //TileObjectData.newTile.StyleWrapLimit = 36;
-            TileObjectData.addTile(Type);
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Caliburn Altar");
-            //name.AddTranslation(GameCulture.Chinese, "烤炉");
-            AddMapEntry(new Color(227, 216, 195), name);
+            base.SetDefaults();
         }
 
     }
@@ -181,25 +166,8 @@ namespace SGAmod.Tiles
         public override int summontype => 2;
         public override void SetDefaults()
         {
-            Main.tileFrameImportant[Type] = true;
-            Main.tileLavaDeath[Type] = false;
-            Main.tileTable[Type] = false;
-            dustType = DustID.Grass;
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 20 };
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.StyleHorizontal = false;
-            TileObjectData.newTile.LavaDeath = false;
-            TileObjectData.newTile.WaterDeath = false;
-            //TileObjectData.newTile.StyleWrapLimit = 36;
-            TileObjectData.addTile(Type);
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Caliburn Altar");
-            //name.AddTranslation(GameCulture.Chinese, "烤炉");
-            AddMapEntry(new Color(227, 216, 195), name);
+            base.SetDefaults();
         }
-
-    }
     enum MessageType : byte
     {
         ClientNPC

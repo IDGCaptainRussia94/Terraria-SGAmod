@@ -1,6 +1,6 @@
 
 Changelog:
-3.600o-(12/7/21)-Patch 11-Tech N Wreck: Beta
+3.600o-(12/9/21)-Patch 11-Tech N Wreck: Beta
 
 -Proper Sprite for Avarice Lord's Wings
 
@@ -13,6 +13,32 @@ Changelog:
 -Rebalanced Mandala Armor: summon damage reduced to a 30% increase (from 32%), overseer's tutelage is now affected by summon weapon speed, attack rate has been reduced slightly to compensate for the armor's boosts to summon weapon speed, asteriods are thrown at a 25% slower rate
 
 -Nerfed Prismal Necklace: Now required Overseen Crystals: IE is post Pheathon
+
+-Fixed screen shake config to be in proper values
+
+-Reworked F.S.R.G: is now a dart weapon (makes sense cus stingers), damage increased by 5
+
+-Vibranium Helmet now properly checks to make sure the weapon is ranged to boost damage based on ammo
+
+-Reworked Magatsu Armor: Added a new ability: deploy a shadow decoy to distract enemies! (also gives an Action Cooldown Stack)
+
+-Added Xenith (aka Zenith bow), a Post Hellion weapon
+
+-Floors now only show on the main menu if you've completed atleast 1
+
+-Fixed the Early Luminite config doing the reverse
+
+-Matrix Potion now has a distortion shader effect (the arrows are also behind the player)
+
+-New changes to Phaethon:
+-Further optimized drawcode to try to prevent the boss from being drawn whenever he doesn't need to be, tethers will no longer be invisible if they are too far away
+-Uses the tether resprite during the fight, tether asteriods altered a bit
+
+-New changes to Cratrosity:
+-Uses an ooolllddd crate mimic sprite now in its fight, stops attacking when transforming
+
+-New changes to Cratogeddon:
+-Uses the correct crate sprites, for real this time!
 
 
 
@@ -557,7 +583,7 @@ Changelog:
 
 -Added Autoclicker (Souls of Byte-tier Summon)
 
--Nerfed F.S.R.G: fire rate increased to 10 (from 8), 80% to not consume ammo reduced to 75%
+-Nerfed F.S.R.G: fire rate increased to 10 (from 8), 80% to not consume ammo reduced to 75%, is now a dart weapon (makes sense cus stingers), damage increased by 5
 
 -Implimented Chain-Mining for asteriods; when you mine an asteriod, all nearby asteriods are mined for half your pickaxe power
 
@@ -721,11 +747,11 @@ Changelog:
 3.600-(9/13/21)-Patch 11-Tech N Wreck
 
 Guess who's back!?! SGAmod returns a year later with the largest update to drop yet! Featuring many improves and vast effort to overhaul and modernize the mod to new personal higher standards while still retaining that original random content mod fun aspect!
-Hope you enjoy, it's been half a year in the making!
+Hope you enjoy, it's been over half a year in the making!
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Sirius Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Oranos Skye Hook, Firefox Greatbow, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Boyfriend's Mic, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, Rod Of Teleportation, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight, Avarice Lord Wings, Draconic Claw Necklace, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault, Deific Healing Potion, And more, explore to find the rest!
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Sirius Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Oranos Skye Hook, Firefox Greatbow, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Xenith, Boyfriend's Mic, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, Rod Of Teleportation, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight,Hallowed Visor, Avarice Lord Wings, Draconic Claw Necklace, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault, Deific Healing Potion, And more, explore to find the rest!
 -Almighty SMT Spellcards: Megido, Megidola, Megidolaon, Morning Star, Rays of Control
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus! (and look out for something... up there)
@@ -791,9 +817,11 @@ Hope you enjoy, it's been half a year in the making!
 
 -Cobalt Wraith now locks the hardmode forge, rather than the anvil
 
--Wrath of Caliburn is now always immune to knockback
+-Wrath of Caliburn has been completely reworked, is and now a full, distinct boss, also is now always immune to knockback
 
 -Cirno now enrages with a chance outside the snow biome and no longer becomes unhittable
+
+-Cratrosity has a custom sprite after phase 2, a larger hitbox to take (not deal) damage, and now properly uses texture pack crates
 
 -Murk balance changes: spawns a fly every 3 (direct melee swing 5) hits, instead of chance. Slam has a longer delay, but mudballs do more damage, Spinning Stinger attack is telegraphed with delays, Orge Snot balls have been replaced with a less-sticky version that inflicts a stacking debuff
 
@@ -815,15 +843,17 @@ Hope you enjoy, it's been half a year in the making!
 
 -Hellion will now flat out not allow you to summon her in Multiplayer; really sorry before, this is something I should have done sooner
 
--Reality's Sunder is now only uncraftable until the 1st 3 PML bosses are beaten
+-Matrix Potion now has a distortion shader effect (the arrows are also behind the player)
 
--Added the Star Anise to the list of items the Ninja Stash can summon on attacks
+-Reality's Sunder is now only uncraftable until the 1st 3 PML bosses are beaten
 
 -Laser Markers can be made with colors via different gemstones, and are visually improved
 
 -Amulet of Diehard Cataclysm no longer activates during a boss; only out of boss fights, effect also replays properly now
 
 -Handling Gloves now reduce the penality of holding radioactive items
+
+-Added the Star Anise to the list of items the Ninja Stash can summon on attacks
 
 -Traveling Merchant's SGAmod items are a bit more common
 
@@ -832,8 +862,6 @@ Hope you enjoy, it's been half a year in the making!
 -Jab-lins now record DPS done from the DOT damage of impaled enemies
 
 -Changed the Null astetic with its after image effect a bit
-
--Cratrosity now properly uses texture pack crates
 
 -Hellion will now drop a random post-Hellion item on defeat, excluding Enmity
 

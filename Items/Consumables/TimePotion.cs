@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Idglibrary;
 using SGAmod.Buffs;
+using Terraria.Graphics.Effects;
 
 namespace SGAmod.Items.Consumables
 {
@@ -24,7 +25,7 @@ namespace SGAmod.Items.Consumables
 
 		public override bool CanUseItem(Player player)
 		{
-			return player.SGAPly().CooldownStacks.Count+2 < player.SGAPly().MaxCooldownStacks && !player.HasBuff(mod.BuffType("MatrixBuff"));
+			return player.SGAPly().CooldownStacks.Count + 2 < player.SGAPly().MaxCooldownStacks && !player.HasBuff(mod.BuffType("MatrixBuff"));
 		}
 
 		public override bool ConsumeItem(Player player)
@@ -34,7 +35,7 @@ namespace SGAmod.Items.Consumables
 
 		public override bool UseItem(Player player)
 		{
-			player.SGAPly().AddCooldownStack(60*150,3);
+			player.SGAPly().AddCooldownStack(60 * 150, 3);
 			return true;
 		}
 
@@ -52,7 +53,7 @@ namespace SGAmod.Items.Consumables
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
 			item.buffType = mod.BuffType("MatrixBuff");
-			item.buffTime = 60*60;
+			item.buffTime = 60 * 60;
 		}
 
 		public override void AddRecipes()
@@ -67,7 +68,7 @@ namespace SGAmod.Items.Consumables
 			recipe.AddIngredient(ItemID.FossilOre, 10);
 			recipe.AddIngredient(ItemID.Amber, 3);
 			recipe.AddTile(TileID.AlchemyTable);
-			recipe.SetResult(this,3);
+			recipe.SetResult(this, 3);
 			recipe.AddRecipe();
 		}
 	}
@@ -82,9 +83,67 @@ namespace SGAmod.Items.Consumables
 			DisplayName.SetDefault("Beam Gun");
 		}
 
+		public override bool Autoload(ref string name)
+		{
+			SGAmod.PostUpdateEverythingEvent += SGAmod_PostUpdateEverythingEvent;
+			return true;
+		}
+
+		public static RenderTarget2D DistortRenderTarget2D;
+		public static int queueRenderTargetUpdate = 0;
+
+		private void SGAmod_PostUpdateEverythingEvent()
+		{
+			if (Main.dedServ)
+				return;
+
+			if (TimeEffect.queueRenderTargetUpdate > 0)
+			{
+				TimeEffect.queueRenderTargetUpdate -= 1;
+
+				if (TimeEffect.queueRenderTargetUpdate > 1)
+				{
+					if (TimeEffect.DistortRenderTarget2D == null || TimeEffect.DistortRenderTarget2D.IsDisposed)
+					{
+						int width = Main.screenWidth / 2;
+						int height = Main.screenHeight / 2;
+						TimeEffect.DistortRenderTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+					}
+
+					RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
+
+					//Main.spriteBatch.End();
+					Main.graphics.GraphicsDevice.SetRenderTarget(TimeEffect.DistortRenderTarget2D);
+					Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicWrap, default, default, default, Matrix.Identity);
+
+					Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 0.50f, SpriteEffects.None, 0f);
+
+					Main.spriteBatch.End();
+
+					Main.graphics.GraphicsDevice.SetRenderTargets(binds);
+
+				}
+				if (TimeEffect.queueRenderTargetUpdate == 1)
+				{
+					if (TimeEffect.DistortRenderTarget2D != null && !TimeEffect.DistortRenderTarget2D.IsDisposed)
+					{
+						TimeEffect.DistortRenderTarget2D.Dispose();
+					}
+				}
+			}
+
+		}
+
 		public override bool CanDamage()
 		{
 			return false;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			return true;
 		}
 
 
@@ -97,11 +156,16 @@ namespace SGAmod.Items.Consumables
 			projectile.hostile = false;
 			projectile.friendly = true;
 			projectile.tileCollide = false;
-			projectile.magic = true;
+			//projectile.hide = true;
 			projectile.timeLeft = 10;
 			projectile.penetrate = -1;
 			aiType = ProjectileID.WoodenArrowFriendly;
 			projectile.damage = 0;
+		}
+
+		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
+		{
+			//drawCacheProjsOverWiresUI.Add(index);
 		}
 
 		public override string Texture
@@ -111,6 +175,8 @@ namespace SGAmod.Items.Consumables
 
 		public override void AI()
 		{
+
+
 			projectile.localAI[0] += 1f;
 
 			Player player = Main.player[projectile.owner];
@@ -124,14 +190,14 @@ namespace SGAmod.Items.Consumables
 
 				projectile.scale = projectile.timeLeft / 60f;
 
-				if (player.dead || buffid<0)
+				if (player.dead || buffid < 0)
 				{
 					//j
 				}
 				else
 				{
 
-					projectile.timeLeft = Math.Min(projectile.timeLeft+2,60);
+					projectile.timeLeft = Math.Min(projectile.timeLeft + 2, 60);
 					projectile.ai[0] = 256;
 
 
@@ -164,9 +230,9 @@ namespace SGAmod.Items.Consumables
 								{
 
 									if (proj.boss)
-									player.buffTime[buffid] -= 1;
+										player.buffTime[buffid] -= 1;
 									else
-									counterx += 0.25f;
+										counterx += 0.25f;
 
 
 								}
@@ -186,7 +252,7 @@ namespace SGAmod.Items.Consumables
 						Projectile proj = Main.projectile[i];
 						if (proj != null && proj.active)
 						{
-							if (proj.hostile && (proj.Center-projectile.Center).Length()< projectile.ai[0])
+							if (proj.hostile && (proj.Center - projectile.Center).Length() < projectile.ai[0])
 							{
 								if (nonolist.Any(type => type != proj.type))
 								{
@@ -215,40 +281,86 @@ namespace SGAmod.Items.Consumables
 
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public static void DrawDistort(SGAPlayer sga)
+		{
+			if (sga.player.ownedProjectileCounts[ModContent.ProjectileType<Items.Consumables.TimeEffect>()] > 0)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+				Projectile[] array = (Main.projectile.Where(testby => testby.active && testby.owner == sga.player.whoAmI && testby.type == ModContent.ProjectileType<Items.Consumables.TimeEffect>())).ToArray();
+				if (array.Length > 0)
+				{
+
+					Projectile projectile = array[0];
+
+					Filter filtershader = Filters.Scene["SGAmod:ScreenTimeDistort"];
+					ScreenShaderData shader = filtershader.GetShader();
+
+					float aspectRatio = Main.screenWidth / (float)Main.screenHeight;
+					Vector2 position = (projectile.Center - Main.screenPosition) / new Vector2(Main.screenWidth, Main.screenHeight);
+					position.X *= aspectRatio;
+					float percent = projectile.timeLeft / 60f;
+
+					//shader.UseImage(SGAmod.Instance.GetTexture("Fire"), 1, SamplerState.AnisotropicWrap);
+					//shader.Apply();
+					shader.Shader.Parameters["distortionTexture"].SetValue(SGAmod.Instance.GetTexture("Fire"));
+					shader.Shader.Parameters["uTargetPosition"].SetValue(position);
+					shader.Shader.Parameters["uScreenResolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+					shader.Shader.Parameters["uColor"].SetValue(new Vector3(2.25f, 10f * percent, 0f));
+					shader.Shader.Parameters["uIntensity"].SetValue(1f);
+					shader.Shader.Parameters["uOpacity"].SetValue(percent);
+					shader.Shader.Parameters["uTime"].SetValue(Main.GlobalTime / 4f);
+					shader.Shader.CurrentTechnique.Passes["TimeDistort"].Apply();
+
+					Items.Consumables.TimeEffect.queueRenderTargetUpdate = 5;
+
+					if (Items.Consumables.TimeEffect.DistortRenderTarget2D != null && !Items.Consumables.TimeEffect.DistortRenderTarget2D.IsDisposed)
+						Main.spriteBatch.Draw(Items.Consumables.TimeEffect.DistortRenderTarget2D, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, SpriteEffects.None, 0f);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+					int buffid = sga.player.FindBuffIndex(SGAmod.Instance.BuffType("MatrixBuff"));
+					float timeleft = 0f;
+					if (buffid > -1)
+						timeleft = (float)sga.player.buffTime[buffid];
+
+
+					for (int i = 0; i < 360; i += 360 / 12)
+					{
+						float angle = MathHelper.ToRadians(i);
+						Vector2 hereas = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 256;
+
+						Vector2 drawPos = ((hereas * projectile.scale) + projectile.Center) - Main.screenPosition;
+						Color glowingcolors1 = Color.White;//Main.hslToRgb((float)lightColor.R*0.08f,(float)lightColor.G*0.08f,(float)lightColor.B*0.08f);
+						Main.spriteBatch.Draw(Main.blackTileTexture, drawPos, new Rectangle(0, 0, 80, 10), glowingcolors1 * projectile.scale, projectile.rotation + MathHelper.ToRadians(i), new Vector2(80, 5), new Vector2(1, 1) * projectile.scale, SpriteEffects.None, 0f);
+
+					}
+
+				}
+			}
+		}
+
+		public override bool PreDrawExtras(SpriteBatch spriteBatch)
 		{
 
 			Player player = Main.player[projectile.owner];
 			SGAPlayer modplayer = player.GetModPlayer<SGAPlayer>();
 
-				int buffid = player.FindBuffIndex(mod.BuffType("MatrixBuff"));
-				float timeleft = 0f;
-				if (buffid > -1)
+			int buffid = player.FindBuffIndex(mod.BuffType("MatrixBuff"));
+			float timeleft = 0f;
+			if (buffid > -1)
 				timeleft = (float)player.buffTime[buffid];
 
-
-				for (int i = 0; i < 360; i += 360/12)
-				{
-					float angle = MathHelper.ToRadians(i);
-					Vector2 hereas = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 256;
-
-					Vector2 drawPos = ((hereas * projectile.scale)+ projectile.Center) - Main.screenPosition;
-					Color glowingcolors1 = Color.White;//Main.hslToRgb((float)lightColor.R*0.08f,(float)lightColor.G*0.08f,(float)lightColor.B*0.08f);
-					spriteBatch.Draw(Main.blackTileTexture, drawPos, new Rectangle(0, 0, 80, 10), glowingcolors1 * projectile.scale, projectile.rotation+ MathHelper.ToRadians(i), new Vector2(80, 5), new Vector2(1, 1) * projectile.scale, SpriteEffects.None, 0f);
-
-				}
-
 			Texture2D tex = ModContent.GetTexture("SGAmod/MatrixArrow");
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White*projectile.scale, MathHelper.ToRadians(timeleft * (360 / 60)) + MathHelper.ToRadians(-90), new Vector2(0, tex.Height / 2), new Vector2(2, 2)*projectile.scale, SpriteEffects.None, 0f) ;
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White*projectile.scale, MathHelper.ToRadians(timeleft * (360 / 60)) / 60f + MathHelper.ToRadians(-90), new Vector2(0, tex.Height / 2), new Vector2(1, 1) * projectile.scale, SpriteEffects.None, 0f) ;
-
+			Main.spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * projectile.scale, MathHelper.ToRadians(timeleft * (360 / 60)) + MathHelper.ToRadians(-90), new Vector2(0, tex.Height / 2), new Vector2(2, 2) * projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * projectile.scale, MathHelper.ToRadians(timeleft * (360 / 60)) / 60f + MathHelper.ToRadians(-90), new Vector2(0, tex.Height / 2), new Vector2(1, 1) * projectile.scale, SpriteEffects.None, 0f);
 
 			return false;
 		}
 
 
 	}
-
-
 
 }

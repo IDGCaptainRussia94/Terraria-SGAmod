@@ -16,7 +16,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shadeflare");
-			Tooltip.SetDefault("Opens a ift that unleashes torrents of piercing Shadowflame arrows\n75% chance to not consume ammo when firing an ammo type arrow");
+			Tooltip.SetDefault("Opens a rift that unleashes torrents of piercing Shadowflame arrows\n75% chance to not consume ammo when firing an ammo type arrow");
 		}
 
 		public override void SetDefaults()
@@ -155,7 +155,7 @@ return base.CanUseItem(player);
 		int chargeUpTimer=0;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Plasma Gun Charging");
+			DisplayName.SetDefault("Shadeflare Charging");
 		}
 
 		public override string Texture => "Terraria/Projectile_" + ProjectileID.ShadowFlameArrow;

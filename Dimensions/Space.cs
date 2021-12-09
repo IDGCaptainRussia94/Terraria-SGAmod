@@ -450,7 +450,7 @@ namespace SGAmod.Dimensions
 
             //Celular Crap
 
-            prog.Message = "Smoothing Asteriods";
+            prog.Message = "Smoothing Asteroids";
 
             for (int passes = 0; passes < 4; passes += 1)
             {

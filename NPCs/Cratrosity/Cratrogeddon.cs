@@ -401,6 +401,10 @@ namespace SGAmod.NPCs.Cratrosity
 	public class CratrosityCrateOfSlowing : CratrosityCrate
 	{
 		protected virtual int BuffType => BuffID.Slow;
+		public override string Texture
+		{
+			get { return "SGAmod/NPCs/Cratrosity/" + Name; }
+		}
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Crate Of Slowing");

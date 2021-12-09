@@ -233,8 +233,11 @@ namespace SGAmod.NPCs
 						}*/
 						if (SGAWorld.CirnoBlizzard < card * 100 && nightmareprog % 3 == 0)
 							SGAWorld.CirnoBlizzard += 1;
-						ScreenShaderData shad = Filters.Scene["SGAmod:CirnoBlizzard"].GetShader();
-						shad.UseColor(Color.Lerp(Color.Blue, Color.Turquoise, 0.5f + (float)Math.Sin(Main.GlobalTime)));
+						if (!Main.dedServ)
+						{
+							ScreenShaderData shad = Filters.Scene["SGAmod:CirnoBlizzard"].GetShader();
+							shad.UseColor(Color.Lerp(Color.Blue, Color.Turquoise, 0.5f + (float)Math.Sin(Main.GlobalTime)));
+						}
 						Main.raining = true;
 						Main.windSpeed = MathHelper.Clamp(Main.windSpeed + Math.Sign((P.Center.X - npc.Center.X)) * (-0.002f / 3f), -0.4f, 0.4f);
 						Main.maxRaining = Math.Min(Main.maxRaining + 0.001f, 0.10f);

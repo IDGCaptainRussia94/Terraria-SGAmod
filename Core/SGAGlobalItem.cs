@@ -460,10 +460,15 @@ namespace SGAmod
             }
             if (set == "Magatsu")
             {
-                player.setBonus = "+2% increased Apocalyptical Chance, +40% increased Apocalyptical Strength\nManifest your own N0ll Watchers to sense nearby enemies and 'watch' them\nYou get one watcher per free minion slot\nScoring an Apocalyptical against a watched enemy spreads a copy of damage nearby\nN0ll Watchers won't see you as an enemy, thus won't give chase on sight";
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to deploy a shadowy decoy to distract enemies\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 60 seconds") + "\nOnly one decoy may be active at a time\nManifest your own N0ll Watchers to sense nearby enemies and 'watch' them\nYou get one watcher per free minion slot\nScoring an Apocalyptical against a watched enemy spreads a copy of damage nearby\nN0ll Watchers won't see you as an enemy, thus won't give chase on sight\n+2% increased Apocalyptical Chance, +40% increased Apocalyptical Strength\nGain an additional free Cooldown Stack";
 
                 Items.Armors.Magatsu.MagatsuHood.SetBonus(sgaplayer);
-
+                sgaplayer.MaxCooldownStacks += 1;
             }
 
             if (set == "JungleTemplar")
@@ -970,7 +975,7 @@ namespace SGAmod
             SGAPlayer sgaply = player.SGAPly();
             if (item.useAmmo > 0 && sgaply.russianRoulette)
             {
-                if (item.useAmmo != AmmoID.Rocket && item.useAmmo != AmmoID.Bullet && item.useAmmo != AmmoID.Arrow)
+                if (item.ranged && item.useAmmo != AmmoID.Rocket && item.useAmmo != AmmoID.Bullet && item.useAmmo != AmmoID.Arrow)
                 {
                     if (player.armor[0].type == ModContent.ItemType<VibraniumHelmet>())
                         add += 0.30f;

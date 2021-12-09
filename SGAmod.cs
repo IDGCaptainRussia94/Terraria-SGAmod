@@ -221,7 +221,7 @@ namespace SGAmod
 				if (Main.gameMenu)
 					return 0;
 
-				return Math.Max(_screenShake* (SGAConfigClient.Instance.ScreenShakeMul), 0);
+				return Math.Max(_screenShake* (SGAConfigClient.Instance.ScreenShakeMul/100f), 0);
 			}
 			set
 			{
@@ -324,6 +324,7 @@ namespace SGAmod
 			Overlays.Scene.Deactivate("SGAmod:ScreenExplosions");
 			Overlays.Scene.Deactivate("SGAmod:CirnoBlizzard");
 			Filters.Scene["SGAmod:CirnoBlizzard"].Deactivate();
+			Filters.Scene["SGAmod:ScreenTimeDistort"].Deactivate();
 		}
 
 		public static List<Texture2D> HellionGores;
@@ -723,6 +724,10 @@ namespace SGAmod
 				Filters.Scene["SGAmod:ShockwaveBanshee"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
 				Ref<Effect> screenRef2 = new Ref<Effect>(GetEffect("Effects/ScreenWave"));
 				Filters.Scene["SGAmod:ScreenWave"] = new Filter(new ScreenShaderData(screenRef2, "ScreenWave"), EffectPriority.VeryHigh);
+				Ref<Effect> screenRef3 = new Ref<Effect>(GetEffect("Effects/ScreenTimeDistort"));
+				Filters.Scene["SGAmod:ScreenTimeDistort"] = new Filter(new ScreenShaderData(screenRef3, "TimeDistort"), EffectPriority.VeryHigh);
+
+
 				//screenRef2 = new Ref<Effect>(GetEffect("Effects/ScreenTrippy"));
 				//Filters.Scene["SGAmod:ScreenTrippy"] = new Filter(new ScreenShaderData(screenRef2, "ScreenTrippy").UseImage("SGAmod/TiledPerlin", 1, null), EffectPriority.VeryHigh);
 

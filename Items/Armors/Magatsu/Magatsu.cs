@@ -29,6 +29,27 @@ namespace SGAmod.Items.Armors.Magatsu
 			DisplayName.SetDefault("Magatsu Hood");
 			Tooltip.SetDefault(tooltip);
 		}
+
+		public static void ActivateDecoy(SGAPlayer sgaplayer)
+        {
+			bool decoyExists = Main.npc.Where(testby => testby.active && testby.type == ModContent.NPCType<MagatsuDecoy>() && testby.ai[3] == sgaplayer.player.whoAmI).Count() > 0;
+			if (decoyExists)
+				return;
+			if (sgaplayer.AddCooldownStack(60 * 60, 2))
+            {
+				Vector2 spot = sgaplayer.player.Center;
+				int npc2 = NPC.NewNPC((int)spot.X, (int)spot.Y, ModContent.NPCType<MagatsuDecoy>(), ai3: sgaplayer.player.whoAmI);
+				Main.npc[npc2].life = sgaplayer.player.statLifeMax2*3;
+				Main.npc[npc2].lifeMax = Main.npc[npc2].life;
+				Main.npc[npc2].defense = sgaplayer.player.statDefense*2;
+				Main.PlaySound(SoundID.Item, (int)spot.X, (int)spot.Y, 78, 1f, -0.8f);
+				var snd = Main.PlaySound(SoundID.DD2_EtherianPortalOpen, (int)spot.X, (int)spot.Y);
+				if (snd != null)
+                {
+					snd.Pitch = -0.80f;
+                }
+			}
+		}
 		public override void SetDefaults()
 		{
 			item.width = 18;
@@ -265,7 +286,15 @@ namespace SGAmod.Items.Armors.Magatsu
 			}
 
 			Vector2 halfcircle = new Vector2(0,-P.gravDir*48f).RotatedBy(MathHelper.PiOver2 - ((index / (float)countedindex) * MathHelper.Pi))*new Vector2(1.00f,2.0f);
-			Vector2 gohere = P.Center+new Vector2(P.direction*0f,P.gravDir*48f)+halfcircle;
+			Vector2 PCenter = P.Center;
+
+			if (SGAPlayer.centerOverrideTimerIsActive > 0)
+			{
+				if (P.SGAPly().centerOverrideTimer > 0)
+					PCenter = P.SGAPly().centerOverridePosition;
+			}
+
+			Vector2 gohere = PCenter + new Vector2(P.direction*0f,P.gravDir*48f)+halfcircle;
 			projectile.timeLeft = 3;
 
 			if (projectile.ai[1] < 1000)
@@ -376,7 +405,7 @@ namespace SGAmod.Items.Armors.Magatsu
 
 		public override void SetDefaults()
 		{
-			npc.townNPC = true;
+			npc.townNPC = false;
 			npc.friendly = true;
 			npc.width = 32;
 			npc.height = 50;
@@ -386,7 +415,7 @@ namespace SGAmod.Items.Armors.Magatsu
 			npc.defense = 50;
 			npc.lifeMax = 500;
 			npc.HitSound = SoundID.NPCHit1;
-			npc.DeathSound = SoundID.NPCDeath1;
+			npc.DeathSound = SoundID.NPCDeath6;
 			npc.knockBackResist = 0.75f;
 			//npc.immortal = true;
 			//animationType = NPCID.Guide;
@@ -417,7 +446,7 @@ namespace SGAmod.Items.Armors.Magatsu
 			//npc.ai[3] = 0;
 			npc.velocity /= 1.1f;
 
-			Main.NewText(npc.ai[3]);
+			//Main.NewText(npc.ai[3]);
 
 			if (npc.localAI[0]>150)
 				npc.life -= 1;

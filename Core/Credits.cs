@@ -327,6 +327,11 @@ namespace SGAmod.Credits
             line.delayTimer = 20;
             creditsToSpawn.Add(line);
 
+            line = new CreditsLine(("suicidecrew", "", "Seemless fire texture"), top);
+            line._colors.Item2 = Color.WhiteSmoke;
+            line.delayTimer = 20;
+            creditsToSpawn.Add(line);
+
             line = new CreditsLine(("DRKV333", "", "'While you had no direct involvement, your wisdom did!'"), top);
             line._colors.Item2 = Color.WhiteSmoke;
             line.delayTimer = 20;

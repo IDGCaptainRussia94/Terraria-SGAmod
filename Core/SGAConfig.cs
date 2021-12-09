@@ -279,10 +279,10 @@ namespace SGAmod
 		public int CaptionChance { get; set; }
 
 		[Label("Screen Shake Multiplier")]
-		[Tooltip("Adjust the intensity of screen shakes")]
-		[Increment(0.01f)]
-		[Range(0f, 2f)]
-		[DefaultValue(1f)]
+		[Tooltip("Adjust the intensity of screen shakes (in percents)")]
+		[Increment(5)]
+		[Range(0, 200)]
+		[DefaultValue(100)]
 		[Slider]
 		public int ScreenShakeMul { get; set; }
 

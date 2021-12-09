@@ -2147,7 +2147,7 @@ namespace SGAmod.Dimensions.NPCs
 
 				//Twilight Nebula
 
-				float alphaik = ((1f - sky.darkalpha) * 0.50f * darknessAura)*MathHelper.Clamp(1f-(npc.ai[0]-100000f)/180f,0f,1f);
+				float alphaik = ((1f - sky.darkalpha) * 0.50f * darknessAura) *MathHelper.Clamp(1f-(npc.ai[0]-100000f)/180f,0f,1f);
 
 				if (sky.darkalpha < 1 && (sky.darkalpha > 0 || (new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) - (npc.Center - Main.screenPosition)).LengthSquared() < 1440000))
 				{
@@ -2159,9 +2159,47 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
-			if (Sleeping && (Main.LocalPlayer.Center - npc.Center).LengthSquared() > 2000 * 2000)
+			bool near = true;
+			//if (Sleeping)
+			//{
+				int bufferRange = 64;
+			Rectangle bufferrect = new Rectangle((int)Main.screenPosition.X - bufferRange, (int)Main.screenPosition.Y - bufferRange, Main.screenWidth + bufferRange, Main.screenHeight + bufferRange);
+			bufferRange = 160;
+			Rectangle bufferrect2 = new Rectangle((int)Main.screenPosition.X - bufferRange, (int)Main.screenPosition.Y - bufferRange, Main.screenWidth + bufferRange, Main.screenHeight + bufferRange);
+
+			if (!bufferrect2.Contains(npc.Center.ToPoint()))
+				{
+				near = false;
+
+				foreach (Projectile asteriod in TetherAsteriods)
+				{
+					if (bufferrect.Contains(asteriod.Center.ToPoint()))
+					{
+						near = true;
+						break;
+					}
+
+				}
+			}
+
+			if (!Sleeping && !near)
+			{
+				foreach (SpaceBossRock rock in Rocks)
+				{
+					if (bufferrect.Contains(rock.Position.ToPoint()))
+					{
+						near = true;
+						break;
+					}
+				}
+			}
+
+			//}
+
+			if (!near)
 				return false;
 
+			Main.NewText("boss is here");
 
 			Texture2D firerock = ModContent.GetTexture("SGAmod/Projectiles/FieryRock");
 			Texture2D rocksmall = mod.GetTexture("Dimensions/Space/OverseenHead");
@@ -2824,8 +2862,8 @@ namespace SGAmod.Dimensions.NPCs
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D turrettex = mod.GetTexture("Dimensions/Space/Tether");
-			Texture2D turrettexGlow = mod.GetTexture("Dimensions/Space/Tether_Glow");
+			Texture2D turrettex = mod.GetTexture(!SpaceDim.SpaceBossIsActive ? "Dimensions/Space/Tether" : "Dimensions/Space/TetherFancy");
+			Texture2D turrettexGlow = mod.GetTexture(!SpaceDim.SpaceBossIsActive ? "Dimensions/Space/Tether_Glow" : "Dimensions/Space/TetherFancy_Glow");
 
 			Vector2 vec = new Vector2(turrettex.Width, turrettex.Height * 0.90f) / 2f;
 			Vector2 drawPos = projectile.Center - Main.screenPosition;
@@ -2843,6 +2881,7 @@ namespace SGAmod.Dimensions.NPCs
 			stardustsshader.Apply(null, new DrawData?(value8));
 
 			spriteBatch.Draw(turrettexGlow, drawPos + (offset * projectile.width * (rand.NextFloat(0.65f, 0.85f))).RotatedBy(projectile.rotation), new Rectangle(0, 0, turrettex.Width, turrettex.Height / 2), Color.LightGray, projectile.rotation, vec, projectile.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(turrettexGlow, drawPos + (offset * projectile.width * (rand.NextFloat(0.65f, 0.85f))).RotatedBy(projectile.rotation), new Rectangle(0, turrettex.Height / 2, turrettex.Width, turrettex.Height / 2), Color.LightGray*MathHelper.Clamp((float)(0.3f+Math.Sin((Main.GlobalTime*1.2f)+rand.NextFloat(MathHelper.TwoPi))*0.52f),0f,1f), projectile.rotation, vec, projectile.scale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);

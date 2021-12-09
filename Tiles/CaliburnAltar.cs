@@ -66,7 +66,8 @@ namespace SGAmod.Tiles
 
                     if ((Main.player[z].Center - new Vector2(i * 16, j * 16)).Length() < 160)
                     {
-                        if (Main.player[z].statLife >= 200 && NPC.CountNPCS(mod.NPCType("CaliburnGuardian")) < 1)
+                        bool bossNotActive = NPC.CountNPCS(mod.NPCType("CaliburnGuardian")) < 1;
+                        if (Main.player[z].statLife >= 200 && bossNotActive)
                         {
                             if (SGAWorld.downedCaliburnGuardiansPoints > 0)
                             {
@@ -100,7 +101,7 @@ namespace SGAmod.Tiles
                         else
                         {
                             if (Main.netMode < NetmodeID.Server && Main.myPlayer == z)
-                                Main.NewText("You will not survive pulling this, come back when you have meat on your bones...", 100, 255, 100);
+                                Main.NewText(bossNotActive ? "You will not survive pulling this, come back when you have meat on your bones..." : "Your in the middle of a fight... Finish the fight first!", 100, 255, 100);
                         }
                     }
 

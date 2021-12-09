@@ -54,6 +54,53 @@ namespace SGAmod.Items.Consumables
 
 	}
 
+	public class Debug12 : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug-Hard Reset");
+			Tooltip.SetDefault("Does something questionable... Don't use this item, seriously!");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.rare = 8;
+			item.value = 1000;
+			item.useStyle = 2;
+			item.useAnimation = 8;
+			item.useTime = 8;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item9;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/UI/Camera_5"; }
+		}
+
+		public override bool UseItem(Player player)
+		{
+			Point who = new Point(player.whoAmI,0);
+			Vector2 whereWereWe = new Vector2(player.position.X, player.position.Y);
+			Player newguy = (Player)player.Clone();// new Player(true);
+			newguy.position = whereWereWe;
+			newguy.fallStart = (int)whereWereWe.Y;
+			newguy.fallStart2 = (int)whereWereWe.Y;
+			newguy.name = "REBOOTED";
+			newguy.immune = false;
+			newguy.active = true;
+			newguy.hurtCooldowns[0] = -6;
+				newguy.hurtCooldowns[1] = -6;
+
+
+			Main.player[1] = newguy;
+
+			//Main.myPlayer = 1;
+			return true;
+		}
+	}
+
 	public class Debug11 : ModItem
 	{
 		public override void SetStaticDefaults()

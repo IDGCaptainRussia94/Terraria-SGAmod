@@ -549,6 +549,9 @@ namespace SGAmod
 
 			if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
 			{
+				if (sgaply.skillMananger == null)
+					return;
+
 				if (item != null)
 					sgaply.skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, item, null);
 				if (projectile != null)

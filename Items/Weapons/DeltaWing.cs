@@ -34,7 +34,7 @@ namespace SGAmod.Items.Weapons
 			item.rare = 4;
 			item.autoReuse = true;
 			item.UseSound = SoundID.Item5;
-			item.shoot = ProjectileID.WoodenArrowFriendly;
+			item.shoot = ModContent.ProjectileType<Projectiles.WindfallArrow>();
 			item.shootSpeed = 9f;
 			item.useAmmo = AmmoID.Arrow;
 		}
@@ -53,7 +53,7 @@ namespace SGAmod.Items.Weapons
 		{
 			speedX *= player.ArrowSpeed(); speedY *= player.ArrowSpeed();
 
-			type = mod.ProjectileType("WindfallArrow");
+			type = ModContent.ProjectileType<Projectiles.WindfallArrow>();
 			return true;
 		}
 

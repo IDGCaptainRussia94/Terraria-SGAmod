@@ -303,9 +303,11 @@ namespace SGAmod
 				if (tag3.ContainsKey("darknessVision"))
 					darknessUnlocked = tag3.GetBool("darknessVision");
 
-
-				string text = "Floors completed: " + (floors < 0 ? "None" : ""+(int)floors);
-				Utils.DrawBorderString(spriteBatch, text, pos + new Vector2(-Main.fontMouseText.MeasureString(text).X - 8, 5), Color.DeepSkyBlue);
+				if (floors > 0)
+				{
+					string text = "Floors completed: " + (floors < 0 ? "None" : "" + (int)floors);
+					Utils.DrawBorderString(spriteBatch, text, pos + new Vector2(-Main.fontMouseText.MeasureString(text).X - 8, 5), Color.DeepSkyBlue);
+				}
 
 				if (darknessUnlocked)
 				{

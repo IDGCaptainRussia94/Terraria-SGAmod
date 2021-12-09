@@ -1989,6 +1989,10 @@ namespace SGAmod
 				{
 					Items.Armors.Valkyrie.ValkyrieHelm.ActivateRagnorok(this);
 				}
+				if (magatsuSet)
+				{
+					Items.Armors.Magatsu.MagatsuHood.ActivateDecoy(this);
+				}				
 				if (jungleTemplarSet.Item1)
 				{
 					Items.Armors.JungleTemplar.JungleTemplarHelmet.ActivatePrecurserPower(this);

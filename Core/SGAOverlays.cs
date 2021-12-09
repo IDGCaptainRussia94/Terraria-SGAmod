@@ -205,7 +205,7 @@ namespace SGAmod
 				Uncrafts = default;
 			}
 
-
+			Items.Consumables.TimeEffect.DrawDistort(sga);
 
 			if (sga.gunslingerLegendtarget > -1)
 			{

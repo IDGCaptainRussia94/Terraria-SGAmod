@@ -47,7 +47,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Future Hallowed Visor");
-			Tooltip.SetDefault("12% increased throwing damage\n6% increased throwing crit\n20% increased throwing velocity\n'reverse 1.4 lol'");
+			Tooltip.SetDefault("12% increased throwing damage\n6% increased throwing crit\n20% increased throwing velocity\n'Reverse 1.4 lol'");
 		}
 	}
 

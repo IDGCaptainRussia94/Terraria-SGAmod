@@ -242,6 +242,11 @@ namespace SGAmod.NPCs.Cratrosity
 			{
 				npc.life = npc.lifeMax;
 				phase -= 1;
+				if (phase < 4 && GetType() == typeof(Cratrosity))
+                {
+					npc.localAI[3] = 1;
+					npc.frameCounter = 1;
+                }
 				Cratrosity origin = npc.modNPC as Cratrosity;
 				CrateRelease(phase);
 				FalseDeath(phase);
@@ -314,6 +319,77 @@ namespace SGAmod.NPCs.Cratrosity
 			}
 			else
 			{
+
+				if (npc.localAI[3] > 0)
+				{
+					if (npc.localAI[3] < 100)
+					{
+						npc.dontTakeDamage = true;
+						npc.velocity *= 0.85f;
+						npc.localAI[3] += 1;
+						if (phase > 2 && npc.localAI[3]>=0)
+						{
+							npc.frameCounter = 16f * (1f - ((npc.localAI[3]) / 100f));
+                        }
+                        else
+                        {
+							npc.frameCounter = 19 + (npc.localAI[3]/3f) % 3;
+						}
+
+						if (npc.localAI[3] == 50)
+						{
+							npc.extraValue += Item.buyPrice(0, 1, 0, 0);
+							npc.moneyPing(npc.Center);
+
+						}
+
+						goto gohere;
+					}
+					else
+					{
+						
+						if (npc.localAI[3] < 200)
+						{
+							//if (npc.frameCounter < 5)
+							//{
+							npc.frameCounter += 0.25f;
+							npc.frameCounter %= 8;
+							if (npc.frameCounter >= 5 && npc.frameCounter < 8)
+								npc.frameCounter = 5 - npc.frameCounter;
+							//}
+						}
+						
+						if (npc.localAI[3] >= 200 && npc.localAI[3] < 400)
+						{
+							npc.localAI[3]++;
+							//if (npc.frameCounter < 5)
+							//{
+							if (npc.frameCounter < 18)
+								npc.frameCounter = 18;
+
+							if (npc.frameCounter < 21)
+								npc.frameCounter += 0.25f;
+
+							if (npc.frameCounter > 18 && npc.localAI[3]>215)
+								npc.frameCounter -= 0.25f;
+
+							if (npc.localAI[3] > 230)
+								npc.localAI[3] = 100;
+							//}
+						}
+						if (npc.localAI[3] >= 400)
+						{
+							npc.localAI[3]++;
+							npc.frameCounter = 21f * (((npc.localAI[3]-400) / 100f));
+							if (npc.localAI[3] > 460)
+								npc.localAI[3] = 201;
+						}
+						
+						
+
+					}
+					npc.dontTakeDamage = false;
+				}
 
 
 				npc.ai[0] += 1f;
@@ -470,6 +546,10 @@ namespace SGAmod.NPCs.Cratrosity
 							npc.ai[0] -= 1;
 							if (doCharge == 60)
 							{
+								if (npc.localAI[3]>0)
+								npc.localAI[3] = 400;
+
+
 								SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageAttack, npc.Center);
 								if (sound != null)
 								{
@@ -499,6 +579,10 @@ namespace SGAmod.NPCs.Cratrosity
 							if (tiev < (GetType() == typeof(Cratrogeddon) ? 10 : 1))
 							{
 								npc.velocity = (npc.velocity + gogo);
+
+								if (npc.localAI[3] > 0)
+									npc.localAI[3] = 201;
+
 								if (npc.velocity.Length() > 30)
 								{
 									npc.velocity.Normalize();
@@ -511,6 +595,8 @@ namespace SGAmod.NPCs.Cratrosity
 					}
 				}
 			}
+
+			gohere:
 
 			npc.defense = (int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.WoodenCrate.ToString()))) * 5 +
 			(int)(NPC.CountNPCS(mod.NPCType("CratrosityCrate" + ItemID.IronCrate.ToString()))) * 6 +
@@ -693,6 +779,22 @@ namespace SGAmod.NPCs.Cratrosity
 					//Vector2 drawPos = Cratesvector[a, i] - Main.screenPosition;
 					//spriteBatch.Draw(texture, drawPos, null, lightColor, (float)Cratesangle[a, i], new Vector2(16, 16), new Vector2(1, 1), SpriteEffects.None, 0f);
 				}
+			}
+
+			if (GetType() != typeof(Cratrogeddon) && (npc.localAI[3] > 0 || phase<3))
+			{
+				Texture2D trueFormTexture = mod.GetTexture("NPCs/Cratrosity/Cratosity");
+				int width = trueFormTexture.Width;
+				int height = trueFormTexture.Height;
+				int frames = 22;
+				int framesHeight = height / frames;
+				int frame = (int)npc.frameCounter;
+
+				float direction = Math.Sign(npc.velocity.X);
+				npc.frame = new Rectangle(0, frame * framesHeight, width, framesHeight);
+				Main.spriteBatch.Draw(trueFormTexture, npc.Center - Main.screenPosition, npc.frame, lightColor, (float)Math.Pow(Math.Abs(npc.velocity.X/60f),0.75f)* direction, new Vector2(width, framesHeight)/2f, npc.scale, default, 0);
+
+				return false;
 			}
 
 			Texture2D mainTex = GetType() == typeof(Cratrogeddon) ? mod.GetTexture("NPCs/Cratrosity/TitanCrate") : Main.itemTexture[ItemID.GoldenCrate];

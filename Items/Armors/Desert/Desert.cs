@@ -80,11 +80,12 @@ namespace SGAmod.Items.Armors.Desert
 		public override void DrawHands(ref bool drawHands, ref bool drawArms)
 		{
 			drawHands = true;
-			drawArms = true;
+			drawArms = false;
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.AntlionMandible, 1);
 			recipe.AddIngredient(ItemID.HardenedSand, 10);
 			recipe.AddIngredient(ItemID.Cactus, 25);
 			recipe.AddTile(TileID.WorkBenches);
@@ -143,6 +144,7 @@ namespace SGAmod.Items.Armors.Desert
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.AntlionMandible, 2);
 			recipe.AddIngredient(ItemID.HardenedSand, 20);
 			recipe.AddIngredient(ItemID.SandBlock, 10);
 			recipe.AddTile(TileID.WorkBenches);

@@ -92,6 +92,8 @@ namespace SGAmod
 			if (!loadedChecklist || Main.dedServ)
 				return;
 
+			CustomEntries.Clear();
+
 			if (BookBossTexture != null && !BookBossTexture.IsDisposed)
 				BookBossTexture.Dispose();
 

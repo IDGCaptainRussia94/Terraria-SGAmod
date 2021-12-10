@@ -39,6 +39,9 @@ namespace SGAmod.Items.Accessories
 
 		public static void Load()
 		{
+			if (Main.dedServ)
+				return;
+
 			wingsSurface = new RenderTarget2D(Main.graphics.GraphicsDevice, 160,240, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
 			wingsSurfacePre = new RenderTarget2D(Main.graphics.GraphicsDevice, 160, 240, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
 		}
@@ -150,6 +153,9 @@ namespace SGAmod.Items.Accessories
 
 		public static void DrawWings(Player drawPlayer)
 		{
+
+			if (Main.dedServ)
+				return;
 
 			SGAmod mod = SGAmod.Instance;
 			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
@@ -340,6 +346,7 @@ namespace SGAmod.Items.Accessories
 				player.GetModPlayer<DergWingsPlayer>().flyingAngle.Item2 = 4;
 			}
 			player.GetModPlayer<SGAPlayer>().CustomWings = 2;
+
 			DrawWings(player);
 		}
 

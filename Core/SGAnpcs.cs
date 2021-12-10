@@ -1385,6 +1385,11 @@ namespace SGAmod
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Tornado"));
 			}
 
+			if (npc.type == NPCID.Vulture && Main.rand.Next(100) < 50)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.Feather);
+			}
+
 			if (npc.type == NPCID.Golem && Main.rand.Next(100) < 20 && !Main.expertMode)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Upheaval"));

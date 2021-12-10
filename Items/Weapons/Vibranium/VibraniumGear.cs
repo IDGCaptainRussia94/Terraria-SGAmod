@@ -66,7 +66,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Quaser Kunai");
+			DisplayName.SetDefault("Quasar Kunai");
 			Tooltip.SetDefault("Throws resonant knives that bounce between targets, bypass defense, and leave a stacking DoT\nThe knives bounce more against Irradiated targets and do 15% more damage\nWhen fully charged, emits a Gamma Ray burst in both directions\nThis inflicts Severe Radiation to hit enemies");
 		}
 

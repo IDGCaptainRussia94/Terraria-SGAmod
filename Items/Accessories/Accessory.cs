@@ -1832,6 +1832,7 @@ namespace SGAmod.Items.Accessories
 
 			}
 
+			ModContent.GetInstance<GravityStabilizerBoots>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<PrimordialSkull>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<AmberGlowSkull>().UpdateAccessory(player, hideVisual);
 

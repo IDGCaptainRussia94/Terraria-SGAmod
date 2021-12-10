@@ -1359,6 +1359,7 @@ namespace SGAmod.Items.Weapons.Aurora
             recipe.SetResult(this);
             recipe.AddRecipe();
 
+            recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.MonkStaffT3, 1);
             recipe.AddIngredient(ModContent.ItemType<AuroraTearAwoken>(), 1);
             recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 8);

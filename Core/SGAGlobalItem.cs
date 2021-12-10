@@ -989,7 +989,8 @@ namespace SGAmod
 
                 if (item.modItem is ITechItem)
                 {
-                    float floaterdam = (sgaply.techdamage * (MathHelper.Clamp((sgaply.electricCharge / (float)sgaply.electricChargeMax) * 4f, 0f, 1f)));
+                    float value = sgaply.electricChargeMax>0 ? sgaply.electricCharge / ((float)sgaply.electricChargeMax) : 0;
+                    float floaterdam = (sgaply.techdamage * (MathHelper.Clamp(value * 4f, 0f, 1f)));
                     add = Math.Max(add+(floaterdam - 1f),0f);
                 }
 

@@ -119,11 +119,14 @@ namespace SGAmod
 		}
 
 		//This patch forces the sandstorm visual effect to play when the sandstormTimer is above 0
-		private static bool PlayerSandstormDelegate()
+		private static bool PlayerSandstormDelegate(bool previous)
 		{
 			SGAPlayer sgaply = Main.LocalPlayer.SGAPly();
 
-			return sgaply.desertSet && sgaply.sandStormTimer>0;
+			if (sgaply.desertSet && sgaply.sandStormTimer > 0)
+			return true;
+
+			return previous;
 		}
 
 		private static void ForceSandStormEffects(ILContext il)
@@ -131,11 +134,14 @@ namespace SGAmod
 			ILCursor c = new ILCursor(il); 
 			if (c.TryGotoNext(MoveType.After,i => i.MatchStloc(2)))
             {
-				c.EmitDelegate<Func<bool>>(PlayerSandstormDelegate);
+				c.Emit(OpCodes.Ldloc, 2);//get 'flag'
+				c.EmitDelegate<Func<bool,bool>>(PlayerSandstormDelegate);
 				c.Emit(OpCodes.Stloc, 2);//Force 'flag' to the above condition
 
 				ILLabel label2 = c.DefineLabel();
-				c.EmitDelegate<Func<bool>>(PlayerSandstormDelegate);
+
+				c.Emit(OpCodes.Ldloc, 2);//get 'flag'
+				c.EmitDelegate<Func<bool, bool>>(PlayerSandstormDelegate);
 				c.Emit(OpCodes.Brfalse, label2);//If the above is false, we jump ahead
 
 				c.Emit(OpCodes.Ldc_I4, 500);//TOO MUCH SAND!
@@ -146,7 +152,6 @@ namespace SGAmod
 			else
             {
 				throw new Exception("IL Error Test");
-				return;
             }
 
 			//Branch over the ret part, move past the branch
@@ -155,7 +160,8 @@ namespace SGAmod
 			if (c.TryGotoNext(MoveType.After, i => i.MatchCall(methodToLookFor)))
 			{
 				//c.Emit(OpCodes.Ldc_I4, 1);//true
-				c.EmitDelegate<Func<bool>>(PlayerSandstormDelegate);
+				c.Emit(OpCodes.Ldloc, 2);//get 'flag'
+				c.EmitDelegate<Func<bool, bool>>(PlayerSandstormDelegate);
 				c.Emit(OpCodes.Brtrue, label);//If the above is true, we jump ahead
 				if (c.TryGotoNext(MoveType.After, i => i.MatchRet()))
 				{

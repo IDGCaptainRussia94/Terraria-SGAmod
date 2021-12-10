@@ -188,10 +188,11 @@ namespace SGAmod.Dimensions
         int maxGen = 0;
         int gen = 0;
         int noiseDetail = 3;
-        Rectangle BossRoom;
-        Rectangle BossRoomInside;
-        Point16 currentPosition;
-        Point16 startingPoint;
+        public Rectangle BossRoom;
+        public Rectangle BossRoomInside;
+        public Point16 currentPosition;
+        public Point16 startingPoint;
+        public MazeRoom LastRoom=null;
         //HashSet<MazeRoom> mazePainter;
         List<MazeRoom> mazePainter;
         List<MazeRoom> mazeRooms;
@@ -382,9 +383,9 @@ namespace SGAmod.Dimensions
                     //Draw line and connect the dots
                     Point check1 = (currentPosition + Flow(currentPosition, flowSize)).ToPoint();
                     Point check2 = (checkHere + Flow(checkHere, flowSize)).ToPoint();
+
                     foreach (Point there in IDGWorldGen.GetLine(check1, check2))
                     {
-
                         Point16 there2 = new Point16(there.X, there.Y);
                         if (InsideMap(there2.X, there2.Y))
                         {
@@ -398,6 +399,9 @@ namespace SGAmod.Dimensions
                     gen += 1;
                     MazeRoom mazepoint = new MazeRoom(checkHere, gen, Flow(currentPosition, flowSize), roomIndex);
                     mazepoint.ConnectedRoom = whereWeAre;
+
+                    if (LastRoom == null || gen > LastRoom.gen)
+                    LastRoom = mazepoint;
 
                     mazeStack.Push(mazepoint);
                     mazeRooms.Add(whereWeAre);
@@ -677,7 +681,6 @@ namespace SGAmod.Dimensions
                         IDGWorldGen.PlaceMulti(new Point(xx, yy), TileID.RubyGemspark, UniRand.Next(2, 6), -1, true);
                         BossBox.Add(new Point16(xx, yy));
                     }
-
                 }
             }
             InnerArenaTiles = new HashSet<Point16>(BossBox);

@@ -316,8 +316,21 @@ namespace SGAmod.Items.Weapons
 							projType = ProjectileID.ShadowFlameArrow;
 						if (item.type == ItemID.PulseBow)
 							projType = ProjectileID.PulseBolt;
-						if (item.type == ItemID.DD2BetsyBow)
+						if (item.type == ItemID.HellwingBow)
+						{
 							projType = ProjectileID.DD2BetsyArrow;
+							damage = damage / 2;
+						}
+						if (item.type == ItemID.BeesKnees)
+						{
+							projType = ProjectileID.DD2BetsyArrow;
+							damage = damage / 2;
+						}
+						if (item.type == ItemID.DD2BetsyBow)
+						{
+							projType = ProjectileID.DD2BetsyArrow;
+							damage = damage / 2;
+						}
 						if (item.type == ItemID.Marrow)
 						{
 							speed += 64;
@@ -332,7 +345,7 @@ namespace SGAmod.Items.Weapons
 								proj2.Kill();
 							}
 							hide = true;
-							damage = damage / 3;
+							damage = (int)(damage *0.75f);
 
 							//projType = ProjectileID.DD2PhoenixBowShot;
 						}
@@ -343,7 +356,7 @@ namespace SGAmod.Items.Weapons
 								proj2.Kill();
 							}
 							hide = true;
-							damage = damage / 3;
+							damage = (int)(damage * 0.25f);
 						}
 
 						Projectile proj = Projectile.NewProjectileDirect(Position, rotation.ToRotationVector2() * speed*player.ArrowSpeed(), projType,damage,knockback, owner.projectile.owner);

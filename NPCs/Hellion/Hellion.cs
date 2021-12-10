@@ -3715,11 +3715,13 @@ namespace SGAmod.NPCs.Hellion
 			{
 				SGAWorld.downedHellion = 2;
 				HellionAttacks.HellionWelcomesYou();
-
-				filmCredits = new Film();
-				filmCredits.AppendSequence(240, FilmBlankCredits);
-				filmCredits.AppendSequence(1, FilmStartCredits);
-				CinematicManager.Instance.PlayFilm(filmCredits);
+				if (SGAWorld.modtimer >= 300)
+				{
+					filmCredits = new Film();
+					filmCredits.AppendSequence(240, FilmBlankCredits);
+					filmCredits.AppendSequence(1, FilmStartCredits);
+					CinematicManager.Instance.PlayFilm(filmCredits);
+				}
 			}
 
 			Achivements.SGAAchivements.UnlockAchivement("Hellion", Main.LocalPlayer);

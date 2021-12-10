@@ -1,6 +1,48 @@
 
 Changelog:
 
+3.602-(12/10/21)-Hotfix 21
+
+--Changed:
+
+-Nerfed Xenith (some bows do less damage, Phantom Phoenix does a bit more damage)
+
+
+--Fixed:
+
+-Polarity Halberd having an incorrect recipe
+
+-(Attempted) Boss Checklist edits not unloading properly
+
+-Hopefully stopped the credits from starting on world load
+
+-A divide by zero error with electric charge, resulting in tech weapons doing infinite damage
+
+-Avarice Lord blocking servers from starting
+
+-'quasar kunai' being spelled as 'quaser kunai'
+
+-Minor visual bug with the Nomadic Shirt
+
+
+
+3.601-(12/10/21)-Hotfix 20
+
+--Changed:
+
+-Vultures can drop feathers (50% chance)
+
+-Nomad Chestplate and Leggings needs antlion mandibles
+
+
+--Fixed:
+
+-Demon Steppers not inheriting the Gravity Stabilizer Boots
+
+-Sandstorm visuals not showing up in the desert
+
+
+
 3.600p-(12/10/21)-Patch 11-Tech N Wreck: Beta
 
 -Removed space boss, Universal Bait, heros mod, cheatsheet, and boss checklist debug texts

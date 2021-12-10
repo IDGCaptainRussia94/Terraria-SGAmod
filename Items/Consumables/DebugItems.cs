@@ -83,7 +83,7 @@ namespace SGAmod.Items.Consumables
 		{
 			Point who = new Point(player.whoAmI,0);
 			Vector2 whereWereWe = new Vector2(player.position.X, player.position.Y);
-			Player newguy = (Player)player.Clone();// new Player(true);
+			Player newguy =  new Player(true);//(Player)player.Clone();//
 			newguy.position = whereWereWe;
 			newguy.fallStart = (int)whereWereWe.Y;
 			newguy.fallStart2 = (int)whereWereWe.Y;
@@ -94,7 +94,7 @@ namespace SGAmod.Items.Consumables
 				newguy.hurtCooldowns[1] = -6;
 
 
-			Main.player[1] = newguy;
+			Main.player[0] = newguy;
 
 			//Main.myPlayer = 1;
 			return true;

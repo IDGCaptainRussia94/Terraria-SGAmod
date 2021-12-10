@@ -21,6 +21,7 @@ using SGAmod.NPCs.Hellion;
 using Terraria.Cinematics;
 using Terraria.Graphics.Effects;
 using SGAmod.Buffs;
+using SGAmod.Dusts;
 
 namespace SGAmod.Dimensions.NPCs
 {
@@ -1075,17 +1076,16 @@ namespace SGAmod.Dimensions.NPCs
 				{
 					if (boss.countdownToTheEnd < 60 * 90)
 					{
-						player.AddBuff(BuffID.OnFire, 2);
+						player.AddBuff(boss.countdownToTheEnd < 60 * 60 ? BuffID.OnFire : ModContent.BuffType<Sunburn>(), 2);
 					}
-
-					if (boss.countdownToTheEnd < 60 * 60)
+					if (boss.countdownToTheEnd < 60 * 40)
 					{
 						player.AddBuff(ModContent.BuffType<ThermalBlaze>(), 2);
 					}
 
 					if (boss.countdownToTheEnd < 60 * 30)
 					{
-						player.AddBuff(boss.countdownToTheEnd < 60 * 15 ? ModContent.BuffType<LavaBurn>() : ModContent.BuffType<LavaBurnLight>(), 2);
+						player.AddBuff(boss.countdownToTheEnd < 60 * 10 ? ModContent.BuffType<LavaBurn>() : ModContent.BuffType<LavaBurnLight>(), 2);
 					}
 
 					if (boss.countdownToTheEnd < 60 * 20)
@@ -2163,9 +2163,9 @@ namespace SGAmod.Dimensions.NPCs
 			//if (Sleeping)
 			//{
 				int bufferRange = 64;
-			Rectangle bufferrect = new Rectangle((int)Main.screenPosition.X - bufferRange, (int)Main.screenPosition.Y - bufferRange, Main.screenWidth + bufferRange, Main.screenHeight + bufferRange);
-			bufferRange = 160;
-			Rectangle bufferrect2 = new Rectangle((int)Main.screenPosition.X - bufferRange, (int)Main.screenPosition.Y - bufferRange, Main.screenWidth + bufferRange, Main.screenHeight + bufferRange);
+			Rectangle bufferrect = new Rectangle((int)Main.screenPosition.X - bufferRange, (int)Main.screenPosition.Y - bufferRange, (int)Main.screenPosition.X+Main.screenWidth + bufferRange, (int)Main.screenPosition.Y+Main.screenHeight + bufferRange);
+			int bufferRange2 = 640;
+			Rectangle bufferrect2 = new Rectangle((int)Main.screenPosition.X - bufferRange2, (int)Main.screenPosition.Y - bufferRange2, (int)Main.screenPosition.X+Main.screenWidth + bufferRange2, (int)Main.screenPosition.Y+Main.screenHeight + bufferRange2);
 
 			if (!bufferrect2.Contains(npc.Center.ToPoint()))
 				{
@@ -2198,8 +2198,6 @@ namespace SGAmod.Dimensions.NPCs
 
 			if (!near)
 				return false;
-
-			Main.NewText("boss is here");
 
 			Texture2D firerock = ModContent.GetTexture("SGAmod/Projectiles/FieryRock");
 			Texture2D rocksmall = mod.GetTexture("Dimensions/Space/OverseenHead");
@@ -2902,7 +2900,7 @@ namespace SGAmod.Dimensions.NPCs
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overseer's Shot");
-			ProjectileID.Sets.TrailCacheLength[projectile.type] = 150;
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 60;
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
 		}
 
@@ -2937,7 +2935,7 @@ namespace SGAmod.Dimensions.NPCs
 				Vector2 startloc2 = projectile.velocity;
 				startloc2.Normalize();
 				Vector2 startloc = (projectile.Center + (startloc2 * 12f));
-				int dust = Dust.NewDust(new Vector2(startloc.X, startloc.Y), 0, 0, 185);
+				int dust = Dust.NewDust(new Vector2(startloc.X, startloc.Y), 0, 0, DustID.BlueCrystalShard);
 
 				float anglehalf2 = anglehalf + ((float)Math.PI / 2f);
 				Main.dust[dust].position += anglehalf2.ToRotationVector2() * (float)((Main.rand.Next(-200, 200) / 10f));
@@ -2947,6 +2945,7 @@ namespace SGAmod.Dimensions.NPCs
 				Main.dust[dust].velocity = (randomcircle / 3f);
 				Main.dust[dust].velocity += (projectile.velocity * (num475/5f));
 				Main.dust[dust].noGravity = true;
+				Main.dust[dust].rotation = Main.dust[dust].velocity.ToRotation();
 			}
 
 			return true;
@@ -2955,7 +2954,7 @@ namespace SGAmod.Dimensions.NPCs
 		public override void AI()
 		{
 			projectile.localAI[0] += 1;
-			float homing = MathHelper.Clamp((projectile.localAI[0])/300,0,0.05f) *MathHelper.Clamp((projectile.timeLeft-200)/160f, 0f,1f);
+			float homing = MathHelper.Clamp((projectile.localAI[0]) / 300, 0, 0.05f) * MathHelper.Clamp((projectile.timeLeft - 200) / 160f, 0f, 1f);
 			if (!Main.expertMode)
 				homing = MathHelper.Clamp((projectile.localAI[0]) / 300, 0, 0.05f) * MathHelper.Clamp((projectile.timeLeft - 500) / 200f, 0f, 1f);
 
@@ -2980,8 +2979,8 @@ namespace SGAmod.Dimensions.NPCs
 
 			projectile.spriteDirection = (projectile.velocity.X > 0).ToDirectionInt();
 
-			int target2= Player.FindClosest(projectile.Center,projectile.width, projectile.height);
-			if (target2 >=0)
+			int target2 = Player.FindClosest(projectile.Center, projectile.width, projectile.height);
+			if (target2 >= 0)
 			{
 				Player target = Main.player[target2];
 				if ((target.Center - projectile.Center).Length() < 5000f)
@@ -2992,11 +2991,16 @@ namespace SGAmod.Dimensions.NPCs
 			}
 
 			Vector2 offset = Vector2.Normalize(projectile.velocity.RotatedByRandom(MathHelper.Pi / 12f)).RotatedBy(MathHelper.Pi);
-			int dust = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y) + offset * Main.rand.NextFloat(-16f, 64f), 0, 0, DustID.BlueCrystalShard);
+			Vector2 offset2 = Vector2.Normalize(projectile.velocity.RotatedByRandom(MathHelper.PiOver2));
+			int dustType = Main.rand.Next(100) < 25 ? ModContent.DustType<LeviDust>() : DustID.BlueCrystalShard;
+			int dust = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y) + offset2 * Main.rand.NextFloat(-12, 12), 0, 0, dustType);
 			Main.dust[dust].scale = 1f;
-			Main.dust[dust].alpha = 150;
+			Main.dust[dust].alpha = 40;
+			Main.dust[dust].rotation = offset.ToRotation();
 			Main.dust[dust].velocity = Vector2.Normalize(offset) * (float)(1f * Main.rand.NextFloat(0f, 3f));
 			Main.dust[dust].noGravity = true;
+			Main.dust[dust].color = Color.White;
+
 
 			SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(projectile.Center.X, projectile.Center.Y, 48)));
 
@@ -3014,7 +3018,7 @@ namespace SGAmod.Dimensions.NPCs
 				if (projectile.localAI[0] < 2)
 					projectile.oldPos[i] = projectile.position;
 
-				if (i % 25 == 0)
+				if (i % 5 == 0)
                 {
 					Rectangle rect = new Rectangle((int)Main.screenPosition.X- bufferRange, (int)Main.screenPosition.Y - bufferRange, Main.screenWidth+ bufferRange, Main.screenHeight+ bufferRange);
 					if (rect.Contains(projectile.oldPos[i].ToPoint()))
@@ -3042,7 +3046,7 @@ namespace SGAmod.Dimensions.NPCs
 			}
 
 				TrailHelper trail = new TrailHelper("FadedBasicEffectPass", SGAmod.Instance.GetTexture("TiledPerlin"));
-			trail.coordMultiplier = new Vector2(0.25f, projectile.velocity.Length()* (maxLength/(float)projectile.oldPos.Length));
+			trail.coordMultiplier = new Vector2(0.25f, 0.20f*projectile.velocity.Length()* (maxLength/(float)projectile.oldPos.Length));
 			trail.coordOffset = new Vector2(0, Main.GlobalTime * -2f);
 			trail.projsize = projectile.Hitbox.Size() / 2f;
 			trail.trailThickness = 12;

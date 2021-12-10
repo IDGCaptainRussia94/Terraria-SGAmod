@@ -137,6 +137,7 @@ namespace SGAmod
 		public int shinobj = 0;
 		public int soldierboost = 0;
 		public bool voidEmbrancers = false;
+		public bool gravBoots = false;
 		public FlaskOfBlaze flaskBuff = default;
 		public (bool,int) snakeEyes = (false,0);
 		public (float, float) auraBoosts = (0, 0);
@@ -386,6 +387,7 @@ namespace SGAmod
 				grippingglovestimer -= 1;
 			}
 
+			gravBoots = false;
 			voidEmbrancers = false;
 			twinesoffate = false;
 			jabALot = false;

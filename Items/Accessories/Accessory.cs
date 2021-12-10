@@ -1743,12 +1743,66 @@ namespace SGAmod.Items.Accessories
 	}
 
 	[AutoloadEquip(EquipType.Shoes)]
+	public class GravityStabilizerBoots : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Gravity Stabilizer Boots");
+			Tooltip.SetDefault("Hold DOWN to fall faster in normal gravity\nBut only fall at normal speed in low gravity");
+		}
+
+        public override bool Autoload(ref string name)
+        {
+            SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostPostUpdateEquipsEvent;
+			return true;
+        }
+
+		private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer sgaply)
+		{
+			if (sgaply.player.controlDown && sgaply.gravBoots == true)
+			{
+				if (sgaply.player.gravity >= Player.defaultGravity)
+					sgaply.player.maxFallSpeed += 5;
+				sgaply.player.gravity = sgaply.player.gravity < Player.defaultGravity ? Player.defaultGravity : sgaply.player.gravity + 1;
+			}
+		}
+
+        public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().gravBoots = true;
+		}
+
+        public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 26;
+			item.defense = 0;
+			item.accessory = true;
+			item.height = 14;
+			item.value = Item.sellPrice(silver: 75);
+			item.rare = ItemRarityID.LightPurple;
+			item.expert = false;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 12);
+			recipe.AddIngredient(ModContent.ItemType<Glowrock>(), 50);
+			recipe.AddIngredient(ItemID.GravitationPotion, 1);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	[AutoloadEquip(EquipType.Shoes)]
 	public class DemonSteppers : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Demon Steppers");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead");
+			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead\nHold DOWN to stabilizer gravity");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -1811,14 +1865,15 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<GravityStabilizerBoots>(), 1);
 			recipe.AddIngredient(ItemID.FrostsparkBoots, 1);
 			recipe.AddIngredient(ItemID.LavaWaders, 1);
 			recipe.AddIngredient(ItemID.BlueHorseshoeBalloon, 1);
 			recipe.AddIngredient(ItemID.FrogLeg, 1);
-			recipe.AddIngredient(mod.ItemType("AmberGlowSkull"), 1);
-			recipe.AddIngredient(mod.ItemType("PrimordialSkull"), 1);
-			recipe.AddIngredient(mod.ItemType("Entrophite"), 100);
-			recipe.AddIngredient(mod.ItemType("StygianCore"), 3);
+			recipe.AddIngredient(ModContent.ItemType < AmberGlowSkull>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < PrimordialSkull>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < Entrophite>(), 100);
+			recipe.AddIngredient(ModContent.ItemType < StygianCore>(), 3);
 			recipe.AddIngredient(ItemID.HellstoneBar, 10);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
@@ -2383,7 +2438,7 @@ namespace SGAmod.Items.Accessories
 		{
 			player.breathMax += 100;
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
-			if (!hideVisual && ((Main.raining) || SGAWorld.downedSharkvern))
+			if (!hideVisual && ((Main.raining) || SGAWorld.tidalCharmUnlocked))
 			sgaply.tidalCharm = 2;
 
 		}
@@ -3877,7 +3932,7 @@ namespace SGAmod.Items.Accessories
 			((GetType() == typeof(PrismalDivingGear)) ? Language.GetTextValue("ItemTooltip.FlipperPotion")+"\n" : "") + "Hold DOWN to fall faster in liquids\nReels in air bubbles from further away"+(GetType() == typeof(TerraDivingGear) ? "\n'Sometimes known as Dergon Diving Gear'" : "");
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Terra Diving Gear");
+			DisplayName.SetDefault("Terra Breathing Gear");
 			Tooltip.SetDefault(allText);
 		}
 
@@ -4014,7 +4069,7 @@ namespace SGAmod.Items.Accessories
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Prismal Diving Gear");
+			DisplayName.SetDefault("Prismal Breathing Gear");
 			Tooltip.SetDefault(allText+ "\nEffects of Terra Diving Gear, Murky Charm, and Prismal Air Tank");
 		}
 
@@ -4042,10 +4097,11 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("TerraDivingGear"), 1);
-			recipe.AddIngredient(mod.ItemType("PrismalAirTank"), 1);
-			recipe.AddIngredient(mod.ItemType("MurkyCharm"), 1);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
+			recipe.AddIngredient(ModContent.ItemType < TerraDivingGear>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < PrismalAirTank>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < MurkyCharm>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
+			recipe.AddIngredient(ModContent.ItemType <StarMetalBar>(), 16);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

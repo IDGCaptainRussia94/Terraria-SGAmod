@@ -517,7 +517,7 @@ namespace SGAmod.Items.Consumables
 		{
 			DisplayName.SetDefault("Dragon's Might Potion");
 			Tooltip.SetDefault("50% increase to all damage types except Summon damage" +
-				"\nLasts 20 seconds, inflicts Weakness after it ends\nThis cannot be stopped by being immune\nCannot be used while Weakened");
+				"\nLasts 20 seconds, inflicts Weakness after it ends\nThis cannot be stopped by being immune\nCannot be used while Weakened\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds"));
 		}
 
 		public override void SetDefaults()
@@ -552,7 +552,7 @@ namespace SGAmod.Items.Consumables
 
         public override bool CanUseItem(Player player)
         {
-			return !player.HasBuff(ModContent.BuffType<WorseWeakness>());
+			return !player.HasBuff(ModContent.BuffType<WorseWeakness>()) && player.SGAPly().AddCooldownStack(60*60);
         }
 
         public override void OnConsumeItem(Player player)

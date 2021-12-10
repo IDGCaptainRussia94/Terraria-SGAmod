@@ -171,7 +171,7 @@ namespace SGAmod
 
 				foreach (Type typea in assybcl.GetTypes())
 				{
-					SGAmod.Instance.Logger.Debug(typea.Name);
+					//SGAmod.Instance.Logger.Debug(typea.Name);
 					if (typea.Name == "BossLogPanel")
 						BossLogPanel = typea;
 					if (typea.Name == "BossInfo")
@@ -263,6 +263,7 @@ namespace SGAmod
 				c.MoveBeforeLabels();
 				c.MarkLabel(label);
 				SGAmod.Instance.Logger.Debug("Placed BCL label");
+				return;
 			}
 			else
 			{

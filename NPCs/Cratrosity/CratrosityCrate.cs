@@ -92,8 +92,10 @@ namespace SGAmod.NPCs.Cratrosity
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
 			Texture2D mainTex = Main.itemTexture[CrateIndex];
+			if (GetType() == typeof(CratrosityCrateOfSlowing) || GetType().IsSubclassOf(typeof(CratrosityCrateOfSlowing)))
+				mainTex = Main.npcTexture[npc.type];
 			//if (GetType() == typeof(CratrosityCrateDankCrate))
-				//mainTex = ModContent.GetTexture(Texture);
+			//mainTex = ModContent.GetTexture(Texture);
 
 			Main.spriteBatch.Draw(mainTex, npc.Center - Main.screenPosition, null, drawColor, 0, mainTex.Size()/2f, npc.scale, default, 0);
 			return false;

@@ -369,6 +369,11 @@ namespace SGAmod.Credits
 
             line = new CreditsLine(("Blushiemagic", "", "'Hope life takes you places!'"), top);
             line._colors.Item2 = Color.WhiteSmoke;
+            line.delayTimer = 30;
+            creditsToSpawn.Add(line);
+
+            line = new CreditsLine(("All the people involved:", "Dimensional Doors", "'Heavy inspiration for my mod! And also where the music came from!'"), top);
+            line._colors.Item2 = Color.WhiteSmoke;
             line.delayTimer = 20;
             creditsToSpawn.Add(line);
 

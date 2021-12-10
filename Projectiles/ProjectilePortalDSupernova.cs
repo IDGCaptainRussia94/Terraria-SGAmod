@@ -107,13 +107,13 @@ namespace SGAmod.Projectiles
                         Main.PlaySound(SoundID.Item20, player.Center);
                         projectile.timeLeft = Math.Max(startrate - (int)counterfire * drainrate, projectilerate);
                         counterfire += 1;
-                        player.CheckMana(new Item(), (int)(manacost),true);
+                        player.CheckMana(player.HeldItem, (int)(manacost), true,false);
 
                     }
                 }
                 else
                 {
-                  if (player == null || (!player.channel || player.dead || player.statMana < manacost))
+                  if (player == null || (!player.channel || player.dead || !player.CheckMana(player.HeldItem, (int)(manacost), false)))
                   projectile.Kill();
 
                 }

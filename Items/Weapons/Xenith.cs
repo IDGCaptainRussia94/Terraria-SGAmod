@@ -12,17 +12,15 @@ using Terraria.ModLoader;
 
 namespace SGAmod.Items.Weapons
 {
-	public class Xenith : ModItem,IHellionDrop
+	public class Xenith : ModItem
 	{
-		int IHellionDrop.HellionDropAmmount() => 1;
-		int IHellionDrop.HellionDropType() => ModContent.ItemType<Xenith>();
 
 		public static int[] XenithBowTypes
         {
             get
             {
 				int[] types = new int[]{
-				ItemID.CopperBow,
+				ModContent.ItemType<UnmanedBow>(),
 				ItemID.BeesKnees,
 				ItemID.HellwingBow,
 				ItemID.Marrow,
@@ -97,7 +95,7 @@ namespace SGAmod.Items.Weapons
 			{
 				recipe.AddIngredient(type, 1);
 			}
-			recipe.AddIngredient(ModContent.ItemType<DrakeniteBar>(), 8);
+			recipe.AddIngredient(ModContent.ItemType<ByteSoul>(), 100);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

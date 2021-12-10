@@ -11,6 +11,7 @@ using Idglibrary;
 using SGAmod.Items.Weapons;
 using Microsoft.Xna.Framework.Audio;
 using System.Linq;
+using Terraria.Graphics.Shaders;
 
 namespace SGAmod.NPCs.Cratrosity
 {
@@ -353,9 +354,9 @@ namespace SGAmod.NPCs.Cratrosity
 							//if (npc.frameCounter < 5)
 							//{
 							npc.frameCounter += 0.25f;
-							npc.frameCounter %= 8;
-							if (npc.frameCounter >= 5 && npc.frameCounter < 8)
-								npc.frameCounter = 5 - npc.frameCounter;
+							npc.frameCounter %= 5;
+							//if (npc.frameCounter >= 5 && npc.frameCounter < 8)
+							//	npc.frameCounter = 5 - npc.frameCounter;
 							//}
 						}
 						
@@ -791,8 +792,26 @@ namespace SGAmod.NPCs.Cratrosity
 				int frame = (int)npc.frameCounter;
 
 				float direction = Math.Sign(npc.velocity.X);
-				npc.frame = new Rectangle(0, frame * framesHeight, width, framesHeight);
-				Main.spriteBatch.Draw(trueFormTexture, npc.Center - Main.screenPosition, npc.frame, lightColor, (float)Math.Pow(Math.Abs(npc.velocity.X/60f),0.75f)* direction, new Vector2(width, framesHeight)/2f, npc.scale, default, 0);
+				npc.frame = new Rectangle(0, frame * framesHeight, width/2, framesHeight);
+				Rectangle frame2 = new Rectangle(width/2, frame * framesHeight, width / 2, framesHeight);
+
+				Main.spriteBatch.Draw(trueFormTexture, npc.Center - Main.screenPosition, npc.frame, lightColor, (float)Math.Pow(Math.Abs(npc.velocity.X/60f),0.75f)* direction, npc.frame.Size()/ 2f, npc.scale, default, 0);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+				ArmorShaderData stardustsshader3 = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye);
+				DrawData value28 = new DrawData(trueFormTexture, new Vector2(0, 0), frame2, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+						stardustsshader3.UseColor(Color.Blue.MultiplyRGB(lightColor).ToVector3());
+				stardustsshader3.UseOpacity(0.5f);
+				stardustsshader3.UseSaturation(0f);
+				stardustsshader3.UseSecondaryColor(Color.Aqua);
+				stardustsshader3.Apply(null, new DrawData?(value28));
+
+						Main.spriteBatch.Draw(trueFormTexture, npc.Center - Main.screenPosition, frame2, Color.White, (float)Math.Pow(Math.Abs(npc.velocity.X / 60f), 0.75f) * direction, npc.frame.Size() / 2f, npc.scale, default, 0);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 				return false;
 			}

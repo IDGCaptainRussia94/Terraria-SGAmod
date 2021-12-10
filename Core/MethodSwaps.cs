@@ -67,6 +67,7 @@ namespace SGAmod
 
 			if (SGAConfig.Instance.QuestionableDetours)
 			{
+				SGAmod.Instance.Logger.Debug("Loading Monogame detours, these can be disabled in configs");
 				On.Terraria.Main.DoUpdate += OverrideCreditsUpdate;
 				On.Terraria.Main.Draw += Main_Draw;
 			}

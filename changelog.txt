@@ -1,5 +1,31 @@
 
 Changelog:
+
+3.600p-(12/9/21)-Patch 11-Tech N Wreck: Beta
+
+-Removed space boss, heros mod, cheatsheet, and boss checklist debug texts
+
+-Nerfed Dragon's Might Potion: Now requires a cooldown stack, no more spamming 50% damage boosts!
+
+-Fixed Vibranium Headgear not properly halving and costing Electric charge on some magic weapons
+
+-Added the Gravity Stabilizer Boots: to help control gravity and give the player a falling adventange
+
+-Fixed Tidal Charm not being properly locked behind Tidal Sharkvern
+
+-Xenith is now craftable after only Hellion Core
+
+-Terra and Prismal Diving Gear renamed to Terra and Prismal Breathing Gear respectively
+
+-New changes to Phaethon:
+-Homing Shot Trail is heavily shortened, also use a Dust type I had lying around by Squid, they now fit perfectly <3
+-Final phase burning is toned down quite a bit
+
+-New changes to Cratogeddon:
+-100% FIXED THE CRATES THIS TIME! Lol
+
+
+
 3.600o-(12/9/21)-Patch 11-Tech N Wreck: Beta
 
 -Proper Sprite for Avarice Lord's Wings
@@ -744,14 +770,14 @@ Changelog:
 
 Changelog:
 
-3.600-(9/13/21)-Patch 11-Tech N Wreck
+3.600-(12/10/21)-Patch 11-Tech N Wreck
 
 Guess who's back!?! SGAmod returns a year later with the largest update to drop yet! Featuring many improves and vast effort to overhaul and modernize the mod to new personal higher standards while still retaining that original random content mod fun aspect!
 Hope you enjoy, it's been over half a year in the making!
 
 --Added:
 
--Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Sirius Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Oranos Skye Hook, Firefox Greatbow, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Xenith, Boyfriend's Mic, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, Rod Of Teleportation, True Rainbow Heart (offically), Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight,Hallowed Visor, Avarice Lord Wings, Draconic Claw Necklace, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault, Deific Healing Potion, And more, explore to find the rest!
+-Seraphim Shard, Torch God's Summon, Plasmic Rail Gun, Sirius Gun, Buzz Blaster, Quasar Kunai, Skylight, Aura Borealis Staff, The Northern Shine, Polarity Halberd, Oranos Skye Hook, Firefox Greatbow, Main Sequence Staff, Autoclicker, Aegisalt Aetherstone, Radioactive Snowball Cannon, Uranium Filled Snowballs, Throwing Star, Super Star Thrower, Xenith, Boyfriend's Mic, The Jelly Brew, Lunar Fork, Thieves' Throw, Desolate Rift, Terra Excavator, Rod Of Teleportation, True Rainbow Heart (offically), Gravity Stabilizer Boots, Professional's Drop, Prismal Guantlet, Snake Eyes, Russian Roulette, Rad Suit, Magician's Gear, Void Em'Bracers, Oracle's Insight,Hallowed Visor, Avarice Lord Wings, Draconic Claw Necklace, Universal Bait, Dungeon Splunker, Interdimensional Party Hat, Aurora Tear (offically), Awoken Aurora Tear, Woven Entrophite, Prismic Star, Glowrock, Overseen Cystals, Joyful Shroom, Soul Jar, Mossy Salve, Ice Cube?, Novite Bullet, Soulbound Bullet, Seeker Bullet, Dankwood Wall, Aureate Vault, Deific Healing Potion, And more, explore to find the rest!
 -Almighty SMT Spellcards: Megido, Megidola, Megidolaon, Morning Star, Rays of Control
 
 -Near Terrarian Orbit: A low gravity subworld environment full of asteriods and rich in rare materials and gems, simply fly up and out of your world. Just be sure you come with proper breathing apparatus! (and look out for something... up there)
@@ -1005,6 +1031,8 @@ Hope you enjoy, it's been over half a year in the making!
 
 -Buffed Novite Command Chip: now gives 1000 Max Electric Charge
 
+-Nerfed Prismal Necklace: Now required Overseen Crystals
+
 -Nerfed Mister Creeper's Armor Set: all damage types that are not melee and throwing get a -10% damage and crit chance per armor piece
 
 -Nerfed Mister Creeper's Crowning Attire: crit chances reduced to 8/12 (from 10/20)
@@ -1048,6 +1076,8 @@ Hope you enjoy, it's been over half a year in the making!
 -Nerfed Kou Sash and Shin Sash: crit chance boost was incorrect and has been lowered
 
 -Nerfed all the Horseman Saddles: Apocalyptical chance boost reduced to 3%
+
+-Nerfed Dragon's Might Potion: Now requires a cooldown stack, no more spamming 50% damage boosts!
 
 -Nerfed Flask Of Acid: now reduces melee damage by 10%
 

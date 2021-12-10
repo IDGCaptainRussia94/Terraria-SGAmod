@@ -364,6 +364,7 @@ namespace SGAmod.Items.Armors.Vibranium
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<Accessories.GravityStabilizerBoots>(), 1);
 			recipe.AddIngredient(mod.ItemType("VibraniumBar"), 6);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this, 1);

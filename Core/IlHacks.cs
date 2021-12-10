@@ -57,6 +57,7 @@ namespace SGAmod
 
 			if (SGAConfigClient.Instance.FixSubworldsLavaBG)
 			{
+				SGAmod.Instance.Logger.Debug("Loading Subworld lava BG fix, these can be disabled in configs");
 				IL.Terraria.Main.DrawBackground += RemoveLavabackground;
 				IL.Terraria.Main.OldDrawBackground += RemoveOldLavabackground;
 			}
@@ -367,7 +368,7 @@ namespace SGAmod
 
 		}
 
-		static internal void RemoveUpdateCinematic(ILContext il)//Patch to fix high framerate issues with the cinematic system
+		static internal void RemoveUpdateCinematic(ILContext il)//Patch to fix high framerate issues with the cinematic system, we run this in SGAmod's Post Update everything method instead
 		{
 
 			ILCursor c = new ILCursor(il);
@@ -377,7 +378,6 @@ namespace SGAmod
 				goto Failed;
 
 			c.RemoveRange(3);//Get rid of em
-
 
 			return;
 
@@ -397,6 +397,7 @@ namespace SGAmod
 				goto Failed;
 
 			c.Index -= 1;
+			c.MoveAfterLabels();
 
 			ILLabel label = c.DefineLabel();
 
@@ -786,7 +787,7 @@ namespace SGAmod
 		static internal void TileInteractionHack(ILContext il)//Shoot modded Snowballs out of the (placed) Snowball Launcher!
 		{
 			ILCursor c = new ILCursor(il);
-			if (c.TryGotoNext(MoveType.After,n => n.MatchLdcI4(ItemID.Snowball))) //Snowball Item
+			if (c.TryGotoNext(MoveType.After, n => n.MatchLdcI4(ItemID.Snowball))) //Snowball Item
 			{
 				//c.Remove();
 				//c.Emit(OpCodes.Ldc_I4, 949);//Fallback id
@@ -795,14 +796,15 @@ namespace SGAmod
 				{
 					return player.HeldItem.ammo == AmmoID.Snowball ? player.HeldItem.type : sourceball;
 				});
-				c.TryGotoNext(n => n.MatchLdcI4(ProjectileID.SnowBallFriendly));//Also Snowballa (Projectile)
-				c.Remove();
+				c.TryGotoNext(MoveType.After, n => n.MatchLdcI4(ProjectileID.SnowBallFriendly));//Also Snowballa (Projectile)
+				c.Index += 1;//Move after the stloc 8
 				c.Emit(OpCodes.Ldarg_0);
-				c.Emit(OpCodes.Ldc_I4, 166);//Fallback id
+				c.Emit(OpCodes.Ldc_I4, ProjectileID.SnowBallFriendly);//Fallback id
 				c.EmitDelegate<Func<Player, Int32, Int32>>((Player player, int sourceball) =>
 				{
 					return player.HeldItem.ammo == AmmoID.Snowball ? player.HeldItem.shoot : sourceball;
 				});
+				c.Emit(OpCodes.Stloc,8);
 			}
 		}
 

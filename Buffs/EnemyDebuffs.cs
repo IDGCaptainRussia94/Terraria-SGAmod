@@ -9,6 +9,39 @@ using Terraria.ModLoader;
 
 namespace SGAmod.Buffs
 {
+	public class Sunburn : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Buff_" + BuffID.OnFire;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Sun Burn");
+			Description.SetDefault("'The air would be burning if there was oxygen...'");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			if (!player.buffImmune[BuffID.OnFire])
+			{
+				if (Main.rand.Next(100) < 10)
+					player.onFire = true;
+
+				if (player.lifeRegen > 0)
+				{
+					player.lifeRegen = 0;
+				}
+				player.lifeRegenTime = 0;
+				player.lifeRegen -= 2;
+			}
+		}
+	}
 	public class TechnoCurse : ModBuff
 	{
 		public override void SetDefaults()

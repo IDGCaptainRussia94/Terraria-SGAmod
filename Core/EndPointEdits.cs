@@ -269,7 +269,7 @@ namespace SGAmod
 
 					foreach (Type typea in assybcl.GetTypes())
 					{
-						SGAmod.Instance.Logger.Debug(typea.Name);
+						//SGAmod.Instance.Logger.Debug(typea.Name);
 						if (typea.Name == "GodMode")
 							godModeCS = typea;
 					}
@@ -287,7 +287,7 @@ namespace SGAmod
 
 					foreach (Type typea in assybcl.GetTypes())
 					{
-						SGAmod.Instance.Logger.Debug(typea.Name);
+						//SGAmod.Instance.Logger.Debug(typea.Name);
 						if (typea.Name == "GodModeService")
 							godModeCS = typea;
 					}

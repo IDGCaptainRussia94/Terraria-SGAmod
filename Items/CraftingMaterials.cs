@@ -2071,7 +2071,7 @@ namespace SGAmod.Items
 			SGAmod.VoronoiEffect.Parameters["_CellColor"].SetValue(Color.Black.ToVector4() * 1f);
 			SGAmod.VoronoiEffect.Parameters["_EdgeColor"].SetValue(Color.Lerp(Color.Orange,Color.Yellow,0.50f).ToVector4() * 1f);
 			SGAmod.VoronoiEffect.Parameters["_CellSize"].SetValue(new Vector2(1.5f,2f)*1f);
-			SGAmod.VoronoiEffect.Parameters["_ScrollSpeed"].SetValue(Main.GlobalTime/4000f);
+			SGAmod.VoronoiEffect.Parameters["_ScrollSpeed"].SetValue(Main.GlobalTime/40000f);
 			SGAmod.VoronoiEffect.Parameters["_FadeSpeed"].SetValue(3f);
 			SGAmod.VoronoiEffect.Parameters["_ColorScale"].SetValue(1.5652475842498528f);
 			SGAmod.VoronoiEffect.Parameters["_Time"].SetValue(Main.GlobalTime*1f);

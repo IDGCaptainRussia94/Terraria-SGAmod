@@ -1,9 +1,9 @@
 
 Changelog:
 
-3.600p-(12/9/21)-Patch 11-Tech N Wreck: Beta
+3.600p-(12/10/21)-Patch 11-Tech N Wreck: Beta
 
--Removed space boss, heros mod, cheatsheet, and boss checklist debug texts
+-Removed space boss, Universal Bait, heros mod, cheatsheet, and boss checklist debug texts
 
 -Nerfed Dragon's Might Potion: Now requires a cooldown stack, no more spamming 50% damage boosts!
 

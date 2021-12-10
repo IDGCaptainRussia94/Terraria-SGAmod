@@ -2399,11 +2399,9 @@ namespace SGAmod
 		{
 			if (bait.type == ModContent.ItemType<Items.Tools.UniversalBait>())
             {
-				Main.NewText("tester");
 				int fish = Items.Tools.UniversalBait.GetFish();
 				if (fish > -1)
 				{
-					Main.NewText("tester 2");
 					caughtType = fish;
 					return;
 				}

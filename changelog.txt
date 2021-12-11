@@ -1,7 +1,20 @@
 
 Changelog:
 
-3.604-(12/10/21)-Hotfix 22
+3.605-(12/11/21)-Hotfix 23
+
+--Changed:
+
+-'drowning' in Near Orbit now triggers a new death message instead
+
+
+--Fixed:
+
+-Hoppers crashing the game... Hopefully
+
+
+
+3.604-(12/11/21)-Hotfix 22
 
 --Changed:
 
@@ -14,7 +27,7 @@ Changelog:
 
 -(hopefully) fixed the Mana Cost bug that stopped 64Bit from loading the mod
 
--(how do I even explain these to most players?), specific patches should now no longer cast on trying to unload
+-(how do I even explain these to most players?), specific patches should now no longer crash on trying to unload
 
 -Gravity Stabilizer Boots stopping you from falling through platforms
 

@@ -1632,17 +1632,53 @@ namespace SGAmod
 		}
 
 	}
+	public class SgaWalls : GlobalWall
+	{
 
+		public override bool CanExplode(int i, int j, int type)
+		{
+			bool canDo = true;
+			KillWall(i, j, type, ref canDo);
 
+			return canDo;
+		}
+
+		public override void KillWall(int i, int j, int type, ref bool fail)
+		{
+
+			if (WorldGen.InWorld(i, j - 1))
+			{
+				Tile tilz2 = Framing.GetTileSafely(i, j);
+
+				if (tilz2.type > TileID.Count)
+				{
+					if (ModContent.GetModTile(tilz2.type) is ModTile modTile)
+					{
+						if (modTile != null && modTile is Tiles.TechTiles.HopperTile)
+						{
+							fail = true;
+						}
+					}
+				}
+			}
+		}
+
+	}
 
 	public class SGAtiles : GlobalTile
 	{
 		public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
+
+
 			if (WorldGen.InWorld(i, j - 1))
 			{
-				Tile tilz = Framing.GetTileSafely(i, j - 1);
+
 				Tile tilz2 = Framing.GetTileSafely(i, j);
+
+
+				Tile tilz = Framing.GetTileSafely(i, j - 1);
+
 				if (tilz2.type != mod.TileType("CaliburnAltar") && tilz2.type != mod.TileType("CaliburnAltarB") && tilz2.type != mod.TileType("CaliburnAltarC"))
 					if (tilz.type == mod.TileType("CaliburnAltar") || tilz.type == mod.TileType("CaliburnAltarB") || tilz.type == mod.TileType("CaliburnAltarC"))
 						fail = true;

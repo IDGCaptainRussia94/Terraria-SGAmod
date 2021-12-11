@@ -109,7 +109,7 @@ namespace SGAmod.Items.Armors.Vibranium
 			Tooltip.SetDefault("30% increased magic damage and 12% crit chance\nHalf of your mana cost is paid as Electric Charge (by 3X the cost)\n"+Idglib.ColorText(Color.Red, "Will trigger a shield break on deplete")+"\n2% increased magic Apocalyptical Chance");
 		}
 
-		internal static bool GetMagicCost(Player player, int ammount, bool pay)
+		internal static bool GetMagicCost(Player player, ref int ammount, bool pay)
 		{
 			//Type whateverItWas = boxedAmmount.GetType();
 
@@ -118,24 +118,10 @@ namespace SGAmod.Items.Armors.Vibranium
 			if (player.armor[0].type == ModContent.ItemType<VibraniumHeadgear>())
 			{
 				doIt = player.SGAPly().ConsumeElectricCharge(10 + ammount, 30 + ammount * 2, true, pay);
+				ammount = (int)(ammount * 0.50f);
 			}
 
 			return doIt;
-		}
-
-		internal static int SetMagicCost(Player player, int ammount, bool pay)
-		{
-			//Type whateverItWas = boxedAmmount.GetType();
-			int newAmmount = ammount;
-
-			bool doIt = true;
-			if (player.armor[0].type == ModContent.ItemType<VibraniumHeadgear>())
-			{
-				doIt = player.SGAPly().ConsumeElectricCharge(10 + newAmmount, 30 + newAmmount * 2, true, pay);
-				newAmmount = (int)(newAmmount * 0.50f);
-			}
-
-			return newAmmount;
 		}
 
 		public override void SetDefaults()

@@ -88,9 +88,9 @@ namespace SGAmod.Tiles.TechTiles
 				{
 					Tile tile = Framing.GetTileSafely(tilePosition.X, tilePosition.Y);
 					//Main.NewText(tile.type + " this type "+item.position);
-					if (tile.type == ModContent.TileType<HopperTile>() || tile.type == ModContent.TileType<ChestHopperTile>() || tile.type == ModContent.TileType<ShiftingFunnelTile>() || tile.type == ModContent.TileType<LiquidationHopperTile>())
+					//if (tile.type == ModContent.TileType<HopperTile>() || tile.type == ModContent.TileType<ChestHopperTile>() || tile.type == ModContent.TileType<ShiftingFunnelTile>() || tile.type == ModContent.TileType<LiquidationHopperTile>())
+					if (tile.type>TileID.Count)
 					{
-
 						if (ModContent.GetModTile(tile.type) is ModTile modTile)
 						{
 							if (modTile != null && modTile is HopperTile)
@@ -99,7 +99,6 @@ namespace SGAmod.Tiles.TechTiles
 								(modTile as HopperTile).HopperMoveItem(item, tilePosition, 0, ref item.stack, ref teststatus);
 							}
 						}
-
 
 						//MoveItem(item, tilePosition, 0,ref item.stack,ref teststatus);
 					}

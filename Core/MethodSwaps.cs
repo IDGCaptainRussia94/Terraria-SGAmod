@@ -25,6 +25,7 @@ using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using System.IO;
 using SGAmod.Credits;
+using System.Diagnostics;
 
 namespace SGAmod
 {
@@ -47,6 +48,7 @@ namespace SGAmod
             On.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += CtorModWorlData;
             On.Terraria.GameContent.UI.Elements.UIWorldListItem.DrawSelf += Menu_UICWorldListItem;
             On.Terraria.GameContent.UI.States.UIWorldSelect.ctor += UIWorldSelect_ClearData;
+            On.Terraria.DataStructures.PlayerDeathReason.ByOther += DrowningInSpaceIsNotReallyAThing; 
 
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
@@ -161,7 +163,7 @@ namespace SGAmod
 
 		}
 
-        private static void BlockVanillaAccessories(On.Terraria.Player.orig_UpdateEquips orig, Player self, int i)
+		private static void BlockVanillaAccessories(On.Terraria.Player.orig_UpdateEquips orig, Player self, int i)
         {
 			if (self.SGAPly().disabledAccessories<1)
 			orig(self, i);
@@ -230,6 +232,25 @@ namespace SGAmod
 			{
 				SGAWorld.highestDimDungeonFloor = 0;
 			}
+		}
+
+		private static PlayerDeathReason DrowningInSpaceIsNotReallyAThing(On.Terraria.DataStructures.PlayerDeathReason.orig_ByOther orig, int type)
+		{
+			if (type == 1 && SGAPocketDim.WhereAmI == typeof(SpaceDim))
+            {
+				string playerName = "NO ONE";
+
+				foreach (Player player in Main.player.Where(testby => testby.statLife < 1))
+                {
+					playerName = player.name;
+					break;
+                }
+
+				return PlayerDeathReason.ByCustomReason(playerName+ " was asphyxiated by the void of space");
+            }
+
+
+			return orig(type);
 		}
 
 		//These aren't used atm

@@ -643,7 +643,41 @@ namespace SGAmod
 
 			return true;
 		}
+		public static Type NumberType(dynamic thisNumber)
+		{
 
+			if (thisNumber is sbyte)
+				return typeof(sbyte);
+
+			if (thisNumber is short)
+				return typeof(short);
+
+			if (thisNumber is ushort)
+				return typeof(ushort);
+
+			if (thisNumber is int)
+				return typeof(int);
+
+			if (thisNumber is uint)
+				return typeof(uint);
+
+			if (thisNumber is long)
+				return typeof(long);
+
+			if (thisNumber is ulong)
+				return typeof(ulong);
+
+			if (thisNumber is float)
+				return typeof(float);
+
+			if (thisNumber is double)
+				return typeof(double);
+
+			if (thisNumber is decimal)
+				return typeof(decimal);
+
+			throw new InvalidOperationException("This is not a number");
+		}
 
 		public static int ItemToMusic(int itemtype)
 		{

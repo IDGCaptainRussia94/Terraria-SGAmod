@@ -1759,7 +1759,7 @@ namespace SGAmod.Items.Accessories
 
 		private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer sgaply)
 		{
-			if (sgaply.player.controlDown && sgaply.gravBoots == true)
+			if (sgaply.player.velocity.Y != 0 && sgaply.player.controlDown && !sgaply.player.controlJump && sgaply.gravBoots == true)
 			{
 				if (sgaply.player.gravity >= Player.defaultGravity)
 					sgaply.player.maxFallSpeed += 5;

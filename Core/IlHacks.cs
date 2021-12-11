@@ -46,8 +46,8 @@ namespace SGAmod
 
 			IL.Terraria.GameContent.Events.Sandstorm.EmitDust += ForceSandStormEffects;
 
-			if (SGAmod.OSType < 1)//Only windows
-				IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
+			//if (SGAmod.OSType < 1)//Only windows
+			//	IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
 
 			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
 			IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
@@ -392,7 +392,9 @@ namespace SGAmod
 
 		}
 
-		private delegate bool MagicOverride(Player player,ref int ammount,bool pay);
+		private delegate bool MagicIfOverride(Player player,int ammount, bool pay);
+		private delegate int MagicDoOverride(Player player, int ammount, bool pay);
+
 		static internal void MagicCostHack(ILContext il)//Change and apply effects AFTER the ammount has been properly set in CheckMana_Item_int_bool_bool
 		{
 
@@ -409,17 +411,28 @@ namespace SGAmod
 
 			//c.Index -= 3;
 			c.Emit(OpCodes.Ldarg, 0);//player
-			c.Emit(OpCodes.Ldarga, 2);//'ammount' int, passed as 'ref'
+			c.Emit(OpCodes.Ldarg, 2);//'ammount' int (not ref anymore cus 64bit doesn't like that), passed as 'ref'
 			c.Emit(OpCodes.Ldarg, 3);//'pay' bool
-			c.EmitDelegate<MagicOverride>((Player player,ref int ammount, bool pay) =>
+			c.EmitDelegate<MagicIfOverride>((Player player, int ammount, bool pay) =>
 			{
-				return Items.Armors.Vibranium.VibraniumHeadgear.DoMagicStuff(player,ref ammount,pay);
+				return Items.Armors.Vibranium.VibraniumHeadgear.GetMagicCost(player,ammount, pay);
 			});
 			c.Emit(OpCodes.Brtrue_S, label); //if false, jump ahead
 			c.Emit(OpCodes.Ldc_I4_0);//false
 			c.Emit(OpCodes.Ret);//return ^false
 
 			c.MarkLabel(label);
+
+			//64bit fix below
+
+			c.Emit(OpCodes.Ldarg, 0);//player
+			c.Emit(OpCodes.Ldarg, 2);//'ammount' int (not ref anymore cus 64bit doesn't like that), passed as 'ref'
+			c.Emit(OpCodes.Ldarg, 3);//'pay' bool
+			c.EmitDelegate<MagicDoOverride>((Player player, int ammount, bool pay) =>
+			{
+				return Items.Armors.Vibranium.VibraniumHeadgear.SetMagicCost(player, ammount, pay);
+			});
+			c.Emit(OpCodes.Starg, 2);//set 'ammount'
 
 
 			return;

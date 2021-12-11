@@ -5,7 +5,18 @@ Changelog:
 
 --Changed:
 
+-Nerfed Brimflame Harbinger: damage lowered to 160 (from 200)
+
+-Gravity Stabilizer Boots don't work if you also hold jump: to not conflict with boosting
+
+
 --Fixed:
+
+-(hopefully) fixed the Mana Cost bug that stopped 64Bit from loading the mod
+
+-(how do I even explain these to most players?), specific patches should now no longer cast on trying to unload
+
+-Gravity Stabilizer Boots stopping you from falling through platforms
 
 -Phaethon not dropping his Relic, No-hits now only count from the moment the boss exits their intro animation (getting hit before the boss fight no longer prevents getting the relic)
 

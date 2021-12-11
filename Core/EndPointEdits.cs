@@ -26,35 +26,53 @@ using System.Threading;
 namespace SGAmod
 {
 
-	public static class PrivateClassEdits
-	{
-		//This class is comprised of more direct version of Monomod IL patches/ON Detour Hooks to classes that you normally 'should not' have access to (and by extention, should not be) patching, learned thanks to a very "specific", very talented dev who's serving a not-worth-it mod
+	public class HookEdit
+    {
+		public bool loaded = false;
 
-		public static Type typeUIModItem;
+		public void Load()
+        {
+			if (!loaded)
+			{
+				LoadInternal();
+				loaded = true;
+			}
+		}
+		public void Unload()
+        {
+			if (loaded)
+            {
+				UnloadInternal();
+				loaded = false;
+			}
+        }
 
-		internal static void ApplyPatches()
+		protected virtual void LoadInternal(){}
+		protected virtual void UnloadInternal(){}
+		internal HookEdit()
+        {
+			Load();
+		}
+	}
+
+	public class BlockPlayerEquips : HookEdit
+    {
+		private delegate bool PlayerIsInSandstormDelegate(Player ply);
+
+		protected override void LoadInternal()
 		{
-			SGAmod.Instance.Logger.Debug("Doing some Monomod Hook Endpoint nonsense... Jesus christ this is alot of vanilla hacking");
-
-			typeUIModItem = Assembly.GetAssembly(typeof(Main)).GetType("Terraria.ModLoader.UI.UIModItem");//This class is off-limits to us (internal), even to ON and IL, so we have to grab it directly from Main's assembly
-
-			ModifyUIModManipulator += ModifyUIModILPatch;
-			ModifyZoneSandstormPropertydManipulator += ModifyPlayerSandstormPropertyPatch;
 			BlockModdedAccessoriesManipulator += BlockModdedAccessoriesPatch;
-
+		}
+		protected override void UnloadInternal()
+		{
+			BlockModdedAccessoriesManipulator += BlockModdedAccessoriesPatch;
 		}
 
-		internal static void RemovePatches()
-		{
-			ModifyUIModManipulator -= ModifyUIModILPatch;
-			ModifyZoneSandstormPropertydManipulator -= ModifyPlayerSandstormPropertyPatch;
-			BlockModdedAccessoriesManipulator += BlockModdedAccessoriesPatch;
-		}
 
-        //Shutdown player accessories: vanilla and modded Post-Update ones, testing and unused atm: may not keep! (this may be going too far)
-        //Also runs post-post updates, after all other mods
-        #region Blocked Modded Accessories From Updating
-        public static event Manipulator BlockModdedAccessoriesManipulator
+		//Shutdown player accessories: vanilla and modded Post-Update ones, testing and unused atm: may not keep! (this may be going too far)
+		//Also runs post-post updates, after all other mods
+		#region Blocked Modded Accessories From Updating
+		public static event Manipulator BlockModdedAccessoriesManipulator
 		{
 			add
 			{
@@ -66,7 +84,7 @@ namespace SGAmod
 			}
 		}
 
-		private static void BlockModdedAccessoriesPatch(ILContext context)
+		private void BlockModdedAccessoriesPatch(ILContext context)
 		{
 			ILCursor c = new ILCursor(context);
 			ILLabel label = c.DefineLabel();
@@ -91,73 +109,48 @@ namespace SGAmod
 			});
 		}
 
-		private static bool BlockModdedAccessoriesMethod(Player ply)
+		private bool BlockModdedAccessoriesMethod(Player ply)
 		{
 			SGAPlayer sgaply = ply.SGAPly();
-			return sgaply.disabledAccessories>0;
+			return sgaply.disabledAccessories > 0;
 		}
 		#endregion
 
-		//Overrides the ZoneSandstorm property in Player to be true when the armor set ability is active (The visuals patch for this is in ILHacks.cs)
-		#region Sandstorm Edits
-		public static event Manipulator ModifyZoneSandstormPropertydManipulator
+	}
+
+	public class ModifyUI : HookEdit
+	{
+		private delegate bool PlayerIsInSandstormDelegate(Player ply);
+		Type typeUIModItem;
+
+		protected override void LoadInternal()
+		{
+			typeUIModItem = Assembly.GetAssembly(typeof(Main)).GetType("Terraria.ModLoader.UI.UIModItem");//This class is off-limits to us (internal), even to ON and IL, so we have to grab it directly from Main's assembly
+			ModifyUIModManipulator += ModifyUIModILPatch;
+		}
+		protected override void UnloadInternal()
+		{
+			ModifyUIModManipulator += ModifyUIModILPatch;
+		}
+
+
+		//This part adds the (soon to be) animated Icon, and walking dragon to the mod list :3
+		#region ModUI Edits
+
+
+		public event Manipulator ModifyUIModManipulator
 		{
 			add
 			{
-				HookEndpointManager.Modify(typeof(Player).GetProperty("ZoneSandstorm", SGAmod.UniversalBindingFlags).GetMethod, (Delegate)(object)value);
+				HookEndpointManager.Modify((MethodBase)typeUIModItem.GetMethod("Draw", SGAmod.UniversalBindingFlags), (Delegate)(object)value);
 			}
 			remove
 			{
-				HookEndpointManager.Unmodify(typeof(Player).GetProperty("ZoneSandstorm", SGAmod.UniversalBindingFlags).GetMethod, (Delegate)(object)value);
+				HookEndpointManager.Unmodify((MethodBase)typeUIModItem.GetMethod("Draw", SGAmod.UniversalBindingFlags), (Delegate)(object)value);
 			}
 		}
 
-		private static void ModifyPlayerSandstormPropertyPatch(ILContext context)
-		{
-			ILCursor c = new ILCursor(context);
-			ILLabel label = c.DefineLabel();
-
-			//effectively, looks like this:
-			//
-			//if (PlayerIsInSandstormMethod(player))
-			//return true;
-			//
-			//rest of original code below
-			c.Emit(OpCodes.Ldarg_0);
-			c.EmitDelegate<PlayerIsInSandstormDelegate>(PlayerIsInSandstormMethod);
-			c.Emit(OpCodes.Brfalse_S, label);
-			c.Emit(OpCodes.Ldc_I4_1);
-			c.Emit(OpCodes.Ret);
-			c.MarkLabel(label);
-		}
-
-		private delegate bool PlayerIsInSandstormDelegate(Player ply);
-
-		private static bool PlayerIsInSandstormMethod(Player ply)
-		{
-			SGAPlayer sgaply = ply.SGAPly();
-
-			return sgaply.desertSet && sgaply.sandStormTimer > 0;
-		}
-#endregion
-
-        //This part adds the (soon to be) animated Icon, and walking dragon to the mod list :3
-        #region ModUI Edits
-
-
-        public static event Manipulator ModifyUIModManipulator
-	{
-		add
-		{
-			HookEndpointManager.Modify((MethodBase)typeUIModItem.GetMethod("Draw", SGAmod.UniversalBindingFlags), (Delegate)(object)value);
-		}
-		remove
-		{
-			HookEndpointManager.Unmodify((MethodBase)typeUIModItem.GetMethod("Draw", SGAmod.UniversalBindingFlags), (Delegate)(object)value);
-		}
-	}
-
-		private static void ModifyUIModILPatch(ILContext context)
+		private void ModifyUIModILPatch(ILContext context)
 		{
 			ILCursor c = new ILCursor(context);
 
@@ -175,9 +168,9 @@ namespace SGAmod
 
 		}
 
-		private delegate void UIModDelegate(object instance,SpriteBatch sb);
+		private delegate void UIModDelegate(object instance, SpriteBatch sb);
 
-		private static void UIDrawMethod(object instance, SpriteBatch sb)
+		private void UIDrawMethod(object instance, SpriteBatch sb)
 		{
 			string modName = (string)(typeUIModItem.GetProperty("ModName", SGAmod.UniversalBindingFlags).GetValue(instance));
 			CalculatedStyle style = (CalculatedStyle)(typeUIModItem.GetMethod("GetInnerDimensions", SGAmod.UniversalBindingFlags).Invoke(instance, new object[] { }));
@@ -198,7 +191,7 @@ namespace SGAmod
 
 				if (inBox.Contains((int)Main.MouseScreen.X, (int)Main.MouseScreen.Y))
 				{
-					instance.GetType().GetField("_tooltip", SGAmod.UniversalBindingFlags).SetValue(instance,"SGAmod Credits");
+					instance.GetType().GetField("_tooltip", SGAmod.UniversalBindingFlags).SetValue(instance, "SGAmod Credits");
 					Microsoft.Xna.Framework.Input.MouseState mouseState = Microsoft.Xna.Framework.Input.Mouse.GetState();
 					if (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
 					{
@@ -236,6 +229,97 @@ namespace SGAmod
 			}
 		}
 		#endregion
+
+	}
+
+	public class PlayerIsInSandstorm : HookEdit
+	{
+		private delegate bool PlayerIsInSandstormDelegate(Player ply);
+
+		protected override void LoadInternal()
+		{
+			ModifyZoneSandstormPropertydManipulator += ModifyPlayerSandstormPropertyPatch;
+		}
+		protected override void UnloadInternal()
+		{
+			ModifyZoneSandstormPropertydManipulator += ModifyPlayerSandstormPropertyPatch;
+		}
+
+
+		//Overrides the ZoneSandstorm property in Player to be true when the armor set ability is active (The visuals patch for this is in ILHacks.cs)
+		#region Sandstorm Edits
+		public event Manipulator ModifyZoneSandstormPropertydManipulator
+		{
+			add
+			{
+				HookEndpointManager.Modify(typeof(Player).GetProperty("ZoneSandstorm", SGAmod.UniversalBindingFlags).GetMethod, (Delegate)(object)value);
+			}
+			remove
+			{
+				HookEndpointManager.Unmodify(typeof(Player).GetProperty("ZoneSandstorm", SGAmod.UniversalBindingFlags).GetMethod, (Delegate)(object)value);
+			}
+		}
+
+		private void ModifyPlayerSandstormPropertyPatch(ILContext context)
+		{
+			ILCursor c = new ILCursor(context);
+			ILLabel label = c.DefineLabel();
+
+			//effectively, looks like this:
+			//
+			//if (PlayerIsInSandstormMethod(player))
+			//return true;
+			//
+			//rest of original code below
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<PlayerIsInSandstormDelegate>(PlayerIsInSandstormMethod);
+			c.Emit(OpCodes.Brfalse_S, label);
+			c.Emit(OpCodes.Ldc_I4_1);
+			c.Emit(OpCodes.Ret);
+			c.MarkLabel(label);
+		}
+
+		private bool PlayerIsInSandstormMethod(Player ply)
+		{
+			SGAPlayer sgaply = ply.SGAPly();
+
+			return sgaply.desertSet && sgaply.sandStormTimer > 0;
+		}
+		#endregion
+
+	}
+
+
+	public static class PrivateClassEdits
+	{
+		//This class is comprised of more direct version of Monomod IL patches/ON Detour Hooks to classes that you normally 'should not' have access to (and by extention, should not be) patching, learned thanks to a very "specific", very talented dev who's serving a not-worth-it mod
+		internal static List<HookEdit> hooksList;
+
+		internal static void ApplyPatches()
+		{
+			SGAmod.Instance.Logger.Debug("Doing some Monomod Hook Endpoint nonsense... Jesus christ this is alot of vanilla hacking");
+			hooksList = new List<HookEdit>();
+
+			Assembly ass = SGAmod.Instance.Code;
+			foreach (Type typeoff in ass.GetTypes())
+			{
+				Type hooktype = typeof(HookEdit);
+				//SGAmod.Instance.Logger.Debug("Checking assembly: "+ typeoff.Name);
+				if (typeoff != hooktype && typeoff.IsSubclassOf(hooktype))
+				{
+					HookEdit instancedHook = (ass.CreateInstance(typeoff.FullName) as HookEdit);
+					hooksList.Add(instancedHook);
+				}
+			}
+		}
+
+		internal static void RemovePatches()
+		{
+			foreach(HookEdit hook in hooksList)
+            {
+				hook.Unload();
+            }
+		}
 
 		/*public static IEnumerable<Type> GetEveryMethodDerivedFrom(Type baseType, Assembly assemblyToSearch)
 	{

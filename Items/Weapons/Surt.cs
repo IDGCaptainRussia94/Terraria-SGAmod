@@ -171,7 +171,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 200;
+			item.damage = 160;
 			item.melee = true;
 			item.width = 54;
 			item.crit = 15;

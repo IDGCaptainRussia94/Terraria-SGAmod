@@ -17,7 +17,7 @@ namespace SGAmod.NPCs.Sharkvern
             projectile.hostile = true;
             projectile.tileCollide = false;
             projectile.ignoreWater = true;
-            projectile.penetrate = 1;
+            projectile.penetrate = -1;
             projectile.timeLeft = 500;
 			projectile.aiStyle = 36;
             Main.projFrames[projectile.type] = 6;

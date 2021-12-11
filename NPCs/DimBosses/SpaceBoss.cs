@@ -1743,6 +1743,8 @@ namespace SGAmod.Dimensions.NPCs
 
 		public void StateWakingUp()
 		{
+			npc.SGANPCs().NoHit = true;
+
 			bool canAdvance = true;
 
 			npc.TargetClosestUpgraded(false, npc.Center);

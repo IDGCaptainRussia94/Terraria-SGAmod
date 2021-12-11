@@ -24,6 +24,14 @@ A few warnings before the changelog:
 
 Changelog:
 
+3.603-(12/10/21)-Hotfix 22
+
+--Changed:
+
+-Removed "beta" in the mod title
+
+
+
 3.602-(12/10/21)-Hotfix 21
 
 --Changed:

@@ -1,6 +1,28 @@
 
 Changelog:
 
+3.604-(12/10/21)-Hotfix 22
+
+--Changed:
+
+--Fixed:
+
+-Phaethon not dropping his Relic, No-hits now only count from the moment the boss exits their intro animation (getting hit before the boss fight no longer prevents getting the relic)
+
+-Incorrect (and wierd head) Mandala Glowmasks
+
+-Water Tornados (Sharkvern) no longer vanish on hitting a friendly NPC
+
+
+
+3.603-(12/10/21)-Hotfix 22
+
+--Changed:
+
+-Removed "beta" in the mod title
+
+
+
 3.602-(12/10/21)-Hotfix 21
 
 --Changed:

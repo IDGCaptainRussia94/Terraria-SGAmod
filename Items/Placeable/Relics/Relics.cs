@@ -71,7 +71,12 @@ namespace SGAmod.Items.Placeable.Relics
 			ISGABoss iboss = modnpc as ISGABoss;
 			string itemtype = "Relic_Item_" + iboss.RelicName();
 
-			if (itemtype == "Relic_Item_Caliburn")
+			if (itemtype == "Relic_Item_SpaceBoss")
+			{
+				itemtype = "Relic_Item_Phaethon";
+			}
+
+				if (itemtype == "Relic_Item_Caliburn")
 			{
 				itemtype = "Relic_Item_Caliburn_A";
 				if (modnpc.npc.ai[2] == 1)

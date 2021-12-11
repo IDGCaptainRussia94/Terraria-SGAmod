@@ -105,8 +105,10 @@ namespace SGAmod
 		{
 			if (Main.expertMode && NoHit && npc.modNPC != null)
 			{
+
 				if (npc.modNPC is ISGABoss iboss)
 				{
+
 					if (npc.GetType() != typeof(HellionCore))
 					{
 						iboss.NoHitDrops();

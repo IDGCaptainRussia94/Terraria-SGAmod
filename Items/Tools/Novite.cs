@@ -71,7 +71,8 @@ namespace SGAmod.Items.Tools
 			item.height = 40;
 			item.useTime = 15;
 			item.useAnimation = 15;
-			item.axe = 60;
+			item.tileBoost = -2;
+			item.axe = 15;
 			item.pick = 0;
 			item.useStyle = 1;
 			item.knockBack = 6;

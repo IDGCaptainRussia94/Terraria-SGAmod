@@ -4,11 +4,6 @@ Changelog:
 
 3.611-(12/15/21)--Hotfix 24
 
---Changed:
-
--Buffed Novus Axe: axe power increased to 60 (from 12)
-
-
 --Fixed:
 
 -missing Novite Shield Recipe
@@ -81,7 +76,6 @@ Changelog:
 -Extreme lag on the Novus Core
 
 -Vibranium Headgear only taking 1X the mana cost as electric charge (should have taken 3X)
-
 
 
 

@@ -22,12 +22,8 @@ A few warnings before the changelog:
 -This mod has not been properly tested/optimized for multiplayer, while it supports some MP features, many things are disabled in MP
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
+
 3.611-(12/15/21)--Hotfix 24
-
---Changed:
-
--Buffed Novus Axe: axe power increased to 60 (from 12)
-
 
 --Fixed:
 

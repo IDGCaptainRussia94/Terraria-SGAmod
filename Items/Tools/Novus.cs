@@ -77,7 +77,7 @@ namespace SGAmod.Items.Tools
 			item.height = 40;
 			item.useTime = 15;
 			item.useAnimation = 15;
-			item.axe = 60;
+			item.axe = 12;
 			item.useStyle = 1;
 			item.knockBack = 6;
 			item.value = 10000;

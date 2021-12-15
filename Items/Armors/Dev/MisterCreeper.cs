@@ -65,12 +65,13 @@ namespace SGAmod.Items.Armors.Dev
 			player.meleeSpeed += 0.25f;
 			player.GetModPlayer<SGAPlayer>().ThrowingSpeed += 0.15f;
 			player.BoostAllDamage(-0.10f, -10);
+			player.statLifeMax2 += 75;
 		}
 		public virtual List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "8% Increased Melee Crit, 12% increased throwing Crit"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "33% to not consume thrown items, 25% increased melee swing speed"));
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "15% increased throwing rate"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "15% increased throwing rate, 75 increased max life"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red, "10% reduced non-melee/throwing damage and crit chance")));
 			return tooltips;
 		}
@@ -151,12 +152,14 @@ namespace SGAmod.Items.Armors.Dev
 			player.meleeCrit += 10;
 
 			player.BoostAllDamage(-0.10f, -10);
+
+			player.statLifeMax2 += 100;
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "25% increased melee damage, 32% increased throwing damage"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Immunity to Knockback, greatly increased Life Regen"));
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "20% improved Endurance"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "20% improved Endurance, 100 increased max life"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red, "10% reduced non-melee/throwing damage and crit chance")));
 			return tooltips;
 		}
@@ -212,12 +215,15 @@ namespace SGAmod.Items.Armors.Dev
 			player.meleeDamage += 0.10f;
 			player.Throwing().thrownDamage += 0.10f;
 
+			player.statLifeMax2 += 75;
+
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Movement speed increased and Flight time improved by 20%"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Do you don't take ANY self damage (includes fall and explosive damage)"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds")));
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Movement speed increased and Flight time improved by 20%"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "75 increased max life"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red, "10% reduced non-melee/throwing damage and crit chance")));
 			return tooltips;
 		}

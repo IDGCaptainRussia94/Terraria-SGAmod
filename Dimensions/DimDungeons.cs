@@ -50,7 +50,6 @@ namespace SGAmod.Dimensions
 			Filters.Scene["SGAmod:SpaceSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(1f ,1f ,1f).UseOpacity(0.0f), EffectPriority.High);
 			SkyManager.Instance["SGAmod:SpaceSky"] = new SpaceSky();			
 			
-			On.Terraria.Player.Teleport += Player_Teleport;
 			//On.Terraria.Player.Update += Player_Update;
 			DrawOverride.InitTestThings();
 		}
@@ -106,27 +105,6 @@ namespace SGAmod.Dimensions
 			DimDungeonsProxy.Instance = null;
 			LimboDim.DestroyTextures();
 		}
-
-		private void Player_Teleport(On.Terraria.Player.orig_Teleport orig, Player self, Vector2 newPos, int Style = 0, int extraInfo = 0)
-		{
-			// 'orig' is a delegate that lets you call back into the original method.
-			// 'self' is the 'this' parameter that would have been passed to the original method.
-
-			if (SGAPocketDim.WhereAmI != null)
-			{
-				if (SLWorld.currentSubworld is SGAPocketDim sub)
-				{
-					if (sub.LimitPlayers % 16 == 0 && sub.LimitPlayers>0)
-					{
-						return;
-					}
-				}
-				if (SGAPocketDim.WhereAmI == typeof(LimboDim))
-					self.AddBuff(BuffID.ChaosState, 60 * 10);
-			}
-			orig(self, newPos, Style, extraInfo);
-
-	}
 
 	private void Player_Update(On.Terraria.Player.orig_Update orig, Player self, int index)
 	{

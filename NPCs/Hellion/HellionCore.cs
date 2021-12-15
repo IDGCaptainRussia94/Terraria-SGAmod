@@ -1105,10 +1105,14 @@ namespace SGAmod.NPCs.Hellion
 
         }
 
+        public override string BossHeadTexture => "SGAmod/NPCs/Hellion/HellionCore_Head_Boss";
+
+        /*
         public override string Texture
         {
             get { return ("Terraria/Projectile_" + ProjectileID.Starfury); }
         }
+        */
 
         public override bool? CanBeHitByItem(Player player, Item item)
         {

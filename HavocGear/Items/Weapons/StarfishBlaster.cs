@@ -22,7 +22,13 @@ namespace SGAmod.HavocGear.Items.Weapons
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Starfish Blaster");
-            Tooltip.SetDefault("Uses starfish as ammo.");
+            Tooltip.SetDefault("Uses starfish as ammo.\n90% to not consume ammo");
+        }
+
+        public override bool ConsumeAmmo(Player player)
+        {
+
+            return Main.rand.Next(100)<10;
         }
 
         public override void SetDefaults()

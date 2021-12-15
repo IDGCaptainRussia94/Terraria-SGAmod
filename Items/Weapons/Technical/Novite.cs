@@ -25,13 +25,14 @@ namespace SGAmod.Items.Weapons.Technical
 		{
 			base.SetDefaults();
 
-			item.damage = 15;
+			item.damage = 36;
+			item.crit = 25;
 			item.width = 48;
 			item.height = 48;
 			item.melee = true;
 			item.useTurn = true;
-			item.rare = 1;
-			item.value = 2000;
+			item.rare = ItemRarityID.Green;
+			item.value = 2500;
 			item.useStyle = 1;
 			item.useAnimation = 50;
 			item.useTime = 50;
@@ -65,19 +66,19 @@ namespace SGAmod.Items.Weapons.Technical
 
 	}
 
-	public class NoviteStab : ModProjectile
+	public class NoviteStab : ModProjectile,ITrueMeleeProjectile
 	{
 		public override void SetDefaults()
 		{
-			projectile.width = 12;
-			projectile.height = 12;
+			projectile.width = 16;
+			projectile.height = 16;
 			projectile.aiStyle = -1;
 			projectile.friendly = true;
 			projectile.hostile = false;
 			projectile.penetrate = 1;
 			projectile.melee = true;
-			projectile.timeLeft = 30;
-			projectile.extraUpdates = 30;
+			projectile.timeLeft = 40;
+			projectile.extraUpdates = 40;
 			aiType = -1;
 			Main.projFrames[projectile.type] = 1;
 		}

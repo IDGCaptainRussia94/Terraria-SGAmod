@@ -33,21 +33,21 @@ namespace SGAmod
 			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
 			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
+			IL.Terraria.Player.DashMovement += EoCBonkInjection;
 
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
 			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += AdjustLifeRegen;
 			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
-			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
-			IL.Terraria.Player.ExtractinatorUse += Player_ExtractinatorUse;
 			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
-			IL.Terraria.Player.DashMovement += EoCBonkInjection;
+			IL.Terraria.Player.ExtractinatorUse += Player_ExtractinatorUse;
+			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
 
 			IL.Terraria.GameContent.Events.Sandstorm.EmitDust += ForceSandStormEffects;
 
 			//if (SGAmod.OSType < 1)//Only windows
-				//IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
+			//IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
 
 			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
 			IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
@@ -173,7 +173,7 @@ namespace SGAmod
 		}
 
 		//Adds extra functionality to the EoC Shield Bonk
-		private delegate void BonkDelegate(Player ply, int npcid, ref float damage, ref float knockback, ref bool crit);
+		private delegate void BonkDelegate(Player ply, int npcid, float damage, float knockback, bool crit);
 		static internal void EoCBonkInjection(ILContext il)
 		{
 			ILCursor c = new ILCursor(il);
@@ -183,10 +183,10 @@ namespace SGAmod
 			{
 				c.Emit(OpCodes.Ldarg_0);//player
 				c.Emit(OpCodes.Ldloc, 1);//npc id
-				c.Emit(OpCodes.Ldloca, 4);//bonk damage (30f) (passed as 'ref' keyword)
-				c.Emit(OpCodes.Ldloca, 5);//bonk knockback (passed as 'ref' keyword)
-				c.Emit(OpCodes.Ldloca, 6);//crit (passed as 'ref' keyword)
-				c.EmitDelegate<BonkDelegate>((Player ply, int npcid,ref float damage, ref float knockback,ref bool crit) => DoShieldBonkCode(ply, npcid, ref damage, ref knockback,ref crit));
+				c.Emit(OpCodes.Ldloc, 4);//bonk damage (30f)
+				c.Emit(OpCodes.Ldloc, 5);//bonk knockback
+				c.Emit(OpCodes.Ldloc, 6);//crit
+				c.EmitDelegate<BonkDelegate>((Player ply, int npcid,float damage, float knockback,bool crit) => DoShieldBonkCode(ply, npcid, damage, knockback,crit));
 				return;
 			}
 
@@ -194,7 +194,7 @@ namespace SGAmod
 
 		}
 
-		private static void DoShieldBonkCode(Player ply, int npcid, ref float damage, ref float knockback, ref bool crit)
+		private static void DoShieldBonkCode(Player ply, int npcid, float damage, float knockback, bool crit)
 		{
 			if (Main.myPlayer != ply.whoAmI && npcid >= 0)
 				return;
@@ -230,7 +230,7 @@ namespace SGAmod
 			NPCs.Hellion.ShadowParticle.Draw();
 		}
 
-		private delegate bool ExtractorDelegate(ref int extractedType, ref int extractedAmmount);//Catches the IDs and stack size of extracts
+		private delegate bool ExtractorDelegate(int extractedType, int extractedAmmount);//Catches the IDs and stack size of extracts
 
 		private static void Player_ExtractinatorUse(ILContext il)//and it works!
 		{
@@ -242,10 +242,10 @@ namespace SGAmod
 
 				ILLabel label = c.DefineLabel();
 
-				c.Emit(OpCodes.Ldloca, 4);
-				c.Emit(OpCodes.Ldloca, 5);
+				c.Emit(OpCodes.Ldloc, 4);
+				c.Emit(OpCodes.Ldloc, 5);
 
-			c.EmitDelegate<ExtractorDelegate>((ref int extractedType,ref int extractedAmmount) =>
+			c.EmitDelegate<ExtractorDelegate>((int extractedType,int extractedAmmount) =>
 			{
 				if (SGAmod.ExtractedItem.Item3)
                 {
@@ -392,7 +392,10 @@ namespace SGAmod
 
 		}
 
-		private delegate bool MagicOverride(Player player,ref int ammount, bool pay);
+		private delegate bool MagicOverride(Player player,int ammount, bool pay);
+		private delegate int MagicPaymentOverride(Player player, int ammount, bool pay);
+
+		//Vibranium Headgear halves mana cost, but makes you consume electric charge instead as well
 		static internal void MagicCostHack(ILContext il)//Change and apply effects AFTER the ammount has been properly set in CheckMana_Item_int_bool_bool
 		{
 
@@ -407,27 +410,37 @@ namespace SGAmod
 
 			ILLabel label = c.DefineLabel();
 
+			
 			//c.Index -= 3;
 			c.Emit(OpCodes.Ldarg, 0);//player
-			c.Emit(OpCodes.Ldarga, 2);//'ammount' int (doesn't work in 64 bit fuck me), passed as 'ref'
+			c.Emit(OpCodes.Ldarg, 2);//'ammount' int
 			c.Emit(OpCodes.Ldarg, 3);//'pay' bool
-			c.EmitDelegate<MagicOverride>((Player player, ref int ammount, bool pay) =>
+			c.EmitDelegate<MagicOverride>((Player player, int ammount, bool pay) =>
 			{
-				return Items.Armors.Vibranium.VibraniumHeadgear.GetMagicCost(player,ref ammount, pay);
+				return Items.Armors.Vibranium.VibraniumHeadgear.GetMagicCost(player,ammount, pay);
 			});
-			c.Emit(OpCodes.Brtrue_S, label); //if false, jump ahead
+			c.Emit(OpCodes.Brtrue_S, label); //if false, jump ahead past the label
+
+
 			c.Emit(OpCodes.Ldc_I4_0);//false
-			c.Emit(OpCodes.Ret);//return ^false
+			c.Emit(OpCodes.Ret);//return ^false	
 
 			c.MarkLabel(label);
+
+			c.Emit(OpCodes.Ldarg, 0);//player
+			c.Emit(OpCodes.Ldarg, 2);//'ammount' int
+			c.Emit(OpCodes.Ldarg, 3);//'pay' bool
+			c.EmitDelegate<MagicPaymentOverride>((Player player, int ammount, bool pay) =>
+			{
+				return Items.Armors.Vibranium.VibraniumHeadgear.SetMagicCost(player, ammount, pay);
+			});
+			c.Emit(OpCodes.Starg, 2);//set mana ammount int
 
 
 			return;
 
 		Failed:
 			throw new Exception("IL Error Test");
-		Failed2:
-			throw new Exception("IL Error Test 2");
 
 		}
 

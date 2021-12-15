@@ -39,16 +39,9 @@ namespace SGAmod.Items.Weapons
         }
         public override bool Autoload(ref string name)
         {
-            SGAmod.PostUpdateEverythingEvent += SGAmod_PostUpdateEverythingEvent;
 			return true;
         }
 
-        private void SGAmod_PostUpdateEverythingEvent()
-        {
-			Main.itemTexture[item.type] = Main.itemTexture[XenithBowTypes[Main.rand.Next(XenithBowTypes.Length)]];
-		}
-
-        public override string Texture => "Terraria/Projectile_" + ProjectileID.ShadowFlameArrow;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Xenith");

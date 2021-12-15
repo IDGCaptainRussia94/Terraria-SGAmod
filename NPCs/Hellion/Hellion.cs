@@ -2361,7 +2361,7 @@ namespace SGAmod.NPCs.Hellion
 	}
 
 
-	//[AutoloadBossHead]
+	[AutoloadBossHead]
 	public class Hellion : ModNPC, ISGABoss
 	{
 		public string Trophy() => "HellionTrophy";
@@ -3686,13 +3686,15 @@ namespace SGAmod.NPCs.Hellion
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Helen 'Hellion' Weygold");
-			Main.npcFrameCount[npc.type] = Main.npcFrameCount[NPCID.Guide];
+			//Main.npcFrameCount[npc.type] = Main.npcFrameCount[NPCID.Guide];
 			NPCID.Sets.MustAlwaysDraw[npc.type] = true;
 		}
-		public override string Texture
+
+		/*public override string Texture
 		{
 			get { return "Terraria/NPC_" + NPCID.Stylist; }
-		}
+		}*/
+
 		private void FilmStartCredits(FrameEventData evt)
 		{
 			Credits.CreditsManager.queuedCredits = true;
@@ -5269,7 +5271,7 @@ namespace SGAmod.NPCs.Hellion
 
 		public virtual void FailedNote(HellionFNFArrow fnfarrow)
 		{
-			Owner.Hurt(PlayerDeathReason.ByCustomReason(Owner.name + " Funkin' Died... Skill Issue"), projectile.damage * 5, 0);
+			Owner.Hurt(PlayerDeathReason.ByCustomReason(Owner.name + " Funkin' Died... Skill Issue"), projectile.damage * 5, 0,cooldownCounter: 2);
 		}
 
 		public virtual void CheckNotes()

@@ -29,8 +29,8 @@ namespace SGAmod.Items.Armors.Dev
 		}
 		public override void InitEffects()
 		{
-			item.defense = 12;
-			item.rare = 10;
+			item.defense = 8;
+			item.rare = ItemRarityID.Purple;
 		}
 
 		public static void SetBonus(SGAPlayer sgaplayer)
@@ -139,8 +139,8 @@ namespace SGAmod.Items.Armors.Dev
 			}
 			public override void InitEffects()
 			{
-				item.defense = 20;
-				item.rare = 10;
+				item.defense = 10;
+				item.rare = ItemRarityID.Purple;
 				item.lifeRegen = 3;
 			}
 			public override void AddEffects(Player player)
@@ -187,9 +187,9 @@ namespace SGAmod.Items.Armors.Dev
 
 			public override void InitEffects()
 			{
-				item.defense = 8;
-				item.rare = 10;
-			}
+			item.defense = 6;
+			item.rare = ItemRarityID.Purple;
+		}
 		public override void AddEffects(Player player)
 		{
 

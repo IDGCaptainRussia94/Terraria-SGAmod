@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using SGAmod.Projectiles;
 using Idglibrary;
+using SGAmod.Buffs;
 
 namespace SGAmod.Items.Weapons
 {
@@ -17,53 +18,8 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Glass Sword");
-			Tooltip.SetDefault("Shatters on the first hit, throwing out several glass shards\nThis weapon ignores enemy defense");
+			Tooltip.SetDefault("Shatters on the first hit, throwing out several glass shards\nEnemies hit with the broken edge afterwords are cut deep with gourged\nThis weapon ignores enemy defense");
 			Item.staff[item.type] = true; 
-		}
-
-		public override bool ConsumeItem(Player player)
-		{
-			return player.itemAnimation>0;
-		}
-
-		public override bool CanUseItem(Player player)
-		{
-			if (!Main.dedServ)
-			{
-				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/Weapons/GlassSword");
-			}
-			item.noMelee = false;
-			return true;
-		}
-
-        public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
-        {
-			damage += target.defense/2;
-		}
-
-        public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
-		{
-			item.noMelee = true;
-			player.ConsumeItem(item.type);
-			Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 27, 0.75f, 0f);
-
-			for (float i = 24; i < 80; i += 20)
-			{
-				Vector2 position = player.Center;
-
-				Vector2 eree = player.itemRotation.ToRotationVector2().RotatedBy(MathHelper.ToRadians(-45f* player.direction));
-				eree *= player.direction;
-
-				position += eree * i;
-
-				int thisoned = Projectile.NewProjectile(position.X, position.Y, eree.X*Main.rand.NextFloat(2.4f,5f), eree.X * Main.rand.NextFloat(0.5f, 2f), mod.ProjectileType("BrokenGlass"), damage, 0f, Main.myPlayer);
-
-			}
-
-				if (!Main.dedServ)
-				{
-					item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/Weapons/GlassSwordBreak");
-				}
 		}
 
 		public override void SetDefaults()
@@ -79,21 +35,94 @@ namespace SGAmod.Items.Weapons
 			item.reuseDelay = 30;
 			item.consumable = true;
 			item.useStyle = 1;
-			item.knockBack = 1;
+			item.knockBack = 2;
 			item.noUseGraphic = true;
 			item.value = Item.sellPrice(0, 0, 0, 5);
 			item.rare = 0;
-	        item.UseSound = SoundID.Item1;
+			item.UseSound = SoundID.Item1;
 			item.useTurn = false;
-	     	item.autoReuse = true;
+			item.autoReuse = true;
+		}
+
+		public override bool ConsumeItem(Player player)
+		{
+			return player.itemAnimation>0;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			if (!Main.dedServ)
+			{
+				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/Weapons/GlassSword");
+				Main.itemTexture[item.type] = mod.GetTexture("Items/Weapons/GlassSword");
+			}
+			item.width = 54;
+			item.height = 54;
+			item.knockBack = 2;
+			item.noMelee = false;
+			return true;
+		}
+
+        public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+        {
+			damage += target.defense/2;
+		}
+
+        public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
+		{
+			if (item.knockBack > 0)
+			{
+
+				player.ConsumeItem(item.type);
+				Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 27, 0.75f, 0f);
+
+				for (float i = 24; i < 80; i += 20)
+				{
+					Vector2 position = player.Center;
+
+					Vector2 eree = player.itemRotation.ToRotationVector2().RotatedBy(MathHelper.ToRadians(-45f * player.direction));
+					eree *= player.direction;
+
+					position += eree * i;
+
+					int thisoned = Projectile.NewProjectile(position.X, position.Y, eree.X * Main.rand.NextFloat(2.4f, 5f), eree.X * Main.rand.NextFloat(0.5f, 2f), mod.ProjectileType("BrokenGlass"), damage, 0f, Main.myPlayer);
+
+				}
+
+				if (!Main.dedServ)
+				{
+					item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/Weapons/GlassSwordBreak");
+				}
+
+            }
+            else
+            {
+				target.AddBuff(ModContent.BuffType<Gourged>(), 60 * 12);
+			}
+			player.itemWidth = 24;
+			player.itemHeight = 24;
+
+			if (!Main.dedServ)
+			{
+				Main.itemTexture[item.type] = mod.GetTexture("Items/Weapons/GlassSwordBreakSmol");
+				item.width = Main.itemTexture[item.type].Height;
+				item.height = Main.itemTexture[item.type].Width;
+			}
+
+
+
+			item.width = 24;
+			item.height = 24;
+
+			item.knockBack = 0;
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Glass, 4);
-			recipe.AddTile(TileID.Furnaces);
-			recipe.SetResult(this, 15);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this, 20);
 			recipe.AddRecipe();
 		}
 	

@@ -564,31 +564,68 @@ namespace SGAmod
 
         public bool NovusCoreCheck(Player player, Item item)
         {
+            SGAPlayer sgaply = player.SGAPly();
+            if (sgaply.novusBoost > 300)
+                return true;
 
-            if (player.SGAPly().Novusset > 3)
+            if (sgaply.novusBoost < 15)
             {
-                RecipeFinder finder = new RecipeFinder();
-                finder.AddIngredient(mod.ItemType("UnmanedBar"));
-                List<Recipe> reclist = finder.SearchRecipes();
-
-                Recipe foundone = reclist.Find(rec => rec.createItem.type == item.type);
-
-                if (foundone != null)
+                if (player.SGAPly().Novusset > 3)
                 {
-                    return true;
+                    RecipeFinder finder = new RecipeFinder();
+                    finder.AddIngredient(mod.ItemType("UnmanedBar"));
+                    List<Recipe> reclist = finder.SearchRecipes();
+
+                    Recipe foundone = reclist.Find(rec => rec.createItem.type == item.type);
+
+                    if (foundone != null)
+                    {
+                        /*if (sgaply.novusBoost < 3331)
+                        {
+                            var snd = Main.PlaySound(SoundID.DD2_KoboldIgnite, player.Center);
+                            if (snd != null)
+                            {
+                                snd.Pitch = -0.500f;
+                            }
+                            for (int i = 0; i < 16; i += 1)
+                            {
+                                int dust = Dust.NewDust(player.Hitbox.TopLeft(), player.Hitbox.Width, player.Hitbox.Height, mod.DustType("NovusSparkle"));
+                                Main.dust[dust].color = new Color(180, 60, 140);
+                                Main.dust[dust].alpha = 181;
+                            }
+                        }*/
+                        sgaply.novusBoost = 450;
+                        return true;
+                    }
+
+                    finder = new RecipeFinder();
+                    finder.AddIngredient(mod.ItemType("FieryShard"));
+                    reclist = finder.SearchRecipes();
+
+                    Recipe foundanother = reclist.Find(rec => rec.createItem.type == item.type);
+
+                    if (foundanother != null)
+                    {
+                        /*if (sgaply.novusBoost < 3331)
+                        {
+                            var snd = Main.PlaySound(SoundID.DD2_KoboldIgnite, player.Center);
+                            if (snd != null)
+                            {
+                                snd.Pitch = -0.750f;
+                            }
+                            for (int i = 0; i < 32; i += 1)
+                            {
+                                int dust = Dust.NewDust(player.Hitbox.TopLeft(), player.Hitbox.Width, player.Hitbox.Height, mod.DustType("NovusSparkle"));
+                                Main.dust[dust].color = new Color(180, 60, 140);
+                                Main.dust[dust].alpha = 181;
+                            }
+                        }*/
+                        sgaply.novusBoost = 600;
+                        return true;
+                    }
+
                 }
-
-                finder = new RecipeFinder();
-                finder.AddIngredient(mod.ItemType("FieryShard"));
-                reclist = finder.SearchRecipes();
-
-                Recipe foundanother = reclist.Find(rec => rec.createItem.type == item.type);
-
-                if (foundanother != null)
-                {
-                    return true;
-                }
-
+                sgaply.novusBoost = 200;
             }
             return false;
 
@@ -598,9 +635,9 @@ namespace SGAmod
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
             sgaplayer.FlaskEffects(hitbox, player.velocity);
-            if (NovusCoreCheck(player, item))
+            if (Main.rand.Next(7) == 0)
             {
-                if (Main.rand.Next(7) == 0)
+                if (NovusCoreCheck(player, item))
                 {
                     int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, mod.DustType("NovusSparkle"));
                     Main.dust[dust].color = new Color(180, 60, 140);

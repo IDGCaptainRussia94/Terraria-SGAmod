@@ -18,21 +18,21 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("BOOMerang");
-			Tooltip.SetDefault("Explodes when it hits an enemy, does not explode on tiles\n'This is what happens when you let Demolitionist and Tinkerer have too much fun...'");
+			Tooltip.SetDefault("Explodes when it hits an enemy, does not explode on tiles\nAllows up to 2 at once\n'This is what happens when you let Demolitionist and Tinkerer have too much fun...'");
 		}
 
 		public override void SetDefaults()
 		{
 			item.width = 16;
 			item.height = 16;
-			item.damage = 14;
-			item.crit = 5;
+			item.damage = 32;
+			item.crit = 10;
 			item.melee = true;
 			item.noMelee = true;
 			item.useTurn = true;
 			item.noUseGraphic = true;
 			item.useAnimation = 30;
-			item.useStyle = 5;
+			item.useStyle = ItemUseStyleID.HoldingOut;
 			item.noUseGraphic = true;
 			item.useTime = 30;
 			item.knockBack = 1f;
@@ -48,7 +48,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool CanUseItem(Player player)
 		{
-			return player.ownedProjectileCounts[item.shoot] < 1;
+			return player.ownedProjectileCounts[item.shoot] < 2;
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)

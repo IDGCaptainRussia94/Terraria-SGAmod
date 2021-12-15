@@ -1030,6 +1030,15 @@ namespace SGAmod
 					nextSlot++;
 					break;
 
+				case NPCID.Demolitionist:
+					if (NPC.CountNPCS(NPCID.GoblinTinkerer) > 0)
+					{
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<ExplosionBoomerang>());
+						nextSlot++;
+					}
+					break;
+
+
 				case NPCID.Wizard:
 
 					shop.item[nextSlot].SetDefaults(ModContent.ItemType<EnchantedBubble>());

@@ -71,17 +71,17 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 32;
+			item.damage = 40;
 			item.magic = true;
 			item.width = 34;
-			item.mana = 10;
+			item.mana = 8;
 			item.height = 24;
 			item.useTime = 15;
 			item.useAnimation = 15;
 			item.useStyle = 5;
 			item.knockBack = 6;
 			item.value = 100000;
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.shootSpeed = 8f;
 			item.noMelee = true;
 			item.shoot = 14;
@@ -109,9 +109,9 @@ namespace SGAmod.Items.Weapons
 			if (player.CountItem(types[taketype]) > 0)
 			{
 				player.ConsumeItem(types[taketype]);
-				float[,] typesproj = { { ModContent.ProjectileType<GlowingCopperCoinPlayer>(), 1f }, { ModContent.ProjectileType<GlowingSilverCoinPlayer>(), 1.5f }, { ModContent.ProjectileType<GlowingGoldCoinPlayer>(), 2.25f }, { ModContent.ProjectileType<GlowingPlatinumCoinPlayer>(), 5f } };
+				float[,] typesproj = { { ModContent.ProjectileType<GlowingCopperCoinPlayer>(), 1f }, { ModContent.ProjectileType<GlowingSilverCoinPlayer>(), 1.25f }, { ModContent.ProjectileType<GlowingGoldCoinPlayer>(), 1.75f }, { ModContent.ProjectileType<GlowingPlatinumCoinPlayer>(), 2.5f } };
 
-				int numberProjectiles = 8 + Main.rand.Next(7);
+				int numberProjectiles = 8 + Main.rand.Next(5);
 				for (int index = 0; index < numberProjectiles; index = index + 1)
 				{
 					Vector2 vector2_1 = new Vector2((float)((double)player.position.X + (double)player.width * 0.5 + (double)(Main.rand.Next(201) * -player.direction) + ((double)Main.mouseX + (double)Main.screenPosition.X - (double)player.position.X)), (float)((double)player.position.Y + (double)player.height * 0.5 - 600.0));   //this defines the projectile width, direction and position

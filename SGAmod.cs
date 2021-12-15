@@ -546,6 +546,7 @@ namespace SGAmod
 			SGAPlayer.ShieldTypes.Add(ItemType("SolarShield"), ProjectileType("SolarShieldProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("CapShield"), ProjectileType("CapShieldProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("AegisaltAetherstone"), ProjectileType("AegisaltAetherstoneProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("NoviteShield"), ProjectileType("NoviteShieldProj"));
 
 			SGAPlayer.ShieldTypes.Add(ItemType("LaserMarker"), ProjectileType("LaserMarkerProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("GraniteMagnet"), ProjectileType("GraniteMagnetProj"));

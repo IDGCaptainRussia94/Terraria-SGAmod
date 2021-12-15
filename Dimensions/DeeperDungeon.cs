@@ -36,7 +36,7 @@ namespace SGAmod.Dimensions
         public bool floor;
         public int lootroomid;
         //0=normal hallwall (subtype: 1-traps)
-        //1=spikey hallwall (subtype: 1-cobwebs, 2-ice hallways)
+        //1=spikey hallwall (subtype: 1-cobwebs, 2-ice hallways, 3-thorns)
         //2=platformed stairs (subtype: 1-traps)
         //3=loot room, doesn't generate minirooms
         //4=hallway leading into loot room
@@ -325,7 +325,9 @@ namespace SGAmod.Dimensions
 
                     subtype = 0;
                     if (UniRand.Next(0, 5) == 0)
-                        subtype = 1;
+                    {
+                            subtype = 1;
+                    }
 
                     MakeRoomLine(randomloc, tryhere, new Vector2(16, 16), ref allareas, UniRand, filltype: Math.Abs(flowpath.Y) > 0.75f ? 2 : UniRand.NextBool() ? 0 : 1, stepsize: UniRand.Next(8, 12), subtype: subtype);
                     randomloc = tryhere;
@@ -378,7 +380,14 @@ namespace SGAmod.Dimensions
                             if (UniRand.Next(0, 3) == 0)
                                 subtype = 1;
                             if (UniRand.Next(0, 20) == 0)
+                            {
                                 subtype = 2;
+                            }
+                            else
+                            {
+                                if (UniRand.Next(0, 15) == 0)
+                                    subtype = 3;
+                            }
 
                             MakeRoomLine(DeeperDungeon.pathways[i].vector, offsetangle, roomsize, ref allareas, UniRand, filltype: UniRand.NextBool() && Math.Abs(where.Y) > 0.75f ? 2 : 1, maxgencheck: 7, gen: repeat, stepsize: 4, branched: repeat + 1, subtype: subtype);
 
@@ -621,6 +630,15 @@ namespace SGAmod.Dimensions
                         IDGWorldGen.PlaceMulti(allareas[x].vector, TileID.BreakableIce, UniRand.Next(2, 5), replacetile: false);
                 }
 
+                if (allareas[x].type < 2 && allareas[x].subtype == 3)
+                {
+                    if (UniRand.Next(0, 30) == 0)
+                        IDGWorldGen.PlaceMulti(allareas[x].vector, -1500, UniRand.Next(2, UniRand.Next(3, 6)), WallID.JungleUnsafe);
+
+                    if (UniRand.Next(0, 75) == 0)
+                        IDGWorldGen.PlaceMulti(allareas[x].vector, TileID.JungleThorns, UniRand.Next(2, 5), replacetile: false);
+                }
+
                 if (allareas[x].type == 1)
                 {
                     if (UniRand.Next(0, allareas[x].subtype == 1 || allareas[x].subtype == 2 ? 20 : 150) == 0)
@@ -651,6 +669,7 @@ namespace SGAmod.Dimensions
                                     type = TileID.Cobweb;
                                     if (allareas[x].subtype == 2)
                                         type = TileID.BreakableIce;
+
                                     sizer[0] *= 1.75f;
                                     sizer[1] *= 1.75f;
                                     sizer[2] *= 1.75f;

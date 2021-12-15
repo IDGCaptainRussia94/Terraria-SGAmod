@@ -289,9 +289,9 @@ namespace SGAmod
 		[Header("Performance")]
 		[Label("Fog Detail")]
 		[Tooltip("Adjust the detail of the darkness fog effect; Higher is more detailed, but also more demanding")]
-		[Increment(0.01f)]
-		[Range(0f, 2f)]
-		[DefaultValue(1f)]
+		[Increment(1)]
+		[Range(5, 100)]
+		[DefaultValue(30)]
 		[Slider]
 		public int FogDetail { get; set; }
 

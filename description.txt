@@ -20,6 +20,100 @@ A few warnings before the changelog:
 
 -This mod has issues reloading/unloading, but will work fine if you restart your game thou, justs a heads up!
 -This mod has not been properly tested/optimized for multiplayer, while it supports some MP features, many things are disabled in MP
+-There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
+
+3.611-(12/15/21)--Hotfix 24
+
+--Changed:
+
+-Buffed Novus Axe: axe power increased to 60 (from 12)
+
+
+--Fixed:
+
+-missing Novite Shield Recipe
+
+-Novite Chainsaw being a mythril drill
+
+
+
+3.610-(12/15/21)-Patch 12
+
+-Added:
+
+-Novite Shield, Novite Chainsaw
+
+-Missing hellion map icons. Thanks Speedymatt123! (also added him to credits)
+
+-Sprite for Xenith, by Rijam
+
+-Speedymatt123 to Credits
+
+
+--Changed:
+
+-There are now thorns in the Deeper Dungeons
+
+-Yoyo Pickaxes can now mine asteriods, drills mine them 3X faster as well
+
+-Cirno now takes 9 seconds (they took 8 before, so it's not a big increase) from throwing the ball to spawn, 9ball joke, of course
+
+-Splunker Jellyfish have been made more uncommon to spawn
+
+-Hellion will always drop 999 AimBot Bullets when she drops those now
+
+-Rebalanced Philanthropist's Shower: Greatly reduced the damage of higher tier coins: (per coin from copper to plat, base damage times X: 1,1.5,2.25,5 => 1,1.25.1.75,2.50), number of shots reduced (8-17 -> 8-12), damage increased to 40 (from 32), mana cost reduced to 8 (from 10)
+
+-Buffed Glass Swords: Increased knockback, crafting is cheaper, and you can hit enemies after the 1st hit with broken glass swords, cutting them deep with the gourged debuff
+
+-Buffed Novite Knife: damage increased (15 => 36), crit chance boost of 25%, projectile goes a bit further and has a wider hitbox, and now counts as True Melee
+
+-Buffed BOOMerang: damage up (14 => 32), crit increased (5 => 10), allows up to 2 at once
+
+-Buffed Desolate Rift: Can now pass through solid tiles
+
+-Buffed Starfish Burster and Starfish Blaster: 90% to not consume ammo
+
+-Buffed MrCreeper Armor: Each piece gives max life: (head,body,leggings respectively => (75,100,75))
+
+-Nerfed JellyBru Armor: (defense down on all parts, head,body,leggings respectively (12,20,8) => (8,10,6)), Shield recharge rate reduced to 10 seconds (from 8)
+
+-Nerfed Flawed 1mm0rtal1ty Pr0t0call: Debuff increased to 10 seconds (from 5)
+
+-New changes to Wrath of Caliburn:
+-Combined dashing now has a much longer delay before they dash again, and they dash less in that attack
+-Added various delays for the dashing attacks
+
+-New changes to Helen Hellion Weygold:
+-Missing notes on the FNF attack will now ignore your immunity frames
+
+
+--Fixed:
+
+-The coveted 64bit fix!
+
+-Fog config being broken (slider of 0 shouldn't be allowed, not sure how this happened)
+
+-BOOMerangs being unobtainable
+
+-Added a Try/Catch for the emblems checking if they can be leveled up: hopefully no longer throwing extensive errors in Magic Storage
+
+-Extreme lag on the Novus Core
+
+-Vibranium Headgear only taking 1X the mana cost as electric charge (should have taken 3X)
+
+
+
+3.605-(12/11/21)-Hotfix 23
+
+--Changed:
+
+-'drowning' in Near Orbit now triggers a new death message instead
+
+
+--Fixed:
+
+-Hoppers crashing the game... Hopefully
 
 
 

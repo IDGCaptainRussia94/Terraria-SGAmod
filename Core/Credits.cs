@@ -126,6 +126,11 @@ namespace SGAmod.Credits
             line._colors.Item3 = Color.Aquamarine;
             creditsToSpawn.Add(line);
 
+            line = new CreditsLine(("Speedymatt123", "Wiki Master", "'Also does various other things to help too!'"), top);
+            line._colors.Item3 = Color.GreenYellow;
+            creditsToSpawn.Add(line);
+
+
 
             line = new CreditsLine(("", "", ""), top);
             line.delayTimer = 50;

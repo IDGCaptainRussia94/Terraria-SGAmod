@@ -124,6 +124,7 @@ namespace SGAmod
 		public int Havoc = 0;
 		public int Novusset = 0; public int Noviteset = 0; public bool Blazewyrmset = false; public bool SpaceDiverset = false; public bool MisterCreeperset = false; public bool Mangroveset = false; public int Dankset = 0; public bool IDGset = false; public bool jellybruSet = false; public bool vibraniumSet = false; public (bool,float,bool, float) valkyrieSet = (false,0,false,0); public (bool, bool) acidSet = (false,false); public (int,int) illuminantSet = (0,0); public (bool,bool) jungleTemplarSet = (false,false); public bool magatsuSet = false; public bool desertSet = false; public (bool,int) mandalaSet = (false,0);
 		public float SpaceDiverWings = 0f;
+		public int novusBoost = 0;
 		public int gamePadAutoAim = 0;
 		public int tidalCharm = 0;
 		public bool lunarSlimeHeart = false;
@@ -323,6 +324,8 @@ namespace SGAmod
 				soldierboost -= 1;
 			if (gamePadAutoAim > 0)
 				gamePadAutoAim -= 1;
+			if (novusBoost > 0)
+				novusBoost -= 1;
 
 			badLifeRegen = 0;
 			uncraftBoost = Math.Max(uncraftBoost - 1, 0);
@@ -1783,7 +1786,7 @@ namespace SGAmod
 			}
 
 			if (BIP)
-				player.AddBuff(mod.BuffType("BIPBuff"), 60 * 5);
+				player.AddBuff(mod.BuffType("BIPBuff"), 60 * 10);
 
 			if (TakeShieldHit(ref damage))
 				return false;

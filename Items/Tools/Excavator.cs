@@ -8,6 +8,8 @@ using Terraria.ModLoader;
 using Idglibrary;
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
+using SGAmod.Dimensions;
 
 namespace SGAmod.Items.Tools
 {
@@ -227,6 +229,14 @@ namespace SGAmod.Items.Tools
 					if ((PickPower % (int)(20 * (owner.meleeSpeed/(owner.SGAPly().UseTimeMulPickaxe/owner.pickSpeed)))) == 0)
 					{
 						PowerPick += 1;
+
+						int dist = 64 * 64;
+						foreach(Projectile asteriodproj in Main.projectile.Where(testby => testby.active && testby.modProjectile != null && testby.modProjectile is IMineableAsteriod && (testby.Center - projectile.Center).LengthSquared() < dist))
+                        {
+							IMineableAsteriod asteriod = asteriodproj.modProjectile as IMineableAsteriod;
+							asteriod.MineAsteriod(owner.HeldItem,false);
+						}
+
 						Point16 hereIAm = new Point16((int)projectile.Center.X >> 4, (int)projectile.Center.Y >> 4);
 						for (int x = -3; x <= 3; x += 1)
 						{

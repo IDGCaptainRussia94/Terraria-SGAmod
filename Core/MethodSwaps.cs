@@ -53,6 +53,7 @@ namespace SGAmod
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
 			On.Terraria.Player.AddBuff += Player_AddBuff;
+            On.Terraria.Player.Teleport += Player_Teleport;
 			On.Terraria.NPC.AddBuff += SmartBuffs;
             On.Terraria.NPC.UpdateNPC += NPC_UpdateNPC;
 			On.Terraria.NPC.StrikeNPC += NPC_StrikeNPC;
@@ -81,7 +82,30 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
-        private static void Main_Draw(On.Terraria.Main.orig_Draw orig, Main self, GameTime gameTime)
+
+		//Stops teleporting when in specific subworlds
+		private static void Player_Teleport(On.Terraria.Player.orig_Teleport orig, Player self, Vector2 newPos, int Style = 0, int extraInfo = 0)
+		{
+			// 'orig' is a delegate that lets you call back into the original method.
+			// 'self' is the 'this' parameter that would have been passed to the original method.
+
+			if (SGAPocketDim.WhereAmI != null)
+			{
+				if (SubworldLibrary.SLWorld.currentSubworld is SGAPocketDim sub)
+				{
+					if (sub.LimitPlayers % 16 == 0 && sub.LimitPlayers > 0)
+					{
+						return;
+					}
+				}
+				if (SGAPocketDim.WhereAmI == typeof(LimboDim))
+					self.AddBuff(BuffID.ChaosState, 60 * 10);
+			}
+			orig(self, newPos, Style, extraInfo);
+		}
+
+		//Credits override drawcode
+		private static void Main_Draw(On.Terraria.Main.orig_Draw orig, Main self, GameTime gameTime)
         {
 			if (CreditsManager.CreditsActive && !SGAmod.ForceDrawOverride)
             {
@@ -92,6 +116,7 @@ namespace SGAmod
 			orig(self, gameTime);
 		}
 
+		//Credits override update code
         private static void OverrideCreditsUpdate(On.Terraria.Main.orig_DoUpdate orig, Main self, GameTime gameTime)
         {
 			SGAmod.lastTime = gameTime;
@@ -302,7 +327,7 @@ namespace SGAmod
 				tag = null;
 			}
 
-			TagCompound tag2 = tag?.GetList<TagCompound>("modData").FirstOrDefault(k => k.GetString("mod") == "SGAmod" && k.GetString("name") == "SGAWorld");
+			TagCompound tag2 = tag?.GetList<TagCompound>("modData").FirstOrDefault(testby => testby.GetString("mod") == "SGAmod" && testby.GetString("name") == "SGAWorld");
 			TagCompound tag3 = tag2?.Get<TagCompound>("data");
 
 			SGAmodData.Add(self, tag3);

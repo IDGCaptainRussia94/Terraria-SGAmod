@@ -627,6 +627,7 @@ namespace SGAmod.Items.Weapons
             projectile.friendly = true;
             projectile.penetrate = -1;
             projectile.melee = true;
+            projectile.tileCollide = false;
             projectile.scale = 1f;
         }
 
@@ -664,6 +665,105 @@ namespace SGAmod.Items.Weapons
 
     }
 
+    public class LeechYoyo : ThievesThrow
+    {
+        //Extra 23-24, 
+        //ProjectileID.MoonLeech
+
+        //Chain 12-Leech
+        //NPCID.LeechHead
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("The Tongue");
+            Tooltip.SetDefault("Leeches nearby enemies of their life\nYou are healed when the yoyo returns to you, based off life leeched");
+        }
+
+        public override void SetDefaults()
+        {
+            Item refItem = new Item();
+            refItem.SetDefaults(ItemID.TheEyeOfCthulhu);
+            item.damage = 50;
+            item.useTime = 64;
+            item.useAnimation = 64;
+            item.useStyle = 5;
+            item.channel = true;
+            item.melee = true;
+            item.value = 10000;
+            item.noMelee = true;
+            item.rare = ItemRarityID.Yellow;
+            item.noUseGraphic = true;
+            item.autoReuse = true;
+            item.shoot = ModContent.ProjectileType<LeechYoyoProj>();
+            item.UseSound = SoundID.Item19;
+        }
+
+        public override string Texture => "SGAmod/Items/Weapons/RiftYoyo";
+
+        public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+            Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI, 0.0f, 0.0f);
+            return false;
+        }
+    }
+
+    public class LeechYoyoProj : ThievesThrowProj
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Leech Yoyo");
+            ProjectileID.Sets.YoyosLifeTimeMultiplier[projectile.type] = 5.0f;
+            ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 320f;
+            ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 8f;
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile refProjectile = new Projectile();
+            refProjectile.SetDefaults(ProjectileID.TheEyeOfCthulhu);
+            projectile.extraUpdates = 0;
+            projectile.width = 16;
+            projectile.height = 16;
+            projectile.aiStyle = 99;
+            projectile.friendly = true;
+            projectile.penetrate = -1;
+            projectile.melee = true;
+            projectile.scale = 1f;
+        }
+
+        public override string Texture => "SGAmod/Projectiles/RiftYoyoProj";
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            damage /= 3;
+        }
+
+        public override void AI()
+        {
+            base.AI();
+            Player player = Main.player[projectile.owner];
+            foreach (NPC npc in Main.npc.Where(testby => testby.active && !testby.friendly && !testby.dontTakeDamage && testby.chaseable && (projectile.Center - testby.Center).LengthSquared() < 60000))
+            {
+                if (!npc.IsDummy() && (npc.Center - projectile.Center).LengthSquared() < 50000)
+                {
+                    npc.Center += Collision.TileCollision(npc.position, Vector2.Normalize(projectile.Center - npc.Center) * 4f * (npc.knockBackResist + 0.25f), npc.width, npc.height);
+
+                    npc.SGANPCs().nonStackingImpaled = Math.Max(npc.SGANPCs().nonStackingImpaled, projectile.damage);
+                }
+            }
+        }
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Dimensions.NPCs.SpaceBoss.DarknessNebulaEffect(mod.GetTexture("GlowOrb"), 0f, projectile.Center, 0.25f, projectile.whoAmI, 10, -5f);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+            return base.PreDraw(spriteBatch, lightColor);
+        }
+
+
+    }
 
 
 }

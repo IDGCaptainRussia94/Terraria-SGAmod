@@ -269,7 +269,7 @@ namespace SGAmod.Items.Accessories.Charms
 					if (sgaplayer.energyShieldAmmountAndRecharge.Item3==0)
 						sgaplayer.StartShieldRecharge();
 
-					float rechargerate = (sgaplayer.jellybruSet ? 480f : 180f);
+					float rechargerate = (sgaplayer.jellybruSet ? 600f : 180f);
 					float multime = 1f;
 					PlayerHooks.NaturalLifeRegen(player, ref multime);
 					rechargerate /= multime;

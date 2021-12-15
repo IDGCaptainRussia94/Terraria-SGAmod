@@ -632,10 +632,10 @@ namespace SGAmod.Items.Consumables
 				{
 					SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 25);
 					if (sound!=null)
-						sound.Pitch += (projectile.localAI[1] - 60) / 350f;
+						sound.Pitch += (projectile.localAI[1] - 60) / 420f;
 				}
 
-				for (int num654 = 0; num654 < 1 + projectile.localAI[1]/8f; num654++)
+				for (int num654 = 0; num654 < 1 + projectile.localAI[1]/9f; num654++)
 				{
 					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 9.00);
 					Dust num655 = Dust.NewDustPerfect(projectile.Center+new Vector2(2,2) + ogcircle * 10f, 59, -projectile.velocity + randomcircle * 2f, 150, Color.Aqua, 1.5f);
@@ -643,7 +643,7 @@ namespace SGAmod.Items.Consumables
 					num655.noLight = true;
 				}
 
-				if (projectile.localAI[1] > 300)
+				if (projectile.localAI[1] > 360)
                 {
 					NPC FakeNPC = new NPC();
 						FakeNPC.SetDefaults(ModContent.NPCType<Cirno>());
@@ -679,7 +679,7 @@ namespace SGAmod.Items.Consumables
 						NetMessage.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", FakeNPC.GetTypeNetName()), new Color(175, 75, 255));
 					}
 
-					Main.PlaySound(15, (int)projectile.position.X, (int)projectile.position.Y, 0);
+					Main.PlaySound(SoundID.Roar, (int)projectile.position.X, (int)projectile.position.Y, 0);
 					for (float num654 = 0; num654 < 25 + projectile.localAI[1] / 10f; num654+=0.25f)
 					{
 						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);

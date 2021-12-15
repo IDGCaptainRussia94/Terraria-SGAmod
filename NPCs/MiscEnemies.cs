@@ -88,7 +88,7 @@ namespace SGAmod.NPCs
         {
             Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY];
             bool NoEventsNoTowns = !spawnInfo.playerInTown && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse;
-            return NoEventsNoTowns && spawnInfo.water && (spawnInfo.spawnTileY > Main.rockLayer / 3) ? 0.15f : 0f;
+            return NoEventsNoTowns && spawnInfo.water && (spawnInfo.spawnTileY > Main.rockLayer / 3) ? 0.08f : 0f;
         }
 
     }

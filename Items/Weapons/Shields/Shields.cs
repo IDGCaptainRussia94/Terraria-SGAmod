@@ -1961,4 +1961,61 @@ namespace SGAmod.Items.Weapons.Shields
 
 	}
 
+	public class NoviteShield : DankWoodShield, IShieldItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Shield");
+			Tooltip.SetDefault("Blocking reduces damage by an extra 30%, at a cost of electric charge\n"+Idglib.ColorText(Color.Red,"Can cause Shield Break")+"\nPerforming a Just Block restores some Electric charge, based on damage blocked");
+			Item.staff[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.width = 24;
+			item.height = 32;
+			item.useTime = 70;
+			item.damage = 0;
+			item.crit = 0;
+			item.value = Item.sellPrice(0, 0, 30, 0);
+			item.expert = false;
+			item.rare = ItemRarityID.Blue;
+		}
+
+		public override void AddRecipes()
+		{
+				ModRecipe recipe = new ModRecipe(mod);
+				recipe.AddIngredient(ModContent.ItemType<NoviteBar>(), 10);
+				recipe.AddTile(TileID.Anvils);
+				recipe.SetResult(this, 1);
+				recipe.AddRecipe();
+		}
+	}
+
+	public class NoviteShieldProj : DankWoodShieldProj, IDrawAdditive
+	{
+		protected override float BlockDamage => 0.10f;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("NoviteShieldProj");
+		}
+
+        public override bool HandleBlock(ref int damage, Player player)
+        {
+			if (player.SGAPly().ConsumeElectricCharge(damage * 5, 120, true))
+            {
+				damage = (int)(damage * 0.70f);
+			}
+
+            return base.HandleBlock(ref damage, player);
+        }
+
+        public override void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex)
+        {
+			player.SGAPly().electricCharge += damage*15;
+		}
+	}
+
+
 }

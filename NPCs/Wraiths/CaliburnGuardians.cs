@@ -17,6 +17,8 @@ using System.Linq;
 using SGAmod.Effects;
 using Terraria.Utilities;
 
+//To Do, make sword fly into the ground and get stuck, to attack it
+
 namespace SGAmod.NPCs.Wraiths
 {
 	public enum StateIds
@@ -29,6 +31,7 @@ namespace SGAmod.NPCs.Wraiths
 		LookAtPlayer = 3,
 		CircleLeader = 4,
 		Hover = 5,
+		Stuck = 6,
 	}
 
 	public class SwordAttackSpawnProjectilesNovaBurst : SwordAttackSpawnProjectilesAtLooking, ICloneable
@@ -420,9 +423,9 @@ namespace SGAmod.NPCs.Wraiths
 				if (Leader)
 				{
 					OrderedAttacks.Add(new SwordAttack((int)StateIds.Circle, 80, 120));
-					for (int i = 0; i < 7; i++)
+					for (int i = 0; i < 4; i++)
 					{
-						OrderedAttacks.Add(new SwordAttack((int)StateIds.LookAtPlayer, 15, 0.25f));
+						OrderedAttacks.Add(new SwordAttack((int)StateIds.LookAtPlayer, 40, 0.25f));
 						SwordAttack swrod = new SwordAttack((int)StateIds.DashAtAnimedAngle, 25, 5);
 						swrod.timerVariable2.X = 1.75f;
 						OrderedAttacks.Add(swrod);
@@ -448,9 +451,9 @@ namespace SGAmod.NPCs.Wraiths
 
 				OrderedAttacks.Add(new SwordAttack((int)StateIds.Circle, 150+(phase > 0 ? leftOrRight*45 : 0), 320));
 
-				for (int i = 0; i < 6+(Leader ? 0 : -1); i++)
+				for (int i = 0; i < 4+(Leader ? 0 : -1); i++)
 				{
-					OrderedAttacks.Add(new SwordAttack((int)StateIds.LookAtPlayer, 30, 20));
+					OrderedAttacks.Add(new SwordAttack((int)StateIds.LookAtPlayer, 50, 20));
 					if (phase > 1)
 					{
 						SwordAttackSpawnProjectilesNovaBurst novaBurst = new SwordAttackSpawnProjectilesNovaBurst((int)StateIds.DashAtAnimedAngle, 30, 15);
@@ -479,6 +482,11 @@ namespace SGAmod.NPCs.Wraiths
 
 				OrderedAttacks.Add(new SwordAttack((int)StateIds.Circle, delay+(specialState == 100 ? 300 : 240), specialState == 100 ? 240 : 640));
 
+				SwordAttack attacc = new SwordAttack((int)StateIds.Circle, 30, 640000);
+				attacc.spinSpeed = -0.025f;
+				attacc.timerVariable2.Y = -0.040f;
+				OrderedAttacks.Add(attacc);
+
 				SwordAttack dasher = new SwordAttack((int)StateIds.DashAtAnimedAngle, 60, 25);
 				if (phase > 0)
 				{
@@ -496,13 +504,20 @@ namespace SGAmod.NPCs.Wraiths
 				for (int i = 0; i < 2; i++)
 				{
 					SwordAttack attack = new SwordAttack((int)StateIds.Circle, (phase > 0 ? 120 : 150) + delay, 100);
-						attack.timerVariable2.Y = 0.50f;
+
+					attack.timerVariable2.Y = 0.50f;
 					if (phase > 1)
 					{
 						attack.timerVariable2.Y = 0.40f;
 						attack.spinSpeed = 0.75f;
 					}
 					OrderedAttacks.Add(attack);
+
+					SwordAttack attacc2 = new SwordAttack((int)StateIds.Circle, 30, 640000);
+					attacc2.spinSpeed = -0.25f;
+					attacc2.timerVariable2.Y = -0.40f;
+					OrderedAttacks.Add(attacc2);
+
 					OrderedAttacks.Add(dasher);
 				}
 				OrderedAttacks.Add(new SwordAttack((int)StateIds.LookAtPlayer, 50,50));
@@ -753,7 +768,39 @@ namespace SGAmod.NPCs.Wraiths
 			}
 		}
 
-		public void ChangeState(int idealState = -1)
+		public void StuckState()
+		{
+			float timeMax = (float)currentAttack.time;
+
+			npc.velocity = Vector2.Zero;
+
+			if (currentAttack.timerVariable2.Y< 1000)
+            {
+				currentAttack.timerVariable2.Y = 1000;
+				SGAmod.AddScreenShake(16f,720, npc.Center);
+
+				var snd = Main.PlaySound(SoundID.DD2_KoboldIgnite, npc.Center);
+				if (snd != null)
+				{
+					snd.Pitch = -0.500f;
+				}
+				Projectile.NewProjectile(npc.Center, Vector2.UnitY, ProjectileID.DD2OgreSmash, 50, 15);
+				for (int i = 0; i < 16; i += 1)
+				{
+					int dust = Dust.NewDust(npc.Hitbox.TopLeft(), npc.Hitbox.Width, npc.Hitbox.Height, mod.DustType("NovusSparkle"));
+					Main.dust[dust].color = new Color(180, 60, 140);
+					Main.dust[dust].alpha = 181;
+				}
+
+			}
+
+			if (SpecialStateTimer > timeMax)
+			{
+				ChangeState();
+			}
+		}
+
+		public void ChangeState(int idealState = -1,bool overrideOrdersOfBrothers = false)
         {
 			if (specialStateVar == default)
 			specialStateVar = Vector2.UnitX;
@@ -772,9 +819,12 @@ namespace SGAmod.NPCs.Wraiths
 
 						foreach (CaliburnGuardianHardmode sworder in us)
 						{
-							//sworder.ChangeState((int)StateIds.PhaseAdvance);
-							sworder.AddAttackOrder();
-							sworder.ChangeState();
+							if (sworder.dontTakeOrders < 1 || overrideOrdersOfBrothers)
+							{
+								//sworder.ChangeState((int)StateIds.PhaseAdvance);
+								sworder.AddAttackOrder();
+								sworder.ChangeState();
+							}
 						}
 						return;
 					}
@@ -809,7 +859,7 @@ namespace SGAmod.NPCs.Wraiths
 				foreach (CaliburnGuardianHardmode sworder in us)
 				{
 					sworder.phase = 2;
-					sworder.ChangeState((int)StateIds.PhaseAdvance);
+					sworder.ChangeState((int)StateIds.PhaseAdvance,true);
 					sworder.AddAttackOrder();
 				}
 			}
@@ -823,7 +873,7 @@ namespace SGAmod.NPCs.Wraiths
 				foreach (CaliburnGuardianHardmode sworder in us)
 				{
 					sworder.phase = 1;
-					sworder.ChangeState((int)StateIds.PhaseAdvance);
+					sworder.ChangeState((int)StateIds.PhaseAdvance, true);
 					sworder.AddAttackOrder();
 				}
 			}
@@ -843,6 +893,8 @@ namespace SGAmod.NPCs.Wraiths
 				CircleLeaderState();
 			if (specialState == (int)StateIds.Hover)
 				HoverState();
+			if (specialState == (int)StateIds.Stuck)
+				StuckState();
 
 		}
 
@@ -1012,6 +1064,7 @@ namespace SGAmod.NPCs.Wraiths
 		public float appear = 0f;
 		public float afterGlow = 1f;
 		public int nohit;
+		public int dontTakeOrders = 0;
 		public static bool debugMode => false;
 		protected virtual int caliburnlevel => SGAWorld.downedCaliburnGuardians;
 
@@ -1308,7 +1361,7 @@ namespace SGAmod.NPCs.Wraiths
 				}
 			}
 
-
+			dontTakeOrders -= 1;
 			nohit += 1;
 			trailingeffect();
 			return true;

@@ -83,22 +83,29 @@ namespace SGAmod.Items.Accessories
 
 		public static bool CanCraftUp(Recipe recipe)
         {
-			if (recipe.createItem?.modItem is TF2Emblem)
+			try
 			{
-				foreach (Item item in recipe.requiredItem)
+				if (recipe.createItem?.modItem is TF2Emblem)
 				{
-					if (item?.modItem is TF2Emblem tf2emblemrequired)
+					foreach (Item item in recipe.requiredItem)
 					{
-						//foreach (Item item2 in Main.LocalPlayer.inventory.Where(testby => testby.type == item.type))
-						//{
-						TF2Emblem playerhasemblem = GetPlayerEmblem(Main.LocalPlayer, false, item.type);
+						if (item?.modItem is TF2Emblem tf2emblemrequired)
+						{
+							//foreach (Item item2 in Main.LocalPlayer.inventory.Where(testby => testby.type == item.type))
+							//{
+							TF2Emblem playerhasemblem = GetPlayerEmblem(Main.LocalPlayer, false, item.type);
 							if (!playerhasemblem.xp.Item2)
 								return false;
-						//}
+							//}
+						}
 					}
 				}
-			}
-			return true;
+				return true;
+            }
+            catch
+            {
+				return false;
+            }
 		}
 
 		public override bool CanEquipAccessory(Player player, int slot)

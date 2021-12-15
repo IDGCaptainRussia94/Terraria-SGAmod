@@ -600,7 +600,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Star'Fish' Burster");
-			Tooltip.SetDefault("Fires 4 starfish in bursts at the cost of 1, but requires a small amount of mana\nStarfish bounce off walls and pierce\nUses Starfish as ammo");
+			Tooltip.SetDefault("Fires 4 starfish in bursts at the cost of 1, but requires a small amount of mana\nStarfish bounce off walls and pierce\nUses Starfish as ammo\n90% to not consume ammo");
 		}
 		public override bool CanUseItem(Player player)
 		{

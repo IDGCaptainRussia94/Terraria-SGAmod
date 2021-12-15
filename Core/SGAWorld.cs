@@ -99,6 +99,9 @@ namespace SGAmod
             modtimer = 0;
             Instance = this;
 
+            if (Dimensions.SGAPocketDim.WhereAmI != null)
+            downedSpaceBoss = false;
+
             if (SGAmod.cachedata == false)
             {
                 portalcanmovein = false;
@@ -124,7 +127,6 @@ namespace SGAmod
                 downedCaliburnGuardiansPoints = 0;
                 downedCaliburnGuardianHardmode = false;
                 downedCirno = false;
-                downedSpaceBoss = false;
                 downedSharkvern = false;
                 darknessVision = false;
                 overalldamagedone = 0;

@@ -449,7 +449,7 @@ namespace SGAmod.Dimensions
 
         public override void HoldItem(Item item, Player player)
         {
-            if (player.SGAPly().timer % 30 == 0 && item.pick>0)
+            if (player.SGAPly().timer % 10 == 0 && item.pick>0)
             {
                 Projectile finder;
                 finder = Main.projectile.FirstOrDefault(testby => testby.active && testby.owner == player.whoAmI && testby.aiStyle == 20);

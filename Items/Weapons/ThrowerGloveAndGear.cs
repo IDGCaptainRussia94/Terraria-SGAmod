@@ -217,7 +217,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetDefaults();
 			item.useStyle = 1;
-			item.damage = 5;
+			item.damage = 6;
 			item.shoot = ModContent.ProjectileType<GrenadeNotAHook2>();
 			item.shootSpeed = 5.5f;
 			item.value = Item.buyPrice(0, 2, 50, 0);
@@ -262,11 +262,9 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetDefaults();
 			item.useStyle = 1;
-			item.damage = 4;
 			item.shoot = ModContent.ProjectileType<GrenadeNotAHook3>();
 			item.shootSpeed = 5.5f;
 			item.value = Item.buyPrice(0, 2, 50, 0);
-			item.rare = 4;
 		}
 
 		public override string Texture
@@ -278,6 +276,7 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("ThrowerGlove"), 1);
+			recipe.AddIngredient(ItemID.BeeWax, 16);
 			recipe.AddIngredient(ItemID.Dynamite, 8);
 			recipe.AddIngredient(ItemID.StickyBomb, 16);
 			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 8);

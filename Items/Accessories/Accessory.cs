@@ -3309,7 +3309,42 @@ namespace SGAmod.Items.Accessories
 			item.rare = ItemRarityID.Green;
 			item.accessory = true;
 		}
-	}	
+	}
+	public class CardDeckPersona : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Hearts of the Cards");
+			Tooltip.SetDefault("Cooldown Stack times on Almighty cards are reduced by half\nYou have a chance to pull A Joker whenever you use a card\nJokers steal one of your hearts and enter your inventory\nSuccessfully using a card causes you to get your hearts back\nJokers vanish if dropped");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().personaDeck = true;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			foreach (TooltipLine line in tooltips)
+			{
+				if (line.mod == "Terraria" && line.Name == "ItemName")
+				{
+					line.overrideColor = Color.Lerp(Color.Red, Color.Black, 0.5f + (float)Math.Sin(Main.GlobalTime * 6f));
+				}
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+	}
+
 	public class NoviteCore : ModItem
 	{
 		public override void SetStaticDefaults()

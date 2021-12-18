@@ -17,7 +17,7 @@ using SGAmod.Effects;
 using AAAAUThrowing;
 using Microsoft.Xna.Framework.Audio;
 
-namespace SGAmod.Items.Weapons
+namespace SGAmod.Items.Weapons.Almighty
 {
 	public class AlmightyWeapon : ModItem
 	{
@@ -67,7 +67,6 @@ namespace SGAmod.Items.Weapons
 			DisplayName.SetDefault("Megido");
 			Tooltip.SetDefault("Targets 4 enemies nearby your cursor on use\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 20 seconds"));
 		}
-		public override string Texture => "Terraria/Item_" + ItemID.Darkness;
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
@@ -91,6 +90,12 @@ namespace SGAmod.Items.Weapons
 			item.shoot = ModContent.ProjectileType<MegidoProj>();
 		}
 
+		public bool UseStacks(SGAPlayer sgaply,int time,int count = 1)
+        {
+			return sgaply.AddCooldownStack(time,count);
+
+		}
+
 		public override bool CanUseItem(Player player)
 		{
 			if (player.SGAPly().AddCooldownStack(100, testOnly: true))
@@ -105,7 +110,7 @@ namespace SGAmod.Items.Weapons
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/MegidoSnd").WithVolume(.7f).WithPitchVariance(.15f), player.Center);
-			player.SGAPly().AddCooldownStack(60 * 20);
+			UseStacks(player.SGAPly(),60 * 20);
 
 			for (int i = 0; i < 4; i += 1)
 			{
@@ -364,7 +369,7 @@ namespace SGAmod.Items.Weapons
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			//Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Megido").WithVolume(1.0f).WithPitchVariance(.15f), player.Center);
-		player.SGAPly().AddCooldownStack(60 * 30, 2);
+			UseStacks(player.SGAPly(),60 * 30, 2);
 
 			for (int i = 0; i < 3; i += 1)
 			{
@@ -602,7 +607,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			player.SGAPly().AddCooldownStack(60 * 45, 3);
+			UseStacks(player.SGAPly(),60 * 45, 3);
 
 			int pushYUp = -1;
 			player.FindSentryRestingSpot(item.shoot, out var worldX, out var worldY, out pushYUp);
@@ -938,7 +943,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			player.SGAPly().AddCooldownStack(60 * 80, 4);
+			UseStacks(player.SGAPly(), 60 * 80, 4);
 
 			int pushYUp = -1;
 			player.FindSentryRestingSpot(item.shoot, out var worldX, out var worldY, out pushYUp);
@@ -1275,7 +1280,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			player.SGAPly().AddCooldownStack(60 * 120, 5);
+			UseStacks(player.SGAPly(), 60 * 120, 5);
 
 			position = player.Center - new Vector2(0,320);
 
@@ -1761,8 +1766,6 @@ namespace SGAmod.Items.Weapons
 			DisplayName.SetDefault("Nuclear Option");
 			Tooltip.SetDefault("'Unleash the full raw, unfiltered, cataclysmic wrath of the British...'\nCharges up by holding this item, based off life regen and by grazing projectiles\nWill charge up very slowly if not actively held\nAt 50% charge or higher, activate to unleash a Nuclear Explosion\nSends out a initial shock wave, afterwards only the fireball does damage\nVaporizes most projectiles, and has more range and damage at higher charge\n" + Idglib.ColorText(Color.Red, "Getting hurt and losing health will halve your current charge")+"\n"+Idglib.ColorText(Color.Red, "Only charges up to half outside of boss fights"));
 		}
-
-        public override string Texture => "SGAmod/Items/Weapons/NuclearOption";
 
         public override void SetDefaults()
 		{

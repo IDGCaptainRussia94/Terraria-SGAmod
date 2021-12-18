@@ -525,7 +525,7 @@ namespace SGAmod.Dimensions
 
             sunPosition = sunOrigPosition;
 
-            if (bossIndex >= 0 && !boss.DyingState)
+            if (boss != null && bossIndex >= 0 && !boss.DyingState)
             {
                 sunBossPosition = boss.npc.Center;
                 sunIsApprouching = MathHelper.Clamp(1f - (boss.countdownToTheEnd / (100f * 60f)), 0f, 1f);
@@ -1121,8 +1121,12 @@ namespace SGAmod.Dimensions
                     projtype = ModContent.ProjectileType<MineableAsteriodGem>();
 
 
-                if (Main.rand.Next(0, 10) == 1 && SpaceDim.crystalAsteriods)
-                    projtype = ModContent.ProjectileType<MineableAsteriodOverseenCrystal>();
+                if (Main.rand.Next(0, 10) == 1)
+                {
+                    //&& SpaceDim.crystalAsteriods)
+                    if (!SGAmod.SpaceBossActive || SpaceDim.crystalAsteriods)
+                        projtype = ModContent.ProjectileType<MineableAsteriodOverseenCrystal>();
+                }
 
 
                 Projectile proj = Projectile.NewProjectileDirect(player.Center + chosenspot, velocity, projtype, 0, 0);
@@ -1436,6 +1440,11 @@ namespace SGAmod.Dimensions
             projectile.tileCollide = true;
             projectile.timeLeft = 2;
             projectile.damage = 0;
+        }
+
+        public override bool CanDamage()
+        {
+            return false;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)

@@ -2,7 +2,7 @@
 Changelog:
 
 
-3.612-(12/16/21)-Patch 13
+3.612-(12/18/21)-Patch 13
 
 -Added:
 
@@ -42,9 +42,13 @@ Changelog:
 
 -Buffed Mossthorn and Thermal Pike: now auto swings, Thermal Pike hitbox is a bit larger and has less knockback
 
+-Buffed Rioter's Glove: damage increased by 1
+
 -Buffed Dankwood Armor: Set gives 50% DoT resistance (multiplicative, so it's really 42.625% resistance)
 
 -Buffed Fridgeflame Concoction: now gives 25% DoT resist (gave 15% before), boosted to 40% with the debuffs. Now can properly reduce *all* DoT damage
+
+-Nerfed Demolitionist's Glove: no longer has a damage bonus
 
 -New changes to Murk:
 -Reduced jump sideways speed on high jump attack

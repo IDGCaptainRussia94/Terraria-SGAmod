@@ -1359,6 +1359,9 @@ namespace SGAmod.Dimensions.NPCs
 			name = "Phaethon";
 			SGAmod.ModifyTransformMatrixEvent += MoveCamera;
 			SGAWorld.CutsceneActiveEvent += CutSceneActive;
+			if (!SGAmod.SpaceBossActive)
+			return false;
+
 			return mod.Properties.Autoload;
 		}
 

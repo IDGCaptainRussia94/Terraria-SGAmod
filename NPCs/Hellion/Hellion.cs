@@ -3832,7 +3832,7 @@ namespace SGAmod.NPCs.Hellion
 								}
 								else
 								{
-									thatplayer.velocity += ((gohere * dist) / 50f) + (thatplayer.velocity.Length()<4 ? (gohere * 0.25f) : Vector2.Zero);
+									thatplayer.velocity += ((gohere * dist) / 50f) + (thatplayer.velocity.Length()<7 ? (gohere * 2.50f) : Vector2.Zero);
 								}
 							}
 						}

@@ -129,6 +129,7 @@ namespace SGAmod
 		public int novusBoost = 0;
 		public int gamePadAutoAim = 0;
 		public int tidalCharm = 0;
+		public bool personaDeck = false;
 		public bool lunarSlimeHeart = false;
 		public bool LifeFlower = false; public bool GeyserInABottle = false; public bool GeyserInABottleActive = false; public bool JavelinBaseBundle = false; public bool JavelinSpearHeadBundle = false; public bool PrimordialSkull = false;
 		public bool MatrixBuffp = false; public bool BoosterMagnet = false; public bool HoE = false; public bool CalamityRune = false; public bool RadSuit = false;
@@ -421,6 +422,7 @@ namespace SGAmod
 			SerratedTooth = false;
 			aversionCharm = false;
 			SybariteGem = false;
+			personaDeck = false;
 			UseTimeMul = 1f;
 			UseTimeMulPickaxe = 1f;
 			ThrowingSpeed = 1f;
@@ -1846,7 +1848,7 @@ namespace SGAmod
 			if (TakeShieldHit(ref damage))
 				return false;
 
-			player.GetModPlayer<CataNukePlayer>().Charge /= 2;
+			player.GetModPlayer<Items.Weapons.Almighty.CataNukePlayer>().Charge /= 2;
 
 			return true;
 		}

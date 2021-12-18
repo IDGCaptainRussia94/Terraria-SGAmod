@@ -100,6 +100,7 @@ namespace SGAmod
 		public const bool EngieUpdate = true;
 		public const bool ArmorButtonUpdate = false;
 		public const bool EnchantmentsUpdate = false;
+		public const bool SpaceBossActive = false;
 
 		public static SGAmod Instance;
 		public static string SteamID;
@@ -810,7 +811,7 @@ namespace SGAmod
 			SGAILHacks.Unpatch();
 			BCLEntries.Unload();
 
-			Items.Weapons.CataLogo.Unload();
+			Items.Weapons.Almighty.CataLogo.Unload();
 
 
 			if (!Main.dedServ)
@@ -1537,7 +1538,7 @@ namespace SGAmod
 			//test++;
 			Terraria.Cinematics.CinematicManager.Instance.Update(new GameTime());
 			ShadowParticle.UpdateAll();
-			RaysOfControlOrb.UpdateAll();
+            Items.Weapons.Almighty.RaysOfControlOrb.UpdateAll();
 
 			//Main.worldSurface -= 0.25;
 

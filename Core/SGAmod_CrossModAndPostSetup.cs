@@ -227,8 +227,11 @@ namespace SGAmod
 
 				bossList.Call("AddBoss", 11.85f, ModContent.NPCType<Harbinger>(), this, "Doom Harbinger", (Func<bool>)(() => SGAWorld.downedHarbinger), new List<int>() { ModContent.ItemType<TruelySusEye>() }, new List<int>() { }, new List<int>() { }, "Use a [i:" + ItemType("TruelySusEye") + "] (Semi-removed Boss)","Harbinger is gone", "Terraria/OneDropLogo", "Terraria/OneDropLogo", (Func<bool>)(() => SGAWorld.downedHarbinger));
 
-				List<int> PhaethonDrops = new List<int>() { ModContent.ItemType<OverseenCrystal>(), ModContent.ItemType<AegisaltAetherstone>() };
-				bossList.Call("AddBoss", 11.86f, ModContent.NPCType<Dimensions.NPCs.SpaceBoss>(), this, "Phaethon", (Func<bool>)(() => SGAWorld.downedSpaceBoss), new List<int>() { }, new List<int>() { }, new List<int>() {ModContent.ItemType<PhaethonEye>(), ModContent.ItemType<StarMetalMold>(), ModContent.ItemType<OverseenCrystal>() }, "Found in Near Orbit","The cosmos accept another prey", "Terraria/Confuse", "Terraria/Confuse", (Func<bool>)(() => SGAWorld.downedSpaceBoss));
+				if (SGAmod.SpaceBossActive)
+				{
+					List<int> PhaethonDrops = new List<int>() { ModContent.ItemType<OverseenCrystal>(), ModContent.ItemType<StarMetalMold>(), ModContent.ItemType<PhaethonEye>() };
+					bossList.Call("AddBoss", 11.86f, ModContent.NPCType<Dimensions.NPCs.SpaceBoss>(), this, "Phaethon", (Func<bool>)(() => SGAWorld.downedSpaceBoss), new List<int>() { }, new List<int>() { }, PhaethonDrops, "Found in Near Orbit", "The cosmos accept another prey", "Terraria/Confuse", "Terraria/Confuse", (Func<bool>)(() => SGAWorld.downedSpaceBoss));
+				}
 
 				bossList.Call("AddBoss", 13.1f, ModContent.NPCType<LuminiteWraith>(), this, "Luminite Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() { ItemID.LunarCraftingStation }, "Use a [i:" + ItemType("WraithCoreFragment3") + "], defeat this boss to get the Ancient Manipulator.", "", "SGAmod/NPCs/Wraiths/LWraithLog", "SGAmod/NPCs/Wraiths/LuminiteWraith_Head_Boss");
 

@@ -274,7 +274,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class NoteLaserProj : MegidolaLaserProj
+	public class NoteLaserProj : Almighty.MegidolaLaserProj
 	{
 		Vector2 startingloc = default;
 		Vector2 hitboxchoose = default;

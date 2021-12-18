@@ -1526,7 +1526,7 @@ namespace SGAmod
 			{
 				if (NPC.CountNPCS(NPCID.CultistBossClone) >= 6 && npc.SGANPCs().NoHit)
 				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<NuclearOption>());
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.Almighty.NuclearOption>());
 				}
 			}
 

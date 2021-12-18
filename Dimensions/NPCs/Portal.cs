@@ -16,11 +16,43 @@ namespace SGAmod.Dimensions.NPCs
 {
 	public class DungeonPortalDeeperDungeons : DungeonPortal
 	{
-
+		bool fallendown = false;
 		public override bool Autoload(ref string name)
 		{
 			name = "Stranger Portal";
 			return mod.Properties.Autoload;
+		}
+
+		public override void AI()
+		{
+			base.AI();
+			if (!fallendown)
+			{
+				for (int i = 0; i < 200; i += 1)
+				{
+					Point wearehere = ((npc.Center + new Vector2(0, 96)) / 16).ToPoint();
+					if (WorldGen.InWorld(wearehere.X, wearehere.Y))
+					{
+						Tile tile = Framing.GetTileSafely(wearehere.X, wearehere.Y);
+						if (tile != null)
+						{
+							if (tile.active() && (Main.tileSolid[tile.type] || Main.tileSolidTop[tile.type]))
+							{
+								fallendown = true;
+								return;
+							}
+							else
+							{
+								npc.position.Y += 2;
+							}
+						}
+					}
+					else
+					{
+						fallendown = true;
+					}
+				}
+			}
 		}
 
 		public override void SetDefaults()

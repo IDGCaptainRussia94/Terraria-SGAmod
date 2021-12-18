@@ -1317,7 +1317,7 @@ namespace SGAmod.Items
 			item.maxStack = 999;
 			item.width = 14;
 			item.height = 14;
-			item.value = 10;
+			item.value = 5;
 			item.rare = ItemRarityID.White;
 		}
 	}

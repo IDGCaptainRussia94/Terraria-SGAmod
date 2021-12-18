@@ -866,7 +866,7 @@ namespace SGAmod.Items.Weapons
 
 				Vector2 posser = projectile.Center + cb.position* scaleup;
 
-				Main.spriteBatch.Draw(cloudTex, posser - Main.screenPosition, null, BlackColors.MultiplyRGBA(new Color(1f,1f,1f, boomScale * cbalpha * cloudfadeAlpha)) * cloudSideAlpha, cb.angle, cloudTex.Size() / 2f, cb.scale* (1f+(scaleup-1f)), default, 0);
+				Main.spriteBatch.Draw(cloudTex, posser - Main.screenPosition, null, BlackColors.MultiplyRGBA(new Color(1f,1f,1f, 0.32f*boomScale * cbalpha * cloudfadeAlpha)) * cloudSideAlpha, cb.angle, cloudTex.Size() / 2f, cb.scale* (1f+(scaleup-1f)), default, 0);
 			}
 
 			Main.spriteBatch.End();
@@ -874,7 +874,7 @@ namespace SGAmod.Items.Weapons
 
 			//Glowing inside of clouds
 
-			Color glowingColors = Color.Lerp(Color.White, Color.Lerp(Color.White, Color.DarkTurquoise, flashBoomColor2), BoomScaleup);
+			Color glowingColors = Color.Lerp(Color.White, Color.Lerp(Color.White, Color.DarkTurquoise, flashBoomColor2), BoomScaleup)*1.5f;
 			//Color.Lerp(Color.DarkTurquoise,Color.Black,0.25f)*0.75f;
 
 			foreach (CloudBoom cb in boomOfClouds.Where(testby => testby.timeLeft > 0))
@@ -886,7 +886,7 @@ namespace SGAmod.Items.Weapons
 
 				Vector2 posser = projectile.Center + cb.position* scaleup;
 
-				Main.spriteBatch.Draw(cloudTex, posser - Main.screenPosition, null, glowingColors.MultiplyRGBA(new Color(1f,1f,1f, boomScale * cbalpha * cloudfadeAlpha*0.25f))* cloudSideAlpha, cb.angle, cloudTex.Size() / 2f, (cb.scale* (1f+(scaleup-1f)))*0.50f, default, 0);
+				Main.spriteBatch.Draw(cloudTex, posser - Main.screenPosition, null, glowingColors.MultiplyRGBA(new Color(1f,1f,1f, 0.75f*boomScale * cbalpha * cloudfadeAlpha*0.25f))* cloudSideAlpha, cb.angle, cloudTex.Size() / 2f, (cb.scale* (1f+(scaleup-1f)))*0.50f, default, 0);
 			}
 
 			Main.spriteBatch.End();

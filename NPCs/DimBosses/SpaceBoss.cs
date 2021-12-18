@@ -3076,7 +3076,8 @@ namespace SGAmod.Dimensions.NPCs
 	public class SpaceBossBasicShot : SpaceBossHomingShot,IDrawAdditive
 	{
 		int extraparticles => 0;
-		Vector2 startOrg = default;
+		protected virtual Color BoomColor => Color.Blue;
+		protected Vector2 startOrg = default;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overseer's Shot");
@@ -3155,7 +3156,7 @@ namespace SGAmod.Dimensions.NPCs
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
         {
-			if (GetType() != typeof(SpaceBossBasicShotAccelerate))
+			if (GetType() == typeof(SpaceBossBasicShot))
 				return;
 
 			Texture2D glow = ModContent.GetTexture("SGAmod/LightBeam");
@@ -3172,10 +3173,10 @@ namespace SGAmod.Dimensions.NPCs
 				float anglef = f * ((projectile.localAI[0]-40) / 20f);
 				Vector2 scale = new Vector2(alphaFade * 0.20f, MathHelper.SmoothStep(0f, 1f, projectile.localAI[0] / 80f) * scaleColor * 1.50f);
 				float colorScale = MathHelper.Clamp(((projectile.localAI[0] - 40) - Math.Abs(f * 4f)) / 60f,0f,1f);
-				spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, Color.Lerp(Color.White,Color.Blue, colorScale) * alphaFade* scaleColor * 2f, rotation+(anglef / 3f), origin, scale * 0.40f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+				spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, Color.Lerp(Color.White, BoomColor, colorScale) * alphaFade* scaleColor * 2f, rotation+(anglef / 3f), origin, scale * 0.40f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 			}
 
-			spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, Color.Blue * alphaFade * 2f, rotation, origin, new Vector2(0.20f+alphaFade, MathHelper.SmoothStep(0f, 2f, projectile.localAI[0] / 320f) *6f)*0.40f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+			spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, BoomColor * alphaFade * 2f, rotation, origin, new Vector2(0.20f+alphaFade, MathHelper.SmoothStep(0f, 2f, projectile.localAI[0] / 320f) *6f)*0.40f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 			spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, Color.White * alphaFade * 2f, rotation, origin, new Vector2(0.05f + alphaFade*0.75f, MathHelper.SmoothStep(0f, 2f, projectile.localAI[0] / 320f) * 6f) * 0.30f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 
 		}

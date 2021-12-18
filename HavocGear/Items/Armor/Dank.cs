@@ -13,7 +13,7 @@ namespace SGAmod.HavocGear.Items.Armor
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Dank Wood Helmet");
-            Tooltip.SetDefault("4% increased critical strike chance");
+            Tooltip.SetDefault("4% increased critical strike chance\n15% DoT resistance");
         }
 
         public override void SetDefaults()
@@ -28,6 +28,7 @@ namespace SGAmod.HavocGear.Items.Armor
         public override void UpdateEquip(Player player)
         {
             player.BoostAllDamage(0, 4);
+            player.SGAPly().DoTResist *= 0.85f;
         }
 
         public override void AddRecipes()
@@ -47,7 +48,7 @@ namespace SGAmod.HavocGear.Items.Armor
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Dank Wood Chestplate");
-            Tooltip.SetDefault("8% increased item use rate, improved life regen");
+            Tooltip.SetDefault("8% increased item use rate, improved life regen\n25% DoT resistance");
         }
 
         public override void SetDefaults()
@@ -64,6 +65,7 @@ namespace SGAmod.HavocGear.Items.Armor
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
             sgaplayer.UseTimeMul += 0.08f;
+            sgaplayer.DoTResist *= 0.75f;
         }
 
         public override void AddRecipes()
@@ -83,7 +85,7 @@ namespace SGAmod.HavocGear.Items.Armor
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Dank Wood Leggings");
-            Tooltip.SetDefault("Improved movement speed");
+            Tooltip.SetDefault("20% Improved movement speed and faster acceleration\n10% DoT resistance");
         }
 
         public override void SetDefaults()
@@ -99,6 +101,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
             player.moveSpeed += 0.2f;
             player.accRunSpeed += 0.05f;
+            player.SGAPly().DoTResist *= 0.90f;
         }
 
         public override void AddRecipes()

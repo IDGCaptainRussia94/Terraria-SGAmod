@@ -66,6 +66,8 @@ namespace SGAmod
 		public float morespawns = 1f;
 		public int midasMoneyConsumed = 0;
 		public int manaBoost = 0;
+		public float DoTResist = 1f;
+		public int potionFatigue = 0;
 		public (int,byte) skylightLightInfused = (0,0);
 		public (int, int) PolarityHarbPower = (0, 0);
 
@@ -538,6 +540,7 @@ namespace SGAmod
 			digiStacks = (int)MathHelper.Clamp(digiStacks, 0, digiStacksMax);
 			CustomWings = 0;
 			JoyrideShake -= 1;
+			DoTResist = 1f;
 
 			if (!Shieldbreak)
 				electricdelay -= 1;
@@ -780,15 +783,6 @@ namespace SGAmod
 				player.lifeRegen -= 250;
 			}
 
-			if (IceFire)
-			{
-				float hasbuffs = (player.HasBuff(BuffID.OnFire) || player.HasBuff(BuffID.Frostburn) ? 0.15f : 0f);
-				if (player.lifeRegen < 0)
-					player.lifeRegen = (int)(player.lifeRegen * (0.80 - hasbuffs));
-
-				player.buffImmune[BuffID.OnFire] = false;
-				player.buffImmune[BuffID.Frostburn] = false;
-			}
 			if (NoHitCharm && realIFrames < 1 && (player.immune || player.immuneTime > 0))
 			{
 				player.lifeRegenTime = 0;
@@ -1006,6 +1000,67 @@ namespace SGAmod
 			if (player.HasBuff(ModContent.BuffType<TechnoCurse>()))
 			{
 				sgaply.techdamage = Math.Max(sgaply.techdamage-0.50f,0);
+			}
+
+			DoPotionFatigue(sgaply);
+		}
+
+		public static void DoPotionFatigue(SGAPlayer sgaply)
+		{
+			if (!sgaply.nightmareplayer && SGAConfig.Instance.PotionFatigue)
+				return;
+
+			Player player = sgaply.player;
+
+			int count = 0;
+			bool noPotions = true;
+			List<int> badBuffSlots = new List<int>();
+
+			for (int bufftype = 0; bufftype < player.buffTime.Length; bufftype += 1)
+			{
+				if (player.buffTime[bufftype]>0 && !Main.buffNoTimeDisplay[player.buffType[bufftype]])
+				{
+					int found = SGAmod.BuffsThatHavePotions.Where(testby => testby == player.buffType[bufftype]).Count();
+
+					if (SGAmod.BuffsThatHavePotions.Where(testby => testby == player.buffType[bufftype]).Count() > 0)
+					{
+						count += 1;
+						badBuffSlots.Add(bufftype);
+						noPotions = false;
+					}
+				}
+			}
+
+			if (count<=8)
+			{
+				sgaply.potionFatigue = Math.Max(sgaply.potionFatigue - 20, 0);
+				return;
+			}
+
+			sgaply.potionFatigue += (count-8)*1;
+
+			int fatigue = (int)sgaply.potionFatigue;
+
+			if (fatigue > 10000)
+            {
+				if (Main.rand.Next(1000000) < fatigue / 1)
+				{
+					if (badBuffSlots.Count > 0)
+					{
+						int[] badBuffs = { ModContent.BuffType<PiercedVulnerable>(), ModContent.BuffType<PoisonStack>(), ModContent.BuffType<Gourged>(), ModContent.BuffType<WorseWeakness>(), ModContent.BuffType<MiningFatigue>(), ModContent.BuffType<Sunburn>(), ModContent.BuffType<MurkyDepths>(), BuffID.Rabies, ModContent.BuffType<TechnoCurse>(), ModContent.BuffType<ShieldBreak>() };
+
+						badBuffSlots = badBuffSlots.OrderBy(testby => player.buffTime[testby]).ToList();
+						player.buffType[badBuffSlots[0]] = badBuffs[Main.rand.Next(badBuffs.Length)];
+
+						sgaply.potionFatigue -= 5000;
+
+						var snd = Main.PlaySound(SoundID.Zombie, (int)player.Center.X,(int)player.Center.Y, 31);
+						if (snd != null)
+                        {
+							snd.Pitch = 0.75f;
+                        }
+					}
+				}
 			}
 		}
 

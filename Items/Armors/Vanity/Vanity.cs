@@ -77,6 +77,7 @@ namespace SGAmod.Items.Armors.Vanity
 		}
 	}
 
+	[AutoloadEquip(EquipType.Legs)]
 	public class AncientUnmanedLeggings : AncientUnmanedHood
 	{
 		public override void SetStaticDefaults()

@@ -232,15 +232,16 @@ namespace SGAmod.Tiles.TechTiles
             }
 
         }
+        public int npcValue = -1;
         public override int ProcessRate => 50;
         public int InterestCost => 50;
-        public int npcValue = -1;
-        protected int maxStoredMoney = Item.buyPrice(0,1);
+        protected int maxStoredMoney = Item.buyPrice(0,1,0);
         public int MaxStoredMoney
         {
             get
             {
-                return maxStoredMoney * 1;
+                int moneyCapacity = (int)(maxStoredMoney * 2.5f);
+                return moneyCapacity;
             }
             set
             {

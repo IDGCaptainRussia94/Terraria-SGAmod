@@ -48,8 +48,9 @@ namespace SGAmod
             On.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += CtorModWorlData;
             On.Terraria.GameContent.UI.Elements.UIWorldListItem.DrawSelf += Menu_UICWorldListItem;
             On.Terraria.GameContent.UI.States.UIWorldSelect.ctor += UIWorldSelect_ClearData;
-            On.Terraria.DataStructures.PlayerDeathReason.ByOther += DrowningInSpaceIsNotReallyAThing; 
+            On.Terraria.DataStructures.PlayerDeathReason.ByOther += DrowningInSpaceIsNotReallyAThing;
 
+            On.Terraria.Main.DrawBuffIcon += Main_DrawBuffIcon;
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
 			On.Terraria.Player.AddBuff += Player_AddBuff;
@@ -82,9 +83,55 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
+        private static int Main_DrawBuffIcon(On.Terraria.Main.orig_DrawBuffIcon orig, int drawBuffText, int i, int b, int x, int y)
+        {
+			SGAPlayer sgaply = Main.LocalPlayer.SGAPly();
+			if (sgaply.nightmareplayer || SGAConfig.Instance.PotionFatigue)
+            {
+				int fatigue = sgaply.potionFatigue;
+				if (fatigue < 1)
+					orig(drawBuffText, i, b, x, y);
 
-		//Stops teleporting when in specific subworlds
-		private static void Player_Teleport(On.Terraria.Player.orig_Teleport orig, Player self, Vector2 newPos, int Style = 0, int extraInfo = 0)
+				if (SGAmod.BuffsThatHavePotions.Where(testby => testby == b).Count()>0)
+				{
+					Texture2D extra = Main.extraTexture[80];
+				Texture2D buffTex = Main.buffTexture[b];
+					float alpha = MathHelper.Clamp(fatigue / 10000f, 0f, 1f);
+				int frameHeight = extra.Height / 4;
+
+					List<(Vector2, float,int)> effects = new List<(Vector2, float, int)>();
+
+					UnifiedRandom rando = new UnifiedRandom(b);
+
+					for (int zz = 0; zz < 30; zz += 1)
+					{
+						int frame = (int)((Main.GlobalTime * 8f)+rando.Next(4) + i * 2f) % 4;
+						float progress = (rando.NextFloat(0, 100) + Main.GlobalTime * 25)%100;
+						Vector2 offset = new Vector2(rando.Next(-16, 16), rando.Next(8, 16));
+						effects.Add((offset, progress, frame));
+					}
+
+					effects = effects.OrderBy(testby => 10000-testby.Item2).ToList();
+
+					foreach ((Vector2, float,int) place in effects)
+					{
+						float percent2 = place.Item2 / 100f;
+						Vector2 position = new Vector2(0,MathHelper.SmoothStep(0f,-32f, percent2* percent2))+place.Item1 + new Vector2(x, y) + buffTex.Size() / 2f;
+
+						float alpha2 = MathHelper.Clamp((float)Math.Sin((place.Item2 / 100f) * MathHelper.Pi)*2f, 0f, 1f);
+
+						Rectangle erect = new Rectangle(0, place.Item3 * frameHeight, extra.Width, frameHeight);
+
+						Main.spriteBatch.Draw(extra, position, erect, Color.White * alpha* alpha2, 0, erect.Size() / 2f, alpha2, SpriteEffects.None, 0f);
+					}
+				}
+			}
+			return orig(drawBuffText, i, b, x, y);
+        }
+
+
+        //Stops teleporting when in specific subworlds
+        private static void Player_Teleport(On.Terraria.Player.orig_Teleport orig, Player self, Vector2 newPos, int Style = 0, int extraInfo = 0)
 		{
 			// 'orig' is a delegate that lets you call back into the original method.
 			// 'self' is the 'this' parameter that would have been passed to the original method.
@@ -131,7 +178,9 @@ namespace SGAmod
 				CreditsManager.UpdateCredits(gameTime);
 				return;
 			}
+			
 			orig(self, gameTime);
+
 			/*
 			 * if (SGAmod.DrawCreditsMouseTooltip)
 			{

@@ -98,6 +98,11 @@ namespace SGAmod
 		[DefaultValue(true)]
 		public bool ManaPotionChange { get; set; }
 
+		[Label("Buff Burning")]
+		[Tooltip("Having over 8 potion buffs builds up fatigue, at max fatigue there's a chance for them to became a debuff")]
+		[DefaultValue(false)]
+		public bool PotionFatigue { get; set; }
+
 		//This is the work of someone who gives 2 shits about netcode. (not me, mostly)
 		public static bool IsPlayerLocalServerOwner(int whoAmI)
 		{

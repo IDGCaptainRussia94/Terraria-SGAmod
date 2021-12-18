@@ -126,7 +126,7 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<HopperItem>(), 1);
-			recipe.AddIngredient(ItemID.LogicSensor_Above, 1);
+			recipe.AddIngredient(ItemID.GoldenKey, 1);
 			recipe.AddRecipeGroup("SGAmod:Chests", 1);
 			recipe.AddTile(ModContent.TileType<Tiles.ReverseEngineeringStation>());
 			recipe.SetResult(this, 1);

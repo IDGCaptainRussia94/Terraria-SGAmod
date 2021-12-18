@@ -1160,6 +1160,8 @@ namespace SGAmod.NPCs.Hellion
 				npc.dontTakeDamage = true;
 				float maxer = 10000;
 
+				if (npc.ai[1]>7750)
+					hell.teleportNet = 30;
 
 				float lerpPer = MathHelper.Clamp((7900 - (npc.ai[1])) / 250f, 0f, 1f);
 				hell.noescapeauralocmove = 10;
@@ -1181,6 +1183,9 @@ namespace SGAmod.NPCs.Hellion
 				{
 					npc.ai[1] = 0;
 				}
+
+				if (npc.ai[1] > 6250)
+					hell.teleportNet = 30;
 
 				npc.dontTakeDamage = true;
 
@@ -3827,7 +3832,7 @@ namespace SGAmod.NPCs.Hellion
 								}
 								else
 								{
-									thatplayer.velocity += ((gohere * dist) / 30f);
+									thatplayer.velocity += ((gohere * dist) / 50f) + (thatplayer.velocity.Length()<4 ? (gohere * 0.25f) : Vector2.Zero);
 								}
 							}
 						}

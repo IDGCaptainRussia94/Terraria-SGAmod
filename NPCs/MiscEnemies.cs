@@ -171,7 +171,7 @@ namespace SGAmod.NPCs
         {
             Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY];//!NPC.BusyWithAnyInvasionOfSorts()
             bool NoEventsNoTowns = !spawnInfo.playerInTown && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse;
-            return NoEventsNoTowns && Main.hardMode && !spawnInfo.player.ZoneUnderworldHeight && (spawnInfo.spawnTileY > Main.rockLayer / 2 || spawnInfo.player.ZoneJungle) ? (spawnInfo.player.ZoneJungle ? 0.025f : 0.015f) : 0f;
+            return NoEventsNoTowns && Main.hardMode && !spawnInfo.player.ZoneUnderworldHeight && (spawnInfo.spawnTileY > Main.rockLayer / 2 || spawnInfo.player.ZoneJungle) ? (spawnInfo.player.ZoneJungle ? 0.025f : 0.005f) : 0f;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)

@@ -289,6 +289,41 @@ namespace SGAmod
 
 	}
 
+	public class DoTAdjustments : HookEdit
+	{
+		private delegate bool PlayerIsInSandstormDelegate(Player ply);
+
+		protected override void LoadInternal()
+		{
+			_ = ApplyPlayerBadLifeRegenHook;
+		}
+		internal static bool ApplyPlayerBadLifeRegenHook
+		{
+			get
+			{
+				HookEndpointManager.Add(typeof(PlayerHooks).GetMethod("UpdateBadLifeRegen", SGAmod.UniversalBindingFlags), (hook_BadLifeRegenDetour)DetourBadLifeRegen);
+
+				return false;
+			}
+		}
+
+		private delegate void orig_BadLifeRegenDetour(Player player);
+		private delegate void hook_BadLifeRegenDetour(orig_BadLifeRegenDetour orig, Player player);
+		private static void DetourBadLifeRegen(orig_BadLifeRegenDetour orig, Player player)
+		{
+			orig(player);
+
+			if (player.lifeRegen < 0)
+			{
+				SGAPlayer sgaply = player.SGAPly();
+				if (sgaply.DoTResist != 1f)
+				{
+					player.lifeRegen = (int)(player.lifeRegen * sgaply.DoTResist);
+
+				}
+			}
+		}
+	}
 
 	public static class PrivateClassEdits
 	{

@@ -2,6 +2,69 @@
 Changelog:
 
 
+3.612-(12/16/21)-Patch 13
+
+-Added:
+
+-New Vanilla Config Option: Buff Burning
+-Having over 8 potion buffs will fatigue you, high fatigue transforms buffs into debuffs: pick and choose potions instead of spam!
+-Off by default, forced on in Nightmare
+
+
+--Changed:
+
+-Various changes to the Deeper Dungeons:
+-regenerates if too many tiles are cobwebs
+-Thorns are now in smaller patches
+-Loot Rooms should no longer be able spawn out of bounds, and be able to spawn more often
+-Various extra-rewarding objects exist in the deeper dungeons now
+-The 'Stranger Portal' in the Deeper Dungeons should now fall down to reachable levels if it's floating in the air
+
+-Chest Hoppers now require a golden key instead of a player above logic sensor
+
+-The Jacob changed to use Souls of Fright instead of Souls of Sight
+
+-Numismatic Crucible now has a base capacity of 2.5 gold (from 1 gold)
+
+-Doubled the shards Copper Wraith drops, adn reduced their sell prices
+
+-Sandscorched Golem now drops 3-12 fiery shard
+
+-Added missing Soul Jar projectile texture, and empty ones can stack up to 30
+
+-Made Elite Bats alot rarer
+
+-Barrier Fields are now affected by lighting, and no longer glow in the dark
+
+-Changed the visuals on Megidolaon a bit to make the smoke less of the focus (and more of the whole thing the focus)
+
+-Reworked Heat Wave: damage lowered to 25, releases a back-blast explosion when a crystal expires, doing more 3X damage and piercing, allows up to 3 crystals into a target a time, mana cost increased to 8 (from 4)
+
+-Buffed Mossthorn and Thermal Pike: now auto swings, Thermal Pike hitbox is a bit larger and has less knockback
+
+-Buffed Dankwood Armor: Set gives 50% DoT resistance (multiplicative, so it's really 42.625% resistance)
+
+-Buffed Fridgeflame Concoction: now gives 25% DoT resist (gave 15% before), boosted to 40% with the debuffs. Now can properly reduce *all* DoT damage
+
+-New changes to Murk:
+-Reduced jump sideways speed on high jump attack
+
+-New changes to Helen Hellion Weygold:
+-Added missing Teleport safety nets on the 2 new attacks
+-Pulls you out of the ring with a base speed; hopefully stopping you getting completely stuck
+
+
+--Fixed:
+
+-Empty Soul Jars corrupting save files
+
+-Interdimensional Party Hat requiring 2 action cooldown stacks
+
+-Unmaned Leggings being unwearable
+
+-Fridgeflame Concoction not really working
+
+
 3.611-(12/15/21)--Hotfix 24
 
 --Fixed:
@@ -985,6 +1048,8 @@ Hope you enjoy, it's been over half a year in the making!
 -Added Census Support
 
 -Added Godray-screen explosion effects! (only used in a few specific places, as several at once can get messy)
+
+-Added SCREEN SHAKE, FINALLY!
 
 -A few new music tracks, including one for Cratrosity (thanks again Rijam!)
 

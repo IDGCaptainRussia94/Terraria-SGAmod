@@ -673,7 +673,7 @@ namespace SGAmod.NPCs.Murk
                         if (npc.ai[1] == 3f)
                         {
                             //High Jump
-                            speedboost = Math.Max((mathit - 160f) / (Main.hardMode ? 54f : 96f), 0f);
+                            speedboost = Math.Max((mathit - 160f) / (Main.hardMode ? 128f : 160f), 0f);
                             npc.velocity.Y = -13;
 
                             if (!Main.hardMode)
@@ -700,7 +700,17 @@ namespace SGAmod.NPCs.Murk
                             npc.velocity.Y = -8f;
                             float distz = Main.player[npc.target].Center.Y - npc.Center.Y;
                             if (distz < -96)
-                                npc.velocity.Y += (distz - 100) / 60f;
+                            {
+                                float jumpHeight = ((Main.player[npc.target].Center.Y - 500) - npc.Center.Y);
+
+                                float gravity = Player.defaultGravity;
+
+                                Vector2 velo = new Vector2(0, (float)Math.Sqrt(-2.0f * gravity * jumpHeight));
+
+                                npc.velocity.Y = velo.Y;
+
+                                //npc.velocity.Y += (distz - 100) / 60f;
+                            }
                             npc.velocity.X = npc.velocity.X + ((npc.localAI[0] < 0 ? 6f : 4f) + speedboost) * (float)npc.direction;
                             npc.ai[0] = -120f;
                             npc.ai[1] += 1f;

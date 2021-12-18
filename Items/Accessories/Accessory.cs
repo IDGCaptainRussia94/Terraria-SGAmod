@@ -653,7 +653,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Corporate Epiphany");
-			Tooltip.SetDefault("'Money Money Money!'\n'Must be funny? In a rich man's world?'\n" +
+			Tooltip.SetDefault("'Money Money Money!\nMust be funny? In a rich man's world?'\n" +
 				"Combined Effects of Idol of Midas, Sybarite Gem, Avarice Ring, and Omni-Magnet (hide to disable Idol of Midas's coin collecting)\n" +
 				"Includes EALogo's ability. but only while worn as an accessory");
 		}

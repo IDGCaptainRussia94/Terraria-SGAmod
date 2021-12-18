@@ -284,6 +284,17 @@ namespace SGAmod.Buffs
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.GetModPlayer<SGAPlayer>().IceFire = true;
+
+				float hasbuffs = (player.HasBuff(BuffID.OnFire) || player.HasBuff(BuffID.Frostburn) ? 0.60f : 0.75f);
+
+			player.SGAPly().DoTResist *= hasbuffs;
+
+				//if (player.lifeRegen < 0)
+				//	player.lifeRegen = (int)(player.lifeRegen * (0.80 - hasbuffs));
+
+			player.buffImmune[BuffID.OnFire] = false;
+				player.buffImmune[BuffID.Frostburn] = false;
+
 			player.lavaRose = true;
 		}
 	}

@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace SGAmod.HavocGear.Items.Weapons
 {
-	public class ThermalPike : ModItem
+	public class ThermalPike : Mossthorn
 	{
 		public override void SetStaticDefaults()
 		{
@@ -27,9 +27,9 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.useAnimation = 16;
 			item.useStyle = 5;
 			item.useTime = 12;
-			item.knockBack = 5.5f;
+			item.knockBack = 3.2f;
 			item.UseSound = SoundID.Item1;
-			item.autoReuse = false;
+			item.autoReuse = true;
 			item.height = 44;
 			item.maxStack = 1;
 			item.value = 75000;
@@ -38,7 +38,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.shootSpeed = 10f;
 		}
 
-		public override void AddRecipes()
+        public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "FieryShard", 12);

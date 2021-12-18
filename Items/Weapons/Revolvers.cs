@@ -528,7 +528,7 @@ namespace SGAmod.Items.Weapons
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("RevolverUpgrade"), 1);
 			recipe.AddIngredient(ItemID.HallowedBar, 8);
-			recipe.AddIngredient(ItemID.SoulofSight, 20);
+			recipe.AddIngredient(ItemID.SoulofFright, 20);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -536,7 +536,7 @@ namespace SGAmod.Items.Weapons
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("GuerrillaPistol"), 1);
 			recipe.AddIngredient(ItemID.HallowedBar, 10);
-			recipe.AddIngredient(ItemID.SoulofSight, 20);
+			recipe.AddIngredient(ItemID.SoulofFright, 20);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

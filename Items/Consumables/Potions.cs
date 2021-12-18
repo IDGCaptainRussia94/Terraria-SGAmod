@@ -599,6 +599,7 @@ namespace SGAmod.Items.Consumables
 			recipe.AddIngredient(ModContent.ItemType < CryostalBar>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < IceFairyDust>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < Fridgeflame>(), 3);
+			recipe.AddIngredient(ModContent.ItemType<Fridgeflame>(), 3);
 			recipe.AddTile(TileID.AlchemyTable);
 			recipe.SetResult(this, 2);
 			recipe.AddRecipe();

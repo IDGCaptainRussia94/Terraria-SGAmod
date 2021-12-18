@@ -906,7 +906,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bone Bucket");
-			Tooltip.SetDefault("'Full of spare bone parts! Someone might want these...'\nOpens a portal to bring the Skeleton Merchant to your location where you used it\nNot usable if the Merchant Merchant is already in the world or the sun is shining\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 300 seconds each"));
+			Tooltip.SetDefault("'Full of spare bone parts! Someone might want these...'\nOpens a portal to bring the Skeleton Merchant to your location where you used it\nNot usable if the Traveling Merchant is already in the world or the sun is shining\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 300 seconds each"));
 		}
 
 		public override bool CanUseItem(Player player)
@@ -1008,7 +1008,7 @@ namespace SGAmod.Items.Consumables
 		}
 		public override bool CanUseItem(Player player)
 		{
-			return player.SGAPly().CooldownStacks.Count + 1 < player.SGAPly().MaxCooldownStacks && !BirthdayParty.PartyIsUp;
+			return player.SGAPly().CooldownStacks.Count < player.SGAPly().MaxCooldownStacks && !BirthdayParty.PartyIsUp;
 		}
 		public override bool UseItem(Player player)
 		{
@@ -1025,7 +1025,7 @@ namespace SGAmod.Items.Consumables
 					{
 						BirthdayParty.CelebratingNPCs.Add(indexer);
 					}
-					Main.NewText("It would seem the item has worked... try making sure you have the npcs first");
+					//Main.NewText("It would seem the item has worked... try making sure you have the npcs first");
 					break;
 				}
 			}
@@ -1078,7 +1078,9 @@ namespace SGAmod.Items.Consumables
 		public string npcType = "";
 		public string modName = "";
 		public int npcTypeToUse = -10000;
-		public override bool CloneNewInstances => true;
+		public override bool CloneNewInstances => GetType() != typeof(SoulJar);
+
+		public static Color SoulColorStatic => Main.hslToRgb(Main.GlobalTime % 1f, 1f, 0.75f);
 
 		public Color SoulColor
         {
@@ -1089,7 +1091,7 @@ namespace SGAmod.Items.Consumables
 					return Color.White;
                 }
 
-				return Main.hslToRgb(Main.GlobalTime % 1f, 1f, 0.75f);
+				return SoulColorStatic;
             }
         }
 		public override string Texture
@@ -1107,7 +1109,7 @@ namespace SGAmod.Items.Consumables
 			item.width = 18;
 			item.height = 18;
 			item.value = Item.sellPrice(0, 1, 0, 0);
-			item.maxStack = 1;
+			item.maxStack = 30;
 			item.useTime = 10;
 			item.useAnimation = 10;
 			item.consumable = true;
@@ -1150,12 +1152,17 @@ namespace SGAmod.Items.Consumables
 
 		public override void NetSend(BinaryWriter writer)
 		{
+			if (GetType() == typeof(SoulJar))
+				return;
 			writer.Write(npcType);
 			writer.Write(modName);
 
 		}
 		public override void NetRecieve(BinaryReader reader)
 		{
+			if (GetType() == typeof(SoulJar))
+				return;
+
 			npcType = reader.ReadString();
 			modName = reader.ReadString();
 			ParseLoadingCapture();
@@ -1163,6 +1170,9 @@ namespace SGAmod.Items.Consumables
 
 		public override TagCompound Save()
 		{
+			if (GetType() == typeof(SoulJar))
+				return new TagCompound();
+
 			TagCompound tag = new TagCompound
 			{
 				["npcType"] = npcType,
@@ -1172,6 +1182,9 @@ namespace SGAmod.Items.Consumables
 		}
 		public override void Load(TagCompound tag)
 		{
+			if (GetType() == typeof(SoulJar))
+				return;
+
 			if (tag.ContainsKey("npcType"))
 			{
 				npcType = tag.GetString("npcType");
@@ -1247,6 +1260,7 @@ namespace SGAmod.Items.Consumables
 		{
 			base.SetDefaults();
 			item.useTime = -1;
+			item.maxStack = 1;
 			item.useAnimation = -1;
 			item.consumable = false;
 			item.useStyle = ItemUseStyleID.SwingThrow;
@@ -1262,7 +1276,16 @@ namespace SGAmod.Items.Consumables
 		{
 			DisplayName.SetDefault("Thrown Soul Jar");
 		}
+
 		NPC capture = null;
+
+		public Color SoulColor
+		{
+			get
+			{
+				return SoulJar.SoulColorStatic;
+			}
+		}
 
 		public override string Texture
 		{
@@ -1328,7 +1351,25 @@ namespace SGAmod.Items.Consumables
 			}
 		}
 
-	}
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			Texture2D inner = Main.projectileTexture[projectile.type];
+			Texture2D inner2 = Main.itemTexture[ItemID.RedDye];
+
+			Vector2 slotSize = new Vector2(52f, 52f);
+			Vector2 drawPos = projectile.Center;
+			Vector2 textureOrigin = new Vector2(inner.Width, inner.Height) / 2f;
+
+			//spriteBatch.Draw(inner, drawPos, null, Color.DarkMagenta, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
+
+			spriteBatch.Draw(inner2, drawPos, null, Color.White * 1f, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(inner, drawPos, null, SoulColor * 1f, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
+
+			return false;
+		}
+
+    }
 
 	public class EntropicRelocator : ModItem
 	{

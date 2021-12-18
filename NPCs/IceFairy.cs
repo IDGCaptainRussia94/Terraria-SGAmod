@@ -44,8 +44,8 @@ namespace SGAmod.NPCs
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
 			Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY];
-			bool underground = (int)((double)(spawnInfo.spawnTileY + 20) - Main.worldSurface) > 0;
-			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && !underground && Main.dayTime && spawnInfo.player.ZoneSnow && Main.hardMode ? 0.25f : 0f;
+			bool underground = Items.Consumables.AcidicEgg.Underground(spawnInfo.spawnTileY);
+			return !spawnInfo.playerInTown && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && !underground && Main.dayTime && spawnInfo.player.ZoneSnow && Main.hardMode ? 0.25f : 0f;
 		}
 
 		public override void NPCLoot()

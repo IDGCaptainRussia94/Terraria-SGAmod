@@ -30,8 +30,8 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -Concussion (thing) accessory that grants bonus damage based off your knockback VS enemy knockback resistance, or just if enemy is immune to knockback
 
 -"boring" swords:
--Dank Wood Sword, Machete, Rusted Blade, Claymore (maybe),Mudmore, Mangrove Striker,Thermal Blade, Rubied Blade, Curcuit Breaker Blade (maybe), Sword of a Thousand Truths (hhmhhmmm), Celestial Flare (maybe)
-
+-Dank Wood Sword, Machete, Rusted Blade, Claymore (maybe),Mudmore, Mangrove Striker,Thermal Blade, Rubied Blade, Curcuit Breaker Blade (maybe), Sword of a Thousand Truths (hhmhhmmm), Celestial Flare (maybe), Galactic Inferno (yes)
+-call them Zweihänder ?
 
 
 Credits:

@@ -15,15 +15,15 @@ namespace SGAmod.HavocGear.Items.Weapons
 		{
 			DisplayName.SetDefault("Heat Wave");
 			Tooltip.SetDefault("Summons heated crystals that lodge into foes, setting them ablaze" +
-				"\nAfter a while the crystal explodes, inflicting Thermal Blaze on the enemy they were attached to" +
-	"\nOnly one crystal may be lodged into a foe at a time");
+				"\nAfter a while the crystal explodes, releasing a back blast of energy" +
+	"\nOnly 3 crystals may be lodged into a foe at a time");
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 32;
+			item.damage = 25;
 			item.magic = true;
-			item.mana = 4;
+			item.mana = 8;
 			item.width = 34;      
             item.height = 24;
 			item.useTime = 10;

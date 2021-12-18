@@ -177,6 +177,7 @@ namespace SGAmod
 
 		public static Dictionary<int, int> itemToMusicReference = new Dictionary<int, int>();
 		public static Dictionary<int, int> musicToItemReference = new Dictionary<int, int>();
+		public static List<int> BuffsThatHavePotions = new List<int>();
 		public static byte SkillRun = 1;
 		public static int RecipeIndex = 0;
 		public static float fogAlpha = 1f;
@@ -1079,11 +1080,18 @@ namespace SGAmod
 			List<int> stone = new List<int>();
 			List<int> team = new List<int>();
 			List<int> accessory = new List<int>();
+			BuffsThatHavePotions.Clear();
 
 			for (int i = 0; i < Main.itemTexture.Length; i += 1)
             {
 				Item item = new Item();
 				item.SetDefaults(i);
+
+				if (item.buffType >= 0)
+				{
+					BuffsThatHavePotions.Add(item.buffType);
+				}
+
 				if (i < Main.item.Length &&  item.accessory)
                 {
 					accessory.Add(item.type);
@@ -1129,6 +1137,7 @@ namespace SGAmod
 					chests.Add(item.type);
 					continue;
 				}
+
 
 			}
 

@@ -609,7 +609,7 @@ namespace SGAmod.Dimensions
         public virtual bool IsSpike(int it,int type = 0)
         {
             bool match = (it == SGAmod.Instance.TileType("UnmanedBarTile") || it == SGAmod.Instance.TileType("NoviteBarTile") || it == SGAmod.Instance.TileType("BiomassBarTile"));
-            return ((it == TileID.Spikes || it == TileID.WoodenSpikes) && type == 1) || it == TileID.Cobweb || it==TileID.BreakableIce || it == TileID.MagicalIceBlock || it == TileID.MetalBars || match;
+            return ((it == TileID.Spikes || it == TileID.WoodenSpikes) && type == 1) || it == TileID.Cobweb || it == TileID.CorruptThorns || it == TileID.CrimtaneThorns || it == TileID.JungleThorns || it == TileID.BreakableIce || it == TileID.MagicalIceBlock || it == TileID.WaterCandle || it == TileID.Torches || it == TileID.LargePiles || it == TileID.MagicalIceBlock || it == TileID.MetalBars || match;
         }
 
         public virtual bool IsDirt(int it)
@@ -1057,7 +1057,8 @@ namespace SGAmod.Dimensions
                                 basecolor = Color.Lerp(Color.Magenta, player.GetImmuneAlpha(Color.LightPink, 0.5f), 0.75f) * 1f;
                             }
 
-                            spriteBatch.Draw(noise, (player.MountedCenter + loc) - Main.screenPosition, null, basecolor * alphapercent, angle, noise.Size() / 2f, (new Vector2(200f, 150f) / noisesize) * 0.6f, SpriteEffects.None, 0f);
+                            Color lighting = Lighting.GetColor((int)(player.MountedCenter.X) >> 4, (int)(player.MountedCenter.Y) >> 4, Color.White);
+                            spriteBatch.Draw(noise, (player.MountedCenter + loc) - Main.screenPosition, null, basecolor * alphapercent*(((lighting.R+ lighting.G+ lighting.B)/255f)/3f), angle, noise.Size() / 2f, (new Vector2(200f, 150f) / noisesize) * 0.6f, SpriteEffects.None, 0f);
                         }
 
                     }

@@ -10,6 +10,8 @@ Changelog:
 -Having over 8 potion buffs will fatigue you, high fatigue transforms buffs into debuffs: pick and choose potions instead of spam!
 -Off by default, forced on in Nightmare
 
+-Persona 5 Almighty card sprites, by Coolio (forgot to add to credits)
+
 
 --Changed:
 

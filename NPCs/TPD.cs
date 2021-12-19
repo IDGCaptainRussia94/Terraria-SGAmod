@@ -68,7 +68,7 @@ namespace SGAmod.NPCs
 
 		public override void NPCLoot()
 		{
-			if (Main.netMode != NetmodeID.SinglePlayer)
+			if (Main.netMode != NetmodeID.SinglePlayer || !SGAmod.SpaceBossActive)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<StarMetalMold>());
 				//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType <Glowrock>(),(int)(Main.rand.Next(60,100)*(Main.expertMode ? 0.6 : 1)));

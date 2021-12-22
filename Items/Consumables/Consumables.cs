@@ -1117,6 +1117,7 @@ namespace SGAmod.Items.Consumables
 			item.rare = ItemRarityID.Orange;
 			item.shoot = ModContent.ProjectileType<SoulJarProj>();
 			item.shootSpeed = 16;
+			item.noUseGraphic = true;
 		}
 
 		public void ParseLoadingCapture()
@@ -1228,8 +1229,24 @@ namespace SGAmod.Items.Consumables
 
 			return false;
 		}
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
+			Texture2D inner = Main.itemTexture[item.type];
+			Texture2D inner2 = Main.itemTexture[ItemID.RedDye];
 
-		public override void AddRecipes()
+			Vector2 drawPos = item.Center-Main.screenPosition;
+			Vector2 textureOrigin = new Vector2(inner.Width, inner.Height) / 2f;
+
+			Color lighting = Lighting.GetColor(((int)item.Center.X) >> 4, ((int)item.Center.Y) >> 4, Color.White);
+
+			//spriteBatch.Draw(inner, drawPos, null, Color.DarkMagenta, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
+
+			spriteBatch.Draw(inner2, drawPos, null, lighting, item.velocity.X * 0.2f, textureOrigin, item.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(inner, drawPos, null, lighting, item.velocity.X * 0.2f, textureOrigin, item.scale, SpriteEffects.None, 0f);
+			return false;
+		}
+
+        public override void AddRecipes()
 		{
 			if (GetType() == typeof(SoulJar))
 			{
@@ -1283,7 +1300,7 @@ namespace SGAmod.Items.Consumables
 		{
 			get
 			{
-				return SoulJar.SoulColorStatic;
+				return Color.White;
 			}
 		}
 
@@ -1358,13 +1375,15 @@ namespace SGAmod.Items.Consumables
 			Texture2D inner2 = Main.itemTexture[ItemID.RedDye];
 
 			Vector2 slotSize = new Vector2(52f, 52f);
-			Vector2 drawPos = projectile.Center;
+			Vector2 drawPos = projectile.Center-Main.screenPosition;
 			Vector2 textureOrigin = new Vector2(inner.Width, inner.Height) / 2f;
 
 			//spriteBatch.Draw(inner, drawPos, null, Color.DarkMagenta, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
 
-			spriteBatch.Draw(inner2, drawPos, null, Color.White * 1f, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
-			spriteBatch.Draw(inner, drawPos, null, SoulColor * 1f, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
+			Color lighting = Lighting.GetColor(((int)projectile.Center.X) >> 4, ((int)projectile.Center.Y) >> 4,Color.White);
+
+			spriteBatch.Draw(inner2, drawPos, null, Color.White.MultiplyRGB(lighting), projectile.rotation, textureOrigin, projectile.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(inner, drawPos, null, SoulColor.MultiplyRGB(lighting), projectile.rotation, textureOrigin, projectile.scale, SpriteEffects.None, 0f);
 
 			return false;
 		}

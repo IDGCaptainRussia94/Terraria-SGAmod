@@ -2,15 +2,96 @@
 Changelog:
 
 
-3.612-(12/18/21)-Patch 13
+3.615-(12/20/21)--Patch 14
 
--Added:
+--Added
+
+-Space Bender Potion: the former debuff can now be made as a buff post Hellion
+
+
+--Changed:
+
+-Various changes to the Deeper Dungeons:
+-tmutli-color touches line the halls, based on their respective wall type
+-Objects should no longer be able to hang from/spawn on spikes
+
+-Luminite Wraith's 1st form has been renamed to Terra Wraith (and the real fight is no longer called a rematch)
+
+-Warped Reality no longer takes life, that has been moved to a player-made version of the debuff
+
+-Trigger Finger Potion now affects 'all' revolver-class items, including the Soldier's Rocket Launcher
+
+-Sharkvern summon no longer requires souls of light, clouds have a bit more delay before lightning strikes, and lightning damage reduced to 75
+
+-Sandscorched enemies should no longer be able to spawn on beaches
+
+-Splunker Jellyfish have a 1/50 chance to drop a Jellyfish Necklace, Swamp Jelly have a 1/50 to drop a Murky Charm
+
+-Buffed Big Dakka: Charged Shot explosions can now crit (I think this was something I didn't intentionally leave out)
+
+-Buffed Ragnarok Brew: boost increassed, also Boosts Apoco Strength, and the buff displays the boost now
+
+-Buffed Pickaxe Yoyos: increased "power" of spinning pickaxes in mining, range on all reduced to 300 (same as Excavator), move speed reduced on later upgrades a bit
+
+-Buffed all Javelins: damage boosted slightly on all (except pearlwood, which is already solid)
+
+-Buffed Amber Javelin: Moved to post evil, damage increased to 20 (from 18), crafting recipe adjusted
+
+-Buffed Kelvin: Kelvin is held out a bit longer and goes a bit further, it does bonus damage against lava immune enemies
+
+-Buffed Gatlipiller: now has a 50% chance to not consume ammo
+
+-Buffed Trigger Finger Potion: Boosted to 25% faster firing speed
+
+-Buffed Sparing Spurs: Gives 4 defense, speed increased, acceleration increased
+
+-Buffed Gunslinger of Song and Legend: carries over the 4 defense from Sparing Spurs
+
+-Buffed Revolving West: Damage increased (28 => 42), firing speed greatly increased (30 => 12, alt: 40 => 16)
+
+-Rebalanced Dragon's might: now affects summmoning damage, more so than normal damage types, other types reduced to 30%, Duration increased to 30 seconds
+
+-Rebalanced Soldier's Rocket Launcher: level 1 emblem damage boost reduced to 20% (from 30%), level 4 emblem now has the ability to crit slowed enemies
+
+-Rebalanced Snowfall, Yellow Winter, Cursed Hail: Knockback reduced to 2 (from 10)
+
+-New changes to Helen Hellion Weygold:
+-Warped Reality renamed to Hellion's Warped Reality: no longer grants downsides
+-FNF attack notes don't do damage, but a new debuff and an attack are introduced to keep you moving regardless
+
+
+--Fixed:
+
+-Incorrect discription on Empowered Wraith Core
+
+-Blazewyrm deleting melee projectiles
+
+-Megidola using an incorrect sprite
+
+-Old One's Army breaking
+
+-Portalable-held trap weapons breaking grass when held
+
+-Fixed the soul jar draw code, for real this time
+
+-Fixed Dev Armors (also Manifested Items) vanishing on inventory sorting
+
+-Stranger Portal spawning outside the Deeper Dungeons
+
+-Traveling Merchant not selling Rocket I's with Soldier's Rocket Launcher
+
+
+
+
+3.613-(12/18/21)-Patch 13
+
+--Added:
 
 -New Vanilla Config Option: Buff Burning
 -Having over 8 potion buffs will fatigue you, high fatigue transforms buffs into debuffs: pick and choose potions instead of spam!
 -Off by default, forced on in Nightmare
 
--Persona 5 Almighty card sprites, by Coolio (forgot to add to credits)
+-Persona 5 Almighty card sprites, by Coolio
 
 
 --Changed:
@@ -28,7 +109,7 @@ Changelog:
 
 -Numismatic Crucible now has a base capacity of 2.5 gold (from 1 gold)
 
--Doubled the shards Copper Wraith drops, adn reduced their sell prices
+-Doubled the shards Copper Wraith drops, and reduced their sell prices
 
 -Sandscorched Golem now drops 3-12 fiery shard
 
@@ -40,7 +121,7 @@ Changelog:
 
 -Changed the visuals on Megidolaon a bit to make the smoke less of the focus (and more of the whole thing the focus)
 
--Reworked Heat Wave: damage lowered to 25, releases a back-blast explosion when a crystal expires, doing more 3X damage and piercing, allows up to 3 crystals into a target a time, mana cost increased to 8 (from 4)
+-Reworked Heat Wave: damage lowered to 25, releases a back-blast explosion when a crystal expires, doing 3X damage and piercing, allows up to 3 crystals into a target a time, mana cost increased to 8 (from 4)
 
 -Buffed Mossthorn and Thermal Pike: now auto swings, Thermal Pike hitbox is a bit larger and has less knockback
 
@@ -69,6 +150,7 @@ Changelog:
 -Unmaned Leggings being unwearable
 
 -Fridgeflame Concoction not really working
+
 
 
 3.611-(12/15/21)--Hotfix 24

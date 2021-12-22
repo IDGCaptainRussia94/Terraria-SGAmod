@@ -59,7 +59,7 @@ namespace SGAmod.NPCs.Sharkvern
             npc.height = 52; 
             npc.boss = true;
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Shark");
-            npc.lavaImmune = true;      
+            npc.lavaImmune = false;      
             npc.noGravity = true;          
             npc.noTileCollide = true;       
             npc.HitSound = SoundID.NPCHit1;
@@ -70,6 +70,7 @@ namespace SGAmod.NPCs.Sharkvern
             npc.netAlways = true;
             bossBag = mod.ItemType("SharkvernBag");
             npc.value = Item.buyPrice(0, 25, 0, 0);
+            npc.aiStyle = -1;
         }
 
         public override void BossLoot(ref string name, ref int potionType)
@@ -181,6 +182,13 @@ namespace SGAmod.NPCs.Sharkvern
             {
                 if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && !SGAWorld.downedSharkvern && Main.raining && (SGAConfig.Instance.NegativeWorldEffects || SGAWorld.NightmareHardcore>0))
                 {
+                    if (!SGAWorld.sharkvernMessage)
+                    {
+                        SGAWorld.sharkvernMessage = true;
+                        Idglib.Chat("A torrential storm moves in from the oceans...", 50, 50, 255);
+
+                    }
+
                     Main.maxRaining = 0.80f;
 
                     for (int k = 0; k < Main.maxPlayers; k++)

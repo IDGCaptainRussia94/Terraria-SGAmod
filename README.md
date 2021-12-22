@@ -10,7 +10,6 @@ Github was moved: previous builds of the mod can be found over here: https://git
 -Crimson only: Jarate, Jarocket, Jarate Shurikens, Heart Guard, Sanguine Bident, Crimson Catastrophe (can be bypassed with fishing)
 -Corruption only: Gas Passer, Wraith Arrows, Dosed Arrows, Corrupted Tome, Cursed Hail, Jagged Spike Buckler (can be bypassed with fishing)
 
-
 -Ideas: Banners, the Couch, Bannerlord=collection of banners tf2/style things, Tech weapons have an "overclock" mechanic that changes up their gameplay while active and overhaul ideas (maybe?), spider queen can melt normal generated blocks (dirt and so)
 Cruciatus (damage over time debuff attack), Charon's Ferry (shadow tenticle mount thing), Spider body mount with legs?, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
 Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Binding Vudoo Clothier's Doll Magic, Mana Potion Pet (Blue Gusher), Clothier drop that forces dropped throwing items to attack enemies, Make Enchanted Fury/Seriph Shard a Clothier drop
@@ -28,10 +27,12 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
 -WoF yoyo that leeches out HP from enemies into the yoyo, heals the player when it retracts (moonlord upgrade too)
 -Concussion (thing) accessory that grants bonus damage based off your knockback VS enemy knockback resistance, or just if enemy is immune to knockback
+-Omni-shoot, combine all the one-off ammo types of: Styngers, Stakes, Candycorn, Jack o' Lanterns, Nails, and Starfish into an endgame weapon with swappable forms
 
 -"boring" swords:
 -Dank Wood Sword, Machete, Rusted Blade, Claymore (maybe),Mudmore, Mangrove Striker,Thermal Blade, Rubied Blade, Curcuit Breaker Blade (maybe), Sword of a Thousand Truths (hhmhhmmm), Celestial Flare (maybe), Galactic Inferno (yes)
 -call them Zweihänder ?
+-Finish card deck, finish Wrath Caliburn attacks
 
 
 Credits:

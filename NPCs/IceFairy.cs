@@ -28,7 +28,6 @@ namespace SGAmod.NPCs
 			npc.lifeMax = 400;
 			npc.HitSound = SoundID.NPCHit1;
 			npc.DeathSound = SoundID.NPCDeath1;
-			npc.value = 0f;
 			npc.knockBackResist = 0.2f;
 			npc.aiStyle = 22;
 			aiType = 0;

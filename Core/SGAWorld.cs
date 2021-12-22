@@ -62,6 +62,7 @@ namespace SGAmod
         public static bool portalcanmovein = false;
         public static bool darknessVision = false;
         public static int darkSectorInt = 0;
+        public static bool sharkvernMessage = false;
         public static NoiseGenerator WorldNoise;
 
         public static int SnapCooldown = 0;
@@ -133,6 +134,7 @@ namespace SGAmod
                 downedCratrosity = false;
                 downedCratrosityPML = false;
                 downedHellion = 0;
+                sharkvernMessage = false;
                 downedPrismBanshee = 0;
                 tf2cratedrops = false;
                 tf2quest = 0;

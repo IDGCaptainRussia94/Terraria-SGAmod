@@ -10,10 +10,49 @@ using SGAmod.HavocGear.Items;
 using SGAmod.Buffs;
 using Microsoft.Xna.Framework.Graphics;
 using SGAmod.Tiles;
+using System.Collections.Generic;
 //using SubworldLibrary;
 
 namespace SGAmod.Items.Consumables
 {
+
+	public class SpaceBenderPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Space Bender Potion");
+			Tooltip.SetDefault("'Distance doesn't matter when you flatten space like paper'\nGrants unlimited flight\n" + Idglib.ColorText(Color.Red, "But flying when wingtime is too low will drain your health") + "\n" + Idglib.ColorText(Color.Red, "Mounts drain health as well"));
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.Red;
+			item.value = 5000;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = SGAmod.Instance.BuffType("WarmpedRealityBuff");
+			item.buffTime = 60 * 600;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<DragonsMightPotion>(), 1);
+			recipe.AddRecipeGroup("Fragment", 3);
+			recipe.AddIngredient(ModContent.ItemType<DrakeniteBar>(), 1);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
 	public class DeificHealingPotion : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -166,7 +205,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Trigger Finger Potion");
-			Tooltip.SetDefault("Increases the attack speed of non-autofire guns by 15%");
+			Tooltip.SetDefault("Increases the attack speed of non-autofire guns/Revolvers by 15%");
 		}
 
 		public override void SetDefaults()
@@ -360,7 +399,12 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ragnarok's Brew");
-			Tooltip.SetDefault("Boosts your Apocalyptical Chance as your HP drops (up to a max of 3%)");
+			Tooltip.SetDefault("Boosts your Apocalyptical Chance and Strength as your HP drops");
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "apocalypticaltext", SGAGlobalItem.apocalypticaltext));
 		}
 
 		public override void SetDefaults()
@@ -516,8 +560,8 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dragon's Might Potion");
-			Tooltip.SetDefault("50% increase to all damage types except Summon damage" +
-				"\nLasts 20 seconds, inflicts Weakness after it ends\nThis cannot be stopped by being immune\nCannot be used while Weakened\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds"));
+			Tooltip.SetDefault("30% increase to all damage types except Summon damage, which gets 50%" +
+				"\nLasts 30 seconds, inflicts Weakness after it ends\nThis cannot be stopped by being immune\nCannot be used while Weakened\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds"));
 		}
 
 		public override void SetDefaults()
@@ -534,7 +578,7 @@ namespace SGAmod.Items.Consumables
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
 			item.buffType = mod.BuffType("DragonsMight");
-			item.buffTime = 60*20;
+			item.buffTime = 60*30;
 		}
 
 		public override void AddRecipes()
@@ -599,7 +643,6 @@ namespace SGAmod.Items.Consumables
 			recipe.AddIngredient(ModContent.ItemType < CryostalBar>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < IceFairyDust>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < Fridgeflame>(), 3);
-			recipe.AddIngredient(ModContent.ItemType<Fridgeflame>(), 3);
 			recipe.AddTile(TileID.AlchemyTable);
 			recipe.SetResult(this, 2);
 			recipe.AddRecipe();

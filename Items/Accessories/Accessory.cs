@@ -2844,7 +2844,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sparing Spurs");
-			Tooltip.SetDefault("Gain a movement speed buff while reloading your revolver\nGrants a Shield of Cthulhu Dash while firing your revolver\nFall Damage and fireblock immunity\n'Ya ready to dance pardner?'");
+			Tooltip.SetDefault("Gain a movement speed and acceleration buff while reloading your revolver\nGrants a Shield of Cthulhu Dash while firing your revolver\nFall Damage and fireblock immunity\n'Ya ready to dance pardner?'");
 		}
 
 		public override void SetDefaults()
@@ -2854,6 +2854,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = 3;
 			item.value = Item.sellPrice(0, 2, 0, 0);
 			item.accessory = true;
+			item.defense = 4;
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -2870,7 +2871,7 @@ namespace SGAmod.Items.Accessories
 
 			if (player.itemAnimation < 1 && sgaply.ReloadingRevolver > 0)
 			{
-				if (Math.Abs(player.velocity.X) > 4f && player.velocity.Y == 0.0 && !player.mount.Active && !player.mount.Cart)
+				if (Math.Abs(player.velocity.X) > 2f && player.velocity.Y == 0.0 && !player.mount.Active && !player.mount.Cart)
 				{
 					float posX;
 					if (player.direction > 0)
@@ -2895,8 +2896,9 @@ namespace SGAmod.Items.Accessories
 					Main.dust[dust].shader = GameShaders.Armor.GetSecondaryShader(player.dye[slot].dye, player);
 					Main.dust[dust].noGravity = true;
 				}
-				player.accRunSpeed += 6.0f;
-				player.moveSpeed += 0.20f;
+				player.accRunSpeed += 4.0f;
+				player.runAcceleration += 0.50f;
+				player.moveSpeed += 0.75f;
 			}
 			player.noFallDmg = true;
 			player.fireWalk = true;
@@ -3010,6 +3012,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void SetDefaults()
 		{
+			item.defense = 4;
 			item.width = 18;
 			item.height = 24;
 			item.rare = ItemRarityID.Cyan;

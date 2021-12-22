@@ -190,7 +190,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             item.CloneDefaults(ItemID.DayBreak);
-            item.damage = 8;
+            item.damage = 12;
             item.width = 24;
             item.height = 24;
             item.useTime = 25;

@@ -102,7 +102,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Empowered Wraith Core Fragment");
-			Tooltip.SetDefault("Summons forth the second of the Wraiths, who has stolen your ability to make a hardmode anvil and craft anything at one as well.");
+			Tooltip.SetDefault("Summons forth the second of the Wraiths");
 		}
 
 		public override string Texture
@@ -242,7 +242,6 @@ namespace SGAmod.Items.Consumables
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Seashell, 1);
 			recipe.AddIngredient(ItemID.SharkFin, 1);
-			recipe.AddIngredient(ItemID.SoulofLight, 5);
 			recipe.AddIngredient(ItemID.ChlorophyteBar, 5);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);

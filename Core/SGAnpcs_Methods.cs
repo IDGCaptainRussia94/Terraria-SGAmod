@@ -524,7 +524,7 @@ namespace SGAmod
 
 			if (moddedplayer.Blazewyrmset)
 			{
-				if (npc.HasBuff(mod.BuffType("ThermalBlaze")) && item.melee)
+				if (npc.HasBuff(mod.BuffType("ThermalBlaze")) && ((item != null && item.melee) || (projectile != null && projectile.melee)))
 				{
 					damage += (int)(sourcedamage * 0.20f);
 				}
@@ -720,7 +720,7 @@ namespace SGAmod
 
 			if (moddedplayer.Blazewyrmset)
 			{
-				if (crit && ((item != null && item.melee && item.pick + item.axe + item.hammer < 1)) || (projectile != null && projectile.melee && (player.heldProj == projectile.whoAmI || (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile))))
+				if (crit && ((item != null && item.melee && item.pick + item.axe + item.hammer < 1)) || (projectile != null && projectile.melee && (player.heldProj == projectile.whoAmI || (projectile.modProjectile != null && (projectile.modProjectile is IShieldBashProjectile || projectile.modProjectile is ITrueMeleeProjectile)))))
 				{
 					if (player.SGAPly().AddCooldownStack(12 * 60))
 					{

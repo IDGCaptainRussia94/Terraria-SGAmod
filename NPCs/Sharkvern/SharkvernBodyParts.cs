@@ -49,6 +49,8 @@ namespace SGAmod.NPCs.Sharkvern
             npc.dontCountMe = true;
             npc.HitSound = SoundID.NPCHit1;
             npc.chaseable = true;
+            npc.lavaImmune = false;
+            npc.aiStyle = -1;
         }
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -94,6 +96,7 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override bool PreAI()
         {
+            //npc.AddBuff(ModContent.BuffType<Buffs.LavaBurn>(),900);
 
             npc.Opacity = MathHelper.Clamp(npc.Opacity + (npc.dontTakeDamage ? -0.01f : 0.02f), 0.2f, 1f);
 
@@ -181,6 +184,8 @@ namespace SGAmod.NPCs.Sharkvern
             npc.dontCountMe = true;
             npc.HitSound = SoundID.NPCHit1;
             npc.chaseable = false;
+            npc.lavaImmune = false;
+            npc.aiStyle = -1;
         }
 
         public override bool PreAI()

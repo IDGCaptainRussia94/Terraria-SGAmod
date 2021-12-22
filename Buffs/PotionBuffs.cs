@@ -9,12 +9,12 @@ using System.Linq;
 
 namespace SGAmod.Buffs
 {
-	public class DragonsMight: ModBuff
+	public class DragonsMight : ModBuff
 	{
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Dragon's Might");
-			Description.SetDefault("50% increase to all damage types except Summon damage");
+			Description.SetDefault("30% increase to all damage types except Summon damage, which gets 50%");
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
 			Main.debuff[Type] = true;
@@ -23,13 +23,11 @@ namespace SGAmod.Buffs
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.magicDamage += 0.5f;
-			player.Throwing().thrownDamage += 0.5f;
-			player.meleeDamage += 0.5f;
-			player.rangedDamage += 0.5f;
-			if (player.buffTime[buffIndex] < 10)
+			player.BoostAllDamage(0.30f);
+			player.minionDamage += 0.20f;
+			if (player.buffTime[buffIndex] < 20)
 			{
-			player.AddBuff(ModContent.BuffType<WorseWeakness>(),60*20);
+			player.AddBuff(ModContent.BuffType<WorseWeakness>(),60*30);
 			}
 		}
 	}
@@ -73,14 +71,14 @@ namespace SGAmod.Buffs
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Trigger Finger");
-			Description.SetDefault("Non-autofire guns fire 15% faster");
+			Description.SetDefault("Non-autofire guns fire 25% faster");
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
 			Main.debuff[Type] = false;
 		}
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.SGAPly().triggerFinger += 0.15f;
+			player.SGAPly().triggerFinger += 0.25f;
 		}
 	}		
 	public class TrueStrikePotionBuff : ModBuff
@@ -148,6 +146,7 @@ namespace SGAmod.Buffs
 	}
 	public class RagnarokBrewBuff : ModBuff
 	{
+		double Boost(Player player) => Math.Max(Math.Min(4.00 - (((double) player.statLife / (double) player.statLifeMax2) * 4.00), 4.00),1.00);
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Ragnarok's Brew");
@@ -156,20 +155,36 @@ namespace SGAmod.Buffs
 			Main.buffNoSave[Type] = true;
 		}
 
-		public override void Update(Player player, ref int buffIndex)
+        public override void ModifyBuffTip(ref string tip, ref int rare)
+        {
+			tip += "\nCurrent Boosts: " + Math.Round(Boost(Main.LocalPlayer),2) + "% Apoco Chance, "+ Math.Round(Boost(Main.LocalPlayer)*25f,1)+"% Apoco Strength";
+		}
+
+        public override void Update(Player player, ref int buffIndex)
 		{
-			double gg = Math.Min(4.00 - (((double)player.statLife / (double)player.statLifeMax) * 4.00), 3.00);
+			float gg = (float)Boost(player);
 
 			if (player.HeldItem != null)
 			{
-				if (player.HeldItem.melee)
-					player.GetModPlayer<SGAPlayer>().apocalypticalChance[0] += gg;
-				if (player.HeldItem.ranged)
-					player.GetModPlayer<SGAPlayer>().apocalypticalChance[1] += gg;
-				if (player.HeldItem.magic)
-					player.GetModPlayer<SGAPlayer>().apocalypticalChance[2] += gg;
-				if (player.HeldItem.thrown)
-					player.GetModPlayer<SGAPlayer>().apocalypticalChance[3] += gg;
+				SGAPlayer sgaply = player.SGAPly();
+				player.SGAPly().apocalypticalStrength += gg*0.25f;
+				if (player.HeldItem.melee) 
+				{
+					sgaply.apocalypticalChance[0] += gg;
+					return;
+				}
+				if (player.HeldItem.ranged) 
+				{
+					sgaply.apocalypticalChance[1] += gg;
+					return;
+				}
+				if (player.HeldItem.magic) 
+				{
+					sgaply.apocalypticalChance[2] += gg;
+					return;
+				}
+				player.SGAPly().apocalypticalChance[3] += gg;
+
 			}
 		}
 	}

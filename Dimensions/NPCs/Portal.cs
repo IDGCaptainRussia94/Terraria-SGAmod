@@ -119,6 +119,9 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
+			if (GetType() != typeof(DungeonPortal))
+				return 0;
+
 			//Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY];
 			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && NPC.downedBoss3 && !spawnInfo.invasion && spawnInfo.player.ZoneDungeon && NPC.CountNPCS(ModContent.NPCType<DungeonPortal>())<1 &&
 				(spawnInfo.spawnTileType==TileID.BlueDungeonBrick || spawnInfo.spawnTileType == TileID.PinkDungeonBrick || spawnInfo.spawnTileType == TileID.GreenDungeonBrick) ? 0.02f : 0f;

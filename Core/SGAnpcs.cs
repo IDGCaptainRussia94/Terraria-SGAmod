@@ -1169,7 +1169,10 @@ namespace SGAmod
 			if (Main.rand.Next(0, 3) == 0 && Main.hardMode)
 			{
 				int[] weapon = { ModContent.ItemType<SeraphimShard>(), ModContent.ItemType<SoldierRocketLauncher>(), ModContent.ItemType<Gunarang>() };
+				int intex = weapon[Main.rand.Next(weapon.Length)];
 				shop[nextSlot] = weapon[Main.rand.Next(weapon.Length)];
+				if (shop[nextSlot] == ModContent.ItemType<SoldierRocketLauncher>())
+					rocket = true;
 				nextSlot++;
 
 			}
@@ -1465,7 +1468,9 @@ namespace SGAmod
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, Main.rand.Next(1,3)));
 				}
 
-				if (npc.aiStyle != 107 && npc.aiStyle != 108 && npc.aiStyle != 109 && npc.aiStyle != 110 && npc.aiStyle != 111)
+
+				//OOA support
+				if (npc.aiStyle != 107 && npc.aiStyle != 108 && npc.aiStyle != 109 && npc.aiStyle != 110 && npc.aiStyle != 111 && !NPCID.Sets.BelongsToInvasionOldOnesArmy[npc.type])
 				{
 					if (Main.player[npc.target] != null)
 					{

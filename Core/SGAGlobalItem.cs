@@ -960,9 +960,13 @@ namespace SGAmod
             if (item.pick + item.hammer + item.axe > 0) {
                 usetimetemp *= sgaplayer.UseTimeMulPickaxe;
             }
-            if (item.ranged && item.useAmmo == AmmoID.Bullet && item.autoReuse == false)
+            if (item.ranged)
             {
-                usetimetemp += sgaplayer.triggerFinger - 1f;
+                int type;
+                if ((item.useAmmo == AmmoID.Bullet && item.autoReuse == false) || SGAmod.UsesClips.TryGetValue(item.type, out type))
+                {
+                    usetimetemp += sgaplayer.triggerFinger - 1f;
+                }
             }
 
 

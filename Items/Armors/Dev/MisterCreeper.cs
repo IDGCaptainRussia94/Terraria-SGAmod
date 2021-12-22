@@ -12,7 +12,7 @@ namespace SGAmod.Items.Armors.Dev
 {
 
 	[AutoloadEquip(EquipType.Head)]
-	public class MisterCreeperHead : ModItem
+	public class MisterCreeperHead : ModItem, IDevArmor
 	{
 		public virtual Color AwakenedColors => Color.Orange;
 		public override void SetStaticDefaults()
@@ -120,7 +120,7 @@ namespace SGAmod.Items.Armors.Dev
 	}
 
 	[AutoloadEquip(EquipType.Body)]
-	public class MisterCreeperBody : MisterCreeperHead
+	public class MisterCreeperBody : MisterCreeperHead, IDevArmor
 	{
 		public override void SetStaticDefaults()
 		{
@@ -167,7 +167,7 @@ namespace SGAmod.Items.Armors.Dev
 	}
 
 	[AutoloadEquip(EquipType.Legs)]
-	public class MisterCreeperLegs : MisterCreeperHead
+	public class MisterCreeperLegs : MisterCreeperHead, IDevArmor
 	{
 		public override void SetStaticDefaults()
 		{

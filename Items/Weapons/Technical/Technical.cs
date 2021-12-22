@@ -2452,7 +2452,6 @@ namespace SGAmod.HavocGear.Items.Weapons
 			projectile.friendly = true;
 			projectile.tileCollide = true;
 			projectile.ranged = true;
-			projectile.arrow = true;
 			projectile.penetrate = 2;
 			projectile.timeLeft = 800;
 			projectile.extraUpdates = 5;
@@ -2480,7 +2479,12 @@ namespace SGAmod.HavocGear.Items.Weapons
 					for (int i = 0; i < numProj; i++)
 					{
 						//Vector2 perturbedSpeed = new Vector2(projectile.velocity.X, projectile.velocity.Y).RotatedBy(MathHelper.Lerp(-rotation, rotation, i / (numProj - 1)));
-						Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("BoulderBlast"), projectile.damage, projectile.knockBack, projectile.owner, 0f, 0f);
+						int proj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("BoulderBlast"), projectile.damage, projectile.knockBack, projectile.owner, 0f, 0f);
+						if (proj >= 0)
+						{
+							Main.projectile[proj].ranged = true;
+							Main.projectile[proj].netUpdate = true;
+						}
 					}
 
 				}

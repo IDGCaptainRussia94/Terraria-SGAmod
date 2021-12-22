@@ -59,13 +59,13 @@ namespace SGAmod.Items.Tools
 	public class TerraExcavatorProj : ExcavatorProj
 	{
 		public override int[] Pickaxes => new int[] { ItemID.SpectrePickaxe, ItemID.ShroomiteDiggingClaw, ItemID.ChlorophytePickaxe, ItemID.PickaxeAxe };
-		public override int RealPickPower => 45;
+		public override int RealPickPower => 100;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Terra Excavator");
 			//ProjectileID.Sets.YoyosLifeTimeMultiplier[projectile.type] = 5000f;
-			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 500f;
-			ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 10f;
+			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 300f;
+			ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 8f;
 		}
 	}
 	public class Geyodo : Excavator
@@ -116,13 +116,13 @@ namespace SGAmod.Items.Tools
 		public class GeyodoProj : ExcavatorProj
 	{
 		public override int[] Pickaxes => new int[] { ItemID.CobaltPickaxe, ItemID.MythrilPickaxe, ItemID.AdamantitePickaxe, ItemID.MoltenPickaxe };
-		public override int RealPickPower => 45;
+		public override int RealPickPower => 70;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Geyodo Proj");
 			//ProjectileID.Sets.YoyosLifeTimeMultiplier[projectile.type] = 5000f;
-			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 400f;
-			ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 8f;
+			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 300f;
+			ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 7f;
 		}
 	}
 
@@ -182,7 +182,7 @@ namespace SGAmod.Items.Tools
 	{
 		public int PickPower = 0;
 		public int PowerPick = 0;
-		public virtual int RealPickPower => 10;
+		public virtual int RealPickPower => 20;
 		public virtual int[] Pickaxes => new int[] { ItemID.CopperPickaxe, ItemID.IronPickaxe, ItemID.SilverPickaxe, ItemID.GoldPickaxe };
 		public override void SetStaticDefaults()
 		{

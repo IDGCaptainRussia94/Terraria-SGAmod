@@ -675,7 +675,7 @@ namespace SGAmod.NPCs.Wraiths
 			//float moveval=(float)(Math.Sin(npc.ai[0]/600f)*40f);
 			Vector2 loc = new Vector2(0f, -250f) + dodge;
 			npc.dontTakeDamage = false;
-			npc.GivenName = "The Luminite Wraith";
+			npc.GivenName = music == MusicID.LunarBoss ? "The Luminite Wraith" : "Terra Wraith";
 			doingCharge -= 1;
 			if (fighttversion == 0 && warninglevel > 30)
 			{

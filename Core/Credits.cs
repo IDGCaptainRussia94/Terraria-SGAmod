@@ -203,6 +203,10 @@ namespace SGAmod.Credits
             line._colors.Item3 = Color.Red;
             creditsToSpawn.Add(line);
 
+            line = new CreditsLine(("Coolio", "Sprite Contributor", "'Sprite delight!'"), top);
+            line._colors.Item3 = Color.Orange;
+            creditsToSpawn.Add(line);
+
             line = new CreditsLine(("Squid", "Former Spriter", "'Vulcanit revival one day?'"), top);
             line._colors.Item3 = Color.Orange;
             creditsToSpawn.Add(line);

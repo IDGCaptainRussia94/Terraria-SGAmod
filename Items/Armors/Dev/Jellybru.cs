@@ -12,7 +12,7 @@ namespace SGAmod.Items.Armors.Dev
 {
 
 	[AutoloadEquip(EquipType.Head)]
-	public class JellybruHelmet : MisterCreeperHead
+	public class JellybruHelmet : MisterCreeperHead, IDevArmor
 	{
 		public override bool Autoload(ref string name)
 		{
@@ -122,7 +122,7 @@ namespace SGAmod.Items.Armors.Dev
 				//};
 
 [AutoloadEquip(EquipType.Body)]
-		public class JellybruChestplate : JellybruHelmet
+		public class JellybruChestplate : JellybruHelmet, IDevArmor
 	{
 			public override void SetStaticDefaults()
 			{
@@ -169,7 +169,7 @@ namespace SGAmod.Items.Armors.Dev
 	}
 
 		[AutoloadEquip(EquipType.Legs)]
-		public class JellybruLeggings : JellybruHelmet
+		public class JellybruLeggings : JellybruHelmet, IDevArmor
 	{
 			public override void SetStaticDefaults()
 			{

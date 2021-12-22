@@ -29,7 +29,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 300;
+            item.damage = 320;
             item.width = 32;
             item.crit = 10;
             item.height = 32;
@@ -121,7 +121,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 38;
+            item.damage = 42;
             item.width = 32;
             item.height = 32;
             item.crit = 10;
@@ -234,7 +234,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 42;
+            item.damage = 50;
             item.width = 32;
             item.height = 32;
             item.knockBack = 5;
@@ -355,7 +355,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 50;
+            item.damage = 60;
             item.width = 32;
             item.height = 32;
             item.crit = 0;
@@ -393,7 +393,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 40;
+            item.damage = 56;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -428,7 +428,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 26;
+            item.damage = 32;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -500,7 +500,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 18;
+            item.damage = 28;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -529,7 +529,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 18;
+            item.damage = 20;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -539,11 +539,11 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.PalmWood, 5);
-            recipe.AddIngredient(ItemID.Sandstone, 10);
+            recipe.AddIngredient(ItemID.PalmWood, 10);
+            recipe.AddIngredient(ItemID.FossilOre, 2);
             recipe.AddIngredient(ItemID.Amber, 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 150);
+            recipe.SetResult(this, 250);
             recipe.AddRecipe();
         }
 
@@ -565,7 +565,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 12;
+            item.damage = 15;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -601,7 +601,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 16;
+            item.damage = 20;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -636,7 +636,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 11;
+            item.damage = 14;
             item.width = 24;
             item.height = 24;
             item.knockBack = 5;

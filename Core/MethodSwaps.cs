@@ -195,8 +195,40 @@ namespace SGAmod
 
         private static void NPC_UpdateNPC(On.Terraria.NPC.orig_UpdateNPC orig, NPC self, int i)
         {
-			if (self.target >= 0 && Main.player[self.target].active)
-            {
+			/*
+			NPCUtils.TargetClosestOldOnesInvasion(this);
+			NPCAimedTarget targetData = self.GetTargetData();
+			targetData.Center
+			*/
+
+			bool oldOnes = NPCID.Sets.BelongsToInvasionOldOnesArmy[self.type];
+
+			if (!oldOnes && self.HasValidTarget && Main.player[self.target].active)
+			{
+				/*if (oldOnes)
+				{
+					NPCAimedTarget targetData = self.GetTargetData();
+					if (targetData.Type == Terraria.Enums.NPCTargetType.Player)
+                    {
+						Player nearest = Main.player[Player.FindClosest(targetData.Center,64,64)];
+						SGAPlayer sgaply = nearest.SGAPly();
+						Vector2 newPos = sgaply.centerOverridePosition;
+
+						if ((newPos - self.Center).LengthSquared() < 2560000)
+						{
+							Vector2 oldPos = sgaply.player.MountedCenter;
+							//targetData.Type = Terraria.Enums.NPCTargetType.NPC;
+
+							sgaply.player.MountedCenter = newPos;
+							orig(self, i);
+							sgaply.player.MountedCenter = oldPos;
+						}
+
+					}
+
+                }
+				else
+				*/
 				SGAPlayer sgaply = Main.player[self.target].SGAPly();
 				if (sgaply.centerOverrideTimer > 0)
 				{
@@ -205,6 +237,7 @@ namespace SGAmod
 					{
 						Vector2 oldPos = sgaply.player.MountedCenter;
 						sgaply.player.MountedCenter = newPos;
+
 						orig(self, i);
 						sgaply.player.MountedCenter = oldPos;
 						return;
@@ -289,7 +322,7 @@ namespace SGAmod
 				}
 			}
 
-			if (sgaply.nightmareplayer && IdgNPC.bossAlive)
+			if ((sgaply.nightmareplayer && IdgNPC.bossAlive) || sgaply.noLifeRegen)
 				return;
 
 			orig(self);

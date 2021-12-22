@@ -20,12 +20,14 @@ namespace SGAmod
 	{
 
 	}
+	interface IDevArmor
+	{
 
+	}
 	interface IRustBurnText
 	{
 
 	}
-
 	interface IDankSlowText
 	{
 

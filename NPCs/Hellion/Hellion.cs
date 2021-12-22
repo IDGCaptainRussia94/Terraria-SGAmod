@@ -1075,8 +1075,7 @@ namespace SGAmod.NPCs.Hellion
 					if (Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<HellionFNFArrowMinigameMasterProjectile>()).Count() > 0)
 					{
 						npc.ai[1] = 7600;
-
-						/*
+	
 						int portaltime = 160;
 						int proj = ModContent.ProjectileType<HellionCorePlasmaAttackButGreen>();
 						for (int i = -800; i <= 801; i += 1600)
@@ -1117,8 +1116,7 @@ namespace SGAmod.NPCs.Hellion
 							Main.PlaySound(SoundID.Item, (int)Main.projectile[ize].position.X, (int)Main.projectile[ize].position.Y, 33, 0.25f, 0.75f);
 							Main.projectile[ize].netUpdate = true;
 						}
-						npc.ai[3] += MathHelper.PiOver2;
-						*/
+						npc.ai[3] += MathHelper.PiOver2;		
 
 					}
 				}
@@ -1150,6 +1148,15 @@ namespace SGAmod.NPCs.Hellion
 				{
 					hell.HellionTaunt("Go!");
 				}
+				if ((int)npc.ai[1] < 7700)
+                {
+					foreach(Player player in Main.player)
+                    {
+						if (player != null && player.active && !player.dead)
+						player.AddBuff(ModContent.BuffType<FNFDebuff>(), 3);
+                    }
+
+                }
 
 
 				if ((int)npc.ai[1] == 7800)
@@ -2771,8 +2778,8 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (!rematch)
 			{
-				//if (npc.life < npc.lifeMax * 0.999f && phase < 5 && npc.ai[1] < 1)
-					if (npc.life < npc.lifeMax * 0.40f && phase < 5 && npc.ai[1] < 1)
+				if (npc.life < npc.lifeMax * 0.999f && phase < 5 && npc.ai[1] < 1)
+					//if (npc.life < npc.lifeMax * 0.40f && phase < 5 && npc.ai[1] < 1)
 				{
 					phase = 5;
 					if (ArmyVersion)
@@ -3800,7 +3807,7 @@ namespace SGAmod.NPCs.Hellion
 					}
 
 					if (npc.ai[1]>0)
-					thatplayer.AddBuff(ModContent.BuffType<WarmpedRealityBuff>(), 10);
+					thatplayer.AddBuff(ModContent.BuffType<WarmpedRealityDebuff>(), 10);
 
 					if (!rematch || noescapeaurasize < 1950)
 					{
@@ -5480,7 +5487,12 @@ namespace SGAmod.NPCs.Hellion
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
 		}
 
-		public virtual void DoUpdate()
+        public override bool CanDamage()
+        {
+			return false;
+        }
+
+        public virtual void DoUpdate()
         {
 
         }
@@ -5581,17 +5593,51 @@ namespace SGAmod.NPCs.Hellion
 
 	}
 
-	public class WarmpedRealityBuff : ModBuff
+	public class FNFDebuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Buff_" + BuffID.SugarRush;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Dance to the Beats");
+			Description.SetDefault("Life Regen disabled\nHealth drains if you aren't actively moving");
+			Main.pvpBuff[Type] = false;
+			Main.debuff[Type] = true;
+			Main.buffNoTimeDisplay[Type] = true;
+			Main.buffNoSave[Type] = true;
+		}
+		public override void Update(Player player, ref int buffIndex)
+		{
+			if (player.velocity.Length() < 0.1f && player.SGAPly().timer % 10 == 0)
+			{
+				CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), CombatText.LifeRegenNegative, 5, dramatic: false, dot: true);
+				player.statLife -= 5;
+				if (player.statLife < 1)
+                {
+					player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " showed no will to funk"), 1337, 0);
+				}
+			}
+			player.lifeRegen = 0;
+			player.lifeRegenTime = 0;
+			player.SGAPly().noLifeRegen = true;
+
+		}
+	}
+
+	public class WarmpedRealityDebuff : ModBuff
 	{
         public override bool Autoload(ref string name, ref string texture)
         {
-			texture = "SGAmod/Buffs/Gourged";
+			texture = "Terraria/Buff_"+BuffID.VortexDebuff;
 			return true;
         }
         public override void SetDefaults()
 		{
-			DisplayName.SetDefault("Warped Reality");
-			Description.SetDefault("Unlimited Flight, but slowly takes life if flight time is too low\nBeing mounted also reduces life regen");
+			DisplayName.SetDefault("Hellion's Warped Reality");
+			Description.SetDefault("Unlimited Flight");
 			Main.pvpBuff[Type] = false;
 			Main.debuff[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
@@ -5600,6 +5646,28 @@ namespace SGAmod.NPCs.Hellion
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.wingTime = Math.Max(player.wingTime, 3);
+		}
+	}
+
+
+	public class WarmpedRealityBuff : WarmpedRealityDebuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Buff_" + BuffID.VortexDebuff;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			DisplayName.SetDefault("Flawed Warped Reality");
+			Description.SetDefault("Unlimited Flight, but slowly takes life if flight time is too low\nBeing mounted also reduces life regen");
+			Main.debuff[Type] = false;
+			Main.buffNoTimeDisplay[Type] = false;
+		}
+		public override void Update(Player player, ref int buffIndex)
+		{
+			base.Update(player,ref buffIndex);
 			if (player.statLife > 100)
 			{
 				if (player.wingTime < 200)
@@ -5610,7 +5678,6 @@ namespace SGAmod.NPCs.Hellion
 				if (player.mount != null && player.mount.Active)
 				{
 					player.SGAPly().badLifeRegen += 10;
-
 				}
 			}
 		}

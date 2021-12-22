@@ -558,11 +558,11 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			item.CloneDefaults(ItemID.Revolver);
-			item.damage = 28;
+			item.damage = 42;
 			item.width = 48;
 			item.height = 24;
-			item.useTime = 30;
-			item.useAnimation = 30;
+			item.useTime = 12;
+			item.useAnimation = 12;
 			item.knockBack = 10;
 			item.value = 50000;
 			item.rare = 3;
@@ -590,14 +590,14 @@ namespace SGAmod.Items.Weapons
 
 			if (altfired)
 			{
-				item.useAnimation = 40;
-				item.useTime = 40;
+				item.useAnimation = 16;
+				item.useTime = 16;
 				item.UseSound = SoundID.Item38;
 			}
 			else
 			{
-				item.useTime = 30;
-				item.useAnimation = 30;
+				item.useTime = 12;
+				item.useAnimation = 12;
 				item.UseSound = SoundID.Item38;
 			}
 			if (!sgaplayer.ConsumeAmmoClip(false)) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }

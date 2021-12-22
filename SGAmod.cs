@@ -429,6 +429,7 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.MedusaHeadRay));//116
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/UI/Settings_Inputs_2"));//117
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_"+ TileID.Torches));//118
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Glow_239"));//119
 
 				//Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 

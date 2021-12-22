@@ -31,8 +31,8 @@ namespace SGAmod.Items.Weapons
 			item.useTime = 30;
 			item.useAnimation = 30;
 			item.useStyle = 1;
-			item.knockBack = 10;
-			item.value = 100000;
+			item.knockBack = 2;
+			item.value = 75000;
 			item.noMelee = true;
 			item.rare = 5;
 			item.shoot = 10;
@@ -164,8 +164,8 @@ namespace SGAmod.Items.Weapons
 			item.useTime = 30;
 			item.useAnimation = 30;
 			item.useStyle = 1;
-			item.knockBack = 10;
-			item.value = 10000;
+			item.knockBack = 2;
+			item.value = 200000;
 			item.noMelee = true;
 			item.rare = ItemRarityID.Lime;
 			item.shoot = 10;
@@ -368,8 +368,8 @@ namespace SGAmod.Items.Weapons
 			item.useTime = 30;
 			item.useAnimation = 30;
 			item.useStyle = 1;
-			item.knockBack = 10;
-			item.value = 10000;
+			item.knockBack = 2;
+			item.value = 100000;
 			item.noMelee = true;
 			item.rare = ItemRarityID.Yellow;
 			item.shoot = 10;

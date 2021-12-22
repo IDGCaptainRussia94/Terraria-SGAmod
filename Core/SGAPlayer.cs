@@ -179,6 +179,7 @@ namespace SGAmod
 
 		//Stat Related
 		public float UseTimeMul = 1f;
+		public bool noLifeRegen = false;
 		public int drownRate = 0;
 		public ushort FireBreath = 0;
 		public int MaxCooldownStacks = 1;
@@ -331,6 +332,7 @@ namespace SGAmod
 				novusBoost -= 1;
 
 			badLifeRegen = 0;
+			noLifeRegen = false;
 			uncraftBoost = Math.Max(uncraftBoost - 1, 0);
 			surprised = Math.Max(surprised - 1, 0);
 			tidalCharm = (int)MathHelper.Clamp(tidalCharm - Math.Sign(tidalCharm), -1000, 1000);

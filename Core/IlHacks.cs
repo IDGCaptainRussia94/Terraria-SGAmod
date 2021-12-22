@@ -45,6 +45,7 @@ namespace SGAmod
 			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
 
 			IL.Terraria.GameContent.Events.Sandstorm.EmitDust += ForceSandStormEffects;
+            IL.Terraria.UI.ItemSorting.Sort += IgnoreManifestDevArmors;
 
 			//if (SGAmod.OSType < 1)//Only windows
 			//IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
@@ -79,6 +80,33 @@ namespace SGAmod
 			//IL.Terraria.Player.PickTile -= PickPowerOverride;
 			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
 			*/
+		}
+
+		//Work around to stop awoken dev armors from being deleted on being Sorted
+
+		private delegate bool IgnoreManifestDevArmorsDelegate(Item item);
+		private static bool IgnoreManifestDevArmorsMethod(Item item)
+		{
+			return !(item.modItem != null && (item.modItem is IManifestedItem || item.modItem is IDevArmor));
+		}
+
+		private static void IgnoreManifestDevArmors(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+
+			if (c.TryGotoNext(MoveType.After,i => i.MatchLdfld<Item>("favorited")))
+			{
+				var operand = c.Instrs[c.Index].Operand;//Grab the operand of the branch, we're going to add our own AND condition to the end of it
+
+				c.Index += 1;
+
+				c.Emit(OpCodes.Ldloc, 8);//item
+				c.EmitDelegate<IgnoreManifestDevArmorsDelegate>(IgnoreManifestDevArmorsMethod);
+				c.Emit(OpCodes.Brfalse_S, operand);//Branching location AND statement
+				return;
+			}
+
+			throw new Exception("IL Error Test");
 		}
 
 		private delegate int NPCLifeRegenAdjustDelegate(NPC npc, int lifeRegen);
@@ -670,7 +698,7 @@ namespace SGAmod
 			FieldInfo HackTheField = typeof(Player).GetField("statManaMax2", BindingFlags.Public | BindingFlags.Instance);
 			FieldInfo HackTheField2 = typeof(Player).GetField("statDefense", BindingFlags.Public | BindingFlags.Instance);
 			
-			//This part allows me to break the 400 hardcoded limit through a SGAPlayer field
+			//This part allows me to break the 400 hardcoded max mana limit through a SGAPlayer field, it's done in such a way that it won't conflict with other mods that do the same (tested, works with Story of Red Cloud, which has a similar patch)
 			SwimInAirHackDelegate manaUnchained = delegate (bool stackbool, Player player)
 			{
 				SGAPlayer sgaply = player.SGAPly();

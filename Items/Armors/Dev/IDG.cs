@@ -19,8 +19,8 @@ namespace SGAmod.Items.Armors.Dev
 	}
 
 	[AutoloadEquip(EquipType.Head)]
-		public class IDGHead : MisterCreeperHead
-		{
+		public class IDGHead : MisterCreeperHead, IDevArmor
+	{
 		public override Color AwakenedColors => Color.Lime;
 		public override void SetStaticDefaults()
 			{
@@ -100,8 +100,8 @@ namespace SGAmod.Items.Armors.Dev
 				//};
 
 [AutoloadEquip(EquipType.Body)]
-		public class IDGBreastplate : IDGHead
-		{
+		public class IDGBreastplate : IDGHead, IDevArmor
+	{
 			public override void SetStaticDefaults()
 			{
 				DisplayName.SetDefault("IDGCaptainRussia94's Scaled Suit");
@@ -153,8 +153,8 @@ namespace SGAmod.Items.Armors.Dev
 	}
 
 		[AutoloadEquip(EquipType.Legs)]
-		public class IDGLegs : IDGHead
-		{
+		public class IDGLegs : IDGHead, IDevArmor
+	{
 			public override void SetStaticDefaults()
 			{
 				DisplayName.SetDefault("IDGCaptainRussia94's Dragon Dressings");

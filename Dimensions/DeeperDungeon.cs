@@ -875,8 +875,10 @@ namespace SGAmod.Dimensions
                             Tile thetile = Framing.GetTileSafely((int)(allareas[x].vector.X + where[i].X), (int)(allareas[x].vector.Y + where[i].Y));
                             Tile thetile2 = Framing.GetTileSafely((int)(allareas[x].vector.X + where[i].X + 1), (int)(allareas[x].vector.Y + where[i].Y));
                             Tile thetile3 = Framing.GetTileSafely((int)(allareas[x].vector.X + where[i].X - 1), (int)(allareas[x].vector.Y + where[i].Y));
+                            Tile thetile4 = Framing.GetTileSafely((int)(allareas[x].vector.X + where[i].X), (int)(allareas[x].vector.Y + where[i].Y+1));
+                            Tile thetile5 = Framing.GetTileSafely((int)(allareas[x].vector.X + where[i].X), (int)(allareas[x].vector.Y + where[i].Y+2));
                             if (thetile.active() && thetile2.active() && thetile3.active()
-                              && !DeeperDungeon.instance.IsSpike(thetile.type, 0) && !DeeperDungeon.instance.IsSpike(thetile2.type, 0) && !DeeperDungeon.instance.IsSpike(thetile3.type, 0))
+                              && !(DeeperDungeon.instance.IsSpike(thetile.type, 1) || DeeperDungeon.instance.IsSpike(thetile2.type, 1) || DeeperDungeon.instance.IsSpike(thetile3.type, 1) || DeeperDungeon.instance.IsSpike(thetile4.type, 1) || DeeperDungeon.instance.IsSpike(thetile5.type, 1)))
                             {
                                 if (i == 0 && allareas[x].type <2)
                                 {
@@ -903,7 +905,8 @@ namespace SGAmod.Dimensions
 
                                         if (allareas[x].type == 2)
                                         {
-                                            typeOfThing = 49;
+                                            //Water candles!
+                                            typeOfThing = TileID.WaterCandle;
                                             styleOfThing = 0;
                                             if (UniRand.Next(100) < 90)
                                                 goto dontplaceem;
@@ -954,13 +957,25 @@ namespace SGAmod.Dimensions
                                 Tile thetile2 = Framing.GetTileSafely((int)(allareas[x].vector.X + where[i].X + 1), (int)(allareas[x].vector.Y + where[i].Y));
                                 Tile thetile3 = Framing.GetTileSafely((int)(allareas[x].vector.X + where[i].X - 1), (int)(allareas[x].vector.Y + where[i].Y));
                                 if (thetile.active()
-                                  && !DeeperDungeon.instance.IsSpike(thetile.type, 0) && !DeeperDungeon.instance.IsSpike(thetile2.type, 0) && !DeeperDungeon.instance.IsSpike(thetile3.type, 0))
+                                  && !DeeperDungeon.instance.IsSpike(thetile.type, 1) && !DeeperDungeon.instance.IsSpike(thetile2.type, 1) && !DeeperDungeon.instance.IsSpike(thetile3.type, 1))
                                 {
-                                    int typeofhang = 0;
-                                    if (allareas[x].type == 1)
-                                        typeofhang = 21;
 
-                                    WorldGen.PlaceObject((int)allareas[x].vector.X, (int)allareas[x].vector.Y, TileID.Torches, false, typeofhang);
+                                    if ((thetile.type == TileID.BlueDungeonBrick || thetile.type == TileID.GreenDungeonBrick || thetile.type == TileID.PinkDungeonBrick)
+                                        && (thetile2.type == TileID.BlueDungeonBrick || thetile2.type == TileID.GreenDungeonBrick || thetile2.type == TileID.PinkDungeonBrick))
+                                    {
+
+                                        int typeofhang = 5;
+                                        if (thetile.wall == WallID.BlueDungeonUnsafe)
+                                            typeofhang = 1;
+                                        if (thetile.wall == WallID.GreenDungeonUnsafe)
+                                            typeofhang = 3;
+                                        if (thetile.wall == WallID.PinkDungeonUnsafe)
+                                            typeofhang = 4;
+                                        //if (allareas[x].type == 1)
+                                        //    typeofhang = 21;
+
+                                        WorldGen.PlaceObject((int)allareas[x].vector.X, (int)allareas[x].vector.Y, TileID.Torches, false, typeofhang);
+                                    }
                                 }
                             }
                         }

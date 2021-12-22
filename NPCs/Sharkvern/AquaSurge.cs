@@ -174,11 +174,12 @@ namespace SGAmod.NPCs.Sharkvern
 			int shark = NPC.FindFirstNPC(ModContent.NPCType<SharkvernHead>());
 			if (introEffect >= 1f)
 			{
+				int timer = 600;
 				npc.dontTakeDamage = false;
 				npc.ai[0]++;
 				if (P.active && !P.dead && shark >= 0 && Main.npc[shark].active)
 				{
-					if (npc.ai[0] % 500 < 300)
+					if (npc.ai[0] % timer < 300)
 					{
 						if (npc.Distance(Main.npc[shark].Center) > 1280)
 						{
@@ -187,13 +188,13 @@ namespace SGAmod.NPCs.Sharkvern
                     }
                     else
                     {
-						if (npc.ai[0] % 500 < 420)
+						if (npc.ai[0] % timer < 420)
 						{
 							npc.velocity += Vector2.Normalize(P.MountedCenter + new Vector2(0, -200) - npc.Center) * 2.75f;
 						}
 						else
 						{
-							if (npc.ai[0] % 500 < 440)
+							if (npc.ai[0] % timer < 470)
 							{
 								for (int i = 0; i < lightningDelay.Length; i += 1)
 								{
@@ -203,9 +204,9 @@ namespace SGAmod.NPCs.Sharkvern
 							}
 						}
 
-						if (npc.ai[0] % 500 == 440)
+						if (npc.ai[0] % timer == 470)
                         {
-							int proj = Projectile.NewProjectile((int)npc.Center.X, (int)npc.Center.Y, 0,16, ProjectileID.CultistBossLightningOrbArc, 100, 15f);
+							int proj = Projectile.NewProjectile((int)npc.Center.X, (int)npc.Center.Y, 0,16, ProjectileID.CultistBossLightningOrbArc, 75, 15f);
 							Main.projectile[proj].ai[0] = MathHelper.PiOver2;
 							Main.projectile[proj].netUpdate = true;
 

@@ -45,6 +45,8 @@ namespace SGAmod.NPCs
         public override void NPCLoot()
         {
             Item.NewItem(npc.position, npc.Hitbox.Size(), ItemID.SpelunkerGlowstick, Main.rand.Next(6, 12));
+            if (Main.rand.Next(50)<1)
+                Item.NewItem(npc.position, npc.Hitbox.Size(), ItemID.JellyfishNecklace);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)

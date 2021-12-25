@@ -33,7 +33,7 @@ namespace SGAmod.Dimensions
         public override UserInterface loadingUI => base.loadingUI;
         public override UIState loadingUIState => new LimborinthLoad();
 
-        public static Texture2D[] staticeffects=new Texture2D[20];
+        public static Texture2D[] staticeffects = new Texture2D[20];
         public override float maxSpawns => 5f;
         public override float spawnRate => 0.15f;
 
@@ -41,7 +41,12 @@ namespace SGAmod.Dimensions
         public static int heartBeats = 0;
         public static HellionInsanity warningText;
 
-        public override int? Music
+        public override Texture2D GetMapBackgroundImage()
+        {
+            return SGAmod.Instance.GetTexture("LimboMapBackground");
+        }
+
+public override int? Music
         {
 
             get

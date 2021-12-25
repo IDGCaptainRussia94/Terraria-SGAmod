@@ -853,9 +853,10 @@ namespace SGAmod.Dimensions.NPCs
 
 			if ((int)npc.ai[0] == 10120)
 			{
+				bool finalPhase = boss.npc.ai[3] == 2;
 				if (boss.npc.ai[3] == 1)
 				boss.healthphase -= 0.25f;
-				boss.LaunchTethers(boss.npc.ai[3] == 2 ? 5 : 3);
+				boss.LaunchTethers(finalPhase ? 5 : 3, finalPhase ? 5000 : 2400);
 			}
 
 			if (npc.ai[0] > 10120)
@@ -1542,8 +1543,7 @@ namespace SGAmod.Dimensions.NPCs
 
 				Eyes.Add(eye);
 				//Eyes.Add(eye2);
-
-				LaunchTethers();
+				LaunchTethers(3,5000);
 			}
 		}
 
@@ -1778,26 +1778,35 @@ namespace SGAmod.Dimensions.NPCs
 				rock.UpdateRotation(rock.randomRotation2);
 			}
 
+			foreach (SpaceBossEye eye in Eyes)
+			{
+				if (eye.customID == 1 || eye.customID == -1)
+				{
+					eye.NewLook(npc.Center + Vector2.UnitY, 0.01f, true, true);
+				}
+			}
+
 			if (npc.ai[0] > 120)
 			{
 				shieldeffect -= 1f;
 				if (shieldeffect < 0)
 					shieldeffect = 0;
 
-				UnifiedRandom randomrock = new UnifiedRandom(npc.whoAmI*8);
+				UnifiedRandom randomrock = new UnifiedRandom(npc.whoAmI * 8);
 				foreach (SpaceBossEye eye in Eyes)
 				{
+
 					if (eye.boss != this)
 					{
 						eye.sleep += 0.015f;
 						eye.beamAlpha += 0.015f;
 
 						if (eye.sleep > 1f)
-                        {
+						{
 							eye.NewLook(Main.player[npc.target].MountedCenter, 0.01f, false, false);
-                        }
-                        else
-                        {
+						}
+						else
+						{
 							eye.NewLook(eye.BasePosition + Vector2.UnitY, 0.01f, true, true);
 							eye.progress = 0f;
 						}
@@ -1807,18 +1816,19 @@ namespace SGAmod.Dimensions.NPCs
 						if (eye.sleep > 1.15f && !rock.followBoss)
 						{
 							Vector2 toboss = npc.Center - rock.bossOffset;
-							rock.bossOffset += Vector2.Normalize(toboss) * MathHelper.Clamp((eye.sleep-1.5f)*6f,0f,12f);
+							rock.bossOffset += Vector2.Normalize(toboss) * MathHelper.Clamp((eye.sleep - 1.5f) * 6f, 0f, 12f);
 							if (toboss.Length() < rock.bossRockDist)
 							{
 								rock.LockUnlock(true);
 							}
-								canAdvance = false;
+							canAdvance = false;
 						}
 						else
 						{
 							//canAdvance = false;
 						}
 					}
+
 				}
 			}
 			else
@@ -1826,7 +1836,7 @@ namespace SGAmod.Dimensions.NPCs
 				bool boom = (int)npc.ai[0] == 118;
 
 				if (boom)
-                {
+				{
 					SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_FlameburstTowerShot, npc.Center);
 					if (sound != null)
 					{
@@ -1840,7 +1850,7 @@ namespace SGAmod.Dimensions.NPCs
 					Vector2 offset = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
 					int dust = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y) + offset * Main.rand.NextFloat(16f, 32f), 0, 0, DustID.BlueCrystalShard);
 					Main.dust[dust].scale = 1.5f;
-					Main.dust[dust].velocity = Vector2.Normalize(-offset) * (float)((boom ? 8f : 1f) *Main.rand.NextFloat(0.50f, 2.50f));
+					Main.dust[dust].velocity = Vector2.Normalize(-offset) * (float)((boom ? 8f : 1f) * Main.rand.NextFloat(0.50f, 2.50f));
 					Main.dust[dust].noGravity = true;
 				}
 			}
@@ -1860,24 +1870,67 @@ namespace SGAmod.Dimensions.NPCs
 			npc.velocity *= 0.96f;
 		}
 
-		public void LaunchTethers(int ammount=3)
+		public void LaunchTethers(int ammount=3,float maxRange = 2000)
         {
-			List<Vector2> vex = SpaceDim.FilledSpaces;
+			List<FilledSpaceArea> vex = new List<FilledSpaceArea>(SpaceDim.FilledSpaces);
 			Vector2 previousone = default;
+			float angle = 0.80f;
+			float fails = 1f;
 
 			for (int i = 0; i < ammount; i += 1)
 			{
-				Vector2[] thisthing = vex.OrderBy(testby => (testby - npc.Center).LengthSquared() + (previousone == default ? 0 :
-				Vector2.Dot(Vector2.Normalize(testby - npc.Center), Vector2.Normalize(previousone - npc.Center)) > 0.5 ? 999999 : 0)).ToArray();
-				Vector2 position1 = thisthing[0];
-				vex.Remove(position1);
-				previousone = position1;
+				float angleCheck = (1f - (angle/ fails));
+				vex = vex.OrderBy(testby => (testby.position - npc.Center).LengthSquared() + (previousone == default ? 0 :
+				Vector2.Dot(Vector2.Normalize(testby.position - npc.Center), Vector2.Normalize(previousone - npc.Center)) > angleCheck ? 999999 : 0)).ToList();
 
-				Projectile proj = Projectile.NewProjectileDirect(npc.Center, Vector2.Normalize(position1 - npc.Center) * 16f, ModContent.ProjectileType<MineableAsteriodBossLock>(), 0, 0);
-				if (proj != null)
+				Vector2 position1 = vex[0].position;
+				Vector2 distanceToPoint = position1 - npc.Center;
+
+				float dist = distanceToPoint.LengthSquared();
+
+				
+				if (dist > maxRange * maxRange || dist<128*128)
+                {
+					LaunchTethers((ammount - i)-1);
+					return;
+                }
+
+				bool succeed = false;
+
+				for (int tryAgain = 32; tryAgain < 128; tryAgain += 16)
 				{
-					proj.rotation = proj.velocity.ToRotation() - MathHelper.PiOver2;
+					if (!succeed)
+					{
+						position1 = vex[0].position + Main.rand.NextVector2Circular(tryAgain, tryAgain);
+						distanceToPoint = position1 - npc.Center;
+						previousone = position1;
+
+						if (!Collision.CanHitLine(position1, 4, 4, npc.Center, 4, 4))
+						{
+							Projectile proj = Projectile.NewProjectileDirect(npc.Center, Vector2.Normalize(distanceToPoint) * 16f, ModContent.ProjectileType<MineableAsteriodBossLock>(), 0, 0);
+							if (proj != null)
+							{
+								proj.rotation = proj.velocity.ToRotation() - MathHelper.PiOver2;
+							}
+							fails = 1;
+							tryAgain = 1337;
+							succeed = true;
+							goto endhere;
+						}
+						else
+						{
+
+						}
+					}
 				}
+
+			endhere:
+				if (!succeed)
+                {
+					fails++;
+					i -= 1;
+				}
+				vex.RemoveAt(0);
 			}
 
 		}
@@ -2220,36 +2273,39 @@ namespace SGAmod.Dimensions.NPCs
 
 			//Rocks
 
-			foreach (SpaceBossRock rock in Rocks)
+			if (!DyingState)
 			{
-				if (rock.eye != null) 
+				foreach (SpaceBossRock rock in Rocks)
 				{
-					float alpha = rock.eye.beamAlpha - 0.60f;
-					if (alpha <= 0 && rock.state < 1000)
-						continue;
-
-					if (rock.whiten > 0)
-                    {
-						alpha = MathHelper.Clamp(1f-Main.rand.NextFloat(0f, rock.whiten),0,1);
-					}
-
-				List<Vector2> toThem = new List<Vector2>();
-
-					toThem.Add(rock.Position);
-					toThem.Add(npc.Center);
-
-					TrailHelper trail = new TrailHelper("FadedBasicEffectPass", Main.sunTexture);
-					trail.projsize = Vector2.Zero;
-					trail.coordOffset = new Vector2(0, 0f);
-					trail.coordMultiplier = new Vector2(1f, 0.5f);
-					trail.trailThickness = 16;
-					trail.trailThicknessIncrease = -12;
-					trail.doFade = false;
-					trail.color = delegate (float percent)
+					if (rock.eye != null)
 					{
-						return Color.CornflowerBlue * (MathHelper.Clamp((alpha+percent)-1f, 0f, 1f));
-					};
-					trail.DrawTrail(toThem, npc.Center);
+						float alpha = rock.eye.beamAlpha - 0.60f;
+						if (alpha <= 0 && rock.state < 1000)
+							continue;
+
+						if (rock.whiten > 0)
+						{
+							alpha = MathHelper.Clamp(1f - Main.rand.NextFloat(0f, rock.whiten), 0, 1);
+						}
+
+						List<Vector2> toThem = new List<Vector2>();
+
+						toThem.Add(rock.Position);
+						toThem.Add(npc.Center);
+
+						TrailHelper trail = new TrailHelper("FadedBasicEffectPass", Main.sunTexture);
+						trail.projsize = Vector2.Zero;
+						trail.coordOffset = new Vector2(0, 0f);
+						trail.coordMultiplier = new Vector2(1f, 0.5f);
+						trail.trailThickness = 16;
+						trail.trailThicknessIncrease = -12;
+						trail.doFade = false;
+						trail.color = delegate (float percent)
+						{
+							return Color.CornflowerBlue * (MathHelper.Clamp((alpha + percent) - 1f, 0f, 1f));
+						};
+						trail.DrawTrail(toThem, npc.Center);
+					}
 				}
 			}
 

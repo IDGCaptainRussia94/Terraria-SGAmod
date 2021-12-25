@@ -132,6 +132,11 @@ namespace SGAmod.Dimensions
 
         public override UserInterface loadingUI => base.loadingUI;
 
+        public override Texture2D GetMapBackgroundImage()
+        {
+            return SGAmod.Instance.GetTexture("SeedOfEvilMapBackground");
+        }
+
         public override int? Music
         {
 

@@ -179,10 +179,10 @@ namespace SGAmod.Effects
 
             }
 
-            int vertoffset = ((k + 1) * 6);
-
+            #region EndCaps
             if (caps > 0)
             {
+                int vertoffset = ((k + 1) * 6);
 
                 Vector2 loc = new Vector2(drawPoses[0].X, drawPoses[0].Y) + projsize;
                 Vector2 normal = Vector2.Normalize(loc - (new Vector2(drawPoses[1].X, drawPoses[1].Y) + projsize));
@@ -219,6 +219,7 @@ namespace SGAmod.Effects
 
                 }
             }
+            #endregion
 
             vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
             vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
@@ -234,17 +235,22 @@ namespace SGAmod.Effects
             Effect.CurrentTechnique.Passes[pass].Apply();
             Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, ((totalcount + 1) * 2)+(caps));
 
-            theend:
+        theend:
+            ResetValues();
 
-            Effect.Parameters["coordOffset"].SetValue(Vector2.Zero);
-            Effect.Parameters["coordMultiplier"].SetValue(Vector2.One);
-            Effect.Parameters["strength"].SetValue(1f);
-            Effect.Parameters["yFade"].SetValue(1f);
-            Effect.Parameters["strengthPow"].SetValue(0f);
 
         }
+
+        private void ResetValues()
+        {
+            Effect.Parameters["coordOffset"].SetValue(Vector2.Zero);
+            Effect.Parameters["coordMultiplier"].SetValue(Vector2.One);
+            Effect.Parameters["rainbowCoordOffset"].SetValue(Vector2.Zero);
+            Effect.Parameters["rainbowCoordMultiplier"].SetValue(Vector2.One);
+            Effect.Parameters["yFade"].SetValue(1f);
+            Effect.Parameters["strength"].SetValue(1f);
+            Effect.Parameters["strengthPow"].SetValue(0f);
+        }
     }
-
-
 
 }

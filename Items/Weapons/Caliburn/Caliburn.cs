@@ -537,6 +537,9 @@ namespace SGAmod.Items.Weapons.Caliburn
 			}
 			oldRot[0] = projectile.rotation;
 
+			if (projectile.hostile)
+				projectile.rotation += projectile.velocity.Y * 0.05f;
+
 			projectile.rotation += projectile.velocity.X*0.1f;
 			projectile.velocity=projectile.velocity.RotatedBy(MathHelper.ToRadians(projectile.velocity.X/3f));
 

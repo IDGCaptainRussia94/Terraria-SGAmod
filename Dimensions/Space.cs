@@ -26,9 +26,22 @@ using SGAmod.Dimensions.NPCs;
 using SGAmod.Items.Consumables;
 using SGAmod.Tiles;
 using SGAmod.NPCs;
+using SGAmod.Dimensions.Tiles;
 
 namespace SGAmod.Dimensions
 {
+    public class FilledSpaceArea
+    {
+        public Vector2 position;
+        public byte type;
+        //public byte[] allowedToConnectwith = {0};
+        public FilledSpaceArea(Vector2 where)
+        {
+            position = where;
+            type = 0;
+        }
+    }
+
     public class SpaceDim : SGAPocketDim
     {
         public override int width => 3200;
@@ -39,7 +52,7 @@ namespace SGAmod.Dimensions
         public override string DimName => "Near Terrarian Orbit";
 
         public static List<Vector2> EmptySpaces;
-        public static List<Vector2> FilledSpaces;
+        public static List<FilledSpaceArea> FilledSpaces;
 
         public override UserInterface loadingUI => base.loadingUI;
         NoiseGenerator Noisegen;
@@ -68,6 +81,12 @@ namespace SGAmod.Dimensions
             }
 
         }
+
+        public override Texture2D GetMapBackgroundImage()
+        {
+            return SGAmod.Instance.GetTexture("SpaceMapBackground_NoSun");
+        }
+
         public override int? Music
         {
 
@@ -187,7 +206,7 @@ namespace SGAmod.Dimensions
                 AGenPass(proggers);
             }
 
-            FilledSpaces = new List<Vector2>();
+            FilledSpaces = new List<FilledSpaceArea>();
             EmptySpaces = new List<Vector2>();
 
 
@@ -212,18 +231,30 @@ namespace SGAmod.Dimensions
                 Noisegen.Frequency = 1.75;
                 Noisegen.Octaves = 5;
                 Noisegen.Persistence = 1f;
-                FilledSpaces.Add(pointa.ToVector2() * 16f);
+                FilledSpaces.Add(new FilledSpaceArea(pointa.ToVector2() * 16f));
 
                 MakeAsteriod(pointa, rand);
             }
 
-            Rectangle rect = new Rectangle(400, 200, width - 800, height - 400);
+        }
 
-            List<Vector2> spots = EmptySpaces.Where(testby => rect.Contains(new Point((int)testby.X / 16, (int)testby.Y / 16))).ToList();
-            Vector2 bossplace = EmptySpaces[0];
+        public int AsteriodDensity(Point where,int buffer)
+        {
+            int ammount = 0;
 
-            NPC.NewNPC((int)bossplace.X, (int)bossplace.Y, ModContent.NPCType<SpaceBoss>());
+            for(int x=-buffer; x <= buffer; x += 1)
+            {
+                for (int y = -buffer; y <= buffer; y += 1)
+                {
+                    int whereX = Math.Min(width, Math.Max(0,where.X + x));
+                    int whereY = Math.Min(width, Math.Max(0, where.Y + y));
 
+                    Tile tile = Framing.GetTileSafely(whereX, whereY);
+                    if (tile.active() && Main.tileSolid[tile.type])
+                        ammount += 1;
+                }
+            }
+            return ammount;
         }
 
         public void MakeAsteriod(Point where, UnifiedRandom rand)
@@ -305,6 +336,30 @@ namespace SGAmod.Dimensions
         public override void DoUpdates()
         {
             ChooseEnemies();
+        }
+
+        public void SmoothOutAsteriods(UnifiedRandom uniRand,int passesToDo = 4)
+        {
+
+            for (int passes = 0; passes < passesToDo; passes += 1)
+            {
+                for (int y = 0; y < Main.maxTilesY; y += 1)
+                {
+                    for (int x = 0; x < Main.maxTilesX; x += 1)
+                    {
+                        Tile tile = Main.tile[x, y];
+                        bool asteriodRocks = tile.type == ModContent.TileType<Spacerock>() || tile.type == ModContent.TileType<Spacerock2>() || tile.type == ModContent.TileType<AstrialLuminite>() || tile.type == TileID.Meteorite;
+
+                        if (!asteriodRocks)
+                            continue;
+
+                        if (GetTilesAround(x, y, 1) > uniRand.Next(3, 6))
+                            Main.tile[x, y].active(true);
+                        else
+                            Main.tile[x, y].active(false);
+                    }
+                }
+            }
         }
 
         public virtual void AGenPass(GenerationProgress prog)
@@ -448,23 +503,20 @@ namespace SGAmod.Dimensions
             }*/
 
 
-            //Celular Crap
+            //Gen space station, thing here
+
+            //Cellular Crap
 
             prog.Message = "Smoothing Asteroids";
 
-            for (int passes = 0; passes < 4; passes += 1)
-            {
-                for (int y = 0; y < Main.maxTilesY; y += 1)
-                {
-                    for (int x = 0; x < Main.maxTilesX; x += 1)
-                    {
-                        if (GetTilesAround(x, y, 1) > UniRand.Next(3, 6))
-                            Main.tile[x, y].active(true);
-                        else
-                            Main.tile[x, y].active(false);
-                    }
-                }
-            }
+            SmoothOutAsteriods(UniRand);
+
+            Rectangle rect = new Rectangle(400, 200, width - 800, height - 400);
+
+            EmptySpaces = EmptySpaces.Where(testby => rect.Contains(new Point((int)testby.X / 16, (int)testby.Y / 16)) && AsteriodDensity(new Point((int)testby.X / 16, (int)testby.Y / 16), 8) < 20 && Main.tile[(int)testby.X / 16, (int)testby.Y / 16].wall<=0).ToList();
+            Vector2 bossplace = EmptySpaces[0];
+
+            NPC.NewNPC((int)bossplace.X, (int)bossplace.Y, ModContent.NPCType<SpaceBoss>());
 
             prog.Message = "Finishing Up";
 
@@ -1449,6 +1501,18 @@ namespace SGAmod.Dimensions
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
+            /*
+            Texture2D sunText = Main.sunTexture;
+            foreach (FilledSpaceArea area in SpaceDim.FilledSpaces)
+            {
+                spriteBatch.Draw(sunText, area.position - Main.screenPosition, null, Color.White, 0, sunText.Size() / 2f, 1f, SpriteEffects.None, 0f);
+            }
+
+            foreach (Vector2 area in SpaceDim.EmptySpaces)
+            {
+                spriteBatch.Draw(sunText, area - Main.screenPosition, null, Color.Blue, 0, sunText.Size() / 2f, 1f, SpriteEffects.None, 0f);
+            }
+            */
 
             List<Projectile> Asteriods = Main.projectile.Where(testby => testby.active && testby?.modProjectile is IMineableAsteriod).ToList();
 

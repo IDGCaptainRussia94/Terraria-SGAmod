@@ -18,6 +18,10 @@ namespace SGAmod.Items.Consumables
 		public virtual int Period => Main.rand.Next(120, 180);
 		public virtual int Debuff => ModContent.BuffType<ThermalBlaze>();
 		public virtual int Chance => 0;
+		public virtual void OnRealHit(Player player, Projectile proj, NPC npc,int damage)
+        {
+
+        }
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Flask of Blaze");
@@ -109,7 +113,7 @@ namespace SGAmod.Items.Consumables
 			if (Main.rand.Next(0, 100) > 50)
 				return;
 
-			int dust = Dust.NewDust(start, rect.Width, rect.Height, ModContent.DustType<AcidDust>(), 0, 0, 100, default(Color), 0.5f);
+			int dust = Dust.NewDust(start, rect.Width, rect.Height, BuffID.HeartLamp, 0, 0, 100, default(Color), 0.5f);
 			Main.dust[dust].fadeIn = 0.2f;
 			Main.dust[dust].velocity = speed * Main.rand.NextFloat(0.7f, 1.20f);
 
@@ -142,9 +146,117 @@ namespace SGAmod.Items.Consumables
 
         public override void Update(Player player, ref int buffIndex)
         {
+			base.Update(player, ref buffIndex);
 			player.meleeDamage -= 0.10f;
         }
     }
+	public class FlaskOfLifeLeech : FlaskOfBlaze
+	{
+		public override int FlaskBuff => ModContent.BuffType<FlaskOfLifeLeechBuff>();
+		public override int Period => 2;
+		public override int Debuff => BuffID.AmmoBox;
+		public override int Chance => 2;
 
+		public override void OnRealHit(Player player, Projectile proj, NPC npc, int damage)
+		{
+
+
+			if (player.HasBuff(ModContent.BuffType<LifeLeechDebuff>()))
+				return;
+
+			if (Main.rand.Next(100) < 100)
+			{
+				Projectile projectile = new Projectile();
+				projectile.Center = npc.Center;
+				projectile.owner = player.whoAmI;
+				projectile.vampireHeal((int)(damage), npc.Center);
+				player.AddBuff(ModContent.BuffType<LifeLeechDebuff>(), 300+((int)(damage / 2f)));
+			}
+		}
+
+		public static string LifeStealLine => "Melee attacks have a chance to life steal on hit\nChance is much lower with non-true melee hits\nSuccessfully life stealing will incure a delay before you can life steal again";
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Flask of Life Leech");
+			Tooltip.SetDefault(LifeStealLine);
+		}
+
+		public override void FlaskEffect(Rectangle rect, Vector2 speed)
+		{
+
+			Vector2 start = new Vector2(rect.X, rect.Y);
+
+			if (Main.rand.Next(0, 100) > 90)
+				return;
+
+			int dust = Dust.NewDust(start, rect.Width, rect.Height, 242, 0, 0, 100, default(Color), 0.5f);
+			Main.dust[dust].fadeIn = 0.2f;
+			Main.dust[dust].velocity = speed * Main.rand.NextFloat(0.7f, 1.20f);
+
+			if (Main.rand.Next(100) < 20)
+            {
+				Vector2 value = new Vector2(Main.rand.Next(-10, 11), Main.rand.Next(-10, 11))+speed;
+				value.Normalize();
+				int num45 = Gore.NewGore(new Vector2(rect.X, rect.Y) + new Vector2(Main.rand.Next(rect.Width),Main.rand.Next(rect.Height)), value * Main.rand.Next(3, 6) * 0.33f, 331, (float)Main.rand.Next(20, 60) * 0.01f);
+				Main.gore[num45].sticky = false;
+				Main.gore[num45].velocity *= 0.4f;
+				Main.gore[num45].velocity.Y -= 0.6f;
+			}
+
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Bottle, 1);
+			recipe.AddIngredient(ModContent.ItemType<HopeHeart>(), 1);
+			recipe.AddTile(TileID.ImbuingStation);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class FlaskOfLifeLeechBuff : FlaskOfBlazeBuff
+	{
+		public override FlaskOfBlaze FlaskType => ModContent.GetModItem(ModContent.ItemType<FlaskOfLifeLeech>()) as FlaskOfBlaze;
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/FlaskOfLifeLeechBuff";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			DisplayName.SetDefault("Weapon Imbue: Life Leech");
+			Description.SetDefault(FlaskOfLifeLeech.LifeStealLine);
+		}
+
+        public override void Update(Player player, ref int buffIndex)
+        {
+			base.Update(player, ref buffIndex);
+		}
+    }
+
+	public class LifeLeechDebuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Buff_"+BuffID.MoonLeech;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			DisplayName.SetDefault("Life Leeched");
+			Description.SetDefault("Your flask cannot leach for a while");
+			Main.debuff[Type] = true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+
+		}
+	}
 
 }

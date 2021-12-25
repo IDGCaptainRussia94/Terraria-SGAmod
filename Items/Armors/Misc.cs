@@ -14,7 +14,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hallowed Visor");
-			Tooltip.SetDefault("12% increased throwing damage\n6% increased throwing crit\n20% increased throwing velocity");
+			Tooltip.SetDefault("12% increased throwing damage\n10% increased throwing crit\n20% increased throwing velocity");
 		}
 		public override void SetDefaults()
 		{
@@ -27,7 +27,7 @@ namespace SGAmod.Items.Armors
 		public override void UpdateEquip(Player player)
 		{
 			player.Throwing().thrownDamage += 0.12f;
-			player.Throwing().thrownCrit += 6;
+			player.Throwing().thrownCrit += 10;
 			player.Throwing().thrownVelocity += 0.20f;
 
 		}
@@ -47,7 +47,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Future Hallowed Visor");
-			Tooltip.SetDefault("12% increased throwing damage\n6% increased throwing crit\n20% increased throwing velocity\n'Reverse 1.4 lol'");
+			Tooltip.SetDefault("12% increased throwing damage\n10% increased throwing crit\n20% increased throwing velocity\n'Reverse 1.4 lol'");
 		}
 	}
 

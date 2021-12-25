@@ -338,6 +338,7 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<TF2EmblemRed>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<TF2EmblemBlu>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<Consumables.DivineShower>(), 3);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

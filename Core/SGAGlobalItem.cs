@@ -720,7 +720,7 @@ namespace SGAmod
             {
                 grabRange += 400;
             }            
-            if (item.maxStack > 1 && ((item.modItem != null && (item.Throwing().thrown || item.modItem is IJablinItem)) || item.thrown) && player.armor[0].type == ModContent.ItemType<VibraniumHat> ())
+            if (player.armor[0].type == ModContent.ItemType<VibraniumHat>() && item.maxStack > 1 && ((item.modItem != null && (item.Throwing().thrown || item.modItem is IJablinItem)) || item.thrown))
             {
                 grabRange += (int)(720 * player.Throwing().thrownVelocity);
             }
@@ -744,7 +744,7 @@ namespace SGAmod
             {
                 float speed = 0.025f;
                 bool pullIn = player.SGAPly().graniteMagnet;
-                if (item.maxStack > 1 && ((item.modItem != null && (item.Throwing().thrown || item.modItem is IJablinItem)) || item.thrown) && player.armor[0].type == ModContent.ItemType<VibraniumHat>())
+                if (player.armor[0].type == ModContent.ItemType<VibraniumHat>() && item.maxStack > 1 && ((item.modItem != null && (item.Throwing().thrown || item.modItem is IJablinItem)) || item.thrown))
                 {
                     speed += 0.75f;
                     pullIn = true;

@@ -278,6 +278,7 @@ namespace SGAmod.Items.Weapons
 
 				rotation = rotation.AngleLerp(owner.projectile.rotation,0.20f);
 				int timer = (int)(((index / (float)IndexMax)* owner.TimeToShootPerBow) +player.SGAPly().timer);
+
 				if (timer % owner.TimeToShootPerBow == 0)
 				{
 					if (player.HasAmmo(player.HeldItem, true))
@@ -486,6 +487,7 @@ namespace SGAmod.Items.Weapons
 
 			projectile.velocity *= 0.96f;
 
+			Owner.itemRotation = projectile.rotation;
 
 			projectile.Center += (gotohere - projectile.Center) / (24f/followSpeedRate);
 			projectile.velocity += (gotohere - projectile.Center)/(320f/ followSpeedRate);

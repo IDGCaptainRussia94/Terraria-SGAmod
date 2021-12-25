@@ -719,7 +719,9 @@ namespace SGAmod
 			c.TryGotoNext(MoveType.Before,i => i.MatchLdfld(HackTheField2));
 			c.Index -= 1;
 			c.MoveAfterLabels();
-			c.MarkLabel(babel);
+			c.MarkLabel(babel);//Lock it all down in a branch
+
+
 
 			c.Index = il.Instrs.Count - 1;
 

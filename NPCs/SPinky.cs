@@ -15,6 +15,7 @@ using Terraria.Utilities;
 using System.Linq;
 using SGAmod.Effects;
 using SGAmod.Items;
+using Terraria.Graphics.Effects;
 
 namespace SGAmod.NPCs
 {
@@ -60,6 +61,79 @@ namespace SGAmod.NPCs
 			phase = 0;
 			attackPhaseTime = 1200;
 		}
+			public static bool VortexActive = false;
+		public static bool VortexEffect
+		{
+			get
+			{
+				bool returnval = VortexActive;
+
+				if (VortexActive)
+				{
+					NPC thetarget = null;
+					returnval = false;
+
+					foreach (NPC npc in Main.npc.Where(testby => testby.active && testby.type == ModContent.NPCType<SPinkyTrue>() && testby.ai[1]>=10))
+                    {
+						returnval = true;
+						thetarget = npc;
+						break;
+                    }
+
+					if (returnval)
+                    {
+						/*
+						if (!Filters.Scene["SGAmod:SwirlingVortex"].IsActive())
+                        {
+								Filters.Scene.Activate("SGAmod:SwirlingVortex", default(Vector2));
+						}
+						*/
+
+						SPinkyTrue boss = (thetarget.modNPC as SPinkyTrue);
+						float scale = boss.effectScale;
+						float scale2 = MathHelper.Clamp(-1+((thetarget.ai[0]-1000000)/250f),0f,1f);
+						float scale3 = MathHelper.Clamp(((thetarget.ai[0] - 1000000) / 500f), 0f, 1f);
+
+						Filters.Scene["SGAmod:SwirlingVortex"].GetShader().UseIntensity(MathHelper.Clamp(2f - scale2*2,0f,2f)).UseProgress(scale2*10f).UseImageScale(new Vector2(1f, scale/1200f),0)
+							.UseTargetPosition(thetarget.Center).UseImage("Images/Misc/Noise", 0, null);
+
+						return true;
+                    }
+
+
+					if (thetarget == null)
+					{
+
+						/*
+						if (Filters.Scene["SGAmod:SwirlingVortex"].Active)
+						{
+							Filters.Scene.Deactivate("SGAmod:SwirlingVortex");
+						}
+						*/
+
+						returnval = false;
+						VortexActive = false;
+					}
+				}
+
+				return returnval;
+			}
+        }
+
+		public static Vector2 PinkyBossLoc
+		{
+			get
+			{
+				Vector2 targetphere = default;
+				foreach (NPC npc in Main.npc.Where(testby => testby.active && testby.type == ModContent.NPCType<SPinkyTrue>() && testby.ai[1] >= 10))
+				{
+					targetphere = npc.Center;
+					break;
+				}
+				return targetphere;
+			}
+		}
+
 
         public override string BossHeadTexture => "SGAmod/NPCs/SPinkyTrue_Head_Boss";
 
@@ -1272,6 +1346,7 @@ namespace SGAmod.NPCs
 
 				if (npc.ai[1] == 10)
 				{
+					VortexActive = true;
 					FinalAttack();
 					goto labeljump;
 				}

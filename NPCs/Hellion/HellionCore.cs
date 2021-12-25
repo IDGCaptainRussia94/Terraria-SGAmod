@@ -343,7 +343,7 @@ namespace SGAmod.NPCs.Hellion
 
                         if ((npc.ai[0] + aioffset * 64) % 1200 > 800 && (npc.ai[0] % 3000 > 1400))
                         {
-                            int len = 1000 * 1000;
+                            int len = 720 * 720;
                             if (handsAttack > 0 || (player.Center - npc.Center).LengthSquared() > len)
                             {
                                 nomove = 60;
@@ -352,9 +352,10 @@ namespace SGAmod.NPCs.Hellion
 
                                 int delay = (int)(npc.ai[0] + aioffset * 8);
 
-                                if ((delay) % 180 == 0 && handsAttack < -180 && (npc.localAI[3] >= 300))
+                                Vector2 thingz = player.Center - npc.Center;
+
+                                if ((delay) % 180 == 0 && handsAttack < -180 && (npc.localAI[3] >= 300) && Vector2.Dot(Vector2.Normalize(thehelldir),Vector2.Normalize(thingz))>0.5f)
                                 {
-                                    Vector2 thingz = player.Center - npc.Center;
                                     thingz.Normalize();
                                     chargeAt = thingz * 120f;
                                     //npc.velocity += thingz * 85f;
@@ -362,7 +363,7 @@ namespace SGAmod.NPCs.Hellion
                                     handsAttack = 100;
                                 }
 
-                                if (handsAttack == 40)
+                                if (handsAttack == 75)
                                 {
                                     //Vector2 thingz = player.Center - npc.Center;
                                     //thingz.Normalize();
@@ -1059,7 +1060,7 @@ namespace SGAmod.NPCs.Hellion
 
 
 
-    //[AutoloadBossHead]
+    [AutoloadBossHead]
     public class HellionCore : Hellion
     {
 
@@ -1105,7 +1106,7 @@ namespace SGAmod.NPCs.Hellion
 
         }
 
-        public override string BossHeadTexture => "SGAmod/NPCs/Hellion/HellionCore_Head_Boss";
+        //public override string BossHeadTexture => "SGAmod/NPCs/Hellion/HellionCore_Head_Boss";
 
         /*
         public override string Texture

@@ -734,7 +734,6 @@ namespace SGAmod.Items.Accessories
 			player.BoostAllDamage(0.05f, 5);
 			//player.meleeCrit += 5; player.magicCrit += 5; player.rangedCrit += 5; player.Throwing().thrownCrit += 5;
 			sgaply.maxblink += hideVisual ? 0 : 60 * 6;
-			player.aggro -= 400;
 			//sgaply.boosterPowerLeftMax += (int)(10000f * 0.15f);
 			//sgaply.boosterrechargerate += 3;
 			//sgaply.electricChargeMax += 1500;
@@ -752,7 +751,7 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LunarBar, 6);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 30);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 32);
 			recipe.AddRecipeGroup("SGAmod:HardmodeEvilAccessory", 1);
 			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
 			recipe.AddIngredient(mod.ItemType("PrismalCore"), 1);
@@ -1648,6 +1647,44 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+
+	public class Transformer : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Transformer");
+			Tooltip.SetDefault("Electric Bolts will gain an additional arc\n+2000 Max Electric Charge\n+2 (8 if Electrified) passive Electric Charge Rate");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = ItemRarityID.Orange;
+			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			sgaply.electricrechargerate += player.HasBuff(BuffID.Electrified) ? 10 : 2;
+			sgaply.electricChargeMax += 2000;
+			sgaply.transformerAccessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<ManaBattery>(), 3);
+			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<NoviteBar>(), 6);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
 	public class BlinkTech : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -2677,7 +2714,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Plasma Pack");
-			Tooltip.SetDefault("20% increased Plasma capacity\n+3 Booster recharge rate\n+3000 Max Electric Charge, +2 passive Electric Charge Rate\nEffects of Blink Tech Canister");
+			Tooltip.SetDefault("20% increased Plasma capacity\n+3 Booster recharge rate\n+3000 Max Electric Charge, +2 passive Electric Charge Rate\nEffects of Blink Tech Canister and Transformer");
 		}
 
 		public override void SetDefaults()
@@ -2697,13 +2734,15 @@ namespace SGAmod.Items.Accessories
 			sgaply.electricChargeMax += 3000;
 			player.SGAPly().electricrechargerate += 2;
 			ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<Transformer>().UpdateAccessory(player, hideVisual);
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("BlinkTech"), 1);
-			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 2);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
+			recipe.AddIngredient(ModContent.ItemType<BlinkTech>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<Transformer>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<PlasmaCell>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 8);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -2844,7 +2883,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sparing Spurs");
-			Tooltip.SetDefault("Gain a movement speed and acceleration buff while reloading your revolver\nGrants a Shield of Cthulhu Dash while firing your revolver\nFall Damage and fireblock immunity\n'Ya ready to dance pardner?'");
+			Tooltip.SetDefault("Gain movement speed, acceleration, and 8 defense while reloading your revolver\nGrants a Shield of Cthulhu Dash and 3 defense while firing your revolver\nFall Damage, fireblock, and (if grounded) knockback immunity\n'Ya ready to dance pardner?'");
 		}
 
 		public override void SetDefaults()
@@ -2902,6 +2941,8 @@ namespace SGAmod.Items.Accessories
 			}
 			player.noFallDmg = true;
 			player.fireWalk = true;
+			if (player.velocity.Y == 0)
+				player.noKnockback = true;
 		}
 		public override void AddRecipes()
 		{
@@ -3313,28 +3354,17 @@ namespace SGAmod.Items.Accessories
 			item.accessory = true;
 		}
 	}
-	public class CardDeckPersona : ModItem
+	public class CardDeckPersona : Weapons.Almighty.TheJoker
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hearts of the Cards");
-			Tooltip.SetDefault("Cooldown Stack times on Almighty cards are reduced by half\nYou have a chance to pull A Joker whenever you use a card\nJokers steal one of your hearts and enter your inventory\nSuccessfully using a card causes you to get your hearts back\nJokers vanish if dropped");
+			Tooltip.SetDefault("Cooldown Stack times on Almighty cards are reduced by half\nYou have a chance to pull A Joker whenever you use a card\nJokers steal one of your hearts and enter your inventory\nSuccessfully using a card causes you to get your hearts back\n'Lookin' cool Joker!'");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.SGAPly().personaDeck = true;
-		}
-
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
-		{
-			foreach (TooltipLine line in tooltips)
-			{
-				if (line.mod == "Terraria" && line.Name == "ItemName")
-				{
-					line.overrideColor = Color.Lerp(Color.Red, Color.Black, 0.5f + (float)Math.Sin(Main.GlobalTime * 6f));
-				}
-			}
 		}
 
 		public override void SetDefaults()
@@ -4140,7 +4170,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ModContent.ItemType < PrismalAirTank>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < MurkyCharm>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
-			recipe.AddIngredient(ModContent.ItemType <StarMetalBar>(), 16);
+			recipe.AddIngredient(ModContent.ItemType <PrismalBar>(), 12);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

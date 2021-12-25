@@ -105,7 +105,6 @@ namespace SGAmod
 		{
 			if (Main.expertMode && NoHit && npc.modNPC != null)
 			{
-
 				if (npc.modNPC is ISGABoss iboss)
 				{
 
@@ -376,7 +375,6 @@ namespace SGAmod
 				{
 					if (player.ownedLargeGems[4] && Main.rand.Next(0, (int)(50000f / Math.Max((float)damage, 40f))) == 1)
 					{
-
 						Projectile projectile = new Projectile();
 						projectile.Center = npc.Center;
 						projectile.owner = player.whoAmI;
@@ -594,10 +592,13 @@ namespace SGAmod
 
 			}
 
-			if (moddedplayer.flaskBuff != default)
+			if (moddedplayer.flaskBuff != default && ((projectile != null && projectile.melee) || (item != null && item.melee)))
 			{
 				if (Main.rand.Next(0, moddedplayer.flaskBuff.Chance) == 0)
+				{
 					npc.AddBuff(moddedplayer.flaskBuff.Debuff, moddedplayer.flaskBuff.Period);
+					moddedplayer.flaskBuff.OnRealHit(player, projectile, npc, damage);
+				}
 			}
 
 			if (item != null && npc.life - damage < 1 && npc.lifeMax > 50)

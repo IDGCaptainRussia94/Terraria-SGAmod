@@ -322,18 +322,9 @@ namespace SGAmod.Dimensions
         {
             if (SGAPocketDim.WhereAmI != null)
             {
-                if (SGAPocketDim.WhereAmI == typeof(LimboDim))
+                if (SLWorld.currentSubworld is SGAPocketDim sgapocket)
                 {
-                    return mod.GetTexture("LimboMapBackground");
-                }
-                if (SGAPocketDim.WhereAmI == typeof(SpaceDim))
-                {
-                    return mod.GetTexture("SpaceMapBackground_NoSun");
-                }
-                if (SGAPocketDim.WhereAmI == typeof(DeeperDungeon))
-                {
-                    Texture2D bg = (Texture2D)typeof(Main).GetField("mapBG5Texture", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(Main.instance);
-                    return bg;
+                    return sgapocket.GetMapBackgroundImage();
                 }
             }
             return null;
@@ -588,6 +579,11 @@ namespace SGAmod.Dimensions
                 return SLWorld.currentSubworld.GetType();
             }
 
+        }
+
+        public virtual Texture2D GetMapBackgroundImage()
+        {
+            return null;
         }
 
         public int LimitPlayers = 0;

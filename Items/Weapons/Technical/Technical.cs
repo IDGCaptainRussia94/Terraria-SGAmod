@@ -303,6 +303,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class CBreakerBolt : ModProjectile
 	{
+		bool transboost = false;
 		public override void SetDefaults()
 		{
 			projectile.width = 4;
@@ -335,6 +336,8 @@ namespace SGAmod.Items.Weapons.Technical
 			writer.Write(projectile.magic);
 			writer.Write(projectile.usesLocalNPCImmunity);
 			writer.Write(projectile.localNPCHitCooldown);
+			writer.Write(transboost);
+
 		}
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -346,6 +349,7 @@ namespace SGAmod.Items.Weapons.Technical
 			projectile.magic = reader.ReadBoolean();
 			projectile.usesLocalNPCImmunity = reader.ReadBoolean();
 			projectile.localNPCHitCooldown = reader.ReadInt32();
+			transboost = reader.ReadBoolean();
 		}
 
 		public override void SetStaticDefaults()
@@ -373,6 +377,8 @@ namespace SGAmod.Items.Weapons.Technical
 					int prog = Projectile.NewProjectile(target.Center.X, target.Center.Y, Speed.X, Speed.Y, ModContent.ProjectileType<CBreakerBolt>(),projectile.damage, projectile.knockBack / 2f, projectile.owner, projectile.ai[0]);
 					Main.projectile[prog].melee = projectile.melee;
 					Main.projectile[prog].magic = projectile.magic;
+					Main.projectile[prog].aiStyle = -200;
+
 					IdgProjectile.Sync(prog);
 					Main.PlaySound(SoundID.Item93, projectile.Center);
 				}
@@ -412,11 +418,6 @@ namespace SGAmod.Items.Weapons.Technical
 			}
 
 
-			Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 0.1f;
-			int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1f * (1f + (projectile.ai[0] / 3f)));
-			Main.dust[num655].noGravity = true;
-			Main.dust[num655].velocity *= 0.5f;
-
 			Vector2 gothere = projectile.velocity;
 			gothere=gothere.RotatedBy(MathHelper.ToRadians(90));
 			gothere.Normalize();
@@ -424,6 +425,14 @@ namespace SGAmod.Items.Weapons.Technical
 
 			if (basepoint == Vector2.Zero)
 			{
+				SGAPlayer sgaply = player.SGAPly();
+				if (sgaply.transformerAccessory && !transboost && projectile.aiStyle>-100)
+				{
+					projectile.aiStyle = -150;
+					projectile.ai[0] += 1;
+					transboost = true;
+				}
+
 				basepoint = projectile.Center;
 				projectile.localAI[1] = (float)player.SGAPly().timer;
 			}
@@ -434,6 +443,12 @@ namespace SGAmod.Items.Weapons.Technical
 
 			float theammount = ((float)projectile.timeLeft + (float)(projectile.whoAmI*6454f)+(projectile.localAI[1]* 72.454f));
 			float scale = (1f - projectile.ai[1]);
+
+
+			Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 0.1f;
+			int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1f * (1f + (projectile.ai[0] / 3f)));
+			Main.dust[num655].noGravity = true;
+			Main.dust[num655].velocity *= 0.5f;
 
 
 			projectile.Center += ((gothere * ((float)Math.Sin((double)theammount / 7.10) * (1.97f * scale)))+ (gothere * ((float)Math.Cos((double)theammount / -13.00) * (2.95f * scale)))+ (gothere * ((float)Math.Sin((double)theammount / 4.34566334) * (2.1221f * scale)))

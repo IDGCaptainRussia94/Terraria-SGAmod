@@ -301,6 +301,7 @@ namespace SGAmod.HavocGear.Items
 
 namespace SGAmod.Items
 {
+
 	public class Glowrock : ModItem, IRadioactiveItem
 	{
 		public override void SetStaticDefaults()
@@ -330,7 +331,7 @@ namespace SGAmod.Items
 				return;
 
 			WeightedRandom<(int, int)> WR = new WeightedRandom<(int, int)>();
-
+			
 			if (NPC.downedPlantBoss)
 			{
 				WR.Add((ItemID.Ectoplasm, Main.rand.Next(1, 1)), 1);

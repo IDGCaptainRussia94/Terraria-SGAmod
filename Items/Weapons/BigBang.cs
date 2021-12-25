@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using SGAmod.Projectiles;
 using Idglibrary;
+using System.Linq;
 
 namespace SGAmod.Items.Weapons
 {
@@ -23,9 +24,9 @@ namespace SGAmod.Items.Weapons
 			item.melee = true;
 			item.width = 44;
 			item.height = 52;
-			item.useTime = 25;
+			item.useTime = 20;
+			item.useAnimation = 21;
 			item.crit = 15;
-			item.useAnimation = 26;
 			item.useStyle = 5;
 			item.autoReuse = true;
 			item.knockBack = 15;
@@ -37,7 +38,7 @@ namespace SGAmod.Items.Weapons
 			item.autoReuse = false;
 			item.useTurn = false;
 			item.channel = true;
-			item.mana = 10;
+			item.mana = 7;
 			if (!Main.dedServ)
 			{
 				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/BigBang_Glow");
@@ -47,14 +48,21 @@ namespace SGAmod.Items.Weapons
 
 		public override bool CanUseItem(Player player)
 		{
-			if (player.statMana<20 || player.ownedProjectileCounts[mod.ProjectileType("ProjectilePortalBigBang")]>0)
-			return false;
-			else
+
+			//if (player.statMana<20 || player.ownedProjectileCounts[mod.ProjectileType("ProjectilePortalBigBang")]>0)
+			//return false;
+			//else
 			return true;
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
+			foreach(Projectile proj in Main.projectile.Where(testby => testby.owner == player.whoAmI && testby.type == item.shoot))
+            {
+				proj.Kill();
+            }
+
+
 			item.noMelee = false;
 			item.useStyle = 1;
 			if (player.ownedProjectileCounts[mod.ProjectileType("ProjectilePortalBigBang")] > 0)
@@ -169,7 +177,7 @@ namespace SGAmod.Items.Weapons
 					gotohere = projectile.velocity;//Main.MouseScreen - projectile.Center;
 					gotohere.Normalize();
 
-					Vector2 perturbedSpeed = new Vector2(gotohere.X, gotohere.Y).RotatedByRandom(MathHelper.ToRadians(50)) * projectile.velocity.Length();
+					Vector2 perturbedSpeed = new Vector2(gotohere.X, gotohere.Y).RotatedByRandom(MathHelper.ToRadians(10)) * projectile.velocity.Length();
 					int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y), (int)projectile.ai[0], projectile.damage, projectile.knockBack, owner.whoAmI);
 					Main.projectile[proj].melee = true;
 					Main.projectile[proj].netUpdate = true;

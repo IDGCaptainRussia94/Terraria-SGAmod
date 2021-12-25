@@ -1383,7 +1383,7 @@ namespace SGAmod
 			}
 			if (SGAWorld.tf2cratedrops && npc.lifeMax>50)
 			{
-				int craterates = SGAWorld.downedCratrosity == false ? (Main.hardMode ? 300 : 1500) : (Main.hardMode ? 30 : 200);
+				int craterates = SGAWorld.downedCratrosity ? (Main.hardMode ? 300 : 1500) : (Main.hardMode ? 30 : 200);
 
 				var setting = SGAConfig.Instance.CrateFieldDropChance;
 

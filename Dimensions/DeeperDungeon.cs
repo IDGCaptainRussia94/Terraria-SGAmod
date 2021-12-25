@@ -130,6 +130,12 @@ namespace SGAmod.Dimensions
         public static List<DungeonPath> pathwayrooms = new List<DungeonPath>();
         public static List<Vector2> pathwayloothalls = new List<Vector2>();
 
+        public override Texture2D GetMapBackgroundImage()
+        {
+            Texture2D bg = (Texture2D)typeof(Main).GetField("mapBG5Texture", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(Main.instance);
+            return bg;
+        }
+
         public override int? Music
         {
             get
@@ -442,6 +448,8 @@ namespace SGAmod.Dimensions
             int maxtiles = width * height;
             int cob = 0;
 
+
+            prog.Message = "Cobweb Police";
             for (int xx = 0; xx < width; xx += 1)
             {
                 for (int yy = 0; yy < height; yy += 1)
@@ -452,7 +460,7 @@ namespace SGAmod.Dimensions
                 }
             }
 
-            if (cob > maxtiles / 5)
+            if (cob > maxtiles / 6)
             {
                 //Gen failed, start over
                 DimDungeonsProxy.DungeonSeeds += 1;
@@ -890,9 +898,9 @@ namespace SGAmod.Dimensions
                                 }
                                 if (i == 1)
                                 {
-                                    if (UniRand.Next(0, 30) < 1)//Rare Chance for Chest
+                                    if (UniRand.Next(0, allareas[x].type == 2 ? 60 : 30) == 0)//Rare Chance for Chest, rarer on platforms
                                     {
-                                        bool locked = UniRand.Next(0, 3) == 1;
+                                        bool locked = UniRand.Next(0, 3) == 0;
                                         int thechest = WorldGen.PlaceChest((int)allareas[x].vector.X, (int)allareas[x].vector.Y, 21, false, locked ? 2 : 1);
                                         DeeperDungeon.AddStuffToChest(thechest, locked ? 1 : 0, UniRand);
                                     }
@@ -908,7 +916,7 @@ namespace SGAmod.Dimensions
                                             //Water candles!
                                             typeOfThing = TileID.WaterCandle;
                                             styleOfThing = 0;
-                                            if (UniRand.Next(100) < 90)
+                                            if (UniRand.Next(100) < 95)
                                                 goto dontplaceem;
 
                                             goto placeem;
@@ -1021,7 +1029,7 @@ namespace SGAmod.Dimensions
 
         public static int[] CommonItems => new int[] { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone"), SGAmod.Instance.ItemType("MagusSlippers"), SGAmod.Instance.ItemType("YoyoTricks"), SGAmod.Instance.ItemType("Megido") };
         public static int[] RareItems => new int[] { SGAmod.Instance.ItemType("BenchGodsFavor"), SGAmod.Instance.ItemType("PortalEssence"), SGAmod.Instance.ItemType("DungeonSplunker"), SGAmod.Instance.ItemType("InterdimensionalPartyHat") };
-        public static int[] ShadowItems => new int[] { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow, SGAmod.Instance.ItemType("BeserkerAuraStaff"), SGAmod.Instance.ItemType("EnchantedFury") };// SGAmod.Instance.ItemType("CardDeckPersona") };
+        public static int[] ShadowItems => new int[] { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow, SGAmod.Instance.ItemType("BeserkerAuraStaff"), SGAmod.Instance.ItemType("EnchantedFury"), SGAmod.Instance.ItemType("CardDeckPersona") };
 
     public static void AddStuffToChest(int chestid, int loottype,UnifiedRandom unirand)
         {

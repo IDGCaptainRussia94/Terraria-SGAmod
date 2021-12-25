@@ -90,9 +90,42 @@ namespace SGAmod.Items.Weapons.Almighty
 			item.shoot = ModContent.ProjectileType<MegidoProj>();
 		}
 
-		public bool UseStacks(SGAPlayer sgaply,int time,int count = 1)
-        {
-			return sgaply.AddCooldownStack(time,count);
+		public bool UseStacks(SGAPlayer sgaply, int time, int count = 1)
+		{
+			Player player = sgaply.player;
+			if (Main.rand.Next(100) < 20 && sgaply.personaDeck)
+			{
+				sgaply.player.QuickSpawnItem(ModContent.ItemType<TheJoker>(), count);
+				Main.PlaySound(SoundID.Item16.WithPitchVariance(0.20f), sgaply.player.Center);
+
+				int HPlost = count * 20;
+
+				CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Red, HPlost, dramatic: false, dot: false);
+
+				player.statLife -= HPlost;
+				if (player.statLife < 1)
+				{
+					player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " had a fatal change of heart"), 1337, 0);
+				}
+
+				sgaply.AddCooldownStack((int)(time * (sgaply.personaDeck ? 0.50f : 1f)), count);
+
+				return false;
+			}
+
+			for(int i = 0; i < count; i += 1)
+            {
+				if (player.HasItem(ModContent.ItemType<TheJoker>()))
+				{
+					player.ConsumeItem(ModContent.ItemType<TheJoker>(), true);
+					player.HealEffect(20);
+					player.netLife = true;
+					player.statLife += 20;
+					Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/P5Loot").WithVolume(1f).WithPitchVariance(.10f), player.Center);
+				}
+            }
+
+			return sgaply.AddCooldownStack((int)(time * (sgaply.personaDeck ? 0.50f : 1f)), count);
 
 		}
 
@@ -368,16 +401,18 @@ namespace SGAmod.Items.Weapons.Almighty
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			//Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Megido").WithVolume(1.0f).WithPitchVariance(.15f), player.Center);
-			UseStacks(player.SGAPly(),60 * 30, 2);
-
-			for (int i = 0; i < 3; i += 1)
+			if (UseStacks(player.SGAPly(), 60 * 30, 2))
 			{
-				NPC[] findnpc = SGAUtils.ClosestEnemies(player.Center, 1500, Main.MouseWorld, checkWalls: false, checkCanChase: true)?.ToArray();
-				NPC target = findnpc[i % findnpc.Count()];
 
-				Projectile proj = Projectile.NewProjectileDirect(target.Center + Vector2.UnitX.RotatedBy(Main.rand.NextFloat(MathHelper.TwoPi)) * Main.rand.NextFloat(72f, 160f), Vector2.Zero, ModContent.ProjectileType<MegidolaProj>(), damage, knockBack, player.whoAmI);
-				proj.ai[0] = -12f * i;
-				proj.netUpdate = true;
+				for (int i = 0; i < 3; i += 1)
+				{
+					NPC[] findnpc = SGAUtils.ClosestEnemies(player.Center, 1500, Main.MouseWorld, checkWalls: false, checkCanChase: true)?.ToArray();
+					NPC target = findnpc[i % findnpc.Count()];
+
+					Projectile proj = Projectile.NewProjectileDirect(target.Center + Vector2.UnitX.RotatedBy(Main.rand.NextFloat(MathHelper.TwoPi)) * Main.rand.NextFloat(72f, 160f), Vector2.Zero, ModContent.ProjectileType<MegidolaProj>(), damage, knockBack, player.whoAmI);
+					proj.ai[0] = -12f * i;
+					proj.netUpdate = true;
+				}
 			}
 
 			return false;
@@ -606,13 +641,13 @@ namespace SGAmod.Items.Weapons.Almighty
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			UseStacks(player.SGAPly(),60 * 45, 3);
+			if (UseStacks(player.SGAPly(), 60 * 45, 3))
+			{
+				int pushYUp = -1;
+				player.FindSentryRestingSpot(item.shoot, out var worldX, out var worldY, out pushYUp);
 
-			int pushYUp = -1;
-			player.FindSentryRestingSpot(item.shoot, out var worldX, out var worldY, out pushYUp);
-
-			Projectile proj = Projectile.NewProjectileDirect(new Vector2(worldX, worldY), Vector2.Zero, ModContent.ProjectileType<MegidolaonProj>(), damage, knockBack, player.whoAmI);
-
+				Projectile proj = Projectile.NewProjectileDirect(new Vector2(worldX, worldY), Vector2.Zero, ModContent.ProjectileType<MegidolaonProj>(), damage, knockBack, player.whoAmI);
+			}
 
 			return false;
 		}
@@ -942,13 +977,13 @@ namespace SGAmod.Items.Weapons.Almighty
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			UseStacks(player.SGAPly(), 60 * 80, 4);
+			if (UseStacks(player.SGAPly(), 60 * 80, 4))
+			{
+				int pushYUp = -1;
+				player.FindSentryRestingSpot(item.shoot, out var worldX, out var worldY, out pushYUp);
 
-			int pushYUp = -1;
-			player.FindSentryRestingSpot(item.shoot, out var worldX, out var worldY, out pushYUp);
-
-			Projectile proj = Projectile.NewProjectileDirect(new Vector2(worldX, worldY), Vector2.Zero, ModContent.ProjectileType<MorningStarProj>(), damage, knockBack, player.whoAmI);
-
+				Projectile proj = Projectile.NewProjectileDirect(new Vector2(worldX, worldY), Vector2.Zero, ModContent.ProjectileType<MorningStarProj>(), damage, knockBack, player.whoAmI);
+			}
 
 			return false;
 		}
@@ -1279,13 +1314,12 @@ namespace SGAmod.Items.Weapons.Almighty
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			UseStacks(player.SGAPly(), 60 * 120, 5);
+			if (UseStacks(player.SGAPly(), 60 * 120, 5))
+			{
+				position = player.Center - new Vector2(0, 320);
 
-			position = player.Center - new Vector2(0,320);
-
-			Projectile proj = Projectile.NewProjectileDirect(position, Vector2.Zero, ModContent.ProjectileType<RaysOfControlProj>(), damage, knockBack, player.whoAmI);
-
-
+				Projectile proj = Projectile.NewProjectileDirect(position, Vector2.Zero, ModContent.ProjectileType<RaysOfControlProj>(), damage, knockBack, player.whoAmI);
+			}
 			return false;
 		}
 
@@ -2103,7 +2137,34 @@ namespace SGAmod.Items.Weapons.Almighty
 
 	}
 
+	public class TheJoker : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("The Joker");
+			Tooltip.SetDefault("'The jokes on you!'\nIs Consumed when successfully using Almighty cards, and restores 20 HP per stack");
+		}
 
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			foreach (TooltipLine line in tooltips)
+			{
+				if (line.mod == "Terraria" && line.Name == "ItemName")
+				{
+					line.overrideColor = Color.Lerp(Color.Red, Color.Black, 0.5f + (float)Math.Sin(Main.GlobalTime * 6f));
+				}
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 14;
+			item.height = 14;
+			item.value = 0;
+			item.rare = ItemRarityID.Red;
+		}
+	}
 
 	public class RaysOfControlOrb
 	{

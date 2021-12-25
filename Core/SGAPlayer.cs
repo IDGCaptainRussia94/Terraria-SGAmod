@@ -141,6 +141,7 @@ namespace SGAmod
 		public int shinobj = 0;
 		public int soldierboost = 0;
 		public bool voidEmbrancers = false;
+		public bool transformerAccessory = false;
 		public bool gravBoots = false;
 		public FlaskOfBlaze flaskBuff = default;
 		public (bool,int) snakeEyes = (false,0);
@@ -372,6 +373,7 @@ namespace SGAmod
 			diesIraeStone = false;
 			starCollector = false;
 			magusSlippers = false;
+			transformerAccessory = false;
 			previoustf2emblemLevel = tf2emblemLevel;
 			tf2emblemLevel = 0;
 			ninjaSash = 0;
@@ -2354,7 +2356,12 @@ namespace SGAmod
 			//TheProgrammer
 			player.ManageSpecialBiomeVisuals("SGAmod:ProgramSky", (SGAmod.ProgramSkyAlpha > 0f || NPC.CountNPCS(mod.NPCType("SPinkyTrue")) > 0) ? true : false, player.Center);
 			player.ManageSpecialBiomeVisuals("SGAmod:HellionSky", (SGAmod.HellionSkyalpha > 0f || NPC.CountNPCS(mod.NPCType("Hellion")) + NPC.CountNPCS(mod.NPCType("HellionFinal")) > 0) ? true : false, player.Center);
+			player.ManageSpecialBiomeVisuals("SGAmod:SwirlingVortex", SPinkyTrue.VortexEffect, SPinkyTrue.PinkyBossLoc);
+
+
 			player.ManageSpecialBiomeVisuals("SGAmod:CirnoBlizzard", (SGAWorld.CirnoBlizzard > 0) ? true : false, player.Center);
+
+
 			ScreenShaderData shad = Filters.Scene["SGAmod:CirnoBlizzard"].GetShader();
 			if (SGAWorld.CirnoBlizzard > 0)
 				shad.UseOpacity((float)(SGAWorld.CirnoBlizzard / 1000f));

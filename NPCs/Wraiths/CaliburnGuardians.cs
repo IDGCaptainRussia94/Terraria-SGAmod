@@ -32,6 +32,7 @@ namespace SGAmod.NPCs.Wraiths
 		CircleLeader = 4,
 		Hover = 5,
 		Stuck = 6,
+		DashIntoTheGround = 7,
 	}
 
 	public class SwordAttackSpawnProjectilesNovaBurst : SwordAttackSpawnProjectilesAtLooking, ICloneable
@@ -161,9 +162,9 @@ namespace SGAmod.NPCs.Wraiths
 
         public override bool CheckDead()
         {
-			if (specialState == 0)
+			if (specialState == 0 && npc.life < 1 && !npc.lavaImmune)
 			{
-				ChangeState(100);
+				ChangeState((int)StateIds.Transform);
 				npc.lifeMax *= 3;
 				npc.life = npc.lifeMax;
 
@@ -266,7 +267,7 @@ namespace SGAmod.NPCs.Wraiths
 			Main.npcFrameCount[npc.type] = 1;
 		}
 
-		public void AddAttackOrder()
+		public void AddAttackOrder(bool forceground=false)
 		{
 
 		tryagain:
@@ -293,6 +294,10 @@ namespace SGAmod.NPCs.Wraiths
 			}
 
 			int finalchoice = wrand.Get();
+
+			if (forceground)
+				finalchoice = 6;
+
 			//if (specialState == 100)//always to start off
 			//	finalchoice = 0;
 
@@ -313,6 +318,19 @@ namespace SGAmod.NPCs.Wraiths
 			}*/
 
 			bool bouldermode = false;
+
+			if (finalchoice == 6)//Dash into Ground
+			{
+				SwordAttack sword1 = new SwordAttack((int)StateIds.Hover, 180, 700);
+				sword1.hoverArea = new Vector2(P.Center.X+Main.rand.Next(-600,600), P.Center.Y - 240);
+				sword1.lookAt = MathHelper.PiOver2;
+				OrderedAttacks.Add(sword1);
+
+				SwordAttack swrod = new SwordAttack((int)StateIds.DashIntoTheGround, 32, 8);
+				swrod.timerVariable2.X = 1.65f;
+				OrderedAttacks.Add(swrod);
+
+			}
 
 			if (finalchoice == 5)//Boulders!
 			{
@@ -559,6 +577,8 @@ namespace SGAmod.NPCs.Wraiths
 
 			if (SpecialStateTimer > timeMax)
 			{
+				if (!Leader)
+				dontTakeOrders = -1000;
 				ChangeState();
 			}
 
@@ -614,6 +634,7 @@ namespace SGAmod.NPCs.Wraiths
 
 			if (SpecialStateTimer > timeMax)
 			{
+				npc.lavaImmune = true;
 				ChangeState();
 			}
 		}
@@ -736,7 +757,7 @@ namespace SGAmod.NPCs.Wraiths
 
 		}
 
-		public void DashAtAnimedAngleState()
+		public void DashAtAnimedAngleState(bool allowchange=true)
 		{
 			float timeMax = (float)currentAttack.time;
 
@@ -764,7 +785,34 @@ namespace SGAmod.NPCs.Wraiths
 
 			if (SpecialStateTimer > timeMax)
 			{
+				if (allowchange)
 				ChangeState();
+			}
+		}
+
+		public void DashIntoTheGroundState()
+		{
+			DashAtAnimedAngleState(false);
+			if (npc.velocity.Length() > 0 && SpecialStateTimer > 10)
+			{
+				float timeMax = (float)currentAttack.time;
+				Vector2 diff = P.MountedCenter - npc.Center;
+
+				//if (Vector2.Dot(Vector2.Normalize(diff), Vector2.Normalize(npc.velocity)) < 0)
+				//{
+
+					bool collide = Collision.CanHit(npc.Center, 16, 16, npc.Center + npc.velocity/2, 16, 16);
+
+					if (!collide && SpecialStateTimer > 10)
+					{
+					while(!Collision.CanHit(npc.Center, 16, 16, npc.Center + Vector2.Normalize(npc.velocity)*32, 16, 16))
+                    {
+						npc.Center -= Vector2.Normalize(npc.velocity) * 2;
+                    }
+
+					ChangeState((int)StateIds.Stuck);
+					}
+				//}
 			}
 		}
 
@@ -772,12 +820,16 @@ namespace SGAmod.NPCs.Wraiths
 		{
 			float timeMax = (float)currentAttack.time;
 
+			//npc.behindTiles = true;
+
 			npc.velocity = Vector2.Zero;
 
 			if (currentAttack.timerVariable2.Y< 1000)
             {
 				currentAttack.timerVariable2.Y = 1000;
 				SGAmod.AddScreenShake(16f,720, npc.Center);
+
+				dontTakeOrders = 420;
 
 				var snd = Main.PlaySound(SoundID.DD2_KoboldIgnite, npc.Center);
 				if (snd != null)
@@ -794,22 +846,22 @@ namespace SGAmod.NPCs.Wraiths
 
 			}
 
-			if (SpecialStateTimer > timeMax)
+			if (dontTakeOrders < -10)
 			{
-				ChangeState();
+				//ChangeState();
 			}
 		}
 
-		public void ChangeState(int idealState = -1,bool overrideOrdersOfBrothers = false)
-        {
+		public void ChangeState(int idealState = -1, bool overrideOrdersOfBrothers = false)
+		{
 			if (specialStateVar == default)
-			specialStateVar = Vector2.UnitX;
+				specialStateVar = Vector2.UnitX;
 
 			SpecialStateTimer = 0;
 			if (idealState == -1)
-            {
+			{
 				if (OrderedAttacks.Count < 1)
-                {
+				{
 					AddAttackOrder();
 
 					if (Leader)
@@ -817,17 +869,27 @@ namespace SGAmod.NPCs.Wraiths
 						List<CaliburnGuardianHardmode> us = new List<CaliburnGuardianHardmode>(brothers);
 						us.Add(this);
 
-						foreach (CaliburnGuardianHardmode sworder in us)
+						foreach (CaliburnGuardianHardmode sworder in us.OrderBy(testby => Main.rand.Next()))
 						{
-							if (sworder.dontTakeOrders < 1 || overrideOrdersOfBrothers)
+							if (sworder.dontTakeOrders < 1 || sworder.Leader || overrideOrdersOfBrothers)
 							{
 								//sworder.ChangeState((int)StateIds.PhaseAdvance);
-								sworder.AddAttackOrder();
+
+								if (dontTakeOrders < -60 && !sworder.Leader)
+								{
+									dontTakeOrders = 1800;
+									sworder.AddAttackOrder(true);
+								}
+								else
+								{
+									sworder.AddAttackOrder();
+								}
+
 								sworder.ChangeState();
 							}
 						}
-						return;
 					}
+					return;
 				}
 
 				SwordAttack attack = OrderedAttacks[0];
@@ -837,7 +899,7 @@ namespace SGAmod.NPCs.Wraiths
 				OrderedAttacks.RemoveAt(0);
 
 				return;
-            }
+			}
 			specialState = idealState;
 
 		}
@@ -878,6 +940,9 @@ namespace SGAmod.NPCs.Wraiths
 				}
 			}
 
+			npc.hide = false;
+			npc.behindTiles = false;
+
 			if (specialState == (int)StateIds.Transform)
 				TransformState();
 			if (specialState == (int)StateIds.PhaseAdvance)
@@ -894,7 +959,12 @@ namespace SGAmod.NPCs.Wraiths
 			if (specialState == (int)StateIds.Hover)
 				HoverState();
 			if (specialState == (int)StateIds.Stuck)
+			{
+				npc.behindTiles = true;
 				StuckState();
+            }
+			if (specialState == (int)StateIds.DashIntoTheGround)
+				DashIntoTheGroundState();
 
 		}
 
@@ -1038,6 +1108,10 @@ namespace SGAmod.NPCs.Wraiths
 
 		}
 		protected override int caliburnlevel => 3;
+		public override bool CanUseAttack(int type)
+		{
+			return true;
+		}
 
 	}
 
@@ -1053,6 +1127,11 @@ namespace SGAmod.NPCs.Wraiths
 		public void NoHitDrops() { }
 
 		protected string[] names = {"A","B","C"};
+
+		public virtual bool CanUseAttack(int type)
+        {
+			return type == (int)npc.ai[2];
+        }
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Spirit of Caliburn");
@@ -1271,8 +1350,22 @@ namespace SGAmod.NPCs.Wraiths
 
 			if (npc.ai[0] % 90 == 0 && npc.localAI[0]<1)
 			{
-				Idglib.Shattershots(npc.Center, P.Center + new Vector2((P.Center.X - npc.Center.X) > 0 ? 600 : -600, 0), new Vector2(P.width, P.height), ProjectileID.Boulder, 50, 3, caliburnlevel * 50, 1+ caliburnlevel, true, 0, true, 300);
+				if (CanUseAttack(0))
+				{
+					for (int i = 0; i < 2 + caliburnlevel * 2; i += 1)
+					{
+						Projectile proj = Projectile.NewProjectileDirect(P.MountedCenter - new Vector2(Main.rand.Next(-128, 128), 720 - i * 16), Vector2.UnitY * ((i / 3f) + 4), ModContent.ProjectileType<Items.Weapons.Caliburn.CaliburnSpectralBlade>(), 15, 5);
+						if (proj != null)
+						{
+							proj.friendly = false;
+							proj.hostile = true;
+							proj.melee = false;
+							proj.timeLeft = 300;
+						}
+					}
+				}
 
+				Idglib.Shattershots(npc.Center, P.Center + new Vector2((P.Center.X - npc.Center.X) > 0 ? 600 : -600, 0), new Vector2(P.width, P.height), ProjectileID.Boulder, 50, 3, caliburnlevel * 50, 1+ caliburnlevel, true, 0, true, 300);
 			}
 
 
@@ -1293,8 +1386,6 @@ namespace SGAmod.NPCs.Wraiths
 				int dust = Dust.NewDust(npc.Center + here*24f, 0,0, typr);
 				Main.dust[dust].scale = (0.5f * appear) + (npc.velocity.Length() / 50f);
 				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
-				Vector2 normvel = npc.velocity;
-				normvel.Normalize(); normvel *= 2f;
 
 				npc.rotation = npc.rotation.AngleLerp((P.Center-npc.Center).ToRotation()-MathHelper.ToRadians(-45f*npc.spriteDirection), 0.1f);
 
@@ -1311,6 +1402,23 @@ namespace SGAmod.NPCs.Wraiths
 
 			if (npc.ai[1] % 50 == 49)
 			{
+				if (CanUseAttack(1))
+				{
+					float maxer = 1 + caliburnlevel * 1;
+					for (int i = 0; i < maxer; i += 1)
+					{
+						float posser = i / (maxer);
+						posser += Main.rand.NextFloat(MathHelper.TwoPi);
+						Vector2 position = Vector2.UnitX.RotatedBy(posser);
+						Projectile proj = Projectile.NewProjectileDirect(P.MountedCenter - position*320f, position*2f, ModContent.ProjectileType<CalburnSwordAttackNonochrome>(), 15, 5);
+						if (proj != null)
+						{
+							proj.timeLeft = 350;
+						}
+					}
+				}
+
+
 				List<Vector2> heremaybe = new List<Vector2>();
 
 				for (int zz = -1; zz < 2+ caliburnlevel; zz = zz + 1)
@@ -1361,7 +1469,9 @@ namespace SGAmod.NPCs.Wraiths
 				}
 			}
 
+			if (npc.lavaImmune)
 			dontTakeOrders -= 1;
+
 			nohit += 1;
 			trailingeffect();
 			return true;
@@ -1431,8 +1541,9 @@ namespace SGAmod.NPCs.Wraiths
 
 						if (npc.ai[0] % (70) == 0)
 						{
-							if (caliburnlevel > 0)
-								Idglib.Shattershots(npc.Center, npc.Center - npc.velocity * 26f, new Vector2(P.width, P.height), ProjectileID.CrystalShard, 10, 5f + caliburnlevel * 1.5f, caliburnlevel * 60, 8 + caliburnlevel * 8, true, 0, false, 200);
+							if (CanUseAttack(2))
+								Idglib.Shattershots(npc.Center, npc.Center - npc.velocity * 26f, new Vector2(P.width, P.height), ProjectileID.CrystalShard, 10, 7.5f + caliburnlevel * 1.25f, 180, 8 + caliburnlevel * 8, true, 0, false, 200);
+
 							if (caliburnlevel > 0)
 								Idglib.Shattershots(npc.Center, npc.Center + npc.velocity * 26f, new Vector2(P.width, P.height), ProjectileID.EnchantedBeam, 20, 6f, 30, caliburnlevel, true, 0, false, 200);
 
@@ -1501,6 +1612,15 @@ namespace SGAmod.NPCs.Wraiths
 	public class CalburnSwordAttack : Hellion.HellionXemnasAttack
     {
 		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Holy Swords");
+		}
+	}
+
+	public class CalburnSwordAttackNonochrome : CalburnSwordAttack
+	{
+        public override Color ColorToDraw => Color.Lerp(Color.DarkGray, Color.White,MathHelper.Clamp(projectile.timeLeft/300f,0f,1f));
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Holy Swords");
 		}

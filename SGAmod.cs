@@ -100,7 +100,7 @@ namespace SGAmod
 		public const bool EngieUpdate = true;
 		public const bool ArmorButtonUpdate = false;
 		public const bool EnchantmentsUpdate = false;
-		public const bool SpaceBossActive = false;
+		public const bool SpaceBossActive = true;
 
 		public static SGAmod Instance;
 		public static string SteamID;
@@ -243,7 +243,7 @@ namespace SGAmod
 
 			ScreenExplosion explode = new ScreenExplosion(here, time, str);
 
-			Vector2 centerpos = Main.LocalPlayer.Center;
+			//Vector2 centerpos = Main.LocalPlayer.Center;
 
 			//explode.strength = explode.strength *= MathHelper.Clamp((here- centerpos).Length()/ distance,0f,1f);
 			screenExplosions.Add(explode);
@@ -730,6 +730,7 @@ namespace SGAmod
 				Filters.Scene["SGAmod:ScreenWave"] = new Filter(new ScreenShaderData(screenRef2, "ScreenWave"), EffectPriority.VeryHigh);
 				Ref<Effect> screenRef3 = new Ref<Effect>(GetEffect("Effects/ScreenTimeDistort"));
 				Filters.Scene["SGAmod:ScreenTimeDistort"] = new Filter(new ScreenShaderData(screenRef3, "TimeDistort"), EffectPriority.VeryHigh);
+				Filters.Scene["SGAmod:SwirlingVortex"] = new Filter(new ScreenShaderData("FilterCrystalDestructionVortex").UseImage("SGAmod/Perlin"), EffectPriority.VeryHigh);
 
 
 				//screenRef2 = new Ref<Effect>(GetEffect("Effects/ScreenTrippy"));

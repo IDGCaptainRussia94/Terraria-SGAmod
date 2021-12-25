@@ -2778,8 +2778,8 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (!rematch)
 			{
-				if (npc.life < npc.lifeMax * 0.999f && phase < 5 && npc.ai[1] < 1)
-					//if (npc.life < npc.lifeMax * 0.40f && phase < 5 && npc.ai[1] < 1)
+				//if (npc.life < npc.lifeMax * 0.999f && phase < 5 && npc.ai[1] < 1)
+					if (npc.life < npc.lifeMax * 0.40f && phase < 5 && npc.ai[1] < 1)
 				{
 					phase = 5;
 					if (ArmyVersion)
@@ -4705,6 +4705,8 @@ namespace SGAmod.NPCs.Hellion
 
 	public class HellionXemnasAttack : ModProjectile
 	{
+
+		public virtual Color ColorToDraw => Main.hslToRgb(((Main.GlobalTime / 5f) + (projectile.whoAmI* 235.3f)) % 1f, 1f, 0.75f);
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hellion's Org 13 swords");
@@ -4794,7 +4796,7 @@ namespace SGAmod.NPCs.Hellion
 					projectile.timeLeft = Math.Min(projectile.timeLeft, 60);
 				} else if (hell == null)
 				{
-					if (GetType() != typeof(CalburnSwordAttack))
+					if (GetType() != typeof(CalburnSwordAttack) && GetType() != typeof(CalburnSwordAttackNonochrome))
 						projectile.timeLeft = Math.Min(projectile.timeLeft, 60);
 				}
 			}
@@ -4823,7 +4825,7 @@ namespace SGAmod.NPCs.Hellion
 			Vector2 drawOrigin2 = texture.Size() / 2f;
 			Vector2 drawOrigin3 = textureGlow.Size() / 2f;
 
-			Color color2 = Main.hslToRgb(((Main.GlobalTime / 5f) + (projectile.whoAmI * 235.3f)) % 1f, 1f, 0.75f) * MathHelper.Clamp((projectile.localAI[0] - 60) / 80f, 0.5f, 1f);
+			Color color2 = ColorToDraw;// Main.hslToRgb(((Main.GlobalTime / 5f) + (projectile.whoAmI * 235.3f)) % 1f, ColorScale, 0.75f) * MathHelper.Clamp((projectile.localAI[0] - 60) / 80f, 0.5f, 1f);
 
 			float detail = 1f + projectile.velocity.Length();
 			Vector2 scaledpre = MathHelper.Clamp((projectile.localAI[0] - 20) / 45f, 0f, 1f) * new Vector2(1f, 0.4f);
@@ -5611,17 +5613,23 @@ namespace SGAmod.NPCs.Hellion
 		}
 		public override void Update(Player player, ref int buffIndex)
 		{
-			if (player.velocity.Length() < 0.1f && player.SGAPly().timer % 10 == 0)
+			if (player.velocity.Length() < 0.1f)
 			{
-				CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), CombatText.LifeRegenNegative, 5, dramatic: false, dot: true);
-				player.statLife -= 5;
-				if (player.statLife < 1)
-                {
-					player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " showed no will to funk"), 1337, 0);
+				if (player.SGAPly().timer % 10 == 0)
+				{
+					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), CombatText.LifeRegenNegative, 5, dramatic: false, dot: true);
+					player.statLife -= 5;
+					if (player.statLife < 1)
+					{
+						player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " showed no will to funk"), 1337, 0);
+					}
 				}
 			}
-			player.lifeRegen = 0;
-			player.lifeRegenTime = 0;
+			else
+			{
+				player.lifeRegen = 0;
+				player.lifeRegenTime = 0;
+			}
 			player.SGAPly().noLifeRegen = true;
 
 		}

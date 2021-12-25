@@ -304,41 +304,46 @@ namespace SGAmod
 			addtolistmodded("Cratrogeddon", 1500);
 			addtolistmodded("Hellion", 3000);
 
-			//Not bosses (+500 total)
+			//Not bosses (+525 total)
 			for (int i = 0; i < 75; i += 1)
 			{
 				addtolist(NPCID.GoblinPeon, 2);
 			}
 
-			addtolistmodded("TidalElemental", 75);
+			addtolist(NPCID.Pinky, 25);
 			addtolist(NPCID.Tim, 50);
 			addtolist(NPCID.DoctorBones, 50);
 			addtolist(NPCID.Nymph, 50);
 			addtolist(NPCID.TheGroom, 25);
 			addtolist(NPCID.TheBride, 25);
 			addtolist(NPCID.DD2DarkMageT1, 75);
+			addtolistmodded("TidalElemental", 75);
 
-			//Not bosses: Hardmode (+2500 total)
-			for (int i = 0; i < 2; i += 1)//700
+			//Not bosses: Hardmode (+3000 total)
+			for (int i = 0; i < 2; i += 1)//1050
 			{
 				addtolist(NPCID.GoblinSummoner, 25);
-				addtolist(NPCID.Mothron, 75);
+				addtolist(NPCID.Mothron, 50);
 				addtolist(NPCID.Mimic, 25);
+				addtolist(NPCID.Medusa, 50);
+				addtolist(NPCID.IceGolem, 50);
+				addtolist(NPCID.SandElemental, 50);
 				addtolist(NPCID.MartianSaucerCore, 150);
 				addtolist(NPCID.PirateShip, 75);
 				addtolist(NPCID.PirateCaptain, 50);
 			}
-			//700
+
+			//775
 			addtolist(NPCID.BigMimicCorruption, 100);
 			addtolist(NPCID.BigMimicHallow, 100);
-			addtolist(NPCID.Medusa, 50);
-			addtolist(NPCID.Clown, 50);
+			addtolist(NPCID.Clown, 25);
+			addtolist(NPCID.RainbowSlime, 25);
+			addtolistmodded("EliteBat", 50);
+			addtolist(NPCID.PresentMimic, 25);
 			addtolist(NPCID.RuneWizard, 50);
-			addtolist(NPCID.RainbowSlime, 50);
-			addtolist(NPCID.Moth, 75);
+			addtolist(NPCID.Moth, 50);
 			addtolist(NPCID.DD2OgreT2, 50);
-			addtolist(NPCID.IceGolem, 50);
-			addtolist(NPCID.SandElemental, 50);
+			addtolistmodded("PrismBanshee", 300);
 
 			for (int i = 0; i < 3; i += 1)//1200
 			{
@@ -348,6 +353,7 @@ namespace SGAmod
 				addtolist(NPCID.SantaNK1, 75);
 				addtolist(NPCID.IceQueen, 125);
 			}
+
 
 			for (int i = 0; i < 100; i += 1)
 			{

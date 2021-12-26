@@ -33,8 +33,8 @@ namespace SGAmod.HavocGear.Projectiles
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			if (Main.rand.Next(0, 100) < 40 && !target.boss && !target.buffImmune[BuffID.Poisoned])
-				target.AddBuff(mod.BuffType("DankSlow"), 60 * 40);
+			if (Main.rand.Next(0, 100) < 40 && !target.boss)
+				target.AddBuff(ModContent.BuffType<Buffs.DankSlow>(), 60 * 40);
 		}
 	}
 }

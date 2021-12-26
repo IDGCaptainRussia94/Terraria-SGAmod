@@ -501,6 +501,7 @@ namespace SGAmod.Projectiles
 
 		public override bool PreKill(int timeLeft)
 		{
+			projectile.damage /= 5;
 			effects(1);
 			return true;
 		}

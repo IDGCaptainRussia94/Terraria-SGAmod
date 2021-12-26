@@ -17,8 +17,9 @@ namespace SGAmod.Items.Tools
 		public override void SetDefaults()
 		{
 			item.CloneDefaults(ItemID.MythrilDrill);
-			item.shoot = mod.ProjectileType("NoviteDrillProj");
+			item.shoot = ModContent.ProjectileType<NoviteDrillProj>();
 			item.useAnimation = 40;
+			item.value = Item.buyPrice(0, 0, 50, 0);
 			item.useTime = 12;
 			item.damage = 8;
 			item.pick = 55;
@@ -45,6 +46,55 @@ namespace SGAmod.Items.Tools
 		public override string Texture
 		{
 			get { return ("SGAmod/Items/Tools/NoviteDrillProj"); }
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.MythrilDrill);
+		}
+
+	}
+
+	public class NoviteChainsaw : NoviteDrill
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Chainsaw");
+		}
+
+		public override void SetDefaults()
+		{
+			item.CloneDefaults(ItemID.MythrilDrill);
+			item.damage = 7;
+			item.melee = true;
+			item.width = 40;
+			item.height = 40;
+			item.useTime = 15;
+			item.useAnimation = 15;
+			item.tileBoost = -2;
+			item.axe = 15;
+			item.pick = 0;
+			item.useStyle = 1;
+			item.knockBack = 6;
+			item.value = 10000;
+			item.rare = 2;
+			item.UseSound = SoundID.Item1;
+			item.autoReuse = true;
+			item.shoot = ModContent.ProjectileType<NoviteChainsawProj>();
+		}
+
+	}
+
+	public class NoviteChainsawProj : NoviteDrillProj
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Chainsaw");
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Tools/NoviteChainsawProj"); }
 		}
 
 		public override void SetDefaults()

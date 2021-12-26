@@ -13,7 +13,7 @@ using SGAmod.Buffs;
 
 namespace SGAmod.Items.Weapons.SeriousSam
 {
-	public class LavaRocksGun : SeriousSamWeapon
+	public class LavaRocksGun : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{

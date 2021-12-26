@@ -26,7 +26,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.WoodenCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 2334; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -35,7 +35,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.IronCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 2335; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -44,7 +44,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.GoldenCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 2336; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -53,7 +53,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.CorruptFishingCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3203; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -62,7 +62,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.CrimsonFishingCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3204; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -71,16 +71,16 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.DungeonFishingCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3205; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
-	public class CratrosityCrate3206: CratrosityCrate
+	public class CratrosityCrate3206 : CratrosityCrate
 	{
 		protected override int CrateIndex => ItemID.FloatingIslandFishingCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3206; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 
@@ -93,7 +93,7 @@ namespace SGAmod.NPCs.Cratrosity
 		npc.ai[0]+=Main.rand.Next(0,4);
 		if (myowner.ai[0]%10==0 && npc.ai[0]%300<90){
 		Player P = Main.player[myowner.target];
-		List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height),ProjectileID.PlatinumCoin,30,8,0,1,true,0,false,220);
+		List<Projectile> itz=Idglib.Shattershots(npc.Center,P.position,new Vector2(P.width,P.height), ModContent.ProjectileType<GlowingPlatinumCoin>(), 30,8,0,1,true,0,false,220);
 		itz[0].aiStyle=5;
 		}}
 
@@ -106,7 +106,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.HallowedFishingCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3207; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -115,7 +115,7 @@ namespace SGAmod.NPCs.Cratrosity
 		protected override int CrateIndex => ItemID.IronCrate;
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3208; }
+			get { return "Terraria/Item_" + CrateIndex; }
 		}
 
 	}
@@ -128,7 +128,7 @@ namespace SGAmod.NPCs.Cratrosity
 		}
 		public override string Texture
 		{
-			get { return "Terraria/Item_" + 3208; }
+			get { return "SGAmod/HavocGear/Items/DankCrate"; }
 		}
 
 		public override void AI()

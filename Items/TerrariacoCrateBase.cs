@@ -34,13 +34,14 @@ namespace SGAmod.Items
 		{
 			string[] dropitems = { "CrateBossWeaponMagic", "CrateBossWeaponMelee", "CrateBossWeaponRanged", "CrateBossWeaponThrown", "CrateBossWeaponSummon" };
 			ply.QuickSpawnItem(mod.ItemType(dropitems[Main.rand.Next(0, dropitems.Length)]), 1);
+
 			if (Main.expertMode)
 			{
 				ply.QuickSpawnItem(mod.ItemType("IdolOfMidas"), 1);
 			}
 			int[] typeofloot = { ItemID.GoldRing, ItemID.LuckyCoin, ItemID.DiscountCard };
-			if (Main.rand.Next(0, 3) == 1)
-				ply.QuickSpawnItem(mod.ItemType("TF2Emblem"), 1);
+			if (Main.rand.Next(0, 2) == 1)
+				ply.QuickSpawnItem(Main.rand.NextBool() ? ModContent.ItemType<Placeable.TechPlaceable.AureateVaultItem>() : mod.ItemType("TF2Emblem"), 1);
 			if (Main.rand.Next(0, 3) == 1)
 				ply.QuickSpawnItem(typeofloot[Main.rand.Next(0, typeofloot.Length)], 1);
 		}

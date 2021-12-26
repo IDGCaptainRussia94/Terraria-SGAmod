@@ -16,7 +16,7 @@ namespace SGAmod.Items.Weapons.Auras
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Berserker Aura Staff");
-			Tooltip.SetDefault("Summons Beserker Gauntlets around the player to boost their attack power\nBut in your rage, you forget to breath");
+			Tooltip.SetDefault("Summons Berserker Gauntlets around the player to boost their attack power\nBut in your rage, you forget to breath");
 			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}
@@ -75,7 +75,7 @@ namespace SGAmod.Items.Weapons.Auras
 	{
 
 		protected override int BuffType => ModContent.BuffType<AuraBuffBeserker>();
-		protected override float AuraSize => 60;
+		protected override float _AuraSize => 60;
 
 		public override void SetStaticDefaults()
 		{
@@ -100,8 +100,8 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public override float CalcAuraPower(Player player)
 		{
-			thepower = 1f+(player.minionDamage * (projectile.minionSlots / 2f));
-			return thepower;
+			float temp = 1f+(player.minionDamage * (projectile.minionSlots / 2f));
+			return temp;
 		}
 
 		public override void AuraAI(Player player)
@@ -112,19 +112,13 @@ namespace SGAmod.Items.Weapons.Auras
 		public override void InsideAura<T>(T type, Player player)
 		{
 
-			if (type is Player)
+			if (type is Player alliedplayer && player.IsAlliedPlayer(alliedplayer))
 			{
-				SGAPlayer theply = (type as Player).SGAPly();
+				SGAPlayer theply = alliedplayer.SGAPly();
 				theply.beserk[0] = 5;
 				theply.beserk[1] = (int)((float)thepower*1f);
 
-				theply.player.meleeDamage += (float)(theply.beserk[1] * 0.05f);
-				theply.player.magicDamage += (float)(theply.beserk[1] * 0.05f);
-				theply.player.minionDamage += (float)(theply.beserk[1] * 0.05f);
-				theply.player.rangedDamage += (float)(theply.beserk[1] * 0.05f);
-				theply.player.Throwing().thrownDamage += (float)(theply.beserk[1] * 0.05f);
-				SGAmod.BoostModdedDamage(theply.player, (float)(theply.beserk[1] * 0.05f),0);
-
+				theply.player.BoostAllDamage((float)(theply.beserk[1] * 0.05f), 0);
 			}
 
 		}
@@ -183,7 +177,7 @@ namespace SGAmod.Items.Weapons.Auras
 	{
 		public override void SetDefaults()
 		{
-			DisplayName.SetDefault("Beserker Aura");
+			DisplayName.SetDefault("Berserker Aura");
 			Description.SetDefault("The Aura enrages your attacks, but you forget to breath");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;

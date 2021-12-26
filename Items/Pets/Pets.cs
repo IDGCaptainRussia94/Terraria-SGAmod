@@ -17,7 +17,7 @@ namespace SGAmod.Items.Pets
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Guardian Heart Lantern");
-            Tooltip.SetDefault("Summons a Guardian Heart Lantern to provide light and provide life regen to nearby players");
+            Tooltip.SetDefault("Summons a Guardian Heart Lantern to provide light and life regen to nearby players");
         }
 
         public override void SetDefaults()
@@ -50,7 +50,7 @@ namespace SGAmod.Items.Pets
             recipe.AddIngredient(ItemID.HeartLantern, 1);
             recipe.AddIngredient(ItemID.DemonWings, 1);
             recipe.AddIngredient(ItemID.SoulofNight, 5);
-            recipe.AddIngredient(null, "VirulentBar", 8);
+            recipe.AddIngredient(mod.ItemType("VirulentBar"), 8);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);
             recipe.AddRecipe();
@@ -154,7 +154,7 @@ namespace SGAmod.Items.Pets
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Guardian S.I.A.B");
-            Tooltip.SetDefault("Summons a Guardian Star-in-a-bottle to provide light and provide mana regen to nearby players");
+            Tooltip.SetDefault("Summons a Guardian Star-in-a-bottle to provide light and mana regen to nearby players");
         }
 
         public override void SetDefaults()
@@ -170,7 +170,7 @@ namespace SGAmod.Items.Pets
             recipe.AddIngredient(ItemID.StarinaBottle, 1);
             recipe.AddIngredient(ItemID.AngelWings, 1);
             recipe.AddIngredient(ItemID.SoulofLight, 5);
-            recipe.AddIngredient(null, "VirulentBar", 8);
+            recipe.AddIngredient(mod.ItemType("VirulentBar"), 8);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);
             recipe.AddRecipe();

@@ -9,8 +9,8 @@ using Terraria.ObjectData;
 using Idglibrary;
 
 namespace SGAmod.Tiles
-{  
-        public class CaliburnAltar : ModTile
+{
+    public class CaliburnAltar : ModTile
     {
         public virtual string myitem => "CaliburnTypeA";
         public virtual int summontype => 0;
@@ -24,6 +24,8 @@ namespace SGAmod.Tiles
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 18 };
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.StyleHorizontal = false;
+            TileObjectData.newTile.LavaDeath = false;
+            TileObjectData.newTile.WaterDeath = false;
             TileID.Sets.CanBeClearedDuringGeneration[Type] = false;
             //TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<BannerRackTE>().Hook_AfterPlacement, -1, 0, true);
             //TileObjectData.newTile.StyleWrapLimit = 36;
@@ -62,9 +64,10 @@ namespace SGAmod.Tiles
                         return true;
                     }
 
-                    if ((Main.player[z].Center - new Vector2(i*16, j*16)).Length() < 160)
+                    if ((Main.player[z].Center - new Vector2(i * 16, j * 16)).Length() < 160)
                     {
-                        if (Main.player[z].statLife >= 200 && NPC.CountNPCS(mod.NPCType("CaliburnGuardian")) < 1)
+                        bool bossNotActive = NPC.CountNPCS(mod.NPCType("CaliburnGuardian")) < 1;
+                        if (Main.player[z].statLife >= 200 && bossNotActive)
                         {
                             if (SGAWorld.downedCaliburnGuardiansPoints > 0)
                             {
@@ -98,7 +101,7 @@ namespace SGAmod.Tiles
                         else
                         {
                             if (Main.netMode < NetmodeID.Server && Main.myPlayer == z)
-                                Main.NewText("You will not survive pulling this, come back when you have meat on your bones...", 100, 255, 100);
+                                Main.NewText(bossNotActive ? "You will not survive pulling this, come back when you have meat on your bones..." : "Your in the middle of a fight... Finish the fight first!", 100, 255, 100);
                         }
                     }
 
@@ -116,7 +119,7 @@ namespace SGAmod.Tiles
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
-            Player him=null;
+            Player him = null;
             /*for (int z = 0; z < Main.maxPlayers; z += 1)
             {
                 if (Main.player[z].active && !Main.player[z].dead)
@@ -127,7 +130,7 @@ namespace SGAmod.Tiles
                     }
                 }
             }*/
-            if (SGAWorld.downedCaliburnGuardiansPoints>0 && !fail)
+            if (SGAWorld.downedCaliburnGuardiansPoints > 0 && !fail)
             {
                 //him.Hurt(new PlayerDeathReason(), 1, him.direction, false, true);
 
@@ -135,7 +138,7 @@ namespace SGAmod.Tiles
                 {
                     //Item.NewItem(i * 16, j * 16, 48, 48, mod.ItemType(myitem), 1, false, 0, false, false);
                     NPC npc = new NPC();
-                    npc.DropItemInstanced(new Vector2(i * 16, j * 16), new Vector2(48, 48), mod.ItemType(myitem),1,false);
+                    npc.DropItemInstanced(new Vector2(i * 16, j * 16), new Vector2(48, 48), mod.ItemType(myitem), 1, false);
                     SGAWorld.downedCaliburnGuardiansPoints -= 1;
                     if (Main.netMode == NetmodeID.Server)
                     {
@@ -153,20 +156,7 @@ namespace SGAmod.Tiles
         public override int summontype => 1;
         public override void SetDefaults()
         {
-            Main.tileFrameImportant[Type] = true;
-            Main.tileLavaDeath[Type] = false;
-            Main.tileTable[Type] = false;
-            dustType = DustID.Grass;
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 20 };
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.StyleHorizontal = false;
-            //TileObjectData.newTile.StyleWrapLimit = 36;
-            TileObjectData.addTile(Type);
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Caliburn Altar");
-            //name.AddTranslation(GameCulture.Chinese, "烤炉");
-            AddMapEntry(new Color(227, 216, 195), name);
+            base.SetDefaults();
         }
 
     }
@@ -177,22 +167,8 @@ namespace SGAmod.Tiles
         public override int summontype => 2;
         public override void SetDefaults()
         {
-            Main.tileFrameImportant[Type] = true;
-            Main.tileLavaDeath[Type] = false;
-            Main.tileTable[Type] = false;
-            dustType = DustID.Grass;
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 20 };
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.StyleHorizontal = false;
-            //TileObjectData.newTile.StyleWrapLimit = 36;
-            TileObjectData.addTile(Type);
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Caliburn Altar");
-            //name.AddTranslation(GameCulture.Chinese, "烤炉");
-            AddMapEntry(new Color(227, 216, 195), name);
+            base.SetDefaults();
         }
-
     }
     enum MessageType : byte
     {

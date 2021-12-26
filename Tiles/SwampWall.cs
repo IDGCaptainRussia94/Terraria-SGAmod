@@ -4,6 +4,26 @@ using Terraria.ModLoader;
 
 namespace SGAmod.Tiles
 {
+
+	public class SwampWoodWall : SwampWall
+	{
+		public override void SetDefaults()
+		{
+			Main.wallHouse[Type] = true;
+			AddMapEntry(new Color(100, 40, 40));
+		}
+
+        public override bool Drop(int i, int j, ref int type)
+        {
+			type = ModContent.ItemType<Items.Placeable.SwampWoodWall>();
+			return true;
+        }
+
+        public override void NumDust(int i, int j, bool fail, ref int num)
+		{
+			num = fail ? 1 : 3;
+		}
+	}
 	public class SwampWall : ModWall
 	{
 		public override void SetDefaults()

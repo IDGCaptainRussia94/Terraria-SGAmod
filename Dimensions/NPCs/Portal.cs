@@ -14,10 +14,58 @@ using Idglibrary;
 
 namespace SGAmod.Dimensions.NPCs
 {
+	public class DungeonPortalDeeperDungeons : DungeonPortal
+	{
+		bool fallendown = false;
+		public override bool Autoload(ref string name)
+		{
+			name = "Stranger Portal";
+			return mod.Properties.Autoload;
+		}
+
+		public override void AI()
+		{
+			base.AI();
+			if (!fallendown)
+			{
+				for (int i = 0; i < 200; i += 1)
+				{
+					Point wearehere = ((npc.Center + new Vector2(0, 96)) / 16).ToPoint();
+					if (WorldGen.InWorld(wearehere.X, wearehere.Y))
+					{
+						Tile tile = Framing.GetTileSafely(wearehere.X, wearehere.Y);
+						if (tile != null)
+						{
+							if (tile.active() && (Main.tileSolid[tile.type] || Main.tileSolidTop[tile.type]))
+							{
+								fallendown = true;
+								return;
+							}
+							else
+							{
+								npc.position.Y += 2;
+							}
+						}
+					}
+					else
+					{
+						fallendown = true;
+					}
+				}
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			npc.rarity = 1;
+		}
+	}
+
+
+		[AutoloadHead]
 	public class DungeonPortal : ModNPC
 	{
-
-		float walkframe = 0f;
 
 		public override bool Autoload(ref string name)
 		{
@@ -25,7 +73,14 @@ namespace SGAmod.Dimensions.NPCs
 			return mod.Properties.Autoload;
 		}
 
-		public override void SetStaticDefaults()
+        public override void BossHeadSlot(ref int index)
+        {
+			if (!SGAWorld.portalcanmovein)
+				index = -1;
+        }
+        public override string HeadTexture => "SGAmod/Dimensions/NPCs/DungeonPortal_Head";
+
+        public override void SetStaticDefaults()
 		{
 			// DisplayName automatically assigned from .lang files, but the commented line below is the normal approach.
 			// DisplayName.SetDefault("Example Person");
@@ -56,13 +111,17 @@ namespace SGAmod.Dimensions.NPCs
 			//npc.immortal = true;
 			animationType = NPCID.Guide;
 			npc.homeless = true;
-			npc.rarity = 1;
+			npc.SGANPCs().overallResist = 0;
+			//npc.rarity = 1;
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 2) % 1f, 0.5f, 0.35f);
 
 		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
+			if (GetType() != typeof(DungeonPortal))
+				return 0;
+
 			//Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY];
 			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && NPC.downedBoss3 && !spawnInfo.invasion && spawnInfo.player.ZoneDungeon && NPC.CountNPCS(ModContent.NPCType<DungeonPortal>())<1 &&
 				(spawnInfo.spawnTileType==TileID.BlueDungeonBrick || spawnInfo.spawnTileType == TileID.PinkDungeonBrick || spawnInfo.spawnTileType == TileID.GreenDungeonBrick) ? 0.02f : 0f;
@@ -95,7 +154,7 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override string TownNPCName()
 		{
-			return "Strange Portal";
+			return "";
 		}
 
 		public override string Texture
@@ -125,7 +184,7 @@ namespace SGAmod.Dimensions.NPCs
 				Color color = Color.Lerp(drawColor,Color.White,0.5f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Texture, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Texture, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
 			for (float valez = 34f; valez > 4f; valez -= 0.2f)
 			{
@@ -133,7 +192,7 @@ namespace SGAmod.Dimensions.NPCs
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
 			for (float valez = 0.1f; valez < 10f; valez += 0.2f)
 			{
@@ -192,9 +251,10 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				return "Go deeper to Floor " + (SGAWorld.dungeonlevel + 2)+"?";
 			}
+			string extrachat = " (Highest floor completed: " + SGAWorld.highestDimDungeonFloor + ")";
 			if (BirthdayParty.PartyIsUp)
-				return "Are you sure you wish to leave the party?";
-			return "Do you dare enter?";
+				return "Are you sure you wish to leave the party?" + extrachat;
+			return "Do you dare enter?" + extrachat;
 		}
 
 		public override void SetChatButtons(ref string button, ref string button2)
@@ -202,8 +262,8 @@ namespace SGAmod.Dimensions.NPCs
 			//button = Language.GetTextValue("LegacyInterface.28");
 			if (Main.netMode < 1)
 				button = "Enter";
-			else
-				button = "Buy Loot";
+			//else
+				//button = "Buy Loot";
 
 		}
 
@@ -235,6 +295,11 @@ namespace SGAmod.Dimensions.NPCs
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 			nextSlot++;
 
+			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("YoyoTricks"));
+			shop.item[nextSlot].shopCustomPrice = 75;
+			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
+			nextSlot++;
+
 			shop.item[nextSlot].SetDefaults(SGAmod.Instance.ItemType("BeserkerAuraStaff"));
 			shop.item[nextSlot].shopCustomPrice = 75;
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
@@ -244,14 +309,6 @@ namespace SGAmod.Dimensions.NPCs
 			shop.item[nextSlot].shopCustomPrice = 100;
 			shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 			nextSlot++;
-
-			if (Main.LocalPlayer.SGAPly().ExpertiseCollectedTotal >= 4000)
-			{
-				shop.item[nextSlot].SetDefaults(mod.ItemType("EntropyTransmuter"));
-				shop.item[nextSlot].shopCustomPrice = 150;
-				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
-				nextSlot++;
-			}
 		}
 
 		public override void OnChatButtonClicked(bool firstButton, ref bool shop)
@@ -260,11 +317,13 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				if (Main.netMode < 1)
 				{
+					if (SGAPocketDim.WhereAmI == null)
+						SGAWorld.dungeonlevel = SGAConfigDeeperDungeon.Instance.SetDungeonFloors != null ? SGAConfigDeeperDungeon.Instance.SetDungeonFloors.floor : 0;
 					SGAPocketDim.EnterSubworld(mod.GetType().Name + "_DeeperDungeon", true);
 				}
 				else
 				{
-					shop = true;
+					//shop = true;
 				}
 			}
 		}
@@ -277,7 +336,7 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown)
 		{
-			cooldown = 5;
+			cooldown = 5000;
 			randExtraCooldown = 10;
 		}
 

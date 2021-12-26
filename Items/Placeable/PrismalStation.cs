@@ -14,7 +14,7 @@ namespace SGAmod.Items.Placeable
 			item.maxStack = 999;
 			item.width = 26;
 			item.height = 14;
-			item.value = 10;
+			item.value = 0;
 			item.rare = 10;
 			item.alpha = 0;
 			item.useTurn = true;

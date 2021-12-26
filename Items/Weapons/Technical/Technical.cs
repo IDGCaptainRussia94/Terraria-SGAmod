@@ -15,21 +15,24 @@ using AAAAUThrowing;
 using SGAmod.Buffs;
 using SGAmod.Effects;
 using Microsoft.Xna.Framework.Audio;
+using SGAmod.Items.Weapons.Technical;
+using Terraria.ModLoader.IO;
+using SGAmod.Items;
 
 namespace SGAmod.Items.Weapons.Technical
 {
-	public class AssaultRifle : SeriousSamWeapon
+	public class AssaultRifle : SeriousSamWeapon, ITechItem
 	{
 		int firemode = 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tactical SMG Rifle");
-			Tooltip.SetDefault("Adjustable Machinegun!\nVery Fast! But no ammo saving chance and causes very bad recoil if held down for too long.\nRight click to toggle firemodes");
+			Tooltip.SetDefault("Adjustable Machine Gun!\nVery Fast! But no ammo saving chance and causes very bad recoil if held down for too long.\nRight click to toggle fire modes");
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 28;
+			item.damage = 25;
 			item.ranged = true;
 			item.width = 42;
 			item.height = 16;
@@ -107,7 +110,7 @@ namespace SGAmod.Items.Weapons.Technical
 			Main.PlaySound(SoundID.Item41, player.Center);
 
 			float speed = 1.5f;
-			float numberProjectiles = 3;
+			float numberProjectiles = 2;
 			float rotation = MathHelper.ToRadians(1+ player.GetModPlayer<SGAPlayer>().recoil);
 			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 20f;
 
@@ -134,6 +137,8 @@ namespace SGAmod.Items.Weapons.Technical
 			recipe.AddIngredient(ItemID.IllegalGunParts, 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 8);
 			recipe.AddIngredient(ItemID.ChainGun, 1);
+			recipe.AddIngredient(ItemID.ClockworkAssaultRifle, 1);
+			recipe.AddIngredient(ItemID.Gatligator, 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 15);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this);
@@ -142,7 +147,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	}
 
-	public class OnyxTacticalShotgun : SeriousSamWeapon
+	public class OnyxTacticalShotgun : SeriousSamWeapon,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -215,37 +220,16 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-	public class CircuitBreakerBlade : SeriousSamWeapon
+	public class CircuitBreakerBlade : SeriousSamWeapon, ITechItem
 	{
 		public static NPC FindClosestTarget(Player ply,Vector2 loc, Vector2 size, bool block = true, bool friendlycheck = true, bool chasecheck = false)
 		{
-			int num;
-			float num170 = 1000000;
-			NPC num171 = null;
+			List<Point> hitenemies = new List<Point>();
+			foreach (NPC hitenemy in Main.npc.Where(testby => testby.immune[0] > 0))
+				hitenemies.Add(new Point(hitenemy.whoAmI, 99999));
 
-			for (int num172 = 0; num172 < Main.maxNPCs; num172 = num + 1)
-			{
-				float num173 = Main.npc[num172].position.X + (float)(Main.npc[num172].width / 2);
-				float num174 = Main.npc[num172].position.Y + (float)(Main.npc[num172].height / 2);
-				float num175 = Math.Abs(loc.X + (float)(size.X / 2) - num173) + Math.Abs(loc.Y + (float)(size.Y / 2) - num174);
-				if (Main.npc[num172].active)
-				{
-
-					if (num175 < num170 && !Main.npc[num172].dontTakeDamage && ((Collision.CanHit(new Vector2(loc.X, loc.Y), 1, 1, Main.npc[num172].position, Main.npc[num172].width, Main.npc[num172].height) && block) || block == false) && (Main.npc[num172].townNPC == false && (Main.npc[num172].CanBeChasedBy(new Projectile(), false) || !chasecheck)))
-					{
-						if (Main.npc[num172].immune[ply.whoAmI]<1)
-						{
-							num170 = num175;
-							num171 = Main.npc[num172];
-						}
-					}
-				}
-				num = num172;
-			}
-			if (num170 > 400)
-				return null;
-
-			return num171;
+			List<NPC> closestnpcs = SGAUtils.ClosestEnemies(loc, 400f, AddedWeight: hitenemies);
+			return closestnpcs?[0];//Closest
 
 		}
 		public override void SetStaticDefaults()
@@ -319,6 +303,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class CBreakerBolt : ModProjectile
 	{
+		bool transboost = false;
 		public override void SetDefaults()
 		{
 			projectile.width = 4;
@@ -331,6 +316,8 @@ namespace SGAmod.Items.Weapons.Technical
 			projectile.timeLeft = 120;
 			projectile.light = 0.1f;
 			projectile.extraUpdates = 120;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
 			aiType = -1;
 			Main.projFrames[projectile.type] = 1;
 		}
@@ -349,6 +336,8 @@ namespace SGAmod.Items.Weapons.Technical
 			writer.Write(projectile.magic);
 			writer.Write(projectile.usesLocalNPCImmunity);
 			writer.Write(projectile.localNPCHitCooldown);
+			writer.Write(transboost);
+
 		}
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -360,6 +349,7 @@ namespace SGAmod.Items.Weapons.Technical
 			projectile.magic = reader.ReadBoolean();
 			projectile.usesLocalNPCImmunity = reader.ReadBoolean();
 			projectile.localNPCHitCooldown = reader.ReadInt32();
+			transboost = reader.ReadBoolean();
 		}
 
 		public override void SetStaticDefaults()
@@ -387,6 +377,8 @@ namespace SGAmod.Items.Weapons.Technical
 					int prog = Projectile.NewProjectile(target.Center.X, target.Center.Y, Speed.X, Speed.Y, ModContent.ProjectileType<CBreakerBolt>(),projectile.damage, projectile.knockBack / 2f, projectile.owner, projectile.ai[0]);
 					Main.projectile[prog].melee = projectile.melee;
 					Main.projectile[prog].magic = projectile.magic;
+					Main.projectile[prog].aiStyle = -200;
+
 					IdgProjectile.Sync(prog);
 					Main.PlaySound(SoundID.Item93, projectile.Center);
 				}
@@ -417,11 +409,14 @@ namespace SGAmod.Items.Weapons.Technical
 		Vector2 basepoint=Vector2.Zero;
 
 		public override void AI()
-		{
-			Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 0.1f;
-			int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1f * (1f + (projectile.ai[0] / 3f)));
-			Main.dust[num655].noGravity = true;
-			Main.dust[num655].velocity *= 0.5f;
+		{			
+			if (projectile.localAI[1] == 0f)
+			{
+				projectile.localAI[1] = Main.rand.NextFloat();
+				projectile.netUpdate = true;
+				projectile.rotation = (float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X) + 1.57f;
+			}
+
 
 			Vector2 gothere = projectile.velocity;
 			gothere=gothere.RotatedBy(MathHelper.ToRadians(90));
@@ -430,6 +425,14 @@ namespace SGAmod.Items.Weapons.Technical
 
 			if (basepoint == Vector2.Zero)
 			{
+				SGAPlayer sgaply = player.SGAPly();
+				if (sgaply.transformerAccessory && !transboost && projectile.aiStyle>-100)
+				{
+					projectile.aiStyle = -150;
+					projectile.ai[0] += 1;
+					transboost = true;
+				}
+
 				basepoint = projectile.Center;
 				projectile.localAI[1] = (float)player.SGAPly().timer;
 			}
@@ -438,21 +441,24 @@ namespace SGAmod.Items.Weapons.Technical
 				basepoint += projectile.velocity;
 			}
 
-			float theammount = ((float)projectile.timeLeft + (float)(projectile.whoAmI*6454f)+(projectile.localAI[1]*3.137f));
+			float theammount = ((float)projectile.timeLeft + (float)(projectile.whoAmI*6454f)+(projectile.localAI[1]* 72.454f));
 			float scale = (1f - projectile.ai[1]);
+
+
+			Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 0.1f;
+			int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1f * (1f + (projectile.ai[0] / 3f)));
+			Main.dust[num655].noGravity = true;
+			Main.dust[num655].velocity *= 0.5f;
 
 
 			projectile.Center += ((gothere * ((float)Math.Sin((double)theammount / 7.10) * (1.97f * scale)))+ (gothere * ((float)Math.Cos((double)theammount / -13.00) * (2.95f * scale)))+ (gothere * ((float)Math.Sin((double)theammount / 4.34566334) * (2.1221f * scale)))
 				*(1f - projectile.localAI[0]));
 
-			if (projectile.localAI[1] == 0f)
-			{
-				projectile.rotation = (float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X) + 1.57f;
-			}
+
 		}
 	}
 
-	public class TeslaStaff : SeriousSamWeapon
+	public class TeslaStaff : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -500,6 +506,7 @@ namespace SGAmod.Items.Weapons.Technical
 					int prog = Projectile.NewProjectile(position.X, position.Y, Speed.X, Speed.Y, ModContent.ProjectileType<CBreakerBolt>(), (int)(damage * 1), knockBack, player.whoAmI);
 					Main.projectile[prog].melee = false;
 					Main.projectile[prog].magic = true;
+					Main.projectile[prog].usesLocalNPCImmunity = false;
 					IdgProjectile.Sync(prog);
 					Main.PlaySound(SoundID.Item93, position);
 				}
@@ -521,7 +528,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-		public class Massacre : SeriousSamWeapon
+	public class Massacre : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -564,7 +571,7 @@ namespace SGAmod.Items.Weapons.Technical
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(null, "PrismalLauncher", 1);
 			recipe.AddIngredient(null, "QuasarCannon", 1);
-			recipe.AddIngredient(ItemID.ProximityMineLauncher,1);
+			recipe.AddIngredient(ItemID.ProximityMineLauncher, 1);
 			recipe.AddIngredient(ItemID.Stynger, 1);
 			recipe.AddIngredient(ItemID.FragmentStardust, 10);
 			recipe.AddIngredient(mod.ItemType("ManaBattery"), 4);
@@ -575,7 +582,7 @@ namespace SGAmod.Items.Weapons.Technical
 			recipe.AddRecipe();
 		}
 
-        public override bool CanUseItem(Player player)
+		public override bool CanUseItem(Player player)
 		{
 			if (player.statLife <= 50)
 			{
@@ -588,20 +595,21 @@ namespace SGAmod.Items.Weapons.Technical
 
 			}
 			return true;
-        }
+		}
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-				CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Red, 50, false, false);
-				if (Main.netMode == 1 && player.whoAmI == Main.myPlayer)
-				{
-					NetMessage.SendData(35, -1, -1, null, player.whoAmI, 50, 0f, 0f, 0, 0, 0);
-				}
-				player.statLife -= 50;
-				player.lifeRegenTime = 0;
-				player.lifeRegenCount = 0;
+			CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Red, 50, false, false);
+			if (Main.netMode == 1 && player.whoAmI == Main.myPlayer)
+			{
+				NetMessage.SendData(35, -1, -1, null, player.whoAmI, 50, 0f, 0f, 0, 0, 0);
+			}
+			player.statLife -= 50;
+			player.netLife = true;
+			player.lifeRegenTime = 0;
+			player.lifeRegenCount = 0;
 
-			player.velocity += new Vector2(Math.Sign(-player.direction) * 20, (-10f-(speedY / 15f)));
+			player.velocity += new Vector2(Math.Sign(-player.direction) * 20, (-10f - (speedY / 15f)));
 			int numberProjectiles = 4;// + Main.rand.Next(2);
 			for (int i = 0; i < numberProjectiles; i++)
 			{
@@ -665,7 +673,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-	public class RodofEnforcement : SeriousSamWeapon
+	public class RodofEnforcement : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -861,7 +869,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-	public class BeamCannon : SeriousSamWeapon
+	public class BeamCannon : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -937,7 +945,7 @@ namespace SGAmod.Items.Weapons.Technical
 			if (player.altFunctionUse == 2)
 			{
 				modply.plasmaLeftInClip -= 50;
-				player.CheckMana(40, true);
+				player.CheckMana(item,40, true);
 				player.itemTime *= 5;
 				player.itemAnimation *= 5;
 				Main.PlaySound(SoundID.Item, player.Center, 122);
@@ -1301,364 +1309,7 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
-	public class LaserMarker : Shields.CorrodedShield, IHitScanItem
-	{
-		public override bool CanBlock => false;
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Laser Marker");
-			Tooltip.SetDefault("Point at your enemies to mark them, increasing damage they take by 10%\nCan be held out like a torch and used normally by holding shift\nCan also be thrown like a "+Terraria.Localization.Language.GetTextValue("ItemName.Glowstick"));
-			Item.staff[item.type] = true;
-		}
-
-		public override void SetDefaults()
-		{
-			item.width = 32;
-			item.height = 12;
-			item.useTime = 20;
-			item.useAnimation = 21;
-			item.reuseDelay = 100;
-			item.useStyle = 1;
-			item.knockBack = 5;
-			item.noUseGraphic = true;
-			item.value = Item.buyPrice(0, 0, 0, 80);
-			item.rare = 2;
-			item.UseSound = SoundID.Item7;
-			item.consumable = true;
-			item.maxStack = 30;
-			item.shootSpeed = 10f;
-			item.useTurn = false;
-			item.autoReuse = false;
-			item.noMelee = true;
-
-			item.shoot = ModContent.ProjectileType<LaserMarkerThrownProj>();
-		}
-
-        public override bool ConsumeItem(Player player)
-        {
-			return player.reuseDelay > 3;
-		}
-
-        public override bool CanUseItem(Player player)
-		{
-			return true;// player.SGAPly().CooldownStacks.Count < player.SGAPly().MaxCooldownStacks;
-		}
-		public override void AddRecipes()
-		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddRecipeGroup("SGAmod:Tier1Bars", 1);
-			recipe.AddRecipeGroup("SGAmod:BasicWraithShards", 1);
-			recipe.AddIngredient(ItemID.Glass, 5);
-			recipe.AddIngredient(ItemID.SandBlock, 5);
-			recipe.AddIngredient(ItemID.Glowstick, 3);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this,3);
-			recipe.AddRecipe();
-		} 
-
-        public override bool UseItem(Player player)
-        {
-			return true;
-        }
-
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
-		{
-
-				Vector2 speedto = Main.MouseWorld - position;
-				Vector2 speed = Vector2.Normalize(speedto) * (Math.Min(400f * player.Throwing().thrownVelocity, speedto.Length()));
-
-				speed /= 30f;
-
-				speedX = speed.X;
-				speedY = speed.Y;
-
-				//position = Main.MouseWorld;
-				Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, player.whoAmI, 0f, 0f);
-
-			return false;
-		}
-
-
-	}
-
-	public class LaserMarkerProj : Shields.CorrodedShieldProj
-    {
-		protected int MyLaser = default;
-		public Vector2 EndPoint = default;
-		public override bool Blocking => false;
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("LaserMarkerProj");
-		}
-
-		public override void SetDefaults()
-		{
-			Projectile refProjectile = new Projectile();
-			refProjectile.SetDefaults(ProjectileID.Boulder);
-			aiType = ProjectileID.Boulder;
-			projectile.friendly = true;
-			projectile.timeLeft = 10;
-			projectile.hostile = false;
-			projectile.penetrate = 10;
-			projectile.light = 0.35f;
-			projectile.width = 24;
-			projectile.height = 24;
-			projectile.tileCollide = false;
-			drawHeldProjInFrontOfHeldItemAndArms = true;
-		}
-
-		public override string Texture
-		{
-			get { return ("SGAmod/Items/Weapons/Technical/LaserMarker"); }
-		}
-
-		public override bool PreAI()
-		{
-			return true;
-		}
-
-		public override void AI()
-		{
-
-			Player player = Main.player[projectile.owner];
-			bool heldone = player.HeldItem.type != mod.ItemType(ItemName);
-			if (projectile.ai[0] > 0 || (player.HeldItem == null || heldone) || player.itemAnimation>0 || player.dead)
-			{
-				projectile.Kill();
-				return;
-			}
-			else
-			{
-				if (projectile.timeLeft < 3)
-					projectile.timeLeft = 3;
-				Vector2 mousePos = Main.MouseWorld;
-
-				if (projectile.owner == Main.myPlayer)
-				{
-					Vector2 diff = mousePos - player.Center;
-					projectile.velocity = diff;
-					projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
-					projectile.netUpdate = true;
-					projectile.Center = mousePos;
-				}
-				int dir = projectile.direction;
-				player.ChangeDir(dir);
-
-				Vector2 direction = (projectile.velocity);
-				Vector2 directionmeasure = direction;
-
-				player.heldProj = projectile.whoAmI;
-
-				projectile.velocity.Normalize();
-				projectile.rotation = projectile.velocity.ToRotation();
-
-				player.bodyFrame.Y = player.bodyFrame.Height * 3;
-				if (directionmeasure.Y - Math.Abs(directionmeasure.X) > 25)
-					player.bodyFrame.Y = player.bodyFrame.Height * 4;
-				if (directionmeasure.Y + Math.Abs(directionmeasure.X) < -25)
-					player.bodyFrame.Y = player.bodyFrame.Height * 2;
-				if (directionmeasure.Y + Math.Abs(directionmeasure.X) < -160)
-					player.bodyFrame.Y = player.bodyFrame.Height * 5;
-				player.direction = (directionmeasure.X > 0).ToDirectionInt();
-
-				projectile.Center = player.Center + (projectile.velocity * 10f);
-				projectile.velocity *= 8f;
-
-				MyLaser = Projectile.NewProjectile(projectile.Center, projectile.rotation.ToRotationVector2() * 2f, ModContent.ProjectileType<LaserMarkerLaserProj>(), 0, 0, player.whoAmI, ai1: (int)projectile.whoAmI);
-
-			}
-		}
-
-		public void DoDraw(SpriteBatch spriteBatch, Color drawColor)
-		{
-			Vector2 origin = new Vector2(0, 2);
-			Vector2 start = projectile.Center + projectile.rotation.ToRotationVector2() * 2f;
-
-			Vector2 diff = (EndPoint - start);
-			float length = diff.Length();
-
-
-			Main.spriteBatch.Draw(Main.blackTileTexture, start - Main.screenPosition, new Rectangle(0, 0, 4, 4), Color.Red * 0.50f, diff.ToRotation(), origin, new Vector2(length / 4f, 1f), SpriteEffects.None, 0);
-		}
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
-		{
-			if (EndPoint != default)
-				DoDraw(spriteBatch, drawColor);
-
-			bool facingleft = projectile.velocity.X > 0;
-			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
-			Texture2D texture = Main.projectileTexture[projectile.type];
-			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor * projectile.Opacity, projectile.rotation + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
-
-			return false;
-		}
-
-	}
-
-	class LaserMarkerThrownProj : LaserMarkerProj
-	{
-
-		public override void SetStaticDefaults()
-		{
-			base.SetStaticDefaults();
-			DisplayName.SetDefault("Rock");
-		}
-
-		public override void SetDefaults()
-		{
-			projectile.CloneDefaults(ProjectileID.Glowstick);
-			projectile.Throwing().thrown = true;
-			projectile.timeLeft = 1800;
-			projectile.width = 8;
-			projectile.height = 8;
-			projectile.light = 0.35f;
-		}
-
-		public override string Texture
-		{
-			get { return ("SGAmod/Items/Weapons/Technical/LaserMarker"); }
-		}
-
-		public override bool PreKill(int timeLeft)
-		{
-			for (int i = 0; i < 20; i += 1)
-			{
-				int dust = Dust.NewDust(new Vector2(projectile.Center.X - 4, projectile.Center.Y - 4), 8, 8, 269);
-				Main.dust[dust].scale = 0.50f;
-				Main.dust[dust].noGravity = false;
-				Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
-			}
-			SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)projectile.Center.X, (int)projectile.Center.Y, 53);
-			if (sound!=null)
-				sound.Pitch -= 0.5f;
-
-			return true;
-		}
-
-		public override void AI()
-		{
-			//vanilla
-			Player player = Main.player[projectile.owner];
-			MyLaser = Projectile.NewProjectile(projectile.Center, projectile.rotation.ToRotationVector2() * 2f, ModContent.ProjectileType<LaserMarkerLaserProj>(), 0, 0, player.whoAmI, ai1: (int)projectile.whoAmI);
-		}
-
-	}
-
-	public class LaserMarkerLaserProj : ModProjectile
-	{
-		public Vector2 EndPoint = default;
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("LaserMarkerLaserProj");
-		}
-
-		public override void SetDefaults()
-		{
-			Projectile refProjectile = new Projectile();
-			refProjectile.SetDefaults(ProjectileID.Boulder);
-			aiType = ProjectileID.Boulder;
-			projectile.friendly = true;
-			projectile.timeLeft = 1;
-			projectile.hostile = false;
-			projectile.penetrate = 1;
-			projectile.light = 0.35f;
-			projectile.width = 24;
-			projectile.height = 24;
-			projectile.tileCollide = false;
-			projectile.extraUpdates = 0;
-			drawHeldProjInFrontOfHeldItemAndArms = true;
-		}
-
-		public override string Texture
-		{
-			get { return ("SGAmod/Items/Weapons/Technical/LaserMarker"); }
-		}
-
-		//The distance charge particle from the player center
-		private const float MOVE_DISTANCE = 0f;
-
-		// The actual distance is stored in the ai0 field
-		// By making a property to handle this it makes our life easier, and the accessibility more readable
-		public float Distance
-		{
-			get => projectile.ai[0];
-			set => projectile.ai[0] = value;
-		}
-
-		public override bool CanDamage()
-		{
-			return false;
-		}
-
-		public override void AI()
-		{
-
-			//projectile.Center = Main.projectile[(int)projectile.knockBack].Center;
-
-			Player player = Main.player[projectile.owner];
-
-			NPC hitnpc = default;
-
-			SetLaserPosition(player, ref hitnpc);
-
-			if (hitnpc != default)
-			{
-				hitnpc.AddBuff(ModContent.BuffType<Marked>(), 2);
-			}
-
-			Lighting.AddLight(EndPoint, (Color.Red).ToVector3() * 0.50f);
-
-			Projectile owner = Main.projectile[(int)projectile.ai[1]];
-
-			if (owner != null && owner.active && owner.modProjectile!=null && owner.modProjectile is LaserMarkerProj laser)
-				laser.EndPoint = EndPoint;
-
-			//Utils.PlotTileLine(projectile.Center, projectile.Center + projectile.velocity * (Distance - MOVE_DISTANCE), 26, new Utils.PerLinePoint(DelegateMethods.CastLight));
-
-
-		}
-
-		private void SetLaserPosition(Player player, ref NPC hitnpc)
-		{
-			for (Distance = MOVE_DISTANCE; Distance <= 2200f; Distance += 5f)
-			{
-				var start = projectile.Center + projectile.velocity * Distance;
-				EndPoint = start;
-
-				//if (Main.rand.Next(0, 10) == 0)
-				Lighting.AddLight(start, (Color.Red).ToVector3() * Main.rand.NextFloat(0.10f, 0.30f));
-
-
-				if (!Collision.CanHit(projectile.Center, 0, 0, start, 0, 0))
-				{
-					Distance -= 5f;
-					return;
-				}
-				foreach (NPC npc in Main.npc)
-				{
-					if (npc.active && !npc.dontTakeDamage && new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height).Contains(start.ToPoint()))
-					{
-						hitnpc = npc;
-						Distance -= 5f;
-						return;
-					}
-
-				}
-			}
-		}
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
-		{
-			return false;
-		}
-
-	}
-
-	public class VolcanicSpaceBlaster : NoviteBlaster
+	public class VolcanicSpaceBlaster : NoviteBlaster, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -1698,14 +1349,11 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override bool CanUseItem(Player player)
 		{
-			if (player.SGAPly().electricCharge > 300)
-				return true;
-			return false;
+			return player.SGAPly().ConsumeElectricCharge(300, 0, consume: false);
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("NoviteBlaster"), 1);
 			recipe.AddIngredient(ItemID.SpaceGun, 1);
 			recipe.AddIngredient(mod.ItemType("HeatBeater"), 1);
 			recipe.AddIngredient(ItemID.Nanites, 100);
@@ -1955,6 +1603,165 @@ namespace SGAmod.Items.Weapons.Technical
 		}
 	}
 
+	public class SirianGun : NoviteBlaster, ITechItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Sirian Gun");
+			Tooltip.SetDefault("charges up several piercing bolts of electricity\nConsumes Electric Charge, hold the fire button to charge a stronger, more accurate shot");
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.damage = 18;
+			item.magic = true;
+			item.useTime = 60;
+			item.useAnimation = 60;
+			item.knockBack = 1;
+			item.value = Item.buyPrice(0, 1, 50, 0);
+			item.rare = ItemRarityID.Pink;
+			//item.UseSound = SoundID.Item99;
+			item.autoReuse = true;
+			item.shootSpeed = 50f;
+			item.noUseGraphic = false;
+			item.channel = true;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return player.SGAPly().ConsumeElectricCharge(150, 0, consume: false);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<NoviteBlaster>(), 1);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 8);
+			recipe.AddIngredient(ModContent.ItemType<WraithFragment4>(), 15);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 8f;
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<SirianGunCharging>()] < 1)
+			{
+				int proj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, ModContent.ProjectileType<SirianGunCharging>(), damage, knockBack, player.whoAmI);
+				player.SGAPly().ConsumeElectricCharge(150, 200);
+			}
+			return false;
+		}
+
+	}
+
+	public class SirianGunCharging : NovaBlasterCharging
+	{
+
+		public override int chargeuptime => 120;
+		public override float velocity => 6f;
+		public override float spacing => 48f;
+		public override int fireRate => 5;
+		public override int FireCount => 1 + (int)(projectile.ai[0] / 20f);
+
+		public override (float, float) AimSpeed => (0.20f, 0.03f);
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Sirian Gun Charging");
+		}
+
+		public override void ChargeUpEffects()
+		{
+
+			if (projectile.ai[0] < chargeuptime)
+			{
+				for (int num315 = 0; num315 < 2; num315 = num315 + 1)
+				{
+					if (Main.rand.Next(0, 5) == 0)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y) + randomcircle * 20, 0, 0, DustID.Electric, 0f, 0f, 100, default(Color), 0.75f);
+
+						Main.dust[num622].scale = 1f;
+						Main.dust[num622].noGravity = true;
+						//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+						Main.dust[num622].velocity.X = -randomcircle.X;
+						Main.dust[num622].velocity.Y = -randomcircle.Y;
+						Main.dust[num622].alpha = 150;
+					}
+				}
+			}
+			else
+			{
+				for (int num315 = 0; num315 < 2; num315 = num315 + 1)
+				{
+					if (Main.rand.Next(0, 5) == 0)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, DustID.Electric, 0f, 0f, 100, default(Color), 0.75f);
+
+						Main.dust[num622].scale = 1.5f;
+						Main.dust[num622].noGravity = true;
+						//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+						Main.dust[num622].velocity.X = randomcircle.X * 2;
+						Main.dust[num622].velocity.Y = randomcircle.Y * 2;
+						Main.dust[num622].alpha = 100;
+					}
+				}
+			}
+
+
+			if (projectile.ai[0] == chargeuptime)
+			{
+				for (int num315 = 0; num315 < 15; num315 = num315 + 1)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+					int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, DustID.Electric, 0f, 0f, 100, default(Color), 0.5f);
+
+					Main.dust[num622].scale = 2.8f;
+					Main.dust[num622].noGravity = true;
+					//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+					Main.dust[num622].velocity.X = randomcircle.X * 4f;
+					Main.dust[num622].velocity.Y = randomcircle.Y * 4f;
+					Main.dust[num622].alpha = 150;
+				}
+			}
+
+		}
+
+		public override void FireWeapon(Vector2 direction)
+		{
+			float perc = MathHelper.Clamp((firedCount / (float)FireCount), 0f, 1f) * 0.80f;
+			float perc2 = 1f - perc;
+
+			float speed = 1f + (perc2 * velocity)* (projectile.ai[0]/(float)chargeuptime);
+
+			//projectile.Center += projectile.velocity;
+
+			for (int i = 0; i < 5; i += 1)
+			{
+				Vector2 perturbedSpeed = (new Vector2(direction.X, direction.Y) * speed).RotatedBy((Main.rand.NextFloat(-perc, perc)) * 0.75f); // Watch out for dividing by 0 if there is only 1 projectile.
+				int prog = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, perturbedSpeed.X, perturbedSpeed.Y, ModContent.ProjectileType<CBreakerBolt>(), projectile.damage, projectile.knockBack, player.whoAmI, 0, 0.10f);
+				Main.projectile[prog].localAI[0] = (perc * 0.90f);
+				//Main.projectile[prog].localAI[1] = i;
+				Main.projectile[prog].magic = true;
+				Main.projectile[prog].melee = false;
+				Main.projectile[prog].netUpdate = true;
+			}
+
+			Main.PlaySound(SoundID.Item91, player.Center);
+
+			if (firedCount >= FireCount)
+				projectile.Kill();
+		}
+
+		public override bool DoChargeUp()
+		{
+			return player.SGAPly().ConsumeElectricCharge(4, 75);
+		}
+	}
+
 
 }
 
@@ -1962,18 +1769,411 @@ namespace SGAmod.Items.Weapons.Technical
 namespace SGAmod.HavocGear.Items.Weapons
 {
 
-	public class BigDakka : SeriousSamWeapon
+	public class PlasmaGun : NoviteBlaster, ITechItem,IHitScanItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Plasmic Rail Gun");
+			Tooltip.SetDefault("Charges up a powerful piercing railgun shot\nHyper charged plasma melts targets from a long range\nRequires Plasma Cells and Electric Charge to fire\nYou can fire a weaker beam if you run out of Plasma\nRight click to zoom out");
+			SGAmod.UsesPlasma.Add(SGAmod.Instance.ItemType("PlasmaGun"), 1000);
+		}
+
+		public override void SetDefaults()
+		{
+			item.damage = 7500;
+			item.magic = true;
+			item.width = 32;
+			item.height = 62;
+			item.useTime = 70;
+			item.useAnimation = 70;
+			item.useStyle = 5;
+			item.crit = 25;
+			item.noMelee = true;
+			item.knockBack = 25;
+			item.value = Item.buyPrice(0, 5, 0, 0);
+			item.rare = ItemRarityID.Cyan;
+			//item.UseSound = SoundID.Item99;
+			item.autoReuse = true;
+			item.shoot = ModContent.ProjectileType<PlasmaGunCharging>();
+			item.shootSpeed = 32f;
+			item.noUseGraphic = false;
+			item.channel = true;
+		}
+		public override Vector2? HoldoutOffset()
+		{
+			return new Vector2(-6, -0);
+		}
+		public override void HoldItem(Player player)
+		{
+			player.scope = true;
+		}
+		public override bool CanUseItem(Player player)
+		{
+
+			return player.SGAPly().RefilPlasma() && player.SGAPly().ConsumeElectricCharge(300, 60, false, false);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+
+			recipe.AddIngredient(mod.ItemType("VolcanicSpaceBlaster"), 1);
+			recipe.AddIngredient(ItemID.SniperRifle, 1);
+			recipe.AddIngredient(mod.ItemType("PrismalBar"), 6);
+			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 16);
+			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
+			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
+			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			float rotation = MathHelper.ToRadians(0);
+			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 8f;
+			if (player.ownedProjectileCounts[item.shoot] < 1)
+			{
+				int proj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, item.shoot, damage, knockBack, player.whoAmI);
+				player.SGAPly().ConsumeElectricCharge(200, 300);
+			}
+			return false;
+		}
+
+	}
+
+	public class PlasmaGunCharging : NovaBlasterCharging
+	{
+
+		public override int chargeuptime => 180;
+		public override float velocity => 72f;
+		public override float spacing => 64f;
+		public override int fireRate => 30;
+		public override (float, float) AimSpeed => (0.10f, 0f);
+		int chargeUpTimer = 0;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Plasma Gun Charging");
+		}
+
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.tileCollide = false;
+			projectile.magic = true;
+			aiType = 0;
+		}
+
+		public override void ChargeUpEffects()
+		{
+			chargeUpTimer += 1;
+
+			if (projectile.ai[0] < chargeuptime)
+			{
+				if (chargeUpTimer % 4 == 0)
+				{
+					float perc = MathHelper.Clamp(projectile.ai[0] / (float)chargeuptime, 0f, 1f);
+					SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_LightningAuraZap, (int)projectile.Center.X, (int)projectile.Center.Y);
+					if (sound != null)
+					{
+						sound.Pitch = -0.5f + perc;
+					}
+				}
+				for (int num315 = 0; num315 < 2; num315 = num315 + 1)
+				{
+					if (Main.rand.Next(0, 3) == 0)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y) + randomcircle * 20, 0, 0, DustID.AncientLight, 0f, 0f, 100, Color.Magenta, 0.75f);
+
+						Main.dust[num622].scale = 1f;
+						Main.dust[num622].noGravity = true;
+						//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+						Main.dust[num622].velocity.X = -randomcircle.X;
+						Main.dust[num622].velocity.Y = -randomcircle.Y;
+						Main.dust[num622].alpha = 150;
+					}
+				}
+			}
+			else
+			{
+				for (int num315 = 0; num315 < 2; num315 = num315 + 1)
+				{
+					if (Main.rand.Next(0, 2) == 0)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, DustID.AncientLight, 0f, 0f, 100, Color.Magenta, 0.75f);
+
+						Main.dust[num622].scale = 1.5f;
+						Main.dust[num622].noGravity = true;
+						//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+						Main.dust[num622].velocity.X = randomcircle.X * 2;
+						Main.dust[num622].velocity.Y = randomcircle.Y * 2;
+						Main.dust[num622].alpha = 100;
+					}
+				}
+			}
+
+
+			if (projectile.ai[0] == chargeuptime)
+			{
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_LightningBugZap, (int)projectile.Center.X, (int)projectile.Center.Y);
+				if (sound != null)
+				{
+					sound.Pitch -= 0.5f;
+				}
+
+				for (int num315 = 0; num315 < 35; num315 = num315 + 1)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+					int num622 = Dust.NewDust(new Vector2(projectile.Center.X - 1, projectile.Center.Y), 0, 0, DustID.AncientLight, 0f, 0f, 100, Color.Magenta, 0.5f);
+
+					Main.dust[num622].scale = 2.8f;
+					Main.dust[num622].noGravity = true;
+					//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+					Main.dust[num622].velocity.X = randomcircle.X * 4f;
+					Main.dust[num622].velocity.Y = randomcircle.Y * 4f;
+					Main.dust[num622].alpha = 150;
+				}
+			}
+
+		}
+
+		public override bool DoChargeUp()
+		{
+			int plasma = player.SGAPly().plasmaLeftInClip;
+			player.SGAPly().plasmaLeftInClip = Math.Max(plasma - 1, 0);
+			return player.SGAPly().ConsumeElectricCharge(7, 120,consume: plasma>0) && player.SGAPly().plasmaLeftInClip>0;
+		}
+
+		public override void FireWeapon(Vector2 direction)
+		{
+			float perc = MathHelper.Clamp(projectile.ai[0] / (float)chargeuptime, 0f, 1f);
+
+			float speed = 4f+ perc*4f;
+
+			Vector2 perturbedSpeed = (new Vector2(direction.X, direction.Y) * speed); // Watch out for dividing by 0 if there is only 1 projectile.
+
+			projectile.Center += projectile.velocity;
+
+			int damage = (int)(projectile.damage*(projectile.ai[0]/ chargeuptime));
+
+			if (projectile.ai[0] >= chargeuptime || player.SGAPly().plasmaLeftInClip<1)
+			{
+				int type = ModContent.ProjectileType<PlasmaBeam>();
+				Vector2 center = projectile.Center-Vector2.Normalize(perturbedSpeed)*32f;
+				int prog = Projectile.NewProjectile(center.X, center.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, projectile.knockBack, player.whoAmI);
+				//if (projectile.ai[0] >= chargeuptime)
+				//IdgProjectile.AddOnHitBuff(prog, ModContent.BuffType<LavaBurn>(), (int)(120 + (perc * 300f)));
+
+				player.velocity -= perturbedSpeed;
+
+				SGAmod.AddScreenShake(42f,600,player.Center);
+
+				Main.PlaySound(SoundID.Item73, player.Center);
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, (int)center.X, (int)center.Y);
+				if (sound != null)
+				{
+					sound.Pitch += 0.5f;
+				}
+
+				for (int num315 = 0; num315 < 35; num315 = num315 + 1)
+				{
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+					int num622 = Dust.NewDust(center, 0, 0, DustID.Shadowflame, 0f, 0f, 100, default(Color), 0.5f);
+
+					Main.dust[num622].scale = 3.2f;
+					Main.dust[num622].noGravity = true;
+					//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+					Main.dust[num622].velocity.X = randomcircle.X * Main.rand.NextFloat(4f,8f);
+					Main.dust[num622].velocity.Y = randomcircle.Y * Main.rand.NextFloat(4f, 8f);
+					Main.dust[num622].alpha = 50;
+				}
+
+				for (int num315 = 0; num315 < 20; num315 = num315 + 1)
+				{
+					if (Main.rand.Next(0, 2) == 0)
+					{
+						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+						int num622 = Dust.NewDust(center, 0, 0, DustID.AncientLight, 0f, 0f, 100, Color.Magenta, 0.75f);
+
+						Main.dust[num622].scale = 1.5f;
+						Main.dust[num622].noGravity = true;
+						//Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+						randomcircle *= Main.rand.NextFloat(-2f, 4f+ num315/4f);
+						Main.dust[num622].velocity.X = randomcircle.X;
+						Main.dust[num622].velocity.Y = randomcircle.Y;
+						Main.dust[num622].alpha = 100;
+					}
+				}
+
+			}
+			projectile.Kill();
+		}
+
+	}
+
+	public class PlasmaBeam : NPCs.Hellion.HellionBeam
+    {
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 60;
+			projectile.damage = 15;
+			projectile.width = 64;
+			projectile.height = 64;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Plasma Beam");
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Item_" + ItemID.GeyserTrap; }
+		}
+
+		public override bool CanDamage()
+		{
+			if (projectile.ai[1] < 2)
+				return true;
+			return false;
+		}
+
+		public override void AI()
+		{
+
+			scale2 = Math.Min(scale2 + 0.5f, 1.5f);
+
+			projectile.ai[1] += 1;
+
+			if (projectile.ai[1] < 40 && projectile.ai[1]%6==0)
+			{
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_LightningBugZap, (int)projectile.Center.X, (int)projectile.Center.Y);
+				if (sound != null)
+				{
+					sound.Pitch = -1f+(projectile.timeLeft / 60f)*0.80f;
+					sound.Volume = projectile.timeLeft/60f;
+				}
+			}
+
+			if (projectile.ai[1] == 1)
+			{
+
+				for (int num315 = 0; num315 < 2200f; num315 = num315 + 4)
+				{
+					Vector2 offset2 = Vector2.Normalize(projectile.velocity);
+					int num622 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y)+ (offset2 * num315), 0, 0, DustID.Shadowflame, 0f, 0f, 100, Color.Magenta, 0.5f);
+					float speedz = Main.rand.NextFloat(0.25f, 6f);
+
+					Main.dust[num622].scale = 2.0f;
+					Main.dust[num622].noGravity = true;
+					Main.dust[num622].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+					offset2 = offset2.RotatedBy(Main.rand.NextBool() ? MathHelper.PiOver2 : -MathHelper.PiOver2);
+					Main.dust[num622].velocity.X = offset2.X * speedz;
+					Main.dust[num622].velocity.Y = offset2.Y * speedz;
+					Main.dust[num622].alpha = 50;
+				}
+
+			}
+
+			Vector2 offset = Vector2.Normalize(projectile.velocity);
+			Lighting.AddLight(new Vector2(projectile.Center.X, projectile.Center.Y) + (offset * Main.rand.NextFloat(MaxDistance))/16,(Color.Magenta*0.50f).ToVector3());
+
+			projectile.localAI[0] += 0.2f;
+			base.AI();
+		}
+
+		public override void MoreAI(Vector2 dustspot)
+		{
+			//nil
+			//SGAmod.updatelasers = true;
+		}
+
+        public override void OnHitPlayer(Player player, int damage, bool crit)
+        {
+            //nah
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			if (Main.dedServ)
+				return false;
+
+			Color colortex = Color.Purple * 0.75f;
+			Vector2 scale = new Vector2(MathHelper.Clamp(projectile.timeLeft / 8f, 0f, 1f) * scale2, 1f);
+
+			List<Vector2> vectors = new List<Vector2>();
+			vectors.Add(projectile.Center);
+			vectors.Add(hitspot);
+
+			TrailHelper trail = new TrailHelper("FadedBasicEffectPass", Main.extraTexture[21]);
+			trail.projsize = Vector2.Zero;
+			trail.coordOffset = new Vector2(0, projectile.localAI[0] * -0.22f);
+			trail.coordMultiplier = new Vector2(1f, 120f);
+			trail.doFade = false;
+			trail.trailThickness = 18 * scale.X;
+			trail.trailThicknessIncrease = 0;
+			trail.color = delegate (float percent)
+			{
+				return colortex;
+			};
+			trail.DrawTrail(vectors, projectile.Center);
+
+			trail = new TrailHelper("FadedBasicEffectPass", Main.extraTexture[21]);
+			trail.projsize = Vector2.Zero;
+			trail.coordOffset = new Vector2(0, projectile.localAI[0] * 0.22f);
+			trail.coordMultiplier = new Vector2(2f, 180f);
+			trail.doFade = false;
+			trail.trailThickness = 10 * scale.X;
+			trail.trailThicknessIncrease = 0;
+			trail.color = delegate (float percent)
+			{
+				return Color.Lerp(Color.White,Color.Purple*0.25f,1f-(projectile.timeLeft/60f));
+			};
+			trail.DrawTrail(vectors, projectile.Center);
+
+			Texture2D glowStar = mod.GetTexture("Extra_57b");
+			Vector2 glowSize = glowStar.Size();
+
+			Terraria.Utilities.UnifiedRandom random = new Terraria.Utilities.UnifiedRandom(projectile.whoAmI);
+
+			float alphaIK = MathHelper.Clamp(projectile.timeLeft / 32f, 0f, 1f);
+
+			for (float ff = 1f; ff > 0.25f; ff -= 0.05f)
+			{
+				float explodeSize = ((2f - ff)* scale.X)*0.60f;
+				Color color = Color.Lerp(Color.Blue, Color.MediumPurple, alphaIK);
+				float rot = random.NextFloat(0.05f, 0.15f) * (random.NextBool() ? 1f : -1f) * (Main.GlobalTime * 8f);
+				spriteBatch.Draw(glowStar, projectile.Center - Main.screenPosition, null, color * alphaIK * 0.75f, random.NextFloat(MathHelper.TwoPi) + rot, glowSize / 2f, (new Vector2(random.NextFloat(0.15f, 0.50f), 0.5f) + new Vector2(ff, ff))* explodeSize, SpriteEffects.None, 0);
+			}
+
+			return false;
+		}
+
+	}
+
+
+	public class BigDakka : SeriousSamWeapon, ITechItem
 	{
 		int ammotype;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Big Dakka");
-			Tooltip.SetDefault("Rapidly fires 2 pairs of bullets from the smaller chambers\ncontinue holding to charge up the central barrel to fire a homing shot that unleashes fiery death!\n75% to not consume ammo per bullet fired");
+			Tooltip.SetDefault("Rapidly fires 2 pairs of bullets from the smaller chambers\nContinue holding to charge up the central barrel to fire a homing shot that unleashes fiery death!\n75% to not consume ammo per bullet fired");
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 80;
+			item.damage = 75;
 			item.ranged = true;
 			item.width = 32;
 			item.height = 62;
@@ -2016,7 +2216,6 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("VolcanicSpaceBlaster"), 1);
 			recipe.AddIngredient(ItemID.SnowmanCannon, 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 12);
 			recipe.AddIngredient(mod.ItemType("MoneySign"), 8);
@@ -2123,9 +2322,9 @@ namespace SGAmod.HavocGear.Items.Weapons
 				}
 				for (float new1 = -1f; new1 < 2f; new1 = new1 + 2f)
 				{
-					float angle = 90;
+					float angle = MathHelper.Pi/1.45f;
 					Vector2 angg = projectile.velocity.RotatedBy(angle * new1);
-					DustID2 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("HotDust"), 0, 0, 20, default(Color), 1f);
+					DustID2 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y)-Vector2.Normalize(projectile.velocity) * 3f, projectile.width, projectile.height, mod.DustType("HotDust"), 0, 0, 20, default(Color), 1f);
 					Main.dust[DustID2].velocity = new Vector2(angg.X * 2f, angg.Y * 2f);
 					Main.dust[DustID2].noGravity = true;
 				}
@@ -2219,7 +2418,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 								for (int new1 = 0; new1 < 5; new1 = new1 + 3)
 								{
 									Vector2 newloc = projectile.Center;
-									newloc -= normal * 8f;
+									newloc -= normal * 58f;
 									newloc += (normal.RotatedBy(MathHelper.ToRadians(90)) * num315) * (10 + new1);
 									int proj = Projectile.NewProjectile(newloc.X, newloc.Y, newspeed.X * 1.5f, newspeed.Y * 1.5f, type, damageproj, knockbackproj, player.whoAmI);
 									if (Main.rand.Next(100) < 75 && (ammo2.modItem != null && ammo2.modItem.ConsumeAmmo(player)) && ammo2.maxStack > 1)
@@ -2268,7 +2467,6 @@ namespace SGAmod.HavocGear.Items.Weapons
 			projectile.friendly = true;
 			projectile.tileCollide = true;
 			projectile.ranged = true;
-			projectile.arrow = true;
 			projectile.penetrate = 2;
 			projectile.timeLeft = 800;
 			projectile.extraUpdates = 5;
@@ -2296,7 +2494,12 @@ namespace SGAmod.HavocGear.Items.Weapons
 					for (int i = 0; i < numProj; i++)
 					{
 						//Vector2 perturbedSpeed = new Vector2(projectile.velocity.X, projectile.velocity.Y).RotatedBy(MathHelper.Lerp(-rotation, rotation, i / (numProj - 1)));
-						Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("BoulderBlast"), projectile.damage, projectile.knockBack, projectile.owner, 0f, 0f);
+						int proj = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, mod.ProjectileType("BoulderBlast"), projectile.damage, projectile.knockBack, projectile.owner, 0f, 0f);
+						if (proj >= 0)
+						{
+							Main.projectile[proj].ranged = true;
+							Main.projectile[proj].netUpdate = true;
+						}
 					}
 
 				}
@@ -2307,4 +2510,5 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 
 	}
+
 }

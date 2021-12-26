@@ -47,7 +47,9 @@ namespace SGAmod.Dimensions
 			Filters.Scene["SGAmod:LimboSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.6f, 0.6f, 0.6f).UseOpacity(0.25f), EffectPriority.High);
 			SkyManager.Instance["SGAmod:LimboSky"] = new LimboSky();
 			LimboDim.CreateTextures();
-			On.Terraria.Player.Teleport += Player_Teleport;
+			Filters.Scene["SGAmod:SpaceSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(1f ,1f ,1f).UseOpacity(0.0f), EffectPriority.High);
+			SkyManager.Instance["SGAmod:SpaceSky"] = new SpaceSky();			
+			
 			//On.Terraria.Player.Update += Player_Update;
 			DrawOverride.InitTestThings();
 		}
@@ -67,9 +69,14 @@ namespace SGAmod.Dimensions
 
 		public void PostUpdateEverything()
 		{
+
 			DrawOverride.DrawFog();
 			SGAmod.PostDraw.Clear();
 			NullWatcher.DoAwarenessChecks(NullWatcher.SeeDistance, true, false);
+
+			bool spacey = SGAPocketDim.WhereAmI != null && SGAPocketDim.WhereAmI == typeof(SpaceDim);
+			if (spacey)
+				 MineableAsteriod.SpawnAsteriods();
 			//Main.NewText("test1");
 
 			List<HellionInsanity> madness = DimDungeonsProxy.madness;
@@ -98,27 +105,6 @@ namespace SGAmod.Dimensions
 			DimDungeonsProxy.Instance = null;
 			LimboDim.DestroyTextures();
 		}
-
-		private void Player_Teleport(On.Terraria.Player.orig_Teleport orig, Player self, Vector2 newPos, int Style = 0, int extraInfo = 0)
-		{
-			// 'orig' is a delegate that lets you call back into the original method.
-			// 'self' is the 'this' parameter that would have been passed to the original method.
-
-			if (SGAPocketDim.WhereAmI != null)
-			{
-				if (SLWorld.currentSubworld is SGAPocketDim sub)
-				{
-					if (sub.LimitPlayers % 16 == 0 && sub.LimitPlayers>0)
-					{
-						return;
-					}
-				}
-				if (SGAPocketDim.WhereAmI == typeof(LimboDim))
-					self.AddBuff(BuffID.ChaosState, 60 * 10);
-			}
-			orig(self, newPos, Style, extraInfo);
-
-	}
 
 	private void Player_Update(On.Terraria.Player.orig_Update orig, Player self, int index)
 	{
@@ -310,11 +296,13 @@ namespace SGAmod.Dimensions
 	{
 		public string text = "";
 		public float angle;
-		float angleAdder;
+		public float angleAdder;
 		public float distance;
 		public int timeleft = 0;
 		public float flipped = 0f;
 		public float addone = 0f;
+		public float shaking = 0f;
+		public Vector2 scale;
 		public HellionInsanity(string text, float distance, int timeleft)
 		{
 			angle = MathHelper.ToRadians(Main.rand.NextFloat(0f, 360f));
@@ -324,6 +312,7 @@ namespace SGAmod.Dimensions
 			this.timeleft = timeleft;
 			flipped = 0f;
 			addone = 0f;
+			scale = new Vector2(1f, 1f);
 			if (this.angle > MathHelper.ToRadians(180))
 				flipped = MathHelper.ToRadians(180);
 		}
@@ -338,12 +327,12 @@ namespace SGAmod.Dimensions
 		public void Draw()
 		{
 			float alpha = MathHelper.Clamp((float)timeleft / 150f, 0f, Math.Min(addone / 100f, 1f));
-			Vector2 size = Main.fontDeathText.MeasureString(text);
+			Vector2 size = Main.fontDeathText.MeasureString(text)* scale;
 
-			Vector2 mathstuff = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * distance;
+			Vector2 mathstuff = Main.rand.NextVector2Circular(shaking, shaking)+new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * distance;
 
-			Matrix mat = Matrix.CreateTranslation(-size.X / 2f, 0, 0) * Matrix.CreateRotationZ(angle - MathHelper.ToRadians(90) - flipped) * Matrix.CreateTranslation(mathstuff.X, mathstuff.Y, 0) *
-			Matrix.CreateTranslation((float)Main.screenWidth / 2f, (float)Main.screenHeight / 2f, 0) * Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
+			Matrix mat = Matrix.CreateScale(scale.X, scale.Y,1f) * Matrix.CreateTranslation(-size.X / 2f, 0, 0) * Matrix.CreateRotationZ(angle - MathHelper.PiOver2 - flipped) * Matrix.CreateTranslation(mathstuff.X, mathstuff.Y, 0) *
+			Matrix.CreateTranslation((float)Main.screenWidth / 2f, (float)Main.screenHeight / 2f, 0) * Matrix.CreateScale((Main.screenWidth / 1920f), (Main.screenHeight / 1024f), 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, mat * Main.GameViewMatrix.ZoomMatrix);

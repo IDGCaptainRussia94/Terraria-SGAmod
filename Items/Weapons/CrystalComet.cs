@@ -32,8 +32,8 @@ namespace SGAmod.Items.Weapons
 			item.width = 24;
 			item.height = 24;
 			item.useTime = 40;
-			item.mana = 20;
-			item.crit = 10;
+			item.mana = 60;
+			item.crit = 0;
 			item.useAnimation = 40;
 			item.useStyle = ItemUseStyleID.HoldingOut;
 			item.noMelee = true; //so the item's animation doesn't do damage
@@ -48,8 +48,9 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.CrystalStorm, 1); 
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 15);
+			recipe.AddIngredient(ItemID.CrystalStorm, 1);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 15);
 			recipe.AddTile(mod.TileType("PrismalStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -152,17 +153,20 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class ShootingStar : CrystalComet
+	public class ShootingStar : CrystalComet, IHellionDrop
 	{
+		int IHellionDrop.HellionDropAmmount() => 1;
+		int IHellionDrop.HellionDropType() => ModContent.ItemType<ShootingStar>();
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shooting Star");
-			Tooltip.SetDefault("Controls a very inspirational Star\nReleases a nova of stars when hitting past your mouse curser\nSpeeds up the longer you use the item\n'The more you know!'");
+			Tooltip.SetDefault("Controls a very inspirational Star\nReleases a nova of stars when hitting past your mouse cursor\nSpeeds up the longer you use the item\n'The more you know!'");
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 600;
+			item.damage = 250;
 			item.magic = true;
 			item.width = 24;
 			item.height = 24;
@@ -301,7 +305,7 @@ namespace SGAmod.Items.Weapons
 					if (diff.Length() > 1800 || projectile.ai[1]>1200)
 					{
 
-						if (!player.CheckMana(8, true))
+						if (!player.CheckMana(player.HeldItem,8, true))
 						{
 							projectile.ai[0] = -10000;
 							projectile.netUpdate = true;
@@ -386,11 +390,12 @@ namespace SGAmod.Items.Weapons
 			trail.DrawTrail(projectile.oldPos.ToList(), projectile.Center);
 
 
+			Texture2D texaz = SGAmod.ExtraTextures[110];
+
 			for (float xx = -3; xx < 3.5f; xx += 0.5f)
 			{
 				for (float i = 1f; i < 3; i += 0.4f)
 				{
-					Texture2D texaz = SGAmod.ExtraTextures[110];
 					float scalerz = 0.85f + (float)Math.Cos(Main.GlobalTime * 1.25f * (Math.Abs(xx) + i)) * 0.3f;
 					spriteBatch.Draw(texaz, (projectile.Center + ((projectile.velocity.ToRotation() + (float)Math.PI / 4f)).ToRotationVector2() * (xx * 9f)) - Main.screenPosition, null, Color.Yellow * (0.5f / (i + xx)) * 0.25f, projectile.velocity.ToRotation() + (float)Math.PI / 2f, new Vector2(texaz.Width / 2f, texaz.Height / 4f), (new Vector2(1 + i, 1 + i * 1.5f) / (1f + Math.Abs(xx))) * scalerz * projectile.scale, SpriteEffects.None, 0f);
 				}

@@ -85,7 +85,7 @@ namespace SGAmod.NPCs.Dank
 
         public override void NPCLoot()
         {
-            int rand = Main.rand.Next(4);
+            int rand = Main.rand.Next(5);
             if (rand == 0)
             {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Treepeater"));
@@ -102,6 +102,10 @@ namespace SGAmod.NPCs.Dank
             {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("EarthbreakerShield"));
             }         
+            if (rand == 4)
+            {
+                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("StickySituationSummon"));
+            }
         }
     }
 
@@ -116,8 +120,10 @@ namespace SGAmod.NPCs.Dank
             npc.lifeMax = 300;
             npc.value = 100f;
             npc.aiStyle = 3;
-            aiType = NPCID.WalkingAntlion;
-            animationType = NPCID.Zombie;
+            aiType = NPCID.Unicorn;
+            animationType = NPCID.BloodZombie; //Changed from Zombie to BloodZombie
+            npc.HitSound = SoundID.NPCHit1; //New addition
+            // npc.DeathSound = SoundID.NPCDeath1; //New addition
             banner = npc.type;
             bannerItem = mod.ItemType("GiantLizardBanner");
         }
@@ -137,18 +143,24 @@ namespace SGAmod.NPCs.Dank
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Giant Lizard");
-            Main.npcFrameCount[npc.type] = 8;
+            Main.npcFrameCount[npc.type] = 9; //Changed from 8 to 9
         }
 
         public override void NPCLoot()
         {
+            Microsoft.Xna.Framework.Audio.SoundEffectInstance snd = Main.PlaySound(SoundID.DD2_WyvernDeath, (int)npc.Center.X, (int)npc.Center.Y);
+            if (snd != null)
+            {
+                snd.Pitch = -0.50f;
+            }
+
             if (Main.rand.Next(100) == 0)
             {
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.LizardEgg);
             }
             if (Main.rand.Next(5) == 0 && SGAWorld.downedMurk > 1)
             {
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Biomass"), Main.rand.Next(1,12));
+                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Biomass"), Main.rand.Next(1, 12));
             }
         }
 
@@ -161,11 +173,12 @@ namespace SGAmod.NPCs.Dank
 
     public class BlackLeech : ModNPC
     {
+        Vector2 offset = default;
         public override void SetDefaults()
         {
             npc.width = 18;
             npc.height = 8;
-            npc.damage = 7;
+            npc.damage = 0;
             npc.defense = 2;
             npc.lifeMax = 5;
             npc.noTileCollide = false;
@@ -192,6 +205,12 @@ namespace SGAmod.NPCs.Dank
             Player player = Main.player[npc.target]; npc.TargetClosest(true);
             if (npc.ai[0] == 0f)
             {
+                if (npc.Hitbox.Intersects(player.Hitbox))
+                {
+                    offset = player.Center - npc.Center;
+                    npc.ai[0] = 1f;
+                }
+
                 if (npc.wet)
                 {
                     npc.noGravity = true;
@@ -244,7 +263,11 @@ namespace SGAmod.NPCs.Dank
             { 
                 if (npc.ai[0] == 1f)
                 {
-                    npc.position = player.position;
+                    player.AddBuff(BuffID.Bleeding, 360);
+                    player.AddBuff(BuffID.Dazed, 20);
+                    player.AddBuff(ModContent.BuffType<Buffs.MassiveBleeding>(), 3);
+                    npc.Center = player.MountedCenter+offset;
+                    npc.velocity = Vector2.Zero;
                 }
             }
         }
@@ -323,7 +346,7 @@ namespace SGAmod.NPCs.Dank
                 npc.rotation /= 2f;
                 if (target != null && target.active && !target.dead)
                 {
-                    if (Collision.CanHit(npc.Center, 1, 1, target.Center, 1, 1))
+                    if (Collision.CanHitLine(npc.Center, 1, 1, target.Center, 1, 1))
                     {
                         npc.aiAction += 3;
                     }
@@ -354,7 +377,7 @@ namespace SGAmod.NPCs.Dank
                         if (WorldGen.InWorld(here.X, here.Y))
                         {
                             there.Add(here.ToVector2());
-                            if (!Collision.CanHit(npc.Center, 1, 1, here.ToVector2() * 16, 1, 1))
+                            if (!Collision.CanHitLine(npc.Center, 1, 1, here.ToVector2() * 16, 1, 1))
                             {
                                 hit = true;
                                 gotothere = here.ToVector2() * 16;
@@ -394,7 +417,7 @@ namespace SGAmod.NPCs.Dank
                 npc.velocity.Y -= 0.5f;
                 npc.velocity.X /= 1.05f;
 
-                if (Math.Abs(npc.velocity.X)<0.25 && npc.velocity.Y <= 0 && !Collision.CanHit(npc.Center,1,1,npc.Center-new Vector2(0,24),1,1))
+                if (Math.Abs(npc.velocity.X)<0.25 && npc.velocity.Y <= 0 && !Collision.CanHitLine(npc.Center,1,1,npc.Center-new Vector2(0,24),1,1))
                 {
                     npc.velocity.Y = 5;
                 }
@@ -405,7 +428,7 @@ namespace SGAmod.NPCs.Dank
 
                 if (target != null && target.active && !target.dead)
                 {
-                    if (!Collision.CanHit(npc.Center, 1, 1, target.Center, 1, 1))
+                    if (!Collision.CanHitLine(npc.Center, 1, 1, target.Center, 1, 1))
                     {
                         npc.aiAction += 3;
                     }
@@ -452,7 +475,7 @@ namespace SGAmod.NPCs.Dank
             if (spawnInfo.player.ZoneJungle && Main.hardMode)
                 return 0.01f;
 
-            return Main.hardMode ? ((tile == mod.TileType("MoistStone") || tile == TileID.Mud) ? 0.15f : 0f) : 0f;
+            return Main.hardMode ? ((tile == mod.TileType("MoistStone") || TileID.Sets.Mud[tile]) ? 0.15f : 0f) : 0f;
         }
     }
 }

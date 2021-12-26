@@ -55,12 +55,40 @@ namespace SGAmod.Buffs
 			npc.SGANPCs().reducedDefense += 5;
 		}
 	}
+	public class RadioDebuff : ModBuff
+	{
+
+		public static string RadioactiveDebuffText => Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) ? "Irradiated enemies explode on death, doing damage around them based the irradiated ammounts\nGains more strength and deals extra damage if exposed to radiation sources for longer\nRate gained and max capped is based on a per-weapon basis" : "(Hold LEFT CONTROL for more info on Irradiated)";
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Irradiated");
+			Description.SetDefault("Not for players to see!");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = false;
+			Main.buffNoSave[Type] = true;
+		}
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+			if (npc.buffTime[buffIndex] < 200)
+			{
+				npc.GetGlobalNPC<SGAnpcs>().IrradiatedAmmount_ = 0;
+				npc.GetGlobalNPC<SGAnpcs>().IrradiatedAmmount = 0;
+			}
+		}
+	}
 
 	public class Targeted : ModBuff
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/TargetedDebuff";
 			return true;
 		}
 		public override void SetDefaults()
@@ -77,7 +105,7 @@ namespace SGAmod.Buffs
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/PetrifiedDebuff";
 			return true;
 		}
 		public override void SetDefaults()
@@ -98,7 +126,7 @@ namespace SGAmod.Buffs
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/MarkedDebuff";
 			return true;
 		}
 		public override void SetDefaults()
@@ -214,9 +242,10 @@ namespace SGAmod.Buffs
 	public class DankSlow : ModBuff
 	{
 
+		public static string DankText => Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) ? "Attacks may slow enemies\nConsecutive attacks will stack the debuff, making the slowing effect stronger, but this soft caps after a point\nDoes not affect Bosses or enemies who are immune to poisoned are also immune to Dank Slow" : "(Hold LEFT CONTROL for more info on Dank Slow)";
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/DankSlowDebuff";
 			return true;
 		}
 		public override void SetDefaults()
@@ -246,14 +275,42 @@ namespace SGAmod.Buffs
 		}
 	}
 
-	public class RustBurn : ModBuff
+	public class GildingAuraBuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Aureation Aura");
+			Description.SetDefault("Nearby NPCs are gilded with Midas");
+			Main.debuff[Type] = false;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoTimeDisplay[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = true;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			return true;
+		}
+
+        public override void Update(Player player, ref int buffIndex)
+        {
+            foreach(NPC npc in Main.npc.Where(testby => testby.DistanceSQ(player.MountedCenter) < 600 * 600))
+            {
+				npc.AddBuff(BuffID.Midas, 2);
+			}
+        }
+
+    }
+
+		public class RustBurn : ModBuff
 	{
 		public static string RustText => Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) ? "Rustburn lowers defense by 25 and is effective against inorganic enemies\nInorganic enemies with Rustburn take even more damage from Acid Burn\nOrganic enemies only take a bit of damage over time" : "(Hold LEFT CONTROL for more info on Rust Burn)";
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Rust Burn");
-			Description.SetDefault("Stuff");
-			Main.debuff[Type] = true;
+			Description.SetDefault("Slowness is happening");
+			Main.debuff[Type] = true; 
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
 			longerExpertDebuff = true;
@@ -261,7 +318,7 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AcidBurn";
+			texture = "SGAmod/Buffs/RustBurnDebuff";
 			return true;
 		}
 
@@ -286,19 +343,25 @@ namespace SGAmod.Buffs
 				return true;
 		}
 
+		public static bool IsInorganic(NPC npc)
+        {
+			return npc.HitSound == SoundID.NPCHit4 || npc.HitSound == SoundID.NPCHit7;
+
+		}
+
 		public override void Update(NPC npc, ref int buffIndex)
 		{
-			int timer = (int)((10 + (npc.HitSound == SoundID.NPCHit4 || npc.HitSound == SoundID.NPCHit7 ? 40 : 0)) * MathHelper.Min(npc.buffTime[buffIndex] / 150f, 1f));
-			npc.SGANPCs().impaled += 10 + (npc.HitSound==SoundID.NPCHit4 || npc.HitSound == SoundID.NPCHit7 ? 40 : 0);
-			npc.SGANPCs().reducedDefense += npc.HitSound == SoundID.NPCHit4 || npc.HitSound == SoundID.NPCHit7 ? 25 : 0;
+			int timer = (int)((10 + (IsInorganic(npc) ? 40 : 0)) * MathHelper.Min(npc.buffTime[buffIndex] / 150f, 1f));
+			npc.SGANPCs().impaled += 10 + (IsInorganic(npc) ? 40 : 0);
+			npc.SGANPCs().reducedDefense += IsInorganic(npc) ? 25 : 0;
 		}
 	}
 	public class LavaBurn : ModBuff
 	{
 		public override void SetDefaults()
 		{
-			DisplayName.SetDefault("Lava Burn");
-			Description.SetDefault("Magma melts your skin\nObsidian Skin is disabled");
+			DisplayName.SetDefault("Severe Lava Burn");
+			Description.SetDefault("Magma scorches your body\nObsidian Skin is disabled");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
@@ -306,11 +369,12 @@ namespace SGAmod.Buffs
 		}
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "Terraria/Buff_" + BuffID.Burning;
+			texture = "SGAmod/Buffs/LavaBurnDebuff";
 			return true;
 		}
 		public override void Update(Player player, ref int buffIndex)
 		{
+			if (GetType() == typeof(LavaBurn))
 			player.lavaImmune = false;
 			player.SGAPly().lavaBurn = true;
 
@@ -318,6 +382,18 @@ namespace SGAmod.Buffs
 		public override void Update(NPC npc, ref int buffIndex)
 		{
 			npc.GetGlobalNPC<SGAnpcs>().lavaBurn = true;
+		}
+	}
+	public class LavaBurnLight : LavaBurn
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Lava Burn");
+			Description.SetDefault("Magma burns your skin");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = true;
 		}
 	}
 	public class MoonLightCurse : ModBuff
@@ -414,7 +490,7 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/MoonLightCurse";
+			texture = "SGAmod/Buffs/SnapFade";
 			return true;
 		}
 	}

@@ -39,6 +39,7 @@ namespace SGAmod.Dimensions
         public bool outerlayer = false;
         public readonly DarkSector myDarkSector;
         public int gen = 0;
+        public bool purity = false;
 
         public DarkSectorTile(DarkSector myDarkSector, int x, int y, Point16 myDirection, UnifiedRandom rand, int gen = 1)
         {
@@ -80,7 +81,7 @@ namespace SGAmod.Dimensions
             int scalecheck = 64 * myDarkSector.scaleSize;
             int posx4x = position.X << 4;
 
-            if (posx4x < Main.screenPosition.X + Main.screenWidth + scalecheck && posx4x > Main.screenPosition.X - scalecheck)
+            if (posx4x < Main.screenPosition.X + Main.screenWidth + scalecheck && posx4x > Main.screenPosition.X  - scalecheck)
             {
                 int posy4x = position.Y << 4;
                 if (posy4x < Main.screenPosition.Y + Main.screenHeight + scalecheck && posy4x > Main.screenPosition.Y - scalecheck)
@@ -90,10 +91,10 @@ namespace SGAmod.Dimensions
                     float add1 = ((float)Math.Cos(atime + position.Y / 20f) * 25f);
                     float add2 = ((float)Math.Sin(atime / 1.25f + position.X / 30f) * 19f);
                     float alpha2 = (float)Math.Sin(((-atime2 * 0.25f)+((add1+add2) / 40f)));
-                    float alpha = MathHelper.Clamp(alpha2, myDarkSector.hasCompass ? 0.1f : 0.25f, myDarkSector.hasCompass ? 0.35f : 0.85f)/5f;
+                    float alpha = MathHelper.Clamp(alpha2, myDarkSector.hasCompass ? 0.1f : 0.25f, myDarkSector.hasCompass ? 0.35f : 0.85f)*3f;
 
                     Vector2 scale = new Vector2(1f + (float)Math.Sin(atime * 1.25f + (position.X - position.Y)/10f)*0.5f, 1f + (float)Math.Sin(atime + (position.Y + position.X) / 10f) * 0.5f);
-                    Main.spriteBatch.Draw(tex, (new Vector2(posx4x, posy4x))-Main.screenPosition, default, Color.White * alpha, 0, size, scale*myDarkSector.scaleSize, SpriteEffects.None, 0f);
+                    Main.spriteBatch.Draw(tex, (new Vector2(posx4x, posy4x))-Main.screenPosition, default, Color.Lerp(Color.Black,Color.Maroon, alpha2 / 26f) * alpha, 0, size, scale*myDarkSector.scaleSize, SpriteEffects.None, 0f);
 
                 }
             }
@@ -242,7 +243,7 @@ namespace SGAmod.Dimensions
             if (!done)
                 return;
 
-            hasCompass = (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Consumable.CaliburnCompess>() || Main.LocalPlayer.HasItem(ModContent.ItemType<Items.Consumable.CaliburnCompess>())) && SGAWorld.darknessVision;
+            hasCompass = (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Consumables.CaliburnCompess>() || Main.LocalPlayer.HasItem(ModContent.ItemType<Items.Consumables.CaliburnCompess>())) && SGAWorld.darknessVision;
 
             if (DarkSectorZone(Main.LocalPlayer))
             {

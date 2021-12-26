@@ -14,6 +14,7 @@ using Terraria.GameContent.Events;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Effects;
 using System.Linq;
+using AAAAUThrowing;
 
 namespace SGAmod.NPCs
 {
@@ -22,6 +23,8 @@ namespace SGAmod.NPCs
 	{
 		public string Trophy() => "CirnoTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
+		public string RelicName() => "Cirno";
+		public void NoHitDrops() { }
 
 		int aicounter = 0;
 		int frameid = 0;
@@ -209,11 +212,11 @@ namespace SGAmod.NPCs
 				aicounter = aicounter + 1;
 
 				Vector2 playerloc = P.Center;
-				if (GetType() == typeof(CirnoHellion) && Hellion.Hellion.GetHellion() != null)
+				/*if (GetType() == typeof(CirnoHellion) && Hellion.Hellion.GetHellion() != null)
 				{
 					playerloc = Hellion.Hellion.GetHellion().npc.Center;
 					npc.dontTakeDamage = true;
-				}
+				}*/
 
 				Vector2 dist = playerloc - npc.Center;
 
@@ -230,8 +233,11 @@ namespace SGAmod.NPCs
 						}*/
 						if (SGAWorld.CirnoBlizzard < card * 100 && nightmareprog % 3 == 0)
 							SGAWorld.CirnoBlizzard += 1;
-						ScreenShaderData shad = Filters.Scene["SGAmod:CirnoBlizzard"].GetShader();
-						shad.UseColor(Color.Lerp(Color.Blue, Color.Turquoise, 0.5f + (float)Math.Sin(Main.GlobalTime)));
+						if (!Main.dedServ)
+						{
+							ScreenShaderData shad = Filters.Scene["SGAmod:CirnoBlizzard"].GetShader();
+							shad.UseColor(Color.Lerp(Color.Blue, Color.Turquoise, 0.5f + (float)Math.Sin(Main.GlobalTime)));
+						}
 						Main.raining = true;
 						Main.windSpeed = MathHelper.Clamp(Main.windSpeed + Math.Sign((P.Center.X - npc.Center.X)) * (-0.002f / 3f), -0.4f, 0.4f);
 						Main.maxRaining = Math.Min(Main.maxRaining + 0.001f, 0.10f);
@@ -793,57 +799,65 @@ namespace SGAmod.NPCs
 	public override bool CanHitPlayer(Player target){
 		return false;
 	}
-	public override void AI()
-	{
-		projectile.velocity=new Vector2(projectile.velocity.X,projectile.velocity.Y*0.95f);
-		int q=0;
+		public override void AI()
+		{
+			projectile.velocity = new Vector2(projectile.velocity.X, projectile.velocity.Y * 0.95f);
+			int q = 0;
 			for (q = 0; q < 4; q++)
+			{
+
+				int dust = Dust.NewDust(projectile.position - new Vector2(100, 0), 200, 12, DustID.Smoke, 0f, projectile.velocity.Y * 0.4f, 100, colorcloud, 3f);
+				Main.dust[dust].noGravity = true;
+				//Main.dust[dust].velocity *= 1.8f;
+				//Main.dust[dust].velocity.Y -= 0.5f;
+				//Main.playerDrawDust.Add(dust);
+			}
+			projectile.ai[0]++;
+			int target2 = Idglib.FindClosestTarget(projectile.friendly ? 0 : 1, projectile.position, new Vector2(0, 0));
+			Entity target;
+			target = Main.player[target2] as Player;
+			if (projectile.friendly)
+			{
+				target = Main.npc[target2] as NPC;
+				//target=Main.player[target2];
+			}
+
+			if (target is Player)
+			{
+				Player targetasplayer = target as Player;
+				if (targetasplayer != null && targetasplayer.ownedProjectileCounts[mod.ProjectileType("SnowfallCloud")] > 0)
 				{
-
-					int dust = Dust.NewDust(projectile.position-new Vector2(100,0), 200, 12, DustID.Smoke, 0f, projectile.velocity.Y * 0.4f, 100, colorcloud, 3f);
-					Main.dust[dust].noGravity = true;
-					//Main.dust[dust].velocity *= 1.8f;
-					//Main.dust[dust].velocity.Y -= 0.5f;
-					//Main.playerDrawDust.Add(dust);
+					projectile.Kill();
 				}
-				projectile.ai[0]++;
-		int target2=Idglib.FindClosestTarget(projectile.friendly ? 0 : 1,projectile.position,new Vector2(0,0));
-		Entity target;
-		target=Main.player[target2] as Player;
-		if (projectile.friendly){
-		target=Main.npc[target2] as NPC;
-		//target=Main.player[target2];
-		}
+			}
 
-		if (target is Player){
-		Player targetasplayer=target as Player;
-		if (targetasplayer.ownedProjectileCounts[mod.ProjectileType("SnowfallCloud")]>0){
-		projectile.Kill();
-		}}
-
-		if (target!=null){
+			if (target != null)
+			{
 
 
 
-		Vector2 dist=target.Center-projectile.position;
-		if (System.Math.Abs(dist.X)<250){
-		if (projectile.ai[0]%rate==0){
-		List<Projectile> itz=Idglib.Shattershots(projectile.Center+new Vector2(Main.rand.Next(-100,100),0),projectile.Center+new Vector2(Main.rand.Next(-200,200),500),new Vector2(0,0), projectileid, (int)projectile.damage,8f,0,1,true,0,true,220);
-		itz[0].friendly=projectile.friendly;
-		itz[0].hostile=projectile.hostile;
-		itz[0].coldDamage = true;
-		itz[0].netUpdate=true;
-		itz[0].ranged = false;
-		itz[0].minion = true;
-		}
-		}
+				Vector2 dist = target.Center - projectile.position;
+				if (System.Math.Abs(dist.X) < 250)
+				{
+					if (projectile.ai[0] % rate == 0)
+					{
+						List<Projectile> itz = Idglib.Shattershots(projectile.Center + new Vector2(Main.rand.Next(-100, 100), 0), projectile.Center + new Vector2(Main.rand.Next(-200, 200), 500), new Vector2(0, 0), projectileid, (int)projectile.damage, 8f, 0, 1, true, 0, true, 220);
+						itz[0].friendly = projectile.friendly;
+						itz[0].hostile = projectile.hostile;
+						itz[0].coldDamage = true;
+						itz[0].netUpdate = true;
+						itz[0].ranged = false;
+						itz[0].Throwing().thrown = false;
+						itz[0].minion = true;
+					}
+				}
+
+
+			}
+
 
 
 		}
-
-
-
-	}
 
 public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 {
@@ -855,7 +869,7 @@ return false;
 	public class CirnoBolt : ModProjectile
 	{
 
-		double keepspeed=0.0;
+		public double keepspeed =0.0;
 		public float homing=0.02f;
 		Vector2 gothere;
 		public override void SetStaticDefaults()
@@ -1000,6 +1014,7 @@ return false;
 			npc.noTileCollide = true;
 			npc.noGravity = true;
 			npc.value = 40000f;
+			npc.coldDamage = true;
 		}
 
 				public override float SpawnChance(NPCSpawnInfo spawnInfo)
@@ -1264,7 +1279,7 @@ return false;
 
 	}
 
-		public class CirnoHellion : Cirno
+		/*public class CirnoHellion : Cirno
 	{
 		public override void SetStaticDefaults()
 		{
@@ -1308,7 +1323,7 @@ return false;
 			bossBag = mod.ItemType("CirnoBag");
 			npc.value = Item.buyPrice(0, 15, 0, 0);
 		}
-	}
+	}*/
 
 }
 

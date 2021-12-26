@@ -6,6 +6,43 @@ using AAAAUThrowing;
 
 namespace SGAmod.HavocGear.Items.Armor
 {
+	[AutoloadEquip(EquipType.Head)]
+	public class MangroveHelmet : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("Mangrove Helmet");
+			Tooltip.SetDefault("15% increased throwing velocity\n10% increased throwing damage and crit chance\n1% increased Throwing Apocalyptical Chance");
+		}
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 18;
+			item.value = 50000;
+			item.rare = 4;
+			item.defense = 12;
+		}
+
+		public override void UpdateEquip(Player player)
+		{
+			player.SGAPly().apocalypticalChance[3] += 1.0;
+			player.Throwing().thrownVelocity += 0.15f;
+			player.Throwing().thrownDamage += 0.1f;
+			player.Throwing().thrownCrit += 10;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 7);
+			recipe.AddIngredient(null, "DankWoodHelm", 1);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
+
 	[AutoloadEquip(EquipType.Body)]
 	public class MangroveChestplate : ModItem
 	{
@@ -32,68 +69,11 @@ namespace SGAmod.HavocGear.Items.Armor
 			player.Throwing().thrownDamage += 0.08f;
 		}
 
-
-		public override bool IsArmorSet(Item head, Item body, Item legs)
-		{
-			return head.type == mod.ItemType("MangroveHelmet") && legs.type == mod.ItemType("MangroveGreaves");
-		}
-
-		public override void UpdateArmorSet(Player player)
-		{
-			player.setBonus = "Crit throwing attacks grant Dryad's Blessing and spawn Mangrove Orbs from you that seek out enemies\nYou are limited to 4 of these Orbs at a time\nWhile you are in the jungle:\n-Greatly Increased regeneration" +
-				"\n-Gain an additional Free Cooldown Stack";
-
-			player.GetModPlayer<SGAPlayer>().Mangroveset = true;
-			if (player.ZoneJungle)
-			{
-				player.lifeRegen += 5;
-				player.SGAPly().MaxCooldownStacks += 1;
-			}
-		}
-
-        	public override void AddRecipes()
-        	{
-            		ModRecipe recipe = new ModRecipe(mod);
-            		recipe.AddIngredient(null, "VirulentBar", 11);
-					recipe.AddIngredient(null, "DankWoodChest", 1);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this);
-            		recipe.AddRecipe();
-        	}
-	}
-
-	[AutoloadEquip(EquipType.Head)]
-	public class MangroveHelmet : ModItem
-	{
-		public override void SetStaticDefaults()
-		{
-			base.SetStaticDefaults();
-			DisplayName.SetDefault("Mangrove Helmet");
-			Tooltip.SetDefault("15% increased throwing velocity\n10% increased throwing damage and crit chance\n1% increased Throwing Apocalyptical Chance");
-		}
-
-		public override void SetDefaults()
-		{
-			item.width = 18;
-			item.height = 18;
-			item.value = 50000;
-			item.rare = 4;
-			item.defense = 12;
-		}
-
-		public override void UpdateEquip(Player player)
-		{
-			player.SGAPly().apocalypticalChance[3] += 1.0;
-			player.Throwing().thrownVelocity += 0.15f;
-			player.Throwing().thrownDamage += 0.1f;
-			player.Throwing().thrownCrit += 10;
-		}
-
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "VirulentBar", 7);
-			recipe.AddIngredient(null, "DankWoodHelm", 1);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 11);
+			recipe.AddIngredient(null, "DankWoodChest", 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -132,7 +112,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "VirulentBar", 9);
+			recipe.AddIngredient(mod.ItemType("VirulentBar"), 9);
 			recipe.AddIngredient(null, "DankLegs", 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);

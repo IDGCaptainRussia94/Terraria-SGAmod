@@ -19,6 +19,8 @@ using SubworldLibrary;
 using SGAmod.Dimensions.NPCs;
 using SGAmod.Effects;
 using SGAmod.Items;
+using Terraria.Cinematics;
+
 
 namespace SGAmod.Dimensions
 {
@@ -29,13 +31,22 @@ namespace SGAmod.Dimensions
         public override bool saveSubworld => false;
         public override string DimName => "Limbo";
         public override UserInterface loadingUI => base.loadingUI;
-        public override UIState loadingUIState => base.loadingUIState;
+        public override UIState loadingUIState => new LimborinthLoad();
 
-        public static Texture2D[] staticeffects=new Texture2D[20];
+        public static Texture2D[] staticeffects = new Texture2D[20];
         public override float maxSpawns => 5f;
         public override float spawnRate => 0.15f;
 
-        public override int? Music
+        //public static Film warnings = new Film();
+        public static int heartBeats = 0;
+        public static HellionInsanity warningText;
+
+        public override Texture2D GetMapBackgroundImage()
+        {
+            return SGAmod.Instance.GetTexture("LimboMapBackground");
+        }
+
+public override int? Music
         {
 
             get
@@ -206,7 +217,8 @@ namespace SGAmod.Dimensions
                 Main.rockLayer = Main.maxTilesY + 2; //Hides the cavern layer way out of bounds
 
                 AGenPass(progress);
-
+                //warnings = new Film();
+                heartBeats = 0;
 
             }));
 
@@ -219,6 +231,61 @@ namespace SGAmod.Dimensions
         {
             Main.dayTime = false;
             Main.time = 40000;
+        }
+        private static void BlankFrame(FrameEventData evt)
+        {
+            //num
+        }
+        private static void TextSpawnFrame(FrameEventData evt)
+        {
+            if (heartBeats==1)
+            LimboDim.warningText = new HellionInsanity("You", 100, 600);
+
+            if (heartBeats == 2)
+                LimboDim.warningText = new HellionInsanity("Shouldn't", 120, 600);
+
+            if (heartBeats == 3)
+                LimboDim.warningText = new HellionInsanity("Be", 140, 600);
+
+            if (heartBeats == 4)
+                LimboDim.warningText = new HellionInsanity("Here", 160, 600);
+
+            if (heartBeats == 5)
+            {
+                LimboDim.warningText = new HellionInsanity("LEAVE", 240, 600);
+                LimboDim.warningText.scale = Vector2.One * 1.5f;
+                LimboDim.warningText.angleAdder = 0;
+                LimboDim.warningText.shaking = 12;
+                LimboDim.warningText.flipped = MathHelper.Pi;
+                LimboDim.warningText.angle = -MathHelper.PiOver2;
+            }
+
+            DimDungeonsProxy.madness.Add(LimboDim.warningText);
+            //num
+        }
+
+        public static void PlayWarning()
+        {
+
+            if (!Main.dedServ)
+            {
+                Film warnings = new Film();
+                if (heartBeats != 2220)
+                {
+                    warnings.AppendSequence(80, BlankFrame);
+                    warnings.AppendSequence(1, TextSpawnFrame);
+
+                    goto playfilm;
+                }
+
+
+            playfilm:
+                CinematicManager.Instance.PlayFilm(warnings);
+
+            }
+
+            heartBeats += 1;
+
         }
 
 
@@ -301,6 +368,14 @@ namespace SGAmod.Dimensions
             basicEffect.TextureEnabled = true;
             basicEffect.Texture = SGAmod.ExtraTextures[21];*/
 
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
+
+            spriteBatch.Draw(Main.blackTileTexture, Vector2.Zero, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
             VertexBuffer vertexBuffer;
             Vector2 parallex = new Vector2(Main.screenPosition.X / 9000f, -Main.GlobalTime * 0.1f);
             Color skycolor = Color.Red*0.75f;
@@ -359,7 +434,7 @@ namespace SGAmod.Dimensions
             if (maxDepth >= 0 && minDepth < 0)
             {
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
                 ArmorShaderData shader2 = GameShaders.Armor.GetShaderFromItemId(ItemID.VoidDye); shader2.Apply(null);
                 Texture2D sun = SGAmod.ExtraTextures[100];
 
@@ -380,7 +455,7 @@ namespace SGAmod.Dimensions
             }
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+            Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
             UnifiedRandom alwaysthesame = new UnifiedRandom(DimDungeonsProxy.DungeonSeeds);
 
@@ -403,7 +478,7 @@ namespace SGAmod.Dimensions
             }
 
             Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override float GetCloudAlpha()

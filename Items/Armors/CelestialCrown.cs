@@ -12,7 +12,7 @@ namespace SGAmod.Items.Armors
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hellion's Crown");
-			Tooltip.SetDefault("'Became one with the pure chaotic code...'");
+			Tooltip.SetDefault("'Become one with the pure chaotic code...'");
 		}
 		public override void SetDefaults()
 		{
@@ -55,14 +55,19 @@ namespace SGAmod.Items.Armors
 			get { return ("SGAmod/Items/Armors/CelestialCrown"); }
 		}
 	}
+	[AutoloadEquip(EquipType.Head)]
 	public class CelestialCrown : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Celestial Crown");
-			Tooltip.SetDefault("5% faster item use times");
+			DisplayName.SetDefault("Debug Crown");
+			Tooltip.SetDefault("Tests equip region stuff");
 		}
-		public override void SetDefaults()
+        public override bool Autoload(ref string name)
+        {
+			return true;
+        }
+        public override void SetDefaults()
 		{
 			item.width = 18;
 			item.height = 18;
@@ -73,7 +78,6 @@ namespace SGAmod.Items.Armors
 		public override void UpdateEquip(Player player)
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-			sgaplayer.UseTimeMul += 0.05f;
 		}
 	}
 }

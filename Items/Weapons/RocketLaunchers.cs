@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.Enums;
 using Idglibrary;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Weapons
 {
@@ -24,28 +25,28 @@ namespace SGAmod.Items.Weapons
 		{
 			SGAPlayer sgaply = Main.LocalPlayer.SGAPly();
 			if (sgaply.tf2emblemLevel > 0)
-			tooltips.Add(new TooltipLine(mod, "SoldierLine", "Tier 1: Damage Increased by 30%, Reload and firing speed are faster per level"));
+			tooltips.Add(new TooltipLine(mod, "SoldierLine", "Tier 1: Damage Increased by 20%, Reload and firing speed are faster per level"));
 			if (sgaply.tf2emblemLevel > 1)
 				tooltips.Add(new TooltipLine(mod, "SoldierLine", "Tier 2: Damage Increased by 50%; rockets explode larger and move faster per level"));
 			if (sgaply.tf2emblemLevel > 2)
-				tooltips.Add(new TooltipLine(mod, "SoldierLine", "Tier 3: Damage Increased by 75%; Rockets slow targets, gain a firing speed boost when you rocket jump"));
+				tooltips.Add(new TooltipLine(mod, "SoldierLine", "Tier 3: Damage Increased by 100%; Rockets slow targets, gain a firing speed boost when you rocket jump"));
 			if (sgaply.tf2emblemLevel > 3)
-				tooltips.Add(new TooltipLine(mod, "SoldierLine", "Tier 4: Damage Increased by 300%; Rocket jumping restores WingTime and slow is stronger"));
+				tooltips.Add(new TooltipLine(mod, "SoldierLine", "Tier 4: Damage Increased by 300%; Rocket jumping restores WingTime, slow is stronger, direct hits against slowed enemies will always crit"));
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.6f);
-			tooltips.Add(new TooltipLine(mod, "IDG Debug Item", Idglib.ColorText(c, "'He didn't fly into heaven, he rocket jumped into heaven'")));
+			tooltips.Add(new TooltipLine(mod, "RIP Rick May", Idglib.ColorText(c, "'He didn't fly into heaven, he rocket jumped into heaven'")));
 			c = Main.hslToRgb((float)((Main.GlobalTime+5.77163f) / 4) % 1f, 0.35f, 0.65f);
-			tooltips.Add(new TooltipLine(mod, "IDG Debug Item", Idglib.ColorText(c, "RIP Rick May: 1940-2020")));
+			tooltips.Add(new TooltipLine(mod, "RIP Rick May", Idglib.ColorText(c, "RIP Rick May: 1940-2020")));
 		}
 
 		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
 		{
 			SGAPlayer sgaply = player.SGAPly();
 			if (sgaply.tf2emblemLevel > 0)
-				mult += 0.30f;
+				mult += 0.20f;
 			if (sgaply.tf2emblemLevel > 1)
 				mult += 0.50f;
 			if (sgaply.tf2emblemLevel > 2)
-				mult += 0.75f;
+				mult += 1.00f;
 			if (sgaply.tf2emblemLevel > 3)
 				mult += 3.00f;
 		}
@@ -138,7 +139,7 @@ namespace SGAmod.Items.Weapons
 			projectile.hostile = false;
 			projectile.friendly = true;
 			projectile.tileCollide = true;
-			projectile.penetrate = -1;
+			projectile.penetrate = 3;
 			projectile.localNPCHitCooldown = -1;
 			projectile.usesLocalNPCImmunity = true;
 			aiType = -1;
@@ -205,7 +206,15 @@ namespace SGAmod.Items.Weapons
 			return true;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+			if (projectile.ai[1] > 3 && target.HasBuff(mod.BuffType("DankSlow")))
+			{
+				crit = true;
+			}
+        }
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (!hitonce)
 			{
@@ -253,7 +262,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class RocketShockBoom : ModProjectile
+	public class RocketShockBoom : ModProjectile,IDrawAdditive
 	{
 		float ranspin = 0;
 		float ranspin2 = 0;
@@ -300,10 +309,23 @@ namespace SGAmod.Items.Weapons
 			return false;
 		}
 
+		public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+			Texture2D tex = SGAmod.ExtraTextures[119];
+
+			float timeleft = ((float)projectile.timeLeft / 20f);
+			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
+			Vector2 drawPos = ((projectile.Center - Main.screenPosition));
+			Color color = Color.White * MathHelper.Clamp(MathHelper.SmoothStep(0f,2f, timeleft),0f,1f);
+			float scale = MathHelper.SmoothStep(6f + (projectile.ai[1] * 12f),0, timeleft);
+			spriteBatch.Draw(tex, drawPos, null, color, ranspin, drawOrigin, scale*1f, SpriteEffects.None, 0f);
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			getstuff();
 			Texture2D tex = SGAmod.ExtraTextures[96];
+
 			float timeleft = ((float)projectile.timeLeft / 20f);
 			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition));
@@ -402,6 +424,63 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ItemID.GrenadeLauncher, 1);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
 			recipe.AddTile(mod.TileType("PrismalStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	public class RadioactiveSnowballCannon : ModItem, IRadioactiveItem, IRadioactiveDebuffText
+	{
+		public int RadioactiveHeld() => 2;
+		public int RadioactiveInventory() => 1;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Radioactive Snowball Cannon");
+			Tooltip.SetDefault("'Sure Brain, sure...\nEnriches normal snowballs with radioactive isotopes");// + "\n" + Idglib.ColorText(Color.Red, "You suffer Radiation 2 while holding this") + "\n" + Idglib.ColorText(Color.Red, "Radiation 1 if only in inventory"));
+		}
+
+		public override void SetDefaults()
+		{
+			var snd = item.UseSound;
+			item.CloneDefaults(ItemID.SnowballCannon);
+			item.damage = 25;
+			item.UseSound = snd;
+			item.width = 48;
+			item.height = 48;
+			item.knockBack = 6;
+			item.value = 100000;
+			item.ranged = true;
+			item.rare = ItemRarityID.Yellow;
+			item.shootSpeed += 1f;
+		}
+
+		public override Vector2? HoldoutOffset()
+		{
+			return new Vector2(-18, -6);
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 32f;
+			player.SGAPly().timer = 1;
+			if (type == ProjectileID.SnowBallFriendly)
+				type = mod.ProjectileType("UraniumSnowballsProg");
+
+			SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_GoblinBomberThrow, (int)position.X, (int)position.Y);
+			if (sound != null)
+				sound.Pitch -= 0.525f;
+
+			return true;
+
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.SnowballCannon, 1);
+			recipe.AddIngredient(ModContent.ItemType<UraniumSnowballs>(), 250);
+			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}

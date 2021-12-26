@@ -28,7 +28,7 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 1;
 			item.Throwing().thrown=true;
 			item.damage = 110;
-			item.crit = 20;
+			item.crit = 10;
 			item.shootSpeed = 45f;
 			item.shoot = ModContent.ProjectileType<Scythe>();
 			item.useTurn = true;
@@ -67,7 +67,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 4);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 2);
 			recipe.AddTile(TileID.LunarCraftingStation);
-			recipe.SetResult(this,1);
+			recipe.SetResult(this,2);
             recipe.AddRecipe();
 		}
 	}
@@ -79,6 +79,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Scythe");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override void SetDefaults()

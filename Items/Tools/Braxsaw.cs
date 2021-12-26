@@ -41,11 +41,11 @@ namespace SGAmod.Items.Tools
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "StarMetalBar", 12);
+			recipe.AddIngredient(ModContent.ItemType<StarMetalBar>(), 32);
+			recipe.AddIngredient(ModContent.ItemType<LunarRoyalGel>(), 10);
 			recipe.AddIngredient(ItemID.Drax, 1);
-			recipe.AddIngredient(null, "BoreicDrill", 1);
-			recipe.AddIngredient(null, "VirulentDrill", 1);
-			recipe.AddIngredient(ItemID.LunarBar, 10);
+			recipe.AddIngredient(ModContent.ItemType <BoreicDrill>(), 1);
+			recipe.AddIngredient(ModContent.ItemType <HavocGear.Items.Tools.VirulentDrill>(), 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

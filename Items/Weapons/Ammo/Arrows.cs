@@ -14,7 +14,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novus Arrow");
-			Tooltip.SetDefault("Arrows slighty home in on nearby enemies");
+			Tooltip.SetDefault("Arrows slightly home in on nearby enemies");
 		}
 		public override string Texture
 		{
@@ -52,7 +52,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Notchvos Arrow");
-			Tooltip.SetDefault("Improved arrows that better home in on nearby enemies\nArrows travel in the reverse direction after hitting an enemy\ncan hit a total of 2 times, ignores invulnerability frames");
+			Tooltip.SetDefault("Improved arrows that better home in on nearby enemies\nArrows travel in the reverse direction after hitting an enemy\nCan hit a total of 2 times, ignores invulnerability frames");
 		}
 		public override string Texture
 		{
@@ -169,7 +169,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Wrath Arrow");
-			Tooltip.SetDefault("Inflicts Betsy's Curse, and explodes like Aerial Bane Arrows on hit (no extra arrows are spawned however)\nBecause of course we need this too :-p");
+			Tooltip.SetDefault("Inflicts Betsy's Curse, and explodes like Aerial Bane Arrows on hit (no extra arrows are spawned however)\n'Because of course we need this too :-p'");
 		}
 		public override string Texture
 		{
@@ -185,7 +185,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
 			item.knockBack = 4f;
 			item.value = 500;
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.shoot = mod.ProjectileType("WraithArrow");   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 18f;                  //The speed of the projectile
 			item.ammo = AmmoID.Arrow;              //The ammo class this ammo belongs to.
@@ -194,22 +194,22 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ShadowJavelinRecipe(mod);
-			recipe.AddIngredient(ItemID.WoodenArrow, 100);
+			recipe.AddIngredient(ItemID.HellfireArrow, 250);
 			recipe.AddIngredient(ItemID.WrathPotion, 1);
 			recipe.AddIngredient(ItemID.DefenderMedal, 5);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 2);
 			recipe.AddIngredient(mod.ItemType("OmegaSigil"), 1);
 			recipe.AddTile(TileID.LunarCraftingStation);
-			recipe.SetResult(this, 100);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}
-	public class DankArrow : ModItem
+	public class DankArrow : ModItem,IDankSlowText
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dank Arrow");
-			Tooltip.SetDefault("Attacks may slow enemies\nConsecutive attacks will stack the debuff, making the slowing effect stronger, but this soft caps after a point\nDoes not affect Bosses and enemies who are immune to poisoned are also immune to Dank Slow");
+			Tooltip.SetDefault("");
 		}
 		public override void SetDefaults()
 		{
@@ -230,10 +230,10 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("DankWood"), 15);
+			recipe.AddIngredient(mod.ItemType("DankWood"), 25);
 			recipe.AddIngredient(mod.ItemType("DankCore"), 1);
 			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this, 100);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}

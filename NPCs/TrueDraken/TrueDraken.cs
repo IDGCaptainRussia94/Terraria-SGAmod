@@ -42,7 +42,7 @@ namespace SGAmod.NPCs.TrueDraken
 
 		public override bool Autoload(ref string name)
 		{
-			return false;
+			return true;
 		}
 
 		public override void SetStaticDefaults()
@@ -439,7 +439,7 @@ namespace SGAmod.NPCs.TrueDraken
 			Vector2 Turnto = PWhere - DrakenWhere;
 			if (npc.ai[0] % 80 == 30)
 			{
-				Turnto = PredictiveAim(100f, npc.Center, false) - DrakenWhere;
+				Turnto = SGAUtils.PredictiveAim(100f, npc.Center,P.MountedCenter,P.velocity, false) - DrakenWhere;
 				Turnto.Normalize();
 				npc.velocity = Turnto * 100f;
 				//npc.velocity += Turnto * 70f;
@@ -468,7 +468,7 @@ namespace SGAmod.NPCs.TrueDraken
 			//Draken Clone Spin Cycle
 			Vector2 Turnto = PWhere - DrakenWhere;
 			npc.rotation = npc.rotation.AngleLerp((Turnto).ToRotation(), 0.025f);
-			Vector2 shootthere = PredictiveAim(30f, npc.Center, false);
+			Vector2 shootthere = SGAUtils.PredictiveAim(30f, npc.Center, P.MountedCenter, P.velocity, false);
 			npc.Center = npc.Center.RotatedBy(MathHelper.ToRadians(npc.ai[0] % 800 > 400 ? 5f : -5f), PWhere);
 			shootthere -= DrakenWhere;
 			shootthere.Normalize();
@@ -610,6 +610,7 @@ namespace SGAmod.NPCs.TrueDraken
 
 		}
 
+		/*
 		//From Joost, get perms yeah
 		private Vector2 PredictiveAim(float speed, Vector2 origin, bool ignoreY)
 		{
@@ -620,6 +621,7 @@ namespace SGAmod.NPCs.TrueDraken
 			//predictedPos = P.MountedCenter + P.velocity + (vel * (Vector2.Distance(predictedPos, origin) / speed));
 			return predictedPos;
 		}
+		*/
 
 		public static TrueDraken GetDraken()
 		{

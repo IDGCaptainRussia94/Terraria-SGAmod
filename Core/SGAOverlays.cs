@@ -17,6 +17,7 @@ using ReLogic.Graphics;
 using SGAmod.SkillTree;
 using SGAmod.Dimensions;
 using SGAmod.Items;
+using System.Reflection;
 
 namespace SGAmod
 {
@@ -40,17 +41,20 @@ namespace SGAmod
 			}
 
 			int foundIndex = 0;
+			int foundLastIndex = layers.Count-1;
 
 			for (int k = 0; k < layers.Count; k++)
 			{
 				if (layers[k].Name == "Vanilla: Resource Bars")
 				{
-					foundIndex = k + 1;
+					foundIndex = k+1;
+					foundLastIndex = foundIndex;
 					break;
 				}
 			}
 
 			layers.Insert(foundIndex, new LegacyGameInterfaceLayer("SGAmod: HUD", DrawHUD, InterfaceScaleType.UI));
+			//layers.Insert(foundLastIndex, new LegacyGameInterfaceLayer("SGAmod: Over HUD", DrawOverHUD, InterfaceScaleType.UI));
 
 			int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 			if (mouseTextIndex != -1)
@@ -69,14 +73,119 @@ namespace SGAmod
 
 		}
 
+		internal static void HUDCode(int type, (int, int, int, int) itta = default)
+		{
+			if (type == 0)
+			{
+				SGAmod.VanillaHearts.Item1 = Main.heartTexture;
+				SGAmod.VanillaHearts.Item2 = Main.heart2Texture;
+
+				if (Main.heartTexture == SGAmod.Instance.GetTexture("Invisible"))
+				{
+					Main.heartTexture = SGAmod.OGVanillaHearts.Item1;
+					Main.heart2Texture = SGAmod.OGVanillaHearts.Item2;
+				}
+			}
+			if (type == 2)
+			{
+				Main.heartTexture = SGAmod.VanillaHearts.Item1;
+				Main.heart2Texture = SGAmod.VanillaHearts.Item2;
+
+				if (Main.heartTexture == SGAmod.Instance.GetTexture("Invisible"))
+				{
+					Main.heartTexture = SGAmod.OGVanillaHearts.Item1;
+					Main.heart2Texture = SGAmod.OGVanillaHearts.Item2;
+				}
+			}
+			if (type == 1)
+			{
+
+				int i = itta.Item1;
+
+				SGAPlayer sgaply = Main.LocalPlayer.SGAPly();
+
+				if (sgaply.energyShieldReservation > 0f)
+				{
+					int UI_ScreenAnchorX = (int)(typeof(Main).GetField("UI_ScreenAnchorX", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null));
+
+					Player player = sgaply.player;
+
+					int totalhearts = Math.Min((int)Math.Ceiling((decimal)player.statLifeMax / 20), 20);
+
+					float UIDisplay_LifePerHeart = totalhearts;
+
+
+					//int num2 = (player.statLifeMax - 400) / 5;
+
+					int num = player.statLifeMax2;
+
+					//Main.NewText(totalhearts);
+
+					float startingheartindex = ((num * (1f-sgaply.energyShieldReservation)) / num) * UIDisplay_LifePerHeart;
+
+					Main.heartTexture = SGAmod.VanillaHearts.Item1;
+					Main.heart2Texture = SGAmod.VanillaHearts.Item2;
+
+					//SGAmod.VanillaHearts.Item1 = Main.heartTexture;
+					//SGAmod.VanillaHearts.Item2 = Main.heart2Texture;
+
+					if (i > startingheartindex)
+					{
+
+						float start = (i - startingheartindex);
+
+						float energy = MathHelper.Clamp((((sgaply.GetEnergyShieldAmmountAndRecharge.Item1 / (float)sgaply.GetEnergyShieldAmmountAndRecharge.Item2)) * (UIDisplay_LifePerHeart - (startingheartindex - 1))) - start, 0f, 1f);
+
+						int num8 = itta.Item2;
+						float scale = 1f;
+						int num6 = itta.Item3;
+						int num9 = itta.Item4;
+
+						Main.heartTexture = SGAmod.Instance.GetTexture("Invisible");
+						Main.heart2Texture = SGAmod.Instance.GetTexture("Invisible");
+
+						Texture2D heartTexture = SGAmod.Instance.GetTexture("GreyHeart");
+						Texture2D heartTexture2 = SGAmod.Instance.GetTexture("ShieldHealth");
+
+						//Main.spriteBatch.Draw(heartTexture, new Vector2(0,0), null, Color.White, 0f, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), num6, SpriteEffects.None, 0f);
+
+						Color colorDye = Main.LocalPlayer.SGAPly().jellybruSet ? Color.HotPink : Color.White;
+
+						//Zap!
+						int counter = (Main.LocalPlayer.miscCounter + i * 73) / 4;
+						Rectangle glowrect = new Rectangle(0, (counter % 7) * (Main.glowMaskTexture[25].Height / 7), Main.glowMaskTexture[25].Width, Main.glowMaskTexture[25].Height / 7);
+
+						Main.spriteBatch.Draw(Main.glowMaskTexture[25], new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), glowrect, Color.Lerp(colorDye,Color.Black,0f) * energy, MathHelper.Pi, glowrect.Size() / 2f, 0.75f + (energy * 0.25f),
+							((counter % 14) > 6 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | ((counter % 28) > 13 ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
+
+						//Hearts
+						Main.spriteBatch.Draw(heartTexture, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, Color.White * 0.50f, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f, SpriteEffects.None, 0f);
+
+						Main.spriteBatch.Draw(heartTexture2, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, colorDye * energy, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f + (energy * 0.25f), SpriteEffects.None, 0f);
+
+						//Zap again!
+						Main.spriteBatch.Draw(Main.glowMaskTexture[25], new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), glowrect, colorDye * energy, 0, glowrect.Size() / 2f, 0.75f + (energy * 0.25f), 
+							((counter % 14)>6 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | ((counter % 28) > 13 ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
+
+					}
+
+				}
+
+			}
+		}
+
 		public static bool DrawUI()
 		{
 			if (SGAmod.CustomUIMenu.visible) 
 			{
 				SGAmod.CustomUIMenu.Draw(Main.spriteBatch);
 			}
-			if (Main.playerInventory && Main.LocalPlayer.SGAPly().benchGodFavor)
+			if (Main.playerInventory)
 			{
+				if (SGAmod.ArmorButtonUpdate && Main.EquipPage == 0)
+				SGAmod.armorButton.Draw(Main.spriteBatch);
+
+				if (Main.LocalPlayer.SGAPly().benchGodFavor)
 				SGAmod.craftBlockPanel.Draw(Main.spriteBatch);
 			}
 			return true;
@@ -96,7 +205,7 @@ namespace SGAmod
 				Uncrafts = default;
 			}
 
-
+			Items.Consumables.TimeEffect.DrawDistort(sga);
 
 			if (sga.gunslingerLegendtarget > -1)
 			{
@@ -110,12 +219,96 @@ namespace SGAmod
 					float angle = MathHelper.ToRadians(i+((sizeup ? 400f : -400f)*MathHelper.Clamp(1f- ((float)sga.lockoneffect/70f), 0f,1f)));
 					Vector2 hereas = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * (180f+MathHelper.Clamp(300- sga.lockoneffect*4,0,300));
 
+					Texture2D arrow = ModContent.GetTexture("SGAmod/MatrixArrow");
+
 					Vector2 drawPos = ((hereas * (sizeup ? 1f : 1f)*Main.essScale) + target.Center) - Main.screenPosition;
-					int sizer = (sizeup ? 8 : 4);
-					Main.spriteBatch.Draw(Main.blackTileTexture, drawPos, new Rectangle(0, 0, 50, sizer * 2), Color.Red*MathHelper.Clamp((float)sga.lockoneffect/70f,0f,1f), MathHelper.ToRadians(i), new Vector2(50, sizer), new Vector2(1, 1), SpriteEffects.None, 0f);
+					float sizer = (sizeup ? 0.5f : 1f);
+					Main.spriteBatch.Draw(arrow, drawPos, null, Main.hslToRgb(((i/360f)-Main.GlobalTime*1f)%1f,1f,0.75f)*MathHelper.Clamp((float)sga.lockoneffect/70f,0f,1f), MathHelper.ToRadians(i)+MathHelper.Pi, new Vector2(arrow.Width* sizer, arrow.Height/2), new Vector2(1, 1), SpriteEffects.None, 0f);
 
 				}
 			}
+
+			return true;
+		}
+
+		public static bool DrawOverHUD()
+		{
+
+			if (Main.gameMenu || SGAmod.Instance == null && !Main.dedServ)
+				return false;
+
+			SpriteBatch spriteBatch = Main.spriteBatch;
+
+			SGAPlayer sga = Main.LocalPlayer.SGAPly();
+
+			if (sga.GetEnergyShieldAmmountAndRecharge.Item1 > 0 && sga.GetEnergyShieldAmmountAndRecharge.Item2 > 0)
+			{
+
+				Vector2 drawPos = new Vector2(Main.screenWidth-44,42);
+
+				Texture2D stain = SGAmod.Instance.GetTexture("TiledPerlin");
+				float percentit = (sga.GetEnergyShieldAmmountAndRecharge.Item1 / (float)sga.GetEnergyShieldAmmountAndRecharge.Item2);
+				int barlength = (int)((255f * (percentit)) *Main.UIScale);
+				int height = (int)(24 * Main.UIScale);
+
+				spriteBatch.End();
+				//Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+				//DrawData value28 = new DrawData(stain, new Vector2(240, 240), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 120, 120)), Microsoft.Xna.Framework.Color.White, 0, stain.Size() / 2f, 1f, SpriteEffects.None, 0);
+
+				/*DrawData value28 = new DrawData(stain, new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 320, 320)), Microsoft.Xna.Framework.Color.White, 0, stain.Size() / 2f, 1f, SpriteEffects.None, 0);
+
+				ArmorShaderData stardustsshader3 = GameShaders.Armor.GetShaderFromItemId(ItemID.NebulaDye);
+				stardustsshader3.UseColor(Color.Blue.ToVector3());
+				stardustsshader3.UseOpacity(0.5f);
+				stardustsshader3.Apply(null, new DrawData?(value28));
+
+				spriteBatch.Draw(stain, drawPos, new Rectangle(0, 0, size, 48), Color.Blue * 0.50f, MathHelper.Pi, Vector2.Zero, new Vector2(1, 1), SpriteEffects.None, 0f);
+				*/
+
+				VertexBuffer vertexBuffer;
+
+				Vector3 d3pos = new Vector3(drawPos.X, drawPos.Y, 0)*Main.UIScale;
+
+				Effect effect = SGAmod.TrailEffect;
+
+				effect.Parameters["WorldViewProjection"].SetValue(Effects.WVP.View(Main.GameViewMatrix.Zoom) * Effects.WVP.Projection());
+				effect.Parameters["imageTexture"].SetValue(stain);
+				effect.Parameters["coordOffset"].SetValue(new Vector2(0, Main.GlobalTime*-0.1f));
+				effect.Parameters["coordMultiplier"].SetValue(new Vector2(0.3f,0.1f));
+				effect.Parameters["strength"].SetValue(MathHelper.Clamp(1.5f,0,3));
+
+				VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
+
+				Vector3 screenPos = new Vector3(-16, 0, 0);
+
+				vertices[0] = new VertexPositionColorTexture(d3pos + new Vector3(0, 0, 0), Color.Blue, new Vector2(0, 0));
+				vertices[1] = new VertexPositionColorTexture(d3pos + new Vector3(0, height, 0), Color.Blue, new Vector2(0, 1));
+				vertices[2] = new VertexPositionColorTexture(d3pos + new Vector3(-barlength, 0, 0), Color.Blue, new Vector2(percentit, 0));
+
+				vertices[3] = new VertexPositionColorTexture(d3pos + new Vector3(-barlength, height, 0), Color.Blue, new Vector2(percentit, 1));
+				vertices[4] = new VertexPositionColorTexture(d3pos + new Vector3(0, height, 0), Color.Blue, new Vector2(0, 1));
+				vertices[5] = new VertexPositionColorTexture(d3pos + new Vector3(-barlength, 0, 0), Color.Blue, new Vector2(percentit, 0));;
+
+				vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+				vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+				Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+				RasterizerState rasterizerState = new RasterizerState();
+				rasterizerState.CullMode = CullMode.None;
+				Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+
+				effect.CurrentTechnique.Passes["FadedBasicEffectPassY"].Apply();
+				Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+
+			}
+
+			spriteBatch.End();
+			//Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
+			spriteBatch.Begin(SpriteSortMode.Deferred, default, default, default, default, null, Matrix.Identity);
+
 
 			return true;
 		}
@@ -136,23 +329,27 @@ namespace SGAmod
 				{
 					spriteBatch.End();
 					//Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
-					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1, 1, 0f));
-					for (int i = 0; i < SGAWorld.CaliburnAlterCoordsX.Length; i += 1)
+					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+					if (Dimensions.SGAPocketDim.WhereAmI == null)
 					{
-						string[] texs = { "SGAmod/Items/Weapons/Caliburn/CaliburnTypeA", "SGAmod/Items/Weapons/Caliburn/CaliburnTypeB", "SGAmod/Items/Weapons/Caliburn/CaliburnTypeC" };
-						Texture2D tex = ModContent.GetTexture(texs[i]);
+						for (int i = 0; i < SGAWorld.CaliburnAlterCoordsX.Length; i += 1)
+						{
+							string[] texs = { "SGAmod/Items/Weapons/Caliburn/CaliburnTypeA", "SGAmod/Items/Weapons/Caliburn/CaliburnTypeB", "SGAmod/Items/Weapons/Caliburn/CaliburnTypeC" };
+							Texture2D tex = ModContent.GetTexture(texs[i]);
 
-						Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
+							Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
 
-						Vector2 drawPos = (new Vector2(Main.screenWidth, Main.screenHeight) / 2f) * Main.UIScale;
+							Vector2 drawPos = (new Vector2(Main.screenWidth, Main.screenHeight) / 2f) * Main.UIScale;
 
-						Vector2 Vecd = (new Vector2(SGAWorld.CaliburnAlterCoordsX[i], SGAWorld.CaliburnAlterCoordsY[i] + 96) - (drawPos + Main.screenPosition));
-						float pointthere = Vecd.ToRotation();
-						bool flip = Vecd.X > 0;
+							Vector2 Vecd = (new Vector2(SGAWorld.CaliburnAlterCoordsX[i], SGAWorld.CaliburnAlterCoordsY[i] + 96) - (drawPos + Main.screenPosition));
+							float pointthere = Vecd.ToRotation();
+							bool flip = Vecd.X > 0;
 
-						spriteBatch.Draw(tex, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White, pointthere + MathHelper.ToRadians(45) + (flip ? MathHelper.ToRadians(-90) * 3f : 0), drawOrigin, Main.UIScale, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
-						//spriteBatch.Draw(tex, new Vector2(150, 150), null, Color.White, Main.GlobalTime, drawOrigin, 1, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+							spriteBatch.Draw(tex, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White, pointthere + MathHelper.ToRadians(45) + (flip ? MathHelper.ToRadians(-90) * 3f : 0), drawOrigin, Main.UIScale, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+							//spriteBatch.Draw(tex, new Vector2(150, 150), null, Color.White, Main.GlobalTime, drawOrigin, 1, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 
+						}
 					}
 
 					if (SGAWorld.darknessVision && DimDingeonsWorld.darkSectors.Count > 0)
@@ -177,6 +374,24 @@ namespace SGAmod
 							spriteBatch.Draw(tex2, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.Black*0.4f, Main.GlobalTime * 2f*k, tex2.Size() / 2f, Main.UIScale*1.25f, SpriteEffects.FlipHorizontally, 0f);
 							spriteBatch.Draw(tex, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), rect, Color.White*Main.essScale, 0, drawOrigin, Main.UIScale,SpriteEffects.FlipHorizontally, 0f);
 
+
+						}
+					}
+
+					if (Main.LocalPlayer.SGAPly().phaethonEye>0)
+					{
+						foreach(NPC npc in Main.npc.Where(testby => testby.active && testby.rarity > 0))
+						{
+
+							Texture2D tex2 = Main.itemTexture[ItemID.LifeformAnalyzer];
+
+							Vector2 drawPos = (new Vector2(Main.screenWidth, Main.screenHeight) / 2f) * Main.UIScale;
+
+							Vector2 Vecd = (npc.Center) - (drawPos + Main.screenPosition);
+							float pointthere = Vecd.ToRotation();
+
+							spriteBatch.Draw(tex2, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White * Main.essScale, 0, tex2.Size() / 2f, Main.UIScale, SpriteEffects.FlipHorizontally, 0f);
+							spriteBatch.Draw(tex2, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White * Main.essScale, 0, tex2.Size()/2f, Main.UIScale, SpriteEffects.FlipHorizontally, 0f);
 
 						}
 					}
@@ -260,7 +475,7 @@ namespace SGAmod
 
 					Texture2D texture = mod.GetTexture("BoostBar");
 
-					int offsetY = -texture.Height;
+					int offsetY = -texture.Height+SGAConfigClient.Instance.HUDDisplacement;
 
 					if (perc > 0)
 					{
@@ -384,7 +599,81 @@ namespace SGAmod
 	}
 
 
+	public class SGAScreenExplosionsOverlay : Overlay
+	{
+		public SGAScreenExplosionsOverlay() : base(EffectPriority.VeryHigh, RenderLayers.All) { }
 
+		public override void Update(GameTime gameTime)
+		{
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			if (IsVisible())
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+
+				foreach (ScreenExplosion explosion in SGAmod.screenExplosions)
+				{
+					float warmupTime = Math.Min(explosion.time / explosion.warmupTime, 1f);
+					float timeLeft = MathHelper.Clamp(explosion.timeLeft / explosion.decayTime, 0f, warmupTime);
+
+					float timeLeftDirect = explosion.time / (float)explosion.timeLeftMax;
+					if (explosion.timeLeft < 2)
+						continue;
+
+					float maxstr = explosion.strength;
+					if (explosion.strengthBasedOnPercent != default)
+                    {
+						maxstr = explosion.strengthBasedOnPercent(timeLeftDirect);
+						//Main.NewText(maxstr);
+					}
+					Vector2 halfOfScreen = SGAmod.screenExplosionCopy.Size() / 2f;
+
+					Vector2 center = new Vector2(Main.screenWidth, Main.screenHeight) / 2f;
+					Vector2 screenCenter = Main.screenPosition + center;
+					Vector2 dist = (screenCenter - explosion.where);
+
+					float distFade = MathHelper.Clamp((explosion.distance- dist.Length()) / 480f, 0f, 1f);
+
+					for (float str = 1f; str < 1f+(maxstr* warmupTime); str += 0.05f)
+					{
+						Vector2 offset = center + dist * (str-1f);
+
+						float fadeLater = (1f - ((str - 1f) / (maxstr-1f)));
+
+						spriteBatch.Draw(SGAmod.screenExplosionCopy, offset, null, Color.White * distFade* fadeLater*explosion.alpha * timeLeft,0, halfOfScreen, 1f+((str-1f)*explosion.perscreenscale* timeLeft), SpriteEffects.None, 0f);
+
+					}
+					//Main.NewText("twese");
+					//spriteBatch.Draw(Main.sunTexture, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.White, 0, halfOfScreen, 1.15f, SpriteEffects.None, 0f);
+				}
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Matrix.Identity);
+			}
+		}
+
+		public override void Activate(Vector2 position, params object[] args) { }
+
+		public override void Deactivate(params object[] args) { }
+
+		public override bool IsVisible()
+		{
+			bool draw = false;
+			if (!Main.gameMenu && Main.LocalPlayer != null && SGAmod.Instance != null && SGAmod.screenExplosions.Count>0)
+			{
+				//if (Main.LocalPlayer.HeldItem.type == SGAmod.Instance.ItemType("Expertise"))
+				draw = true;
+            }
+            else
+            {
+				Overlays.Scene.Deactivate("SGAmod:ScreenExplosions");
+			}
+
+			return draw;
+		}
+	}
 
 	public class SGAHUD : Overlay
 	{
@@ -396,12 +685,41 @@ namespace SGAmod
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			
+			if (IsVisible())
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+
+				Effect TrippyRainbowEffect = SGAmod.TrippyRainbowEffect;
+
+				TrippyRainbowEffect.Parameters["uColor"].SetValue(new Vector3(0.05f, 0.05f, 0f));
+				TrippyRainbowEffect.Parameters["uScreenResolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight) / 6f);
+				TrippyRainbowEffect.Parameters["uOpacity"].SetValue(0.15f * Filters.Scene["SGAmod:ScreenWave"].GetShader().CombinedOpacity);
+				TrippyRainbowEffect.Parameters["uDirection"].SetValue(new Vector2(1f, Main.GlobalTime * 0.1f));
+				TrippyRainbowEffect.Parameters["uIntensity"].SetValue(1f);
+				TrippyRainbowEffect.Parameters["uScreenPosition"].SetValue(Main.screenPosition / 500f);
+				TrippyRainbowEffect.Parameters["uTargetPosition"].SetValue(Main.screenPosition / 500f);
+				TrippyRainbowEffect.Parameters["uProgress"].SetValue(Main.GlobalTime * 0.05f);
+				TrippyRainbowEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("TiledPerlin"));
+				TrippyRainbowEffect.CurrentTechnique.Passes["ScreenTrippy"].Apply();
+
+				spriteBatch.Draw(Main.blackTileTexture, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, new Rectangle(0, 0, 128, 128), Color.White * 0.25f, -MathHelper.PiOver2, Vector2.One * 56, Vector2.One * 128, SpriteEffects.None, 0f);
+				TrippyRainbowEffect.Parameters["uDirection"].SetValue(new Vector2(1f, Main.GlobalTime * 0.1f));
+				TrippyRainbowEffect.Parameters["uProgress"].SetValue(Main.GlobalTime * 0.0075f);
+				TrippyRainbowEffect.CurrentTechnique.Passes["ScreenTrippy"].Apply();
+
+				spriteBatch.Draw(Main.blackTileTexture, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, new Rectangle(0, 0, 128, 128), Color.White * 0.25f, 0, Vector2.One * 73, Vector2.One * 128, SpriteEffects.None, 0f);
+
+				TrippyRainbowEffect.Parameters["uDirection"].SetValue(new Vector2(1f, Main.GlobalTime * 0.06f));
+				TrippyRainbowEffect.Parameters["uProgress"].SetValue(Main.GlobalTime * 0.0075f);
+				TrippyRainbowEffect.CurrentTechnique.Passes["ScreenTrippy"].Apply();
+
+				spriteBatch.Draw(Main.blackTileTexture, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, new Rectangle(0, 0, 128, 128), Color.White * 0.25f, -MathHelper.PiOver4, Vector2.One * 100, Vector2.One * 128, SpriteEffects.None, 0f);
 
 
-
-
-
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Matrix.Identity);
+			}
 		}
 
 		public override void Activate(Vector2 position, params object[] args) { }
@@ -411,7 +729,7 @@ namespace SGAmod
 		public override bool IsVisible()
 		{
 			bool draw=false;
-			if (!Main.gameMenu && Main.LocalPlayer != null && SGAmod.Instance != null)
+			if (!Main.gameMenu && Main.LocalPlayer != null && SGAmod.Instance != null && Filters.Scene["SGAmod:ScreenWave"].GetShader().CombinedOpacity>0f)
 			{
 				//if (Main.LocalPlayer.HeldItem.type == SGAmod.Instance.ItemType("Expertise"))
 				draw = true;

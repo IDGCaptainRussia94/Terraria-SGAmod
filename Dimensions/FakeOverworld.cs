@@ -97,23 +97,6 @@ namespace SGAmod.Dimensions
             }
 
 
-            //Celular Crap
-
-            for (int passes = 0; passes < 5; passes += 1)
-            {
-                for (int x = 0; x < Main.maxTilesX; x += 1)
-                {
-                    for (int y = 0; y < Main.maxTilesY; y += 1)
-                    {
-                        if (GetTilesAround(x, y, 1) > 4)
-                            Main.tile[x, y].active(true);
-                        else
-                            Main.tile[x, y].active(false);
-                    }
-                }
-            }
-
-
             //Hills
             for (int totalpass = 0; totalpass < 3; totalpass += 1)
             {
@@ -162,34 +145,26 @@ namespace SGAmod.Dimensions
                 }
             }
 
+            //Celular Crap
+
+            for (int passes = 0; passes < 5; passes += 1)
+            {
+                for (int x = 0; x < Main.maxTilesX; x += 1)
+                {
+                    for (int y = 0; y < Main.maxTilesY; y += 1)
+                    {
+                        if (GetTilesAround(x, y, 1) > 4)
+                            Main.tile[x, y].active(true);
+                        else
+                            Main.tile[x, y].active(false);
+                    }
+                }
+            }
+
             WorldGen._genRandSeed = lastseed;
 
         }
 
-        public bool InsideMap(int x, int y)
-        {
-            return x >= 0 && y >= 0 && x < Main.maxTilesX && y < Main.maxTilesY;
-        }
-
-        public int GetTilesAround(int xx, int yy, int buffer = 1)
-        {
-            int tilecount = 0;
-            for (int x = xx - buffer; x <= xx + buffer; x += 1)
-            {
-                for (int y = yy - buffer; y <= yy + buffer; y += 1)
-                {
-                    if (InsideMap(x, y))
-                    {
-                        if (Main.tile[x, y].active())
-                        {
-                            tilecount += 1;
-                        }
-                    }
-                }
-            }
-            return tilecount;
-
-        }
         public override List<GenPass> tasks { get; }
 
         public FakeOverworld()

@@ -16,7 +16,7 @@ using SGAmod.Effects;
 namespace SGAmod.Items.Weapons
 {
 
-	public class AvaliScythe : SeriousSamWeapon
+	public class AvaliScythe : SeriousSamWeapon,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -251,12 +251,12 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class CyberScythe : AvaliScythe
+	public class CyberScythe : AvaliScythe,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cyber Scythe");
-			Tooltip.SetDefault("Spins a duo-Cybernetic Scythe around the player\nThe blades expand to reach your mouse curser's distance\nDoes more damage further out and hits more often as it charges up" +
+			Tooltip.SetDefault("Spins a duo-Cybernetic Scythe around the player\nThe blades expand to reach your mouse cursor's distance\nDoes more damage further out and hits more often as it charges up" +
 				"\nAfter holding for a short while, release to throw the weapon\nWhen thrown, Does throwing damage and deals more\nConsumes Electric Charge; requires more the longer you charge it up");
 			Item.staff[item.type] = true;
 		}
@@ -484,8 +484,9 @@ namespace SGAmod.Items.Weapons
 
 					if (Main.netMode != NetmodeID.Server && master.ai[1] < 1)
 					{
-						projectile.ai[0] += ((Main.MouseWorld - owner.MountedCenter).Length() - projectile.ai[0]) / (1000f / ((master.ai[0] * owner.meleeSpeed) + 1));
-						projectile.ai[0] = Math.Max(Math.Min(160, master.ai[0] * 20), Math.Min(projectile.ai[0], 600f * owner.meleeSpeed));
+						float speedrate = (1000f / (((master.ai[0]*2f) * owner.meleeSpeed) + 1));
+						projectile.ai[0] += ((Main.MouseWorld - owner.MountedCenter).Length() - projectile.ai[0]) / speedrate;
+						projectile.ai[0] = Math.Max(Math.Min(160, master.ai[0] * 20), Math.Min(projectile.ai[0], 600f / owner.meleeSpeed));
 						projectile.netUpdate = true;
 					}
 				}
@@ -546,7 +547,7 @@ namespace SGAmod.Items.Weapons
 				basicEffect.Projection = WVP.Projection();
 				basicEffect.VertexColorEnabled = true;
 				basicEffect.TextureEnabled = true;
-				basicEffect.Texture = SGAmod.ExtraTextures[21];
+				basicEffect.Texture = Main.extraTexture[21];
 
 
 				int totalcount = 3 + (int)div2;
@@ -635,7 +636,7 @@ namespace SGAmod.Items.Weapons
         }
     }
 
-	public class LaserLance : SeriousSamWeapon
+	public class LaserLance : SeriousSamWeapon,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -835,7 +836,7 @@ namespace SGAmod.Items.Weapons
 namespace SGAmod.HavocGear.Items.Weapons
 {
 
-	public class RedPhasebrand : AvaliScythe
+	public class RedPhasebrand : AvaliScythe,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{

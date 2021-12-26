@@ -31,8 +31,8 @@ namespace SGAmod.Items.Weapons
 			item.useTime = 30;
 			item.useAnimation = 30;
 			item.useStyle = 1;
-			item.knockBack = 10;
-			item.value = 100000;
+			item.knockBack = 2;
+			item.value = 75000;
 			item.noMelee = true;
 			item.rare = 5;
 			item.shoot = 10;
@@ -43,22 +43,15 @@ namespace SGAmod.Items.Weapons
 
 		}
 
+		public void Limit(Player player)
+        {
+			SGAPlayer.LimitProjectiles(player, 1, new int[] { ModContent.ProjectileType<SnowfallCloud>(), ModContent.ProjectileType<SnowCloud>(), ModContent.ProjectileType<CursedHailCloud>(), ModContent.ProjectileType<CursedHailProj>(), ModContent.ProjectileType<YellowWinterCloud>(), ModContent.ProjectileType<YellowWinterProj>() });
+		}
+
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 
-			/*int projcount=player.ownedProjectileCounts[mod.ProjectileType("SnowfallCloud")]+player.ownedProjectileCounts[mod.ProjectileType("SnowCloud")];
-
-			if (projcount>1){
-			for (int i = 0; i < Main.maxProjectiles; i++)
-			{
-				Projectile him=Main.projectile[i];
-				if (him.type==mod.ProjectileType("SnowfallCloud") || him.type==mod.ProjectileType("SnowCloud")){
-				if (him.active && him.owner==projectile.owner){
-				him.Kill();
-				break;
-			}}}}*/
-
-			SGAPlayer.LimitProjectiles(player, 1, new ushort[] { (ushort)mod.ProjectileType("SnowfallCloud"), (ushort)mod.ProjectileType("SnowCloud"), (ushort)mod.ProjectileType("CursedHailCloud"), (ushort)mod.ProjectileType("CursedHailCloud") });
+			Limit(player);
 
 			int theproj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, mod.ProjectileType("SnowfallCloud"), damage, knockBack, player.whoAmI);
 			float num12 = (float)Main.mouseX + Main.screenPosition.X;
@@ -153,7 +146,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class CursedHail : ModItem
+	public class CursedHail : Snowfall
 	{
 		public override void SetStaticDefaults()
 		{
@@ -171,8 +164,8 @@ namespace SGAmod.Items.Weapons
 			item.useTime = 30;
 			item.useAnimation = 30;
 			item.useStyle = 1;
-			item.knockBack = 10;
-			item.value = 10000;
+			item.knockBack = 2;
+			item.value = 200000;
 			item.noMelee = true;
 			item.rare = ItemRarityID.Lime;
 			item.shoot = 10;
@@ -186,7 +179,7 @@ namespace SGAmod.Items.Weapons
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 
-			SGAPlayer.LimitProjectiles(player, 1, new ushort[] { (ushort)mod.ProjectileType("SnowfallCloud"), (ushort)mod.ProjectileType("SnowCloud"), (ushort)mod.ProjectileType("CursedHailCloud"), (ushort)mod.ProjectileType("CursedHailCloud") });
+			Limit(player);
 
 			int theproj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, mod.ProjectileType("CursedHailProj"), damage, knockBack, player.whoAmI);
 			float num12 = (float)Main.mouseX + Main.screenPosition.X;
@@ -284,9 +277,7 @@ namespace SGAmod.Items.Weapons
 			projectile.tileCollide = false;
 		}
 
-
 	}
-
 
 	public class CursedHailProjectile : ModProjectile
 	{
@@ -358,6 +349,138 @@ namespace SGAmod.Items.Weapons
 		}
 
 	}
+
+	public class YellowWinter : Snowfall
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Yellow Winter");
+			Tooltip.SetDefault("Summon a golden cloud to shower your foes with yellow snow\nLimits 2 clouds at a time");
+		}
+
+		public override void SetDefaults()
+		{
+			item.summon = true;
+			item.damage = 40;
+			item.mana = 50;
+			item.width = 44;
+			item.height = 52;
+			item.useTime = 30;
+			item.useAnimation = 30;
+			item.useStyle = 1;
+			item.knockBack = 2;
+			item.value = 100000;
+			item.noMelee = true;
+			item.rare = ItemRarityID.Yellow;
+			item.shoot = 10;
+			item.shootSpeed = 10f;
+			item.UseSound = SoundID.Item60;
+			item.autoReuse = true;
+			item.useTurn = false;
+
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+
+			Limit(player);
+
+			int theproj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, mod.ProjectileType("YellowWinterProj"), damage, knockBack, player.whoAmI);
+			float num12 = (float)Main.mouseX + Main.screenPosition.X;
+			float num13 = (float)Main.mouseY + Main.screenPosition.Y;
+			HalfVector2 half = new HalfVector2(num12, num13);
+			Main.projectile[theproj].ai[0] = ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
+			Main.projectile[theproj].netUpdate = true;
+			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<Snowfall>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<Consumables.DivineShower>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<Consumables.Jarate>(), 5);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+
+		}
+
+
+	}
+
+	public class YellowWinterProj : SnowfallCloud
+	{
+
+		public override void SetDefaults()
+		{
+			projectile.width = 30;
+			projectile.height = 30;
+			//projectile.aiStyle = 1;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			//projectile.magic = true;
+			//projectile.penetrate = 1;
+			projectile.timeLeft = 60 * 30;
+			projectile.tileCollide = false;
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Item_" + 5; }
+		}
+		public override void AI()
+		{
+
+			Vector2 gohere = new HalfVector2() { PackedValue = ReLogic.Utilities.ReinterpretCast.FloatAsUInt(projectile.ai[0]) }.ToVector2();
+			Vector2 anglevect = (gohere - projectile.position);
+			float length = anglevect.Length();
+			anglevect.Normalize();
+			projectile.velocity = (10f * anglevect);
+			bool reached = (length < projectile.velocity.Length() + 1f);
+			for (int q = 0; q < (reached ? 40 : 4); q++)
+			{
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+				float reachfloat = reached ? 0f : 1f;
+				int dust = Dust.NewDust(projectile.position - new Vector2(8, 0), 16, 16, DustID.Smoke, ((projectile.velocity.X * 0.75f) * reachfloat) + (randomcircle * (reached ? 12f : 0f)).X, ((projectile.velocity.Y * 0.75f) * reachfloat) + (randomcircle * (reached ? 4f : 0f)).Y, 100, Color.Yellow, 3f);
+				Main.dust[dust].noGravity = true;
+			}
+			if (reached)
+			{
+				int theproj = Projectile.NewProjectile(projectile.position.X + 16f, projectile.position.Y, 0f, 0f, ModContent.ProjectileType<YellowWinterCloud>(), projectile.damage, projectile.knockBack, projectile.owner);
+				Main.projectile[theproj].friendly = true;
+				Main.projectile[theproj].hostile = false;
+				Main.projectile[theproj].timeLeft = projectile.timeLeft;
+				Main.projectile[theproj].netUpdate = true;
+				projectile.Kill();
+
+			}
+
+		}
+
+	}
+	public class YellowWinterCloud : SnowCloud
+	{
+
+		public override int projectileid => ModContent.ProjectileType<JarateShurikensProg>();
+		public override Color colorcloud => Color.Yellow;
+		public override int rate => 5;
+
+		public override void SetDefaults()
+		{
+			projectile.width = 30;
+			projectile.height = 30;
+			//projectile.aiStyle = 1;
+			projectile.friendly = false;
+			projectile.hostile = true;
+			//projectile.magic = true;
+			//projectile.penetrate = 1;
+			projectile.timeLeft = 600;
+			projectile.tileCollide = false;
+		}
+
+	}
+
 
 	public class RubiedBlade : ModItem
 	{
@@ -477,7 +600,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Star'Fish' Burster");
-			Tooltip.SetDefault("Fires 4 starfish in bursts at the cost of 1, but requires a small amount of mana\nStarfish bounce off walls and pierce\nuses Starfish as ammo");
+			Tooltip.SetDefault("Fires 4 starfish in bursts at the cost of 1, but requires a small amount of mana\nStarfish bounce off walls and pierce\nUses Starfish as ammo\n90% to not consume ammo");
 		}
 		public override bool CanUseItem(Player player)
 		{
@@ -581,7 +704,7 @@ namespace SGAmod.Items.Weapons
 						player.itemTime = 90;
 
 					}
-					player.CheckMana(60,true);
+					player.CheckMana(item,60,true);
 					player.manaRegenDelay = 1200;
 				}
 
@@ -786,11 +909,11 @@ namespace SGAmod.NPCs
 	public class CirnoBoltPlayer : CirnoBolt
 	{
 
-		double keepspeed = 0.0;
-		float homing = 0.05f;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cirno's Grace");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override void SetDefaults()
@@ -799,6 +922,8 @@ namespace SGAmod.NPCs
 			projectile.hostile = false;
 			projectile.friendly = true;
 			projectile.coldDamage = true;
+			keepspeed = 0.0;
+			homing = 0.05f;
 		}
 
 		public override void AI()

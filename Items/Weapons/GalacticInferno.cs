@@ -52,7 +52,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("UnmanedSword"), 1);
 			recipe.AddIngredient(ItemID.DD2SquireDemonSword, 1);
 			recipe.AddIngredient(ItemID.BrokenHeroSword, 1);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 6);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 20);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this, 1);

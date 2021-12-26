@@ -19,7 +19,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Solis Nova");
-			Tooltip.SetDefault("Conjures the power of a gravitational Galaxy through channeling mana\nAfter charging enough, gains the ability to slow enemies down and pull them in\nGravity is based on Galaxy size, enemy distance, and enemy knockback resistance\nWhen fully charged, releasing dispurses the nebula over a massive area\n'fear the mighty pull of the Pastel-Colored Galaxy!'");
+			Tooltip.SetDefault("Conjures the power of a gravitational galaxy through channeling mana\nAfter charging enough, gains the ability to slow enemies down and pull them in\nGravity is based on Galaxy size, enemy distance, and enemy knockback resistance\nWhen fully charged, releasing disperses the galaxy over a massive area\n'fear the mighty pull of the Pastel-Colored Galaxy!'");
 		}
 
 		public override void SetDefaults()
@@ -199,7 +199,7 @@ namespace SGAmod.Items.Weapons
 					for (int i = 0; i < Main.maxNPCs; i += 1)
 					{
 						NPC guy = Main.npc[i];
-						if (guy != null && guy.active && !guy.friendly && !guy.townNPC && guy.CanBeChasedBy())
+						if (guy != null && guy.active && !guy.friendly && !guy.townNPC && guy.CanBeChasedBy() && !guy.IsDummy())
 						{
 							Vector2 there = guy.Center - projectile.Center;
 							there.Normalize();
@@ -221,7 +221,7 @@ namespace SGAmod.Items.Weapons
 					}
 				}
 
-				if (((projectile.ai[0] > 0 || !player.CheckMana(10)) || !player.channel) && projectile.ai[1]>1)
+				if (((projectile.ai[0] > 0 || !player.CheckMana(player.HeldItem,10)) || !player.channel) && projectile.ai[1]>1)
 				{
 					projectile.ai[0] += 1;
 					if (projectile.ai[0] == 1)
@@ -245,7 +245,7 @@ namespace SGAmod.Items.Weapons
 
 						if (projectile.ai[1] % 6 == 0)
 						{
-							player.CheckMana((int)(0.20f + (growsize / 20f)),true);
+							player.CheckMana(player.HeldItem,(int)(0.20f + (growsize / 20f)),true);
 							if (player.statMana < 1 && player.manaFlower)
 								player.QuickMana();
 						}

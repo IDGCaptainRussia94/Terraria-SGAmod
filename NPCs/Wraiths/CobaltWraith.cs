@@ -309,7 +309,7 @@ namespace SGAmod.NPCs.Wraiths
 						npc.velocity = npc.velocity * 0.86f;
 						if (npc.ai[0] % 20 == 0 && npc.ai[0] % 900 > 650)
 						{
-							NPC findthem = Main.npc[NPC.FindFirstNPC(mod.NPCType("CobaltWraith"))];
+							//NPC findthem = Main.npc[NPC.FindFirstNPC(mod.NPCType("CobaltWraith"))];
 							//int arrowType = SGAWorld.NightmareHardcore > 0 && !(findthem.modNPC as CobaltWraith).raged ? mod.ProjectileType("UnmanedArrow2") : ProjectileID.WoodenArrowHostile;
 							int arrowType = ProjectileID.WoodenArrowHostile;
 							List<Projectile> one = Idglib.Shattershots(npc.Center, npc.Center + new Vector2(-15 * npc.spriteDirection, 0), new Vector2(0, 0), arrowType, 20, 20, 0, 1, true, (Main.rand.Next(-100, 100) * 0.000f) - npc.rotation, true, 300);
@@ -612,7 +612,7 @@ return true;
 			get { return ("SGAmod/NPCs/TPD"); }
 		}
 
-		public override string BossHeadTexture => "Terraria/Item_" + ItemID.CobaltHelmet;
+		public override string BossHeadTexture => "SGAmod/NPCs/Wraiths/CobaltWraith_Head_Boss";
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
@@ -660,12 +660,14 @@ return true;
 			for (ammount = 0; ammount < 1; ammount += 1)
 				types.Insert(types.Count, ItemID.SoulofNight);
 
-			for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
+			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
+
+			/*for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0, types.Count)]);
-			}
+			}*/
 
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("WraithFragment4"), Main.expertMode ? 25 : 10);
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("WraithFragment4"), Main.expertMode ? 25 : 10);
 
 			Achivements.SGAAchivements.UnlockAchivement("Cobalt Wraith", Main.LocalPlayer);
 			if (SGAWorld.downedWraiths < 2)
@@ -729,7 +731,7 @@ return true;
 			else
 			{
 				if ((P.Center - npc.Center).Length() < 700)
-					npc.timeLeft = 250;
+					npc.timeLeft = Math.Max(npc.timeLeft, 500);
 				base.AI();
 				if (npc.ai[0] > 10) { npc.ai[0]++; }
 				if (npc.ai[0] == 1)

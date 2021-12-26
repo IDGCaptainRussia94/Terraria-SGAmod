@@ -285,6 +285,8 @@ namespace SGAmod.NPCs.Wraiths
 	{
 		public string Trophy() => "LuminiteWraithTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
+		public string RelicName() => "Luminite_Wraith";
+		public void NoHitDrops() { }
 
 		public int level = 0;
 		public Vector2 dodge = new Vector2(0f, 0f);
@@ -361,10 +363,14 @@ namespace SGAmod.NPCs.Wraiths
 				if (SGAWorld.downedWraiths > 2)
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("LuminiteWraithNotch"));
 			}
-			for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
+
+			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
+
+			/*for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0, types.Count)]);
-			}
+			}*/
+
 			Achivements.SGAAchivements.UnlockAchivement("Luminite Wraith", Main.LocalPlayer);
 			if (Main.expertMode)
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CosmicFragment"));
@@ -410,7 +416,7 @@ namespace SGAmod.NPCs.Wraiths
 			get { return ("SGAmod/NPCs/TPD"); }
 		}
 
-		public override string BossHeadTexture => "Terraria/Projectile_538";
+		public override string BossHeadTexture => "SGAmod/NPCs/Wraiths/LuminiteWraith_Head_Boss";
 
         public override bool CheckActive()
         {
@@ -669,7 +675,7 @@ namespace SGAmod.NPCs.Wraiths
 			//float moveval=(float)(Math.Sin(npc.ai[0]/600f)*40f);
 			Vector2 loc = new Vector2(0f, -250f) + dodge;
 			npc.dontTakeDamage = false;
-			npc.GivenName = "The Luminite Wraith";
+			npc.GivenName = music == MusicID.LunarBoss ? "The Luminite Wraith" : "Terra Wraith";
 			doingCharge -= 1;
 			if (fighttversion == 0 && warninglevel > 30)
 			{

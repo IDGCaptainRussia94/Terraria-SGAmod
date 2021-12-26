@@ -42,18 +42,6 @@ namespace SGAmod.NPCs.SpiderQueen
             {
                 projectile.Kill();
             }
-            else
-            {
-                Main.PlaySound(SoundID.Item10,projectile.Center);
-                if (projectile.velocity.X != oldVelocity.X)
-                {
-                    projectile.velocity.X = -oldVelocity.X;
-                }
-                if (projectile.velocity.Y != oldVelocity.Y)
-                {
-                    projectile.velocity.Y = -oldVelocity.Y;
-                }
-            }
             return false;
         }
 

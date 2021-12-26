@@ -12,14 +12,14 @@ namespace SGAmod.HavocGear.Projectiles
     	public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Kelvin");
-			ProjectileID.Sets.YoyosLifeTimeMultiplier[projectile.type] = 2.2f;
-			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 200f;
+			ProjectileID.Sets.YoyosLifeTimeMultiplier[projectile.type] = 2.5f;
+			ProjectileID.Sets.YoyosMaximumRange[projectile.type] = 220f;
 			ProjectileID.Sets.YoyosTopSpeed[projectile.type] = 14f;
 		}
        
 	public override void SetDefaults()
         {
-        	Projectile refProjectile = new Projectile();
+			Projectile refProjectile = new Projectile();
 			refProjectile.SetDefaults(ProjectileID.TheEyeOfCthulhu);
 			projectile.extraUpdates = 0;
 			projectile.width = 16;
@@ -29,9 +29,17 @@ namespace SGAmod.HavocGear.Projectiles
 			projectile.penetrate = -1;
 			projectile.melee = true;
 			projectile.scale = 1f;
-        }
-	
-	public override void AI()
+		}
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+			if (target.lavaImmune)
+			{
+				damage = (int)(damage * 1.25f);
+			}
+
+		}
+
+        public override void AI()
 	{
 		if (Main.rand.Next(3) == 0)
 		{
@@ -49,7 +57,7 @@ namespace SGAmod.HavocGear.Projectiles
         {
         	Player player = Main.player[projectile.owner];
 		target.immune[projectile.owner] = 2;
-		target.AddBuff(mod.BuffType("ThermalBlaze"), 120);
-    	}
+		target.AddBuff(ModContent.BuffType<Buffs.LavaBurn>(), 120);
+		}
     }
 }

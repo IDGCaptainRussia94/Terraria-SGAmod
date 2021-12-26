@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 
 namespace SGAmod.NPCs.TownNPCs
 {
@@ -67,11 +67,17 @@ namespace SGAmod.NPCs.TownNPCs
 
 		public override void HitEffect(int hitDirection, double damage)
 		{
-			/*int num = npc.life > 0 ? 1 : 5;
-			for (int k = 0; k < num; k++)
+			if (npc.life <= 0)
 			{
-				Dust.NewDust(npc.position, npc.width, npc.height, mod.DustType("Sparkle"));
-			}*/
+
+				Gore.NewGore(npc.position, npc.velocity, mod.GetGoreSlot("Gores/Goat_head_gib"), 1f);
+
+				for (int k = 0; k < 2; k++)
+				{
+					Gore.NewGore(npc.position, npc.velocity, mod.GetGoreSlot("Gores/Goat_leg_gib"), 1f);
+					Gore.NewGore(npc.position, npc.velocity, mod.GetGoreSlot("Gores/Goat_arm_gib"), 1f);
+				}
+			}
 		}
 
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
@@ -131,12 +137,12 @@ namespace SGAmod.NPCs.TownNPCs
 			chat.Add("I love Draken so much");
 			chat.Add("Only the best goat for the best derg");
 			chat.Add("[i: " + ModContent.ItemType<YellowHeart>() + "] the Derg");
-			chat.Add("I never felt true plutonic love til I met Draken");
+			chat.Add("I never felt true platonic love til I met Draken");
 			if (Main.dayTime)
 			{
 				chat.Add(Main.raining ? "Rain rain, go away, come back another day" : "today is beautiful");
 				chat.Add("Thankfully it isn't too hot");
-				chat.Add(Main.raining ? "Atleast it's cool out" : "What a lovely day");
+				chat.Add(Main.raining ? "At least it's cool out" : "What a lovely day");
 			}
 			else
 			{
@@ -182,14 +188,28 @@ namespace SGAmod.NPCs.TownNPCs
 			shop.item[nextSlot].SetDefaults(mod.ItemType("UnderTheWaterfallPainting"));
 			shop.item[nextSlot].value = Item.buyPrice(1,0);
 			nextSlot += 1; 
+
 			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientSpaceDiverHelmet"));
 			nextSlot += 1; 		
 			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientSpaceDiverChestplate"));
 			nextSlot += 1; 		
 			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientSpaceDiverLeggings"));
 			nextSlot += 1;
+			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientUnmanedHood"));
+			nextSlot += 1; 		
+			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientUnmanedBreastplate"));
+			nextSlot += 1; 		
+			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientUnmanedLeggings"));
+			nextSlot += 1;
+
 			shop.item[nextSlot].SetDefaults(mod.ItemType("MasterfullyCraftedHatOfTheDragonGods"));
 			nextSlot += 1;
+			shop.item[nextSlot].SetDefaults(mod.ItemType("JoyfulShroom"));
+			shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 10, 0, 0);
+			nextSlot += 1;			
+			shop.item[nextSlot].SetDefaults(mod.ItemType("AvariceRingWeaker"));
+			shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 75, 0, 0);
+			nextSlot += 1;			
 			shop.item[nextSlot].SetDefaults(mod.ItemType("NoHitCharmlv1"));
 			shop.item[nextSlot].shopCustomPrice = Item.buyPrice(1, 0, 0, 0);
 			nextSlot += 1;

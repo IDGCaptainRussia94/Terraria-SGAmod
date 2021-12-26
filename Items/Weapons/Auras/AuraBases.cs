@@ -42,7 +42,9 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-				tooltips.Add(new TooltipLine(mod, "AuraUse", "Reusing the item consumes an extra minion slot and increases the current Aura Strength"));
+			Color c = Placeable.TechPlaceable.LuminousAlterItem.AuroraLineColor;
+			tooltips.Add(new TooltipLine(mod, "Plasma Item", Idglib.ColorText(c, "Aura weapons affect all around the player, friend and foe alike")));
+			tooltips.Add(new TooltipLine(mod, "AuraUse", Idglib.ColorText(c, "Reusing the item consumes an extra minion slot and increases the current Aura Strength")));
 			//tooltips.Add(new TooltipLine(mod, "AuraUse", "Alt Fire to relocate the Aura, Alt Fire again to return it to you"));
 		}
 
@@ -65,6 +67,7 @@ namespace SGAmod.Items.Weapons.Auras
 						if (((float)player.maxMinions - player.GetModPlayer<SGAPlayer>().GetMinionSlots) >= 1)
 						{
 							Main.projectile[i].ai[0] += 1f;
+							Main.projectile[i].damage = damage;
 							Main.projectile[i].netUpdate = true;
 						}
 					}
@@ -80,7 +83,9 @@ namespace SGAmod.Items.Weapons.Auras
 	public class AuraMinion : ModProjectile
 	{
 		protected virtual int BuffType => ModContent.BuffType<AuraBuffStone>();
-		protected virtual float AuraSize => 160;
+		protected Player Player => Main.player[projectile.owner];
+		protected virtual float _AuraSize => 160;
+		protected virtual float AuraSize => _AuraSize;// * Player.SGAPly().auraBoosts.Item2;
 		protected float thesize = 0;
 		public float thepower = 0;
 
@@ -103,13 +108,19 @@ namespace SGAmod.Items.Weapons.Auras
 
 		public virtual float CalcAuraPower(Player player)
 		{
-			thepower = (player.minionDamage * (1f + (projectile.minionSlots / 3f)));
+			float temp = (player.minionDamage * (1f + (projectile.minionSlots / 3f)));
+			return temp;
+		}
+
+		public float CalcAuraPowerReal(Player player)
+		{
+			thepower = CalcAuraPower(player)+player.SGAPly().auraBoosts.Item1;
 			return thepower;
 		}
 
 		public virtual float CalcAuraSize(Player player)
 		{
-			return AuraSize * (float)Math.Pow((double)CalcAuraPower(player),0.80);
+			return (AuraSize * (float)Math.Pow((double)CalcAuraPowerReal(player),0.80));
 		}
 
 		public override void SetDefaults()

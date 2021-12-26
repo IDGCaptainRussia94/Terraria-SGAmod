@@ -16,17 +16,60 @@ using Idglibrary;
 using Terraria.Graphics.Effects;
 using Microsoft.Xna.Framework.Audio;
 using Terraria.DataStructures;
+using Terraria.Utilities;
+using SGAmod.Items;
 
 namespace SGAmod.NPCs
 {
+	[AutoloadBossHead]
 	public class PrismBanshee : ModNPC
 	{
 		public int bansheeState = 0;
 		public int maxattacktime = 300;
+		public int expectedHandCount = 2;
+		public int essenceCollected = 0;
+		public int essenceCollectedTimer = 0;
+
+		public void CollectEssence(int ammount)
+		{
+			if (essenceCollectedTimer > 0)
+				return;
+
+			foreach (NPC hands in Main.npc.Where(myhands => myhands.active && myhands.type == ModContent.NPCType<PrismBansheeHand>() && (int)myhands.ai[1] == npc.whoAmI).ToList())
+			{
+				for (int i = 0; i < 32; i += 1)
+				{
+					Vector2 position = new Vector2(Main.rand.Next(-12,12), Main.rand.Next(-12,12));
+					int num128 = Dust.NewDust(hands.Center + position, 0, 0, 254, 0, 0, 240, Color.Pink, 1f);
+					Main.dust[num128].noGravity = true;
+					Main.dust[num128].scale = 2f;
+					Main.dust[num128].color = Color.Pink;
+					Main.dust[num128].velocity = (Vector2.Normalize(position) * 6f) + (npc.velocity * 4.5f);
+				}
+
+				SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)hands.Center.X, (int)hands.Center.Y, 5);
+				if (sound != null)
+					sound.Pitch = -0.75f+(essenceCollected / 6f);
+
+			}
+
+			essenceCollected += ammount;
+			if (essenceCollected > 10)
+			{
+
+				SoundEffectInstance sound2 = Main.PlaySound(SoundID.Zombie, (int)npc.Center.X, (int)npc.Center.Y, 73);
+				if (sound2 != null)
+					sound2.Pitch = 0.75f;
+
+				essenceCollected = 0;
+				essenceCollectedTimer = 600;
+			}
+		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismic Banshee");
-			Main.npcFrameCount[npc.type] = 1;
+			Main.npcFrameCount[npc.type] = 2;
 			NPCID.Sets.MustAlwaysDraw[npc.type] = true;
 		}
 
@@ -40,20 +83,22 @@ namespace SGAmod.NPCs
         {
 			writer.Write(bansheeState);
 			writer.Write(maxattacktime);
+			writer.Write(expectedHandCount);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
 			bansheeState = reader.ReadInt32();
 			maxattacktime = reader.ReadInt32();
+			expectedHandCount = reader.ReadInt32();
 		}
 
 		public void ChangeHit(ref int damage, ref bool crit,int player,Projectile proj)
         {
 			if (npc.ai[0] < 900)
 			{
-				damage = (int)(damage * 0.25f);
-				crit = false;
+				//damage = (int)(damage * 0.25f);
+				//crit = false;
 			}
 			bool pickedone = false;
 			foreach(NPC giveMeAHandWouldYa in Main.npc.Where(myhands => myhands.active && myhands.type == ModContent.NPCType<PrismBansheeHand>() && (int)myhands.ai[1] == npc.whoAmI && (myhands.modNPC as PrismBansheeHand).blockTime<1))
@@ -88,8 +133,8 @@ namespace SGAmod.NPCs
 
         public override void SetDefaults()
 		{
-			npc.lifeMax = 80000;
-			npc.defense = 75;
+			npc.lifeMax = Main.expertMode ? 80000 : 50000;
+			npc.defense = 50;
 			npc.damage = 0;
 			npc.scale = 1f;
 			npc.width = 48;
@@ -107,21 +152,28 @@ namespace SGAmod.NPCs
 			npc.HitSound = SoundID.NPCHit7;
 			npc.DeathSound = SoundID.NPCDeath6;
 			npc.value = Item.buyPrice(0, 5, 0);
+			npc.SGANPCs().dotResist = 0.10f;
 		}
-		public override string Texture
+		/*public override string Texture
 		{
-			get { return ("Terraria/Projectile_" + ProjectileID.Starfury); }
-		}
+			get { return ("SGAmod/Items/Consumables/PrismaticBansheeStar"); }
+		}*/
 
         public override void NPCLoot()
         {
-			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AuroraTear"), Main.expertMode ? 2 : 1);
-			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(12, Main.expertMode ? 30 : 20));
-			SGAWorld.downedPrismBanshee = true;
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AuroraTear"), (Main.expertMode ? 2 : 1)*(2-(int)npc.ai[3]));
+			//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(12, Main.expertMode ? 30 : 20) * (2 - (int)npc.ai[3]));
+			if (SGAWorld.downedPrismBanshee<1)
+			SGAWorld.downedPrismBanshee = 1;
+			if (npc.ai[3] < 1 && SGAWorld.downedPrismBanshee<2)
+				SGAWorld.downedPrismBanshee = 2;
+
 		}
 
         public void DoAttacks()
 		{
+
+			essenceCollectedTimer -= 1;
 			float statetimer = npc.ai[0] - 900;
 
 			List<NPC> NPCspirits = Main.npc.Where(spirittest => spirittest.active && spirittest.type == ModContent.NPCType<PrismSpirit>() && (int)spirittest.ai[1] == npc.whoAmI).ToList();
@@ -137,8 +189,35 @@ namespace SGAmod.NPCs
 					bansheeState = 2;
 					maxattacktime = 600;
 				}
+
+				if (essenceCollectedTimer > 0 || (Main.rand.Next(0, 4) == 0 && npc.ai[3] < 1))
+				{
+					bansheeState = 3;
+					maxattacktime = 460;
+				}
+
 				//Filters.Scene.Activate("SGAmod:Shockwave", proj.Center, new object[0]).GetShader().UseColor(rippleCount, rippleSize, expandRate).UseTargetPosition(proj.Center);
 				npc.netUpdate = true;
+			}
+
+			if (bansheeState == 3)
+            {
+				if (statetimer == 60)
+                {
+					npc.velocity = Vector2.Zero;
+					Vector2 starterPos = npc.Center + new Vector2(0, -46);
+					Projectile.NewProjectile(starterPos, Vector2.Normalize(Main.player[npc.target].Center - starterPos) * 2f, ModContent.ProjectileType<BansheeBeam>(), 100, 16);
+
+                }
+
+				if (statetimer > 40 && statetimer<450)
+				{
+					if (Main.netMode != 2)
+					{
+						Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/PrismicBanshee");
+						npc.frame = new Rectangle(0, tex.Height / 2, tex.Width, tex.Height / 2);
+					}
+				}
 			}
 
 
@@ -148,14 +227,21 @@ namespace SGAmod.NPCs
 				{
 					if (!Filters.Scene["SGAmod:ShockwaveBanshee"].IsActive())
 					{
-						Main.NewText("work!");
+						//Main.NewText("work!");
 						Filters.Scene.Activate("SGAmod:ShockwaveBanshee", npc.Center, new object[0]).GetShader().UseColor(5f, 2f, 10f).UseTargetPosition(npc.Center);
 					}
 
 
 					float progress = (400 - statetimer) / 2400f;
 					if (statetimer >= 400)
+					{
 						progress = MathHelper.Clamp((statetimer - 400f) / 200f, 0f, 1f);
+						if (Main.netMode != 2)
+						{
+							Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/PrismicBanshee");
+							npc.frame = new Rectangle(0, tex.Height / 2, tex.Width, tex.Height / 2);
+						}
+					}
 
 					float alpha = Math.Min(statetimer, 100f);
 
@@ -179,11 +265,12 @@ namespace SGAmod.NPCs
 				}
 				if (statetimer == 400)
 				{
+
 					SoundEffectInstance sound = Main.PlaySound(SoundID.Roar, (int)npc.Center.X, (int)npc.Center.Y, 2);
 					if (sound != null)
 						sound.Pitch += 0.75f;
 
-					foreach(Player player2 in Main.player.Where(testplayer => testplayer.active && Collision.CanHit(testplayer.MountedCenter,1,1,npc.Center,1,1)))
+					foreach(Player player2 in Main.player.Where(testplayer => testplayer.active && Collision.CanHitLine(testplayer.MountedCenter,1,1,npc.Center,1,1)))
                     {
 						player2.Hurt(PlayerDeathReason.ByCustomReason(player2.name+" had their brain popped"), 10000, npc.spriteDirection, Crit: true);
 					}
@@ -211,31 +298,49 @@ namespace SGAmod.NPCs
 			npc.timeLeft = 300;
 			npc.localAI[0] += 1;
 			npc.ai[0] += 1;
+			npc.dontTakeDamage = false;
+
+			if (Main.netMode != 2)
+			{
+				Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/PrismicBanshee");
+				npc.frame = new Rectangle(0, 0, tex.Width, tex.Height / 2);
+			}
+
+			if (npc.ai[3] < 1)
+			{
+				if (expectedHandCount < 6)
+					npc.dontTakeDamage = true;
+				npc.GivenName = "Aurora Banshee";
+			}
+
 			if (npc.ai[0] == 1)
 			{
-				HalfVector2 half = new HalfVector2(-128, 32);
+				HalfVector2 half = new HalfVector2(-128, -40);
 
 				int hand = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismBansheeHand>());
 				Main.npc[hand].ai[1] = npc.whoAmI;
 				Main.npc[hand].ai[2] = ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
+				Main.npc[hand].localAI[2] = expectedHandCount;
 				Main.npc[hand].netUpdate = true;
 
-				half = new HalfVector2(128, 32);
+				half = new HalfVector2(128, -40);
 
 				hand = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismBansheeHand>());
 				Main.npc[hand].ai[1] = npc.whoAmI;
 				Main.npc[hand].ai[2] = ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
+				Main.npc[hand].localAI[2] = expectedHandCount;				
 				Main.npc[hand].netUpdate = true;
 			}
 
-			bool underground = (int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
-
 			Player P = Main.player[npc.target];
+
+			bool underground = ((int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0);
+
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active || !underground)
 			{
 				npc.TargetClosest(false);
 				P = Main.player[npc.target];
-				if (!P.active || P.dead || !Main.dayTime || !underground)
+				if (!P.active || P.dead || !underground)
 				{
 					npc.velocity = new Vector2(npc.velocity.X, npc.velocity.Y + 1f);
 				}
@@ -274,17 +379,74 @@ namespace SGAmod.NPCs
 				else
 				{
 					npc.velocity *= 0.90f;
+
 					DoAttacks();
+
 					if (npc.ai[0] > 900 + maxattacktime)
 					{
 						npc.ai[0] = Main.rand.Next(1, 100);
 						npc.netUpdate = true;
+					} 
+				}
+
+				if (npc.ai[3]< 1 && npc.ai[0] % 91 == 0 && npc.ai[1] < 1 && expectedHandCount<24)
+				{
+					List<NPC> they = Main.npc.Where(myhands => myhands.active && myhands.type == ModContent.NPCType<PrismBansheeHand>() && (int)myhands.ai[1] == npc.whoAmI).ToList();
+					if (Main.npc.Where(myhands => myhands.active && myhands.type == ModContent.NPCType<PrismBansheeHand>() && (int)myhands.ai[1] == npc.whoAmI).ToList().Count < expectedHandCount)
+					{
+						npc.ai[1] = 1;
+						npc.netUpdate = true;
+                    }
+                    else
+                    {
+						int index = 0;
+						List<NPC> they2 = Main.npc.Where(myhands => myhands.active && myhands.type == ModContent.NPCType<PrismBansheeHand>() && (int)myhands.ai[1] == npc.whoAmI && myhands.localAI[2]==expectedHandCount).ToList();
+						if (they2.Count < 2 && they.Count >= 2)
+						{
+							they[0].localAI[2] = expectedHandCount;
+							they[1].localAI[2] = expectedHandCount;
+						}
+
 					}
 				}
+
+				if (npc.ai[1] > 0)
+				{
+					npc.ai[1] += 1;
+
+					if (npc.ai[1] == 120)
+					{
+						if (expectedHandCount<8)
+						expectedHandCount += 1;
+						HalfVector2 half = new HalfVector2(-Main.rand.NextFloat(48, 160), Main.rand.NextFloat(-80, 80));
+
+						int hand = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismBansheeHand>());
+						Main.npc[hand].ai[1] = npc.whoAmI;
+						Main.npc[hand].ai[2] = ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
+						Main.npc[hand].localAI[2] = Math.Min(7,expectedHandCount);
+						Main.npc[hand].netUpdate = true;
+
+						half = new HalfVector2(Main.rand.NextFloat(48, 160), Main.rand.NextFloat(-80, 80));
+
+						hand = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<PrismBansheeHand>());
+						Main.npc[hand].ai[1] = npc.whoAmI;
+						Main.npc[hand].ai[2] = ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue);
+						Main.npc[hand].localAI[2] = Math.Min(7, expectedHandCount);
+						Main.npc[hand].netUpdate = true;
+					}
+
+					if (npc.ai[1] > 240)
+					{
+						npc.ai[1] = -1;
+						npc.velocity *= 0.50f;
+					}
+
+				}
+
 			}
 		}
 
-		public static void DrawPrismCore(SpriteBatch spriteBatch, Color drawColor,Vector2 drawWhere,float rotter,float scale = 1,float scaleup=96)
+        public static void DrawPrismCore(SpriteBatch spriteBatch, Color drawColor,Vector2 drawWhere,float rotter,float scale = 1,float scaleup=96,int startingpoint=0)
         {
 			Vector2 drawPos = drawWhere - Main.screenPosition;
 			Texture2D tex2 = Main.projectileTexture[SGAmod.Instance.ProjectileType("JavelinProj")];
@@ -295,7 +457,8 @@ namespace SGAmod.NPCs
 				{
 					float rotAngle = f + ((rotter + (i / 8f)) / ((-i * 2) + 16f)) * (((i - 24) % 12 == 0) ? 1f : -1f);
 					Vector2 vecAngle = Vector2.UnitX.RotatedBy(rotAngle)*scale;
-					spriteBatch.Draw(tex2, drawPos + vecAngle * i, null, Color.Magenta * peralpha * (1f - (i / 84f)),rotAngle + MathHelper.PiOver2, (tex2.Size() / 2f), scale, SpriteEffects.None, 0f);
+					float fadeOut = 84f * (scaleup/84f);
+					spriteBatch.Draw(tex2, drawPos + vecAngle * (startingpoint+i), null, Color.Magenta * peralpha * (1f - (i / fadeOut)),rotAngle + MathHelper.PiOver2, (tex2.Size() / 2f), scale, SpriteEffects.None, 0f);
 				}
 			}
 
@@ -304,7 +467,7 @@ namespace SGAmod.NPCs
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
 			Vector2 drawPos = npc.Center - Main.screenPosition;
-			Texture2D texture = SGAmod.PrismBansheeTex;
+			Texture2D texture = ModContent.GetTexture("SGAmod/NPCs/PrismicBanshee");// SGAmod.PrismBansheeTex;
 			Texture2D tex = Main.npcTexture[npc.type];
 			//Texture2D tex3 = Main.projectileTexture[ProjectileID.CultistBossIceMist];
 
@@ -312,7 +475,9 @@ namespace SGAmod.NPCs
 
 			float inrc = Main.GlobalTime / 30f;
 
-			DrawPrismCore(spriteBatch,drawColor,npc.Center,npc.localAI[0],npc.scale);
+			float scaleEffect = (float)(Math.Sin((npc.ai[1] / 240f) * MathHelper.Pi));
+
+			DrawPrismCore(spriteBatch,drawColor,npc.Center,npc.localAI[0],npc.scale+(scaleEffect*2f),128,(int)MathHelper.Clamp(npc.localAI[0]/8f,0,24));
 
 			float strength = 1f;
 
@@ -324,7 +489,7 @@ namespace SGAmod.NPCs
 					{
 						Vector2 handoffset = new Vector2(hand.Center.X, hand.position.Y);
 						List<Vector2> trailspots = new List<Vector2>();
-						Vector2 point1 = Vector2.Lerp(npc.Center, handoffset, 0.5f) + new Vector2(0, 96 + (float)Math.Sin(npc.localAI[0] / 40f) * 30f);
+						Vector2 point1 = Vector2.Lerp(npc.Center, handoffset, 0.5f) + new Vector2(0, 128 + (float)Math.Sin(npc.localAI[0] / 40f) * 32f);
 						Vector2 point2 = new HalfVector2() { PackedValue = ReLogic.Utilities.ReinterpretCast.FloatAsUInt(hand.ai[2]) }.ToVector2();
 
 						for (float f = 0; f < 1f; f += 0.02f)
@@ -354,59 +519,65 @@ namespace SGAmod.NPCs
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			Effect hallowed = SGAmod.HallowedEffect;
 
 			hallowed.Parameters["alpha"].SetValue(1);
 			hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
-			hallowed.Parameters["prismAlpha"].SetValue(0.85f);
-			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));
+			hallowed.Parameters["prismAlpha"].SetValue(0);
+			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("TiledPerlin"));
 			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -npc.localAI[0] / 250f, npc.localAI[0] / 150f));
-			hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
+			hallowed.Parameters["overlayAlpha"].SetValue(0.20f);
 			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, npc.localAI[0] / 150f));
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+			hallowed.Parameters["rainbowScale"].SetValue(1f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(2f, 4f));
 
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
-			spriteBatch.Draw(texture, drawPos, null, Color.White, npc.rotation, new Vector2(texture.Width, texture.Height / 1.20f) / 2f, npc.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(texture, drawPos, npc.frame, Color.White, npc.rotation, new Vector2(texture.Width, (texture.Height/2) * 1.15f) / 2f, npc.scale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			hallowed.Parameters["alpha"].SetValue(1);
 			hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
-			hallowed.Parameters["prismAlpha"].SetValue(0.85f);
+			hallowed.Parameters["prismAlpha"].SetValue(0.185f);
 			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));
 			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -npc.localAI[0] / 250f, npc.localAI[0] / 150f));
 			hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
 			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, npc.localAI[0] / 150f));
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+			hallowed.Parameters["rainbowScale"].SetValue(1f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
 
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
-			if (NPCHands.Count > 0)
+				if (NPCHands.Count > 0)
 			{
 				foreach (NPC hand in NPCHands)
 				{
 					PrismBansheeHand myhand = hand.modNPC as PrismBansheeHand;
 					Texture2D handtex = Main.npcTexture[hand.type];
-					spriteBatch.Draw(handtex, new Vector2(hand.Center.X, hand.position.Y) - Main.screenPosition, null, Color.White, hand.rotation, handtex.Size() / 2f, hand.scale, hand.spriteDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+					spriteBatch.Draw(handtex, new Vector2(hand.Center.X, hand.Center.Y) - Main.screenPosition, null, Color.White, hand.rotation, handtex.Size() / 2f, hand.scale, hand.spriteDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 				}
 			}
 
-
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			hallowed.Parameters["alpha"].SetValue(1);
 			hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
-			hallowed.Parameters["prismAlpha"].SetValue(0.80f);
+			hallowed.Parameters["prismAlpha"].SetValue(0.10f);
 			hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("Perlin"));
 			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -npc.localAI[0] / 150f, npc.localAI[0] / 75f));
 			hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
 			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, npc.localAI[0] / 60f));
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+			hallowed.Parameters["rainbowScale"].SetValue(1f);
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(0.25f, 0.25f));
+
 
 			hallowed.CurrentTechnique.Passes["Prism"].Apply();
 
@@ -417,16 +588,62 @@ namespace SGAmod.NPCs
 				foreach (NPC spirit in NPCspirits)
 				{
 					Texture2D handtex = Main.npcTexture[spirit.type];
-					spriteBatch.Draw(handtex, new Vector2(spirit.Center.X, spirit.Center.Y) - Main.screenPosition, new Rectangle(0, ((int)(spirit.localAI[0] / 30f) % 3) * (handtex.Height / 3), handtex.Width, handtex.Height / 3), Color.White, -spirit.velocity.X * 0.05f, new Vector2(handtex.Width, handtex.Height / 3) / 2f, spirit.scale, spirit.spriteDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+					spriteBatch.Draw(handtex, new Vector2(spirit.Center.X, spirit.Center.Y) - Main.screenPosition, new Rectangle(0, ((int)(spirit.localAI[0] / 30f) % 4) * (handtex.Height / 4), handtex.Width, handtex.Height / 4), Color.White, -spirit.velocity.X * 0.05f, new Vector2(handtex.Width, handtex.Height / 4) / 2f, spirit.scale, spirit.spriteDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 				}
 			}
 
+			hallowed.Parameters["overlayScale"].SetValue(new Vector2(1,1));
+
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-
-
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(tex, drawPos, null, Color.White, npc.rotation, (tex.Size() / 2f), npc.scale, SpriteEffects.None, 0f);
+
+			if (npc.ai[1] > 0)
+			{
+
+				VertexBuffer vertexBuffer;
+				Effect effect = SGAmod.TrailEffect;
+
+				effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Main.GameViewMatrix.Zoom) * WVP.Projection());
+				effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("Space"));
+				effect.Parameters["coordOffset"].SetValue(0);
+				effect.Parameters["coordMultiplier"].SetValue(4f);
+				effect.Parameters["strength"].SetValue(Math.Min(0.8f,scaleEffect *1.25f));
+
+				VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
+
+				Vector3 screenPos = (npc.Center - Main.screenPosition).ToVector3();
+				float size = 64f + scaleEffect*(360f);
+
+				vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-size, -size, 0), Color.Purple, new Vector2(0, 0));
+				vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-size, size, 0), Color.Purple, new Vector2(0, 1));
+				vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(size, -size, 0), Color.Purple, new Vector2(1, 0));
+
+				vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(size, size, 0), Color.Purple, new Vector2(1, 1));
+				vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-size, size, 0), Color.Purple, new Vector2(0, 1));
+				vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(size, -size, 0), Color.Purple, new Vector2(1, 0));
+
+				vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+				vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+				Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+				RasterizerState rasterizerState = new RasterizerState();
+				rasterizerState.CullMode = CullMode.None;
+				Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+
+				effect.CurrentTechnique.Passes["DefaultPassSinShade"].Apply();
+
+				Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
 
 			//spriteBatch.Draw(tex2, drawPos, null, Color.Magenta, npc.rotation, (tex2.Size() / 2f), npc.scale, SpriteEffects.None, 0f);
 
@@ -466,7 +683,7 @@ namespace SGAmod.NPCs
 		}
         public override bool CheckDead()
         {
-			if (Owner != null)
+			if (Owner != null && Owner.ai[3] >= 1)
 			{
 				npc.life = npc.lifeMax;
 				return false;
@@ -474,10 +691,43 @@ namespace SGAmod.NPCs
 			return true;
         }
 
+        public override void HitEffect(int hitDirection, double damage)
+        {
+			SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_CrystalCartImpact, (int)npc.Center.X, (int)npc.Center.Y);
+			if (sound != null)
+			{
+				sound.Pitch += Main.rand.NextFloat(0f,0.25f);
+			}
+		}
+
+        public override void NPCLoot()
+        {
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Shatter, (int)npc.Center.X, (int)npc.Center.Y, 1);
+			if (sound != null)
+			{
+				sound.Pitch = -0.25f;
+			}
+			sound = Main.PlaySound(SoundID.DD2_CrystalCartImpact, (int)npc.Center.X, (int)npc.Center.Y);
+			if (sound != null)
+			{
+				sound.Pitch = -0.25f;
+			}
+
+			for (float f = 6; f < 12; f += 0.10f)
+			{
+				Vector2 offset = Main.rand.NextVector2Circular(1f, f);
+				int dust = Dust.NewDust(new Vector2(npc.position.X, npc.position.Y)+ Vector2.Normalize(offset)*f, npc.width, npc.height, DustID.PurpleCrystalShard);
+				Main.dust[dust].scale = 1;
+				Main.dust[dust].noGravity = true;
+				Main.dust[dust].velocity = Main.rand.NextVector2Circular(f,f);
+			}
+
+		}
+
         public override void SetDefaults()
 		{
-			npc.lifeMax = 1000;
-			npc.defense = 10000;
+			npc.lifeMax = 10000;
+			npc.defense = 20;
 			npc.damage = 120;
 			npc.width = 48;
 			npc.height = 48;
@@ -488,13 +738,14 @@ namespace SGAmod.NPCs
 			npc.noGravity = true;
 			npc.noTileCollide = true;
 			npc.netAlways = true;
-			npc.HitSound = SoundID.NPCHit7;
-			npc.DeathSound = SoundID.NPCDeath6;
+			//npc.HitSound = SoundID.NPCHit7;
+			// npc.DeathSound = SoundID.NPCDeath6;
 			npc.Opacity = 0f;
+			npc.SGANPCs().dotResist = 0.20f;
 		}
 		public override string Texture
 		{
-			get { return ("Terraria/Projectile_" + ProjectileID.CultistBossIceMist); }
+			get { return ("SGAmod/NPCs/PrismicCrystalCluster"); }
 		}
 
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
@@ -508,6 +759,7 @@ namespace SGAmod.NPCs
 			writer.Write(blockTime);
 			writer.Write(bansheesmoothness);
 			writer.Write(npc.localAI[3]);
+			writer.Write(npc.localAI[2]);
 		}
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
@@ -515,24 +767,42 @@ namespace SGAmod.NPCs
 			blockTime = reader.ReadInt32();
 			bansheesmoothness = reader.ReadInt32();
 			npc.localAI[3] = reader.ReadInt32();
+			npc.localAI[2] = reader.ReadInt32();
 		}
 
 		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
-			projectile.damage = projectile.damage >> 2;
+			projectile.SGAProj().damageReduce += (0.25f/(1f+((npc.localAI[2] - 1f)/5f)));
+			projectile.SGAProj().damageReduceTime = 60;
+			//projectile.damage = projectile.damage >> 2;
 		}
 
-        private void ArmOutState(ref Vector2 gohere)
+		private void ArmOutState(ref Vector2 gohere)
 		{
-			gohere = Owner.Center + new Vector2(ArmOffset.X * 2f, 20f);
+			gohere = Owner.Center + new Vector2(ArmOffset.X * 2f, ArmOffset.Y/2f);
 		}
+		public void DisabledMovement(Vector2 gohere)
+		{
+
+			//Vector2 belowus = Vector2.UnitY.RotatedBy(MathHelper.Pi+((float)Math.Sin(npc.localAI[0] / 12f) * (MathHelper.Pi / 1.5f)));
+			float timers = 0.5f+((float)Math.Sin(npc.localAI[0] / 12f)/3f);
+			Vector2 distvector = (gohere+new Vector2(ArmOffset.X/2f, 144+ArmOffset.Y/3f) -(ArmOffset*timers)) - npc.Center;
+
+			npc.velocity *= 0.85f;
+
+			//if (distvector.LengthSquared() > 64)
+				npc.velocity += Vector2.Normalize(distvector) * Math.Min(8f, distvector.Length() / 64f) * MathHelper.Clamp(1f - ((npc.localAI[3]) / 100f), 0f, 0.75f);
+			//else
+				//npc.Center = gohere;
+
+		}		
 		public void NormalMovement(Vector2 gohere)
 		{
 			Vector2 distvector = gohere - npc.Center;
 
 			if (blockTime > 0)
 			{
-				gohere = Owner.Center + (Vector2.UnitX * Math.Abs(ArmOffset.X)).RotatedBy(blockAngle);
+				gohere = Owner.Center+Owner.velocity + (Vector2.UnitX * Math.Abs(ArmOffset.X)).RotatedBy(blockAngle);
 				distvector = (gohere - npc.Center) * 1.5f;
 
 			}
@@ -546,6 +816,11 @@ namespace SGAmod.NPCs
 		public bool BansheeMovement(Vector2 gohere)
 		{
 			PrismBanshee bantie = Owner.modNPC as PrismBanshee;
+
+			//Main.NewText(npc.localAI[2] + " : "+ bantie.expectedHandCount);
+			if (npc.localAI[2] != bantie.expectedHandCount)
+				return false;
+
 			if (bantie.bansheeState == 1)
 			{
 				npc.ai[0] -= 1;
@@ -563,7 +838,7 @@ namespace SGAmod.NPCs
 				{
 					int aicounter = ((int)bansheesmoothness - 100) % 150;
 					Player P = Main.player[npc.target];
-					Vector2 offset = new Vector2(npc.Center.X + (aicounter * Math.Sign(ArmOffset.X) * 16f), P.MountedCenter.Y - 300);
+					Vector2 offset = new Vector2(npc.Center.X + (aicounter * Math.Sign(ArmOffset.X) * (16f+((ArmOffset.Y + 40)*0.1f))), P.MountedCenter.Y - 300);
 					int proj2 = Projectile.NewProjectile(offset, Vector2.UnitY * (aicounter % 20 == 0 ? 24f : 16f), mod.ProjectileType("PrismShardHinted"), 80, 4, 0);
 					(Main.projectile[proj2].modProjectile as CirnoIceShardHinted).CirnoStart = npc.Center;
 					Main.projectile[proj2].tileCollide = false;
@@ -576,7 +851,7 @@ namespace SGAmod.NPCs
 			{
 				npc.ai[0] -= 1;
 				bansheesmoothness += 1;
-				gohere = Owner.Center + new Vector2(Math.Sign(ArmOffset.X) * (80f - (Owner.ai[0] - 900) / 6f), -16f);
+				gohere = Owner.Center + new Vector2(Math.Sign(ArmOffset.X) * (80f - (Owner.ai[0] - 900) / 6f), ArmOffset.Y);
 				if (bansheesmoothness > 400)
 					gohere = Owner.Center + new Vector2(Math.Sign(ArmOffset.X) * (160), -64f);
 
@@ -652,12 +927,23 @@ namespace SGAmod.NPCs
 			npc.localAI[0] += 1;
 			npc.ai[0] += 1;
 			npc.localAI[3] -= 1;
+
+			npc.rotation = -npc.velocity.X * 0.15f;
+
 			if (Owner != null)
 			{
 				//if (npc.target<0)
 				npc.TargetClosest();
 
 				Vector2 gohere = Owner.Center + ArmOffset;
+
+				PrismBanshee prism = Owner.modNPC as PrismBanshee;
+
+				if (prism.essenceCollectedTimer > 0)
+				{
+					DisabledMovement(gohere);
+					return;
+				}
 
 				if (!BansheeMovement(gohere))
 				{
@@ -684,7 +970,6 @@ namespace SGAmod.NPCs
 			{
 				npc.StrikeNPCNoInteraction(10000, 0, 0);
 			}
-
 		}
 		public override void OnHitPlayer(Player target, int damage, bool crit)
 		{
@@ -731,10 +1016,6 @@ namespace SGAmod.NPCs
 			npc.DeathSound = SoundID.NPCDeath39;
 			npc.Opacity = 0f;
 		}
-		public override string Texture
-		{
-			get { return ("Terraria/NPC_" + NPCID.DungeonSpirit); }
-		}
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.WriteVector2(flyTo);
@@ -750,7 +1031,7 @@ namespace SGAmod.NPCs
 
         public override void NPCLoot()
         {
-			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), 1);
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<IlluminantEssenceBoss>(), 1);
 		}
 
         private void FindLocation(Player target, int tries = 10)
@@ -765,7 +1046,7 @@ namespace SGAmod.NPCs
 
 				Vector2 checkloc = target.Center;
 				Vector2 checkFlyLoc = checkloc + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * distance;
-				if (Collision.CanHit(checkloc, 1, 1, checkFlyLoc, 1, 1))
+				if (Collision.CanHitLine(checkloc, 1, 1, checkFlyLoc, 1, 1))
 				{
                     flyTo = checkFlyLoc;
 					npc.netUpdate = true;
@@ -812,6 +1093,8 @@ namespace SGAmod.NPCs
 			{
 				//if (npc.target<0)
 				npc.TargetClosest();
+
+				npc.dontTakeDamage = Owner.ai[3] < 1;
 
 				NoiseGenerator noisy = new NoiseGenerator(npc.whoAmI);
 
@@ -897,95 +1180,25 @@ namespace SGAmod.NPCs
 
 			if (hinted.projectile.Opacity > 0)
 			{
-			if (hinted.projectile.localAI[0] < 100)
-				hinted.projectile.localAI[0] = 100 + Main.rand.Next(0, 3);
+				if (hinted.projectile.localAI[0] < 100)
+					hinted.projectile.localAI[0] = 100 + Main.rand.Next(0, 3);
 
-			Texture2D tex = Main.extraTexture[35];
-			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2f;
-			Vector2 drawPos = ((hinted.VectorEffect - Main.screenPosition)) + new Vector2(0f, 4f);
-			int timing = (int)(hinted.projectile.localAI[0] - 100);
-			timing %= 3;
-			timing *= ((tex.Height) / 3);
-			spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height) / 3), Color.Lerp(Color.Magenta,Color.White,0.4f).MultiplyRGB(lightColor)*projectile.Opacity, hinted.projectile.rotation, drawOrigin, hinted.projectile.scale, SpriteEffects.None, 0f);
+				Texture2D tex = Main.extraTexture[35];
+				Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2f;
+				Vector2 drawPos = ((hinted.VectorEffect - Main.screenPosition)) + new Vector2(0f, 4f);
+				int timing = (int)(hinted.projectile.localAI[0] - 100);
+				timing %= 3;
+				timing *= ((tex.Height) / 3);
+				spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height) / 3), Color.Lerp(Color.Magenta, Color.White, 0.4f).MultiplyRGB(lightColor) * projectile.Opacity, hinted.projectile.rotation, drawOrigin, hinted.projectile.scale, SpriteEffects.None, 0f);
 			}
 
 			return false;
 
 		}
 
-static public void Draw(SpriteBatch spriteBatch, Color lightColor)
-{
-
-
-/*int testitem = ModContent.ProjectileType<PrismShardHinted>();
-
-var sortedGoods = Main.projectile.Where(testproj => testproj.active && testproj.type == testitem);
-
-foreach (Projectile proj in sortedGoods)
-{
-	PrismShardHinted hinted = proj.modProjectile as PrismShardHinted;
-
-	for (int k = hinted.oldPos.Length - 1; k > 0; k--)
-	{
-		if (hinted.oldPos[k] == default)
-			hinted.oldPos[k] = hinted.VectorEffect;
-	}
-
-	if (hinted.strength > 0)
-	{
-		TrailHelper trail = new TrailHelper("DefaultPass", SGAmod.Instance.GetTexture("noise"));
-		trail.color = delegate (float percent)
+		static public void Draw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			return Color.Magenta;
-		};
-		trail.projsize = hinted.projectile.Hitbox.Size() / 2f;
-		trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
-		trail.trailThickness = 4;
-		trail.trailThicknessIncrease = 6;
-		trail.capsize = new Vector2(4f, 0f);
-		trail.strength = hinted.strength;
-		trail.DrawTrail(hinted.oldPos.ToList(), hinted.projectile.Center);
-	}
-}
-
-Main.spriteBatch.End();
-Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-
-foreach (Projectile proj in sortedGoods)
-{
-	PrismShardHinted hinted = proj.modProjectile as PrismShardHinted;
-
-	Effect hallowed = SGAmod.HallowedEffect;
-
-	hallowed.Parameters["prismColor"].SetValue(Color.Magenta.ToVector3());
-	hallowed.Parameters["prismAlpha"].SetValue(0.75f);
-	hallowed.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("Perlin"));
-	hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -hinted.projectile.localAI[1] / 50f, hinted.projectile.localAI[1] / 25f));
-	hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
-	hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.20f, hinted.projectile.localAI[1] / 20f));
-	hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
-	hallowed.Parameters["alpha"].SetValue(hinted.projectile.Opacity);
-
-	hallowed.CurrentTechnique.Passes["Prism"].Apply();
-
-	//if (hinted.projectile.Opacity > 0)
-	//{
-		if (hinted.projectile.localAI[0] < 100)
-			hinted.projectile.localAI[0] = 100 + Main.rand.Next(0, 3);
-
-		Texture2D tex = Main.extraTexture[35];
-		Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2f;
-		Vector2 drawPos = ((hinted.VectorEffect - Main.screenPosition)) + new Vector2(0f, 4f);
-		int timing = (int)(hinted.projectile.localAI[0]-100);
-		timing %= 3;
-		timing *= ((tex.Height) / 3);
-		spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height) / 3), Color.White, hinted.projectile.rotation, drawOrigin, hinted.projectile.scale, SpriteEffects.None, 0f);
-	//}
-}
-
-Main.spriteBatch.End();
-Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-*/
+			//draw
 		}
 
 	}
@@ -1009,7 +1222,6 @@ Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerS
 			npc.chaseable = false;
 			aiType = NPCID.Worm;
 			animationType = NPCID.Worm;
-			banner = npc.type;
 			npc.rarity = 2;
 			npc.scale = 0.50f;
 		}
@@ -1042,7 +1254,10 @@ Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerS
 					sound.Pitch = 0.50f;
 				}
 				npc.Transform(mod.NPCType("PrismBanshee"));
+				npc.ai[3] = 1;
+				npc.netUpdate = true;
 				counter = 0;
+				return false;
 			}
 			if (counter2++ == 15)
 			{
@@ -1053,7 +1268,7 @@ Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerS
 		}
 		public override string Texture
 		{
-			get { return ("Terraria/Projectile_" + ProjectileID.Starfury); }
+			get { return ("SGAmod/Items/Consumables/PrismaticBansheeStar"); }
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
@@ -1072,8 +1287,284 @@ Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerS
 
 			bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
 
-			return (player.ZoneHoly && underground) ? (SGAWorld.downedPrismBanshee ? 0.020f : 0.15f) : 0f;
+			return (player.ZoneHoly && underground) ? (SGAWorld.downedPrismBanshee>0 ? 0.020f : 0.15f) : 0f;
 		}
+	}
+
+	public class IlluminantEssenceBoss : IlluminantEssence, IConsumablePickup
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Illuminant Essence");
+			Tooltip.SetDefault("'Shards of Banshee'");
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+			ItemID.Sets.ItemIconPulse[item.type] = true;
+		}
+		public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.HotPink.ToVector3() * 0.55f * Main.essScale);
+		}
+        public override Color? GetAlpha(Color lightColor)
+        {
+            return Color.Lerp(Color.White,Color.Red,0.5f+MathHelper.Clamp((float)Math.Sin(Main.GlobalTime*5f)*0.5f,0f,1f));
+        }
+        public override bool OnPickup(Player player)
+        {
+			if (NPC.CountNPCS(ModContent.NPCType<PrismBanshee>()) < 1)
+			{
+				Item.NewItem(item.Center, ModContent.ItemType<IlluminantEssence>(), item.stack);
+				return false;
+			}
+
+			Projectile.NewProjectile(player.Center, Vector2.UnitX.RotatedBy(Main.rand.NextFloat(MathHelper.TwoPi)) * 8f, ModContent.ProjectileType<BansheeEssenceCollectedProj>(),0,0,player.whoAmI);
+			return false;
+        }
+    }
+
+	public class BansheeEssenceCollectedProj : PinkyMinionKilledProj
+	{
+
+		protected override float ScalePercent => MathHelper.Clamp(projectile.timeLeft / 10f, 0f, Math.Min(projectile.localAI[0] / 6f, 1f));
+		protected override int EnemyType => ModContent.NPCType<PrismBanshee>();
+		protected override float SpinRate => 0f;
+		Vector2 startingloc = default;
+		public override void SetDefaults()
+		{
+			projectile.width = 8;
+			projectile.height = 8;
+			projectile.aiStyle = -1;
+			projectile.penetrate = -1;
+			projectile.tileCollide = false;
+			projectile.timeLeft = 300;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Banshee collected essence");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 10;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		public override void ReachedTarget(NPC target)
+		{
+
+			PrismBanshee prism = target?.modNPC as PrismBanshee;
+
+			if (prism != null)
+			{
+
+				prism.CollectEssence(1);
+
+				projectile.ai[0] += 1;
+				projectile.timeLeft = (int)MathHelper.Clamp(projectile.timeLeft, 0, 10);
+				projectile.netUpdate = true;
+			}
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			for (int i = 0; i < projectile.oldPos.Length; i += 1)//dumb hack to get the trails to not appear at 0,0
+			{
+				if (projectile.oldPos[i] == default)
+					projectile.oldPos[i] = projectile.position;
+			}
+
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+			UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);
+			float colorz = rando.NextFloat();
+			trail.color = delegate (float percent)
+			{
+				return Color.Purple;
+			};
+			trail.projsize = projectile.Hitbox.Size() / 2f;
+			trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
+			trail.trailThickness = 4 + MathHelper.Clamp(projectile.ai[0], 0f, 30f);
+			trail.trailThicknessIncrease = 6;
+			//trail.capsize = new Vector2(6f, 0f);
+			trail.strength = ScalePercent*0.75f;
+			trail.DrawTrail(projectile.oldPos.ToList(), projectile.Center);
+
+			Texture2D mainTex = Main.itemTexture[ModContent.ItemType<IlluminantEssence>()];
+
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.White * MathHelper.Clamp(projectile.timeLeft / 10f, 0f, 1f), 0, mainTex.Size() / 2f, 1f, default, 0);
+
+			return false;
+		}
+	}
+
+	public class BansheeBeam : Items.Weapons.Aurora.AuraBeamStikeProj
+    {
+
+		int ExplodeTime => 240;
+		Vector2 startingLoc = default;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Banshee Beam Fury");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Starfury);
+			base.SetDefaults();
+			aiType = -1;
+			projectile.aiStyle = -1;
+			projectile.timeLeft = 1100;
+			projectile.extraUpdates = 2;
+			projectile.width = 64;
+			projectile.height = 64;
+			projectile.friendly = false;
+			projectile.hostile = true;
+		}
+
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			if (timer < ExplodeTime)
+			{
+				return false;
+			}
+
+			float hitThere = 0f;
+			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projectile.Center,
+				projectile.Center + Vector2.Normalize(projectile.velocity) * 6400,32f, ref hitThere);
+		}
+
+		public override void AI()
+		{
+			if (timer < 1)
+			{
+				startingLoc = projectile.Center;
+			}
+
+			if (timer == ExplodeTime)
+			{
+				SoundEffectInstance sound = Main.PlaySound(SoundID.Zombie, (int)projectile.Center.X, (int)projectile.Center.Y, 104);
+				if (sound != null)
+				{
+					sound.Pitch = 0.85f;
+				}
+			}
+
+			if (timer < ExplodeTime && timer%20==0)
+			{
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DrakinBreathIn, (int)projectile.Center.X, (int)projectile.Center.Y);
+				if (sound != null)
+				{
+					sound.Pitch = -0.4f+(timer/(float)ExplodeTime)*1.25f;
+					sound.Volume = 1f;
+				}
+			}
+
+			if (SGAmod.ScreenShake < 5)
+            {
+				SGAmod.AddScreenShake(MathHelper.Clamp(((timer-((float)ExplodeTime-80f)))/80f,0f,2f), projectile.timeLeft * 5f, projectile.Center);
+            }
+
+			byte playerz = Player.FindClosest(projectile.Center, 1, 1);
+			if (playerz >= 0)
+			{
+				Player player = Main.player[playerz];
+
+				if (player != null && player.active && !player.dead)
+				{
+					float speed = projectile.velocity.Length();
+					float turnspeed = (0.001f*(MathHelper.TwoPi)*((MathHelper.Clamp((timer-ExplodeTime)/800f,0f,1f+(timer - ExplodeTime)/ 2400f)*(Main.expertMode ? 1f : 0f)) + 0.25f));
+					projectile.velocity = projectile.velocity.ToRotation().AngleTowards((player.Center-projectile.Center).ToRotation(), turnspeed).ToRotationVector2() * speed;
+				}
+			}
+
+			projectile.position -= projectile.velocity;
+			timer += 1;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		{
+
+			Effect hallowed = SGAmod.HallowedEffect;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D tex = Main.projectileTexture[projectile.type];
+
+			Vector2 fromposition = startingLoc;
+
+			float trailalpha = MathHelper.Clamp(projectile.timeLeft / 30f, 0f, 1f);
+
+			float spread = (float)Math.Pow(timer / 64f,0.75f);
+
+			float explodeSize = MathHelper.Clamp((timer - ExplodeTime) / 10f, 0.10f, 1.20f) * trailalpha;
+
+			List<float> sploderEffect = new List<float>();
+			for (int i = 0; i < 10; i += 1)
+			{
+				sploderEffect.Add(((i / 10f) + (Main.GlobalTime * 3f)) % 1f);
+			}
+
+			sploderEffect = sploderEffect.OrderBy(testby => testby).ToList();
+
+			spriteBatch.Draw(tex, fromposition - Main.screenPosition, null, Color.White * 0.50f, projectile.velocity.ToRotation() + MathHelper.PiOver2, new Vector2(tex.Width / 2f, tex.Height), new Vector2(0.05f, spread), SpriteEffects.None, 0);
+
+			foreach (float splodsize in sploderEffect)
+			{
+				Color warningcolor = Main.hslToRgb((splodsize/10f)%1f,255,0.75f) * trailalpha;
+
+				hallowed.Parameters["alpha"].SetValue(0.40f);
+				hallowed.Parameters["prismColor"].SetValue(warningcolor.ToVector3());
+				hallowed.Parameters["prismAlpha"].SetValue(0);
+				hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("TiledPerlin"));
+				hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -timer / 250f, timer / 150f));
+				hallowed.Parameters["overlayAlpha"].SetValue(0.20f);
+				hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, timer / 150f));
+				hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+				hallowed.Parameters["rainbowScale"].SetValue(2f);
+				hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
+
+				hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+				spriteBatch.Draw(tex, fromposition - Main.screenPosition, null, warningcolor * 0.40f, projectile.velocity.ToRotation() + MathHelper.PiOver2, new Vector2(tex.Width / 2f, tex.Height), new Vector2(explodeSize * splodsize, spread), SpriteEffects.None, 0);
+			}
+
+
+			Texture2D glowStar = mod.GetTexture("Extra_57b");
+			Vector2 glowSize = glowStar.Size();
+
+			UnifiedRandom random = new UnifiedRandom(projectile.whoAmI);
+
+			float alphaIK = MathHelper.Clamp(timer / 6f, 0f, 1f) * trailalpha;
+
+			float trailsize2 = MathHelper.Clamp(projectile.timeLeft / 5f, 0f, 1f);
+
+			float explodeSize2 = MathHelper.Clamp((timer) / (float)ExplodeTime, 0.10f, 1.00f) * trailalpha;
+
+			for (float ff = 1f; ff > 0.25f; ff -= 0.05f)
+			{
+				Color color = Main.hslToRgb(random.NextFloat(1f), 0.65f, 0.85f);
+
+				hallowed.Parameters["alpha"].SetValue(alphaIK * 0.75f);
+				hallowed.Parameters["prismColor"].SetValue(color.ToVector3());
+				hallowed.Parameters["prismAlpha"].SetValue(0);
+				hallowed.Parameters["overlayTexture"].SetValue(mod.GetTexture("TiledPerlin"));
+				hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -timer / 640f, timer / 242f));
+				hallowed.Parameters["overlayAlpha"].SetValue(0.25f);
+				hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, timer / 164f));
+				hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+				hallowed.Parameters["rainbowScale"].SetValue(1f);
+				hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f,1f));
+
+				hallowed.CurrentTechnique.Passes["Prism"].Apply();
+
+				float rot = random.NextFloat(0.05f, 0.15f) * (random.NextBool() ? 1f : -1f) * (Main.GlobalTime * 8f);
+				spriteBatch.Draw(glowStar, fromposition - Main.screenPosition, null, color * alphaIK * 0.25f, random.NextFloat(MathHelper.TwoPi) + rot, glowSize / 2f, ((new Vector2(random.NextFloat(0.15f, 0.50f), explodeSize2) + new Vector2(ff, ff)) * trailsize2 * 0.75f* explodeSize2)*(1f+(explodeSize*1f)), SpriteEffects.None, 0);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+
+			return false;
+		}
+
 	}
 
 

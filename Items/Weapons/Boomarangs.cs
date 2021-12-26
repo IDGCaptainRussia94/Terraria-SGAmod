@@ -18,20 +18,21 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("BOOMerang");
-			Tooltip.SetDefault("Explodes when it hits an enemy, does not explode on tiles\n'This is what happens when you let Demolitionist and Tinkerer have too much fun...'");
+			Tooltip.SetDefault("Explodes when it hits an enemy, does not explode on tiles\nAllows up to 2 at once\n'This is what happens when you let Demolitionist and Tinkerer have too much fun...'");
 		}
 
 		public override void SetDefaults()
 		{
 			item.width = 16;
 			item.height = 16;
-			item.damage = 14;
+			item.damage = 32;
+			item.crit = 10;
 			item.melee = true;
 			item.noMelee = true;
 			item.useTurn = true;
 			item.noUseGraphic = true;
 			item.useAnimation = 30;
-			item.useStyle = 5;
+			item.useStyle = ItemUseStyleID.HoldingOut;
 			item.noUseGraphic = true;
 			item.useTime = 30;
 			item.knockBack = 1f;
@@ -47,7 +48,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool CanUseItem(Player player)
 		{
-			return player.ownedProjectileCounts[item.shoot] < 1;
+			return player.ownedProjectileCounts[item.shoot] < 2;
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -137,15 +138,15 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Specterang");
-			Tooltip.SetDefault("Throws a ghostly Boomarang that passes through enemies and walls\nLeaves behind ghostly images of itself that damages enemies");
+			Tooltip.SetDefault("Throws a ghostly Boomerang that passes through enemies and walls\nLeaves behind ghostly images of itself that damages enemies");
 		}
 
 		public override void SetDefaults()
 		{
 			item.width = 10;
 			item.height = 10;
-			item.damage = 60;
-			item.crit = 5;
+			item.damage = 30;
+			item.crit = 10;
 			item.melee = true;
 			item.noMelee = true;
 			item.useTurn = true;
@@ -220,7 +221,7 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
-	public class SpecterangProj : ModProjectile,IDrawAdditive
+	public class SpecterangProj : ModProjectile, IDrawAdditive
 	{
 		protected virtual int ReturnTime => 20;
 		protected virtual int ReturnTimeNoSlow => 70;
@@ -237,7 +238,7 @@ namespace SGAmod.Items.Weapons
 			get { return ("Terraria/Projectile_658"); }
 		}
 
-		public static void DrawSpecterang(Projectile projectile,SpriteBatch spriteBatch, Color lightColor)
+		public static void DrawSpecterang(Projectile projectile, SpriteBatch spriteBatch, Color lightColor)
 		{
 			Texture2D tex = Main.itemTexture[ModContent.ItemType<Specterang>()];
 			Texture2D tex2 = ModContent.GetTexture("SGAmod/Items/GlowMasks/Specterang_Glow");
@@ -250,9 +251,9 @@ namespace SGAmod.Items.Weapons
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
-        {
+		{
 			if (GetType() == typeof(SpecterangProj))
-			DrawSpecterang(projectile, spriteBatch, Lighting.GetColor((int)(projectile.Center.X/16), (int)(projectile.Center.Y / 16),Color.White));
+				DrawSpecterang(projectile, spriteBatch, Lighting.GetColor((int)(projectile.Center.X / 16), (int)(projectile.Center.Y / 16), Color.White));
 
 		}
 
@@ -264,7 +265,7 @@ namespace SGAmod.Items.Weapons
 			{
 				float offset = rand.NextFloat(-MathHelper.Pi / 4f, MathHelper.Pi / 4f);
 				float scale = (1f - (a / 6f));
-				spriteBatch.Draw(tex, projectile.Center - (projectile.velocity * a) - Main.screenPosition, null, Color.White * 0.05f * scale, projectile.rotation + offset, tex.Size() / 2f, new Vector2(2f, 2f)* scale, default, 0);
+				spriteBatch.Draw(tex, projectile.Center - (projectile.velocity * a) - Main.screenPosition, null, Color.White * 0.05f * scale, projectile.rotation + offset, tex.Size() / 2f, new Vector2(2f, 2f) * scale, default, 0);
 			}
 
 			return false;
@@ -282,31 +283,31 @@ namespace SGAmod.Items.Weapons
 			projectile.scale = 1f;
 			projectile.usesLocalNPCImmunity = true;
 			projectile.localNPCHitCooldown = 15;
-			projectile.extraUpdates = 0;
+			projectile.extraUpdates = 2;
 			projectile.tileCollide = false;
 		}
 
-        public override bool CanDamage()
-        {
-            return false;
-        }
+		public override bool CanDamage()
+		{
+			return false;
+		}
 
-        public override void AI()
-        {
+		public override void AI()
+		{
 
 			bool solid = projectile.ai[0] >= ReturnTime && projectile.ai[0] < ReturnTimeNoSlow;
 
 			if (startSpeed == default)
 			{
 				startSpeed = projectile.velocity.Length();
-				projectile.aiStyle = (projectile.velocity.X>0 ? 1 : -1) - 20;
+				projectile.aiStyle = (projectile.velocity.X > 0 ? 1 : -1) - 20;
 			}
 
 			projectile.localAI[0] = 1f;// MathHelper.Clamp(projectile.localAI[0] += (solid ? 0.08f : -0.04f), 0.5f, 1f);
 
 			projectile.ai[0] += 1;
 
-			projectile.rotation += 0.4f * (float)(projectile.aiStyle+20f);
+			projectile.rotation += 0.4f * (float)(projectile.aiStyle + 20f);
 
 			if (GetType() == typeof(SpecterangProj))
 			{
@@ -323,38 +324,36 @@ namespace SGAmod.Items.Weapons
 				}
 			}
 
-				if (projectile.ai[0] >= ReturnTime)
+			if (projectile.ai[0] >= ReturnTime)
+			{
+				Player owner = Main.player[projectile.owner];
+
+				Vector2 distmeasure = owner.MountedCenter - projectile.Center;
+
+				projectile.velocity += Vector2.Normalize(distmeasure) * (0.70f);
+
+				if (projectile.ai[0] >= ReturnTimeNoSlow)
 				{
-					Player owner = Main.player[projectile.owner];
-
-					Vector2 distmeasure = owner.MountedCenter - projectile.Center;
-
-					projectile.velocity += Vector2.Normalize(distmeasure) * (0.70f);
-
-					if (projectile.ai[0] >= ReturnTimeNoSlow)
-					{
-						//projectile.velocity *= 0.75f;
-						float dist = Math.Min(((projectile.ai[0] - ReturnTimeNoSlow) / 4f), distmeasure.Length());
-						projectile.Center += Vector2.Normalize(distmeasure) * (0.50f) * dist;
-					}
-
-					projectile.velocity *= 0.99f;
-					if (projectile.velocity.Length() > startSpeed)
-						projectile.velocity = Vector2.Normalize(projectile.velocity) * startSpeed;
-
-					if (Main.myPlayer == projectile.owner)
-					{
-						Rectangle rectangle = new Rectangle((int)projectile.position.X, (int)projectile.position.Y, projectile.width, projectile.height);
-						Rectangle value2 = new Rectangle((int)Main.player[projectile.owner].position.X, (int)Main.player[projectile.owner].position.Y, Main.player[projectile.owner].width, Main.player[projectile.owner].height);
-						if (rectangle.Intersects(value2))
-						{
-							projectile.Kill();
-						}
-					}
-
+					//projectile.velocity *= 0.75f;
+					float dist = Math.Min(((projectile.ai[0] - ReturnTimeNoSlow) / 4f), distmeasure.Length());
+					projectile.Center += Vector2.Normalize(distmeasure) * (0.50f) * dist;
 				}
-			
 
+				projectile.velocity *= 0.99f;
+				if (projectile.velocity.Length() > startSpeed)
+					projectile.velocity = Vector2.Normalize(projectile.velocity) * startSpeed;
+
+				if (Main.myPlayer == projectile.owner)
+				{
+					Rectangle rectangle = new Rectangle((int)projectile.position.X, (int)projectile.position.Y, projectile.width, projectile.height);
+					Rectangle value2 = new Rectangle((int)Main.player[projectile.owner].position.X, (int)Main.player[projectile.owner].position.Y, Main.player[projectile.owner].width, Main.player[projectile.owner].height);
+					if (rectangle.Intersects(value2))
+					{
+						projectile.Kill();
+					}
+				}
+
+			}
 
 		}
 
@@ -425,6 +424,7 @@ namespace SGAmod.Items.Weapons
 			item.width = 12;
 			item.height = 12;
 			item.damage = 32;
+			item.crit = 5;
 			item.melee = true;
 			item.noMelee = true;
 			item.useTurn = true;
@@ -553,7 +553,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fridgeflamarang");
-			Tooltip.SetDefault("Throws an Icey and Flaming Boomerang pair guided by a light that split apart on hit\nUsable only when less than 4 Boomerangs are active");
+			Tooltip.SetDefault("Throws an Icy and Flaming Boomerang pair guided by a light that split apart on hit\nUsable only when less than 4 Boomerangs are active");
 		}
 
 		public override void SetDefaults()
@@ -561,6 +561,7 @@ namespace SGAmod.Items.Weapons
 			item.width = 10;
 			item.height = 10;
 			item.damage = 50;
+			item.crit = 5;
 			item.melee = true;
 			item.noMelee = true;
 			item.useTurn = true;
@@ -576,7 +577,7 @@ namespace SGAmod.Items.Weapons
 			item.value = Item.buyPrice(gold: 5);
 			item.rare = ItemRarityID.LightPurple;
 			item.shoot = ModContent.ProjectileType<FridgeflamarangProj>();
-			item.shootSpeed = 10f;
+			item.shootSpeed = 25f;
 		}
 
 		public override bool CanUseItem(Player player)
@@ -719,7 +720,8 @@ namespace SGAmod.Items.Weapons
 		{
 			item.width = 10;
 			item.height = 10;
-			item.damage = 28;
+			item.damage = 42;
+			item.crit = 5;
 			item.melee = true;
 			item.noMelee = true;
 			item.useTurn = true;
@@ -735,7 +737,7 @@ namespace SGAmod.Items.Weapons
 			item.value = Item.buyPrice(gold: 1);
 			item.rare = ItemRarityID.Green;
 			item.shoot = ModContent.ProjectileType<CoralrangProj>();
-			item.shootSpeed = 7f;
+			item.shootSpeed = 32f;
 		}
 		public override bool CanUseItem(Player player)
 		{
@@ -805,6 +807,7 @@ namespace SGAmod.Items.Weapons
 			projectile.penetrate = 1;
 			projectile.melee = true;
 			projectile.scale = 1f;
+			projectile.extraUpdates = 0;
 		}
 
 		public override void SendExtraAI(System.IO.BinaryWriter writer)
@@ -835,6 +838,17 @@ namespace SGAmod.Items.Weapons
 
 		public override void AI()
 		{
+
+			if (projectile.ai[1]>0)
+			projectile.ai[1] += 2.5f;
+
+			if (projectile.ai[0] > 0)
+            {
+				Player P = Main.player[projectile.owner];
+				Vector2 dist = P.Center - projectile.Center;
+				projectile.velocity += Vector2.Normalize(dist) *MathHelper.Clamp(dist.Length()/180f,0f,1f);
+            }
+
 			for (int k = 0; k < orbitors.Length; k += 1)
 			{
 				if (spinners[k] == default)

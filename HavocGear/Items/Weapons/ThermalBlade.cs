@@ -10,6 +10,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Thermal Blade");
+			Tooltip.SetDefault("'Furious!'\n50% to Thermal Blaze enemies for 5 seconds on hit\nCrits enemies burning in lava");
 		}
 		
 		public override void SetDefaults()
@@ -30,7 +31,6 @@ namespace SGAmod.HavocGear.Items.Weapons
 			{
 				item.GetGlobalItem<ItemUseGlow>().glowTexture = mod.GetTexture("Items/GlowMasks/ThermalBlade_Glow");
 			}
-
 		}
 
         public override void AddRecipes()
@@ -54,12 +54,20 @@ namespace SGAmod.HavocGear.Items.Weapons
 			}
 			Lighting.AddLight(player.position, 0.6f, 0.5f, 0f);
 		}
-		
-		public override void OnHitNPC(Player player, NPC target, int damage, float knockback, bool crit)
+
+        public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+        {
+            if (target.lavaWet)
+            {
+				crit = true;
+            }
+        }
+
+        public override void OnHitNPC(Player player, NPC target, int damage, float knockback, bool crit)
 		{
 			if(!(Main.rand.Next(2) == 0))
 			{
-				target.AddBuff(mod.BuffType("ThermalBlaze"), 300, false);
+				target.AddBuff(ModContent.BuffType<Buffs.ThermalBlaze>(), 300);
 			}
 		}
     }

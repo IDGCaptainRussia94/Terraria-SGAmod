@@ -15,7 +15,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enchanted Fury"); // By default, capitalization in classnames will add spaces to the display name. You can customize the display name here by uncommenting this line.
-			Tooltip.SetDefault("Primary fire shoots a sword that explodes erupts stars on kill\nAlt-fire rains stars down from the heavens, 1.1 Starfury style\n'The combination of magic!'");
+			Tooltip.SetDefault("Primary fire shoots a sword that erupts stars on kill\nAlt-fire rains stars down from the heavens, 1.1 Starfury style\n'The combination of magic!'");
 		}
 
 		public override void SetDefaults()

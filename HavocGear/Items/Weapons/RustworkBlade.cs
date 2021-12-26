@@ -7,12 +7,12 @@ using Terraria.ModLoader;
 
 namespace SGAmod.HavocGear.Items.Weapons
 {
-    public class RustworkBlade : ModItem
+    public class RustworkBlade : ModItem,IRustBurnText
     {
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Rustwork Blade");
-            Tooltip.SetDefault("Applies Rustburn on hit\n"+RustBurn.RustText+"\nThe Debuff times scale up with the weapon's damage");
+            Tooltip.SetDefault("Applies Rustburn on hit\nThe Debuff duration scales up with the weapon's damage");
         }
         public override void SetDefaults()
         {
@@ -32,10 +32,6 @@ namespace SGAmod.HavocGear.Items.Weapons
             item.value = 5000;
             item.consumable = false;
             item.UseSound = SoundID.Item19;
-        }
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
-            tooltips.Add(new TooltipLine(mod, "RustBurnText", RustBurn.RustText));
         }
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
         {

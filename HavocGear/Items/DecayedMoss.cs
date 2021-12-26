@@ -45,5 +45,17 @@ namespace SGAmod.HavocGear.Items
             }
             return true;
         }
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ModContent.ItemType<Biomass>(), 2);
+            recipe.AddIngredient(ModContent.ItemType<MoistSand>(), 4);
+            recipe.AddIngredient(ModContent.ItemType<Weapons.SwampSeeds>(), 6);
+            recipe.AddIngredient(ModContent.ItemType<DankCore>(), 1);
+            recipe.AddTile(TileID.AlchemyTable);
+            recipe.SetResult(this, 12);
+            recipe.AddRecipe();
+        }
+
     }
 }

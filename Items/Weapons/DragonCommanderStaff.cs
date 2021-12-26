@@ -19,8 +19,10 @@ using Terraria.Utilities;
 namespace SGAmod.Items.Weapons
 {
 
-	public class DragonCommanderStaff : ModItem, IHitScanItem
+	public class DragonCommanderStaff : ModItem, IHitScanItem, IDevItem, IHellionDrop
 	{
+		int IHellionDrop.HellionDropAmmount() => 1;
+		int IHellionDrop.HellionDropType() => ModContent.ItemType<DragonCommanderStaff>();
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dragon Commander");
@@ -32,6 +34,10 @@ namespace SGAmod.Items.Weapons
 			SGAPlayer sga = player.SGAPly();
 			mult = 0.25f+((sga.ExpertiseCollectedTotal/20000f)*0.75f);
 		}
+		public (string, string) DevName()
+        {
+			return ("IDGCaptainRussia94","other");
+		}
 
         public override void SetDefaults()
 		{
@@ -41,6 +47,7 @@ namespace SGAmod.Items.Weapons
 			item.height = 24;
 			item.useTime = 10;
 			item.mana = 25;
+			item.expert = true;
 			item.useAnimation = 10;
 			item.autoReuse = false;
 			item.useTurn = false;
@@ -107,11 +114,11 @@ namespace SGAmod.Items.Weapons
 			Projectile.NewProjectile(Main.MouseWorld.X, Main.MouseWorld.Y, 0,0, type, damage, knockBack, player.whoAmI);
 			return false;
         }
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        /*public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
 			tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, "IDGCaptainRussia94's other dev weapon")));
-		}
+		}*/
 	}
 
 	public class DrakenSummonProj : ModProjectile
@@ -549,7 +556,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Draken Defense");
-			Description.SetDefault("damage reduced to damage^0.90\nand massively boosted life regen");
+			Description.SetDefault("Damage reduced to damage^0.90\nand massively boosted life regen");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
 			Main.debuff[Type] = true;

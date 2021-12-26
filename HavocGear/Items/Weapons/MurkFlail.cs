@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace SGAmod.HavocGear.Items.Weapons
 {
-    public class MurkFlail : ModItem
+    public class MurkFlail : ModItem,IDankSlowText
     {
         public override void SetDefaults()
         {
@@ -35,7 +35,7 @@ namespace SGAmod.HavocGear.Items.Weapons
     public override void SetStaticDefaults()
     {
             DisplayName.SetDefault("Mudrock Crasher");
-            Tooltip.SetDefault("Impacts against walls at high enough speeds unleash several dank blasts which inflict Dank Slow\nEnemies who are immune to poison are also immune to Dank Slow");
+            Tooltip.SetDefault("Impacts against walls at high enough speeds unleash several dank blasts which inflict Dank Slow");
         }
 
     }

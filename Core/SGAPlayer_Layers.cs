@@ -150,7 +150,69 @@ namespace SGAmod
 			SGAPlayer.drawdigistuff(drawInfo, false);
 		});
 
-		public static readonly PlayerLayer AltWings = new PlayerLayer("SGAmod", "AltWings", PlayerLayer.Wings, delegate (PlayerDrawInfo drawInfo)
+		public static void DrawilluminantLayer(PlayerDrawInfo drawInfo, bool front)
+		{
+
+			Player drawPlayer = drawInfo.drawPlayer;
+			SGAmod mod = SGAmod.Instance;
+			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();
+
+
+			int activestacks = modply.activestacks;
+
+			if (activestacks > 0)
+			{
+				List<Vector4> whichone = new List<Vector4>();
+				UnifiedRandom rando = new UnifiedRandom(drawPlayer.whoAmI);
+
+				for (int i = 0; i < activestacks; i += 1)
+				{
+					float percent = rando.NextFloat(1f) * MathHelper.TwoPi;
+					Matrix mxatrix = Matrix.CreateRotationY((Main.GlobalTime*2f)+ percent) * Matrix.CreateRotationZ(((i / (float)activestacks) * MathHelper.TwoPi)+(Main.GlobalTime * (rando.NextFloat(0.4f,0.6f))));
+					Vector3 vec3 = Vector3.Transform(Vector3.UnitX, mxatrix);
+					float alpha = 1f;
+					if (modply.CooldownStacks.Count >= i)
+						alpha = MathHelper.Clamp((modply.CooldownStacks[i].timeleft / (float)modply.CooldownStacks[i].maxtime)*3f,0f,1f);
+
+					whichone.Add(new Vector4(vec3, alpha));
+				}
+				whichone = whichone.OrderBy((x) => x.Z).ToList();
+
+				if (whichone.Count > 0)
+				{
+					for (int a = 0; a < whichone.Count; a += 1)
+					{
+						Vector4 theplace = whichone[a];
+						float scaler = 1+theplace.Z;
+
+						if ((scaler >= 1f && front) || (scaler < 1f && !front))
+						{
+
+							Texture2D texture = SGAmod.Instance.GetTexture("Extra_57b");
+
+							Vector2 drawhere = new Vector2(theplace.X, theplace.Y)* 64f;
+							DrawData data = new DrawData(texture, drawPlayer.MountedCenter+drawhere - Main.screenPosition, null, Color.Magenta*(theplace.W*0.75f), (float)Math.Sin(theplace.X), texture.Size()/2f, 0.5f+(scaler-1f)*0.25f, (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+							//data.shader = (int)drawPlayer.dye[2].dye;
+							Main.playerDrawData.Add(data);
+						}
+					}
+				}
+
+			}
+
+		}
+
+		public static readonly PlayerLayer illuminantEffect = new PlayerLayer("SGAmod", "illuminantEffect", PlayerLayer.MiscEffectsFront, delegate (PlayerDrawInfo drawInfo)
+		{
+			SGAPlayer.DrawilluminantLayer(drawInfo, true);
+		});
+
+		public static readonly PlayerLayer illuminantEffectBack = new PlayerLayer("SGAmod", "illuminantEffect", PlayerLayer.MiscEffectsBack, delegate (PlayerDrawInfo drawInfo)
+		{
+			SGAPlayer.DrawilluminantLayer(drawInfo, false);
+		});
+
+		public static readonly PlayerLayer JoyriderWings = new PlayerLayer("SGAmod", "AltWings", PlayerLayer.Wings, delegate (PlayerDrawInfo drawInfo)
 		{
 			Player drawPlayer = drawInfo.drawPlayer;
 			SGAmod mod = SGAmod.Instance;
@@ -176,17 +238,22 @@ namespace SGAmod
 
 				float stealth = (0.2f + drawPlayer.stealth * 0.8f) *Math.Max(0.10f,((float)drawInfo.bodyColor.A / 255f));
 
-				for (int i = -10; i < 11; i += 20)
+			int num = drawPlayer.bodyFrame.Y / 56;
+			if (num >= Main.OffsetsPlayerHeadgear.Length)
+				num = 0;
+
+			for (int i = -10; i < 11; i += 20)
 				{
 					nalzs = Main.rand.NextFloat(-joy, joy) / 2f;
 					nalzs2 = Main.rand.NextFloat(-joy / 1f, 0);
 					drawX = (int)((drawPlayer.MountedCenter.X + (drawPlayer.direction * (-8 + i)) + nalzs));
 					drawY = (int)((drawPlayer.MountedCenter.Y + nalzs2 - 8f));//gravDir 
+				Vector2 extraY = Vector2.UnitY* (drawPlayer.gfxOffY + Main.OffsetsPlayerHeadgear[num].Y);
 					Vector2 whereat2 = (new Vector2(drawX, drawY).RotatedBy(drawPlayer.fullRotation, drawPlayer.MountedCenter));
 					color = Lighting.GetColor((int)(whereat2.X / 16f), (int)(whereat2.Y / 16f)) * stealth;
 					texture = Main.itemTexture[ItemID.Megashark];
 					org = new Vector2(texture.Width * (drawPlayer.direction > 0 ? 0.25f : 0.25f), texture.Height / 2f);
-					DrawData data2 = new DrawData(texture, whereat2 - Main.screenPosition, null, color, (float)drawPlayer.fullRotation + angle, org, 0.75f, (drawPlayer.direction == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+					DrawData data2 = new DrawData(texture, whereat2 + extraY - Main.screenPosition, null, color, (float)drawPlayer.fullRotation + angle, org, 0.75f, (drawPlayer.direction == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
 					data2.shader = (int)drawPlayer.cWings;
 					Main.playerDrawData.Add(data2);
 				}
@@ -233,15 +300,39 @@ namespace SGAmod
 				Texture2D texture = ModContent.GetTexture(modply.armorglowmasks[index]);
 
 				int drawX = (int)((drawInfo.position.X + drawPlayer.bodyPosition.X + 10) - Main.screenPosition.X);
-				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) - Main.screenPosition.Y);//gravDir 
+				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) + drawPlayer.gfxOffY - Main.screenPosition.Y);//gravDir 
 				DrawData data;
 				if (index == 3)
-					data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.legFrame.Y, drawPlayer.legFrame.Width, drawPlayer.legFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width / 2, drawPlayer.bodyFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+					data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.legFrame.Y, drawPlayer.legFrame.Width, drawPlayer.legFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.legFrame.Width / 2, drawPlayer.legFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
 				else
 					data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.bodyFrame.Y, drawPlayer.bodyFrame.Width, drawPlayer.bodyFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width / 2, drawPlayer.bodyFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
 				data.shader = (int)drawPlayer.dye[index > 1 ? index - 1 : index].dye;
 
 				Main.playerDrawData.Add(data);
+
+				if (modply.valkyrieSet.Item3)
+				{
+					int indexer = drawPlayer.FindBuffIndex(ModContent.BuffType<Items.Armors.Valkyrie.RagnarokBuff>());
+					if (indexer >= 0)
+					{
+						for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.Pi / 8f)
+						{
+							float distance = (2f + (float)Math.Sin(Main.GlobalTime * 3f) * 2f)+(20f * (modply.valkyrieSet.Item4-0.25f));
+							float drawX2 = (float)(drawX + Math.Cos(Main.GlobalTime + f) * distance);
+							float drawY2 = (float)(drawY + Math.Sin(Main.GlobalTime + f) * distance)+drawPlayer.gfxOffY;
+
+							Color colorz = Color.White * MathHelper.Clamp(drawPlayer.buffTime[indexer] / 200f, 0f, 1f);
+
+							if (index == 3)
+								data = new DrawData(texture, new Vector2(drawX2, drawY2), new Rectangle(0, drawPlayer.legFrame.Y, drawPlayer.legFrame.Width, drawPlayer.legFrame.Height), colorz * 0.05f, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width / 2, drawPlayer.bodyFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+							else
+								data = new DrawData(texture, new Vector2(drawX2, drawY2), new Rectangle(0, drawPlayer.bodyFrame.Y, drawPlayer.bodyFrame.Width, drawPlayer.bodyFrame.Height), colorz * 0.05f, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.bodyFrame.Width / 2, drawPlayer.bodyFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+							data.shader = (int)drawPlayer.dye[index > 1 ? index - 1 : index].dye;
+
+							Main.playerDrawData.Add(data);
+						}
+					}
+				}
 			}
 
 		}
@@ -263,14 +354,22 @@ namespace SGAmod
 			layers.Insert(backacclayer, SpaceDiverTank);*/
 			}
 
+			//Main.NewText(sgaplayer.CustomWings);
 			if (sgaplayer.CustomWings>0)
 			{
 				int wingsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("Wings"));
 				if (wingsLayer >= 0)
 				{
-					AltWings.visible = true;
-					//layers.RemoveAt(wingsLayer);
-					layers.Insert(wingsLayer, AltWings);
+					if (sgaplayer.CustomWings == 1)
+					{
+						JoyriderWings.visible = true;
+						layers.Insert(wingsLayer, JoyriderWings);
+					}
+					if (sgaplayer.CustomWings == 2)
+					{
+                        Items.Accessories.TrueDragonWings.DergWings.visible = true;
+						layers.Insert(wingsLayer, Items.Accessories.TrueDragonWings.DergWings);
+					}
 				}
 			}
 
@@ -294,22 +393,38 @@ namespace SGAmod
 				}
 			}
 
-			if (IDGset)
+			if (IDGset || illuminantSet.Item1 > 4)
 			{
 				int armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsFront"));
 				if (armLayer2 >= 0)
 				{
-					DigiEffect.visible = true;
-					layers.Insert(armLayer2, DigiEffect);
+					if (IDGset)
+					{
+						DigiEffect.visible = true;
+						layers.Insert(armLayer2, DigiEffect);
+					}
+					if (illuminantSet.Item1 > 4)
+                    {
+						illuminantEffect.visible = true;
+						layers.Insert(armLayer2, illuminantEffect);
+					}
+
 					armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MiscEffectsBack"));
 					if (armLayer2 >= 0)
 					{
-						DigiEffectBack.visible = true;
-						layers.Insert(armLayer2, DigiEffectBack);
+						if (IDGset)
+						{
+							DigiEffectBack.visible = true;
+							layers.Insert(armLayer2, DigiEffectBack);
+						}
+						if (illuminantSet.Item1 > 4)
+						{
+							illuminantEffectBack.visible = true;
+							layers.Insert(armLayer2, illuminantEffectBack);
+						}
 					}
 				}
 			}
-
             #endregion
 
             #region armor glowmasks

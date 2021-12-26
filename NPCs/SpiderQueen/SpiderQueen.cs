@@ -16,6 +16,8 @@ namespace SGAmod.NPCs.SpiderQueen
 	{
 		public string Trophy() => "SpiderQueenTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
+		public string RelicName() => "Spider_Queen";
+		public void NoHitDrops() { }
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Spider Queen");
@@ -284,7 +286,7 @@ namespace SGAmod.NPCs.SpiderQueen
 					phase = 2;
 				npc.dontTakeDamage = false;
 				bool sighttoplayer = (Collision.CanHitLine(new Vector2(npc.Center.X, npc.Center.Y), 6, 6, new Vector2(P.Center.X, P.Center.Y), 6, 6));
-				bool underground = (int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+				bool underground = Items.Consumables.AcidicEgg.Underground((int)npc.Center.Y);//(int)((double)((npc.position.Y + (float)npc.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
 				if (!underground)
 				{
 					npc.dontTakeDamage = true;
@@ -327,9 +329,9 @@ namespace SGAmod.NPCs.SpiderQueen
 						npc.localAI[0] += 1f;
 						npc.localAI[1] = P.Center.X;
 						npc.localAI[2] = P.Center.Y;
-						if ((npc.ai[0] + 26) % (Main.expertMode ? 60 : 90) == 0)
+						if ((npc.ai[0] + 26) % (Main.expertMode ? 60 : 90) == 0)//Chase after the player and Squirt
 						{
-							Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 15, 8, 35 + phase * 5, phase + 1, true, 0, true, 1600);
+							Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 15, 8, 60 + phase * 10, phase + 1, true, 0, true, 1600);
 							Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 102, 0.25f, -0.25f);
 						}
 						npc.rotation = npc.rotation.AngleLerp((P.Center - npc.Center).ToRotation(), maxrotate);
@@ -343,12 +345,14 @@ namespace SGAmod.NPCs.SpiderQueen
 					else
 					{
 						//Acid Spin Attack
-						if (npc.ai[0] % 1200 == 601) {
+						if (npc.ai[0] % 1200 == 601)
+						{
 							npc.ai[0] += 1;
 							npc.ai[3] = 60;
 							Main.PlaySound(SoundID.NPCHit, (int)npc.Center.X, (int)npc.Center.Y, 37, 0.50f, -0.25f);
 						}
-						if (npc.ai[0] % 1200 > 602) {
+						if (npc.ai[0] % 1200 > 602)
+						{
 							float angle1; float angle2;
 							GetAngleDifferenceBlushiMagic(new Vector2(npc.localAI[1], npc.localAI[2]), out angle1, out angle2);
 							float rotSpeed = angle2 > angle1 ? 0.05f : -0.05f;
@@ -371,11 +375,7 @@ namespace SGAmod.NPCs.SpiderQueen
 									npc.localAI[1] = P.Center.X;
 									npc.localAI[2] = P.Center.Y;
 								}
-
-
 							}
-
-
 						}
 
 
@@ -433,7 +433,7 @@ namespace SGAmod.NPCs.SpiderQueen
 			{
 				for (int i = 0; i < legs.Count; i += 1)
 				{
-					legs[i].legUpdate(npc.Center, npc.rotation, legdists,npc.velocity, charge);
+					legs[i].LegUpdate(npc.Center, npc.rotation, legdists,npc.velocity, charge);
 				}
 			}
 
@@ -520,7 +520,7 @@ namespace SGAmod.NPCs.SpiderQueen
 			this.side = side;
 		}
 
-		public void legUpdate(Vector2 SpiderLoc, float SpiderAngle, float maxdistance,Vector2 SpiderVel,bool charge)
+		public void LegUpdate(Vector2 SpiderLoc, float SpiderAngle, float maxdistance,Vector2 SpiderVel,bool charge)
 		{
 			bool spin = maxdistance < 94;
 			this.maxdistance = maxdistance;

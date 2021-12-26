@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using SGAmod.Items.Weapons;
+using AAAAUThrowing;
 
 namespace SGAmod
 {
@@ -21,14 +22,18 @@ namespace SGAmod
 		}
 	public bool inttime=false;
 	public bool enhancedbees=false;
-	public bool splittingcoins=false;
+	public bool grazed=false;
 	public bool raindown=false;
+		public bool acid = false;
+		public float damageReduce = 1f;
+		public int damageReduceTime = 0;
 		public bool embued = false;
 		public bool onehit = false;
 	public Vector2 splithere=new Vector2(0,0);
 		public int shortlightning = 0;
 		public bool stackedattack=false;
 		public bool rerouted = false;
+		public double extraApocoChance = 0;
 
 		/*private List<int> debuffs=new List<int>();
 		private List<int> debufftime=new List<int>();
@@ -80,20 +85,48 @@ namespace SGAmod
 				return;
         }
 
-        public override void ModifyHitNPC(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public static bool IsTrueMelee(Projectile projectile, Player player)
         {
+			return ((projectile.melee && player.heldProj == projectile.whoAmI) || (projectile.modProjectile != null && (projectile.modProjectile is IShieldBashProjectile || projectile.modProjectile is ITrueMeleeProjectile)));
+		}
+
+		public override void ModifyHitNPC(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
 			if (projectile.friendly)
 			{
 				Player owner = Main.player[projectile.owner];
+				SGAPlayer sgaply = owner.SGAPly();
 				if (owner != null)
 				{
-					if (projectile.melee && owner.heldProj == projectile.whoAmI || (projectile.modProjectile!=null && projectile.modProjectile is IShieldBashProjectile))
-						damage = (int)((float)damage * owner.SGAPly().trueMeleeDamage);
+					float damageIncrease = 1f;
+					if (projectile.aiStyle == 99)
+					{
+						damageIncrease += projectile.Distance(owner.MountedCenter) / ((float)ProjectileID.Sets.YoyosMaximumRange[projectile.type])*0.15f;
+					}
+					if (IsTrueMelee(projectile,owner))
+						damageIncrease += (sgaply.trueMeleeDamage-1f);
+
+					damage = (int)((float)damage * damageIncrease);
+
 				}
 			}
+			if (damageReduce > 1)
+			{
+				damage = (int)(damage / damageReduce);
+			}
+
 
 			if (embued)
 				damage = (int)(projectile.damage * 1.50f);
+
+
+		}
+        public override void ModifyHitPlayer(Projectile projectile, Player target, ref int damage, ref bool crit)
+        {
+			if (damageReduce > 1)
+			{
+				damage = (int)(damage / damageReduce);
+			}
 		}
         public override bool? CanHitNPC(Projectile projectile, NPC target)
 		{
@@ -105,10 +138,16 @@ namespace SGAmod
 		{
 			if (embued)
 			{
-				target.AddBuff(mod.BuffType("MoonLightCurse"),90);
+				target.AddBuff(ModContent.BuffType<Buffs.MoonLightCurse>(), 90);
 			}
 
-				if (onehit)
+			if (acid)
+			{
+				target.AddBuff(ModContent.BuffType<Buffs.AcidBurn>(), damage);
+				acid = false;
+			}
+
+			if (onehit)
 				projectile.Kill();
 		}
 
@@ -118,9 +157,10 @@ namespace SGAmod
 			Player owner = Main.player[projectile.owner];
 			if (owner != null)
 			{
-				if (owner.SGAPly().SybariteGem)
+				SGAPlayer sgaply = owner.SGAPly();
+				if (sgaply != null && sgaply.SybariteGem)
 				{
-					if (Main.rand.Next(0, 4) == 0)
+					if (Main.rand.Next(0, 20) == 0)
 					{
 						int itemid;
 						if (SGAmod.CoinsAndProjectiles.TryGetValue(projectile.type, out itemid))
@@ -137,6 +177,20 @@ namespace SGAmod
 
         public override void PostAI(Projectile projectile)
 		{
+			SGAprojectile modeproj = projectile.GetGlobalProjectile<SGAprojectile>();
+				modeproj.damageReduceTime -= 1;			
+			if (modeproj.damageReduce >= 0f)
+            {
+
+				if (damageReduceTime < 1)
+				{
+					modeproj.damageReduce /= 2f;
+					if (modeproj.damageReduce < 1)
+						modeproj.damageReduce = 1f;
+				}
+			}
+
+
 			Player owner = Main.player[projectile.owner];
 			if (owner != null)
 			{
@@ -172,7 +226,18 @@ namespace SGAmod
 				Main.dust[dust].color = Main.hslToRgb(((float)(Main.GlobalTime / 3)+(float)projectile.whoAmI*7.16237f) % 1f, 0.9f, 0.65f);
 			}
 
-			SGAprojectile modeproj = projectile.GetGlobalProjectile<SGAprojectile>();
+			if (acid)
+            {
+				if (Main.rand.Next(0, 3) == 1)
+				{
+					int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, ModContent.DustType<Dusts.AcidDust>());
+					Main.dust[dust].scale = 0.75f;
+					Main.dust[dust].noGravity = true;
+					Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(60, 100) * 0.01f);
+				}
+			}
+
+			//SGAprojectile modeproj = projectile.GetGlobalProjectile<SGAprojectile>();
 			if (projectile.owner < 255 && Main.player[projectile.owner].active && projectile.friendly && !projectile.hostile)
 			{
 				if (!modeproj.stackedattack)
@@ -210,11 +275,19 @@ namespace SGAmod
 				if (projectile.friendly)
 				{
 					Player owner = Main.player[projectile.owner];
-					if (owner != null && owner.SGAPly().enchantedShieldPolish)
+					if (owner != null)
 					{
-						if (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile)
+						SGAPlayer sgaply = owner.SGAPly();
+						if (sgaply.acidSet.Item2 && (projectile.Throwing().thrown || projectile.thrown))
 						{
-							projectile.magic = true;
+							acid = true;
+						}
+						if (sgaply.enchantedShieldPolish)
+						{
+							if (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile)
+							{
+								projectile.magic = true;
+							}
 						}
 					}
 				}
@@ -249,27 +322,30 @@ namespace SGAmod
 		}}
 
 			}*/
-			if (Main.player[projectile.owner] != null)
+			if (projectile.type == 181 || projectile.type == ProjectileID.GiantBee)
 			{
-				Player ply = Main.player[projectile.owner];
-				if (ply != null)
+				if (Main.player[projectile.owner] != null)
 				{
-					SGAPlayer modplayer = ply.GetModPlayer<SGAPlayer>();
+					Player ply = Main.player[projectile.owner];
 					if (ply != null)
 					{
-						if (modplayer.beefield > 0)
+						SGAPlayer modplayer = ply.GetModPlayer<SGAPlayer>();
+						if (ply != null)
 						{
-							//modeproj.enhancedbees == true
-							if ((projectile.type == 181 || projectile.type==ProjectileID.GiantBee) && modplayer.beefieldtoggle > 0)
+							if (modplayer.beefield > 0)
 							{
-								if (projectile.velocity.Length() > 20)
+								//modeproj.enhancedbees == true
+								if (modplayer.beefieldtoggle > 0)
 								{
-									projectile.velocity.Normalize();
-									projectile.velocity = projectile.velocity * 0.98f;
-								}
-								else
-								{
-									projectile.velocity = projectile.velocity * 1.15f;
+									if (projectile.velocity.Length() > 20)
+									{
+										projectile.velocity.Normalize();
+										projectile.velocity = projectile.velocity * 0.98f;
+									}
+									else
+									{
+										projectile.velocity = projectile.velocity * 1.15f;
+									}
 								}
 							}
 						}

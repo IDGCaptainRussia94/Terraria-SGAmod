@@ -93,7 +93,69 @@ namespace SGAmod
 					}
 				}
 			}
+		}
 
+		public void ShieldRecharge()
+        {
+
+        }
+
+		public void StartShieldRecharge()
+		{
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Zombie, (int)player.Center.X, (int)player.Center.Y, 71);
+			if (sound != null)
+				sound.Pitch += 0.5f;
+		}
+
+		public void ShieldDepleted()
+        {
+			CauseShieldBreak(60 * 7);
+		}
+
+		(int, int) shieldAmmounts = (5, 7);
+
+		public bool TakeShieldHit(ref int damage)
+		{
+
+			int takenshielddamage = (int)(jellybruSet ? damage*Math.Max(player.manaCost, 0.10f) : damage);
+
+			if (GetEnergyShieldAmmountAndRecharge.Item1 > takenshielddamage)
+            {
+
+				if (!player.immune)
+				{
+					SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 93);
+					if (sound != null)
+						sound.Pitch = MathHelper.Clamp(-0.8f + ((GetEnergyShieldAmmountAndRecharge.Item1 / (float)GetEnergyShieldAmmountAndRecharge.Item2) * 1.60f),-0.75f,0.80f);
+
+					energyShieldAmmountAndRecharge.Item3 = 60 * (tpdcpu ? shieldAmmounts.Item1 : shieldAmmounts.Item2);
+					energyShieldAmmountAndRecharge.Item1 -= takenshielddamage;
+
+					//Main.NewText(takenshielddamage);
+
+					player.immune = true;
+					player.immuneTime = 20;
+				}
+
+				return true;
+			}
+			damage -= GetEnergyShieldAmmountAndRecharge.Item1;
+
+			if (GetEnergyShieldAmmountAndRecharge.Item1 > 0)
+			{
+				ShieldDepleted();
+				energyShieldAmmountAndRecharge.Item1 = 0;
+			}
+			return false;
+		}
+
+		public void StackDebuff(int type,int time)
+        {
+			player.AddBuff(ModContent.BuffType<PlaceHolderDebuff>(), time);
+			if (player.FindBuffIndex(ModContent.BuffType<PlaceHolderDebuff>()) >= 0)
+            {
+				player.buffType[player.FindBuffIndex(ModContent.BuffType<PlaceHolderDebuff>())] = type;
+			}
 		}
 
 		public float GetMinionSlots
@@ -110,21 +172,74 @@ namespace SGAmod
 			}
 		}
 
-		public bool AddCooldownStack(int time, int count = 1)
+		public void RestoreBreath(int ammount, bool texteffect = true)
 		{
-			if (CooldownStacks.Count + (count - 1) < MaxCooldownStacks)
+			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
+			Main.PlaySound(SoundID.Drown, (int)player.Center.X, (int)player.Center.Y, 0, 1f, 0.50f);
+			player.breath = (int)MathHelper.Clamp(player.breath + ammount, 0, player.breathMax);
+			sgaplayer.sufficate = player.breath;
+			if (texteffect)
+				CombatText.NewText(player.Hitbox, Color.Aqua, "+" + (ammount / 20) + " bubbles");
+
+		}
+
+		public bool AddCooldownStack(int time, int count = 1, bool testOnly = false)
+		{
+			bool weHaveStacks = CooldownStacks.Count + (count - 1) < MaxCooldownStacks;
+
+			bool worked = false;
+
+			for (int i = 0; i < count; i += 1)
 			{
-				//if (player.HasBuff(mod.BuffType("CondenserBuff")))
-				//	time = (int)((float)time * 1.15f);
 
-				time = (int)((float)time * actionCooldownRate);
+				bool illuSet = illuminantSet.Item1 > 4 && weHaveStacks && !testOnly && Main.rand.Next(4) == 0;
 
-				for (int i = 0; i < count; i += 1)
-					CooldownStacks.Add(new ActionCooldownStack(time, CooldownStacks.Count));
-				return true;
+				if (illuSet)
+				{
+					worked = true;
+					continue;
+				}
+				if (weHaveStacks)
+				{
+					//if (player.HasBuff(mod.BuffType("CondenserBuff")))
+					//	time = (int)((float)time * 1.15f);
+
+					if (!testOnly)
+					{
+						int time2 = (int)((float)time * ActionCooldownRate);
+
+						CooldownStacks.Add(new ActionCooldownStack(time2, CooldownStacks.Count));
+					}
+					worked = true;
+				}
 			}
-			return false;
+			return worked && weHaveStacks;
 			
+		}
+
+		public void AddElectricCharge(int ammount)
+        {
+			electricCharge += ammount;
+		}
+
+		public void CauseShieldBreak(int time)
+        {
+			if (!tpdcpu)
+			{
+				player.AddBuff(ModContent.BuffType<ShieldBreak>(), time);
+				CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Aquamarine, "Shield Break!", true, false);
+				SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)player.Center.X, (int)player.Center.Y, 53);
+				if (sound != null)
+					sound.Pitch -= 0.5f;
+
+				for (int i = 0; i < 20; i += 1)
+				{
+					int dust = Dust.NewDust(new Vector2(player.Center.X - 4, player.Center.Y - 8), 8, 16, 269);
+					Main.dust[dust].scale = 0.50f;
+					Main.dust[dust].noGravity = false;
+					Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
+				}
+			}
 		}
 
 		public bool ConsumeElectricCharge(int requiredcharge, int delay, bool damage = false,bool consume = true)
@@ -145,21 +260,7 @@ namespace SGAmod
 				{
 					electricCharge = 0;
 					electricdelay = 30;
-					player.AddBuff(ModContent.BuffType<ShieldBreak>(), 60 * 5);
-					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Aquamarine, "Shield Break!", true, false);
-					SoundEffectInstance sound = Main.PlaySound(SoundID.NPCHit, (int)player.Center.X, (int)player.Center.Y, 53);
-					if (sound != null)
-						sound.Pitch -= 0.5f;
-
-					for (int i = 0; i < 20; i += 1)
-					{
-						int dust = Dust.NewDust(new Vector2(player.Center.X - 4, player.Center.Y - 8), 8, 16, 269);
-						Main.dust[dust].scale = 0.50f;
-						Main.dust[dust].noGravity = false;
-						Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
-					}
-
-
+					CauseShieldBreak(60 * 5);
 				}
 			}
 
@@ -284,7 +385,7 @@ namespace SGAmod
 			return false;
 		}
 
-		public static void LimitProjectiles(Player player, int maxprojs, ushort[] types)
+		public static void LimitProjectiles(Player player, int maxprojs, int[] types)
 		{
 
 			int projcount = 0;
@@ -332,6 +433,24 @@ namespace SGAmod
 				}
 			}
 			return false;
+		}
+
+		public void LookForThrowingGear(ref int type)
+        {
+			int[] typesToCheck = { ItemID.Shuriken, ItemID.ThrowingKnife, ItemID.PoisonedKnife, ItemID.FrostDaggerfish, ItemID.StarAnise, ItemID.BoneDagger };
+
+			for(int i = 0; i < player.inventory.Length; i += 1)
+            {
+				Item item = player.inventory[i];
+
+				var counter = typesToCheck.Where(testby => testby == item.type);
+
+				if (counter.Count() > 0)
+                {
+					type = counter.ToArray()[0];
+					break;
+				}
+            }
 		}
 
 		public void UpgradeTF2()
@@ -446,41 +565,48 @@ namespace SGAmod
 						}
 					}*/
 					Projectile proj = Main.projectile[heldShield];
-					if (proj.active)
-					foundhim = heldShield;
-
-				if (foundhim > -1)
+				if (proj.active)
 				{
-					CorrodedShieldProj modShieldProj = proj.modProjectile as CorrodedShieldProj;
-					if (modShieldProj == null)
-						return false;
-					int blocktime = modShieldProj.blocktimer;
-					bool blocking = modShieldProj.Blocking;
-					if (proj == null || blocktime < 2 || !blocking)
-						return false;
-
-
-
-					Vector2 itavect2 = Main.projectile[foundhim].Center - player.Center;
-					itavect2.Normalize();
-					Vector2 ang1 = Vector2.Normalize(proj.velocity);
-					float diff = Vector2.Dot(itavect, ang1);
-
-
-					if (diff > (proj.modProjectile as CorrodedShieldProj).BlockAnglePublic)
+					foreach (Projectile proj2 in Main.projectile.Where(testby => testby.modProjectile != null && testby.modProjectile is CorrodedShieldProj))
 					{
-						if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
-							return true;
+						proj = proj2;
+						foundhim = heldShield;
 
-						float damageval = 1f - modShieldProj.BlockDamagePublic;
-						damage = (int)(damage * damageval);
+						if (foundhim > -1)
+						{
+							CorrodedShieldProj modShieldProj = proj.modProjectile as CorrodedShieldProj;
+							if (modShieldProj == null)
+								return false;
+							int blocktime = modShieldProj.Blocktimer;
+							bool blocking = modShieldProj.Blocking;
 
-						Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
+							if (proj == null || blocktime < 2 || !blocking)
+								continue;// return false;
 
-						if (!NoHitCharm && !(proj.modProjectile as CorrodedShieldProj).HandleBlock(ref damage, player))
-							return true;
 
-						return false;
+
+							Vector2 itavect2 = Main.projectile[foundhim].Center - player.Center;
+							itavect2.Normalize();
+							Vector2 ang1 = Vector2.Normalize(proj.velocity);
+							float diff = Vector2.Dot(itavect, ang1);
+
+
+							if (diff > (proj.modProjectile as CorrodedShieldProj).BlockAnglePublic-player.SGAPly().shieldBlockAngle)
+							{
+								if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
+									return true;
+
+								float damageval = 1f - modShieldProj.BlockDamagePublic;
+								damage = (int)(damage * damageval);
+
+								Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 4, 0.6f, 0.5f);
+
+								if (!NoHitCharm && !(proj.modProjectile as CorrodedShieldProj).HandleBlock(ref damage, player))
+									return true;
+
+								continue;// return false;
+							}
+						}
 					}
 				}
 
@@ -530,7 +656,7 @@ namespace SGAmod
 
 		public bool DashBlink()
 		{
-			if (noModTeleport || maxblink < 1)
+			if (noModTeleport || maxblink < 1 || (player.mount != null && player.mount.Active))
 				return false;
 
 
@@ -550,7 +676,7 @@ namespace SGAmod
 					player.Teleport(player.Center + new Vector2(player.dashTime > 0 ? -8 : 0, -20), 1);
 					for (int i = 0; i < 30; i += 1)
 					{
-						if (Collision.CanHit(player.Center, 16, 16, player.Center + new Vector2(Math.Sign(player.dashTime) * 8, 0), 16, 16))
+						if (Collision.CanHitLine(player.Center, 16, 16, player.Center + new Vector2(Math.Sign(player.dashTime) * 8, 0), 16, 16))
 						{
 							player.Center += new Vector2(Math.Sign(player.dashTime) * 8, 0);
 
@@ -592,7 +718,7 @@ namespace SGAmod
 			{
 				for (int g = 0; g < Player.MaxBuffs; g += 1)
 				{
-					if (player.manaRegenBuff && SGAConfig.Instance.ManaPotionChange)
+					if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore>0))
 					{
 						if (player.buffType[g] == BuffID.ManaSickness && player.buffTime[g] > 3)
 						{
@@ -619,7 +745,7 @@ namespace SGAmod
 						//longerExpertDebuff
 						for (int i = 0; i < Player.MaxBuffs; i += 1)
 						{
-							if (player.buffType[i] != BuffID.PotionSickness && player.buffType[i] != mod.BuffType("MatrixBuff") && player.buffType[i] != mod.BuffType("DragonsMight"))
+							if (!player.BlackListedBuffs(i))
 							{
 								ModBuff buff = ModContent.GetModBuff(player.buffType[i]);
 								bool isdebuff = Main.debuff[player.buffType[i]];
@@ -641,6 +767,7 @@ namespace SGAmod
 					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Green, "Anticipated!", false, false);
 					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y - 48, player.width, player.height), Color.Green, "+" + anticipationLevel * 100 + "!", false, false);
 					player.AddBuff(mod.BuffType("BossHealingCooldown"), 120 * 60);
+					player.netLife = true;
 					player.statLife += anticipationLevel * 100;
 				}
 				Item helditem = player.HeldItem;

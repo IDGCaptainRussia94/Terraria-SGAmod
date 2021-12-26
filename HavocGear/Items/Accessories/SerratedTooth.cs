@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 
 namespace SGAmod.HavocGear.Items.Accessories
 {
+	[AutoloadEquip(EquipType.Neck)]
 	public class SerratedTooth : ModItem
 	{
         public override void SetStaticDefaults()

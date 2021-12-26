@@ -57,7 +57,7 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/ActionCooldown";
+			texture = "SGAmod/Buffs/AnticipationCooldownDebuff";
 			return true;
 		}
 

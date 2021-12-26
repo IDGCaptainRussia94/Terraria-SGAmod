@@ -61,18 +61,6 @@ namespace SGAmod.UI
 			}
 
 				base.DrawSelf(spriteBatch);
-			/*if (this.visible)
-			{
-				Vector2 vector = new Vector2((float)Main.mouseX, (float)Main.mouseY);
-				if (this._UIView.ContainsPoint(vector))
-				{
-					Main.LocalPlayer.mouseInterface = true;
-				}
-				if (this.dragging)
-				{
-					this._Recalculate(vector, 0f);
-				}
-			}*/
 		}
 
 		public override void Update(GameTime gameTime)

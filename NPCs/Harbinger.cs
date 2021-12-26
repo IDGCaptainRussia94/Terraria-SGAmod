@@ -15,6 +15,8 @@ namespace SGAmod.NPCs
 	{
 		public string Trophy() => "DoomHarbingerTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
+		public string RelicName() => "Doom_Harbinger";
+		public void NoHitDrops() { }
 
 		int oldtype=0;
 		int [] orbitors=new int[20];
@@ -78,7 +80,7 @@ namespace SGAmod.NPCs
 					if (SGAWorld.downedHarbinger == false)
 					{
 						Idglib.Chat("Your end is nigh...", 15, 15, 150);
-						Idglib.Chat("Robbed figures have been seen near the dungeon.", 20, 20, 125);
+						//Idglib.Chat("Robbed figures have been seen near the dungeon.", 20, 20, 125);
 						SGAWorld.downedHarbinger = true;
 					}
 				}

@@ -43,7 +43,7 @@ using SGAmod.Items;
 using SGAmod.Items.Weapons;
 using SGAmod.Items.Armors;
 using SGAmod.Items.Accessories;
-using SGAmod.Items.Consumable;
+using SGAmod.Items.Consumables;
 using SGAmod.Items.Weapons.Caliburn;
 using SGAmod.Tiles;
 using SGAmod.UI;
@@ -57,6 +57,8 @@ using Terraria.GameContent.UI.Elements;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Dimensions.NPCs;
 using SGAmod.Items.Placeable.Paintings;
+using Terraria.ModLoader.Audio;
+using System.Net;
 
 #if Dimensions
 using SGAmod.Dimensions;
@@ -94,8 +96,64 @@ namespace SGAmod
 		public partial class SGAmod : Mod
 	{
 
+		public SGAmod()
+		{
+#if Dimensions
+			proxydimmod = new DimDungeonsProxy();
+#endif
+			safeMode = 0;
+			//SGAmod.AbsentItemDisc.Add(SGAmod.Instance.ItemType("Tornado"), "This is test");
+
+			if (SpecialEvents.Item1)
+				SpecialBirthdayMode = true;
+			if (SpecialEvents.Item2)
+				AprilFoolsMode = true;
+
+			Properties = new ModProperties()
+			{
+				Autoload = true,
+				AutoloadGores = true,
+				AutoloadSounds = true
+			};
+
+		}
+
+		public const bool VibraniumUpdate = true;
+		public const bool EngieUpdate = true;
+		public const bool ArmorButtonUpdate = false;
+		public const bool EnchantmentsUpdate = false;
+		public const bool SpaceBossActive = true;
+
+		public static int SafeModeCheck
+        {
+            get
+            {
+				int valuez = 0;
+				Microsoft.Xna.Framework.Input.KeyboardState keyState = Microsoft.Xna.Framework.Input.Keyboard.GetState();
+				if (keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.CapsLock))
+				{
+
+					if (Main.MouseScreen.Y < 128)
+					{
+						SGAmod.Instance.Logger.Debug("SAFE MODE ACTIVATED: no risky OS stuff");
+						valuez += 1;
+					}
+						if (Main.MouseScreen.X < 128)
+						{
+						SGAmod.Instance.Logger.Debug("SAFE MODE ACTIVATED: Not loading IL or Hookend point patches");
+						valuez += 2;
+						}
+				}
+
+				return valuez;
+			}
+		}
+
+		public static int safeMode = 0;
+
 		public static SGAmod Instance;
 		public static string SteamID;
+		public static bool isGoG = false;
 		public static bool SkillUIActive = false;
 		public static int ScrapCustomCurrencyID;
 		public static CustomCurrencySystem ScrapCustomCurrencySystem;
@@ -109,15 +167,20 @@ namespace SGAmod
 		public static Dictionary<int, string> StuffINeedFuckingSpritesFor;
 		public static Dictionary<int, EnchantmentCraftingMaterial> EnchantmentCatalyst;
 		public static Dictionary<int, EnchantmentCraftingMaterial> EnchantmentFocusCrystal;
+		public static Dictionary<int, LuminousAlterItemClass> LuminousAlterItems;
+		public static Dictionary<int, Color> GemColors;
 		public static Dictionary<int, int> CoinsAndProjectiles;
 		public static int[] otherimmunes = new int[3];
-		public static bool Calamity = false;
 		public static bool NightmareUnlocked = false;
+		public static bool exitingSubworld = false;
 		public static string userName = Environment.UserName;
 		public static string filePath = "C:/Users/" + userName + "/Documents/My Games/Terraria/ModLoader/SGAmod";
 		public static Texture2D hellionLaserTex;
 		public static Texture2D ParadoxMirrorTex;
-		public static Texture2D PrismBansheeTex;
+		//public static Texture2D PrismBansheeTex;
+		public static Texture2D RadSuitHeadTex;
+		public static Texture2D PlatformTex;
+		public static Texture2D PearlIceBackground;
 		public static int OSType;
 		internal static ModHotKey CollectTaxesHotKey;
 		internal static ModHotKey WalkHotKey;
@@ -131,11 +194,27 @@ namespace SGAmod
 		public static bool updateportals = false;
 		public static bool anysubworld = false;
 		public static float overpoweredMod = 0f;
+		public static int vibraniumCounter = 0;
+		public static bool ForceDrawOverride = false;
+		public static GameTime lastTime = new GameTime();
+		public static (int, int, bool) ExtractedItem = (-1,-1, false);
+
 		private int localtimer = 0;
+
 		public static List<PostDrawCollection> PostDraw;
 		public static RenderTarget2D drawnscreen;
 		public static RenderTarget2D postRenderEffectsTarget;
 		public static RenderTarget2D postRenderEffectsTargetCopy;
+		public static RenderTarget2D screenExplosionCopy;
+
+		public static (Texture2D, Texture2D) VanillaHearts;
+		public static (Texture2D, Texture2D) OGVanillaHearts;
+
+
+		public static (bool, bool) SpecialEvents => ((DateTime.Now.Month, DateTime.Now.Day) == (8,24), (DateTime.Now.Month, DateTime.Now.Day) == (4, 1));
+		public static bool SpecialBirthdayMode = false;
+		public static bool AprilFoolsMode = false;
+
 
 		public static SGACustomUIMenu CustomUIMenu;
 		public static UserInterface CustomUIMenuInterface;
@@ -143,14 +222,98 @@ namespace SGAmod
 		internal static SGACraftBlockPanel craftBlockPanel;
 		internal static UserInterface craftBlockPanelInterface;
 
+		internal static SGAArmorButton armorButton;
+		internal static UserInterface armorButtonPanelInterface;
+
 		public static Dictionary<int, int> itemToMusicReference = new Dictionary<int, int>();
 		public static Dictionary<int, int> musicToItemReference = new Dictionary<int, int>();
+		public static List<int> BuffsThatHavePotions = new List<int>();
 		public static byte SkillRun = 1;
 		public static int RecipeIndex = 0;
 		public static float fogAlpha = 1f;
 		public static Effect TrailEffect;
 		public static Effect HallowedEffect;
+		public static Effect TrippyRainbowEffect;
+		public static Effect FadeInEffect;
+		public static Effect RadialEffect;
+		public static Effect SphereMapEffect;
+		public static Effect VoronoiEffect;
+		public static Effect CataEffect;
+		public static Effect TextureBlendEffect;
+
+
+		public static List<CustomSpecialDrawnTiles> BeforeTilesAdditive = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> BeforeTiles = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> AfterTiles = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> AfterTilesAdditive = new List<CustomSpecialDrawnTiles>();
+
+		public static List<CustomSpecialDrawnTiles> BeforeTilesAdditiveToDraw = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> BeforeTilesToDraw = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> AfterTilesToDraw = new List<CustomSpecialDrawnTiles>();
+		public static List<CustomSpecialDrawnTiles> AfterTilesAdditiveToDraw = new List<CustomSpecialDrawnTiles>();
+
+		public static (Texture2D, Texture2D) oldLogo;
+
+		public static MusicStreamingOGGPlus musicTest;
+
+		public static readonly BindingFlags UniversalBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+
 		public static string HellionUserName => SGAConfigClient.Instance.HellionPrivacy ? Main.LocalPlayer.name : userName;
+
+		public static int hellionMusicGrabState = 0;
+		public static MusicStreamingOGGPlus hellionTheme = default;
+
+		protected static float _screenShake = 0;
+
+		public static float ScreenShake
+		{
+			get
+			{
+				if (Main.gameMenu)
+					return 0;
+
+				return Math.Max(_screenShake* (SGAConfigClient.Instance.ScreenShakeMul/100f), 0);
+			}
+			set
+			{
+				_screenShake = value;
+			}
+		}
+
+		public static List<ScreenExplosion> screenExplosions = new List<ScreenExplosion>();
+
+		public static ScreenExplosion AddScreenExplosion(Vector2 here,int time,float str, float distance = 3200)
+        {
+			if (Main.dedServ)
+				return null;
+
+			if (!SGAConfigClient.Instance.ScreenFlashExplosions)
+				return null;
+
+			ScreenExplosion explode = new ScreenExplosion(here, time, str);
+
+			//Vector2 centerpos = Main.LocalPlayer.Center;
+
+			//explode.strength = explode.strength *= MathHelper.Clamp((here- centerpos).Length()/ distance,0f,1f);
+			screenExplosions.Add(explode);
+
+			Overlays.Scene.Activate("SGAmod:ScreenExplosions");
+			return explode;
+		}
+
+		public static void AddScreenShake(float ammount, float distance = -1, Vector2 origin = default)
+		{
+			if (Main.dedServ)
+				return;
+
+			if (origin != default)
+			{
+				ammount *= MathHelper.Clamp((1f - (Vector2.Distance(origin, Main.LocalPlayer.Center) / distance)), 0f, 1f);
+			}
+
+			_screenShake += ammount;
+		}
+
 
 		public int OSDetect()
 		{
@@ -168,36 +331,18 @@ namespace SGAmod
 					SGAmod.filePath = "/home/" + userName + "/.local/share/Terraria/ModLoader/SGAmod";
 					return 1;
 				case PlatformID.MacOSX:
-					SGAmod.filePath = "/Users/" + userName + "/Library/Application Support/Terraria/ModLoader";
+					SGAmod.filePath = "/Users/" + userName + "/Library/Application Support/Terraria/ModLoader/SGAmod";
 					return 2;
 				default:
-					Logger.Error("SGAmod cannot detect your OS, files might not be saved in the right places");
+					SGAmod.filePath = Main.SavePath+ "/ModLoader/SGAmod";
+					Logger.Error("SGAmod cannot detect your OS, files might not be saved in the right places, trying default path");
 					break;
 			}
 			return -1;
-
-
-
 		}
 #if Dimensions
 		DimDungeonsProxy proxydimmod;
 #endif
-
-		public SGAmod()
-		{
-#if Dimensions
-			proxydimmod = new DimDungeonsProxy();
-#endif
-
-			//SGAmod.AbsentItemDisc.Add(SGAmod.Instance.ItemType("Tornado"), "This is test");
-
-			Properties = new ModProperties()
-			{
-				Autoload = true,
-				AutoloadGores = true,
-				AutoloadSounds = true
-			};
-		}
 
 		public override void PreSaveAndQuit()
 		{
@@ -205,13 +350,42 @@ namespace SGAmod
 			proxydimmod.PreSaveAndQuit();
 #endif
 			Overlays.Scene.Deactivate("SGAmod:SGAHUD");
+			Overlays.Scene.Deactivate("SGAmod:ScreenExplosions");
 			Overlays.Scene.Deactivate("SGAmod:CirnoBlizzard");
 			Filters.Scene["SGAmod:CirnoBlizzard"].Deactivate();
+			Filters.Scene["SGAmod:ScreenTimeDistort"].Deactivate();
 		}
 
 		public static List<Texture2D> HellionGores;
 		public static List<Texture2D> HellionTextures;
 		public static List<Texture2D> ExtraTextures;
+
+		private void AddMusicBoxes()
+		{
+			AddItem("MusicBox_Boss2Remix", new SGAItemMusicBox("MusicBox_Boss2Remix", "Murk", "Boss 2 Remix", "Unknown"));
+			AddItem("MusicBox_Swamp", new SGAItemMusicBox("MusicBox_Swamp", "Dank Shrine", "The Swamp of Ebag sah'now", "Skyre Ventes"));
+			AddItem("MusicBox_Caliburn", new SGAItemMusicBox("MusicBox_Caliburn", "Caliburn Guardians", "Guardians Down Below", "Rijam"));
+			AddItem("MusicBox_Wraith", new SGAItemMusicBox("MusicBox_Wraith", "Wraiths", "First Night", "Musicman"));
+			AddItem("MusicBox_SpiderQueen", new SGAItemMusicBox("MusicBox_SpiderQueen", "Spider Queen", "Acidic Affray", "Musicman"));
+			AddItem("MusicBox_Sharkvern", new SGAItemMusicBox("MusicBox_Sharkvern", "Sharkvern", "Freak of Nature", "Musicman"));
+			AddItem("MusicBox_Creepy", new SGAItemMusicBox("MusicBox_Creepy", "Creepy", "???", "Unknown"));
+			AddItem("MusicBox_Cirno", new SGAItemMusicBox("MusicBox_Cirno", "Cirno", "Algid Action", "Rijam"));
+			AddItem("MusicBox_Space", new SGAItemMusicBox("MusicBox_Space", "Space", "Asteriod Expanse", "Rijam"));
+			AddItem("MusicBox_SpaceBoss", new SGAItemMusicBox("MusicBox_SpaceBoss", "Phaethon", "Meteoroid Barrage", "Rijam"));
+			AddItem("MusicBox_Cratrosity", new SGAItemMusicBox("MusicBox_Cratrosity", "Cratrosity", "A Perilous Venture", "Rijam"));
+
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Murk"), ItemType("MusicBox_Boss2Remix"), TileType("MusicBox_Boss2Remix"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Swamp"), ItemType("MusicBox_Swamp"), TileType("MusicBox_Swamp"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Swamp_Remix"), ItemType("MusicBox_Caliburn"), TileType("MusicBox_Caliburn"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Copperig"), ItemType("MusicBox_Wraith"), TileType("MusicBox_Wraith"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SpiderQueen"), ItemType("MusicBox_SpiderQueen"), TileType("MusicBox_SpiderQueen"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Shark"), ItemType("MusicBox_Sharkvern"), TileType("MusicBox_Sharkvern"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/creepy"), ItemType("MusicBox_Creepy"), TileType("MusicBox_Creepy"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cirno_v2"), ItemType("MusicBox_Cirno"), TileType("MusicBox_Cirno"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space"), ItemType("MusicBox_Space"), TileType("MusicBox_Space"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Space_Boss"), ItemType("MusicBox_SpaceBoss"), TileType("MusicBox_SpaceBoss"));
+			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cratrosity"), ItemType("MusicBox_Cratrosity"), TileType("MusicBox_Cratrosity"));
+		}
 
 		public static void LoadOrUnloadTextures(bool load)
 		{
@@ -228,6 +402,9 @@ namespace SGAmod
 				HellionTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.FrostShard));
 				HellionTextures.Add(ModContent.GetTexture("Terraria/Projectile_490"));
 				HellionTextures.Add(ModContent.GetTexture("Terraria/Projectile_"+ProjectileID.Leaf));
+
+				VanillaHearts = (ModContent.GetTexture("Terraria/Heart"), ModContent.GetTexture("Terraria/Heart2"));
+				OGVanillaHearts = (ModContent.GetTexture("Terraria/Heart"), ModContent.GetTexture("Terraria/Heart2"));
 
 			}
 
@@ -272,10 +449,58 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 571));//109
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + 711));//110
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + 1));//111
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Glow_"+ 239));//112
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_" + TileID.ExposedGems));//113
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_" + TileID.Crystals));//114
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.DetonatingBubble));//115
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.MedusaHeadRay));//116
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/UI/Settings_Inputs_2"));//117
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_"+ TileID.Torches));//118
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Glow_239"));//119
 
-				Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
-				int height = queenTex.Height;
-				PrismBansheeTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, height-(height / 6), queenTex.Width, height / 6));
+				//Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
+
+				Texture2D PlatTex = ModContent.GetTexture("Terraria/Tiles_"+TileID.Asphalt);
+				PearlIceBackground = ModContent.GetTexture("Terraria/Background_206");
+
+				Item item = new Item();
+				item.SetDefaults(ItemID.ParkaHood);
+				Texture2D RadTex = ModContent.GetTexture("Terraria/Armor_Head_" + item.headSlot);
+
+				item = new Item();
+				item.SetDefaults(ItemID.SWATHelmet);
+				Texture2D RadTex2 = ModContent.GetTexture("Terraria/Armor_Head_" + item.headSlot);
+
+				//int height = queenTex.Height;
+				//RadSuitHeadTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, 0, RadTex.Width, RadTex.Height));
+				//PrismBansheeTex = queenTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(0, height-(height / 6), queenTex.Width, height / 6));
+				PlatformTex = PlatTex.CreateTexture(Main.graphics.GraphicsDevice,new Rectangle(18*5,0, 16, 16));
+
+				Texture2D tex = new Texture2D(Main.graphics.GraphicsDevice, RadTex.Width, RadTex.Height);
+
+				Color[] datacolors2 = new Color[RadTex.Width * RadTex.Height];
+				RadTex.GetData(datacolors2);
+				tex.SetData(datacolors2);
+
+				Color[] dataColors = new Color[RadTex.Width * RadTex.Height];
+				RadTex2.GetData(dataColors);
+
+				for (int y = 0; y < RadTex.Height; y++)
+				{
+					for (int x = 0; x < RadTex.Width; x += 1)
+					{
+						int therex = (int)MathHelper.Clamp((x), 0, RadTex.Width);
+						int therey = (int)MathHelper.Clamp((y), 0, RadTex.Height);
+						if (datacolors2[(int)therex + therey * RadTex.Width].A > 0)
+						{
+
+							dataColors[(int)therex + therey * RadTex.Width] = datacolors2[(int)therex + therey * RadTex.Width];
+						}
+					}
+				}
+
+				tex.SetData(dataColors);
+				RadSuitHeadTex = tex;
 			}
 
 			else
@@ -293,25 +518,59 @@ namespace SGAmod
 				HellionTextures = null;
 				HellionGores = null;
 				ExtraTextures = null;
-				PrismBansheeTex.Dispose();
+				//PrismBansheeTex.Dispose();
+				RadSuitHeadTex.Dispose();
+				PlatformTex.Dispose();
+				PearlIceBackground.Dispose();
 
 			}
 
 			}
+
+		public void UnLoadMusic(bool unload)
+        {
+			if (unload)
+			{
+				if (SGAmod.musicTest != default && SGAmod.hellionTheme != null)
+				{
+					if (SGAmod.musicTest.IsPlaying)
+						SGAmod.musicTest.Stop(AudioStopOptions.Immediate);
+					SGAmod.musicTest.Dispose();
+				}
+
+				if (SGAmod.hellionTheme != default && SGAmod.hellionTheme != null)
+				{
+					if (SGAmod.hellionTheme.IsPlaying)
+						SGAmod.hellionTheme.Stop(AudioStopOptions.Immediate);
+					SGAmod.hellionTheme.Dispose();
+				}
+			}
+		}
 
 		public override void Load()
 		{
+			Instance = this;
+
 #if Dimensions
 			proxydimmod.Load();
 #endif
-			SteamID = Main.dedServ || Main.netMode == NetmodeID.Server ? "" : (string)(typeof(ModLoader).GetProperty("SteamID64", BindingFlags.Static | BindingFlags.NonPublic)).GetValue(null);
+
+			safeMode = SafeModeCheck;
+
+			if (safeMode == 0 || safeMode == 2)
+			{
+				Type installVarifier = Assembly.GetAssembly(typeof(Main)).GetType("Terraria.ModLoader.Engine.InstallVerifier");
+				isGoG = (bool)installVarifier.GetField("IsGoG").GetValue(null);
+
+				SteamID = Main.dedServ || Main.netMode == NetmodeID.Server || !isGoG ? "" : (string)(typeof(ModLoader).GetProperty("SteamID64", BindingFlags.Static | BindingFlags.NonPublic)).GetValue(null);
+
+			}
 			/*FieldInfo fild= typeof(CalamityPlayer).GetField("throwingDamage", BindingFlags.Instance | BindingFlags.Public);
 
 			object modp = Main.LocalPlayer.GetModPlayer(ModLoader.GetMod("CalamityMod"), "CalamityPlayer");
 
 			fild.SetValue(modp, 1f+ (float)fild.GetValue(modp));*/
 
-			Instance = this;
 			overpoweredMod = 0;
 
 			SGAPlayer.ShieldTypes.Clear();
@@ -323,44 +582,35 @@ namespace SGAmod
 			SGAPlayer.ShieldTypes.Add(ItemType("RiotShield"), ProjectileType("RiotShieldProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("SolarShield"), ProjectileType("SolarShieldProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("CapShield"), ProjectileType("CapShieldProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("AegisaltAetherstone"), ProjectileType("AegisaltAetherstoneProj"));
+			SGAPlayer.ShieldTypes.Add(ItemType("NoviteShield"), ProjectileType("NoviteShieldProj"));
 
 			SGAPlayer.ShieldTypes.Add(ItemType("LaserMarker"), ProjectileType("LaserMarkerProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("GraniteMagnet"), ProjectileType("GraniteMagnetProj"));
 			SGAPlayer.ShieldTypes.Add(ItemType("CobaltMagnet"), ProjectileType("CobaltMagnetProj"));
 
-
-			AddItem("MusicBox_Boss2Remix", new SGAItemMusicBox("MusicBox_Boss2Remix", "Murk","Boss 2 Remix","Unknown"));
-			AddItem("MusicBox_Swamp", new SGAItemMusicBox("MusicBox_Swamp", "Dank Shrine", "The Swamp of Ebag sah'now", "Skyre Ventes"));
-			AddItem("MusicBox_Caliburn", new SGAItemMusicBox("MusicBox_Caliburn", "Caliburn Guardians", "Guardians Down Below", "Rijam"));
-			AddItem("MusicBox_Wraith", new SGAItemMusicBox("MusicBox_Wraith", "Wraiths", "First Night", "Musicman"));
-			AddItem("MusicBox_SpiderQueen", new SGAItemMusicBox("MusicBox_SpiderQueen", "Spider Queen", "Acidic Affray", "Musicman"));
-			AddItem("MusicBox_Sharkvern", new SGAItemMusicBox("MusicBox_Sharkvern", "Sharkvern", "Freak of Nature", "Musicman"));
-			AddItem("MusicBox_Creepy", new SGAItemMusicBox("MusicBox_Creepy", "Creepy", "???", "Unknown"));
-			AddItem("MusicBox_Cirno", new SGAItemMusicBox("MusicBox_Cirno", "Cirno", "Algid Action", "Rijam"));
-
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Murk"), ItemType("MusicBox_Boss2Remix"), TileType("MusicBox_Boss2Remix"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Swamp"), ItemType("MusicBox_Swamp"), TileType("MusicBox_Swamp"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Swamp_Remix"), ItemType("MusicBox_Caliburn"), TileType("MusicBox_Caliburn"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Copperig"), ItemType("MusicBox_Wraith"), TileType("MusicBox_Wraith"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SpiderQueen"), ItemType("MusicBox_SpiderQueen"), TileType("MusicBox_SpiderQueen"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/Shark"), ItemType("MusicBox_Sharkvern"), TileType("MusicBox_Sharkvern"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/creepy"), ItemType("MusicBox_Creepy"), TileType("MusicBox_Creepy"));
-			AddMusicBox(GetSoundSlot(SoundType.Music, "Sounds/Music/SGAmod_Cirno_v2"), ItemType("MusicBox_Cirno"), TileType("MusicBox_Cirno"));
+			//LuminousAlterCraftingHint.InitLuminousCrafting();
 
 			AddTile("PrismalBarTile", new BarTile("PrismalBar", "Prismal Bar", new Color(210, 0, 100)), "SGAmod/Tiles/PrismalBarTile");
-			AddTile("UnmanedBarTile", new BarTile("UnmanedBar", "Unmaned Bar", new Color(70, 0, 40)), "SGAmod/Tiles/UnmanedBarTile");
+			AddTile("UnmanedBarTile", new BarTile("UnmanedBar", "Novus Bar", new Color(70, 0, 40)), "SGAmod/Tiles/UnmanedBarTile");
 			AddTile("NoviteBarTile", new BarTile("NoviteBar", "Novite Bar", new Color(240, 221, 168)), "SGAmod/Tiles/NoviteBarTile");
 			AddTile("BiomassBarTile", new BarTile("BiomassBar", "Biomass Bar", new Color(40, 150, 40)), "SGAmod/Tiles/BiomassBarTile");
 			AddTile("VirulentBarTile", new BarTile("VirulentBar", "Virulent Bar", new Color(21, 210, 20)), "SGAmod/Tiles/VirulentBarTile");
 			AddTile("CryostalBarTile", new BarTile("CryostalBar", "Cryostal Bar", new Color(21, 60, 100)), "SGAmod/Tiles/CryostalBarTile");
-			AddTile("DrakeniteBarTile", new BarTile("DrakeniteBar", "Drakenite Bar", new Color(0, 240, 0)), "SGAmod/Tiles/DrakeniteBarTile");
-			AddTile("StarMetalBarTile", new BarTile("StarMetalBar", "Star Metal Bar", new Color(0, 240, 0)), "SGAmod/Tiles/StarMetalBarTile");
+			AddTile("DrakeniteBarTile", new BarTile("DrakeniteBar", "Drakenite Bar", new Color(0, 240, 0),true), "SGAmod/Tiles/DrakeniteBarTile");
+			AddTile("StarMetalBarTile", new BarTile("StarMetalBar", "Star Metal Bar", new Color(244, 232, 250)), "SGAmod/Tiles/StarMetalBarTile");
+			AddTile("VibraniumBarTile", new BarTile("VibraniumBar", "Vibranium Bar", new Color(181, 85, 127)), "SGAmod/Tiles/VibraniumBarTile");
+			AddTile("WovenEntrophiteTile", new BarTile("WovenEntrophite", "Woven Entrophite", new Color(32, 0, 32)), "SGAmod/Tiles/WovenEntrophiteTile");
 
 			//AddGore("SGAmod/Gores/CirnoHeadGore",new CirnoHeadGore);
 
+			AddMusicBoxes();
 			SGAPlacablePainting.SetupPaintings();
+			Items.Placeable.Relics.SGAPlacableRelic.AddRelics();
 			ClipWeaponReloading.SetupRevolverHoldingTypes();
+			Items.Placeable.TechPlaceable.LuminousAlterCraftingHint.CreateRecipeItems();
 
+			//MusicStreamingMP3 musicTest = new MusicStreamingMP3("tmod:SGAmod/Sounds/Music/Swamp.mp3");
 
 			anysubworld = false;
 			SGAmod.SkillUIActive = false;
@@ -372,9 +622,20 @@ namespace SGAmod
 			SGAmod.NonStationDefenses = new Dictionary<int, int>();
 			SGAmod.EnchantmentCatalyst = new Dictionary<int, EnchantmentCraftingMaterial>();
 			SGAmod.EnchantmentFocusCrystal = new Dictionary<int, EnchantmentCraftingMaterial>();
+			SGAmod.LuminousAlterItems = new Dictionary<int, LuminousAlterItemClass>();
 			SGAmod.CoinsAndProjectiles = new Dictionary<int, int>();
-			CoinsAndProjectiles.Add(ProjectileID.CopperCoin, ItemID.CopperCoin); CoinsAndProjectiles.Add(ProjectileID.SilverCoin, ItemID.SilverCoin); 
+			SGAmod.GemColors = new Dictionary<int, Color>();
+
+			SGAmod.GemColors.Add(ItemID.Sapphire, Color.Blue); SGAmod.GemColors.Add(ItemID.Ruby, Color.Red); SGAmod.GemColors.Add(ItemID.Emerald, Color.Lime);
+			SGAmod.GemColors.Add(ItemID.Topaz, Color.Yellow); SGAmod.GemColors.Add(ItemID.Amethyst, Color.Purple); SGAmod.GemColors.Add(ItemID.Diamond, Color.Aquamarine);
+			SGAmod.GemColors.Add(ItemID.Amber, Color.Orange);
+
+			CoinsAndProjectiles.Add(ProjectileID.CopperCoin, ItemID.CopperCoin); CoinsAndProjectiles.Add(ProjectileID.SilverCoin, ItemID.SilverCoin);
 			CoinsAndProjectiles.Add(ProjectileID.GoldCoin, ItemID.GoldCoin); CoinsAndProjectiles.Add(ProjectileID.PlatinumCoin, ItemID.PlatinumCoin);
+
+			CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingCopperCoinPlayer>(), ItemID.CopperCoin); CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingSilverCoinPlayer>(), ItemID.SilverCoin);
+			CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingGoldCoinPlayer>(), ItemID.GoldCoin); CoinsAndProjectiles.Add(ModContent.ProjectileType<GlowingPlatinumCoinPlayer>(), ItemID.PlatinumCoin);
+
 
 			SGAmod.otherimmunes = new int[3];
 			SGAmod.otherimmunes[0] = BuffID.Daybreak;
@@ -385,26 +646,30 @@ namespace SGAmod
 
 			CollectTaxesHotKey = RegisterHotKey("Collect Taxes", "X");
 			WalkHotKey = RegisterHotKey("Walk Mode", "C");
-			ToggleRecipeHotKey = RegisterHotKey("Cycle Recipes", "V");
-			ToggleGamepadKey = RegisterHotKey("Cycle Aiming Style", "V");
+			ToggleRecipeHotKey = RegisterHotKey("Abilities/Cycle Recipes", "V");
+			ToggleGamepadKey = RegisterHotKey("Cycle Aiming Style", "Z");
 			GunslingerLegendHotkey = RegisterHotKey("Gunslinger Legend Ability", "Q");
 			NinjaSashHotkey = RegisterHotKey("Shin Sash Ability", "Q");
 			//SkillTestKey = RegisterHotKey("(Debug) Skill Tree Key", "T");
 
 			OSType = OSDetect();
+
 			SGAmod.PostDraw = new List<PostDrawCollection>();
 			//On.Terraria.GameInput.LockOnHelper.SetActive += GameInput_LockOnHelper_SetActive;
 
-			SGAMethodSwaps.Apply();
-			SGAILHacks.Patch();
-
 			if (!Main.dedServ)
 			{
-				SGAmod.MakeRenderTarget(true);
-				//RenderTarget2D ss=new RenderTarget2D()
+				if (safeMode == 0 || safeMode == 2)
+				{
+					_ = Core.WinForm.WinHandled;
+				}
+				ShadowParticle.Load();
+
+				CreateRenderTarget2Ds(Main.screenWidth, Main.screenHeight, false, true);
 				DrakeniteBar.CreateTextures();
 				LoadOrUnloadTextures(true);
 				SkillTree.SKillUI.InitThings();
+				UnLoadMusic(false);
 
 				CustomUIMenu = new SGACustomUIMenu();
 				CustomUIMenu.Activate();
@@ -416,13 +681,82 @@ namespace SGAmod
 				craftBlockPanelInterface = new UserInterface();
 				craftBlockPanelInterface.SetState(craftBlockPanel);
 
+				if (ArmorButtonUpdate)
+				{
+					armorButton = new SGAArmorButton();
+					armorButton.Initialize();
+					armorButtonPanelInterface = new UserInterface();
+					armorButtonPanelInterface.SetState(armorButton);
+				}
+
+
+				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidoSnd", new Sounds.Custom.MegidoSnd());
+				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidolaonSnd", new Sounds.Custom.MegidolaonSnd());
+				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/RoR2sndTurretFire", new Sounds.Custom.RoR2sndTurretFire());
+
 			}
 
 			AddItem("Nightmare", NPCs.TownNPCs.Nightmare.instance);
 
-			if (Directory.Exists(filePath))
+			bool failedToMakeDirectoy = false;
+			bool safefailsafe = false;
+
+			if (SafeModeCheck == 1 || SafeModeCheck == 3)
+            {
+				failedToMakeDirectoy = true;
+				safefailsafe = true;
+				goto goherenext;
+
+			}
+
+			try
 			{
-				SGAmod.NightmareUnlocked = true;
+				if (!Directory.Exists(SGAmod.filePath))
+				{
+					Directory.CreateDirectory(SGAmod.filePath);
+				}
+            }
+			catch (IOException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
+			}
+			catch (UnauthorizedAccessException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
+			}
+			catch (ArgumentException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
+			}		
+			catch (NotSupportedException e)
+			{
+				SGAmod.Instance.Logger.Debug(e.GetType().FullName + e.Message);
+				failedToMakeDirectoy = true;
+			}
+
+		goherenext:
+
+			if (!Main.dedServ)
+			{
+				HellionAttacks.CheckAndLoadMusic();
+			}
+
+			if (failedToMakeDirectoy || Directory.Exists(filePath))
+			{
+				//foreach(string filename in Directory.GetFiles(filePath))
+				//Logger.Debug("files: " + filename);
+
+
+
+				if (failedToMakeDirectoy || Directory.GetFiles(filePath).Where(testby => testby.Contains("Itsnotoveryet.txt")).Count()>0)
+				{
+					SGAmod.NightmareUnlocked = true;
+
+					Logger.Debug(safefailsafe ? "Safe Mode bypass activated" : (failedToMakeDirectoy ? "Directory not able to be made" : "Directory and file found") + ": Nightmare Mode has been unlocked");
+				}
 				//if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
 				//{
 				//Main.PlaySound(29, -1,-1, 105, 1f, -0.6f);
@@ -433,41 +767,85 @@ namespace SGAmod
 
 			//The Blizzard Part here was snipped from Elements Awoken, which I'm sure came from somewhere else.
 			//Oh, and the Sky code was originally from Zokalon, so I'm mentioning that too! Thanks guys!
-
-			Filters.Scene["SGAmod:ProgramSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0.4f), EffectPriority.High);
-			Filters.Scene["SGAmod:HellionSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0f), EffectPriority.High);
-			Filters.Scene["SGAmod:CirnoBlizzard"] = new Filter(new BlizzardShaderData("FilterBlizzardForeground").UseColor(1f, 1f, 1f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/noise", 0, null).UseIntensity(0.9f).UseImageScale(new Vector2(8f, 2.75f), 0), EffectPriority.High);
 			if (!Main.dedServ)
 			{
+				Filters.Scene["SGAmod:ProgramSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0.4f), EffectPriority.High);
+				Filters.Scene["SGAmod:HellionSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.5f, 0.5f, 0.5f).UseOpacity(0f), EffectPriority.High);
+				Filters.Scene["SGAmod:CirnoBlizzard"] = new Filter(new BlizzardShaderData("FilterBlizzardForeground").UseColor(1f, 1f, 1f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/Noise", 0, null).UseIntensity(0.9f).UseImageScale(new Vector2(8f, 2.75f), 0), EffectPriority.High);
+
 				Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/Shockwave"));
 				Filters.Scene["SGAmod:Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
 				Filters.Scene["SGAmod:ShockwaveBanshee"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
 				Ref<Effect> screenRef2 = new Ref<Effect>(GetEffect("Effects/ScreenWave"));
 				Filters.Scene["SGAmod:ScreenWave"] = new Filter(new ScreenShaderData(screenRef2, "ScreenWave"), EffectPriority.VeryHigh);
+				Ref<Effect> screenRef3 = new Ref<Effect>(GetEffect("Effects/ScreenTimeDistort"));
+				Filters.Scene["SGAmod:ScreenTimeDistort"] = new Filter(new ScreenShaderData(screenRef3, "TimeDistort"), EffectPriority.VeryHigh);
+				Filters.Scene["SGAmod:SwirlingVortex"] = new Filter(new ScreenShaderData("FilterCrystalDestructionVortex").UseImage("SGAmod/Perlin"), EffectPriority.VeryHigh);
+
+
+				//screenRef2 = new Ref<Effect>(GetEffect("Effects/ScreenTrippy"));
+				//Filters.Scene["SGAmod:ScreenTrippy"] = new Filter(new ScreenShaderData(screenRef2, "ScreenTrippy").UseImage("SGAmod/TiledPerlin", 1, null), EffectPriority.VeryHigh);
 
 				TrailEffect = SGAmod.Instance.GetEffect("Effects/trailShaders");
 				HallowedEffect = SGAmod.Instance.GetEffect("Effects/Hallowed");
+				HallowedEffect.Parameters["overlayScale"].SetValue(new Vector2(1, 1));
+				HallowedEffect.Parameters["rainbowScale"].SetValue(1f);
+
+				FadeInEffect = SGAmod.Instance.GetEffect("Effects/FadeIn");
+				FadeInEffect.Parameters["fadeMultiplier"].SetValue(new Vector2(1, 1));
+				FadeInEffect.Parameters["fadeOffset"].SetValue(new Vector2(1, 1));
+				FadeInEffect.Parameters["fadePercentSize"].SetValue(4f);
+
+				TrippyRainbowEffect = SGAmod.Instance.GetEffect("Effects/ScreenTrippy");
+				TrippyRainbowEffect.Parameters["uColor"].SetValue(new Vector3(0.02f, 0.02f, 0f));
+				TrippyRainbowEffect.Parameters["uOpacity"].SetValue(1f);
+				TrippyRainbowEffect.Parameters["uDirection"].SetValue(new Vector2(1f, Main.GlobalTime * 0.1f));
+				TrippyRainbowEffect.Parameters["uIntensity"].SetValue(1f);
+				TrippyRainbowEffect.Parameters["uProgress"].SetValue(0f);
+
+				RadialEffect = SGAmod.Instance.GetEffect("Effects/Radial");
+				SphereMapEffect = SGAmod.Instance.GetEffect("Effects/SphereMap");
+				VoronoiEffect = SGAmod.Instance.GetEffect("Effects/Voronoi");
+				CataEffect = SGAmod.Instance.GetEffect("Effects/CataLogo");
+				TextureBlendEffect = SGAmod.Instance.GetEffect("Effects/TextureBlend");
+
+
 
 				GameShaders.Misc["SGAmod:DeathAnimation"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/EffectDeath")), "DeathAnimation").UseImage("Images/Misc/Perlin");
 				GameShaders.Misc["SGAmod:ShaderOutline"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/ShaderOutline")), "ShaderOutline").UseImage("Images/Misc/Perlin");
 				//AddEquipTexture(new Items.Armors.Dev.Dragonhead(), null, EquipType.Head, "Dragonhead", "SGAmod/Items/Armors/Dev/IDGHead_SmallerHead");
+				//AddEquipTexture(null, EquipType.Head, "InterdimensionalPartyHat_Head", "Terraria/Armor_Head_"+ 195);
 			}
 			SkyManager.Instance["SGAmod:ProgramSky"] = new ProgramSky();
 			SkyManager.Instance["SGAmod:HellionSky"] = new HellionSky();
 			Overlays.Scene["SGAmod:SGAHUD"] = new SGAHUD();
-			Overlays.Scene["SGAmod:CirnoBlizzard"] = new SimpleOverlay("Images/Misc/noise", new BlizzardShaderData("FilterBlizzardBackground").UseColor(0.2f, 1f, 0.2f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/noise", 0, null).UseIntensity(0.7f).UseImageScale(new Vector2(3f, 0.75f), 0), EffectPriority.High, RenderLayers.Landscape);
+			Overlays.Scene["SGAmod:ScreenExplosions"] = new SGAScreenExplosionsOverlay();
 
+			Overlays.Scene["SGAmod:CirnoBlizzard"] = new SimpleOverlay("Images/Misc/Noise", new BlizzardShaderData("FilterBlizzardBackground").UseColor(0.2f, 1f, 0.2f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/Noise", 0, null).UseIntensity(0.7f).UseImageScale(new Vector2(3f, 0.75f), 0), EffectPriority.High, RenderLayers.Landscape);
+
+			SGAMethodSwaps.Apply();
+			if (safeMode<2)
+			SGAILHacks.Patch();
+
+			if (!Main.dedServ && SGAConfigClient.Instance.LogoReplace)
+			{
+				oldLogo.Item1 = Main.logoTexture.CreateTexture(Main.graphics.GraphicsDevice, Main.logo2Texture.Bounds);
+				oldLogo.Item2 = Main.logo2Texture.CreateTexture(Main.graphics.GraphicsDevice, Main.logo2Texture.Bounds);
+
+				Main.logoTexture = ModContent.GetTexture("SGAmod/logo_double");
+				Main.logo2Texture = ModContent.GetTexture("SGAmod/logo_space1_double");
+			}
 			//On.Terraria.Player.AdjTiles += Player_AdjTiles;
 		}
 
-        /*private void Player_AdjTiles(On.Terraria.Player.orig_AdjTiles orig, Player self)
+		/*private void Player_AdjTiles(On.Terraria.Player.orig_AdjTiles orig, Player self)
 		{
 			//orig.Invoke(self);
 			//self.adjTile[TileID.WorkBenches] = true;
 
 		}*/
 
-        public override uint ExtraPlayerBuffSlots => 40;
+		public override uint ExtraPlayerBuffSlots => 50;
 
 		public override void Unload()
 		{
@@ -482,20 +860,32 @@ namespace SGAmod
 			SGAmod.EnchantmentFocusCrystal = null;
 			SubworldCache.UnloadCache();
 
+
 			SGAILHacks.Unpatch();
+			BCLEntries.Unload();
+
+			Items.Weapons.Almighty.CataLogo.Unload();
 
 
 			if (!Main.dedServ)
-			{
+			{			
+				UnLoadMusic(true);
+				ShadowParticle.Unload();
 				if (SGAmod.ParadoxMirrorTex != null)
 					SGAmod.ParadoxMirrorTex.Dispose();
 				if (SGAmod.hellionLaserTex != null)
 					SGAmod.hellionLaserTex.Dispose();
+
+				if (oldLogo != default)
+				{
+					Main.logoTexture = oldLogo.Item1;
+					Main.logo2Texture = oldLogo.Item2;
+				}
+
 				//LoadOrUnloadTextures(false);
 			}
 			NightmareUnlocked = false;
 			Instance = null;
-			Calamity = false;
 			otherimmunes = null;
 			if (!Main.dedServ)
 			{
@@ -507,8 +897,11 @@ namespace SGAmod
 
 		public override void AddRecipes()
 		{
+
+			Items.Placeable.TechPlaceable.LuminousAlterCraftingHint.InitLuminousCrafting();
+
 			RecipeFinder finder;
-			int[] stuff = { ItemID.MythrilAnvil, ItemID.OrichalcumAnvil };
+			int[] stuff = { ItemID.AdamantiteForge, ItemID.TitaniumForge };
 			for (int i = 0; i < 2; i += 1)
 			{
 				finder = new RecipeFinder();
@@ -516,22 +909,30 @@ namespace SGAmod
 				foreach (Recipe recipe2 in finder.SearchRecipes())
 				{
 					RecipeEditor editor = new RecipeEditor(recipe2);
-					editor.AddIngredient(SGAmod.Instance.ItemType("WraithFragment4"), 10);
+					editor.AddIngredient(ModContent.ItemType<WraithFragment4>(), 10);
 				}
+			}
+
+			finder = new RecipeFinder();
+			finder.SetResult(ItemID.LunarBar);
+			foreach (Recipe recipe2 in finder.SearchRecipes())
+			{
+				RecipeEditor editor = new RecipeEditor(recipe2);
+				editor.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 2);
 			}
 
 			int tileType = ModContent.TileType<Tiles.ReverseEngineeringStation>();
 
 			ModRecipe recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
-			recipe.AddIngredient(this.ItemType("IceFairyDust"), 5);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<IceFairyDust>(), 5);
 			recipe.AddIngredient(ItemID.IceBlock, 50);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.IceMachine);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
 			recipe.AddIngredient(ItemID.FallenStar, 5);
 			recipe.AddIngredient(ItemID.Cloud, 50);
 			recipe.AddTile(tileType);
@@ -539,32 +940,32 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
 			recipe.AddIngredient(ItemID.Silk, 30);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.HandWarmer);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
-			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 3);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
 			recipe.AddIngredient(ItemID.IceBlock, 20);
 			recipe.AddIngredient(ItemID.Snowball, 100);
+			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 3);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.SnowballLauncher);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
-			recipe.AddIngredient(null, "SharkTooth", 5);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<SharkTooth>(), 5);
 			recipe.AddIngredient(ItemID.Chain, 1);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.SharkToothNecklace);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
-			recipe.AddIngredient(null, "NormalQuiver", 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType <NormalQuiver>(), 1);
 			recipe.AddIngredient(ItemID.SoulofLight, 3);
 			recipe.AddIngredient(ItemID.SoulofNight, 3);
 			recipe.AddTile(tileType);
@@ -572,7 +973,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
 			recipe.AddIngredient(ItemID.CloudinaBottle, 1);
 			recipe.AddIngredient(ItemID.SandBlock, 50);
 			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
@@ -581,7 +982,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
 			recipe.AddIngredient(ItemID.SilkRope, 30);
 			recipe.AddIngredient(ItemID.AncientCloth, 3);
 			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
@@ -590,16 +991,16 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
-			recipe.AddIngredient(null,"DankCore", 2);
-			recipe.AddIngredient(null, "VirulentBar", 10);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType <DankCore>(), 2);
+			recipe.AddIngredient(this.ItemType("VirulentBar"), 10);
 			recipe.AddIngredient(ItemID.Frog, 1);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.FrogLeg);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
 			recipe.AddIngredient(ItemID.FlipperPotion, 2);
 			recipe.AddIngredient(ItemID.WaterBucket, 1);
 			recipe.AddIngredient(ItemID.RocketBoots, 1);
@@ -608,7 +1009,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
 			recipe.AddIngredient(ItemID.Obsidian, 20);
 			recipe.AddIngredient(ItemID.Fireblossom, 3);
 			recipe.AddTile(tileType);
@@ -616,25 +1017,25 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
 			recipe.AddIngredient(ItemID.LavaBucket, 3);
-			recipe.AddIngredient(null,"FieryShard", 10);
+			recipe.AddIngredient(ModContent.ItemType <FieryShard>(), 10);
 			recipe.AddIngredient(ItemID.ObsidianRose, 1);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.LavaCharm);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
-			recipe.AddIngredient(this.ItemType("RustedBulwark"), 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<RustedBulwark>(), 1);
 			recipe.AddIngredient(ItemID.CobaltBar, 6);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.CobaltShield);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
-			recipe.AddIngredient(null, "Entrophite", 100);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 100);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 15);
 			recipe.AddIngredient(ItemID.SoulofNight, 10);
 			recipe.AddIngredient(ItemID.GoldenKey, 1);
@@ -643,16 +1044,16 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
 			recipe.AddIngredient(ItemID.Gel, 100);
-			recipe.AddIngredient(null, "DankWood", 15);
+			recipe.AddIngredient(ModContent.ItemType<DankWood>(), 15);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.SlimeStaff);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
-			recipe.AddIngredient(this.ItemType("AdvancedPlating"), 5);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType <AdvancedPlating>(), 5);
 			recipe.AddRecipeGroup("SGAmod:IchorOrCursed", 5);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 5);
 			recipe.AddTile(tileType);
@@ -660,7 +1061,7 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
 			recipe.AddIngredient(ItemID.TatteredCloth, 5);
 			recipe.AddIngredient(ItemID.Aglet, 1);
 			recipe.AddIngredient(ItemID.WaterWalkingPotion, 3);
@@ -670,16 +1071,44 @@ namespace SGAmod
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(this);
-			recipe.AddIngredient(this.ItemType("AssemblyStar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ItemID.HermesBoots, 1);
+			recipe.AddIngredient(ItemID.IceBlock, 25);
+			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 4);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.IceSkates);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
 			recipe.AddIngredient(ItemID.TurtleShell, 1);
 			recipe.AddIngredient(ItemID.FrostCore, 1);
-			recipe.AddIngredient(this.ItemType("CryostalBar"), 8);
+			recipe.AddIngredient(ModContent.ItemType<CryostalBar>(), 8);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 6);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.FrozenTurtleShell);
 			recipe.AddRecipe();
 
-			int[] moonlorditems = { ItemID.Terrarian, ItemID.LunarFlareBook, ItemID.RainbowCrystalStaff, ItemID.SDMG, ItemID.StarWrath, ItemID.Meowmere, ItemID.LastPrism, ItemID.MoonlordTurretStaff, ItemID.FireworksLauncher };
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<ManaBattery>(), 1);
+			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 6);
+			recipe.AddIngredient(ItemID.Wire, 20);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.MetalDetector);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
+			recipe.AddIngredient(ItemID.MetalDetector, 1);
+			recipe.AddIngredient(ItemID.DesertFossil, 20);
+			recipe.AddIngredient(ItemID.Wire, 25);
+			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 8);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.Extractinator,1);
+			recipe.AddRecipe();
+
+			int[] moonlorditems = { ItemID.Terrarian, ItemID.LunarFlareBook, ItemID.RainbowCrystalStaff, ItemID.SDMG, ItemID.StarWrath, ItemID.Meowmere, ItemID.LastPrism, ItemID.MoonlordTurretStaff, ItemID.FireworksLauncher,ModContent.ItemType<SoulPincher>() };
 
 			foreach (int idofitem in moonlorditems)
 			{
@@ -699,6 +1128,86 @@ namespace SGAmod
 
 		public override void AddRecipeGroups()
 		{
+			List<int> chests = new List<int>();
+			List<int> ores = new List<int>();
+			List<int> mud = new List<int>();
+			List<int> stone = new List<int>();
+			List<int> team = new List<int>();
+			List<int> accessory = new List<int>();
+			BuffsThatHavePotions.Clear();
+
+			for (int i = 0; i < Main.itemTexture.Length; i += 1)
+            {
+				Item item = new Item();
+				item.SetDefaults(i);
+
+				if (item.buffType >= 0)
+				{
+					BuffsThatHavePotions.Add(item.buffType);
+				}
+
+				if (i < Main.item.Length &&  item.accessory)
+                {
+					accessory.Add(item.type);
+					continue;
+                }
+
+				if (!item.consumable || item.createTile < 0 || (item.modItem != null && item.modItem.mod == this))
+				{
+					continue;
+				}
+				if (TileID.Sets.BasicChest[item.createTile])
+				{
+					chests.Add(item.type);
+					continue;
+				}
+				if (TileID.Sets.Ore[item.createTile])
+				{
+					ores.Add(item.type);
+					continue;
+				}
+				if (TileID.Sets.Mud[item.createTile])
+				{
+					mud.Add(item.type);
+					continue;
+				}
+				if (TileID.Sets.Stone[item.createTile])
+				{
+					stone.Add(item.type);
+					continue;
+				}
+				if (TileID.Sets.TeamTiles[item.createTile])
+				{
+					team.Add(item.type);
+					continue;
+				}
+				if (TileID.Sets.TeamTiles[item.createTile])
+				{
+					team.Add(item.type);
+					continue;
+				}
+				if (TileID.Sets.BasicChest[item.createTile])
+				{
+					chests.Add(item.type);
+					continue;
+				}
+
+
+			}
+
+			RecipeGroup groupspecial = new RecipeGroup(() => "any" + " Chest", chests.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:Chests", groupspecial);
+			groupspecial = new RecipeGroup(() => "any" + " Ore", ores.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:Ore", groupspecial);
+			groupspecial = new RecipeGroup(() => "any" + " Mud", mud.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:Mud", groupspecial);
+			groupspecial = new RecipeGroup(() => "any" + " Stone", stone.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:Stone", groupspecial);
+			groupspecial = new RecipeGroup(() => "any" + " Team Tiles", team.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:TeamTiles", groupspecial);
+			groupspecial = new RecipeGroup(() => "any" + " Accessory", accessory.ToArray());
+			RecipeGroup.RegisterGroup("SGAmod:VanillaAccessory", groupspecial);
+
 			RecipeGroup group = new RecipeGroup(() => "any" + " Copper or Tin ore", new int[]
 			{
 			ItemID.CopperOre,
@@ -763,6 +1272,12 @@ namespace SGAmod
 			ItemID.CrimtaneBar
 			});
 			RecipeGroup.RegisterGroup("SGAmod:Tier5Bars", group6);
+			group6 = new RecipeGroup(() => "any" + " Novus or Novite Bars", new int[]
+{
+			ModContent.ItemType<UnmanedBar>(),
+			ModContent.ItemType<NoviteBar>()
+});
+			RecipeGroup.RegisterGroup("SGAmod:NoviteNovusBars", group6);
 			group6 = new RecipeGroup(() => "any" + " Evil Javelins", new int[]
 			{
 			this.ItemType("CorruptionJavelin"),
@@ -841,6 +1356,19 @@ namespace SGAmod
 });
 			RecipeGroup.RegisterGroup("SGAmod:Tier7Pickaxe", pickaxe);
 
+			pickaxe = new RecipeGroup(() => "Any gems", new int[]
+{
+			ItemID.Amber,
+			ItemID.Amethyst,
+			ItemID.Diamond,
+			ItemID.Emerald,
+			ItemID.Ruby,
+			ItemID.Sapphire,
+			ItemID.Topaz
+
+});
+			RecipeGroup.RegisterGroup("SGAmod:Gems", pickaxe);
+
 
 			if (RecipeGroup.recipeGroupIDs.ContainsKey("IronBar"))
 			{
@@ -860,25 +1388,31 @@ namespace SGAmod
 
 		public override void UpdateUI(GameTime gameTime)
 		{
+
 			if (SkillUIActive)
 				SkillTree.SKillUI.UpdateUI();
 
 			craftBlockPanel.visible = Main.playerInventory;
+			if (ArmorButtonUpdate)
+			armorButton.visible = Main.playerInventory;
 
 			//Main.NewText(Main.time);
 			if (CustomUIMenu.visible)
 			{
 				CustomUIMenuInterface?.Update(gameTime);
 			}
-			if (Main.playerInventory && Main.LocalPlayer.SGAPly().benchGodFavor)
+			if (Main.playerInventory)
 			{
+				if (ArmorButtonUpdate && Main.EquipPage == 0)
+				armorButtonPanelInterface?.Update(gameTime);
+				if (Main.LocalPlayer.SGAPly().benchGodFavor)
 				craftBlockPanelInterface?.Update(gameTime);
 			}
 
 			if (!Main.dedServ)
 			{
 				localtimer += 1;
-				HellionBeam.UpdateHellionBeam((int)(localtimer));
+				//HellionBeam.UpdateHellionBeam((int)(localtimer));
 				ParadoxMirror.drawit(new Vector2(0, 0), Main.spriteBatch, Color.White, Color.White, 1f, 0);
 			}
 		}
@@ -929,8 +1463,34 @@ namespace SGAmod
 
 		}
 
-        public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
+		public delegate void ModifyTransformMatrixDelegate(ref SpriteViewMatrix Transform);
+		public static event ModifyTransformMatrixDelegate ModifyTransformMatrixEvent;
+
+		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
         {
+			ModifyTransformMatrixEvent?.Invoke(ref Transform);
+
+			if (ScreenShake > 0)
+			{
+				//(Vector2)(typeof(SpriteViewMatrix).GetField("_translation", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Transform));
+
+				/*Matrix transMatrix = (Matrix)(typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Transform));
+				transMatrix = transMatrix * Matrix.CreateTranslation(-new Vector3(Main.screenWidth,Main.screenHeight,0)/2) * Matrix.CreateRotationZ(MathHelper.PiOver2) * Matrix.CreateTranslation((new Vector3(Main.screenWidth, Main.screenHeight, 0) / 2)+(Main.rand.NextVector2Circular(ScreenShake, ScreenShake).ToVector3()));*/
+
+				//int width = Main.graphics.GraphicsDevice.Viewport.Width;
+				//int height = Main.graphics.GraphicsDevice.Viewport.Height;
+
+				/*transMatrix = Matrix.CreateLookAt(Vector3.Zero, Vector3.UnitZ, Vector3.Up) * Matrix.CreateTranslation(width / 2, height / -2, 0) * Matrix.CreateRotationZ(MathHelper.Pi) * Matrix.CreateScale(Main.GameViewMatrix.Zoom.X, Main.GameViewMatrix.Zoom.Y, 1f) * Matrix.CreateTranslation((new Vector3(Main.screenPosition.X, Main.screenPosition.Y, 0) / 2));
+				transMatrix = transMatrix* Matrix.CreatePerspectiveFieldOfView(1f, width / (float)height, 0.00001f,100000);*/
+
+				//typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Transform, transMatrix);
+
+				//typeof(SpriteViewMatrix).GetField("_translation", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Main.GameViewMatrix, readonlyvector2 + Main.rand.NextVector2Circular(ScreenShake, ScreenShake));
+				//typeof(SpriteViewMatrix).GetMethod("Rebuild", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Main.GameViewMatrix, null);
+
+				Main.screenPosition += Main.rand.NextVector2Circular(ScreenShake, ScreenShake);
+			}
+
 			if (SGADimPlayer.staticHeartBeat >= 0)
 			{
 				float zoom1 = Math.Max(0, (float)Math.Sin(MathHelper.Pi * (SGADimPlayer.staticHeartBeat / 15f)));
@@ -948,7 +1508,7 @@ namespace SGAmod
 			SGAmod.CustomUIMenu.ToggleUI(flag);
 		}
 
-		public static void MakeRenderTarget(bool forced = false)
+		/*public static void MakeRenderTarget(bool forced = false)
         {
 			if (Main.netMode == NetmodeID.Server || Main.dedServ)
 				return;
@@ -979,21 +1539,125 @@ namespace SGAmod
 				postRenderEffectsTargetCopy = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth/2, Main.screenHeight/2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
 
 			}
+		}*/
+
+		public delegate void RenderTargetsDelegate();
+		public static event RenderTargetsDelegate RenderTargetsEvent;
+		public static void CreateRenderTarget2Ds(int width, int height, bool fullscreen,bool initialize=false)
+		{
+			if (Main.dedServ)
+				return;
+
+			if ((!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight)) || initialize)
+			{
+				SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
+				SGAmod.postRenderEffectsTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.PreserveContents);
+					SGAmod.postRenderEffectsTargetCopy = new RenderTarget2D(Main.graphics.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
+					SGAmod.screenExplosionCopy = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+
+				RenderTargetsEvent?.Invoke();
+			}
 		}
+
+		public delegate void RenderTargetsCheckDelegate(ref bool yay);
+		public static event RenderTargetsCheckDelegate RenderTargetsCheckEvent;
+
+		public static bool CheckRenderTarget2Ds()
+        {
+			bool dontneedthem = true;
+			if (SGAmod.postRenderEffectsTarget == null || SGAmod.postRenderEffectsTarget.IsDisposed)
+				dontneedthem &= false;
+				if (SGAmod.postRenderEffectsTarget == null || SGAmod.postRenderEffectsTarget.IsDisposed)
+				dontneedthem &= false;
+
+			RenderTargetsCheckEvent?.Invoke(ref dontneedthem);
+
+			return dontneedthem;
+
+		}
+
 #if Dimensions
-        public override void MidUpdatePlayerNPC()
+		public override void MidUpdatePlayerNPC()
         {
 			NullWatcher.watchers.Clear();
 		}
 #endif
 
+		public delegate void PostUpdateEverythingDelegate();
+		public static event PostUpdateEverythingDelegate PostUpdateEverythingEvent;
 		public override void PostUpdateEverything()
 		{
+
+			//test++;
+			Terraria.Cinematics.CinematicManager.Instance.Update(new GameTime());
+			ShadowParticle.UpdateAll();
+            Items.Weapons.Almighty.RaysOfControlOrb.UpdateAll();
+
+			//Main.worldSurface -= 0.25;
+
+			 PostUpdateEverythingEvent?.Invoke();
+			//Main.NewText(test);
+
+
+			if (SGAmod.musicTest != null && SGAmod.musicTest.IsPlaying)
+			{
+				SGAmod.musicTest.CheckBuffer();
+			}
+			if (SGAmod.hellionTheme != default)
+			{
+				bool active = hellionTheme.doMusic();
+
+				if (SGAmod.hellionTheme.IsPlaying)
+				{
+					hellionTheme.CheckBuffer();
+                }
+                else
+                {
+					if (active)
+						hellionTheme.StartPlus(hellionTheme.volume);
+
+				}
+			}
+
+			if (_screenShake > 0)
+			{
+				_screenShake -= 1;
+			}
+
+			if (screenExplosions.Count > 0)
+            {
+				foreach(ScreenExplosion explosion in screenExplosions)
+                {
+					explosion.Update();
+                }
+				screenExplosions = screenExplosions.Where(testby => testby.timeLeft > 0).ToList();
+
+				RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
+
+				Main.graphics.GraphicsDevice.SetRenderTarget(screenExplosionCopy);
+				Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+				//Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
+
+				Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One, default, 0);
+
+				Main.spriteBatch.End();
+
+				Main.graphics.GraphicsDevice.SetRenderTargets(binds);
+
+
+			}
+
 #if Dimensions
 			proxydimmod.PostUpdateEverything();
-			MakeRenderTarget();
+
+			//if (!Main.dedServ && !CheckRenderTarget2Ds())
+			//	SGAmod.CreateRenderTarget2Ds(Main.screenWidth, Main.screenHeight, false,true);
 #endif
 
+			vibraniumCounter = Math.Max(vibraniumCounter - 1, 0);
+			SGAPlayer.centerOverrideTimerIsActive = Math.Max(SGAPlayer.centerOverrideTimerIsActive - 1, 0);
 			SGAWorld.modtimer += 1;
 			PrismShardHinted.ApplyPrismOnce = false;
 
@@ -1024,6 +1688,7 @@ namespace SGAmod
 					}
 
 				}
+
 			}
 
 			SGAmod.fogAlpha = 1f;
@@ -1031,19 +1696,53 @@ namespace SGAmod
 		}
 
 	}
+	public class SgaWalls : GlobalWall
+	{
 
+		public override bool CanExplode(int i, int j, int type)
+		{
+			bool canDo = true;
+			KillWall(i, j, type, ref canDo);
 
+			return canDo;
+		}
 
+		public override void KillWall(int i, int j, int type, ref bool fail)
+		{
 
+			if (WorldGen.InWorld(i, j - 1))
+			{
+				Tile tilz2 = Framing.GetTileSafely(i, j);
+
+				if (tilz2.type > TileID.Count)
+				{
+					if (ModContent.GetModTile(tilz2.type) is ModTile modTile)
+					{
+						if (modTile != null && modTile is Tiles.TechTiles.HopperTile)
+						{
+							fail = true;
+						}
+					}
+				}
+			}
+		}
+
+	}
 
 	public class SGAtiles : GlobalTile
 	{
 		public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
+
+
 			if (WorldGen.InWorld(i, j - 1))
 			{
-				Tile tilz = Framing.GetTileSafely(i, j - 1);
+
 				Tile tilz2 = Framing.GetTileSafely(i, j);
+
+
+				Tile tilz = Framing.GetTileSafely(i, j - 1);
+
 				if (tilz2.type != mod.TileType("CaliburnAltar") && tilz2.type != mod.TileType("CaliburnAltarB") && tilz2.type != mod.TileType("CaliburnAltarC"))
 					if (tilz.type == mod.TileType("CaliburnAltar") || tilz.type == mod.TileType("CaliburnAltarB") || tilz.type == mod.TileType("CaliburnAltarC"))
 						fail = true;
@@ -1061,5 +1760,118 @@ namespace SGAmod
 		}
 
 	}
+
+	public class CustomSpecialDrawnTiles
+    {
+		public Vector2 position;
+		public Action<SpriteBatch,Vector2> CustomDraw = delegate (SpriteBatch spriteBatch,Vector2 thisposition)
+		{
+
+		};
+
+		public CustomSpecialDrawnTiles(Vector2 place)
+        {
+
+
+        }
+
+
+	}
+
+	public class MusicStreamingOGGPlus : MusicStreamingOGG
+    {
+		public float volume = 1f;
+		public float volumeGoal = 1f;
+		public float volumeChangeRate = 0.005f;
+
+		public float pitch = 0f;
+		public float pitchGoal = 1f;
+		public float pitchChangeRate = 0.005f;
+
+		public float volumeScale = 0.01f;
+		private bool initCheck = false;
+
+		public MusicStreamingOGGPlus(string path)
+	: base(path)
+		{
+		}
+		public bool StartPlus(float volume = 0f)
+		{
+			if (Main.musicVolume <= 0f)
+				return false;
+
+			initCheck = true;
+			Play();
+
+			this.volume = MathHelper.Clamp(volume, 0f, 1f);
+			this.SetVariable("Volume", volume * Main.musicVolume);
+			return true;
+
+		}
+
+		public Func<bool> doMusic =	delegate() { return false; };
+
+		public override void CheckBuffer()
+		{
+
+			base.CheckBuffer();
+			if (initCheck)
+            {
+				initCheck = false;
+				return;
+			}
+
+			if (volume < 0)
+			{
+				Reset();
+				volume = 0;
+				Stop(AudioStopOptions.Immediate);
+				return;
+			}
+
+			volume += Math.Sign(volumeGoal - volume) * volumeChangeRate;
+			this.volume = MathHelper.Clamp(volume, 0f, 1f);
+			this.SetVariable("Volume", volume * volumeScale * Main.musicVolume);
+
+			pitch += Math.Sign(pitchGoal - pitch) * pitchChangeRate;
+			this.SetVariable("Pitch", pitch);
+
+		}
+
+
+	}
+
+	public class ScreenExplosion
+	{
+		public Vector2 where;
+		public int time = 0;
+		public int timeLeft = 0;
+		public int timeLeftMax = 0;
+		public float strength = 16f;
+		public float decayTime = 16f;
+		public float warmupTime = 16f;
+		public float distance = 1600f;
+		public float alpha = 0.10f;
+		public float perscreenscale = 1.15f;
+		public Func<float,float> strengthBasedOnPercent;
+
+
+		public ScreenExplosion(Vector2 there, int time, float str, float decayTime = 16)
+		{
+			where = there;
+			this.time = 0;
+			this.timeLeft = time;
+			this.timeLeftMax = time;
+			this.strength = str;
+			this.decayTime = decayTime;
+		}
+		public void Update()
+		{
+			timeLeft -= 1;
+			time += 1;
+		}
+
+	}
+
 
 }

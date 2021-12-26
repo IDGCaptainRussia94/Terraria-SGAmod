@@ -109,6 +109,17 @@ namespace SGAmod.NPCs
 			}
 			else
 			{
+				bool RageShark = false;
+				foreach(NPC npc in Main.npc.Where(testby => testby.active && testby.type == ModContent.NPCType<Sharkvern.SharkvernHead>()))
+                {
+					if ((npc.modNPC as Sharkvern.SharkvernHead).RainFight)
+						RageShark = true;
+                }
+				if (RageShark)
+				{
+					npc.damage = 80;
+					npc.defense = 30;
+				}
 				Vector2 dista = P.Center - npc.Center;
 				Vector2 dista2 = P.Center - npc.Center;
 				//Vector2 dista2=dista;
@@ -117,7 +128,7 @@ namespace SGAmod.NPCs
 				npc.spriteDirection = dista2.X > 0 ? 1 : -1;
 				if (outofwater < 300)
 				{
-					outofwater += (npc.ai[1] == 0 ? 1 : 0) + ((Collision.CanHitLine(new Vector2(npc.Center.X, npc.Center.Y), 16, 32, new Vector2(P.Center.X, P.Center.Y), 16, 32)) ? 0 : 1);
+					outofwater += (npc.ai[1] == 0 ? 1 : 0) + ((Collision.CanHitLine(new Vector2(npc.Center.X, npc.Center.Y), 16, 32, new Vector2(P.Center.X, P.Center.Y), 16, 32)) ? 0 : 1)+(RageShark ? 1 : 0);
 				}
 				if (npc.ai[1] == -1 && outofwater > 299 && dista.Y < -30f)
 				{
@@ -125,7 +136,7 @@ namespace SGAmod.NPCs
 				}
 				if (npc.ai[0] % 400 > 250 && npc.ai[0] % 60 == 0 && Collision.CanHitLine(new Vector2(npc.Center.X, npc.Center.Y), 4, 4, new Vector2(P.Center.X, P.Center.Y), 4, 4))
 				{
-					List<Projectile> itz = Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), mod.ProjectileType("ThrownTrident"), 20, 8, 0, 1, true, 0, true, 400);
+					List<Projectile> itz = Idglib.Shattershots(npc.Center, P.position, new Vector2(P.width, P.height), mod.ProjectileType("ThrownTrident"), RageShark ? 60 : 20, 8, 0, 1, true, 0, true, 400);
 					itz[0].damage /= 2;
 				}
 
@@ -186,7 +197,8 @@ namespace SGAmod.NPCs
 		{
 			Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY - 3];
 			bool canspawn = tile.liquid > 63 ? true : false;
-			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && spawnInfo.spawnTileY < Main.rockLayer && spawnInfo.player.ZoneBeach && canspawn && NPC.downedBoss1 ? 0.05f : 0f;
+			//!NPC.BusyWithAnyInvasionOfSorts() 
+			return !spawnInfo.playerInTown && !spawnInfo.invasion && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && spawnInfo.spawnTileY < Main.rockLayer && spawnInfo.player.ZoneBeach && canspawn && NPC.downedBoss1 ? 0.05f : 0f;
 		}
 
 		public override void NPCLoot()

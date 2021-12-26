@@ -9,7 +9,23 @@ using Terraria.ModLoader;
 
 namespace SGAmod.NPCs.Sharkvern
 {    
-    public class SharkvernTail : ModNPC
+    public class SharkvernBase : ModNPC
+    {
+        public Color sharkGlowColor = Color.Transparent;
+
+        public override void DrawEffects(ref Color drawColor)
+        {
+            sharkGlowColor = drawColor;
+            base.DrawEffects(ref drawColor);
+        }
+
+        public override bool Autoload(ref string name)
+        {
+            return GetType() != typeof(SharkvernBase);
+        }
+    }
+
+    public class SharkvernTail : SharkvernBase
     {
 
     public Vector2 localdist;
@@ -33,12 +49,15 @@ namespace SGAmod.NPCs.Sharkvern
             npc.dontCountMe = true;
             npc.HitSound = SoundID.NPCHit1;
             npc.chaseable = true;
+            npc.lavaImmune = false;
+            npc.aiStyle = -1;
         }
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if (projectile.penetrate!=1)
-            damage = (int)(damage * 0.50f);
+            Player player = Main.player[projectile.owner];
+            if (projectile.penetrate!=1 && (!SGAprojectile.IsTrueMelee(projectile, player)))
+            damage = (int)(damage * (GetType() == typeof(SharkvernTail) ? 1f : 0.75f));
         }
 
         public override void HitEffect(int hitDirection, double damage)
@@ -77,6 +96,7 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override bool PreAI()
         {
+            //npc.AddBuff(ModContent.BuffType<Buffs.LavaBurn>(),900);
 
             npc.Opacity = MathHelper.Clamp(npc.Opacity + (npc.dontTakeDamage ? -0.01f : 0.02f), 0.2f, 1f);
 
@@ -127,7 +147,7 @@ namespace SGAmod.NPCs.Sharkvern
         {
             Texture2D texture = Main.npcTexture[npc.type];
             Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
-            Main.spriteBatch.Draw(texture, npc.Center - Main.screenPosition, new Rectangle?(), drawColor*npc.Opacity, npc.rotation, origin, npc.scale,localdist.X>0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            //Main.spriteBatch.Draw(texture, npc.Center - Main.screenPosition, new Rectangle?(), drawColor*npc.Opacity, npc.rotation, origin, npc.scale,localdist.X>0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             return false;
         }
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
@@ -146,13 +166,13 @@ namespace SGAmod.NPCs.Sharkvern
 
         public override string Texture
         {
-            get { return("SGAmod/NPCs/Sharkvern/SharkvernBody2"); }
+            get { return ("SGAmod/NPCs/Sharkvern/SharkvernBody2"); }
         }
 
         public override void SetDefaults()
         {
-            npc.width = 52;             
-            npc.height = 48;           
+            npc.width = 52;
+            npc.height = 48;
             npc.damage = 36;
             npc.defense = 25;
             npc.lifeMax = 27000;
@@ -164,12 +184,14 @@ namespace SGAmod.NPCs.Sharkvern
             npc.dontCountMe = true;
             npc.HitSound = SoundID.NPCHit1;
             npc.chaseable = false;
+            npc.lavaImmune = false;
+            npc.aiStyle = -1;
         }
 
-                public override bool PreAI()
+        public override bool PreAI()
         {
-        base.PreAI();
-        return false;
+            base.PreAI();
+            return false;
         }
 
         public override void HitEffect(int hitDirection, double damage)
@@ -191,21 +213,21 @@ namespace SGAmod.NPCs.Sharkvern
             if (npc.life > 0 && Main.netMode != 1 && Main.rand.Next(1) == 0)
             {
                 SharkvernHead jawsbrain = Main.npc[(int)npc.ai[3]].modNPC as SharkvernHead;
-                float percent=Main.npc[(int)npc.ai[3]].life;
-                float percent2=Main.npc[(int)npc.ai[3]].lifeMax;
-                if (jawsbrain.sergedout<1 && (percent/percent2)<0.8f){
-                    jawsbrain.sergedout=(int)(60f*(8f+((percent/percent2)*(Main.expertMode ? 15f : 25f))));
+                float percent = Main.npc[(int)npc.ai[3]].life;
+                float percent2 = Main.npc[(int)npc.ai[3]].lifeMax;
+                if (jawsbrain.sergedout < 1 && (percent / percent2) < 0.8f)
+                {
+                    jawsbrain.sergedout = (int)(60f * (8f + ((percent / percent2) * (Main.expertMode ? 15f : 25f))));
                     int randomSpawn = Main.rand.Next(0);
                     if (randomSpawn == 0)
                     {
                         randomSpawn = mod.NPCType("AquaSurge");
                     }
 
-                     int num660 = NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)(npc.position.Y + (float)npc.height), randomSpawn, 0, 0f, 0f, 0f, 0f, 255);
+                    int num660 = NPC.NewNPC((int)(npc.position.X + (float)(npc.width / 2)), (int)(npc.position.Y + (float)npc.height), randomSpawn, 0, 0f, 0f, 0f, 0f, 255);
                 }
             }
         }
-
     }
 
 

@@ -9,6 +9,7 @@ using Terraria.Enums;
 
 namespace SGAmod.HavocGear.Projectiles
 {
+
     public class HeatWave : ModProjectile
     {
         public override void SetStaticDefaults()

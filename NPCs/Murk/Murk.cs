@@ -9,6 +9,10 @@ using SGAmod.Dimensions;
 using Idglibrary;
 using System.IO;
 using System.Linq;
+using SGAmod.HavocGear.Items.Weapons;
+using SGAmod.Items.Weapons;
+using Microsoft.Xna.Framework.Audio;
+using SGAmod.Buffs;
 
 namespace SGAmod.NPCs.Murk
 {
@@ -17,7 +21,10 @@ namespace SGAmod.NPCs.Murk
     {
         public string Trophy() => "MurkTrophy";
         public bool Chance() => Main.rand.Next(0, 10) == 0;
+        public string RelicName() => "Murk";
+        public void NoHitDrops() { }
 
+        int perhit = 0; 
         int counter = 0;
         public int gasshift = 0;
         public int gastimer = 0;
@@ -113,19 +120,22 @@ namespace SGAmod.NPCs.Murk
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("MurkyGel"));
                     }
 
-                    int choice = Main.rand.Next(6);
+                    int choice = Main.rand.Next(7);
                     if (choice == 0)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("MurkFlail"));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < MurkFlail>());
                     else if (choice == 1)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Mossthorn"));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < Mossthorn>());
                     else if (choice == 2)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Landslide"));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < Landslide>());
                     else if (choice == 3)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Mudmore"));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < Mudmore>());
                     else if (choice == 4)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("SwarmGrenade"), Main.rand.Next(40, 100));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SwarmGrenade>(), Main.rand.Next(40, 100));
                     else if (choice == 5)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(SGAWorld.GennedVirulent ? "HorseFlyStaff" : "GnatStaff"));
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, SGAWorld.GennedVirulent ? ModContent.ItemType <HorseFlyStaff>() : ModContent.ItemType<GnatStaff>());
+                    else if (choice == 6)
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<SwarmGun>());
+
                 }
             }
             Achivements.SGAAchivements.UnlockAchivement("Murk", Main.LocalPlayer);
@@ -154,9 +164,10 @@ namespace SGAmod.NPCs.Murk
                 dustype = 184;
 
             npc.noGravity = false;
-
+            npc.SGANPCs().overallResist = 1f;
             if (gasshift > 0)
             {
+                npc.SGANPCs().overallResist = 0.5f;
 
                 float scaledSize = 1.5f+MathHelper.Clamp((Math.Abs(npc.localAI[0])-400)/200f,0f,0.5f);
                 Vector2 center = npc.Center;
@@ -172,11 +183,14 @@ namespace SGAmod.NPCs.Murk
                             Main.player[i].GetModPlayer<SGADimPlayer>().lightSize = 4000 - (int)((float)gasshift * (4000f / 500f));
                             if (Main.player[i].Distance(center) > ((gasshift) * scaledSize) && gasshift > 400)
                             {
-                                Main.player[i].AddBuff(BuffID.Dazed, 2);
-                                Main.player[i].AddBuff(BuffID.Slow, 2);
-                                Main.player[i].AddBuff(BuffID.Poisoned, 2);
+                                Main.player[i].AddBuff(BuffID.Rabies, 2);
+                                Main.player[i].AddBuff(BuffID.Venom, 2);
                                 Main.player[i].AddBuff(BuffID.Suffocation, 2);
+                                Main.player[i].AddBuff(BuffID.Weak, 2);
                                 Main.player[i].AddBuff(ModContent.BuffType<MurkyDepths>(), 2);
+                                Main.player[i].AddBuff(ModContent.BuffType<Buffs.PiercedVulnerable>(), 2);
+                                Main.player[i].AddBuff(ModContent.BuffType<Buffs.EverlastingSuffering>(), 2);
+
                             }
                         }
                     }
@@ -496,7 +510,7 @@ namespace SGAmod.NPCs.Murk
                     {
                         for (int i = -1; i < 3; i += 2)
                         {
-                            List<Projectile> itz = Idglib.Shattershots(npc.Center + new Vector2(0, k), npc.Center + new Vector2(1000 * i, k), new Vector2(0,0), ProjectileID.MudBall, 50, 30f, 5, 2, true, 0, true, 300);
+                            List<Projectile> itz = Idglib.Shattershots(npc.Center + new Vector2(0, k), npc.Center + new Vector2(1000 * i, k), new Vector2(0,0), ProjectileID.MudBall, 70, 30f, 5, 2, true, 0, true, 300);
                             foreach (Projectile proj in itz)
                             {
                                 proj.aiStyle = -5;
@@ -594,7 +608,7 @@ namespace SGAmod.NPCs.Murk
                                         {
                                             if (!boolz)
                                             {
-                                                List<Projectile> itz2 = Idglib.Shattershots(npc.Center, npc.Center + shootthere, Vector2.Zero, ProjectileID.PoisonFang, Main.hardMode ? 25 : 15, 1f, 0, 1, true, 0f, false, 200);
+                                                List<Projectile> itz2 = Idglib.Shattershots(npc.Center, npc.Center + shootthere, Vector2.Zero, ModContent.ProjectileType<MurkTelegraphedAttack>(), Main.hardMode ? 25 : 15, 1f, 0, 1, true, 0f, false, 200);
                                                 IdgProjectile.AddOnHitBuff(itz2[0].whoAmI, BuffID.Poisoned, 60 * 5);
 
                                                 Vector2 vectoing = Vector2.TransformNormal(itz2[0].velocity, Matrix.CreateScale(1f, 1f, 1f));
@@ -659,7 +673,7 @@ namespace SGAmod.NPCs.Murk
                         if (npc.ai[1] == 3f)
                         {
                             //High Jump
-                            speedboost = Math.Max((mathit - 160f) / (Main.hardMode ? 54f : 96f), 0f);
+                            speedboost = Math.Max((mathit - 160f) / (Main.hardMode ? 128f : 160f), 0f);
                             npc.velocity.Y = -13;
 
                             if (!Main.hardMode)
@@ -686,7 +700,17 @@ namespace SGAmod.NPCs.Murk
                             npc.velocity.Y = -8f;
                             float distz = Main.player[npc.target].Center.Y - npc.Center.Y;
                             if (distz < -96)
-                                npc.velocity.Y += (distz - 100) / 60f;
+                            {
+                                float jumpHeight = ((Main.player[npc.target].Center.Y - 500) - npc.Center.Y);
+
+                                float gravity = Player.defaultGravity;
+
+                                Vector2 velo = new Vector2(0, (float)Math.Sqrt(-2.0f * gravity * jumpHeight));
+
+                                npc.velocity.Y = velo.Y;
+
+                                //npc.velocity.Y += (distz - 100) / 60f;
+                            }
                             npc.velocity.X = npc.velocity.X + ((npc.localAI[0] < 0 ? 6f : 4f) + speedboost) * (float)npc.direction;
                             npc.ai[0] = -120f;
                             npc.ai[1] += 1f;
@@ -702,20 +726,48 @@ namespace SGAmod.NPCs.Murk
             {
                 if (smackdown < -200 && smackdown>=-1000)//FLY DOWN, SMACK!
                 {
+                    int slamtime = Main.hardMode ? -900 : -850;
+
                     npc.noGravity = true;
-                    for (int i = 0; i < 4; i += 1)
-                    {
-                        int num658x = Dust.NewDust(npc.position, npc.width, npc.height, dustype, Main.rand.NextFloat(-16f, 16f), -npc.velocity.Y * 3f, 100, new Color(30, 30, 30, 20), npc.scale * ((i / 2f)) + 0.75f);
-                        Main.dust[num658x].noGravity = true;
-                    }
-                    if (smackdown > -920)
+                    if (smackdown > slamtime)
                     {
                         npc.velocity.Y += 2.0f;
                         if (npc.velocity.Y > 16)
                             npc.velocity.Y = 16;
+
+                        for (int i = 0; i < 4; i += 1)
+                        {
+                            int num658x = Dust.NewDust(npc.position, npc.width, npc.height, dustype, Main.rand.NextFloat(-16f, 16f), -npc.velocity.Y * 3f, 100, new Color(30, 30, 30, 20), npc.scale * ((i / 2f)) + 0.75f);
+                            Main.dust[num658x].noGravity = true;
+                        }
+
                     }
                     else
                     {
+                        if (smackdown == slamtime-30)
+                        {
+                            SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageCastHeal, -1, -1);
+                            if (sound != null)
+                            {
+                                sound.Volume = 0.99f;
+                                sound.Pitch += 0.5f;
+                            }
+
+                            for (int i = 0; i < 16; i += 1)
+                            {
+                                int num658x = Dust.NewDust(npc.position, npc.width, npc.height, dustype, 0, 0, 100, new Color(30, 30, 30, 20), npc.scale * ((i / 2f)) + 1.75f);
+                                Main.dust[num658x].velocity = Main.rand.NextVector2CircularEdge(12f, 12f);
+                                Main.dust[num658x].noGravity = true;
+                            }
+                        }
+                        if (smackdown < -880)
+                        {
+                            for (int i = 0; i < 4; i += 1)
+                            {
+                                int num658x = Dust.NewDust(npc.position, npc.width, npc.height, dustype, Main.rand.NextFloat(-16f, 16f), -npc.velocity.Y * 3f, 100, new Color(30, 30, 30, 20), npc.scale * ((i / 2f)) + 0.75f);
+                                Main.dust[num658x].noGravity = true;
+                            }
+                        }
                         npc.velocity.Y -= 0.25f;
                         npc.velocity /= 1.25f;
                     }
@@ -892,10 +944,14 @@ namespace SGAmod.NPCs.Murk
 
         public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
         {
+            perhit += 1;
             if (Main.netMode != 1)
             {
-                if (NPC.CountNPCS(mod.NPCType("Fly")) > 30 && Main.rand.Next(5) == 0)
+                if (NPC.CountNPCS(mod.NPCType("Fly")) > 30 || perhit < 5)
+                {
                     return;
+                }
+                perhit = 0;
                 int x = (int)(npc.position.X + (float)Main.rand.Next(npc.width - 32));
                 int y = (int)(npc.position.Y + (float)Main.rand.Next(npc.height - 32));
                 int num663 = mod.NPCType("Fly");
@@ -910,10 +966,14 @@ namespace SGAmod.NPCs.Murk
 
         public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
+            perhit += 1;
             if (Main.netMode != 1)
             {
-                if (NPC.CountNPCS(ModContent.NPCType<Fly>()) > 30 && Main.rand.Next(3) == 0)
+                if (NPC.CountNPCS(mod.NPCType("Fly")) > 30 || perhit < 3)
+                {
                     return;
+                }
+                perhit = 0;
                 int x = (int)(npc.position.X + (float)Main.rand.Next(npc.width - 32));
                 int y = (int)(npc.position.Y + (float)Main.rand.Next(npc.height - 32));
                 int num663 = ModContent.NPCType<Fly>();
@@ -1197,7 +1257,7 @@ namespace SGAmod.NPCs.Murk
             else
             {
 
-                if (this.GetType() == typeof(BossFlyMiniboss1) && npc.ai[2]%300==0 && npc.ai[0]>700 && Main.expertMode)
+                if (this.GetType() == typeof(BossFlyMiniboss1) && npc.ai[2]%300==0 && npc.ai[0]>700 && Main.expertMode && (NPC.CountNPCS(ModContent.NPCType<Murk>())<1 || Main.hardMode))
                 {
 
                     Player target = Main.player[npc.target];
@@ -1265,7 +1325,7 @@ namespace SGAmod.NPCs.Murk
         private void ResetBomb()
         {
             npc.ai[0] = Main.rand.Next(50, 200);
-            npc.ai[3] = Projectile.NewProjectile(npc.Center.X + Main.rand.Next(-8, 8), npc.Center.Y - 40f, 0f, 0f, ProjectileID.DD2OgreSpit, 15, 0f, 0);
+            npc.ai[3] = Projectile.NewProjectile(npc.Center.X + Main.rand.Next(-8, 8), npc.Center.Y - 40f, 0f, 0f, ModContent.ProjectileType<LessStickyOgreBall>(), 15, 0f, 0);
             Main.projectile[(int)npc.ai[3]].damage = 15;
             npc.velocity.Y /= 3f;
             npc.netUpdate = true;
@@ -1294,7 +1354,7 @@ namespace SGAmod.NPCs.Murk
 
             if (carryproj != null && npc.ai[3] > 0)
             {
-                if (carryproj.type == ProjectileID.DD2OgreSpit && carryproj.active)
+                if (carryproj.type == ModContent.ProjectileType<LessStickyOgreBall>() && carryproj.active)
                 {
                     carryproj.timeLeft = 200;
                     carryproj.position = new Vector2(npc.position.X, npc.position.Y + (npc.height));
@@ -1571,6 +1631,30 @@ namespace SGAmod.NPCs.Murk
 
     }
 
+    public class PoisonStack : ModBuff
+    {
+        public override void SetDefaults()
+        {
+            DisplayName.SetDefault("Swamp Rot");
+            Description.SetDefault("Slowly losing health");
+            Main.debuff[Type] = true;
+            Main.pvpBuff[Type] = true;
+            Main.buffNoSave[Type] = true;
+            longerExpertDebuff = true;
+        }
+
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "SGAmod/Buffs/PoisonStack";
+            return true;
+        }
+
+        public override void Update(Player player, ref int buffIndex)
+        {
+            player.GetModPlayer<SGAPlayer>().badLifeRegen += 4;
+        }
+    }
+
     public class MurkyDepths : ModBuff
     {
         public override void SetDefaults()
@@ -1585,7 +1669,7 @@ namespace SGAmod.NPCs.Murk
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "SGAmod/NPCs/Murk/Murk_Head_Boss";
+            texture = "SGAmod/Buffs/MurkyDepths";
             return true;
         }
 
@@ -1596,5 +1680,159 @@ namespace SGAmod.NPCs.Murk
 
     }
 
+        public class LessStickyOgreBall : ModProjectile
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Rot Ball");
+        }
+        public override string Texture => "Terraria/Projectile_" + ProjectileID.DD2OgreSpit;
+        public override void SetDefaults()
+        {
+            projectile.CloneDefaults(ProjectileID.DD2OgreSpit);
+            projectile.width = 12;
+            projectile.height = 12;
+            projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
+            projectile.hostile = true;
+            projectile.friendly = false;
+            projectile.tileCollide = true;
+            projectile.hide = false;
+            projectile.alpha = 0;
+            projectile.timeLeft = 100000;
+            aiType = -1;
+            //projectile.aiStyle = -1;
+        }
 
-}
+        public override void AI()
+        {
+            projectile.rotation = 0;
+            for (int num149 = 0; num149 < 2; num149++)
+            {
+                if (Main.rand.Next(5) != 0)
+                {
+                    int num150 = Utils.SelectRandom<int>(Main.rand, 4, 256);
+                    Dust dust7 = Main.dust[Dust.NewDust(projectile.position, projectile.width, projectile.height, num150, projectile.velocity.X, projectile.velocity.Y, 100)];
+                    dust7.velocity = dust7.velocity / 4f + projectile.velocity / 2f;
+                    dust7.scale = 0.8f + Main.rand.NextFloat() * 0.4f;
+                    dust7.position = projectile.Center;
+                    dust7.position += new Vector2(projectile.width * 2, 0f).RotatedBy((float)Math.PI * 2f * Main.rand.NextFloat()) * Main.rand.NextFloat();
+                    dust7.noLight = true;
+                    if (dust7.type == 4)
+                    {
+                        dust7.color = new Color(80, 170, 40, 120);
+                    }
+                }
+            }
+        }
+
+        public override bool PreKill(int timeLeft)
+        {
+
+            for (int num161 = 0; num161 < 120; num161++)
+            {
+                int num162 = Utils.SelectRandom<int>(Main.rand, 4, 256);
+                Dust dust68 = Main.dust[Dust.NewDust(projectile.position, projectile.width, projectile.height, num162, 0f, 0f, 100)];
+                dust68.scale = 0.8f + Main.rand.NextFloat() * 0.6f;
+                dust68.fadeIn = 0.5f;
+                Dust dust69 = dust68;
+                Dust dust2 = dust69;
+                dust2.velocity *= 4.5f;
+                dust68.noLight = true;
+                if (dust68.velocity.Y > 0f)
+                {
+                    dust69 = dust68;
+                    dust2 = dust69;
+                    dust2.velocity *= -0.5f;
+                }
+                if (dust68.type == 4)
+                {
+                    dust68.color = new Color(80, 170, 40, 120);
+                }
+            }
+            for (int num163 = 0; num163 < 10; num163++)
+            {
+                Gore.NewGoreDirect(projectile.Center, new Vector2(MathHelper.Lerp(-5f, 5f, Main.rand.NextFloat()), (0f - Main.rand.NextFloat()) * 5f), 1024);
+            }
+            for (int num164 = 0; num164 < 10; num164++)
+            {
+                Gore.NewGoreDirect(projectile.Center, new Vector2(MathHelper.Lerp(-5f, 5f, Main.rand.NextFloat()), (0f - Main.rand.NextFloat()) * 5f), 1025);
+            }
+            for (int num165 = 0; num165 < 10; num165++)
+            {
+                Gore.NewGoreDirect(projectile.Center, new Vector2(MathHelper.Lerp(-5f, 5f, Main.rand.NextFloat()), (0f - Main.rand.NextFloat()) * 5f), 1026);
+            }
+            for (int num166 = 0; num166 < 20; num166++)
+            {
+                Gore.NewGoreDirect(projectile.Center, new Vector2(MathHelper.Lerp(-0.5f, 0.5f, Main.rand.NextFloat()), (0f - Main.rand.NextFloat()) * 2f), 1026);
+            }
+            if (Main.netMode != NetmodeID.Server)
+            {
+                Player player = Main.player[Main.myPlayer];
+                if (!player.dead && player.active && (player.Center - projectile.Center).Length() < 300f)
+                {
+                    player.AddBuff(ModContent.BuffType<PlaceHolderDebuff>(), 60*15);
+                    if (player.FindBuffIndex(ModContent.BuffType<PlaceHolderDebuff>()) >= 0)
+                    {
+                        player.buffType[player.FindBuffIndex(ModContent.BuffType<PlaceHolderDebuff>())] = ModContent.BuffType<PoisonStack>();
+                    }
+                }
+            }
+
+
+            return false;
+        }
+
+    }
+
+    public class LessStickyOgreBallOneTick : LessStickyOgreBall
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Rot Ball (1 tick)");
+        }
+
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+            projectile.timeLeft = 3;
+            projectile.alpha = 255;
+        }
+
+    }
+
+    public class MurkTelegraphedAttack : PinkyWarning
+    {
+        protected override Color color => Color.Lime;
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Warning Forever! (Murky Flavor)");
+        }
+        public override void SetDefaults()
+        {
+            //projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+            projectile.width = 16;
+            projectile.height = 16;
+            projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
+            projectile.hostile = true;
+            projectile.friendly = false;
+            projectile.tileCollide = false;
+            projectile.timeLeft = 150;
+            projectile.extraUpdates = 1;
+            aiType = -1;
+            projectile.aiStyle = -1;
+        }
+
+        public override void AI()
+        {
+            base.AI();
+            if (projectile.timeLeft == 80)
+            {
+                List<Projectile> itz2 = Idglib.Shattershots(projectile.Center, projectile.Center + projectile.velocity, Vector2.Zero, ProjectileID.PoisonFang, projectile.damage, 16f, 0, 1, true, 0f, false, 200);
+                IdgProjectile.AddOnHitBuff(itz2[0].whoAmI, BuffID.Poisoned, 60 * 5);
+            }
+        }
+
+    }
+
+
+    }

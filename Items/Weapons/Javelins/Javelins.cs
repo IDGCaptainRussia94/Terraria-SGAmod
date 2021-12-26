@@ -13,7 +13,7 @@ using AAAAUThrowing;
 
 namespace SGAmod.Items.Weapons.Javelins
 {
-    public class CrimsonCatastrophe : SanguineBident
+    public class CrimsonCatastrophe : SanguineBident, IJablinItem
     {
 
         public override float Stabspeed => 10f;
@@ -21,7 +21,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override int Penetrate => 8;
         public override float Speartype => 10;
         public override int[] Usetimes => new int[] { 25, 15 };
-        public override string[] Normaltext => new string[] { "A twisted form of thrown bloodlust that explodes your foe's blood out from their wounds", "Throws 3 Jab-lins that inflict area damage against foes that are Massively Bleeding", "In Addition, crits against enemies afficted with Everlasting Suffering", "On proc the Bleeding and Everlasting Suffering are removed, with a delay before retrigger", "Doesn't effect the enemy the Jab-lin is stuck to", "Primary Fire flies far and fast, and inflicts Massive Bleeding", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
+        public override string[] Normaltext => new string[] { "A twisted form of thrown blood lust that explodes your foe's blood out from their wounds", "Throws 3 Jab-lins that inflict area damage against foes that are Massively Bleeding", "In Addition, crits against enemies afflicted with Everlasting Suffering", "On proc the Bleeding and Everlasting Suffering are removed, with a delay before retrigger", "Doesn't effect the enemy the Jab-lin is stuck to", "Primary Fire flies far and fast, and inflicts Massive Bleeding", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Crimson Catastrophe");
@@ -29,7 +29,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 300;
+            item.damage = 320;
             item.width = 32;
             item.crit = 10;
             item.height = 32;
@@ -105,7 +105,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class TerraTrident : SanguineBident
+    public class TerraTrident : SanguineBident, IJablinItem
     {
 
         public override float Stabspeed => 3.6f;
@@ -121,7 +121,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 50;
+            item.damage = 42;
             item.width = 32;
             item.height = 32;
             item.crit = 10;
@@ -218,7 +218,7 @@ namespace SGAmod.Items.Weapons.Javelins
         }
     }
 
-    public class SanguineBident : StoneJavelin
+    public class SanguineBident : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 3.6f;
@@ -234,7 +234,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 42;
+            item.damage = 50;
             item.width = 32;
             item.height = 32;
             item.knockBack = 5;
@@ -340,14 +340,14 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class SwampSovnya: SanguineBident
+    public class SwampSovnya: SanguineBident, IJablinItem,IDankSlowText
     {
         public override float Stabspeed => 4.00f;
         public override float Throwspeed => 10f;
         public override int Penetrate => 5;
         public override float Speartype => 12;
         public override int[] Usetimes => new int[] { 25, 6 };
-        public override string[] Normaltext => new string[] {"'Hunt or be hunted'", "Thrown Jab-libs inflict Dank Slow to enemies if not immune to poison", "Jabs crit slowed targets and remove the debuff, increasing damage based on slow up to 5X","Additionally, this weapon does 25% increased direct and DOT damage to poison-immune enemies", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
+        public override string[] Normaltext => new string[] {"'Hunt or be hunted'", "Thrown Jab-libs inflict Dank Slow", "Jabs crit slowed targets and remove the debuff, increasing damage based on slow up to 5X","Additionally, this weapon does 25% increased direct and DOT damage to poison-immune enemies", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Swamp Sovnya");
@@ -355,7 +355,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 50;
+            item.damage = 60;
             item.width = 32;
             item.height = 32;
             item.crit = 0;
@@ -377,7 +377,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class ThermalJavelin : StoneJavelin
+    public class ThermalJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 4.00f;
@@ -393,7 +393,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 40;
+            item.damage = 56;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -412,7 +412,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class ShadowJavelin : StoneJavelin
+    public class ShadowJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.70f;
@@ -420,7 +420,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override int Penetrate => 5;
         public override float Speartype => 7;
         public override int[] Usetimes => new int[] { 25, 7 };
-        public override string[] Normaltext => new string[] { "Made from evil Jab-lins and the dark essence emited by a shadow key, attacks may inflict shadowflame","The Shadow Key is NOT consumed on craft!", "Javelins accelerates forward, is not affected by gravity until it hits a target" };
+        public override string[] Normaltext => new string[] { "Made from evil Jab-lins and the dark essence emitted by a shadow key, attacks may inflict Shadowflame","The Shadow Key is NOT consumed on craft!", "Javelins accelerates forward, is not affected by gravity until it hits a target" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Shadow Jab-lin");
@@ -428,7 +428,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 26;
+            item.damage = 32;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -447,7 +447,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class PearlWoodJavelin : StoneJavelin
+    public class PearlWoodJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 3.00f;
@@ -484,7 +484,7 @@ namespace SGAmod.Items.Weapons.Javelins
     }
 
 
-    public class DynastyJavelin : StoneJavelin
+    public class DynastyJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.70f;
@@ -500,7 +500,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 18;
+            item.damage = 28;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -513,7 +513,7 @@ namespace SGAmod.Items.Weapons.Javelins
         }
     }
 
-    public class AmberJavelin : StoneJavelin
+    public class AmberJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.70f;
@@ -529,7 +529,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 18;
+            item.damage = 20;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -539,17 +539,17 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.PalmWood, 5);
-            recipe.AddIngredient(ItemID.Sandstone, 10);
+            recipe.AddIngredient(ItemID.PalmWood, 10);
+            recipe.AddIngredient(ItemID.FossilOre, 2);
             recipe.AddIngredient(ItemID.Amber, 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 150);
+            recipe.SetResult(this, 250);
             recipe.AddRecipe();
         }
 
     }
 
-        public class CorruptionJavelin : StoneJavelin
+        public class CorruptionJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.50f;
@@ -565,7 +565,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 12;
+            item.damage = 15;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -585,7 +585,7 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class CrimsonJavelin : StoneJavelin
+    public class CrimsonJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.20f;
@@ -601,7 +601,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 16;
+            item.damage = 20;
             item.width = 24;
             item.height = 24;
             item.knockBack = 4;
@@ -621,14 +621,14 @@ namespace SGAmod.Items.Weapons.Javelins
 
     }
 
-    public class IceJavelin : StoneJavelin
+    public class IceJavelin : StoneJavelin, IJablinItem
     {
 
         public override float Stabspeed => 1.20f;
         public override float Throwspeed => 6f;
         public override float Speartype => 1;
         public override int[] Usetimes => new int[] { 40, 15 };
-        public override string[] Normaltext => new string[] { "Made from cold materials, attacks may inflict frostburn" };
+        public override string[] Normaltext => new string[] { "Made from cold materials, attacks may inflict Frostburn" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Ice Jab-lin");
@@ -636,7 +636,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.damage = 11;
+            item.damage = 14;
             item.width = 24;
             item.height = 24;
             item.knockBack = 5;

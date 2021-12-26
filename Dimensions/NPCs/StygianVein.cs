@@ -38,6 +38,7 @@ namespace SGAmod.Dimensions.NPCs
             npc.noTileCollide = true;
             npc.aiStyle = -1;
             npc.alpha = 0;
+            npc.rarity = 1;
             npc.chaseable = false;
             npc.SGANPCs().dotImmune = true;
             npc.SGANPCs().TimeSlowImmune = true;

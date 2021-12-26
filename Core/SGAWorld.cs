@@ -37,7 +37,8 @@ namespace SGAmod
         public static bool downedCratrosityPML = false;
         public static bool downedSharkvern = false;
         public static bool downedCirno = false;
-        public static bool downedPrismBanshee = false;
+        public static bool downedSpaceBoss = false;
+        public static byte downedPrismBanshee = 0;
         public static int downedMurk = 0;
         public static int downedHellion = 0;
         public static int downedCaliburnGuardians = 0;
@@ -51,6 +52,7 @@ namespace SGAmod
         public static int overalldamagedone = 0;
         public static int MoistStonecount = 0;
         public static int tf2quest = 0;
+        public static byte highestDimDungeonFloor = 0;
         public static int bossprgressor = 0;
         public static int tf2questcounter = 0;
         public static int[] questvars = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -59,6 +61,9 @@ namespace SGAmod
         public static int dungeonlevel = 0;
         public static bool portalcanmovein = false;
         public static bool darknessVision = false;
+        public static int darkSectorInt = 0;
+        public static bool sharkvernMessage = false;
+        public static NoiseGenerator WorldNoise;
 
         public static int SnapCooldown = 0;
 
@@ -68,8 +73,22 @@ namespace SGAmod
         public static int modtimer = 0;
         public static int craftwarning = 0;
         public static bool GennedVirulent = false;
+        public static bool tidalCharmUnlocked = false;
         public static int[] oretypesprehardmode = { TileID.Copper, TileID.Iron, TileID.Silver, TileID.Gold };
         public static int[] oretypeshardmode = { TileID.Cobalt, TileID.Mythril, TileID.Adamantite };
+
+        public delegate bool CutsceneActiveDelegate(ref bool vara);
+        public static event CutsceneActiveDelegate CutsceneActiveEvent;
+        public static bool CutsceneActive
+        {
+            get
+            {
+                bool active = false;
+                active = CutsceneActiveEvent.Invoke(ref active);
+                return active;
+            }
+
+        }
         public static ModWorld Instance;
 
 
@@ -80,6 +99,10 @@ namespace SGAmod
         {
             modtimer = 0;
             Instance = this;
+
+            if (Dimensions.SGAPocketDim.WhereAmI != null)
+            downedSpaceBoss = false;
+
             if (SGAmod.cachedata == false)
             {
                 portalcanmovein = false;
@@ -87,6 +110,7 @@ namespace SGAmod
                 oretypeshardmode = new int[3] { TileID.Cobalt, TileID.Mythril, TileID.Adamantite };
                 NightmareHardcore = 0;
                 dungeonlevel = 0;
+                //highestDimDungeonFloor = 0;
                 Main.invasionSize = 0;
                 customInvasionUp = false;
                 downedCustomInvasion = false;
@@ -97,6 +121,8 @@ namespace SGAmod
                 downedWraiths = 0;
                 downedMurk = 0;
                 craftwarning = 0;
+                tidalCharmUnlocked = false;
+                GennedVirulent = false;
                 downedMurklegacy = false;
                 downedCaliburnGuardians = 0;
                 downedCaliburnGuardiansPoints = 0;
@@ -108,6 +134,8 @@ namespace SGAmod
                 downedCratrosity = false;
                 downedCratrosityPML = false;
                 downedHellion = 0;
+                sharkvernMessage = false;
+                downedPrismBanshee = 0;
                 tf2cratedrops = false;
                 tf2quest = 0;
                 bossprgressor = 0;
@@ -124,7 +152,25 @@ namespace SGAmod
                 {
                     questvars[x] = 0;
                 }
+
+                if (!Main.dedServ)
+                {
+                    Item c0decrown = new Item();
+                    c0decrown.SetDefaults(mod.ItemType("CelestialCrown"));
+
+                    Main.armorHeadLoaded[c0decrown.headSlot] = true;
+                    Main.armorHeadTexture[c0decrown.headSlot] = SGAmod.RadSuitHeadTex;
+                }
+
             }
+
+            WorldNoise = new NoiseGenerator(Main.worldName.GetHashCode());
+
+            WorldNoise.Amplitude = 1;
+            WorldNoise.Octaves = 4;
+            WorldNoise.Persistence = 0.750;
+            WorldNoise.Frequency *= 1.25;
+
             SGAmod.cachedata = false;
         }
 
@@ -184,6 +230,9 @@ namespace SGAmod
 
         public override void PostUpdate()
         {
+            if (!SGAConfig.Instance.OPmods)
+                SGAmod.overpoweredMod = 0;
+
             if ((Main.netMode < 1 || Main.myPlayer == 0) && Main.expertMode)
                 NightmareHardcore = Main.LocalPlayer.GetModPlayer<SGAPlayer>().nightmareplayer ? 1 : 0;
 
@@ -212,7 +261,7 @@ namespace SGAmod
                 stolecrafting += 1;
             if (Main.netMode < 1)
             {
-                if (harbingercounter == 5)
+                /*if (harbingercounter == 5)
                 {
                     if (Main.rand.Next(0, 10) < 5 && bossprgressor == 1 && downedHarbinger == false && DD2Event.DownedInvasionT3 && NPC.downedMartians)
                     {
@@ -225,7 +274,7 @@ namespace SGAmod
                     harbingercounter = 6;
                     SGAmod.CalamityNoRevengenceNoDeathNoU();
                     NPC.SpawnOnPlayer(Main.rand.Next(0, Main.PlayerList.Count), mod.NPCType("Harbinger"));
-                }
+                }*/
             }
 
             questvars[11] = Math.Max(questvars[11] - 1, 0);
@@ -314,6 +363,7 @@ namespace SGAmod
             tag["downedSPinky"] = downedSPinky;
             tag["downedTPD"] = downedTPD;
             tag["downedCirno"] = downedCirno;
+            tag["downedSpaceBoss"] = downedSpaceBoss;
             tag["downedSharkvern"] = downedSharkvern;
             tag["overalldamagedone"] = overalldamagedone;
             tag["downedCratrosity"] = downedCratrosity;
@@ -327,12 +377,17 @@ namespace SGAmod
             tag["bossprgressor"] = bossprgressor;
             tag["portalcanmovein"] = portalcanmovein;
             tag["GennedVirulent"] = GennedVirulent;
-            tag["downedPrismBanshee"] = downedPrismBanshee; 
+            tag["tidalCharmUnlocked"] = GennedVirulent;
+            tag["downedPrismBansheeByte"] = downedPrismBanshee; 
+            tag["highestDimDungeonFloor"] = highestDimDungeonFloor; 
+
             tag["downedSpiderQueen"] = downedSpiderQueen;
             tag["downedCratrosityPML"] = downedCratrosityPML;
             tag["downedCaliburnGuardians"] = downedCaliburnGuardians;
             tag["downedCaliburnGuardiansPoints"] = downedCaliburnGuardiansPoints;
             tag["downedCaliburnGuardianHardmode"] = downedCaliburnGuardianHardmode;
+            tag["darkSectorInt"] = darkSectorInt;
+
             int x = 0;
             for (x = 0; x < questvars.Length; x++)
             {
@@ -377,6 +432,7 @@ namespace SGAmod
             downedSPinky = tag.GetBool("downedSPinky");
             downedTPD = tag.GetBool("downedTPD");
             downedCirno = tag.GetBool("downedCirno");
+            downedSpaceBoss = tag.GetBool("downedSpaceBoss");
             downedSharkvern = tag.GetBool("downedSharkvern");
             downedCratrosity = tag.GetBool("downedCratrosity");
             downedHarbinger = tag.GetBool("downedHarbinger");
@@ -393,8 +449,12 @@ namespace SGAmod
             if (tag.ContainsKey("tf2quest")) { tf2quest = 0; }//tag.GetInt("tf2quest");}
             if (tag.ContainsKey("bossprgressor")) { bossprgressor = tag.GetInt("bossprgressor"); }
             if (tag.ContainsKey("GennedVirulent")) { GennedVirulent = tag.GetBool("GennedVirulent"); }
-            if (tag.ContainsKey("downedPrismBanshee")) { downedPrismBanshee = tag.GetBool("downedPrismBanshee"); }
+            if (tag.ContainsKey("tidalCharmUnlocked")) { GennedVirulent = tag.GetBool("tidalCharmUnlocked"); }
+            if (tag.ContainsKey("downedPrismBansheeByte")) { downedPrismBanshee = tag.GetByte("downedPrismBansheeByte"); }
+            if (tag.ContainsKey("darkSectorInt")) { darkSectorInt = tag.GetInt("darkSectorInt"); }
 
+            //if (!SGAmod.exitingSubworld)
+            if (tag.ContainsKey("highestDimDungeonFloor")) { highestDimDungeonFloor = Math.Max(tag.GetByte("highestDimDungeonFloor"), highestDimDungeonFloor); }
 
             if (tag.ContainsKey("overalldamagedone")) { overalldamagedone = tag.GetInt("overalldamagedone"); }
 
@@ -425,6 +485,7 @@ namespace SGAmod
                     if (tag.ContainsKey(tagname)) { oretypeshardmode[x] = tag.GetInt(tagname); }
                 }
             }
+            SGAmod.exitingSubworld = false;
         }
 
         //Sync downed data
@@ -442,7 +503,7 @@ namespace SGAmod
             BitsByte flags = new BitsByte(); flags[0] = downedCustomInvasion; flags[1] = downedSPinky; flags[2] = downedTPD; flags[3] = downedCratrosity; flags[4] = downedCirno; flags[5] = downedSharkvern; flags[6] = downedHarbinger; flags[7] = GennedVirulent;
             writer.Write(flags);
             BitsByte flags2 = new BitsByte(); flags[0] = downedSpiderQueen; flags[1] = downedCratrosityPML; flags[2] = downedCaliburnGuardianHardmode;
-            flags[3] = darknessVision; flags[4] = portalcanmovein; flags[5] = downedPrismBanshee; flags[6] = true; flags[7] = true;
+            flags[3] = darknessVision; flags[4] = portalcanmovein; flags[5] = downedPrismBanshee>0; flags[6] = downedPrismBanshee > 1; flags[7] = tidalCharmUnlocked;
             writer.Write(flags2);
 
             writer.Write((short)downedWraiths);
@@ -455,6 +516,7 @@ namespace SGAmod
             writer.Write(bossprgressor);
             writer.Write(modtimer);
             writer.Write((short)NightmareHardcore);
+            writer.Write((short)darkSectorInt);
 
             for (x = 0; x < questvars.Length; x++)
             {
@@ -484,9 +546,15 @@ namespace SGAmod
             tf2cratedrops = reader.ReadBoolean();
             BitsByte flags = reader.ReadByte(); downedCustomInvasion = flags[0]; downedSPinky = flags[1]; downedTPD = flags[2]; downedCratrosity = flags[3]; downedCirno = flags[4]; downedSharkvern = flags[5]; downedHarbinger = flags[6]; GennedVirulent = flags[7];
             BitsByte flags2 = reader.ReadByte(); downedSpiderQueen = flags2[0]; downedCratrosityPML = flags2[1]; downedCaliburnGuardianHardmode = flags2[2];
-            darknessVision = flags2[3]; portalcanmovein = flags2[4]; downedPrismBanshee = flags2[5];
+            darknessVision = flags2[3]; portalcanmovein = flags2[4];
+            if (flags2[5])
+                downedPrismBanshee = 1;
+            if (flags2[6])
+                downedPrismBanshee = 2;
+            tidalCharmUnlocked = flags2[7];
 
-             downedWraiths = reader.ReadInt16();
+
+            downedWraiths = reader.ReadInt16();
             downedMurk = reader.ReadInt16();
             downedHellion = reader.ReadInt16();
             downedCaliburnGuardians = reader.ReadInt16();
@@ -497,6 +565,7 @@ namespace SGAmod
             bossprgressor = reader.ReadInt32();
             modtimer = reader.ReadInt32();
             NightmareHardcore = reader.ReadInt16();
+            darkSectorInt = (int)reader.ReadInt16();
 
             for (x = 0; x < questvars.Length; x++)
             {
@@ -675,12 +744,16 @@ namespace SGAmod
                       progress.Message = "Hiding Secret Chambers";
                       Generation.NormalWorldGeneration.TempleChambers();
                   }));
-                int CaliburnShrines = tasks.FindIndex(genpass => genpass.Name.Equals("Pots"));
-                tasks.Add(new PassLegacy("Caliburn Shrines", delegate (GenerationProgress progress)
-                  {
-                      progress.Message = "Hiding Caliburn's Gifts";
-                      Generation.NormalWorldGeneration.GenAllCaliburnShrine();
-                  }));
+
+                if (SGAConfig.Instance.DankShrines)
+                {
+                    int CaliburnShrines = tasks.FindIndex(genpass => genpass.Name.Equals("Pots"));
+                    tasks.Add(new PassLegacy("Caliburn Shrines", delegate (GenerationProgress progress)
+                      {
+                          progress.Message = "Hiding Caliburn's Gifts";
+                          Generation.NormalWorldGeneration.GenAllCaliburnShrine();
+                      }));
+                }
 
             }
 
@@ -695,6 +768,7 @@ namespace SGAmod
                 Idglibrary.Idglib.nightmaremode = NightmareHardcore;
             }
             Hellion.HellionManager();
+
             SharkvernHead.DoStormThings(null, null);
 
             SnapCooldown = Math.Max(SnapCooldown - 1, 0);

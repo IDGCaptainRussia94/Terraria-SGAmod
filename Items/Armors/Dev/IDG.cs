@@ -19,9 +19,10 @@ namespace SGAmod.Items.Armors.Dev
 	}
 
 	[AutoloadEquip(EquipType.Head)]
-		public class IDGHead : MisterCreeperHead
-		{
-			public override void SetStaticDefaults()
+		public class IDGHead : MisterCreeperHead, IDevArmor
+	{
+		public override Color AwakenedColors => Color.Lime;
+		public override void SetStaticDefaults()
 			{
 				DisplayName.SetDefault("IDGCaptainRussia94's Dergon Disguise");
 			}
@@ -57,24 +58,6 @@ namespace SGAmod.Items.Armors.Dev
 				tooltips.Add(new TooltipLine(mod, "IDG", "25% increased ranged damage, 15% increased ranged crit chance"));
 				tooltips.Add(new TooltipLine(mod, "IDG", "40% increased summon damage, Summon weapons are used 50% faster"));
 				return tooltips;
-			}
-
-			public override void UpdateInventory(Player player)
-			{
-				if (item.vanity)
-				{
-					if (player.GetModPlayer<SGAPlayer>().devpower>0)
-					{
-						item.vanity = false;
-						//Client Side
-						if (Main.myPlayer == player.whoAmI)
-						{
-							CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Lime, "???!!!", false, false);
-							Main.PlaySound(29, (int)player.position.X, (int)player.position.Y, 105, 1f, -0.6f);
-						}
-						InitEffects();
-					}
-				}
 			}
 			public override void UpdateEquip(Player player)
 			{
@@ -117,8 +100,8 @@ namespace SGAmod.Items.Armors.Dev
 				//};
 
 [AutoloadEquip(EquipType.Body)]
-		public class IDGBreastplate : IDGHead
-		{
+		public class IDGBreastplate : IDGHead, IDevArmor
+	{
 			public override void SetStaticDefaults()
 			{
 				DisplayName.SetDefault("IDGCaptainRussia94's Scaled Suit");
@@ -170,8 +153,8 @@ namespace SGAmod.Items.Armors.Dev
 	}
 
 		[AutoloadEquip(EquipType.Legs)]
-		public class IDGLegs : IDGHead
-		{
+		public class IDGLegs : IDGHead, IDevArmor
+	{
 			public override void SetStaticDefaults()
 			{
 				DisplayName.SetDefault("IDGCaptainRussia94's Dragon Dressings");
@@ -191,7 +174,23 @@ namespace SGAmod.Items.Armors.Dev
 				item.defense = 20;
 				item.rare = 10;
 			}
-			public override void AddEffects(Player player)
+
+		public override bool Autoload(ref string name)
+		{
+			SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostPostUpdateEquipsEvent;
+			return true;
+		}
+
+		private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer sgaplayer)
+		{
+			Player player = sgaplayer.player;
+			if (!player.armor[2].vanity && player.armor[2].type == item.type)
+			{
+				player.wingTimeMax = (int)(player.wingTimeMax * 1.20f);
+			}
+		}
+
+		public override void AddEffects(Player player)
 			{
 				player.moveSpeed += 2f;
 				player.accRunSpeed += 2f;

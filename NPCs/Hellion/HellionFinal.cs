@@ -45,7 +45,9 @@ namespace SGAmod.NPCs.Hellion
 			NPCID.Sets.MustAlwaysDraw[npc.type] = true;
 		}
 
-		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        public override string Texture => "SGAmod/NPCs/Hellion/Hellion";
+
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
 			if (subphase == 0)
 				return false;

@@ -10,43 +10,12 @@ using SGAmod.Dusts;
 
 namespace SGAmod.HavocGear.Items.Weapons
 {
-	public class MangroveBow : MangrovePickaxe
+	public class MangroveBow : MangrovePickaxe, IMangroveSet
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mangrove Bow");
 			Tooltip.SetDefault("Shoots 2 arrows offsetted at angles at the cost of 1");
-		}
-
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
-		{
-			base.ModifyTooltips(tooltips);
-			tooltips.Add(new TooltipLine(mod, "Item Sets", "Having more of the mangrove weapon set in your inventory improves the damage"));
-			tooltips.Add(new TooltipLine(mod, "Item Sets", "Up to 50% with all the weapons"));
-		}
-
-		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
-		{
-			List<int> mangroves = new List<int>();
-			mangroves.Add(mod.ItemType("MangroveStriker"));
-			mangroves.Add(mod.ItemType("MangroveShiv"));
-			mangroves.Add(mod.ItemType("MangroveStaff"));
-			mangroves.Add(mod.ItemType("MangroveBow"));
-			mangroves.Add(mod.ItemType("MossYoyo"));
-
-			float bonusdamage = 0;
-
-			foreach(int itemtype in mangroves)
-			{
-				if (player.CountItem(itemtype) > 0)
-				{
-					if (itemtype != item.type)
-					{
-						bonusdamage += 0.125f;
-					}
-				}
-			}
-			add+= bonusdamage;
 		}
 
 		public override void SetDefaults()
@@ -95,12 +64,12 @@ namespace SGAmod.HavocGear.Items.Weapons
 		}
 	}
 
-	public class MangroveStriker : MangroveBow
+	public class MangroveStriker : MangroveBow, IMangroveSet
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mangrove Striker");
-			Tooltip.SetDefault("Attacks may inflict Dryad's Bane");
+			Tooltip.SetDefault("Attacks may inflict Dryad's Bane, or bless yourself");
 		}
 
 		public override void SetDefaults()
@@ -123,6 +92,8 @@ namespace SGAmod.HavocGear.Items.Weapons
 		{
 			if (Main.rand.Next(0, 100) < 25)
 			target.AddBuff(BuffID.DryadsWardDebuff, 60 * 4);
+			if (Main.rand.Next(0, 100) < 25)
+				player.AddBuff(BuffID.DryadsWard, 60 * 5);
 		}
 
 		public override void AddRecipes()
@@ -136,7 +107,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		}
 	}
 
-	public class MangroveStaff : MangroveBow
+	public class MangroveStaff : MangroveBow, IMangroveSet
 	{
 		public override void SetStaticDefaults()
 		{
@@ -180,7 +151,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 	}
 
-	public class MangroveShiv : MangroveStaff
+	public class MangroveShiv : MangroveStaff, IMangroveSet
 	{
 		public override void SetStaticDefaults()
 		{

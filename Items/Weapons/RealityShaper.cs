@@ -13,7 +13,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Reality Shaper");
-			Tooltip.SetDefault("The elements are yours to shape\nRequires a small amount of mana to swing, Double tab to launch 2 heat waves in succession\nFunctions as both a sword and a staff\nHitting with the blade opens several rifts that launch Sky Fracture Blades into the target\nAfter the swing animation hold left mouse to open a rift\nThis will fire fast moving cirno bolts\nFurthermore, portals appear behind you that summon Hot Rounds!\nThe damage of these are less than the melee damage but are improved by your magic damage multiplier\nIf done after a double tap, you'll summon 2 portals to shoot twice as many projectiles, at double the mana costs");
+			Tooltip.SetDefault("The elements are yours to shape\nRequires a small amount of mana to swing, Double tab to launch 2 heat waves in succession\nFunctions as both a sword and a staff\nHitting with the blade opens several rifts that launch Sky Fracture Blades into the target\nAfter the swing animation hold left mouse to open a rift\nThis will fire fast moving Cirno bolts\nFurthermore, portals appear behind you that summon Hot Rounds!\nThe damage of these are less than the melee damage but are improved by your magic damage multiplier\nIf done after a double tap, you'll summon 2 portals to shoot twice as many projectiles, at double the mana costs");
 			Item.staff[item.type] = true;
 		}
 

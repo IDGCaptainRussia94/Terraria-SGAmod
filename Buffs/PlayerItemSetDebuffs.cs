@@ -14,6 +14,7 @@ namespace SGAmod.Buffs
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
+			Main.buffNoTimeDisplay[Type] = true;
 			longerExpertDebuff = false;
 		}
 
@@ -22,12 +23,12 @@ namespace SGAmod.Buffs
 			player.GetModPlayer<SGAPlayer>().Pressured=true;
 		}
 	}
-	public class ShieldBreak: ModBuff
+	public class CleansedPerception : ModBuff
 	{
 		public override void SetDefaults()
 		{
-			DisplayName.SetDefault("Shield Break");
-			Description.SetDefault("No Electric Charge Regen\nTaking off an Energy Shield will hurt the player");
+			DisplayName.SetDefault("Histoplasma");
+			Description.SetDefault("The doors of perception have been cleansed!");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
@@ -36,7 +37,31 @@ namespace SGAmod.Buffs
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/AcidBurn";
+			texture = "SGAmod/Buffs/CleansedPerceptionBuff";
+			return true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			//if (Main.netMode != NetmodeID.Server)
+			//	Main.buffTexture[ModContent.BuffType<CleansedPerception>()] = Main.buffTexture[Main.rand.Next(Main.buffTexture.Length)];
+		}
+	}
+	public class ShieldBreak: ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Shield Break");
+			Description.SetDefault("No Electric Charge/Barrier Regen\nTaking off an Energy Shield will hurt the player");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = false;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/ShieldBreak";
 			return true;
 		}
 
@@ -45,12 +70,28 @@ namespace SGAmod.Buffs
 			player.GetModPlayer<SGAPlayer>().Shieldbreak = true;
 		}
 	}
+	public class PlaceHolderDebuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BrokenImmortalityDebuff";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Place Holder Debuff");
+			Description.SetDefault("Your not suppose to see this! No Seriously this debuff is NEVER meant to be active! It is Swapped out instantly to stack same-type debuffs!");
+			Main.pvpBuff[Type] = false;
+			Main.debuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+		}
+	}
 	public class BIPBuff : ModBuff
 	{
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/BuffTemplate";
+			texture = "SGAmod/Buffs/BrokenImmortalityDebuff";
 			return true;
 		}
 		public override void SetDefaults()

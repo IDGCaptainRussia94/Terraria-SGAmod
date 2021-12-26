@@ -15,6 +15,8 @@ using AAAAUThrowing;
 using SGAmod.NPCs.Cratrosity;
 using SGAmod.Buffs;
 using System.Linq;
+using Microsoft.Xna.Framework.Audio;
+using SGAmod.Items.Weapons;
 
 namespace SGAmod
 {
@@ -53,64 +55,79 @@ namespace SGAmod
 
 		}
 
+		public void NinjaStashSummonProjectile(NPC npc,Player player, ref int damage, ref float knockback, ref bool crit)
+        {
+			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
+
+			int ammo = -1;
+			moddedplayer.LookForThrowingGear(ref ammo);
+
+			//if (player.HasItem(ModContent.ItemType<ThrowingStars>()))
+			//	ammo = ModContent.ItemType<ThrowingStars>();
+
+
+			if (ammo > 0)
+			{
+				Item itemy = new Item();
+				itemy.SetDefaults(ammo);
+				int shootype = itemy.shoot;
+
+				Vector2 anglez = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, -2000));
+				anglez.Normalize();
+
+				float i = Main.rand.NextFloat(90f, 260f);
+
+				int thisoned = Projectile.NewProjectile(npc.Center + (anglez * i), anglez * -16f, shootype, damage, 0f, Main.myPlayer);
+				Main.projectile[thisoned].ranged = false;
+				Main.projectile[thisoned].thrown = false;
+
+
+				for (float gg = 2f; gg > 0.25f; gg -= 0.6f)
+				{
+					int goreIndex = Gore.NewGore(npc.Center + (anglez * i), -anglez * gg, Main.rand.Next(61, 64), 1f);
+					Main.gore[goreIndex].scale = 1.5f;
+				}
+				moddedplayer.ninjaStashLimit += (int)(60 / player.Throwing().thrownDamage);
+				player.ConsumeItem(ammo);
+			}
+
+		}
+
+		public static void PlayersGotHit()
+		{
+			foreach (SGAnpcs sganpc in Main.npc.Where(testby => testby.active).Select(testby => testby.SGANPCs()))
+			{
+				sganpc.NoHit = false;
+			}
+		}
+
+		public void DropRelic(NPC npc)
+		{
+			if (Main.expertMode && NoHit && npc.modNPC != null)
+			{
+				if (npc.modNPC is ISGABoss iboss)
+				{
+
+					if (npc.GetType() != typeof(HellionCore))
+					{
+						iboss.NoHitDrops();
+						Items.Placeable.Relics.SGAPlacableRelic.AttemptDropRelic(npc.modNPC);
+					}
+				}
+			}
+		}
+
 		public void OnCrit(NPC npc, Projectile projectile, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
 
-			if (moddedplayer.gunslingerLegendtarget > -1)
-			{
-				if (npc.whoAmI == moddedplayer.gunslingerLegendtarget)
-				{
-					damage = (int)((float)damage * 1.50f);
-				}
-				else
-				{
-					damage = (int)((float)damage * 0.25f);
-				}
-
-			}
-
 			if (crit)
 			{
-				if (moddedplayer.ninjaSash > 0 && ((item != null && item.Throwing().thrown) || (projectile != null && projectile.Throwing().thrown)))
+				if (moddedplayer.ninjaStashLimit < 600)
 				{
-					int ammo = 0;
-					if (player.HasItem(ItemID.Shuriken))
-						ammo = ItemID.Shuriken;
-					if (player.HasItem(ItemID.ThrowingKnife))
-						ammo = ItemID.ThrowingKnife;
-					if (player.HasItem(ItemID.PoisonedKnife))
-						ammo = ItemID.PoisonedKnife;
-					if (player.HasItem(ItemID.BoneDagger))
-						ammo = ItemID.BoneDagger;
-					if (player.HasItem(ItemID.FrostDaggerfish))
-						ammo = ItemID.FrostDaggerfish;
-
-
-
-					if (ammo > 0)
+					if (moddedplayer.ninjaSash > 0 && ((item != null && (item.Throwing().thrown || item.thrown)) || (projectile != null && (projectile.Throwing().thrown || projectile.thrown))))
 					{
-						Item itemy = new Item();
-						itemy.SetDefaults(ammo);
-						int shootype = itemy.shoot;
-
-						Vector2 anglez = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, -2000));
-						anglez.Normalize();
-
-						float i = Main.rand.NextFloat(90f, 260f);
-
-						int thisoned = Projectile.NewProjectile(npc.Center + (anglez * i), anglez * -16f, shootype, damage, 0f, Main.myPlayer);
-						Main.projectile[thisoned].ranged = false;
-						Main.projectile[thisoned].thrown = false;
-
-
-						for (float gg = 2f; gg > 0.25f; gg -= 0.6f)
-						{
-							int goreIndex = Gore.NewGore(npc.Center + (anglez * i), -anglez * gg, Main.rand.Next(61, 64), 1f);
-							Main.gore[goreIndex].scale = 1.5f;
-						}
-
-						player.ConsumeItem(ammo);
+						NinjaStashSummonProjectile(npc, player, ref damage, ref knockback, ref crit);
 					}
 				}
 			}
@@ -132,7 +149,7 @@ namespace SGAmod
 					chance = 1;
 				if (projectile.magic)
 					chance = 2;
-				if (projectile.thrown)
+				if (projectile.thrown || projectile.Throwing().thrown)
 					chance = 3;
 			}
 			if (item != null)
@@ -149,7 +166,14 @@ namespace SGAmod
 			}
 			if (npc != null && (always || chance > -1))
 			{
-				if (always || Main.rand.Next(0, 100) < moddedplayer.apocalypticalChance[chance] && crit)
+
+				double chanceboost = 0;
+				if (projectile != null)
+                {
+					chanceboost += projectile.GetGlobalProjectile<SGAprojectile>().extraApocoChance;
+				}
+
+				if (always || (crit && Main.rand.Next(0, 100) < (moddedplayer.apocalypticalChance[chance]+chanceboost)))
 				{
 					if (moddedplayer.HoE && projectile != null)
 					{
@@ -168,7 +192,7 @@ namespace SGAmod
 							Projectile proj = Main.projectile[i];
 							if (proj.active && proj.owner == player.whoAmI)
 							{
-								if (proj.Throwing().thrown)
+								if (proj.Throwing().thrown || proj.thrown)
 									proj.SGAProj().Embue(projectile);
 
 							}
@@ -187,8 +211,6 @@ namespace SGAmod
 						pos += new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height));
 						SGAUtils.SpawnCoins(pos, ammount, 10f + Math.Min(3f * mul, 20f));
 					}
-
-
 
 					if (moddedplayer.dualityshades)
 					{
@@ -234,8 +256,30 @@ namespace SGAmod
 								player.ConsumeItemRespectInfiniteAmmoTypes(ammo);
 							}
 						}
+					}
 
+					if (moddedplayer.RadSuit)
+                    {
+						//IrradiatedAmmount = Math.Max(IrradiatedAmmount, 25);
 
+						IrradiatedExplosion(npc, (int)(damage * 1f * moddedplayer.apocalypticalStrength));
+
+						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageHealImpact, (int)npc.Center.X, (int)npc.Center.Y);
+						if (sound != null)
+							sound.Pitch += 0.525f;
+
+						int proj;
+
+						if (projectile!=null)
+						proj = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<RadioactivePool>(), (int)(damage * 0.5f * moddedplayer.apocalypticalStrength), projectile.knockBack, projectile.owner);
+						else
+							proj = Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<RadioactivePool>(), (int)(damage * 0.5f * moddedplayer.apocalypticalStrength), knockback, player.whoAmI);
+
+						Main.projectile[proj].width += 80;
+						Main.projectile[proj].height += 80;
+						Main.projectile[proj].timeLeft += (int)(30*moddedplayer.apocalypticalStrength);
+						Main.projectile[proj].Center -= new Vector2(40, 40);
+						Main.projectile[proj].netUpdate = true;
 					}
 
 					if (moddedplayer.CalamityRune)
@@ -251,12 +295,44 @@ namespace SGAmod
 
 					damage = (int)(damage * (3f + (moddedplayer.apocalypticalStrength - 1f)));
 
+					if (moddedplayer.magatsuSet && npc.HasBuff(ModContent.BuffType<Watched>()))
+					{
+						Projectile.NewProjectile(npc.Center,Vector2.Zero,ModContent.ProjectileType<Items.Armors.Magatsu.ExplosionDarkSectorEye>(),0,0);
+
+						Point location;
+
+						if (projectile != null)
+							location = new Point((int)projectile.Center.X, (int)projectile.Center.Y);
+						else
+							location = new Point((int)npc.Center.X, (int)npc.Center.Y);
+
+						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_WyvernScream, (int)location.X, (int)location.Y);
+						if (sound != null)
+							sound.Pitch = 0.925f;
+
+						foreach (NPC enemy in Main.npc.Where(testby => testby.active && !testby.dontTakeDamage && !testby.friendly && testby != npc && (testby.Center-npc.Center).LengthSquared()<400*400))
+                        {
+							int damazz = Main.DamageVar(damage);
+							enemy.StrikeNPC(damazz, 16, -enemy.spriteDirection, true);
+
+							if (Main.netMode != 0)
+							{
+								NetMessage.SendData(MessageID.StrikeNPC, -1, -1, null, npc.whoAmI, damazz, 16f, (float)1, 0, 0, 0);
+							}
+						}
+
+					}
+
 					if (effectText)
 					CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.DarkRed, "Apocalyptical!", true, false);
 					if (SGAConfigClient.Instance.EpicApocalypticals)
 					{
 						if (effectShockwave)
-						RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 10f, 60, 1f);
+						{
+							RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 10f, 60, 1f);
+							if (SGAmod.ScreenShake<32)
+							SGAmod.AddScreenShake(24f, 1200, player.Center);
+						}
 						if (effectSound)
 							Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/crit_hit").WithVolume(.7f).WithPitchVariance(.25f), npc.Center);
 					}
@@ -267,6 +343,30 @@ namespace SGAmod
 
 		}
 
+		public void AddDamageStack(int damage,int time)
+        {
+			damageStacks.Add(new DamageStack(damage,time));
+		}
+		public void IrradiatedExplosion(NPC npc,int baseDamage)
+		{
+			if (IrradiatedAmmount > 0)
+			{
+				int proj = Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<RadioactivePool>(), (npc.boss ? 0 : baseDamage) + IrradiatedAmmount, 0, Main.player.OrderBy(playerxy => playerxy.Distance(npc.Center)).ToArray()[0].whoAmI);
+				Main.projectile[proj].ai[1] = 1;
+				Main.projectile[proj].timeLeft = 2;
+				Main.projectile[proj].netUpdate = true;
+				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageSummonSkeleton, (int)npc.Center.X, (int)npc.Center.Y);
+				if (sound != null)
+					sound.Pitch -= 0.525f;
+
+				if (npc.HasBuff(ModContent.BuffType<RadioDebuff>()))
+				npc.DelBuff(npc.FindBuffIndex(ModContent.BuffType<RadioDebuff>()));
+				IrradiatedAmmount = 0;
+				IrradiatedAmmount_ = 0;
+			}
+
+
+		}
 		public void LifeSteal(NPC npc, Player player, ref int damage, ref float knockback, ref bool crit)
 		{
 			if (player != null)
@@ -275,7 +375,6 @@ namespace SGAmod
 				{
 					if (player.ownedLargeGems[4] && Main.rand.Next(0, (int)(50000f / Math.Max((float)damage, 40f))) == 1)
 					{
-
 						Projectile projectile = new Projectile();
 						projectile.Center = npc.Center;
 						projectile.owner = player.whoAmI;
@@ -285,36 +384,65 @@ namespace SGAmod
 			}
 
 		}
-		public void DoModifies(NPC npc, Player player, Projectile projectile, Item item, ref int damage, ref float knockback, ref bool crit)
+
+		public delegate void DoModifiesLateDelegate(NPC npc, Player player, Projectile projectile, Item item, ref int sourcedamage, ref int damage, ref float knockback, ref bool crit);
+
+		public static event DoModifiesLateDelegate DoModifiesLateEvent;
+
+
+		public void DoModifies(NPC npc, Player player, Projectile projectile, Item item, ref int sourcedamage, ref float knockback, ref bool crit)
 		{
 			SGAPlayer moddedplayer = player.GetModPlayer<SGAPlayer>();
-			damage = (int)(damage * damagemul);
+			int damage = (int)(sourcedamage * damagemul);
 
 			Projectile held = null;
 			if (projectile != null)
 			{
+				float resist = npc.SGANPCs().pierceResist;
+				if ((projectile.penetrate < 0 || projectile.penetrate > 3) && resist < 1)
+				{
+					damage = (int)(damage * resist);
+					sourcedamage = damage;
+				}
+
+
+				if (crit && moddedplayer.molotovLimit>0 && projectile.Throwing().thrown)
+				{
+				crit = (Main.rand.Next(10) == 0);
+				}
+
 				if (player!=null && player.heldProj>=0)
 				held = Main.projectile[player.heldProj];
 
 				if (projectile.trap)
-					damage = (int)(damage * player.GetModPlayer<SGAPlayer>().TrapDamageMul);
+					damage += (int)(sourcedamage * (player.SGAPly().TrapDamageMul-1f));
 			}
 
 			DoApoco(npc, projectile, player, item, ref damage, ref knockback, ref crit);
-				damage += (int)(Math.Min(npc.defense, reducedDefense) / 2);
-			if (Gourged)
-				damage += (npc.defense / 2) / 2;
-			if (Sodden)
-				damage = (int)((float)damage * 1.33f);
 
-			if (moddedplayer != null && moddedplayer.PrimordialSkull)
-				if (npc.HasBuff(BuffID.OnFire))
-					damage = (int)(damage * 1.25);
-
-			if (moddedplayer.MidasIdol > 0)
+			if (moddedplayer != null)
 			{
+				if (moddedplayer.acidSet.Item1)
+				{
+					reducedDefense += (npc.poisoned ? 5 : 0) + (npc.venom ? 5 : 0) + (acidburn ? 5 : 0);
+				}
+			}
+
+			damage += (int)(Math.Min(npc.defense, reducedDefense) / 2);
+
+			if (Gourged)
+				damage += npc.defense / 4;
+			if (Sodden)
+				damage += (int)((float)sourcedamage * 0.33f);
+
+			if (moddedplayer != null)
+			{
+				if (moddedplayer.PrimordialSkull)
+					if (npc.HasBuff(BuffID.OnFire))
+						damage += (int)(sourcedamage * 0.25);
+
 				if (npc.HasBuff(BuffID.Midas))
-					damage = (int)(damage * 1.15f);
+					damage += (int)(sourcedamage * 0.15f);
 			}
 
 			if (item != null)
@@ -326,21 +454,6 @@ namespace SGAmod
 						knockback += 50f;
 					}
 				}
-            }
-
-			if (petrified)
-            {
-				if (player != null && (item?.pick > 0 || (projectile != null && player.heldProj >= 0 && player.heldProj == projectile.whoAmI && player.HeldItem.pick > 0)))
-				{
-					damage = (int)(damage * 3f);
-					crit = true;
-					Main.PlaySound(SoundID.Tink, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, 0.25f);
-				}
-                else
-                {
-					damage = (int)(damage * 0.25f);
-				}
-
             }
 
 			if (projectile != null)
@@ -390,7 +503,7 @@ namespace SGAmod
 				{
 					if (moddedplayer.CirnoWings == true && projectile.coldDamage)
 					{
-						damage = (int)((float)damage * 1.20f);
+						damage += (int)((float)sourcedamage * 0.20f);
 					}
 				}
 
@@ -409,28 +522,62 @@ namespace SGAmod
 
 			if (moddedplayer.Blazewyrmset)
 			{
-				if (npc.HasBuff(mod.BuffType("ThermalBlaze")) && item.melee)
+				if (npc.HasBuff(mod.BuffType("ThermalBlaze")) && ((item != null && item.melee) || (projectile != null && projectile.melee)))
 				{
-					damage = (int)(damage * 1.20f);
+					damage += (int)(sourcedamage * 0.20f);
 				}
 			}
 
 			if (moddedplayer.alkalescentHeart)
 			{
-				damage = (int)(damage*(1f+(npc.HasBuff(ModContent.BuffType<AcidBurn>()) ? 0.15f : (npc.HasBuff(BuffID.Venom) ? 0.10f : (npc.HasBuff(BuffID.Poisoned) ? 0.05f : 0)))));
+				damage += (int)(sourcedamage * (0f+(npc.HasBuff(ModContent.BuffType<AcidBurn>()) ? 0.15f : (npc.HasBuff(BuffID.Venom) ? 0.10f : (npc.HasBuff(BuffID.Poisoned) ? 0.05f : 0)))));
 			}
 
+			SGAPlayer sgaply = player.SGAPly();
+
+			if (sgaply.snakeEyes.Item1)
+            {
+				bool falsecrit = crit;
+				if (!crit && Main.rand.Next(100) == 0)
+				{
+					CombatText.NewText(npc.Hitbox,Color.Red,"False Crit",false,false);
+					falsecrit = true;
+				}
+				sgaply.snakeEyes.Item2 = falsecrit ? 0 : Math.Min(sgaply.snakeEyes.Item2 + 1, 100);
+				damage += (int)(sourcedamage * (0f + (sgaply.snakeEyes.Item2 / 100f)));
+            }
 
 			if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
 			{
+				if (sgaply.skillMananger == null)
+					return;
+
 				if (item != null)
-					player.SGAPly().skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, item, null);
+					sgaply.skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, item, null);
 				if (projectile != null)
-					player.SGAPly().skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, null, projectile);
+					sgaply.skillMananger.OnEnemyDamage(ref damage, ref crit, ref knockback, null, projectile);
 			}
+
+			if (petrified)
+			{
+				if (player != null && (item?.pick > 0 || (projectile != null && player.heldProj >= 0 && player.heldProj == projectile.whoAmI && player.HeldItem.pick > 0)))
+				{
+					damage = (int)(damage * 3f);
+					crit = true;
+					Main.PlaySound(SoundID.Tink, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, 0.25f);
+				}
+				else
+				{
+					damage = (int)(damage * 0.25f);
+				}
+			}
+
+			DoModifiesLateEvent?.Invoke(npc,player,projectile,item, ref sourcedamage, ref damage, ref knockback,ref crit);
 
 			LifeSteal(npc, player, ref damage, ref knockback, ref crit);
 			OnCrit(npc, projectile, player, item, ref damage, ref knockback, ref crit);
+
+			sourcedamage = damage;
 
 		}
 
@@ -445,10 +592,13 @@ namespace SGAmod
 
 			}
 
-			if (moddedplayer.flaskBuff != default)
+			if (moddedplayer.flaskBuff != default && ((projectile != null && projectile.melee) || (item != null && item.melee)))
 			{
 				if (Main.rand.Next(0, moddedplayer.flaskBuff.Chance) == 0)
+				{
 					npc.AddBuff(moddedplayer.flaskBuff.Debuff, moddedplayer.flaskBuff.Period);
+					moddedplayer.flaskBuff.OnRealHit(player, projectile, npc, damage);
+				}
 			}
 
 			if (item != null && npc.life - damage < 1 && npc.lifeMax > 50)
@@ -456,6 +606,7 @@ namespace SGAmod
 				if (item.type == mod.ItemType("Powerjack"))
 				{
 					player.HealEffect(25, false);
+					player.netLife = true;
 					player.statLife += 25;
 					if (player.statLife > player.statLifeMax2)
 					{
@@ -521,9 +672,19 @@ namespace SGAmod
 			}
 
 			SGAWorld.overalldamagedone = ((int)damage) + SGAWorld.overalldamagedone;
+
+			if (item != null)
+            {
+				if (moddedplayer.FieryheartBuff > 0)
+				{
+					if (!npc.buffImmune[BuffID.Daybreak] || moddedplayer.FieryheartBuff > 15)
+						IdgNPC.AddBuffBypass(npc.whoAmI, 189, 1 * (20 + (int)(player.SGAPly().ExpertiseCollectedTotal / 250f)));
+				}
+			}
+
 			if (projectile != null)
 			{
-				if (moddedplayer.FieryheartBuff > 0 && projectile.owner == player.whoAmI)
+				if (moddedplayer.FieryheartBuff > 0 && projectile.owner == player.whoAmI && projectile.friendly)
 				{
 					if (!npc.buffImmune[BuffID.Daybreak] || moddedplayer.FieryheartBuff > 15)
 					IdgNPC.AddBuffBypass(npc.whoAmI,189, 1 * (20+(int)(player.SGAPly().ExpertiseCollectedTotal/250f)));
@@ -560,7 +721,7 @@ namespace SGAmod
 
 			if (moddedplayer.Blazewyrmset)
 			{
-				if (crit && ((item != null && item.melee && item.pick + item.axe + item.hammer < 1)) || (projectile != null && projectile.melee && (player.heldProj == projectile.whoAmI || (projectile.modProjectile != null && projectile.modProjectile is IShieldBashProjectile))))
+				if (crit && ((item != null && item.melee && item.pick + item.axe + item.hammer < 1)) || (projectile != null && projectile.melee && (player.heldProj == projectile.whoAmI || (projectile.modProjectile != null && (projectile.modProjectile is IShieldBashProjectile || projectile.modProjectile is ITrueMeleeProjectile)))))
 				{
 					if (player.SGAPly().AddCooldownStack(12 * 60))
 					{
@@ -603,7 +764,7 @@ namespace SGAmod
 					hasabuff = true;
 				}
 			}
-
+			
 
 			if (DosedInGas && hasabuff)
 			{
@@ -635,10 +796,18 @@ namespace SGAmod
 
 			}
 
+			/*if (PinkyMinion>0)
+            {
+				if ((npc.life-damage)<1 && ((projectile.penetrate<5 && projectile.penetrate >= 0) || projectile == null))
+				{
+					NPC[] findnpc = SGAUtils.ClosestEnemies(npc.Center, 1500, checkWalls: false, checkCanChase: false)?.ToArray();
+					findnpc = findnpc != null ? findnpc.Where(testby => testby.type == ModContent.NPCType<NPCs.SPinkyTrue>()).ToArray() : null;
 
-
+					if (findnpc != null && findnpc.Count()>0 && findnpc[0].type == ModContent.NPCType<NPCs.SPinkyTrue>())
+					Projectile.NewProjectile(npc.Center, Vector2.Normalize(findnpc[0].Center - npc.Center) * 10f, ModContent.ProjectileType<NPCs.PinkyMinionKilledProj>(), 500, 0);
+				}
+			}*/
 		}
-
 	}
 
 

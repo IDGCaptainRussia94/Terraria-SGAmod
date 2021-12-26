@@ -33,7 +33,70 @@ namespace SGAmod.Items.Armors.Vanity
 	}
 
 	[AutoloadEquip(EquipType.Head)]
-	public class AncientSpaceDiverHelmet : ModItem
+	public class AncientUnmanedHood : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Unmaned Hood");
+		}
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 18;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = 4;
+			item.vanity = true;
+			item.defense = 0;
+		}
+		public override bool DrawHead()
+		{
+			return GetType() != typeof(AncientSpaceDiverHelmet) && GetType() != typeof(AncientUnmanedHood);
+		}
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			Color c = Main.hslToRgb((float)(Main.GlobalTime / 5f) % 1f, 0.45f, 0.65f);
+			tooltips.Add(new TooltipLine(mod, "Dedicated", Idglib.ColorText(c, "Dedicated to PhilBill44, and preserving his work")));
+		}
+	}
+
+	[AutoloadEquip(EquipType.Body)]
+	public class AncientUnmanedBreastplate : AncientUnmanedHood
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Unmaned Breastplate");
+		}
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 18;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = 4;
+			item.vanity = true;
+			item.defense = 0;
+		}
+	}
+
+	[AutoloadEquip(EquipType.Legs)]
+	public class AncientUnmanedLeggings : AncientUnmanedHood
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Unmaned Leggings");
+		}
+		public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 18;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = 4;
+			item.vanity = true;
+			item.defense = 0;
+		}
+	}
+
+	[AutoloadEquip(EquipType.Head)]
+	public class AncientSpaceDiverHelmet : AncientUnmanedHood
 	{
 		public override void SetStaticDefaults()
 		{
@@ -56,15 +119,6 @@ namespace SGAmod.Items.Armors.Vanity
 				if (!Main.dedServ)
 					sgaplayer.armorglowmasks[0] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
 			}
-		}
-        public override bool DrawHead()
-        {
-            return GetType() != typeof(AncientSpaceDiverHelmet);
-        }
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
-		{
-			Color c = Main.hslToRgb((float)(Main.GlobalTime / 5f) % 1f, 0.45f, 0.65f);
-			tooltips.Add(new TooltipLine(mod, "Dedicated", Idglib.ColorText(c, "Dedicated to PhilBill44, and preserving his work")));
 		}
 	}
 

@@ -33,8 +33,8 @@ namespace SGAmod.HavocGear.Projectiles
 
         public override void SetDefaults()
         {
-            projectile.width = 35;
-            projectile.height = 35;
+            projectile.width = 42;
+            projectile.height = 42;
             projectile.friendly = true;
             projectile.hostile = false;
             projectile.tileCollide = false;
@@ -46,9 +46,9 @@ namespace SGAmod.HavocGear.Projectiles
             projectile.timeLeft = 90;
             projectile.hide = true;
 
-            movein=1.2f;
-            moveout=0.60f;
-            thrustspeed=2f;
+            movein=1.6f;
+            moveout=0.50f;
+            thrustspeed=5f;
         }
         public override void AI()
         {

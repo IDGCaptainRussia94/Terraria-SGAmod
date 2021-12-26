@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Idglibrary;
+using Terraria;
 
 namespace SGAmod.Items.Placeable
 {
@@ -18,7 +19,7 @@ namespace SGAmod.Items.Placeable
 			item.maxStack = 999;
 			item.width = 26;
 			item.height = 14;
-			item.value = 1;
+			item.value = Item.sellPrice(0,0,75,0);
 			item.rare = ItemRarityID.Blue;
 			item.alpha = 0;
 			item.useTurn = true;

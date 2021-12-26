@@ -18,6 +18,7 @@ namespace SGAmod.Projectiles
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Orb thingy from Asterism");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 

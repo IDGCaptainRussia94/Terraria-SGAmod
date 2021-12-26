@@ -510,6 +510,8 @@ namespace SGAmod.NPCs.Wraiths
 	{
 		public string Trophy() => GetType() == typeof(CobaltWraith) ? "CobaltWraithTrophy" : "CopperWraithTrophy";
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
+		public string RelicName() => GetType() == typeof(CobaltWraith) ? "Cobalt_Wraith" : "Copper_Wraith";
+		public void NoHitDrops() { }
 
 		public int level = 0;
 		public Vector2 OffsetPoints = new Vector2(0f, 0f);
@@ -545,7 +547,7 @@ namespace SGAmod.NPCs.Wraiths
 			get { return ("SGAmod/NPCs/TPD"); }
 		}
 
-		public override string BossHeadTexture => "Terraria/Item_" + ItemID.CopperHelmet;
+		public override string BossHeadTexture => "SGAmod/NPCs/Wraiths/CopperWraith_Head_Boss";
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
@@ -555,7 +557,7 @@ namespace SGAmod.NPCs.Wraiths
 
 		public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			if ((projectile.penetrate < 1 || projectile.penetrate > 1) && projectile.damage > (GetType() == typeof(CobaltWraith) ? 20 : 30))
+			if ((projectile.maxPenetrate < 1 || projectile.maxPenetrate > 1) && projectile.damage > (GetType() == typeof(CobaltWraith) ? 20 : 30))
 			{
 				damage = (int)((float)damage * 0.25f);
 
@@ -566,7 +568,7 @@ namespace SGAmod.NPCs.Wraiths
 				//{
 				if (GetType() == typeof(CopperWraith))
 					damage = (int)(damage * 1.5);
-				if (projectile.penetrate < 2 && projectile.penetrate > -1)
+				if (projectile.maxPenetrate < 2 && projectile.maxPenetrate > -1)
 					crit = true;
 			}
 		}
@@ -609,14 +611,15 @@ namespace SGAmod.NPCs.Wraiths
 
 			if (shardtype > 0)
 			{
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype, (Main.expertMode ? 30 : 15));
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype, (Main.expertMode ? 60 : 30));
 			}
 
+			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 50 : 30, npc.Center);
 
-			for (int f = 0; f < (Main.expertMode ? 50 : 30); f += 1)
+			/*for (int f = 0; f < (Main.expertMode ? 50 : 30); f += 1)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0, types.Count)]);
-			}
+			}*/
 
 			Achivements.SGAAchivements.UnlockAchivement("Copper Wraith", Main.LocalPlayer);
 			if (SGAWorld.downedWraiths < 1)

@@ -5,15 +5,16 @@ using Terraria.ModLoader;
 using SGAmod.NPCs;
 using Idglibrary;
 using AAAAUThrowing;
+using System.Linq;
 
 namespace SGAmod.Buffs
 {
-	public class DragonsMight: ModBuff
+	public class DragonsMight : ModBuff
 	{
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Dragon's Might");
-			Description.SetDefault("50% increase to all damage types except Summon damage");
+			Description.SetDefault("30% increase to all damage types except Summon damage, which gets 50%");
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
 			Main.debuff[Type] = true;
@@ -22,13 +23,11 @@ namespace SGAmod.Buffs
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.magicDamage += 0.5f;
-			player.Throwing().thrownDamage += 0.5f;
-			player.meleeDamage += 0.5f;
-			player.rangedDamage += 0.5f;
-			if (player.buffTime[buffIndex] < 10)
+			player.BoostAllDamage(0.30f);
+			player.minionDamage += 0.20f;
+			if (player.buffTime[buffIndex] < 20)
 			{
-			player.AddBuff(ModContent.BuffType<WorseWeakness>(),60*20);
+			player.AddBuff(ModContent.BuffType<WorseWeakness>(),60*30);
 			}
 		}
 	}
@@ -72,14 +71,14 @@ namespace SGAmod.Buffs
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Trigger Finger");
-			Description.SetDefault("Non-autofire guns fire 15% faster");
+			Description.SetDefault("Non-autofire guns fire 25% faster");
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
 			Main.debuff[Type] = false;
 		}
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.SGAPly().triggerFinger += 0.15f;
+			player.SGAPly().triggerFinger += 0.25f;
 		}
 	}		
 	public class TrueStrikePotionBuff : ModBuff
@@ -147,6 +146,7 @@ namespace SGAmod.Buffs
 	}
 	public class RagnarokBrewBuff : ModBuff
 	{
+		double Boost(Player player) => Math.Max(Math.Min(4.00 - (((double) player.statLife / (double) player.statLifeMax2) * 4.00), 4.00),1.00);
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Ragnarok's Brew");
@@ -155,20 +155,36 @@ namespace SGAmod.Buffs
 			Main.buffNoSave[Type] = true;
 		}
 
-		public override void Update(Player player, ref int buffIndex)
+        public override void ModifyBuffTip(ref string tip, ref int rare)
+        {
+			tip += "\nCurrent Boosts: " + Math.Round(Boost(Main.LocalPlayer),2) + "% Apoco Chance, "+ Math.Round(Boost(Main.LocalPlayer)*25f,1)+"% Apoco Strength";
+		}
+
+        public override void Update(Player player, ref int buffIndex)
 		{
-			double gg = Math.Min(4.00 - (((double)player.statLife / (double)player.statLifeMax) * 4.00), 3.00);
+			float gg = (float)Boost(player);
 
 			if (player.HeldItem != null)
 			{
-				if (player.HeldItem.melee)
-					player.GetModPlayer<SGAPlayer>().apocalypticalChance[0] += gg;
-				if (player.HeldItem.ranged)
-					player.GetModPlayer<SGAPlayer>().apocalypticalChance[1] += gg;
-				if (player.HeldItem.magic)
-					player.GetModPlayer<SGAPlayer>().apocalypticalChance[2] += gg;
-				if (player.HeldItem.thrown)
-					player.GetModPlayer<SGAPlayer>().apocalypticalChance[3] += gg;
+				SGAPlayer sgaply = player.SGAPly();
+				player.SGAPly().apocalypticalStrength += gg*0.25f;
+				if (player.HeldItem.melee) 
+				{
+					sgaply.apocalypticalChance[0] += gg;
+					return;
+				}
+				if (player.HeldItem.ranged) 
+				{
+					sgaply.apocalypticalChance[1] += gg;
+					return;
+				}
+				if (player.HeldItem.magic) 
+				{
+					sgaply.apocalypticalChance[2] += gg;
+					return;
+				}
+				player.SGAPly().apocalypticalChance[3] += gg;
+
 			}
 		}
 	}
@@ -186,7 +202,7 @@ namespace SGAmod.Buffs
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.SGAPly().MaxCooldownStacks += 1;
-			player.SGAPly().actionCooldownRate += 0.15f;
+			player.SGAPly().actionCooldownRate += 1.15f;
 		}
 	}
 	public class EnergyPotionBuff : ModBuff
@@ -205,7 +221,55 @@ namespace SGAmod.Buffs
 			player.SGAPly().electricrechargerate += 1;
 			player.SGAPly().electricChargeReducedDelay *= 0.5f;
 		}
-	}	
+	}
+
+	public class PhalanxPotionBuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Phalanx Potion");
+			Description.SetDefault("Shield block angle is improved!\n+8 defense per nearby player holding a shield");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			canBeCleared = false;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			foreach(Player player2 in Main.player.Where(testby => testby.active && !testby.dead && (testby.Center-player.Center).LengthSquared()<600*600 && testby.HeldItem != null && testby.HeldItem.modItem != null && testby.HeldItem.modItem is IShieldItem))
+			{
+				player.statDefense += 8;
+            }
+			player.SGAPly().shieldBlockAngle += 0.15f;
+		}
+	}
+
+	public class ReflexPotionBuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			//texture = "Terraria/Buff_" + BuffID.PaladinsShield;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Reflex Potion");
+			Description.SetDefault("React for longer with your shield to Just Block!");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			canBeCleared = false;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().shieldBlockTime += 10;
+		}
+	}
+
 	public class ConsumeHellBuff : ModBuff
 	{
 
@@ -235,10 +299,44 @@ namespace SGAmod.Buffs
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.GetModPlayer<SGAPlayer>().IceFire = true;
+
+				float hasbuffs = (player.HasBuff(BuffID.OnFire) || player.HasBuff(BuffID.Frostburn) ? 0.60f : 0.75f);
+
+			player.SGAPly().DoTResist *= hasbuffs;
+
+				//if (player.lifeRegen < 0)
+				//	player.lifeRegen = (int)(player.lifeRegen * (0.80 - hasbuffs));
+
+			player.buffImmune[BuffID.OnFire] = false;
+				player.buffImmune[BuffID.Frostburn] = false;
+
 			player.lavaRose = true;
 		}
 	}
-	public class ManaRegenFake : ModBuff
+	public class InvincibleBuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			//texture = "Terraria/Buff_" + BuffID.ShadowDodge;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Invincible");
+			Description.SetDefault("Damage is currently completely prevented\n'that one time you aren't defeated during a cutscene!'");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			Main.debuff[Type] = true;
+			canBeCleared = false;
+		}
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().invincible = true;
+
+		}
+
+	}
+	public class ManaRegenFakeBuff : ModBuff
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{

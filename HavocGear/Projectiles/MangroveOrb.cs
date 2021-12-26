@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Idglibrary;
 using SGAmod.Dusts;
+using AAAAUThrowing;
 
 namespace SGAmod.HavocGear.Projectiles
 {
@@ -19,6 +20,7 @@ namespace SGAmod.HavocGear.Projectiles
 			DisplayName.SetDefault("Mangrove Orb");
 			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override void SetDefaults()
@@ -31,7 +33,7 @@ namespace SGAmod.HavocGear.Projectiles
 			projectile.penetrate = 1;
 			projectile.timeLeft = 320;
 			projectile.alpha = 100;
-			projectile.magic = false;
+			projectile.magic = true;
 			projectile.light = 0.4f;
 			projectile.ignoreWater = true;
 			projectile.tileCollide = true;
@@ -58,6 +60,7 @@ namespace SGAmod.HavocGear.Projectiles
 			DisplayName.SetDefault("Mangrove Orb");
 			ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override void SetDefaults()
@@ -70,7 +73,6 @@ namespace SGAmod.HavocGear.Projectiles
 			projectile.penetrate = 1;
 			projectile.timeLeft = 320;
 			projectile.alpha = 100;
-			projectile.magic = true;
 			projectile.light = 0.4f;
 			projectile.ignoreWater = true;
 			projectile.tileCollide = true;

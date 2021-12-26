@@ -14,6 +14,7 @@ using AAAAUThrowing;
 using Terraria.Graphics.Shaders;
 using SGAmod.Buffs;
 using Microsoft.Xna.Framework.Audio;
+using Terraria.Utilities;
 
 namespace SGAmod.Items.Weapons.Shields
 {
@@ -40,7 +41,7 @@ namespace SGAmod.Items.Weapons.Shields
 				return proj;
 			}
 		}
-		public string ShowPercentText
+		public virtual string ShowPercentText
 		{
 			get
 			{
@@ -50,7 +51,10 @@ namespace SGAmod.Items.Weapons.Shields
 					CorrodedShieldProj proj2 = proj.modProjectile as CorrodedShieldProj;
 					if (proj2 != null)
 					{
-						return "Blocks " + (proj2.BlockDamagePublic) * 100 + "% of damage ";
+						float blockpercent = (proj2.BlockDamagePublic);
+						//blockpercent += Main.LocalPlayer.SGAPly().shieldDamageReduce;
+
+						return "Blocks " + (blockpercent) * 100 + "% of damage ";
 					}
 				}
 
@@ -63,7 +67,7 @@ namespace SGAmod.Items.Weapons.Shields
 		{
 			DisplayName.SetDefault("Corroded Shield");
 			Tooltip.SetDefault("'A treasure belonging to a former adventurer you'd rather not use but it looks useful'" +
-				"\nAttack with the shield to bash-dash, gaining IFrames and hit enemies are Acid Burned\nCan only hit 5 targets, bash-dash ends prematurally after the 5th");
+				"\nAttack with the shield to bash-dash, gaining IFrames and hit enemies are Acid Burned\nCan only hit 5 targets, bash-dash ends prematurely after the 5th");
 			Item.staff[item.type] = true;
 		}
 
@@ -110,13 +114,42 @@ namespace SGAmod.Items.Weapons.Shields
 		{
 			return true;
 		}
+
+		public override int ChoosePrefix(UnifiedRandom rand)
+		{
+			if (!CanBlock)
+				return base.ChoosePrefix(rand);
+
+			switch (rand.Next(9))
+			{
+				case 1:
+					return PrefixID.Weak;
+				case 2:
+					return PrefixID.Frenzying;
+				case 3:
+					return PrefixID.Damaged;
+				case 4:
+					return PrefixID.Savage;
+				case 5:
+					return PrefixID.Furious;
+				case 6:
+					return PrefixID.Terrible;
+				case 7:
+					return mod.PrefixType("Busted");
+				default:
+					return mod.PrefixType("Defensive");
+			}
+		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			if (CanBlock)
 			{
-				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, ShowPercentText + DamagePercent)));
-				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, "Block at the last second to 'Just Block', taking no damage")));
-				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 3 seconds each")));
+				if (ShowPercentText != "none")
+				{
+					tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, ShowPercentText + DamagePercent)));
+					tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, "Block at the last second to 'Just Block', taking no damage")));
+					tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 3 seconds each")));
+				}
 				tooltips.Add(new TooltipLine(mod, "shieldtext", Idglib.ColorText(Color.CornflowerBlue, "Can be held out like a torch and used normally by holding shift")));
 			}
 		}
@@ -124,17 +157,26 @@ namespace SGAmod.Items.Weapons.Shields
 
 	public class CorrodedShieldProj : ModProjectile, IDrawAdditive
 	{
-		public int blocktimer = 1;
-		protected virtual float BlockAngle => 0.75f;
+		public int Blocktimer => blocktimer-player.SGAPly().shieldBlockTime;
+		private int blocktimer = 1;
+
+		protected virtual bool CanBlock => true;
+		protected virtual float VisualAngle => 0;
+		protected virtual float BlockAngle => 0.5f;
 		protected virtual float BlockDamage => 0.25f;
+		protected virtual int BlockPeriod => 30;
 		protected virtual float AngleAdjust => 0f;
+		protected virtual float BlockAngleAdjust => 0f;
+		protected virtual float AlphaFade => 1f;
+		protected virtual float HoldingDistance => 10f;
+
 		public virtual float BlockDamagePublic
 		{
 			get
 			{
 				float boost = 0;
 				if (player != null)
-					boost += player.SGAPly().shieldDamageReduce;
+					boost += player.SGAPly().shieldDamageReduce*1f;
 
 				return BlockDamage + boost;
 			}
@@ -215,8 +257,8 @@ namespace SGAmod.Items.Weapons.Shields
 
 				if (projectile.owner == Main.myPlayer)
 				{
-					Vector2 diff = mousePos - player.Center;
-					projectile.velocity = diff;
+					Vector2 diff = mousePos - player.MountedCenter;
+					projectile.velocity = diff.RotatedBy(BlockAngleAdjust);
 					projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
 					projectile.netUpdate = true;
 					projectile.Center = mousePos;
@@ -240,21 +282,26 @@ namespace SGAmod.Items.Weapons.Shields
 					player.bodyFrame.Y = player.bodyFrame.Height * 5;
 				player.direction = (directionmeasure.X > 0).ToDirectionInt();
 
-				projectile.Center = player.Center + (projectile.velocity * 10f);
+				projectile.Center = player.MountedCenter + (projectile.velocity * HoldingDistance);
 				projectile.velocity *= 8f;
 
 			}
 		}
 		protected virtual void DrawAdd()
 		{
+
+			if (!CanBlock)
+				return;
+
 			bool facingleft = projectile.velocity.X > 0;
 			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
 			Texture2D texture = MyTexture;
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 			float facing = facingleft ? AngleAdjust : -AngleAdjust;
 
-			if (blocktimer < 30 && blocktimer > 1)
-				Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f) * MathHelper.Clamp((30 - blocktimer) / 8f, 0f, 1f), (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale + 0.25f, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+			float alpha = MathHelper.Clamp((30 - Blocktimer) / 8f, 0f, 1f);
+			if (alpha>0f)
+				Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f) * alpha, (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi)+ VisualAngle, origin, projectile.scale + 0.25f, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
 
 		}
 		public void DrawAdditive(SpriteBatch spriteBatch)
@@ -268,7 +315,7 @@ namespace SGAmod.Items.Weapons.Shields
 			Texture2D texture = MyTexture;
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 			float facing = facingleft ? AngleAdjust : -AngleAdjust;
-			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor * projectile.Opacity, (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi), origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor * AlphaFade * projectile.Opacity, (projectile.velocity.ToRotation() + facing) + (facingleft ? 0 : MathHelper.Pi) + VisualAngle, origin, projectile.scale, facingleft ? effect : SpriteEffects.FlipHorizontally, 0);
 		}
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
@@ -307,7 +354,8 @@ namespace SGAmod.Items.Weapons.Shields
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			target.AddBuff(mod.BuffType("AcidBurn"), (int)(60 * 1.50));
+			if (GetType() == typeof(CorrodedShieldProjDash))
+				target.AddBuff(mod.BuffType("AcidBurn"), (int)(60 * 1.50));
 		}
 
 		public override void AI()
@@ -471,7 +519,7 @@ namespace SGAmod.Items.Weapons.Shields
 	public class MagishieldProj : DankWoodShieldProj, IDrawAdditive
 	{
 		protected override float BlockDamage => 1f - (1f / ((player.magicDamage * 2) - 1f));
-		protected override float BlockAngle => 0.30f;
+		protected override float BlockAngle => base.BlockAngle;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("MagishieldProj");
@@ -485,7 +533,7 @@ namespace SGAmod.Items.Weapons.Shields
 			if (player.manaCost == 0.0f)
 				player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " tried to block with unlimited mana and divided by 0"), 1337, 0);
 			//damage = (int)(damage / (player.magicDamage*2)-1f);
-			if (!player.manaSick && !player.manaRegenBuff && player.CheckMana(damage, true, false))
+			if (!player.manaSick && !player.manaRegenBuff && player.CheckMana(new Item(), damage, true, false))
 			{
 				damage -= player.statMana;
 				player.immune = true;
@@ -521,7 +569,7 @@ namespace SGAmod.Items.Weapons.Shields
 			item.height = 32;
 			item.useTime = 70;
 			item.useTime = 20;
-            item.useAnimation = 20;
+			item.useAnimation = 20;
 			item.damage = 0;
 			item.useStyle = ItemUseStyleID.SwingThrow;
 			item.value = Item.sellPrice(0, 2, 50, 0);
@@ -542,6 +590,11 @@ namespace SGAmod.Items.Weapons.Shields
 
 		public override bool CanUseItem(Player player)
 		{
+			return CanRoDTeleport(player);
+		}
+
+		public static bool CanRoDTeleport(Player player)
+        {
 			Vector2 vector27 = default(Vector2);
 			vector27.X = (float)Main.mouseX + Main.screenPosition.X;
 			if (player.gravDir == 1f)
@@ -565,8 +618,7 @@ namespace SGAmod.Items.Weapons.Shields
 			return false;
 		}
 
-
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public static void RoDTeleport(Player player,int teletype = 0)
         {
 			Vector2 vector27 = default(Vector2);
 			vector27.X = (float)Main.mouseX + Main.screenPosition.X;
@@ -581,11 +633,11 @@ namespace SGAmod.Items.Weapons.Shields
 			}
 
 
-			player.Teleport(vector27, 1);
+			player.Teleport(vector27, teletype);
 			NetMessage.SendData(MessageID.Teleport, -1, -1, null, 0, player.whoAmI, vector27.X, vector27.Y, 1);
 
 			//More RoD stuff
-			if (player.chaosState)
+			if (player.chaosState && teletype == 1)
 			{
 				player.statLife -= player.statLifeMax2 / 7;
 				PlayerDeathReason damageSource = PlayerDeathReason.ByOther(13);
@@ -602,10 +654,18 @@ namespace SGAmod.Items.Weapons.Shields
 			}
 
 			player.AddBuff(BuffID.ChaosState, 360);
-			return false;
-        }
 
-        public override void AddRecipes()
+
+		}
+
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			RoDTeleport(player,1);
+			return false;
+		}
+
+		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.RodofDiscord, 1);
@@ -643,7 +703,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Earthbreaker Shield");
-			Tooltip.SetDefault("Bulwark of Gaia, defence of her wrath!\nBash-Dash throws the player down for a ground slam, impaling 5 nearby enemies\nImpaled enemies are immobile and lose 10 defence for 15 seconds\nEnemies can not be impaled again til they recover their defence\nPerforming a Just Block impales 3 nearby enemies");
+			Tooltip.SetDefault("Bulwark of Gaia, defense of her wrath!\nBash-Dash throws the player down for a ground slam, impaling 5 nearby enemies\nImpaled enemies are immobile and lose 10 defense for 15 seconds\nEnemies can not be impaled again until they recover their defense\nPerforming a Just Block impales 3 nearby enemies");
 			Item.staff[item.type] = true;
 		}
 
@@ -735,7 +795,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 		public static void Entrap(Vector2 where, float distance, int count, int owner, Projectile projpoj = null)
 		{
-			List<NPC> them = Main.npc.Where(testnpc => testnpc.active && CrackedMirrorProj.AffectNPC(testnpc) && testnpc.DistanceSQ(where) < distance*distance && !testnpc.HasBuff(ModContent.BuffType<PiercedVulnerable>())).ToList();
+			List<NPC> them = Main.npc.Where(testnpc => testnpc.active && CrackedMirrorProj.AffectNPC(testnpc) && testnpc.DistanceSQ(where) < distance * distance && !testnpc.HasBuff(ModContent.BuffType<PiercedVulnerable>())).ToList();
 			if (them.Count > 0)
 			{
 				int limit = 0;
@@ -744,6 +804,9 @@ namespace SGAmod.Items.Weapons.Shields
 				{
 					if (limit > count)
 						break;
+
+					SGAmod.AddScreenShake(28f, 320, npc.Center);
+
 					SoundEffectInstance sound = Main.PlaySound(SoundID.Item70, npc.Center);
 					if (sound != null)
 					{
@@ -777,7 +840,7 @@ namespace SGAmod.Items.Weapons.Shields
 
 			if (projectile.timeLeft < 70)
 			{
-				if ((projectile.timeLeft < 40 && projectile.velocity.Y>3f) || projectile.timeLeft>6)
+				if ((projectile.timeLeft < 40 && projectile.velocity.Y > 3f) || projectile.timeLeft > 6)
 					projectile.timeLeft = 5;
 				//if (owner.velocity.Y<15f)
 				player.velocity.Y += 0.25f;
@@ -806,6 +869,99 @@ namespace SGAmod.Items.Weapons.Shields
 		}
 
 	}
+	public class EarthbreakerRockSpike : ModProjectile
+	{
+		float strength => Math.Min(1f - (projectile.localAI[1] / 110f), 1f);
+		public static int OffsetPoint => 64;
+		public static bool ApplyPrismOnce = false;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Earthbreaker Spike");
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.tileCollide = false;
+			projectile.timeLeft = 300;
+			projectile.hide = true;
+		}
+		public override string Texture
+		{
+			get { return "SGAmod/Invisible"; }
+		}
+		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
+		{
+			drawCacheProjsBehindNPCsAndTiles.Add(projectile.whoAmI);
+		}
+		public override bool PreKill(int timeLeft)
+		{
+			SoundEffectInstance sound = Main.PlaySound(SoundID.Item70, projectile.Center);
+			if (sound != null)
+			{
+				sound.Pitch -= 0.50f;
+
+			}
+			return true;
+		}
+		public override void AI()
+		{
+			projectile.localAI[0] += 1;
+			NPC target = Main.npc[(int)projectile.ai[1]];
+			if (projectile.localAI[0] > 5)
+			{
+				projectile.velocity *= 0.85f;
+
+			}
+			if (target.active && target.life > 0)
+			{
+				SGAnpcs snpc = target.SGANPCs();
+				target.AddBuff(ModContent.BuffType<PiercedVulnerable>(), 60 * 15);
+				snpc.noMovement = Math.Max(snpc.noMovement, 3);
+				target.Center = projectile.Center + new Vector2(0, -OffsetPoint);
+				if (projectile.velocity.Y < 0 && !Collision.CanHitLine(target.Center, 16, 16, target.Center - Vector2.UnitY * 32, 8, 8))
+					projectile.velocity.Y = -projectile.velocity.Y / 2f;
+
+			}
+			else
+			{
+				projectile.Kill();
+			}
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			if (projectile.localAI[1] < 100)
+				projectile.localAI[1] = 100 + Main.rand.Next(0, 3);
+
+			float rot = MathHelper.Pi;
+			Texture2D tex = Main.extraTexture[35];
+			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2.5f;
+			Vector2 drawPos = ((projectile.Center)) + new Vector2(0f, 4f);
+			int timing = (int)(projectile.localAI[1] - 100);
+			timing %= 3;
+			timing *= ((tex.Height) / 3);
+
+			for (int i = -64; i < 180; i += 32)
+			{
+				for (int a = -8; a < 9; a += 8)
+				{
+					Point loc = new Point((int)((drawPos.X + a) / 16f), (int)((drawPos.Y + (i + Math.Abs(a))) / 16f));
+					Color lighting = Lighting.GetColor(loc.X, loc.Y);
+					if (Lighting.GetBlackness(loc.X, loc.Y).R < 220)
+					{
+						spriteBatch.Draw(tex, drawPos - Main.screenPosition + new Vector2(a, i + Math.Abs(a)), new Rectangle(0, timing, tex.Width, (tex.Height) / 3), Color.Lerp(Color.Brown, Color.White, 0.5f).MultiplyRGB(lighting) * projectile.Opacity, projectile.rotation + rot, drawOrigin, projectile.scale * 1f, SpriteEffects.None, 0f);
+					}
+				}
+			}
+
+
+			return false;
+
+		}
+
+	}
+
 	public class SolarShield : CorrodedShield, IShieldItem
 	{
 		private SolarShieldProj SolarShieldGet => GetShieldProj?.modProjectile as SolarShieldProj;
@@ -828,7 +984,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Solar Shield");
-			Tooltip.SetDefault("Grows in power when held, growth scales with your melee speed\nIncreases block angle and reduces damage up to 3 levels\nBlocking an attack creates a solar explosion\nPerforming a Just Block sets the shield to level 3\nGain a fiery bash-dash with atleast a level 2 shield");
+			Tooltip.SetDefault("Grows in power when held, growth scales with your melee speed\nIncreases block angle and reduces damage up to 3 levels\nBlocking an attack creates a solar explosion\nPerforming a Just Block sets the shield to level 3\nGain a fiery bash-dash with at least a level 2 shield");
 			Item.staff[item.type] = true;
 		}
 
@@ -1004,14 +1160,13 @@ namespace SGAmod.Items.Weapons.Shields
 
 	}
 
-
 	public class CapShield : CorrodedShield, IShieldItem
 	{
 		public override string DamagePercent => "at a decent angle";
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Captain America's Shield");
-			Tooltip.SetDefault("Performing a Just Block grants a fews seconds of Striking Moment\nCharge up to enable a powerful bash-dash!\nThis bash-dash may be cancelled early by unequiping the shield\nAlt Fire lets you throw the shield, which will bounce between nearby enemies\nYou cannot use your shield while it is thrown, gains +1 bounces per 30 defense\n'Stars and Stripes!'");
+			Tooltip.SetDefault("Performing a Just Block grants a fews seconds of Striking Moment\nCharge up to enable a powerful bash-dash!\nThis bash-dash may be canceled early by unequiping the shield\nAlt Fire lets you throw the shield, which will bounce between nearby enemies\nYou cannot use your shield while it is thrown, gains +1 bounces per 30 defense\n'Stars and Stripes!'");
 			Item.staff[item.type] = true;
 		}
 
@@ -1143,8 +1298,6 @@ namespace SGAmod.Items.Weapons.Shields
 			recipe.AddRecipe();
 		}
 	}
-
-
 	public class CapShieldProj : CorrodedShieldProj, IDrawAdditive
 	{
 		protected override float BlockAngle => 0.4f;
@@ -1370,7 +1523,6 @@ namespace SGAmod.Items.Weapons.Shields
 					if (Main.npc[num172].active)
 					{
 
-						//(Collision.CanHit(new Vector2(loc.X, loc.Y), 1, 1, Main.npc[num172].position, Main.npc[num172].width, Main.npc[num172].height) || block == false)
 						if (num175 < num170)
 						{
 							int result = 0;
@@ -1463,98 +1615,406 @@ namespace SGAmod.Items.Weapons.Shields
 
 	}
 
-
-	public class EarthbreakerRockSpike : ModProjectile
+	public class AegisaltAetherstone : CorrodedShield, IShieldItem,IDevItem
 	{
-		float strength => Math.Min(1f - (projectile.localAI[1] / 110f), 1f);
-		public static int OffsetPoint => 64;
-		public static bool ApplyPrismOnce = false;
+		public override string DamagePercent => "at a large angle";
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Earthbreaker Spike");
+			DisplayName.SetDefault("Aegisalt Aetherstone");
+			Tooltip.SetDefault("Makes copies of itself when held out; covering every direction\nEach shield goes down after taking a hit, and recovers faster with Melee Speed\nAttack launches all active shields out as piercing waves\nAlt-Fire tightens the shields, allowing for a narrower wave shot\nPerforming a Just Block spawns hearts and mana stars, and resets Barrier cooldown");
+			Item.staff[item.type] = true;
 		}
+
+		public (string, string) DevName()
+		{
+			return ("JellyBru", "other");
+		}
+
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
+			item.width = 24;
+			item.height = 32;
+			item.damage = 100;
+			item.useTime = 40;
+			item.useAnimation = 40;
+			item.melee = true;
+			item.value = Item.sellPrice(0, 10, 0, 0);
+			item.rare = ItemRarityID.Cyan;
+			item.shoot = ModContent.ProjectileType<AegisaltAetherstoneProjDash>();
+			item.shootSpeed = 16f;
+			item.UseSound = default;
+		}
+        public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
+        {
+			if (player.SGAPly().devempowerment[2]>0)
+				mult += 0.50f;
+        }
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[2] > 0)
+			{
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Empowerment bonus ---"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Damage, shield regen rate, block percent and angle are greatly improved"));
+				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Bash does damage at intervals"));
+			}
+			base.ModifyTooltips(tooltips);
+		}
+
+		public override bool AltFunctionUse(Player player)
+        {
+			List<Projectile> them = Main.projectile.Where(testby => testby.owner == player.whoAmI && testby.modProjectile != null && testby.modProjectile is AegisaltAetherstoneProj).ToList();
+			foreach (Projectile proj2 in them)
+			{
+				AegisaltAetherstoneProj projha = (AegisaltAetherstoneProj)proj2.modProjectile;
+				if (projha.Blocktimer < projha.TimeToCopy)
+                {
+					return false;
+                }
+			}
+
+			return true;
+        }
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+			if (player.altFunctionUse != 2)
+			{
+				return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+			}
+			else
+			{
+				List<Projectile> them = Main.projectile.Where(testby => testby.owner == player.whoAmI && testby.modProjectile != null && testby.modProjectile is AegisaltAetherstoneProj).ToList();
+				foreach (Projectile proj2 in them)
+				{
+					AegisaltAetherstoneProj projha = (AegisaltAetherstoneProj)proj2.modProjectile;
+					projha.tightFormation = projha.tightFormation ? false : true;
+					if (projha.genCopy == 0)
+					{
+						SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DefenseTowerSpawn, (int)proj2.Center.X, (int)proj2.Center.Y);
+						if (sound != null)
+						{
+							sound.Pitch = 0.8f;
+						}
+					}
+
+				}
+			}
+			return false;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 40);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class AegisaltAetherstoneProj : CorrodedShieldProj, IDrawAdditive
+	{
+		protected override float BlockDamage => player.SGAPly().devempowerment[2] > 0 ? 0.50f : 0.25f;
+		protected override float BlockAngle => disabledTimer > 0 ? 10f : (player.SGAPly().devempowerment[2] > 0 ? 0.0f : 0.25f);
+
+		protected override float AlphaFade => MathHelper.Clamp(1f - Math.Min(disabledTimer / 20f, 0.75f), 0f, Math.Min(Blocktimer / TimeToCopy, 1f));
+
+		protected override float HoldingDistance => MathHelper.Clamp(((Blocktimer / TimeToCopy) * 32f) + Math.Abs(genCopy * 100), 0f, 32f);
+
+		public bool copied = false;
+
+		public bool tightFormation = false;
+
+		public float spreadValue = 1f;
+
+		public float TimeToCopy => 30f * player.meleeSpeed;
+		int maxCopies = 2;
+		public float disabledTimer = 0;
+		float AddAngleAmmount => (((MathHelper.Pi * 0.80f) / ((float)maxCopies)) * (genCopy > 0 ? 1f : -1f));
+
+		protected override float BlockAngleAdjust => (genCopy == 0 ? 0 : angleAdd + MathHelper.Clamp(Blocktimer / TimeToCopy, 0f, 1f) * AddAngleAmmount) * spreadValue;
+
+		public int genCopy = 0;
+		public float angleAdd = 0;
+
+		public override Texture2D MyTexture => mod.GetTexture("Items/Weapons/Shields/AegisaltAetherstoneProj");
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Aegisalt Aetherstone");
+		}
+		public override void AI()
+		{
+
+			spreadValue += ((!tightFormation ? 1f : 0.25f) - spreadValue) / 8f;
+
+			disabledTimer -= 6f - (player.meleeSpeed * 5f);
+
+			if (disabledTimer > 0)
+			{
+				projectile.timeLeft = 5;
+			}
+
+			if (!copied && Blocktimer > TimeToCopy && Math.Abs(genCopy) < maxCopies)
+			{
+				copied = true;
+				for (int i = -1; i < 2; i += 2)
+				{
+					if (genCopy == 0 || (genCopy < 0 && i < 0) || (genCopy > 0 && i > 0))
+					{
+						Projectile proj = Projectile.NewProjectileDirect(projectile.Center, Vector2.Zero, projectile.type, projectile.damage, projectile.knockBack, projectile.owner);
+						if (proj != null)
+						{
+							((AegisaltAetherstoneProj)proj?.modProjectile).genCopy = genCopy + i;
+
+							((AegisaltAetherstoneProj)proj?.modProjectile).angleAdd = angleAdd + (genCopy == 0 ? 0f : ((AegisaltAetherstoneProj)proj?.modProjectile).AddAngleAmmount);
+							if (i == 1)
+							{
+								SoundEffectInstance sound = Main.PlaySound(SoundID.Item78, (int)projectile.Center.X, (int)projectile.Center.Y);
+								if (sound != null)
+								{
+									sound.Pitch = -0.8f + Math.Abs(genCopy) / 10f;
+								}
+							}
+						}
+					}
+				}
+			}
+			base.AI();
+		}
+		public override void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex)
+		{
+			player.SGAPly().energyShieldAmmountAndRecharge.Item3 = 0;
+			player.QuickSpawnItem(ItemID.Heart);
+			player.QuickSpawnItem(ItemID.Star);
+		}
+		public override bool HandleBlock(ref int damage, Player player)
+		{
+			disabledTimer = player.SGAPly().devempowerment[2]>0 ? 40 : 75;
+			return true;
+		}
+	}
+
+	public class AegisaltAetherstoneProjDash : CorrodedShieldProjDash, IShieldBashProjectile
+	{
+		public override int HoldType => ModContent.ItemType<AegisaltAetherstone>();
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("AegisaltAetherstoneProj");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.Boulder);
+			aiType = ProjectileID.Boulder;
+			projectile.friendly = true;
+			projectile.timeLeft = 2;
+			projectile.hostile = false;
+			projectile.penetrate = -1;
+			projectile.light = 0.5f;
+			projectile.width = 64;
+			projectile.height = 64;
+			projectile.melee = true;
 			projectile.tileCollide = false;
-			projectile.timeLeft = 300;
-			projectile.hide = true;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+
+		public override void AI()
+		{
+			Player owner = Main.player[projectile.owner];
+			if (owner.SGAPly().devempowerment[2] > 0)
+				projectile.localNPCHitCooldown = 4;
+
+			foreach (Projectile proj2 in Main.projectile.Where(testby => testby.owner == projectile.owner && testby.modProjectile != null && testby.modProjectile is AegisaltAetherstoneProj))
+			{
+				AegisaltAetherstoneProj projha = (AegisaltAetherstoneProj)proj2.modProjectile;
+				if (projha.disabledTimer < 1)
+				{
+					projha.disabledTimer = Math.Max(projha.disabledTimer, 75);
+					Projectile.NewProjectileDirect(projectile.Center, Vector2.Normalize(proj2.velocity) * projectile.velocity.Length(), ModContent.ProjectileType<AegisaltAetherstoneProjSlashWave>(), projectile.damage, projectile.knockBack, projectile.owner);
+
+					SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_FlameburstTowerShot, (int)projectile.Center.X, (int)projectile.Center.Y);
+					if (sound != null)
+					{
+						sound.Pitch = 0.25f;
+					}
+
+				}
+			}
 		}
 		public override string Texture
 		{
 			get { return "SGAmod/Invisible"; }
 		}
-		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
-		{
-			drawCacheProjsBehindNPCsAndTiles.Add(projectile.whoAmI);
-		}
-		public override bool PreKill(int timeLeft)
-		{
-			SoundEffectInstance sound = Main.PlaySound(SoundID.Item70, projectile.Center);
-			if (sound != null)
-			{
-				sound.Pitch -= 0.50f;
+	}
 
-			}
-			return true;
+	public class AegisaltAetherstoneProjSlashWaveEffect
+	{
+
+		public int time = 0;
+		public int timeMax = 0;
+		public Vector2 position;
+
+		public AegisaltAetherstoneProjSlashWaveEffect(int time,Vector2 pos)
+		{
+			this.time = 0;
+			this.timeMax = time;
+			position = pos;
 		}
+
+	}
+
+	public class AegisaltAetherstoneProjSlashWave : ModProjectile, IShieldBashProjectile, IDrawAdditive
+	{
+		List<AegisaltAetherstoneProjSlashWaveEffect> effects = new List<AegisaltAetherstoneProjSlashWaveEffect>();
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("AegisaltAetherstoneProj");
+		}
+		public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.Boulder);
+			aiType = ProjectileID.Boulder;
+			projectile.friendly = true;
+			projectile.timeLeft = 60;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+			projectile.hostile = false;
+			projectile.penetrate = -1;
+			projectile.light = 0.5f;
+			projectile.width = 72;
+			projectile.height = 72;
+			projectile.melee = true;
+			projectile.tileCollide = false;
+			projectile.aiStyle = -1;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = 4;
+		}
+
 		public override void AI()
 		{
-			projectile.localAI[0] += 1;
-			NPC target = Main.npc[(int)projectile.ai[1]];
-			if (projectile.localAI[0] > 5)
-			{
-				projectile.velocity *= 0.85f;
+			Player player = Main.player[projectile.owner];
 
+			if (player != null)
+				projectile.localNPCHitCooldown = player.SGAPly().devempowerment[2]>0 ? 4 : -1;
+
+			projectile.ai[0] += 1;
+
+			if (projectile.ai[0] % 4 == 0)
+			{
+				effects.Add(new AegisaltAetherstoneProjSlashWaveEffect(25, projectile.Center));
 			}
-			if (target.active && target.life > 0)
+
+			for (int i = 0; i < effects.Count; i += 1)
 			{
-				SGAnpcs snpc = target.SGANPCs();
-				target.AddBuff(ModContent.BuffType<PiercedVulnerable>(), 60 * 15);
-				snpc.noMovement = Math.Max(snpc.noMovement, 3);
-				target.Center = projectile.Center + new Vector2(0, -OffsetPoint);
-				if (projectile.velocity.Y < 0 && !Collision.CanHit(target.Center, 16, 16, target.Center - Vector2.UnitY * 32, 8, 8))
-					projectile.velocity.Y = -projectile.velocity.Y / 2f;
-
-			}
-			else
-			{
-				projectile.Kill();
-			}
-		}
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-		{
-
-			if (projectile.localAI[1] < 100)
-				projectile.localAI[1] = 100 + Main.rand.Next(0, 3);
-
-			float rot = MathHelper.Pi;
-			Texture2D tex = Main.extraTexture[35];
-			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 3) / 2.5f;
-			Vector2 drawPos = ((projectile.Center)) + new Vector2(0f, 4f);
-			int timing = (int)(projectile.localAI[1] - 100);
-			timing %= 3;
-			timing *= ((tex.Height) / 3);
-
-			for (int i = -64; i < 180; i += 32)
-			{
-				for (int a = -8; a < 9; a += 8)
+				effects[i].time += 1;
+				if (effects[i].time > effects[i].timeMax)
 				{
-					Point loc = new Point((int)((drawPos.X + a) / 16f), (int)((drawPos.Y + (i + Math.Abs(a))) / 16f));
-					Color lighting = Lighting.GetColor(loc.X, loc.Y);
-					if (Lighting.GetBlackness(loc.X, loc.Y).R < 220)
-					{
-						spriteBatch.Draw(tex, drawPos- Main.screenPosition + new Vector2(a, i+Math.Abs(a)), new Rectangle(0, timing, tex.Width, (tex.Height) / 3), Color.Lerp(Color.Brown, Color.White, 0.5f).MultiplyRGB(lighting) * projectile.Opacity, projectile.rotation + rot, drawOrigin, projectile.scale * 1f, SpriteEffects.None, 0f);
-					}
+					effects.RemoveAt(i);
+					i -= 1;
 				}
 			}
-
-
-			return false;
-
+			projectile.rotation = projectile.velocity.ToRotation();
 		}
 
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			bool facingleft = projectile.velocity.X > 0;
+			Microsoft.Xna.Framework.Graphics.SpriteEffects effect = SpriteEffects.None;
+			Texture2D texture = Main.projectileTexture[projectile.type];
+			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+			float facing = -1;
+
+			for (int i = 0; i < effects.Count; i += 1)
+			{
+				AegisaltAetherstoneProjSlashWaveEffect effectx = effects[i];
+				float alpha = (1f - MathHelper.Clamp(effectx.time / ((float)effectx.timeMax),0f, 1f))*Math.Min(projectile.timeLeft / 30f, 1f);
+				Main.spriteBatch.Draw(texture, effectx.position - Main.screenPosition, null, Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.85f) * alpha, projectile.rotation, origin, (Vector2.One*projectile.scale) + new Vector2(0, 1f-alpha), effect, 0);
+			}
+		}
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+			return false;
+        }
+
+        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+			Texture2D texture = Main.projectileTexture[projectile.type];
+			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.White * Math.Min(projectile.timeLeft / 30f, 1f), projectile.rotation, origin, (Vector2.One * projectile.scale), SpriteEffects.None, 0);
+		}
+
+        public override string Texture
+		{
+			get { return "SGAmod/Items/Weapons/Shields/AegisaltAetherstoneProjAlt"; }
+		}
+
+	}
+
+	public class NoviteShield : DankWoodShield, IShieldItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Shield");
+			Tooltip.SetDefault("Blocking reduces damage by an extra 30%, at a cost of electric charge\n"+Idglib.ColorText(Color.Red,"Can cause Shield Break")+"\nPerforming a Just Block restores some Electric charge, based on damage blocked");
+			Item.staff[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.width = 24;
+			item.height = 32;
+			item.useTime = 70;
+			item.damage = 0;
+			item.crit = 0;
+			item.value = Item.sellPrice(0, 0, 30, 0);
+			item.expert = false;
+			item.rare = ItemRarityID.Blue;
+		}
+
+		public override void AddRecipes()
+		{
+				ModRecipe recipe = new ModRecipe(mod);
+				recipe.AddIngredient(ModContent.ItemType<NoviteBar>(), 10);
+				recipe.AddTile(TileID.Anvils);
+				recipe.SetResult(this, 1);
+				recipe.AddRecipe();
+		}
+	}
+
+	public class NoviteShieldProj : DankWoodShieldProj, IDrawAdditive
+	{
+		protected override float BlockDamage => 0.10f;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("NoviteShieldProj");
+		}
+
+        public override bool HandleBlock(ref int damage, Player player)
+        {
+			if (player.SGAPly().ConsumeElectricCharge(damage * 5, 120, true))
+            {
+				damage = (int)(damage * 0.70f);
+			}
+
+            return base.HandleBlock(ref damage, player);
+        }
+
+        public override void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex)
+        {
+			player.SGAPly().electricCharge += damage*15;
+		}
 	}
 
 

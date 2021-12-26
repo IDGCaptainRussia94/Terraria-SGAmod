@@ -35,6 +35,8 @@ namespace SGAmod.NPCs.Dank
         public override void NPCLoot()
         {
             Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ItemID.Glowstick, Main.rand.Next(4));
+            if (Main.rand.Next(50) < 1)
+                Item.NewItem(npc.position, npc.Hitbox.Size(), ModContent.ItemType<Items.Accessories.MurkyCharm>());
         }
 
         public override bool CheckDead()

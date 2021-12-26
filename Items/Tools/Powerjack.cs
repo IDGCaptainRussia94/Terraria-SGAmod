@@ -11,7 +11,7 @@ namespace SGAmod.Items.Tools
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Powerjack");
-			Tooltip.SetDefault("Whie in hand:\n15% increase to all movement speed, 25 life restored on kill\n"+Idglib.ColorText(Color.Red,"20% increased damage taken")+"\nCan smash altars");
+			Tooltip.SetDefault("While in hand:\n15% increase to all movement speed, 25 life restored on kill\n"+Idglib.ColorText(Color.Red,"20% increased damage taken")+"\nCan smash altars");
 		}
 
         /*public override void ModifyTooltips(List<TooltipLine> tooltips)

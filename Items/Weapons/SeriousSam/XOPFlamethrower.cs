@@ -9,12 +9,12 @@ using Idglibrary;
 
 namespace SGAmod.Items.Weapons.SeriousSam
 {
-	public class XOPFlamethrower : SeriousSamWeapon
+	public class XOPFlamethrower : SeriousSamWeapon, ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("XOP Flamethrower");
-            Tooltip.SetDefault("Spreads sticky flames that ignore enemy defense, bounce off walls\nFlames don't intefere with your other weapons, and burn even fire immune enemies\nImmune enemies will burn for only half as long");
+            Tooltip.SetDefault("Spreads sticky flames that ignore enemy defense, bounce off walls\nFlames don't interfere with your other weapons, and burn even fire immune enemies\nImmune enemies will burn for only half as long");
 		}
 
         public override void SetDefaults()
@@ -66,7 +66,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			int numberProjectiles = 1;
 			Vector2 offset = new Vector2(speedX, speedY);
 			offset.Normalize();
-			offset *= 16f;
+			offset *= 24f;
 			position += offset;
 
 
@@ -79,13 +79,6 @@ namespace SGAmod.Items.Weapons.SeriousSam
                 IdgProjectile.Sync(prog);
 			}
 			return false;
-
-			/*Vector2 muzzleOffset = Vector2.Normalize(new Vector2(speedX, speedY)) * 25f;
-			if (Collision.CanHit(position, 0, 0, position + muzzleOffset, 0, 0))
-			{
-				position += muzzleOffset;
-			}
-			return true;*/
 		}
 	}
 

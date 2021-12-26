@@ -26,8 +26,8 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.mana = 12;
 			item.width = 22;
 			item.height = 22;
-			item.useTime = 20;
-			item.useAnimation = 20;
+			item.useTime = 30;
+			item.useAnimation = 30;
 			item.useStyle = 5;
 			item.knockBack = 10;
 			item.value = 1000000;
@@ -66,7 +66,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			recipe.AddIngredient(mod.ItemType("ShadeflameStaff"), 1);
 			recipe.AddIngredient(ItemID.FragmentNebula, 8);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 6);
+			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 20);
 			recipe.AddIngredient(ItemID.SoulofNight, 6);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);

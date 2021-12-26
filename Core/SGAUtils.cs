@@ -30,6 +30,9 @@ using SGAmod.Items.Weapons.SeriousSam;
 using ReLogic.Graphics;
 using Terraria.Utilities;
 using System.Reflection;
+using AAAAUThrowing;
+using System.Threading;
+using SGAmod.Buffs;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -62,6 +65,213 @@ namespace SGAmod
 			Main.worldRate = 0;
 		}
 	}*/
+
+	public class PathNode
+	{
+
+		public PathNode previousLocation;
+		public int distanceFromStart;
+		public int distanceToEnd;
+		public Point16 location;
+		public PathNode(Point16 loc, int distanceFromStart, int distanceToEnd, PathNode prev = default)
+		{
+			previousLocation = prev;
+
+			this.distanceFromStart = distanceFromStart;
+			this.distanceToEnd = distanceToEnd;
+			location = loc;
+		}
+	}
+	enum PathState
+	{
+		Ready,
+		Calculating,
+		Finished,
+		Failed
+	}
+	//IDG's homebrew take at an AStar pathfinder!
+	public class AStarPathFinder
+	{
+		public static bool Debug => false;
+		private Point16[] RoseCompass = { new Point16(1, 0), new Point16(1, -1), new Point16(0, -1), new Point16(-1, -1), new Point16(-1, 0), new Point16(-1, 1), new Point16(0, 1), new Point16(1, 1) };
+		private int[] RoosCompassDist = { 10, 14 };
+
+		public Point16 startingPosition = new Point16(0, 0);
+
+		public List<PathNode> Path = new List<PathNode>();
+		public int recursionLimit = 10000;
+		public int seed = -1;
+		public int wallsWeight = 0;
+		public int state = (int)PathState.Ready;
+		public AStarPathFinder(bool diagonal = true)
+		{
+			if (!diagonal)
+			{
+				RoseCompass = new Point16[] { new Point16(1, 0), new Point16(1, -1), new Point16(0, -1), new Point16(-1, -1), new Point16(-1, 0), new Point16(-1, 1), new Point16(0, 1), new Point16(1, 1) };
+				RoosCompassDist = new int[] { 10, 14 };
+			}
+
+		}
+		static public int Heuristic(Point16 a, Point16 b)
+		{
+			return (Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y)) * 10;
+		}
+		public bool AStarTiles(Point16 EndPoint, int stepSize)
+		{
+
+			//So this doesn't freeze your game, AStarPathFinder uses a thread and a state checker for this
+			//Task.Run(delegate ()
+			return ThreadPool.QueueUserWorkItem(delegate (Object threadState)
+			{
+				Path.Clear();
+				state = (int)PathState.Calculating;
+				int seed2 = seed;
+				if (seed == -1)
+					seed2 = (int)Main.GlobalTime * 7894;
+
+				UnifiedRandom uniRand = new UnifiedRandom(seed2);
+				EndPoint = (EndPoint.ToVector2() / stepSize).ToPoint16() * new Point16(stepSize);
+				Point16 StartPoint = (startingPosition.ToVector2() / stepSize).ToPoint16() * new Point16(stepSize);
+
+				if (Main.tile[StartPoint.X, StartPoint.Y].active() || Main.tile[EndPoint.X, EndPoint.Y].active())
+					return;
+
+				List<PathNode> openCells = new List<PathNode>();
+				List<PathNode> closedCells = new List<PathNode>();
+				int CurrentCost = 0;
+
+				openCells.Add(new PathNode(StartPoint, CurrentCost, Heuristic(StartPoint, EndPoint)));
+
+				int RecursionCount = 0;
+
+			//Did you mean Recursion?
+			Recursion:
+
+				//Magic priority sorter!
+				openCells = openCells.OrderBy(order => ((order.distanceFromStart + order.distanceToEnd) * 100) + uniRand.Next(8)).ToList();
+
+				PathNode checkCell = openCells[0];
+				openCells.RemoveAt(0);
+				closedCells.Insert(0, checkCell);
+
+				if (AStarPathFinder.Debug)
+				{
+					int dust = Dust.NewDust(checkCell.location.ToVector2() * 16, 0, 0, DustID.PurpleCrystalShard);
+					Main.dust[dust].scale = 2f;
+					Main.dust[dust].velocity = Vector2.Zero;
+					Main.dust[dust].noGravity = true;
+				}
+
+				//End Reached, success!
+				if (checkCell.location == EndPoint || RecursionCount > recursionLimit)
+				{
+					//no wait, we failed to find it in time :(
+					if (RecursionCount > recursionLimit)
+						state = (int)PathState.Failed;
+
+					goto EndHere;
+				}
+
+
+				//Open cells around the current cell
+				for (int i = 0; i < RoseCompass.Length; i += 1)
+				{
+					int dist = RoosCompassDist[i % 2] * stepSize;
+					Point16 pointcheck = new Point16(stepSize, stepSize) * RoseCompass[i];
+					Point16 newPoint = checkCell.location + pointcheck;
+
+					Tile tile = Main.tile[newPoint.X, newPoint.Y];
+					bool solidWall = tile.active() && Main.tileSolid[tile.type];
+					int extraCost = solidWall ? wallsWeight : 0;
+
+
+					if (!solidWall || wallsWeight > 0)
+					{
+						int endDist = Heuristic(newPoint, EndPoint);//(int)(EndPoint - newPoint).ToVector2().Length() * 10;
+																	//int startDist = (int)(StartPoint - newPoint).ToVector2().Length() * 10;
+						int startDist = checkCell.distanceFromStart + dist + extraCost;
+
+						PathNode thisOne = closedCells.FirstOrDefault(test => test.location == newPoint);
+						//Open a new cell here
+						if (thisOne == default)
+						{
+							if (openCells.FirstOrDefault(test => test.location == newPoint) == default)
+							{
+								PathNode NewCell = new PathNode(newPoint, startDist, endDist, checkCell);
+								openCells.Add(NewCell);
+
+								/*dust = Dust.NewDust(NewCell.location.ToVector2() * 16, 0, 0, DustID.SparksMech);
+								Main.dust[dust].scale = 5f;
+								Main.dust[dust].velocity = Vector2.Zero;
+								Main.dust[dust].noGravity = true;*/
+							}
+						}
+						else
+						{
+							//fixes up distances if they're shorter
+							if (thisOne.distanceFromStart + thisOne.distanceToEnd > checkCell.distanceFromStart + checkCell.distanceToEnd)
+							{
+								closedCells.RemoveAt(0);
+								checkCell.distanceFromStart = thisOne.distanceFromStart;
+								checkCell.previousLocation = thisOne;
+								closedCells.Insert(0, checkCell);
+
+								/*dust = Dust.NewDust(checkCell.location.ToVector2() * 16, 0, 0, DustID.Blood);
+								Main.dust[dust].scale = 1f;
+								Main.dust[dust].velocity = Vector2.Zero;
+								Main.dust[dust].noGravity = true;*/
+							}
+
+						}
+
+					}
+				}
+				RecursionCount += 1;
+
+				goto Recursion;
+
+			EndHere:
+
+				//Construct the path by backtracking, also draw a line in debug, but otherwise; we're done
+				int testx = 0;
+				List<PathNode> finalPoints = new List<PathNode>();
+
+				while (checkCell.previousLocation != default)
+				{
+					finalPoints.Add(checkCell);
+					checkCell = checkCell.previousLocation;
+				}
+
+				//if we didn't fail we clearly succeeded
+				if (state != (int)PathState.Failed)
+					state = (int)PathState.Finished;
+
+				Path = new List<PathNode>(finalPoints);
+
+				if (AStarPathFinder.Debug)
+				{
+					for (int i = 0; i < 500; i += 1)
+					{
+						foreach (PathNode node in finalPoints)
+						{
+							if (Main.LocalPlayer.DistanceSQ(node.location.ToVector2() * 16) < 1000 * 1000)
+							{
+								int dustx = Dust.NewDust(node.location.ToVector2() * 16, 0, 0, DustID.PurpleCrystalShard);
+								Main.dust[dustx].scale = 2f;
+								Main.dust[dustx].velocity = Vector2.Zero;
+								Main.dust[dustx].noGravity = true;
+							}
+						}
+
+						//Thread.Sleep(50);
+					}
+				}
+
+			});
+
+		}
+
+	}
 
 	//please don't touch
 	public class UncraftClass
@@ -112,7 +322,7 @@ namespace SGAmod
 
 					stackSize = recipe.createItem.stack;
 
-					if (stackSize <= item.stack && BlackListedItems.FirstOrDefault(search => search == item.type) == default)
+					if (stackSize <= item.stack && BlackListedItems.FirstOrDefault(search => search == item.type) == default && recipe.requiredItem[2].type != SGAmod.Instance.ItemType("AlterCraft_Time"))
 					{
 
 						List<List<int>> isGroup = new List<List<int>>();
@@ -178,6 +388,35 @@ namespace SGAmod
 
 		}
 
+		public static void DrawItem(SpriteBatch spriteBatch,int itemType,Vector2 position,int stackNumber=0)
+        {
+			Texture2D tex = Main.itemTexture[itemType];
+
+			DrawAnimation anim = Main.itemAnimations[itemType];
+			int frame = 0;
+			int height = tex.Height;
+			Vector2 size = tex.Size() / 2f;
+
+			if (anim != null)
+			{
+				frame = anim.Frame;
+				height = tex.Height / anim.FrameCount;
+				size = new Vector2(tex.Width, height) / 2f;
+			}
+
+			Item anitem = new Item();
+			anitem.SetDefaults(itemType);
+
+			spriteBatch.Draw(tex, position, new Rectangle(0, height * frame, tex.Width, height), anitem.modItem?.GetAlpha(Color.White) ?? Color.White, 0f, size, 1f, SpriteEffects.None, 0);
+			if (stackNumber > 0)
+			{
+				string str = stackNumber.ToString();
+				Vector2 size2 = Main.fontDeathText.MeasureString(str);
+				spriteBatch.DrawString(Main.fontMouseText, str, position + new Vector2(4, 4), Color.White);
+			}
+
+		}
+
 		public void Draw()
 		{
 			Vector2 position = (location.ToVector2() * 16) - Main.screenPosition;
@@ -187,40 +426,63 @@ namespace SGAmod
 
 			foreach (Point data in possibleItems)
 			{
-
-				Texture2D tex = Main.itemTexture[data.X];
-
-				DrawAnimation anim = Main.itemAnimations[data.X];
-				int frame = 0;
-				int height = tex.Height;
-				Vector2 size = tex.Size() / 2f;
-				if (anim != null)
-				{
-					frame = anim.Frame;
-					height = tex.Height / anim.FrameCount;
-					size = new Vector2(tex.Width, height) / 2f;
-				}
-
-				Item anitem = new Item();
-				anitem.SetDefaults(data.X);
-
-				Main.spriteBatch.Draw(tex, position, new Rectangle(0, height * frame, tex.Width, height), anitem.modItem?.GetAlpha(Color.White) ?? Color.White, 0f, size, 1f, SpriteEffects.None, 0);
-				if (data.Y > 0)
-				{
-					string str = data.Y.ToString();
-					Vector2 size2 = Main.fontDeathText.MeasureString(str);
-					Main.spriteBatch.DrawString(Main.fontMouseText, str, position + new Vector2(4, 4), Color.White);
-				}
-
+				DrawItem(Main.spriteBatch, data.X,position,data.Y);
 				position.X += 32;
-
 			}
 
 		}
 
 	}
 
-	public class PostDrawCollection
+	//Converts a 1D array of an inventory into a 2D grid, to make item interfacing a HELL of alot easier! (this is presuming the grid is a fixed rectangle with no extra spaces, the y size scales up to match)
+	public class GridInventory
+	{
+		public int maxX;
+		public int maxY;
+		public Item[,] inventory;
+		public GridInventory(int maxWidth,Item[] inventoryToGrid)
+        {
+			maxX = maxWidth;
+			maxY = (int)(inventoryToGrid.Length / maxWidth) + 1;
+			inventory = new Item[maxWidth, maxY];
+			int index = 0;
+			int yindex = 0;
+			foreach(Item item in inventoryToGrid)
+            {
+				inventory[index % maxWidth, yindex] = item;
+				if (index == maxWidth - 1)
+                {
+					yindex += 1;
+					//maxY += 1;
+				}
+				index += 1;
+
+			}
+        }
+
+		public Point FindItem(Item item)
+		{
+			Point point = new Point(-1, -1);
+			for (int x = 0; x < maxX; x += 1)
+			{
+				for (int y = 0; y < maxY; y += 1)
+				{
+					if (!inventory[x, y].IsAir && inventory[x,y].type == item.type)
+                    {
+						return new Point(x, y);
+					}
+				}
+			}
+			return point;
+		}
+
+		public bool InsideGrid(int x,int y)
+        {
+			return x >= 0 && y >= 0 && x < maxX && x < maxY;
+		}
+	}
+
+		public class PostDrawCollection
 	{
 		public Vector3 light;
 
@@ -231,6 +493,7 @@ namespace SGAmod
 	}
 	public static class TextureExtension
 	{
+		//Lifted code used with credit to the source, I do not own this but credit given where due!
 		//https://stackoverflow.com/questions/44760512/xna-make-a-new-texture2d-out-of-another-texture2d
 		/// <summary>
 		/// Creates a new texture from an area of the texture.
@@ -300,8 +563,32 @@ namespace SGAmod
 			}
 		}*/
 
+		public static void FindSentryRestingSpotBetter(this Player player,Vector2 position, out int worldX, out int worldY, out int pushYUp)
+		{
+			bool flag = false;
+			int num = (int)(position.X) / 16;
+			int i = (int)(position.Y) / 16;
+			if (player.gravDir == -1f)
+			{
+				//i = (int)(Main.screenPosition.Y + (float)Main.screenHeight - (float)Main.mouseY) / 16;
+			}
+			worldX = num * 16 + 8;
+			pushYUp = 26;
 
-		//Again, from Joost, thanks man
+			if (!flag)
+			{
+				for (; i < Main.maxTilesY - 10 && Main.tile[num, i] != null && !WorldGen.SolidTile2(num, i) && Main.tile[num - 1, i] != null && !WorldGen.SolidTile2(num - 1, i) && Main.tile[num + 1, i] != null && !WorldGen.SolidTile2(num + 1, i); i++)
+				{
+				}
+				i++;
+			}
+			i--;
+			pushYUp -= 14;
+			worldY = i * 16;
+		}
+
+
+		//Again, from Joost used with written permission, thanks man
 		public static Vector2 PredictiveAim(float speed, Vector2 origin, Vector2 target, Vector2 targetVelocity, bool ignoreY)
 		{
 			Vector2 vel = (ignoreY ? new Vector2(targetVelocity.X, 0) : targetVelocity);
@@ -309,6 +596,87 @@ namespace SGAmod
 			predictedPos = target + targetVelocity + (vel * (Vector2.Distance(predictedPos, origin) / speed));
 			predictedPos = target + targetVelocity + (vel * (Vector2.Distance(predictedPos, origin) / speed));
 			return predictedPos;
+		}
+
+		public static bool HasAccessoryEquipped(this Player player, int ItemID)
+		{
+			for (int k = 3; k <= 7 + player.extraAccessorySlots; k += 1)
+				if (player.armor[k].type == ItemID)
+					return true;
+			return false;
+		}
+
+		public static void BoostAllDamage(this Player player, float damage, int crit = 0)
+		{
+			UThrowingPlayer thrownPlayer = player.Throwing();
+
+			player.meleeDamage += damage;
+			player.rangedDamage += damage;
+			player.magicDamage += damage;
+			player.minionDamage += damage;
+			thrownPlayer.thrownDamage += damage;
+
+			player.meleeCrit += crit; if (player.meleeCrit < 0) player.meleeCrit = 0;
+			player.rangedCrit += crit; if (player.rangedCrit < 0) player.rangedCrit = 0;
+			player.magicCrit += crit; if (player.magicCrit < 0) player.magicCrit = 0;
+			thrownPlayer.thrownCrit += crit; if (thrownPlayer.thrownCrit < 0) thrownPlayer.thrownCrit = 0;
+			SGAmod.BoostModdedDamage(player, damage, crit);
+		}
+		public static bool IsValidEnemy(this NPC npc)
+		{
+			return npc.active && !npc.dontTakeDamage && !npc.townNPC && !npc.friendly;
+		}
+		public static bool IsValidDebuff(Player player, int buffindex)
+		{
+			int bufftype = player.buffType[buffindex];
+			bool vitalbuff = (bufftype == BuffID.PotionSickness || bufftype == BuffID.ManaSickness || bufftype == BuffID.ChaosState);
+			return player.buffTime[buffindex] > 2 && Main.debuff[bufftype] && !Main.buffNoTimeDisplay[bufftype] && !Main.vanityPet[bufftype] && !vitalbuff;
+		}
+
+		public static bool IsDigitsOnly(string str)
+		{
+			foreach (char c in str)
+			{
+				if (c < '0' || c > '9')
+					return false;
+			}
+
+			return true;
+		}
+		public static Type NumberType(dynamic thisNumber)
+		{
+
+			if (thisNumber is sbyte)
+				return typeof(sbyte);
+
+			if (thisNumber is short)
+				return typeof(short);
+
+			if (thisNumber is ushort)
+				return typeof(ushort);
+
+			if (thisNumber is int)
+				return typeof(int);
+
+			if (thisNumber is uint)
+				return typeof(uint);
+
+			if (thisNumber is long)
+				return typeof(long);
+
+			if (thisNumber is ulong)
+				return typeof(ulong);
+
+			if (thisNumber is float)
+				return typeof(float);
+
+			if (thisNumber is double)
+				return typeof(double);
+
+			if (thisNumber is decimal)
+				return typeof(decimal);
+
+			throw new InvalidOperationException("This is not a number");
 		}
 
 		public static int ItemToMusic(int itemtype)
@@ -360,8 +728,8 @@ namespace SGAmod
 				if (Main.npc[i].active)
 				{
 					bool colcheck = !checkWalls || (Collision.CheckAABBvLineCollision(Main.npc[i].position, new Vector2(Main.npc[i].width, Main.npc[i].height), Main.npc[i].Center, Center)
-	&& Collision.CanHit(Main.npc[i].Center, 0, 0, Center, 0, 0));
-					if (!Main.npc[i].friendly && !Main.npc[i].townNPC && !Main.npc[i].dontTakeDamage && (!checkCanChase || Main.npc[i].CanBeChasedBy()) && colcheck
+	&& Collision.CanHitLine(Main.npc[i].Center, 0, 0, Center, 0, 0));
+					if (Main.npc[i].IsValidEnemy() && (!checkCanChase || Main.npc[i].CanBeChasedBy()) && colcheck
 					&& squaredDist < maxdist)
 					{
 						closestnpcs.Add(Main.npc[i]);
@@ -406,13 +774,20 @@ namespace SGAmod
 		{
 			return listToClone.Select(item => (T)item.Clone()).ToList();
 		}
-		public static Vector3 ToVector3(this Vector2 vector)
+		public static Vector3 ToVector3(this Vector2 vector,bool keepz=false)
 		{
 			return new Vector3(vector.X, vector.Y, 0);
 		}
 		public static SGAPlayer SGAPly(this Player player)
 		{
 			return player.GetModPlayer<SGAPlayer>();
+		}
+		public static bool IsAlliedPlayer(this Player player,Player otherplayer)
+		{
+			bool allied = true;
+			allied &= (otherplayer.team == player.team);
+
+			return allied;
 		}
 		public static SGAprojectile SGAProj(this Projectile proj)
 		{
@@ -428,6 +803,15 @@ namespace SGAmod
 			return !spawnInfo.invasion && ((!Main.pumpkinMoon && !Main.snowMoon) || spawnInfo.spawnTileY > Main.worldSurface || Main.dayTime) && (!Main.eclipse || spawnInfo.spawnTileY > Main.worldSurface || !Main.dayTime);
 		}
 
+		public static bool BlackListedBuffs(this Player player,int index)
+		{
+			return player.buffType[index] == BuffID.PotionSickness || player.buffType[index] == ModContent.BuffType<MatrixBuff>() || player.buffType[index] == ModContent.BuffType<DragonsMight>();
+		}
+		public static bool BlackListedBuffs(int index)
+		{
+			return index == BuffID.PotionSickness || index == ModContent.BuffType<MatrixBuff>() || index == ModContent.BuffType<DragonsMight>();
+		}
+
 		public static float ArrowSpeed(this Player player)
 		{
 			return player.HasBuff(BuffID.Archery) ? 1.20f : 1f;
@@ -439,6 +823,17 @@ namespace SGAmod
 				return false;
 
 			return player.ConsumeItem(item, reverseOrder);
+		}
+
+		public static bool IsDummy(this NPC npc)
+        {
+			return npc.immortal || npc.type == NPCID.TargetDummy;
+		}
+
+		public static bool IsConsumablePickup(this Item item)
+		{
+			bool iConsumablePickup = item.modItem != null && item.modItem is IConsumablePickup;
+			return item.type == ItemID.Heart || item.type == ItemID.Star || item.type == ItemID.CandyApple || item.type == ItemID.SoulCake || item.type == ItemID.CandyCane || item.type == ItemID.SugarPlum || item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3 || iConsumablePickup;
 		}
 
 		public static void SpawnCoins(Vector2 where, int ammount2, float explodespeed = 0f)
@@ -458,13 +853,275 @@ namespace SGAmod
 				int item = Item.NewItem(where, Vector2.Zero, subanditem[0]);
 				Main.item[item].velocity = new Vector2(Main.rand.NextFloat(-2f, 2f) * explodespeed, Main.rand.NextFloat(-0.75f, 0.75f) * explodespeed);
 				ammount -= subanditem[1];
-
-
 			}
+		}
+
+		public static int[] GetCoins(int ammount2)
+		{
+			int[] ammountsOfCoins = new int[4];
+			int ammount = ammount2/5;
+
+
+				/*subanditem = new int[] { ItemID.CopperCoin, 1 };
+				if (ammount >= 100)
+					subanditem = new int[] { ItemID.SilverCoin, 100 };
+				if (ammount >= 10000)
+					subanditem = new int[] { ItemID.GoldCoin, 10000 };
+				if (ammount >= 1000000)
+					subanditem = new int[] { ItemID.PlatinumCoin, 1000000 };*/
+
+				ammountsOfCoins[0] = ammount % 100;
+				ammountsOfCoins[1] = (ammount / 100) % 100;
+				ammountsOfCoins[2] = (ammount / 10000) % 100;
+				ammountsOfCoins[3] = (ammount / 1000000) % 100;
+			
+
+			return ammountsOfCoins;
 
 		}
 
-		public static void DrawFishingLine(Vector2 start, Vector2 end, Vector2 Velocity, Vector2 offset, float reel)
+		public static void DropFixedItemQuanity(int[] itemtypes, int quanity, Vector2 position, Player player = default)
+		{
+			int[] itemtypes2 = new int[itemtypes.Length];
+
+			for (int i = 0; i < quanity; i += 1)
+			{
+				itemtypes2[Main.rand.Next(itemtypes.Length)] += 1;
+			}
+
+			if (player == default)
+			{
+
+				for (int i = 0; i < itemtypes2.Length; i += 1)
+				{
+					if (itemtypes2[i] > 0)
+						Item.NewItem(position, itemtypes[i], itemtypes2[i]);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < itemtypes2.Length; i += 1)
+				{
+					if (itemtypes2[i] > 0)
+						player.QuickSpawnItem(itemtypes[i], itemtypes2[i]);
+				}
+			}
+		}
+
+		public static float InverseLerp(float from, float to, float percent, bool clampedValue = false)
+		{
+			if (clampedValue)
+			{
+				if (from < to)
+				{
+					if (percent < from)
+					{
+						return 0f;
+					}
+					if (percent > to)
+					{
+						return 1f;
+					}
+				}
+				else
+				{
+					if (percent < to)
+					{
+						return 1f;
+					}
+					if (percent > from)
+					{
+						return 0f;
+					}
+				}
+			}
+			return (percent - from) / (to - from);
+		}
+
+		//A class made from Turing's Bezier Curve method, this time, with permission!
+		public class BezierCurveTuring
+		{
+			public bool wind = false;
+			public Vector2[] ControlPoints;
+
+			public BezierCurveTuring(params Vector2[] controlPoints)
+			{
+				this.ControlPoints = controlPoints;
+			}
+
+			public BezierCurveTuring(List<Vector2> controlPoints)
+			{
+				this.ControlPoints = controlPoints.ToArray();
+			}
+
+			public Vector2 BezierCurve(float T)
+			{
+				if (T < 0f)
+				{
+					T = 0f;
+				}
+				if (T > 1f)
+				{
+					T = 1f;
+				}
+				return PrivateBezierCurve(ControlPoints, 1f - T) + (wind ? new Vector2(T * Main.windSpeed * 128f * Main.maxRaining, 0) : Vector2.Zero);
+			}
+
+			private Vector2 PrivateBezierCurve(Vector2[] bezierPoints, float bezierProgress)
+			{
+				if (bezierPoints.Length == 1)
+				{
+					return bezierPoints[0];
+				}
+				Vector2[] array = new Vector2[bezierPoints.Length - 1];
+				for (int i = 0; i < bezierPoints.Length - 1; i++)
+				{
+					array[i] = bezierPoints[i] * bezierProgress + bezierPoints[i + 1] * (1f - bezierProgress);
+				}
+				return PrivateBezierCurve(array, bezierProgress);
+			}
+		}
+		public static Vector2 SunPosition()
+		{
+
+			int bgTop = (int)((double)(0f - Main.screenPosition.Y) / (Main.worldSurface * 16.0 - 600.0) * 200.0);
+			if (Main.gameMenu || Main.netMode == NetmodeID.Server)
+			{
+				bgTop = -200;
+			}
+
+			if (!Main.dayTime)
+            {
+				int num23 = (int)(Main.time / 32400.0 * (double)(Main.screenWidth + Main.moonTexture[0].Width * 2)) - Main.moonTexture[0].Width;
+				int num24 = 0;
+
+				if (Main.time < 16200.0)
+				{
+					double num28 = Math.Pow(1.0 - Main.time / 32400.0 * 2.0, 2.0);
+					num24 = (int)((double)bgTop + num28 * 250.0 + 180.0);
+				}
+				else
+				{
+					double num28 = Math.Pow((Main.time / 32400.0 - 0.5) * 2.0, 2.0);
+					num24 = (int)((double)bgTop + num28 * 250.0 + 180.0);
+				}
+
+				return new Vector2(num23, num24+Main.moonModY);
+
+			}
+
+			float rotation3 = (float)(Main.GlobalTime / 54000.0) * 2f - 7.3f;
+
+			int num151 = (int)(Main.time / 54000.0 * (double)(Main.screenWidth + Main.sunTexture.Width * 2)) - Main.sunTexture.Width;
+			int num150 = 0;
+
+			double num144;
+			if (Main.time < 27000.0)
+			{
+				num144 = Math.Pow(1.0 - Main.time / 54000.0 * 2.0, 2.0);
+				num150 = (int)((double)bgTop + num144 * 250.0 + 180.0);
+			}
+			else
+			{
+				num144 = Math.Pow((Main.time / 54000.0 - 0.5) * 2.0, 2.0);
+				num150 = (int)((double)bgTop + num144 * 250.0 + 180.0);
+			}
+
+			return new Vector2((float)num151, (float)(num150 + Main.sunModY));
+
+		}
+
+		//Came from Luiafk; the only mod I know that has chest-related netcode (was edited thou to fit my needs)
+		public static void ForceUpdateChestsForPlayers()
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+				return;
+
+			for (int i = 0; i < 255; i++)
+			{
+				Player p = Main.player[i];
+				bool chestIsOpened = p.chest >= 0;
+				if (p.active && !p.dead && chestIsOpened)
+				{
+					ForceUpdateChestForPlayer(p,p.chest);
+				}
+			}
+		}
+
+		//Same story, also heavily edited, please don't sue me :(
+		public static void ForceUpdateChestForPlayer(Player p, int specificChest)
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+				return;
+
+			int specificItemSlot = -1;
+
+			int chest = specificChest;
+			if (specificItemSlot < 0)
+			{
+				for (int i = 0; i < 40; i++)
+				{
+					NetMessage.SendData(MessageID.SyncChestItem, p.whoAmI, -1, null, chest, i);
+				}
+            }
+            else
+            {
+				NetMessage.SendData(MessageID.SyncChestItem, p.whoAmI, -1, null, chest, specificItemSlot);
+			}
+
+				NetMessage.SendData(MessageID.SyncPlayerChest, p.whoAmI, -1, null, chest);
+				Main.player[p.whoAmI].chest = chest;
+				NetMessage.SendData(MessageID.SyncPlayerChestIndex, -1, p.whoAmI, null, p.whoAmI, chest);
+		}
+
+
+		public static void SpelunkerGlow(Vector2 here,int range = 32)//Literally from vanilla (Splunker Glowsticks)
+		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
+			int num169 = range;
+			Vector2 there = here;//Main.player[Main.myPlayer].Center
+			if ((here - there).Length() < (float)(num169 * 16))
+			{
+				int num170 = (int)here.X / 16;
+				int num171 = (int)here.Y / 16;
+				for (int num172 = num170 - num169; num172 <= num170 + num169; num172++)
+				{
+					for (int num173 = num171 - num169; num173 <= num171 + num169; num173++)
+					{
+						if (Main.rand.Next(4) != 0 || !(new Vector2(num170 - num172, num171 - num173).Length() < (float)num169) || num172 <= 0 || num172 >= Main.maxTilesX - 1 || num173 <= 0 || num173 >= Main.maxTilesY - 1 || Main.tile[num172, num173] == null || !Main.tile[num172, num173].active())
+						{
+							continue;
+						}
+						bool flag3 = false;
+						if (Main.tile[num172, num173].type == 185 && Main.tile[num172, num173].frameY == 18)
+						{
+							if (Main.tile[num172, num173].frameX >= 576 && Main.tile[num172, num173].frameX <= 882)
+							{
+								flag3 = true;
+							}
+						}
+						else if (Main.tile[num172, num173].type == 186 && Main.tile[num172, num173].frameX >= 864 && Main.tile[num172, num173].frameX <= 1170)
+						{
+							flag3 = true;
+						}
+						if (flag3 || Main.tileSpelunker[Main.tile[num172, num173].type] || (Main.tileAlch[Main.tile[num172, num173].type] && Main.tile[num172, num173].type != 82))
+						{
+							int num174 = Dust.NewDust(new Vector2(num172 * 16, num173 * 16), 16, 16, 204, 0f, 0f, 150, default(Color), 0.3f);
+							Main.dust[num174].fadeIn = 0.75f;
+							Dust dust28 = Main.dust[num174];
+							Dust dust2 = dust28;
+							dust2.velocity *= 0.1f;
+							Main.dust[num174].noLight = true;
+						}
+					}
+				}
+			}
+		}
+
+			//Adapted from Vanilla Terraria
+			public static void DrawFishingLine(Vector2 start, Vector2 end, Vector2 Velocity, Vector2 offset, float reel)
 		{
 			float pPosX = start.X;
 			float pPosY = start.Y;
@@ -569,6 +1226,7 @@ namespace SGAmod
 
 
 		//These next 3 methods came from a cheats forum lol, but hey if I can use them in Terraria... (https://www.unknowncheats.me/forum/battlefield-4-a/143104-absolutely-accurate-aiming-prediction-correction-erros-theory.html)
+		//Used as is, no modifications were made
 		private static uint SolveCubic(double[] coeff, ref double[] x)
 		{
 			/* Adjust coefficients */
@@ -679,7 +1337,7 @@ namespace SGAmod
 			Vector3 predictedAimingPosition = targetPosition;
 
 			// trans target position relate to local player's view position for simplifying equations
-			Vector3 p1 = targetPosition;
+			Vector3 p1 = position- targetPosition;
 
 			// equations about predict time t
 			//
@@ -800,6 +1458,138 @@ namespace SGAmod
 			return;
 		}
 
+		//these next 3 are from Luiafk and Not Mine, but damn do they solve my money-in-chest problems!
+		//I would ask you but like... uh your missing in action and quit so...
+
+		internal static bool UpdateCoins(Chest chest,long addMoney)
+		{
+			long copper = 0L;
+			long silver = 0L;
+			long gold = 0L;
+			long platinum = 0L;
+			int slots = 0;
+			int num = 0;
+			bool flag = false;
+			bool flag2 = false;
+			bool flag3 = false;
+			int num2 = 0;
+			int num3 = 0;
+			num3 = CalculateChestSlots(chest, addMoney, ref copper, ref silver, ref gold, ref platinum, ref slots);
+			if (num3 == -1)
+			{
+				return false;
+			}
+			for (int i = 0; i < 40; i++)
+			{
+				Item item = chest.item[i];
+				if (item.IsAir || (item.type >= 71 && item.type <= 74))
+				{
+					num++;
+					if (num >= slots)
+					{
+						break;
+					}
+				}
+			}
+			if (num < slots)
+			{
+				return false;
+			}
+			for (int k = 0; k < 40; k++)
+			{
+				Item item = chest.item[k];
+				if (item.type >= 71 && item.type <= 74)
+				{
+					chest.item[k].TurnToAir();
+				}
+			}
+			//for (int num4 = 39; num4 >= 0; num4--)
+			for (int num4 = 0; num4 < 40; num4++)
+			{
+				if (chest.item[num4].IsAir)
+				{
+					if (num2 + 1 < num3)
+					{
+						chest.item[num4] = new Item();
+						chest.item[num4].SetDefaults(74);
+						chest.item[num4].stack = 999;
+						platinum -= 999;
+						num2++;
+					}
+					else if (num2 + 1 == num3)
+					{
+						chest.item[num4] = new Item();
+						chest.item[num4].SetDefaults(74);
+						chest.item[num4].stack = (int)platinum;
+						num2++;
+					}
+					else if (!flag3 && gold > 0)
+					{
+						chest.item[num4] = new Item();
+						chest.item[num4].SetDefaults(73);
+						chest.item[num4].stack = (int)gold;
+						flag3 = true;
+					}
+					else if (!flag2 && silver > 0)
+					{
+						chest.item[num4] = new Item();
+						chest.item[num4].SetDefaults(72);
+						chest.item[num4].stack = (int)silver;
+						flag2 = true;
+					}
+					else if (!flag && copper > 0)
+					{
+						chest.item[num4] = new Item();
+						chest.item[num4].SetDefaults(71);
+						chest.item[num4].stack = (int)copper;
+						flag = true;
+						break;
+					}
+				}
+			}
+			if (Main.playerInventory && Main.LocalPlayer.chest>=0 && chest == Main.chest[Main.LocalPlayer.chest])
+			{
+				Recipe.FindRecipes();
+			}
+			return true;
+		}
+
+		private static int CalculateChestSlots(Chest chest,long moneyIn, ref long copper, ref long silver, ref long gold, ref long platinum, ref int slots)
+		{
+			int num = 0;
+			copper += moneyIn;
+
+			if (copper > 0)
+			{
+				for (int j = 0; j < 40; j++)
+				{
+					Item item = chest.item[j];
+					if (item.type >= 71 && item.type <= 74)
+					{
+						copper += (long)((double)item.stack * Math.Pow(100.0, item.type - 71));
+					}
+				}
+				MoneyValueCalc(ref copper, ref silver, ref gold, ref platinum);
+				if (platinum > 0)
+				{
+					num = (int)((platinum % 999 == 0L) ? (platinum / 999) : (platinum / 999 + 1));
+				}
+				slots = ((gold > 0) ? 1 : 0) + ((silver > 0) ? 1 : 0) + ((copper > 0) ? 1 : 0) + num;
+				return num;
+			}
+			return -1;
+		}
+
+		private static void MoneyValueCalc(ref long copper, ref long silver, ref long gold, ref long platinum)
+		{
+			platinum = copper / 1000000;
+			copper -= platinum * 1000000;
+			gold = copper / 10000;
+			copper -= gold * 10000;
+			silver = copper / 100;
+			copper -= silver * 100;
+		}
+
 
 	}
 
@@ -844,21 +1634,24 @@ namespace SGAmod
 
 		public static void MakeShockwave(Vector2 position2, float rippleSize, float rippleCount, float expandRate, int timeleft = 200, float size = 1f, bool important = false)
 		{
-			if (!Main.dedServ)
+			if (!Main.dedServ && !Main.gameMenu)
 			{
 				if (!Filters.Scene["SGAmod:Shockwave"].IsActive() || important)
 				{
 					int prog = Projectile.NewProjectile(position2, Vector2.Zero, SGAmod.Instance.ProjectileType("RippleBoom"), 0, 0f);
 					Projectile proj = Main.projectile[prog];
-					RippleBoom modproj = proj.modProjectile as RippleBoom;
-					modproj.rippleSize = rippleSize;
-					modproj.rippleCount = rippleCount;
-					modproj.expandRate = expandRate;
-					modproj.size = size;
-					proj.timeLeft = timeleft - 10;
-					modproj.maxtime = timeleft;
-					proj.netUpdate = true;
-					Filters.Scene.Activate("SGAmod:Shockwave", proj.Center, new object[0]).GetShader().UseColor(rippleCount, rippleSize, expandRate).UseTargetPosition(proj.Center);
+					if (proj != null && proj.active)
+					{
+						RippleBoom modproj = proj.modProjectile as RippleBoom;
+						modproj.rippleSize = rippleSize;
+						modproj.rippleCount = rippleCount;
+						modproj.expandRate = expandRate;
+						modproj.size = size;
+						proj.timeLeft = timeleft - 10;
+						modproj.maxtime = timeleft;
+						proj.netUpdate = true;
+						Filters.Scene.Activate("SGAmod:Shockwave", proj.Center, new object[0]).GetShader().UseColor(rippleCount, rippleSize, expandRate).UseTargetPosition(proj.Center);
+					}
 				}
 			}
 
@@ -921,5 +1714,33 @@ namespace SGAmod
 			this.text = text;
 		}
 	}
+	public class LuminousAlterItemClass
+	{
+		public int infusionTime;
+		public int outputItem;
+		public int stackCost = 1;
+		public int stackMade = 1;
+		public Func<bool> SpecialCondition;
+		public string requiredText = "";
 
+		public LuminousAlterItemClass(int outputItem, int infusionTime, int stackCost, int stackMade = 1, Func<bool> SCon = default,string requiredText = "")
+		{
+			if (SCon == default)
+			{
+				SpecialCondition = delegate ()
+				 {
+					 return !Main.dayTime && !Main.raining && !Main.bloodMoon;
+				 };
+            }
+            else
+            {
+				SpecialCondition = SCon;
+			}
+			this.outputItem = outputItem;
+			this.infusionTime = infusionTime;
+			this.stackCost = stackCost;
+			this.stackMade = stackMade;
+			this.requiredText = requiredText;
+		}
+	}
 }

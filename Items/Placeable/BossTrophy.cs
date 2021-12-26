@@ -88,6 +88,7 @@ namespace SGAmod.Items.Placeable
 			mod.AddItem("CratrogeddonTrophy", new BossTrophy(13, trophySprite: "SGAmod/Items/Placeable/CratrogeddonTrophy"));
 			mod.AddItem("SupremePinkyTrophy", new BossTrophy(14, trophySprite: "SGAmod/Items/Placeable/SupremePinkyTrophy"));
 			mod.AddItem("HellionTrophy", new BossTrophy(15, trophySprite: "SGAmod/Items/Placeable/HellionTrophy"));
+			mod.AddItem("PhaethonTrophy", new BossTrophy(16, trophySprite: "SGAmod/Items/Placeable/PhaethonTrophy"));
 
 			return false;
         }

@@ -15,7 +15,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gatlipiller");
-			Tooltip.SetDefault("Fires a 5-round burst that gets faster the longer you hold down the fire button\nBullets poison targets\nThe shots do not travel far");
+			Tooltip.SetDefault("Fires a 5-round burst that gets faster the longer you hold down the fire button\nBullets poison targets\nThe shots do not travel far\n50% to not consume ammo");
 		}
 
 		public override void SetDefaults()
@@ -37,6 +37,10 @@ namespace SGAmod.Items.Weapons
 			item.shoot = 10;
 			item.shootSpeed = 26f;
 			item.useAmmo = AmmoID.Bullet;
+		}
+		public override bool ConsumeAmmo(Player player)
+		{
+			return Main.rand.Next(100) < 50;
 		}
 
 		public override Vector2? HoldoutOffset()

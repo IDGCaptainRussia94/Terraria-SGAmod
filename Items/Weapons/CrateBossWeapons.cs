@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
 using AAAAUThrowing;
+using SGAmod.NPCs.Cratrosity;
 
 namespace SGAmod.Items.Weapons
 {
@@ -70,17 +71,17 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 32;
+			item.damage = 40;
 			item.magic = true;
 			item.width = 34;
-			item.mana = 10;
+			item.mana = 8;
 			item.height = 24;
 			item.useTime = 15;
 			item.useAnimation = 15;
 			item.useStyle = 5;
 			item.knockBack = 6;
 			item.value = 100000;
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.shootSpeed = 8f;
 			item.noMelee = true;
 			item.shoot = 14;
@@ -108,9 +109,9 @@ namespace SGAmod.Items.Weapons
 			if (player.CountItem(types[taketype]) > 0)
 			{
 				player.ConsumeItem(types[taketype]);
-				float[,] typesproj = { { (float)ProjectileID.CopperCoin, 1f }, { (float)ProjectileID.SilverCoin, 1.5f }, { (float)ProjectileID.GoldCoin, 2.25f }, { (float)ProjectileID.PlatinumCoin, 5f } };
+				float[,] typesproj = { { ModContent.ProjectileType<GlowingCopperCoinPlayer>(), 1f }, { ModContent.ProjectileType<GlowingSilverCoinPlayer>(), 1.25f }, { ModContent.ProjectileType<GlowingGoldCoinPlayer>(), 1.75f }, { ModContent.ProjectileType<GlowingPlatinumCoinPlayer>(), 2.5f } };
 
-				int numberProjectiles = 8 + Main.rand.Next(7);
+				int numberProjectiles = 8 + Main.rand.Next(5);
 				for (int index = 0; index < numberProjectiles; index = index + 1)
 				{
 					Vector2 vector2_1 = new Vector2((float)((double)player.position.X + (double)player.width * 0.5 + (double)(Main.rand.Next(201) * -player.direction) + ((double)Main.mouseX + (double)Main.screenPosition.X - (double)player.position.X)), (float)((double)player.position.Y + (double)player.height * 0.5 - 600.0));   //this defines the projectile width, direction and position
@@ -128,6 +129,8 @@ namespace SGAmod.Items.Weapons
 					float SpeedX = (num16 * morespeed) + (float)Main.rand.Next(-40, 41) * 0.02f;
 					float SpeedY = (num17 * morespeed) + (float)Main.rand.Next(-40, 41) * 0.02f;
 					int thisone = Projectile.NewProjectile(vector2_1.X, vector2_1.Y, SpeedX, SpeedY, (int)typesproj[taketype, 0], (int)(typesproj[taketype, 1] * (float)damage), knockBack, Main.myPlayer, 0.0f, 0f);
+					Main.projectile[thisone].friendly = true;
+					Main.projectile[thisone].hostile = false;
 					Main.projectile[thisone].magic = true;
 					Main.projectile[thisone].ranged = false;
 					IdgProjectile.AddOnHitBuff(thisone, BuffID.Midas, 60 * 10);
@@ -185,10 +188,12 @@ namespace SGAmod.Items.Weapons
 			float numberProjectiles = 1;
 			float rotation = MathHelper.ToRadians(8);
 			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 45f;
+			float rooffset = player.direction * MathHelper.PiOver2 * -0.15f;
 
 			for (int i = 0; i < numberProjectiles; i++)
 			{
-				Vector2 perturbedSpeed = (new Vector2(speedX, speedY) * speed).RotatedBy(MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0, 100) / 100f)) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
+				Vector2 perturbedSpeed = (new Vector2(speedX, speedY) * speed).RotatedBy((MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0, 100) / 100f))) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
+				position = position.RotatedBy(rooffset, player.MountedCenter);
 				int proj = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, mod.ProjectileType("JackpotRocket"), damage, knockBack, player.whoAmI);
 				Main.projectile[proj].friendly = true;
 				Main.projectile[proj].hostile = false;
@@ -216,7 +221,7 @@ namespace SGAmod.Items.Weapons
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Avarice");
-			Tooltip.SetDefault("Throw coins that influx on one enemy\nInflicts Midas and Shadowflame on enemies\n'Greed is it's own corruption'");
+			Tooltip.SetDefault("Throw coins that influx on one enemy, losing 50% damage per hit\nInflicts Midas on the 1st hit, and Shadowflame on 2nd hit\nHitting the 3rd will inflict Mircotransactions\nthis depletes enemy health and wealth\n'Greed is it's own corruption'");
 		}
 
 		public override void SetDefaults()
@@ -252,7 +257,7 @@ namespace SGAmod.Items.Weapons
 	}
 
 	public class AvariceCoin : NPCs.Cratrosity.GlowingGoldCoin
-    {
+	{
 
 		int fakeid = ProjectileID.GoldCoin;
 		public int guyihit = -10;
@@ -309,9 +314,13 @@ namespace SGAmod.Items.Weapons
 				guyihit = target.whoAmI;
 			cooldown = 15;
 			projectile.tileCollide = false;
+			projectile.damage /= 2;
 			target.immune[projectile.owner] = 2;
-			target.AddBuff(BuffID.ShadowFlame, 60 * 10);
 			target.AddBuff(BuffID.Midas, 60 * 10);
+			if (projectile.penetrate < 3)
+			target.AddBuff(BuffID.ShadowFlame, 60 * 10);
+			if (projectile.penetrate<2)
+				target.AddBuff(ModContent.BuffType<Buffs.Microtransactions>(), 60 * 10);
 			projectile.netUpdate = true;
 		}
 
@@ -349,14 +358,14 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prosperity Rod");
-			Tooltip.SetDefault("Summons Midas Portals to shower your enemies in wealth, painfully\nOrdering your minions to attack a target will move the center of the circle to the target and the portals will gain an extra weaker attack VS the closest enemy\nAttacks inflict Midas\n'money money, it acts so funny...'");
+			Tooltip.SetDefault("Summons Midas Portals to shower your enemies in wealth, painfully\nOrdering your minions to attack a target will move the center of the circle to the target\nThe portals will gain an extra weaker attack VS the closest enemy\nAttacks inflict Midas\n'money money, it acts so funny...'");
 			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 45;
+			item.damage = 30;
 			item.knockBack = 3f;
 			item.mana = 10;
 			item.width = 32;
@@ -488,12 +497,14 @@ namespace SGAmod.Items.Weapons
 					if (projectile.ai[0] % 20 == 0)
 					{
 						Main.PlaySound(18, (int)projectile.Center.X, (int)projectile.Center.Y, 0, 1f, 0.25f);
-						int thisoned = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, ProjectileID.GoldCoin, projectile.damage, projectile.knockBack, Main.player[projectile.owner].whoAmI);
+						int thisoned = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, ModContent.ProjectileType<GlowingGoldCoin>(), projectile.damage, projectile.knockBack, Main.player[projectile.owner].whoAmI);
 						Main.projectile[thisoned].minion = true;
 						Main.projectile[thisoned].velocity = (them.Center - projectile.Center);
 						Main.projectile[thisoned].velocity.Normalize(); Main.projectile[thisoned].velocity *= 12f; Main.projectile[thisoned].velocity = Main.projectile[thisoned].velocity.RotateRandom(MathHelper.ToRadians(15));
 						Main.projectile[thisoned].penetrate = 1;
 						Main.projectile[thisoned].ranged = false;
+						Main.projectile[thisoned].friendly = true;
+						Main.projectile[thisoned].hostile = false;
 						Main.projectile[thisoned].netUpdate = true;
 						IdgProjectile.AddOnHitBuff(thisoned, BuffID.Midas, 60 * 5);
 						IdgProjectile.Sync(thisoned);
@@ -509,12 +520,14 @@ namespace SGAmod.Items.Weapons
 						if (projectile.ai[0] % 35 == 0)
 						{
 							Main.PlaySound(18, (int)projectile.Center.X, (int)projectile.Center.Y, 0, 0.75f, -0.5f);
-							int thisoned = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, ProjectileID.SilverCoin, (int)((float)projectile.damage * 0.75f), projectile.knockBack, Main.player[projectile.owner].whoAmI);
+							int thisoned = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, ModContent.ProjectileType<GlowingSilverCoin>(), (int)((float)projectile.damage * 0.75f), projectile.knockBack, Main.player[projectile.owner].whoAmI);
 							Main.projectile[thisoned].minion = true;
 							Main.projectile[thisoned].velocity = (oldthem.Center - projectile.Center);
 							Main.projectile[thisoned].velocity.Normalize(); Main.projectile[thisoned].velocity *= 10f; Main.projectile[thisoned].velocity = Main.projectile[thisoned].velocity.RotateRandom(MathHelper.ToRadians(15));
 							Main.projectile[thisoned].penetrate = 1;
 							Main.projectile[thisoned].ranged = false;
+							Main.projectile[thisoned].friendly = true;
+							Main.projectile[thisoned].hostile = false;
 							Main.projectile[thisoned].netUpdate = true;
 							IdgProjectile.AddOnHitBuff(thisoned, BuffID.Midas, 60 * 2);
 							IdgProjectile.Sync(thisoned);
@@ -597,7 +610,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Midas Portal");
-			Description.SetDefault("Portals to planes of wealth will fight for you");
+			Description.SetDefault("Portals from Planes of Wealth will fight for you");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
 		}
@@ -659,10 +672,69 @@ namespace SGAmod.Items.Weapons
 		{
 			if (target.HasBuff(BuffID.Midas))
 			{
-				target.value += (int)(item.value * (player.SGAPly().MidasIdol>0 ? 0.20f : 0.05f));
+				target.value += (int)(item.value * (player.SGAPly().MidasIdol > 0 ? 0.20f : 0.05f));
 			}
 		}
 
+	}
+
+	public class GlowingCopperCoinPlayer : GlowingCopperCoin, IDrawAdditive
+	{
+		protected override int FakeID2 => ProjectileID.CopperCoin;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Copper Coin");
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			projectile.friendly = true;
+			projectile.hostile = false;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 0; }
+		}
+	}
+	public class GlowingSilverCoinPlayer : GlowingCopperCoinPlayer, IDrawAdditive
+	{
+		protected override int FakeID2 => ProjectileID.SilverCoin;
+		protected override Color GlowColor => Color.Silver;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Silver Coin");
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 1; }
+		}
+	}
+	public class GlowingGoldCoinPlayer : GlowingCopperCoinPlayer, IDrawAdditive
+	{
+		protected override int FakeID2 => ProjectileID.GoldCoin;
+		protected override Color GlowColor => Color.Gold;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Gold Coin");
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 2; }
+		}
+	}
+	public class GlowingPlatinumCoinPlayer : GlowingCopperCoinPlayer, IDrawAdditive
+	{
+		protected override int FakeID2 => ProjectileID.PlatinumCoin;
+		protected override Color GlowColor => new Color(229, 228, 226);
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Avarice Platinum Coin");
+		}
+		public override string Texture
+		{
+			get { return "Terraria/Coin_" + 3; }
+		}
 	}
 
 }

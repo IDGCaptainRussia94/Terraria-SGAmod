@@ -31,7 +31,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.knockBack = 1.5f;
 			item.value = 25;
 			item.rare = 5;
-			item.shoot = mod.ProjectileType("BlazeBullet");   //The projectile shoot when your weapon using this ammo
+			item.shoot = ModContent.ProjectileType <Projectiles.BlazeBullet>();   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 5f;                  //The speed of the projectile
 			item.ammo = AmmoID.Bullet;
 		}
@@ -70,7 +70,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.knockBack = 1.5f;
 			item.value = 25;
 			item.rare = 5;
-			item.shoot = mod.ProjectileType("AcidBullet");   //The projectile shoot when your weapon using this ammo
+			item.shoot = ModContent.ProjectileType<Projectiles.AcidBullet>();   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 2.5f;                  //The speed of the projectile
 			item.ammo = AmmoID.Bullet;
 		}
@@ -79,6 +79,124 @@ namespace SGAmod.Items.Weapons.Ammo
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("VialofAcid"), 1);
+			recipe.AddIngredient(ItemID.MusketBall, 50);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this, 50);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class NoviteBullet : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Bullet");
+			Tooltip.SetDefault("Redirects when near enemies, but only once\nCosts 25 electric charge to change direction");
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Ammo/NoviteBullet"); }
+		}
+		public override void SetDefaults()
+		{
+			item.damage = 6;
+			item.ranged = true;
+			item.width = 8;
+			item.height = 8;
+			item.maxStack = 999;
+			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
+			item.knockBack = 0f;
+			item.value = 20;
+			item.rare = ItemRarityID.Green;
+			item.shoot = ModContent.ProjectileType<Projectiles.NoviteBullet>();   //The projectile shoot when your weapon using this ammo
+			item.shootSpeed = 4.5f;                  //The speed of the projectile
+			item.ammo = AmmoID.Bullet;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<NoviteBar>(), 1);
+			recipe.AddIngredient(ItemID.MusketBall, 50);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this, 50);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class SeekerBullet : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Seeker Bullet");
+			Tooltip.SetDefault("Does summon damage\nHomes in on the minion focused enemy\nThis includes enemies who otherwise can't be chased");
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Ammo/SeekerBullet"); }
+		}
+        public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
+        {
+			flat += item.damage * player.minionDamage;
+		}
+        public override void SetDefaults()
+		{
+			item.damage = 10;
+			item.summon = true;
+			item.width = 8;
+			item.height = 8;
+			item.maxStack = 999;
+			item.consumable = true;
+			item.knockBack = 0f;
+			item.value = 20;
+			item.rare = ItemRarityID.LightPurple;
+			item.shoot = ModContent.ProjectileType<Projectiles.SeekerBullet>();
+			item.shootSpeed = 6f;
+			item.ammo = AmmoID.Bullet;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
+			recipe.AddIngredient(ItemID.MusketBall, 250);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this, 250);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class SoulboundBullet : SeekerBullet
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Soulbound Bullet");
+			Tooltip.SetDefault("A bullet bound with souls, Does summon damage\nHitting an enemy focuses them for your minions to attack\nIf below 20% health, you will leech small amounts of life on hit\n"+Idglibrary.Idglib.ColorText(Color.Red,"Suffer self-damage when you miss and hit a tile"));
+		}
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Ammo/SoulboundBullet"); }
+		}
+		public override void SetDefaults()
+		{
+			item.damage = 50;
+			item.summon = true;
+			item.width = 8;
+			item.height = 8;
+			item.maxStack = 999;
+			item.consumable = true;
+			item.knockBack = 0f;
+			item.value = 20;
+			item.rare = ItemRarityID.Lime;
+			item.shoot = ModContent.ProjectileType<Projectiles.SoundboundBullet>();
+			item.shootSpeed = 6f;
+			item.ammo = AmmoID.Bullet;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Ectoplasm, 1);
 			recipe.AddIngredient(ItemID.MusketBall, 50);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this, 50);
@@ -106,9 +224,9 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.maxStack = 999;
 			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
 			item.knockBack = 1.5f;
-			item.value = 25;
+			item.value = 10;
 			item.rare = 1;
-			item.shoot = mod.ProjectileType("TungstenBullet");   //The projectile shoot when your weapon using this ammo
+			item.shoot = ModContent.ProjectileType<Projectiles.TungstenBullet>();   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 4.5f;                  //The speed of the projectile
 			item.ammo = AmmoID.Bullet;
 		}
@@ -124,8 +242,10 @@ namespace SGAmod.Items.Weapons.Ammo
 		}
 	}
 
-	public class AimBotBullet : ModItem
+	public class AimBotBullet : ModItem, IHellionDrop
 	{
+		int IHellionDrop.HellionDropAmmount() => 999;
+		int IHellionDrop.HellionDropType() => ModContent.ItemType<AimBotBullet>();
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Aim-Bot Bullet");
@@ -148,7 +268,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.knockBack = 2.0f;
 			item.value = 300;
 			item.rare = 10;
-			item.shoot = mod.ProjectileType("AimBotBullet");   //The projectile shoot when your weapon using this ammo
+			item.shoot = ModContent.ProjectileType <Projectiles.AimBotBullet>();   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 1f;                  //The speed of the projectile
 			item.ammo = AmmoID.Bullet;
 		}
@@ -204,7 +324,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			item.knockBack = 1.5f;
 			item.value = 100;
 			item.rare = 9;
-			item.shoot = mod.ProjectileType("PortalBullet");   //The projectile shoot when your weapon using this ammo
+			item.shoot = ModContent.ProjectileType<Projectiles.PortalBullet>();   //The projectile shoot when your weapon using this ammo
 			item.shootSpeed = 4.5f;                  //The speed of the projectile
 			item.ammo = AmmoID.Bullet;
 		}

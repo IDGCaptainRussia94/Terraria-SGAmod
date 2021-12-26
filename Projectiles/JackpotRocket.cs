@@ -108,28 +108,24 @@ namespace SGAmod.Projectiles
 
 	}
 
-	public class FallingGoldCoin : ModProjectile
+	public class FallingGoldCoin : NPCs.Cratrosity.GlowingGoldCoin, IDrawAdditive
 	{
-
-		int fakeid=ProjectileID.GoldCoin;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gold Coin");
 		}
-
-		public override string Texture
+		public override void SetDefaults()
 		{
-			get { return "Terraria/Projectile_" + fakeid; }
-		}
-
-		public override bool PreKill(int timeLeft)
-		{
-			projectile.type=fakeid;
-			return true;
+			base.SetDefaults();
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.aiStyle = -1;
+			projectile.timeLeft = 180;
 		}
 
 		public override void AI()
 		{
+			projectile.localAI[0] += 1;
 			projectile.velocity.Y+=0.2f;
 			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
 		}

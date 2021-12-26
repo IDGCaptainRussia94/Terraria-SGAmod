@@ -64,6 +64,7 @@ namespace SGAmod.Projectiles
             }
             else
             {
+
                 if (counter - takeeffectdelay > 0)
                 {
                     Vector2 mousePos = Main.MouseWorld;
@@ -91,7 +92,6 @@ namespace SGAmod.Projectiles
                     projectile.Center = player.Center + (projectile.velocity * portaldistfromsword);
                     projectile.velocity *= velmulti;
 
-
                     if (player.manaRegenDelay<15)
                     player.manaRegenDelay = 15;
                     if (projectile.timeLeft < timeleftfirerate && player.channel)
@@ -107,13 +107,13 @@ namespace SGAmod.Projectiles
                         Main.PlaySound(SoundID.Item20, player.Center);
                         projectile.timeLeft = Math.Max(startrate - (int)counterfire * drainrate, projectilerate);
                         counterfire += 1;
-                        player.CheckMana((int)(manacost),true);
+                        player.CheckMana(player.HeldItem, (int)(manacost), true);
 
                     }
                 }
                 else
                 {
-                  if (player == null || (!player.channel || player.dead || player.statMana < manacost))
+                  if (player == null || (!player.channel || player.dead || !player.CheckMana(player.HeldItem, (int)(manacost), false)))
                   projectile.Kill();
 
                 }

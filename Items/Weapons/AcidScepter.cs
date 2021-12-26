@@ -11,8 +11,8 @@ using Idglibrary;
 
 namespace SGAmod.Items.Weapons
 {
-	public class AcidScepter : UnmanedPickaxe
-	{
+	public class AcidScepter : ModItem
+    {
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Acid Scepter");
@@ -176,7 +176,7 @@ namespace SGAmod.Items.Weapons
                             int thisoned = Projectile.NewProjectile(player.Center.X, player.Center.Y-12, Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1f, 1f), mod.ProjectileType("AcidScepterVenom"), projectile.damage, projectile.knockBack, Main.myPlayer);
                             IdgProjectile.Sync(thisoned);
                             Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 9, 0.25f, -0.25f);
-                            player.CheckMana(5, true);
+                            player.CheckMana(player.HeldItem, 5, true);
 
                         }
 

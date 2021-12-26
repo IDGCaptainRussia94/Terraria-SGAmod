@@ -16,42 +16,14 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 	public class SeriousSamWeapon : ModItem
 	{
-
-		public override bool Autoload(ref string name)
+        public override bool Autoload(ref string name)
 		{
 			return GetType() != typeof(SeriousSamWeapon);
-		}
-
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
-		{
-			// Get the vanilla damage tooltip
-			TooltipLine tt = tooltips.FirstOrDefault(x => x.Name == "Damage" && x.mod == "Terraria");
-			if (tt != null)
-			{
-				string[] thetext = tt.text.Split(' ');
-				string newline = "";
-				List<string> valuez = new List<string>();
-				foreach (string text2 in thetext)
-				{
-					valuez.Add(text2 + " ");
-				}
-				valuez.Insert(1, "Technological ");
-				foreach (string text3 in valuez)
-				{
-					newline += text3;
-				}
-				tt.text = newline;
-			}
-		}
-		public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
-		{
-			//add += player.GetModPlayer<SGAPlayer>().techdamage-1f;
-			mult *= player.GetModPlayer<SGAPlayer>().techdamage;
 		}
 	}
 
 
-	public class BeamGun : SeriousSamWeapon, IHitScanItem
+	public class BeamGun : SeriousSamWeapon, IHitScanItem,ITechItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -305,7 +277,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 					if (Main.npc[num172].active)
 					{
 
-					//(Collision.CanHit(new Vector2(loc.X, loc.Y), 1, 1, Main.npc[num172].position, Main.npc[num172].width, Main.npc[num172].height) || block == false)
+
 					if (num175 < num170)
 						{
 						int result = bouncetargets.Find(x => x == num172);
@@ -544,9 +516,9 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 			Texture2D tex = Main.chain6Texture;
 
-			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
-			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
-			Color color = Color.Lerp((projectile.GetAlpha(lightColor) * 0.5f), Color.White, 0.5f); //* ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+			//Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 4) / 2f;
+			//Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
+			//Color color = Color.Lerp((projectile.GetAlpha(lightColor) * 0.5f), Color.White, 0.5f); //* ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
 			int timing = 0;
 			timing *= ((tex.Height) / 5);
 			float alpha = 1f;

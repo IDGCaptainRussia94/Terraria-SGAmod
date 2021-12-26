@@ -3,6 +3,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using System.Collections.Generic;
 using System.Linq;
+using SGAmod.Items.Accessories;
+using SGAmod.Items.Weapons.Technical;
 
 namespace SGAmod
 {
@@ -62,6 +64,25 @@ namespace SGAmod
                 return SGArecipes.EnforceDuplicatesInRecipe(this);
         }
     }
+    public class DragonClawsRecipe : ModRecipe
+    {
+        public DragonClawsRecipe(Mod mod) : base(mod)
+        {
+
+        }
+        public override void OnCraft(Item item)
+        {
+            Main.LocalPlayer.QuickSpawnItem(ModContent.ItemType<DraconicClawNecklace>());
+        }
+
+        public override bool RecipeAvailable()
+        {
+            return SGArecipes.EnforceDuplicatesInRecipe(this);
+        }
+
+
+    }
+
     class ShadowJavelinRecipe : ModRecipe
     {
 
@@ -165,13 +186,28 @@ namespace SGAmod
 
                 }
             }
+
+            if (recipe.createItem.type == ModContent.ItemType<LaserMarker>())
+            {
+                ((LaserMarker)recipe.createItem.modItem).gemType = recipe.requiredItem[0].type;
+            }
+
         }
 
         public override bool RecipeAvailable(Recipe recipe)
         {
 
-            bool canwemakeit=base.RecipeAvailable(recipe);
-            if (recipe.createItem.type == mod.ItemType("HellionSummon") && SGAWorld.downedHellion < 1)
+            bool canwemakeit = base.RecipeAvailable(recipe);
+
+            if (!TF2Emblem.CanCraftUp(recipe) || recipe.requiredItem[2].type == SGAmod.Instance.ItemType("AlterCraft_Time"))
+                return false;
+
+            if (recipe.createItem.type == ModContent.ItemType<LaserMarker>())
+            {
+                ((LaserMarker)recipe.createItem.modItem).gemType = recipe.requiredItem[0].type;
+            }
+
+            if (recipe.createItem.type == mod.ItemType("HellionSummon") && !(SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths > 3))
                 canwemakeit = false;
             //if ((((recipe.createItem.type==ItemID.MythrilAnvil || recipe.requiredTile.Any(tile => tile == TileID.MythrilAnvil)) || recipe.createItem.type==ItemID.OrichalcumAnvil) && (SGAWorld.downedWraiths<2))
             if ((recipe.createItem.type==ItemID.LunarBar && SGAWorld.downedWraiths<4))

@@ -34,7 +34,7 @@ namespace SGAmod.Items.Weapons
 				{
 					valuez.Add(text2 + " ");
 				}
-				valuez.Insert(1, "Trap ");
+				valuez.Insert(1, "trap ");
 				foreach (string text3 in valuez)
 				{
 					newline += text3;
@@ -59,7 +59,7 @@ namespace SGAmod.Items.Weapons
 
 		public void DoTurn(Player player)
 		{
-			if (!player.GetModPlayer<SGAPlayer>().grippinggloves && player.velocity.X != 0)
+			if (player.GetModPlayer<SGAPlayer>().grippinggloves<1 && player.velocity.X != 0)
 				player.ChangeDir(player.velocity.X > 0 ? 1 : -1);
 
 		}
@@ -291,7 +291,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Non-Stationary Snowball Launcher");
-			Tooltip.SetDefault("A frosty gattling gun in the palm of your... hands" +
+			Tooltip.SetDefault("'A frosty gatling gun in the palm of your... hands'" +
 				"\nRapidly fires snowballs from your inventory" + "\nCan only fire in in a forward arc" +
 	"\nCounts as trap damage, doesn't crit");
 			SGAmod.NonStationDefenses.Add(SGAmod.Instance.ItemType("NonStationarySnowballLauncher"), SGAmod.Instance.ProjectileType("NonStationarySnowballLauncherHolding"));
@@ -461,7 +461,12 @@ namespace SGAmod.Items.Weapons
 			drawHeldProjInFrontOfHeldItemAndArms = false;
 		}
 
-		public override bool? CanHitNPC(NPC target)
+        public override bool CanDamage()
+        {
+			return false;
+        }
+
+        public override bool? CanHitNPC(NPC target)
 		{
 			return false;
 		}
@@ -503,7 +508,7 @@ namespace SGAmod.Items.Weapons
 				if (Main.LocalPlayer == owner)
 				{
 					Vector2 direction = (Main.MouseWorld - owner.Center);
-					if (owner.GetModPlayer<SGAPlayer>().grippinggloves)
+					if (owner.GetModPlayer<SGAPlayer>().grippinggloves>0)
 					{
 						projectile.direction = (direction.X > 0).ToDirectionInt();
 					}
@@ -514,7 +519,7 @@ namespace SGAmod.Items.Weapons
 
 				}
 
-				if (owner.GetModPlayer<SGAPlayer>().grippinggloves)
+				if (owner.GetModPlayer<SGAPlayer>().grippinggloves>0)
 				{
 				owner.ChangeDir(projectile.direction);
 				}

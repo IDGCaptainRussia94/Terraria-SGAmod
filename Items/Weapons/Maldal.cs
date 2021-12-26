@@ -11,6 +11,7 @@ using SGAmod.Projectiles;
 using SGAmod.NPCs.Hellion;
 using Idglibrary;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Weapons
 {
@@ -20,7 +21,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Maldal");
-			Tooltip.SetDefault("Floods your screen with files that explode when they touch an enemy!\nNot useable while your files are on the system");
+			Tooltip.SetDefault("Floods your screen with files that explode when they touch an enemy!\nNot usable while your files are on the system");
 			Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
 		}
 
@@ -47,7 +48,7 @@ namespace SGAmod.Items.Weapons
 
 		public override Color? GetAlpha(Color lightColor)
 		{
-			return lightColor = Main.hslToRgb((Main.GlobalTime / 6f) % 1f, 0.85f, 0.45f);
+			return Main.hslToRgb((Main.GlobalTime / 6f) % 1f, 0.85f, 0.45f);
 		}
 
 		public override bool CanUseItem(Player player)
@@ -63,7 +64,7 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("ByteSoul"), 100);
+			recipe.AddIngredient(mod.ItemType("ByteSoul"), 75);
 			//recipe.AddIngredient(mod.ItemType("LostNotes"), 5);
 			recipe.AddRecipeGroup("Fragment", 15);
 			recipe.AddIngredient(ItemID.SpellTome, 1);
@@ -119,17 +120,11 @@ namespace SGAmod.Items.Weapons
 					float randomx = 48f;//Main.rand.NextFloat(54f, 96f);
 					Vector2 here = new Vector2((float)Math.Cos(angles), (float)Math.Sin(angles));
 
-					int thisone = Projectile.NewProjectile(projectile.Center.X - 150, projectile.Center.Y - 150, here.X, here.Y, ModContent.ProjectileType<CreepersThrowBoom>(), projectile.damage, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
-					Main.projectile[thisone].timeLeft = 2;
-					Main.projectile[thisone].width = 300;
-					Main.projectile[thisone].height = 300;
-					Main.projectile[thisone].magic = true;
-					Main.projectile[thisone].melee = false;
-					Main.projectile[thisone].penetrate = -1;
-					Main.projectile[thisone].usesLocalNPCImmunity = true;
-					Main.projectile[thisone].localNPCHitCooldown = -1;
-					Main.projectile[thisone].scale = 0.001f;
-					Main.projectile[thisone].netUpdate = true;
+					SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y,61);
+					if (sound != null)
+						sound.Pitch = 0.925f;
+
+					int thisone = Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0,0, ModContent.ProjectileType<MaldalBlast>(), projectile.damage, projectile.knockBack, Main.player[projectile.owner].whoAmI, 0.0f, 0f);
 					IdgProjectile.Sync(thisone);
 
 
@@ -152,6 +147,54 @@ namespace SGAmod.Items.Weapons
 
 		}
 
+	}
+
+	public class MaldalBlast : ModProjectile
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Viral Blast");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 96;
+			projectile.height = 96;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.ignoreWater = true;
+			projectile.tileCollide = false;
+			projectile.magic = true;
+			projectile.penetrate = -1;
+			projectile.timeLeft = 60;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/HavocGear/Projectiles/BoulderBlast"); }
+		}
+
+        public override bool CanDamage()
+        {
+            return projectile.ai[0]<30;
+        }
+
+        public override void AI()
+		{
+			Lighting.AddLight(projectile.Center, ((255 - projectile.alpha) * 0.01f) / 255f, ((255 - projectile.alpha) * 0.025f) / 255f, ((255 - projectile.alpha) * 0.25f) / 255f);
+			projectile.ai[0] += 1;
+
+			float size = projectile.ai[0] < 2 ? 0f : 1f;
+
+			for (int i = 0; i < 1 + (projectile.ai[0] < 2 ? 32 : 0); i++)
+			{
+				Vector2 randomcircle = Main.rand.NextVector2CircularEdge(1f, 1f);
+				int num655 = Dust.NewDust(projectile.Center + Main.rand.NextVector2Circular(projectile.width, projectile.width)* size, 0, 0, ModContent.DustType<Dusts.ViralDust>(), projectile.velocity.X + randomcircle.X * (4f), projectile.velocity.Y + randomcircle.Y * (4f), 150, Main.hslToRgb(Main.rand.NextFloat(), 1f, (projectile.timeLeft / 60f)), 0.5f);
+				Main.dust[num655].noGravity = true;
+			}
+		}
 	}
 
 

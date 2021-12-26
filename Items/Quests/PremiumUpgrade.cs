@@ -24,7 +24,7 @@ namespace SGAmod.Items.Quests
 			item.noMelee = true; //so the item's animation doesn't do damage
 			item.rare = 1;
 			item.UseSound = SoundID.Item1;
-			item.value = Item.buyPrice(1, 0, 0, 0);
+			item.value = Item.buyPrice(0, 2, 0, 0);
 		}
 		//player.CountItem(mod.ItemType("ModItem"))
 

@@ -1,12 +1,13 @@
 author = IDGCaptainRussia
-version = 3.581
-displayName = [i:2730][i:2718][i:2712]mod - [i:3725] [c/4fd446:Century's Millennium] [i:3580][i:3040]
-buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, *.xcf, *.idg, *.MD, *.csproj, *.user, obj\*, bin\*
+version = 3.616
+displayName = SGAmod: [c/ff00ff:Tech N Wreck]
+buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, .zip, Effects\fxcompiler,*.exe,*.zip, *.xcf, *.idg, *.MD, *.csproj, *.user, obj\*, bin\*, vs\*, git\*
 includePDB = true
 hideCode = true
 homepage = https://discord.gg/aGy34Xw
 hideResources = true
 includeSource = true
 modReferences = Idglibrary,AAAAUThrowing,SubworldLibrary
-weakReferences = CalamityMod@1.4.2.101
+weakReferences = CalamityMod@1.4.2.101,IridiumMod,ThoriumMod,BossChecklist,HEROsMod,CheatSheet
 sortAfter = Idglibrary,AAAAUThrowing
+sortBefore = IridiumMod

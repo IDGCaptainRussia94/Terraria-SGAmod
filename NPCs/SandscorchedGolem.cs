@@ -90,7 +90,7 @@ namespace SGAmod.NPCs
 
 		public override void NPCLoot()
 		{
-			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(1, 4));
+			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("FieryShard"), Main.rand.Next(3, 13));
 		}
 
 		public override void OnHitPlayer(Player player, int damage, bool crit)
@@ -101,7 +101,7 @@ namespace SGAmod.NPCs
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
 			Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY-3];
-			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && !NPC.BusyWithAnyInvasionOfSorts() && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && spawnInfo.spawnTileY < Main.rockLayer && spawnInfo.player.ZoneDesert && Main.hardMode ? 0.15f : 0f;
+			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && !NPC.BusyWithAnyInvasionOfSorts() && !Main.pumpkinMoon && !Main.snowMoon && !Main.eclipse && spawnInfo.spawnTileY < Main.rockLayer && spawnInfo.player.ZoneDesert && !spawnInfo.player.ZoneBeach && Main.hardMode ? 0.15f : 0f;
 		}
 
 

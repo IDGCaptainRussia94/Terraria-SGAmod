@@ -18,7 +18,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Elemental Cascade");
-			Tooltip.SetDefault("Unleashes 4 elemental beams in cardinal directions towards the mouse cursor, swapping elements with each fire\nthe beams bounce off walls and are non solid until they stop moving, and deal different debuffs to enemies");
+			Tooltip.SetDefault("Unleashes 4 elemental beams in cardinal directions towards the mouse cursor, swapping elements with each fire\nThe beams bounce off walls and are non solid until they stop moving, and deal different debuffs to enemies");
 			Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
 		}
 
@@ -96,7 +96,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lunar Cascade");
-			Tooltip.SetDefault("Unleashes several beams in a complete circle around the player that travel far and effectively melt enemies\nthe beams bounce off walls and are non solid until they stop moving\nBeams deal different powerful debuffs to enemies");
+			Tooltip.SetDefault("Unleashes several beams in a complete circle around the player that travel far and effectively melt enemies\nThe beams bounce off walls and are non solid until they stop moving\nBeams deal different powerful debuffs to enemies");
 			Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
 		}
 
@@ -161,19 +161,21 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class HellionCascade : LunarCascade
+	public class HellionCascade : LunarCascade, IHellionDrop
 	{
+		int IHellionDrop.HellionDropAmmount() => 1;
+		int IHellionDrop.HellionDropType() => ModContent.ItemType<HellionCascade>();
 		int projectiletype = 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hellion's Cascade");
-			Tooltip.SetDefault("Unleashes several beams in a complete spiral around the player that travel far, absolutely melting enemies\nthe beams pass through walls and are non solid until they stop moving\nBeams deal different very powerful debuffs to enemies");
+			Tooltip.SetDefault("Unleashes several beams in a complete spiral around the player that travel far, absolutely melting enemies\nThe beams pass through walls and are non solid until they stop moving\nBeams deal different very powerful debuffs to enemies");
 			Item.staff[item.type] = true; //this makes the useStyle animate as a staff instead of as a gun
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 70;
+			item.damage = 500;
 			item.magic = true;
 			item.mana = 100;
 			item.width = 40;
@@ -196,7 +198,7 @@ namespace SGAmod.Items.Weapons
 			ModRecipe recipe = new HellionItems(mod);
 			recipe.AddIngredient(mod.ItemType("LunarCascade"), 1);
 			recipe.AddRecipeGroup("Fragment", 10);
-			recipe.AddIngredient(mod.ItemType("ByteSoul"), 200);
+			recipe.AddIngredient(mod.ItemType("ByteSoul"), 100);
 			//recipe.AddIngredient(mod.ItemType("HellionSummon"), 1);
 			recipe.AddIngredient(mod.ItemType("DrakeniteBar"), 10);
 			recipe.AddTile(TileID.LunarCraftingStation);
@@ -218,7 +220,7 @@ namespace SGAmod.Items.Weapons
 					Vector2 offset = speez;
 					offset.Normalize();
 					offset *= 48f;
-					int probg = Projectile.NewProjectile(position.X + offset.X, position.Y + offset.Y, speez.X, speez.Y, type, damage*12, knockBack, player.whoAmI, (projectiletype),(float)i/1.5f);
+					int probg = Projectile.NewProjectile(position.X + offset.X, position.Y + offset.Y, speez.X, speez.Y, type, damage, knockBack, player.whoAmI, (projectiletype),(float)i/1.5f);
 					Main.projectile[probg].friendly = true;
 					Main.projectile[probg].hostile = false;
 					Main.projectile[probg].netUpdate = true;
@@ -294,7 +296,7 @@ namespace SGAmod.Items.Weapons
 			projectile.magic = true;
 			projectile.tileCollide = false;
 			projectile.usesIDStaticNPCImmunity = true;
-			projectile.idStaticNPCHitCooldown = 30;
+			projectile.idStaticNPCHitCooldown = 10;
 			buffs = new int[4] { BuffID.Daybreak, mod.BuffType("EverlastingSuffering"), mod.BuffType("AcidBurn"), mod.BuffType("MoonLightCurse") };
 		}
 

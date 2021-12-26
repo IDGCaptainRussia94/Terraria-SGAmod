@@ -16,6 +16,14 @@ using Idglibrary;
 using AAAAUThrowing;
 using Terraria.Utilities;
 using SGAmod.Buffs;
+using SGAmod.Items.Armors;
+using SGAmod.Items.Armors.Vibranium;
+using Terraria.GameContent.Events;
+using Terraria.DataStructures;
+using SGAmod.Items.Armors.Dev;
+using SGAmod.Items;
+using SGAmod.Tiles.TechTiles;
+using SGAmod.HavocGear.Items;
 
 namespace SGAmod
 {
@@ -32,11 +40,11 @@ namespace SGAmod
                 SGAPlayer modplayer = player.GetModPlayer<SGAPlayer>();
                 int whichone = (int)Main.GlobalTime % 4;
                 string[] theones = { "Melee", "Ranged", "Magic", "Throwing" };
-                string text = modplayer.apocalypticalChance[whichone] +"% "+ theones[whichone] + " Apocalyptical Chance";
+                string text = Math.Round(modplayer.apocalypticalChance[whichone],2) + "% " + theones[whichone] + " Apocalyptical Chance";
 
                 if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl))
                 {
-                    text += "\nApocalyptical Strength: "+ (modplayer.apocalypticalStrength*100f)+"%";
+                    text += "\nApocalyptical Strength: " + (modplayer.apocalypticalStrength * 100f) + "%";
                     text += "\nAn Apocalyptical is when your crit-crits, resulting in 3X damage";
                     text += "\nItems and effects may add special effects on top of this";
                     text += "\nApocalyptical Strength however only really boosts these effects rather than the damage of the crit";
@@ -54,15 +62,80 @@ namespace SGAmod
             }
 
         }
+        public static string techtext
+        {
+            get
+            {
+                Player player = Main.LocalPlayer;
+                SGAPlayer modplayer = player.GetModPlayer<SGAPlayer>();
+
+                string text = "";
+
+                if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl))
+                {
+                    text += "\nTech Weapons have their damage boosted by your tech multiplier";
+                    text += "\nIf Electric Charge falls below 50% your damage will be reduced";
+                    text += "\nDamage can fall down to -50% damage at no charge";
+                    text += "\nAll Tech Weapons consume a small ammount of Electric Charge on use";
+
+                }
+                else
+                {
+                    text += " (Hold LEFT CONTROL for more info)";
+
+                }
+                return text;
+
+            }
+
+        }
 
         public override bool CanUseItem(Item item, Player player)
         {
-            if ((player.SGAPly().ReloadingRevolver>0) && item.damage > 0) {
+            if ((player.SGAPly().ReloadingRevolver > 0) && item.damage > 0)
+            {
                 return false;
-            } else {
+            }
+            else
+            {
                 return base.CanUseItem(item, player);
             }
         }
+
+        public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
+        {
+            if (item.modItem != null && item.modItem is IAuroraItem)
+            {
+                if (line.mod == "Terraria" && line.Name == "ItemName")
+                {
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Main.UIScaleMatrix);
+
+                    Effect hallowed = SGAmod.HallowedEffect;
+
+                    Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
+
+                    hallowed.Parameters["alpha"].SetValue(0.5f);
+                    hallowed.Parameters["prismColor"].SetValue(Items.Placeable.TechPlaceable.LuminousAlterItem.AuroraLineColor.ToVector3());
+                    hallowed.Parameters["rainbowScale"].SetValue(0.25f);
+                    hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
+                    hallowed.Parameters["overlayTexture"].SetValue(SGAmod.PearlIceBackground);
+                    hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, Main.GlobalTime / 14f, 0));
+                    hallowed.Parameters["overlayAlpha"].SetValue(1.5f);
+                    hallowed.Parameters["overlayStrength"].SetValue(new Vector3(1f, 0f, 0f));
+                    hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+                    hallowed.CurrentTechnique.Passes["PrismNoRainbow"].Apply();
+
+                    Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                    return false;
+                }
+            }
+            return true;
+        }
+
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
@@ -90,20 +163,43 @@ namespace SGAmod
                 if (ishavocitem > 0)
                 {
                     Color c = Main.hslToRgb(0.9f, 0.5f, 0.35f);
-                    tooltips.Add(new TooltipLine(mod, "Havoc Item", Idglib.ColorText(c, "Former Havoc mod item")));
-
+                    tooltips.Add(new TooltipLine(mod, "HavocItem", Idglib.ColorText(c, "Former Havoc mod item")));
                 }
                 if (SGAmod.UsesPlasma.ContainsKey(item.type))
                 {
                     Color c = Main.hslToRgb(0.7f, 0.15f, 0.7f);
-                    tooltips.Add(new TooltipLine(mod, "Plasma Item", Idglib.ColorText(c, "This weapon uses plasma cells for recharging")));
+                    tooltips.Add(new TooltipLine(mod, "PlasmaItem", Idglib.ColorText(c, "This weapon uses plasma cells for recharging")));
                 }
 
-                if (SGAmod.StuffINeedFuckingSpritesFor.ContainsKey(item.type))
+                if (item.modItem is IManifestedItem)
                 {
                     string tt = "This is a placeholder sprite";
                     Color c = Main.hslToRgb(0f, 0.75f, 0.7f);
-                    tooltips.Add(new TooltipLine(mod, "Plasma Item", SGAmod.StuffINeedFuckingSpritesFor.TryGetValue(item.type, out tt) ? tt : tt));
+                    tooltips.Add(new TooltipLine(mod, "Manifested Item", Idglib.ColorText(Color.Yellow, "This item is a manifestion of your armor set, bound to you")));
+                }
+                if (item.modItem is IMangroveSet)
+                {
+                    tooltips.Add(new TooltipLine(mod, "MangroveSet", "Having more of the mangrove weapon set in your inventory improves the damage"));
+                    tooltips.Add(new TooltipLine(mod, "MangroveSet", "Up to 50% with all the weapons"));
+                }
+
+                if (item.modItem is INoHitItem)
+                {
+                    tooltips.Add(new TooltipLine(mod, "NoHitItem",Idglib.ColorText(Items.Placeable.Relics.SGAPlacableRelic.RelicColor,"No-hit exclusive")));
+                }
+                if (item.modItem is IRadioactiveItem radactive)
+                {
+                    string tt = "This is a placeholder sprite";
+                    Color c = Main.hslToRgb(0f, 0.75f, 0.7f);
+                    tooltips.Add(new TooltipLine(mod, "RadioactiveItemText", Idglib.ColorText(Color.Lime, "This item is Radioactive")));
+                    if (radactive.RadioactiveHeld() > 0)
+                    {
+                        tooltips.Add(new TooltipLine(mod, "RadioactiveItemText", Idglib.ColorText(Color.Lime, "You suffer Radiation "+ radactive.RadioactiveHeld()+" while holding this")));
+                    }
+                    if (radactive.RadioactiveInventory() > 0)
+                    {
+                        tooltips.Add(new TooltipLine(mod, "RadioactiveItemText", Idglib.ColorText(Color.Lime, "You suffer Radiation " + radactive.RadioactiveInventory() + " while this is in your inventory")));
+                    }
                 }
 
                 int ammoclip = Main.LocalPlayer.SGAPly().IsRevolver(item);
@@ -112,9 +208,31 @@ namespace SGAmod
                     Color c = Main.hslToRgb(0.7f, 0.15f, 0.7f);
                     tooltips.Add(new TooltipLine(mod, "Clip Item", Idglib.ColorText(c, ammoclip == 2 ? "Counts as a revolver: Automatically Reloads itself when held" : "This weapon has a clip and requires manual reloading")));
                 }
+
+                if (item?.modItem is IRustBurnText)
+                {
+                    tooltips.Add(new TooltipLine(mod, "RustBurnText", RustBurn.RustText));
+                }
+
+                if (item?.modItem is IDankSlowText)
+                {
+                    tooltips.Add(new TooltipLine(mod, "DankSlowText", DankSlow.DankText));
+                }
+                if (item.modItem is IRadioactiveDebuffText)
+                {
+                    tooltips.Add(new TooltipLine(mod, "RadioactiveDebuffText", RadioDebuff.RadioactiveDebuffText));
+                }
+                if (item?.modItem is IDevItem)
+                {
+                    (string, string) dev = ((IDevItem)item.modItem).DevName();
+                    Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
+                    tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, dev.Item1 + "'s "+(dev.Item2+ (dev.Item2 != "" ? " " : "")) + "dev weapon")));
+                }
+
+
             }
 
-            if (item.type == ItemID.ManaRegenerationPotion && SGAConfig.Instance.ManaPotionChange)
+            if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore>0))
             {
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Mana Sickness decays very slowly")));
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Max Mana is reduced by 60")));
@@ -143,40 +261,111 @@ namespace SGAmod
                     tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "A very strong being has locked it away from your possession, talk to the guide")));
                 }
             }
+
+            if (item?.modItem is ITechItem)//Tech items
+            {
+                // Get the vanilla damage tooltip
+                TooltipLine tt = tooltips.FirstOrDefault(x => x.Name == "Damage" && x.mod == "Terraria");
+                if (tt != null)
+                {
+                    string[] thetext = tt.text.Split(' ');
+                    string newline = "";
+                    List<string> valuez = new List<string>();
+                    foreach (string text2 in thetext)
+                    {
+                        valuez.Add(text2 + " ");
+                    }
+                    valuez.Insert(1, "technological ");
+                    foreach (string text3 in valuez)
+                    {
+                        newline += text3;
+                    }
+                    tt.text = newline;
+                }
+            }
+
         }
 
         public override string IsArmorSet(Item head, Item body, Item legs)
         {
-            if (head.type == mod.ItemType("DankWoodHelm") && body.type == mod.ItemType("DankWoodChest") && legs.type == mod.ItemType("DankLegs"))
+            if (head.type == ModContent.ItemType <Items.Armors.Desert.DesertHelmet>() && body.type == ModContent.ItemType<Items.Armors.Desert.DesertShirt>() && legs.type == ModContent.ItemType <Items.Armors.Desert.DesertPants>())
+            {
+                return "Desert";
+            }
+            if (head.type == ModContent.ItemType<HavocGear.Items.Armor.DankWoodHelm>() && body.type == ModContent.ItemType<HavocGear.Items.Armor.DankWoodChest>() && legs.type == ModContent.ItemType<HavocGear.Items.Armor.DankLegs>())
             {
                 return "Dank";
             }
-            if (head.type == mod.ItemType("UnmanedHood") && body.type == mod.ItemType("UnmanedBreastplate") && legs.type == mod.ItemType("UnmanedLeggings"))
+            if (head.type == ModContent.ItemType<Items.Armors.Novus.UnmanedHood>() && body.type == ModContent.ItemType<Items.Armors.Novus.UnmanedBreastplate>() && legs.type == ModContent.ItemType<Items.Armors.Novus.UnmanedLeggings>())
             {
                 return "Novus";
             }
-            if (head.type == mod.ItemType("NoviteHelmet") && body.type == mod.ItemType("NoviteChestplate") && legs.type == mod.ItemType("NoviteLeggings"))
+            if (head.type == ModContent.ItemType<Items.Armors.Novite.NoviteHelmet>() && body.type == ModContent.ItemType<Items.Armors.Novite.NoviteChestplate>() && legs.type == ModContent.ItemType<Items.Armors.Novite.NoviteLeggings>())
             {
                 return "Novite";
             }
-            if (head.type == mod.ItemType("BlazewyrmHelm") && body.type == mod.ItemType("BlazewyrmBreastplate") && legs.type == mod.ItemType("BlazewyrmLeggings"))
+            if (head.type == ModContent.ItemType<Items.Armors.Acid.AcidHelmet>() && body.type == ModContent.ItemType<Items.Armors.Acid.AcidChestplate>() && legs.type == ModContent.ItemType<Items.Armors.Acid.AcidLeggings>())
+            {
+                return "Acid";
+            }
+            if (head.type == ModContent.ItemType<Items.Armors.Engineer.EngineerHead>() && body.type == ModContent.ItemType<Items.Armors.Engineer.EngineerChest>() && legs.type == ModContent.ItemType<Items.Armors.Engineer.EngineerLegs>())
+            {
+                return "Engineer";
+            }
+            if (head.type == ModContent.ItemType<Items.Armors.Blazewyrm.BlazewyrmHelm>() && body.type == ModContent.ItemType<Items.Armors.Blazewyrm.BlazewyrmBreastplate>() && legs.type == ModContent.ItemType<Items.Armors.Blazewyrm.BlazewyrmLeggings>())
             {
                 return "Blazewyrm";
             }
-            if (head.type == mod.ItemType("SpaceDiverHelmet") && body.type == mod.ItemType("SpaceDiverChestplate") && legs.type == mod.ItemType("SpaceDiverLeggings"))
+            if (head.type == ModContent.ItemType<HavocGear.Items.Armor.MangroveHelmet>() && body.type == ModContent.ItemType<HavocGear.Items.Armor.MangroveChestplate>() && legs.type == ModContent.ItemType<HavocGear.Items.Armor.MangroveGreaves>())
+            {
+                return "Mangrove";
+            }                      
+            if ((head.type == ModContent.ItemType<Items.Armors.HallowedVisor>() || head.type == ModContent.ItemType<Items.Armors.AncientHallowedVisor>()) && body.type == ItemID.HallowedPlateMail && body.type == ItemID.HallowedGreaves)
+            {
+                return "Hallowed";
+            }
+            if (head.type == ModContent.ItemType<Items.Armors.Magatsu.MagatsuHood>() && body.type == ModContent.ItemType<Items.Armors.Magatsu.MagatsuRobes>() && legs.type == ModContent.ItemType<Items.Armors.Magatsu.MagatsuPants>())
+            {
+                return "Magatsu";
+            }
+            if (head.type == ModContent.ItemType<Items.Armors.JungleTemplar.JungleTemplarHelmet>() && body.type == ModContent.ItemType<Items.Armors.JungleTemplar.JungleTemplarChestplate>() && legs.type == ModContent.ItemType<Items.Armors.JungleTemplar.JungleTemplarLeggings>())
+            {
+                return "JungleTemplar";
+            }            
+            if (head.type == ModContent.ItemType<Items.Armors.SpaceDiver.SpaceDiverHelmet>() && body.type == ModContent.ItemType<Items.Armors.SpaceDiver.SpaceDiverChestplate>() && legs.type == ModContent.ItemType<Items.Armors.SpaceDiver.SpaceDiverLeggings>())
             {
                 return "SpaceDiver";
             }
-            if (!head.vanity && !body.vanity && !legs.vanity) {
-                if (head.type == mod.ItemType("MisterCreeperHead") && body.type == mod.ItemType("MisterCreeperBody") && legs.type == mod.ItemType("MisterCreeperLegs"))
-                {
-                    return "MisterCreeper";
-                } }
+            if (head.type == ModContent.ItemType<Items.Armors.Mandala.MandalaHood>() && body.type == ModContent.ItemType<Items.Armors.Mandala.MandalaChestplate>() && legs.type == ModContent.ItemType<Items.Armors.Mandala.MandalaLeggings>())
+            {
+                return "Mandala";
+            }
+            if (head.type == ModContent.ItemType<Items.Armors.Valkyrie.ValkyrieHelm>() && body.type == ModContent.ItemType<Items.Armors.Valkyrie.ValkyrieBreastplate>() && legs.type == ModContent.ItemType<Items.Armors.Valkyrie.ValkyrieLeggings>())
+            {
+                return "Valkyrie";
+            }                 
+            if (head.type == ModContent.ItemType<Items.Armors.Illuminant.IlluminantHelmet>() && body.type == ModContent.ItemType<Items.Armors.Illuminant.IlluminantChestplate>() && legs.type == ModContent.ItemType<Items.Armors.Illuminant.IlluminantLeggings>())
+            {
+                return "Illuminant";
+            }                
+            int[] vibraniumSet = { ModContent.ItemType<Items.Armors.Vibranium.VibraniumMask>(), ModContent.ItemType<Items.Armors.Vibranium.VibraniumHelmet>(), ModContent.ItemType<Items.Armors.Vibranium.VibraniumHeadgear>(), ModContent.ItemType<Items.Armors.Vibranium.VibraniumHood>(), ModContent.ItemType<Items.Armors.Vibranium.VibraniumHat>() };
+            if (vibraniumSet.Any(testby => testby == head.type) && body.type == mod.ItemType("VibraniumChestplate") && legs.type == mod.ItemType("VibraniumLeggings"))
+            {
+                return "Vibranium";
+            }
             if (!head.vanity && !body.vanity && !legs.vanity)
             {
+                if (head.type == ModContent.ItemType <Items.Armors.Dev.MisterCreeperHead>() && body.type == ModContent.ItemType < Items.Armors.Dev.MisterCreeperBody>() && legs.type == ModContent.ItemType < Items.Armors.Dev.MisterCreeperLegs>())
+                {
+                    return "MisterCreeper";
+                }
                 if (head.type == mod.ItemType("IDGHead") && body.type == mod.ItemType("IDGBreastplate") && legs.type == mod.ItemType("IDGLegs"))
                 {
                     return "IDG";
+                }
+                if (head.type == ModContent.ItemType<Items.Armors.Dev.JellybruHelmet>() && body.type == mod.ItemType("JellybruChestplate") && legs.type == mod.ItemType("JellybruLeggings"))
+                {
+                    return "Jellybru";
                 }
             }
             return "";
@@ -185,6 +374,25 @@ namespace SGAmod
         public override void UpdateArmorSet(Player player, string set)
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+            if (set == "Desert")
+            {
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") to Summon up a short-lived Sandstorm\n---"+Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 45 seconds")+ "\nIncreased movement, 10% crit, and 35% extra throwing velocity in a Sandstorm\nImmunity to Mighty Winds\nManifested weapon: Sand Tosser";
+                player.buffImmune[BuffID.WindPushed] = true;
+                sgaplayer.desertSet = true;
+                if (Sandstorm.Happening && player.ZoneSandstorm)
+                {
+                    player.Throwing().thrownVelocity += 0.35f;
+                    player.Throwing().thrownCrit += 10;
+                    player.moveSpeed += 3f;
+                    player.accRunSpeed += 4f;
+                }
+                sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Desert.ManifestedSandTosser>();
+            }
             if (set == "Dank")
             {
                 player.setBonus = "10% of the sum of all damage types is added to your current weapon's attack\nyou regen life faster while on the surface during the day";
@@ -201,15 +409,81 @@ namespace SGAmod
                 player.setBonus = "Gain a movement bonus based on current charge\nWhen you take damage you discharge a chain bolt at a nearby enemy\nThis costs 750 Electic Charge and is scaled based on Defense and Technological Damage";
                 sgaplayer.Noviteset = 3;
             }
+            if (set == "Acid")
+            {
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Hunger of Fames for a short time\nAll throwing weapons get coated in acid for the 1st hit, but resets your life regeneration" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stacks, adds 60 seconds") + "\nPoison, Venom, and Acid Burn all lower enemy defence by an extra 5\n ";
+                sgaplayer.acidSet = (true, sgaplayer.acidSet.Item2);
+            }
+            if (set == "Engineer")
+            {
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+                player.setBonus = "Hold JUMP to hover at an expense to Electric Charge\nManifested weapon: Engie Controls\nPress the 'Toggle Recipe' (" + s + ") Hotkey to toggle jetpack mode";
+                sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Engineer.ManifestedEngieControls>();
+            }
             if (set == "Blazewyrm")
             {
                 player.setBonus = "True melee crits create a very powerful explosion equal to triple the damage dealt\nEach strike requires a free Cooldown Stack, and adds one for 12 seconds\n20% increased melee damage against enemies inflicted with Thermal Blaze" +
                         "\nImmune to fireblocks as well as immunity to On Fire! and Thermal Blaze\nGain an additional free Cooldown Stack";
                 player.fireWalk = true;
-                player.buffImmune[BuffID.OnFire] = true;
+                player.buffImmune[BuffID.OnFire] = true;///
                 player.buffImmune[mod.BuffType("ThermalBlaze")] = true;
                 sgaplayer.Blazewyrmset = true;
                 sgaplayer.MaxCooldownStacks += 1;
+            }
+            if (set == "Mangrove")
+            {
+                player.setBonus = "Crit throwing attacks grant Dryad's Blessing and spawn Mangrove Orbs from you that seek out enemies\nYou are limited to 4 of these Orbs at a time\nWhile you are in the jungle:\n-Greatly Increased regeneration" +
+    "\n-Gain an additional Free Cooldown Stack";
+
+                sgaplayer.Mangroveset = true;
+                if (player.ZoneJungle)
+                {
+                    player.lifeRegen += 5;
+                    player.SGAPly().MaxCooldownStacks += 1;
+                }
+            }
+            if (set == "Hallowed")
+            {
+                player.setBonus = "25% faster throwing item use and chance to not consume throwable";
+                sgaplayer.ThrowingSpeed += 0.25f;
+                sgaplayer.Thrownsavingchance += 0.25f;
+            }
+            if (set == "Magatsu")
+            {
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to deploy a shadowy decoy to distract enemies\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 60 seconds") + "\nOnly one decoy may be active at a time\nManifest your own N0ll Watchers to sense nearby enemies and 'watch' them\nYou get one watcher per free minion slot\nScoring an Apocalyptical against a watched enemy spreads a copy of damage nearby\nN0ll Watchers won't see you as an enemy, thus won't give chase on sight\n+2% increased Apocalyptical Chance, +40% increased Apocalyptical Strength\nGain an additional free Cooldown Stack";
+
+                Items.Armors.Magatsu.MagatsuHood.SetBonus(sgaplayer);
+                sgaplayer.MaxCooldownStacks += 1;
+            }
+
+            if (set == "JungleTemplar")
+            {
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Precurser's Power for a short time\nRepairs wounds at full speed even while moving, but consumes Electric Charge\nAlso during this, throwing damage is increased by Tech Damage scaling" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 80 seconds") + "\nYou gain the ability to run as if on Asphalt, also and fall down faster\nReflect 3X damage and gain knockback immunity while grounded" + Idglib.ColorText(Color.Red, "Gravity is increased, wings are less effective, Shield Break can happen")+ "\n" + Idglib.ColorText(Color.Red, "User is submerged in lava at low Electric Charge") + "\nGain an additional free Cooldown Stack";
+
+                sgaplayer.MaxCooldownStacks += 1;
+                sgaplayer.jungleTemplarSet.Item1 = true;
+                Items.Armors.JungleTemplar.JungleTemplarHelmet.SetBonus(sgaplayer);
             }
             if (set == "SpaceDiver")
             {
@@ -221,50 +495,137 @@ namespace SGAmod
                 sgaplayer.techdamage += 0.25f;
                 sgaplayer.electricChargeCost *= 0.75f;
             }
+            if (set == "Mandala")
+            {
+                player.setBonus = "Makes you a disciple of the Shadowspirits\nOne will follow you and grant you its powers\nManifested weapon: Overseer's Tutelage";
+                sgaplayer.mandalaSet.Item1 = true;
+                sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Mandala.ManifestedMandalaControls>();
+            }
+            if (set == "Valkyrie")
+            {
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+
+                string text2 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to active Ragnarök for a time based off current life regeneration\nThrowing speed and apocalyptical chance are increased"+ Idglib.ColorText(Color.Red,"But resets life regen while active")+"\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 150 seconds") + "\n";
+
+                string text1 = "Gain a throwing damage increase based on your current life regen\nMale Characters gain 15% Endurance\nFemale Characters gain 20% more flight time\n"+text2;
+                player.setBonus = text1 + "\nGain an additional free Cooldown Stack";
+                sgaplayer.valkyrieSet.Item1 = true;
+                sgaplayer.MaxCooldownStacks += 1;
+            }
+            if (set == "Illuminant")
+            {
+                string text1 = "Reduces all new Action Cooldown Stacks by 20%\nEach Active Action Cooldown Stack grants 4% (6% Summon) damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\nAll Vanilla Prefixes on accessories are twice as effective";
+                player.setBonus = text1;
+                sgaplayer.illuminantSet.Item1 = 5;
+            }            
+            if (set == "Vibranium")
+            {
+                string s = "Not Binded!";
+                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+                {
+                    s = key;
+                }
+                string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt skybridge below your feet\nYou can land on this bridge while falling down\nHold Down to fall through\nThis consumes electric charge while active, " + Idglib.ColorText(Color.Red, "and will trigger a shield break on deplete");
+
+                s = "Not Binded!";
+
+                string text2 = "If while holding the AutoSelect key, phase a wall around where you aim instead\nThis wall is treated as solid tiles in most cases\nThis consumes electric charge on activate and damage, will trigger a shield break on deplete";
+                player.setBonus = text1 + "\n" + text2 + "\nGain an additional free Cooldown Stack";
+                sgaplayer.MaxCooldownStacks += 1;
+                sgaplayer.vibraniumSet = true;
+                Items.Armors.Vibranium.VibraniumChestplate.VibraniumSetBonus(sgaplayer);
+            }
             if (set == "MisterCreeper")
             {
-                player.setBonus = "Any sword that doesn't shoot a projectile is swung 50% faster and deals crits when you are falling downwards\nWhen you take damage, you launch a damaging high velocity grenade at what hit you\nThese grenades are launched even during immunity frames if your touching an enemy\nDrinking a healing potion launches a ton of bouncy grendes in all directions" +
-                    "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\n"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 180 seconds") + "\nCreeper's explosive throw and Stormbreaker are empowered\n------";
+                player.setBonus = "Any sword that doesn't shoot a projectile is swung 50% faster and deals crits when you are falling downwards\nWhen you take damage, you launch a damaging high velocity grenade at what hit you\nThese grenades are launched even during immunity frames if your touching an enemy\nDrinking a healing potion launches a ton of bouncy grenades in all directions" +
+                    "\nTaking lethal damage will cause you to light your fuse, killing you IF you fail to kill anyone with your ending explosion in a few seconds!\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 180 seconds") + "\nCreeper's explosive throw and Stormbreaker are empowered\n \n ";
                 sgaplayer.MisterCreeperset = true;
                 sgaplayer.devempowerment[1] = 3;
             }
             if (set == "IDG")
             {
                 player.setBonus = "Minions cause less immunity frames, the enemy targeted by a minion weapon is Digi-Cursed\nDigi-Curse causes enemies to take 10% increased damage from all sources\n" +
-                    "Minion Damage builds up Digi-Stacks, which increase ranged damage\nMax Stacks boosts ranged damage by 100%\nFurthermore, copies of your current bullet type are fired from your Stacks\nThese copies do 50% of the base projectile's damage\nPlus the copy consumes a percentage of Stacks based on the damage\nAny projectiles below 100 damage will not produce a copy\nSerpent's Redemption is empowered\n------";
+                    "Minion Damage builds up Digi-Stacks, which increase ranged damage\nMax Stacks boosts ranged damage by 100%\nFurthermore, copies of your current bullet type are fired from your Stacks\nThese copies do 50% of the base projectile's damage\nPlus the copy consumes a percentage of Stacks based on the damage\nAny projectiles below 100 damage will not produce a copy\nSerpent's Redemption is empowered\n \n ";
                 sgaplayer.IDGset = true;
                 sgaplayer.digiStacksMax += 100000;
                 sgaplayer.devempowerment[0] = 3;
             }
+            if (set == "Jellybru")
+            {
+                player.setBonus = "Reserves 50% of your max HP x2 as an energy barrier\nDamage to your barrier is reduced by Mana Cost Reduction\nThese barriers are boosted by your Magic and Tech Damage Scaling\nBarriers fully recharge in 6 seconds" + Idglib.ColorText(Color.PaleTurquoise, "When Shield Up: Gain Ankh Charm effects") + "\nThe Jelly Brew and Aegisalt Aetherstone are empowered\n \n ";
+                sgaplayer.jellybruSet = true;
+                sgaplayer.devempowerment[2] = 3;
+            }        
         }
 
-        public bool NovusCoreCheck(Player player,Item item)
+        public bool NovusCoreCheck(Player player, Item item)
         {
+            SGAPlayer sgaply = player.SGAPly();
+            if (sgaply.novusBoost > 300)
+                return true;
 
-            if (player.SGAPly().Novusset > 3)
+            if (sgaply.novusBoost < 15)
             {
-                RecipeFinder finder = new RecipeFinder();
-                finder.AddIngredient(mod.ItemType("UnmanedBar"));
-                List<Recipe> reclist = finder.SearchRecipes();
-
-                Recipe foundone = reclist.Find(rec => rec.createItem.type == item.type);
-
-                if (foundone != null)
+                if (player.SGAPly().Novusset > 3)
                 {
-                    return true;
+                    RecipeFinder finder = new RecipeFinder();
+                    finder.AddIngredient(mod.ItemType("UnmanedBar"));
+                    List<Recipe> reclist = finder.SearchRecipes();
+
+                    Recipe foundone = reclist.Find(rec => rec.createItem.type == item.type);
+
+                    if (foundone != null)
+                    {
+                        /*if (sgaply.novusBoost < 3331)
+                        {
+                            var snd = Main.PlaySound(SoundID.DD2_KoboldIgnite, player.Center);
+                            if (snd != null)
+                            {
+                                snd.Pitch = -0.500f;
+                            }
+                            for (int i = 0; i < 16; i += 1)
+                            {
+                                int dust = Dust.NewDust(player.Hitbox.TopLeft(), player.Hitbox.Width, player.Hitbox.Height, mod.DustType("NovusSparkle"));
+                                Main.dust[dust].color = new Color(180, 60, 140);
+                                Main.dust[dust].alpha = 181;
+                            }
+                        }*/
+                        sgaply.novusBoost = 450;
+                        return true;
+                    }
+
+                    finder = new RecipeFinder();
+                    finder.AddIngredient(mod.ItemType("FieryShard"));
+                    reclist = finder.SearchRecipes();
+
+                    Recipe foundanother = reclist.Find(rec => rec.createItem.type == item.type);
+
+                    if (foundanother != null)
+                    {
+                        /*if (sgaply.novusBoost < 3331)
+                        {
+                            var snd = Main.PlaySound(SoundID.DD2_KoboldIgnite, player.Center);
+                            if (snd != null)
+                            {
+                                snd.Pitch = -0.750f;
+                            }
+                            for (int i = 0; i < 32; i += 1)
+                            {
+                                int dust = Dust.NewDust(player.Hitbox.TopLeft(), player.Hitbox.Width, player.Hitbox.Height, mod.DustType("NovusSparkle"));
+                                Main.dust[dust].color = new Color(180, 60, 140);
+                                Main.dust[dust].alpha = 181;
+                            }
+                        }*/
+                        sgaply.novusBoost = 600;
+                        return true;
+                    }
+
                 }
-
-                finder = new RecipeFinder();
-                finder.AddIngredient(mod.ItemType("FieryShard"));
-                reclist = finder.SearchRecipes();
-
-                Recipe foundanother = reclist.Find(rec => rec.createItem.type == item.type);
-
-                if (foundanother != null)
-                {
-                    return true;
-                }
-
+                sgaply.novusBoost = 200;
             }
             return false;
 
@@ -273,10 +634,10 @@ namespace SGAmod
         public override void MeleeEffects(Item item, Player player, Rectangle hitbox)
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
-            sgaplayer.FlaskEffects(hitbox,player.velocity);
-            if (NovusCoreCheck(player, item))
+            sgaplayer.FlaskEffects(hitbox, player.velocity);
+            if (Main.rand.Next(7) == 0)
             {
-                if (Main.rand.Next(7) == 0)
+                if (NovusCoreCheck(player, item))
                 {
                     int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, mod.DustType("NovusSparkle"));
                     Main.dust[dust].color = new Color(180, 60, 140);
@@ -300,16 +661,17 @@ namespace SGAmod
         }
 
         [System.Obsolete]
-        public override void GetWeaponDamage(Item item, Player player, ref int damage) {
+        public override void GetWeaponDamage(Item item, Player player, ref int damage)
+        {
 
             float basemul = 1f;
 
-                SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+            SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 
             if (item.shoot < 1 && item.melee && item.pick + item.axe + item.hammer < 1)
-                damage = (int)((float)damage*sgaplayer.trueMeleeDamage);
+                damage = (int)((float)damage * sgaplayer.trueMeleeDamage);
 
-            if (NovusCoreCheck(player,item))
+            if (NovusCoreCheck(player, item))
                 basemul += 0.1f;
 
             if (item.modItem != null)
@@ -324,14 +686,14 @@ namespace SGAmod
                 }
             }
 
-            if (sgaplayer.Dankset>0)
+            if (sgaplayer.Dankset > 0)
             {
-                damage = (int)(damage+(damage * ((player.magicDamage + player.minionDamage + player.rangedDamage + player.meleeDamage + player.Throwing().thrownDamage) - 5f) * 0.10f));
+                damage = (int)(damage + (damage * ((player.magicDamage + player.minionDamage + player.rangedDamage + player.meleeDamage + player.Throwing().thrownDamage) - 5f) * (sgaplayer.Dankset > 3 ? 0.05f : 0.10f)));
             }
 
-            if (sgaplayer.IDGset && sgaplayer.digiStacks>0 && item.ranged)
+            if (sgaplayer.IDGset && sgaplayer.digiStacks > 0 && item.ranged)
             {
-                damage = damage+(int)((float)damage*((float)sgaplayer.digiStacks/ (float)sgaplayer.digiStacksMax)*1.00f);
+                damage = damage + (int)((float)damage * ((float)sgaplayer.digiStacks / (float)sgaplayer.digiStacksMax) * 1.00f);
             }
 
             damage = (int)(damage * (float)basemul);
@@ -354,29 +716,52 @@ namespace SGAmod
             {
                 grabRange += 48;
             }
+            if (item.type == ModContent.ItemType<Dimensions.BubblePickup>() && player.SGAPly().terraDivingGear)
+            {
+                grabRange += 400;
+            }            
+            if (player.armor[0].type == ModContent.ItemType<VibraniumHat>() && item.maxStack > 1 && ((item.modItem != null && (item.Throwing().thrown || item.modItem is IJablinItem)) || item.thrown))
+            {
+                grabRange += (int)(720 * player.Throwing().thrownVelocity);
+            }
         }
 
-        public override bool GrabStyle(Item item,Player player)
+        public override bool GrabStyle(Item item, Player player)
         {
-            if (item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3)
+
+            bool boostedrealin = ((item.type == ItemID.NebulaPickup1 || item.type == ItemID.NebulaPickup2 || item.type == ItemID.NebulaPickup3) && player.GetModPlayer<SGAPlayer>().BoosterMagnet) || 
+                (item.type == ModContent.ItemType<Dimensions.BubblePickup>() && player.SGAPly().terraDivingGear);
+
+
+            if (boostedrealin)
             {
-                if (player.GetModPlayer<SGAPlayer>().BoosterMagnet)
-                {
                     Vector2 vectorItemToPlayer = player.Center - item.Center;
                     Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * 0.1f;
                     item.velocity = item.velocity + movement;
                     item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
-
-                }
-                else
+            }
+            else
+            {
+                float speed = 0.025f;
+                bool pullIn = player.SGAPly().graniteMagnet;
+                if (player.armor[0].type == ModContent.ItemType<VibraniumHat>() && item.maxStack > 1 && ((item.modItem != null && (item.Throwing().thrown || item.modItem is IJablinItem)) || item.thrown))
                 {
-                    if (player.SGAPly().graniteMagnet)
+                    speed += 0.75f;
+                    pullIn = true;
+                }
+                if (pullIn)
+                {
+                    Vector2 vectorItemToPlayer = player.Center - item.Center;
+                    Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * speed;
+                    item.velocity = item.velocity + movement;
+                    item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
+
+                    if ((player.SGAPly().timer + item.whoAmI) % 10 == 0 && player.armor[0].type == ModContent.ItemType<VibraniumHat>() && player.ownedProjectileCounts[ModContent.ProjectileType<VibraniumThrownExplosion>()] < 20)
                     {
-                        Vector2 vectorItemToPlayer = player.Center - item.Center;
-                        Vector2 movement = vectorItemToPlayer.SafeNormalize(default(Vector2)) * 0.025f;
-                        item.velocity = item.velocity + movement;
-                        item.velocity = Collision.TileCollision(item.position, item.velocity, item.width, item.height);
+                        Projectile.NewProjectile(item.Center.X, item.Center.Y, 0, 0, ModContent.ProjectileType<VibraniumThrownExplosion>(), (int)((100 * player.Throwing().thrownDamage) * MathHelper.Clamp((item.stack / 25f), 0.5f, 3f)), 0, player.whoAmI, 0f, 0f);
                     }
+
+                    return true;
                 }
             }
 
@@ -392,7 +777,7 @@ namespace SGAmod
                 if (player.statMana + item.healMana >= player.statManaMax2)
                 {
                     int difference = (player.statMana + item.healMana) - player.statManaMax2;
-                    player.AddBuff(ModContent.BuffType<ManaRegenFake>(), difference * 2);
+                    player.AddBuff(ModContent.BuffType<ManaRegenFakeBuff>(), difference * 2);
                 }
             }
 
@@ -429,22 +814,24 @@ namespace SGAmod
 
             if (item.type == ItemID.Heart || item.type == ItemID.CandyApple || item.type == ItemID.CandyCane)
             {
-                if (player.HasItem(mod.ItemType("EALogo")))
+                if (sgaplayer.EALogo)
                     player.QuickSpawnItem(ItemID.SilverCoin, 8);
                 if (sgaplayer.HeartGuard)
                 {
                     player.HealEffect(5);
+                    player.netLife = true;
                     player.statLife += 5;
                 }
-                if (sgaplayer.intimacy>0 && player.HasBuff(BuffID.Lovestruck))
+                if (sgaplayer.intimacy > 0 && player.HasBuff(BuffID.Lovestruck))
                 {
                     player.HealEffect(10);
+                    player.netLife = true;
                     player.statLife += 10;
                 }
             }
             if (item.type == ItemID.Star || item.type == ItemID.SugarPlum || item.type == ItemID.SoulCake)
             {
-                if (player.HasItem(mod.ItemType("EALogo")))
+                if (sgaplayer.EALogo)
                     player.QuickSpawnItem(ItemID.SilverCoin, 4);
 
                 if (player.SGAPly().starCollector && player.HasBuff(BuffID.ManaSickness))
@@ -452,13 +839,21 @@ namespace SGAmod
                     int index = player.FindBuffIndex(BuffID.ManaSickness);
                     if (index >= 0)
                         player.buffTime[index] -= 60;
+
+                    if (player.statManaMax2 >= player.statManaMax2)
+                    {
+                        player.HealEffect(5);
+                        player.netLife = true;
+                        player.statLife += 5;
+                    }
+
                 }
             }
             //lifesteal/gain
             //NetMessage.SendData(66, -1, -1, null, num492, (float)num497, 0f, 0f, 0, 0, 0);
 
 
-            if (sgaplayer.MidasIdol > 0 && sgaplayer.MidasIdol<3)
+            if (sgaplayer.MidasIdol > 0 && sgaplayer.MidasIdol < 3)
             {
                 /*int[] count = {player.CountItem(ItemID.CopperCoin), player.CountItem(ItemID.SilverCoin), player.CountItem(ItemID.GoldCoin), player.CountItem(ItemID.PlatinumCoin) };
 
@@ -467,43 +862,91 @@ namespace SGAmod
                  totalcount += coincount;
                  }
                  if (totalcount>0)*/
+                
+                if (ItemID.Sets.NeverShiny[item.type])
+                {
+                    sgaplayer.midasMoneyConsumed += (item.value*item.stack)/5;
 
+                    if (item.type == ItemID.CopperCoin)
+                    {
+                        Main.PlaySound(SoundID.CoinPickup, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.5f);
+                        if (sgaplayer.MidasIdol == 2)
+                            player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Campfire : BuffID.Swiftness, 60 * 5);
+                        else
+                            player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.MagicPower : BuffID.Titan, 60 * 3);
+                        return false;
+                    }
+                    if (item.type == ItemID.SilverCoin)
+                    {
+                        Main.PlaySound(SoundID.CoinPickup, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.6f);
+                        if (sgaplayer.MidasIdol == 2)
+                            player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Endurance : BuffID.Honey, 60 * 5);
+                        else
+                            player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Wrath : BuffID.Rage, 60 * 5);
+                        return false;
+                    }
+                    if (item.type == ItemID.GoldCoin)
+                    {
+                        Main.PlaySound(SoundID.CoinPickup, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.7f);
+                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.DryadsWard : BuffID.Ironskin, 60 * 10);
+                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Wrath : BuffID.Rage, 60 * 20);
+                        return false;
+                    }
+                    if (item.type == ItemID.PlatinumCoin)
+                    {
+                        Main.PlaySound(SoundID.CoinPickup, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.8f);
+                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.RapidHealing : BuffID.ShadowDodge, 60 * 30);
+                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.SolarShield2 : BuffID.IceBarrier, 60 * 30);
+                        return false;
+                    }
+                }
 
-                if (item.type == ItemID.CopperCoin)
-                {
-                    Main.PlaySound(38, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.6f);
-                    if (sgaplayer.MidasIdol == 2)
-                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Campfire : BuffID.Swiftness, 60 * 5);
-                    else
-                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.MagicPower : BuffID.Titan, 60 * 3);
-                    return false;
-                }
-                if (item.type == ItemID.SilverCoin)
-                {
-                    Main.PlaySound(38, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.6f);
-                    if (sgaplayer.MidasIdol == 2)
-                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Endurance : BuffID.Honey, 60 * 5);
-                    else
-                        player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Wrath : BuffID.Rage, 60 * 5);
-                    return false;
-                }
-                if (item.type == ItemID.GoldCoin)
-                {
-                    Main.PlaySound(38, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.6f);
-                    player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.DryadsWard : BuffID.Ironskin, 60 * 10);
-                    player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.Wrath : BuffID.Rage, 60 * 20);
-                    return false;
-                }
-                if (item.type == ItemID.PlatinumCoin)
-                {
-                    Main.PlaySound(38, (int)player.position.X, (int)player.position.Y, 0, 1f, -0.6f);
-                    player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.RapidHealing : BuffID.ShadowDodge, 60 * 30);
-                    player.AddBuff(Main.rand.Next(0, 2) == 0 ? BuffID.SolarShield2 : BuffID.IceBarrier, 60 * 30);
-                    return false;
-                }
 
             }
             return base.OnPickup(item, player);
+        }
+
+        public override void HorizontalWingSpeeds(Item item, Player player, ref float speed, ref float acceleration)
+        {
+            int plyleggings = player.armor[2].type;
+
+            if (plyleggings == ModContent.ItemType<Items.Armors.Dev.JellybruLeggings>())
+            {
+                float boost = player.SGAPly().EnergyDepleted ? 2f : 1f;
+                speed += 1.5f * boost;
+                acceleration += 0.15f * boost;
+            }
+
+            if (plyleggings == ModContent.ItemType<Items.Armors.Mandala.MandalaLeggings>() && Dimensions.SGAPocketDim.WhereAmI != null)
+            {
+                speed += 2f;
+                acceleration += 0.20f;
+            }
+
+            if (player.SGAPly().jungleTemplarSet.Item1)
+            {
+                speed *= 0.75f;
+                acceleration *= 0.75f;
+            }
+
+        }
+
+        public override void VerticalWingSpeeds(Item item, Player player, ref float ascentWhenFalling, ref float ascentWhenRising, ref float maxCanAscendMultiplier, ref float maxAscentMultiplier, ref float constantAscend)
+        {
+            if (player.SGAPly().jungleTemplarSet.Item1)
+            {
+                maxCanAscendMultiplier *= 0.75f;
+                constantAscend *= 0.75f;
+                ascentWhenRising *= 0.25f;
+            }
+        }
+
+        public override void OnConsumeAmmo(Item item, Player player)
+        {
+            if (item.ammo > -1 && player.armor[0].type == ModContent.ItemType<VibraniumHelmet>())
+            {
+                player.SGAPly().AddElectricCharge(item.damage/5);
+            }
         }
 
         public override float UseTimeMultiplier(Item item, Player player)
@@ -517,17 +960,21 @@ namespace SGAmod
             if (item.pick + item.hammer + item.axe > 0) {
                 usetimetemp *= sgaplayer.UseTimeMulPickaxe;
             }
-            if (item.ranged && item.useAmmo == AmmoID.Bullet && item.autoReuse == false)
+            if (item.ranged)
             {
-                usetimetemp += sgaplayer.triggerFinger-1f;
+                int type;
+                if ((item.useAmmo == AmmoID.Bullet && item.autoReuse == false) || SGAmod.UsesClips.TryGetValue(item.type, out type))
+                {
+                    usetimetemp += sgaplayer.triggerFinger - 1f;
+                }
             }
 
 
             if (item.summon)
             {
-                usetimetemp*=(1f+sgaplayer.summonweaponspeed);
+                usetimetemp *= (sgaplayer.summonweaponspeed);
             }
-            if ((item.Throwing().thrown || item.thrown) && item.type!=ItemID.Beenade) {
+            if ((item.Throwing().thrown || item.thrown) && item.type != ItemID.Beenade) {
                 usetimetemp *= sgaplayer.ThrowingSpeed;
             }
             /*ModItem mitem = item.modItem;
@@ -546,29 +993,93 @@ namespace SGAmod
             }
 
             if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
-                player.SGAPly().skillMananger.UseTimeMultiplier(item,ref usetimetemp);
+                player.SGAPly().skillMananger.UseTimeMultiplier(item, ref usetimetemp);
             return (usetimetemp * sgaplayer.UseTimeMul);
         }
 
         public override void PickAmmo(Item weapon, Item ammo, Player player, ref int type, ref float speed, ref int damage, ref float knockback)
         {
             player.GetModPlayer<SGAPlayer>().myammo = ammo.type;
+
+            if (player.SGAPly().russianRoulette && Main.rand.Next(6) == 0)
+            {
+                player.SGAPly().MisterCreeperset = false;
+                player.Hurt(PlayerDeathReason.ByPlayer(player.whoAmI), damage, -player.direction, true, false, true, 1);
+                knockback = 0;
+                speed = 0.5f;
+                type = ProjectileID.BlowupSmoke;
+            }
+        }
+
+        public override void ModifyWeaponDamage(Item item, Player player, ref float add, ref float mult, ref float flat)
+        {
+            SGAPlayer sgaply = player.SGAPly();
+            if (item.useAmmo > 0 && sgaply.russianRoulette)
+            {
+                if (item.ranged && item.useAmmo != AmmoID.Rocket && item.useAmmo != AmmoID.Bullet && item.useAmmo != AmmoID.Arrow)
+                {
+                    if (player.armor[0].type == ModContent.ItemType<VibraniumHelmet>())
+                        add += 0.30f;
+                }
+
+                add += item?.modItem is Items.Weapons.RevolverBase ? 1f : 0.5f;
+            }
+
+            if (item.modItem != null)
+            {
+
+                if (item.modItem is ITechItem)
+                {
+                    float value = sgaply.electricChargeMax>0 ? sgaply.electricCharge / ((float)sgaply.electricChargeMax) : 0;
+                    float floaterdam = (sgaply.techdamage * (MathHelper.Clamp(value * 4f, 0f, 1f)));
+                    add = Math.Max(add+(floaterdam - 1f),0f);
+                }
+
+                if (item.modItem is IMangroveSet)
+                {
+                    List<int> mangroves = new List<int>();
+                    mangroves.Add(mod.ItemType("MangroveStriker"));
+                    mangroves.Add(mod.ItemType("MangroveShiv"));
+                    mangroves.Add(mod.ItemType("MangroveStaff"));
+                    mangroves.Add(mod.ItemType("MangroveBow"));
+                    mangroves.Add(mod.ItemType("MossYoyo"));
+
+                    float bonusdamage = 0;
+
+                    foreach (int itemtype in mangroves)
+                    {
+                        if (player.CountItem(itemtype) > 0)
+                        {
+                            if (itemtype != item.type)
+                            {
+                                bonusdamage += 0.125f;
+                            }
+                        }
+                    }
+                    add += bonusdamage;
+                }
+            }
         }
 
         public override bool Shoot(Item item, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
 
+            if (item?.modItem is ITechItem)
+            {
+                sgaplayer.ConsumeElectricCharge(5+(int)((damage * sgaplayer.techdamage) * 1f), 60);
+            }
+
             if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister)
             {
 
-                int probg = Projectile.NewProjectile(position.X + (int)(speedX * 2f), position.Y + (int)(speedY * 2f), speedX, speedY, mod.ProjectileType("IceFlames"), (int)(damage*0.75), knockBack, player.whoAmI);
+                int probg = Projectile.NewProjectile(position.X + (int)(speedX * 2f), position.Y + (int)(speedY * 2f), speedX, speedY, mod.ProjectileType("IceFlames"), (int)(damage * 0.75), knockBack, player.whoAmI);
                 Main.projectile[probg].ranged = item.ranged;
                 Main.projectile[probg].magic = item.magic;
                 Main.projectile[probg].friendly = true;
                 Main.projectile[probg].hostile = false;
                 Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(15));
-                Main.projectile[probg].velocity.X = perturbedSpeed.X*0.6f;
+                Main.projectile[probg].velocity.X = perturbedSpeed.X * 0.6f;
                 Main.projectile[probg].velocity.Y = perturbedSpeed.Y * 0.6f;
                 Main.projectile[probg].owner = player.whoAmI;
                 SGAprojectile modeproj = Main.projectile[probg].GetGlobalProjectile<SGAprojectile>();
@@ -579,26 +1090,60 @@ namespace SGAmod
             return true;
         }
 
+        public static void AwardSGAmodDevArmor(Player player)
+        {
+            Mod mod = SGAmod.Instance;
+
+            string[] texts = {"Wooo!","Congrats!","You're Winner!","You did it!","Unusual Unboxed!","Yay!" };
+
+            for(int i = 0; i < 32; i += 1)
+            {
+                CombatText.NewText(new Rectangle((int)Main.screenPosition.X, (int)Main.screenPosition.Y,Main.screenWidth,Main.screenHeight), Main.DiscoColor, texts[Main.rand.Next(texts.Length)], true);
+            }
+
+            int itt = Projectile.NewProjectile(player.Center, new Vector2(0, -5), ProjectileID.RocketFireworkYellow,100,0, player.whoAmI);
+            Main.projectile[itt].timeLeft = 72;
+            itt = Projectile.NewProjectile(player.Center, new Vector2(2, -4), ProjectileID.RocketFireworkGreen, 100, 0, player.whoAmI);
+            Main.projectile[itt].timeLeft = 72;
+            itt = Projectile.NewProjectile(player.Center, new Vector2(-2, -4), ProjectileID.RocketFireworkBlue, 100, 0, player.whoAmI);
+            Main.projectile[itt].timeLeft = 72;
+
+            switch (Main.rand.Next(0,3))
+            {
+                case 2:
+                    player.QuickSpawnItem(ModContent.ItemType<JellybruHelmet>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < JellybruChestplate>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < JellybruLeggings>(), 1);
+                    break;
+
+                case 1:
+                    player.QuickSpawnItem(ModContent.ItemType < MisterCreeperHead>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < MisterCreeperBody>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < MisterCreeperLegs>(), 1);
+                    break;
+
+                default:
+                    player.QuickSpawnItem(ModContent.ItemType < IDGHead>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < IDGBreastplate>(), 1);
+                    player.QuickSpawnItem(ModContent.ItemType < IDGLegs>(), 1);
+                    break;
+            }
+        }
+
         public override void OpenVanillaBag(string context, Player player, int arg)
         {
             if (context == "bossBag")
             {
-                if (Main.rand.Next(100) <= (Main.hardMode ? 2 : 1))
-                {
-                    player.QuickSpawnItem(mod.ItemType("MisterCreeperHead"), 1);
-                    player.QuickSpawnItem(mod.ItemType("MisterCreeperBody"), 1);
-                    player.QuickSpawnItem(mod.ItemType("MisterCreeperLegs"), 1);
-                }
-                if (Main.rand.Next(100) <= (Main.hardMode ? 2 : 1))
-                {
-                    player.QuickSpawnItem(mod.ItemType("IDGHead"), 1);
-                    player.QuickSpawnItem(mod.ItemType("IDGBreastplate"), 1);
-                    player.QuickSpawnItem(mod.ItemType("IDGLegs"), 1);
-                }
+
                 if (arg == ItemID.GolemBossBag && Main.rand.Next(100) < 20)
                     player.QuickSpawnItem(mod.ItemType("Upheaval"), 1);
                 if (arg == ItemID.MoonLordBossBag)
-                    player.QuickSpawnItem(mod.ItemType("EldritchTentacle"), Main.rand.Next(20, 40));
+                {
+                    player.QuickSpawnItem(ModContent.ItemType<EldritchTentacle>(), Main.rand.Next(20, 40));
+                    if (Main.rand.Next(6)<1)
+                    player.QuickSpawnItem(ModContent.ItemType<Items.Weapons.SoulPincher>());
+
+                }
                 if (arg == ItemID.BossBagBetsy)
                     player.QuickSpawnItem(mod.ItemType("OmegaSigil"), 1);
                 if (arg == ItemID.WallOfFleshBossBag && Main.rand.Next(100) <= 10)
@@ -614,12 +1159,63 @@ namespace SGAmod
             }   
         }
 
+        public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
+        {
+            if (item.type == ItemID.SandBlock && item.velocity.Y == 0 && item.wet && Main.rand.Next(100)<1)
+            {
+                int item2 = Item.NewItem(item.Center, ModContent.ItemType<MoistSand>(), 1);
+                Item item3 = Main.item[item2];
+                if (item3 != null && item3.active)
+                {
+                    //item3.velocity = Vector2.Zero;
+                    item3.noGrabDelay = 0;
+                    if (Main.netMode != NetmodeID.SinglePlayer)
+                    {
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
+                    }
+                    item.stack--;
+
+                    if (item.stack < 1)
+                        item.TurnToAir();
+                    return;
+                }
+            }
+            HopperTile.HandleItemHoppers(item);
+        }
+
         public override void UpdateInventory(Item item,Player player)
         {
             if (item.buffType > 0 && SGAmod.overpoweredMod>1f)
             {
                 item.maxStack = 29;
             }
+
+            string[] buffTier = { "", "RadiationOne", "RadiationTwo", "RadiationThree" };
+
+            if (item.modItem != null && item.modItem is IRadioactiveItem)
+            {
+                int buffID = (item.modItem as IRadioactiveItem).RadioactiveInventory() - (player.SGAPly().grippinggloves > 1 ? 1 : 0);
+                int indexer = (int)MathHelper.Clamp(buffID, 0, buffTier.Length - 1);
+
+                if (indexer > 0)
+                    player.AddBuff(ModLoader.GetMod("IDGLibrary").GetBuff(buffTier[indexer]).Type, 2);
+            }
+
+            if (item.modItem != null && item.modItem is IManifestedItem)
+            {
+                if (player.inventory[player.selectedItem] != item)
+                {
+                    item.active = false;
+                    //item.TurnToAir();
+                    item.type = 0;
+                }
+            }
+
+        }
+
+        public override bool NewPreReforge(Item item)
+        {
+            return base.NewPreReforge(item);
         }
 
     }
@@ -901,7 +1497,31 @@ namespace SGAmod
 
     }
 
-        public class TrapPrefix : ModPrefix
+    public class BustedPrefix : TrapPrefix
+    {
+        public override PrefixCategory Category { get { return PrefixCategory.AnyWeapon; } }
+
+        public BustedPrefix(int misc)
+        {
+            this.misc = misc;
+        }
+        public override bool CanRoll(Item item)
+        {
+            return true;
+        }
+        public override float RollChance(Item item)
+        {
+            return 1f;
+        }
+    }
+    public class BustedAccessoryPrefix : BustedPrefix
+    {
+        public override PrefixCategory Category { get { return PrefixCategory.Accessory; } }
+
+        public BustedAccessoryPrefix(int misc) : base(misc) { }
+    }
+
+    public class TrapPrefix : ModPrefix
     {
         public float armorbreak = 0f;
         public float damage = 0f;
@@ -941,42 +1561,67 @@ namespace SGAmod
         {
             if (base.Autoload(ref name))
             {
+                if (GetType() == typeof(BustedPrefix))
+                {
+                    //mod.AddPrefix("Busted", new BustedPrefix(2));
+                    //mod.AddPrefix("Screwed Up", new BustedAccessoryPrefix(2));
+                }
+
                 if (GetType() == typeof(ShieldPrefix))
                 {
-                    mod.AddPrefix("Defensive", new ShieldPrefix(3));
+                    //mod.AddPrefix("Defensive", new ShieldPrefix(3));
                 }
                 if (GetType() == typeof(TrapPrefix))
                 {
-                    mod.AddPrefix("Edged", new TrapPrefix(0.05f, 0.05f));
-                    mod.AddPrefix("Sundering", new TrapPrefix(0.08f, 0.10f));
-                    mod.AddPrefix("Undercut", new TrapPrefix(0.12f, 0.10f));
+                    if (!SGAConfig.Instance.BestPrefixes)
+                    {
+                        mod.AddPrefix("Edged", new TrapPrefix(0.05f, 0.05f));
+                        mod.AddPrefix("Sundering", new TrapPrefix(0.08f, 0.10f));
+                        mod.AddPrefix("Undercut", new TrapPrefix(0.12f, 0.10f));
+                    }
                     mod.AddPrefix("Razor Sharp", new TrapPrefix(0.2f, 0.15f));
-                    mod.AddPrefix("Busted", new TrapPrefixAccessory(0,0,2));
                 }
                 if (GetType() == typeof(TrapPrefixAccessory))
                 {
-                    mod.AddPrefix("Tinkering", new TrapPrefixAccessory(0f, 0.04f));
-                    mod.AddPrefix("Knowledgeable", new TrapPrefixAccessory(0.06f, 0f));
-                    mod.AddPrefix("Dungeoneer's", new TrapPrefixAccessory(0.04f, 0.05f));
+                    mod.AddPrefix("Defensive", new ShieldPrefix(3));
+
+                    mod.AddPrefix("Busted", new BustedPrefix(2));
+                    mod.AddPrefix("Screwed Up", new BustedAccessoryPrefix(2));
+
+                    if (!SGAConfig.Instance.BestPrefixes)
+                    {
+                        mod.AddPrefix("Tinkering", new TrapPrefixAccessory(0f, 0.04f));
+                        mod.AddPrefix("Knowledgeable", new TrapPrefixAccessory(0.06f, 0f));
+                        mod.AddPrefix("Dungeoneer's", new TrapPrefixAccessory(0.04f, 0.05f));
+                    }
                     mod.AddPrefix("Goblin Tinker's Own", new TrapPrefixAccessory(0.05f, 0.075f));
                     mod.AddPrefix("Energized", new TrapPrefixAccessory(0,0,1));
                 }
                 if (GetType() == typeof(ThrowerPrefix))
                 {
-                    mod.AddPrefix("Tossable", new ThrowerPrefix(0f, 0f, 0.1f, 0.15f));
-                    mod.AddPrefix("Impacting", new ThrowerPrefix(0f, 0f, 0.15f, 0.2f));
+                    if (!SGAConfig.Instance.BestPrefixes)
+                    {
+                        mod.AddPrefix("Tossable", new ThrowerPrefix(0f, 0f, 0.1f, 0.15f));
+                        mod.AddPrefix("Impacting", new ThrowerPrefix(0f, 0f, 0.15f, 0.2f));
+                    }
                     mod.AddPrefix("Olympian", new ThrowerPrefix(0f, 0f, 0.25f, 0.4f));
                 }
                 if (GetType() == typeof(ThrowerPrefixAccessory))
                 {
-                    mod.AddPrefix("Lightweight", new ThrowerPrefixAccessory(0f, 0f, 0.025f, 0.025f,0f,0,0));
-                    mod.AddPrefix("Slinger's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.02f,0.01f,0,0));
-                    mod.AddPrefix("Pocketed", new ThrowerPrefixAccessory(0f, 0f, 0.02f, 0.03f, 0.015f,0,0));
-                    mod.AddPrefix("Conserving", new ThrowerPrefixAccessory(0f, 0f, 0.0f, 0.0f,0.05f,0,0));
+                    if (!SGAConfig.Instance.BestPrefixes)
+                    {
+                        mod.AddPrefix("Lightweight", new ThrowerPrefixAccessory(0f, 0f, 0.025f, 0.025f, 0f, 0, 0));
+                        mod.AddPrefix("Slinger's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.02f, 0.01f, 0, 0));
+                        mod.AddPrefix("Pocketed", new ThrowerPrefixAccessory(0f, 0f, 0.02f, 0.03f, 0.015f, 0, 0));
+                        mod.AddPrefix("Conserving", new ThrowerPrefixAccessory(0f, 0f, 0.0f, 0.0f, 0.05f, 0, 0));
+                    }
                     mod.AddPrefix("Roguish", new ThrowerPrefixAccessory(0f, 0f, 0.06f, 0.05f,0.02f,0,0));
 
-                    mod.AddPrefix("Doomsayer", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 0.5f,0.05f));
-                    mod.AddPrefix("Horseman's", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 1f,0.075f));
+                    if (!SGAConfig.Instance.BestPrefixes)
+                    {
+                        mod.AddPrefix("Doomsayer", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 0.5f, 0.05f));
+                    }
+                        mod.AddPrefix("Horseman's", new ThrowerPrefixAccessory(0f, 0f, 0f, 0f, 0f, 1f, 0.075f));
 
                     mod.AddPrefix("Disordered", new ThrowerPrefixAccessory(0.05f, 0.075f, 0f, 0f, 0f, 0.25f, 0.06f));
                     mod.AddPrefix("Rioter's", new ThrowerPrefixAccessory(0f, 0f, 0.04f, 0.03f, 0f, 0.25f, 0.04f));
@@ -1125,6 +1770,14 @@ namespace SGAmod
             }
         }
 
+        public override bool CanEquipAccessory(Item item, Player player, int slot)
+        {
+            if (misc != 2)
+                return base.CanUseItem(item, player);
+            else
+                return false;
+        }
+
         public override bool CanUseItem(Item item, Player player)
         {
             if (misc != 2)
@@ -1241,7 +1894,7 @@ namespace SGAmod
             }
             if (misc == 3)
             {
-                string line2 = Idglib.ColorText(Color.Red, "+5% Shield Block");
+                string line2 = "+5% Shield Block";
                 TooltipLine line = new TooltipLine(mod, "SGAPrefixline", line2);
                 line.isModifier = true;
                 tooltips.Add(line);
@@ -1297,6 +1950,9 @@ namespace SGAmod
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
+            if (!SGAmod.EnchantmentsUpdate)
+                return;
+
             if (SGAmod.EnchantmentCatalyst != null)
             {
                 EnchantmentCraftingMaterial valuz;

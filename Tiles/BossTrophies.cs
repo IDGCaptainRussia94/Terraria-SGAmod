@@ -92,6 +92,9 @@ namespace SGAmod.Tiles
 					case 3:
 						item = mod.ItemType("HellionTrophy");
 						break;
+					case 4:
+						item = mod.ItemType("PhaethonTrophy");
+						break;
 				}
 
 			}

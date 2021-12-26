@@ -11,6 +11,7 @@ using SGAmod.Projectiles;
 using Idglibrary;
 using System.Linq;
 using AAAAUThrowing;
+using Terraria.Utilities;
 
 namespace SGAmod.Items.Weapons.Caliburn
 {
@@ -79,7 +80,16 @@ namespace SGAmod.Items.Weapons.Caliburn
 			Item.staff[item.type] = true;
 		}
 
-		public override void SetDefaults()
+        public override bool? PrefixChance(int pre, UnifiedRandom rand)
+        {
+
+			if (pre == -1)
+				item.prefix = (byte)TrapPrefix.GetBustedPrefix;
+
+			return true;
+        }
+
+        public override void SetDefaults()
 		{
 			item.damage = 20;
 			item.crit = 0;
@@ -261,6 +271,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Caliburn");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override void SetDefaults()
@@ -304,6 +315,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Caliburn");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 
@@ -524,6 +536,9 @@ namespace SGAmod.Items.Weapons.Caliburn
 
 			}
 			oldRot[0] = projectile.rotation;
+
+			if (projectile.hostile)
+				projectile.rotation += projectile.velocity.Y * 0.05f;
 
 			projectile.rotation += projectile.velocity.X*0.1f;
 			projectile.velocity=projectile.velocity.RotatedBy(MathHelper.ToRadians(projectile.velocity.X/3f));

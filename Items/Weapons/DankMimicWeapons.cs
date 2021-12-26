@@ -24,7 +24,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 30;
+			item.damage = 112;
 			item.summon = true;
 			item.sentry = true;
 			item.width = 24;
@@ -171,7 +171,7 @@ namespace SGAmod.Items.Weapons
 							if (rec1.Intersects(rec2))
 							{
 								npc.SGANPCs().TimeSlow += 1f;
-								npc.SGANPCs().nonStackingImpaled = (int)(projectile.damage*3.75f);
+							npc.SGANPCs().nonStackingImpaled = projectile.damage;//(int)(projectile.damage*3.75f);
 							}
 
 						}
@@ -226,6 +226,7 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 1;
 			item.value = Item.buyPrice(0, 1, 0, 0);
 			item.rare = 4;
+			item.noMelee = true;
 			item.UseSound = SoundID.Item44;
 
 			// These below are needed for a minion weapon
@@ -469,8 +470,6 @@ namespace SGAmod.Items.Weapons
 				j += 1;
 			}
 
-
-
 			Player player = Main.player[projectile.owner];
 			DoPlayerChecks(player);
 
@@ -516,7 +515,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Gnat Minions");
-			Description.SetDefault("Buzz Swarm Dungpile Buzz!");
+			Description.SetDefault("Buzz Swarm Dung Pile Buzz!");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
 		}
@@ -571,6 +570,7 @@ namespace SGAmod.Items.Weapons
 			item.value = Item.buyPrice(0, 2, 50, 0);
 			item.rare = ItemRarityID.LightPurple;
 			item.UseSound = SoundID.Item44;
+			item.noMelee = true;
 
 			// These below are needed for a minion weapon
 			item.noMelee = true;
@@ -691,7 +691,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Horse Fly Minions");
-			Description.SetDefault("Buzz Swarm Dungpile Buzz BUZZ!");
+			Description.SetDefault("Buzz Swarm Dung Pile Buzz BUZZ!");
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
 		}
@@ -785,7 +785,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(null, "DankWood", 25);
             recipe.AddIngredient(null, "DankCore", 1);
-            recipe.AddIngredient(null, "VirulentBar", 12);
+            recipe.AddIngredient(mod.ItemType("VirulentBar"), 12);
             recipe.AddIngredient(ItemID.VineRopeCoil, 2);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this, 1);

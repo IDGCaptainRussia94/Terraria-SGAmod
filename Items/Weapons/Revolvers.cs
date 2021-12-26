@@ -53,7 +53,7 @@ namespace SGAmod.Items.Weapons
 		}
 
     }
-	public class DragonRevolver : RevolverBase
+	public class DragonRevolver : RevolverBase,IDevItem
 	{
 		bool altfired = false;
 		public override int RevolverID => mod.ProjectileType("DragonRevolverReloading");
@@ -63,7 +63,10 @@ namespace SGAmod.Items.Weapons
 			Tooltip.SetDefault("Hold Left Click and hover your mouse over targets to mark them for execution: releasing a dragon-fire burst on them!\nYou may mark targets as long as you have ammo in the clip and nothing is blocking your way\nUp to 6 targets may be marked for execution; a target that resists however can be marked more than once\nThe explosion is unable to crit but hits several times\nAlt Fire shoots 3 accurate rounds at once if the bullet does not pierce more than 3 times, otherwise 1\nThe extra bullets do only 50% base damage\n'Thy time has come'ith for dragon slayers, repent!'");
 			SGAmod.UsesClips.Add(SGAmod.Instance.ItemType("DragonRevolver"), 6);
 		}
-
+		public (string, string) DevName()
+		{
+			return ("IDGCaptainRussia94", "");
+		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[0] > 0)
@@ -72,9 +75,6 @@ namespace SGAmod.Items.Weapons
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Primary Explosion is larger"));
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "Secondary fires faster"));
 			}
-
-			Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
-			tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, "IDGCaptainRussia94's dev weapon")));
 		}
 
 		public override void SetDefaults()
@@ -433,7 +433,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("The Jakob");
-			Tooltip.SetDefault("Right click to fan the hammer-rapidly fire the remaining clip with less accuracy\n'If it took more than 1 shot, you wern't using a Jakobs!'");
+			Tooltip.SetDefault("Right click to fan the hammer-rapidly fire the remaining clip with less accuracy\n'If it took more than 1 shot, you weren't using a Jakob's!'");
 			SGAmod.UsesClips.Add(SGAmod.Instance.ItemType("TheJacob"), 6);
 		}
 
@@ -528,7 +528,7 @@ namespace SGAmod.Items.Weapons
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("RevolverUpgrade"), 1);
 			recipe.AddIngredient(ItemID.HallowedBar, 8);
-			recipe.AddIngredient(ItemID.SoulofSight, 20);
+			recipe.AddIngredient(ItemID.SoulofFright, 20);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -536,7 +536,7 @@ namespace SGAmod.Items.Weapons
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("GuerrillaPistol"), 1);
 			recipe.AddIngredient(ItemID.HallowedBar, 10);
-			recipe.AddIngredient(ItemID.SoulofSight, 20);
+			recipe.AddIngredient(ItemID.SoulofFright, 20);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -558,11 +558,11 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			item.CloneDefaults(ItemID.Revolver);
-			item.damage = 28;
+			item.damage = 42;
 			item.width = 48;
 			item.height = 24;
-			item.useTime = 30;
-			item.useAnimation = 30;
+			item.useTime = 12;
+			item.useAnimation = 12;
 			item.knockBack = 10;
 			item.value = 50000;
 			item.rare = 3;
@@ -590,14 +590,14 @@ namespace SGAmod.Items.Weapons
 
 			if (altfired)
 			{
-				item.useAnimation = 40;
-				item.useTime = 40;
+				item.useAnimation = 16;
+				item.useTime = 16;
 				item.UseSound = SoundID.Item38;
 			}
 			else
 			{
-				item.useTime = 30;
-				item.useAnimation = 30;
+				item.useTime = 12;
+				item.useAnimation = 12;
 				item.UseSound = SoundID.Item38;
 			}
 			if (!sgaplayer.ConsumeAmmoClip(false)) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }

@@ -59,19 +59,22 @@ namespace SGAmod.Items.Armors.Dev
 		public virtual void AddEffects(Player player)
 		{
 			player.Throwing().thrownCrit += 22;
-			player.meleeCrit += 18;
-			player.meleeDamage += 0.10f; player.Throwing().thrownDamage += 0.10f;
 			player.Throwing().thrownCost33 = true;
+			player.Throwing().thrownDamage += 0.10f;
+			player.meleeCrit += 18;
+			player.meleeDamage += 0.10f;
 			player.meleeSpeed += 0.25f;
-			player.GetModPlayer<SGAPlayer>().ThrowingSpeed += 0.15f;
+			player.SGAPly().ThrowingSpeed += 0.15f;
 			player.BoostAllDamage(-0.10f, -10);
 			player.statLifeMax2 += 75;
+			player.SGAPly().DoTResist *= 0.75f;
 		}
 		public virtual List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "8% Increased Melee Crit, 12% increased throwing Crit"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "33% to not consume thrown items, 25% increased melee swing speed"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "15% increased throwing rate, 75 increased max life"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "25% DoT resistance"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red, "10% reduced non-melee/throwing damage and crit chance")));
 			return tooltips;
 		}
@@ -154,12 +157,14 @@ namespace SGAmod.Items.Armors.Dev
 			player.BoostAllDamage(-0.10f, -10);
 
 			player.statLifeMax2 += 100;
+			player.SGAPly().DoTResist *= 0.35f;
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "25% increased melee damage, 32% increased throwing damage"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Immunity to Knockback, greatly increased Life Regen"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "20% improved Endurance, 100 increased max life"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "35% DoT resistance"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red, "10% reduced non-melee/throwing damage and crit chance")));
 			return tooltips;
 		}
@@ -216,6 +221,7 @@ namespace SGAmod.Items.Armors.Dev
 			player.Throwing().thrownDamage += 0.10f;
 
 			player.statLifeMax2 += 75;
+			player.SGAPly().DoTResist *= 0.85f;
 
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
@@ -224,6 +230,7 @@ namespace SGAmod.Items.Armors.Dev
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Do you don't take ANY self damage (includes fall and explosive damage)"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds")));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "75 increased max life"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "15% DoT resistance"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red, "10% reduced non-melee/throwing damage and crit chance")));
 			return tooltips;
 		}

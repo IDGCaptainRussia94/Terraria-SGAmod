@@ -96,11 +96,60 @@ namespace SGAmod
 		public partial class SGAmod : Mod
 	{
 
+		public SGAmod()
+		{
+#if Dimensions
+			proxydimmod = new DimDungeonsProxy();
+#endif
+			safeMode = 0;
+			//SGAmod.AbsentItemDisc.Add(SGAmod.Instance.ItemType("Tornado"), "This is test");
+
+			if (SpecialEvents.Item1)
+				SpecialBirthdayMode = true;
+			if (SpecialEvents.Item2)
+				AprilFoolsMode = true;
+
+			Properties = new ModProperties()
+			{
+				Autoload = true,
+				AutoloadGores = true,
+				AutoloadSounds = true
+			};
+
+		}
+
 		public const bool VibraniumUpdate = true;
 		public const bool EngieUpdate = true;
 		public const bool ArmorButtonUpdate = false;
 		public const bool EnchantmentsUpdate = false;
 		public const bool SpaceBossActive = true;
+
+		public static int SafeModeCheck
+        {
+            get
+            {
+				int valuez = 0;
+				Microsoft.Xna.Framework.Input.KeyboardState keyState = Microsoft.Xna.Framework.Input.Keyboard.GetState();
+				if (keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.CapsLock))
+				{
+
+					if (Main.MouseScreen.Y < 128)
+					{
+						SGAmod.Instance.Logger.Debug("SAFE MODE ACTIVATED: no risky OS stuff");
+						valuez += 1;
+					}
+						if (Main.MouseScreen.X < 128)
+						{
+						SGAmod.Instance.Logger.Debug("SAFE MODE ACTIVATED: Not loading IL or Hookend point patches");
+						valuez += 2;
+						}
+				}
+
+				return valuez;
+			}
+		}
+
+		public static int safeMode = 0;
 
 		public static SGAmod Instance;
 		public static string SteamID;
@@ -294,28 +343,6 @@ namespace SGAmod
 #if Dimensions
 		DimDungeonsProxy proxydimmod;
 #endif
-
-		public SGAmod()
-		{
-#if Dimensions
-			proxydimmod = new DimDungeonsProxy();
-#endif
-
-			//SGAmod.AbsentItemDisc.Add(SGAmod.Instance.ItemType("Tornado"), "This is test");
-
-			if (SpecialEvents.Item1)
-				SpecialBirthdayMode = true;
-			if (SpecialEvents.Item2)
-				AprilFoolsMode = true;
-
-			Properties = new ModProperties()
-			{
-				Autoload = true,
-				AutoloadGores = true,
-				AutoloadSounds = true
-			};
-
-		}
 
 		public override void PreSaveAndQuit()
 		{
@@ -522,21 +549,28 @@ namespace SGAmod
 
 		public override void Load()
 		{
+			Instance = this;
+
 #if Dimensions
 			proxydimmod.Load();
 #endif
 
-			Type installVarifier = Assembly.GetAssembly(typeof(Main)).GetType("Terraria.ModLoader.Engine.InstallVerifier");
-			isGoG = (bool)installVarifier.GetField("IsGoG").GetValue(null);
+			safeMode = SafeModeCheck;
 
-			SteamID = Main.dedServ || Main.netMode == NetmodeID.Server || !isGoG ? "" : (string)(typeof(ModLoader).GetProperty("SteamID64", BindingFlags.Static | BindingFlags.NonPublic)).GetValue(null);
+			if (safeMode == 0 || safeMode == 2)
+			{
+				Type installVarifier = Assembly.GetAssembly(typeof(Main)).GetType("Terraria.ModLoader.Engine.InstallVerifier");
+				isGoG = (bool)installVarifier.GetField("IsGoG").GetValue(null);
+
+				SteamID = Main.dedServ || Main.netMode == NetmodeID.Server || !isGoG ? "" : (string)(typeof(ModLoader).GetProperty("SteamID64", BindingFlags.Static | BindingFlags.NonPublic)).GetValue(null);
+
+			}
 			/*FieldInfo fild= typeof(CalamityPlayer).GetField("throwingDamage", BindingFlags.Instance | BindingFlags.Public);
 
 			object modp = Main.LocalPlayer.GetModPlayer(ModLoader.GetMod("CalamityMod"), "CalamityPlayer");
 
 			fild.SetValue(modp, 1f+ (float)fild.GetValue(modp));*/
 
-			Instance = this;
 			overpoweredMod = 0;
 
 			SGAPlayer.ShieldTypes.Clear();
@@ -625,7 +659,10 @@ namespace SGAmod
 
 			if (!Main.dedServ)
 			{
-				_ = Core.WinForm.WinHandled;
+				if (safeMode == 0 || safeMode == 2)
+				{
+					_ = Core.WinForm.WinHandled;
+				}
 				ShadowParticle.Load();
 
 				CreateRenderTarget2Ds(Main.screenWidth, Main.screenHeight, false, true);
@@ -662,6 +699,15 @@ namespace SGAmod
 			AddItem("Nightmare", NPCs.TownNPCs.Nightmare.instance);
 
 			bool failedToMakeDirectoy = false;
+			bool safefailsafe = false;
+
+			if (SafeModeCheck == 1 || SafeModeCheck == 3)
+            {
+				failedToMakeDirectoy = true;
+				safefailsafe = true;
+				goto goherenext;
+
+			}
 
 			try
 			{
@@ -691,21 +737,25 @@ namespace SGAmod
 				failedToMakeDirectoy = true;
 			}
 
+		goherenext:
+
+			if (!Main.dedServ)
+			{
+				HellionAttacks.CheckAndLoadMusic();
+			}
+
 			if (failedToMakeDirectoy || Directory.Exists(filePath))
 			{
 				//foreach(string filename in Directory.GetFiles(filePath))
 				//Logger.Debug("files: " + filename);
 
-				if (!Main.dedServ)
-				{
-					HellionAttacks.CheckAndLoadMusic();
-				}
+
 
 				if (failedToMakeDirectoy || Directory.GetFiles(filePath).Where(testby => testby.Contains("Itsnotoveryet.txt")).Count()>0)
 				{
 					SGAmod.NightmareUnlocked = true;
 
-					Logger.Debug(failedToMakeDirectoy ? "Directory not able to be made" : "Directory and file found" + ": Nightmare Mode has been unlocked");
+					Logger.Debug(safefailsafe ? "Safe Mode bypass activated" : (failedToMakeDirectoy ? "Directory not able to be made" : "Directory and file found") + ": Nightmare Mode has been unlocked");
 				}
 				//if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift))
 				//{
@@ -774,6 +824,7 @@ namespace SGAmod
 			Overlays.Scene["SGAmod:CirnoBlizzard"] = new SimpleOverlay("Images/Misc/Noise", new BlizzardShaderData("FilterBlizzardBackground").UseColor(0.2f, 1f, 0.2f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/Noise", 0, null).UseIntensity(0.7f).UseImageScale(new Vector2(3f, 0.75f), 0), EffectPriority.High, RenderLayers.Landscape);
 
 			SGAMethodSwaps.Apply();
+			if (safeMode<2)
 			SGAILHacks.Patch();
 
 			if (!Main.dedServ && SGAConfigClient.Instance.LogoReplace)

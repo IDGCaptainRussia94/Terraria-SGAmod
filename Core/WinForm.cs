@@ -49,7 +49,7 @@ namespace SGAmod.Core
             {
 
                 //MakeTexture();
-                if (Main.dedServ || Environment.Is64BitProcess || SGAmod.OSType != 0)
+                if (Main.dedServ || SGAmod.OSType > 0 || Environment.Is64BitProcess)
                     return false;
 
                 bool didItWork = false;

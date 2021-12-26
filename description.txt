@@ -23,6 +23,154 @@ A few warnings before the changelog:
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
 
+3.616-(12/26/21)--Hotfix 25
+
+--Added
+
+-Safe Mode, by holding Capslock and moving your curser to the far left or far top of your screen (or both), you can make the mod not load specific content, as follows:
+-Top of the screen stops File System-related stuff from loading (no windows text code, no steamID), and forces nightmare mode to unlock
+-Left of the screen stops IL patches and Hookend points from loading
+-These can be combined
+
+
+--Changed:
+
+-Buffed MrCreeper Armor: Each piece gives DoT resistance: (head,body,leggings respectively => (25%,35%,15%))
+
+-Nerfed JellyBru Armor: Each piece decreases DoT resistance: (head,body,leggings respectively => (35%,50%,15%))
+
+
+--Fixed:
+
+-Maybe fixed the MAC issue this time?
+
+
+
+3.615-(12/25/21)--Patch 14
+
+--Added
+
+-Transformer, Hearts of the Cards, Flask of Life Leech
+
+-Space Bender Potion: the former debuff can now be made as a buff post Hellion
+
+-Various new resprites by Kooyah of his older work, including Surt, Brimflame harbinger, Dank Cores, and ther armor set and other items from the Mangrove set
+
+
+--Changed:
+
+-Various changes to the Deeper Dungeons:
+-multi-color touches line the halls, based on their respective wall type
+-Objects should no longer be able to hang from/spawn on spikes
+
+-Various changes to Near Orbit:
+-Pheathon can be found again, and his asteriods don't spawn til you beat them, various internal changes to fix issues with the boss, read below
+-Vibranium Crystals are excluded from being smoothed, and appear a bit different
+
+-Luminite Wraith's 1st form has been renamed to Terra Wraith (and the real fight is no longer called a rematch)
+
+-Warped Reality no longer takes life, that has been moved to a player-made version of the debuff
+
+-Trigger Finger Potion now affects 'all' revolver-class items, including the Soldier's Rocket Launcher
+
+-Sharkvern summon no longer requires souls of light, clouds have a bit more delay before lightning strikes, and lightning damage reduced to 75
+
+-Sandscorched enemies should no longer be able to spawn on beachesz
+
+-Splunker Jellyfish have a 1/50 chance to drop a Jellyfish Necklace, Swamp Jelly have a 1/50 to drop a Murky Charm
+
+-Sharkvern now gives of a warning in chat when his world effect comes into play
+
+-Added Pinky (25), Present Mimic (25), Elite Bat (50), and Prismic Banshee (300) to the list of enemies that give Expertise (only on new characters thou), Expertise given costs of others altered
+
+-Added Divinity Callers to the Commando Emblem's recipe
+
+-Prismal Breathing Gear is now pre-Moon Lord again, requiring Prismal Bars
+
+-Buffed Hallowed Visor: Throwing crit chance increased to 10% (from 6%)
+
+-Buffed Big Dakka: Charged Shot explosions can now crit (I think this was something I didn't intentionally leave out)
+
+-Buffed Ragnarok Brew: boost increassed, also Boosts Apoco Strength, and the buff displays the boost now
+
+-Buffed Pickaxe Yoyos: increased "power" of spinning pickaxes in mining, range on all reduced to 300 (same as Excavator), move speed reduced on later upgrades a bit
+
+-Buffed all Javelins: damage boosted slightly on all (except pearlwood, which is already solid)
+
+-Buffed Amber Javelin: Moved to post evil, damage increased to 20 (from 18), crafting recipe adjusted
+
+-Buffed Kelvin: Kelvin is held out a bit longer and goes a bit further, it does bonus damage against lava immune enemies
+
+-Buffed Gatlipiller: now has a 50% chance to not consume ammo
+
+-Buffed Trigger Finger Potion: Boosted to 25% faster firing speed
+
+-Buffed Sparing Spurs: Gives 3 defense while firing, and 8 while reloading, speed increased, acceleration increased, and immunity to knockback if on ground
+
+-Buffed Revolving West: Damage increased (28 => 42), firing speed greatly increased (30 => 12, alt: 40 => 16)
+
+-Buffed Big Bang: Mana to swing reduced (10 => 7), swing speed increased (26 => 20), summoned swords are more accurate, and there is no longer a delay on swinging
+
+-Rebalanced Surt and Brimflame Harbinger: the explosions can go down steeper cliffs now, and the Brimeflame explosions have been tinkered with, let me know if it's better or worse!
+
+-Rebalanced Dragon's might: now affects summmoning damage, more so than normal damage types, other types reduced to 30%, Duration increased to 30 seconds
+
+-Rebalanced Soldier's Rocket Launcher: level 1 emblem damage boost reduced to 20% (from 30%), level 4 emblem now has the ability to crit slowed enemies
+
+-Rebalanced Snowfall, Yellow Winter, Cursed Hail: Knockback reduced to 2 (from 10)
+
+-Rebalanced Tech Master's Gear: Removed reduced aggro as Flesh Knuckles would balance it out
+
+-New changes to Phaethon:
+-Reintroduced back into the mod after being silently removed last update
+-Should no longer be able to spawn/stop inside of asteriods, and tethers should no longer fly out into space
+-This is still a WIP; the rework will come at a later date
+
+-New changes to Supreme Pinky:
+-Final attack has an new visual (yay more Old One's Army reused content!)
+
+-New changes to Spirit of Caliburn:
+-Each sword has an exclusive additional (except Caliburn C) attack for each fight, The crystal dash ring has been moved to be Caliburn C exclusion and now covers all angles; it is also slightly larger
+
+-New changes to Wrath of Caliburn:
+-1st phase has all the previously mentioned Spirit of Caliburn additions active
+-2nd phase Swords dash into the ground after a delay, allowing you to get damage on the boss; they remain in place for about 2 attack cycles
+
+-New changes to Hellion Core:
+-3rd phase hands will only charge at you if the hands and boss's angle difference to the player is small enough (in other words, they won't fly at you from all directions anymore), charging min distance has been reduced
+
+-New changes to Helen Hellion Weygold:
+-Warped Reality renamed to Hellion's Warped Reality: no longer grants downsides
+-FNF attack notes don't do damage, but a new debuff and an attack are introduced to keep you moving regardless
+
+
+--Fixed:
+
+-The game window can no longer change text on other OS's that aren't Windows based: should stop the mac from crashing on MAcs
+
+-Incorrect discription on Empowered Wraith Core
+
+-Blazewyrm deleting melee projectiles
+
+-Megidola using an incorrect sprite
+
+-Old One's Army breaking
+
+-Portalable-held trap weapons breaking grass when held
+
+-Fixed the soul jar draw code, for real this time
+
+-Fixed Dev Armors (also Manifested Items) vanishing on inventory sorting
+
+-Stranger Portal spawning outside the Deeper Dungeons
+
+-Traveling Merchant not selling Rocket I's with Soldier's Rocket Launcher
+
+-Crate drop rates being reversed: dropping more when the boss is beaten VS otherwise
+
+-SGAmod Flasks flat out boosting all weapons (surprised this went under the radar for so long), also Flask of Acid not working
+
+
 3.613-(12/18/21)-Patch 13
 
 -Added:

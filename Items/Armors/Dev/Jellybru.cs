@@ -78,13 +78,14 @@ namespace SGAmod.Items.Armors.Dev
 			player.statManaMax2 += 50;
 			player.manaRegenBonus += player.SGAPly().EnergyDepleted ? 250 : 100;
 			player.manaRegenDelayBonus += 2;
-
+			player.SGAPly().DoTResist += 0.30f;
 		}
 
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "Jellybru", "+14% magic damage and crit chance, +50 Mana"));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", "Mana regen is greatly improved, Regen delay is reduced"));
+			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.Red, "30% Increased DoT damage taken")));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "--When Shield Down--")));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "Mana regen is improved to extreme levels!")));
 			return tooltips;
@@ -149,6 +150,7 @@ namespace SGAmod.Items.Armors.Dev
 				player.magicDamage += 0.16f;
 				player.manaCost *= 0.80f;
 				player.statManaMax2 += 100;
+			player.SGAPly().DoTResist += 0.50f;
 
 			if (sgaply.EnergyDepleted)
 			{
@@ -161,6 +163,7 @@ namespace SGAmod.Items.Armors.Dev
 			{
 			tooltips.Add(new TooltipLine(mod, "Jellybru", "+16% magic damage, +100 Mana"));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", "magic cost reduced by 20%, minorly increased Life Regen"));
+			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.Red, "50% Increased DoT damage taken")));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "--When Shield Down--")));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "Gain the powers of the nebula pillar!")));
 			return tooltips;
@@ -199,12 +202,14 @@ namespace SGAmod.Items.Armors.Dev
 			player.statManaMax2 += 50;
 			player.moveSpeed += sgaplayer.EnergyDepleted ? 6f : 2f;
 			player.accRunSpeed += sgaplayer.EnergyDepleted ? 6f : 2f;
+			player.SGAPly().DoTResist += 0.20f;
 
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "Jellybru", "+15% magic damage, +50 Mana"));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", "Movement and horizontal flight speed increased"));
+			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.Red, "20% Increased DoT damage taken")));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "--When Shield Down--")));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "Gain a great speed increase!")));
 			return tooltips;

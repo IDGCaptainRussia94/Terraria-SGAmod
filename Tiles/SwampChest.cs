@@ -12,7 +12,8 @@ namespace SGAmod.Tiles
 {
 	public class SwampChest : ModTile
 	{
-		public override void SetDefaults() {
+		public override void SetDefaults()
+		{
 			Main.tileSpelunker[Type] = true;
 			Main.tileContainer[Type] = true;
 			Main.tileShine2[Type] = true;
@@ -93,10 +94,12 @@ namespace SGAmod.Tiles
 			Main.mouseRightRelease = false;
 			int left = i;
 			int top = j;
-			if (tile.frameX % 36 != 0) {
+			if (tile.frameX % 36 != 0)
+			{
 				left--;
 			}
-			if (tile.frameY != 0) {
+			if (tile.frameY != 0)
+			{
 				top--;
 			}
 			if (player.sign >= 0) {
@@ -121,12 +124,14 @@ namespace SGAmod.Tiles
 					Recipe.FindRecipes();
 					Main.PlaySound(SoundID.MenuClose);
 				}
-				else {
+				else
+				{
 					NetMessage.SendData(MessageID.RequestChestOpen, -1, -1, null, left, (float)top, 0f, 0f, 0, 0, 0);
 					Main.stackSplit = 600;
 				}
 			}
-			else {
+			else
+			{
 				if (isLocked)
 				{
 					int key = ModContent.ItemType<Items.SwampKey>();
@@ -141,7 +146,8 @@ namespace SGAmod.Tiles
 						}
 					}
 				}
-				else {
+				else
+				{
 					int chest = Chest.FindChest(left, top);
 					if (chest >= 0) {
 						Main.stackSplit = 600;
@@ -166,7 +172,8 @@ namespace SGAmod.Tiles
 			return true;
 		}
 
-		public override void MouseOver(int i, int j) {
+		public override void MouseOver(int i, int j)
+		{
 			Player player = Main.LocalPlayer;
 			Tile tile = Main.tile[i, j];
 			int left = i;
@@ -184,7 +191,8 @@ namespace SGAmod.Tiles
 			if (chest < 0) {
 				player.showItemIconText = Language.GetTextValue("LegacyChestType.0");
 			}
-			else {
+			else
+			{
 				player.showItemIconText = Main.chest[chest].name.Length > 0 ? Main.chest[chest].name : "Swamp Chest";
 				if (player.showItemIconText == "Swamp Chest") {
 					player.showItemIcon2 = ModContent.ItemType<Items.Placeable.SwampChest>();
@@ -197,7 +205,8 @@ namespace SGAmod.Tiles
 			player.showItemIcon = true;
 		}
 
-		public override void MouseOverFar(int i, int j) {
+		public override void MouseOverFar(int i, int j)
+		{
 			MouseOver(i, j);
 			Player player = Main.LocalPlayer;
 			if (player.showItemIconText == "")

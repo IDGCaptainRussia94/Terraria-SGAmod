@@ -88,6 +88,10 @@ namespace SGAmod
 	{
 		void PostEffectsDraw(SpriteBatch spriteBatch,float drawScale);
 	}
+	interface IDrawThroughFog
+	{
+		void DrawThroughFog(SpriteBatch spriteBatch);
+	}
 	interface IHitScanItem
 	{
 

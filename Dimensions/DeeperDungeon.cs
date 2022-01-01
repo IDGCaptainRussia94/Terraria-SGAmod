@@ -121,8 +121,10 @@ namespace SGAmod.Dimensions
         public static int branchoffchance = 40;
         public static float branchedPathsScale = 1f;
         public static float lightchancefortiles = 1f;
-        public static int LootRoomMaxTiles = 100;
-        public static int LootRoomTries = 10;
+
+        public static int LootRoomMaxTiles = 75;
+        public static int LootRoomTries = 15;
+
         public static List<Platforms> lastplatformy = new List<Platforms>();
         public static List<LootRoomLocation> LootRooms = new List<LootRoomLocation>();
 
@@ -749,8 +751,10 @@ namespace SGAmod.Dimensions
                 int tilecounter = 0;
             goback:
                 tilecounter = 0;
+
                 if (tryit > DeeperDungeon.LootRoomTries)
                     return;
+
                 there = DeeperDungeon.pathwayrooms[i].vector + (DeeperDungeon.pathwayrooms[i].direction.RotatedBy(MathHelper.ToRadians(UniRand.Next(-90, 90))) * (20 + (tryit) * 3));
                 rect2 = new Rectangle((int)(there.X - 20), (int)(there.Y - 10), 40, 20);
                 for (int x = rect2.X; x < rect2.X + rect2.Width; x += 1)
@@ -1029,7 +1033,8 @@ namespace SGAmod.Dimensions
 
         public static int[] CommonItems => new int[] { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone"), SGAmod.Instance.ItemType("MagusSlippers"), SGAmod.Instance.ItemType("YoyoTricks"), SGAmod.Instance.ItemType("Megido") };
         public static int[] RareItems => new int[] { SGAmod.Instance.ItemType("BenchGodsFavor"), SGAmod.Instance.ItemType("PortalEssence"), SGAmod.Instance.ItemType("DungeonSplunker"), SGAmod.Instance.ItemType("InterdimensionalPartyHat") };
-        public static int[] ShadowItems => new int[] { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow, SGAmod.Instance.ItemType("BeserkerAuraStaff"), SGAmod.Instance.ItemType("EnchantedFury"), SGAmod.Instance.ItemType("CardDeckPersona") };
+        public static int[] ShadowItems => new int[] {SGAmod.Instance.ItemType("BeserkerAuraStaff"), SGAmod.Instance.ItemType("EnchantedFury"), SGAmod.Instance.ItemType("CardDeckPersona") };
+        //public static int[] ShadowItemsVanilla => new int[] { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow};
 
     public static void AddStuffToChest(int chestid, int loottype,UnifiedRandom unirand)
         {
@@ -1105,6 +1110,10 @@ namespace SGAmod.Dimensions
 
                     int index = unirand.Next(0, ShadowItems.Length);
                     Main.chest[chestid].item[e].SetDefaults(ShadowItems[index]);
+                    Main.chest[chestid].item[e].stack = 1;
+                    e += 1;
+
+                    Main.chest[chestid].item[e].SetDefaults(ItemID.LockBox);
                     Main.chest[chestid].item[e].stack = 1;
                     e += 1;
 

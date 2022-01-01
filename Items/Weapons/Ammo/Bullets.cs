@@ -309,7 +309,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			spriteBatch.Draw(inner, position+ (new Vector2(4f,8f)*scale), null, drawColor, Main.GlobalTime, new Vector2(inner.Width / 2, inner.Height / 2), scale, SpriteEffects.None, 0f);
 			spriteBatch.Draw(Main.itemTexture[item.type], position, frame, drawColor, 0, origin, scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 			return false;
 		}
 
@@ -365,7 +365,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			shader.Apply(null);
 			spriteBatch.Draw(Main.itemTexture[item.type], position, frame, drawColor,0, origin, scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 			return false;
 		}
 		public override void SetDefaults()
@@ -465,7 +465,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			shader.Apply(null);
 			spriteBatch.Draw(Main.itemTexture[item.type], position, frame, drawColor, 0, origin, scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 			return false;
 		}
 		public override void SetDefaults()

@@ -181,7 +181,7 @@ namespace SGAmod
 				fargos.Call("AddSummon", 14.8f, "SGAmod", "WraithCoreFragment3", (Func<bool>)(() => SGAWorld.downedWraiths > 2), Item.buyPrice(0, 10, 0, 0));
 				fargos.Call("AddSummon", 15f, "SGAmod", "SalvagedCrate", (Func<bool>)(() => SGAWorld.downedCratrosityPML), Item.buyPrice(0, 50, 0, 0));
 				fargos.Call("AddSummon", 16f, "SGAmod", "Prettygel", (Func<bool>)(() => SGAWorld.downedSPinky), Item.buyPrice(0, 15, 0, 0));
-				fargos.Call("AddSummon", 17.5f, "SGAmod", "HellionSummon", (Func<bool>)(() => SGAWorld.downedHellion > 0), Item.buyPrice(5, 0, 0, 0));
+				fargos.Call("AddSummon", 17.5f, "SGAmod", "HellionSummon", (Func<bool>)(() => SGAWorld.downedWraiths > 2 && SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML), Item.buyPrice(5, 0, 0, 0));
 			}
 
 			Mod census = ModLoader.GetMod("Census");
@@ -223,14 +223,14 @@ namespace SGAmod
 
 				bossList.Call("AddBoss", 10.5f, ModContent.NPCType<Cratrosity>(), this, "Cratrosity", (Func<bool>)(() => SGAWorld.downedCratrosity), new List<int>() { ModContent.ItemType<TerrariacoCrateBase>(), ItemID.GoldenKey, ItemID.NightKey, ItemID.LightKey }, new List<int>() { }, new List<int>() { ModContent.ItemType<IdolOfMidas>(), ModContent.ItemType<TerrariacoCrateKey>(), ModContent.ItemType<CrateBossWeaponMelee>(), ModContent.ItemType<CrateBossWeaponRanged>(), ModContent.ItemType<CrateBossWeaponMagic>(), ModContent.ItemType<CrateBossWeaponSummon>(), ModContent.ItemType<CrateBossWeaponThrown>(), ModContent.ItemType<TF2Emblem>() }, "Right Click a [i:" + ItemType("TerrariacoCrateBase") + "] while you have any of the listed keys in your inventory at night", "All players have paid up their lives to microtransactions", "SGAmod/NPCs/Cratrosity/CratrosityLog");
 
-				bossList.Call("AddBoss", 11.25f, ModContent.NPCType<TPD>(), this, "Twin Prime Destroyers", (Func<bool>)(() => SGAWorld.downedTPD), new List<int>() { ModContent.ItemType<Mechacluskerf>() }, new List<int>() { }, new List<int>() { ItemID.ChlorophyteBar, ItemID.ShroomiteBar, ItemID.SpectreBar, ItemID.Ectoplasm, ModContent.ItemType<StarMetalMold>() }, "Use a [i:" + ItemType("Mechacluskerf") + "] anywhere at night");
+				bossList.Call("AddBoss", 11.25f, ModContent.NPCType<TPD>(), this, "Twin Prime Destroyers", (Func<bool>)(() => SGAWorld.downedTPD), new List<int>() { ModContent.ItemType<Mechacluskerf>() }, new List<int>() { }, new List<int>() { ItemID.ChlorophyteBar, ItemID.ShroomiteBar, ItemID.SpectreBar, ItemID.Ectoplasm, ModContent.ItemType<StarMetalMold>() }, "Use a [i:" + ItemType("Mechacluskerf") + "] anywhere at night", "Terraria/OneDropLogo", "Terraria/OneDropLogo", (Func<bool>)(() => SGAWorld.downedTPD));
 
 				bossList.Call("AddBoss", 11.85f, ModContent.NPCType<Harbinger>(), this, "Doom Harbinger", (Func<bool>)(() => SGAWorld.downedHarbinger), new List<int>() { ModContent.ItemType<TruelySusEye>() }, new List<int>() { }, new List<int>() { }, "Use a [i:" + ItemType("TruelySusEye") + "] (Semi-removed Boss)","Harbinger is gone", "Terraria/OneDropLogo", "Terraria/OneDropLogo", (Func<bool>)(() => SGAWorld.downedHarbinger));
 
 				if (SGAmod.SpaceBossActive)
 				{
 					List<int> PhaethonDrops = new List<int>() { ModContent.ItemType<OverseenCrystal>(), ModContent.ItemType<StarMetalMold>(), ModContent.ItemType<PhaethonEye>() };
-					bossList.Call("AddBoss", 11.86f, ModContent.NPCType<Dimensions.NPCs.SpaceBoss>(), this, "Phaethon", (Func<bool>)(() => SGAWorld.downedSpaceBoss), new List<int>() { }, new List<int>() { }, PhaethonDrops, "Found in Near Orbit", "The cosmos accept another prey", "Terraria/Confuse", "Terraria/Confuse", (Func<bool>)(() => SGAWorld.downedSpaceBoss));
+					bossList.Call("AddBoss", 11.86f, ModContent.NPCType<Dimensions.NPCs.SpaceBoss>(), this, "Phaethon", (Func<bool>)(() => SGAWorld.downedSpaceBoss), new List<int>() { }, new List<int>() { }, PhaethonDrops, "Found in Near Orbit", "The cosmos accept another prey", "SGAmod/NPCs/DimBosses/PhaethonLog", "SGAmod/Doom_Harbinger_Resprite_pupil", (Func<bool>)(() => true));
 				}
 
 				bossList.Call("AddBoss", 13.1f, ModContent.NPCType<LuminiteWraith>(), this, "Terra Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() { ItemID.LunarCraftingStation }, "Use a [i:" + ItemType("WraithCoreFragment3") + "], defeat this boss to get the Ancient Manipulator.", "", "SGAmod/NPCs/Wraiths/LWraithLog", "SGAmod/NPCs/Wraiths/LuminiteWraith_Head_Boss");
@@ -287,6 +287,10 @@ namespace SGAmod
 				yabhb.Call("hbStart");
 				yabhb.Call("hbForceSmall", true);
 				yabhb.Call("hbFinishMultiple", ModContent.NPCType<CratrosityCrateDankCrate>(), ModContent.NPCType<CratrosityCrate2334>(), ModContent.NPCType<CratrosityCrate2335>(), ModContent.NPCType<CratrosityCrate2336>(), ModContent.NPCType<CratrosityCrate3203>(), ModContent.NPCType<CratrosityCrate3204>(), ModContent.NPCType<CratrosityCrate3205>(), ModContent.NPCType<CratrosityCrate3206>(), ModContent.NPCType<CratrosityCrate3207>(), ModContent.NPCType<CratrosityCrate3208>());
+
+				yabhb.Call("hbStart");
+				//yabhb.Call("hbForceSmall", true);
+				yabhb.Call("hbFinishMultiple", ModContent.NPCType<Dimensions.NPCs.SpaceBossShadowNebulaEnemy>());
 
 				yabhb.Call("hbStart");
 				yabhb.Call("hbFinishMultiple", NPCType("Harbinger"), NPCType("Harbinger"));

@@ -100,6 +100,8 @@ namespace SGAmod
             modtimer = 0;
             Instance = this;
 
+            Tiles.Monolith.CelestialMonolithTE.ResetTEs();
+
             if (Dimensions.SGAPocketDim.WhereAmI != null)
             downedSpaceBoss = false;
 
@@ -753,6 +755,16 @@ namespace SGAmod
                           progress.Message = "Hiding Caliburn's Gifts";
                           Generation.NormalWorldGeneration.GenAllCaliburnShrine();
                       }));
+                }
+
+                if (SGAConfig.Instance.DankShrines)
+                {
+                    int CaliburnShrines = tasks.FindIndex(genpass => genpass.Name.Equals("Settle Liquids Again"))+1;
+                    tasks.Add(new PassLegacy("Caliburn Shrines Post Liquid Settle", delegate (GenerationProgress progress)
+                    {
+                        progress.Message = "(Un)cleaning Caliburn's Shrines";
+                        Generation.NormalWorldGeneration.MuddifyShrines();
+                    }));
                 }
 
             }

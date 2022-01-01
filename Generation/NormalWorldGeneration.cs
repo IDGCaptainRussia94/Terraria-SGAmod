@@ -19,12 +19,17 @@ namespace SGAmod.Generation
 {
     public class NormalWorldGeneration
     {
+        public static List<Point> allDankWater = new List<Point>();
+        public static List<List<Point>> eachShrineWater = new List<List<Point>>();
+
         public static void GenAllCaliburnShrine()
         {
+            eachShrineWater = new List<List<Point>>();
             //PlaceCaiburnShrine(new Vector2(80, 30));
             for (int num = 0; num < SGAWorld.CaliburnAlterCoordsX.Length; num++)
             {
                 GenCaliburnShrine(num);
+                eachShrineWater.Add(allDankWater);
             }
 
         }
@@ -33,6 +38,8 @@ namespace SGAmod.Generation
             bool foundspot = false;
             Vector2 here = new Vector2();
             Tile tstart;
+            allDankWater = new List<Point>();
+
 
 
             for (int tries = 0; tries < 50000; tries++)
@@ -91,9 +98,13 @@ namespace SGAmod.Generation
             {
                 for (ybuffer = -buffersizey; ybuffer < buffersizey; ybuffer++)
                 {
-                    Tile tile = Framing.GetTileSafely((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer);
+                    Point loc = new Point((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer);
+                    Tile tile = Framing.GetTileSafely(loc.X, loc.Y);
                     IDGWorldGen.PlaceMulti(placementspot + new Vector2(xbuffer, ybuffer), tiletype, 4, walltype);
-                    deways.Add(new Vector2((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer));
+                    deways.Add(new Vector2(loc.X, loc.Y));
+
+                    allDankWater.Add(loc);
+
                     if (generation > 1000)
                     {
                         if (xbuffer < 2 && xbuffer > -2)
@@ -185,10 +196,11 @@ namespace SGAmod.Generation
             {
                 for (ybuffer = -buffersizey; ybuffer < buffersizey; ybuffer++)
                 {
-                    Tile tile = Framing.GetTileSafely((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer);
+                    Point loc = new Point((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer);
+                    Tile tile = Framing.GetTileSafely(loc.X, loc.Y);
                     IDGWorldGen.PlaceMulti(placementspot + new Vector2(xbuffer, ybuffer), SGAmod.Instance.TileType("MoistStone"), 4, SGAmod.Instance.WallType("SwampWall"));
-                    dewaysMainroom.Add(new Vector2((int)placementspot.X + (int)xbuffer, (int)placementspot.Y + (int)ybuffer));
-
+                    dewaysMainroom.Add(new Vector2(loc.X, loc.Y));
+                    allDankWater.Add(loc);
                 }
 
             }
@@ -199,6 +211,8 @@ namespace SGAmod.Generation
             PlaceCaiburnHallway(placementspot + new Vector2(buffersizex * 1, 0), 12, 6, 0, ref deways, 0, t1, t2);
             PlaceCaiburnHallway(placementspot + new Vector2(-buffersizex * 1, 0), 12, 6, 2, ref deways, 0, t1, t2);
 
+
+            //Clear out area
             for (int aaa = 0; aaa < deways.Count; aaa++)
             {
                 if ((int)deways[aaa].Y < heighestTile)
@@ -211,6 +225,7 @@ namespace SGAmod.Generation
 
             }
 
+            //Turn to water
             foreach (Vector2 point in deways.Where(testby => testby.Y > lowestTile - 150))
             {
                 if (point.Y + WorldGen.genRand.Next(150)> lowestTile)
@@ -219,6 +234,8 @@ namespace SGAmod.Generation
                     tile.liquid = 20;
                 }
             }
+
+            //Remove top area
             HashSet<Point16> removes = new HashSet<Point16>();
             foreach (Vector2 point in deways.Where(testby => testby.Y < heighestTile + 3))
             {
@@ -235,6 +252,7 @@ namespace SGAmod.Generation
                 }
             }
 
+            //turn to biomass
             foreach (Point16 point2 in removes)
             {
                 Tile tile = Framing.GetTileSafely(point2.X, point2.Y);
@@ -242,6 +260,12 @@ namespace SGAmod.Generation
                 tile.type = (ushort)ModContent.TileType<Biomass>();
             }
 
+
+            //Fill some water area with Moist Sand
+            //Liquid.QuickWater(3);
+            //WaterCheck();
+
+            //Do general object placement
             for (int aaa = 0; aaa < deways.Count; aaa++)
             {
                 if (WorldGen.genRand.Next(0, 100) <20)
@@ -250,7 +274,7 @@ namespace SGAmod.Generation
                     if (tile.active())
                     {
                         string[] onts = new string[] { "SwampGrassGrow", "SwampGrassGrow2", "SwampGrassGrow3" };
-                        WorldGen.PlaceObject((int)deways[aaa].X, (int)deways[aaa].Y, SGAmod.Instance.TileType(onts[Main.rand.Next(onts.Length)]), true);
+                        WorldGen.PlaceObject((int)deways[aaa].X, (int)deways[aaa].Y, SGAmod.Instance.TileType(onts[WorldGen.genRand.Next(onts.Length)]), true);
                     }
 
                 }
@@ -282,11 +306,21 @@ namespace SGAmod.Generation
 
                     if (tile1.active() && tile2.active() && !tile3.active() && !tile4.active() && findone == Vector2.Zero)
                     {
-
-                        int thechest = WorldGen.PlaceChest((int)deways[aaa].X, (int)deways[aaa].Y, 21, false, 12);
+                        Point loc = new Point((int)deways[aaa].X, (int)deways[aaa].Y);
+                        int thechest = WorldGen.PlaceChest(loc.X, loc.Y, 21, false, 12);
 
                         if (thechest > 0)
                         {
+                            for (int xx = 0; xx < 2; xx += 1)
+                            {
+                                for (int yy = 0; yy < 2; yy += 1)
+                                {
+                                    Tile tile = Framing.GetTileSafely((int)deways[aaa].X+xx, (int)deways[aaa].Y+yy-1);
+                                    tile.color((byte)Paints.DeepGreen);
+                                }
+                            }
+                            
+
                             List<int> loot = new List<int> { 2344, 2345, 2346, 2347, 2348, 2349, 2350, 2351, 2352, 2353, 2354, 2355, 2356, 2359, 301, 302, 303, 304, 305, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 226, 188, 189, 110, 28 };
 
                             List<int> lootmain = new List<int> { SGAWorld.WorldIsNovus ? SGAmod.Instance.ItemType("UnmanedOre") : SGAmod.Instance.ItemType("NoviteOre"), SGAmod.Instance.ItemType("DankWood"), SGAmod.Instance.ItemType("DankWood"), SGAmod.Instance.ItemType("Biomass"), SGAmod.Instance.ItemType("DankWood"), ItemID.SilverCoin, ItemID.LesserManaPotion };
@@ -386,6 +420,78 @@ namespace SGAmod.Generation
             SGAWorld.CaliburnAlterCoordsY[type] = (int)placementspot.Y * 16;
 
 
+        }
+
+        public static void MuddifyShrines()
+        {
+
+            Liquid.QuickWater(3);
+            WorldGen.WaterCheck();
+            int num78 = 0;
+            Liquid.quickSettle = true;
+            while (num78 < 10)
+            {
+                int num79 = Liquid.numLiquid + LiquidBuffer.numLiquidBuffer;
+                num78++;
+                float num80 = 0f;
+                while (Liquid.numLiquid > 0)
+                {
+                    float num81 = (float)(num79 - (Liquid.numLiquid + LiquidBuffer.numLiquidBuffer)) / (float)num79;
+                    if (Liquid.numLiquid + LiquidBuffer.numLiquidBuffer > num79)
+                    {
+                        num79 = Liquid.numLiquid + LiquidBuffer.numLiquidBuffer;
+                    }
+                    if (num81 > num80)
+                    {
+                        num80 = num81;
+                    }
+                    else
+                    {
+                        num81 = num80;
+                    }
+                    if (num78 == 1)
+                    {
+                        //progress.Set(num81 / 3f + 0.33f);
+                    }
+                    int num82 = 10;
+                    if (num78 > num82)
+                    {
+                        num82 = num78;
+                    }
+                    Liquid.UpdateLiquid();
+                }
+                WorldGen.WaterCheck();
+            }
+            Liquid.quickSettle = false;
+
+
+
+
+
+
+
+
+
+
+            foreach (List<Point> waterPoints in eachShrineWater)
+            {
+
+                int indexWaterTile = 0;
+                foreach (Point floodedTilePoint in waterPoints.Distinct().Where(testby => Main.tile[testby.X, testby.Y].liquid > 250).OrderBy(testby => 100000-testby.Y+WorldGen.genRand.Next(-4,4)))
+                {
+                    if (indexWaterTile < waterPoints.Count / 2)
+                    {
+
+                        Tile tileAbove = Framing.GetTileSafely(floodedTilePoint.X, floodedTilePoint.Y- WorldGen.genRand.Next(2, 5));
+                        if (tileAbove.liquid > 250)
+                        {
+                            Tile tile = Framing.GetTileSafely(floodedTilePoint.X, floodedTilePoint.Y);
+                            WorldGen.PlaceTile(floodedTilePoint.X, floodedTilePoint.Y, ModContent.TileType<MoistSand>(), false, true);
+                        }
+                    }
+                    //indexWaterTile += 1;
+                }
+            }
         }
 
 

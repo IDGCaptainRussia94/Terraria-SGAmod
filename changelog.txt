@@ -1,6 +1,83 @@
 
 Changelog:
 
+3.620-(12/26/21)--Patch 15
+
+--Added
+
+-Celestial Monolith, Helios Focus Crystal, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Empty Plasma Cell
+
+-Speedymatt123's Hellion Painting: a Nightmare Mode exclusive reward!
+
+-Resprite for Dies Irae Stone (thx JellyBru!)
+
+-Fully Finished Sprite Sheet for Cratrosity (Thanks Rijam!)
+
+--Changed:
+
+-Various changes to the Dank Shrines:
+-now has piles of Moist Sand filling up the water areas
+
+-Various changes to the Deeper Dungeons:
+-adjusted Loot Room spawn conditions a bit
+-Shadow Chests no longer can contain vanilla Shadow Chest items, instead they now always contain a Lockbox AND one of the SGAmod Shadow Chest items
+
+-Various changes to Near Orbit:
+-Added Space Station structures, their blocks aren't minable but house a breathable-normal gravity area
+-Ore Generation has been changed a bit
+-Can now generate Fragement Blocks after moonlord is defeated
+-Astral Luminite can now only be mined after moonlord is defeated
+
+-Supreme Pinky's 'Treasure Bag' can no longer be opened in Subworlds
+
+-Cratrosity/Cratrogeddon can now be summoned during the day
+
+-Luminous Alter is now crafted at a Lihzard Altar
+
+-Phaethon now always shows up in boss checklist (also added checklist sprite), Twin Prime Destroyers is now hidden til beaten
+
+-Mutant will now sell Reality's Sunder when you are 1st able to fight Hellion Core
+
+-Demon Steppers now lose the Frog Leg jump/fly boost when in Walk Mode
+
+-Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
+
+-Nerfed Pickaxe Yoyos: decreased "power" of spinning pickaxes in mining; this is not a revert, they are still stronger than before the previous patch
+
+-Buffed Hallowed Visor: defense increased by 1
+
+-Nerfed Mangrove Armor: defense reduced (head/chest/leggings: 12,16,8 => 8,12,6), combined damage and crit reduced to 20%/10% respectively
+
+-Nerfed Mangrove Leggings: throwing speed bonus reduced to 10%, fixed extra 20% leading to a total of a 40% faster speed boost, reduced movement max speed
+
+-New changes to Phaethon:
+-Will always use Shadow Nebula at the start of phase 3
+-Shadow Nebula completely reworked, boss releases several orbs the player must destroy in order to end the attack: Phaethon can no longer be hurt, grab asteriods, or shield during this attack, and tries to chase the player
+-(todo) Shadow Nebula also changes most of his attacks as well
+-(todo) The Outpost Space Stations spawn with a crystal that heals the boss (at longer/slower rate when shielded), and mining fatigues the player in range
+-Now drops Greater Healing Potions instead of lesser Healing Potions
+
+
+
+
+-Removed Early Luminite config option
+
+
+--Fixed:
+
+-Black Leeches seemingly (no, really infact) teleporting onto the player
+
+-Giant Ice Cube being only sold in Hardmode
+
+-Starfish Burster not saving ammo
+
+-Stranger Portal spawning outside the Deeper Dungeons (for real hopefully)
+
+-Buff Burning not working as expected, even when you had it disabled it was having an effect (without it showing visually)
+
+-Xenith shooting Betsy Arrows on the Bees Knees and the Hellwing Bow
+
+
 
 3.616-(12/26/21)--Hotfix 25
 

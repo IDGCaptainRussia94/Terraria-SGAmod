@@ -98,11 +98,13 @@ namespace SGAmod
 		public int hellionTimer = 0;
 		public int counter = 0;
 		public int impaled = 0;
+		public int invertedTime = 0;
 		public byte crimsonCatastrophe = 0;
 		private int nonStackingImpaled_;
 		public int PinkyMinion = 0;
 		public int watched = 0;
 		public bool NoHit = true;
+		public bool treatAsNight = false;
 		public static bool dropFork = false;
 		public List<DamageStack> damageStacks = new List<DamageStack>();
 
@@ -190,6 +192,9 @@ namespace SGAmod
 			drawonce = true;
 			reducedDefense = 0;
 			crimsonCatastrophe = (byte)Math.Max(crimsonCatastrophe - 1, 0);
+			if (invertedTime > 0)
+				invertedTime -= 1;
+
 			if (Snapped > 0)
 			{
 				if (Snapped == 2)
@@ -1161,7 +1166,7 @@ namespace SGAmod
 			}
 
 			bool rocket = false;
-			if (Main.rand.Next(0, 3) == 0 && Main.hardMode)
+			if (Main.rand.Next(0, 3) == 0)
 			{
 				shop[nextSlot] = ModContent.ItemType<Items.Mounts.GiantIceCube>();
 				nextSlot++;

@@ -68,6 +68,7 @@ namespace SGAmod
 		public int manaBoost = 0;
 		public float DoTResist = 1f;
 		public int potionFatigue = 0;
+		public byte invertedTime = 0;
 		public (int,byte) skylightLightInfused = (0,0);
 		public (int, int) PolarityHarbPower = (0, 0);
 
@@ -143,6 +144,10 @@ namespace SGAmod
 		public bool voidEmbrancers = false;
 		public bool transformerAccessory = false;
 		public bool gravBoots = false;
+		public bool highStakesSet = false;
+		public int liquidGambling = 0;
+		public bool experimentalPathogen = false;
+		public bool concussionDevice = false;
 		public FlaskOfBlaze flaskBuff = default;
 		public (bool,int) snakeEyes = (false,0);
 		public (float, float) auraBoosts = (0, 0);
@@ -324,6 +329,8 @@ namespace SGAmod
 			{
 				beserk[0] = 0; beserk[1] = 0;
 			}
+			if (invertedTime > 0)
+				invertedTime -= 1;
 
 			if (soldierboost > 0)
 				soldierboost -= 1;
@@ -427,12 +434,19 @@ namespace SGAmod
 			aversionCharm = false;
 			SybariteGem = false;
 			personaDeck = false;
+			highStakesSet = false;
+
+			if (liquidGambling > 0)
+				liquidGambling--;
+
+			experimentalPathogen = false;
+			concussionDevice = false;
 			UseTimeMul = 1f;
 			UseTimeMulPickaxe = 1f;
 			ThrowingSpeed = 1f;
 			SpaceDiverset = false;
 			acidSet = (false, false);
-			jungleTemplarSet = (false,false);
+			jungleTemplarSet = (false, false);
 			desertSet = false;
 			potionsicknessincreaser = 0;
 			Blazewyrmset = false;
@@ -474,10 +488,10 @@ namespace SGAmod
 			{
 				if (NoHitCharmTimer > 999999)
 				{
-					player.KillMe(PlayerDeathReason.ByCustomReason(player.name+ " attempted to break free of Cataclysm"),666666,0); 
+					player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " attempted to break free of Cataclysm"), 666666, 0);
 				}
 
-				NoHitCharmTimer = Math.Min(NoHitCharmTimer+1,181);
+				NoHitCharmTimer = Math.Min(NoHitCharmTimer + 1, 181);
 			}
 
 			NoHitCharm = false;
@@ -507,8 +521,8 @@ namespace SGAmod
 			YoyoTricks = false;
 			OmegaSigil = false;
 			tpdcpu = false;
-			if (phaethonEye>0)
-			phaethonEye -= 1;
+			if (phaethonEye > 0)
+				phaethonEye -= 1;
 			MurkyDepths = false;
 			MatrixBuffp = false;
 			plasmaLeftInClipMax = 1000;
@@ -551,9 +565,9 @@ namespace SGAmod
 			if (!Shieldbreak)
 				electricdelay -= 1;
 
-				boosterPowerLeft = Math.Min(boosterPowerLeft + (boosterdelay < 1 ? boosterrechargerate : 0), boosterPowerLeftMax);
+			boosterPowerLeft = Math.Min(boosterPowerLeft + (boosterdelay < 1 ? boosterrechargerate : 0), boosterPowerLeftMax);
 
-				electricCharge = Math.Min(electricCharge + (electricdelay < 1 ? electricrechargerate : 0), electricChargeMax);
+			electricCharge = Math.Min(electricCharge + (electricdelay < 1 ? electricrechargerate : 0), electricChargeMax);
 
 			electricChargeMax = Electicpermboost;
 			electricrechargerate = 0;
@@ -563,10 +577,10 @@ namespace SGAmod
 			boosterPowerLeftMax = 10000;
 			Shieldbreak = false;
 
-			if (ShieldTypeDelay>0)
-			ShieldTypeDelay -= 1;
+			if (ShieldTypeDelay > 0)
+				ShieldTypeDelay -= 1;
 			else
-			ShieldType = 0;
+				ShieldType = 0;
 
 			for (int a = 0; a < devempowerment.Length; a++)
 				devempowerment[a] = Math.Max(devempowerment[a] - 1, 0);
@@ -586,7 +600,7 @@ namespace SGAmod
 			noactionstackringofrespite = false;
 			actionCooldownRate = 1f;
 			Noviteset = 0;
-			if (player.breath >= player.breathMax || (!SGAConfig.Instance.DrowningChange && SGAWorld.NightmareHardcore<1))
+			if (player.breath >= player.breathMax || (!SGAConfig.Instance.DrowningChange && SGAWorld.NightmareHardcore < 1))
 				drowningIncrementer.X = 0;
 			else if (player.breath < 1)
 				drowningIncrementer.X += 1;
@@ -1013,7 +1027,7 @@ namespace SGAmod
 
 		public static void DoPotionFatigue(SGAPlayer sgaply)
 		{
-			if (!sgaply.nightmareplayer && SGAConfig.Instance.PotionFatigue)
+			if (!SGAConfig.Instance.PotionFatigue || !sgaply.nightmareplayer)
 				return;
 
 			Player player = sgaply.player;
@@ -1766,6 +1780,11 @@ namespace SGAmod
 					player.NinjaDodge();
 					return false;
 				}
+			}
+
+			if (highStakesSet)
+			{
+				damage = (int)(damage * Main.rand.NextFloat(0.75f,1.25f));
 			}
 
 			if (NoHitCharm)

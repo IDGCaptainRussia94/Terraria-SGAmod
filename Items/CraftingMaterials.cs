@@ -852,20 +852,47 @@ namespace SGAmod.Items
 			item.maxStack = 20;
 			item.width = 26;
 			item.height = 14;
-			item.value = Item.sellPrice(0,0,50,0);
+			item.value = Item.sellPrice(0, 0, 50, 0);
 			item.rare = ItemRarityID.Yellow;
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 2);
-			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 2);
+			recipe.AddIngredient(ModContent.ItemType<AdvancedPlating>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<WraithFragment4>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<ManaBattery>(), 1);
 			recipe.AddIngredient(ItemID.MartianConduitPlating, 10);
 			recipe.AddIngredient(ItemID.MeteoriteBar, 1);
-			recipe.AddIngredient(mod.ItemType("VialofAcid"), 3);
+			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 3);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<EmptyPlasmaCell>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 2);
+			recipe.AddIngredient(mod.ItemType("VialofAcid"), 2);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+
+		}
+	}
+	public class EmptyPlasmaCell : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Empty Plasma Cell");
+			Tooltip.SetDefault("Casing not yet filled with plasma");
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 20;
+			item.width = 26;
+			item.height = 14;
+			item.value = Item.sellPrice(0,0,10,0);
+			item.rare = ItemRarityID.LightRed;
 		}
 	}
 	public class CryostalBar: ModItem
@@ -1771,6 +1798,69 @@ namespace SGAmod.Items
 			recipe.AddRecipe();
 		}
 
+	}
+
+	public class HeliosFocusCrystal : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Helios Focus Crystal");
+			Tooltip.SetDefault("An intact focus crystal used to empower Phaethon\nCould be useful for crafting your own empowerment devices");
+		}
+		public override void SetDefaults()
+		{
+			item.width = 40;
+			item.height = 40;
+			item.value = 0;
+			item.rare = ItemRarityID.Yellow;
+			item.maxStack = 30;
+			//item.damage = 1;
+		}
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb(Main.GlobalTime % 1f, 1f, 0.75f);
+		}
+		public override string Texture
+		{
+			get { return ("Terraria/Item_" + ItemID.DD2ElderCrystal); }
+		}
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+
+			Vector2 slotSize = new Vector2(52f, 52f) * scale;
+			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+			Vector2 textureOrigin = Vector2.Zero;
+
+			slotSize.X /= 1.0f;
+			slotSize.Y = -slotSize.Y / 4f;
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.IntenseBlueFlameDye);
+
+			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
+			{
+				spriteBatch.Draw(Main.itemTexture[item.type], drawPos+(Vector2.UnitX.RotatedBy(f+Main.GlobalTime/6f)*8f), null, drawColor*0.20f, Main.GlobalTime, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, Main.GlobalTime, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			SGAmod.FadeInEffect.Parameters["fadeColor"].SetValue(2f);
+			SGAmod.FadeInEffect.Parameters["alpha"].SetValue(0.50f);
+			SGAmod.FadeInEffect.CurrentTechnique.Passes["ColorToAlphaPass"].Apply();
+
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, Main.GlobalTime, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale*1/15f, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			return false;
+		}
 	}
 
 	public class EntropyTransmuter : ModItem

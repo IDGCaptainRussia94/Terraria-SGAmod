@@ -298,6 +298,12 @@ namespace SGAmod.NPCs.TownNPCs
 			//if (Main.LocalPlayer.HasItem(ItemID.AncientCloth))
 			//{
 
+			shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Accessories.LiquidGambling>());
+			shop.item[nextSlot].shopCustomPrice = 250;
+			shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.DesertFossilCurrencyCustomCurrencyID;
+			nextSlot++;
+
+
 			shop.item[nextSlot].SetDefaults(ModContent.ItemType<LootBoxVanillaPotions>());
 			shop.item[nextSlot].shopCustomPrice = randz.Next(3, 7);
 			shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.DesertFossilCurrencyCustomCurrencyID;
@@ -317,7 +323,7 @@ namespace SGAmod.NPCs.TownNPCs
 			if (randz.Next(10) < 8)
 			{
 				shop.item[nextSlot].SetDefaults(ModContent.ItemType<LootBoxAccessories>());
-				shop.item[nextSlot].shopCustomPrice = randz.Next(4, 9);
+				shop.item[nextSlot].shopCustomPrice = randz.Next(3, 8);
 				shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.AncientClothCurrencyCustomCurrencyID;
 				nextSlot++;
 			}

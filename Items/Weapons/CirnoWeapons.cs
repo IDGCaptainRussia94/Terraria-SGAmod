@@ -600,7 +600,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Star'Fish' Burster");
-			Tooltip.SetDefault("Fires 4 starfish in bursts at the cost of 1, but requires a small amount of mana\nStarfish bounce off walls and pierce\nUses Starfish as ammo\n90% to not consume ammo");
+			Tooltip.SetDefault("Fires 4 starfish in bursts at the cost of 1, but requires a small amount of mana\nStarfish bounce off walls and pierce\nUses Starfish as ammo\n66% to not consume ammo");
 		}
 		public override bool CanUseItem(Player player)
 		{
@@ -618,12 +618,19 @@ namespace SGAmod.Items.Weapons
 			item.rare = 7;
 			item.magic = false;
 			item.ranged = true;
-			item.mana = 10;
 			//item.shoot = mod.ProjectileType("SunbringerFlare");
 			item.shoot = mod.ProjectileType("StarfishProjectile");
 			item.shootSpeed = 11f;
 			item.useAmmo = 2626;
 		}
+
+		/*
+		public override bool ConsumeAmmo(Player player)
+		{
+			return Main.rand.Next(100) < 33;
+		}
+		*/
+
 
 		public override void AddRecipes()
 		{

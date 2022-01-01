@@ -195,6 +195,8 @@ namespace SGAmod
 		public static bool anysubworld = false;
 		public static float overpoweredMod = 0f;
 		public static int vibraniumCounter = 0;
+		public static int fogDrawNPCsCounter = 0;
+
 		public static bool ForceDrawOverride = false;
 		public static GameTime lastTime = new GameTime();
 		public static (int, int, bool) ExtractedItem = (-1,-1, false);
@@ -652,9 +654,11 @@ namespace SGAmod
 			NinjaSashHotkey = RegisterHotKey("Shin Sash Ability", "Q");
 			//SkillTestKey = RegisterHotKey("(Debug) Skill Tree Key", "T");
 
-			OSType = OSDetect();
-
 			SGAmod.PostDraw = new List<PostDrawCollection>();
+
+			OSType = OSDetect();
+			Logger.Debug("SGAmod filepath defined: " + filePath);
+
 			//On.Terraria.GameInput.LockOnHelper.SetActive += GameInput_LockOnHelper_SetActive;
 
 			if (!Main.dedServ)
@@ -1575,6 +1579,18 @@ namespace SGAmod
 			return dontneedthem;
 
 		}
+		internal static void DrawBehindAllTilesButBeforeSky()
+		{
+			Items.Placeable.CelestialMonolithManager.DrawMonolithAura();
+		}
+		internal static void DrawBehindMoonMan()
+		{
+			NPCs.Hellion.ShadowParticle.Draw();
+		}
+		internal static void DrawBehindWormBoys()
+		{
+			//nothing yet
+		}
 
 #if Dimensions
 		public override void MidUpdatePlayerNPC()
@@ -1657,6 +1673,8 @@ namespace SGAmod
 #endif
 
 			vibraniumCounter = Math.Max(vibraniumCounter - 1, 0);
+			fogDrawNPCsCounter = Math.Max(fogDrawNPCsCounter - 1, 0);
+
 			SGAPlayer.centerOverrideTimerIsActive = Math.Max(SGAPlayer.centerOverrideTimerIsActive - 1, 0);
 			SGAWorld.modtimer += 1;
 			PrismShardHinted.ApplyPrismOnce = false;
@@ -1759,6 +1777,41 @@ namespace SGAmod
 			}
 		}
 
+	}
+
+	public enum Paints : byte
+	{
+		None,
+		Red,
+		Orange,
+		Yellow,
+		Lime,
+		Green,
+		Teal,
+		Cyan,
+		SkyBlue,
+		Blue,
+		Purple,
+		Violet,
+		Pink,
+		DeepRed,
+		DeepOrange,
+		DeepYellow,
+		DeepLime,
+		DeepGreen,
+		DeepTeal,
+		DeepCyan,
+		DeepSkyBlue,
+		DeepBlue,
+		DeepPurple,
+		DeepViolet,
+		DeepPink,
+		Black,
+		White,
+		Gray,
+		Brown,
+		Shadow,
+		Negative
 	}
 
 	public class CustomSpecialDrawnTiles

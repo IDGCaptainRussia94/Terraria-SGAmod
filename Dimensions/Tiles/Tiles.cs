@@ -133,6 +133,13 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileMerge[(ushort)mod.TileType("VibraniumCrystalTile")][TileID.Meteorite] = true;
 			Main.tileMerge[TileID.Meteorite][(ushort)mod.TileType("VibraniumCrystalTile")] = true;
 
+			int[] oreType = { TileID.LunarBlockNebula, TileID.LunarBlockSolar, TileID.LunarBlockStardust, TileID.LunarBlockVortex };
+			foreach (int typeofore in oreType)
+            {
+				Main.tileMerge[typeofore][Type] = true;
+				Main.tileMerge[Type][typeofore] = true;
+			}
+
 			TileID.Sets.ChecksForMerge[Type] = true;
 
 			minPick = 100;
@@ -180,7 +187,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileBlockLight[Type] = true;
 			Main.tileLighted[Type] = true;
 			TileID.Sets.ChecksForMerge[Type] = true;
-			minPick = !SGAConfig.Instance.EarlyLuminite ? 225 : 200;
+			minPick = 200;// !SGAConfig.Instance.EarlyLuminite ? 225 : 200;
 			soundType = SoundID.Tink;
 			soundStyle = 0;
 			mineResist = 5f;
@@ -199,6 +206,9 @@ namespace SGAmod.Dimensions.Tiles
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
+			if (!SpaceDim.postMoonLord)
+				fail = true;
+
 			if (!fail)
 			{ 
 				noItem = true;

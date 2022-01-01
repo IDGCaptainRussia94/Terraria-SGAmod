@@ -31,8 +31,11 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 
 -"boring" swords:
 -Dank Wood Sword, Machete, Rusted Blade, Claymore (maybe),Mudmore, Mangrove Striker,Thermal Blade, Rubied Blade, Curcuit Breaker Blade (maybe), Sword of a Thousand Truths (hhmhhmmm), Celestial Flare (maybe), Galactic Inferno (yes)
--call them Zweihänder ?
--Finish card deck, finish Wrath Caliburn attacks
+-call them Zweihänder ? (Nah lets call am Boring Blades)
+
+-Finish Wrath Caliburn attacks?
+-Add Celestial Monolith (finish)
+-Add focus Crystal, Finish Phaethon's rework, finish ALL space stations
 
 
 Credits:

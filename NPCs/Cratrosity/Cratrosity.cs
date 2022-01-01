@@ -306,11 +306,11 @@ namespace SGAmod.NPCs.Cratrosity
 			doCharge -= 1;
 			Player P = Target;
 			npc.localAI[0] -= 1;
-			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active || Main.dayTime)
+			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
 			{
 				npc.TargetClosest(false);
 				P = Main.player[npc.target];
-				if (!P.active || P.dead || Main.dayTime)
+				if (!P.active || P.dead)
 				{
 					float speed = ((-10f));
 					npc.velocity = new Vector2(npc.velocity.X, npc.velocity.Y + speed);

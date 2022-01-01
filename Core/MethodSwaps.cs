@@ -39,6 +39,17 @@ namespace SGAmod
 
 			On.Terraria.Player.NinjaDodge += Player_NinjaDodge;
 			On.Terraria.Player.CheckDrowning += Player_CheckDrowning;
+			On.Terraria.Player.AddBuff += Player_AddBuff;
+			On.Terraria.Player.Teleport += Player_Teleport;
+			On.Terraria.Player.Update += Player_Update;
+			On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
+			On.Terraria.Player.DropSelectedItem += DontDropManifestedItems;
+			On.Terraria.Player.dropItemCheck += ManifestedPriority;
+			On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
+			On.Terraria.Player.ItemFitsWeaponRack += NoPlacingManifestedItemOnItemRack;
+			On.Terraria.Main.SetDisplayMode += RecreateRenderTargetsOnScreenChange;
+			On.Terraria.Player.UpdateEquips += BlockVanillaAccessories;
+
 			On.Terraria.Main.DrawDust += Main_DrawAdditive;
 			On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
 			On.Terraria.GameContent.Events.DD2Event.SpawnMonsterFromGate += CrucibleArenaMaster.DD2PortalOverrides;
@@ -53,21 +64,15 @@ namespace SGAmod
             On.Terraria.Main.DrawBuffIcon += Main_DrawBuffIcon;
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
-			On.Terraria.Player.AddBuff += Player_AddBuff;
-            On.Terraria.Player.Teleport += Player_Teleport;
-			On.Terraria.NPC.AddBuff += SmartBuffs;
+
+
             On.Terraria.NPC.UpdateNPC += NPC_UpdateNPC;
+			On.Terraria.NPC.AddBuff += SmartBuffs;
 			On.Terraria.NPC.StrikeNPC += NPC_StrikeNPC;
             On.Terraria.NPC.UpdateNPC_BuffApplyDOTs += NPC_UpdateNPC_BuffApplyDOTs;
-			On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
-			On.Terraria.Player.DropSelectedItem += DontDropManifestedItems;
-			On.Terraria.Player.dropItemCheck += ManifestedPriority;
 			On.Terraria.UI.ItemSlot.LeftClick_ItemArray_int_int += ItemSlot_LeftClick_refItem_int;
 			On.Terraria.UI.ItemSlot.RightClick_ItemArray_int_int += ItemSlot_RightClick_refItem_int;
-			On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
-			On.Terraria.Player.ItemFitsWeaponRack += NoPlacingManifestedItemOnItemRack;
 			On.Terraria.Main.SetDisplayMode += RecreateRenderTargetsOnScreenChange;
-			On.Terraria.Player.UpdateEquips += BlockVanillaAccessories;
 
 			if (SGAConfig.Instance.QuestionableDetours)
 			{
@@ -81,6 +86,30 @@ namespace SGAmod
 
 			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
+		}
+
+        private static void Player_Update(On.Terraria.Player.orig_Update orig, Player self, int i)
+        {
+            if (self != null && self.active && Items.Placeable.CelestialMonolithManager.queueRenderTargetUpdate > 0)
+            {
+				if (self.SGAPly().invertedTime > 0)
+				{
+					double time = Main.time;
+					bool dayTime = Main.dayTime;
+
+					Main.dayTime = !Main.dayTime;
+					Main.time = Items.Placeable.CelestialMonolithManager.GetInvertedTime(time);
+
+					orig(self, i);
+
+					Main.dayTime = dayTime;
+					Main.time = time;
+					return;
+				}
+
+            }
+			orig(self, i);
+
 		}
 
         private static int Main_DrawBuffIcon(On.Terraria.Main.orig_DrawBuffIcon orig, int drawBuffText, int i, int b, int x, int y)
@@ -195,6 +224,29 @@ namespace SGAmod
 
         private static void NPC_UpdateNPC(On.Terraria.NPC.orig_UpdateNPC orig, NPC self, int i)
         {
+			double time = Main.time;
+			bool nighttime = Main.dayTime;
+			bool nighttimeCheck = false;
+			bool invertCheck = false;
+
+
+			if (self != null && self.active && self.SGANPCs().treatAsNight)
+            {
+				nighttime = Main.dayTime;
+				Main.dayTime = false;
+				nighttimeCheck = true;
+			}
+
+			if (!nighttimeCheck && Items.Placeable.CelestialMonolithManager.queueRenderTargetUpdate > 0 && self != null && self.active)
+			{
+				if (self.SGANPCs().invertedTime > 0)
+				{
+					Main.dayTime = !nighttime;
+					Main.time = Items.Placeable.CelestialMonolithManager.GetInvertedTime(time);
+					invertCheck = true;
+				}
+			}
+
 			/*
 			NPCUtils.TargetClosestOldOnesInvasion(this);
 			NPCAimedTarget targetData = self.GetTargetData();
@@ -246,6 +298,18 @@ namespace SGAmod
 			}
 
 			orig(self, i);
+
+			if (nighttimeCheck)
+            {
+				Main.dayTime = nighttime;
+				return;
+			}
+			if (invertCheck)
+            {
+				Main.dayTime = nighttime;
+				Main.time = time;
+			}
+
 		}
 
         private static void NPC_UpdateNPC_BuffApplyDOTs(On.Terraria.NPC.orig_UpdateNPC_BuffApplyDOTs orig, NPC self)
@@ -363,7 +427,6 @@ namespace SGAmod
 		//These aren't used atm
 		private static bool Player_CheckManaItem(On.Terraria.Player.orig_CheckMana_Item_int_bool_bool orig, Player self, Item item, int amount, bool pay, bool blockQuickMana)
 		{
-			Main.NewText(amount);
 			if (self.armor[0].type == ModContent.ItemType<VibraniumHeadgear>())
 			{
 				amount = (int)(amount * 0.50f);
@@ -374,7 +437,6 @@ namespace SGAmod
 
 		private static bool Player_CheckMana(On.Terraria.Player.orig_CheckMana_int_bool_bool orig, Player self, int amount, bool pay, bool blockQuickMana)
 		{
-			Main.NewText("test");
 			if (self.armor[0].type == ModContent.ItemType<VibraniumHeadgear>())
 			{
 				amount = (int)(amount * 0.50f);

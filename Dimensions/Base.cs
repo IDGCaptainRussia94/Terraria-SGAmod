@@ -263,6 +263,7 @@ namespace SGAmod.Dimensions
 
                     if (player.wings > 0 && player.velocity.Y < 0 && player.Center.Y < (16*50) && spacevar == 0 && player.controlJump && !IdgNPC.bossAlive)
                     {
+                        SpaceDim.postMoonLord = NPC.downedMoonlord;
                         SGAPocketDim.EnterSubworld(mod.GetType().Name + "_SpaceDim");
                     }
                     spacevar = 0;
@@ -1087,6 +1088,23 @@ namespace SGAmod.Dimensions
                     }
                     Main.spriteBatch.End();
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
+
+                    if (SGAmod.fogDrawNPCsCounter > 0)
+                    {
+
+                        Main.spriteBatch.End();
+                        Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+
+                        foreach (NPC npc in Main.npc.Where(testby => testby.active && testby.modNPC != null && testby.modNPC is IDrawThroughFog))
+                        {
+                            IDrawThroughFog ifog = npc.modNPC as IDrawThroughFog;
+                            ifog.DrawThroughFog(spriteBatch);
+                        }
+                    }
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
+
 
                     ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.TwilightDye);
                     shader.UseOpacity(1f);

@@ -27,6 +27,9 @@ namespace SGAmod.Items
 
 		public override bool CanRightClick()
 		{
+			if (Dimensions.SGAPocketDim.WhereAmI != null)
+				return false;
+
 			//Main.NewText("Nope.avi... This boss isn't done yet, coming in a future update",250, 250, 250);
 			//return false;
 			Player ply = Main.LocalPlayer;
@@ -109,7 +112,7 @@ namespace SGAmod.Items
 			//Main.NewText("Nope.avi... This boss isn't done yet, coming in a future update",250, 250, 250);
 			//return false;
 			Player ply = Main.LocalPlayer;
-			return ((ply.CountItem(ItemID.TempleKey) > 0 && !Main.dayTime && !NPC.AnyNPCs(mod.NPCType("Cratrogeddon"))) || ply.CountItem(mod.ItemType("TerrariacoCrateKeyUber")) > 0);
+			return ((ply.CountItem(ItemID.TempleKey) > 0 && !NPC.AnyNPCs(mod.NPCType("Cratrogeddon"))) || ply.CountItem(mod.ItemType("TerrariacoCrateKeyUber")) > 0);
 		}
 
 		public override void RightClick(Player ply)

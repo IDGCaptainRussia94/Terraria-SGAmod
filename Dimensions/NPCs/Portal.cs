@@ -55,6 +55,11 @@ namespace SGAmod.Dimensions.NPCs
 			}
 		}
 
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+				return 0;
+		}
+
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
@@ -119,8 +124,6 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			if (GetType() != typeof(DungeonPortal))
-				return 0;
 
 			//Tile tile = Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY];
 			return !spawnInfo.playerInTown && !NPC.BusyWithAnyInvasionOfSorts() && NPC.downedBoss3 && !spawnInfo.invasion && spawnInfo.player.ZoneDungeon && NPC.CountNPCS(ModContent.NPCType<DungeonPortal>())<1 &&
@@ -149,7 +152,10 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override bool CheckConditions(int left, int right, int top, int bottom)
 		{
-			return SGAWorld.portalcanmovein;
+			if (GetType() != typeof(DungeonPortal))
+				return false;
+
+				return SGAWorld.portalcanmovein;
 		}
 
 		public override string TownNPCName()

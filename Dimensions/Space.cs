@@ -27,20 +27,825 @@ using SGAmod.Items.Consumables;
 using SGAmod.Tiles;
 using SGAmod.NPCs;
 using SGAmod.Dimensions.Tiles;
+using SGAmod.Tiles.Monolith;
+using SGAmod.Items.Accessories;
 
 namespace SGAmod.Dimensions
 {
     public class FilledSpaceArea
     {
         public Vector2 position;
-        public byte type;
+        public int type;
+        public int generation;
+        public int heightVar = 0;
+        public int size = 0;
+        public bool generationAsteriods = true;
+
+        public List<FilledSpaceArea> connections;
+
         //public byte[] allowedToConnectwith = {0};
         public FilledSpaceArea(Vector2 where)
         {
             position = where;
             type = 0;
+            generation = 0;
         }
     }
+
+    public struct SecurityEnemy
+    {
+        public int type;
+        public int delay;
+        public SecurityEnemy(int type, int delay)
+        {
+            this.type = type;
+            this.delay = delay;
+        }
+    }
+
+    public class MainStationStructure : SpaceStationStructure
+    {
+
+        public MainStationStructure(Vector2 position) : base(position)
+        {
+            this.position = position;
+            StationObjects.Add(this);
+            mainBase = true;
+            type = 0;
+        }
+
+        public override void FillInStation(UnifiedRandom uniRand, List<(Point, int)> floorTiles, List<(Point, int)> platfromTiles)
+        {
+
+            int chestCount = floorTiles.Count / 5000;
+            int addedChests = 0;
+
+            floorTiles.AddRange(platfromTiles);
+
+            foreach ((Point, int) floor in floorTiles.OrderBy(testby => uniRand.Next()))
+            {
+                if (addedChests >= chestCount)
+                    break;
+
+                if (floor.Item2 > TileRangeExits)
+                    continue;
+
+                if ((floor.Item2 > TileRangeWalkwayMin && floor.Item2 < TileRangeWalkwayMax) && uniRand.Next(100) < 50)
+                    continue;
+
+                int thechest = WorldGen.PlaceChest(floor.Item1.X, floor.Item1.Y, TileID.Containers, false, 49);
+                if (thechest >= 0)
+                {
+                    SpaceDim.AddStuffToChest(thechest, 1, uniRand);
+                    addedChests += 1;
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+        public class SpaceStationStructure
+    {
+        public static List<(Vector2, int)> placesToFillIn = new List<(Vector2, int)>();
+        public static List<SpaceStationStructure> StationObjects;
+        public static List<(Vector2,Vector2)> ConnectionLines;
+        public static int TileRangeExits = 10000;
+        public static int TileRangeWalkwayMin = 1000;
+        public static int TileRangeWalkwayMax = 3000;
+        public static int TileRangeWalkwayHalf = 2000;
+
+
+        public List<(Vector2, int)> placesToBuild = new List<(Vector2, int)>();
+
+        public int type;
+        public List<Point> expansionPoints = new List<Point>();
+        public Vector2 position;
+        public bool mainBase = false;
+
+        public bool securityActivated = false;
+        public int maxSecurity = 5;
+        public int securitySpawnDelay = 120;
+        public List<SecurityEnemy> securityToSpawn = new List<SecurityEnemy>();
+        public List<(NPC,int)> securitySpawned = new List<(NPC, int)>();
+        public List<(FilledSpaceArea, Vector2)> roomsToGenerateLater = new List<(FilledSpaceArea, Vector2)>();
+
+
+        public int thickness = 3;
+        public int tileType = TileID.MeteoriteBrick;
+        public int tileTypeInside = TileID.CopperPlating;
+        public int tileTypePlatform = TileID.TeamBlockWhitePlatform;
+        public int tileTypeSolidPlatform = TileID.MartianConduitPlating;
+        public int tileTypeLight = TileID.DiamondGemspark;
+        public int wallType = WallID.IridescentBrick;
+        public int wallTypeExitWay = WallID.IridescentBrick;
+        public int wallTypeConnector = WallID.TinPlating;
+
+        public int glassType = WallID.BlueStainedGlass;
+
+
+        public SpaceStationStructure(Vector2 position)
+        {
+            this.position = position;
+            StationObjects.Add(this);
+            type = 0;
+        }
+        public static void UpdateStations()
+        {
+            foreach (SpaceStationStructure station in SpaceStationStructure.StationObjects)
+            {
+                station.Update();
+            }
+        }
+
+        public virtual bool CanOverrideTile(Tile tile)
+        {
+            return tile.type == tileType || tile.type == tileTypeInside || tile.type == tileTypeLight;
+        }
+
+        public void Update()
+        {
+            if (securityActivated)
+            {
+                securitySpawnDelay -= 1;
+
+                if (securitySpawnDelay < 1)
+                {
+                    if (securitySpawned.Count < maxSecurity)
+                    {
+                        SpawnSecurity();
+                    }
+                }
+            }
+        }
+
+        private void SpawnSecurity()
+        {
+            if (securityToSpawn.Count > 0)
+            {
+                Vector2 place = placesToBuild[Main.rand.Next(placesToBuild.Count)].Item1;
+                SecurityEnemy enemy = securityToSpawn[0];
+
+                NPC.NewNPC((int)place.X, (int)place.Y, enemy.type);
+                securitySpawnDelay = enemy.delay;
+
+                securityToSpawn.RemoveAt(0);
+            }
+        }
+
+        public void MakeConnectionWalkways(UnifiedRandom uniRand, FilledSpaceArea theLocation,ref List<(Vector2, int)> tempPlacesToBuild)
+        {
+            if (theLocation.connections == default)
+                return;
+
+            List<(Vector2, int)> corridorsToBuild = new List<(Vector2, int)>();
+
+            Point pos = (theLocation.position / 16).ToPoint();
+
+            foreach (FilledSpaceArea connection in theLocation.connections)
+            {
+                Point connectionpos = (connection.position / 16).ToPoint();
+                List<Point> line = IDGWorldGen.GetLine(pos, connectionpos);
+
+                int index = 0;
+
+                foreach(Point buildPoint in line)
+                {
+                    for (int x = -1; x < 2; x += 1)
+                    {
+                        for (int y = -1; y < 2; y += 1)
+                        {
+                            Point newPoint = new Point(buildPoint.X + x, buildPoint.Y + y);
+
+                            int walkwayValue = (index) %20>16 ? TileRangeWalkwayHalf : TileRangeWalkwayMin;
+
+                            corridorsToBuild.Add((newPoint.ToVector2() * 16, walkwayValue + index));
+                        }
+                    }
+                    index += 1;
+                }
+
+            }
+
+            tempPlacesToBuild.AddRange(corridorsToBuild.ToList());
+
+        }
+
+        public void GenerateStationCore(UnifiedRandom uniRand, FilledSpaceArea theLocation,Vector2 position,bool keepTrackOnly = true,bool addObjectsPhase = false)
+        {
+
+            int heightPlatformDifferance = theLocation.heightVar;// uniRand.Next(-4, 6);
+            int size = theLocation.size;
+            int size16 = size * 16;
+            int lowerlimit = 16;
+            int upperlimit = -16;
+
+            int defaultSize = 16 * 16;
+
+            Vector2 centerPos = position == default ? theLocation.position : position;
+
+            List<(Vector2, int)> tempPlacesToBuild = new List<(Vector2, int)>();
+
+            if (keepTrackOnly)
+            {
+
+                //Asteriod Area
+                if (theLocation.generationAsteriods)
+                {
+                    for (int dister = 120 + (size16 - defaultSize); dister < 480 + (size16 - defaultSize); dister += 120)
+                    {
+                        for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 12f)
+                        {
+                            Vector2 offsetter = centerPos + f.ToRotationVector2() * dister;
+
+                            Point locaa = new Point((int)offsetter.X / 16, (int)offsetter.Y / 16);
+                            SpaceDim.MakeAsteriod(locaa, uniRand);
+                        }
+                    }
+                }
+
+                SpaceDim.FilledSpacesTakenByStations.Remove(theLocation);
+
+                roomsToGenerateLater.Add((theLocation, position));
+                goto gototheend;
+            }
+
+            centerPos.Y -= upperlimit + lowerlimit;
+
+            //Create Circle Shape
+            for (int x = -size16; x <= size16; x += 1)
+            {
+                for (int y = -size16; y <= size16; y += 1)
+                {
+                    int realx = x;
+                    int realy = Math.Min(Math.Max(upperlimit, y), lowerlimit);
+
+                    Vector2 placeHere = centerPos + new Vector2(realx * 16, realy * 16);
+                    if ((placeHere - centerPos).Length() < size16)
+                    {
+                        tempPlacesToBuild.Add((placeHere, 0));
+                    }
+                }
+            }
+
+            MakeConnectionWalkways(uniRand,theLocation,ref tempPlacesToBuild);
+
+            //Create walkways (exits)
+            if (theLocation.type == 10)
+            {
+                int openspace = 0;
+                int walkwaylength = 0;
+                for (int side = -1; side < 2; side += 2)
+                {
+                    for (int xx = size - 8; xx < size + 64; xx += 1)
+                    {
+                        int allOpen = 0;
+                        int realx = xx * side;
+
+                        walkwaylength += 1;
+
+                        for (int yy = -1; yy < 2; yy += 1)
+                        {
+                            int realy = yy - 2;
+                            Vector2 thereAreThey = centerPos + new Vector2(realx * 16, ((realy + heightPlatformDifferance) * 16));
+                            Point loc = (thereAreThey / 16).ToPoint();
+                            Tile tile = Framing.GetTileSafely(loc.X, loc.Y);
+
+                            if (!tile.active())
+                            {
+                                allOpen += 1;
+                            }
+
+                            Vector2 placeHere = thereAreThey;// theLocation.position + new Vector2(realx * 16, realy * 16);
+                            tempPlacesToBuild.Add((placeHere, TileRangeExits + walkwaylength));
+                        }
+
+                        if (openspace>0)
+                        openspace -= 1;
+
+
+                        if (allOpen > 2)
+                            openspace += 8;
+
+                        if (openspace > 6)
+                        {
+                            /*
+                            if (theLocation.type>5)
+                            {
+                                Vector2 thereAreThey2 = theLocation.position + new Vector2(realx * 16, ((0 + heightPlatformDifferance) * 16));
+                                FilledSpaceArea area2 = new FilledSpaceArea(thereAreThey2);
+                                area2.type = (theLocation.type-1;
+
+                                GenerateStationCore(uniRand, area2,0);
+                            }
+                            */
+
+                            goto gotoNext;
+                        }
+                    }
+                gotoNext:
+                    openspace = 0;
+                }
+            }
+
+
+            if (addObjectsPhase == false)
+            {
+
+                #region fillIns
+                //Fill in
+                foreach ((Vector2, int) there in tempPlacesToBuild)
+                {
+                    IDGWorldGen.PlaceMulti(there.Item1 / 16, tileType, thickness);
+                }
+
+                //Fill in-outline side, add wall types
+                foreach ((Vector2, int) there in tempPlacesToBuild)
+                {
+                    int walltype = -1;
+
+                    if (there.Item2 < TileRangeWalkwayMin || there.Item2 >= TileRangeExits)
+                    {
+                        walltype = there.Item2 >= TileRangeExits ? wallTypeExitWay : wallType;
+                    }
+                    else
+                    {
+                        //Make Connector Glass Types
+                        if (there.Item2 >= TileRangeWalkwayMin)
+                        {
+                            Tile tile = Framing.GetTileSafely((int)(there.Item1.X / 16), (int)(there.Item1.Y / 16));
+                            if (tile.wall < 1)
+                            {
+                                walltype = there.Item2 >= TileRangeWalkwayHalf ? glassType : wallTypeConnector;
+                            }
+                        }
+                    }
+
+                    IDGWorldGen.PlaceMulti(there.Item1 / 16, tileTypeInside, thickness - 1, walltype);
+                }
+
+                //Add Glass walls/Dye Solid tiles
+                foreach ((Vector2, int) there in tempPlacesToBuild)
+                {
+                    float dister = (there.Item1 - centerPos).Length();
+
+                    if (there.Item2 < 2 && Math.Sin(dister / 16f) > 0)
+                        Main.tile[(int)there.Item1.X / 16, (int)there.Item1.Y / 16].wall = (ushort)glassType;
+
+                    for (int x = -thickness; x <= thickness; x += 1)
+                    {
+                        for (int y = -thickness; y <= thickness; y += 1)
+                        {
+                            Point vexx = (there.Item1 / 16).ToPoint();
+                            Tile tile = Main.tile[vexx.X + x, vexx.Y + y];
+
+                            if (tile.type == tileType)
+                                tile.color((byte)Paints.White);
+
+                            if (tile.type == tileTypeInside)
+                                tile.color((byte)Paints.White);
+                        }
+                    }
+                }
+            }
+
+
+            if (addObjectsPhase)
+            {
+
+
+                //Add lights/Bubble enterances/exits
+
+                List<Point> openings = new List<Point>();
+                foreach ((Vector2, int) there in tempPlacesToBuild)
+                {
+                    if (there.Item2 > 2 && there.Item2 % 8 > 5)
+                    {
+                        Point here = ((there.Item1 / 16) + new Vector2(0, -1)).ToPoint();
+                        Tile theTile = Framing.GetTileSafely(here.X, here.Y);
+
+                        if (theTile.type == tileTypeInside)
+                        {
+                            theTile.type = (ushort)tileTypeLight;
+
+                        }
+
+
+                    }
+
+
+                    //Add Tunnel bubble exits
+                    if (theLocation.type == 10 && there.Item2 > TileRangeExits+2)
+                    {
+
+                        Vector2[] coordz = { new Vector2(-8, 0), new Vector2(8, 0) };
+
+                        foreach (Vector2 herethere in coordz)
+                        {
+                            Point here = ((there.Item1 / 16) + herethere).ToPoint();
+                            Tile theTile = Framing.GetTileSafely(here.X, here.Y);
+                            if (!theTile.active() && theTile.wall < 1)
+                            {
+                                foreach (Point line in IDGWorldGen.GetLine((there.Item1 / 16).ToPoint(), here))
+                                {
+                                    Tile theTile2 = Framing.GetTileSafely(line.X, line.Y);
+                                    if (CanOverrideTile(theTile2))// || Main.tileMerge[ModContent.TileType<Spacerock>()][theTile2.type])
+                                    {
+                                        //theTile2.active(false);
+                                        openings.Add(line);
+
+                                        /*
+                                        if (theTile2.type == tileType || theTile2.type == tileTypeInside)
+                                        {
+                                            theTile2.type = TileID.Bubble;
+                                            theTile2.color((byte)PaintID.Teal);
+                                        }
+                                        else
+                                        {
+                                            theTile2.active(false);
+                                        }
+                                        */
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                //Add 1-block bubble walls in recorded places
+                Point[] coordz2 = { new Point(-1, 0), new Point(1, 0) };
+                int tileBubbleType = TileID.Bubble;
+
+                foreach (Point opening in openings)
+                {
+                    //Change outer layer into Bubble Tiles
+                    foreach (Point herethere in coordz2)
+                    {
+                        Tile theTileToBubble = Framing.GetTileSafely(opening.X, opening.Y);
+
+                        Point here = new Point(opening.X + herethere.X, opening.Y + herethere.Y);
+                        Tile theTile = Framing.GetTileSafely(here.X, here.Y);
+                        if (!theTile.active() && theTile.wall < 1 && theTileToBubble.wall < 1 && theTileToBubble.type == tileType)
+                        {
+                            theTileToBubble.active(true);
+                            theTileToBubble.type = (ushort)tileBubbleType;
+                            theTileToBubble.color((byte)PaintID.Teal);
+                        }
+                    }
+
+                    //Add bubblegun walls next to Bubble tiles
+                    foreach (Point herethere in coordz2)
+                    {
+                        Tile theTileToBubble = Framing.GetTileSafely(opening.X, opening.Y);
+
+                        Point here = new Point(opening.X + herethere.X, opening.Y + herethere.Y);
+                        Tile theTile = Framing.GetTileSafely(here.X, here.Y);
+
+                        if (theTileToBubble.type == tileTypeInside && theTile.type == tileBubbleType)
+                        {
+                            theTileToBubble.wall = WallID.BubblegumBlock;
+                            theTileToBubble.wallColor((byte)PaintID.White);
+                        }
+                    }
+                }
+
+                    #endregion
+
+                    //Clear Insides/Platform in the middle
+                    #region ClearOutInsides
+
+                    int rectsizeDiffer = 8;
+                Rectangle platform = new Rectangle((int)(centerPos.X / 16) - size + rectsizeDiffer, (int)(centerPos.Y / 16) + heightPlatformDifferance, (size * 2) - (rectsizeDiffer * 2) + 1, 1);
+                Rectangle platformEdge = new Rectangle((int)(centerPos.X / 16) - size, (int)(centerPos.Y / 16) + heightPlatformDifferance, size * 2, 1);
+
+                foreach ((Vector2, int) there in tempPlacesToBuild)
+                {
+                    if (there.Item2 < 1)
+                    {
+                        Point therePoint = new Point((int)there.Item1.X / 16, (int)there.Item1.Y / 16);
+                        Tile tile = Framing.GetTileSafely(therePoint.X, therePoint.Y);
+
+                        tile.active(false);
+
+                        if (platformEdge.Contains(therePoint))
+                        {
+                            if (platform.Contains(therePoint))
+                            {
+                                WorldGen.PlaceTile(therePoint.X, therePoint.Y, tileTypeSolidPlatform);
+                                //tile.slope(7);
+                                continue;
+                            }
+                            WorldGen.PlaceTile(therePoint.X, therePoint.Y, tileTypePlatform);
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            SGAmod.Instance.Logger.Debug(centerPos);
+            #endregion
+
+            placesToBuild.AddRange(tempPlacesToBuild);
+
+            return;
+            gototheend:
+
+            SpaceDim.StationSpaces.Add(theLocation);
+
+            //WorldGen.DungeonStairs((int)theLocation.position.X/16, (int)theLocation.position.Y/16,TileID.BlueDungeonBrick,WallID.BlueDungeonUnsafe);
+        }
+
+        public List<FilledSpaceArea> StemNewStationSegments(UnifiedRandom uniRand, FilledSpaceArea theLocation,int maxRooms = 3,int type = 0)
+        {
+            List<FilledSpaceArea> areas = new List<FilledSpaceArea>();
+            //Sprawl more Stations
+            #region recursiveGeneration
+            if (theLocation.type < 10 && theLocation.generation < 8)
+            {
+                float dist = 2000 * 2000;
+                float distMin = (theLocation.size)*16+320;
+
+                int tries = 0;
+                int failType = 0;
+                int maxGens = 3;
+
+                int maxChains = maxRooms;// theLocation.generation < 1 ? 3 : 2;
+
+                List<FilledSpaceArea> filledAreas = new List<FilledSpaceArea>(SpaceDim.FilledSpacesTakenByStations);
+
+                for (int chains = 0; chains < maxChains; chains += 1)
+                {
+
+                    FilledSpaceArea chosenArea = null;
+
+                    filledAreas = SpaceDim.FilledSpacesTakenByStations.Where(testby => (testby.position - theLocation.position).LengthSquared() < dist && (testby.position - theLocation.position).LengthSquared() > (distMin* distMin))
+    .Where(testby => testby.position != theLocation.position).ToList();
+
+
+
+
+
+
+                    foreach (FilledSpaceArea areaToCheck in filledAreas)
+                    {
+                        bool canDoIt = true;
+                        foreach (FilledSpaceArea areaToCheck2 in SpaceDim.StationSpaces)
+                        {
+                            if (areaToCheck2.position == theLocation.position)
+                                continue;
+
+
+                            int buffersizeLines = 8;
+                            int buffersizeCircles = 8;
+
+                            float sizerx = (areaToCheck2.size + theLocation.size + buffersizeCircles) * 16;
+                            float sizery = (areaToCheck.size + theLocation.size + buffersizeCircles) * 16;
+
+
+                            //Spheres do not touch
+
+                            if ((areaToCheck2.position - theLocation.position).LengthSquared() < (sizerx * sizerx) || (areaToCheck2.position - areaToCheck.position).LengthSquared() < (sizery * sizery))
+                            {
+                                canDoIt = false;
+                                break;
+                            }
+
+                            Vector2 out1;
+                            Vector2 out2;
+
+                            //We do not cut into a sphere trying to go to the destination
+                            if (Idglib.FindLineCircleIntersections(areaToCheck2.position.X, areaToCheck2.position.Y, (areaToCheck2.size + buffersizeLines) * 16, theLocation.position, areaToCheck.position, out out1, out out2) > 0)
+                            {
+                                canDoIt = false;
+                                break;
+                            }
+
+                            //We do not overlap other connections
+                            foreach ((Vector2, Vector2) linePair in SpaceStationStructure.ConnectionLines)
+                            {
+                                Vector2 outIntersection;
+                                bool bool1;
+                                bool bool2;
+                                Idglib.FindLineLineIntersection(linePair.Item1, linePair.Item2, theLocation.position, areaToCheck.position, out bool1, out bool2, out outIntersection, out out1, out out2);
+
+                                if (bool2 && !(outIntersection == theLocation.position || outIntersection == areaToCheck.position))
+                                {
+                                    canDoIt = false;
+                                    goto skiploop;
+                                }
+                            }
+                        }
+
+                        skiploop:
+
+                        if (canDoIt)
+                        {
+                            chosenArea = areaToCheck;
+                            goto endthis;
+                        }
+
+                        tries += 1;
+                    }
+
+                
+
+                endthis:
+
+                    if (chosenArea != null)
+                    {
+
+                        chosenArea.generation = theLocation.generation + 1;
+                        chosenArea.size = 16 - uniRand.Next(-2, 4);
+                        chosenArea.heightVar = uniRand.Next(-4, 6) / (1 + (chosenArea.generation / 2));
+                        chosenArea.type = type;
+
+                        if (chosenArea.connections == default)
+                        chosenArea.connections = new List<FilledSpaceArea>();
+
+                        chosenArea.connections.Add(theLocation);
+                        SpaceStationStructure.ConnectionLines.Add((theLocation.position, chosenArea.position));
+
+                        //if (chosenArea.generation > maxGens-1)
+                        //    chosenArea.type = 10;
+
+                        areas.Add(chosenArea);
+                        SGAmod.Instance.Logger.Debug("Generated Precced Station: " + chosenArea.generation);
+                        GenerateStationCore(uniRand, chosenArea, chosenArea.position);
+
+
+                    }
+                    else
+                    {
+                        SGAmod.Instance.Logger.Debug("New Station Failed to Generate: tries " + tries + " : " + filledAreas.Count + " : " + SpaceDim.StationSpaces.Count + ": testing is done");
+                    }
+
+                }
+
+            }
+            return areas;
+            #endregion
+
+
+        }
+
+        //Fills in the rooms proper
+        public static void GenerateAllStationRooms(UnifiedRandom uniRand)
+        {
+            foreach (SpaceStationStructure station in SpaceStationStructure.StationObjects)
+            {
+                foreach ((FilledSpaceArea, Vector2) room in station.roomsToGenerateLater)
+                {
+                    station.GenerateStationCore(uniRand, room.Item1, room.Item2, false);
+                }
+                foreach ((FilledSpaceArea, Vector2) room in station.roomsToGenerateLater)
+                {
+                    station.GenerateStationCore(uniRand, room.Item1, room.Item2, false,true);
+                }
+            }
+        }
+
+        //Per Station fill-ins
+        public virtual void FillInStation(UnifiedRandom uniRand, List<(Point, int)> floorTiles, List<(Point, int)> platfromTiles)
+        {
+
+            //Put a chest on solid tiles
+            bool addedChest = false;
+            foreach ((Point, int) floor in floorTiles.OrderBy(testby => uniRand.Next()))
+            {
+                if (addedChest)
+                    break;
+
+                if (floor.Item2 > TileRangeExits)
+                    continue;
+
+                int thechest = WorldGen.PlaceChest(floor.Item1.X, floor.Item1.Y, TileID.Containers, false, 48);
+                if (thechest >= 0)
+                {
+                    SpaceDim.AddStuffToChest(thechest, 0, uniRand);
+                    addedChest = true;
+                }
+            }
+        }
+
+        //Fill in all stations
+        public static void FillInAllStations(UnifiedRandom uniRand)
+        {
+
+            //Get "floors" in the station, these include the platforms
+            List<(Point, int)> solidFloorsInAllStations = new List<(Point, int)>();
+            foreach (SpaceStationStructure station in SpaceStationStructure.StationObjects)
+            {
+                List<(Point, int)> solidFloorsInThisStation = new List<(Point, int)>();
+                List<(Point, int)> platformFloorsInThisStation = new List<(Point, int)>();
+
+                foreach ((Vector2, int) there in station.placesToBuild)
+                {
+                    Point therePoint = new Point((int)there.Item1.X / 16, (int)there.Item1.Y / 16);
+                    Tile tile = Framing.GetTileSafely(therePoint.X, therePoint.Y);
+
+                    if (station.CanOverrideTile(tile) || Main.tileMerge[ModContent.TileType<Spacerock>()][tile.type])
+                        tile.active(false);
+                }
+
+
+                foreach ((Vector2, int) there in station.placesToBuild)
+                {
+                    Point therePoint = new Point((int)there.Item1.X / 16, (int)there.Item1.Y / 16);
+                    Tile tile = Framing.GetTileSafely(therePoint.X, therePoint.Y);
+
+                    Point therePointBelow = new Point(therePoint.X, therePoint.Y + 1);
+                    Tile tileBelow = Framing.GetTileSafely(therePointBelow.X, therePointBelow.Y);
+
+                    //On solid tiles only
+                    if ((Main.tileSolid[tileBelow.type]) && tileBelow.active())
+                        solidFloorsInThisStation.Add((therePoint, there.Item2));
+
+                    //On Platforms only
+                    if ((Main.tileSolidTop[tileBelow.type]) && tileBelow.active())
+                        platformFloorsInThisStation.Add((therePoint, there.Item2));
+
+                }
+
+                station.placesToBuild.Distinct().ToList();
+
+                station.FillInStation(uniRand, solidFloorsInThisStation, platformFloorsInThisStation);//Add stuff that's per station
+
+                solidFloorsInAllStations.AddRange(solidFloorsInThisStation);
+                solidFloorsInAllStations.AddRange(platformFloorsInThisStation);
+            }
+
+
+
+            //Place stuff that can be in any station
+
+            foreach ((Point, int) floor in solidFloorsInAllStations.OrderBy(testby => uniRand.Next()))
+            {
+                if (floor.Item2 < TileRangeExits)
+                {
+                    WorldGen.PlaceObject(floor.Item1.X, floor.Item1.Y, ModContent.TileType<CelestialMonolith>());
+                    Tile tile = Framing.GetTileSafely(floor.Item1.X, floor.Item1.Y);
+
+                    if (tile.type == ModContent.TileType<CelestialMonolith>())
+                    {
+                        CelestialMonolithTE inst = ModContent.GetInstance<CelestialMonolithTE>();
+
+                        inst.Hook_AfterPlacement(floor.Item1.X, floor.Item1.Y, inst.Type, 0,0);
+                        goto theend;
+                    }
+                }
+            }
+
+            theend:
+            SGAmod.Instance.Logger.Debug("Done adding stuff to stations");
+
+        }
+
+        public void GenerateMainStationStructure(UnifiedRandom uniRand, FilledSpaceArea AreaToSpawnMainBaseAt)
+        {
+
+            FilledSpaceArea ChosenMainBaseLocation = AreaToSpawnMainBaseAt;
+            ChosenMainBaseLocation.type = 9;
+            ChosenMainBaseLocation.generation = 0;
+            ChosenMainBaseLocation.size = 24;
+            ChosenMainBaseLocation.heightVar = uniRand.Next(-1, 1);
+
+            //Make the main, central core room
+            GenerateStationCore(uniRand, ChosenMainBaseLocation, ChosenMainBaseLocation.position);
+
+
+            //Generate 1st ones
+            List<FilledSpaceArea> firstLayerAreas = StemNewStationSegments(uniRand, ChosenMainBaseLocation,3,0);
+
+            foreach (FilledSpaceArea areaHere in firstLayerAreas)
+            {
+                areaHere.generation = 1;
+
+                //Generate 2nd layer exits
+                foreach (FilledSpaceArea areaHere2ndLayer in StemNewStationSegments(uniRand, areaHere, 2, 2))
+                {
+                    //nil
+                }
+            }
+
+
+            SpaceStationStructure.placesToFillIn.AddRange(placesToBuild);
+        }
+
+    }
+
+
+
+
 
     public class SpaceDim : SGAPocketDim
     {
@@ -50,13 +855,16 @@ namespace SGAmod.Dimensions
         public override float spawnRate => 7.50f;
 
         public override string DimName => "Near Terrarian Orbit";
+        public static bool postMoonLord = false;
 
         public static List<Vector2> EmptySpaces;
         public static List<FilledSpaceArea> FilledSpaces;
+        public static List<FilledSpaceArea> FilledSpacesTakenByStations;
+        public static List<FilledSpaceArea> StationSpaces;
 
         public override UserInterface loadingUI => base.loadingUI;
-        NoiseGenerator Noisegen;
-        NoiseGenerator Noisegen2freq;
+        public static NoiseGenerator Noisegen;
+        public static NoiseGenerator Noisegen2freq;
         int noiseScale = 4;
         double[,] noiseGrid;
         double[,] noiseGrid2;
@@ -206,10 +1014,6 @@ namespace SGAmod.Dimensions
                 AGenPass(proggers);
             }
 
-            FilledSpaces = new List<FilledSpaceArea>();
-            EmptySpaces = new List<Vector2>();
-
-
             foreach (Point pointa in TakenPoints)
             {
                 //Point gridloc = new Point(pointa.X / noiseScale, pointa.Y / noiseScale);
@@ -238,15 +1042,15 @@ namespace SGAmod.Dimensions
 
         }
 
-        public int AsteriodDensity(Point where,int buffer)
+        public int AsteriodDensity(Point where, int buffer)
         {
             int ammount = 0;
 
-            for(int x=-buffer; x <= buffer; x += 1)
+            for (int x = -buffer; x <= buffer; x += 1)
             {
                 for (int y = -buffer; y <= buffer; y += 1)
                 {
-                    int whereX = Math.Min(width, Math.Max(0,where.X + x));
+                    int whereX = Math.Min(width, Math.Max(0, where.X + x));
                     int whereY = Math.Min(width, Math.Max(0, where.Y + y));
 
                     Tile tile = Framing.GetTileSafely(whereX, whereY);
@@ -257,7 +1061,7 @@ namespace SGAmod.Dimensions
             return ammount;
         }
 
-        public void MakeAsteriod(Point where, UnifiedRandom rand)
+        public static void MakeAsteriod(Point where, UnifiedRandom rand)
         {
 
             //float angle = rand.NextFloat(MathHelper.TwoPi);
@@ -266,6 +1070,8 @@ namespace SGAmod.Dimensions
             int size2 = rand.Next(2, 4);
             int spaced = 0;
             int itr = 8;
+            int width = Main.maxTilesX;
+            int height = Main.maxTilesY;
 
             if (rand.Next(0, 10) == 0)
             {
@@ -274,6 +1080,10 @@ namespace SGAmod.Dimensions
                 itr = 16;
             }
 
+            bool fragmentAsteriod = postMoonLord && rand.Next(10) < 1;
+            Point boundsLower = new Point(where.X, where.Y);
+            Point boundsUpper = new Point(where.X, where.Y);
+
             for (int i = 0; i < itr; i += 1)
             {
 
@@ -281,20 +1091,57 @@ namespace SGAmod.Dimensions
 
                 Point idealLocation = new Point(where.X + (int)offsetGaussian.X, where.Y + (int)offsetGaussian.Y);
 
+                Point OreSpreadLoc = rand.Next(100) < 25 ? idealLocation : where;
+
                 int size = size2 + rand.Next(-1, 2) + (int)MathHelper.Clamp((float)Noisegen.Noise(where.X, where.Y) * 4f, -2f, 3f);
 
-                IDGWorldGen.PlaceMulti(idealLocation, SGAmod.Instance.TileType("Spacerock"), size);
+                IDGWorldGen.PlaceMulti(idealLocation, (ushort)ModContent.TileType<Spacerock2>(), size);
 
                 if (rand.Next(-50, Math.Max(80, 300 - where.Y)) > 0)
-                    IDGWorldGen.TileRunner(where.X, where.Y, 5, 12, TileID.Meteorite, false, rand: rand);
+                {
+                    if (fragmentAsteriod)
+                    {
+                        boundsLower.X = Math.Min(boundsLower.X, OreSpreadLoc.X);
+                        boundsLower.Y = Math.Min(boundsLower.Y, OreSpreadLoc.Y);
+
+                        boundsUpper.X = Math.Max(boundsUpper.X, OreSpreadLoc.X);
+                        boundsUpper.Y = Math.Max(boundsUpper.Y, OreSpreadLoc.Y);
+                    }
+
+                    IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 5, 12, fragmentAsteriod ? TileID.Adamantite : TileID.Meteorite, false, rand: rand);
+                }
 
                 if (rand.Next(-50, Math.Max(-10, 300 - where.Y)) > 0)
-                    IDGWorldGen.TileRunner(where.X, where.Y, 4, 15, SGAmod.Instance.TileType("AstrialLuminite"), false, rand: rand);
+                    IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 4, 15, SGAmod.Instance.TileType("AstrialLuminite"), false, rand: rand);
 
                 if (rand.Next((height - 300) - 50, Math.Max((height - 300) - 10, height)) < where.Y)
-                    IDGWorldGen.TileRunner(where.X, where.Y, 4, 15, SGAmod.Instance.TileType("VibraniumCrystalTile"), false, rand: rand);
+                    IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 4, 15, SGAmod.Instance.TileType("VibraniumCrystalTile"), false, rand: rand);
 
             }
+
+            if (fragmentAsteriod)
+            {
+                int[] oreType = { TileID.LunarBlockNebula, TileID.LunarBlockSolar, TileID.LunarBlockStardust, TileID.LunarBlockVortex };
+                ushort myFragementOre = (ushort)oreType[rand.Next(oreType.Length)];
+
+                for (int x = boundsLower.X - 30; x < boundsUpper.X + 60; x++)
+                {
+                    for (int y = boundsLower.Y - 30; y < boundsUpper.Y + 60; y++)
+                    {
+                        if (WorldGen.InWorld(x, y))
+                        {
+                            Tile tile = Framing.GetTileSafely(x, y);
+
+                            if (tile.type == TileID.Adamantite)
+                                tile.type = myFragementOre;
+                            //tile.color((byte)Paints.DeepRed);
+                        }
+                    }
+
+                }
+
+            }
+
 
         }
 
@@ -312,33 +1159,7 @@ namespace SGAmod.Dimensions
 
         GenerationProgress proggers;
 
-        public void ChooseEnemies()
-        {
-            EnemySpawnsOverride = delegate (IDictionary<int, float> pool, NPCSpawnInfo spawnInfo, SGAPocketDim pocket)
-            {
-                    //UnifiedRandom UniRand2 = new UnifiedRandom(pocket.enemyseed);
-                    for (int i = 0; i < pool.Count; i += 1)
-                {
-                    pool[i] = 0f;
-
-                }
-                    if (spawnInfo.spawnTileType == ModContent.TileType<VibraniumCrystalTile>())
-                pool[ModContent.NPCType<ResonantWisp>()] = 50f;
-                pool[ModContent.NPCType<OverseenHead>()] = 1f;
-                pool[NPCID.MartianDrone] = 0.25f;
-                pool[NPCID.MartianTurret] = 0.2f;
-
-                pocket.chooseenemies = true;
-                return 1;
-            };
-        }
-
-        public override void DoUpdates()
-        {
-            ChooseEnemies();
-        }
-
-        public void SmoothOutAsteriods(UnifiedRandom uniRand,int passesToDo = 4)
+        public void SmoothOutAsteriods(UnifiedRandom uniRand, int passesToDo = 4)
         {
 
             for (int passes = 0; passes < passesToDo; passes += 1)
@@ -362,6 +1183,79 @@ namespace SGAmod.Dimensions
             }
         }
 
+        public void MakeSmallStations(UnifiedRandom uniRand, int idealCount = 5)
+        {
+            List<FilledSpaceArea> areas = new List<FilledSpaceArea>(FilledSpaces);
+            //SpaceStationStructure.placesToFillIn.Clear();
+
+            for (int i = 0; i < idealCount; i += 1)
+            {
+                int distance = 3200;
+            goback:
+                List<FilledSpaceArea> area = areas.Where(testby => StationSpaces.Where(testby2 => (testby2.position - testby.position).Length() < distance).Count() < 1).OrderBy(testby => uniRand.Next()).ToList();
+                if (area.Count < 1)
+                {
+                    distance -= 10;
+                    goto goback;
+                }
+
+                //SpaceStationStructure.placesToBuild.Clear();
+
+                //Generation single Stations, with only exits (no prceed-generation)
+
+                FilledSpaceArea theLocation = area[0];
+                theLocation.type = 10;
+                theLocation.generation = 0;
+                theLocation.size = 16;
+                theLocation.heightVar = uniRand.Next(-4, 6);
+
+                SpaceStationStructure outpost = new SpaceStationStructure(theLocation.position);
+                outpost.GenerateStationCore(uniRand, theLocation, theLocation.position);
+
+                SpaceStationStructure.placesToFillIn.AddRange(outpost.placesToBuild);
+
+
+            }
+
+        }
+
+        public void MakeMainStation(UnifiedRandom uniRand, int worldBuffer = 4200, int MinWorldBuffer = 720)
+        {
+            FilledSpacesTakenByStations = new List<FilledSpaceArea>(FilledSpaces);
+
+            foreach (Vector2 space in SpaceDim.EmptySpaces)
+            {
+                FilledSpacesTakenByStations.Add(new FilledSpaceArea(space));
+            }
+
+
+            List<FilledSpaceArea> areas = new List<FilledSpaceArea>();
+            SpaceStationStructure.placesToFillIn.Clear();
+
+            bool leftOrRight = uniRand.NextBool();
+
+            Rectangle inner = new Rectangle(0, 0, (Main.maxTilesX * 16) - worldBuffer * 2, (Main.maxTilesY * 16));
+            Rectangle outer = new Rectangle(0, 1200, (Main.maxTilesX * 16) - MinWorldBuffer * 2, (Main.maxTilesY * 16) - 2400);
+
+
+
+            areas = FilledSpaces.Where(testby => outer.Contains(testby.position.ToPoint()) && !inner.Contains(testby.position.ToPoint())).OrderBy(testby => uniRand.Next()).ToList();
+
+            MainStationStructure outpost = new MainStationStructure(areas[0].position);
+
+            outpost.mainBase = true;
+
+            outpost.GenerateMainStationStructure(uniRand, areas[0]);
+
+            SpaceStationStructure.placesToFillIn.AddRange(outpost.placesToBuild);
+
+
+
+
+        }
+
+
+
         public virtual void AGenPass(GenerationProgress prog)
         {
             proggers = prog;
@@ -371,7 +1265,7 @@ namespace SGAmod.Dimensions
                 for (int y = 0; y < height; y += 1)
                 {
                     Main.tile[x, y].active(false);
-                    Main.tile[x, y].type = (ushort)SGAmod.Instance.TileType("Spacerock2");
+                    Main.tile[x, y].type = (ushort)ModContent.TileType<Spacerock2>();
                     Main.tile[x, y].wall = 0;
 
                 }
@@ -381,6 +1275,7 @@ namespace SGAmod.Dimensions
             int lastseed = WorldGen._genRandSeed;
             WorldGen._genRandSeed = DimDungeonsProxy.DungeonSeeds;
             enemyseed = (DimDungeonsProxy.DungeonSeeds);
+
             prog.Message = "Loading"; //Sets the text above the worldgen progress bar
             Main.worldSurface = Main.maxTilesY - 2; //Hides the underground layer just out of bounds
             Main.rockLayer = Main.maxTilesY; //Hides the cavern layer way out of bounds
@@ -390,10 +1285,10 @@ namespace SGAmod.Dimensions
 
             ChooseEnemies();
 
-             //Perlin Noise Gen
-             //Base Terrain Fill
+            //Perlin Noise Gen
+            //Base Terrain Fill
 
-             Noisegen = new NoiseGenerator(DimDungeonsProxy.DungeonSeeds);
+            Noisegen = new NoiseGenerator(DimDungeonsProxy.DungeonSeeds);
 
             Noisegen.Amplitude = 1.75;
             Noisegen.Frequency *= 0.40;
@@ -441,9 +1336,13 @@ namespace SGAmod.Dimensions
             }
 
             prog.Message = "Filling up the sky with rocks";
+
+            FilledSpaces = new List<FilledSpaceArea>();
+            EmptySpaces = new List<Vector2>();
+
             DFSPDS(new Point(width / 2, height / 2), UniRand);
 
-
+            #region oldstuff
             //Noisegen.Frequency
 
             /*
@@ -501,9 +1400,27 @@ namespace SGAmod.Dimensions
                     }
                 }
             }*/
+            #endregion
 
+            Rectangle rect = new Rectangle(400, 200, width - 800, height - 400);
+
+            FilledSpaces = FilledSpaces.Where(testby => rect.Contains(new Point((int)testby.position.X / 16, (int)testby.position.Y / 16))).ToList();
 
             //Gen space station, thing here
+
+            prog.Message = "Inviting Interstellar Guests";
+
+            StationSpaces = new List<FilledSpaceArea>();
+            SpaceStationStructure.StationObjects = new List<SpaceStationStructure>();
+            SpaceStationStructure.ConnectionLines = new List<(Vector2, Vector2)>();
+
+            MakeMainStation(UniRand);
+
+            prog.Message = "Inviting Lesser Guests";
+
+            MakeSmallStations(UniRand);
+
+            EmptySpaces = EmptySpaces.Where(testby => rect.Contains(new Point((int)testby.X / 16, (int)testby.Y / 16)) && AsteriodDensity(new Point((int)testby.X / 16, (int)testby.Y / 16), 8) < 20 && Main.tile[(int)testby.X / 16, (int)testby.Y / 16].wall <= 0).ToList();
 
             //Cellular Crap
 
@@ -511,14 +1428,19 @@ namespace SGAmod.Dimensions
 
             SmoothOutAsteriods(UniRand);
 
-            Rectangle rect = new Rectangle(400, 200, width - 800, height - 400);
+            prog.Message = "Inviting Interstellar Guests In";
 
-            EmptySpaces = EmptySpaces.Where(testby => rect.Contains(new Point((int)testby.X / 16, (int)testby.Y / 16)) && AsteriodDensity(new Point((int)testby.X / 16, (int)testby.Y / 16), 8) < 20 && Main.tile[(int)testby.X / 16, (int)testby.Y / 16].wall<=0).ToList();
+            SpaceStationStructure.GenerateAllStationRooms(UniRand);
+            prog.Message = "Filling Guests";
+            SpaceStationStructure.FillInAllStations(UniRand);
+
             Vector2 bossplace = EmptySpaces[0];
 
             NPC.NewNPC((int)bossplace.X, (int)bossplace.Y, ModContent.NPCType<SpaceBoss>());
 
             prog.Message = "Finishing Up";
+
+            postMoonLord = false;
 
             WorldGen._genRandSeed = lastseed;
 
@@ -541,11 +1463,103 @@ namespace SGAmod.Dimensions
 
         }
 
+        public void ChooseEnemies()
+        {
+            EnemySpawnsOverride = delegate (IDictionary<int, float> pool, NPCSpawnInfo spawnInfo, SGAPocketDim pocket)
+            {
+                //UnifiedRandom UniRand2 = new UnifiedRandom(pocket.enemyseed);
+                for (int i = 0; i < pool.Count; i += 1)
+                {
+                    pool[i] = 0f;
+
+                }
+                if (spawnInfo.spawnTileType == ModContent.TileType<VibraniumCrystalTile>())
+                    pool[ModContent.NPCType<ResonantWisp>()] = 50f;
+                pool[ModContent.NPCType<OverseenHead>()] = 1f;
+                pool[NPCID.MartianDrone] = 0.25f;
+                pool[NPCID.MartianTurret] = 0.2f;
+
+                pocket.chooseenemies = true;
+                return 1;
+            };
+        }
+
+        public override void DoUpdates()
+        {
+            ChooseEnemies();
+            SpaceStationStructure.UpdateStations();
+        }
+
         public override void Load()
         {
             Main.dayTime = false;
             Main.time = 0;
         }
+
+        public static void AddStuffToChest(int chestid, int loottype, UnifiedRandom unirand)
+        {
+
+            if (chestid > -1)
+            {
+
+                List<int> lootmain = new List<int> { ItemID.MetalShelf,ItemID.MeteoriteBrick,ItemID.SilverCoin, ItemID.FrostCore };
+                List<int> lootSemiRare = new List<int> {ItemID.FrostCore, ItemID.AncientBattleArmorMaterial };
+
+                List<int> lootrare = new List<int> { ModContent.ItemType<ConcussionDevice>(), ModContent.ItemType<ExperimentalPathogen>(), ItemID.GoblinTech,ItemID.REK, ModContent.ItemType<PlasmaCell>()};
+
+                int index = 0;
+                int chestItem = 0;
+
+                if (loottype == 0)//Outpost Chest
+                {
+                    if (unirand.Next(100) < 25)
+                        lootmain.Add(ItemID.GoldCoin);
+                    if (unirand.Next(100) < 10)
+                        lootmain.Add(ModContent.ItemType<EmptyPlasmaCell>());
+
+                    index = unirand.Next(0, lootrare.Count);
+                    Main.chest[chestid].item[chestItem].SetDefaults(lootrare[index]);
+                    Main.chest[chestid].item[chestItem].stack = 1;
+                    chestItem += 1;
+                }
+
+                if (loottype == 0)//Main Station Chest
+                {
+                    if (unirand.Next(100) < 25)
+                        lootmain.Add(ItemID.GoldCoin);
+
+                    index = unirand.Next(0, lootrare.Count);
+                    Main.chest[chestid].item[chestItem].SetDefaults(lootrare[index]);
+                    Main.chest[chestid].item[chestItem].stack = 1;
+                    chestItem += 1;
+                }
+
+
+
+                //Misc items
+                for (int kk = 0; kk < unirand.Next(2, 3 + (Main.expertMode ? 6 : 3)); kk += 1)
+                {
+                    if (unirand.Next(0, 100) < 35)
+                    {
+                        index = unirand.Next(0, lootmain.Count);
+                        Main.chest[chestid].item[chestItem].SetDefaults(lootmain[index]);
+                        Main.chest[chestid].item[chestItem].stack = unirand.Next(2, unirand.Next(4, Main.expertMode ? 8 : 5));
+                        chestItem += 1;
+                    }
+
+                    if (unirand.Next(0, 100) < 20)
+                    {
+                        index = unirand.Next(0, lootSemiRare.Count);
+                        Main.chest[chestid].item[chestItem].SetDefaults(lootSemiRare[index]);
+                        Main.chest[chestid].item[chestItem].stack = unirand.Next(1, unirand.Next(4, Main.expertMode ? 4 : 3));
+                        chestItem += 1;
+                    }
+
+                }
+            }
+
+        }
+
     }
 
     public class SpaceSky : CustomSky

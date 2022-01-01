@@ -312,12 +312,12 @@ namespace SGAmod.Items.Weapons
 							projType = ProjectileID.PulseBolt;
 						if (item.type == ItemID.HellwingBow)
 						{
-							projType = ProjectileID.DD2BetsyArrow;
+							projType = ProjectileID.Hellwing;
 							damage = damage / 2;
 						}
 						if (item.type == ItemID.BeesKnees)
 						{
-							projType = ProjectileID.DD2BetsyArrow;
+							projType = ProjectileID.BeeArrow;
 							damage = damage / 2;
 						}
 						if (item.type == ItemID.DD2BetsyBow)

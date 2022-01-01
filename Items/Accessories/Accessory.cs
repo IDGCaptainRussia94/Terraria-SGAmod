@@ -1854,6 +1854,7 @@ namespace SGAmod.Items.Accessories
 				{
 					player.accRunSpeed += 5f;
 					player.runAcceleration += 0.05f;
+					player.jumpSpeedBoost += 2.4f;
 				}
 				player.iceSkate = true;
 				player.lavaMax += 500;
@@ -1862,7 +1863,6 @@ namespace SGAmod.Items.Accessories
 				player.jumpBoost = true;
 				player.noFallDmg = true;
 				player.autoJump = true;
-				player.jumpSpeedBoost += 2.4f;
 				player.extraFall += 15;
 				if (!hideVisual)
 				player.doubleJumpCloud = true;
@@ -1882,7 +1882,7 @@ namespace SGAmod.Items.Accessories
 			{
 				s = key;
 			}
-			tooltips.Add(new TooltipLine(mod, "DemonSteppersSpeed", "Toggle the speed boost with the 'Walk Mode' hotkey (" + s+")"));
+			tooltips.Add(new TooltipLine(mod, "DemonSteppersSpeed", "Toggle the speed/frog leg boost with the 'Walk Mode' hotkey (" + s+")"));
 			if (item.wingSlot>0)
             {
 				tooltips.Add(new TooltipLine(mod, "DemonSteppersSpeed", "Also effects the flying speed"));
@@ -2643,15 +2643,6 @@ namespace SGAmod.Items.Accessories
 			item.value = Item.buyPrice(0, 1, 0, 0);
 			item.accessory = true;
 		}
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return Main.hslToRgb((Main.GlobalTime / 3f) % 1f, 0.85f, 0.50f);
-		}
-
-		public override string Texture
-		{
-			get { return ("Terraria/Item_" + ItemID.JourneymanBait); }
-		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
@@ -3295,6 +3286,7 @@ namespace SGAmod.Items.Accessories
 	}
 	public class SnakeEyes : ModItem
 	{
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Snake Eyes");
@@ -3378,6 +3370,179 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
+	public class LiquidGambling : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Liquified Gambling");
+			Tooltip.SetDefault("'You don't want to question this substance...'\nGreatly speeds up the opening of Contraband Crates\nAlso works while in inventory");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().liquidGambling = 5;
+		}
+
+        public override void UpdateInventory(Player player)
+        {
+			UpdateAccessory(player, true);
+		}
+
+        public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(silver: 50);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+	}
+
+	public class HighStakesSet : LiquidGambling
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("High Stakes Set");
+			Tooltip.SetDefault("Damage taken and given has a 25% variance\nIncludes the effects of:\n--Hearts of the Cards, Snake Eyes\n--Russian Roulette, and Liquified Gambling");
+		}
+
+		public override bool Autoload(ref string name)
+		{
+            SGAnpcs.DoModifiesLateEvent += SGAnpcs_DoModifiesLateEvent;
+			return true;
+		}
+
+		private void SGAnpcs_DoModifiesLateEvent(NPC npc, Player player, Projectile projectile, Item item, ref int sourcedamage, ref int damage, ref float knockback, ref bool crit)
+		{
+			if (player != null && player.SGAPly().highStakesSet)
+			{
+				damage = (int)(damage * Main.rand.NextFloat(0.75f, 1.25f));
+			}
+		}
+
+        public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().highStakesSet = true;
+			base.UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<CardDeckPersona>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<RussianRoulette>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<SnakeEyes>().UpdateAccessory(player, hideVisual);
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 5);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<SnakeEyes>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<RussianRoulette>(), 1);
+            recipe.AddIngredient(ModContent.ItemType<CardDeckPersona>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<LiquidGambling>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<TerrariacoCrateBase>(), 1);
+			recipe.AddIngredient(ItemID.LockBox, 1);
+			recipe.AddIngredient(ItemID.Stake, 100);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+
+	public class ExperimentalPathogen : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Experimental Pathogen");
+			Tooltip.SetDefault("'Takes advantage of a weakened body, allowing further damage'\nGain 5% increased damage against enemies per buff/debuff applies to them\nGoes to a max of 25%");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().experimentalPathogen = true;
+		}
+
+		public override bool Autoload(ref string name)
+		{
+			SGAnpcs.DoModifiesLateEvent += SGAnpcs_DoModifiesLateEvent;
+			return true;
+		}
+
+		private void SGAnpcs_DoModifiesLateEvent(NPC npc, Player player, Projectile projectile, Item item, ref int sourcedamage, ref int damage, ref float knockback, ref bool crit)
+		{
+			if (player != null && player.SGAPly().experimentalPathogen)
+			{
+				int dam = sourcedamage;
+				int increase = 0;
+
+				for (int i = 0; i < npc.buffType.Length; i += 1)
+				{
+					if (npc.buffTime[i] > 0)
+						increase++;
+				}
+
+				damage = (int)(dam * (1f + Math.Min(increase * 0.05f, 0.25f)));
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = ItemRarityID.LightPurple;
+			item.accessory = true;
+		}
+
+	}
+	public class ConcussionDevice : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Concussion Device");
+			Tooltip.SetDefault("'This device will provide a strong blow to those who can normally take it'\nDo more damage the more knockback immunity an enemy has\nGoes to a max of 15%");
+		}
+
+		public override bool Autoload(ref string name)
+		{
+			SGAnpcs.DoModifiesLateEvent += SGAnpcs_DoModifiesLateEvent;
+			return true;
+		}
+
+		private void SGAnpcs_DoModifiesLateEvent(NPC npc, Player player, Projectile projectile, Item item, ref int sourcedamage, ref int damage, ref float knockback, ref bool crit)
+		{
+			if (player != null && player.SGAPly().concussionDevice)
+			{
+				int dam = sourcedamage;
+				damage = (int)(dam * (1f + Math.Max((1f-npc.knockBackResist)*0.15f,0)));
+			}
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().concussionDevice = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = ItemRarityID.LightPurple;
+			item.accessory = true;
+		}
+	}
 	public class NoviteCore : ModItem
 	{
 		public override void SetStaticDefaults()

@@ -557,7 +557,7 @@ namespace SGAmod.Dimensions
 
                                 tileline.type = TileID.DiamondGemspark;
                                 tileline.active(true);
-                                tileline.color((byte)FakeOverworld.Paints.Negative);
+                                tileline.color((byte)Paints.Negative);
                             }
                         }
                     }
@@ -692,7 +692,7 @@ namespace SGAmod.Dimensions
             foreach (Point16 point in BossBox)
             {
                 Tile tileline = Main.tile[point.X, point.Y];
-                tileline.color((byte)FakeOverworld.Paints.Shadow);
+                tileline.color((byte)Paints.Shadow);
                 //if (BossRoomInside.Contains(point.X, point.Y))
                 //{
                 tileline.active(false);

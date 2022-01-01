@@ -82,13 +82,6 @@ namespace SGAmod.NPCs
 
 					if (returnval)
                     {
-						/*
-						if (!Filters.Scene["SGAmod:SwirlingVortex"].IsActive())
-                        {
-								Filters.Scene.Activate("SGAmod:SwirlingVortex", default(Vector2));
-						}
-						*/
-
 						SPinkyTrue boss = (thetarget.modNPC as SPinkyTrue);
 						float scale = boss.effectScale;
 						float scale2 = MathHelper.Clamp(-1+((thetarget.ai[0]-1000000)/250f),0f,1f);
@@ -103,14 +96,6 @@ namespace SGAmod.NPCs
 
 					if (thetarget == null)
 					{
-
-						/*
-						if (Filters.Scene["SGAmod:SwirlingVortex"].Active)
-						{
-							Filters.Scene.Deactivate("SGAmod:SwirlingVortex");
-						}
-						*/
-
 						returnval = false;
 						VortexActive = false;
 					}

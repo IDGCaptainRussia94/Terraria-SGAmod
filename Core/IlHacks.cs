@@ -47,6 +47,8 @@ namespace SGAmod
 			IL.Terraria.GameContent.Events.Sandstorm.EmitDust += ForceSandStormEffects;
             IL.Terraria.UI.ItemSorting.Sort += IgnoreManifestDevArmors;
 
+            IL.Terraria.Main.DoDraw += BGPatchOfPain;
+
 			//if (SGAmod.OSType < 1)//Only windows
 			//IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
 
@@ -81,6 +83,69 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
 			*/
 		}
+
+		//Not... enjoying this one...
+		private delegate bool CheckForSkyDelegate();
+		private static bool CheckForSkyMethod()
+		{
+			return Items.Placeable.CelestialMonolithManager.onlyDrawSky;
+		}
+
+		private static void BGPatchOfPain(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+
+			//1st we make a label...ssss
+			ILLabel jumpToDrawingSky = c.DefineLabel();
+			ILLabel smolBranch = c.DefineLabel();
+
+			c.EmitDelegate<CheckForSkyDelegate>(CheckForSkyMethod);
+			c.Emit(OpCodes.Brfalse_S, smolBranch);
+			c.Emit(OpCodes.Br, jumpToDrawingSky);
+			c.MarkLabel(smolBranch);
+			//c.MarkLabel(jumpToDrawingSky);
+
+
+
+			if (c.TryGotoNext(MoveType.Before, i => i.MatchStfld<Main>("unityMouseOver")))
+			{
+				//Terraria.Graphics.Effects.FilterManager::BeginCapture()
+				MethodInfo methodToLookForpre = typeof(Terraria.Graphics.Effects.FilterManager).GetMethod("BeginCapture", SGAmod.UniversalBindingFlags);
+
+				if (c.TryGotoPrev(MoveType.After, i => i.MatchCallvirt(methodToLookForpre)))
+				{
+
+					//c.MoveAfterLabels();
+					c.MarkLabel(jumpToDrawingSky);
+
+					c.Index = il.Instrs.Count - 1;
+
+					if (c.TryGotoPrev(MoveType.After, i => i.MatchStsfld<Main>("grabSky")))
+					{
+						//IL_390e: callvirt instance void Terraria.Graphics.Effects.OverlayManager::Draw(class [Microsoft.Xna.Framework.Graphics]Microsoft.Xna.Framework.Graphics.SpriteBatch, valuetype Terraria.Graphics.Effects.RenderLayers, bool)
+						MethodInfo methodToLookFor = typeof(SpriteBatch).GetMethod("End", SGAmod.UniversalBindingFlags);
+
+						if (c.TryGotoNext(MoveType.After, i => i.MatchCallvirt(methodToLookFor)))
+						{
+
+							ILLabel smolBranch2 = c.DefineLabel();
+							c.EmitDelegate<CheckForSkyDelegate>(CheckForSkyMethod);
+							c.Emit(OpCodes.Brfalse_S, smolBranch2);
+							c.Emit(OpCodes.Ret);
+							c.MarkLabel(smolBranch2);
+
+
+							return;
+						}
+						throw new Exception("IL Error Test 4");
+					}
+					throw new Exception("IL Error Test 3");
+				}
+				throw new Exception("IL Error Test 2");
+			}
+			throw new Exception("IL Error Test 1");
+		}
+
 
 		//Work around to stop awoken dev armors from being deleted on being Sorted
 
@@ -244,18 +309,27 @@ namespace SGAmod
 
 		}
 
-		//Draws Hellion's Stary effect in the same layer as Moonlord's
+		//Draws Hellion's Stary effect in the same layer as Moonlord's, also draws stuff right before worm enemies
 		private static void DrawBehindVoidLayers(ILContext il)
 		{
 			ILCursor c = new ILCursor(il);
+				MethodInfo methodToLookFor = typeof(Main).GetMethod("DrawBackgroundBlackFill", SGAmod.UniversalBindingFlags);
+			c.TryGotoNext(MoveType.After,n => n.MatchCall(methodToLookFor));
+			c.Index--;
+
+			c.EmitDelegate<Action>(SGAmod.DrawBehindAllTilesButBeforeSky);		
+			
 			c.TryGotoNext(n => n.MatchLdfld<Main>("DrawCacheNPCsMoonMoon"));
 			c.Index--;
 
-			c.EmitDelegate<Action>(DrawBehindMoonMan);
-		}
-		private static void DrawBehindMoonMan()
-		{
-			NPCs.Hellion.ShadowParticle.Draw();
+			c.EmitDelegate<Action>(SGAmod.DrawBehindMoonMan);
+
+			methodToLookFor = typeof(Main).GetMethod("SortDrawCacheWorms", SGAmod.UniversalBindingFlags);
+			c.TryGotoNext(MoveType.Before,n => n.MatchCall(methodToLookFor));
+			c.Index--;
+
+			c.EmitDelegate<Action>(SGAmod.DrawBehindWormBoys);
+
 		}
 
 		private delegate bool ExtractorDelegate(int extractedType, int extractedAmmount);//Catches the IDs and stack size of extracts

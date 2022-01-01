@@ -52,6 +52,7 @@ namespace SGAmod.NPCs.Cratrosity
 			npc.noTileCollide = true;
 			npc.noGravity = true;
 			npc.value = 40000f;
+			npc.SGANPCs().treatAsNight = true;
 		}
 		public override void AI()
 		{

@@ -23,8 +23,20 @@ namespace SGAmod.Dimensions.NPCs
 			return mod.Properties.Autoload;
 		}
 
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			return 0;
+		}
+
 		public override void AI()
 		{
+			if (SGAPocketDim.WhereAmI == null)
+            {
+				npc.active = false;
+				return;
+            }
+
+
 			base.AI();
 			if (!fallendown)
 			{

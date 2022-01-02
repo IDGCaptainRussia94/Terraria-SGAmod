@@ -23,6 +23,13 @@ A few warnings before the changelog:
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
 
+3.618-(12/2/22)--Hotfix 27
+
+--Fixed:
+
+-(Attempted) to fix the 2nd Strange Portal spawning and the TF2 emblem freezing the game with mods like Recursive Craft
+
+
 3.617-(12/2/22)--Hotfix 26
 
 -Changed:

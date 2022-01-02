@@ -1,6 +1,14 @@
 
 Changelog:
 
+3.618-(12/2/22)--Hotfix 27
+
+--Fixed:
+
+-(Attempted) to fix the 2nd Strange Portal spawning and the TF2 emblem freezing the game with mods like Recursive Craft
+
+
+
 
 3.617-(12/2/22)--Hotfix 26
 

@@ -94,7 +94,7 @@ namespace SGAmod.Items.Accessories
 							//foreach (Item item2 in Main.LocalPlayer.inventory.Where(testby => testby.type == item.type))
 							//{
 							TF2Emblem playerhasemblem = GetPlayerEmblem(Main.LocalPlayer, false, item.type);
-							if (!playerhasemblem.xp.Item2)
+							if (playerhasemblem == null || !playerhasemblem.xp.Item2)
 								return false;
 							//}
 						}

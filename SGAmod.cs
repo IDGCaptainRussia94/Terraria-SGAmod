@@ -130,7 +130,7 @@ namespace SGAmod
             {
 				int valuez = 0;
 				Microsoft.Xna.Framework.Input.KeyboardState keyState = Microsoft.Xna.Framework.Input.Keyboard.GetState();
-				if (keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.CapsLock))
+				if (keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
 				{
 
 					if (Main.MouseScreen.Y < 128)
@@ -1372,6 +1372,17 @@ namespace SGAmod
 
 });
 			RecipeGroup.RegisterGroup("SGAmod:Gems", pickaxe);
+
+			pickaxe = new RecipeGroup(() => "Any Horseshoe Balloon", new int[]
+{
+			ItemID.BalloonHorseshoeFart,
+			ItemID.BalloonHorseshoeHoney,
+			ItemID.BalloonHorseshoeSharkron,
+			ItemID.BlueHorseshoeBalloon,
+			ItemID.WhiteHorseshoeBalloon,
+			ItemID.YellowHorseshoeBalloon,
+});
+			RecipeGroup.RegisterGroup("SGAmod:HorseshoeBalloons", pickaxe);
 
 
 			if (RecipeGroup.recipeGroupIDs.ContainsKey("IronBar"))

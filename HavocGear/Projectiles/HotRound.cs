@@ -68,6 +68,7 @@ namespace SGAmod.HavocGear.Projectiles
 				if (snd != null)
 				{
 					snd.Pitch = 0.75f;
+					if (SGAmod.ScreenShake < 20)
 					SGAmod.AddScreenShake(16, 1280, projectile.Center);
 				}
 

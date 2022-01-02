@@ -28,7 +28,7 @@ Changelog:
 -Can now generate Fragement Blocks after moonlord is defeated
 -Astral Luminite can now only be mined after moonlord is defeated
 
--Supreme Pinky's 'Treasure Bag' can no longer be opened in Subworlds
+-Supreme Pinky's 'Treasure Bag' can no longer be opened in SubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworlds
 
 -Cratrosity/Cratrogeddon can now be summoned during the day
 
@@ -38,7 +38,7 @@ Changelog:
 
 -Mutant will now sell Reality's Sunder when you are 1st able to fight Hellion Core
 
--Demon Steppers now lose the Frog Leg jump/fly boost when in Walk Mode
+-Demon Steppers now lose the Frog Leg jump/fly boost when in Walk Mode, can now be made with any Horseshoe Balloon Accessories (with only inherit the standard stats thou)
 
 -Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
 
@@ -57,9 +57,6 @@ Changelog:
 -(todo) The Outpost Space Stations spawn with a crystal that heals the boss (at longer/slower rate when shielded), and mining fatigues the player in range
 -Now drops Greater Healing Potions instead of lesser Healing Potions
 
-
-
-
 -Removed Early Luminite config option
 
 
@@ -76,6 +73,10 @@ Changelog:
 -Buff Burning not working as expected, even when you had it disabled it was having an effect (without it showing visually)
 
 -Xenith shooting Betsy Arrows on the Bees Knees and the Hellwing Bow
+
+-Missing Boss Checklist Items in boss loot
+
+-A few minor bugs of mis-matched damage types and other smaller things
 
 
 

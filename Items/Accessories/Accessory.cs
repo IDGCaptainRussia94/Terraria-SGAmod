@@ -1902,11 +1902,13 @@ namespace SGAmod.Items.Accessories
 		}
 		public override void AddRecipes()
 		{
+
+
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<GravityStabilizerBoots>(), 1);
 			recipe.AddIngredient(ItemID.FrostsparkBoots, 1);
 			recipe.AddIngredient(ItemID.LavaWaders, 1);
-			recipe.AddIngredient(ItemID.BlueHorseshoeBalloon, 1);
+			recipe.AddRecipeGroup("SGAmod:HorseshoeBalloons", 1);
 			recipe.AddIngredient(ItemID.FrogLeg, 1);
 			recipe.AddIngredient(ModContent.ItemType < AmberGlowSkull>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < PrimordialSkull>(), 1);

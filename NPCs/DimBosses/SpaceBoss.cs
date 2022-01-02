@@ -1606,6 +1606,11 @@ namespace SGAmod.Dimensions.NPCs
 
 				int maxIndex = 32;
 
+				foreach(SpaceStationStructure station in SpaceStationStructure.StationObjects)
+                {
+					station.SpawnFocusCrystals();
+				}
+
 				for (int i = 0; i < maxIndex; i += 1)
 				{
 
@@ -2136,7 +2141,19 @@ namespace SGAmod.Dimensions.NPCs
 				goingDark -= 1;
 		}
 
+		public void RespawnBoss()
+        {
 
+			NPC.NewNPC((int)startPosition.X, (int)startPosition.Y, npc.type);
+			npc.active = false;
+			npc.type = 0;
+
+			foreach (Projectile proj in TetherAsteriods)
+			{
+				proj.active = false;
+			}
+
+		}
 
 
 
@@ -2189,14 +2206,7 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				if (NoHitMode && Main.player[npc.target].dead)
 				{
-					NPC.NewNPC((int)startPosition.X, (int)startPosition.Y, npc.type);
-					npc.active = false;
-					npc.type = 0;
-					foreach (Projectile proj in TetherAsteriods)
-					{
-						proj.active = false;
-					}
-
+					RespawnBoss();
 					return;
 				}
 
@@ -3313,20 +3323,21 @@ namespace SGAmod.Dimensions.NPCs
 				}
 			}
 
-			Vector2 offset = Vector2.Normalize(projectile.velocity.RotatedByRandom(MathHelper.Pi / 12f)).RotatedBy(MathHelper.Pi);
-			Vector2 offset2 = Vector2.Normalize(projectile.velocity.RotatedByRandom(MathHelper.PiOver2));
-			int dustType = Main.rand.Next(100) < 25 ? ModContent.DustType<LeviDust>() : DustID.BlueCrystalShard;
-			int dust = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y) + offset2 * Main.rand.NextFloat(-12, 12), 0, 0, dustType);
-			Main.dust[dust].scale = 1f;
-			Main.dust[dust].alpha = 40;
-			Main.dust[dust].rotation = offset.ToRotation();
-			Main.dust[dust].velocity = Vector2.Normalize(offset) * (float)(1f * Main.rand.NextFloat(0f, 3f));
-			Main.dust[dust].noGravity = true;
-			Main.dust[dust].color = Color.White;
-
+			if (Main.rand.Next(0, 200) < projectile.localAI[0])
+			{
+				Vector2 offset = Vector2.Normalize(projectile.velocity.RotatedByRandom(MathHelper.Pi / 12f)).RotatedBy(MathHelper.Pi);
+				Vector2 offset2 = Vector2.Normalize(projectile.velocity.RotatedByRandom(MathHelper.PiOver2));
+				int dustType = Main.rand.Next(100) < 25 ? ModContent.DustType<LeviDust>() : DustID.BlueCrystalShard;
+				int dust = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y) + offset2 * Main.rand.NextFloat(-12, 12), 0, 0, dustType);
+				Main.dust[dust].scale = 1f;
+				Main.dust[dust].alpha = 40;
+				Main.dust[dust].rotation = offset.ToRotation();
+				Main.dust[dust].velocity = Vector2.Normalize(offset) * (float)(1f * Main.rand.NextFloat(0f, 3f));
+				Main.dust[dust].noGravity = true;
+				Main.dust[dust].color = Color.White;
+			}
 
 			SGAmod.PostDraw.Add(new PostDrawCollection(new Vector3(projectile.Center.X, projectile.Center.Y, 48)));
-
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -3703,7 +3714,7 @@ namespace SGAmod.Dimensions.NPCs
 
 	}
 
-	public class SpaceBossShadowNebulaEnemy : OverseenHead
+	public class SpaceBossShadowNebulaEnemy : OverseenHead,IDrawThroughFog
 	{
 		public SpaceBossRock spawnedFrom;
 		public SpaceBossShadowNebulaEnemy masterBeforeMe;
@@ -3745,6 +3756,15 @@ namespace SGAmod.Dimensions.NPCs
 			return false;
 
         }
+
+		public override void HitEffect(int hitDirection, double damage)
+		{
+			SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_EtherianPortalDryadTouch, (int)npc.Center.X, (int)npc.Center.Y);
+			if (sound != null)
+			{
+				sound.Pitch += Main.rand.NextFloat(0f, 0.25f);
+			}
+		}
 
 		public override void AI()
 		{
@@ -3847,8 +3867,14 @@ namespace SGAmod.Dimensions.NPCs
 			}
 		}
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		public void DrawThroughFog(SpriteBatch spriteBatch)
 		{
+
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		{
+
 			float overallAlpha = MathHelper.Clamp(npc.ai[2] / 50f, 0f, 1f);
 
 
@@ -3959,9 +3985,8 @@ namespace SGAmod.Dimensions.NPCs
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
 			}
-
-
 			return false;
+
 		}
 
 	}

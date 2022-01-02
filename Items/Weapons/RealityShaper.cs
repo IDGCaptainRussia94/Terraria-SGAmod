@@ -243,6 +243,7 @@ namespace SGAmod.Items.Weapons
 					{
 						int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y)*2f, (int)projectile.ai[0], (int)(projectile.damage*1f* damagescale), projectile.knockBack / 10f, owner.whoAmI);
 						Main.projectile[proj].magic = true;
+						Main.projectile[proj].melee = false;
 						Main.projectile[proj].timeLeft = 300;
 						Main.projectile[proj].penetrate = penetrate;
 						IdgProjectile.Sync(proj);
@@ -255,7 +256,8 @@ namespace SGAmod.Items.Weapons
 					gohere *= 28f;
 					gohere = gohere.RotatedByRandom(MathHelper.ToRadians(20));
 
-					int proj2 = Projectile.NewProjectile(backthere, gohere, mod.ProjectileType("ProjectilePortalRealityShaperHit"), (int)(projectile.damage*1.25 * damagescale), projectile.knockBack / 6f, owner.whoAmI, mod.ProjectileType("HotRound"));
+					int proj2 = Projectile.NewProjectile(backthere, gohere, mod.ProjectileType("ProjectilePortalRealityShaperHit"), (int)(projectile.damage*1.25f * damagescale), projectile.knockBack / 6f, owner.whoAmI, mod.ProjectileType("HotRound"));
+					Main.projectile[proj2].melee = false;
 					IdgProjectile.Sync(proj2);
 
 				}

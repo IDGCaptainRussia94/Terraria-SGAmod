@@ -1027,8 +1027,11 @@ namespace SGAmod
 
 		public static void DoPotionFatigue(SGAPlayer sgaply)
 		{
-			if (!SGAConfig.Instance.PotionFatigue || !sgaply.nightmareplayer)
+			if (!SGAConfig.Instance.PotionFatigue && !sgaply.nightmareplayer)
+			{
+				sgaply.potionFatigue = Math.Max(sgaply.potionFatigue - 20, 0);
 				return;
+			}
 
 			Player player = sgaply.player;
 

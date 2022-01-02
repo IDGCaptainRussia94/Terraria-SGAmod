@@ -115,7 +115,7 @@ namespace SGAmod
         private static int Main_DrawBuffIcon(On.Terraria.Main.orig_DrawBuffIcon orig, int drawBuffText, int i, int b, int x, int y)
         {
 			SGAPlayer sgaply = Main.LocalPlayer.SGAPly();
-			if (sgaply.nightmareplayer || SGAConfig.Instance.PotionFatigue)
+			if (SGAConfig.Instance.PotionFatigue || sgaply.nightmareplayer)
             {
 				int fatigue = sgaply.potionFatigue;
 				if (fatigue < 1)

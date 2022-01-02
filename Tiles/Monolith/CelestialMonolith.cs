@@ -18,6 +18,8 @@ namespace SGAmod.Tiles.Monolith
 	//I don't like doing tiles, lol
 	public class CelestialMonolith : ModTile
 	{
+
+
 		public override void SetDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;

@@ -67,9 +67,9 @@ namespace SGAmod.Items.Accessories
 				}
 				player.rocketBoots = 2;
 			}
+
 			player.maxFallSpeed += 10f;
 			player.wingTimeMax = 300;
-
 
 		}
 

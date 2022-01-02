@@ -20,7 +20,7 @@ using SGAmod.Dimensions.NPCs;
 using SGAmod.Effects;
 using SGAmod.Items;
 using Terraria.Cinematics;
-
+using SGAmod.NPCs.Hellion;
 
 namespace SGAmod.Dimensions
 {

@@ -440,7 +440,7 @@ namespace SGAmod.Items
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.HallowedBar, 4);
 			recipe.AddIngredient(ItemID.SoulofFright, 1);
-			recipe.AddIngredient(ItemID.SoulofNight, 1);
+			recipe.AddIngredient(ItemID.SoulofMight, 1);
 			recipe.AddIngredient(ItemID.SoulofSight, 1);
 			recipe.AddIngredient(this, 5);
 			recipe.AddTile(tileType);
@@ -1818,7 +1818,7 @@ namespace SGAmod.Items
 		}
 		public override Color? GetAlpha(Color lightColor)
 		{
-			return Main.hslToRgb(Main.GlobalTime % 1f, 1f, 0.75f);
+			return Main.hslToRgb((Main.GlobalTime/4f) % 1f, 1f, 0.75f);
 		}
 		public override string Texture
 		{
@@ -1836,17 +1836,16 @@ namespace SGAmod.Items
 			slotSize.Y = -slotSize.Y / 4f;
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
-			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.IntenseBlueFlameDye);
 
 			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
 			{
-				spriteBatch.Draw(Main.itemTexture[item.type], drawPos+(Vector2.UnitX.RotatedBy(f+Main.GlobalTime/6f)*8f), null, drawColor*0.20f, Main.GlobalTime, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+				spriteBatch.Draw(Main.itemTexture[item.type], drawPos+(Vector2.UnitX.RotatedBy(f+Main.GlobalTime*2f)*3f), null, Main.hslToRgb(f/MathHelper.TwoPi,1f,0.75f), 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
 			}
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
-			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, Main.GlobalTime, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
@@ -1855,7 +1854,7 @@ namespace SGAmod.Items
 			SGAmod.FadeInEffect.Parameters["alpha"].SetValue(0.50f);
 			SGAmod.FadeInEffect.CurrentTechnique.Passes["ColorToAlphaPass"].Apply();
 
-			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, Main.GlobalTime, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale*1/15f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale*1/15f, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);

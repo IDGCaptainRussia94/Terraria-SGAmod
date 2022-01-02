@@ -1,7 +1,7 @@
 
 Changelog:
 
-3.620-(12/26/21)--Patch 15
+3.620-(12/26/21)--Patch 15: Spaced Out!
 
 --Added
 
@@ -12,6 +12,9 @@ Changelog:
 -Resprite for Dies Irae Stone (thx JellyBru!)
 
 -Fully Finished Sprite Sheet for Cratrosity (Thanks Rijam!)
+
+-The Consolation Prize, a pickaxe that is granted to new players if one of their starting gear is spawned with the Busted prefix
+
 
 --Changed:
 
@@ -34,10 +37,6 @@ Changelog:
 
 -Luminous Alter is now crafted at a Lihzard Altar
 
--Phaethon now always shows up in boss checklist (also added checklist sprite), Twin Prime Destroyers is now hidden til beaten
-
--Mutant will now sell Reality's Sunder when you are 1st able to fight Hellion Core
-
 -Demon Steppers now lose the Frog Leg jump/fly boost when in Walk Mode, can now be made with any Horseshoe Balloon Accessories (with only inherit the standard stats thou)
 
 -Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
@@ -50,14 +49,14 @@ Changelog:
 
 -Nerfed Mangrove Leggings: throwing speed bonus reduced to 10%, fixed extra 20% leading to a total of a 40% faster speed boost, reduced movement max speed
 
+-Skylight's internal name has changed (to SkyLight from Skylight), this will cause the weapon to turn into a missing item on restart... sry about that!
+
 -New changes to Phaethon:
 -Will always use Shadow Nebula at the start of phase 3
 -Shadow Nebula completely reworked, boss releases several orbs the player must destroy in order to end the attack: Phaethon can no longer be hurt, grab asteriods, or shield during this attack, and tries to chase the player
 -(todo) Shadow Nebula also changes most of his attacks as well
 -(todo) The Outpost Space Stations spawn with a crystal that heals the boss (at longer/slower rate when shielded), and mining fatigues the player in range
 -Now drops Greater Healing Potions instead of lesser Healing Potions
-
--Removed Early Luminite config option
 
 
 --Fixed:
@@ -78,6 +77,21 @@ Changelog:
 
 -A few minor bugs of mis-matched damage types and other smaller things
 
+
+3.617-(12/2/22)--Hotfix 26
+
+-Changed:
+
+-Phaethon now always shows up in boss checklist (also added checklist sprite), Twin Prime Destroyers is now hidden til beaten
+
+-Mutant will now sell Reality's Sunder when you are 1st able to fight Hellion Core
+
+-Removed Early Luminite config option
+
+
+--Fixed:
+
+-missing boss checklist content
 
 
 3.616-(12/26/21)--Hotfix 25

@@ -23,6 +23,26 @@ A few warnings before the changelog:
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
 
+Changelog:
+
+
+3.617-(12/2/22)--Hotfix 26
+
+-Changed:
+
+-Phaethon now always shows up in boss checklist (also added checklist sprite), Twin Prime Destroyers is now hidden til beaten
+
+-Mutant will now sell Reality's Sunder when you are 1st able to fight Hellion Core
+
+-Removed Early Luminite config option
+
+
+--Fixed:
+
+-missing boss checklist content
+
+
+
 3.616-(12/26/21)--Hotfix 25
 
 --Added

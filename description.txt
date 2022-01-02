@@ -23,7 +23,7 @@ A few warnings before the changelog:
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
 
-3.616-(12/2/22)--Hotfix 26
+3.617-(12/2/22)--Hotfix 26
 
 -Changed:
 

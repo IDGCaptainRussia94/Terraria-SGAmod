@@ -31,10 +31,6 @@ namespace SGAmod
 		[DefaultValue(true)]
 		public bool NegativeWorldEffects { get; set; }
 
-		[Label("Early Luminite")]
-		[Tooltip("Enables/Disables pre-Moonlord Luminite sources (Astrial Luminite), disable this if it breaks progression with other mods")]
-		[DefaultValue(true)]
-		public bool EarlyLuminite { get; set; }
 
 		[Label("Dark Sector")]
 		[Tooltip("Enables/Disables the Dark Sector to appear when loading a post-mechs world. [This will moderately break mod progression!]")]

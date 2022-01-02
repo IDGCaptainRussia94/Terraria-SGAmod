@@ -180,7 +180,7 @@ namespace SGAmod.Dimensions.Tiles
 			Main.tileBlockLight[Type] = true;
 			Main.tileLighted[Type] = true;
 			TileID.Sets.ChecksForMerge[Type] = true;
-			minPick = !SGAConfig.Instance.EarlyLuminite ? 225 : 200;
+			minPick = 225;
 			soundType = SoundID.Tink;
 			soundStyle = 0;
 			mineResist = 5f;

@@ -1,31 +1,21 @@
 
 Changelog:
 
-3.616-(12/26/21)--Hotfix 26
 
---Added
-
--Safe Mode, by holding Capslock and moving your curser to the far left or far top of your screen (or both), you can make the mod not load specific content, as follows:
--Top of the screen stops File System-related stuff from loading (no windows text code, no steamID), and forces nightmare mode to unlock
--Left of the screen stops IL patches and Hookend points from loading
--These can be combined
+3.616-(12/2/22)--Hotfix 26
 
 -Changed:
-
 
 -Phaethon now always shows up in boss checklist (also added checklist sprite), Twin Prime Destroyers is now hidden til beaten
 
 -Mutant will now sell Reality's Sunder when you are 1st able to fight Hellion Core
 
+-Removed Early Luminite config option
+
 
 --Fixed:
 
 -missing boss checklist content
-
-
---Fixed:
-
--Maybe fixed the MAC issue this time?
 
 
 3.616-(12/26/21)--Hotfix 25

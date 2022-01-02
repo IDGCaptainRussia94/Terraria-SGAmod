@@ -130,7 +130,7 @@ namespace SGAmod
             {
 				int valuez = 0;
 				Microsoft.Xna.Framework.Input.KeyboardState keyState = Microsoft.Xna.Framework.Input.Keyboard.GetState();
-				if (keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.CapsLock))
+				if (keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
 				{
 
 					if (Main.MouseScreen.Y < 128)

@@ -1,6 +1,15 @@
 
 Changelog:
 
+3.619-(12/3/22)--Hotfix 28
+
+--Fixed:
+
+-(Attempted) to fix the Moist Sand crashing issue
+
+-Credits crashing the game
+
+
 3.618-(12/2/22)--Hotfix 27
 
 --Fixed:

@@ -311,7 +311,7 @@ namespace SGAmod.Credits
             line.delayTimer = 20;
             line.customDrawData = delegate (CreditsLine liner)
             {
-                Texture2D dedicated = SGAmod.Instance.GetTexture("Items/Weapons/NuclearOption");
+                Texture2D dedicated = SGAmod.Instance.GetTexture("Items/Weapons/Almighty/NuclearOption");
                 Main.spriteBatch.Draw(dedicated, liner.position + new Vector2(-106, 42), null, Color.White, 0, dedicated.Size() / 2f, 1f, default, 0);
 
                 int frame = (int)(CreditsManager.timePassed / 7f) % 10;

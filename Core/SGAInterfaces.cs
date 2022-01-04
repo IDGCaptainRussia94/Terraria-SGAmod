@@ -98,6 +98,8 @@ namespace SGAmod
 	}
 	interface ITechItem
 	{
+		float ElectricChargeScalingPerUse();
+
 		/*int MaxElectricCharge();
 		int ElectricChargePerUse();
 		int ElectricChargeWhileInUse();*/

@@ -12,6 +12,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 {
 	public class QuasarCannon : SeriousSamWeapon,ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Quasar Cannon");

@@ -2015,7 +2015,35 @@ namespace SGAmod.Items
 			item.rare = ItemRarityID.Quest;
 		}
 	}
+		public class ShadowLockBox : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Shadow LockBox");
+			Tooltip.SetDefault("Right click to open, must have a Shadow Key\n'Yes, this is literally just placeholder 1.4 content'");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 14;
+			item.height = 14;
+			item.value = 0;
+			item.rare = ItemRarityID.Quest;
+		}
+        public override bool CanRightClick()
+        {
+			return Main.LocalPlayer.HasItem(ItemID.ShadowKey);
+        }
 
+        public override void RightClick(Player player)
+        {
+			List<int> lootrare = new List<int> { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow};
+
+			player.QuickSpawnItem(lootrare[Main.rand.Next(lootrare.Count)]);
+		}
+
+
+    }
 	public class HellionCheckpoint1 : ModItem
 	{
 		protected virtual Color color => Color.Lime;

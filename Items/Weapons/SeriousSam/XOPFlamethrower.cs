@@ -11,6 +11,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 {
 	public class XOPFlamethrower : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 0.20f;
 		public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("XOP Flamethrower");

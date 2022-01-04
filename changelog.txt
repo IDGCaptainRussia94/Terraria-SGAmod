@@ -5,11 +5,11 @@ Changelog:
 
 --Added
 
--Celestial Monolith, Helios Focus Crystal, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Empty Plasma Cell
+-Celestial Monolith, Helios Focus Crystal, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Empty Plasma Cell, Shadow LockBox
 
 -Speedymatt123's Hellion Painting: a Nightmare Mode exclusive reward!
 
--Resprite for Dies Irae Stone (thx JellyBru!)
+-Resprite for Dies Irae Stone (thx JellyBru!), Yoyo Gauntlet Resprite and Transformer accessory sprite (thx Rijam!)
 
 -Fully Finished Sprite Sheet for Cratrosity (Thanks Rijam!)
 
@@ -23,7 +23,8 @@ Changelog:
 
 -Various changes to the Deeper Dungeons:
 -adjusted Loot Room spawn conditions a bit
--Shadow Chests no longer can contain vanilla Shadow Chest items, instead they now always contain a Lockbox AND one of the SGAmod Shadow Chest items
+-Shadow Chests no longer can contain vanilla Shadow Chest items, instead they now always contain a Shadow LockBox AND one of the SGAmod Deeper Dungeons Shadow Chest loot items
+-Golden Chest loot is replaced with a Lockbox as well (and a key)
 
 -Various changes to Near Orbit:
 -Added Space Station structures, their blocks aren't minable but house a breathable-normal gravity area
@@ -38,6 +39,12 @@ Changelog:
 -Luminous Alter is now crafted at a Lihzard Altar
 
 -Demon Steppers now lose the Frog Leg jump/fly boost when in Walk Mode, can now be made with any Horseshoe Balloon Accessories (with only inherit the standard stats thou)
+
+-Rebalanced several tech weapons: adjusted Electric Charge use (some were consuming too much)
+
+-ReBalanced Circuit Breaker Blade: no longer auto-turns on swing
+
+-Rebalanced Lava Rocks Gun: Now consumes 1.5X more electric charge on use, mana cost reduced to 8, crit increased by 10%
 
 -Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
 
@@ -67,18 +74,25 @@ Changelog:
 
 -Starfish Burster not saving ammo
 
--Stranger Portal spawning outside the Deeper Dungeons (for real hopefully)
-
 -Buff Burning not working as expected, even when you had it disabled it was having an effect (without it showing visually)
 
 -Xenith shooting Betsy Arrows on the Bees Knees and the Hellwing Bow
 
 -Missing Boss Checklist Items in boss loot
 
+-(attempted) to stop Moist Sand from freezing the game
+
 -A few minor bugs of mis-matched damage types and other smaller things
 
 
-3.617-(12/2/22)--Hotfix 26
+3.618-(1/2/22)--Hotfix 27
+
+--Fixed:
+
+-(Attempted) to fix the 2nd Strange Portal spawning and the TF2 emblem freezing the game with mods like Recursive Craft
+
+
+3.617-(1/2/22)--Hotfix 26
 
 -Changed:
 

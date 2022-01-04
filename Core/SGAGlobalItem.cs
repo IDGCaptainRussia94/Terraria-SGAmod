@@ -1065,9 +1065,10 @@ namespace SGAmod
         {
             SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
 
-            if (item?.modItem is ITechItem)
+            if (item?.modItem is ITechItem tehky)
             {
-                sgaplayer.ConsumeElectricCharge(5+(int)((damage * sgaplayer.techdamage) * 1f), 60);
+                float scalieVal = sgaplayer.techdamage * tehky.ElectricChargeScalingPerUse();
+                sgaplayer.ConsumeElectricCharge(5+(int)((damage * scalieVal) * 1f), 60);
             }
 
             if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister)
@@ -1169,14 +1170,16 @@ namespace SGAmod
                 {
                     //item3.velocity = Vector2.Zero;
                     item3.noGrabDelay = 0;
+                    item.stack--;
+
+                    if (item.stack < 2)
+                        item.type = ModContent.ItemType<MoistSand>();
+
                     if (Main.netMode != NetmodeID.SinglePlayer)
                     {
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
                     }
-                    item.stack--;
 
-                    if (item.stack < 1)
-                        item.TurnToAir();
                     return;
                 }
             }

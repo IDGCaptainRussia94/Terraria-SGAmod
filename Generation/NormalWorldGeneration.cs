@@ -486,6 +486,7 @@ namespace SGAmod.Generation
                         if (tileAbove.liquid > 250)
                         {
                             Tile tile = Framing.GetTileSafely(floodedTilePoint.X, floodedTilePoint.Y);
+                            if (!tile.active())
                             WorldGen.PlaceTile(floodedTilePoint.X, floodedTilePoint.Y, ModContent.TileType<MoistSand>(), false, true);
                         }
                     }

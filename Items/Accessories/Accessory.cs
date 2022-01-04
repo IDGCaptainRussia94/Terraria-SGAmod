@@ -137,7 +137,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Gauntlet");
-			Tooltip.SetDefault("15% increased melee damage and melee speed, +5 armor penetration\nInflict OnFire! and Frostburn on hit and melee hits count as Cold Damage");
+			Tooltip.SetDefault("15% increased melee damage and melee speed, 8% increased melee crit\n+5 armor penetration, Inflict OnFire! and Frostburn on hit and melee hits count as Cold Damage");
 		}
 
 		public override void SetDefaults()
@@ -154,6 +154,7 @@ namespace SGAmod.Items.Accessories
 			player.kbGlove = true;
 			player.meleeSpeed += 0.15f;
 			player.meleeDamage += 0.15f;
+			player.meleeCrit += 10;
 			player.magmaStone = true;
 			player.armorPenetration += 5;
 			player.SGAPly().glacialStone = true;
@@ -1648,6 +1649,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	[AutoloadEquip(EquipType.Back)]
 	public class Transformer : ModItem
 	{
 		public override void SetStaticDefaults()

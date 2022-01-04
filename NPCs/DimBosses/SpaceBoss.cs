@@ -3743,15 +3743,18 @@ namespace SGAmod.Dimensions.NPCs
 
         public override bool CheckDead()
         {
-			if (npc.ai[3] < -200)
-				return true;
+			//if (npc.ai[3] < -200)
+			//	return true;
 
 			if (npc.ai[3] < 1)
             {
-				npc.SGANPCs().overallResist = 0f;
 				npc.ai[3] = 1;
 				npc.life = 1;
+				npc.dontTakeDamage = true;
 			}
+
+			npc.life = 1;
+				npc.netUpdate= true;
 
 			return false;
 
@@ -3759,10 +3762,11 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override void HitEffect(int hitDirection, double damage)
 		{
-			SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_EtherianPortalDryadTouch, (int)npc.Center.X, (int)npc.Center.Y);
+			SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_WitherBeastHurt, (int)npc.Center.X, (int)npc.Center.Y);
 			if (sound != null)
 			{
-				sound.Pitch += Main.rand.NextFloat(0f, 0.25f);
+				float hpLeft = npc.life / (float)npc.lifeMax;
+				sound.Pitch = MathHelper.Clamp((-0.75f+(hpLeft*1.25f))+Main.rand.NextFloat(0.1f,0.1f),-0.80f,0.80f);
 			}
 		}
 
@@ -3781,6 +3785,14 @@ namespace SGAmod.Dimensions.NPCs
 				goto despawn;
 			}
 
+			
+			if (masterBeforeMe != null && masterBeforeMe.npc.active == false)
+            {
+				masterBeforeMe.npc.active = true;
+				masterBeforeMe.npc.life = 1;
+				masterBeforeMe.CheckDead();
+			}
+			
 
 			float percent = MathHelper.Clamp(npc.localAI[0] / 450f, 0f, 1f);
 			float percent2 = MathHelper.Clamp((npc.localAI[0] - 220f) / 420f, 0f, 1f);

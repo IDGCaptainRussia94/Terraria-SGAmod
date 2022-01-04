@@ -1086,12 +1086,14 @@ namespace SGAmod.Dimensions
 
                     if (loottype == 1)//Locked GoldChest
                     {
-                        lootrare = new List<int> { ItemID.Muramasa, ItemID.MagicMissile, ItemID.CobaltShield, ItemID.AquaScepter, ItemID.BlueMoon, ItemID.Handgun, ItemID.Valor };
-
-                        int index = unirand.Next(0, lootrare.Count);
-                        Main.chest[chestid].item[e].SetDefaults(lootrare[index]);
-                        Main.chest[chestid].item[e].stack = 1;
-                        e += 1;
+                        lootrare = new List<int> {ItemID.LockBox, ItemID.GoldenKey };// { ItemID.Muramasa, ItemID.MagicMissile, ItemID.CobaltShield, ItemID.AquaScepter, ItemID.BlueMoon, ItemID.Handgun, ItemID.Valor };
+                        for (int ii = 0; ii < lootrare.Count; ii += 1)
+                        {
+                            int index = ii;// unirand.Next(0, lootrare.Count);
+                            Main.chest[chestid].item[e].SetDefaults(lootrare[index]);
+                            Main.chest[chestid].item[e].stack = 1;
+                            e += 1;
+                        }
                     }
 
                 }
@@ -1113,7 +1115,7 @@ namespace SGAmod.Dimensions
                     Main.chest[chestid].item[e].stack = 1;
                     e += 1;
 
-                    Main.chest[chestid].item[e].SetDefaults(ItemID.LockBox);
+                    Main.chest[chestid].item[e].SetDefaults(ModContent.ItemType<Items.ShadowLockBox>());
                     Main.chest[chestid].item[e].stack = 1;
                     e += 1;
 

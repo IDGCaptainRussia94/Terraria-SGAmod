@@ -564,6 +564,7 @@ namespace SGAmod.Items.Armors.Engineer
     }
     public class ManifestedEngieControls : SeriousSamWeapon, IManifestedItem,ITechItem
     {
+        public float ElectricChargeScalingPerUse() => 1f;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engie Controls");

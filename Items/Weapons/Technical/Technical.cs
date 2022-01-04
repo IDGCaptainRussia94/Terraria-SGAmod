@@ -23,6 +23,7 @@ namespace SGAmod.Items.Weapons.Technical
 {
 	public class AssaultRifle : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 0.1f;
 		int firemode = 0;
 		public override void SetStaticDefaults()
 		{
@@ -149,6 +150,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class OnyxTacticalShotgun : SeriousSamWeapon,ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Onyx Tactical Shotgun");
@@ -222,6 +224,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class CircuitBreakerBlade : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 0.05f;
 		public static NPC FindClosestTarget(Player ply,Vector2 loc, Vector2 size, bool block = true, bool friendlycheck = true, bool chasecheck = false)
 		{
 			List<Point> hitenemies = new List<Point>();
@@ -245,8 +248,7 @@ namespace SGAmod.Items.Weapons.Technical
 			item.width = 48;
 			item.height = 48;
 			item.melee = true;
-			item.useTurn = true;
-			item.rare = 7;
+			item.rare = ItemRarityID.Lime;
 			item.value = 400000;
 			item.useStyle = 1;
 			item.useAnimation = 35;
@@ -254,6 +256,7 @@ namespace SGAmod.Items.Weapons.Technical
 			item.knockBack = 8;
 			item.autoReuse = true;
 			item.consumable = false;
+			item.useTurn = false;
 			item.UseSound = SoundID.Item1;
 			if (!Main.dedServ)
 			{
@@ -460,6 +463,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class TeslaStaff : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 0.01f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tesla Staff");
@@ -530,6 +534,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class Massacre : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Massacre Prototype");
@@ -675,6 +680,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class RodofEnforcement : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rod of Enforcement");
@@ -871,6 +877,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class BeamCannon : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 0.25f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Beam Cannon");
@@ -1311,6 +1318,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class VolcanicSpaceBlaster : NoviteBlaster, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("V.S.B");
@@ -1605,6 +1613,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class SirianGun : NoviteBlaster, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 0.25f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sirian Gun");
@@ -1771,6 +1780,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 	public class PlasmaGun : NoviteBlaster, ITechItem,IHitScanItem
 	{
+		public float ElectricChargeScalingPerUse() => 0.05f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Plasmic Rail Gun");
@@ -2164,7 +2174,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 	public class BigDakka : SeriousSamWeapon, ITechItem
 	{
-		int ammotype;
+		public float ElectricChargeScalingPerUse() => 0.05f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Big Dakka");

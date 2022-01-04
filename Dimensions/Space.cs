@@ -110,7 +110,13 @@ namespace SGAmod.Dimensions
 
 
 
+    public enum StationRoomTypes
+    {
+        BasicFork = 0,
 
+        Main = 9,
+        SmolStation = 10,
+    }
 
 
     public class SpaceStationStructure
@@ -118,6 +124,7 @@ namespace SGAmod.Dimensions
         public static List<(Vector2, int)> placesToFillIn = new List<(Vector2, int)>();
         public static List<SpaceStationStructure> StationObjects;
         public static List<(Vector2, Vector2)> ConnectionLines;
+        public static int TileRangeInnerDoors = 20000;
         public static int TileRangeExits = 10000;
         public static int TileRangeWalkwayMin = 1000;
         public static int TileRangeWalkwayMax = 3000;
@@ -145,6 +152,9 @@ namespace SGAmod.Dimensions
         public int tileTypePlatform = TileID.TeamBlockWhitePlatform;
         public int tileTypeSolidPlatform = TileID.MartianConduitPlating;
         public int tileTypeLight = TileID.DiamondGemspark;
+
+        public int tileTypeMainDoorTile = TileID.RubyGemspark;
+
         public int wallType = WallID.IridescentBrick;
         public int wallTypeExitWay = WallID.IridescentBrick;
         public int wallTypeConnector = WallID.TinPlating;
@@ -246,8 +256,15 @@ namespace SGAmod.Dimensions
                             Point newPoint = new Point(buildPoint.X + x, buildPoint.Y + y);
 
                             int walkwayValue = (index) %20>16 ? TileRangeWalkwayHalf : TileRangeWalkwayMin;
+                            int finalIndex = walkwayValue + index;
 
-                            corridorsToBuild.Add((newPoint.ToVector2() * 16, walkwayValue + index));
+                            //Locked Door into Main
+                            if ((index > (int)(line.Count/2)-2 && index < (int)(line.Count / 2) +2) && connection.type == (int)StationRoomTypes.Main)
+                            {
+                                finalIndex = SpaceStationStructure.TileRangeInnerDoors;
+                            }
+
+                            corridorsToBuild.Add((newPoint.ToVector2() * 16, finalIndex));
                         }
                     }
                     index += 1;
@@ -319,7 +336,7 @@ namespace SGAmod.Dimensions
             MakeConnectionWalkways(uniRand,theLocation,ref tempPlacesToBuild);
 
             //Create walkways (exits)
-            if (theLocation.type == 10)
+            if (theLocation.type == (int)StationRoomTypes.SmolStation)
             {
                 int openspace = 0;
                 int walkwaylength = 0;
@@ -434,7 +451,11 @@ namespace SGAmod.Dimensions
                                 tile.color((byte)Paints.White);
                         }
                     }
+
+
                 }
+
+
             }
 
 
@@ -463,7 +484,7 @@ namespace SGAmod.Dimensions
 
 
                     //Add Tunnel bubble exits
-                    if (theLocation.type == 10 && there.Item2 > TileRangeExits+2)
+                    if (theLocation.type == (int)StationRoomTypes.SmolStation && there.Item2 > TileRangeExits+2)
                     {
 
                         Vector2[] coordz = { new Vector2(-8, 0), new Vector2(8, 0) };
@@ -550,12 +571,29 @@ namespace SGAmod.Dimensions
 
                 foreach ((Vector2, int) there in tempPlacesToBuild)
                 {
+                    Point therePoint = new Point((int)there.Item1.X / 16, (int)there.Item1.Y / 16);
+                    Tile tile = Framing.GetTileSafely(therePoint.X, therePoint.Y);
+
+                    bool clearArea = true;
+
+                    //Add (Main) Doors
+                    if (there.Item2  == TileRangeInnerDoors)
+                    {
+                        Tile door1Tile = tile;
+                        door1Tile.type = (ushort)tileTypeMainDoorTile;
+                        door1Tile.active(true);
+                        clearArea = false;
+                    }
+
+
+                    //Station Circle Room with 1 platform
                     if (there.Item2 < 1)
                     {
-                        Point therePoint = new Point((int)there.Item1.X / 16, (int)there.Item1.Y / 16);
-                        Tile tile = Framing.GetTileSafely(therePoint.X, therePoint.Y);
 
-                        tile.active(false);
+                        if (clearArea)
+                        {
+                            tile.active(false);
+                        }
 
                         if (platformEdge.Contains(therePoint))
                         {
@@ -834,7 +872,7 @@ namespace SGAmod.Dimensions
         {
 
             FilledSpaceArea ChosenMainBaseLocation = AreaToSpawnMainBaseAt;
-            ChosenMainBaseLocation.type = 9;
+            ChosenMainBaseLocation.type = (int)(StationRoomTypes.Main);
             ChosenMainBaseLocation.generation = 0;
             ChosenMainBaseLocation.size = 24;
             ChosenMainBaseLocation.heightVar = uniRand.Next(-1, 1);
@@ -844,14 +882,14 @@ namespace SGAmod.Dimensions
 
 
             //Generate 1st ones
-            List<FilledSpaceArea> firstLayerAreas = StemNewStationSegments(uniRand, ChosenMainBaseLocation,3,0);
+            List<FilledSpaceArea> firstLayerAreas = StemNewStationSegments(uniRand, ChosenMainBaseLocation,3, (int)(StationRoomTypes.BasicFork));
 
             foreach (FilledSpaceArea areaHere in firstLayerAreas)
             {
                 areaHere.generation = 1;
 
                 //Generate 2nd layer exits
-                foreach (FilledSpaceArea areaHere2ndLayer in StemNewStationSegments(uniRand, areaHere, 2, 2))
+                foreach (FilledSpaceArea areaHere2ndLayer in StemNewStationSegments(uniRand, areaHere, 2, (int)(StationRoomTypes.BasicFork)))
                 {
                     //nil
                 }
@@ -1224,7 +1262,7 @@ namespace SGAmod.Dimensions
                 //Generation single Stations, with only exits (no prceed-generation)
 
                 FilledSpaceArea theLocation = area[0];
-                theLocation.type = 10;
+                theLocation.type = (int)(StationRoomTypes.SmolStation);
                 theLocation.generation = 0;
                 theLocation.size = 16;
                 theLocation.heightVar = uniRand.Next(-4, 6);
@@ -2735,8 +2773,8 @@ namespace SGAmod.Dimensions
         {
             npc.friendly = false;
             npc.defense = 50;
-            npc.life = 10000;
-            npc.lifeMax = 10000;
+            npc.life = 7500;
+            npc.lifeMax = 7500;
             npc.width = 64;
             npc.height = 64;
             npc.damage = 0;
@@ -2799,10 +2837,12 @@ namespace SGAmod.Dimensions
                 SpaceBoss trueBoss = boss.modNPC as SpaceBoss;
 
                 float toCheckDist = 2400;
+                float healScaling = 1;
 
                 if (trueBoss.shieldeffect > 0)
                 {
                     toCheckDist *= 3f;
+                    healScaling /= 3f;
                 }
 
                 if (trueBoss.goingDark > 0 || trueBoss.DyingState || trueBoss.Sleeping || boss.ai[3] > 1 || (boss.Center-npc.Center).Length()> toCheckDist)
@@ -2811,8 +2851,8 @@ namespace SGAmod.Dimensions
                 }
                 if (boss != null)
                 {
-
-                    boss.life = Math.Min(boss.life + 10, boss.lifeMax);
+                    float healRate = 10f * healScaling;
+                    boss.life = Math.Min(boss.life + (int)healRate, boss.lifeMax);
 
                 }
             }
@@ -2930,7 +2970,7 @@ namespace SGAmod.Dimensions
                         float extraAngle = ((f2-1f) / 3f) * MathHelper.Pi/2f;
                         float rotter = (Main.GlobalTime / 3f)+f+ extraAngle;
 
-                        float realAnglez = (f/3f)+((MathHelper.TwoPi/3f)*(f2-1f))+(Main.GlobalTime / 4f);
+                        float realAnglez = (f/3f)+((MathHelper.TwoPi/3f)*(f2-1f))+(Main.GlobalTime / 3);
 
                         rotter = MathHelper.SmoothStep(rotter, realAnglez, npc.localAI[1]);
 

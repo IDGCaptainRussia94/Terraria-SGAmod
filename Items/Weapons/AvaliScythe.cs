@@ -18,6 +18,7 @@ namespace SGAmod.Items.Weapons
 
 	public class AvaliScythe : SeriousSamWeapon,ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => GetType() == typeof(CyberScythe) ? 0.01f : 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Avali Scythe");
@@ -638,6 +639,7 @@ namespace SGAmod.Items.Weapons
 
 	public class LaserLance : SeriousSamWeapon,ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Laser Lance");

@@ -16,6 +16,7 @@ namespace SGAmod.Items.Weapons.Technical
 {
 	public class NoviteKnife : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Knife");
@@ -119,6 +120,7 @@ namespace SGAmod.Items.Weapons.Technical
 	public class NoviteBlaster : SeriousSamWeapon, ITechItem
 	{
 		private bool altfired = false;
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Blaster");
@@ -385,6 +387,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class NoviteTowerSummon : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Tesla Tower");

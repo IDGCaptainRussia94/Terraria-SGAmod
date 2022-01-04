@@ -18,6 +18,9 @@ namespace SGAmod.NPCs.SpiderQueen
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
 		public string RelicName() => "Spider_Queen";
 		public void NoHitDrops() { }
+		public string MasterPet() => "SpiderlingEggs";
+		public bool PetChance() => Main.rand.Next(4) == 0;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Spider Queen");
@@ -63,6 +66,10 @@ namespace SGAmod.NPCs.SpiderQueen
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CorrodedShield"));
 				if (Main.rand.Next(0, 3) == 0)
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AmberGlowSkull"));
+				if (Main.rand.Next(7) == 0)
+				{
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.SpiderQueenMask>());
+				}
 			}
 
 		}

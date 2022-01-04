@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using SGAmod.HavocGear.Items.Accessories;
 using SGAmod.HavocGear.Items.Weapons;
 using SGAmod.Items.Weapons;
+using SGAmod.Items.Armors.Vanity;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -76,6 +77,10 @@ namespace SGAmod.HavocGear.Items
 			}
 			player.QuickSpawnItem(ModContent.ItemType<MudAbsorber>());
 			player.QuickSpawnItem(ModContent.ItemType<MurkyGel>(), Main.rand.Next(50, 70));
+			if (Main.rand.Next(7) == 0)
+			{
+				player.QuickSpawnItem(ModContent.ItemType<MurkMask>());
+			}
 		}
 	}
 	public class SharkvernBag : ModItem
@@ -148,6 +153,10 @@ namespace SGAmod.HavocGear.Items
 				player.QuickSpawnItem(mod.ItemType("SharkBait"), Main.rand.Next(60, 150));
 			}
 			player.QuickSpawnItem(mod.ItemType("SharkTooth"), Main.rand.Next(100, 200));
+			if (Main.rand.Next(7) == 0)
+			{
+				player.QuickSpawnItem(ModContent.ItemType<SharkvernMask>());
+			}
 		}
 	}
 }
@@ -192,6 +201,10 @@ namespace SGAmod.Items
 				player.QuickSpawnItem(mod.ItemType("CorrodedShield"), 1);
 			if (Main.rand.Next(0, 3) == 0)
 			player.QuickSpawnItem(mod.ItemType("AmberGlowSkull"), 1);
+			if (Main.rand.Next(7) == 0)
+			{
+				player.QuickSpawnItem(ModContent.ItemType<SpiderQueenMask>());
+			}
 		}
 
 	}
@@ -235,6 +248,10 @@ namespace SGAmod.Items
 			player.QuickSpawnItem(mod.ItemType("CirnoWings"), 1);
 			if (Main.rand.Next(3) == 0)
 				player.QuickSpawnItem(mod.ItemType("GlacialStone"), 1);
+			if (Main.rand.Next(7) == 0)
+			{
+				player.QuickSpawnItem(ModContent.ItemType<CirnoMask>());
+			}
 		}
 
 }
@@ -274,9 +291,10 @@ namespace SGAmod.Items
 			Armors.Illuminant.IlluminantHelmet.IlluminantArmorDrop(2, player.Center);
 			//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("LunarRoyalGel"));
 			player.QuickSpawnItem(mod.ItemType("LunarSlimeHeart"));
-
+			if (Main.rand.Next(7) == 0)
+			{
+				player.QuickSpawnItem(ModContent.ItemType<SupremePinkyMask>());
+			}
 		}
-
 	}
-
 }

@@ -287,6 +287,8 @@ namespace SGAmod.NPCs.Wraiths
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
 		public string RelicName() => "Luminite_Wraith";
 		public void NoHitDrops() { }
+		public string MasterPet() => "LuminiteTack";
+		public bool PetChance() => Main.rand.Next(4) == 0;
 
 		public int level = 0;
 		public Vector2 dodge = new Vector2(0f, 0f);
@@ -362,6 +364,10 @@ namespace SGAmod.NPCs.Wraiths
 			{
 				if (SGAWorld.downedWraiths > 2)
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("LuminiteWraithNotch"));
+			}
+			if (Main.rand.Next(7) == 0)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.LuminiteWraithMask>());
 			}
 
 			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);

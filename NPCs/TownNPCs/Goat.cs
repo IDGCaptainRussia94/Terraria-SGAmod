@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
 using SGAmod.Items.Consumables;
+using SGAmod.Items.Pets;
+using SGAmod.Items.Armors.Vanity;
 
 namespace SGAmod.NPCs.TownNPCs
 {
@@ -37,8 +39,8 @@ namespace SGAmod.NPCs.TownNPCs
 			// DisplayName automatically assigned from .lang files, but the commented line below is the normal approach.
 			// DisplayName.SetDefault("Example Person");
 			Main.npcFrameCount[npc.type] = Main.npcFrameCount[NPCID.Guide];
-			NPCID.Sets.ExtraFramesCount[npc.type] = 9;
-			NPCID.Sets.AttackFrameCount[npc.type] = 4;
+			NPCID.Sets.ExtraFramesCount[npc.type] = 10;
+			NPCID.Sets.AttackFrameCount[npc.type] = 5;
 			NPCID.Sets.DangerDetectRange[npc.type] = 700;
 			NPCID.Sets.AttackType[npc.type] = 0;
 			NPCID.Sets.AttackTime[npc.type] = 90;
@@ -171,28 +173,29 @@ namespace SGAmod.NPCs.TownNPCs
 		{
 
 			shop.item[nextSlot].SetDefaults(mod.ItemType("DergPainting"));
-			shop.item[nextSlot].value = Item.buyPrice(0,1);
-			nextSlot += 1; 
+			shop.item[nextSlot].value = Item.buyPrice(0, 1);
+			nextSlot += 1;
 			shop.item[nextSlot].SetDefaults(mod.ItemType("CalmnessPainting"));
-			shop.item[nextSlot].value = Item.buyPrice(0,10);
-			nextSlot += 1; 
+			shop.item[nextSlot].value = Item.buyPrice(0, 10);
+			nextSlot += 1;
 			shop.item[nextSlot].SetDefaults(mod.ItemType("MeetingTheSunPainting"));
-			shop.item[nextSlot].value = Item.buyPrice(0,10);
-			nextSlot += 1; 
+			shop.item[nextSlot].value = Item.buyPrice(0, 10);
+			nextSlot += 1;
 			shop.item[nextSlot].SetDefaults(mod.ItemType("AdventurePainting"));
-			shop.item[nextSlot].value = Item.buyPrice(1,0);
-			nextSlot += 1; 
+			shop.item[nextSlot].value = Item.buyPrice(1, 0);
+			nextSlot += 1;
 			shop.item[nextSlot].SetDefaults(mod.ItemType("SerenityPainting"));
-			shop.item[nextSlot].value = Item.buyPrice(1,0);
-			nextSlot += 1; 
+			shop.item[nextSlot].value = Item.buyPrice(1, 0);
+			nextSlot += 1;
 			shop.item[nextSlot].SetDefaults(mod.ItemType("UnderTheWaterfallPainting"));
-			shop.item[nextSlot].value = Item.buyPrice(1,0);
-			nextSlot += 1; 
-			if (SGAWorld.NightmareHardcore>0 && SGAWorld.downedHellion > 1)
-			shop.item[nextSlot].SetDefaults(mod.ItemType("ParadoxGeneralPainting"));
-			shop.item[nextSlot].value = Item.buyPrice(1,0);
-			nextSlot += 1; 
-
+			shop.item[nextSlot].value = Item.buyPrice(1, 0);
+			nextSlot += 1;
+			if (SGAWorld.NightmareHardcore > 0 && SGAWorld.downedHellion > 1)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("ParadoxGeneralPainting"));
+				shop.item[nextSlot].value = Item.buyPrice(1, 0);
+				nextSlot += 1;
+			}
 			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientSpaceDiverHelmet"));
 			nextSlot += 1; 		
 			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientSpaceDiverChestplate"));
@@ -220,6 +223,36 @@ namespace SGAmod.NPCs.TownNPCs
 			shop.item[nextSlot].SetDefaults(mod.ItemType("TheWholeExperience"));
 			shop.item[nextSlot].shopCustomPrice = Item.buyPrice(1, 0, 0, 0);
 			nextSlot += 1;
+			if (Main.LocalPlayer.HasItem(ModContent.ItemType<CopperTack>()))
+            {
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<TinTack>());
+				nextSlot++;
+			}
+			if (Main.LocalPlayer.HasItem(ModContent.ItemType<CobaltTack>()))
+			{
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<PalladiumTack>());
+				nextSlot++;
+			}
+			if (Main.LocalPlayer.HasItem(ModContent.ItemType<CopperWraithMask>()))
+			{
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<TinWraithMask>());
+				nextSlot++;
+			}
+			if (Main.LocalPlayer.HasItem(ModContent.ItemType<CobaltWraithMask>()))
+			{
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<PalladiumWraithMask>());
+				nextSlot++;
+			}
+			if (SGAWorld.downedWraiths >= 1)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("TinWraithTrophy"));
+				nextSlot++;
+			}
+			if (SGAWorld.downedWraiths >= 2)
+			{
+				shop.item[nextSlot].SetDefaults(mod.ItemType("PalladiumWraithTrophy"));
+				nextSlot++;
+			}
 		}
 
 		public override void TownNPCAttackStrength(ref int damage, ref float knockback)
@@ -236,7 +269,7 @@ namespace SGAmod.NPCs.TownNPCs
 
 		public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
 		{
-			projType = ProjectileID.DD2DrakinShot;
+			projType = ModContent.ProjectileType<Projectiles.DD2DrakinShotFriendly>();
 			attackDelay = 1;
 		}
 

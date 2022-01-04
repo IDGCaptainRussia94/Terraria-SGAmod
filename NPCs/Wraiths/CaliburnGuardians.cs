@@ -1125,6 +1125,8 @@ namespace SGAmod.NPCs.Wraiths
 		public bool Chance() => true;
 		public string RelicName() => "Caliburn";
 		public void NoHitDrops() { }
+		public string MasterPet() => null;
+		public bool PetChance() => false;
 
 		protected string[] names = {"A","B","C"};
 

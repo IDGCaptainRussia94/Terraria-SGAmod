@@ -23,6 +23,8 @@ namespace SGAmod.NPCs.Murk
         public bool Chance() => Main.rand.Next(0, 10) == 0;
         public string RelicName() => "Murk";
         public void NoHitDrops() { }
+        public string MasterPet() => "ImperatorialOdious";
+        public bool PetChance() => Main.rand.Next(4) == 0;
 
         int perhit = 0; 
         int counter = 0;
@@ -135,7 +137,10 @@ namespace SGAmod.NPCs.Murk
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, SGAWorld.GennedVirulent ? ModContent.ItemType <HorseFlyStaff>() : ModContent.ItemType<GnatStaff>());
                     else if (choice == 6)
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<SwarmGun>());
-
+                    if (Main.rand.Next(7) == 0)
+                    {
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.MurkMask>());
+                    }
                 }
             }
             Achivements.SGAAchivements.UnlockAchivement("Murk", Main.LocalPlayer);

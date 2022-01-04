@@ -113,6 +113,9 @@ namespace SGAmod
 
 		void NoHitDrops();
 
+		string MasterPet();
+		bool PetChance();
+
 	}
 
 }

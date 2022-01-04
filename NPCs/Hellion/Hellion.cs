@@ -2380,6 +2380,8 @@ namespace SGAmod.NPCs.Hellion
 		public bool Chance() => GetType() != typeof(HellionCore);
 		public string RelicName() => GetType() != typeof(HellionCore) ? "Hellion" : "NOU";
 		public void NoHitDrops() { }
+		public string MasterPet() => null;
+		public bool PetChance() => false;
 
 		private float[] oldRot = new float[12];
 		private Vector2[] oldPos = new Vector2[12];

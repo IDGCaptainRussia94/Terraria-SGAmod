@@ -130,6 +130,8 @@ namespace SGAmod.NPCs.Cratrosity
 		{
 			Item.NewItem(npc.position,npc.Hitbox.Size(),ModContent.ItemType<Items.Accessories.AvariceRing>());
 		}
+		public string MasterPet() => null;
+		public bool PetChance() => false;
 
 		public Vector2 offsetype = new Vector2(0, 0);
 		public int phase = 5;
@@ -228,6 +230,10 @@ namespace SGAmod.NPCs.Cratrosity
 		public override void NPCLoot()
 		{
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateKey"));
+			if (Main.rand.Next(7) == 0)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.CratrosityMask>());
+			}
 			Achivements.SGAAchivements.UnlockAchivement("Cratrosity", Main.LocalPlayer);
 			if (SGAWorld.downedCratrosity == false)
 			{

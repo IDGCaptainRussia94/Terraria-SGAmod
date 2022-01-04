@@ -215,10 +215,10 @@ namespace SGAmod.Dimensions.NPCs
 		}
 
 		public void NebulaAttack()
-        {
+		{
 
 
-        }
+		}
 
 		public void BossRocksUpdate()
 		{
@@ -247,7 +247,7 @@ namespace SGAmod.Dimensions.NPCs
 				stateTimer += 1;
 				float maxTime = 300;
 				float maxTimeScale = 600;
-				float scaleDist = (96f + (MathHelper.SmoothStep(0f, 128f, stateTimer / maxTimeScale) * MathHelper.SmoothStep(0f, 640f, MathHelper.Clamp(stateTimer / maxTimeScale,0f,1f))));
+				float scaleDist = (96f + (MathHelper.SmoothStep(0f, 128f, stateTimer / maxTimeScale) * MathHelper.SmoothStep(0f, 640f, MathHelper.Clamp(stateTimer / maxTimeScale, 0f, 1f))));
 
 				float gotoDist = MathHelper.Clamp(stateTimer / 120f, 0f, 1f);
 
@@ -255,18 +255,18 @@ namespace SGAmod.Dimensions.NPCs
 
 				float spinRate = (stateTimer / 60f) * MathHelper.SmoothStep(1f, 0.25f, MathHelper.Clamp(stateTimer / 600f, 0f, 1f));
 
-				float spinRate2 = MathHelper.Clamp(1f-(stateTimer / 420f), 0f, 1f);
+				float spinRate2 = MathHelper.Clamp(1f - (stateTimer / 420f), 0f, 1f);
 
 
 				Vector2 gothere = Vector2.UnitX.RotatedBy(spinRate * ((index / (float)indexMax) * MathHelper.TwoPi)) *
-					(96f + (MathHelper.SmoothStep(0f, MathHelper.SmoothStep(DistToSpace, 360f, spinRate2), stateTimer / maxTime) * MathHelper.SmoothStep(0f, 1f, MathHelper.Clamp(stateTimer / maxTime,0f,1f))));
+					(96f + (MathHelper.SmoothStep(0f, MathHelper.SmoothStep(DistToSpace, 360f, spinRate2), stateTimer / maxTime) * MathHelper.SmoothStep(0f, 1f, MathHelper.Clamp(stateTimer / maxTime, 0f, 1f))));
 
 				gothere += boss.npc.Center;
 
-				Vector2 diff = Position- boss.npc.Center;
+				Vector2 diff = Position - boss.npc.Center;
 				Vector2 diff2 = Vector2.Normalize(diff);
 
-				Vector2 finalDist = Vector2.Lerp(bossOffset+(diff2*2f), gothere, MathHelper.SmoothStep(0f, 1f, gotoDist));
+				Vector2 finalDist = Vector2.Lerp(bossOffset + (diff2 * 2f), gothere, MathHelper.SmoothStep(0f, 1f, gotoDist));
 				bossOffset = finalDist;
 
 				if (boss.goingDark < 1)
@@ -281,7 +281,7 @@ namespace SGAmod.Dimensions.NPCs
 
 
 
-				if (installgrab && (state == 100 || state == 200))
+			if (installgrab && (state == 100 || state == 200))
 			{
 				int dust = Dust.NewDust(posa, 0, 0, DustID.BlueCrystalShard);
 				Main.dust[dust].scale = 1f;
@@ -548,7 +548,7 @@ namespace SGAmod.Dimensions.NPCs
 					return true;
 				}
 
-				if (ToEnemy.Length() > 3200 && boss.goingDark<0)//Heal if too far away, regardless of what is drawn (Shadow Nebula will take priority thou)
+				if (ToEnemy.Length() > 3200 && boss.goingDark < 0)//Heal if too far away, regardless of what is drawn (Shadow Nebula will take priority thou)
 				{
 					npc.ai[0] = 10000;//Shields up
 					return true;
@@ -1047,7 +1047,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			if (thisthing.Length > 0)
 			{
-				int index2 = Main.rand.Next(0, boss.goingDark > 0 ? Math.Min(3,boss.visitedEmptySpaces.Count / 60) : boss.visitedEmptySpaces.Count / 20);
+				int index2 = Main.rand.Next(0, boss.goingDark > 0 ? Math.Min(3, boss.visitedEmptySpaces.Count / 60) : boss.visitedEmptySpaces.Count / 20);
 				boss.visitedEmptySpaces.Remove(thisthing[index2]);
 				boss.goToEmptySpace = thisthing[index2];
 			}
@@ -1295,7 +1295,7 @@ namespace SGAmod.Dimensions.NPCs
 					}
 				}
 
-				npc.dontTakeDamage = boss.goingDark>0;
+				npc.dontTakeDamage = boss.goingDark > 0;
 
 				if (npc.ai[3] > 1)
 					StateFinal();
@@ -1364,7 +1364,7 @@ namespace SGAmod.Dimensions.NPCs
 					}
 					*/
 
-						StateShielded();
+					StateShielded();
 				}
 				else
 				{
@@ -1393,6 +1393,8 @@ namespace SGAmod.Dimensions.NPCs
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
 		public string RelicName() => "Phaethon";
 		public void NoHitDrops() { }
+		public string MasterPet() => null;
+		public bool PetChance() => false;
 
 		public bool TossRoids => (int)npc.ai[0] > 10600 && (int)npc.ai[0] < 10800;
 
@@ -1499,13 +1501,13 @@ namespace SGAmod.Dimensions.NPCs
 			return npc.ai[0] > 200000;
 		}
 
-        public override void BossLoot(ref string name, ref int potionType)
-        {
+		public override void BossLoot(ref string name, ref int potionType)
+		{
 			potionType = ItemID.GreaterHealingPotion;
 
 		}
 
-        public override void NPCLoot()
+		public override void NPCLoot()
 		{
 
 			RippleBoom.MakeShockwave(npc.Center, 8f, 1f, 24f, 80, 1f, true);
@@ -1537,6 +1539,11 @@ namespace SGAmod.Dimensions.NPCs
 			}
 
 			Item.NewItem(npc.Center, ModContent.ItemType<Items.StarMetalMold>());
+
+			if (Main.rand.Next(7) == 0)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.PhaethonMask>());
+			}
 
 			SGAWorld.downedSpaceBoss = true;
 			SubworldCache.AddCache("SGAmod", "SGAWorld", "downedSpaceBoss", true, null);
@@ -1606,8 +1613,8 @@ namespace SGAmod.Dimensions.NPCs
 
 				int maxIndex = 32;
 
-				foreach(SpaceStationStructure station in SpaceStationStructure.StationObjects)
-                {
+				foreach (SpaceStationStructure station in SpaceStationStructure.StationObjects)
+				{
 					station.SpawnFocusCrystals();
 				}
 
@@ -2032,7 +2039,7 @@ namespace SGAmod.Dimensions.NPCs
 		}
 
 		public void ManageDarknessAttack()
-        {
+		{
 			if (goingDark > 0)
 			{
 				SGAmod.fogDrawNPCsCounter = Math.Max(SGAmod.fogDrawNPCsCounter, 300);
@@ -2142,7 +2149,7 @@ namespace SGAmod.Dimensions.NPCs
 		}
 
 		public void RespawnBoss()
-        {
+		{
 
 			NPC.NewNPC((int)startPosition.X, (int)startPosition.Y, npc.type);
 			npc.active = false;
@@ -2481,10 +2488,10 @@ namespace SGAmod.Dimensions.NPCs
 						trail.doFade = false;
 						trail.color = delegate (float percent)
 						{
-							return Color.CornflowerBlue * (MathHelper.Clamp((alpha + percent) - 1f, 0f, 1f))*fadeOutAlpha;
+							return Color.CornflowerBlue * (MathHelper.Clamp((alpha + percent) - 1f, 0f, 1f)) * fadeOutAlpha;
 						};
-						if (fadeOutAlpha>0.01)
-						trail.DrawTrail(toThem, npc.Center);
+						if (fadeOutAlpha > 0.01)
+							trail.DrawTrail(toThem, npc.Center);
 					}
 				}
 			}
@@ -2659,8 +2666,8 @@ namespace SGAmod.Dimensions.NPCs
 
 			spriteBatch.Draw(rocklarge, (npc.Center) - Main.screenPosition, new Rectangle(0, 0, (int)rocklargeorig.X, (int)rocklargeorig.Y), Color.White * fadeOutAlpha, npc.rotation, rocklargeorig / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0f);
 
-			if (fadeOutAlpha>0.1)
-			DrawEyes(spriteBatch, false,false);
+			if (fadeOutAlpha > 0.1)
+				DrawEyes(spriteBatch, false, false);
 
 			//ArmorShaderData shader3 = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye); shader3.Apply(null);
 
@@ -2680,7 +2687,7 @@ namespace SGAmod.Dimensions.NPCs
 				for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 36f)
 				{
 					index += 1;
-					spriteBatch.Draw(eyetex, npc.Center - Main.screenPosition, new Rectangle(0, 0, (int)eyetexorig.X * 2, (int)eyetexorig.Y), Color.White*0.25f * MathHelper.Clamp(alpha / 200f, 0f, Math.Max(0.5f - (npc.ai[0] - 100000) * 0.025f, 0)), f + Main.GlobalTime * (index % 2 == 0 ? 1f : -1f), eyetexorig, new Vector2(0.75f, 4f*MathHelper.Clamp(alpha / 200f, 0f, 2f) + (extraadd / 5f)) * alpha / 24f, SpriteEffects.None, 0f);
+					spriteBatch.Draw(eyetex, npc.Center - Main.screenPosition, new Rectangle(0, 0, (int)eyetexorig.X * 2, (int)eyetexorig.Y), Color.White * 0.25f * MathHelper.Clamp(alpha / 200f, 0f, Math.Max(0.5f - (npc.ai[0] - 100000) * 0.025f, 0)), f + Main.GlobalTime * (index % 2 == 0 ? 1f : -1f), eyetexorig, new Vector2(0.75f, 4f * MathHelper.Clamp(alpha / 200f, 0f, 2f) + (extraadd / 5f)) * alpha / 24f, SpriteEffects.None, 0f);
 				}
 			}
 
@@ -2742,7 +2749,7 @@ namespace SGAmod.Dimensions.NPCs
 			return false;
 		}
 
-		public void DrawEyes(SpriteBatch spriteBatch,bool glow,bool applyShader = true)
+		public void DrawEyes(SpriteBatch spriteBatch, bool glow, bool applyShader = true)
 		{
 			Texture2D rocklarge = mod.GetTexture("Dimensions/Space/GlowAsteriod");
 			Vector2 firerockorig = rocklarge.Size() / 2f;
@@ -2754,8 +2761,8 @@ namespace SGAmod.Dimensions.NPCs
 
 			//Eyes (moved)
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			if (applyShader)
 			{
@@ -2764,7 +2771,7 @@ namespace SGAmod.Dimensions.NPCs
 				DrawData value8 = new DrawData(eyetex, new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 320, 160)), Microsoft.Xna.Framework.Color.White, npc.rotation, eyetexorig, npc.scale, SpriteEffects.None, 0);
 				stardustsshader.UseColor(Color.CornflowerBlue.ToVector3());
 				stardustsshader.UseOpacity(0.5f);
-				stardustsshader.Apply(null, new DrawData?(value8));	
+				stardustsshader.Apply(null, new DrawData?(value8));
 			}
 
 			float scaleAlpha = glow ? 1 - fadeOutAlpha : fadeOutAlpha;
@@ -2795,20 +2802,20 @@ namespace SGAmod.Dimensions.NPCs
 						for (float f = 0; f < 1f; f += 1 / 10f)
 						{
 							float scale2 = ((MathHelper.Clamp((float)Math.Sin(((npc.localAI[0] + (f * 60f)) * MathHelper.TwoPi) / 60), 0f, 1f))) * ((f / 2f) + 0.75f);
-							spriteBatch.Draw(eyetex, (eye.BasePosition) + (eye.offset + eyepos) - Main.screenPosition, null, EyeColor * (f / 2f) * 0.50f* scale2Alpha, 0, eyetexorig, ((eye.eyeScale * 1f) + scale2) * glowEye, SpriteEffects.None, 0);
+							spriteBatch.Draw(eyetex, (eye.BasePosition) + (eye.offset + eyepos) - Main.screenPosition, null, EyeColor * (f / 2f) * 0.50f * scale2Alpha, 0, eyetexorig, ((eye.eyeScale * 1f) + scale2) * glowEye, SpriteEffects.None, 0);
 						}
 					}
 				}
 
 				if (scaleeye > 0 && !eye.exploded)
-					spriteBatch.Draw(eyetex, (eye.BasePosition) + (eye.offset + eyepos) - Main.screenPosition, null, EyeColor* scaleAlpha * 0.50f, 0, eyetexorig, new Vector2(0.75f, 0.75f * scaleeye) * (eye.eyeScale * Main.essScale), SpriteEffects.None, 0f);
+					spriteBatch.Draw(eyetex, (eye.BasePosition) + (eye.offset + eyepos) - Main.screenPosition, null, EyeColor * scaleAlpha * 0.50f, 0, eyetexorig, new Vector2(0.75f, 0.75f * scaleeye) * (eye.eyeScale * Main.essScale), SpriteEffects.None, 0f);
 			}
 
 		}
 
 		public void DrawThroughFog(SpriteBatch spriteBatch)
 		{
-			if (fadeOutAlpha < 1) 
+			if (fadeOutAlpha < 1)
 			{
 				float percentive = (npc.ai[0] - 100000);
 
@@ -2830,7 +2837,7 @@ namespace SGAmod.Dimensions.NPCs
 				{
 					for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 4f)
 					{
-						spriteBatch.Draw(glowTex, npc.Center - Main.screenPosition, new Rectangle(0, 0, glowTex.Width / 2, glowTex.Height), EyeColor * (1f / f2) * (1 - fadeOutAlpha) * 2f, f, glowTex.Size() / 2f, new Vector2(0.05f,0.15f) * f2, SpriteEffects.None, 0);
+						spriteBatch.Draw(glowTex, npc.Center - Main.screenPosition, new Rectangle(0, 0, glowTex.Width / 2, glowTex.Height), EyeColor * (1f / f2) * (1 - fadeOutAlpha) * 2f, f, glowTex.Size() / 2f, new Vector2(0.05f, 0.15f) * f2, SpriteEffects.None, 0);
 					}
 				}
 				//spriteBatch.Draw(glowTex, npc.Center - Main.screenPosition, null, EyeColor * (1 - fadeOutAlpha) * 0.95f, 0, glowTex.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0);
@@ -2898,20 +2905,20 @@ namespace SGAmod.Dimensions.NPCs
 			projectile.ai[1]++;
 
 
-				scale2 += 1f/ (float)timeWarning;
+			scale2 += 1f / (float)timeWarning;
 
 
-				if (projectile.ai[1] > timeWarning)
-					scale3 = Math.Min(scale3 + 0.15f, 1.5f);
+			if (projectile.ai[1] > timeWarning)
+				scale3 = Math.Min(scale3 + 0.15f, 1.5f);
 
 
-				projectile.ai[1] += 1;
-				if ((int)projectile.ai[1] == timeWarning)
-				{
-					SoundEffectInstance beamsnd = Main.PlaySound(SoundID.DD2_BetsyFlameBreath, (int)projectile.Center.X, (int)projectile.Center.Y);
-				}
+			projectile.ai[1] += 1;
+			if ((int)projectile.ai[1] == timeWarning)
+			{
+				SoundEffectInstance beamsnd = Main.PlaySound(SoundID.DD2_BetsyFlameBreath, (int)projectile.Center.X, (int)projectile.Center.Y);
+			}
 
-				projectile.localAI[0] += 0.2f;
+			projectile.localAI[0] += 0.2f;
 
 			base.AI();
 		}
@@ -2949,10 +2956,10 @@ namespace SGAmod.Dimensions.NPCs
 			trail.coordOffset = new Vector2(0, -Main.GlobalTime * 1f);
 			trail.coordMultiplier = new Vector2(1f, 60f);
 			trail.doFade = false;
-			trail.trailThickness = 64 * scale.X*(projectile.width/64f);
+			trail.trailThickness = 64 * scale.X * (projectile.width / 64f);
 			trail.color = delegate (float percent)
 			{
-				return Color.CornflowerBlue * scalez2.X*1.0f;
+				return Color.CornflowerBlue * scalez2.X * 1.0f;
 			};
 			trail.trailThicknessIncrease = 0;
 			trail.DrawTrail(vectors, projectile.Center);
@@ -2965,7 +2972,7 @@ namespace SGAmod.Dimensions.NPCs
 			trail.trailThickness = 8 * scale.X * (projectile.width / 64f);
 			trail.color = delegate (float percent)
 			{
-				return Color.CornflowerBlue * MathHelper.Clamp(scalez2.X * 2.5f,0f,0.75f);
+				return Color.CornflowerBlue * MathHelper.Clamp(scalez2.X * 2.5f, 0f, 0.75f);
 			};
 			trail.trailThicknessIncrease = 0;
 			trail.DrawTrail(vectors, projectile.Center);
@@ -2994,11 +3001,11 @@ namespace SGAmod.Dimensions.NPCs
 
 			Texture2D glowtex = ModContent.GetTexture("SGAmod/GlowOrb");
 
-			Main.spriteBatch.Draw(glowtex, projectile.Center - Main.screenPosition, null, Color.CornflowerBlue * Math.Min(scale.X*4f, 1f), (projectile.velocity).ToRotation() - ((float)Math.PI / 2f), glowtex.Size() / 2f, ((Vector2.One*0.25f)+Vector2.One * (0.15f * scale.X * (projectile.width / 64f)))*MathHelper.Clamp(projectile.timeLeft/30f,0f,1f), SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(glowtex, projectile.Center - Main.screenPosition, null, Color.CornflowerBlue * Math.Min(scale.X * 4f, 1f), (projectile.velocity).ToRotation() - ((float)Math.PI / 2f), glowtex.Size() / 2f, ((Vector2.One * 0.25f) + Vector2.One * (0.15f * scale.X * (projectile.width / 64f))) * MathHelper.Clamp(projectile.timeLeft / 30f, 0f, 1f), SpriteEffects.None, 0);
 
 			glowtex = ModContent.GetTexture("SGAmod/Glow");
 
-			Main.spriteBatch.Draw(glowtex, projectile.Center - Main.screenPosition, null, Color.White * Math.Min(scalez3.X*4f, 1f), (projectile.velocity).ToRotation() - ((float)Math.PI / 2f), glowtex.Size() / 2f, ((Vector2.One*1f)+Vector2.One * (1f * scalez3.X * (projectile.width / 64f)) * MathHelper.Clamp(projectile.timeLeft / 30f, 0f, 1f)), SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(glowtex, projectile.Center - Main.screenPosition, null, Color.White * Math.Min(scalez3.X * 4f, 1f), (projectile.velocity).ToRotation() - ((float)Math.PI / 2f), glowtex.Size() / 2f, ((Vector2.One * 1f) + Vector2.One * (1f * scalez3.X * (projectile.width / 64f)) * MathHelper.Clamp(projectile.timeLeft / 30f, 0f, 1f)), SpriteEffects.None, 0);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -3045,11 +3052,11 @@ namespace SGAmod.Dimensions.NPCs
 			projectile.ai[0] += 1;
 			projectile.localAI[0] += 0.20f;
 			if (projectile.ai[0] > 300)
-            {
+			{
 				projectile.localAI[0] += 4f;
 			}
 			if (projectile.ai[0] == 60)
-            {
+			{
 				ScreenExplosion explode = SGAmod.AddScreenExplosion(projectile.Center, 340, 2f, 1600);
 				if (explode != null)
 				{
@@ -3082,14 +3089,14 @@ namespace SGAmod.Dimensions.NPCs
 			effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("Space"));
 			effect.Parameters["coordOffset"].SetValue(0);
 			effect.Parameters["coordMultiplier"].SetValue(4f);
-			effect.Parameters["strength"].SetValue(MathHelper.Clamp((projectile.timeLeft-30) / 80f, 0f, projectile.ai[0] / 250f));
+			effect.Parameters["strength"].SetValue(MathHelper.Clamp((projectile.timeLeft - 30) / 80f, 0f, projectile.ai[0] / 250f));
 
 			float adder = projectile.localAI[0];//MathHelper.Clamp((projectile.ai[0] - 300f)/1f, 0f, 300f);
 
 			VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
 
 			Vector3 screenPos = (projectile.Center - Main.screenPosition).ToVector3();
-			float size = projectile.localAI[0]*3f;
+			float size = projectile.localAI[0] * 3f;
 
 			vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-size, -size, 0), Color.White, new Vector2(0, 0));
 			vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-size, size, 0), Color.White, new Vector2(0, 1));
@@ -3118,7 +3125,7 @@ namespace SGAmod.Dimensions.NPCs
 			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 5f)
 			{
 				float there = f + Main.GlobalTime / 10f;
-				spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, (Color.White * 0.20f) * MathHelper.Clamp(projectile.timeLeft / 120f, 0f, MathHelper.Clamp(projectile.ai[0]/180f,0f,1f)), there, texture.Size() / 2f, new Vector2(0.85f, 1f) * ((Math.Abs(20f-((projectile.ai[0])/ 300f)*20f))+ (adder/60f)), SpriteEffects.None, 0f);
+				spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, (Color.White * 0.20f) * MathHelper.Clamp(projectile.timeLeft / 120f, 0f, MathHelper.Clamp(projectile.ai[0] / 180f, 0f, 1f)), there, texture.Size() / 2f, new Vector2(0.85f, 1f) * ((Math.Abs(20f - ((projectile.ai[0]) / 300f) * 20f)) + (adder / 60f)), SpriteEffects.None, 0f);
 			}
 
 			//}
@@ -3163,8 +3170,8 @@ namespace SGAmod.Dimensions.NPCs
 			projectile.timeLeft = int.MaxValue - 1;
 		}
 
-        public override bool OnTileCollide(Vector2 oldVelocity)
-        {
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
 			if (projectile.velocity != Vector2.Zero)
 			{
 				SoundEffectInstance snd = Main.PlaySound(SoundID.DD2_CrystalCartImpact, (int)projectile.Center.X, (int)projectile.Center.Y);
@@ -3175,9 +3182,9 @@ namespace SGAmod.Dimensions.NPCs
 				projectile.velocity = Vector2.Zero;
 			}
 			return false;
-        }
+		}
 
-        public override void AI()
+		public override void AI()
 		{
 			base.AI();
 		}
@@ -3212,7 +3219,7 @@ namespace SGAmod.Dimensions.NPCs
 			stardustsshader.Apply(null, new DrawData?(value8));
 
 			spriteBatch.Draw(turrettexGlow, drawPos + (offset * projectile.width * (rand.NextFloat(0.65f, 0.85f))).RotatedBy(projectile.rotation), new Rectangle(0, 0, turrettex.Width, turrettex.Height / 2), Color.LightGray, projectile.rotation, vec, projectile.scale, SpriteEffects.None, 0f);
-			spriteBatch.Draw(turrettexGlow, drawPos + (offset * projectile.width * (rand.NextFloat(0.65f, 0.85f))).RotatedBy(projectile.rotation), new Rectangle(0, turrettex.Height / 2, turrettex.Width, turrettex.Height / 2), Color.LightGray*MathHelper.Clamp((float)(0.3f+Math.Sin((Main.GlobalTime*1.2f)+rand.NextFloat(MathHelper.TwoPi))*0.52f),0f,1f), projectile.rotation, vec, projectile.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(turrettexGlow, drawPos + (offset * projectile.width * (rand.NextFloat(0.65f, 0.85f))).RotatedBy(projectile.rotation), new Rectangle(0, turrettex.Height / 2, turrettex.Width, turrettex.Height / 2), Color.LightGray * MathHelper.Clamp((float)(0.3f + Math.Sin((Main.GlobalTime * 1.2f) + rand.NextFloat(MathHelper.TwoPi)) * 0.52f), 0f, 1f), projectile.rotation, vec, projectile.scale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
@@ -3237,7 +3244,7 @@ namespace SGAmod.Dimensions.NPCs
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
 		}
 
-        public override string Texture => "Terraria/Projectile_538";
+		public override string Texture => "Terraria/Projectile_538";
 
 		public override void SetDefaults()
 		{
@@ -3255,10 +3262,10 @@ namespace SGAmod.Dimensions.NPCs
 
 		public override bool PreKill(int timeLeft)
 		{
-			SoundEffectInstance snd = Main.PlaySound(SoundID.NPCKilled, (int)projectile.Center.X,(int)projectile.Center.Y, 7);
+			SoundEffectInstance snd = Main.PlaySound(SoundID.NPCKilled, (int)projectile.Center.X, (int)projectile.Center.Y, 7);
 
 			if (snd != null)
-            {
+			{
 				snd.Pitch = Main.rand.NextFloat(-0.75f, -0.25f);
 			}
 
@@ -3276,7 +3283,7 @@ namespace SGAmod.Dimensions.NPCs
 				Main.dust[dust].scale = 2f - Math.Abs(num475) / 4f;
 				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
 				Main.dust[dust].velocity = (randomcircle / 3f);
-				Main.dust[dust].velocity += (projectile.velocity * (num475/5f));
+				Main.dust[dust].velocity += (projectile.velocity * (num475 / 5f));
 				Main.dust[dust].noGravity = true;
 				Main.dust[dust].rotation = Main.dust[dust].velocity.ToRotation();
 			}
@@ -3353,14 +3360,14 @@ namespace SGAmod.Dimensions.NPCs
 					projectile.oldPos[i] = projectile.position;
 
 				if (i % 5 == 0)
-                {
-					Rectangle rect = new Rectangle((int)Main.screenPosition.X- bufferRange, (int)Main.screenPosition.Y - bufferRange, Main.screenWidth+ bufferRange, Main.screenHeight+ bufferRange);
+				{
+					Rectangle rect = new Rectangle((int)Main.screenPosition.X - bufferRange, (int)Main.screenPosition.Y - bufferRange, Main.screenWidth + bufferRange, Main.screenHeight + bufferRange);
 					if (rect.Contains(projectile.oldPos[i].ToPoint()))
 					{
 						inrange = true;
 						break;
 					}
-                }
+				}
 			}
 			if (!inrange)
 				return false;
@@ -3376,18 +3383,18 @@ namespace SGAmod.Dimensions.NPCs
 				if (projectile.localAI[0] < 2)
 					projectile.oldPos[i] = projectile.position;
 
-				positions.Add(projectile.oldPos[i].X == 0 ? projectile.oldPos[maxLength-1] : projectile.oldPos[i]);
+				positions.Add(projectile.oldPos[i].X == 0 ? projectile.oldPos[maxLength - 1] : projectile.oldPos[i]);
 			}
 
-				TrailHelper trail = new TrailHelper("FadedBasicEffectPass", SGAmod.Instance.GetTexture("TiledPerlin"));
-			trail.coordMultiplier = new Vector2(0.25f, 0.20f*projectile.velocity.Length()* (maxLength/(float)projectile.oldPos.Length));
+			TrailHelper trail = new TrailHelper("FadedBasicEffectPass", SGAmod.Instance.GetTexture("TiledPerlin"));
+			trail.coordMultiplier = new Vector2(0.25f, 0.20f * projectile.velocity.Length() * (maxLength / (float)projectile.oldPos.Length));
 			trail.coordOffset = new Vector2(0, Main.GlobalTime * -2f);
 			trail.projsize = projectile.Hitbox.Size() / 2f;
 			trail.trailThickness = 12;
 			trail.trailThicknessIncrease = 5;
 			trail.color = delegate (float percent)
 			{
-				return Color.Lerp(Color.CornflowerBlue, Color.CadetBlue,percent)* alphaFade2;
+				return Color.Lerp(Color.CornflowerBlue, Color.CadetBlue, percent) * alphaFade2;
 			};
 
 			trail.DrawTrail(positions, projectile.Center);
@@ -3395,17 +3402,17 @@ namespace SGAmod.Dimensions.NPCs
 
 
 			Texture2D texture = Main.projectileTexture[mod.ProjectileType(this.GetType().Name)];
-			Vector2 origin = texture.Size()/2f;
+			Vector2 origin = texture.Size() / 2f;
 
-			spriteBatch.Draw(texture, projectile.Center + new Vector2(1, 0) - Main.screenPosition, null, Color.White*alphaFade*0.75f, 0 ,origin, new Vector2(1f, 1f)*0.5f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
-			spriteBatch.Draw(texture, projectile.Center + new Vector2(1, 0) - Main.screenPosition, null, Color.White*alphaFade*1f, projectile.localAI[0] / 20f, origin, new Vector2(1.25f, 1.25f), projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+			spriteBatch.Draw(texture, projectile.Center + new Vector2(1, 0) - Main.screenPosition, null, Color.White * alphaFade * 0.75f, 0, origin, new Vector2(1f, 1f) * 0.5f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+			spriteBatch.Draw(texture, projectile.Center + new Vector2(1, 0) - Main.screenPosition, null, Color.White * alphaFade * 1f, projectile.localAI[0] / 20f, origin, new Vector2(1.25f, 1.25f), projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 			spriteBatch.Draw(texture, projectile.Center + new Vector2(1, 0) - Main.screenPosition, null, Color.White * alphaFade, -projectile.localAI[0] / 20f, origin, new Vector2(1.5f, 1.5f), projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 			return false;
 		}
 
 	}
 
-	public class SpaceBossBasicShot : SpaceBossHomingShot,IDrawAdditive
+	public class SpaceBossBasicShot : SpaceBossHomingShot, IDrawAdditive
 	{
 		int extraparticles => 0;
 		protected virtual Color BoomColor => Color.Blue;
@@ -3467,8 +3474,8 @@ namespace SGAmod.Dimensions.NPCs
 		{
 			projectile.localAI[0] += 1;
 
-			if (projectile.localAI[0]==1)
-            {
+			if (projectile.localAI[0] == 1)
+			{
 				startOrg = projectile.Center;
 			}
 
@@ -3487,29 +3494,29 @@ namespace SGAmod.Dimensions.NPCs
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
-        {
+		{
 			if (GetType() == typeof(SpaceBossBasicShot))
 				return;
 
 			Texture2D glow = ModContent.GetTexture("SGAmod/LightBeam");
 			Vector2 origin = new Vector2(glow.Width / 2, glow.Height * 0.15f);
-			float rotation = projectile.velocity.ToRotation()-MathHelper.PiOver2;
+			float rotation = projectile.velocity.ToRotation() - MathHelper.PiOver2;
 
-			float alphaFade = MathHelper.Clamp(projectile.timeLeft / 60f, 0f, 1f)*MathHelper.Clamp(projectile.localAI[0] / 20f, 0f, 1f-MathHelper.Clamp((projectile.localAI[0]-80f)/50f,0f,1f));
+			float alphaFade = MathHelper.Clamp(projectile.timeLeft / 60f, 0f, 1f) * MathHelper.Clamp(projectile.localAI[0] / 20f, 0f, 1f - MathHelper.Clamp((projectile.localAI[0] - 80f) / 50f, 0f, 1f));
 			if (alphaFade <= 0)
 				return;
 
-			for(float f = -MathHelper.Pi; f <= MathHelper.Pi; f += MathHelper.Pi / 6f)
-            {
+			for (float f = -MathHelper.Pi; f <= MathHelper.Pi; f += MathHelper.Pi / 6f)
+			{
 				float scaleColor = (1f - Math.Abs(f / MathHelper.TwoPi)) * 1f;
-				float anglef = f * ((projectile.localAI[0]-40) / 20f);
+				float anglef = f * ((projectile.localAI[0] - 40) / 20f);
 				Vector2 scale = new Vector2(alphaFade * 0.20f, MathHelper.SmoothStep(0f, 1f, projectile.localAI[0] / 80f) * scaleColor * 1.50f);
-				float colorScale = MathHelper.Clamp(((projectile.localAI[0] - 40) - Math.Abs(f * 4f)) / 60f,0f,1f);
-				spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, Color.Lerp(Color.White, BoomColor, colorScale) * alphaFade* scaleColor * 2f, rotation+(anglef / 3f), origin, scale * 0.40f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+				float colorScale = MathHelper.Clamp(((projectile.localAI[0] - 40) - Math.Abs(f * 4f)) / 60f, 0f, 1f);
+				spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, Color.Lerp(Color.White, BoomColor, colorScale) * alphaFade * scaleColor * 2f, rotation + (anglef / 3f), origin, scale * 0.40f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 			}
 
-			spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, BoomColor * alphaFade * 2f, rotation, origin, new Vector2(0.20f+alphaFade, MathHelper.SmoothStep(0f, 2f, projectile.localAI[0] / 320f) *6f)*0.40f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
-			spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, Color.White * alphaFade * 2f, rotation, origin, new Vector2(0.05f + alphaFade*0.75f, MathHelper.SmoothStep(0f, 2f, projectile.localAI[0] / 320f) * 6f) * 0.30f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+			spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, BoomColor * alphaFade * 2f, rotation, origin, new Vector2(0.20f + alphaFade, MathHelper.SmoothStep(0f, 2f, projectile.localAI[0] / 320f) * 6f) * 0.40f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+			spriteBatch.Draw(glow, startOrg - Main.screenPosition, null, Color.White * alphaFade * 2f, rotation, origin, new Vector2(0.05f + alphaFade * 0.75f, MathHelper.SmoothStep(0f, 2f, projectile.localAI[0] / 320f) * 6f) * 0.30f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 
 		}
 
@@ -3524,8 +3531,8 @@ namespace SGAmod.Dimensions.NPCs
 			int index = 0;
 			foreach (Vector2 pos in projectile.oldPos.Reverse())
 			{
-				float indexPercent = (index/(float)projectile.oldPos.Length);
-				spriteBatch.Draw(texture, pos+ (projectile.Hitbox.Size()*0.50f) - Main.screenPosition, null, Color.White * alphaFade * 0.50f * indexPercent, 0, origin, new Vector2(1f, 1f) * 1f * indexPercent, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+				float indexPercent = (index / (float)projectile.oldPos.Length);
+				spriteBatch.Draw(texture, pos + (projectile.Hitbox.Size() * 0.50f) - Main.screenPosition, null, Color.White * alphaFade * 0.50f * indexPercent, 0, origin, new Vector2(1f, 1f) * 1f * indexPercent, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 				index += 1;
 			}
 			spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.White * alphaFade * 1f, 0, origin, 1f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
@@ -3569,12 +3576,12 @@ namespace SGAmod.Dimensions.NPCs
 			{
 				int npc = NPC.FindFirstNPC(ModContent.NPCType<SpaceBoss>());
 
-				if (npc >=0)
+				if (npc >= 0)
 				{
 					NPC npc2 = Main.npc[npc];
 
 					if (npc2.active)
-                    {
+					{
 						SpaceBoss boss = npc2.modNPC as SpaceBoss;
 						return 300 + ((boss.phase - 1) * 250);
 					}
@@ -3694,7 +3701,7 @@ namespace SGAmod.Dimensions.NPCs
 		{
 			base.PreDraw(spriteBatch, drawColor);
 
-			float scaleeffect = 1f-(Math.Abs(((npc.ai[2]) % MaxTime) - 200f) / 90f);
+			float scaleeffect = 1f - (Math.Abs(((npc.ai[2]) % MaxTime) - 200f) / 90f);
 
 			if (scaleeffect > 0)
 			{
@@ -3702,7 +3709,7 @@ namespace SGAmod.Dimensions.NPCs
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-				spriteBatch.Draw(Main.extraTexture[60], npc.Center - Main.screenPosition, null, Color.Aqua * MathHelper.Clamp(scaleeffect, 0f, 0.75f), npc.rotation-MathHelper.PiOver2, (Main.extraTexture[60].Size() / 2f) + new Vector2(0, 11), new Vector2(0.25f, 10f* scaleeffect), SpriteEffects.None, 0f);
+				spriteBatch.Draw(Main.extraTexture[60], npc.Center - Main.screenPosition, null, Color.Aqua * MathHelper.Clamp(scaleeffect, 0f, 0.75f), npc.rotation - MathHelper.PiOver2, (Main.extraTexture[60].Size() / 2f) + new Vector2(0, 11), new Vector2(0.25f, 10f * scaleeffect), SpriteEffects.None, 0f);
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
@@ -3714,7 +3721,7 @@ namespace SGAmod.Dimensions.NPCs
 
 	}
 
-	public class SpaceBossShadowNebulaEnemy : OverseenHead,IDrawThroughFog
+	public class SpaceBossShadowNebulaEnemy : OverseenHead, IDrawThroughFog
 	{
 		public SpaceBossRock spawnedFrom;
 		public SpaceBossShadowNebulaEnemy masterBeforeMe;
@@ -3741,24 +3748,24 @@ namespace SGAmod.Dimensions.NPCs
 			npc.aiStyle = -1;
 		}
 
-        public override bool CheckDead()
-        {
+		public override bool CheckDead()
+		{
 			//if (npc.ai[3] < -200)
 			//	return true;
 
 			if (npc.ai[3] < 1)
-            {
+			{
 				npc.ai[3] = 1;
 				npc.life = 1;
 				npc.dontTakeDamage = true;
 			}
 
 			npc.life = 1;
-				npc.netUpdate= true;
+			npc.netUpdate = true;
 
 			return false;
 
-        }
+		}
 
 		public override void HitEffect(int hitDirection, double damage)
 		{
@@ -3766,7 +3773,7 @@ namespace SGAmod.Dimensions.NPCs
 			if (sound != null)
 			{
 				float hpLeft = npc.life / (float)npc.lifeMax;
-				sound.Pitch = MathHelper.Clamp((-0.75f+(hpLeft*1.25f))+Main.rand.NextFloat(0.1f,0.1f),-0.80f,0.80f);
+				sound.Pitch = MathHelper.Clamp((-0.75f + (hpLeft * 1.25f)) + Main.rand.NextFloat(0.1f, 0.1f), -0.80f, 0.80f);
 			}
 		}
 
@@ -3776,7 +3783,7 @@ namespace SGAmod.Dimensions.NPCs
 
 			npc.localAI[0] += 1;
 
-			npc.localAI[1] = MathHelper.Clamp(npc.localAI[1] + (masterBeforeMe == null || masterBeforeMe.npc.ai[3]>0 ? 0.01f : -0.01f), 0f, 1f);
+			npc.localAI[1] = MathHelper.Clamp(npc.localAI[1] + (masterBeforeMe == null || masterBeforeMe.npc.ai[3] > 0 ? 0.01f : -0.01f), 0f, 1f);
 
 			npc.ai[2] -= 1;
 
@@ -3785,19 +3792,19 @@ namespace SGAmod.Dimensions.NPCs
 				goto despawn;
 			}
 
-			
+
 			if (masterBeforeMe != null && masterBeforeMe.npc.active == false)
-            {
+			{
 				masterBeforeMe.npc.active = true;
 				masterBeforeMe.npc.life = 1;
 				masterBeforeMe.CheckDead();
 			}
-			
+
 
 			float percent = MathHelper.Clamp(npc.localAI[0] / 450f, 0f, 1f);
 			float percent2 = MathHelper.Clamp((npc.localAI[0] - 220f) / 420f, 0f, 1f);
 			Vector2 poz = npc.Center - Main.screenPosition;
-			float size = (npc.localAI[1]+(0.20f* percent)) *((npc.life/(float)npc.lifeMax)+0.20f)*1200f;
+			float size = (npc.localAI[1] + (0.20f * percent)) * ((npc.life / (float)npc.lifeMax) + 0.20f) * 1200f;
 
 			if (poz.X > -size && poz.X < Main.screenWidth + size && poz.Y > -size && poz.Y < Main.screenHeight + size)
 			{
@@ -3810,8 +3817,8 @@ namespace SGAmod.Dimensions.NPCs
 				Vector2 whereWeWere = npc.Center;
 				float speedspeedspeed = 1f;// 16f/whereWeWere.Length();
 
-				npc.Center = Vector2.Lerp(spawnedFrom.Position, emptySpace, MathHelper.SmoothStep(0f,1f,percent2* speedspeedspeed));
-				npc.velocity = (whereWeWere - npc.Center)/3f;
+				npc.Center = Vector2.Lerp(spawnedFrom.Position, emptySpace, MathHelper.SmoothStep(0f, 1f, percent2 * speedspeedspeed));
+				npc.velocity = (whereWeWere - npc.Center) / 3f;
 			}
 			else
 			{
@@ -3854,8 +3861,8 @@ namespace SGAmod.Dimensions.NPCs
 			return;
 		}
 
-        public override void NPCLoot()
-        {
+		public override void NPCLoot()
+		{
 
 
 			SoundEffectInstance snd = Main.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 7);
@@ -3890,8 +3897,8 @@ namespace SGAmod.Dimensions.NPCs
 			float overallAlpha = MathHelper.Clamp(npc.ai[2] / 50f, 0f, 1f);
 
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			float trailGlow = MathHelper.Clamp(npc.velocity.Length() / 5f, 0f, 1f);
 
@@ -3903,7 +3910,7 @@ namespace SGAmod.Dimensions.NPCs
 				trail2.coordMultiplier = new Vector2(1f, 4f);
 				trail2.doFade = false;
 				trail2.trailThickness = 28f;
-				trail2.strength = trailGlow* overallAlpha* overallAlpha*2.5f;
+				trail2.strength = trailGlow * overallAlpha * overallAlpha * 2.5f;
 				trail2.color = delegate (float percent)
 				{
 					return Color.CornflowerBlue * percent;
@@ -3922,11 +3929,11 @@ namespace SGAmod.Dimensions.NPCs
 				drawsToHere.Add(npc.Center);
 				drawsToHere.Add(masterBeforeMe.npc.Center);
 
-				float EffectAlpha = (0.40f+MathHelper.Clamp(npc.ai[3] / 240f, 0f, 0.35f))* npc.localAI[1];
+				float EffectAlpha = (0.40f + MathHelper.Clamp(npc.ai[3] / 240f, 0f, 0.35f)) * npc.localAI[1];
 
 				if (EffectAlpha > 0)
 				{
-					float str = (1f - trailGlow) * EffectAlpha * overallAlpha* overallAlpha;
+					float str = (1f - trailGlow) * EffectAlpha * overallAlpha * overallAlpha;
 					for (int i = 0; i < 2; i += 1)
 					{
 						TrailHelper trail = new TrailHelper(i > 0 ? "FadedBasicEffectAlphaPass" : "FadedBasicEffectPass", i > 0 ? glowTrailEffect : mod.GetTexture("TiledPerlin"));
@@ -3989,7 +3996,7 @@ namespace SGAmod.Dimensions.NPCs
 				{
 					for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
 					{
-						spriteBatch.Draw(glowTex, npc.Center - Main.screenPosition, null, Color.White*0.75f* percent * overallAlpha, MathHelper.PiOver4 + f + (MathHelper.TwoPi * (f2 / 3f))+(Main.GlobalTime/3f*f2), glowTex.Size() / 2f, new Vector2(0.75f, 1f) * f2* scaler, SpriteEffects.None, 0);
+						spriteBatch.Draw(glowTex, npc.Center - Main.screenPosition, null, Color.White * 0.75f * percent * overallAlpha, MathHelper.PiOver4 + f + (MathHelper.TwoPi * (f2 / 3f)) + (Main.GlobalTime / 3f * f2), glowTex.Size() / 2f, new Vector2(0.75f, 1f) * f2 * scaler, SpriteEffects.None, 0);
 					}
 				}
 

@@ -25,6 +25,8 @@ namespace SGAmod.NPCs.Sharkvern
         public bool Chance() => Main.rand.Next(0, 10) == 0;
         public string RelicName() => "Sharkvern";
         public void NoHitDrops() { }
+        public string MasterPet() => null;
+        public bool PetChance() => false;
 
         private float Phase2Percent => RainFight ? 0.80f : 0.75f;
 

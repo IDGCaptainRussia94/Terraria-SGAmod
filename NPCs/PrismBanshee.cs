@@ -162,6 +162,18 @@ namespace SGAmod.NPCs
         public override void NPCLoot()
         {
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AuroraTear"), (Main.expertMode ? 2 : 1)*(2-(int)npc.ai[3]));
+			if (Main.rand.Next(10) == 0)
+            {
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("PrismicBansheeTrophy"));
+			}				
+			if (Main.rand.Next(7) == 0)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.PrismicBansheeMask>());
+			}
+			if (Main.expertMode && Main.rand.Next(4) == 0) //Change to Master Mode in 1.4
+            {
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Pets.VisitantStar>());
+			}
 			//Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(12, Main.expertMode ? 30 : 20) * (2 - (int)npc.ai[3]));
 			if (SGAWorld.downedPrismBanshee<1)
 			SGAWorld.downedPrismBanshee = 1;

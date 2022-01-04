@@ -26,7 +26,23 @@ A few warnings before the changelog:
 Changelog:
 
 
-3.617-(12/2/22)--Hotfix 26
+3.619-(12/3/22)--Hotfix 28
+
+--Fixed:
+
+-(Attempted) to fix the Moist Sand crashing issue
+
+-Credits crashing the game
+
+
+3.618-(1/2/22)--Hotfix 27
+
+--Fixed:
+
+-(Attempted) to fix the 2nd Strange Portal spawning and the TF2 emblem freezing the game with mods like Recursive Craft
+
+
+3.617-(1/2/22)--Hotfix 26
 
 -Changed:
 

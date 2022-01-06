@@ -320,13 +320,21 @@ namespace SGAmod
 			Idglib.AbsentItemDisc.Add(this.ItemType("Tornado"), "5% to drop from Wyverns after Golem");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Upheaval"), "20% to drop from Golem");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Powerjack"), "10% to drop from Wall of Flesh");
-			Idglib.AbsentItemDisc.Add(this.ItemType("SwordofTheBlueMoon"), "10% (20% in expert mod) drop from Moon Lord");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Fieryheart"), "This item is a secret...");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Sunbringer"), "This item is not obtainable yet");
 			Idglib.AbsentItemDisc.Add(this.ItemType("StoneBarrierStaff"), "Found in the Deeper Dungeons");
-			Idglib.AbsentItemDisc.Add(this.ItemType("PeacekeepersDuster"), "Sold by the Traveling Merchant in Hardmode");
 			Idglib.AbsentItemDisc.Add(this.ItemType("SecondCylinder"), "Sold by the Arms Dealer in a world with tin, or in Hardmode");
 			Idglib.AbsentItemDisc.Add(this.ItemType("GunBarrelParts"), "Sold by the Arms Dealer in a world with copper, or in Hardmode");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<FistOfMoonlord>(), "10% drop from Moon Lord");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SwordofTheBlueMoon>(), "10% (20% expert mode) drop from Moon Lord");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SoulPincher>(), "Part of Moon Lord's item pool, can drop as an extra item in the teasure bag");
+
+
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<PeacekeepersDuster>(), "Sold by the Traveling Merchant in Hardmode");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<ShinobiShiv>(), "Sold by the Traveling Merchant in Hardmode");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<Gunarang>(), "Sold by the Traveling Merchant in Hardmode");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SeraphimShard>(), "Sold by the Traveling Merchant in Hardmode");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SoldierRocketLauncher>(), "Sold by the Traveling Merchant in Hardmode, comes with rocket I's for sale too");
 
 			Idglib.AbsentItemDisc.Add(this.ItemType("PrimordialSkull"), "Sold by the Dergon (Draken)");
 			Idglib.AbsentItemDisc.Add(this.ItemType("CaliburnCompess"), "Sold by the Dergon (Draken)");
@@ -345,18 +353,22 @@ namespace SGAmod
 			Idglib.AbsentItemDisc.Add(this.ItemType("DankCore"), "Is found in Dank Shrines, including crates fished from there");
 			Idglib.AbsentItemDisc.Add(this.ItemType("DankWood"), "Is found in Dank Shrines, including crates fished from there");
 			Idglib.AbsentItemDisc.Add(this.ItemType("IceFairyDust"), "Drops from Ice Fairies, they spawn during the day on the surface biome in hardmode");
-			Idglib.AbsentItemDisc.Add(this.ItemType("Entrophite"), "Is created via an Entropy Transmuter");
+			Idglib.AbsentItemDisc.Add(this.ItemType("Entrophite"), "Found in Limbo, Is also created via an Entropy Transmuter");
+			Idglib.AbsentItemDisc.Add(this.ItemType("HopeHeart"), "Found in the depths of Limbo");
+
 			Idglib.AbsentItemDisc.Add(this.ItemType("EldritchTentacle"), "Drops from Moonlord");
 			Idglib.AbsentItemDisc.Add(this.ItemType("IlluminantEssence"), "Drops from Prismic Banshee, and after her defeat, enemies, the glowing ones... Obviously");
 			Idglib.AbsentItemDisc.Add(this.ItemType("LunarRoyalGel"), "Drops from Supreme Pinky");
 			Idglib.AbsentItemDisc.Add(this.ItemType("CryostalBar"), "Drops from Cirno");
 			Idglib.AbsentItemDisc.Add(this.ItemType("MoneySign"), "Drops from Cratogeddon");
 			Idglib.AbsentItemDisc.Add(this.ItemType("ByteSoul"), "Drops from Hellion Core's 'arms'");
-			Idglib.AbsentItemDisc.Add(this.ItemType("StarMetalMold"), "Drops from Twin Prime Destroyers");
-			Idglib.AbsentItemDisc.Add(this.ItemType("DrakeniteBar"), "Drops Hellion's 2nd form");
-			Idglib.AbsentItemDisc.Add(this.ItemType("UnmanedOre"), "Throw Transmutation Powder onto Novite Ore!");
-			Idglib.AbsentItemDisc.Add(this.ItemType("NoviteOre"), "Throw Transmutation Powder onto Novus Ore!");
+			Idglib.AbsentItemDisc.Add(this.ItemType("StarMetalMold"), "Drops from Phaethon in Single Player, Twin Prime Destroyers in Multiplayer");
 
+			Idglib.AbsentItemDisc.Add(this.ItemType("DrakeniteBar"), "Drops Hellion's 2nd form");
+			Idglib.AbsentItemDisc.Add(this.ItemType("UnmanedOre"), "Spawns one type in world,otherwise throw Transmutation Powder onto Novite Ore!");
+			Idglib.AbsentItemDisc.Add(this.ItemType("NoviteOre"), "Spawns one type in world, otherwise throw Transmutation Powder onto Novus Ore!");
+
+			Idglib.AbsentItemDisc.Add(this.ItemType("HeliosFocusCrystal"), "Drops from Focus Crystals in space IF Phaethon is not present");
 			Idglib.AbsentItemDisc.Add(this.ItemType("AncientFabric"), "Found in the bottom layer of Limbo, use a Braxsaw to mine it");
 			Idglib.AbsentItemDisc.Add(this.ItemType("OverseenCrystal"), "Found in near orbit space, just fly up up and away!");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Glowrock"), "Found in near orbit space, just go fly up and away!");

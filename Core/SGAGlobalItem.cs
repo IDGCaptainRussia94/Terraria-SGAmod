@@ -442,7 +442,7 @@ namespace SGAmod
             }
             if (set == "Mangrove")
             {
-                player.setBonus = "Crit throwing attacks grant Dryad's Blessing and spawn Mangrove Orbs from you that seek out enemies\nYou are limited to 4 of these Orbs at a time\nWhile you are in the jungle:\n-Greatly Increased regeneration" +
+                player.setBonus = "Throwing Crits apply Dryad's Blessing\nThey also spawn a pair of Mangrove Orbs from you that seek out enemies and inflict Dryad's Bane\nYou are limited to 4 of these Orbs at a time and are damage soft-capped to 50\nWhile you are in the jungle:\n-Greatly Increased regeneration" +
     "\n-Gain an additional Free Cooldown Stack";
 
                 sgaplayer.Mangroveset = true;

@@ -868,13 +868,16 @@ namespace SGAmod
 			SGAILHacks.Unpatch();
 			BCLEntries.Unload();
 
-			Items.Weapons.Almighty.CataLogo.Unload();
 
 
 			if (!Main.dedServ)
 			{			
 				UnLoadMusic(true);
+
 				ShadowParticle.Unload();
+			Items.Weapons.Almighty.CataLogo.Unload();
+			Items.Placeable.CelestialMonolithManager.Unload();
+
 				if (SGAmod.ParadoxMirrorTex != null)
 					SGAmod.ParadoxMirrorTex.Dispose();
 				if (SGAmod.hellionLaserTex != null)

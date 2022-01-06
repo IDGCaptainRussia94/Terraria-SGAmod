@@ -2615,18 +2615,21 @@ namespace SGAmod.Dimensions.NPCs
 
 				toThem.Reverse();
 
-				TrailHelper trail = new TrailHelper("FadedBasicEffectPass", !fightActive ? mod.GetTexture("TiledPerlin") : Main.extraTexture[21]);
+				TrailHelper trail = new TrailHelper(!fightActive ? "FadedBasicEffectPass" : "BasicEffectAlphaPass", !fightActive ? mod.GetTexture("TiledPerlin") : mod.GetTexture("ElectricFireNoColor"));
 				trail.projsize = Vector2.Zero;
 				trail.coordOffset = new Vector2(0, Main.GlobalTime * -1f);
+				trail.coordMultiplier = new Vector2(1f, fightActive ? 1f : 2f);
+
 				trail.trailThickness = 16;
 				trail.trailThicknessIncrease = -12;
+				trail.strength = fightActive ? 4f : 0.65f;
 				trail.doFade = false;
 
 				float offset = (index2 * MathHelper.TwoPi) / 2.731f;
 
 				trail.color = delegate (float percent)
 				{
-					Color scrColor = (!fightActive ? Color.CornflowerBlue : Color.White);
+					Color scrColor = (!fightActive ? Color.CornflowerBlue : Color.CornflowerBlue*1f);
 					float sinner = (float)Math.Sin(offset + ((Main.GlobalTime * 4f)) + ((1f - percent) * MathHelper.TwoPi));
 					float wave = Math.Max(sinner, 0);
 					Color finalColor = Color.Lerp(Color.Transparent, scrColor * 0.75f, (wave));
@@ -2639,7 +2642,7 @@ namespace SGAmod.Dimensions.NPCs
 				trail.trailThicknessFunction = delegate (float percent)
 				{
 					float sinner = (float)Math.Sin(offset + ((Main.GlobalTime * 4f)) + (percent * MathHelper.TwoPi));
-					return 16f + ((float)(Math.Max(sinner, 0) * 12f) * (1f - percent)) - (12f * percent);
+					return (16f + ((float)(Math.Max(sinner, 0) * 12f) * (1f - percent)) - (12f * percent))*(fightActive ? 2f : 1f);
 				};
 				trail.DrawTrail(toThem, npc.Center);
 				index2 += 1;
@@ -3967,7 +3970,7 @@ namespace SGAmod.Dimensions.NPCs
 				float percent = MathHelper.Clamp(npc.localAI[0] / 300f, 0f, 1f);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 
 				Texture2D glowTex = mod.GetTexture("Glow");
@@ -3977,13 +3980,13 @@ namespace SGAmod.Dimensions.NPCs
 				Color colorz = Color.Lerp(Color.CornflowerBlue, Color.White, (npc.life / (float)npc.lifeMax));
 
 				if (masterBeforeMe == null)
-					colorz = Color.Lerp(Color.CornflowerBlue, Color.MediumAquamarine, (npc.life / (float)npc.lifeMax));
+					colorz = Color.Lerp(Color.CornflowerBlue, Color.MediumPurple, (npc.life / (float)npc.lifeMax));
 
 				stardustsshader.UseColor(colorz.ToVector3() * 2f);
 				stardustsshader.UseOpacity(1f);
 				stardustsshader.Apply(null, new DrawData?(value8));
 
-				float scaler = masterBeforeMe == null ? 2f : 1f;
+				float scaler = (masterBeforeMe == null ? 2f : 1f) * (1f+(1f-(npc.life/(float)npc.lifeMax)*1f)*0.5f);
 
 				for (float f2 = 1; f2 <= 3; f2 += 1f)
 				{

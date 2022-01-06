@@ -34,6 +34,7 @@ namespace SGAmod
 			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
 			IL.Terraria.Player.DashMovement += EoCBonkInjection;
+			IL.Terraria.Player.StickyMovement += AddCustomWebsCollision;
 
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
 			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += AdjustLifeRegen;
@@ -66,6 +67,74 @@ namespace SGAmod
 			}
 
 			PrivateClassEdits.ApplyPatches();
+		}
+
+
+		private delegate int CollisionOtherCobwebsDelegate(Player player, int starterNumber);
+		private static int CollisionOtherCobwebsMethod(Player player, int starterNumber)
+		{
+			if (SGAWorld.modtimer > 120)
+			{
+				int tile = ModContent.TileType<NPCs.SpiderQueen.AcidicWebTile>();
+				if (starterNumber == tile)
+				{
+					player.AddBuff(ModContent.BuffType<Buffs.AcidBurn>(),2);
+					starterNumber = TileID.Cobweb;
+				}
+			}
+			return starterNumber;
+		}
+
+		private delegate Vector2 ModdedCobwebsHereDelegate(Player player,Vector2 sticky);
+		private static Vector2 ModdedCobwebsHereMethod(Player player, Vector2 sticky)
+		{
+			if (SGAWorld.modtimer > 120)
+			{
+				int tile = ModContent.TileType<NPCs.SpiderQueen.AcidicWebTile>();
+
+				for (int x = 0; x < 2; x += 1)
+				{
+					for (int y = 0; y < 2; y += 1)
+					{
+						Vector2 here = (player.position / 16)+new Vector2(x,y);
+
+						if (Main.tile[(int)here.X, (int)here.Y].type == tile)
+						{
+							sticky = here;
+							return sticky;
+						}
+					}
+				}
+			}
+
+			return sticky;
+		}
+
+		private static void AddCustomWebsCollision(ILContext il)
+        {
+			ILCursor c = new ILCursor(il);
+
+			if (c.TryGotoNext(MoveType.After, i => i.MatchStloc(3)))
+			{
+				c.Emit(OpCodes.Ldarg_0);
+				c.Emit(OpCodes.Ldloc, 3);
+				c.EmitDelegate<ModdedCobwebsHereDelegate>(ModdedCobwebsHereMethod);
+				c.Emit(OpCodes.Stloc, 3);
+
+				
+				if (c.TryGotoNext(MoveType.After, i => i.MatchStloc(6)))
+				{
+					c.Emit(OpCodes.Ldarg_0);
+					c.Emit(OpCodes.Ldloc, 6);
+					c.EmitDelegate<CollisionOtherCobwebsDelegate>(CollisionOtherCobwebsMethod);
+					c.Emit(OpCodes.Stloc, 6);
+
+					return;
+				}
+				throw new Exception("IL Error Test 2");
+			}
+
+			throw new Exception("IL Error Test 1");
 		}
 
         internal static void Unpatch()

@@ -2985,13 +2985,14 @@ namespace SGAmod.Dimensions
                 Texture2D mainTex = Main.npcTexture[npc.type];
                 Texture2D otherTex = Main.itemTexture[ItemID.DD2ElderCrystal];
                 Texture2D glowTex = mod.GetTexture("Glow");
+                Texture2D glowTex2 = mod.GetTexture("GlowOrb");
                 Vector2 halfGlow = glowTex.Size() / 2f;
                 ArmorShaderData stardustsshader = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye);
 
                 DrawData value8 = new DrawData(otherTex, new Vector2(30f, 30f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, otherTex.Width, otherTex.Height)), Microsoft.Xna.Framework.Color.White, npc.rotation, glowTex.Size() / 2f, npc.scale * 5f, SpriteEffects.None, 0);
                 Color colorz = Color.White;
 
-                spriteBatch.Draw(glowTex, npc.Center - Main.screenPosition, null, Color.White * 1.50f * overallAlpha, 0, halfGlow, new Vector2(1f, 1f) * 12f, SpriteEffects.None, 0);
+                spriteBatch.Draw(glowTex2, npc.Center - Main.screenPosition, null, Color.White * 0.50f * overallAlpha, 0, glowTex2.Size()/2f, new Vector2(1f, 1f) * 1f, SpriteEffects.None, 0);
 
                 if (npc.localAI[1] < 1)
                 {

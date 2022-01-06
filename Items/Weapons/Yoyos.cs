@@ -699,7 +699,7 @@ namespace SGAmod.Items.Weapons
             item.UseSound = SoundID.Item19;
         }
 
-        public override string Texture => "SGAmod/Items/Weapons/RiftYoyo";
+        public override string Texture => "SGAmod/Items/Weapons/TheTongue";
 
         public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
@@ -732,7 +732,7 @@ namespace SGAmod.Items.Weapons
             projectile.scale = 1f;
         }
 
-        public override string Texture => "SGAmod/Projectiles/RiftYoyoProj";
+        public override string Texture => "SGAmod/Projectiles/TheTongueProj";
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {

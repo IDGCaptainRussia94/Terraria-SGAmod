@@ -9,6 +9,8 @@ using Terraria.ModLoader;
 namespace SGAmod.Items.Placeable
 {
 
+
+
 	public class CelestialMonolithManager
     {
 
@@ -16,6 +18,38 @@ namespace SGAmod.Items.Placeable
 		public static RenderTarget2D SkyRenderTarget2D;
 		public static int queueRenderTargetUpdate = 0;
 		public static bool onlyDrawSky = false;
+
+		public static double GetInvertedTime(double timeOfDay) => timeOfDay / (Main.dayTime ? Main.dayLength : Main.nightLength);
+
+		public static void Unload()
+        {
+            if (CarveOutTarget2D != null && !CarveOutTarget2D.IsDisposed)
+                CarveOutTarget2D.Dispose();
+            if (SkyRenderTarget2D != null && !SkyRenderTarget2D.IsDisposed)
+                SkyRenderTarget2D.Dispose();
+        }
+
+		public static void SGAmod_RenderTargetsCheckEvent(ref bool yay)
+		{
+			yay &= !((CarveOutTarget2D == null || CarveOutTarget2D.IsDisposed) || (SkyRenderTarget2D == null || SkyRenderTarget2D.IsDisposed));
+		}
+
+		public static void SGAmod_RenderTargetsEvent()
+		{
+			if (CelestialMonolithManager.SkyRenderTarget2D == null || CelestialMonolithManager.SkyRenderTarget2D.IsDisposed)
+			{
+				int width = Main.screenWidth;
+				int height = Main.screenHeight;
+				CelestialMonolithManager.SkyRenderTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+			}
+
+			if (CelestialMonolithManager.CarveOutTarget2D == null || CelestialMonolithManager.CarveOutTarget2D.IsDisposed)
+			{
+				int width = Main.screenWidth;
+				int height = Main.screenHeight;
+				CelestialMonolithManager.CarveOutTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+			}
+		}
 
 		public static void DrawMonolithAura()
 		{
@@ -61,8 +95,6 @@ namespace SGAmod.Items.Placeable
 			}
 		}
 
-		public static double GetInvertedTime(double timeOfDay) => timeOfDay / (Main.dayTime ? Main.dayLength : Main.nightLength);
-
 		internal static void SGAmod_PostUpdateEverythingEvent()
 		{
 
@@ -75,19 +107,7 @@ namespace SGAmod.Items.Placeable
 				if (CelestialMonolithManager.queueRenderTargetUpdate > 1)
 				{
 
-					if (CelestialMonolithManager.SkyRenderTarget2D == null || CelestialMonolithManager.SkyRenderTarget2D.IsDisposed)
-					{
-						int width = Main.screenWidth;
-						int height = Main.screenHeight;
-						CelestialMonolithManager.SkyRenderTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
-					}
-
-					if (CelestialMonolithManager.CarveOutTarget2D == null || CelestialMonolithManager.CarveOutTarget2D.IsDisposed)
-					{
-						int width = Main.screenWidth;
-						int height = Main.screenHeight;
-						CelestialMonolithManager.CarveOutTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
-					}
+					SGAmod_RenderTargetsEvent();
 
 					RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
 
@@ -261,6 +281,8 @@ namespace SGAmod.Items.Placeable
 				}
 				if (CelestialMonolithManager.queueRenderTargetUpdate == 1)
 				{
+					Unload();
+					/*
 					if (CelestialMonolithManager.SkyRenderTarget2D != null && !CelestialMonolithManager.SkyRenderTarget2D.IsDisposed)
 					{
 						CelestialMonolithManager.SkyRenderTarget2D.Dispose();
@@ -269,6 +291,7 @@ namespace SGAmod.Items.Placeable
 					{
 						CelestialMonolithManager.CarveOutTarget2D.Dispose();
 					}
+					*/
 				}
 			}
 
@@ -285,6 +308,9 @@ namespace SGAmod.Items.Placeable
 		public override bool Autoload(ref string name)
 		{
 			SGAmod.PostUpdateEverythingEvent += CelestialMonolithManager.SGAmod_PostUpdateEverythingEvent;
+			SGAmod.RenderTargetsCheckEvent += CelestialMonolithManager.SGAmod_RenderTargetsCheckEvent;
+			SGAmod.RenderTargetsEvent += CelestialMonolithManager.SGAmod_RenderTargetsEvent;
+
 			return true;
 		}
 		public override void SetStaticDefaults()

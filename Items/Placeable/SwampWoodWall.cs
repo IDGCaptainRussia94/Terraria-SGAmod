@@ -8,7 +8,7 @@ namespace SGAmod.Items.Placeable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug: Swamp Wall");
-			Tooltip.SetDefault("Use this incase your Dank Shrines get messed up to fix them");
+			Tooltip.SetDefault("Use this in case your Dank Shrines get messed up to fix them");
 		}
 		public override void SetDefaults()
 		{
@@ -44,7 +44,7 @@ namespace SGAmod.Items.Placeable
 
 			public override void SetStaticDefaults()
 			{
-				DisplayName.SetDefault("Dankwood Wall");
+				DisplayName.SetDefault("Swamp Wood Wall");
 				Tooltip.SetDefault("");
 			}
 

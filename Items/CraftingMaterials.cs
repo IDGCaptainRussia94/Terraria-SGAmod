@@ -13,6 +13,7 @@ using SGAmod.Items.Placeable;
 using SGAmod.Items.Weapons.Vibranium;
 using SGAmod.Items.Accessories;
 using Terraria.Utilities;
+using SGAmod.Items.Placeable.DankWoodFurniture;
 
 namespace SGAmod.HavocGear.Items
 {
@@ -232,6 +233,33 @@ namespace SGAmod.HavocGear.Items
 			Tooltip.SetDefault("It smells odd...");
 		}
 
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<DankWoodFence>(), 4);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<BrokenDankWoodFence>(), 4);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<DankWoodWall>(), 4);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<DankWoodPlatform>(), 2);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<SwampWoodWall>(), 4);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
 	}
 	public class DankCore : ModItem
 	{

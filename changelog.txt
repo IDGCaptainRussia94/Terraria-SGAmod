@@ -32,7 +32,7 @@ Changelog:
 -Can now generate Fragement Blocks after moonlord is defeated
 -Astral Luminite can now only be mined after moonlord is defeated
 
--Supreme Pinky's 'Treasure Bag' can no longer be opened in SubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworlds
+-Supreme Pinky's 'Treasure Bag' can no longer be opened in Subworlds
 
 -Cratrosity/Cratrogeddon can now be summoned during the day
 

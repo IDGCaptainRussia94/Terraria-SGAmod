@@ -13,8 +13,196 @@ using SGAmod.Items.Placeable.DankWoodFurniture;
 
 namespace SGAmod.Tiles.DankWoodFurniture
 {
-    //Tile, door, and platform located elsewhere
+    //Tile, door, and platform located elsewhere (nah, they are here now)
     //Walls are located in a different cs file
+
+    #region DankWood Door
+    public class DankDoorClosed : ModTile
+    {
+        public override void SetDefaults()
+        {
+            Main.tileFrameImportant[Type] = true;
+            Main.tileBlockLight[Type] = true;
+            Main.tileSolid[Type] = true;
+            Main.tileNoAttach[Type] = true;
+            Main.tileLavaDeath[Type] = true;
+            TileID.Sets.NotReallySolid[Type] = true;
+            TileID.Sets.DrawsWalls[Type] = true;
+            TileID.Sets.HasOutlines[Type] = true;
+            TileObjectData.newTile.Width = 1;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.Origin = new Point16(0, 0);
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.UsesCustomCanPlace = true;
+            TileObjectData.newTile.LavaDeath = true;
+            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
+            TileObjectData.newTile.CoordinateWidth = 16;
+            TileObjectData.newTile.CoordinatePadding = 2;
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(0, 1);
+            TileObjectData.addAlternate(0);
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(0, 2);
+            TileObjectData.addAlternate(0);
+            TileObjectData.addTile(Type);
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
+            ModTranslation name = CreateMapEntryName();
+            name.SetDefault("Dank Door");
+            AddMapEntry(new Color(20, 120, 20));
+            dustType = 184;
+            //dustType = mod.DustType("Sparkle");
+            disableSmartCursor = true;
+            adjTiles = new int[] { TileID.ClosedDoor };
+            openDoorID = mod.TileType("DankDoorOpen");
+        }
+
+        public override void NumDust(int i, int j, bool fail, ref int num)
+        {
+            num = 1;
+        }
+        public override bool HasSmartInteract()
+        {
+            return true;
+        }
+
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            Item.NewItem(i * 16, j * 16, 16, 48, mod.ItemType("DankDoorItem"));
+        }
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+        {
+            if (fail || effectOnly)
+            {
+                foreach (NPC enemy in Main.npc.Where(npc => npc.active && !npc.friendly && npc.DistanceSQ(new Vector2(i * 16, j * 16)) < 200 * 200))
+                {
+                    enemy.AddBuff(BuffID.Confused, 60 * 5);
+                }
+
+            }
+        }
+    }
+    public class DankDoorOpen : DankDoorClosed
+    {
+        public override void SetDefaults()
+        {
+            Main.tileFrameImportant[Type] = true;
+            Main.tileSolid[Type] = false;
+            Main.tileLavaDeath[Type] = true;
+            Main.tileNoSunLight[Type] = true;
+            TileObjectData.newTile.Width = 2;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.Origin = new Point16(0, 0);
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
+            TileObjectData.newTile.UsesCustomCanPlace = true;
+            TileObjectData.newTile.LavaDeath = true;
+            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
+            TileObjectData.newTile.CoordinateWidth = 16;
+            TileObjectData.newTile.CoordinatePadding = 2;
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.StyleMultiplier = 2;
+            TileObjectData.newTile.StyleWrapLimit = 2;
+            TileObjectData.newTile.Direction = TileObjectDirection.PlaceRight;
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(0, 1);
+            TileObjectData.addAlternate(0);
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(0, 2);
+            TileObjectData.addAlternate(0);
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(1, 0);
+            TileObjectData.newAlternate.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceLeft;
+            TileObjectData.addAlternate(1);
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(1, 1);
+            TileObjectData.newAlternate.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceLeft;
+            TileObjectData.addAlternate(1);
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(1, 2);
+            TileObjectData.newAlternate.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceLeft;
+            TileObjectData.addAlternate(1);
+            TileObjectData.addTile(Type);
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
+            TileID.Sets.HousingWalls[Type] = true; //needed for non-solid blocks to count as walls
+            TileID.Sets.HasOutlines[Type] = true;
+            ModTranslation name = CreateMapEntryName();
+            name.SetDefault("Dank Door");
+            AddMapEntry(new Color(20, 120, 20));
+            dustType = 184;
+            //dustType = mod.DustType("Sparkle");
+            disableSmartCursor = true;
+            adjTiles = new int[] { TileID.OpenDoor };
+            closeDoorID = mod.TileType("DankDoorClosed");
+        }
+    }
+    #endregion
+    #region DankWood Block
+    public class DankWoodBlock : ModTile
+    {
+        public override void SetDefaults()
+        {
+            Main.tileSolid[Type] = true;
+            Main.tileMergeDirt[Type] = true;
+            Main.tileBlockLight[Type] = true;
+            AddMapEntry(new Color(20, 120, 20));
+            dustType = 184;
+            drop = ModContent.ItemType<HavocGear.Items.DankWood>();
+        }
+
+        public override void NumDust(int i, int j, bool fail, ref int num)
+        {
+            num = fail ? 1 : 3;
+        }
+    }
+    #endregion
+    #region DankWood Platform
+    public class DankWoodPlatformTile : ModTile
+    {
+        public override void SetDefaults()
+        {
+            Main.tileLighted[Type] = true;
+            Main.tileFrameImportant[Type] = true;
+            Main.tileSolidTop[Type] = true;
+            Main.tileSolid[Type] = true;
+            Main.tileNoAttach[Type] = true;
+            Main.tileTable[Type] = true;
+            Main.tileLavaDeath[Type] = true;
+            TileID.Sets.Platforms[Type] = true;
+            TileObjectData.newTile.CoordinateHeights = new[] { 16 };
+            TileObjectData.newTile.CoordinateWidth = 16;
+            TileObjectData.newTile.CoordinatePadding = 2;
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.StyleMultiplier = 27;
+            TileObjectData.newTile.StyleWrapLimit = 27;
+            TileObjectData.newTile.UsesCustomCanPlace = false;
+            TileObjectData.newTile.LavaDeath = true;
+            TileObjectData.addTile(Type);
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
+            AddMapEntry(new Color(20, 120, 20));
+            dustType = 184;
+            drop = ModContent.ItemType<Items.Placeable.DankWoodFurniture.DankWoodPlatform>();
+            disableSmartCursor = true;
+            adjTiles = new int[] { TileID.Platforms };
+        }
+
+        public override void PostSetDefaults()
+        {
+            Main.tileNoSunLight[Type] = false;
+        }
+
+        public override void NumDust(int i, int j, bool fail, ref int num)
+        {
+            num = fail ? 1 : 3;
+        }
+    }
+    #endregion
     #region Dank Wood Workbench
     public class DankWoodWorkbench : ModTile
     {

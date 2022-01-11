@@ -224,7 +224,7 @@ namespace SGAmod.HavocGear.Items
 			item.useTime = 10;
 			item.useStyle = ItemUseStyleID.SwingThrow;
 			item.consumable = true;
-			item.createTile = ModContent.TileType<DankWoodBlock>();
+			item.createTile = ModContent.TileType<Tiles.DankWoodFurniture.DankWoodBlock>();
 		}
 
 		public override void SetStaticDefaults()
@@ -395,7 +395,63 @@ namespace SGAmod.Items
         }
     }
 
-		public class OverseenCrystal : ModItem, IRadioactiveItem
+	public class CelestineChunk : ModItem, IRadioactiveItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Celestine Chunk");
+			Tooltip.SetDefault("Inert and radioactive Luminite...");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 16;
+			item.height = 16;
+			item.useTime = 10;
+			item.useAnimation = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.consumable = true;
+			item.value = 0;
+			item.rare = ItemRarityID.Blue;
+		}
+
+		public override string Texture => "Terraria/Item_" + ItemID.LunarOre;
+
+        public override Color? GetAlpha(Color lightColor)
+        {
+			return Color.Lerp(Color.DarkGray, Color.Gray, 0.50f + (float)Math.Sin(Main.GlobalTime / 2f) / 2f);
+        }
+
+        public override void AddRecipes()
+        {
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LunarOre, 1);
+			recipe.AddIngredient(this, 4);
+			recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 1);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(ItemID.LunarBar, 2);
+			recipe.AddRecipe();
+		}
+
+        public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.White.ToVector3() * 0.55f);
+		}
+
+		public int RadioactiveHeld()
+		{
+			return 2;
+		}
+
+		public int RadioactiveInventory()
+		{
+			return 1;
+		}
+	}
+
+	public class OverseenCrystal : ModItem, IRadioactiveItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -443,7 +499,7 @@ namespace SGAmod.Items
 			recipe.AddRecipe();*/
 
 			recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 5);
 			recipe.AddIngredient(ModContent.ItemType<AdvancedPlating>(), 2);
 			recipe.AddIngredient(this, 2);
 			recipe.AddTile(tileType);
@@ -604,11 +660,11 @@ namespace SGAmod.Items
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("VibraniumCrystal"), 3);
 			recipe.AddIngredient(mod.ItemType("VibraniumPlating"), 3);
-			recipe.AddIngredient(ItemID.LunarBar, 1);
+			recipe.AddIngredient(ItemID.LunarBar, 2);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.needLava = true;
-			recipe.SetResult(this, 1);
+			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
 		}
 		public override bool Autoload(ref string name)

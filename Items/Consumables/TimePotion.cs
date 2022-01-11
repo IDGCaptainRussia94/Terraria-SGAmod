@@ -110,19 +110,22 @@ namespace SGAmod.Items.Consumables
 						TimeEffect.DistortRenderTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
 					}
 
-					RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
+					if (TimeEffect.DistortRenderTarget2D != null && !TimeEffect.DistortRenderTarget2D.IsDisposed)
+					{
+						RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
 
-					//Main.spriteBatch.End();
-					Main.graphics.GraphicsDevice.SetRenderTarget(TimeEffect.DistortRenderTarget2D);
-					Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+						//Main.spriteBatch.End();
+						Main.graphics.GraphicsDevice.SetRenderTarget(TimeEffect.DistortRenderTarget2D);
+						Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicWrap, default, default, default, Matrix.Identity);
+						Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicWrap, default, default, default, Matrix.Identity);
 
-					Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 0.50f, SpriteEffects.None, 0f);
+						Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 0.50f, SpriteEffects.None, 0f);
 
-					Main.spriteBatch.End();
+						Main.spriteBatch.End();
 
-					Main.graphics.GraphicsDevice.SetRenderTargets(binds);
+						Main.graphics.GraphicsDevice.SetRenderTargets(binds);
+					}
 
 				}
 				if (TimeEffect.queueRenderTargetUpdate == 1)

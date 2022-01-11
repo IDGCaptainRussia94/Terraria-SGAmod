@@ -78,6 +78,8 @@ namespace SGAmod.Items.Placeable
 					ShadowEffect.Parameters["colorOutline"].SetValue((Main.dayTime ? Color.Aqua : Color.Yellow).ToVector4() * 1f);
 
 					ShadowEffect.Parameters["edgeSmooth"].SetValue(0.05f);
+					ShadowEffect.Parameters["invertLuma"].SetValue(false);
+					ShadowEffect.Parameters["alpha"].SetValue(1f);
 
 					//Show through
 					float percent = 1f;

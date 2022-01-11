@@ -1125,12 +1125,27 @@ namespace SGAmod.Items.Consumables
 			int typeofnpc = -1;
 			if (SGAUtils.IsDigitsOnly(npcType))
             {
-				typeofnpc = int.Parse(npcType);
+				try
+				{
+					typeofnpc = int.Parse(npcType);
+                }
+                catch
+                {
+					typeofnpc = ModLoader.GetMod(modName).NPCType(npcType);
+					if (typeofnpc == 0)
+						typeofnpc = -1;
+					goto gother;
+				}
 			}
 			else
 			{
-				typeofnpc = ModLoader.GetMod(modName).NPCType(npcType);
+				Mod modder = ModLoader.GetMod(modName);
+				typeofnpc = modder != null ? modder.NPCType(npcType) : 0;
+				if (typeofnpc == 0)
+					typeofnpc = -1;
 			}
+
+			gother:
 
 			if (typeofnpc > -1)
 			{

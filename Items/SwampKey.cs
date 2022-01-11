@@ -2,6 +2,7 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 using System.Collections.Generic;
+using Terraria.Localization;
 
 namespace SGAmod.Items
 {
@@ -18,7 +19,7 @@ namespace SGAmod.Items
 		{
 			if (NPC.downedPlantBoss == false)
 			{
-				tooltips.Add(new TooltipLine(mod, "PrePlantera", "It has been cursed by a powerful Jungle creature"));
+				tooltips.Add(new TooltipLine(mod, "PrePlantera", Language.GetText("LegacyTooltip.59").ToString()));
 			}
 			if (NPC.downedPlantBoss == true)
 			{

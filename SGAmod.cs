@@ -205,6 +205,8 @@ namespace SGAmod
 
 		public static List<PostDrawCollection> PostDraw;
 		public static RenderTarget2D drawnscreen;
+		public static RenderTarget2D drawnscreenAdditiveTextures;
+
 		public static RenderTarget2D postRenderEffectsTarget;
 		public static RenderTarget2D postRenderEffectsTargetCopy;
 		public static RenderTarget2D screenExplosionCopy;
@@ -1568,7 +1570,10 @@ namespace SGAmod
 
 			if ((!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight)) || initialize)
 			{
-				SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
+				//new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
+
+				SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+				SGAmod.drawnscreenAdditiveTextures = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
 				SGAmod.postRenderEffectsTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.PreserveContents);
 					SGAmod.postRenderEffectsTargetCopy = new RenderTarget2D(Main.graphics.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
 					SGAmod.screenExplosionCopy = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);

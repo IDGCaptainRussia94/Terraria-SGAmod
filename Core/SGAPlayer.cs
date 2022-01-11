@@ -1810,7 +1810,7 @@ namespace SGAmod
 
 			if (highStakesSet)
 			{
-				damage = (int)(damage * Main.rand.NextFloat(0.75f, 1.25f));
+				damage = (int)(damage * Main.rand.NextFloat(0.50f, 2f));
 			}
 
 			if (NoHitCharm)

@@ -22,7 +22,7 @@ namespace SGAmod.Items.Placeable
 	}
 	public class LockedSwampChest : ModItem
 	{
-		public override string Texture => "SGAmodDev/Items/Placeable/DankChest";
+		public override string Texture => "SGAmod/Items/Placeable/SwampChest";
 
 		public override void SetStaticDefaults()
 		{

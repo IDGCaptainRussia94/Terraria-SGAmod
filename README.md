@@ -30,8 +30,9 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -Omni-shoot, combine all the one-off ammo types of: Styngers, Stakes, Candycorn, Jack o' Lanterns, Nails, and Starfish into an endgame weapon with swappable forms
 
 -"boring" swords:
--Dank Wood Sword, Machete, Rusted Blade, Claymore (maybe),Mudmore, Mangrove Striker,Thermal Blade, Rubied Blade, Curcuit Breaker Blade (maybe), Sword of a Thousand Truths (hhmhhmmm), Celestial Flare (maybe), Galactic Inferno (yes)
+-Dank Wood Sword, Machete, Rusted Blade, Claymore (maybe),Mudmore, Mangrove Striker,Thermal Blade, Rubied Blade, Curcuit Breaker Blade (maybe), Sword of a Thousand Truths (hhmhhmmm), Celestial Flare (maybe), Galactic Inferno (yes, throw globels and bat them at enemies on hit?)
 -call them Zweihänder ? (Nah lets call am Boring Blades)
+-Fix Prismic Banshee features (add laser accel), add Rod of Teleportation Telefragging
 
 -Finish Wrath Caliburn attacks?
 -Add Celestial Monolith (finish)

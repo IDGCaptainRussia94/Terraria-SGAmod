@@ -676,6 +676,8 @@ namespace SGAmod
 		{
 			if (type == ModContent.BuffType<Buffs.DankSlow>() && self.buffImmune[BuffID.Poisoned])
 				return;
+			if (type == ModContent.BuffType<Buffs.MassiveBleeding>() && self.buffImmune[BuffID.Bleeding])
+				return;
 
 			orig(self, type, time, quiet);
 

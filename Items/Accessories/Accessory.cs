@@ -590,7 +590,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 52;
 			item.rare = ItemRarityID.LightPurple;
-			item.value = Item.buyPrice(gold: 1);
+			item.value = Item.buyPrice(gold: 10);
 			item.accessory = true;
 		}
 
@@ -714,7 +714,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tech Master's Gear");
-			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\nGrants the effects of:\n-Prismal Core, Plasma Pack, and Fridgeflame Canister\n-Handling Gloves and Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Knuckles (only one needed to craft)\n-Rusted Bulwark's effects are doubled");
+			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\nGrants the effects of:\n-Prismal Core, Plasma Pack, and Fridgeflame Canister\n-Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Knuckles (only one needed to craft)\n-Rusted Bulwark's effects are doubled");
 		}
 
 		public override void SetDefaults()
@@ -1484,7 +1484,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rad Suit");
-			Tooltip.SetDefault("'Deflects punching at a molecular level!'\nGrants 50% increased radiation resistance and immunity to Radiation One\nYou create bursts of Radiation on enemies when you score an Apocalyptical\n"+Idglib.ColorText(Color.Red, "But only on enemies who are irradiated")+"\nDamage done is boosted by your Apocalyptical Strength");
+			Tooltip.SetDefault("'Deflects punching at a molecular level!'\nGrants 50% increased radiation resistance and immunity to Radiation One\nYou create bursts of Radiation on enemies when you score an Apocalyptical\n"+Idglib.ColorText(Color.Red, "But only on enemies who are irradiated")+"\nDamage done is boosted by your Apocalyptical Strength\nIncreased effects of Handling Gloves");
 		}
 		public override string Texture
 		{
@@ -1494,6 +1494,7 @@ namespace SGAmod.Items.Accessories
 		{
 			player.GetModPlayer<SGAPlayer>().RadSuit = true;
 			player.GetModPlayer<IdgPlayer>().radresist += 0.50f;
+			ModContent.GetInstance<HandlingGloves>().UpdateAccessory(player, hideVisual);
 			player.buffImmune[ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type] = true;
 		}
 
@@ -3408,7 +3409,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("High Stakes Set");
-			Tooltip.SetDefault("Damage taken and given has a 25% variance\nIncludes the effects of:\n--Hearts of the Cards, Snake Eyes\n--Russian Roulette, and Liquified Gambling");
+			Tooltip.SetDefault("'Who knows... Where the whims of fate may lead us.'\nDamage given has a -50% to +50% variance\nDamage taken will vary between halved or doubled\nIncludes the effects of:\n--Hearts of the Cards, Snake Eyes\n--Russian Roulette, and Liquified Gambling");
 		}
 
 		public override bool Autoload(ref string name)
@@ -3421,7 +3422,7 @@ namespace SGAmod.Items.Accessories
 		{
 			if (player != null && player.SGAPly().highStakesSet)
 			{
-				damage = (int)(damage * Main.rand.NextFloat(0.75f, 1.25f));
+				damage = (int)(damage * Main.rand.NextFloat(0.50f, 1.50f));
 			}
 		}
 
@@ -4143,7 +4144,7 @@ namespace SGAmod.Items.Accessories
 			item.maxStack = 1;
 			item.width = 16;
 			item.height = 16;
-			item.value = Item.buyPrice(silver: 30);
+			item.value = Item.buyPrice(gold: 3);
 			item.rare = ItemRarityID.Red;
 			item.accessory = true;
 		}

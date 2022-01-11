@@ -1071,7 +1071,7 @@ namespace SGAmod
                 sgaplayer.ConsumeElectricCharge(5+(int)((damage * scalieVal) * 1f), 60);
             }
 
-            if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister)
+            if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister && item.type != ModContent.ItemType<HavocGear.Items.Weapons.Starduster>())
             {
 
                 int probg = Projectile.NewProjectile(position.X + (int)(speedX * 2f), position.Y + (int)(speedY * 2f), speedX, speedY, mod.ProjectileType("IceFlames"), (int)(damage * 0.75), knockBack, player.whoAmI);

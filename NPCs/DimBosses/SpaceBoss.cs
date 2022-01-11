@@ -464,9 +464,42 @@ namespace SGAmod.Dimensions.NPCs
 
 	public class SpaceBossAI
 	{
+		public class ManagedSpaceBossAttack
+		{
+			public int timeLeft = 0;
+			public int timeLeftMax = 0;
+			public int timePassed = 0;
+			public int damage = 30;
+			SpaceBoss boss;
+			public Vector3 position = Vector3.Zero;
+			public Func<ManagedSpaceBossAttack, SpaceBoss, Vector3> Where = default;
+			public Func<ManagedSpaceBossAttack, SpaceBoss, bool> Shoot = default;
+
+			public ManagedSpaceBossAttack(SpaceBoss boss, int timeMax)
+			{
+				this.boss = boss;
+				this.timeLeft = timeMax;
+				this.timeLeftMax = timeMax;
+			}
+
+			public void Update()
+			{
+				position = Where(this, boss);
+				if (Shoot(this, boss))
+				{
+					Projectile.NewProjectile(new Vector2(position.X, position.Y), position.Z.ToRotationVector2() * 4f, ModContent.ProjectileType<SpaceBossTelegraphedBasicShot>(), damage, 1);
+				}
+				timePassed++;
+				timeLeft -= 1;
+			}
+
+		}
+
+
 		SpaceBoss boss;
 		NPC npc;
 		public List<int> deckOfAttacks = new List<int>();
+		public List<ManagedSpaceBossAttack> managedAttacks = new List<ManagedSpaceBossAttack>();
 
 
 		public SpaceBossAI(SpaceBoss boss)
@@ -548,7 +581,7 @@ namespace SGAmod.Dimensions.NPCs
 					return true;
 				}
 
-				if (ToEnemy.Length() > 3200 && boss.goingDark<0)//Heal if too far away, regardless of what is drawn (Shadow Nebula will take priority thou)
+				if (ToEnemy.Length() > 3200 && boss.goingDark < 0)//Heal if too far away, regardless of what is drawn (Shadow Nebula will take priority thou)
 				{
 					npc.ai[0] = 10000;//Shields up
 					return true;
@@ -619,6 +652,70 @@ namespace SGAmod.Dimensions.NPCs
 
 			return false;
 
+		}
+
+		public void CreateManagedAttacks()
+        {
+			int pickedType = 0;
+
+			float orbPercent = 1f;
+			float maxHP = 1f;
+			float norminalHP = 1f;
+			foreach (NPC npc2 in Main.npc.Where(testby => testby.active && testby.type == ModContent.NPCType<SpaceBossShadowNebulaEnemy>()))
+            {
+				maxHP += npc2.lifeMax;
+				norminalHP += npc2.life;
+			}
+			orbPercent = norminalHP / maxHP;
+
+			//Attack varient 1: 2 waves of shots flying from offscreen
+			if (pickedType == 0)
+			{
+				float maxAngle = orbPercent < 0.50f ? (MathHelper.TwoPi+0.05f) : MathHelper.Pi;
+				float anglePerAdd = MathHelper.PiOver2;
+				float startingAngle = Main.rand.NextBool() ? (Main.rand.NextBool() ? MathHelper.Pi : 0) : (Main.rand.NextBool() ? MathHelper.PiOver2 : MathHelper.Pi+MathHelper.PiOver2)+(Main.rand.NextBool() ? MathHelper.PiOver4 : 0);
+				float angleScale = orbPercent < 0.50f ? 1f : (Main.rand.NextBool() ? 1f : 2f);
+
+				for (float f = 0; f < maxAngle; f += anglePerAdd)
+				{
+					float flip = Main.rand.NextBool() ? 1f : -1f;
+
+					ManagedSpaceBossAttack attack = new ManagedSpaceBossAttack(boss, 300);
+
+					float angle = (f* angleScale) + startingAngle;
+
+					attack.Where = delegate (ManagedSpaceBossAttack managedAttack, SpaceBoss bossy)
+					{
+						Player player = Main.player[bossy.npc.target];
+						float percent = managedAttack.timeLeft / (float)managedAttack.timeLeftMax;
+
+						Vector2 offsetPoint = new Vector2((percent - 0.5f) * (2400f*flip), -2400f).RotatedBy(angle);
+
+						Vector3 pos = new Vector3(player.Center.X + offsetPoint.X, player.Center.Y + offsetPoint.Y, (angle) + MathHelper.PiOver2);
+
+
+						return pos;
+					};
+					attack.Shoot = delegate (ManagedSpaceBossAttack managedAttack, SpaceBoss bossy)
+					{
+						return managedAttack.timePassed % 20 == 0;
+					};
+					managedAttacks.Add(attack);
+				}
+			}
+
+		}
+
+		public void ManageActiveAttacks()
+		{
+			if (managedAttacks.Count > 0)
+			{
+				foreach (ManagedSpaceBossAttack attack in managedAttacks)
+				{
+					attack.Update();
+				}
+				managedAttacks = managedAttacks.Where(testby => testby.timeLeft > 0).ToList();
+			}
 		}
 
 		public void StateShadowNebula()
@@ -733,6 +830,8 @@ namespace SGAmod.Dimensions.NPCs
 
 			if ((int)npc.ai[0] == 10600)
 			{
+				if (boss.goingDark>0)
+				CreateManagedAttacks();
 
 				bool boom = true;
 
@@ -1173,9 +1272,10 @@ namespace SGAmod.Dimensions.NPCs
 
 			if (npc.ai[0] % (Main.expertMode ? 30 : 60) == 0 && !withinDist)
 			{
-				Vector2 place = target.Center + (Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(-400f, 400f)) + Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.Pi)) * 1800f;
+				Vector2 place = target.Center + (Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(-400f, 400f)) + Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.Pi)) * 1500f;
 
-				Projectile.NewProjectile(place, Vector2.Normalize(ToEnemy) * Main.rand.NextFloat(2.5f, 3f), ModContent.ProjectileType<SpaceBossBasicShot>(), 30, 10);
+				int proj = Projectile.NewProjectile(place, Vector2.Normalize(ToEnemy) * Main.rand.NextFloat(3.5f, 4f), ModContent.ProjectileType<SpaceBossTelegraphedBasicShot>(), 30, 10);
+				Main.projectile[proj].timeLeft = 500;
 			}
 
 			//boss.shieldeffect<1
@@ -1273,6 +1373,8 @@ namespace SGAmod.Dimensions.NPCs
 
 			if (npc.ai[0] > 1000)
 			{
+
+				ManageActiveAttacks();
 
 				foreach (SpaceBossRock rockyplace in boss.RocksAreas)
 				{
@@ -3408,8 +3510,56 @@ namespace SGAmod.Dimensions.NPCs
 
 	}
 
+	public class SpaceBossTelegraphedBasicShot : SpaceBossBasicShot, IDrawAdditive,IDrawThroughFog
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Overseer's Shot");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 120;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 24;
+			projectile.height = 24;
+			projectile.friendly = false;
+			projectile.hostile = true;
+			projectile.tileCollide = false;
+			projectile.alpha = 40;
+			projectile.timeLeft = 1000;
+			projectile.light = 0.75f;
+			projectile.extraUpdates = 5;
+			projectile.ignoreWater = true;
+		}
+
+		public void DrawThroughFog(SpriteBatch spriteBatch)
+        {
+			//Main.spriteBatch.End();
+			//Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			//DrawAdditiveThroughFog(spriteBatch);
+		}
+
+		public void DrawAdditiveThroughFog(SpriteBatch spriteBatch)
+		{
+
+			Texture2D tex = Main.blackTileTexture;
+
+			if (projectile.localAI[0] < 90)
+			{
+				float alphaFade = 1f-MathHelper.Clamp((projectile.localAI[0]-50f)/40f,0f,1f);
+
+				for (float f = 3f; f > 0.40f; f -= 0.50f)
+				{
+					spriteBatch.Draw(tex, startOrg - Main.screenPosition, new Rectangle(0,0,2,2), Color.Turquoise * alphaFade * 0.50f, projectile.velocity.ToRotation(), new Vector2(0, 1f), new Vector2(projectile.localAI[0] * 20f*f, (2f*f)+ (1f-alphaFade)*9f), SpriteEffects.None, 0f);
+				}
+			}
+		}
+	}
+
 	public class SpaceBossBasicShot : SpaceBossHomingShot,IDrawAdditive
 	{
+		public virtual bool DrawFlash => false;
 		int extraparticles => 0;
 		protected virtual Color BoomColor => Color.Blue;
 		protected Vector2 startOrg = default;
@@ -3430,7 +3580,7 @@ namespace SGAmod.Dimensions.NPCs
 			projectile.hostile = true;
 			projectile.tileCollide = false;
 			projectile.alpha = 40;
-			projectile.timeLeft = 800;
+			projectile.timeLeft = 1200;
 			projectile.light = 0.75f;
 			projectile.extraUpdates = 5;
 			projectile.ignoreWater = true;
@@ -3489,9 +3639,21 @@ namespace SGAmod.Dimensions.NPCs
 
 		}
 
+		public virtual void DrawAdditiveReal(SpriteBatch spriteBatch)
+		{
+
+		}
+
 		public void DrawAdditive(SpriteBatch spriteBatch)
         {
-			if (GetType() == typeof(SpaceBossBasicShot))
+			DrawAdditiveReal(spriteBatch);
+			if (GetType() == typeof(SpaceBossTelegraphedBasicShot))
+            {
+				(this as SpaceBossTelegraphedBasicShot).DrawAdditiveThroughFog(spriteBatch);
+
+			}
+
+			if (!DrawFlash)
 				return;
 
 			Texture2D glow = ModContent.GetTexture("SGAmod/LightBeam");
@@ -3540,6 +3702,7 @@ namespace SGAmod.Dimensions.NPCs
 
 	public class SpaceBossBasicShotAccelerate : SpaceBossBasicShot, IDrawAdditive
 	{
+		public override bool DrawFlash => true;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overseer's Accelerating Shot");

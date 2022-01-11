@@ -1148,10 +1148,9 @@ namespace SGAmod
 
 			if (sgaplayer.greedyperc > 0)
 			{
-
 				foreach (Item item2 in shop.item)
 				{
-					Main.NewText(sgaplayer.greedyperc);
+					//Main.NewText(sgaplayer.greedyperc);
 					item2.value = (int)(item2.value * (1f - (Math.Min(0.95f, sgaplayer.greedyperc * 1f))));
 				}
 			}
@@ -1470,7 +1469,7 @@ namespace SGAmod
 
 				if ((npc.type == NPCID.EnchantedSword || npc.type == NPCID.IlluminantBat || npc.type == NPCID.IlluminantSlime || npc.type == NPCID.ChaosElemental) && Main.rand.Next(3) <= 1)
 				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, Main.rand.Next(1,3)));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<IlluminantEssence>(), Main.rand.Next(1, Main.rand.Next(1,3)));
 				}
 
 
@@ -1481,9 +1480,9 @@ namespace SGAmod
 					{
 						if (Main.player[npc.target].ZoneHoly && npc.position.Y > Main.rockLayer)
 						{
-							if (Main.rand.Next(100) <= 1)
+							if (Main.rand.Next(125) <= 2)
 							{
-								Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), 1);
+								Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<IlluminantEssence>(), Main.rand.Next(1, 3));
 							}
 						}
 					}

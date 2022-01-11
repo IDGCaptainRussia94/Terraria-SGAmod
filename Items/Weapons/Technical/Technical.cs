@@ -1613,7 +1613,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class SirianGun : NoviteBlaster, ITechItem
 	{
-		public float ElectricChargeScalingPerUse() => 0.25f;
+		public new float ElectricChargeScalingPerUse() => 0.25f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sirian Gun");
@@ -1777,10 +1777,282 @@ namespace SGAmod.Items.Weapons.Technical
 
 namespace SGAmod.HavocGear.Items.Weapons
 {
+	public class Starduster : NoviteBlaster, ITechItem
+	{
+		public new float ElectricChargeScalingPerUse() => 0.01f;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Starduster");
+			Tooltip.SetDefault("'Purge them through celestial flames...'\nUses Gel to unleash a furry of Stars\nConsumes Electric Charge, Stars fly further the longer you hold\nStars that strike enemies will spawn stationary stars nearby\nDoes more damage the less Stars there are");
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.damage = 60;
+			item.ranged = true;
+			item.useAmmo = AmmoID.Gel;
+			item.useTime = 60;
+			item.useAnimation = 60;
+			item.knockBack = 1;
+			item.value = Item.buyPrice(0, 1, 50, 0);
+			item.rare = ItemRarityID.Pink;
+			//item.UseSound = SoundID.Item99;
+			item.autoReuse = true;
+			item.shootSpeed = 10f;
+			item.noUseGraphic = false;
+			item.channel = true;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<StardusterCharging>()] >0)
+			{
+				return true;
+			}
+				return player.SGAPly().ConsumeElectricCharge(150, 0, consume: false);
+		}
+
+        public override bool ConsumeAmmo(Player player)
+        {
+			return false;
+        }
+        public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<XOPFlamethrower>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
+			recipe.AddIngredient(ModContent.ItemType<WraithFragment4>(), 25);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			position += Vector2.Normalize(new Vector2(speedX, speedY)) * 8f;
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<StardusterCharging>()] < 1)
+			{
+				int proj = Projectile.NewProjectile(position.X, position.Y, speedX, speedY, ModContent.ProjectileType<StardusterCharging>(), damage, knockBack, player.whoAmI);
+			}
+			return false;
+		}
+
+	}
+
+	public class StardusterCharging : NovaBlasterCharging,IDrawAdditive
+	{
+		public List<StardusterProjectile> stardust = new List<StardusterProjectile>();
+		public class StardusterProjectile
+		{
+			Vector2 position;
+			Vector2 velocity;
+			public int timeLeft = 0;
+			public int timeStart = 0;
+			public int timeLeftMax = 0;
+			public int rando = 0;
+			public Vector2 scale;
+			public Projectile owner;
+			public Vector2 Position
+            {
+				get
+				{
+					return Vector2.Lerp(owner.Center,position,0.75f);
+				}
+			}
+			public StardusterProjectile(Vector2 position, Vector2 velocity)
+			{
+				scale = Vector2.One;
+				this.position = position;
+				this.velocity = velocity;
+				timeLeft = 30;
+				timeLeftMax = 30;
+				rando = Main.rand.Next();
+			}
+			public void Update()
+            {
+				position += velocity;
+				timeLeft -= 1;
+				timeStart += 1;
+			}
+		}
+
+		public override int chargeuptime => 250000;
+		public override float velocity => 6f;
+		public override float spacing => 48f;
+		public override int fireRate => 1;
+		public override int FireCount => 20;
+		public override (float, float) AimSpeed => (0.16f, 0.16f);
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Starduster Charging");
+		}
+
+        public override void SetDefaults()
+        {
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.tileCollide = false;
+			projectile.ranged = true;
+			projectile.penetrate = -1;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = 8;
+		}
+
+        public override bool CanDamage()
+        {
+			return true;
+        }
+
+		public override void ChargeUpEffects()
+		{
+			foreach (StardusterProjectile dust in stardust)
+			{
+				dust.Update();
+			}
+			stardust = stardust.Where(testby => testby.timeLeft > 0).ToList();
+		}
+
+		public override void FireWeapon(Vector2 direction)
+		{
+			projectile.localAI[1] += 0.05f;
+			//Main.PlaySound(SoundID.Item91, player.Center);
+
+			if (firedCount >= FireCount)
+				projectile.Kill();
+		}
+
+		public override bool DoChargeUp()
+		{
+
+			if (!player.SGAPly().ConsumeElectricCharge(3, 25))
+				return false;
+
+			int type = ProjectileID.Flames;
+			int damage = projectile.damage;
+			float speed = projectile.velocity.Length();
+			float kb = projectile.knockBack;
+
+			bool tr = true;
+			player.PickAmmo(player.HeldItem, ref type, ref speed, ref tr, ref damage, ref kb, (int)(projectile.localAI[0]) % 10 != 0);
+
+			if (tr)
+			{
+
+				if ((int)(projectile.localAI[0]) % 30 == 0)
+				{
+
+					var snd = Main.PlaySound(SoundID.DD2_BookStaffCast, projectile.Center);
+					if (snd != null)
+					{
+						snd.Pitch = -0.75f;
+					}
+				}
+
+				float chargePercent = MathHelper.Clamp((projectile.ai[0] / 100f), 0f, 1f);
+
+				for (int i = 0; i < 2; i++)
+				{
+						float Velocity = chargePercent * (Main.rand.NextFloat(8f, 12f)) * (1f + (projectile.localAI[1] * 3f)) * 2f;
+						float randomAngle = Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi) / (10f + (chargePercent * 10f));
+						StardusterProjectile starduster = new StardusterProjectile(projectile.Center + Vector2.Normalize(projectile.velocity) * 32f, Vector2.Normalize(projectile.velocity).RotatedBy(randomAngle) * Velocity);
+						starduster.owner = projectile;
+
+						stardust.Add(starduster);
+					
+				}
+			}
+
+
+			return true;
+		}
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+			damage = (int)(damage * (1f+(1f-((float)stardust.Count / 200f)) * 3f));
+        }
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				if (Main.rand.Next(200) > stardust.Count)
+				{
+					StardusterProjectile starduster = new StardusterProjectile(target.Center + Main.rand.NextVector2Circular(256, 256), Main.rand.NextVector2Circular(2, 2));
+					starduster.scale = Vector2.One * 1.5f;
+					starduster.timeLeft = Main.rand.Next(10, 80);
+					starduster.timeLeftMax = starduster.timeLeft;
+					starduster.owner = projectile;
+
+					stardust.Add(starduster);
+
+				}
+			}
+		}
+
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			foreach (StardusterProjectile stardustProj in stardust)
+			{
+				Rectangle recto = new Rectangle((int)stardustProj.Position.X - (int)(8 * stardustProj.scale.X), (int)stardustProj.Position.Y - (int)(8 * stardustProj.scale.Y), (int)(16 * stardustProj.scale.X), (int)(16* stardustProj.scale.Y));
+				if (targetHitbox.Intersects(recto))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+			float overallAlpha = (1f - Math.Min(projectile.localAI[1], 1f)) * Math.Min(projectile.localAI[0] / 120f, 1f);
+			foreach (StardusterProjectile stardustProj in stardust)
+			{
+
+				Texture2D startex = Main.starTexture[stardustProj.rando % Main.starTexture.Length];
+				Vector2 startexorigin = new Vector2(startex.Width, startex.Height) / 2f;
+
+				float timeLeft = (stardustProj.timeLeft / (float)stardustProj.timeLeftMax)*MathHelper.Clamp((stardustProj.timeStart* 3f) / (float)stardustProj.timeLeftMax,0f,1f);
+
+				float alphaFade = MathHelper.Clamp(timeLeft * 1.5f, 0f, 1f);
+
+				Color color = Color.White;
+
+				spriteBatch.Draw(startex, stardustProj.Position - Main.screenPosition, null, color * alphaFade * overallAlpha, stardustProj.rando%MathHelper.TwoPi, startexorigin, stardustProj.scale, SpriteEffects.None, 0f);
+			}
+
+			return false;
+        }
+
+        public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			float overallAlpha = (1f - Math.Min(projectile.localAI[1], 1f))*Math.Min(projectile.localAI[0]/120f,1f);
+
+			Texture2D glow = ModContent.GetTexture("SGAmod/Glow");
+			Vector2 origin = new Vector2(glow.Width, glow.Height) / 2f;
+
+			foreach (StardusterProjectile stardustProj in stardust)
+			{
+
+				float timeLeft = (stardustProj.timeLeft / (float)stardustProj.timeLeftMax) * MathHelper.Clamp((stardustProj.timeStart * 3f) / (float)stardustProj.timeLeftMax, 0f, 1f);
+
+				float alphaFade = MathHelper.Clamp(timeLeft *1.5f, 0f, 1f);
+
+				Color color = Color.White;
+
+				spriteBatch.Draw(glow, stardustProj.Position - Main.screenPosition, null, color * alphaFade * overallAlpha, stardustProj.rando % MathHelper.TwoPi, origin, stardustProj.scale, SpriteEffects.None, 0f);
+			}
+		}
+
+	}
+
 
 	public class PlasmaGun : NoviteBlaster, ITechItem,IHitScanItem
 	{
-		public float ElectricChargeScalingPerUse() => 0.05f;
+		public new float ElectricChargeScalingPerUse() => 0.05f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Plasmic Rail Gun");

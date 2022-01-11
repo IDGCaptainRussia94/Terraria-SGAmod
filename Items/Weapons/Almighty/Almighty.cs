@@ -2244,9 +2244,12 @@ namespace SGAmod.Items.Weapons.Almighty
 			if (Main.dedServ || !hasLoaded || !oneUpdate)
 				return;
 
-			Texture2D glowOrb = Main.itemTexture[ModContent.ItemType<StygianCore>()];// ModContent.GetTexture("SGAmod/GlowOrb");
-
 			oneUpdate = false;
+
+			if (orbSurface == null || orbSurface.IsDisposed)
+				return;
+
+			Texture2D glowOrb = Main.itemTexture[ModContent.ItemType<StygianCore>()];// ModContent.GetTexture("SGAmod/GlowOrb");
 
 			RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
 
@@ -2336,6 +2339,9 @@ namespace SGAmod.Items.Weapons.Almighty
 				return;
 
 			oneUpdate = false;
+
+			if (cataSurface == null || cataSurface.IsDisposed)
+				return;
 
 			BlendState negaBlending = new BlendState
 			{

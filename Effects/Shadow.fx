@@ -12,6 +12,8 @@ float4 colorOutline;
 float edgeSmooth;
 float noisePercent;
 float4 noiseScalar;
+float alpha;
+bool invertLuma;
 
 sampler overlaytexsampler = sampler_state
 {
@@ -31,6 +33,13 @@ static const float tau = 6.283185307;
 
 static const float pi = 3.14159265359;
 
+float GetLuma(float3 colors)
+{
+if (invertLuma)
+return saturate(1.0-colors.r);
+return saturate(colors.r);
+}
+
 float4 ColorFilterFunction(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 voxelOverlayTexture = tex2D(overlaytexsampler, coords);
@@ -39,7 +48,7 @@ float4 ColorFilterFunction(float2 coords : TEXCOORD0) : COLOR0
 
         float4 noiseOverlayTexture = tex2D(noisesampler, noiseCoord);
 
-    float luminosity = voxelOverlayTexture.r;//(voxelOverlayTexture.r + voxelOverlayTexture.g + voxelOverlayTexture.b) / 3;
+    float luminosity = GetLuma(voxelOverlayTexture.r);//(voxelOverlayTexture.r + voxelOverlayTexture.g + voxelOverlayTexture.b) / 3;
 
         if (luminosity<=edgeSmooth)
         {
@@ -51,13 +60,13 @@ float4 ColorFilterFunction(float2 coords : TEXCOORD0) : COLOR0
          float4 tex3 = tex2D(overlaytexsampler, coords+adderX);
         float4 tex4 = tex2D(overlaytexsampler, coords+adderY);
 
-        if (tex1.r>edgeSmooth)
+        if (GetLuma(tex1).r>edgeSmooth)
         return colorOutline;
-                if (tex2.r>edgeSmooth)
+                if (GetLuma(tex2).r>edgeSmooth)
         return colorOutline;
-                if (tex3.r>edgeSmooth)
+                if (GetLuma(tex3).r>edgeSmooth)
         return colorOutline;
-                if (tex4.r>edgeSmooth)
+                if (GetLuma(tex4).r>edgeSmooth)
         return colorOutline;
 
     discard;
@@ -67,7 +76,7 @@ float4 ColorFilterFunction(float2 coords : TEXCOORD0) : COLOR0
 
     float4 colorLerp = lerp(colorFrom,lerp(colorTo,float4(noiseOverlayTexture.rgb,colorTo.a),noisePercent),colorPercent);
 
-	return colorLerp;
+	return colorLerp*alpha;
 }
 
 technique Technique1

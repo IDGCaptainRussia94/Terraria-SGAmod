@@ -142,7 +142,7 @@ namespace SGAmod.Dimensions
         public int maxSecurity = 5;
         public int securitySpawnDelay = 120;
         public List<SecurityEnemy> securityToSpawn = new List<SecurityEnemy>();
-        public List<(NPC, int)> securitySpawned = new List<(NPC, int)>();
+        public List<(SecurityEnemy,Vector3, NPC)> securitySpawned = new List<(SecurityEnemy,Vector3, NPC)>();
         public List<(FilledSpaceArea, Vector2)> roomsToGenerateLater = new List<(FilledSpaceArea, Vector2)>();
 
 
@@ -170,14 +170,42 @@ namespace SGAmod.Dimensions
             type = 0;
         }
 
+        public virtual void SetupSecurity()
+        {            
+           
+            securityToSpawn.Clear();
+            securitySpawned.Clear();
+
+            for (int i = 0; i < 5; i += 1)
+            {
+                int typeofenemy = NPCID.GrayGrunt;
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 60);
+                securityToSpawn.Add(secenemy);
+            }
+
+            for (int i = 0; i < 3; i += 1)
+            {
+                int typeofenemy = NPCID.MartianOfficer;
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 100);
+                securityToSpawn.Add(secenemy);
+            }
+
+            securityToSpawn = securityToSpawn.OrderBy(testby => Main.rand.Next()).ToList();
+        }
+
         public void SpawnFocusCrystals()
         {
             if (mainBase)
                 return;
 
+            SetupSecurity();
+
+            makecrystal:
+
             if (focusCrystal == null || !focusCrystal.active)
             {
-                int npc = NPC.NewNPC((int)position.X + 8, (int)position.Y+ 8 + 32, ModContent.NPCType<StationFocusCrystal>());
+
+                int npc = NPC.NewNPC((int)position.X + 8, (int)position.Y + 8 + 32, ModContent.NPCType<StationFocusCrystal>());
                 NPC crystal = Main.npc[npc];
 
                 if (crystal != null)
@@ -185,6 +213,15 @@ namespace SGAmod.Dimensions
                     focusCrystal = crystal;
                     StationFocusCrystal cryrs = crystal.modNPC as StationFocusCrystal;
                     cryrs.station = this;
+                }
+            }
+            else
+            {
+                if (focusCrystal != null)
+                {
+                    focusCrystal.active = false;
+                    focusCrystal = null;
+                    goto makecrystal;
                 }
             }
         }
@@ -205,6 +242,8 @@ namespace SGAmod.Dimensions
         {
             if (securityActivated)
             {
+                int spawnTime = 30;
+
                 securitySpawnDelay -= 1;
 
                 if (securitySpawnDelay < 1)
@@ -213,6 +252,24 @@ namespace SGAmod.Dimensions
                     {
                         SpawnSecurity();
                     }
+                }
+
+                Main.NewText("Security size: " + securitySpawned.Count);
+
+                if (securitySpawned.Count > 0)
+                {
+
+                    foreach ((SecurityEnemy, Vector3, NPC) managedEnemySpawns in securitySpawned)
+                    {
+                        Vector3 data = managedEnemySpawns.Item2;
+                        if ((int)data.Z == spawnTime)
+                        {
+                            NPC.NewNPC((int)data.X, (int)data.Y, managedEnemySpawns.Item1.type);
+                        }
+                    }
+
+                    securitySpawned = securitySpawned.Select(testby => (testby.Item1, new Vector3(testby.Item2.X, testby.Item2.Y, testby.Item2.Z - 1), testby.Item3)).Where(testby => testby.Item2.Z > -60 && !(testby.Item3 == null || !testby.Item3.active)).ToList();
+
                 }
             }
         }
@@ -224,8 +281,10 @@ namespace SGAmod.Dimensions
                 Vector2 place = placesToBuild[Main.rand.Next(placesToBuild.Count)].Item1;
                 SecurityEnemy enemy = securityToSpawn[0];
 
-                NPC.NewNPC((int)place.X, (int)place.Y, enemy.type);
+                //NPC.NewNPC((int)place.X, (int)place.Y, enemy.type);
                 securitySpawnDelay = enemy.delay;
+
+                securitySpawned.Add((enemy, new Vector3(place, 120), null));
 
                 securityToSpawn.RemoveAt(0);
             }
@@ -1169,11 +1228,11 @@ namespace SGAmod.Dimensions
                     IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 5, 12, fragmentAsteriod ? TileID.Adamantite : TileID.Meteorite, false, rand: rand);
                 }
 
-                if (rand.Next(-50, Math.Max(-10, 300 - where.Y)) > 0)
-                    IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 4, 15, SGAmod.Instance.TileType("AstrialLuminite"), false, rand: rand);
+                if (postMoonLord && rand.Next(-50, Math.Max(-10, 300 - where.Y)) > 0)
+                    IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 4, 15, ModContent.TileType<AstrialLuminite>(), false, rand: rand);
 
                 if (rand.Next((height - 300) - 50, Math.Max((height - 300) - 10, height)) < where.Y)
-                    IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 4, 15, SGAmod.Instance.TileType("VibraniumCrystalTile"), false, rand: rand);
+                    IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 4, 15, ModContent.TileType<VibraniumCrystalTile>(), false, rand: rand);
 
             }
 
@@ -1953,6 +2012,57 @@ namespace SGAmod.Dimensions
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+        }
+
+        public static void StarryNebulaSky()
+        {
+            VertexBuffer vertexBuffer;
+
+            UnifiedRandom alwaysthesame = new UnifiedRandom(DimDungeonsProxy.DungeonSeeds);
+
+            int starterType = 15;
+
+            for (int type = starterType; type > 0; type -= 1)
+            {
+
+                Vector2 parallex = new Vector2(Main.GlobalTime * alwaysthesame.NextFloat(0.02f, 0.04f), 0f);
+                    float aspectRato = Main.screenWidth / Main.screenHeight;
+
+                Effect effect = SGAmod.TrailEffect;
+
+                effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Vector2.One) * WVP.Projection());
+                effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("Space"));
+                effect.Parameters["coordOffset"].SetValue(parallex);
+                effect.Parameters["coordMultiplier"].SetValue(new Vector2(0.50f, 0.50f)*new Vector2(aspectRato,1f)*new Vector2(alwaysthesame.NextFloat(0.80f,1.75f), alwaysthesame.NextFloat(0.80f, 1.75f)));
+                effect.Parameters["strength"].SetValue(0.05f+((starterType-type) / 60f)*2f);
+
+                VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
+
+                Vector3 screenPos = new Vector3(-16, 0, 0);
+
+                Color colorsa = Color.PaleTurquoise;
+
+                vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-16, 0, 0), colorsa, new Vector2(0, 0));
+                vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
+                vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
+
+                vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight, 0), colorsa, new Vector2(1, 1));
+                vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
+                vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
+
+                vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+                vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+                Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+                RasterizerState rasterizerState = new RasterizerState();
+                rasterizerState.CullMode = CullMode.None;
+                Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+                effect.CurrentTechnique.Passes[type == starterType ? "BasicEffectPass" : "BasicEffectAlphaPass"].Apply();
+                Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+
+            }
 
         }
 
@@ -2851,9 +2961,8 @@ namespace SGAmod.Dimensions
                 }
                 if (boss != null)
                 {
-                    float healRate = 10f * healScaling;
+                    float healRate = (npc.lifeMax / (60f*30f)) * healScaling;
                     boss.life = Math.Min(boss.life + (int)healRate, boss.lifeMax);
-
                 }
             }
             if (SpaceDim.crystalAsteriods)

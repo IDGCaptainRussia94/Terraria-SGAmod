@@ -192,7 +192,7 @@ namespace SGAmod.Dimensions.Tiles
 			soundStyle = 0;
 			mineResist = 5f;
 			dustType = DustID.LunarOre;
-			drop = ItemID.LunarOre;
+			drop = ModContent.ItemType<CelestineChunk>();
 			TileID.Sets.CanBeClearedDuringGeneration[Type] = true;
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Astrial Luminite");

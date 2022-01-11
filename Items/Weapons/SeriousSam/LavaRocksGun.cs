@@ -15,7 +15,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 {
 	public class LavaRocksGun : SeriousSamWeapon, ITechItem
 	{
-		public float ElectricChargeScalingPerUse() => 1.5f;
+		public float ElectricChargeScalingPerUse() => 1.25f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lava Rocks Gun");

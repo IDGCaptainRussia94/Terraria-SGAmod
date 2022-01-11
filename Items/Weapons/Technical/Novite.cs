@@ -193,9 +193,12 @@ namespace SGAmod.Items.Weapons.Technical
 			DisplayName.SetDefault("Nova Blaster Charging");
 		}
 
-		public override bool? CanHitNPC(NPC target) => false;
+        public override bool CanDamage()
+        {
+			return false;
+        }
 
-		public override string Texture
+        public override string Texture
 		{
 			get { return ("SGAmod/Projectiles/WaveProjectile"); }
 		}
@@ -307,6 +310,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override void AI()
 		{
+			projectile.localAI[0] += 1;
 			player = Main.player[projectile.owner];
 
 			if (player == null)

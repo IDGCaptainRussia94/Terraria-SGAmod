@@ -5,13 +5,13 @@ Changelog:
 
 --Added
 
--Celestial Monolith, Helios Focus Crystal, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Empty Plasma Cell, Shadow LockBox
+-Starduster, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Empty Plasma Cell, Shadow LockBox, Celestial Monolith, Helios Focus Crystal
+
+-Dank Wood Furnature set by Rijam
 
 -Speedymatt123's Hellion Painting: a Nightmare Mode exclusive reward!
 
--Resprite for Dies Irae Stone (thx JellyBru!), Yoyo Gauntlet Resprite and Transformer accessory sprite (thx Rijam!)
-
--Fully Finished Sprite Sheet for Cratrosity (Thanks Rijam!)
+-Resprite for Dies Irae Stone (thx JellyBru!), Yoyo Gauntlet Resprite and Transformer accessory sprite (thx Rijam!), Fully Finished Sprite Sheet for Cratrosity (Thanks Rijam!)
 
 -The Consolation Prize, a better-than-average pickaxe that is granted to new players if one of their starting gear is spawned with the Busted prefix
 
@@ -30,7 +30,7 @@ Changelog:
 -Added Space Station structures, their blocks aren't minable but house a breathable-normal gravity area
 -Ore Generation has been changed a bit
 -Can now generate Fragement Blocks after moonlord is defeated
--Astral Luminite can now only be mined after moonlord is defeated
+-Astral Luminite now drops a different material that requires real Luminite to make Luminite bars, basically, it makes a cheaper way to craft Luminite bars but doesn't skip progression
 
 -Supreme Pinky's 'Treasure Bag' can no longer be opened in Subworlds
 
@@ -44,17 +44,31 @@ Changelog:
 
 -Hellion's Laser and Phaethon's visuals have been updated
 
+-Resonant Wisps are now powered up after Moonlord, not just with a Braxsaw
+
+-Reduced Vibranium Plating Ancient Fabric costs to 5 from 10
+
+-Illuminant Essence can now drop more often and in larger sizes from enemies in the underground Hallow
+
 -Rebalanced several tech weapons: adjusted Electric Charge use (some were consuming too much)
 
 -ReBalanced Circuit Breaker Blade: no longer auto-turns on swing
 
--Rebalanced Lava Rocks Gun: Now consumes 1.5X more electric charge on use, mana cost reduced to 8, crit increased by 10%
+-Rebalanced Lava Rocks Gun: Now consumes 1.25X more electric charge on use, mana cost reduced to 8, crit increased by 10%
+
+-Rebalanced Tech Master's Gear and Rad Suit: Moved Handling Gloves over to Rad Suit
 
 -Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
 
 -Reworked Jungle Templar Armor: now inflicts severe Lava Burn when power is too low instead of normal Lava Burn, doesn't cause Lava Burn til after atleast 5 seconds of being ingame
 
 -Buffed Hallowed Visor: defense increased by 1
+
+-Buffed Sanguine Bident and Crimson Catastrophe: Does 25% and 50% more damage respectively to enemies that are immune to bleeding, Sanguine Bident lifesteal chance has been increased to 1/12 from 1/16 (8/12 from 8/16 with (massive) bleeding)
+
+-Buffed Flail-O-Nades: No longer causes any immunity frames, applies sticky grenades to enemies on hit that do double damage, spawns Proxy Mine I's instead of Sticky Grenades on tile hit
+
+-Nerfed Massive Bleeding: Can no longer affect enemies immune to bleeding
 
 -Nerfed Pickaxe Yoyos: decreased "power" of spinning pickaxes in mining; this is not a revert, they are still stronger than before the previous patch
 
@@ -65,6 +79,10 @@ Changelog:
 -Nerfed Main-Sequence Staff: Debuff removal is now based on minion slots put in: more minions, more burning negated in this order: (Sunburn, OnFire!, Burning, Thermal Blaze, Lava Burn, Severe Lava Burn)
 
 -Skylight's internal name has changed (to SkyLight from Skylight), this will cause the weapon to turn into a missing item on restart... sry about that!
+
+-Adjusted ttem prices
+
+-Removed EA logo debug text
 
 -New changes to Spider Queen:
 -Cobwebs are now a special version that will acid burn on contact, and are cleaned up after the fight is over
@@ -79,6 +97,8 @@ Changelog:
 
 --Fixed:
 
+-Soul Jar's messing up world loading with modded NPCs (Added a failsafe, may or may not work still)
+
 -Black Leeches seemingly (no, really infact) teleporting onto the player
 
 -Giant Ice Cube being only sold in Hardmode
@@ -92,6 +112,10 @@ Changelog:
 -Missing Boss Checklist Items in boss loot
 
 -(attempted) to stop Moist Sand from freezing the game
+
+-Missing player name to one of SPinky's death messages
+
+-Drills not being affected by mining speed buffs when mining asteriods
 
 -A few minor bugs of mis-matched damage types and other smaller things
 

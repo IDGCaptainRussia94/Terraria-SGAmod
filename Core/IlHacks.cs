@@ -70,6 +70,9 @@ namespace SGAmod
 		}
 
 
+
+		//Allows custom-tiles for web collisions
+
 		private delegate int CollisionOtherCobwebsDelegate(Player player, int starterNumber);
 		private static int CollisionOtherCobwebsMethod(Player player, int starterNumber)
 		{

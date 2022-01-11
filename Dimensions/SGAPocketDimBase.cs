@@ -441,7 +441,7 @@ namespace SGAmod.Dimensions
 
         public override void HoldItem(Item item, Player player)
         {
-            if (player.SGAPly().timer % 10 == 0 && item.pick>0)
+            if (player.SGAPly().timer % (int)(10/item.GetGlobalItem<SGAGlobalItem>().UseTimeMultiplier(item,player)) == 0 && item.pick>0)
             {
                 Projectile finder;
                 finder = Main.projectile.FirstOrDefault(testby => testby.active && testby.owner == player.whoAmI && testby.aiStyle == 20);
@@ -772,12 +772,15 @@ namespace SGAmod.Dimensions
 
                 if (lightingtotal < 2600 && (!isMurk || (!SGAConfigClient.Instance.Murklite && isMurk)))
                 {
-                    int fogDetail = SGAConfigClient.Instance.FogDetail;
-                    float fogAlpha = 0.05f * (30f / (float)fogDetail);
+                    int fogDetail = (SGAConfigClient.Instance.FogDetail)/5;
+                    float fogAlpha = 0.04f * (6f / (float)fogDetail);
+
+                    //Draw Texture Parts
 
                     //Main.spriteBatch.End();
+
                     Main.graphics.GraphicsDevice.SetRenderTarget(SGAmod.drawnscreen);
-                    Main.graphics.GraphicsDevice.Clear(Color.Black);
+                    Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
                     Texture2D pern = ModContent.GetTexture("SGAmod/Perlin");
                     Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
@@ -785,37 +788,54 @@ namespace SGAmod.Dimensions
 
                     if (SGAPocketDim.WhereAmI != null && SGAPocketDim.WhereAmI == typeof(SpaceDim))
                     {
-                        pern = ModContent.GetTexture("SGAmod/Space");
-                        Main.spriteBatch.Draw(pern, Vector2.Zero, null, Color.White * 1f, 0, Vector2.Zero, new Vector2(Main.screenWidth / (float)pern.Width, Main.screenHeight / (float)pern.Height), SpriteEffects.None, 0f);
+                        //pern = ModContent.GetTexture("SGAmod/Space");
+                        //Main.spriteBatch.Draw(pern, Vector2.Zero, null, Color.White * 1f, 0, Vector2.Zero, new Vector2(Main.screenWidth / (float)pern.Width, Main.screenHeight / (float)pern.Height), SpriteEffects.None, 0f);
+
+                        SpaceSky.StarryNebulaSky();
+
                         goto skipdraw;
                     }
 
                     if (isMurk)
                     {
-                        Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 1f, Main.GlobalTime * 0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
-                        Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.DarkOliveGreen * 1f, Main.GlobalTime * 0.14f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+                        Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Lerp(Color.DarkOliveGreen, Color.Black,0.5f) * 1f, Main.GlobalTime * 0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+                        Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 0.50f, Main.GlobalTime * 0.14f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+                        Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 0.50f, Main.GlobalTime * 0.08f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
                     }
                     else
                     {
-                        Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Main.hslToRgb((Main.GlobalTime / 3) % 1f, 1f, 0.75f) * 0.5f, Main.GlobalTime * 0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
-                        Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Main.hslToRgb(((Main.GlobalTime + 1.5f) / 3) % 1f, 1f, 0.75f) * 0.5f, Main.GlobalTime * -0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+                        Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, (Main.hslToRgb((Main.GlobalTime / 3) % 1f, 1f, 0.75f)).MultiplyRGB(Color.Lerp(Color.Black,Color.White,0.50f)) * 0.5f, Main.GlobalTime * 0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+                        Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Main.hslToRgb(((Main.GlobalTime + 1.5f) / 3) % 1f, 1f, 0.75f).MultiplyRGB(Color.Lerp(Color.Black, Color.White, 0.50f)) * 0.5f, Main.GlobalTime * -0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
                     }
 
                     skipdraw:
                     Main.spriteBatch.End();
 
+                    //Draw Additive Parts
+                    Main.graphics.GraphicsDevice.SetRenderTarget(SGAmod.drawnscreenAdditiveTextures);
+                    Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-                    pern = ModContent.GetTexture("SGAmod/Extra_49");
-                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+                    pern = ModContent.GetTexture("SGAmod/Extra_49c");
+                    //Yay, finally we have Additive Blending! No more nega-blending!
+
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+                    Vector2 half = new Vector2(pern.Width / 2, pern.Height / 2);
 
                     foreach (PostDrawCollection postdraw in SGAmod.PostDraw)
                     {
                         Vector3 vecx = postdraw.light;
                         float size = vecx.Z / pern.Width;
 
-                        for (int i = 0; i < 360; i += 360 / fogDetail)
-                            Main.spriteBatch.Draw(pern, new Vector2(vecx.X, vecx.Y) - Main.screenPosition, null, Color.White * fogAlpha, MathHelper.ToRadians(i), new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(1.5f, 1.5f) * size, SpriteEffects.None, 0f);
+                        Main.spriteBatch.Draw(pern, new Vector2(vecx.X, vecx.Y) - Main.screenPosition, null, Color.White, 0, half, new Vector2(1.5f, 1.5f) * size, SpriteEffects.None, 0f);
 
+                        for (float scale = 1f; scale < 2f; scale += 0.25f)
+                        {
+                            for (int i = 0; i < 360; i += 360 / fogDetail)
+                            {
+                                Main.spriteBatch.Draw(pern, new Vector2(vecx.X, vecx.Y) - Main.screenPosition, null, Color.White * fogAlpha, MathHelper.ToRadians(i), half, new Vector2(1.25f, 1.5f) * size* scale, SpriteEffects.None, 0f);
+                            }
+
+                        }
                         //for (int i = 0; i < Main.maxNPCs; i += 1)
                         //{
                         //    if (Main.npc[i].active && Main.npc[i].townNPC)
@@ -825,12 +845,16 @@ namespace SGAmod.Dimensions
                         //    }
                         //}
 
-                        pern = ModContent.GetTexture("SGAmod/Extra_49");
+                        //pern = ModContent.GetTexture("SGAmod/Extra_49");
+
+                        /*
+                         * 
                         for (int i = 0; i < 360; i += 360 / 30)
                         {
                             float sizer = 1f - (i / 1000f);
                             Main.spriteBatch.Draw(pern, new Vector2(vecx.X, vecx.Y) - Main.screenPosition, null, Color.White * 0.1f, MathHelper.ToRadians(i) + (Main.GlobalTime * ((i % (360 / 15)) == 0 ? 0.25f : -0.25f)), new Vector2(pern.Width / 2, pern.Height / 2), (new Vector2(1f, 1f) * size) * sizer, SpriteEffects.None, 0f);
                         }
+                        */
 
 
                     }
@@ -1000,7 +1024,7 @@ namespace SGAmod.Dimensions
                     if (sgaply.GetEnergyShieldAmmountAndRecharge.Item1 > 0)
                     {
                         //Main.NewText("test");
-                        Texture2D noise = SGAmod.Instance.GetTexture(sgaply.jellybruSet ? "NPCs/PrismicBanshee" : "Perlin");
+                        Texture2D noise = SGAmod.Instance.GetTexture(sgaply.jellybruSet ? "NPCs/Prismicbansheerealtex" : "Perlin");
                         Vector2 noisesize = noise.Size();
                         float alphapercent = (sgaply.GetEnergyShieldAmmountAndRecharge.Item1 / (float)sgaply.GetEnergyShieldAmmountAndRecharge.Item2);
 
@@ -1081,10 +1105,45 @@ namespace SGAmod.Dimensions
                         bool isMurk = NPC.CountNPCS(ModContent.NPCType<Murk>()) > 0;
                         Main.spriteBatch.End();
 
-                        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);
+                        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, default, default, default, Custommatrix);
                         //Draw Shadow RenderTarget2D
                         if (!isMurk || (isMurk && !SGAConfigClient.Instance.Murklite))
-                            Main.spriteBatch.Draw(SGAmod.drawnscreen, new Vector2(0, 0), null, new Color(50, 50, 50) * alpha * SGAmod.fogAlpha, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
+                        {
+                            if (SGAmod.drawnscreenAdditiveTextures != null && !SGAmod.drawnscreenAdditiveTextures.IsDisposed)
+                            {
+                                Effect ShadowEffect = ShadowParticle.ShadowEffect;
+
+                                ShadowEffect.Parameters["overlayTexture"].SetValue(SGAmod.drawnscreenAdditiveTextures);
+                                ShadowEffect.Parameters["noiseTexture"].SetValue(SGAmod.drawnscreen);
+
+
+                                ShadowEffect.Parameters["colorAmmount"].SetValue(256);
+                                ShadowEffect.Parameters["screenSize"].SetValue(SGAmod.drawnscreen.Size());
+                                //Color.DarkMagenta
+                                //Color.Black
+
+                                //Show through
+                                float percent = alpha * SGAmod.fogAlpha;
+
+
+                                ShadowEffect.Parameters["colorFrom"].SetValue(Color.White.ToVector4() * 0f);
+                                ShadowEffect.Parameters["colorTo"].SetValue(Color.White.ToVector4() * 1.00f);
+                                ShadowEffect.Parameters["colorOutline"].SetValue((Color.Transparent).ToVector4() * 1f);
+
+                                ShadowEffect.Parameters["edgeSmooth"].SetValue(0.0f);
+                                ShadowEffect.Parameters["invertLuma"].SetValue(true);
+                                ShadowEffect.Parameters["alpha"].SetValue(percent);
+
+                                ShadowEffect.Parameters["noisePercent"].SetValue(1f);
+                                ShadowEffect.Parameters["noiseScalar"].SetValue(new Vector4(0, 0, 1f, 1f));
+
+                                ShadowEffect.CurrentTechnique.Passes["ColorFilter"].Apply();
+
+
+
+                                Main.spriteBatch.Draw(SGAmod.drawnscreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
+                            }
+                        }
                     }
                     Main.spriteBatch.End();
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Custommatrix);

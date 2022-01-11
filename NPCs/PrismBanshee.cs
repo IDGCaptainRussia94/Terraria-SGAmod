@@ -214,7 +214,7 @@ namespace SGAmod.NPCs
 				{
 					if (Main.netMode != 2)
 					{
-						Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/PrismicBanshee");
+						Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/Prismicbansheerealtex");
 						npc.frame = new Rectangle(0, tex.Height / 2, tex.Width, tex.Height / 2);
 					}
 				}
@@ -238,7 +238,7 @@ namespace SGAmod.NPCs
 						progress = MathHelper.Clamp((statetimer - 400f) / 200f, 0f, 1f);
 						if (Main.netMode != 2)
 						{
-							Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/PrismicBanshee");
+							Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/Prismicbansheerealtex");
 							npc.frame = new Rectangle(0, tex.Height / 2, tex.Width, tex.Height / 2);
 						}
 					}
@@ -302,7 +302,7 @@ namespace SGAmod.NPCs
 
 			if (Main.netMode != 2)
 			{
-				Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/PrismicBanshee");
+				Texture2D tex = ModContent.GetTexture("SGAmod/NPCs/Prismicbansheerealtex");
 				npc.frame = new Rectangle(0, 0, tex.Width, tex.Height / 2);
 			}
 
@@ -467,7 +467,7 @@ namespace SGAmod.NPCs
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
 			Vector2 drawPos = npc.Center - Main.screenPosition;
-			Texture2D texture = ModContent.GetTexture("SGAmod/NPCs/PrismicBanshee");// SGAmod.PrismBansheeTex;
+			Texture2D texture = ModContent.GetTexture("SGAmod/NPCs/Prismicbansheerealtex");// SGAmod.PrismBansheeTex;
 			Texture2D tex = Main.npcTexture[npc.type];
 			//Texture2D tex3 = Main.projectileTexture[ProjectileID.CultistBossIceMist];
 
@@ -1285,7 +1285,7 @@ namespace SGAmod.NPCs
 			if (!NPC.downedMoonlord || (NPC.CountNPCS(ModContent.NPCType<PrismEgg>())+NPC.CountNPCS(ModContent.NPCType<PrismBanshee>()))>0)
 				return 0;
 
-			bool underground = (int)((double)((player.position.Y + (float)player.height) * 2f / 16f) - Main.worldSurface * 2.0) > 0;
+			bool underground = Items.Consumables.AcidicEgg.Underground(player);
 
 			return (player.ZoneHoly && underground) ? (SGAWorld.downedPrismBanshee>0 ? 0.020f : 0.15f) : 0f;
 		}

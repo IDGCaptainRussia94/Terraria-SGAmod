@@ -755,7 +755,7 @@ namespace SGAmod.NPCs
 				player.position += Collision.TileCollision(player.position, Vector2.Normalize(pull)*Math.Min((effectScale / 600f), 5f), player.width, player.height);
 				if (player.Distance(npc.Center) < Math.Min(npc.ai[0]/10f,256f))
                 {
-					player.Hurt(PlayerDeathReason.ByCustomReason("Became one with the Pink"), 100, 0,cooldownCounter: 1);
+					player.Hurt(PlayerDeathReason.ByCustomReason(player.name+" became one with the Pink"), 100, 0,cooldownCounter: 1);
                 }
 			}
 			if (npc.ai[0] % 300 == 0 && npc.ai[0] > 5200)

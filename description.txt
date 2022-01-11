@@ -23,9 +23,16 @@ A few warnings before the changelog:
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
 
+3.620-(1/11/22)--Hotfix 29
+
+--Fixed:
+
+-Soul Jar world fix, should no longer cause issues with unloaded mods!
+
+
 Changelog:
 
-3.619-(12/3/22)--Hotfix 28
+3.619-(1/3/22)--Hotfix 28
 
 --Fixed:
 
@@ -34,14 +41,14 @@ Changelog:
 -Credits crashing the game
 
 
-3.618-(12/2/22)--Hotfix 27
+3.618-(1/2/22)--Hotfix 27
 
 --Fixed:
 
 -(Attempted) to fix the 2nd Strange Portal spawning and the TF2 emblem freezing the game with mods like Recursive Craft
 
 
-3.617-(12/2/22)--Hotfix 26
+3.617-(1/2/22)--Hotfix 26
 
 -Changed:
 

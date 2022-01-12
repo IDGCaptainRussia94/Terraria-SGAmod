@@ -1131,7 +1131,8 @@ namespace SGAmod.Items.Consumables
 				}
 				catch
 				{
-					typeofnpc = ModLoader.GetMod(modName).NPCType(npcType);
+					Mod modder = ModLoader.GetMod(modName);
+					typeofnpc = modder != null ? modder.NPCType(npcType) : 0;
 					if (typeofnpc == 0)
 						typeofnpc = -1;
 					goto gother;
@@ -1278,6 +1279,7 @@ namespace SGAmod.Items.Consumables
 		}
 
 	}
+
 
 
 	public class SoulJarFull : SoulJar

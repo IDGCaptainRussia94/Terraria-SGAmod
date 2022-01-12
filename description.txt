@@ -23,6 +23,15 @@ A few warnings before the changelog:
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
 
+3.621-(1/12/22)--Hotfix 30
+
+--Fixed:
+
+-Soul Jar world fix, hopefully, for real this time!
+
+-an issue with cross-Calamity support on items that boost all damage types
+
+
 3.620-(1/11/22)--Hotfix 29
 
 --Fixed:

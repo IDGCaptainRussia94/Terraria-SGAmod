@@ -1,11 +1,11 @@
 
 Changelog:
 
-3.620-(12/26/21)--Patch 15: Spaced Out!
+3.625-(12/26/21)--Patch 15: Spaced Out!
 
 --Added
 
--Starduster, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Empty Plasma Cell, Shadow LockBox, Celestial Monolith, Helios Focus Crystal
+-Starduster, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Empty Plasma Cell, Shadow LockBox, Celestial Monolith, Helios Focus Crystal
 
 -Dank Wood Furnature set by Rijam
 
@@ -14,6 +14,8 @@ Changelog:
 -Resprite for Dies Irae Stone (thx JellyBru!), Yoyo Gauntlet Resprite and Transformer accessory sprite (thx Rijam!), Fully Finished Sprite Sheet for Cratrosity (Thanks Rijam!)
 
 -The Consolation Prize, a better-than-average pickaxe that is granted to new players if one of their starting gear is spawned with the Busted prefix
+
+-Spider Armor buff to deal with cobwebs and webbed debuffs, optional via config, suggested by Cata
 
 
 --Changed:
@@ -48,6 +50,8 @@ Changelog:
 
 -Reduced Vibranium Plating Ancient Fabric costs to 5 from 10
 
+-Shadowspirit's Eye's visual buffs now work simply by being in your inventory
+
 -Illuminant Essence can now drop more often and in larger sizes from enemies in the underground Hallow
 
 -Rebalanced several tech weapons: adjusted Electric Charge use (some were consuming too much)
@@ -57,6 +61,8 @@ Changelog:
 -Rebalanced Lava Rocks Gun: Now consumes 1.25X more electric charge on use, mana cost reduced to 8, crit increased by 10%
 
 -Rebalanced Tech Master's Gear and Rad Suit: Moved Handling Gloves over to Rad Suit
+
+-Rebalanced XOP Flamethrower and Flametrap Thrower: Swapped Elf Melter and Flamethrower requirements
 
 -Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
 
@@ -89,7 +95,7 @@ Changelog:
 
 -New changes to Phaethon:
 -Will always use Shadow Nebula at the start of phase 3
--Shadow Nebula completely reworked, boss releases several orbs the player must destroy in order to end the attack: Phaethon can no longer be hurt, grab asteriods, or shield during this attack, and tries to chase the player
+-Shadow Nebula completely reworked, boss releases several orbs the player must destroy in order to end the attack: Phaethon can no longer be hurt, grab asteriods, or shield during this attack, and tries to chase the player, and gains new attacks exlusive to Shadow Nebula
 -(todo) Shadow Nebula also changes most of his attacks as well
 -(todo) The Outpost Space Stations spawn with a crystal that heals the boss (at longer/slower rate when shielded), and mining fatigues the player in range
 -Now drops Greater Healing Potions instead of lesser Healing Potions
@@ -118,6 +124,13 @@ Changelog:
 -Drills not being affected by mining speed buffs when mining asteriods
 
 -A few minor bugs of mis-matched damage types and other smaller things
+
+
+3.620-(1/11/22)--Hotfix 29
+
+--Fixed:
+
+-Soul Jar world fix, should no longer cause issues with unloaded mods!
 
 
 3.619-(12/3/22)--Hotfix 28

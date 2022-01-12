@@ -53,9 +53,9 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.EldMelter, 1);
-			recipe.AddIngredient(null, "FieryShard", 10);
-			recipe.AddIngredient(null, "AdvancedPlating", 10);
+			recipe.AddIngredient(ItemID.Flamethrower, 1);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.FieryShard>(), 10);
+			recipe.AddIngredient(ModContent.ItemType <AdvancedPlating>(), 10);
 			recipe.AddIngredient(ItemID.LihzahrdPowerCell, 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
             recipe.SetResult(this);

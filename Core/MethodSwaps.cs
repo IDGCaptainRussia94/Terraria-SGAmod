@@ -47,8 +47,8 @@ namespace SGAmod
 			On.Terraria.Player.dropItemCheck += ManifestedPriority;
 			On.Terraria.Player.ItemFitsItemFrame += NoPlacingManifestedItemOnItemFrame;
 			On.Terraria.Player.ItemFitsWeaponRack += NoPlacingManifestedItemOnItemRack;
-			On.Terraria.Main.SetDisplayMode += RecreateRenderTargetsOnScreenChange;
 			On.Terraria.Player.UpdateEquips += BlockVanillaAccessories;
+            On.Terraria.Player.StickyMovement += BypassCobwebs;
 
 			On.Terraria.Main.DrawDust += Main_DrawAdditive;
 			On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
@@ -86,6 +86,18 @@ namespace SGAmod
 
 			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
+		}
+
+		private static void BypassCobwebs(On.Terraria.Player.orig_StickyMovement orig, Player self)
+		{
+			if (!SGAConfig.Instance.SpiderArmorBuff)
+			{
+				orig(self);
+				return;
+			}
+
+			if (self.SGAPly().cobwebRepellent < 2)
+				orig(self);
 		}
 
         private static void Player_Update(On.Terraria.Player.orig_Update orig, Player self, int i)

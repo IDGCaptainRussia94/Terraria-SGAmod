@@ -1783,7 +1783,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Starduster");
-			Tooltip.SetDefault("'Purge them through celestial flames...'\nUses Gel to unleash a furry of Stars\nConsumes Electric Charge, Stars fly further the longer you hold\nStars that strike enemies will spawn stationary stars nearby\nDoes more damage the less Stars there are");
+			Tooltip.SetDefault("'Purge your enemies through celestial flames...'\nUses Gel to spray a furry of Stars\nConsumes Electric Charge, Stars fly further the longer you hold\nStars that strike enemies will spawn more stars nearby\nDoes extra damage the less Stars there are");
 		}
 
 		public override void SetDefaults()
@@ -1796,7 +1796,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			item.useAnimation = 60;
 			item.knockBack = 1;
 			item.value = Item.buyPrice(0, 1, 50, 0);
-			item.rare = ItemRarityID.Pink;
+			item.rare = ItemRarityID.Yellow;
 			//item.UseSound = SoundID.Item99;
 			item.autoReuse = true;
 			item.shootSpeed = 10f;
@@ -1857,7 +1857,7 @@ namespace SGAmod.HavocGear.Items.Weapons
             {
 				get
 				{
-					return Vector2.Lerp(owner.Center,position,0.75f);
+					return Vector2.Lerp(owner.Center,position,1F);
 				}
 			}
 			public StardusterProjectile(Vector2 position, Vector2 velocity)
@@ -1956,7 +1956,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 				for (int i = 0; i < 2; i++)
 				{
-						float Velocity = chargePercent * (Main.rand.NextFloat(8f, 12f)) * (1f + (projectile.localAI[1] * 3f)) * 2f;
+						float Velocity = chargePercent * (Main.rand.NextFloat(6f, 12f)) * (1f + (projectile.localAI[1] * 3f)) * 1.25f;
 						float randomAngle = Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi) / (10f + (chargePercent * 10f));
 						StardusterProjectile starduster = new StardusterProjectile(projectile.Center + Vector2.Normalize(projectile.velocity) * 32f, Vector2.Normalize(projectile.velocity).RotatedBy(randomAngle) * Velocity);
 						starduster.owner = projectile;
@@ -1977,18 +1977,21 @@ namespace SGAmod.HavocGear.Items.Weapons
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			for (int i = 0; i < 3; i++)
+			if (player.SGAPly().ConsumeElectricCharge(3, 25, consume: false))
 			{
-				if (Main.rand.Next(200) > stardust.Count)
+				for (int i = 0; i < 3; i++)
 				{
-					StardusterProjectile starduster = new StardusterProjectile(target.Center + Main.rand.NextVector2Circular(256, 256), Main.rand.NextVector2Circular(2, 2));
-					starduster.scale = Vector2.One * 1.5f;
-					starduster.timeLeft = Main.rand.Next(10, 80);
-					starduster.timeLeftMax = starduster.timeLeft;
-					starduster.owner = projectile;
+					if (Main.rand.Next(200) > stardust.Count)
+					{
+						StardusterProjectile starduster = new StardusterProjectile(target.Center + Main.rand.NextVector2Circular(256, 256), Main.rand.NextVector2Circular(2, 2));
+						starduster.scale = Vector2.One * 1.5f;
+						starduster.timeLeft = Main.rand.Next(10, 80);
+						starduster.timeLeftMax = starduster.timeLeft;
+						starduster.owner = projectile;
 
-					stardust.Add(starduster);
+						stardust.Add(starduster);
 
+					}
 				}
 			}
 		}

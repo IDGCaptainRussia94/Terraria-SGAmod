@@ -70,7 +70,7 @@ namespace SGAmod
 		public static (bool, Mod) CheatSheetMod = (false, null);
 
 
-		public static void BoostModdedDamage(Player player, float damage, int crit)
+		public static void BoostModdedDamage(Player player, float damage, int crit)//@1.4.2.101
 		{
 			if (SGAmod.Calamity.Item1 || SGAmod.Thorium.Item1)
 			{

@@ -25,6 +25,12 @@ A few warnings before the changelog:
 
 Changelog:
 
+3.620-(1/11/22)--Hotfix 29
+
+--Fixed:
+
+-Soul Jar world fix, should no longer cause issues with unloaded mods!
+
 
 3.619-(12/3/22)--Hotfix 28
 

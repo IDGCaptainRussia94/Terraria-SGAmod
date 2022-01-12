@@ -160,6 +160,7 @@ namespace SGAmod
 		public bool SybariteGem = false;
 		public bool restorationFlower = false;
 		public bool tpdcpu = false;
+		public byte cobwebRepellent = 0;
 		public bool aversionCharm = false;
 		public byte avariceRing = 0;
 		public int devpower = 0;
@@ -522,6 +523,7 @@ namespace SGAmod
 			YoyoTricks = false;
 			OmegaSigil = false;
 			tpdcpu = false;
+			cobwebRepellent = 0;
 			if (phaethonEye > 0)
 				phaethonEye -= 1;
 			MurkyDepths = false;
@@ -1819,7 +1821,7 @@ namespace SGAmod
 				return true;
 			}
 
-			if (phaethonEye > 0 && player.statLife - damage < 1 && AddCooldownStack(180 + (damage * 5)))
+			if (phaethonEye > 3 && player.statLife - damage < 1 && AddCooldownStack(180 + (damage * 5)))
 			{
 				Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<Items.Accessories.PhaethonEyeProcEffect>(), 0, 0, player.whoAmI);
 				player.NinjaDodge();

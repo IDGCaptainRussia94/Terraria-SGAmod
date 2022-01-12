@@ -4143,7 +4143,7 @@ namespace SGAmod.Dimensions.NPCs
 				Color colorz = Color.Lerp(Color.CornflowerBlue, Color.White, (npc.life / (float)npc.lifeMax));
 
 				if (masterBeforeMe == null)
-					colorz = Color.Lerp(Color.CornflowerBlue, Color.MediumPurple, (npc.life / (float)npc.lifeMax));
+					colorz = Color.Lerp(Color.CornflowerBlue, Main.hslToRgb((Main.GlobalTime/3f)%1f,0.75f,0.60f), (npc.life / (float)npc.lifeMax));
 
 				stardustsshader.UseColor(colorz.ToVector3() * 2f);
 				stardustsshader.UseOpacity(1f);

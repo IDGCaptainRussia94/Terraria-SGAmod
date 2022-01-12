@@ -88,6 +88,13 @@ namespace SGAmod
 			return starterNumber;
 		}
 
+		private delegate void CollisionAddStickyDelegate(Player player);
+		private static void CollisionAddStickyMethod(Player player)
+		{
+			if (player.SGAPly().cobwebRepellent>0)
+			player.stickyBreak += 2;
+		}
+
 		private delegate Vector2 ModdedCobwebsHereDelegate(Player player,Vector2 sticky);
 		private static Vector2 ModdedCobwebsHereMethod(Player player, Vector2 sticky)
 		{
@@ -132,7 +139,13 @@ namespace SGAmod
 					c.EmitDelegate<CollisionOtherCobwebsDelegate>(CollisionOtherCobwebsMethod);
 					c.Emit(OpCodes.Stloc, 6);
 
-					return;
+					if (c.TryGotoNext(MoveType.After, i => i.MatchStfld<Player>("stickyBreak")))
+					{
+						c.Emit(OpCodes.Ldarg_0);
+						c.EmitDelegate<CollisionAddStickyDelegate>(CollisionAddStickyMethod);
+						return;
+					}
+					throw new Exception("IL Error Test 3");
 				}
 				throw new Exception("IL Error Test 2");
 			}

@@ -161,6 +161,7 @@ namespace SGAmod.Dimensions
 
         public int glassType = WallID.BlueStainedGlass;
         public NPC focusCrystal = null;
+        public List<NPC> stationDefenses = null;
 
 
         public SpaceStationStructure(Vector2 position)
@@ -170,11 +171,25 @@ namespace SGAmod.Dimensions
             type = 0;
         }
 
-        public virtual void SetupSecurity()
-        {            
-           
+        public void ResetSecurity()
+        {
             securityToSpawn.Clear();
             securitySpawned.Clear();
+
+            foreach (NPC npc in stationDefenses)
+            {
+                if (npc != null && npc.active)
+                {
+                    npc.active = false;
+                }
+            }
+            stationDefenses.Clear();
+        }
+
+        public virtual void SetupSecurity()
+        {
+
+            ResetSecurity();
 
             for (int i = 0; i < 5; i += 1)
             {

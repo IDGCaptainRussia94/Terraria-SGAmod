@@ -374,6 +374,9 @@ namespace SGAmod
         public override void UpdateArmorSet(Player player, string set)
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+
+            VanillaArmorSetBonus(player, set);
+
             if (set == "Desert")
             {
                 string s = "Not Binded!";
@@ -560,6 +563,19 @@ namespace SGAmod
                 sgaplayer.jellybruSet = true;
                 sgaplayer.devempowerment[2] = 3;
             }        
+        }
+
+        public void VanillaArmorSetBonus(Player player, string set)
+        {
+            if (player.armor[0].type == ItemID.SpiderMask && player.armor[1].type == ItemID.SpiderBreastplate && player.armor[2].type == ItemID.SpiderGreaves)
+            {
+                if (SGAConfig.Instance.SpiderArmorBuff)
+                {
+                    player.setBonus += "\nFreely pass through cobwebs and immunity to webbed";
+                    player.SGAPly().cobwebRepellent = 2;
+                    player.buffImmune[BuffID.Webbed] = true;
+                }
+            }
         }
 
         public bool NovusCoreCheck(Player player, Item item)

@@ -1276,7 +1276,7 @@ namespace SGAmod.Items.Accessories
 		{
 			DisplayName.SetDefault("Shadowspirit's Eye");
 			Tooltip.SetDefault("'an eye of Phaethon, grants its wearing protection of the cosmos...'" +
-				"\nGrants a 1/3 chance of converting debuffs into Action Cooldown Stacks\nLethal damage is converted into an Action Cooldown Stack\nGrants ALL sense potion effects (hide to disable)\nUpgrades the Caliburn Compass to detect Rare creatures from anywhere");
+				"\nGrants a 1/3 chance of converting debuffs into Action Cooldown Stacks\nLethal damage is converted into an Action Cooldown Stack\nGrants ALL sense potion effects (hide to disable)\nUpgrades the Caliburn Compass to detect Rare creatures from anywhere\nVisual buffs work while in inventory");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 
@@ -1293,17 +1293,23 @@ namespace SGAmod.Items.Accessories
 			item.expert = true;
 		}
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
-		{
+        public override void UpdateInventory(Player player)
+        {
 			player.SGAPly().phaethonEye = 3;
-
-			if (!hideVisual)
-			{
-				player.dangerSense = true;
+			player.dangerSense = true;
 				player.detectCreature = true;
 				player.findTreasure = true;
 				player.nightVision = true;
 				player.sonarPotion = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().phaethonEye = 6;
+
+			if (!hideVisual)
+			{
+				UpdateInventory(player);
 			}
 
 		}
@@ -3462,13 +3468,37 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	public class CobwebRepellent : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Cobweb Repellent");
+			Tooltip.SetDefault("Breaks cobwebs 3 times as fast when stuck on them");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().cobwebRepellent = Math.Max(player.SGAPly().cobwebRepellent, (byte)1);
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 26;
+			item.defense = 0;
+			item.accessory = true;
+			item.height = 14;
+			item.value = Item.buyPrice(0, 1, 0, 0);
+			item.rare = ItemRarityID.Blue;
+		}
+	}
 
 	public class ExperimentalPathogen : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Experimental Pathogen");
-			Tooltip.SetDefault("'Takes advantage of a weakened body, allowing further damage'\nGain 5% increased damage against enemies per buff/debuff applies to them\nGoes to a max of 25%");
+			Tooltip.SetDefault("'Takes advantage of a weakened body, allowing further damage'\nGain 5% increased damage against enemies per buff/debuff applied to them\nGoes to a max of 25%");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3548,6 +3578,7 @@ namespace SGAmod.Items.Accessories
 			item.accessory = true;
 		}
 	}
+
 	public class NoviteCore : ModItem
 	{
 		public override void SetStaticDefaults()

@@ -340,7 +340,7 @@ namespace SGAmod.Items.Weapons.Trap
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.Flamethrower, 1);
+			recipe.AddIngredient(ItemID.EldMelter, 1);
 			recipe.AddIngredient(ItemID.FlameTrap, 1);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
 			recipe.AddIngredient(mod.ItemType("CryostalBar"), 5);

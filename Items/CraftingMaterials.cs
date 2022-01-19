@@ -945,8 +945,15 @@ namespace SGAmod.Items
 			recipe.AddIngredient(ModContent.ItemType<AdvancedPlating>(), 2);
 			recipe.AddIngredient(ModContent.ItemType<WraithFragment4>(), 2);
 			recipe.AddIngredient(ModContent.ItemType<ManaBattery>(), 1);
-			recipe.AddIngredient(ItemID.MartianConduitPlating, 10);
-			recipe.AddIngredient(ItemID.MeteoriteBar, 1);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 5);
+			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 5);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 2);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<EmptyPlasmaCell>(), 1);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 2);
 			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 3);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
@@ -955,7 +962,6 @@ namespace SGAmod.Items
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<EmptyPlasmaCell>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 2);
-			recipe.AddIngredient(mod.ItemType("VialofAcid"), 2);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

@@ -1791,6 +1791,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			base.SetDefaults();
 			item.damage = 60;
 			item.ranged = true;
+			item.crit = 12;
 			item.useAmmo = AmmoID.Gel;
 			item.useTime = 60;
 			item.useAnimation = 60;
@@ -1815,13 +1816,14 @@ namespace SGAmod.HavocGear.Items.Weapons
 
         public override bool ConsumeAmmo(Player player)
         {
-			return false;
+			return player.SGAPly().timer%30==0;
         }
         public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<XOPFlamethrower>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 12);
 			recipe.AddIngredient(ModContent.ItemType<WraithFragment4>(), 25);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
@@ -1931,13 +1933,17 @@ namespace SGAmod.HavocGear.Items.Weapons
 			if (!player.SGAPly().ConsumeElectricCharge(3, 25))
 				return false;
 
-			int type = ProjectileID.Flames;
+			Item item = new Item();
+			item.SetDefaults(ModContent.ItemType<Starduster>());
+
+			int projType = item.shoot;
+
 			int damage = projectile.damage;
 			float speed = projectile.velocity.Length();
 			float kb = projectile.knockBack;
 
-			bool tr = true;
-			player.PickAmmo(player.HeldItem, ref type, ref speed, ref tr, ref damage, ref kb, (int)(projectile.localAI[0]) % 10 != 0);
+			bool tr = false;
+			player.PickAmmo(player.HeldItem, ref projType, ref speed, ref tr, ref damage, ref kb, false);
 
 			if (tr)
 			{
@@ -1952,7 +1958,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 					}
 				}
 
-				float chargePercent = MathHelper.Clamp((projectile.ai[0] / 100f), 0f, 1f);
+				float chargePercent = MathHelper.Clamp((projectile.ai[0] / 60f), 0f, 1f);
 
 				for (int i = 0; i < 2; i++)
 				{
@@ -1960,6 +1966,8 @@ namespace SGAmod.HavocGear.Items.Weapons
 						float randomAngle = Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi) / (10f + (chargePercent * 10f));
 						StardusterProjectile starduster = new StardusterProjectile(projectile.Center + Vector2.Normalize(projectile.velocity) * 32f, Vector2.Normalize(projectile.velocity).RotatedBy(randomAngle) * Velocity);
 						starduster.owner = projectile;
+					starduster.timeLeft = Main.rand.Next(25, 50);
+					starduster.timeLeftMax = starduster.timeLeft;
 
 						stardust.Add(starduster);
 					
@@ -1981,7 +1989,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 			{
 				for (int i = 0; i < 3; i++)
 				{
-					if (Main.rand.Next(200) > stardust.Count)
+					if (Main.rand.Next(250) > stardust.Count)
 					{
 						StardusterProjectile starduster = new StardusterProjectile(target.Center + Main.rand.NextVector2Circular(256, 256), Main.rand.NextVector2Circular(2, 2));
 						starduster.scale = Vector2.One * 1.5f;

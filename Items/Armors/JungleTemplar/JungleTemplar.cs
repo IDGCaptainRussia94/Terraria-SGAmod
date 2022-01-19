@@ -109,7 +109,7 @@ namespace SGAmod.Items.Armors.JungleTemplar
 				}
 			}
 
-			if (sgaplayer.timer>300 && !sgaplayer.ConsumeElectricCharge(1000, 0, false, false))
+			if (sgaplayer.timer>300 && sgaplayer.player.lavaTime > 180 && !sgaplayer.ConsumeElectricCharge(1000, 0, false, false))
             {
 				sgaplayer.player.AddBuff(ModContent.BuffType<Buffs.LavaBurn>(),150*(Main.expertMode ? 1 : 2));
 			}

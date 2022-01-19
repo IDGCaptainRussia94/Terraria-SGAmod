@@ -1178,18 +1178,23 @@ namespace SGAmod
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
         {
-            if (item.type == ItemID.SandBlock && item.velocity.Y == 0 && item.wet && Main.rand.Next(100)<1)
+            if (item.type == ItemID.SandBlock && item.velocity.Y == 0 && item.wet && Main.rand.Next(50)<1 && item.stack>=1)
             {
                 int item2 = Item.NewItem(item.Center, ModContent.ItemType<MoistSand>(), 1);
                 Item item3 = Main.item[item2];
                 if (item3 != null && item3.active)
                 {
                     //item3.velocity = Vector2.Zero;
-                    item3.noGrabDelay = 0;
+                    //item3.noGrabDelay = 0;
                     item.stack--;
 
-                    if (item.stack < 2)
-                        item.type = ModContent.ItemType<MoistSand>();
+                    
+                    if (item.stack < 1)
+                    {
+                        item.active = false;
+                        HopperTile.CleanUpGlitchedItems();
+                    }
+                    
 
                     if (Main.netMode != NetmodeID.SinglePlayer)
                     {

@@ -39,6 +39,8 @@ namespace SGAmod
 	public partial class SGAPlayer : ModPlayer
 	{
 		public List<ActionCooldownStack> CooldownStacks;
+		public List<(int, float)> DoTStack = new List<(int, float)>();
+
 		public SkillManager skillMananger;
 		public int surprised = 0;
 		public float[] beserk = { 0, 0 };
@@ -144,10 +146,13 @@ namespace SGAmod
 		public bool voidEmbrancers = false;
 		public bool transformerAccessory = false;
 		public bool gravBoots = false;
+		public bool undyingValor = false;
+		public bool bustlingFungus = false;
 		public bool highStakesSet = false;
 		public int liquidGambling = 0;
 		public bool experimentalPathogen = false;
 		public bool concussionDevice = false;
+		public float concussionDeviceEffectiveness = 0f;
 		public FlaskOfBlaze flaskBuff = default;
 		public (bool, int) snakeEyes = (false, 0);
 		public (float, float) auraBoosts = (0, 0);
@@ -437,12 +442,15 @@ namespace SGAmod
 			SybariteGem = false;
 			personaDeck = false;
 			highStakesSet = false;
+			undyingValor = false;
 
 			if (liquidGambling > 0)
 				liquidGambling--;
 
 			experimentalPathogen = false;
 			concussionDevice = false;
+			bustlingFungus = false;
+			concussionDeviceEffectiveness = 0f;
 			UseTimeMul = 1f;
 			UseTimeMulPickaxe = 1f;
 			ThrowingSpeed = 1f;
@@ -816,6 +824,19 @@ namespace SGAmod
 				return;
 			}
 			player.lifeRegen -= badLifeRegen;
+
+			float dot = 0f;
+
+			if (DoTStack.Count > 0)
+			{
+				foreach ((int, float) stack in DoTStack)
+				{
+					dot += stack.Item2;
+				}
+				float scalepercemn = (Math.Min(0.50f+(DoTResist/2f), 1f));
+				player.lifeRegen -= (int)(dot/scalepercemn);
+				DoTStack = DoTStack.Select(testby => (testby.Item1 - 1, testby.Item2)).Where(testby => testby.Item1 > 0).ToList();
+			}
 		}
 
 		public override void SetupStartInventory(IList<Item> items, bool mediumcoreDeath)
@@ -1001,11 +1022,6 @@ namespace SGAmod
 				if (!Main.dayTime)
 					player.buffTime[player.FindBuffIndex(ModContent.BuffType<Buffs.StarStormCooldown>())] += 1;
 			}
-			if (ELS)
-			{
-				if (player.lifeRegen < 0)
-					player.lifeRegen = (int)(player.lifeRegen * 1.5f);
-			}
 
 			player.statManaMax2 += 20 * Redmanastar;
 
@@ -1024,6 +1040,14 @@ namespace SGAmod
 		{
 			SGAPlayer sgaply = player.SGAPly();
 			PostPostUpdateEquipsEvent?.Invoke(sgaply);
+
+			if (sgaply.ELS)
+			{
+				if (player.lifeRegen < 0)
+					sgaply.DoTResist += 0.50f;
+					//player.lifeRegen = (int)(player.lifeRegen * 1.5f);
+			}
+
 			//Main.NewText("TextTewst");
 			if (sgaply.finalGem > 0)
 			{
@@ -1048,68 +1072,6 @@ namespace SGAmod
 			}
 
 			DoPotionFatigue(sgaply);
-		}
-
-		public static void DoPotionFatigue(SGAPlayer sgaply)
-		{
-			if (!SGAConfig.Instance.PotionFatigue && !sgaply.nightmareplayer)
-			{
-				sgaply.potionFatigue = Math.Max(sgaply.potionFatigue - 20, 0);
-				return;
-			}
-
-			Player player = sgaply.player;
-
-			int count = 0;
-			bool noPotions = true;
-			List<int> badBuffSlots = new List<int>();
-
-			for (int bufftype = 0; bufftype < player.buffTime.Length; bufftype += 1)
-			{
-				if (player.buffTime[bufftype] > 0 && !Main.buffNoTimeDisplay[player.buffType[bufftype]])
-				{
-					int found = SGAmod.BuffsThatHavePotions.Where(testby => testby == player.buffType[bufftype]).Count();
-
-					if (SGAmod.BuffsThatHavePotions.Where(testby => testby == player.buffType[bufftype]).Count() > 0)
-					{
-						count += 1;
-						badBuffSlots.Add(bufftype);
-						noPotions = false;
-					}
-				}
-			}
-
-			if (count <= 8)
-			{
-				sgaply.potionFatigue = Math.Max(sgaply.potionFatigue - 20, 0);
-				return;
-			}
-
-			sgaply.potionFatigue += (count - 8) * 1;
-
-			int fatigue = (int)sgaply.potionFatigue;
-
-			if (fatigue > 10000)
-			{
-				if (Main.rand.Next(1000000) < fatigue / 1)
-				{
-					if (badBuffSlots.Count > 0)
-					{
-						int[] badBuffs = { ModContent.BuffType<PiercedVulnerable>(), ModContent.BuffType<PoisonStack>(), ModContent.BuffType<Gourged>(), ModContent.BuffType<WorseWeakness>(), ModContent.BuffType<MiningFatigue>(), ModContent.BuffType<Sunburn>(), ModContent.BuffType<MurkyDepths>(), BuffID.Rabies, ModContent.BuffType<TechnoCurse>(), ModContent.BuffType<ShieldBreak>() };
-
-						badBuffSlots = badBuffSlots.OrderBy(testby => player.buffTime[testby]).ToList();
-						player.buffType[badBuffSlots[0]] = badBuffs[Main.rand.Next(badBuffs.Length)];
-
-						sgaply.potionFatigue -= 5000;
-
-						var snd = Main.PlaySound(SoundID.Zombie, (int)player.Center.X, (int)player.Center.Y, 31);
-						if (snd != null)
-						{
-							snd.Pitch = 0.75f;
-						}
-					}
-				}
-			}
 		}
 
 		public override void PostUpdateEquips()
@@ -1821,7 +1783,7 @@ namespace SGAmod
 				return true;
 			}
 
-			if (phaethonEye > 3 && player.statLife - damage < 1 && AddCooldownStack(180 + (damage * 5)))
+			if (phaethonEye > 6 && player.statLife - damage < 1 && AddCooldownStack(180 + (damage * 5)))
 			{
 				Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<Items.Accessories.PhaethonEyeProcEffect>(), 0, 0, player.whoAmI);
 				player.NinjaDodge();

@@ -49,6 +49,7 @@ namespace SGAmod
 			On.Terraria.Player.ItemFitsWeaponRack += NoPlacingManifestedItemOnItemRack;
 			On.Terraria.Player.UpdateEquips += BlockVanillaAccessories;
             On.Terraria.Player.StickyMovement += BypassCobwebs;
+            On.Terraria.Player.Hurt += Player_Hurt;
 
 			On.Terraria.Main.DrawDust += Main_DrawAdditive;
 			On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
@@ -88,7 +89,20 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
-		private static void BypassCobwebs(On.Terraria.Player.orig_StickyMovement orig, Player self)
+        private static double Player_Hurt(On.Terraria.Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
+        {
+			if (self.SGAPly().undyingValor)
+            {
+				self.SGAPly().DoTStack.Add((300, (Damage / 300f)*60f));
+				return orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
+			}
+
+
+
+			return orig(self, damageSource, Damage, hitDirection, pvp, quiet, Crit, cooldownCounter);
+        }
+
+        private static void BypassCobwebs(On.Terraria.Player.orig_StickyMovement orig, Player self)
 		{
 			if (!SGAConfig.Instance.SpiderArmorBuff)
 			{
@@ -702,7 +716,7 @@ namespace SGAmod
 
 			SGAPlayer sgaply = self.SGAPly();
 
-			if (sgaply.phaethonEye > 0 && Main.debuff[buff] && time > 60 && !SGAUtils.BlackListedBuffs(buff))
+			if (sgaply.phaethonEye > 6 && Main.debuff[buff] && time > 60 && !SGAUtils.BlackListedBuffs(buff))
 			{
 				if (Main.rand.Next(3) == 0 && sgaply.AddCooldownStack(time))
 				{

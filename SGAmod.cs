@@ -1322,6 +1322,16 @@ namespace SGAmod
 });
 			RecipeGroup.RegisterGroup("SGAmod:HardmodeEvilAccessory", group6);
 
+			group6 = new RecipeGroup(() => "Any Old One's Army tier 2 accessory", new int[]
+{
+			ItemID.HuntressBuckler,
+			ItemID.ApprenticeScarf,
+			ItemID.MonkBelt,
+			ItemID.SquireShield
+});
+			RecipeGroup.RegisterGroup("SGAmod:DD2Accessories", group6);
+
+
 			RecipeGroup pickaxe = new RecipeGroup(() => "Copper or Tin Pickaxe", new int[]
 {
 			ItemID.CopperPickaxe,

@@ -1159,6 +1159,11 @@ namespace SGAmod.Dimensions
                             IDrawThroughFog ifog = npc.modNPC as IDrawThroughFog;
                             ifog.DrawThroughFog(spriteBatch);
                         }
+                        foreach (Projectile proj in Main.projectile.Where(testby => testby.active && testby.modProjectile != null && testby.modProjectile is IDrawThroughFog))
+                        {
+                            IDrawThroughFog ifog = proj.modProjectile as IDrawThroughFog;
+                            ifog.DrawThroughFog(spriteBatch);
+                        }
                     }
 
                     Main.spriteBatch.End();

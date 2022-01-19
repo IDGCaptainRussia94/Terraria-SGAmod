@@ -324,7 +324,51 @@ namespace SGAmod
 			}
 		}
 	}
+	public class FinalDamageAdjustments : HookEdit
+	{
+		private delegate bool PlayerDelegate(Player ply);
 
+		protected override void LoadInternal()
+		{
+			_ = ApplyFinalDamageHook;
+		}
+		internal static bool ApplyFinalDamageHook
+		{
+			get
+			{
+				HookEndpointManager.Add(typeof(PlayerHooks).GetMethod("ModifyHitNPC", SGAmod.UniversalBindingFlags), (hook_FinalDamageDetour)DetourFinalDamageAdjustments);
+				HookEndpointManager.Add(typeof(PlayerHooks).GetMethod("ModifyHitNPCWithProj", SGAmod.UniversalBindingFlags), (hook_FinalDamageProjDetour)DetourFinalDamageProjAdjustments);
+
+				return false;
+			}
+		}
+
+		public static void ApplyKnockbackDamage(Player player,ref int damage, float knockBack)
+        {
+			if (player.SGAPly().concussionDevice)
+            {
+				damage = (int)(damage * Math.Min(2f,1f + (knockBack * 0.05f*player.SGAPly().concussionDeviceEffectiveness)));
+			}
+        }
+
+		//PlayerHooks.ModifyHitNPCWithProj(this, Main.npc[i], ref num7, ref knockback, ref crit, ref hitDirection);
+
+		private delegate void orig_FinalDamageDetour(Player player, Item item, NPC npc, ref int damage, ref float knockBack, ref bool crit);
+		private delegate void hook_FinalDamageDetour(orig_FinalDamageDetour orig, Player player,Item item, NPC npc,ref int damage,ref float knockBack,ref bool crit);
+		private static void DetourFinalDamageAdjustments(orig_FinalDamageDetour orig, Player player, Item item, NPC npc, ref int damage, ref float knockBack, ref bool crit)
+		{
+            orig(player, item, npc, ref damage, ref knockBack, ref crit);
+			ApplyKnockbackDamage(player,ref damage, knockBack);
+		}
+
+		private delegate void orig_FinalDamageProjDetour(Projectile projectile, NPC npc, ref int damage, ref float knockBack, ref bool crit, ref int hitDirection);
+		private delegate void hook_FinalDamageProjDetour(orig_FinalDamageProjDetour orig, Projectile projectile, NPC npc, ref int damage, ref float knockBack, ref bool crit, ref int hitDirection);
+		private static void DetourFinalDamageProjAdjustments(orig_FinalDamageProjDetour orig, Projectile projectile, NPC npc, ref int damage, ref float knockBack, ref bool crit,ref int hitDirection)
+		{
+			orig(projectile, npc, ref damage, ref knockBack, ref crit,ref hitDirection);
+			ApplyKnockbackDamage(Main.player[projectile.owner], ref damage, knockBack);
+		}
+	}
 	public static class PrivateClassEdits
 	{
 		//This class is comprised of more direct version of Monomod IL patches/ON Detour Hooks to classes that you normally 'should not' have access to (and by extention, should not be) patching, learned thanks to a very "specific", very talented dev who's serving a not-worth-it mod

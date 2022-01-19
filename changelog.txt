@@ -5,9 +5,9 @@ Changelog:
 
 --Added
 
--Starduster, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Empty Plasma Cell, Shadow LockBox, Celestial Monolith, Helios Focus Crystal
+-Starduster, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, Armchair General, Empty Plasma Cell, Shadow LockBox, Celestial Monolith, Helios Focus Crystal, Flask of Soul Sap
 
--Dank Wood Furnature set by Rijam
+-The entire Dank Wood Furnature set by Rijam
 
 -Speedymatt123's Hellion Painting: a Nightmare Mode exclusive reward!
 
@@ -33,10 +33,15 @@ Changelog:
 -Ore Generation has been changed a bit
 -Can now generate Fragement Blocks after moonlord is defeated
 -Astral Luminite now drops a different material that requires real Luminite to make Luminite bars, basically, it makes a cheaper way to craft Luminite bars but doesn't skip progression
+-Possessed Asteriods no longer spawn naturally during Phaethon's fight
+
+-Redid the fog system; purged of negitive blending; it now uses a freaking shader and should no longer cause laptops to explode!
 
 -Supreme Pinky's 'Treasure Bag' can no longer be opened in Subworlds
 
 -Cratrosity/Cratrogeddon can now be summoned during the day
+
+-Transmutation Powder can now convert vanilla ores to their respective opposites as well
 
 -Luminous Alter is now crafted at a Lihzard Altar
 
@@ -44,7 +49,7 @@ Changelog:
 
 -Added several 'missing from your inventory' hints to items on how to get them and fixed some incorrect ones
 
--Hellion's Laser and Phaethon's visuals have been updated
+-Hellion's Laser, S.Pinky's sky, and Phaethon's visuals have been updated
 
 -Resonant Wisps are now powered up after Moonlord, not just with a Braxsaw
 
@@ -52,7 +57,19 @@ Changelog:
 
 -Shadowspirit's Eye's visual buffs now work simply by being in your inventory
 
+-Removed Shield Break from Buff Burning, replaced with Everlasting Suffering
+
 -Illuminant Essence can now drop more often and in larger sizes from enemies in the underground Hallow
+
+-Virulent Ore now requires atleast a Mythril Pickaxe to mine, Virulent Pickaxe/Drill has been raised to have pickaxe power on par with Adamantite
+
+-Joyful Shrooms can now stack up to 30, and holding 10 or more in a stack in your invention will have effects
+
+-Plasma Cells can now be obtained in early hardmode, but don't have much use yet
+
+-Moist Sand is created twice as fast
+
+-Rebalanced Druidic Sneakers: now works on Normal, Hallowed, and Jungle Grass
 
 -Rebalanced several tech weapons: adjusted Electric Charge use (some were consuming too much)
 
@@ -66,9 +83,15 @@ Changelog:
 
 -Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
 
--Reworked Jungle Templar Armor: now inflicts severe Lava Burn when power is too low instead of normal Lava Burn, doesn't cause Lava Burn til after atleast 5 seconds of being ingame
+-Reworked Jungle Templar Armor: now inflicts severe Lava Burn when power is too low instead of normal Lava Burn, doesn't cause Lava Burn til after atleast 5 seconds of being ingame or if the lava meter is too low
+
+-Reworked Fist of Moonlord: damage increase per fist's speed has been reduced by 1/3, there's a damage increase cap of 5X, can no longer crit, would-have crits cause the fist to not slow down on hit, and is now Post-Hellion (and is now craftable)
 
 -Buffed Hallowed Visor: defense increased by 1
+
+-Buffed Sticky Situation: does more damage to segmented enemies
+
+-Buffed Quasar Kunai: the projectiles do infact, bounce now (but only twice)
 
 -Buffed Sanguine Bident and Crimson Catastrophe: Does 25% and 50% more damage respectively to enemies that are immune to bleeding, Sanguine Bident lifesteal chance has been increased to 1/12 from 1/16 (8/12 from 8/16 with (massive) bleeding)
 
@@ -86,12 +109,16 @@ Changelog:
 
 -Skylight's internal name has changed (to SkyLight from Skylight), this will cause the weapon to turn into a missing item on restart... sry about that!
 
--Adjusted ttem prices
+-Adjusted item prices
 
 -Removed EA logo debug text
 
 -New changes to Spider Queen:
--Cobwebs are now a special version that will acid burn on contact, and are cleaned up after the fight is over
+-Cobwebs are now a special version that will Acidburn on contact, and are cleaned up after the fight is over
+
+-New changes to Helen Hellion Weygold:
+-When dropping loot: if Aimbot bullets are dropped, an extra random is picked from the pool, furthermore, a stack of 30 Lead Cannonballs drops along with the SBC Cannon MK2
+-Fixed a bug with Hellion's arena ring staying small during the final desperation phase if you did the killing blow during one of her other desperation attacks where it shrinks
 
 -New changes to Phaethon:
 -Will always use Shadow Nebula at the start of phase 3
@@ -103,13 +130,17 @@ Changelog:
 
 --Fixed:
 
--Soul Jar's messing up world loading with modded NPCs (Added a failsafe, may or may not work still)
+-Hopefully fixed Terraria Co Crates not stacking after beating Cratrosity (still an ugly patch thou)
+
+-Moist Sand breaking with Auto-Trash
 
 -Black Leeches seemingly (no, really infact) teleporting onto the player
 
 -Giant Ice Cube being only sold in Hardmode
 
 -Starfish Burster not saving ammo
+
+-Solis Nova making enemies despawn
 
 -Buff Burning not working as expected, even when you had it disabled it was having an effect (without it showing visually)
 
@@ -121,9 +152,20 @@ Changelog:
 
 -Missing player name to one of SPinky's death messages
 
+-Sludge Bomb not damaging alot of types of enemies
+
 -Drills not being affected by mining speed buffs when mining asteriods
 
 -A few minor bugs of mis-matched damage types and other smaller things
+
+
+3.621-(1/12/22)--Hotfix 30
+
+--Fixed:
+
+-Soul Jar world fix, hopefully, for real this time!
+
+-an issue with cross-Calamity support on items that boost all damage types
 
 
 3.620-(1/11/22)--Hotfix 29

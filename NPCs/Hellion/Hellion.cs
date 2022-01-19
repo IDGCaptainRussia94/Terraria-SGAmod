@@ -27,6 +27,7 @@ using System.Reflection;
 using ReLogic.Graphics;
 using MonoMod.RuntimeDetour.HookGen;
 using Terraria.Cinematics;
+using SGAmod.Items.Weapons.Ammo;
 
 namespace SGAmod.NPCs.Hellion
 {
@@ -680,6 +681,10 @@ namespace SGAmod.NPCs.Hellion
                 //Phase 1
                 if (npc.ai[1] > 96001)
 				{
+
+					hell.noescapeauravisualsize += (1f - hell.noescapeauravisualsize) / 30f;
+					hell.noescapeaurasize = (int)(hell.noescapeaurasize + (2000f - hell.noescapeaurasize) / 60f);
+
 					if (npc.ai[1] % 500 == 0 && npc.ai[1] < 100000)
 					{
 
@@ -3745,9 +3750,21 @@ namespace SGAmod.NPCs.Hellion
 
 			List<(int, int)> HellionItems = GetHelliondrops;
 
+			startover:
 			HellionItems = HellionItems.OrderBy(testby => Main.rand.Next()).ToList();
 
 			Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, HellionItems[0].Item1, HellionItems[0].Item2);
+
+			if (HellionItems[0].Item1 == ModContent.ItemType<AimBotBullet>())
+            {
+				HellionItems.RemoveAt(0);
+				goto startover;
+            }
+			if (HellionItems[0].Item1 == ModContent.ItemType<Items.Weapons.SeriousSam.SBCCannonMK2>())
+			{
+				Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.SeriousSam.LeadCannonball>(), 30);
+				goto startover;
+			}
 		}
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{

@@ -426,7 +426,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Joyful Shroom");
-			Tooltip.SetDefault("This is not a normal Mushroom...");
+			Tooltip.SetDefault("This is not a normal Mushroom...\nSimply holding too many may have side effects...");
 		}
 
 		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
@@ -469,7 +469,7 @@ namespace SGAmod.Items.Consumables
 		{
 			item.width = 14;
 			item.height = 14;
-			item.maxStack = 1;
+			item.maxStack = 30;
 			item.rare = ItemRarityID.Quest;
 			item.value = Item.buyPrice(gold: 1);
 			item.useStyle = ItemUseStyleID.EatingUsing;
@@ -523,7 +523,15 @@ namespace SGAmod.Items.Consumables
 
         public override string Texture => "Terraria/Projectile_"+ProjectileID.Mushroom;
 
-		public override bool UseItem(Player player)
+        public override void UpdateInventory(Player player)
+        {
+            if (item.stack >= 10)
+            {
+				player.AddBuff(ModContent.BuffType<Buffs.CleansedPerception>(), (60 * (item.stack-10))+2);
+			}
+        }
+
+        public override bool UseItem(Player player)
 		{
 			player.AddBuff(ModContent.BuffType<Buffs.CleansedPerception>(),60*60);
 			//Main.expertMode = true;

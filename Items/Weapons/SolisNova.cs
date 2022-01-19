@@ -205,11 +205,9 @@ namespace SGAmod.Items.Weapons
 							there.Normalize();
 							float distance = (guy.Center - projectile.Center).Length();
 							float maxdist = (160f + growsize * 2f);
-							if (distance < maxdist)
+							if (distance < maxdist && distance>16)
 							{
 								guy.GetGlobalNPC<SGAnpcs>().TimeSlow += (0.20f + (growsize / 100f)) * (1f - (distance / maxdist));
-
-								float point = 0f;
 
 								if (Collision.CanHitLine(guy.Center, 8, 8, projectile.Center, 8, 8))
 								{

@@ -1343,10 +1343,9 @@ namespace SGAmod
 
 			if (npc.type == NPCID.MoonLordCore)
 			{
-				if (Main.rand.Next(20) < 1)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < FistOfMoonlord>());
 				if (Main.rand.Next(10) < (Main.expertMode ? 2 : 1))
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SwordofTheBlueMoon>());
+
 				if (dropFork && !Main.expertMode)
 				{
 					dropFork = false;

@@ -36,18 +36,21 @@ namespace SGAmod.Items.Placeable
 
 		public static void SGAmod_RenderTargetsEvent()
 		{
-			if (CelestialMonolithManager.SkyRenderTarget2D == null || CelestialMonolithManager.SkyRenderTarget2D.IsDisposed)
+			if (CelestialMonolithManager.queueRenderTargetUpdate > 1)
 			{
-				int width = Main.screenWidth;
-				int height = Main.screenHeight;
-				CelestialMonolithManager.SkyRenderTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
-			}
+				if (CelestialMonolithManager.SkyRenderTarget2D == null || CelestialMonolithManager.SkyRenderTarget2D.IsDisposed)
+				{
+					int width = Main.screenWidth;
+					int height = Main.screenHeight;
+					CelestialMonolithManager.SkyRenderTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+				}
 
-			if (CelestialMonolithManager.CarveOutTarget2D == null || CelestialMonolithManager.CarveOutTarget2D.IsDisposed)
-			{
-				int width = Main.screenWidth;
-				int height = Main.screenHeight;
-				CelestialMonolithManager.CarveOutTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+				if (CelestialMonolithManager.CarveOutTarget2D == null || CelestialMonolithManager.CarveOutTarget2D.IsDisposed)
+				{
+					int width = Main.screenWidth;
+					int height = Main.screenHeight;
+					CelestialMonolithManager.CarveOutTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+				}
 			}
 		}
 

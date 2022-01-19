@@ -46,7 +46,13 @@ namespace SGAmod.Items
 				ply.QuickSpawnItem(typeofloot[Main.rand.Next(0, typeofloot.Length)], 1);
 		}
 
-		public override bool CanRightClick()
+        public override bool OnPickup(Player player)
+        {
+			item.maxStack = SGAWorld.downedCratrosity ? 30 : 1;
+			return true;
+        }
+
+        public override bool CanRightClick()
 		{
 			Player ply = Main.LocalPlayer;
 			bool canclick = (ply.CountItem(ItemID.GoldenKey) > 0 || ply.CountItem(ItemID.LightKey) > 0 || ply.CountItem(ItemID.NightKey) > 0 || ply.CountItem(ModContent.ItemType<SwampChestKey>()) > 0 || ply.CountItem(ItemID.TempleKey) > 0 || ply.CountItem(ItemID.ShadowKey) > 0);

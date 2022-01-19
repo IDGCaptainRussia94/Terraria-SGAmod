@@ -17,7 +17,7 @@ namespace SGAmod.Buffs
 			Description.SetDefault("30% increase to all damage types except Summon damage, which gets 50%");
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
-			Main.debuff[Type] = true;
+			Main.debuff[Type] = false;
 			canBeCleared = false;
 		}
 

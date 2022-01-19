@@ -85,6 +85,8 @@ namespace SGAmod.Items.Consumables
 
 		public override bool Autoload(ref string name)
 		{
+			SGAmod.RenderTargetsCheckEvent += SGAmod_RenderTargetsCheckEvent;
+			SGAmod.RenderTargetsEvent += SGAmod_RenderTargetsEvent;
 			SGAmod.PostUpdateEverythingEvent += SGAmod_PostUpdateEverythingEvent;
 			return true;
 		}
@@ -92,7 +94,25 @@ namespace SGAmod.Items.Consumables
 		public static RenderTarget2D DistortRenderTarget2D;
 		public static int queueRenderTargetUpdate = 0;
 
-		private void SGAmod_PostUpdateEverythingEvent()
+		public static void SGAmod_RenderTargetsCheckEvent(ref bool yay)
+		{
+			yay &= !((DistortRenderTarget2D == null || DistortRenderTarget2D.IsDisposed));
+		}
+
+		public static void SGAmod_RenderTargetsEvent()
+		{
+			if (TimeEffect.queueRenderTargetUpdate > 1)
+			{
+				if (TimeEffect.DistortRenderTarget2D == null || TimeEffect.DistortRenderTarget2D.IsDisposed)
+				{
+					int width = Main.screenWidth / 2;
+					int height = Main.screenHeight / 2;
+					TimeEffect.DistortRenderTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+				}
+			}
+		}
+
+			private void SGAmod_PostUpdateEverythingEvent()
 		{
 			if (Main.dedServ)
 				return;
@@ -103,12 +123,7 @@ namespace SGAmod.Items.Consumables
 
 				if (TimeEffect.queueRenderTargetUpdate > 1)
 				{
-					if (TimeEffect.DistortRenderTarget2D == null || TimeEffect.DistortRenderTarget2D.IsDisposed)
-					{
-						int width = Main.screenWidth / 2;
-						int height = Main.screenHeight / 2;
-						TimeEffect.DistortRenderTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
-					}
+					SGAmod_RenderTargetsEvent();
 
 					if (TimeEffect.DistortRenderTarget2D != null && !TimeEffect.DistortRenderTarget2D.IsDisposed)
 					{

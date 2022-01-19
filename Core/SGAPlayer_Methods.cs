@@ -40,7 +40,7 @@ namespace SGAmod
 		public int maxtime;
 		public int index;
 
-		public ActionCooldownStack(int timeleft,int index)
+		public ActionCooldownStack(int timeleft, int index)
 		{
 			this.timeleft = timeleft;
 			this.maxtime = timeleft;
@@ -96,9 +96,9 @@ namespace SGAmod
 		}
 
 		public void ShieldRecharge()
-        {
+		{
 
-        }
+		}
 
 		public void StartShieldRecharge()
 		{
@@ -108,7 +108,7 @@ namespace SGAmod
 		}
 
 		public void ShieldDepleted()
-        {
+		{
 			CauseShieldBreak(60 * 7);
 		}
 
@@ -117,16 +117,16 @@ namespace SGAmod
 		public bool TakeShieldHit(ref int damage)
 		{
 
-			int takenshielddamage = (int)(jellybruSet ? damage*Math.Max(player.manaCost, 0.10f) : damage);
+			int takenshielddamage = (int)(jellybruSet ? damage * Math.Max(player.manaCost, 0.10f) : damage);
 
 			if (GetEnergyShieldAmmountAndRecharge.Item1 > takenshielddamage)
-            {
+			{
 
 				if (!player.immune)
 				{
 					SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 93);
 					if (sound != null)
-						sound.Pitch = MathHelper.Clamp(-0.8f + ((GetEnergyShieldAmmountAndRecharge.Item1 / (float)GetEnergyShieldAmmountAndRecharge.Item2) * 1.60f),-0.75f,0.80f);
+						sound.Pitch = MathHelper.Clamp(-0.8f + ((GetEnergyShieldAmmountAndRecharge.Item1 / (float)GetEnergyShieldAmmountAndRecharge.Item2) * 1.60f), -0.75f, 0.80f);
 
 					energyShieldAmmountAndRecharge.Item3 = 60 * (tpdcpu ? shieldAmmounts.Item1 : shieldAmmounts.Item2);
 					energyShieldAmmountAndRecharge.Item1 -= takenshielddamage;
@@ -149,11 +149,11 @@ namespace SGAmod
 			return false;
 		}
 
-		public void StackDebuff(int type,int time)
-        {
+		public void StackDebuff(int type, int time)
+		{
 			player.AddBuff(ModContent.BuffType<PlaceHolderDebuff>(), time);
 			if (player.FindBuffIndex(ModContent.BuffType<PlaceHolderDebuff>()) >= 0)
-            {
+			{
 				player.buffType[player.FindBuffIndex(ModContent.BuffType<PlaceHolderDebuff>())] = type;
 			}
 		}
@@ -214,16 +214,16 @@ namespace SGAmod
 				}
 			}
 			return worked && weHaveStacks;
-			
+
 		}
 
 		public void AddElectricCharge(int ammount)
-        {
+		{
 			electricCharge += ammount;
 		}
 
 		public void CauseShieldBreak(int time)
-        {
+		{
 			if (!tpdcpu)
 			{
 				player.AddBuff(ModContent.BuffType<ShieldBreak>(), time);
@@ -242,9 +242,9 @@ namespace SGAmod
 			}
 		}
 
-		public bool ConsumeElectricCharge(int requiredcharge, int delay, bool damage = false,bool consume = true)
+		public bool ConsumeElectricCharge(int requiredcharge, int delay, bool damage = false, bool consume = true)
 		{
-			int newcharge = (int)Math.Max(requiredcharge * electricChargeCost,1);
+			int newcharge = (int)Math.Max(requiredcharge * electricChargeCost, 1);
 			if (electricCharge > newcharge)
 			{
 				if (consume)
@@ -268,8 +268,8 @@ namespace SGAmod
 		}
 
 		public bool HandleFluidDisplacer(int tier)
-        {
-			if (tidalCharm < 0 && ConsumeElectricCharge(tier, 60* tier, true))
+		{
+			if (tidalCharm < 0 && ConsumeElectricCharge(tier, 60 * tier, true))
 				return true;
 
 
@@ -277,18 +277,18 @@ namespace SGAmod
 
 
 		}
-		public bool ConsumeAmmoClip(bool doConsume = true,int ammoCheck = 1)
-        {
+		public bool ConsumeAmmoClip(bool doConsume = true, int ammoCheck = 1)
+		{
 			if (ammoLeftInClip >= ammoCheck)
 			{
 				if (doConsume)
-				ammoLeftInClip -= ammoCheck;
+					ammoLeftInClip -= ammoCheck;
 
 				return true;
 			}
 			return false;
 
-        }
+		}
 		public void StackAttack(ref int damage, Projectile proj)
 		{
 
@@ -436,21 +436,21 @@ namespace SGAmod
 		}
 
 		public void LookForThrowingGear(ref int type)
-        {
+		{
 			int[] typesToCheck = { ItemID.Shuriken, ItemID.ThrowingKnife, ItemID.PoisonedKnife, ItemID.FrostDaggerfish, ItemID.StarAnise, ItemID.BoneDagger };
 
-			for(int i = 0; i < player.inventory.Length; i += 1)
-            {
+			for (int i = 0; i < player.inventory.Length; i += 1)
+			{
 				Item item = player.inventory[i];
 
 				var counter = typesToCheck.Where(testby => testby == item.type);
 
 				if (counter.Count() > 0)
-                {
+				{
 					type = counter.ToArray()[0];
 					break;
 				}
-            }
+			}
 		}
 
 		public void UpgradeTF2()
@@ -463,12 +463,12 @@ namespace SGAmod
 			}
 		}
 
-		public int ActionStackOverflow(ActionCooldownStack stack,int stackIndex)
+		public int ActionStackOverflow(ActionCooldownStack stack, int stackIndex)
 		{
 			if (MaxCooldownStacks <= stackIndex && stack.timerup % 2 == 0)
 				return 0;
 
-				return 1;
+			return 1;
 		}
 
 		public void DoCooldownUpdate()
@@ -492,8 +492,8 @@ namespace SGAmod
 
 		}
 
-		private bool ShieldJustBlock(int blocktime,Projectile shield, Vector2 where, ref int damage, int damageSourceIndex)
-        {
+		private bool ShieldJustBlock(int blocktime, Projectile shield, Vector2 where, ref int damage, int damageSourceIndex)
+		{
 			if (blocktime < 30 && AddCooldownStack(60 * 3))
 			{
 				for (float i = 0; i < MathHelper.TwoPi; i += MathHelper.Pi / 10f)
@@ -511,7 +511,7 @@ namespace SGAmod
 				(shield.modProjectile as Items.Weapons.Shields.CorrodedShieldProj).JustBlock(blocktime, where, ref damage, damageSourceIndex);
 
 				if (enchantedShieldPolish)
-                {
+				{
 					player.statMana = Math.Min(player.statMana + damage, player.statManaMax2);
 					player.ManaEffect(damage);
 				}
@@ -537,34 +537,34 @@ namespace SGAmod
 
 		}
 
-		protected bool ShieldDamageCheck(Vector2 where, ref int damage,int damageSourceIndex)
+		protected bool ShieldDamageCheck(Vector2 where, ref int damage, int damageSourceIndex)
 		{
 			Vector2 itavect = where - player.Center;
 			itavect.Normalize();
 
 
-			if (player.SGAPly().heldShield>=0 && player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1)
+			if (player.SGAPly().heldShield >= 0 && player.ownedProjectileCounts[mod.ProjectileType("CapShieldToss")] < 1)
 			{
 				int heldShield = player.SGAPly().heldShield;
 
 				//if (SGAPlayer.ShieldTypes.ContainsKey(player.HeldItem.type))
 				//{
-					int foundhim = -1;
+				int foundhim = -1;
 
-					int xxxz = 0;
-					int thetype;
-					/*SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out thetype);
-					Projectile proj = null;
-					for (xxxz = 0; xxxz < Main.maxProjectiles; xxxz++)
+				int xxxz = 0;
+				int thetype;
+				/*SGAPlayer.ShieldTypes.TryGetValue(player.HeldItem.type, out thetype);
+				Projectile proj = null;
+				for (xxxz = 0; xxxz < Main.maxProjectiles; xxxz++)
+				{
+					if (Main.projectile[xxxz].active && Main.projectile[xxxz].type == thetype && Main.projectile[xxxz].owner == player.whoAmI)
 					{
-						if (Main.projectile[xxxz].active && Main.projectile[xxxz].type == thetype && Main.projectile[xxxz].owner == player.whoAmI)
-						{
-							foundhim = xxxz;
-							proj = Main.projectile[xxxz];
-							break;
-						}
-					}*/
-					Projectile proj = Main.projectile[heldShield];
+						foundhim = xxxz;
+						proj = Main.projectile[xxxz];
+						break;
+					}
+				}*/
+				Projectile proj = Main.projectile[heldShield];
 				if (proj.active)
 				{
 					foreach (Projectile proj2 in Main.projectile.Where(testby => testby.modProjectile != null && testby.modProjectile is CorrodedShieldProj))
@@ -591,7 +591,7 @@ namespace SGAmod
 							float diff = Vector2.Dot(itavect, ang1);
 
 
-							if (diff > (proj.modProjectile as CorrodedShieldProj).BlockAnglePublic-player.SGAPly().shieldBlockAngle)
+							if (diff > (proj.modProjectile as CorrodedShieldProj).BlockAnglePublic - player.SGAPly().shieldBlockAngle)
 							{
 								if (ShieldJustBlock(blocktime, proj, where, ref damage, damageSourceIndex))
 									return true;
@@ -718,7 +718,7 @@ namespace SGAmod
 			{
 				for (int g = 0; g < Player.MaxBuffs; g += 1)
 				{
-					if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore>0))
+					if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore > 0))
 					{
 						if (player.buffType[g] == BuffID.ManaSickness && player.buffTime[g] > 3)
 						{
@@ -726,7 +726,7 @@ namespace SGAmod
 								player.buffTime[g] += 1;
 						}
 					}
-					if (EnhancingCharm>0)
+					if (EnhancingCharm > 0)
 					{
 						if (potionsicknessincreaser > 0)
 						{
@@ -738,7 +738,7 @@ namespace SGAmod
 						}
 					}
 				}
-				if (EnhancingCharm>0)
+				if (EnhancingCharm > 0)
 				{
 					if (timer % (EnhancingCharm) == 0)
 					{
@@ -797,11 +797,73 @@ namespace SGAmod
 			anticipation = (int)MathHelper.Clamp(anticipation + (IdgNPC.bossAlive ? (adderlevel) : -1), 0, (100 + (adder2)) * 3);
 		}
 
-		public void FlaskEffects(Rectangle rect,Vector2 speed)
+		public void FlaskEffects(Rectangle rect, Vector2 speed)
 		{
 			if (flaskBuff != default)
 			{
 				flaskBuff.FlaskEffect(rect, speed);
+			}
+		}
+
+		public static void DoPotionFatigue(SGAPlayer sgaply)
+		{
+			if (!SGAConfig.Instance.PotionFatigue && !sgaply.nightmareplayer)
+			{
+				sgaply.potionFatigue = Math.Max(sgaply.potionFatigue - 20, 0);
+				return;
+			}
+
+			Player player = sgaply.player;
+
+			int count = 0;
+			bool noPotions = true;
+			List<int> badBuffSlots = new List<int>();
+
+			for (int bufftype = 0; bufftype < player.buffTime.Length; bufftype += 1)
+			{
+				if (player.buffTime[bufftype] > 0 && !Main.buffNoTimeDisplay[player.buffType[bufftype]])
+				{
+					int found = SGAmod.BuffsThatHavePotions.Where(testby => testby == player.buffType[bufftype]).Count();
+
+					if (SGAmod.BuffsThatHavePotions.Where(testby => testby == player.buffType[bufftype]).Count() > 0)
+					{
+						count += 1;
+						badBuffSlots.Add(bufftype);
+						noPotions = false;
+					}
+				}
+			}
+
+			if (count <= 8)
+			{
+				sgaply.potionFatigue = Math.Max(sgaply.potionFatigue - 20, 0);
+				return;
+			}
+
+			sgaply.potionFatigue += (count - 8) * 1;
+
+			int fatigue = (int)sgaply.potionFatigue;
+
+			if (fatigue > 10000)
+			{
+				if (Main.rand.Next(1000000) < fatigue / 1)
+				{
+					if (badBuffSlots.Count > 0)
+					{
+						int[] badBuffs = { ModContent.BuffType<PiercedVulnerable>(), ModContent.BuffType<PoisonStack>(), ModContent.BuffType<Gourged>(), ModContent.BuffType<WorseWeakness>(), ModContent.BuffType<MiningFatigue>(), ModContent.BuffType<Sunburn>(), ModContent.BuffType<MurkyDepths>(), BuffID.Rabies, ModContent.BuffType<TechnoCurse>(), ModContent.BuffType<EverlastingSuffering>() };
+
+						badBuffSlots = badBuffSlots.OrderBy(testby => player.buffTime[testby]).ToList();
+						player.buffType[badBuffSlots[0]] = badBuffs[Main.rand.Next(badBuffs.Length)];
+
+						sgaply.potionFatigue -= 5000;
+
+						var snd = Main.PlaySound(SoundID.Zombie, (int)player.Center.X, (int)player.Center.Y, 31);
+						if (snd != null)
+						{
+							snd.Pitch = 0.75f;
+						}
+					}
+				}
 			}
 		}
 	}

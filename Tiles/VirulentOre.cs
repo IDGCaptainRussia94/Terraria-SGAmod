@@ -24,7 +24,7 @@ namespace SGAmod.Tiles
 			soundStyle = 1;
 			dustType = 128;
 			drop = mod.ItemType("VirulentOre");
-			minPick = 105;
+			minPick = 150;
 			mineResist = 5f;
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Virulent");

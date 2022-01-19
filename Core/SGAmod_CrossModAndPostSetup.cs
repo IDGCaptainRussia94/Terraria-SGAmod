@@ -72,6 +72,8 @@ namespace SGAmod
 
 		public static void BoostModdedDamage(Player player, float damage, int crit)
 		{
+			return;
+
 			if (SGAmod.Calamity.Item1 || SGAmod.Thorium.Item1)
 			{
 				PropertyBoostModdedDamage = new ModdedDamage(player, damage, crit);

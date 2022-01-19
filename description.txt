@@ -22,6 +22,14 @@ A few warnings before the changelog:
 -This mod has not been properly tested/optimized for multiplayer, while it supports some MP features, many things are disabled in MP
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
+3.622-(1/19/22)--Hotfix 31
+
+--Fixed:
+
+-Moist sand soft-locking the game with some other mods
+
+-Modded damage boosts have been disabled for now until I can figure out why it's causing issues
+
 
 3.621-(1/12/22)--Hotfix 30
 

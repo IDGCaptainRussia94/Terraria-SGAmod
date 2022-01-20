@@ -325,7 +325,6 @@ namespace SGAmod
 			Idglib.AbsentItemDisc.Add(this.ItemType("StoneBarrierStaff"), "Found in the Deeper Dungeons");
 			Idglib.AbsentItemDisc.Add(this.ItemType("SecondCylinder"), "Sold by the Arms Dealer in a world with tin, or in Hardmode");
 			Idglib.AbsentItemDisc.Add(this.ItemType("GunBarrelParts"), "Sold by the Arms Dealer in a world with copper, or in Hardmode");
-			Idglib.AbsentItemDisc.Add(ModContent.ItemType<FistOfMoonlord>(), "10% drop from Moon Lord");
 			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SwordofTheBlueMoon>(), "10% (20% expert mode) drop from Moon Lord");
 			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SoulPincher>(), "Part of Moon Lord's item pool, can drop as an extra item in the teasure bag");
 

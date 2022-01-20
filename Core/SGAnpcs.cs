@@ -976,7 +976,13 @@ namespace SGAmod
 						nextSlot++;
 					}
 
-						shop.item[nextSlot].SetDefaults(ModContent.ItemType<CobwebRepellent>());
+					if (player.ZoneBeach)
+					{
+						shop.item[nextSlot].SetDefaults(ItemID.DivingHelmet);
+						nextSlot++;
+					}
+
+					shop.item[nextSlot].SetDefaults(ModContent.ItemType<CobwebRepellent>());
 						nextSlot++;
 
 					if (true)
@@ -1015,6 +1021,13 @@ namespace SGAmod
 						shop.item[nextSlot].SetDefaults(ModContent.ItemType < SharkTooth>());
 						nextSlot++;
 					}
+
+					if (player.CountItem(ModContent.ItemType<SharkBait>()) > 0)
+					{
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<SharkBait>());
+						nextSlot++;
+					}
+
 					if (player.CountItem(ModContent.ItemType<StarfishBlaster>()) + player.CountItem(ModContent.ItemType<Starfishburster>()) > 0)
 					{
 						shop.item[nextSlot].SetDefaults(ItemID.Starfish);

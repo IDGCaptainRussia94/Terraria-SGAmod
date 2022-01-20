@@ -577,7 +577,7 @@ namespace SGAmod.Items.Consumables
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
-			item.buffType = mod.BuffType("DragonsMight");
+			item.buffType = ModContent.BuffType<DragonsMight>();
 			item.buffTime = 60*30;
 		}
 
@@ -585,7 +585,7 @@ namespace SGAmod.Items.Consumables
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.RestorationPotion,2);
-			recipe.AddIngredient(ModContent.ItemType < OmniSoul>(), 2);
+			recipe.AddIngredient(ModContent.ItemType <OmniSoul>(), 2);
 			recipe.AddIngredient(ModContent.ItemType < Fridgeflame>(), 2);
 			recipe.AddIngredient(ModContent.ItemType < MurkyGel>(), 3);
 			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 20);

@@ -134,10 +134,11 @@ namespace SGAmod.Items.Accessories
 	[AutoloadEquip(EquipType.HandsOn)]
 	public class PrismalGuantlet : ModItem
 	{
+		public static string tip = "15% increased melee damage and melee speed, 8% increased melee crit\n+5 armor penetration, Inflict OnFire! and Frostburn on hit and melee hits count as Cold Damage";
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Gauntlet");
-			Tooltip.SetDefault("15% increased melee damage and melee speed, 8% increased melee crit\n+5 armor penetration, Inflict OnFire! and Frostburn on hit and melee hits count as Cold Damage");
+			Tooltip.SetDefault(tip);
 		}
 
 		public override void SetDefaults()
@@ -182,7 +183,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Yoyo Gauntlet");
-			Tooltip.SetDefault("All effects of Prismal Guantlet, Plus:\nYoyo Bag and Professional's Drop Effect, and fabulous rainbow strings!");
+			Tooltip.SetDefault(PrismalGuantlet.tip+"\nYoyos are 25% faster and do more damage at higher ranges\nYoyo Bag with fabulous rainbow strings!");
 		}
 
 		public override void SetDefaults()
@@ -743,7 +744,6 @@ namespace SGAmod.Items.Accessories
 			//sgaply.techdamage += 0.05f;
 			ModContent.GetInstance<PlasmaPack>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<FridgeFlamesCanister>().UpdateAccessory(player, hideVisual);
-			ModContent.GetInstance<HandlingGloves>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<PrismalCore>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<JindoshBuckler>().UpdateAccessoryThing(player, hideVisual, true);
 		}
@@ -757,7 +757,6 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
 			recipe.AddIngredient(mod.ItemType("PrismalCore"), 1);
 			recipe.AddIngredient(mod.ItemType("PlasmaPack"), 1);
-			recipe.AddIngredient(mod.ItemType("HandlingGloves"), 1);
 			recipe.AddIngredient(mod.ItemType("JindoshBuckler"), 1);
 			recipe.AddIngredient(mod.ItemType("FridgeFlamesCanister"), 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
@@ -1275,7 +1274,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Undying Valor");
-			Tooltip.SetDefault("'The caliburns lend you the strength to keep fighting to the end'\nAll damage taken is converted into a DoT stack");
+			Tooltip.SetDefault("'The Caliburns lend you the strength to keep fighting to the end'\nAll damage taken is converted into a DoT stack");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 
@@ -3533,12 +3532,12 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.SGAPly().liquidGambling = 5;
+			UpdateInventory(player);
 		}
 
         public override void UpdateInventory(Player player)
         {
-			UpdateAccessory(player, true);
+			player.SGAPly().liquidGambling = 5;
 		}
 
         public override void SetDefaults()
@@ -3557,7 +3556,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("High Stakes Set");
-			Tooltip.SetDefault("'Who knows... Where the whims of fate may lead us.'\nDamage given has a -50% to +50% variance\nDamage taken will vary between halved or doubled\nIncludes the effects of:\n--Hearts of the Cards, Snake Eyes\n--Russian Roulette, and Liquified Gambling");
+			Tooltip.SetDefault("'Who knows... Where the whims of fate may lead us.'\nDamage taken and given will be between half or doubled\nSelf caused damage will be greatly reduced\nIncludes the effects of all the gambling conponents");
 		}
 
 		public override bool Autoload(ref string name)
@@ -3570,17 +3569,20 @@ namespace SGAmod.Items.Accessories
 		{
 			if (player != null && player.SGAPly().highStakesSet)
 			{
-				damage = (int)(damage * Main.rand.NextFloat(0.50f, 1.50f));
+				damage = (int)(damage * Main.rand.NextFloat(0.50f, 2.00f));
 			}
 		}
 
         public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.SGAPly().highStakesSet = true;
 			base.UpdateAccessory(player, hideVisual);
-			ModContent.GetInstance<CardDeckPersona>().UpdateAccessory(player, hideVisual);
-			ModContent.GetInstance<RussianRoulette>().UpdateAccessory(player, hideVisual);
-			ModContent.GetInstance<SnakeEyes>().UpdateAccessory(player, hideVisual);
+			if (GetType() == typeof(HighStakesSet))
+			{
+				player.SGAPly().highStakesSet = true;
+				ModContent.GetInstance<CardDeckPersona>().UpdateAccessory(player, hideVisual);
+				ModContent.GetInstance<RussianRoulette>().UpdateAccessory(player, hideVisual);
+				ModContent.GetInstance<SnakeEyes>().UpdateAccessory(player, hideVisual);
+			}
 		}
 
 		public override void SetDefaults()
@@ -3754,76 +3756,6 @@ namespace SGAmod.Items.Accessories
 			item.value = Item.sellPrice(gold: 1);
 			item.rare = ItemRarityID.LightPurple;
 			item.accessory = true;
-		}
-	}
-
-	[AutoloadEquip(EquipType.HandsOn)]
-	public class BustlingFungus : ModItem
-	{
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Bustling Fungus");
-			Tooltip.SetDefault("Standing still creates an aura of fungal healing around you\nYour sentries (if they do not move) also create an aura of healing");
-		}
-
-		public override void UpdateAccessory(Player player, bool hideVisual)
-		{
-			player.SGAPly().bustlingFungus = true;
-		}
-
-		public override void SetDefaults()
-		{
-			item.maxStack = 1;
-			item.width = 26;
-			item.defense = 0;
-			item.accessory = true;
-			item.height = 14;
-			item.value = Item.buyPrice(0, 1, 0, 0);
-			item.rare = ItemRarityID.Blue;
-		}
-	}
-
-	public class ArmchairGeneral : PrismalNecklace
-	{
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Armchair General");
-			Tooltip.SetDefault("'Lead not by example'\n" + Language.GetTextValue("ItemTooltip.HuntressBuckler") + "\nFurther increased knockback, max minions increased by 1\nEffects of Prismal Necklace, Busting Fungus, and Shiny Stone");
-		}
-
-		public override void UpdateAccessory(Player player, bool hideVisual)
-		{
-			base.UpdateAccessory(player,hideVisual);
-			player.maxMinions += 1;
-			player.minionKB += 2f;
-			player.SGAPly().bustlingFungus = true;
-			player.shinyStone = true;
-			player.dd2Accessory = true;
-		}
-
-		public override void SetDefaults()
-		{
-			item.maxStack = 1;
-			item.width = 26;
-			item.defense = 0;
-			item.accessory = true;
-			item.height = 14;
-			item.value = Item.buyPrice(0, 1, 0, 0);
-			item.expert = true;
-			item.rare = ItemRarityID.Cyan;
-		}
-		public override void AddRecipes()
-		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<PrismalNecklace>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<BustlingFungus>(), 1);
-			recipe.AddRecipeGroup("SGAmod:DD2Accessories", 1);
-			recipe.AddIngredient(ItemID.ShinyStone, 1);
-			recipe.AddIngredient(ItemID.PapyrusScarab, 1);
-			recipe.AddIngredient(ModContent.ItemType<LunarRoyalGel>(), 12);
-			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
-			recipe.SetResult(this, 1);
-			recipe.AddRecipe();
 		}
 	}
 
@@ -4021,7 +3953,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Necklace");
-			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace") + " (by 2)\nIncreases your max number of sentries\n"+Language.GetTextValue("ItemTooltip.HerculesBeetle")+ "\nImproves Max Electric Charge by 1000\nEffects of Auracle's Insight");
+			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace") + " (by 2)\n25% increased minion damage\nImproves Max Electric Charge by 1000\nAuras are boosted by 1 power level");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -4029,7 +3961,7 @@ namespace SGAmod.Items.Accessories
 			base.UpdateAccessory(player,hideVisual);
 			player.maxMinions += 2;
 			player.maxTurrets += 1;
-			player.minionDamage += 0.15f;
+			player.minionDamage += 0.25f;
 			player.minionKB += 2f;
 		}
 
@@ -4047,13 +3979,83 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType< NovusSummoning>(), 1);
 			recipe.AddIngredient(ModContent.ItemType< NoviteChip>(), 1);
-			recipe.AddIngredient(ItemID.HerculesBeetle, 1);
+			recipe.AddIngredient(ItemID.SummonerEmblem, 1);
 			recipe.AddIngredient(ItemID.PygmyNecklace, 1);
-			recipe.AddIngredient(ModContent.ItemType< PrismalBar>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 10);
 			recipe.AddIngredient(ModContent.ItemType<AuraclesInsight>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 32);
 
 			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
+
+	[AutoloadEquip(EquipType.HandsOn)]
+	public class BustlingFungus : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Bustling Fungus");
+			Tooltip.SetDefault("Standing still creates an aura of fungal healing around you\nYour stationary sentries also create this aura");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().bustlingFungus = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 26;
+			item.defense = 0;
+			item.accessory = true;
+			item.height = 14;
+			item.value = Item.buyPrice(0, 1, 0, 0);
+			item.rare = ItemRarityID.Blue;
+		}
+	}
+	public class ArmchairGeneral : PrismalNecklace
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Armchair General");
+			Tooltip.SetDefault("'Lead not by example'\nIncreases your maximum minions by 3, and sentries by 2\n50% Increased Summon damage and increased Minion knockback\nIncreases max electrical charge by 1000 and boosts auras by 1 level\nWhen standing still you emit a healing fungal aura and regenerate much life faster\nYour stationary sentries also emit this aura");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			player.maxMinions += 1;
+			player.SGAPly().bustlingFungus = true;
+			player.shinyStone = true;
+			player.dd2Accessory = true;
+			player.minionDamage += 0.15f;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 26;
+			item.defense = 0;
+			item.accessory = true;
+			item.height = 14;
+			item.value = Item.buyPrice(0, 10, 0, 0);
+			item.expert = true;
+			item.rare = ItemRarityID.Cyan;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<PrismalNecklace>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<BustlingFungus>(), 1);
+			recipe.AddRecipeGroup("SGAmod:DD2Accessories", 1);
+			recipe.AddIngredient(ItemID.ShinyStone, 1);
+			recipe.AddIngredient(ItemID.PapyrusScarab, 1);
+			recipe.AddIngredient(ModContent.ItemType<LunarRoyalGel>(), 12);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}

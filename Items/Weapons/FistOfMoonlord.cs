@@ -67,7 +67,7 @@ namespace SGAmod.Items.Weapons
 		}
 	}
 
-	public class FistOfMoonlordProjectile : ModProjectile
+	public class FistOfMoonlordProjectile : ModProjectile,ITrueMeleeProjectile
 	{
 		Player Owner => Main.player[projectile.owner];
 		int[] armSizes, armOrigins;

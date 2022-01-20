@@ -375,8 +375,6 @@ namespace SGAmod
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 
-            VanillaArmorSetBonus(player, set);
-
             if (set == "Desert")
             {
                 string s = "Not Binded!";
@@ -565,7 +563,7 @@ namespace SGAmod
             }        
         }
 
-        public void VanillaArmorSetBonus(Player player, string set)
+        public static void VanillaArmorSetBonus(Player player)
         {
             if (player.armor[0].type == ItemID.SpiderMask && player.armor[1].type == ItemID.SpiderBreastplate && player.armor[2].type == ItemID.SpiderGreaves)
             {

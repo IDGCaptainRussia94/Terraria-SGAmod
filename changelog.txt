@@ -1,13 +1,62 @@
 
 Changelog:
 
+3.625-(1/19/21)-beta 2
+
+-added:
+
+-Condensed Gel Pack (chaos)
+
+
+--Changed:
+
+-Arms dealer now sells Shark Bait if the player has Shark Bait
+
+-Updated Mana Herb visuals
+
+-Merchant now sells the diving helmet while at the beach
+
+-Compressed the tooltips on several of the combined, late game items
+
+-High Stakes Set is even more risky now, and self damage is reduced, and fixed inventory effect issues
+
+-Flash of Soul Sap visuals were updated to be less placeholder (IE not Lifeleech)
+
+-prismal necklace inherits Summoner Emblem now instead of the hercules beetle
+
+-Some of the loot in the SGAmod Accessories Lootbox
+
+
+--Fixed:
+
+-Celestial Monolith continuing to show on the title screen
+
+-Fog causing crashes via the detail ammount dividing by zero
+
+-Fixed spider armor not working as expected
+
+-Moist Sand being stopped by sand generating in the Dank Shrines
+
+-Trees glowing when placing down a Celestial Monolith
+
+-Astral Luminite being unminable before Moonlord
+
+-Handling Gloves being present on the Tech Master's still
+
+-Fist of Moon Lord not being true Melee
+
+-Flash of Soul Sap not working
+
+
 3.625-(1/19/21)--Patch 15: Spaced Out!
 
 --Added
 
--Starduster, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, Armchair General, Empty Plasma Cell, Shadow LockBox, Celestial Monolith, Helios Focus Crystal, Flask of Soul Sap
+-Starduster, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap
 
 -The entire Dank Wood Furnature set by Rijam
+
+-Celestial Monolith, an interactable tile to create a reverse day/night rift in the area that treats anything inside as being in the opposite time of day
 
 -Speedymatt123's Hellion Painting: a Nightmare Mode exclusive reward!
 
@@ -69,6 +118,12 @@ Changelog:
 
 -Moist Sand is created twice as fast
 
+-Arms dealer now sells Shark Bait if the player has Shark Bait
+
+-Merchant now sells the diving helmet while at the beach
+
+-Updated Mana Herb visuals
+
 -Rebalanced Druidic Sneakers: now works on Normal, Hallowed, and Jungle Grass
 
 -Rebalanced several tech weapons: adjusted Electric Charge use (some were consuming too much)
@@ -80,6 +135,8 @@ Changelog:
 -Rebalanced Tech Master's Gear and Rad Suit: Moved Handling Gloves over to Rad Suit
 
 -Rebalanced XOP Flamethrower and Flametrap Thrower: Swapped Elf Melter and Flamethrower requirements
+
+-Rebalanced Prismal Necklace: inherits Summoner Emblem now instead of the hercules beetle (no longer has knockback boost, damage increase changed to 25%)
 
 -Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
 
@@ -157,6 +214,15 @@ Changelog:
 -Drills not being affected by mining speed buffs when mining asteriods
 
 -A few minor bugs of mis-matched damage types and other smaller things
+
+
+3.622-(1/19/22)--Hotfix 31
+
+--Fixed:
+
+-Moist sand soft-locking the game with some other mods
+
+-Modded damage boosts have been disabled for now until I can figure out why it's causing issues
 
 
 3.621-(1/12/22)--Hotfix 30

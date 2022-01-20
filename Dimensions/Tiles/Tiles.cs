@@ -206,8 +206,8 @@ namespace SGAmod.Dimensions.Tiles
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
-			if (!SpaceDim.postMoonLord)
-				fail = true;
+			//if (!SpaceDim.postMoonLord)
+			//	fail = true;
 
 			if (!fail)
 			{ 

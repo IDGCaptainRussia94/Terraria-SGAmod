@@ -1041,6 +1041,8 @@ namespace SGAmod
 			SGAPlayer sgaply = player.SGAPly();
 			PostPostUpdateEquipsEvent?.Invoke(sgaply);
 
+			SGAGlobalItem.VanillaArmorSetBonus(player);
+
 			if (sgaply.ELS)
 			{
 				if (player.lifeRegen < 0)
@@ -1744,6 +1746,14 @@ namespace SGAmod
 
 			if (realIFrames > 0)
 				return false;
+
+			if (highStakesSet)
+			{
+				if (damageSource.SourcePlayerIndex == player.whoAmI)
+				{
+					damage /= 4;
+				}
+			}
 
 			SGAnpcs.PlayersGotHit();
 

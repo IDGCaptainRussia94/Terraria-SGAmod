@@ -772,7 +772,7 @@ namespace SGAmod.Dimensions
 
                 if (lightingtotal < 2600 && (!isMurk || (!SGAConfigClient.Instance.Murklite && isMurk)))
                 {
-                    int fogDetail = (SGAConfigClient.Instance.FogDetail)/5;
+                    int fogDetail = Math.Max((SGAConfigClient.Instance.FogDetail)/5,1);
                     float fogAlpha = 0.04f * (6f / (float)fogDetail);
 
                     //Draw Texture Parts

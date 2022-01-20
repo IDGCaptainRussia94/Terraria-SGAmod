@@ -1610,6 +1610,7 @@ namespace SGAmod
 		}
 		internal static void DrawBehindAllTilesButBeforeSky()
 		{
+			if (!Main.gameMenu)
 			Items.Placeable.CelestialMonolithManager.DrawMonolithAura();
 		}
 		internal static void DrawBehindMoonMan()

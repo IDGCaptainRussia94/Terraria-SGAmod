@@ -134,10 +134,11 @@ namespace SGAmod.Items.Accessories
 	[AutoloadEquip(EquipType.HandsOn)]
 	public class PrismalGuantlet : ModItem
 	{
+		public static string tip = "15% increased melee damage and melee speed, 8% increased melee crit\n+5 armor penetration, Inflict OnFire! and Frostburn on hit and melee hits count as Cold Damage";
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Gauntlet");
-			Tooltip.SetDefault("15% increased melee damage and melee speed, 8% increased melee crit\n+5 armor penetration, Inflict OnFire! and Frostburn on hit and melee hits count as Cold Damage");
+			Tooltip.SetDefault(tip);
 		}
 
 		public override void SetDefaults()
@@ -182,7 +183,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Yoyo Gauntlet");
-			Tooltip.SetDefault("All effects of Prismal Guantlet, Plus:\nYoyo Bag and Professional's Drop Effect, and fabulous rainbow strings!");
+			Tooltip.SetDefault(PrismalGuantlet.tip+"\nYoyos are 25% faster and do more damage at higher ranges\nYoyo Bag with fabulous rainbow strings!");
 		}
 
 		public override void SetDefaults()
@@ -590,7 +591,7 @@ namespace SGAmod.Items.Accessories
 			item.width = 24;
 			item.height = 52;
 			item.rare = ItemRarityID.LightPurple;
-			item.value = Item.buyPrice(gold: 1);
+			item.value = Item.buyPrice(gold: 10);
 			item.accessory = true;
 		}
 
@@ -714,7 +715,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tech Master's Gear");
-			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\nGrants the effects of:\n-Prismal Core, Plasma Pack, and Fridgeflame Canister\n-Handling Gloves and Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Knuckles (only one needed to craft)\n-Rusted Bulwark's effects are doubled");
+			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\nGrants the effects of:\n-Prismal Core, Plasma Pack, and Fridgeflame Canister\n-Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Knuckles (only one needed to craft)\n-Rusted Bulwark's effects are doubled");
 		}
 
 		public override void SetDefaults()
@@ -743,7 +744,6 @@ namespace SGAmod.Items.Accessories
 			//sgaply.techdamage += 0.05f;
 			ModContent.GetInstance<PlasmaPack>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<FridgeFlamesCanister>().UpdateAccessory(player, hideVisual);
-			ModContent.GetInstance<HandlingGloves>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<PrismalCore>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<JindoshBuckler>().UpdateAccessoryThing(player, hideVisual, true);
 		}
@@ -757,7 +757,6 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
 			recipe.AddIngredient(mod.ItemType("PrismalCore"), 1);
 			recipe.AddIngredient(mod.ItemType("PlasmaPack"), 1);
-			recipe.AddIngredient(mod.ItemType("HandlingGloves"), 1);
 			recipe.AddIngredient(mod.ItemType("JindoshBuckler"), 1);
 			recipe.AddIngredient(mod.ItemType("FridgeFlamesCanister"), 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
@@ -1270,13 +1269,155 @@ namespace SGAmod.Items.Accessories
 			item.expert = true;
 		}
 	}
+	public class UndyingValor : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Undying Valor");
+			Tooltip.SetDefault("'The Caliburns lend you the strength to keep fighting to the end'\nAll damage taken is converted into a DoT stack");
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+		}
+
+		public override string Texture => "Terraria/Item_3857";
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.defense = 0;
+			item.accessory = true;
+			item.value = Item.sellPrice(0, 10, 0, 0);
+			item.height = 16;
+			item.expert = true;
+			item.rare = ItemRarityID.Quest;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().undyingValor = true;
+		}
+
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+			if (!Main.gameMenu)
+			{
+				Texture2D texture = mod.GetTexture("Glow");
+
+				Texture2D[] tex1 = { mod.GetTexture("Items/Weapons/Caliburn/CaliburnTypeA"), mod.GetTexture("Items/Weapons/Caliburn/CaliburnTypeB"), mod.GetTexture("Items/Weapons/Caliburn/CaliburnTypeC") };
+
+				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+
+				List<float> valuesz = new List<float>();
+				List<(int,float)> valuesz2 = new List<(int, float)>();
+
+				for (int i = 0; i < 3; i += 1)
+				{
+					valuesz2.Add((i, (((i / 3f) * MathHelper.TwoPi)+ Main.GlobalTime)));
+				}
+
+
+				for (int i = 0; i < 50; i += 1)
+				{
+					valuesz.Add(((i / 50f) + Main.GlobalTime / 2f) % 1f);
+				}
+
+
+				valuesz = valuesz.OrderBy(testby => testby).ToList();
+
+				valuesz2 = valuesz2.OrderBy(testby => testby.Item2).ToList();
+
+
+				foreach ((int, float) fot in valuesz2)
+				{
+					float scalezx = 1f + (float)Math.Sin(fot.Item2) / 5f;
+					if (scalezx <= 1f)
+					{
+						spriteBatch.Draw(tex1[fot.Item1], item.Center + (Vector2.UnitX.RotatedBy(fot.Item2)*new Vector2(24f,5f)).RotatedBy(item.velocity.X / 6f) - Main.screenPosition, null, Color.White, -MathHelper.PiOver4+(item.velocity.X / 6f) + (float)Math.Sin((scalezx-1f)) * 0.75f, tex1[fot.Item1].Size()/2f, scalezx * 0.60f, SpriteEffects.None, 0f);
+					}
+				}
+
+				foreach (float fot in valuesz)
+                {
+					spriteBatch.Draw(texture, item.Center + new Vector2(0, 0) - Main.screenPosition, null, Main.hslToRgb((Main.GlobalTime-fot*1.5f)%1f,1f,0.65f) * (1f-fot), item.velocity.X/6f, textureOrigin, new Vector2(1f, 1.75f) * (fot* fot), SpriteEffects.None, 0f);
+				}
+
+				foreach ((int, float) fot in valuesz2)
+				{
+					float scalezx = 1f + (float)Math.Sin(fot.Item2) / 5f;
+					if (scalezx > 1f)
+					{
+						spriteBatch.Draw(tex1[fot.Item1], item.Center + (Vector2.UnitX.RotatedBy(fot.Item2) * new Vector2(24f, 5f)).RotatedBy(item.velocity.X / 6f) - Main.screenPosition, null, Color.White, -MathHelper.PiOver4 + (item.velocity.X / 6f) + (float)Math.Sin((scalezx - 1f)) * 0.75f, tex1[fot.Item1].Size() / 2f, scalezx*0.60f, SpriteEffects.None, 0f);
+					}
+				}
+
+			}
+			return false;
+		}
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			if (!Main.gameMenu)
+			{
+				Texture2D texture = mod.GetTexture("Glow");
+
+				Texture2D[] tex1 = { mod.GetTexture("Items/Weapons/Caliburn/CaliburnTypeA"), mod.GetTexture("Items/Weapons/Caliburn/CaliburnTypeB"), mod.GetTexture("Items/Weapons/Caliburn/CaliburnTypeC") };
+
+				Vector2 textureOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+
+				List<float> valuesz = new List<float>();
+				List<(int, float)> valuesz2 = new List<(int, float)>();
+
+				for (int i = 0; i < 3; i += 1)
+				{
+					valuesz2.Add((i, (((i / 3f) * MathHelper.TwoPi) + Main.GlobalTime)));
+				}
+
+				position = position + new Vector2(13f, 13f) * Main.inventoryScale;
+
+
+
+				for (int i = 0; i < 50; i += 1)
+				{
+					valuesz.Add(((i / 50f) + Main.GlobalTime / 2f) % 1f);
+				}
+
+
+				valuesz = valuesz.OrderBy(testby => testby).ToList();
+
+				valuesz2 = valuesz2.OrderBy(testby => testby.Item2).ToList();
+
+
+				foreach ((int, float) fot in valuesz2)
+				{
+					float scalezx = 1f + (float)Math.Sin(fot.Item2) / 5f;
+					if (scalezx <= 1f)
+					{
+						spriteBatch.Draw(tex1[fot.Item1], position + (Vector2.UnitX.RotatedBy(fot.Item2) * new Vector2(24f, 5f)), null, Color.White, -MathHelper.PiOver4 + (float)Math.Sin((scalezx - 1f)) * 0.75f, tex1[fot.Item1].Size() / 2f, scalezx * 0.60f, SpriteEffects.None, 0f);
+					}
+				}
+
+				foreach (float fot in valuesz)
+				{
+					spriteBatch.Draw(texture, position + new Vector2(0, 0), null, Main.hslToRgb((Main.GlobalTime - fot * 1.5f) % 1f, 1f, 0.65f) * (1f - fot), 0, textureOrigin, new Vector2(1f, 1.75f) * (fot * fot), SpriteEffects.None, 0f);
+				}
+
+				foreach ((int, float) fot in valuesz2)
+				{
+					float scalezx = 1f + (float)Math.Sin(fot.Item2) / 5f;
+					if (scalezx > 1f)
+					{
+						spriteBatch.Draw(tex1[fot.Item1], position + (Vector2.UnitX.RotatedBy(fot.Item2) * new Vector2(24f, 5f)), null, Color.White, -MathHelper.PiOver4 + (float)Math.Sin((scalezx - 1f)) * 0.75f, tex1[fot.Item1].Size() / 2f, scalezx * 0.60f, SpriteEffects.None, 0f);
+					}
+				}
+			}
+			return false;
+		}
+	}	
 	public class PhaethonEye : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shadowspirit's Eye");
 			Tooltip.SetDefault("'an eye of Phaethon, grants its wearing protection of the cosmos...'" +
-				"\nGrants a 1/3 chance of converting debuffs into Action Cooldown Stacks\nLethal damage is converted into an Action Cooldown Stack\nGrants ALL sense potion effects (hide to disable)\nUpgrades the Caliburn Compass to detect Rare creatures from anywhere");
+				"\nGrants a 1/3 chance of converting debuffs into Action Cooldown Stacks\nLethal damage is converted into an Action Cooldown Stack\nGrants ALL sense potion effects (hide to disable)\nUpgrades the Caliburn Compass to detect Rare creatures from anywhere\nVisual buffs work while in inventory");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 
@@ -1293,18 +1434,24 @@ namespace SGAmod.Items.Accessories
 			item.expert = true;
 		}
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
-		{
+        public override void UpdateInventory(Player player)
+        {
 			player.SGAPly().phaethonEye = 3;
-
-			if (!hideVisual)
-			{
-				player.dangerSense = true;
+			player.dangerSense = true;
 				player.detectCreature = true;
 				player.findTreasure = true;
 				player.nightVision = true;
 				player.sonarPotion = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+
+			if (!hideVisual)
+			{
+				UpdateInventory(player);
 			}
+			player.SGAPly().phaethonEye = 10;
 
 		}
 
@@ -1484,7 +1631,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rad Suit");
-			Tooltip.SetDefault("'Deflects punching at a molecular level!'\nGrants 50% increased radiation resistance and immunity to Radiation One\nYou create bursts of Radiation on enemies when you score an Apocalyptical\n"+Idglib.ColorText(Color.Red, "But only on enemies who are irradiated")+"\nDamage done is boosted by your Apocalyptical Strength");
+			Tooltip.SetDefault("'Deflects punching at a molecular level!'\nGrants 50% increased radiation resistance and immunity to Radiation One\nYou create bursts of Radiation on enemies when you score an Apocalyptical\n"+Idglib.ColorText(Color.Red, "But only on enemies who are irradiated")+"\nDamage done is boosted by your Apocalyptical Strength\nIncreased effects of Handling Gloves");
 		}
 		public override string Texture
 		{
@@ -1494,6 +1641,7 @@ namespace SGAmod.Items.Accessories
 		{
 			player.GetModPlayer<SGAPlayer>().RadSuit = true;
 			player.GetModPlayer<IdgPlayer>().radresist += 0.50f;
+			ModContent.GetInstance<HandlingGloves>().UpdateAccessory(player, hideVisual);
 			player.buffImmune[ModLoader.GetMod("IDGLibrary").GetBuff("RadiationOne").Type] = true;
 		}
 
@@ -3384,12 +3532,12 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.SGAPly().liquidGambling = 5;
+			UpdateInventory(player);
 		}
 
         public override void UpdateInventory(Player player)
         {
-			UpdateAccessory(player, true);
+			player.SGAPly().liquidGambling = 5;
 		}
 
         public override void SetDefaults()
@@ -3408,7 +3556,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("High Stakes Set");
-			Tooltip.SetDefault("Damage taken and given has a 25% variance\nIncludes the effects of:\n--Hearts of the Cards, Snake Eyes\n--Russian Roulette, and Liquified Gambling");
+			Tooltip.SetDefault("'Who knows... Where the whims of fate may lead us.'\nDamage taken and given will be between half or doubled\nSelf caused damage will be greatly reduced\nIncludes the effects of all the gambling conponents");
 		}
 
 		public override bool Autoload(ref string name)
@@ -3421,17 +3569,20 @@ namespace SGAmod.Items.Accessories
 		{
 			if (player != null && player.SGAPly().highStakesSet)
 			{
-				damage = (int)(damage * Main.rand.NextFloat(0.75f, 1.25f));
+				damage = (int)(damage * Main.rand.NextFloat(0.50f, 2.00f));
 			}
 		}
 
         public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.SGAPly().highStakesSet = true;
 			base.UpdateAccessory(player, hideVisual);
-			ModContent.GetInstance<CardDeckPersona>().UpdateAccessory(player, hideVisual);
-			ModContent.GetInstance<RussianRoulette>().UpdateAccessory(player, hideVisual);
-			ModContent.GetInstance<SnakeEyes>().UpdateAccessory(player, hideVisual);
+			if (GetType() == typeof(HighStakesSet))
+			{
+				player.SGAPly().highStakesSet = true;
+				ModContent.GetInstance<CardDeckPersona>().UpdateAccessory(player, hideVisual);
+				ModContent.GetInstance<RussianRoulette>().UpdateAccessory(player, hideVisual);
+				ModContent.GetInstance<SnakeEyes>().UpdateAccessory(player, hideVisual);
+			}
 		}
 
 		public override void SetDefaults()
@@ -3461,18 +3612,54 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	public class CobwebRepellent : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Cobweb Repellent");
+			Tooltip.SetDefault("Breaks cobwebs 3 times as fast when stuck on them");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().cobwebRepellent = Math.Max(player.SGAPly().cobwebRepellent, (byte)1);
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 26;
+			item.defense = 0;
+			item.accessory = true;
+			item.height = 14;
+			item.value = Item.buyPrice(0, 1, 0, 0);
+			item.rare = ItemRarityID.Blue;
+		}
+	}
 
 	public class ExperimentalPathogen : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Experimental Pathogen");
-			Tooltip.SetDefault("'Takes advantage of a weakened body, allowing further damage'\nGain 5% increased damage against enemies per buff/debuff applies to them\nGoes to a max of 25%");
+			Tooltip.SetDefault("'takes advantage of a weakened body, allowing further damage'\n'But it weakens you as well'\nGain 6% increased damage against enemies per buff/debuff applied to them\n"+Idglib.ColorText(Color.Red,"However, you suffer 5% more DoT damage per debuff on yourself")+ "\nStacks up to a max of 5 buffs/debuffs\nFurthermore, attacks have a 25% chance to extend enemy debuffs");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.SGAPly().experimentalPathogen = true;
+			float debuffs = 0f;
+
+			for (int i = 0; i < player.buffTime.Length; i += 1)
+			{
+				if (player.buffTime[i] > 0 && player.buffType[i] >= 0 && Main.debuff[player.buffType[i]])
+                {
+					debuffs++;
+					if (debuffs >= 5)
+						break;
+				}
+			}
+			player.SGAPly().DoTResist += 0.05f * debuffs;
 		}
 
 		public override bool Autoload(ref string name)
@@ -3486,15 +3673,36 @@ namespace SGAmod.Items.Accessories
 			if (player != null && player.SGAPly().experimentalPathogen)
 			{
 				int dam = sourcedamage;
+
+				if (Main.rand.Next(100) < 25)
+                {
+					List<int> buffIndex = new List<int>();
+					for (int i = 0; i<npc.buffTime.Length; i++)
+                    {
+						if (npc.buffTime[i] > 0 && Main.debuff[npc.buffType[i]])
+						{
+							buffIndex.Add(i);
+						}
+                    }
+					if (buffIndex.Count > 0)
+					{
+						buffIndex = buffIndex.OrderBy(testby => Main.rand.Next()).ToList();
+						int extendTime = Math.Min(10+(sourcedamage / 3), 180);
+						npc.buffTime[buffIndex[0]] = (int)Math.Min(npc.buffTime[buffIndex[0]]+extendTime,Math.Max(npc.buffTime[buffIndex[0]],300));
+					}
+                }
+
 				int increase = 0;
 
 				for (int i = 0; i < npc.buffType.Length; i += 1)
 				{
-					if (npc.buffTime[i] > 0)
+					if (npc.buffTime[i] > 30)
 						increase++;
+					if (increase >= 5)
+						break;
 				}
 
-				damage = (int)(dam * (1f + Math.Min(increase * 0.05f, 0.25f)));
+				damage = (int)(dam * (1f + Math.Min(increase * 0.06f, 1f)));
 			}
 		}
 
@@ -3514,7 +3722,8 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Concussion Device");
-			Tooltip.SetDefault("'This device will provide a strong blow to those who can normally take it'\nDo more damage the more knockback immunity an enemy has\nGoes to a max of 15%");
+			Tooltip.SetDefault("'This device will provide a stronger blow to those who can normally take it'\nDo more damage the more knockback immunity an enemy has; Up to a max of 20%\nAdditionally: Effectiveness is improved by 5% of your attack's knockback");
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 4));
 		}
 
 		public override bool Autoload(ref string name)
@@ -3528,7 +3737,9 @@ namespace SGAmod.Items.Accessories
 			if (player != null && player.SGAPly().concussionDevice)
 			{
 				int dam = sourcedamage;
-				damage = (int)(dam * (1f + Math.Max((1f-npc.knockBackResist)*0.15f,0)));
+				float effectiveness = Math.Max((1f - npc.knockBackResist) * 0.20f, 0);
+				damage = (int)(dam * (1f + effectiveness));
+				player.SGAPly().concussionDeviceEffectiveness = 1f-npc.knockBackResist;
 			}
 		}
 
@@ -3547,6 +3758,7 @@ namespace SGAmod.Items.Accessories
 			item.accessory = true;
 		}
 	}
+
 	public class NoviteCore : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -3741,7 +3953,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Necklace");
-			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace") + " (by 2)\nIncreases your max number of sentries\n"+Language.GetTextValue("ItemTooltip.HerculesBeetle")+ "\nImproves Max Electric Charge by 1000\nEffects of Auracle's Insight");
+			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace") + " (by 2)\n25% increased minion damage\nImproves Max Electric Charge by 1000\nAuras are boosted by 1 power level");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3749,7 +3961,7 @@ namespace SGAmod.Items.Accessories
 			base.UpdateAccessory(player,hideVisual);
 			player.maxMinions += 2;
 			player.maxTurrets += 1;
-			player.minionDamage += 0.15f;
+			player.minionDamage += 0.25f;
 			player.minionKB += 2f;
 		}
 
@@ -3767,13 +3979,83 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType< NovusSummoning>(), 1);
 			recipe.AddIngredient(ModContent.ItemType< NoviteChip>(), 1);
-			recipe.AddIngredient(ItemID.HerculesBeetle, 1);
+			recipe.AddIngredient(ItemID.SummonerEmblem, 1);
 			recipe.AddIngredient(ItemID.PygmyNecklace, 1);
-			recipe.AddIngredient(ModContent.ItemType< PrismalBar>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 10);
 			recipe.AddIngredient(ModContent.ItemType<AuraclesInsight>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 32);
 
 			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
+
+	[AutoloadEquip(EquipType.HandsOn)]
+	public class BustlingFungus : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Bustling Fungus");
+			Tooltip.SetDefault("Standing still creates an aura of fungal healing around you\nYour stationary sentries also create this aura");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.SGAPly().bustlingFungus = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 26;
+			item.defense = 0;
+			item.accessory = true;
+			item.height = 14;
+			item.value = Item.buyPrice(0, 1, 0, 0);
+			item.rare = ItemRarityID.Blue;
+		}
+	}
+	public class ArmchairGeneral : PrismalNecklace
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Armchair General");
+			Tooltip.SetDefault("'Lead not by example'\nIncreases your maximum minions by 3, and sentries by 2\n50% Increased Summon damage and increased Minion knockback\nIncreases max electrical charge by 1000 and boosts auras by 1 level\nWhen standing still you emit a healing fungal aura and regenerate much life faster\nYour stationary sentries also emit this aura");
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+			player.maxMinions += 1;
+			player.SGAPly().bustlingFungus = true;
+			player.shinyStone = true;
+			player.dd2Accessory = true;
+			player.minionDamage += 0.15f;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 26;
+			item.defense = 0;
+			item.accessory = true;
+			item.height = 14;
+			item.value = Item.buyPrice(0, 10, 0, 0);
+			item.expert = true;
+			item.rare = ItemRarityID.Cyan;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<PrismalNecklace>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<BustlingFungus>(), 1);
+			recipe.AddRecipeGroup("SGAmod:DD2Accessories", 1);
+			recipe.AddIngredient(ItemID.ShinyStone, 1);
+			recipe.AddIngredient(ItemID.PapyrusScarab, 1);
+			recipe.AddIngredient(ModContent.ItemType<LunarRoyalGel>(), 12);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
@@ -3939,7 +4221,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Druidic Sneakers");
-			Tooltip.SetDefault("Mana herbs sometimes grow on grass where you walk\nHarvesting them yields Mana Stars\nEffects of Magus Slippers\n'Eco Friendly!'");
+			Tooltip.SetDefault("Mana herbs sometimes grow on grass where you walk\nWorks on Grass, Jungle Grass, and Hallowed Grass\nHarvesting these plants yields Mana Stars\nEffects of Magus Slippers\n'Eco Friendly!'");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3960,7 +4242,7 @@ namespace SGAmod.Items.Accessories
 					Main.tile[num2, num3].frameY = 0;
 					Main.tile[num2, num3].slope(0);
 					Main.tile[num2, num3].halfBrick(halfBrick: false);
-					if (Main.tile[num2, num3 + 1].type == 2)
+					if (Main.tile[num2, num3 + 1].type == TileID.Grass || Main.tile[num2, num3 + 1].type == TileID.JungleGrass || Main.tile[num2, num3 + 1].type == TileID.HallowedGrass)
 					{
 						if (Main.rand.Next(2) == 0)
 						{
@@ -4143,7 +4425,7 @@ namespace SGAmod.Items.Accessories
 			item.maxStack = 1;
 			item.width = 16;
 			item.height = 16;
-			item.value = Item.buyPrice(silver: 30);
+			item.value = Item.buyPrice(gold: 3);
 			item.rare = ItemRarityID.Red;
 			item.accessory = true;
 		}

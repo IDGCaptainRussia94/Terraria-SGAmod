@@ -472,7 +472,6 @@ namespace SGAmod.Generation
 
 
 
-
             foreach (List<Point> waterPoints in eachShrineWater)
             {
 
@@ -486,7 +485,7 @@ namespace SGAmod.Generation
                         if (tileAbove.liquid > 250)
                         {
                             Tile tile = Framing.GetTileSafely(floodedTilePoint.X, floodedTilePoint.Y);
-                            if (!tile.active())
+                            if (!tile.active() || Main.tileCut[tile.type])
                             WorldGen.PlaceTile(floodedTilePoint.X, floodedTilePoint.Y, ModContent.TileType<MoistSand>(), false, true);
                         }
                     }

@@ -18,8 +18,6 @@ namespace SGAmod.Tiles.Monolith
 	//I don't like doing tiles, lol
 	public class CelestialMonolith : ModTile
 	{
-
-
 		public override void SetDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
@@ -94,7 +92,7 @@ namespace SGAmod.Tiles.Monolith
 						{
 
 							Main.spriteBatch.End();
-							Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1, 1, 1));
+							Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
 
 							Texture2D sunTex = Main.sunTexture;
 
@@ -122,8 +120,9 @@ namespace SGAmod.Tiles.Monolith
 								}
 
 							}
+
 							Main.spriteBatch.End();
-							Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1, 1, 1));
+							Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
 
 							if (te.ActiveState > 0)
 							{
@@ -136,6 +135,11 @@ namespace SGAmod.Tiles.Monolith
 
 
 							Main.spriteBatch.Draw(sunTex, offset - Main.screenPosition, null, Color.White, 0f, sunTex.Size() / 2f, 0.25f + (0.75f * te.ActiveState), SpriteEffects.None, 0f);
+
+							Main.spriteBatch.End();
+							Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+
+
 						}
 
 					}

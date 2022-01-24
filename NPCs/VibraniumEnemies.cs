@@ -116,7 +116,7 @@ namespace SGAmod.NPCs
 				if (buffed == 0)
 				{
 					bool bigtool = Main.player.Where(testby => testby.active && !testby.dead && testby.inventory.Where(testby2 => !testby2.IsAir && testby2.pick > 230).Count()>0).Count()>0;
-					buffed = bigtool ? 2 : 1;
+					buffed = bigtool || Dimensions.SpaceDim.postMoonLord ? 2 : 1;
 					if (buffed == 2)
 					{
 						npc.life *= 5;

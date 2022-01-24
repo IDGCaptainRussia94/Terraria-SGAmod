@@ -210,7 +210,8 @@ namespace SGAmod.NPCs.SpiderQueen
 					npc.rotation += rotSpeed;
 					if (npc.ai[0] % 10 == 0)
 					{
-						int type = mod.ProjectileType("TrapWeb");
+						//AcidicWebTile
+						int type = ModContent.ProjectileType<TrapWeb>();
 						Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), type, 15, 7, 35, 1, true, 0, true, 1600);
 						Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 102, 0.25f, -0.25f);
 					}
@@ -338,7 +339,7 @@ namespace SGAmod.NPCs.SpiderQueen
 						npc.localAI[2] = P.Center.Y;
 						if ((npc.ai[0] + 26) % (Main.expertMode ? 60 : 90) == 0)//Chase after the player and Squirt
 						{
-							Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), mod.ProjectileType("SpiderVenom"), 15, 8, 60 + phase * 10, phase + 1, true, 0, true, 1600);
+							Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), ModContent.ProjectileType<SpiderVenom>(), 15, 8, 60 + phase * 10, phase + 1, true, 0, true, 1600);
 							Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 102, 0.25f, -0.25f);
 						}
 						npc.rotation = npc.rotation.AngleLerp((P.Center - npc.Center).ToRotation(), maxrotate);
@@ -372,7 +373,7 @@ namespace SGAmod.NPCs.SpiderQueen
 								npc.rotation += rotSpeed;
 								if (npc.ai[0] % (Main.expertMode ? 5 : 10) == 0 && npc.ai[3] < 1)
 								{
-									int type = mod.ProjectileType("SpiderVenom");
+									int type = ModContent.ProjectileType<SpiderVenom>();
 									Idglib.Shattershots(npc.Center + npc.rotation.ToRotationVector2() * 32, npc.Center + npc.rotation.ToRotationVector2() * 200, new Vector2(0, 0), type, 15, 7, 35 + (phase * 15), 1 + phase, true, 0, true, 1600);
 									Main.PlaySound(SoundID.Item, (int)npc.Center.X, (int)npc.Center.Y, 102, 0.25f, -0.25f);
 								}
@@ -717,9 +718,7 @@ namespace SGAmod.NPCs.SpiderQueen
 		}
 
 
-
 	}
-
 
 }
 

@@ -33,6 +33,7 @@ using System.Reflection;
 using AAAAUThrowing;
 using System.Threading;
 using SGAmod.Buffs;
+using SGAmod.Items.Weapons.Ammo;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -292,10 +293,11 @@ namespace SGAmod
 			BlackListedItems.Add(ItemID.FragmentSolar);
 			BlackListedItems.Add(ItemID.FragmentStardust);
 			BlackListedItems.Add(ItemID.FragmentVortex);
-			BlackListedItems.Add(SGAmod.Instance.ItemType("StarMetalBar"));
-			BlackListedItems.Add(SGAmod.Instance.ItemType("WraithArrow"));
-			BlackListedItems.Add(SGAmod.Instance.ItemType("ShadowJavelin"));
-			BlackListedItems.Add(SGAmod.Instance.ItemType("SPinkyBagFake"));
+
+			BlackListedItems.Add(ModContent.ItemType<Items.StarMetalBar>());
+			BlackListedItems.Add(ModContent.ItemType<WraithArrow>());
+			BlackListedItems.Add(ModContent.ItemType<Items.Weapons.Javelins.ShadowJavelin>());
+			BlackListedItems.Add(ModContent.ItemType<Items.SPinkyBagFake>());
 		}
 
 		public UncraftClass(Point16 location, Item item, int recipeIndex = 0, int offsetter = 0)

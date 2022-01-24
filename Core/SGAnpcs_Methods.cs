@@ -654,12 +654,22 @@ namespace SGAmod
 					{
 						player.AddBuff(BuffID.DryadsWard, 60 * 5);
 
-						List<Projectile> itz = Idglib.Shattershots(player.Center, player.Center + (player.Center - npc.Center), new Vector2(0, 0), mod.ProjectileType("MangroveOrb"), damage, 8f, 120, 2, false, 0, false, 400);
+						int newDamage = damage;
+						if (newDamage > 50)
+                        {
+							newDamage = 50 + (int)Math.Pow((damage - 50), 0.75f);
+                        }
+
+						List<Projectile> itz = Idglib.Shattershots(player.Center, player.Center + (player.Center - npc.Center), new Vector2(0, 0), mod.ProjectileType("MangroveOrb"), newDamage, 8f, 120, 2, false, 0, false, 400);
 						//itz[0].damage = 30;
 						itz[0].owner = player.whoAmI; itz[0].friendly = true; itz[0].hostile = false;
 						itz[1].owner = player.whoAmI; itz[1].friendly = true; itz[1].hostile = false;
 						Main.projectile[itz[0].whoAmI].netUpdate = true;
 						Main.projectile[itz[1].whoAmI].netUpdate = true;
+
+						IdgProjectile.AddOnHitBuff(itz[0].whoAmI, BuffID.DryadsWardDebuff, 60 * 5);
+						IdgProjectile.AddOnHitBuff(itz[1].whoAmI, BuffID.DryadsWardDebuff, 60 * 5);
+
 						if (Main.netMode == 2 && itz[0].whoAmI < 200)
 						{
 							NetMessage.SendData(27, -1, -1, null, itz[0].whoAmI, 0f, 0f, 0f, 0, 0, 0);

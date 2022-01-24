@@ -32,7 +32,7 @@ namespace SGAmod.HavocGear.Items.Tools
 			item.height = 32;
 			item.useTime = 9;
 			item.useAnimation = 20;
-			item.pick = 150;
+			item.pick = 180;
 			item.useStyle = 1;
 			item.knockBack = 4;
 			item.value = 3000;
@@ -70,7 +70,7 @@ namespace SGAmod.HavocGear.Items.Tools
 			item.channel = true;
 			item.noUseGraphic = true;
 			item.noMelee = true;
-			item.pick = 150;
+			item.pick = 180;
 			item.tileBoost += 1;
 			item.useStyle = 5;
 			item.knockBack = 0;

@@ -1,19 +1,70 @@
 
 Changelog:
 
-3.620-(12/26/21)--Patch 15: Spaced Out!
+3.625-(1/19/21)-beta 2
+
+-added:
+
+-Condensed Gel Pack (chaos)
+
+
+--Changed:
+
+-Arms dealer now sells Shark Bait if the player has Shark Bait
+
+-Updated Mana Herb visuals
+
+-Merchant now sells the diving helmet while at the beach
+
+-Compressed the tooltips on several of the combined, late game items
+
+-High Stakes Set is even more risky now, and self damage is reduced, and fixed inventory effect issues
+
+-Flash of Soul Sap visuals were updated to be less placeholder (IE not Lifeleech)
+
+-prismal necklace inherits Summoner Emblem now instead of the hercules beetle
+
+-Some of the loot in the SGAmod Accessories Lootbox
+
+
+--Fixed:
+
+-Celestial Monolith continuing to show on the title screen
+
+-Fog causing crashes via the detail ammount dividing by zero
+
+-Fixed spider armor not working as expected
+
+-Moist Sand being stopped by sand generating in the Dank Shrines
+
+-Trees glowing when placing down a Celestial Monolith
+
+-Astral Luminite being unminable before Moonlord
+
+-Handling Gloves being present on the Tech Master's still
+
+-Fist of Moon Lord not being true Melee
+
+-Flash of Soul Sap not working
+
+
+3.625-(1/19/21)--Patch 15: Spaced Out!
 
 --Added
 
--Celestial Monolith, Helios Focus Crystal, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Empty Plasma Cell, Shadow LockBox
+-Starduster, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap
+
+-The entire Dank Wood Furnature set by Rijam
+
+-Celestial Monolith, an interactable tile to create a reverse day/night rift in the area that treats anything inside as being in the opposite time of day
 
 -Speedymatt123's Hellion Painting: a Nightmare Mode exclusive reward!
 
--Resprite for Dies Irae Stone (thx JellyBru!), Yoyo Gauntlet Resprite and Transformer accessory sprite (thx Rijam!)
+-Resprite for Dies Irae Stone (thx JellyBru!), Yoyo Gauntlet Resprite and Transformer accessory sprite (thx Rijam!), Fully Finished Sprite Sheet for Cratrosity (Thanks Rijam!)
 
--Fully Finished Sprite Sheet for Cratrosity (Thanks Rijam!)
+-The Consolation Prize, a better-than-average pickaxe that is granted to new players if one of their starting gear is spawned with the Busted prefix
 
--The Consolation Prize, a pickaxe that is granted to new players if one of their starting gear is spawned with the Busted prefix
+-Spider Armor buff to deal with cobwebs and webbed debuffs, optional via config, suggested by Cata
 
 
 --Changed:
@@ -30,37 +81,105 @@ Changelog:
 -Added Space Station structures, their blocks aren't minable but house a breathable-normal gravity area
 -Ore Generation has been changed a bit
 -Can now generate Fragement Blocks after moonlord is defeated
--Astral Luminite can now only be mined after moonlord is defeated
+-Astral Luminite now drops a different material that requires real Luminite to make Luminite bars, basically, it makes a cheaper way to craft Luminite bars but doesn't skip progression
+-Possessed Asteriods no longer spawn naturally during Phaethon's fight
 
--Supreme Pinky's 'Treasure Bag' can no longer be opened in SubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworldsSubworlds
+-Redid the fog system; purged of negitive blending; it now uses a freaking shader and should no longer cause laptops to explode!
+
+-Supreme Pinky's 'Treasure Bag' can no longer be opened in Subworlds
 
 -Cratrosity/Cratrogeddon can now be summoned during the day
+
+-Transmutation Powder can now convert vanilla ores to their respective opposites as well
 
 -Luminous Alter is now crafted at a Lihzard Altar
 
 -Demon Steppers now lose the Frog Leg jump/fly boost when in Walk Mode, can now be made with any Horseshoe Balloon Accessories (with only inherit the standard stats thou)
 
+-Added several 'missing from your inventory' hints to items on how to get them and fixed some incorrect ones
+
+-Hellion's Laser, S.Pinky's sky, and Phaethon's visuals have been updated
+
+-Resonant Wisps are now powered up after Moonlord, not just with a Braxsaw
+
+-Reduced Vibranium Plating Ancient Fabric costs to 5 from 10
+
+-Shadowspirit's Eye's visual buffs now work simply by being in your inventory
+
+-Removed Shield Break from Buff Burning, replaced with Everlasting Suffering
+
+-Illuminant Essence can now drop more often and in larger sizes from enemies in the underground Hallow
+
+-Virulent Ore now requires atleast a Mythril Pickaxe to mine, Virulent Pickaxe/Drill has been raised to have pickaxe power on par with Adamantite
+
+-Joyful Shrooms can now stack up to 30, and holding 10 or more in a stack in your invention will have effects
+
+-Plasma Cells can now be obtained in early hardmode, but don't have much use yet
+
+-Moist Sand is created twice as fast
+
+-Arms dealer now sells Shark Bait if the player has Shark Bait
+
+-Merchant now sells the diving helmet while at the beach
+
+-Updated Mana Herb visuals
+
+-Rebalanced Druidic Sneakers: now works on Normal, Hallowed, and Jungle Grass
+
 -Rebalanced several tech weapons: adjusted Electric Charge use (some were consuming too much)
 
 -ReBalanced Circuit Breaker Blade: no longer auto-turns on swing
 
--Rebalanced Lava Rocks Gun: Now consumes 1.5X more electric charge on use, mana cost reduced to 8, crit increased by 10%
+-Rebalanced Lava Rocks Gun: Now consumes 1.25X more electric charge on use, mana cost reduced to 8, crit increased by 10%
+
+-Rebalanced Tech Master's Gear and Rad Suit: Moved Handling Gloves over to Rad Suit
+
+-Rebalanced XOP Flamethrower and Flametrap Thrower: Swapped Elf Melter and Flamethrower requirements
+
+-Rebalanced Prismal Necklace: inherits Summoner Emblem now instead of the hercules beetle (no longer has knockback boost, damage increase changed to 25%)
 
 -Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
 
--Nerfed Pickaxe Yoyos: decreased "power" of spinning pickaxes in mining; this is not a revert, they are still stronger than before the previous patch
+-Reworked Jungle Templar Armor: now inflicts severe Lava Burn when power is too low instead of normal Lava Burn, doesn't cause Lava Burn til after atleast 5 seconds of being ingame or if the lava meter is too low
+
+-Reworked Fist of Moonlord: damage increase per fist's speed has been reduced by 1/3, there's a damage increase cap of 5X, can no longer crit, would-have crits cause the fist to not slow down on hit, and is now Post-Hellion (and is now craftable)
 
 -Buffed Hallowed Visor: defense increased by 1
 
--Nerfed Mangrove Armor: defense reduced (head/chest/leggings: 12,16,8 => 8,12,6), combined damage and crit reduced to 20%/10% respectively
+-Buffed Sticky Situation: does more damage to segmented enemies
+
+-Buffed Quasar Kunai: the projectiles do infact, bounce now (but only twice)
+
+-Buffed Sanguine Bident and Crimson Catastrophe: Does 25% and 50% more damage respectively to enemies that are immune to bleeding, Sanguine Bident lifesteal chance has been increased to 1/12 from 1/16 (8/12 from 8/16 with (massive) bleeding)
+
+-Buffed Flail-O-Nades: No longer causes any immunity frames, applies sticky grenades to enemies on hit that do double damage, spawns Proxy Mine I's instead of Sticky Grenades on tile hit
+
+-Nerfed Massive Bleeding: Can no longer affect enemies immune to bleeding
+
+-Nerfed Pickaxe Yoyos: decreased "power" of spinning pickaxes in mining; this is not a revert, they are still stronger than before the previous patch
+
+-Nerfed Mangrove Armor: defense reduced (head/chest/leggings: 12,16,8 => 8,12,6), combined damage and crit reduced to 20%/10% respectively, mangrove orbs are soft-damage capped at 50, the orbs released apply Dryad's Bane on hit for 5 seconds
 
 -Nerfed Mangrove Leggings: throwing speed bonus reduced to 10%, fixed extra 20% leading to a total of a 40% faster speed boost, reduced movement max speed
 
+-Nerfed Main-Sequence Staff: Debuff removal is now based on minion slots put in: more minions, more burning negated in this order: (Sunburn, OnFire!, Burning, Thermal Blaze, Lava Burn, Severe Lava Burn)
+
 -Skylight's internal name has changed (to SkyLight from Skylight), this will cause the weapon to turn into a missing item on restart... sry about that!
+
+-Adjusted item prices
+
+-Removed EA logo debug text
+
+-New changes to Spider Queen:
+-Cobwebs are now a special version that will Acidburn on contact, and are cleaned up after the fight is over
+
+-New changes to Helen Hellion Weygold:
+-When dropping loot: if Aimbot bullets are dropped, an extra random is picked from the pool, furthermore, a stack of 30 Lead Cannonballs drops along with the SBC Cannon MK2
+-Fixed a bug with Hellion's arena ring staying small during the final desperation phase if you did the killing blow during one of her other desperation attacks where it shrinks
 
 -New changes to Phaethon:
 -Will always use Shadow Nebula at the start of phase 3
--Shadow Nebula completely reworked, boss releases several orbs the player must destroy in order to end the attack: Phaethon can no longer be hurt, grab asteriods, or shield during this attack, and tries to chase the player
+-Shadow Nebula completely reworked, boss releases several orbs the player must destroy in order to end the attack: Phaethon can no longer be hurt, grab asteriods, or shield during this attack, and tries to chase the player, and gains new attacks exlusive to Shadow Nebula
 -(todo) Shadow Nebula also changes most of his attacks as well
 -(todo) The Outpost Space Stations spawn with a crystal that heals the boss (at longer/slower rate when shielded), and mining fatigues the player in range
 -Now drops Greater Healing Potions instead of lesser Healing Potions
@@ -68,11 +187,17 @@ Changelog:
 
 --Fixed:
 
+-Hopefully fixed Terraria Co Crates not stacking after beating Cratrosity (still an ugly patch thou)
+
+-Moist Sand breaking with Auto-Trash
+
 -Black Leeches seemingly (no, really infact) teleporting onto the player
 
 -Giant Ice Cube being only sold in Hardmode
 
 -Starfish Burster not saving ammo
+
+-Solis Nova making enemies despawn
 
 -Buff Burning not working as expected, even when you had it disabled it was having an effect (without it showing visually)
 
@@ -82,7 +207,47 @@ Changelog:
 
 -(attempted) to stop Moist Sand from freezing the game
 
+-Missing player name to one of SPinky's death messages
+
+-Sludge Bomb not damaging alot of types of enemies
+
+-Drills not being affected by mining speed buffs when mining asteriods
+
 -A few minor bugs of mis-matched damage types and other smaller things
+
+
+3.622-(1/19/22)--Hotfix 31
+
+--Fixed:
+
+-Moist sand soft-locking the game with some other mods
+
+-Modded damage boosts have been disabled for now until I can figure out why it's causing issues
+
+
+3.621-(1/12/22)--Hotfix 30
+
+--Fixed:
+
+-Soul Jar world fix, hopefully, for real this time!
+
+-an issue with cross-Calamity support on items that boost all damage types
+
+
+3.620-(1/11/22)--Hotfix 29
+
+--Fixed:
+
+-Soul Jar world fix, should no longer cause issues with unloaded mods!
+
+
+3.619-(12/3/22)--Hotfix 28
+
+--Fixed:
+
+-(Attempted) to fix the Moist Sand crashing issue
+
+-Credits crashing the game
 
 
 3.618-(1/2/22)--Hotfix 27

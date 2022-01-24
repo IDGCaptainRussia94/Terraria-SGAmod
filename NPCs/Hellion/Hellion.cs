@@ -27,6 +27,7 @@ using System.Reflection;
 using ReLogic.Graphics;
 using MonoMod.RuntimeDetour.HookGen;
 using Terraria.Cinematics;
+using SGAmod.Items.Weapons.Ammo;
 
 namespace SGAmod.NPCs.Hellion
 {
@@ -680,6 +681,10 @@ namespace SGAmod.NPCs.Hellion
                 //Phase 1
                 if (npc.ai[1] > 96001)
 				{
+
+					hell.noescapeauravisualsize += (1f - hell.noescapeauravisualsize) / 30f;
+					hell.noescapeaurasize = (int)(hell.noescapeaurasize + (2000f - hell.noescapeaurasize) / 60f);
+
 					if (npc.ai[1] % 500 == 0 && npc.ai[1] < 100000)
 					{
 
@@ -3747,9 +3752,21 @@ namespace SGAmod.NPCs.Hellion
 
 			List<(int, int)> HellionItems = GetHelliondrops;
 
+			startover:
 			HellionItems = HellionItems.OrderBy(testby => Main.rand.Next()).ToList();
 
 			Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, HellionItems[0].Item1, HellionItems[0].Item2);
+
+			if (HellionItems[0].Item1 == ModContent.ItemType<AimBotBullet>())
+            {
+				HellionItems.RemoveAt(0);
+				goto startover;
+            }
+			if (HellionItems[0].Item1 == ModContent.ItemType<Items.Weapons.SeriousSam.SBCCannonMK2>())
+			{
+				Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.SeriousSam.LeadCannonball>(), 30);
+				goto startover;
+			}
 		}
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
@@ -4467,14 +4484,14 @@ namespace SGAmod.NPCs.Hellion
 			vectors.Add(hitspot);
 			vectors.Add(projectile.Center);
 
-			Texture2D beam = mod.GetTexture("TrailEffect");
+			Texture2D beam = mod.GetTexture("ElectricFireNoColor");
 
 			TrailHelper trail = new TrailHelper("BasicEffectAlphaPass", beam);
 			trail.projsize = Vector2.Zero;
-			trail.coordOffset = new Vector2(0, Main.GlobalTime * 7.5f);
-			trail.coordMultiplier = new Vector2(1f, 2000f / projectile.velocity.Length());
+			trail.coordOffset = new Vector2(0, Main.GlobalTime * 5f);
+			trail.coordMultiplier = new Vector2(1f, projectile.velocity.Length() *5f);
 			trail.doFade = false;
-			trail.trailThickness = 28 * scale.X;
+			trail.trailThickness = 64 * scale.X;
 			trail.strength = 1.5f;
 			trail.color = delegate (float percent)
 			{
@@ -4483,14 +4500,14 @@ namespace SGAmod.NPCs.Hellion
 			trail.trailThicknessIncrease = 0;
 			trail.DrawTrail(vectors, projectile.Center);
 
-			beam = Main.extraTexture[21];
+			beam = SGAmod.Instance.GetTexture("TiledPerlin");//Main.extraTexture[21];
 
 			trail = new TrailHelper("FadedBasicEffectPass", beam);
 			trail.projsize = Vector2.Zero;
 			trail.coordOffset = new Vector2(0, Main.GlobalTime * 3f);
-			trail.coordMultiplier = new Vector2(1f, 30f);
+			trail.coordMultiplier = new Vector2(1f, projectile.velocity.Length() * 6f);
 			trail.doFade = false;
-			trail.trailThickness = 16 * scale.X;
+			trail.trailThickness = 12 * scale.X;
 			trail.color = delegate (float percent)
 			{
 				return colortex;

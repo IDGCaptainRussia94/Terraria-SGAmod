@@ -41,89 +41,86 @@ namespace SGAmod.Tiles
             disableSmartCursor = true;
             adjTiles = new int[] { TileID.Containers };
             chest = "Overgrown Chest";
-            chestDrop = mod.ItemType("OvergrownChest");
+            chestDrop = ModContent.ItemType<HavocGear.Items.OvergrownChest>();
         }
+        public override bool HasSmartInteract() => true;
 
         public string MapChestName(string name, int i, int j)
         {
             return "Overgrown Chest";
         }
 
-        public override void RightClick(int i, int j)
+        public override bool NewRightClick(int i, int j)
         {
-            Player player = Main.player[Main.myPlayer];
-
+            Player player = Main.LocalPlayer;
             Tile tile = Main.tile[i, j];
-            //  tile.frameX != 72    tile.frameX != 90
-            if (tile.frameX != 36)
+            Main.mouseRightRelease = false;
+            int left = i;
+            int top = j;
+            if (tile.frameX % 36 != 0)
             {
-                Main.mouseRightRelease = false;
-                int left = i;
-                int top = j;
-                if (tile.frameX % 36 != 0)
+                left--;
+            }
+            if (tile.frameY != 0)
+            {
+                top--;
+            }
+            if (player.sign >= 0)
+            {
+                Main.PlaySound(SoundID.MenuClose);
+                player.sign = -1;
+                Main.editSign = false;
+                Main.npcChatText = "";
+            }
+            if (Main.editChest)
+            {
+                Main.PlaySound(SoundID.MenuTick);
+                Main.editChest = false;
+                Main.npcChatText = "";
+            }
+            if (player.editedChestName)
+            {
+                NetMessage.SendData(MessageID.SyncPlayerChest, -1, -1, NetworkText.FromLiteral(Main.chest[player.chest].name), player.chest, 1f, 0f, 0f, 0, 0, 0);
+                player.editedChestName = false;
+            }
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                if (left == player.chestX && top == player.chestY && player.chest >= 0)
                 {
-                    left--;
-                }
-                if (tile.frameY != 0)
-                {
-                    top--;
-                }
-                if (player.sign >= 0)
-                {
-                    Main.PlaySound(11, -1, -1, 1);
-                    player.sign = -1;
-                    Main.editSign = false;
-                    Main.npcChatText = "";
-                }
-                if (Main.editChest)
-                {
-                    Main.PlaySound(12, -1, -1, 1);
-                    Main.editChest = false;
-                    Main.npcChatText = "";
-                }
-                if (player.editedChestName)
-                {
-                    NetMessage.SendData(33, -1, -1, NetworkText.FromLiteral(Main.chest[player.chest].name), player.chest, 1f, 0f, 0f, 0, 0, 0);
-                    player.editedChestName = false;
-                }
-                if (Main.netMode == 1)
-                {
-                    if (left == player.chestX && top == player.chestY && player.chest >= 0)
-                    {
-                        player.chest = -1;
-                        Recipe.FindRecipes();
-                        Main.PlaySound(11, -1, -1, 1);
-                    }
-                    else
-                    {
-                        NetMessage.SendData(31, -1, -1, null, left, (float)top, 0f, 0f, 0, 0, 0);
-                        Main.stackSplit = 600;
-                    }
+                    player.chest = -1;
+                    Recipe.FindRecipes();
+                    Main.PlaySound(SoundID.MenuClose);
                 }
                 else
                 {
-                    int chest = Chest.FindChest(left, top);
-                    if (chest >= 0)
-                    {
-                        Main.stackSplit = 600;
-                        if (chest == player.chest)
-                        {
-                            player.chest = -1;
-                            Main.PlaySound(11, -1, -1, 1);
-                        }
-                        else
-                        {
-                            player.chest = chest;
-                            Main.playerInventory = true;
-                            Main.recBigList = false;
-                            player.chestX = left;
-                            player.chestY = top;
-                            Main.PlaySound(player.chest < 0 ? 10 : 12, -1, -1, 1);
-                        }
-                        Recipe.FindRecipes();
-                    }
+                    NetMessage.SendData(MessageID.RequestChestOpen, -1, -1, null, left, (float)top, 0f, 0f, 0, 0, 0);
+                    Main.stackSplit = 600;
                 }
             }
+            else
+            {
+                int chest = Chest.FindChest(left, top);
+                if (chest >= 0)
+                {
+                    Main.stackSplit = 600;
+                    if (chest == player.chest)
+                    {
+                        player.chest = -1;
+                        Main.PlaySound(SoundID.MenuClose);
+                    }
+                    else
+                    {
+                        Main.PlaySound(player.chest < 0 ? SoundID.MenuOpen : SoundID.MenuTick); //lol Example Mod bug. The PlaySound needs to happen before the player.chest is assigned. Otherwise player.chest won't be -1
+                        player.chest = chest;
+                        Main.playerInventory = true;
+                        Main.recBigList = false;
+                        player.chestX = left;
+                        player.chestY = top;
+                    }
+                    Recipe.FindRecipes();
+                }
+            }
+            return true;
         }
 
         public override void MouseOver(int i, int j)
@@ -144,7 +141,16 @@ namespace SGAmod.Tiles
             player.showItemIcon2 = -1;
             if (chest < 0)
             {
-                player.showItemIconText = Lang.chestType[0].Value;
+                player.showItemIconText = Language.GetTextValue("LegacyChestType.0");
+            }
+            else
+            {
+                player.showItemIconText = Main.chest[chest].name.Length > 0 ? Main.chest[chest].name : "Dank Chest";
+                if (player.showItemIconText == "Dank Chest")
+                {
+                    player.showItemIcon2 = ModContent.ItemType<HavocGear.Items.OvergrownChest>();
+                    player.showItemIconText = "";
+                }
             }
             player.noThrow = 2;
             player.showItemIcon = true;

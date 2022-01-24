@@ -988,10 +988,10 @@ namespace SGAmod.Items.Weapons
 					projectile.scale = Math.Min(projectile.scale + (4 - projectile.scale) / 3f, 3f);
 
 
-					foreach (NPC enemy in Main.npc.Where(npctest => npctest.active && !npctest.friendly && !npctest.immortal && !npctest.boss && !npctest.noGravity && !npctest.noTileCollide &&
-					npctest.Distance(projectile.Center)< 32 * projectile.scale))
+					foreach (NPC enemy in Main.npc.Where(npctest => npctest.active && !npctest.friendly && !npctest.immortal &&
+					npctest.DistanceSQ(projectile.Center)< (32 * projectile.scale* (32 * projectile.scale))))
 					{
-						if (!enemy.buffImmune[BuffID.Poisoned])
+						if (!enemy.boss)
 						enemy.AddBuff(ModContent.BuffType<DankSlow>(), 20);
 						enemy.AddBuff(BuffID.Oiled, 60*1);
 						enemy.AddBuff(BuffID.Confused, 3);

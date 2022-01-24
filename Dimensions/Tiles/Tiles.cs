@@ -192,7 +192,7 @@ namespace SGAmod.Dimensions.Tiles
 			soundStyle = 0;
 			mineResist = 5f;
 			dustType = DustID.LunarOre;
-			drop = ItemID.LunarOre;
+			drop = ModContent.ItemType<CelestineChunk>();
 			TileID.Sets.CanBeClearedDuringGeneration[Type] = true;
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Astrial Luminite");
@@ -206,8 +206,8 @@ namespace SGAmod.Dimensions.Tiles
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
-			if (!SpaceDim.postMoonLord)
-				fail = true;
+			//if (!SpaceDim.postMoonLord)
+			//	fail = true;
 
 			if (!fail)
 			{ 

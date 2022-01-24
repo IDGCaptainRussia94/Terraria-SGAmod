@@ -67,7 +67,7 @@ namespace SGAmod.Items.Weapons.Vibranium
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Quasar Kunai");
-			Tooltip.SetDefault("Throws resonant knives that bounce between targets, bypass defense, and leave a stacking DoT\nThe knives bounce more against Irradiated targets and do 15% more damage\nWhen fully charged, emits a Gamma Ray burst in both directions\nThis inflicts Severe Radiation to hit enemies");
+			Tooltip.SetDefault("Throws resonant knives that bounce between targets, bypass defense, and leave a stacking DoT\nThe knives bounce 2 more times against Irradiated targets and do 15% more damage\nWhen fully charged, emits a Gamma Ray burst in both directions\nThis inflicts Severe Radiation to hit enemies");
 		}
 
 		public override string Texture => "SGAmod/Items/Weapons/Vibranium/QuasarKunai";
@@ -227,6 +227,9 @@ namespace SGAmod.Items.Weapons.Vibranium
 			projectile.timeLeft = 15;
 			projectile.penetrate = -1;
 			projectile.aiStyle = -1;
+			projectile.Throwing().thrown = true;
+			projectile.thrown = false;
+			projectile.melee = false;
 			projectile.tileCollide = false;
 		}
 		public override void AI()
@@ -340,6 +343,9 @@ namespace SGAmod.Items.Weapons.Vibranium
 			projectile.usesLocalNPCImmunity = true;
 			projectile.localNPCHitCooldown = 30;
 			projectile.penetrate = 10;
+			projectile.Throwing().thrown = true;
+			projectile.thrown = false;
+			projectile.melee = false;
 		}
 		public override string Texture => "SGAmod/Projectiles/QuasarKunaiProj";
 
@@ -357,7 +363,6 @@ namespace SGAmod.Items.Weapons.Vibranium
 			if (target.HasBuff(ModContent.BuffType<Buffs.RadioDebuff>()))
 			{
 				damage = (int)(damage * 1.25f);
-				projectile.penetrate += 1;
 			}
 		}
 		public override bool? CanHitNPC(NPC target)
@@ -370,6 +375,12 @@ namespace SGAmod.Items.Weapons.Vibranium
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			enemiesHit.Add(new Point(target.whoAmI, 1000000));
+			if (target.SGANPCs().IrradiatedAmmount>0 && projectile.ai[1]<2)
+			{
+				projectile.ai[1] += 1;
+				projectile.penetrate += 1;
+			}
+
 			List<NPC> closestnpcs = SGAUtils.ClosestEnemies(projectile.Center, 640, projectile.Center, AddedWeight: enemiesHit, checkCanChase: false);
 
 			target.SGANPCs().AddDamageStack((int)(damage * 1.5f), 200);
@@ -503,6 +514,9 @@ namespace SGAmod.Items.Weapons.Vibranium
 			projectile.localNPCHitCooldown = -1;
 			aiType = -1;
 			Main.projFrames[projectile.type] = 1;
+
+			projectile.thrown = false;
+			projectile.melee = false;
 		}
 
 		public override bool CanDamage()

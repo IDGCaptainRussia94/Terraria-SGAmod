@@ -21,7 +21,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override int Penetrate => 8;
         public override float Speartype => 10;
         public override int[] Usetimes => new int[] { 25, 15 };
-        public override string[] Normaltext => new string[] { "A twisted form of thrown blood lust that explodes your foe's blood out from their wounds", "Throws 3 Jab-lins that inflict area damage against foes that are Massively Bleeding", "In Addition, crits against enemies afflicted with Everlasting Suffering", "On proc the Bleeding and Everlasting Suffering are removed, with a delay before retrigger", "Doesn't effect the enemy the Jab-lin is stuck to", "Primary Fire flies far and fast, and inflicts Massive Bleeding", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
+        public override string[] Normaltext => new string[] { "A twisted form of thrown blood lust that explodes your foe's blood out from their wounds", "Throws 3 Jab-lins that inflict area damage against foes that are Massively Bleeding", "In Addition, crits against enemies afflicted with Everlasting Suffering", "On proc the Bleeding and Everlasting Suffering are removed, with a delay before retrigger", "Doesn't effect the enemy the Jab-lin is stuck to","50% bonus damage against bleeding immune enemies", "Primary Fire flies far and fast, and inflicts Massive Bleeding", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Crimson Catastrophe");
@@ -46,8 +46,8 @@ namespace SGAmod.Items.Weapons.Javelins
             if (enemy.GetGlobalNPC<SGAnpcs>().crimsonCatastrophe > 0)
                 return;
 
-            int bleed = SGAmod.Instance.BuffType("MassiveBleeding");
-            int els = SGAmod.Instance.BuffType("EverlastingSuffering");
+            int bleed = ModContent.BuffType<Buffs.MassiveBleeding>();
+            int els = ModContent.BuffType <Buffs.EverlastingSuffering>();
             float damazz = (Main.DamageVar((float)projectile.damage * 2f));
             bool crit = false;
 
@@ -226,7 +226,7 @@ namespace SGAmod.Items.Weapons.Javelins
         public override int Penetrate => 3;
         public override float Speartype => 8;
         public override int[] Usetimes => new int[] { 25, 10 };
-        public override string[] Normaltext => new string[] { "Launch 3 projectiles on throw at foes", "Impaled targets may leach life, more likely to leach from bleeding targets", "Melee strikes will make enemies bleed", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
+        public override string[] Normaltext => new string[] { "Launch 3 projectiles on throw at foes", "Impaled targets may leach life, more likely to leach from bleeding targets", "Melee strikes will make enemies bleed", "25% bonus damage against bleeding immune enemies", "Is considered a Jab-lin, but non consumable and able to have prefixes" };
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sanguine Bident");

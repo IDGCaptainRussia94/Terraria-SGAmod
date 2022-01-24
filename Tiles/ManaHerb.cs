@@ -80,10 +80,21 @@ namespace SGAmod.Tiles
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(1,1,1));
-			ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye);
+
+			ArmorShaderData shader2 = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye);
+
+			Texture2D sun2 = ModContent.GetTexture("SGAmod/TiledPerlin");
+
+			/*
 			DrawData value9 = new DrawData(TextureManager.Load("Images/Misc/Perlin"), drawOffset + Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 512, 512)), Microsoft.Xna.Framework.Color.White, 0, new Vector2(256f, 256f), 5f, SpriteEffects.None, 0);
 			shader.UseOpacity(0.25f);
 			shader.Apply(null, new DrawData?(value9));
+			*/
+
+			DrawData value28 = new DrawData(sun2, new Vector2(4, 4), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, sun2.Width, sun2.Height)), Microsoft.Xna.Framework.Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+			shader2.UseColor(Color.Blue);
+			shader2.UseOpacity(1f);
+			shader2.Apply(null, new DrawData?(value28));
 
 
 			for (int z = -2; z < 5; z += 4)

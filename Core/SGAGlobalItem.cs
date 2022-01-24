@@ -374,6 +374,7 @@ namespace SGAmod
         public override void UpdateArmorSet(Player player, string set)
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+
             if (set == "Desert")
             {
                 string s = "Not Binded!";
@@ -442,7 +443,7 @@ namespace SGAmod
             }
             if (set == "Mangrove")
             {
-                player.setBonus = "Crit throwing attacks grant Dryad's Blessing and spawn Mangrove Orbs from you that seek out enemies\nYou are limited to 4 of these Orbs at a time\nWhile you are in the jungle:\n-Greatly Increased regeneration" +
+                player.setBonus = "Throwing Crits apply Dryad's Blessing\nThey also spawn a pair of Mangrove Orbs from you that seek out enemies and inflict Dryad's Bane\nYou are limited to 4 of these Orbs at a time and are damage soft-capped to 50\nWhile you are in the jungle:\n-Greatly Increased regeneration" +
     "\n-Gain an additional Free Cooldown Stack";
 
                 sgaplayer.Mangroveset = true;
@@ -560,6 +561,19 @@ namespace SGAmod
                 sgaplayer.jellybruSet = true;
                 sgaplayer.devempowerment[2] = 3;
             }        
+        }
+
+        public static void VanillaArmorSetBonus(Player player)
+        {
+            if (player.armor[0].type == ItemID.SpiderMask && player.armor[1].type == ItemID.SpiderBreastplate && player.armor[2].type == ItemID.SpiderGreaves)
+            {
+                if (SGAConfig.Instance.SpiderArmorBuff)
+                {
+                    player.setBonus += "\nFreely pass through cobwebs and immunity to webbed";
+                    player.SGAPly().cobwebRepellent = 2;
+                    player.buffImmune[BuffID.Webbed] = true;
+                }
+            }
         }
 
         public bool NovusCoreCheck(Player player, Item item)
@@ -1071,7 +1085,7 @@ namespace SGAmod
                 sgaplayer.ConsumeElectricCharge(5+(int)((damage * scalieVal) * 1f), 60);
             }
 
-            if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister)
+            if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister && item.type != ModContent.ItemType<HavocGear.Items.Weapons.Starduster>())
             {
 
                 int probg = Projectile.NewProjectile(position.X + (int)(speedX * 2f), position.Y + (int)(speedY * 2f), speedX, speedY, mod.ProjectileType("IceFlames"), (int)(damage * 0.75), knockBack, player.whoAmI);
@@ -1162,18 +1176,23 @@ namespace SGAmod
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
         {
-            if (item.type == ItemID.SandBlock && item.velocity.Y == 0 && item.wet && Main.rand.Next(100)<1)
+            if (item.type == ItemID.SandBlock && item.velocity.Y == 0 && item.wet && Main.rand.Next(50)<1 && item.stack>=1)
             {
                 int item2 = Item.NewItem(item.Center, ModContent.ItemType<MoistSand>(), 1);
                 Item item3 = Main.item[item2];
                 if (item3 != null && item3.active)
                 {
                     //item3.velocity = Vector2.Zero;
-                    item3.noGrabDelay = 0;
+                    //item3.noGrabDelay = 0;
                     item.stack--;
 
-                    if (item.stack < 2)
-                        item.type = ModContent.ItemType<MoistSand>();
+                    
+                    if (item.stack < 1)
+                    {
+                        item.active = false;
+                        HopperTile.CleanUpGlitchedItems();
+                    }
+                    
 
                     if (Main.netMode != NetmodeID.SinglePlayer)
                     {

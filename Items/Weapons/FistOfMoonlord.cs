@@ -13,12 +13,15 @@ using System.Linq;
 
 namespace SGAmod.Items.Weapons
 {
-	public class FistOfMoonlord : ModItem
+	public class FistOfMoonlord : ModItem, IHellionDrop
 	{
+		int IHellionDrop.HellionDropAmmount() => 1;
+		int IHellionDrop.HellionDropType() => ModContent.ItemType<FistOfMoonlord>();
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fist Of Moon Lord");
-			Tooltip.SetDefault("'Punches shit into next week'\nHold attack to direct Moon Lord's arm, release to let go\nThe fist does more damage when let go");
+			Tooltip.SetDefault("'Punches shit into next week'\nHold attack to direct Moon Lord's arm, release to let go\nThe fist does more damage the faster it moves\nHitting enemies slows the fist\nCan't crit, but when it would have crit, the fist is not slowed");
 			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(15, 2));
 		}
 		public override void SetDefaults()
@@ -52,13 +55,19 @@ namespace SGAmod.Items.Weapons
 			Projectile.NewProjectile(position.X, position.Y, 0, 0, type,damage, knockBack, player.whoAmI);
 			return false;
 		}
-		public override Vector2? HoldoutOffset()
+		public override void AddRecipes()
 		{
-			return new Vector2(-1, 4);
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<EldritchTentacle>(), 30);
+			recipe.AddIngredient(ModContent.ItemType<DrakeniteBar>(), 12);
+			recipe.AddIngredient(ItemID.SlapHand, 1);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
 		}
 	}
 
-	public class FistOfMoonlordProjectile : ModProjectile
+	public class FistOfMoonlordProjectile : ModProjectile,ITrueMeleeProjectile
 	{
 		Player Owner => Main.player[projectile.owner];
 		int[] armSizes, armOrigins;
@@ -101,8 +110,14 @@ namespace SGAmod.Items.Weapons
 				hitDirection = 1;
 
 			knockback *= (projectile.velocity.Length() / 120f);
+
+			if (!crit)
 			projectile.ai[1] /= 5f;
-			damage = (int)(damage*(Owner.channel ? MathHelper.Clamp(projectile.ai[1] / (120f / Owner.meleeSpeed), 0.33f,1f) : 1f) *projectile.velocity.Length());
+
+			crit = false;
+
+			float damagescalez = Math.Min((Owner.channel ? MathHelper.Clamp(projectile.ai[1] / (120f / Owner.meleeSpeed), 0.33f, 1f) : 1f) * (projectile.velocity.Length()/3f),5f);
+			damage = (int)(damage* damagescalez);
 			if (projectile.ai[1] < 30)
 			{
 				damage = (int)(damage * 0.50);

@@ -227,7 +227,7 @@ namespace SGAmod.Items.Armors.Dev
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Movement speed increased and Flight time improved by 20%"));
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Do you don't take ANY self damage (includes fall and explosive damage)"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "you don't take ANY self damage (includes fall and explosive damage)"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds")));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "75 increased max life"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "15% DoT resistance"));

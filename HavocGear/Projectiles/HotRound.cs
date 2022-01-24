@@ -162,6 +162,7 @@ namespace SGAmod.HavocGear.Projectiles
 				if (himz != null && himz.active)
 				{
 					projectile.Center = (himz.Center - offset) - (projectile.velocity * 0.2f);
+					if (GetType() == typeof(HotRound))
 					himz.AddBuff(BuffID.OnFire, 3);
 				}
 				else
@@ -240,6 +241,7 @@ namespace SGAmod.HavocGear.Projectiles
 	public class HeatedBlowBackShot : Dimensions.NPCs.SpaceBossBasicShot, IDrawAdditive
 	{
         protected override Color BoomColor => Color.Lerp(Color.Red, Color.Orange, projectile.timeLeft/120f);
+		public override bool DrawFlash => true;
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blow Back Shot");

@@ -164,7 +164,7 @@ namespace SGAmod.Items.Consumables
 			if (player.HasBuff(ModContent.BuffType<LifeLeechDebuff>()))
 				return;
 
-			if (Main.rand.Next(100) < 100)
+			if (proj == null || Main.rand.Next(100) < ((proj.modProjectile != null && proj.modProjectile is ITrueMeleeProjectile) ? 100 : 5));
 			{
 				Projectile projectile = new Projectile();
 				projectile.Center = npc.Center;
@@ -210,6 +210,7 @@ namespace SGAmod.Items.Consumables
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Bottle, 1);
+			recipe.AddIngredient(ItemID.Mushroom, 1);
 			recipe.AddIngredient(ModContent.ItemType<HopeHeart>(), 1);
 			recipe.AddTile(TileID.ImbuingStation);
 			recipe.SetResult(this, 1);
@@ -238,6 +239,106 @@ namespace SGAmod.Items.Consumables
 		}
     }
 
+	public class FlaskOfSoulSap : FlaskOfBlaze
+	{
+		public override int FlaskBuff => ModContent.BuffType<FlaskOfSoulSapBuff>();
+		public override int Period => 2;
+		public override int Debuff => ModContent.BuffType<SoulSapDebuff>();
+		public override int Chance => 2;
+
+		public override void OnRealHit(Player player, Projectile proj, NPC npc, int damage)
+		{
+
+			if (npc.HasBuff(ModContent.BuffType<SoulSapDebuff>()))
+            {
+				int index = npc.FindBuffIndex(ModContent.BuffType<SoulSapDebuff>());
+				if (npc.buffTime[index]>10)
+				return;
+			}
+
+			if (proj == null || Main.rand.Next(100) < ((proj.modProjectile != null && proj.modProjectile is ITrueMeleeProjectile) ? 100 : 20));
+			{
+				Item.NewItem(npc.Center,ItemID.Star);
+				IdgNPC.AddBuffBypass(npc.whoAmI, ModContent.BuffType<SoulSapDebuff>(), 60 * 8);
+
+				for (int i = 0; i < 25; i += 1)
+				{
+					Vector2 value = new Vector2(Main.rand.Next(-10, 11), Main.rand.Next(-10, 11));
+					value.Normalize();
+					int num45 = Gore.NewGore(npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height)), value * Main.rand.NextFloat(3, 6), 17, (float)Main.rand.Next(20, 60) * 0.01f);
+					Main.gore[num45].sticky = false;
+				}
+
+			}
+		}
+
+		public static string SoulSapLine => "Melee attacks may spawn mana stars on hit\nTrue Melee have a much higher chance\nWhen spawned, enemies cannot drop more stars for 8 seconds";
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Flask of Soul Sap");
+			Tooltip.SetDefault(SoulSapLine);
+		}
+
+		public override void FlaskEffect(Rectangle rect, Vector2 speed)
+		{
+
+			Vector2 start = new Vector2(rect.X, rect.Y);
+
+			if (Main.rand.Next(0, 100) > 50)
+				return;
+
+			int dust = Dust.NewDust(start, rect.Width, rect.Height, DustID.AncientLight, 0, 0, 100, Color.Blue, 0.5f);
+			Main.dust[dust].fadeIn = 0.2f;
+			Main.dust[dust].velocity = speed * Main.rand.NextFloat(0.7f, 1.20f);
+
+			if (Main.rand.Next(100) < 8)
+			{
+				Vector2 value = new Vector2(Main.rand.Next(-10, 11), Main.rand.Next(-10, 11)) + speed;
+				value.Normalize();
+				int num45 = Gore.NewGore(new Vector2(rect.X, rect.Y) + new Vector2(Main.rand.Next(rect.Width), Main.rand.Next(rect.Height)), value * Main.rand.Next(3, 6) * 0.33f, 17, (float)Main.rand.Next(20, 60) * 0.01f);
+				Main.gore[num45].sticky = false;
+				Main.gore[num45].velocity *= 0.4f;
+				Main.gore[num45].velocity.Y -= 0.6f;
+			}
+
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Bottle, 1);
+			recipe.AddIngredient(ItemID.Star, 1);
+			recipe.AddIngredient(ModContent.ItemType<HopeHeart>(), 1);
+			recipe.AddTile(TileID.ImbuingStation);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class FlaskOfSoulSapBuff : FlaskOfBlazeBuff
+	{
+		public override FlaskOfBlaze FlaskType => ModContent.GetModItem(ModContent.ItemType<FlaskOfSoulSap>()) as FlaskOfBlaze;
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/FlaskOfSoulSapBuff";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			DisplayName.SetDefault("Weapon Imbue: Soul Sap");
+			Description.SetDefault(FlaskOfSoulSap.SoulSapLine);
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			base.Update(player, ref buffIndex);
+		}
+	}
+
+
+
 	public class LifeLeechDebuff : ModBuff
 	{
 		public override bool Autoload(ref string name, ref string texture)
@@ -258,5 +359,26 @@ namespace SGAmod.Items.Consumables
 
 		}
 	}
+
+	public class SoulSapDebuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Buff_" + BuffID.MoonLeech;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			DisplayName.SetDefault("Soul Sapped");
+			Description.SetDefault("Cannot drop stars");
+			Main.debuff[Type] = true;
+		}
+
+        public override void Update(NPC npc, ref int buffIndex)
+        {
+            //
+        }
+    }
 
 }

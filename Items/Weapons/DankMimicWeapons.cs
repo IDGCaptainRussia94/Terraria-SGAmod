@@ -164,14 +164,14 @@ namespace SGAmod.Items.Weapons
 				{
 					foreach (NPC npc in Main.npc)
 					{
-						if (!npc.dontTakeDamage && !npc.friendly && !npc.townNPC)
+						if (npc.active && !npc.dontTakeDamage && !npc.friendly && !npc.townNPC)
 						{
 							Rectangle rec1 = new Rectangle((int)projectile.position.X - 24, (int)projectile.Center.Y - 48, projectile.width + 48, (int)projectile.height + 64);
 							Rectangle rec2 = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height);
 							if (rec1.Intersects(rec2))
 							{
 								npc.SGANPCs().TimeSlow += 1f;
-							npc.SGANPCs().nonStackingImpaled = projectile.damage;//(int)(projectile.damage*3.75f);
+							npc.SGANPCs().nonStackingImpaled = npc.realLife>0 ? projectile.damage*10 : projectile.damage;//(int)(projectile.damage*3.75f);
 							}
 
 						}

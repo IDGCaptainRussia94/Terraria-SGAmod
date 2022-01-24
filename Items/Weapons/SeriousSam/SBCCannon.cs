@@ -14,7 +14,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 {
 	public class SBCCannon : SeriousSamWeapon, ITechItem
 	{
-		public float ElectricChargeScalingPerUse() => 0.75f;
+		public float ElectricChargeScalingPerUse() => 0.60f;
 		public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("SBC Cannon");

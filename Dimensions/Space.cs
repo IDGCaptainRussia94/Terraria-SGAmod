@@ -142,7 +142,7 @@ namespace SGAmod.Dimensions
         public int maxSecurity = 5;
         public int securitySpawnDelay = 120;
         public List<SecurityEnemy> securityToSpawn = new List<SecurityEnemy>();
-        public List<(NPC, int)> securitySpawned = new List<(NPC, int)>();
+        public List<(SecurityEnemy,Vector3, NPC)> securitySpawned = new List<(SecurityEnemy,Vector3, NPC)>();
         public List<(FilledSpaceArea, Vector2)> roomsToGenerateLater = new List<(FilledSpaceArea, Vector2)>();
 
 
@@ -161,6 +161,7 @@ namespace SGAmod.Dimensions
 
         public int glassType = WallID.BlueStainedGlass;
         public NPC focusCrystal = null;
+        public List<NPC> stationDefenses = new List<NPC>();
 
 
         public SpaceStationStructure(Vector2 position)
@@ -170,14 +171,56 @@ namespace SGAmod.Dimensions
             type = 0;
         }
 
+        public void ResetSecurity()
+        {
+            securityToSpawn.Clear();
+            securitySpawned.Clear();
+
+            foreach (NPC npc in stationDefenses)
+            {
+                if (npc != null && npc.active)
+                {
+                    npc.active = false;
+                }
+            }
+            stationDefenses.Clear();
+        }
+
+        public virtual void SetupSecurity()
+        {
+
+            ResetSecurity();
+
+            for (int i = 0; i < 5; i += 1)
+            {
+                int typeofenemy = NPCID.GrayGrunt;
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 60);
+                securityToSpawn.Add(secenemy);
+            }
+
+            for (int i = 0; i < 3; i += 1)
+            {
+                int typeofenemy = NPCID.MartianOfficer;
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 100);
+                securityToSpawn.Add(secenemy);
+            }
+
+            securityToSpawn = securityToSpawn.OrderBy(testby => Main.rand.Next()).ToList();
+        }
+
         public void SpawnFocusCrystals()
         {
             if (mainBase)
                 return;
 
+            SetupSecurity();
+
+            makecrystal:
+
             if (focusCrystal == null || !focusCrystal.active)
             {
-                int npc = NPC.NewNPC((int)position.X + 8, (int)position.Y+ 8 + 32, ModContent.NPCType<StationFocusCrystal>());
+
+                int npc = NPC.NewNPC((int)position.X + 8, (int)position.Y + 8 + 32, ModContent.NPCType<StationFocusCrystal>());
                 NPC crystal = Main.npc[npc];
 
                 if (crystal != null)
@@ -185,6 +228,15 @@ namespace SGAmod.Dimensions
                     focusCrystal = crystal;
                     StationFocusCrystal cryrs = crystal.modNPC as StationFocusCrystal;
                     cryrs.station = this;
+                }
+            }
+            else
+            {
+                if (focusCrystal != null)
+                {
+                    focusCrystal.active = false;
+                    focusCrystal = null;
+                    goto makecrystal;
                 }
             }
         }
@@ -205,6 +257,8 @@ namespace SGAmod.Dimensions
         {
             if (securityActivated)
             {
+                int spawnTime = 30;
+
                 securitySpawnDelay -= 1;
 
                 if (securitySpawnDelay < 1)
@@ -213,6 +267,24 @@ namespace SGAmod.Dimensions
                     {
                         SpawnSecurity();
                     }
+                }
+
+                Main.NewText("Security size: " + securitySpawned.Count);
+
+                if (securitySpawned.Count > 0)
+                {
+
+                    foreach ((SecurityEnemy, Vector3, NPC) managedEnemySpawns in securitySpawned)
+                    {
+                        Vector3 data = managedEnemySpawns.Item2;
+                        if ((int)data.Z == spawnTime)
+                        {
+                            NPC.NewNPC((int)data.X, (int)data.Y, managedEnemySpawns.Item1.type);
+                        }
+                    }
+
+                    securitySpawned = securitySpawned.Select(testby => (testby.Item1, new Vector3(testby.Item2.X, testby.Item2.Y, testby.Item2.Z - 1), testby.Item3)).Where(testby => testby.Item2.Z > -60 && !(testby.Item3 == null || !testby.Item3.active)).ToList();
+
                 }
             }
         }
@@ -224,8 +296,10 @@ namespace SGAmod.Dimensions
                 Vector2 place = placesToBuild[Main.rand.Next(placesToBuild.Count)].Item1;
                 SecurityEnemy enemy = securityToSpawn[0];
 
-                NPC.NewNPC((int)place.X, (int)place.Y, enemy.type);
+                //NPC.NewNPC((int)place.X, (int)place.Y, enemy.type);
                 securitySpawnDelay = enemy.delay;
+
+                securitySpawned.Add((enemy, new Vector3(place, 120), null));
 
                 securityToSpawn.RemoveAt(0);
             }
@@ -274,6 +348,69 @@ namespace SGAmod.Dimensions
 
             tempPlacesToBuild.AddRange(corridorsToBuild.ToList());
 
+        }
+
+        public void MakeExitWalkways(UnifiedRandom uniRand, FilledSpaceArea theLocation,int heightPlatformDifferance, ref List<(Vector2, int)> tempPlacesToBuild)
+        {
+            //Create walkways (exits)
+            if (theLocation.type == (int)StationRoomTypes.SmolStation)
+            {
+                Vector2 centerPos = position == default ? theLocation.position : position;
+                int size = theLocation.size;
+                int openspace = 0;
+                int walkwaylength = 0;
+                for (int side = -1; side < 2; side += 2)
+                {
+                    for (int xx = size - 8; xx < size + 64; xx += 1)
+                    {
+                        int allOpen = 0;
+                        int realx = xx * side;
+
+                        walkwaylength += 1;
+
+                        for (int yy = -1; yy < 2; yy += 1)
+                        {
+                            int realy = yy - 2;
+                            Vector2 thereAreThey = centerPos + new Vector2(realx * 16, ((realy + heightPlatformDifferance) * 16));
+                            Point loc = (thereAreThey / 16).ToPoint();
+                            Tile tile = Framing.GetTileSafely(loc.X, loc.Y);
+
+                            if (!tile.active())
+                            {
+                                allOpen += 1;
+                            }
+
+                            Vector2 placeHere = thereAreThey;// theLocation.position + new Vector2(realx * 16, realy * 16);
+                            tempPlacesToBuild.Add((placeHere, TileRangeExits + walkwaylength));
+                        }
+
+                        if (openspace > 0)
+                            openspace -= 1;
+
+
+                        if (allOpen > 2)
+                            openspace += 8;
+
+                        if (openspace > 6)
+                        {
+                            /*
+                            if (theLocation.type>5)
+                            {
+                                Vector2 thereAreThey2 = theLocation.position + new Vector2(realx * 16, ((0 + heightPlatformDifferance) * 16));
+                                FilledSpaceArea area2 = new FilledSpaceArea(thereAreThey2);
+                                area2.type = (theLocation.type-1;
+
+                                GenerateStationCore(uniRand, area2,0);
+                            }
+                            */
+
+                            goto gotoNext;
+                        }
+                    }
+                gotoNext:
+                    openspace = 0;
+                }
+            }
         }
 
         public void GenerateStationCore(UnifiedRandom uniRand, FilledSpaceArea theLocation,Vector2 position,bool keepTrackOnly = true,bool addObjectsPhase = false)
@@ -335,64 +472,7 @@ namespace SGAmod.Dimensions
 
             MakeConnectionWalkways(uniRand,theLocation,ref tempPlacesToBuild);
 
-            //Create walkways (exits)
-            if (theLocation.type == (int)StationRoomTypes.SmolStation)
-            {
-                int openspace = 0;
-                int walkwaylength = 0;
-                for (int side = -1; side < 2; side += 2)
-                {
-                    for (int xx = size - 8; xx < size + 64; xx += 1)
-                    {
-                        int allOpen = 0;
-                        int realx = xx * side;
-
-                        walkwaylength += 1;
-
-                        for (int yy = -1; yy < 2; yy += 1)
-                        {
-                            int realy = yy - 2;
-                            Vector2 thereAreThey = centerPos + new Vector2(realx * 16, ((realy + heightPlatformDifferance) * 16));
-                            Point loc = (thereAreThey / 16).ToPoint();
-                            Tile tile = Framing.GetTileSafely(loc.X, loc.Y);
-
-                            if (!tile.active())
-                            {
-                                allOpen += 1;
-                            }
-
-                            Vector2 placeHere = thereAreThey;// theLocation.position + new Vector2(realx * 16, realy * 16);
-                            tempPlacesToBuild.Add((placeHere, TileRangeExits + walkwaylength));
-                        }
-
-                        if (openspace>0)
-                        openspace -= 1;
-
-
-                        if (allOpen > 2)
-                            openspace += 8;
-
-                        if (openspace > 6)
-                        {
-                            /*
-                            if (theLocation.type>5)
-                            {
-                                Vector2 thereAreThey2 = theLocation.position + new Vector2(realx * 16, ((0 + heightPlatformDifferance) * 16));
-                                FilledSpaceArea area2 = new FilledSpaceArea(thereAreThey2);
-                                area2.type = (theLocation.type-1;
-
-                                GenerateStationCore(uniRand, area2,0);
-                            }
-                            */
-
-                            goto gotoNext;
-                        }
-                    }
-                gotoNext:
-                    openspace = 0;
-                }
-            }
-
+            MakeExitWalkways(uniRand, theLocation, heightPlatformDifferance, ref tempPlacesToBuild);
 
             if (addObjectsPhase == false)
             {
@@ -806,6 +886,8 @@ namespace SGAmod.Dimensions
                 List<(Point, int)> solidFloorsInThisStation = new List<(Point, int)>();
                 List<(Point, int)> platformFloorsInThisStation = new List<(Point, int)>();
 
+                station.placesToBuild = station.placesToBuild.Distinct().ToList();
+
                 foreach ((Vector2, int) there in station.placesToBuild)
                 {
                     Point therePoint = new Point((int)there.Item1.X / 16, (int)there.Item1.Y / 16);
@@ -815,6 +897,7 @@ namespace SGAmod.Dimensions
                         tile.active(false);
                 }
 
+                //place stuff
 
                 foreach ((Vector2, int) there in station.placesToBuild)
                 {
@@ -833,8 +916,6 @@ namespace SGAmod.Dimensions
                         platformFloorsInThisStation.Add((therePoint, there.Item2));
 
                 }
-
-                station.placesToBuild.Distinct().ToList();
 
                 station.FillInStation(uniRand, solidFloorsInThisStation, platformFloorsInThisStation);//Add stuff that's per station
 
@@ -1169,11 +1250,11 @@ namespace SGAmod.Dimensions
                     IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 5, 12, fragmentAsteriod ? TileID.Adamantite : TileID.Meteorite, false, rand: rand);
                 }
 
-                if (rand.Next(-50, Math.Max(-10, 300 - where.Y)) > 0)
-                    IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 4, 15, SGAmod.Instance.TileType("AstrialLuminite"), false, rand: rand);
+                if (postMoonLord && rand.Next(-50, Math.Max(-10, 300 - where.Y)) > 0)
+                    IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 4, 15, ModContent.TileType<AstrialLuminite>(), false, rand: rand);
 
                 if (rand.Next((height - 300) - 50, Math.Max((height - 300) - 10, height)) < where.Y)
-                    IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 4, 15, SGAmod.Instance.TileType("VibraniumCrystalTile"), false, rand: rand);
+                    IDGWorldGen.TileRunner(OreSpreadLoc.X, OreSpreadLoc.Y, 4, 15, ModContent.TileType<VibraniumCrystalTile>(), false, rand: rand);
 
             }
 
@@ -1227,7 +1308,8 @@ namespace SGAmod.Dimensions
                     for (int x = 0; x < Main.maxTilesX; x += 1)
                     {
                         Tile tile = Main.tile[x, y];
-                        bool asteriodRocks = tile.type == ModContent.TileType<Spacerock>() || tile.type == ModContent.TileType<Spacerock2>() || tile.type == ModContent.TileType<AstrialLuminite>() || tile.type == TileID.Meteorite;
+                        bool asteriodRocks = tile.type == ModContent.TileType<Spacerock>() || tile.type == ModContent.TileType<Spacerock2>() || tile.type == ModContent.TileType<AstrialLuminite>() || tile.type == TileID.Meteorite
+                             || tile.type == TileID.LunarBlockSolar || tile.type == TileID.LunarBlockNebula || tile.type == TileID.LunarBlockVortex || tile.type == TileID.LunarBlockStardust;
 
                         if (!asteriodRocks)
                             continue;
@@ -1956,6 +2038,57 @@ namespace SGAmod.Dimensions
 
         }
 
+        public static void StarryNebulaSky()
+        {
+            VertexBuffer vertexBuffer;
+
+            UnifiedRandom alwaysthesame = new UnifiedRandom(DimDungeonsProxy.DungeonSeeds);
+
+            int starterType = 15;
+
+            for (int type = starterType; type > 0; type -= 1)
+            {
+
+                Vector2 parallex = new Vector2(Main.GlobalTime * alwaysthesame.NextFloat(0.02f, 0.04f), 0f);
+                    float aspectRato = Main.screenWidth / Main.screenHeight;
+
+                Effect effect = SGAmod.TrailEffect;
+
+                effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Vector2.One) * WVP.Projection());
+                effect.Parameters["imageTexture"].SetValue(SGAmod.Instance.GetTexture("Space"));
+                effect.Parameters["coordOffset"].SetValue(parallex);
+                effect.Parameters["coordMultiplier"].SetValue(new Vector2(0.50f, 0.50f)*new Vector2(aspectRato,1f)*new Vector2(alwaysthesame.NextFloat(0.80f,1.75f), alwaysthesame.NextFloat(0.80f, 1.75f)));
+                effect.Parameters["strength"].SetValue(0.05f+((starterType-type) / 60f)*2f);
+
+                VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
+
+                Vector3 screenPos = new Vector3(-16, 0, 0);
+
+                Color colorsa = Color.PaleTurquoise;
+
+                vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-16, 0, 0), colorsa, new Vector2(0, 0));
+                vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
+                vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
+
+                vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, Main.screenHeight, 0), colorsa, new Vector2(1, 1));
+                vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-16, Main.screenHeight, 0), colorsa, new Vector2(0, 1));
+                vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(Main.screenWidth + 16, 0, 0), colorsa, new Vector2(1, 0));
+
+                vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+                vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+                Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+                RasterizerState rasterizerState = new RasterizerState();
+                rasterizerState.CullMode = CullMode.None;
+                Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+                effect.CurrentTechnique.Passes[type == starterType ? "BasicEffectPass" : "BasicEffectAlphaPass"].Apply();
+                Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+
+            }
+
+        }
+
         public override float GetCloudAlpha()
         {
             return 0f;
@@ -2255,7 +2388,7 @@ namespace SGAmod.Dimensions
 
                 Projectile proj = Projectile.NewProjectileDirect(player.Center + chosenspot, velocity, projtype, 0, 0);
 
-                if (Main.rand.Next(0, 100) <= 2)
+                if (!SpaceDim.SpaceBossIsActive && Main.rand.Next(0, 100) <= 2)
                 {
                     int npc = NPC.NewNPC((int)proj.Center.X, (int)proj.Center.Y, ModContent.NPCType<OverseenHeadAsteriod>());
                     MineableAsteriod grabrock = proj.modProjectile as MineableAsteriod;
@@ -2463,6 +2596,7 @@ namespace SGAmod.Dimensions
                 projectile.Center = npc2.Center;
                 projectile.velocity = npc2.velocity;
                 projectile.tileCollide = false;
+                if (npc2.modNPC != null)
                 (npc2.modNPC as OverseenHeadAsteriod).timer = 3;
             }
             else
@@ -2851,9 +2985,8 @@ namespace SGAmod.Dimensions
                 }
                 if (boss != null)
                 {
-                    float healRate = 10f * healScaling;
+                    float healRate = (npc.lifeMax / (60f*30f)) * healScaling;
                     boss.life = Math.Min(boss.life + (int)healRate, boss.lifeMax);
-
                 }
             }
             if (SpaceDim.crystalAsteriods)
@@ -2985,13 +3118,13 @@ namespace SGAmod.Dimensions
                 Texture2D mainTex = Main.npcTexture[npc.type];
                 Texture2D otherTex = Main.itemTexture[ItemID.DD2ElderCrystal];
                 Texture2D glowTex = mod.GetTexture("Glow");
+                Texture2D glowTex2 = mod.GetTexture("GlowOrb");
                 Vector2 halfGlow = glowTex.Size() / 2f;
                 ArmorShaderData stardustsshader = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye);
 
-                DrawData value8 = new DrawData(otherTex, new Vector2(30f, 30f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, otherTex.Width, otherTex.Height)), Microsoft.Xna.Framework.Color.White, npc.rotation, glowTex.Size() / 2f, npc.scale * 5f, SpriteEffects.None, 0);
                 Color colorz = Color.White;
 
-                spriteBatch.Draw(glowTex, npc.Center - Main.screenPosition, null, Color.White * 1.50f * overallAlpha, 0, halfGlow, new Vector2(1f, 1f) * 12f, SpriteEffects.None, 0);
+                spriteBatch.Draw(glowTex2, npc.Center - Main.screenPosition, null, Color.White * 0.50f * overallAlpha, 0, glowTex2.Size()/2f, new Vector2(1f, 1f) * 1f, SpriteEffects.None, 0);
 
                 if (npc.localAI[1] < 1)
                 {
@@ -3012,11 +3145,16 @@ namespace SGAmod.Dimensions
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
+                int intdexer = 0;
+                UnifiedRandom randoz = new UnifiedRandom(npc.whoAmI);
+
                 foreach ((float, float, float) rot in layers)
                 {
                     float f = rot.Item1;
                     float f2 = rot.Item2;
                     float rotter = rot.Item3;
+
+                    DrawData value7 = new DrawData(otherTex, new Vector2(30f, 30f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(randoz.Next(10000), randoz.Next(10000), otherTex.Width, otherTex.Height)), Microsoft.Xna.Framework.Color.White, npc.rotation, glowTex.Size() / 2f, npc.scale * 5f, SpriteEffects.None, 0);
 
                     float dister = MathHelper.SmoothStep((40f + (f2 * 8f)) + (float)Math.Sin((f2*2f) + (Main.GlobalTime * 2f)) * 10f, 42f, npc.localAI[1]);
 
@@ -3024,7 +3162,9 @@ namespace SGAmod.Dimensions
 
                     stardustsshader.UseColor(Main.hslToRgb(((rotter/MathHelper.TwoPi)+ (f / MathHelper.TwoPi)) % 1f,1f-(npc.localAI[1]/1.5f),0.75f).ToVector3() * 1f);
                     stardustsshader.UseOpacity(1f);
-                    stardustsshader.Apply(null, new DrawData?(value8));
+                    stardustsshader.Apply(null, new DrawData?(value7));
+
+                    intdexer += 1;
 
                     spriteBatch.Draw(otherTex, npc.Center + (rotter.ToRotationVector2() * (dister)) - Main.screenPosition, null, Color.White * 1f * overallAlpha, rotter+MathHelper.PiOver2+ addedAngle, otherTex.Size()/2f, new Vector2(1f, 1f), SpriteEffects.None, 0);
                 }
@@ -3040,9 +3180,10 @@ namespace SGAmod.Dimensions
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
+                DrawData value9 = new DrawData(otherTex, new Vector2(30f, 30f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, otherTex.Width, otherTex.Height)), Microsoft.Xna.Framework.Color.White, npc.rotation, glowTex.Size() / 2f, npc.scale * 5f, SpriteEffects.None, 0);
                 stardustsshader.UseColor(colorz.ToVector3() * 1f);
                 stardustsshader.UseOpacity(1f);
-                stardustsshader.Apply(null, new DrawData?(value8));
+                stardustsshader.Apply(null, new DrawData?(value9));
 
                 spriteBatch.Draw(mainTex, npc.Center - Main.screenPosition, null, Color.White * 1f * overallAlpha, 0, mainTex.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0);
 

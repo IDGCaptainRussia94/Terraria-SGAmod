@@ -220,6 +220,9 @@ namespace SGAmod.NPCs.Hellion
 
             ShadowEffect.Parameters["edgeSmooth"].SetValue(edging);
             ShadowEffect.Parameters["noiseTexture"].SetValue(shadowHellion);
+            ShadowEffect.Parameters["invertLuma"].SetValue(false);
+            ShadowEffect.Parameters["alpha"].SetValue(1f);
+
 
             //Show through
             float percent = 1f;

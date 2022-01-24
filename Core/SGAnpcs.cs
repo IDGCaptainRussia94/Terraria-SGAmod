@@ -965,28 +965,37 @@ namespace SGAmod
 					}
 					if (SGAWorld.downedCratrosity)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("TerrariacoCrateKey"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<TerrariacoCrateKey>());
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(20, 0, 0, 0);
 						nextSlot++;
 					}
 					if (Main.netMode != NetmodeID.SinglePlayer && NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("EntropyTransmuter"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<EntropyTransmuter>());
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(1, 0, 0, 0);
 						nextSlot++;
 					}
 
+					if (player.ZoneBeach)
+					{
+						shop.item[nextSlot].SetDefaults(ItemID.DivingHelmet);
+						nextSlot++;
+					}
+
+					shop.item[nextSlot].SetDefaults(ModContent.ItemType<CobwebRepellent>());
+						nextSlot++;
+
 					if (true)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("PremiumUpgrade"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType <Items.Quests.PremiumUpgrade>());
 						nextSlot++;
 					}
 					if (SGAWorld.downedSPinky && SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths > 3 && Main.netMode > 0)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("AncientFabricItem"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType < AncientFabricItem>());
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 1, 0, 0);
 						nextSlot++;
-						shop.item[nextSlot].SetDefaults(mod.ItemType("VibraniumCrystal"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType < VibraniumCrystal>());
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 1, 0, 0);
 						nextSlot++;
 					}
@@ -996,23 +1005,30 @@ namespace SGAmod
 
 					if (!SGAWorld.WorldIsTin || Main.hardMode)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("GunBarrelParts"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType < GunBarrelParts>());
 						shop.item[nextSlot].shopCustomPrice = Main.hardMode ? Item.buyPrice(0, 7, 50, 0) : Item.buyPrice(0, 2, 50, 0);
 						nextSlot++;
 					}
 					if (SGAWorld.WorldIsTin || Main.hardMode)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("SecondCylinder"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType < SecondCylinder>());
 						shop.item[nextSlot].shopCustomPrice = Main.hardMode ? Item.buyPrice(0, 7, 50, 0) : Item.buyPrice(0, 2, 50, 0);
 						nextSlot++;
 					}
 
-					if (player.CountItem(mod.ItemType("SnappyShark")) > 0)
+					if (player.CountItem(ModContent.ItemType<SnappyShark>()) > 0)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("SharkTooth"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType < SharkTooth>());
 						nextSlot++;
 					}
-					if (player.CountItem(mod.ItemType("StarfishBlaster")) + player.CountItem(mod.ItemType("Starfishburster")) > 0)
+
+					if (player.CountItem(ModContent.ItemType<SharkBait>()) > 0)
+					{
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<SharkBait>());
+						nextSlot++;
+					}
+
+					if (player.CountItem(ModContent.ItemType<StarfishBlaster>()) + player.CountItem(ModContent.ItemType<Starfishburster>()) > 0)
 					{
 						shop.item[nextSlot].SetDefaults(ItemID.Starfish);
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 2, 0);
@@ -1148,10 +1164,9 @@ namespace SGAmod
 
 			if (sgaplayer.greedyperc > 0)
 			{
-
 				foreach (Item item2 in shop.item)
 				{
-					Main.NewText(sgaplayer.greedyperc);
+					//Main.NewText(sgaplayer.greedyperc);
 					item2.value = (int)(item2.value * (1f - (Math.Min(0.95f, sgaplayer.greedyperc * 1f))));
 				}
 			}
@@ -1343,10 +1358,9 @@ namespace SGAmod
 
 			if (npc.type == NPCID.MoonLordCore)
 			{
-				if (Main.rand.Next(20) < 1)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < FistOfMoonlord>());
 				if (Main.rand.Next(10) < (Main.expertMode ? 2 : 1))
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SwordofTheBlueMoon>());
+
 				if (dropFork && !Main.expertMode)
 				{
 					dropFork = false;
@@ -1472,7 +1486,7 @@ namespace SGAmod
 
 				if ((npc.type == NPCID.EnchantedSword || npc.type == NPCID.IlluminantBat || npc.type == NPCID.IlluminantSlime || npc.type == NPCID.ChaosElemental) && Main.rand.Next(3) <= 1)
 				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, Main.rand.Next(1,3)));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<IlluminantEssence>(), Main.rand.Next(1, Main.rand.Next(1,3)));
 				}
 
 
@@ -1483,9 +1497,9 @@ namespace SGAmod
 					{
 						if (Main.player[npc.target].ZoneHoly && npc.position.Y > Main.rockLayer)
 						{
-							if (Main.rand.Next(100) <= 1)
+							if (Main.rand.Next(125) <= 2)
 							{
-								Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), 1);
+								Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<IlluminantEssence>(), Main.rand.Next(1, 3));
 							}
 						}
 					}

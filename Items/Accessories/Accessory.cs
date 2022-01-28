@@ -3953,7 +3953,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Necklace");
-			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace") + " (by 2)\n25% increased minion damage\nImproves Max Electric Charge by 1000\nAuras are boosted by 1 power level");
+			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.PygmyNecklace") + " (by 2), and sentries by 1\n25% increased minion damage\nImproves Max Electric Charge by 1000\nAuras are boosted by 1 power level\n" + Idglib.ColorText(Color.Red, "All other damage and crit chance is reduced by 10%"));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3961,8 +3961,9 @@ namespace SGAmod.Items.Accessories
 			base.UpdateAccessory(player,hideVisual);
 			player.maxMinions += 2;
 			player.maxTurrets += 1;
-			player.minionDamage += 0.25f;
+			player.minionDamage += 0.35f;
 			player.minionKB += 2f;
+			player.BoostAllDamage(-0.10f, -10);
 		}
 
 		public override void SetDefaults()
@@ -3977,7 +3978,7 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType< NovusSummoning>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<NovusSummoning>(), 1);
 			recipe.AddIngredient(ModContent.ItemType< NoviteChip>(), 1);
 			recipe.AddIngredient(ItemID.SummonerEmblem, 1);
 			recipe.AddIngredient(ItemID.PygmyNecklace, 1);
@@ -4003,7 +4004,9 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.SGAPly().bustlingFungus = true;
+			player.SGAPly().bustlingFungus.Item1 = true;
+			if (player.SGAPly().bustlingFungus.Item2 == 180)
+			Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<Items.Accessories.BungalHealingAura>(), 0, 0, player.whoAmI);
 		}
 
 		public override void SetDefaults()
@@ -4014,25 +4017,141 @@ namespace SGAmod.Items.Accessories
 			item.accessory = true;
 			item.height = 14;
 			item.value = Item.buyPrice(0, 1, 0, 0);
-			item.rare = ItemRarityID.Blue;
+			item.rare = ItemRarityID.Green;
 		}
 	}
+
+	public class BungalHealingAura : ModProjectile
+	{
+		Effect effect => SGAmod.TrailEffect;
+		public float ringSize => 240 * MathHelper.Clamp(projectile.timeLeft/30f,0f,1f);
+		public int maxSize = 520;
+		public int maxTime = 180;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Bungal Healing Aura");
+		}
+
+		public override string Texture => "SGAmod/HopefulHeart";
+
+		public override void SetDefaults()
+		{
+			projectile.width = 160;
+			projectile.height = 160;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.tileCollide = false;
+			projectile.alpha = 40;
+			projectile.timeLeft = 30;
+			projectile.extraUpdates = 0;
+			projectile.ignoreWater = true;
+			projectile.damage = 20;
+		}
+
+		public override void AI()
+		{
+
+			if (projectile.timeLeft > 28)
+			{
+				float realsize = (ringSize * 0.90f);
+				bool playerbased = projectile.ai[1] <= 0 && (projectile.owner < Main.maxPlayers && Main.player[projectile.owner].velocity.Length() < 0.05f);
+				bool projbased = projectile.ai[1] > 0 && Main.projectile[(int)projectile.ai[1] - 1].active && Main.projectile[(int)projectile.ai[1] - 1].sentry && Main.projectile[(int)projectile.ai[1] - 1].velocity.Length() < 0.25f;
+
+				if (playerbased || projbased)
+				{
+					Player playz = Main.player[projectile.owner];
+					if (playz.SGAPly().bustlingFungus.Item1)
+					{
+						projectile.timeLeft = 30;
+						Projectile masterproj = projbased ? Main.projectile[(int)projectile.ai[1] - 1] : null;
+
+						Entity ent = projbased ? (Entity)masterproj : (Entity)Main.player[projectile.owner];
+						projectile.Center = ent.Center;
+					}
+
+
+					if (projectile.localAI[0] > maxTime && projectile.timeLeft > 29)
+					{
+						foreach (Player player in Main.player.Where(testby => testby.active && testby.IsAlliedPlayer(playz) && (testby.Center - projectile.Center).Length() < realsize))
+						{
+							player.SGAPly().postLifeRegenBoost += 10;
+						}
+					}
+				}
+			}
+
+			projectile.localAI[0] += 1;
+
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D mainTex = Main.projectileTexture[projectile.type];
+			Effect RadialEffect = SGAmod.RadialEffect;
+
+			float alpha = 1f;
+
+			Vector2 half = mainTex.Size() / 2f;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("SmallLaserHorz"));
+			RadialEffect.Parameters["alpha"].SetValue(0.75f * alpha);
+			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.075f, 0.20f));
+			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(1f, 2f));
+			RadialEffect.Parameters["ringScale"].SetValue(0.005f * ((80f / (float)projectile.width) * ((float)ringSize / 64f)) * alpha);
+			RadialEffect.Parameters["ringOffset"].SetValue(((projectile.timeLeft / (float)maxTime)) * 0.9f);
+			RadialEffect.Parameters["ringColor"].SetValue(Color.Lime.ToVector3());
+			RadialEffect.Parameters["tunnel"].SetValue(false);
+
+			RadialEffect.CurrentTechnique.Passes["RadialAlpha"].Apply();
+
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lime, 0, half, ringSize * 0.5f * MathHelper.Clamp(projectile.localAI[0] / 30f, 0f, 1f), default, 0);
+
+
+			RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("SmallLaserHorz"));
+			RadialEffect.Parameters["alpha"].SetValue(1.15f * alpha);
+			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.125f, -Main.GlobalTime * 0.275f));
+			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(2f, 5f));
+			RadialEffect.Parameters["ringScale"].SetValue(0.025f * ((80f / (float)projectile.width) * ((float)ringSize / 64f)) * alpha);
+
+			RadialEffect.CurrentTechnique.Passes["RadialAlpha"].Apply();
+
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lime, 0, half, ringSize * 0.5f*MathHelper.Clamp(projectile.localAI[0]/30f,0f,1f), default, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
+
+			return false;
+		}
+
+	}
+
+	[AutoloadEquip(EquipType.HandsOn, EquipType.HandsOff, EquipType.Back)]
 	public class ArmchairGeneral : PrismalNecklace
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Armchair General");
-			Tooltip.SetDefault("'Lead not by example'\nIncreases your maximum minions by 3, and sentries by 2\n50% Increased Summon damage and increased Minion knockback\nIncreases max electrical charge by 1000 and boosts auras by 1 level\nWhen standing still you emit a healing fungal aura and regenerate much life faster\nYour stationary sentries also emit this aura");
+			Tooltip.SetDefault("'Lead not by example'\nIncreases your maximum minions by 3, and sentries by 2\n50% Increased Summon damage and increased Minion knockback\nIncreases max electrical charge by 1000 and boosts auras by 1 level\nWhen standing still you emit a healing fungal aura and regenerate life much faster\nYour stationary sentries also emit this aura\n" + Idglib.ColorText(Color.Red,"All other damage and crit chance is reduced by 25%"));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			base.UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<BustlingFungus>().UpdateAccessory(player, hideVisual);
 			player.maxMinions += 1;
-			player.SGAPly().bustlingFungus = true;
+			player.minionKB += 1;
 			player.shinyStone = true;
-			player.dd2Accessory = true;
-			player.minionDamage += 0.15f;
+			player.dd2Accessory = true;//10%
+			player.minionDamage += 0.30f;
+			player.BoostAllDamage(-0.15f,-15);
 		}
 
 		public override void SetDefaults()

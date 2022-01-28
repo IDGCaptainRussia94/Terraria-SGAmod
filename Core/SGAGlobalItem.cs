@@ -1163,6 +1163,10 @@ namespace SGAmod
                     player.QuickSpawnItem(mod.ItemType("OmegaSigil"), 1);
                 if (arg == ItemID.WallOfFleshBossBag && Main.rand.Next(100) <= 10)
                     player.QuickSpawnItem(mod.ItemType("Powerjack"), 1);
+                if (arg == ItemID.WallOfFleshBossBag && Main.rand.Next(100) <= 25)
+                    player.QuickSpawnItem(ModContent.ItemType<Items.Weapons.LeechYoyo>(), 1);
+
+
             }
         }
 

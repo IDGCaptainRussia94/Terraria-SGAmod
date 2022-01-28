@@ -103,6 +103,11 @@ namespace SGAmod.Items.Placeable
 		internal static void SGAmod_PostUpdateEverythingEvent()
 		{
 
+			if (SGAWorld.modtimer == 2)
+			{
+				Tiles.Monolith.CelestialMonolithTE.ResetTEs();
+			}
+
 			if (CelestialMonolithManager.queueRenderTargetUpdate > 0)
 			{
 				CelestialMonolithManager.queueRenderTargetUpdate -= 1;

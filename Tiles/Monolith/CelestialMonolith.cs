@@ -272,28 +272,19 @@ namespace SGAmod.Tiles.Monolith
 			CelestialMonolithTileEntities.Clear();
 			for (int i = 0; i < TileEntity.ByID.Count; i += 1)
 			{
-				//try
-				//{
 				TileEntity te;
 				if (TileEntity.ByID.TryGetValue(i, out te))
 				{
 					if (te != null)
 					{
-						Main.NewText("tester " + te.GetType().Name);
+						//Main.NewText("tester " + te.GetType().Name);
 						if (te is CelestialMonolithTE cele)
 						{
 							CelestialMonolithTileEntities.Add(cele);
 						}
 					}
 				}
-				//}
-				//catch
-				//{
-
-				//}
-
 			}
-			//Main.NewText("tester " + CelestialMonolithTE.CelestialMonolithTileEntities.Count + ": ");
 		}
 
 		public override void Update()
@@ -349,7 +340,7 @@ namespace SGAmod.Tiles.Monolith
 			if (Main.netMode == 1)
 			{
 				NetMessage.SendTileRange(Main.myPlayer, i - 1, j - 2, 2, 3);
-				NetMessage.SendData(87, -1, -1, null, i - 1, j - 2, Type, 0f, 0, 0, 0);
+				NetMessage.SendData(MessageID.TileEntityPlacement, -1, -1, null, i - 1, j - 2, Type, 0f, 0, 0, 0);
 				return -1;
 			}
 			return Place(i - 1, j - 2);

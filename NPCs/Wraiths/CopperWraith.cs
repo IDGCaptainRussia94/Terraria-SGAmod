@@ -589,7 +589,6 @@ namespace SGAmod.NPCs.Wraiths
 
 			if (SGAWorld.craftwarning < 30)
 			{
-				SGAWorld.craftwarning = 50;
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TrueCopperWraithNotch"));
 			}
 			if (Main.expertMode)

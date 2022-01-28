@@ -442,7 +442,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Energy Potion");
-			Tooltip.SetDefault("'A bottled transformer for the road'\n+1 passive Electric Charge Rate\nYour Electric Charge Recharge Delay is halved");
+			Tooltip.SetDefault("'A bottled transformer for the road'\n25% increased passive Electric Charge Rate\nYour Electric Charge Recharge Delay is halved");
 		}
 
 		public override void SetDefaults()

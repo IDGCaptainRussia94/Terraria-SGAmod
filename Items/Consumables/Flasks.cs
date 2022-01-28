@@ -259,6 +259,8 @@ namespace SGAmod.Items.Consumables
 			if (proj == null || Main.rand.Next(100) < ((proj.modProjectile != null && proj.modProjectile is ITrueMeleeProjectile) ? 100 : 20));
 			{
 				Item.NewItem(npc.Center,ItemID.Star);
+				//npc.buffType[npc.buffType.Length - 1] = ModContent.BuffType<SoulSapDebuff>();
+				//npc.buffTime[npc.buffType.Length - 1] = 8 * 60;
 				IdgNPC.AddBuffBypass(npc.whoAmI, ModContent.BuffType<SoulSapDebuff>(), 60 * 8);
 
 				for (int i = 0; i < 25; i += 1)

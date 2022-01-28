@@ -34,6 +34,7 @@ namespace SGAmod
 		public bool stackedattack=false;
 		public bool rerouted = false;
 		public double extraApocoChance = 0;
+		public int fungalAura = 0;
 
 		/*private List<int> debuffs=new List<int>();
 		private List<int> debufftime=new List<int>();
@@ -194,9 +195,31 @@ namespace SGAmod
 			Player owner = Main.player[projectile.owner];
 			if (owner != null)
 			{
+			SGAPlayer sgaply= owner.SGAPly();
+
+				if (projectile.sentry && sgaply.bustlingFungus.Item1)
+                {
+					fungalAura += 1;
+					if (fungalAura == 180)
+                    {
+						int proj = Projectile.NewProjectile(projectile.Center,Vector2.Zero,ModContent.ProjectileType<Items.Accessories.BungalHealingAura>(),0,0,projectile.owner,0,projectile.whoAmI+1);
+						//Main.projectile[proj].ai[1] = projectile.whoAmI + 1;
+					}
+					if (projectile.velocity.Length() > 0.25)
+                    {
+						fungalAura = 0;
+					}
+
+                }
+                else
+                {
+					fungalAura = 0;
+				}
+
+
 				if (projectile.melee)
 				{
-					SGAPlayer sgaply= owner.SGAPly();
+
 
 					//Main.NewText("test " + projectile.coldDamage);
 

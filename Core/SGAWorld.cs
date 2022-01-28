@@ -102,7 +102,7 @@ namespace SGAmod
 
             Tiles.Monolith.CelestialMonolithTE.ResetTEs();
 
-            if (Dimensions.SGAPocketDim.WhereAmI != null)
+            if (Dimensions.SGAPocketDim.WhereAmI == null)
             downedSpaceBoss = false;
 
             if (SGAmod.cachedata == false)
@@ -654,14 +654,15 @@ namespace SGAmod
                     chance = 2;
                     if (tile.active() && tile.type == TileID.RainCloud || tile.type == TileID.Cloud)
                     {
-                        chance = 4;
+                        chance = 3;
                         tiletype = TileType<Biomass>();
                         size[0] = 2;
                         size[1] = 5;
                     }
-                    if (tile.active() && (geny < WorldGen.worldSurfaceLow || (WorldGen.genRand.Next(0, 1000) < 2)))
+                    bool randon = (WorldGen.genRand.Next(0, 1000) < 3);
+                    if (tile.active() && (geny < WorldGen.worldSurfaceLow || (randon)))
                     {
-                        chance = 100;
+                        chance = (randon) ? 100 : 25;
                         tiletype = TileType<Biomass>();
                     }
                 }

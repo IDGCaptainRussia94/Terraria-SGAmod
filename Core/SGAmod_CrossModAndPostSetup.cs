@@ -84,6 +84,7 @@ namespace SGAmod
 			{
 				if (SGAmod.Calamity.Item1)
 				{
+					SGAmod.Calamity.Item2 = ModLoader.GetMod("CalamityMod");
 
 					CalamityPlayer calply = value.player.GetModPlayer<CalamityPlayer>();
 					calply.throwingDamage += value.damage;
@@ -91,6 +92,7 @@ namespace SGAmod
 				}
 				if (SGAmod.Thorium.Item1)
 				{
+					SGAmod.Thorium.Item2 = ModLoader.GetMod("ThoriumMod");
 
 					SGAmod.Thorium.Item2.Call("BonusBardDamage", value.player, value.damage);
 					SGAmod.Thorium.Item2.Call("BonusBardCrit", value.player, value.crit);

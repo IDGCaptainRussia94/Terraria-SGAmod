@@ -1430,9 +1430,12 @@ namespace SGAmod
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("OmegaSigil"));
 			}
 
-			if (npc.type == NPCID.WallofFlesh && Main.rand.Next(100) <= 10 && !Main.expertMode)
+			if (npc.type == NPCID.WallofFlesh)
 			{
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
+				if (Main.rand.Next(100) <= 25 && !Main.expertMode)
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<LeechYoyo>());
+				if (Main.rand.Next(100) <= 10 && !Main.expertMode)
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
 			}
 
 			if (npc.type == NPCID.GoblinSorcerer && Main.rand.Next(100) <= 5)

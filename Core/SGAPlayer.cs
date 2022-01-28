@@ -147,7 +147,7 @@ namespace SGAmod
 		public bool transformerAccessory = false;
 		public bool gravBoots = false;
 		public bool undyingValor = false;
-		public bool bustlingFungus = false;
+		public (bool,int) bustlingFungus = (false,0);
 		public bool highStakesSet = false;
 		public int liquidGambling = 0;
 		public bool experimentalPathogen = false;
@@ -189,6 +189,7 @@ namespace SGAmod
 		public int sufficate = 200;
 		public int finalGem = 0;
 		public int sandStormTimer = 0;
+		public int postLifeRegenBoost = 0;
 
 		//Stat Related
 		public float UseTimeMul = 1f;
@@ -239,6 +240,7 @@ namespace SGAmod
 		public Vector2 Locked = new Vector2(100, 300);
 		public int electricCharge = 0; public int electricChargeMax = 0; public float electricChargeCost = 1f; public float electricChargeReducedDelay = 1f;
 		public int ammoLeftInClip = 6; public int plasmaLeftInClip = 1000;
+		public float electricdelay = -500; public int boosterrechargerate = 15; public int electricrechargerate = 1; public float electricRechargeRateMul = 1f;
 		public int ammoLeftInClipMaxLastHeld = 0;
 		public int ammoLeftInClipMaxStack = 0;
 		public int ammoLeftInClipMaxAddedAmmo = 0;
@@ -250,7 +252,7 @@ namespace SGAmod
 
 		public int plasmaLeftInClipMax = 1000;
 		public const int plasmaLeftInClipMaxConst = 1000; public const int boosterPowerLeftMaxConst = 10000;
-		public int boosterPowerLeft = 10000; public int boosterPowerLeftMax = 10000; public float boosterdelay = -500; public float electricdelay = -500; public int boosterrechargerate = 15; public int electricrechargerate = 1;
+		public int boosterPowerLeft = 10000; public int boosterPowerLeftMax = 10000; public float boosterdelay = -500;
 		public int digiStacks = 0; public int digiStacksMax = 0;
 		public int digiStacksCount = 16;
 		public bool modcheckdelay = false;
@@ -449,7 +451,14 @@ namespace SGAmod
 
 			experimentalPathogen = false;
 			concussionDevice = false;
-			bustlingFungus = false;
+			if (bustlingFungus.Item1)
+			{
+				bustlingFungus = (false, player.velocity.Length()>0.05f ? 0 : bustlingFungus.Item2+1);
+			}
+			else
+			{
+				bustlingFungus = (false, 0);
+			}
 			concussionDeviceEffectiveness = 0f;
 			UseTimeMul = 1f;
 			UseTimeMulPickaxe = 1f;
@@ -578,10 +587,11 @@ namespace SGAmod
 
 			boosterPowerLeft = Math.Min(boosterPowerLeft + (boosterdelay < 1 ? boosterrechargerate : 0), boosterPowerLeftMax);
 
-			electricCharge = Math.Min(electricCharge + (electricdelay < 1 ? electricrechargerate : 0), electricChargeMax);
+			electricCharge = Math.Min(electricCharge + (electricdelay < 1 ? (int)(electricrechargerate * electricRechargeRateMul) : 0), electricChargeMax);
 
 			electricChargeMax = Electicpermboost;
 			electricrechargerate = 0;
+			electricRechargeRateMul = 1f;
 			electricChargeCost = 1f;
 			electricChargeReducedDelay = 1f;
 			boosterrechargerate = 15;
@@ -829,10 +839,13 @@ namespace SGAmod
 
 			if (DoTStack.Count > 0)
 			{
+				int count = 1;
 				foreach ((int, float) stack in DoTStack)
 				{
+					count += 1;
 					dot += stack.Item2;
 				}
+				dot *= 1f + ((count-1) / 3f);
 				float scalepercemn = (Math.Min(0.50f+(DoTResist/2f), 1f));
 				player.lifeRegen -= (int)(dot/scalepercemn);
 				DoTStack = DoTStack.Select(testby => (testby.Item1 - 1, testby.Item2)).Where(testby => testby.Item1 > 0).ToList();
@@ -906,14 +919,14 @@ namespace SGAmod
 			SlowDownDefense = 0f;
 			SlowDownResist = 1f;
 
-			if (player.HeldItem.type == mod.ItemType("Powerjack"))
+			if (player.HeldItem.type == ModContent.ItemType<Items.Tools.Powerjack>())
 			{
 				player.moveSpeed *= 1.15f;
 				player.accRunSpeed *= 1.15f;
 				player.maxRunSpeed *= 1.15f;
 			}
 
-			if (player.HeldItem.type == mod.ItemType("NoviteKnife"))
+			if (player.HeldItem.type == ModContent.ItemType<NoviteKnife>())
 			{
 				player.moveSpeed *= 1.20f;
 				player.accRunSpeed *= 1.20f;
@@ -1016,6 +1029,11 @@ namespace SGAmod
 
 		public override void PostUpdateBuffs()
 		{
+			if (postLifeRegenBoost > 0)
+            {
+				player.lifeRegen += postLifeRegenBoost;
+				postLifeRegenBoost = 0;
+			}
 
 			if (player.HasBuff(ModContent.BuffType<Buffs.StarStormCooldown>()))
 			{
@@ -1449,6 +1467,21 @@ namespace SGAmod
 				{
 					player.AddBuff(mod.BuffType("HeavyCrates"), 2, true);
 				}
+			}
+
+			if (SGAConfig.Instance.HeavyInventory || SGAWorld.NightmareHardcore>0)
+            {
+				bool allfilled = true;
+				for(int i = 0; i < 50; i += 1)
+                {
+					if (player.inventory[i].IsAir)
+                    {
+						allfilled = false;
+                    }
+                }
+
+				if (allfilled)
+				player.AddBuff(ModContent.BuffType<HeavyInventory>(), 2, true);
 			}
 
 			if (CirnoWings == true)
@@ -1967,7 +2000,7 @@ namespace SGAmod
 					sufficate = (int)MathHelper.Clamp(-(lifelost + 5), sufficate, 0);
 			}
 
-			if (player.HeldItem.type == mod.ItemType("Powerjack"))
+			if (player.HeldItem.type == ModContent.ItemType<Items.Tools.Powerjack>())
 			{
 				damage = (int)(damage * 1.20);
 			}

@@ -720,7 +720,7 @@ namespace SGAmod.Dimensions.NPCs
                     };
                     attack.Shoot = delegate (ManagedSpaceBossAttack managedAttack, SpaceBoss bossy)
                     {
-                        return managedAttack.timePassed % 20 == 0;
+                        return managedAttack.timePassed % 30 == 0;
                     };
                     managedAttacks.Add(attack);
                 }
@@ -3744,9 +3744,9 @@ namespace SGAmod.Dimensions.NPCs
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             DrawAdditiveReal(spriteBatch);
-            if (GetType() == typeof(SpaceBossTelegraphedBasicShot))
+            if (GetType() == typeof(SpaceBossTelegraphedBasicShot) && SGAmod.fogDrawNPCsCounter<1)
             {
-                //(this as SpaceBossTelegraphedBasicShot).DrawAdditiveThroughFog(spriteBatch);
+                (this as SpaceBossTelegraphedBasicShot).DrawAdditiveThroughFog(spriteBatch);
 
             }
 
@@ -4097,6 +4097,12 @@ namespace SGAmod.Dimensions.NPCs
             if (Vulneverable)
                 npc.dontTakeDamage = false;
 
+            if (masterBeforeMe != null && masterBeforeMe.npc.life >= 5)
+            {
+                if (npc.life<npc.lifeMax)
+                npc.life += 1;
+            }
+
             if (npc.ai[3] > 0)
             {
                 if (npc.life < 5 && (masterBeforeMe == null || masterBeforeMe.npc.life < 5))
@@ -4106,7 +4112,9 @@ namespace SGAmod.Dimensions.NPCs
                 }
                 else
                 {
-                    npc.ai[3] -= 1;
+                    npc.ai[3] -= 5;
+                    if (npc.ai[3] < 0)
+                        npc.ai[3] = 0;
                 }
 
                 sganpc.overallResist = 0f;

@@ -210,7 +210,7 @@ namespace SGAmod.Buffs
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Energy");
-			Description.SetDefault("+1 passive Electric Charge Rate, Recharge delay is halved");
+			Description.SetDefault("25% increased passive Electric Charge Rate, Recharge delay is halved");
 			Main.debuff[Type] = false;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = false;
@@ -218,7 +218,8 @@ namespace SGAmod.Buffs
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.SGAPly().electricrechargerate += 1;
+			//player.SGAPly().electricrechargerate += 1;
+			player.SGAPly().electricRechargeRateMul += 0.25f;
 			player.SGAPly().electricChargeReducedDelay *= 0.5f;
 		}
 	}

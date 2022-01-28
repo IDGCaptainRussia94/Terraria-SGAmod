@@ -104,6 +104,11 @@ namespace SGAmod
 		[DefaultValue(false)]
 		public bool PotionFatigue { get; set; }
 
+		[Label("Over Encumbrance")]
+		[Tooltip("FIlling every inventory slot will greatly slow you down")]
+		[DefaultValue(false)]
+		public bool HeavyInventory { get; set; }
+
 		//This is the work of someone who gives 2 shits about netcode. (not me, mostly)
 		public static bool IsPlayerLocalServerOwner(int whoAmI)
 		{

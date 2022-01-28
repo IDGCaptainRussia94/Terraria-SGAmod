@@ -1628,6 +1628,8 @@ namespace SGAmod.Dimensions
         {
             ChooseEnemies();
             SpaceStationStructure.UpdateStations();
+            SGAmod.NoGravityItems = true;
+            SGAmod.NoGravityItemsTimer = 10;
         }
 
         public override void Load()
@@ -2758,9 +2760,9 @@ namespace SGAmod.Dimensions
         {
             base.SetDefaults();
             npc.dontTakeDamage = false;
-            npc.defense = 100;
-            npc.life = 2000;
-            npc.lifeMax = 2000;
+            npc.defense = 250;
+            npc.life = 5000;
+            npc.lifeMax = 5000;
             npc.damage = 0;
             timer = 5;
         }

@@ -123,6 +123,9 @@ namespace SGAmod
 		public const bool ArmorButtonUpdate = false;
 		public const bool EnchantmentsUpdate = false;
 		public const bool SpaceBossActive = true;
+		public static bool NoGravityItems = false;
+		public static int NoGravityItemsTimer = 0;
+
 
 		public static int SafeModeCheck
         {
@@ -209,6 +212,7 @@ namespace SGAmod
 
 		public static RenderTarget2D postRenderEffectsTarget;
 		public static RenderTarget2D postRenderEffectsTargetCopy;
+		public static int postRenderEffectsTargetDoUpdates;
 		public static RenderTarget2D screenExplosionCopy;
 
 		public static (Texture2D, Texture2D) VanillaHearts;
@@ -461,6 +465,8 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/UI/Settings_Inputs_2"));//117
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_"+ TileID.Torches));//118
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Glow_239"));//119
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.LeechHead));//120
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.MoonLeech));//121
 
 				//Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 
@@ -1639,7 +1645,12 @@ namespace SGAmod
 			ShadowParticle.UpdateAll();
             Items.Weapons.Almighty.RaysOfControlOrb.UpdateAll();
 
-			//Main.worldSurface -= 0.25;
+			if (NoGravityItemsTimer > 0)
+				NoGravityItemsTimer--;
+			else
+				NoGravityItems = false;
+
+			 //Main.worldSurface -= 0.25;
 
 			 PostUpdateEverythingEvent?.Invoke();
 			//Main.NewText(test);
@@ -1706,7 +1717,9 @@ namespace SGAmod
 			fogDrawNPCsCounter = Math.Max(fogDrawNPCsCounter - 1, 0);
 
 			SGAPlayer.centerOverrideTimerIsActive = Math.Max(SGAPlayer.centerOverrideTimerIsActive - 1, 0);
+
 			SGAWorld.modtimer += 1;
+
 			PrismShardHinted.ApplyPrismOnce = false;
 
 			SkillTree.SKillUI.SkillUITimer = SGAmod.SkillUIActive ? SkillTree.SKillUI.SkillUITimer +1 : 0;

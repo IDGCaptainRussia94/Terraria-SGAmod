@@ -93,8 +93,12 @@ namespace SGAmod
         {
 			if (self.SGAPly().undyingValor)
             {
-				self.SGAPly().DoTStack.Add((300, (Damage / 300f)*60f));
-				return orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
+				double ddd = orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
+				if (ddd > 0)
+				{
+					self.SGAPly().DoTStack.Add((300, (Damage / 300f) * 60f));
+					return orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
+				}
 			}
 
 

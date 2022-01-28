@@ -12,6 +12,8 @@ Changelog:
 
 -Arms dealer now sells Shark Bait if the player has Shark Bait
 
+-Armchair General now decreases other damage types
+
 -Updated Mana Herb visuals
 
 -Merchant now sells the diving helmet while at the beach
@@ -25,6 +27,32 @@ Changelog:
 -prismal necklace inherits Summoner Emblem now instead of the hercules beetle
 
 -Some of the loot in the SGAmod Accessories Lootbox
+
+-Bustling Fungus now does something lol
+
+-Made Photosyte less quanity in the sky and a tiny bit more common underground
+
+-Optimized the after-effect on null-related things to not draw every frame, and only check for updates every 5 frames unless one is active, then it stays active for 7.5 seconds consistantly
+
+-Added new proper sprites for the various new items
+
+-Undying Valor causes more DoT stack damage the more stacks you have, to stop tank-hitting as much with it
+
+-Prismal Necklace now decreases damage and crit chance
+
+-Added IL patch to force items to have no gravity in Near Orbit
+
+-Made Overseen Asteriods MUCH more tanky
+
+-Added Over Encumbrance
+
+-Buffed the Energy Potion
+
+--New changes to Phaethon:
+-Made shadow nebula screen projectiles spaced out more and less frequent
+-Re-added missing final phase telegraphs
+
+
 
 
 --Fixed:
@@ -47,12 +75,16 @@ Changelog:
 
 -Flash of Soul Sap not working
 
+-Undying Valor causing you to die in moments on spikes
+
+-Copper Wraith only ambushing you once if you failed to kill them
+
 
 3.625-(1/19/21)--Patch 15: Spaced Out!
 
 --Added
 
--Starduster, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap
+-Starduster, The Tongue, Lunar Leech, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap
 
 -The entire Dank Wood Furnature set by Rijam
 
@@ -63,6 +95,8 @@ Changelog:
 -Resprite for Dies Irae Stone (thx JellyBru!), Yoyo Gauntlet Resprite and Transformer accessory sprite (thx Rijam!), Fully Finished Sprite Sheet for Cratrosity (Thanks Rijam!)
 
 -The Consolation Prize, a better-than-average pickaxe that is granted to new players if one of their starting gear is spawned with the Busted prefix
+
+-Some new config options!
 
 -Spider Armor buff to deal with cobwebs and webbed debuffs, optional via config, suggested by Cata
 
@@ -86,6 +120,8 @@ Changelog:
 
 -Redid the fog system; purged of negitive blending; it now uses a freaking shader and should no longer cause laptops to explode!
 
+-All items in Near Orbit no longer have any gravity
+
 -Supreme Pinky's 'Treasure Bag' can no longer be opened in Subworlds
 
 -Cratrosity/Cratrogeddon can now be summoned during the day
@@ -93,6 +129,8 @@ Changelog:
 -Transmutation Powder can now convert vanilla ores to their respective opposites as well
 
 -Luminous Alter is now crafted at a Lihzard Altar
+
+-Photosyte is niw less quanity in the sky and a tiny bit more common underground
 
 -Demon Steppers now lose the Frog Leg jump/fly boost when in Walk Mode, can now be made with any Horseshoe Balloon Accessories (with only inherit the standard stats thou)
 
@@ -138,6 +176,8 @@ Changelog:
 
 -Rebalanced Prismal Necklace: inherits Summoner Emblem now instead of the hercules beetle (no longer has knockback boost, damage increase changed to 25%)
 
+-Rebalanced Energy Potion: now increases overall electric charge by 20%, instead of +1 regen
+
 -Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
 
 -Reworked Jungle Templar Armor: now inflicts severe Lava Burn when power is too low instead of normal Lava Burn, doesn't cause Lava Burn til after atleast 5 seconds of being ingame or if the lava meter is too low
@@ -157,6 +197,8 @@ Changelog:
 -Nerfed Massive Bleeding: Can no longer affect enemies immune to bleeding
 
 -Nerfed Pickaxe Yoyos: decreased "power" of spinning pickaxes in mining; this is not a revert, they are still stronger than before the previous patch
+
+-Nerfed Prismal Necklace: Now decreases all other damage and crit chance by 10%
 
 -Nerfed Mangrove Armor: defense reduced (head/chest/leggings: 12,16,8 => 8,12,6), combined damage and crit reduced to 20%/10% respectively, mangrove orbs are soft-damage capped at 50, the orbs released apply Dryad's Bane on hit for 5 seconds
 
@@ -212,6 +254,8 @@ Changelog:
 -Sludge Bomb not damaging alot of types of enemies
 
 -Drills not being affected by mining speed buffs when mining asteriods
+
+-Copper Wraith only ambushing you once if you failed to kill them
 
 -A few minor bugs of mis-matched damage types and other smaller things
 

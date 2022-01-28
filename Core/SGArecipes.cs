@@ -171,7 +171,7 @@ namespace SGAmod
                 if (!NPC.AnyNPCs(mod.NPCType("CopperWraith")))
                 {
 
-                    if (Main.netMode > 0)
+                    if (Main.netMode > NetmodeID.SinglePlayer)
                     {
                         mod.Logger.Debug("Copper Wraith: Server Craft Warning");
                         ModPacket packet = mod.GetPacket();

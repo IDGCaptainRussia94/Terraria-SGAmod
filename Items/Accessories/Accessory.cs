@@ -715,7 +715,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tech Master's Gear");
-			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\nGrants the effects of:\n-Prismal Core, Plasma Pack, and Fridgeflame Canister\n-Jindosh Buckler (Both Evil Types)\n-Putrid Scene and Flesh Knuckles (only one needed to craft)\n-Rusted Bulwark's effects are doubled");
+			Tooltip.SetDefault("'Mastery over your advancements has led you to create this highly advanced suit'\nHold UP and press left or right to blink teleport, this gives you 2 seconds of chaos state\nCannot blink with more than 6 seconds of Chaos State\nhide accessory to disable blinking\nGrants the effects of:\n-Prismal Core, Plasma Pack, and Fridgeflame Canister\n-Jindosh Buckler (Both Evil Types)\n-Rusted Bulwark's effects are doubled");
 		}
 
 		public override void SetDefaults()
@@ -723,7 +723,7 @@ namespace SGAmod.Items.Accessories
 			item.value = 1500000;
 			item.rare = ItemRarityID.Red;
 			item.width = 24;
-			item.defense = 12;
+			item.defense = 5;
 			item.height = 24;
 			item.accessory = true;
 			item.waistSlot = 10;
@@ -753,7 +753,6 @@ namespace SGAmod.Items.Accessories
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LunarBar, 6);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 32);
-			recipe.AddRecipeGroup("SGAmod:HardmodeEvilAccessory", 1);
 			recipe.AddIngredient(mod.ItemType("PlasmaCell"), 3);
 			recipe.AddIngredient(mod.ItemType("PrismalCore"), 1);
 			recipe.AddIngredient(mod.ItemType("PlasmaPack"), 1);
@@ -1803,7 +1802,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Transformer");
-			Tooltip.SetDefault("Electric Bolts will gain an additional arc\n+2000 Max Electric Charge\n+2 (8 if Electrified) passive Electric Charge Rate");
+			Tooltip.SetDefault("Electric Bolts will gain an additional arc\n+2000 Max Electric Charge\n+1 per Active Cooldown Stack passive Electric Charge Rate");
 		}
 
 		public override void SetDefaults()
@@ -2857,7 +2856,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Plasma Pack");
-			Tooltip.SetDefault("20% increased Plasma capacity\n+3 Booster recharge rate\n+3000 Max Electric Charge, +2 passive Electric Charge Rate\nEffects of Blink Tech Canister and Transformer");
+			Tooltip.SetDefault("20% increased Plasma capacity\n+3 Booster recharge rate\n+5000 Max Electric Charge, +3 passive Electric Charge Rate\nGrants the other effects of Blink Tech Canister and Transformer");
 		}
 
 		public override void SetDefaults()
@@ -2874,7 +2873,7 @@ namespace SGAmod.Items.Accessories
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			sgaply.boosterrechargerate += 3;
 			sgaply.plasmaLeftInClipMax += (int)((float)SGAPlayer.plasmaLeftInClipMaxConst * 0.20f);
-			sgaply.electricChargeMax += 3000;
+			sgaply.electricChargeMax += 1500;
 			player.SGAPly().electricrechargerate += 2;
 			ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<Transformer>().UpdateAccessory(player, hideVisual);

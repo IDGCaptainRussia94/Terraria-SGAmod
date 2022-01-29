@@ -106,6 +106,10 @@ namespace SGAmod.NPCs.Murk
             SGAWorld.downedMurk = Main.hardMode ? 2 : 2;
             SGAWorld.GenVirulent();
 
+            Player[] plz = Main.player.Where(testby => testby.active && testby.armor[0].type == ModContent.ItemType<Items.Armors.Engineer.EngineerHead>() && testby.armor[1].type == ModContent.ItemType<Items.Armors.Engineer.EngineerChest>() && testby.armor[2].type == ModContent.ItemType<Items.Armors.Engineer.EngineerLegs>()).ToArray();
+            if (plz.Length > 0)
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Accessories.BustlingFungus>());
+
             for (int i = 0; i < (Main.hardMode ? 2 : 1); i += 1)
             {
                 if (Main.expertMode)

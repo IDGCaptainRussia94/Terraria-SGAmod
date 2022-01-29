@@ -956,16 +956,18 @@ namespace SGAmod.Items.Weapons
 
                 if (GetType() == typeof(LunarLeechProj))
                 {
+                    Point point = new Point((int)(leech.Position.X / 16), (int)(leech.Position.Y / 16));
                     gurgleTex = Main.itemTexture[ItemID.LivingUltrabrightFireBlock];
                     int frame = (leech.timer / 4) % 4;
                     Rectangle rect = new Rectangle(0, frame*(HeadTex.Height / 4), HeadTex.Width, HeadTex.Height / 4);
-                    spriteBatch.Draw(HeadTex, leech.Position - Main.screenPosition, rect, lightColor, direction + DirectionAdd, rect.Size() / 2f, 1, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(HeadTex, leech.Position - Main.screenPosition, rect, Lighting.GetColor(point.X, point.Y), direction + DirectionAdd, rect.Size() / 2f, 1, SpriteEffects.None, 0f);
 
                     spriteBatch.Draw(gurgleTex, Vector2.Lerp(projectile.Center, leech.Position, alphaPercent) - Main.screenPosition, null, Color.Aquamarine * scaleSize * 0.50f, direction, gurgleTex.Size() / 2f, (0.25f + scaleSize)*new Vector2(1.25f,0.60f), SpriteEffects.None, 0f);
                 }
                 else
                 {
-                    spriteBatch.Draw(HeadTex, leech.Position - Main.screenPosition, null, lightColor, direction + DirectionAdd, HeadTex.Size() / 2f, 1, SpriteEffects.None, 0f);
+                    Point point = new Point((int)(leech.Position.X / 16), (int)(leech.Position.Y / 16));
+                    spriteBatch.Draw(HeadTex, leech.Position - Main.screenPosition, null, Lighting.GetColor(point.X, point.Y), direction + DirectionAdd, HeadTex.Size() / 2f, 1, SpriteEffects.None, 0f);
 
                     spriteBatch.Draw(gurgleTex, Vector2.Lerp(projectile.Center, leech.Position, alphaPercent) - Main.screenPosition, null, lightColor.MultiplyRGB(Color.Red) * scaleSize * 0.25f, direction, gurgleTex.Size() / 2f, 0.25f + scaleSize, SpriteEffects.None, 0f);
                 }
@@ -995,7 +997,7 @@ namespace SGAmod.Items.Weapons
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("The Lunar Leech");
-            Tooltip.SetDefault("'He only wants a taste...'\nSummons Moonlord tongues that Leeches up to 10 nearby enemies\nYou are massively healed when the yoyo returns to you, based off life leeched\n"+Idglib.ColorText(Color.Red,"However, you get Moonbitten for a short while"));
+            Tooltip.SetDefault("'He only wants a taste...'\nSummons Moonlord tongues that Leeches up to 10 nearby enemies\nYou are healed when the yoyo returns to you, based off life leeched");
         }
 
         public override void SetDefaults()

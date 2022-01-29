@@ -46,11 +46,11 @@ namespace SGAmod
 
             IL.Terraria.Item.UpdateItem += ItemsHaveNoGravityInSpace;
 
-			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
-			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
-
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
 			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += AdjustLifeRegen;
+
+			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
+			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
 
 			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
 
@@ -72,13 +72,14 @@ namespace SGAmod
 			PrivateClassEdits.ApplyPatches();
 		}
 
-		private delegate bool NoGravityForThisItemDelegate(bool previous,Item item);
 
+		//Causes all items to think they have no gravity while SGAmod.NoGravityItems is true
+
+		private delegate bool NoGravityForThisItemDelegate(bool previous,Item item);
 		private static bool NoGravityForThisItemMethod(bool previous,Item item)
 		{
 			return previous || (SGAmod.NoGravityItems);
 		}
-
 		private static void ItemsHaveNoGravityInSpace(ILContext il)
         {
             ILCursor c = new ILCursor(il)

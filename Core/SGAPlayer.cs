@@ -2181,7 +2181,15 @@ namespace SGAmod
 				}
 			}
 		}
-		public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+
+        public override void ModifyNursePrice(NPC nurse, int health, bool removeDebuffs, ref int price)
+        {
+			if (Hellion.GetHellion() != null)
+			{
+				price = int.MaxValue-10;
+			}
+        }
+        public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
 		{
 
 			if (tidalCharm > 0)

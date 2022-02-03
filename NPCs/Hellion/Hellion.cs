@@ -3774,7 +3774,7 @@ namespace SGAmod.NPCs.Hellion
 
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{
-				if (Main.LocalPlayer.name == "AGS")
+				if (Main.rand.Next(500)==0)
 				{
 					int npcguy = NPC.FindFirstNPC(NPCID.Nurse);
 
@@ -3794,6 +3794,7 @@ namespace SGAmod.NPCs.Hellion
 							Main.dust[dust].alpha = 100;
 							Main.dust[dust].velocity = circle * i;
 						}
+						Idglib.Chat(nurse.GivenName + " feels cheated by you hanging out with Hellion, and left", 100, 255, 100);
 					}
 				}
 			}

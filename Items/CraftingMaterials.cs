@@ -1901,7 +1901,7 @@ namespace SGAmod.Items
 		{
 			item.width = 40;
 			item.height = 40;
-			item.value = 0;
+			item.value = Item.sellPrice(0,5,0,0);
 			item.rare = ItemRarityID.Yellow;
 			item.maxStack = 30;
 			//item.damage = 1;

@@ -233,12 +233,12 @@ namespace SGAmod
 
         public void DoFallenSpaceRocks()
         {
-            if (!Main.hardMode || Main.dayTime)
-                return;
+            //if (!Main.hardMode || Main.dayTime)
+            //    return;
 
-            if (Main.rand.Next(1000000) < Main.maxTilesX/10)
+            if (Main.rand.Next(100000) < Main.maxTilesX/(Main.netMode == NetmodeID.SinglePlayer ? 6 : 3))
             {
-                Projectile.NewProjectile(new Vector2(Main.rand.Next(Main.maxTilesX * 16), 20),Vector2.UnitY.RotatedBy((Main.rand.NextFloat(-1f,1f)*MathHelper.Pi)*0.10f), ModContent.ProjectileType<Dimensions.FallingSpaceRock>(), 1000, 10);
+                Projectile.NewProjectile(new Vector2(Main.rand.Next(Main.maxTilesX * 16), 50), Vector2.UnitY.RotatedBy((Main.rand.NextFloat(-1f,1f)*MathHelper.Pi)*0.10f)*Main.rand.NextFloat(3f,6f), ModContent.ProjectileType<Dimensions.FallingSpaceRock>(), 1000, 10);
             }
         }
 

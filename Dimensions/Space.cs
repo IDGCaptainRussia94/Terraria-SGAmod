@@ -951,6 +951,8 @@ namespace SGAmod.Dimensions
 
         public void GenerateMainStationStructure(UnifiedRandom uniRand, FilledSpaceArea AreaToSpawnMainBaseAt)
         {
+            //finished WIP content
+            return;
 
             FilledSpaceArea ChosenMainBaseLocation = AreaToSpawnMainBaseAt;
             ChosenMainBaseLocation.type = (int)(StationRoomTypes.Main);
@@ -3269,7 +3271,7 @@ hallowed.Parameters["rainbowScale"].SetValue(0.8f);
     {
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Falling Space Rock");
+            DisplayName.SetDefault("Falling Comet");
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 30;
             ProjectileID.Sets.TrailingMode[projectile.type] = 2;
         }
@@ -3373,6 +3375,16 @@ hallowed.Parameters["rainbowScale"].SetValue(0.8f);
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
+
+            bool near = false;
+            int bufferRange2 = 240;
+            Rectangle bufferrect2 = new Rectangle((int)Main.screenPosition.X - bufferRange2, (int)Main.screenPosition.Y - bufferRange2, (int)Main.screenPosition.X + Main.screenWidth + bufferRange2, (int)Main.screenPosition.Y + Main.screenHeight + bufferRange2);
+
+            if (!bufferrect2.Contains(projectile.Center.ToPoint()))
+            {
+                return false;
+            }
+
 
             Texture2D trailTex = SGAmod.ExtraTextures[110];
             Texture2D asteriodTex = mod.GetTexture("Dimensions/Space/BlueAsteroidSmall" + (projectile.localAI[1]%2 > 0 ? "" : "2"));

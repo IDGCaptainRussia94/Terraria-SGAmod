@@ -4277,7 +4277,82 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
-	[AutoloadEquip(EquipType.Back)]
+	public class Refractor : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("The Refractor");
+			Tooltip.SetDefault("Reflect damage taken back at nearby enemies as beams of light\nDamage scales with thorns effect\nTake 10% (multiplicative) less damage per enemies affected, up to 25% less\nRaises thorns effect damage by 2X");
+		}
+
+        public override bool Autoload(ref string name)
+        {
+            SGAPlayer.PreHurtEvent += SGAPlayer_PreHurtEvent;
+			//SGAPlayer.AfterTheHitEvent += SGAPlayer_AfterTheHitEvent;
+			return true;
+        }
+
+		private void DoMoreDamageAndTakeLess(SGAPlayer player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		{
+			if (player.refractor)
+			{
+				Player ply = player.player;
+				int damageTaken = (int)(damage * 0.75);
+				damage -= damageTaken;
+				int damageToDo = damage*3;
+				foreach (NPC npc in Main.npc.Where(testby => testby.active && !testby.friendly && !testby.dontTakeDamage && (testby.Center - ply.Center).Length() < 640))
+				{
+					Projectile proj = Projectile.NewProjectileDirect(ply.Center, Vector2.Zero, ModContent.ProjectileType<RefractorLaserProj>(), (int)(damageToDo * ply.thorns), 10, ply.whoAmI, Main.rand.NextFloat(1f), npc.whoAmI);
+					proj.penetrate = -1;
+					proj.netUpdate = true;
+					damage = (int)(damage * 0.90f);
+				}
+				damage += damageTaken;
+			}
+		}
+
+		private void SGAPlayer_PreHurtEvent(SGAPlayer player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		{
+			DoMoreDamageAndTakeLess(player, pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
+		}
+
+        public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.thorns += 2f;
+			player.SGAPly().refractor = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 2);
+			item.rare = ItemRarityID.Yellow;
+			item.accessory = true;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<HeliosFocusCrystal>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
+			recipe.AddIngredient(ItemID.LightShard, 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class RefractorLaserProj : NoteLaserProj
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Refractor Laser Proj");
+		}
+	}
+
+		[AutoloadEquip(EquipType.Back)]
 	public class NormalQuiver : ModItem
 	{
 		public override void SetStaticDefaults()

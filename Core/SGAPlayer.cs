@@ -178,6 +178,7 @@ namespace SGAmod
 		public bool rustedBulwark = false;
 		public bool novusStackBoost = false;
 		public bool BIP = false;
+		public bool refractor = false;
 		public int phaethonEye = 0;
 		public bool armorToggleMode = false;
 		public bool bustedSpawningGear = false;
@@ -445,6 +446,7 @@ namespace SGAmod
 			personaDeck = false;
 			highStakesSet = false;
 			undyingValor = false;
+			refractor = false;
 
 			if (liquidGambling > 0)
 				liquidGambling--;
@@ -1769,6 +1771,9 @@ namespace SGAmod
 			}
 		}
 
+		public delegate void PreHurtDelegate(SGAPlayer player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource);
+		public static event PreHurtDelegate PreHurtEvent;
+
 		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
 			if (invincible)
@@ -1788,6 +1793,7 @@ namespace SGAmod
 				}
 			}
 
+			PreHurtEvent.Invoke(this, pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
 			SGAnpcs.PlayersGotHit();
 
 			if (damageSource.SourceNPCIndex > -1)
@@ -2051,8 +2057,13 @@ namespace SGAmod
 
 		}
 
+		public delegate void AfterTheHitDelegate(SGAPlayer player, NPC npc, Projectile projectile, int damage, bool crit);
+		public static event AfterTheHitDelegate AfterTheHitEvent;
+
 		public void AfterTheHit(NPC npc, Projectile projectile, int damage, bool crit)
 		{
+
+			//AfterTheHitEvent.Invoke(this, null, null, damage, crit);
 
 			if (MisterCreeperset)
 			{

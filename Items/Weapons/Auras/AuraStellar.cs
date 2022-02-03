@@ -91,6 +91,7 @@ namespace SGAmod.Items.Weapons.Auras
 			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.FieryShard>(), 20);
 			recipe.AddIngredient(ModContent.ItemType<StygianCore>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
+			recipe.AddIngredient(ModContent.ItemType<HeliosFocusCrystal>(), 1);
 			recipe.AddIngredient(ItemID.FragmentSolar, 10);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);

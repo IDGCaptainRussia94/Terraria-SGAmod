@@ -9,6 +9,10 @@ Changelog:
 
 -Added Rod Of The Misty Lake, (yet another, but this time a for real) summon weapon for Cirno
 
+-Space Comets that now occassionally fall in hardmode; granting access to glow rock without going to the subworld
+
+-The Refractor, an accessory that benfeits crowd control, it reflects damage in an area and reduces damage taken based off number of enemies nearby
+
 
 --Changed:
 
@@ -67,6 +71,8 @@ Changelog:
 -Disabled the large Space Station Structure, for now
 
 -Disabled use of some very OP shit from popular QoL mods
+
+-Nerfed SBC Cannon: Cannonballs explode on knockback immune enemies again, but only on the weaker version
 
 --New changes to Cirno:
 -Reduced Cirno's on-hit debuff chilled time (projectiles still chill for quite a while due to being vanilla projectiles)
@@ -153,9 +159,9 @@ Changelog:
 
 -Supreme Pinky's 'Treasure Bag' can no longer be opened in Subworlds
 
--Cratrosity/Cratrogeddon can now be summoned during the day
+-Cratrosity/Cratrogeddon can now be summoned and fought during the day
 
--Transmutation Powder can now convert vanilla ores (non-evil) to their respective opposites as well
+-Transmutation Powder can now convert all vanilla ores (non-evil) to their respective opposites as well
 
 -Luminous Alter is now crafted at a Lihzard Altar
 
@@ -247,7 +253,9 @@ Changelog:
 
 -Nerfed Mangrove Leggings: throwing speed bonus reduced to 10%, fixed extra 20% leading to a total of a 40% faster speed boost, reduced movement max speed
 
--Nerfed Main-Sequence Staff: Debuff removal is now based on minion slots put in: more minions, more burning negated in this order: (Sunburn, OnFire!, Burning, Thermal Blaze, Lava Burn, Severe Lava Burn)
+-Nerfed Main-Sequence Staff: Debuff removal is now based on minion slots put in: more minions, more burning debuffs negated in this order: (Sunburn, OnFire!, Burning, Thermal Blaze, Lava Burn, Severe Lava Burn)
+
+-Nerfed SBC Cannon: Cannonballs explode on knockback immune enemies again, but only on the weaker version
 
 -Skylight's internal name has changed (to SkyLight from Skylight), this will cause the weapon to turn into a missing item on restart... sry about that!
 
@@ -259,9 +267,13 @@ Changelog:
 -Cobwebs are now a special version that will Acidburn on contact, and are cleaned up after the fight is over
 -Acid Burn debuff damage (As Spider Queen is still the only source of it) on the player has been slightly lowered
 
+--New changes to Cirno:
+-Reduced Cirno's on-hit debuff chilled time (projectiles still chill for quite a while due to being vanilla projectiles)
+
 -New changes to Helen Hellion Weygold:
 -When dropping loot: if Aimbot bullets are dropped, an extra random is picked from the pool, furthermore, a stack of 30 Lead Cannonballs drops along with the SBC Cannon MK2
 -Fixed a bug with Hellion's arena ring staying small during the final desperation phase if you did the killing blow during one of her other desperation attacks where it shrinks
+-Reverted FNF attack, notes do damage again, side projectiles are missing (unless in nightmare), the debuff is still there thou so you need to keep moving
 
 -New changes to Phaethon:
 -Will always use Shadow Nebula at the start of phase 3

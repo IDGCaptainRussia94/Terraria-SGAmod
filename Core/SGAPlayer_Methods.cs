@@ -718,7 +718,7 @@ namespace SGAmod
 			{
 				for (int g = 0; g < Player.MaxBuffs; g += 1)
 				{
-					if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore > 0))
+					if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAmod.DRMMode))
 					{
 						if (player.buffType[g] == BuffID.ManaSickness && player.buffTime[g] > 3)
 						{

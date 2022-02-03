@@ -67,6 +67,7 @@ namespace SGAmod
 
         public static int SnapCooldown = 0;
 
+        public static bool cheating = false;
         public static int harbingercounter = 0;
         public static int golemchecker = 0;
         public static int stolecrafting = 0;
@@ -230,15 +231,27 @@ namespace SGAmod
             }
         }
 
+        public void DoFallenSpaceRocks()
+        {
+            if (!Main.hardMode || Main.dayTime)
+                return;
+
+            if (Main.rand.Next(1000000) < Main.maxTilesX/10)
+            {
+                Projectile.NewProjectile(new Vector2(Main.rand.Next(Main.maxTilesX * 16), 20),Vector2.UnitY.RotatedBy((Main.rand.NextFloat(-1f,1f)*MathHelper.Pi)*0.10f), ModContent.ProjectileType<Dimensions.FallingSpaceRock>(), 1000, 10);
+            }
+        }
+
         public override void PostUpdate()
         {
-            if (!SGAConfig.Instance.OPmods)
-                SGAmod.overpoweredMod = 0;
 
             if ((Main.netMode < 1 || Main.myPlayer == 0) && Main.expertMode)
                 NightmareHardcore = Main.LocalPlayer.GetModPlayer<SGAPlayer>().nightmareplayer ? 1 : 0;
 
             WorldIsTin = (WorldGen.CopperTierOre == 7 ? false : true);
+
+            DoFallenSpaceRocks();
+
             if (Main.dayTime == true)
             {
                 harbingercounter = 0;
@@ -261,23 +274,6 @@ namespace SGAmod
             harbingercounter += 1;
             if (NPC.downedAncientCultist)
                 stolecrafting += 1;
-            if (Main.netMode < 1)
-            {
-                /*if (harbingercounter == 5)
-                {
-                    if (Main.rand.Next(0, 10) < 5 && bossprgressor == 1 && downedHarbinger == false && DD2Event.DownedInvasionT3 && NPC.downedMartians)
-                    {
-                        harbingercounter = -600;
-                        Idglib.Chat("You feel a darker presence watching over you...", 0, 0, 75);
-                    }
-                }
-                if (harbingercounter == -5)
-                {
-                    harbingercounter = 6;
-                    SGAmod.CalamityNoRevengenceNoDeathNoU();
-                    NPC.SpawnOnPlayer(Main.rand.Next(0, Main.PlayerList.Count), mod.NPCType("Harbinger"));
-                }*/
-            }
 
             questvars[11] = Math.Max(questvars[11] - 1, 0);
             if (questvars[10] > 100 && questvars[10] < 1000)
@@ -382,6 +378,7 @@ namespace SGAmod
             tag["tidalCharmUnlocked"] = GennedVirulent;
             tag["downedPrismBansheeByte"] = downedPrismBanshee; 
             tag["highestDimDungeonFloor"] = highestDimDungeonFloor; 
+            tag["cheating"] = SGAmod.cheating || cheating; 
 
             tag["downedSpiderQueen"] = downedSpiderQueen;
             tag["downedCratrosityPML"] = downedCratrosityPML;
@@ -428,6 +425,8 @@ namespace SGAmod
                 WorldIsNovus = tag.GetBool("WorldIsNovus");
             if (tag.ContainsKey("darknessVision"))
                 darknessVision = tag.GetBool("darknessVision");
+            if (tag.ContainsKey("cheating"))
+                cheating = SGAmod.cheating || tag.GetBool("cheating");
 
             tf2cratedrops = tag.GetBool("tf2cratedrops");
             downedCustomInvasion = tag.GetBool("customInvasion");

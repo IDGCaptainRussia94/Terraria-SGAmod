@@ -34,8 +34,8 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -Fix Prismic Banshee features (add laser accel), add Rod of Teleportation Telefragging
 
 -Finish Wrath Caliburn attacks?
--Add Celestial Monolith (finish)
--Add focus Crystal, Finish Phaethon's rework, finish ALL space stations
+-Add Celestial Monolith (finish), Add Heat Beater heat-building and steamm rework
+-Finish focus Crystal, Finish Phaethon's rework, finish ALL space stations
 
 
 Credits:

@@ -90,8 +90,85 @@ namespace SGAmod
 
         }
 
+        public static void RemoveCheatItemCraftingRecipes()
+        {
+            Mod luiafk = ModLoader.GetMod("Luiafk");
+            if ((luiafk != null))
+            {
+                for (var i = 0; i < Recipe.numRecipes; i++)
+                {
+                    Recipe recipe = Main.recipe[i];
+                    Item itemz = recipe.createItem;
+                    if (itemz.modItem != null)
+                    {
+                        ModItem mitem = itemz.modItem;
+                        SGAmod.Instance.Logger.Debug("has mod item: "+ mitem.GetType().FullName);
+                        string nullname = mitem.GetType().Namespace;
+                        if (nullname.Length - nullname.Replace("Images.Items.Potions", "").Length > 0)
+                        {
+                            recipe.RemoveRecipe();
+                        }
+                    }
+
+                }
+            }
+        }
+
+        public bool IsItemCheating(Item item)
+        {
+            if ((SGAmod.Fargos.Item1 || SGAmod.Luiafk.Item1))
+            {
+                if (item.modItem != null)
+                {
+                    Type modtype = item.modItem.GetType();
+                    string nullname = modtype.Namespace;
+                    if (nullname.Length - nullname.Replace("Fargowiltas.Items.Explosives", "").Length > 0)
+                    {
+                        if (modtype.Name != "BoomShuriken" && modtype.Name != "AutoHouse" && modtype.Name != "LihzahrdInstactuationBomb" && modtype.Name != "MiniInstaBridge")
+                            return true;
+                    }
+                    if (nullname.Length - nullname.Replace("Items.AutoBuilders", "").Length > 0)
+                    {
+                        if (modtype.Name != "PrisonBuilder")
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool CheckForCheatyPlaythroughRuiningItems(Item item, Player player)
+        {
+            if (IsItemCheating(item))
+            {
+                if (!SGAmod.cheating && !SGAmod.cheating)
+                {
+                    Main.NewText("You were warned", Color.Red);
+                    SGAmod.cheating = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public override bool CanUseItem(Item item, Player player)
         {
+            if (!(SGAmod.cheating && !SGAWorld.cheating))
+            {
+                if (IsItemCheating(item))
+                {
+                    if (player.controlUp)
+                    {
+                        if (CheckForCheatyPlaythroughRuiningItems(item, player))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
+
+
             if ((player.SGAPly().ReloadingRevolver > 0) && item.damage > 0)
             {
                 return false;
@@ -232,7 +309,7 @@ namespace SGAmod
 
             }
 
-            if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore>0))
+            if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAmod.DRMMode))
             {
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Mana Sickness decays very slowly")));
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Max Mana is reduced by 60")));
@@ -261,7 +338,13 @@ namespace SGAmod
                     tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "A very strong being has locked it away from your possession, talk to the guide")));
                 }
             }
-
+            if (IsItemCheating(item))
+            {
+                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "This item is considered cheating, overpowered, and gamebreaking within SGAmod")));
+                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Using it will permentally mark your world as a cheat world")));
+                if (!SGAmod.cheating && !SGAWorld.cheating)
+                tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Hold UP to be able to use this item, confirming you read this")));
+            }
             if (item?.modItem is ITechItem)//Tech items
             {
                 // Get the vanilla damage tooltip
@@ -785,6 +868,7 @@ namespace SGAmod
 
         public override bool UseItem(Item item, Player player)
         {
+
             SGAPlayer sga = player.SGAPly();
             if (item.healMana > 0 && sga.restorationFlower)
             {
@@ -1211,7 +1295,7 @@ namespace SGAmod
 
         public override void UpdateInventory(Item item,Player player)
         {
-            if (item.buffType > 0 && SGAmod.overpoweredMod>1f)
+            if (item.buffType > 0 && SGAmod.OverpoweredMod > 1f)
             {
                 item.maxStack = 29;
             }

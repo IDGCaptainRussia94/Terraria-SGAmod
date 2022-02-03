@@ -621,7 +621,7 @@ namespace SGAmod
 			noactionstackringofrespite = false;
 			actionCooldownRate = 1f;
 			Noviteset = 0;
-			if (player.breath >= player.breathMax || (!SGAConfig.Instance.DrowningChange && SGAWorld.NightmareHardcore < 1))
+			if (player.breath >= player.breathMax || (!SGAConfig.Instance.DrowningChange && !SGAmod.DRMMode))
 				drowningIncrementer.X = 0;
 			else if (player.breath < 1)
 				drowningIncrementer.X += 1;
@@ -815,7 +815,7 @@ namespace SGAmod
 			}
 			if (acidburn)
 			{
-				player.lifeRegen -= 20 + player.statDefense;
+				player.lifeRegen -= 15 + (int)(player.statDefense*0.90f);
 				player.statDefense -= 5;
 			}
 
@@ -1236,7 +1236,7 @@ namespace SGAmod
 
 			CharmingAmuletCode();
 
-			if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore > 0))
+			if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAmod.DRMMode))
 				player.statManaMax2 = Math.Max(player.statManaMax2 - 50, 0);
 
 			if (creeperexplosion > 9700)
@@ -1444,7 +1444,7 @@ namespace SGAmod
 			}
 
 
-			if (NPC.CountNPCS(mod.NPCType("Cirno")) > 0 || (SGAWorld.downedCirno == false && Main.hardMode && (SGAConfig.Instance.NegativeWorldEffects || SGAWorld.NightmareHardcore > 0)))
+			if (NPC.CountNPCS(mod.NPCType("Cirno")) > 0 || (SGAWorld.downedCirno == false && Main.hardMode && (SGAConfig.Instance.NegativeWorldEffects || SGAmod.DRMMode)))
 				player.AddBuff(mod.BuffType("NoFly"), 1, true);
 
 			/*if (pmlcrato>0 || NPC.CountNPCS(mod.NPCType("SPinky"))>9990){player.AddBuff(mod.BuffType("Locked"), 2, true);}*/
@@ -1469,7 +1469,7 @@ namespace SGAmod
 				}
 			}
 
-			if (SGAConfig.Instance.HeavyInventory || SGAWorld.NightmareHardcore>0)
+			if (SGAConfig.Instance.HeavyInventory || SGAmod.DRMMode)
             {
 				bool allfilled = true;
 				for(int i = 0; i < 50; i += 1)
@@ -1913,10 +1913,10 @@ namespace SGAmod
 		{
 			//StackDebuff(ModLoader.GetMod("IDGLibrary").GetBuff("RadiationThree").Type, 60 * 15);
 
-			if (SGAmod.overpoweredMod > 0)
+			if (SGAmod.OverpoweredMod > 0)
 			{
 				crit = true;
-				damage = damage + (int)(damage * SGAmod.overpoweredMod);
+				damage = damage + (int)(damage * SGAmod.OverpoweredMod);
 
 			}
 			if (Hellion.GetHellion() != null)
@@ -2228,7 +2228,7 @@ namespace SGAmod
 					Vector2 tomouse = Main.MouseWorld - player.Center;
 					tomouse = tomouse.SafeNormalize(Vector2.Zero);
 					tomouse *= 16f;
-					int thisoned = Projectile.NewProjectile(player.Center.X, player.Center.Y, tomouse.X, tomouse.Y, mod.ProjectileType("NinjaBombProj"), 0, 0f, Main.myPlayer);
+					int thisoned = Projectile.NewProjectile(player.Center.X, player.Center.Y, tomouse.X, tomouse.Y, ModContent.ProjectileType<NinjaBombProj>(), 0, 0f, Main.myPlayer);
 					Main.projectile[thisoned].netUpdate = true;
 				}
 			}

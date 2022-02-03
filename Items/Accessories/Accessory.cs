@@ -1246,7 +1246,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Alkalescent Heart");
-			Tooltip.SetDefault("'The Spider Queen's toxic blood pumps through you!'\nDealing crits debuff enemies, doing more damage while debuffed as follows:\nWhile not poisoned, poison enemies\nWhile poisoned, do 5% more damage and next crit Venoms\n" +
+			Tooltip.SetDefault("'The Spider Queen's toxic blood pumps through you!'\nDealing crits debuff enemies, doing more damage while they are debuffed as follows:\nWhile not poisoned, poison enemies\nWhile poisoned, do 5% more damage and next crit Venoms\n" +
 				"While Venomed, do 10% more damage and next crit Acid Burns\nWhile Acid Burned, do 15% more damage" +
 				"\nThese damage boosts do not stack; highest takes priority\nMinions may infict this based off your highest crit chance");
 		}
@@ -3299,7 +3299,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shin Sash");
-			Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nSmoke bombed enemies are highly likely to miss (Ninja Dodge)\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") + "\nThrowing damage is increased by 10% and crit chance by 5%\nEffects of Ninja Sash and Thrower Pouch");
+			Tooltip.SetDefault("Press 'Shin Sash' key to throw out an explosive short fused smoke bomb\nSmoke bombed enemies are highly likely to miss (Ninja Dodge)\nFriendly players nearby the explosion Ninja Dodge and gain IFrames\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") + "\nThrowing damage is increased by 10% and crit chance by 5%\nEffects of Ninja Sash and Thrower Pouch");
 		}
 
 		public override void SetDefaults()
@@ -3526,7 +3526,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Liquified Gambling");
-			Tooltip.SetDefault("'You don't want to question this substance...'\nGreatly speeds up the opening of Contraband Crates\nAlso works while in inventory");
+			Tooltip.SetDefault("'You don't want to question this substance...'\nTag a swig if you want to test your luck...\n+"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") + "+Greatly speeds up the opening of Contraband Crates when worn\nAlso works while in inventory");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3539,6 +3539,28 @@ namespace SGAmod.Items.Accessories
 			player.SGAPly().liquidGambling = 5;
 		}
 
+        public override bool CanUseItem(Player player)
+        {
+			return player.SGAPly().AddCooldownStack(60 * 60, 1);
+        }
+
+        public override bool UseItem(Player player)
+        {
+			switch (Main.rand.Next(2))
+			{
+				case 1:
+					Projectile.NewProjectile(player.Center+new Vector2(0, -64),-Vector2.UnitY, ProjectileID.CoinPortal, 50000, 10f);
+					break;
+
+				default:
+					player.DropSelectedItem();
+					player.QuickSpawnItem(ItemID.RedPotion);
+					player.AddBuff(ModContent.BuffType<Idglibrary.Buffs.CurseOfRed>(), 60 * 5);
+					break;
+			}
+			return true;
+        }
+
         public override void SetDefaults()
 		{
 			item.maxStack = 1;
@@ -3547,6 +3569,12 @@ namespace SGAmod.Items.Accessories
 			item.value = Item.sellPrice(silver: 50);
 			item.rare = ItemRarityID.Orange;
 			item.accessory = true;
+
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.UseSound = SoundID.Item3;
+			item.useAnimation = 15;
+			item.useTime = 15;
+			item.noMelee = true;
 		}
 	}
 

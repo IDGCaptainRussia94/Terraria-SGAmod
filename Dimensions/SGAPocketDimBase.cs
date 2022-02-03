@@ -1151,7 +1151,7 @@ namespace SGAmod.Dimensions
                                 ShadowEffect.Parameters["noisePercent"].SetValue(1f);
                                 ShadowEffect.Parameters["noiseScalar"].SetValue(new Vector4(0, 0, 1f, 1f));
 
-                                ShadowEffect.CurrentTechnique.Passes["ColorFilter"].Apply();
+                                ShadowEffect.CurrentTechnique.Passes["ColorFilterInverted"].Apply();
 
 
 

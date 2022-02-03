@@ -105,6 +105,7 @@ namespace SGAmod
 		public int watched = 0;
 		public bool NoHit = true;
 		public bool treatAsNight = false;
+		public int flaskCooldown = 0;
 		public static bool dropFork = false;
 		public List<DamageStack> damageStacks = new List<DamageStack>();
 
@@ -191,6 +192,8 @@ namespace SGAmod
 			marked = false;
 			drawonce = true;
 			reducedDefense = 0;
+			if (flaskCooldown > 0)
+				flaskCooldown -= 1;
 			crimsonCatastrophe = (byte)Math.Max(crimsonCatastrophe - 1, 0);
 			if (invertedTime > 0)
 				invertedTime -= 1;
@@ -313,13 +316,13 @@ namespace SGAmod
 
 		public override void SetDefaults(NPC npc)
 		{
-			if (SGAmod.overpoweredMod > 0)
+			if (SGAmod.OverpoweredMod > 0)
 			{
 				if (!npc.friendly)
 				{
-					npc.life += (int)(npc.life * (1f + SGAmod.overpoweredMod));
-					npc.lifeMax += (int)(npc.lifeMax * (1f + SGAmod.overpoweredMod));
-					npc.damage = npc.damage + (int)(1f + SGAmod.overpoweredMod);
+					npc.life += (int)(npc.life * (1f + SGAmod.OverpoweredMod));
+					npc.lifeMax += (int)(npc.lifeMax * (1f + SGAmod.OverpoweredMod));
+					npc.damage = npc.damage + (int)(1f + SGAmod.OverpoweredMod);
 				}
 
 			}

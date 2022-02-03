@@ -1075,7 +1075,8 @@ namespace SGAmod.NPCs.Hellion
 			//FNF attack (Phase advance)
 			if (npc.ai[1] > 7000 && npc.ai[1] <= 8000)
 			{
-				if (npc.ai[1] < 7050)
+				
+				if (SGAmod.DRMMode && npc.ai[1] < 7050)
 				{
 					if (Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<HellionFNFArrowMinigameMasterProjectile>()).Count() > 0)
 					{
@@ -1125,6 +1126,7 @@ namespace SGAmod.NPCs.Hellion
 
 					}
 				}
+				
 
 				if (npc.ai[1] < 7200 && Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<HellionFNFArrowMinigameMasterProjectile>()).Count() < 1)
 				{
@@ -5508,7 +5510,7 @@ namespace SGAmod.NPCs.Hellion
 
         public override bool CanDamage()
         {
-			return false;
+			return true;
         }
 
         public virtual void DoUpdate()

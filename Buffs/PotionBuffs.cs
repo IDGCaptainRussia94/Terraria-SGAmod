@@ -17,14 +17,17 @@ namespace SGAmod.Buffs
 			Description.SetDefault("30% increase to all damage types except Summon damage, which gets 50%");
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
-			Main.debuff[Type] = false;
+			Main.debuff[Type] = true;
 			canBeCleared = false;
 		}
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.BoostAllDamage(0.30f);
-			player.minionDamage += 0.20f;
+			if (player.buffTime[buffIndex] > 5)
+			{
+				player.BoostAllDamage(0.30f);
+				player.minionDamage += 0.20f;
+			}
 			if (player.buffTime[buffIndex] < 20)
 			{
 			player.AddBuff(ModContent.BuffType<WorseWeakness>(),60*30);

@@ -868,11 +868,11 @@ namespace SGAmod.NPCs.Murk
                                 num663 = NPCID.SpikedJungleSlime;
                             if (Main.rand.NextBool())
                                 num663 = ModContent.NPCType<SwampSlime>();
-                            if ((npc.localAI[0] < 0 && Main.expertMode) || (SGAWorld.NightmareHardcore > 0 && Main.rand.Next(2) == 0))
+                            if ((npc.localAI[0] < 0 && Main.expertMode) || ((SGAmod.DRMMode) && Main.rand.Next(2) == 0))
                             {
                                 if (Main.rand.Next(0, 100) < 20)
                                     num663 = NPCID.SpikedJungleSlime;
-                                if (num663 == NPCID.JungleSlime || num663 == ModContent.NPCType<SwampSlime>() || (SGAWorld.NightmareHardcore>0 && Main.rand.Next(3) == 0))
+                                if (num663 == NPCID.JungleSlime || num663 == ModContent.NPCType<SwampSlime>() || (SGAmod.DRMMode && Main.rand.Next(3) == 0))
                                     num663 = ModContent.NPCType<BossFly3>();
                             }
 

@@ -565,6 +565,24 @@ namespace SGAmod
 			}
 		}*/
 
+		//1.4
+		public static bool RemoveRecipe(this Recipe rec)
+		{
+			for (int i = 0; i < Recipe.numRecipes; i++)
+			{
+				if (Main.recipe[i] == rec)
+				{
+					for (int j = i; j < Recipe.numRecipes - 1; j++)
+					{
+						Main.recipe[j] = Main.recipe[j + 1];
+					}
+					Main.recipe[Recipe.numRecipes - 1] = new Recipe();
+					Recipe.numRecipes--;
+					return true;
+				}
+			}
+			return false;
+		}
 		public static void FindSentryRestingSpotBetter(this Player player,Vector2 position, out int worldX, out int worldY, out int pushYUp)
 		{
 			bool flag = false;

@@ -2817,12 +2817,15 @@ namespace SGAmod.Dimensions
         }
         public override bool PreNPCLoot()
         {
-            //TileID.ExposedGems
-            npc.type = NPCID.MeteorHead;
-            if (GetType() == typeof(OverseenHeadBossShield))
-                Item.NewItem(npc.position, npc.width, npc.height, ItemID.Heart);
-            else
-                Item.NewItem(npc.position, npc.width, npc.height, ModContent.ItemType<Glowrock>(), Main.rand.Next(1, 4));
+            if (GetType() != typeof(StationFocusCrystal))
+            {
+                //TileID.ExposedGems
+                npc.type = NPCID.MeteorHead;
+                if (GetType() == typeof(OverseenHeadBossShield))
+                    Item.NewItem(npc.position, npc.width, npc.height, ItemID.Heart);
+                else
+                    Item.NewItem(npc.position, npc.width, npc.height, ModContent.ItemType<Glowrock>(), Main.rand.Next(1, 4));
+            }
 
             return true;
         }
@@ -2897,13 +2900,14 @@ namespace SGAmod.Dimensions
         public SpaceStationStructure station;
         List<Player> playersInRange = new List<Player>();
         NPC boss = null;
+        public float hitVisual = 0f;
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Helios Focus Crystal");
         }
 
-        public override string Texture => "Terraria/NPC_"+NPCID.DD2EterniaCrystal;
+        public override string Texture => "SGAmod/Dimensions/Space/StationFocusCrystal";
 
         public override void SetDefaults()
         {
@@ -2936,12 +2940,14 @@ namespace SGAmod.Dimensions
             {
                 sound.Pitch += Main.rand.NextFloat(0f, 0.25f);
             }
+            hitVisual = 1f;
         }
 
         public override void AI()
         {
             NPCID.Sets.MustAlwaysDraw[npc.type] = true;
             npc.localAI[0] += 1;
+            hitVisual = Math.Max(hitVisual - 0.1f, 0f);
 
             npc.dontTakeDamage = true;
 
@@ -3005,12 +3011,32 @@ namespace SGAmod.Dimensions
                 Item.NewItem(npc.position+npc.Hitbox.Size()/2, 0,0, ModContent.ItemType<HeliosFocusCrystal>(), 1);
             }
 
-            SoundEffectInstance snd = Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, (int)npc.Center.X, (int)npc.Center.Y);
+            SoundEffectInstance snd = Main.PlaySound(SoundID.Shatter, (int)npc.Center.X, (int)npc.Center.Y);
 
             if (snd != null)
             {
                 snd.Pitch = Main.rand.NextFloat(-0.75f, -0.25f);
             }
+
+            for (int num1181 = 0; num1181 < 20; num1181++)
+            {
+                float num1182 = (float)num1181 / 20f;
+                Vector2 vector123 = new Vector2(Main.rand.NextFloat() * 10f, 0f).RotatedBy(num1182 * -(float)Math.PI + Main.rand.NextFloat() * 0.1f - 0.05f);
+                Gore gore8 = Gore.NewGoreDirect(npc.Center + vector123 * 3f, vector123, Utils.SelectRandom<int>(Main.rand, mod.GetGoreSlot("Gores/HeliosFocusCrystal_Gore1"), mod.GetGoreSlot("Gores/HeliosFocusCrystal_Gore2"), mod.GetGoreSlot("Gores/HeliosFocusCrystal_Gore3"), mod.GetGoreSlot("Gores/HeliosFocusCrystal_Gore4")));
+                if (gore8.velocity.Y > 0f)
+                {
+                    Gore gore9 = gore8;
+                    Gore gore2 = gore9;
+                    gore2.velocity *= -0.5f;
+                }
+                if (gore8.velocity.Y < -5f)
+                {
+                    gore8.velocity.Y *= 0.8f;
+                }
+                gore8.velocity.Y *= 1.1f;
+                gore8.velocity.X *= 0.88f;
+            }
+
 
             for (float num475 = 4; num475 < 24f; num475 += 0.1f)
             {
@@ -3118,7 +3144,7 @@ namespace SGAmod.Dimensions
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
                 Texture2D mainTex = Main.npcTexture[npc.type];
-                Texture2D otherTex = Main.itemTexture[ItemID.DD2ElderCrystal];
+                Texture2D otherTex = mod.GetTexture("Dimensions/Space/StationFocusCrystalSmall");
                 Texture2D glowTex = mod.GetTexture("Glow");
                 Texture2D glowTex2 = mod.GetTexture("GlowOrb");
                 Vector2 halfGlow = glowTex.Size() / 2f;
@@ -3176,23 +3202,222 @@ namespace SGAmod.Dimensions
 
                 for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
                 {
-                    spriteBatch.Draw(mainTex, npc.Center + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * 4f)-Main.screenPosition, null, Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f), 0, mainTex.Size() / 2f, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(mainTex, npc.Center + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * (4f+(hitVisual*2f)))-Main.screenPosition, null, Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f), 0, mainTex.Size() / 2f, 1f, SpriteEffects.None, 0f);
                 }
 
+                
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
+               /* 
                 DrawData value9 = new DrawData(otherTex, new Vector2(30f, 30f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, otherTex.Width, otherTex.Height)), Microsoft.Xna.Framework.Color.White, npc.rotation, glowTex.Size() / 2f, npc.scale * 5f, SpriteEffects.None, 0);
-                stardustsshader.UseColor(colorz.ToVector3() * 1f);
-                stardustsshader.UseOpacity(1f);
+                stardustsshader.UseColor(colorz.ToVector3() * 0.60f);
+                stardustsshader.UseOpacity(0.20f);
                 stardustsshader.Apply(null, new DrawData?(value9));
 
                 spriteBatch.Draw(mainTex, npc.Center - Main.screenPosition, null, Color.White * 1f * overallAlpha, 0, mainTex.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0);
+               */
+                
+                Effect hallowed = SGAmod.HallowedEffect;
+
+     /*           
+hallowed.Parameters["prismColor"].SetValue(Color.White.ToVector3());
+hallowed.Parameters["prismAlpha"].SetValue(1f);
+hallowed.Parameters["overlayStrength"].SetValue(new Vector3(2f, 0.10f, Main.GlobalTime / 4f));
+hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
+hallowed.Parameters["rainbowScale"].SetValue(0.8f);
+     */
+
+                hallowed.Parameters["alpha"].SetValue(1f);
+
+                hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f,1f));
+                hallowed.Parameters["overlayTexture"].SetValue(ModContent.GetTexture("SGAmod/Voronoi"));
+                hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, 0, 0f));
+                hallowed.Parameters["overlayAlpha"].SetValue( (1f-(npc.life / (float)npc.lifeMax))*1f);
+                hallowed.Parameters["overlayStrength"].SetValue(new Vector3(1f,1f,1f));
+
+                hallowed.CurrentTechnique.Passes["TextureMixAdditive"].Apply();             
+
+                spriteBatch.Draw(mainTex, npc.Center - Main.screenPosition, null, Color.White * 1f * overallAlpha, 0, mainTex.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0);
+
+                if (hitVisual > 0)
+                {
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+                    Effect fadeIn = SGAmod.FadeInEffect;
+
+                    fadeIn.Parameters["alpha"].SetValue(hitVisual);
+                    fadeIn.Parameters["strength"].SetValue(1f);
+                    fadeIn.Parameters["fadeColor"].SetValue(Color.White.ToVector3());
+                    fadeIn.Parameters["blendColor"].SetValue(Color.White.ToVector3());
+
+                    fadeIn.CurrentTechnique.Passes["FadeIn"].Apply();
+                    spriteBatch.Draw(mainTex, npc.Center - Main.screenPosition, null, Color.White * 1f * overallAlpha, 0, mainTex.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0);
+
+                }
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
             }
+        }
+
+    }
+
+    public class FallingSpaceRock : ModProjectile
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Falling Space Rock");
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 30;
+            ProjectileID.Sets.TrailingMode[projectile.type] = 2;
+        }
+
+        public override string Texture => "Terraria/Projectile_607";
+
+        public override void SetDefaults()
+        {
+            projectile.width = 24;
+            projectile.height = 24;
+            projectile.friendly = false;
+            projectile.hostile = true;
+            projectile.tileCollide = true;
+            projectile.alpha = 40;
+            projectile.timeLeft = 9000;
+            projectile.light = 0.75f;
+            projectile.extraUpdates = 2;
+        }
+
+        public override bool PreKill(int timeLeft)
+        {
+            SoundEffectInstance snd = Main.PlaySound(SoundID.DD2_BetsysWrathImpact, (int)projectile.Center.X, (int)projectile.Center.Y);
+
+            if (snd != null)
+            {
+                snd.Pitch = Main.rand.NextFloat(0.25f, 0.60f);
+            }
+
+            float velocityAngle = projectile.velocity.ToRotation().AngleLerp(MathHelper.PiOver2, 0.75f);
+
+            for (int i = 0; i < 60; i += 1)
+            {
+                Vector2 offset = (velocityAngle+(MathHelper.Pi+Main.rand.NextFloat(-0.35f,0.35f))).ToRotationVector2();
+                int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, DustID.BlueCrystalShard);
+                Main.dust[dust].scale = 1.5f;
+                Main.dust[dust].alpha = 150;
+                Main.dust[dust].velocity = Vector2.Normalize(offset) * (float)(1f * Main.rand.NextFloat(0f, 3f)*(i/5f));
+                Main.dust[dust].noGravity = true;
+            }
+
+            for (int num1181 = 0; num1181 < 20; num1181++)
+            {
+                float num1182 = (float)num1181 / 15f;
+                Vector2 vector123 = new Vector2((num1182*0.80f)+0.15f, 0f).RotatedBy(Main.rand.NextFloat(-0.25f,0.25f));
+                Gore gore = Gore.NewGoreDirect(projectile.position, Vector2.Zero, Utils.SelectRandom<int>(Main.rand, 375, 376, 377), 0.75f);
+
+                if (gore != null)
+                {
+                    gore.velocity = vector123.RotatedBy(velocityAngle + MathHelper.Pi)*12f;
+                    //gore.velocity.Y -= 2f;
+                    //gore.timeLeft = 90;
+                }
+            }
+
+
+            for (int num1181 = 0; num1181 < 20; num1181++)
+            {
+                float num1182 = (float)num1181 / 20f;
+                Vector2 vector123 = new Vector2(Main.rand.NextFloat() * 10f, 0f).RotatedBy(num1182 * -(float)Math.PI + Main.rand.NextFloat() * 0.1f - 0.05f);
+                int itemz = Item.NewItem(projectile.Center+ vector123*3, ModContent.ItemType<Glowrock>(), Main.rand.Next(1, 4));
+                if (itemz >= 0)
+                {
+                    Main.item[itemz].velocity = (Vector2.Normalize(vector123)*0.50f)+(vector123*0.75f);
+                }
+            }
+
+            return true;
+        }
+
+        public override void AI()
+        {
+            projectile.localAI[0] += 1;
+
+            if (projectile.localAI[0] == 1)
+            {
+                projectile.localAI[1] = Main.rand.Next(10000);
+            }
+
+            if (projectile.localAI[0] % 60 == 0)
+            {
+                SoundEffectInstance snd = Main.PlaySound(SoundID.NPCKilled, (int)projectile.Center.X, (int)projectile.Center.Y, 7);
+
+                if (snd != null)
+                {
+                    snd.Pitch = -0.75f+(projectile.timeLeft/9000f);
+                }
+            }
+
+            projectile.rotation += ((projectile.localAI[1] - 5000f) / 5000f) * (MathHelper.Pi * 0.01f);
+            projectile.spriteDirection = projectile.velocity.X > 0 ? 1 : -1;
+            projectile.velocity = projectile.velocity.RotatedBy((float)Math.Sin((projectile.localAI[0] + projectile.localAI[1]) / 120f) * 0.002f);
+
+            Vector2 offset = Vector2.Normalize(projectile.velocity.RotatedByRandom(MathHelper.Pi / 12f)).RotatedBy(MathHelper.Pi);
+            int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, DustID.BlueCrystalShard);
+            Main.dust[dust].scale = 0.5f;
+            Main.dust[dust].alpha = 150;
+            Main.dust[dust].velocity = Vector2.Normalize(offset) * (float)(1f * Main.rand.NextFloat(0f, 3f));
+            Main.dust[dust].noGravity = true;
+
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+
+            Texture2D trailTex = SGAmod.ExtraTextures[110];
+            Texture2D asteriodTex = mod.GetTexture("Dimensions/Space/BlueAsteroidSmall" + (projectile.localAI[1]%2 > 0 ? "" : "2"));
+            float alphaFade = Math.Min(projectile.timeLeft/300f,1f);
+            Texture2D texture = Main.projectileTexture[projectile.type];
+            Vector2 origin = new Vector2(trailTex.Width / 2f, trailTex.Height / 6f);
+
+            float lastpos = (-projectile.velocity).ToRotation();
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            Color colorz = Color.PaleTurquoise;
+
+            Texture2D glowTex = mod.GetTexture("GlowOrb");
+            ArmorShaderData stardustsshader = GameShaders.Armor.GetShaderFromItemId(ItemID.VortexDye);
+
+            DrawData value8 = new DrawData(glowTex, new Vector2(30f, 30f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 64, 64)), Microsoft.Xna.Framework.Color.White, projectile.rotation, glowTex.Size() / 2f, projectile.scale * 5f, SpriteEffects.None, 0);
+            stardustsshader.UseColor(colorz.ToVector3());
+            stardustsshader.UseOpacity(0.15f);
+            stardustsshader.Apply(null, new DrawData?(value8));
+
+
+            for (int i = projectile.oldPos.Length - 1; i > 0; i -= 1)
+            {
+                float alpha = 1f-(i / (float)projectile.oldPos.Length);
+                Vector2 pos1 = projectile.oldPos[i] + (projectile.Hitbox.Size() / 2f);
+                spriteBatch.Draw(trailTex, pos1 - Main.screenPosition, null, Color.Aqua * alphaFade* alpha * 0.20f, lastpos + MathHelper.PiOver2, origin, (1f-(i/ (float)projectile.oldPos.Length)),SpriteEffects.None, 0f);
+                if (i > 0)
+                {
+                    Vector2 pos2 = projectile.oldPos[i-1] + (projectile.Hitbox.Size() / 2f);
+                    lastpos = (pos2 - pos1).ToRotation();
+                }
+            }
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+
+            origin = new Vector2(asteriodTex.Width, asteriodTex.Height / 2) / 2f;
+
+            spriteBatch.Draw(asteriodTex, projectile.Center - Main.screenPosition, new Rectangle(0, 0, asteriodTex.Width, asteriodTex.Height / 2), Color.White * alphaFade * 1f, projectile.rotation, origin, 1f, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+
+
+            return false;
         }
 
     }

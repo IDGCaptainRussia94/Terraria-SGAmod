@@ -20,6 +20,10 @@ namespace SGAmod
 	{
 
 	}
+	interface IPotionCantBeInfinite
+	{
+
+	}
 	interface IDevArmor
 	{
 

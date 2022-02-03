@@ -284,7 +284,6 @@ namespace SGAmod
 
 		public static void DrawGlowmasks(PlayerDrawInfo drawInfo, int index)
 		{
-
 			Player drawPlayer = drawInfo.drawPlayer;
 			SGAmod mod = SGAmod.Instance;
 			SGAPlayer modply = drawPlayer.GetModPlayer<SGAPlayer>();

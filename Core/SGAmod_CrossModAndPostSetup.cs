@@ -68,6 +68,8 @@ namespace SGAmod
 		public static (bool,Mod) Thorium = (false, null);
 		public static (bool, Mod) HerosMod = (false, null);
 		public static (bool, Mod) CheatSheetMod = (false, null);
+		public static (bool, Mod) Fargos = (false, null);
+		public static (bool, Mod) Luiafk = (false, null);
 
 
 		public static void BoostModdedDamage(Player player, float damage, int crit)//@1.4.2.101
@@ -163,12 +165,19 @@ namespace SGAmod
 				PrivateClassEdits.LoadAntiCheats();
 			}
 
-			overpoweredMod = ((ModLoader.GetMod("AFKPETS") != null ? 0.5f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0) + (ModLoader.GetMod("Luiafk") != null ? 2f : 0) + (ModLoader.GetMod("FargowiltasSouls") != null ? 2.5f : 0));
-							   //Why do people still use Luiafk in legit playthroughs? I donno...
+			overpoweredModBaseValue = ((ModLoader.GetMod("AFKPETS") != null ? 0.5f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0) + (ModLoader.GetMod("Luiafk") != null ? 2f : 0) + (ModLoader.GetMod("Fargowiltas") != null ? 1f : 0) + (ModLoader.GetMod("FargowiltasSouls") != null ? 2.5f : 0));
+			//Why do people still use Luiafk in legit playthroughs? I donno...
+			Luiafk.Item2 = ModLoader.GetMod("Luiafk");
+			Luiafk.Item1 = Luiafk.Item2 != null;
+			if (Luiafk.Item2 != null)
+				PrivateClassEdits.ApplyLuiafkDisables();
 
-				Mod fargos = ModLoader.GetMod("Fargowiltas");
-			if (fargos != null)
+			Fargos.Item2 = ModLoader.GetMod("Fargowiltas");
+			if (Fargos.Item2 != null)
 			{
+				Fargos.Item1 = true;
+				Mod fargos = Fargos.Item2;
+				PrivateClassEdits.ApplyFargosBuffExceptions();
 				// AddSummon, order or value in terms of vanilla bosses, your mod internal name, summon  
 				//item internal name, inline method for retrieving downed value, price to sell for in copper
 				fargos.Call("AddSummon", 0.05f, "SGAmod", "WraithCoreFragment", (Func<bool>)(() => SGAWorld.downedWraiths > 0), Item.buyPrice(0, 2, 0, 0));
@@ -330,12 +339,12 @@ namespace SGAmod
 			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SwordofTheBlueMoon>(), "10% (20% expert mode) drop from Moon Lord");
 			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SoulPincher>(), "Part of Moon Lord's item pool, can drop as an extra item in the teasure bag");
 
-
 			Idglib.AbsentItemDisc.Add(ModContent.ItemType<PeacekeepersDuster>(), "Sold by the Traveling Merchant in Hardmode");
 			Idglib.AbsentItemDisc.Add(ModContent.ItemType<ShinobiShiv>(), "Sold by the Traveling Merchant in Hardmode");
 			Idglib.AbsentItemDisc.Add(ModContent.ItemType<Gunarang>(), "Sold by the Traveling Merchant in Hardmode");
 			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SeraphimShard>(), "Sold by the Traveling Merchant in Hardmode");
 			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SoldierRocketLauncher>(), "Sold by the Traveling Merchant in Hardmode, comes with rocket I's for sale too");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<BustlingFungus>(), "Defeat Murk while the Engineer Armor is worn");
 
 			Idglib.AbsentItemDisc.Add(this.ItemType("PrimordialSkull"), "Sold by the Dergon (Draken)");
 			Idglib.AbsentItemDisc.Add(this.ItemType("CaliburnCompess"), "Sold by the Dergon (Draken)");

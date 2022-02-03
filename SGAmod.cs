@@ -125,7 +125,7 @@ namespace SGAmod
 		public const bool SpaceBossActive = true;
 		public static bool NoGravityItems = false;
 		public static int NoGravityItemsTimer = 0;
-
+		internal const bool DevDisableCheating = false;
 
 		public static int SafeModeCheck
         {
@@ -196,9 +196,26 @@ namespace SGAmod
 		public static bool updatelasers = false;
 		public static bool updateportals = false;
 		public static bool anysubworld = false;
-		public static float overpoweredMod = 0f;
 		public static int vibraniumCounter = 0;
 		public static int fogDrawNPCsCounter = 0;
+
+		public static float overpoweredModBaseValue = 0f;
+		public static bool cheating = false;
+
+		public static bool DRMMode
+        {
+            get
+            {
+				return SGAWorld.NightmareHardcore > 0 || (DevDisableCheating && (cheating || SGAWorld.cheating));
+            }
+        }
+		public static float OverpoweredMod
+		{
+            get
+            {
+				return ((SGAConfig.Instance.OPmods || (SGAmod.cheating || SGAWorld.cheating && !DevDisableCheating))) ? overpoweredModBaseValue : 0;
+			}
+        }
 
 		public static bool ForceDrawOverride = false;
 		public static GameTime lastTime = new GameTime();
@@ -581,7 +598,7 @@ namespace SGAmod
 
 			fild.SetValue(modp, 1f+ (float)fild.GetValue(modp));*/
 
-			overpoweredMod = 0;
+			overpoweredModBaseValue = 0;
 
 			SGAPlayer.ShieldTypes.Clear();
 			SGAPlayer.ShieldTypes.Add(ItemType("DankWoodShield"), ProjectileType("DankWoodShieldProj"));
@@ -673,7 +690,8 @@ namespace SGAmod
 			{
 				if (safeMode == 0 || safeMode == 2)
 				{
-					_ = Core.WinForm.WinHandled;
+					if (SGAmod.OSType == 0)
+						_ = Core.WinForm.WinHandled;
 				}
 				ShadowParticle.Load();
 

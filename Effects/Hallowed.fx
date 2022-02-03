@@ -126,6 +126,34 @@ float4 FadeFunction(float2 coords : TEXCOORD0) : COLOR0
 	return inputColor * (sin(coords.x * 3.14159265)*base)*alpha;
 }
 
+float4 TextureMixFunction(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 inputColor = tex2D(uImage0, coords);
+    if (inputColor.a<=0)
+    discard;
+
+    float2 overlayLoc = float2((coords.x*overlayScale.x)+(overlayProgress.x),(coords.y*overlayScale.y)+(overlayProgress.y));
+    float4 overlayColor = tex2D(overlaytexsampler, overlayLoc);
+
+    float luma = (overlayColor.r+overlayColor.g+overlayColor.b)/3.0;
+
+	return lerp(inputColor*overlayStrength.r,overlayColor*overlayStrength.g,overlayColor.a*overlayAlpha)*alpha;
+}
+
+float4 TextureMixAdditiveFunction(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 inputColor = tex2D(uImage0, coords);
+    if (inputColor.a<=0)
+    discard;
+
+    float2 overlayLoc = float2((coords.x*overlayScale.x)+(overlayProgress.x),(coords.y*overlayScale.y)+(overlayProgress.y));
+    float4 overlayColor = tex2D(overlaytexsampler, overlayLoc);
+
+    float luma = (overlayColor.r+overlayColor.g+overlayColor.b)/3.0;
+
+	return lerp(inputColor*overlayStrength.r,overlayColor*overlayStrength.g,luma*overlayAlpha)*alpha;
+}
+
 technique Technique1
 {
     pass Prism
@@ -139,5 +167,13 @@ technique Technique1
         pass ColorFade
     {
         PixelShader = compile ps_2_0 FadeFunction();
+    }
+            pass TextureMix
+    {
+        PixelShader = compile ps_2_0 TextureMixFunction();
+    }
+                pass TextureMixAdditive
+    {
+        PixelShader = compile ps_2_0 TextureMixAdditiveFunction();
     }
 }

@@ -283,7 +283,7 @@ namespace SGAmod.NPCs.SpiderQueen
 			}
 			else
 			{
-				if (SGAWorld.NightmareHardcore > 0)
+				if (SGAmod.DRMMode)
 					phase = 2;
 				npc.dontTakeDamage = false;
 				bool sighttoplayer = (Collision.CanHitLine(new Vector2(npc.Center.X, npc.Center.Y), 6, 6, new Vector2(P.Center.X, P.Center.Y), 6, 6));

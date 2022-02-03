@@ -1,14 +1,18 @@
 
 Changelog:
 
-3.625-(1/19/21)-beta 2
+3.625-(2/3/21)-beta 2
 
 -added:
 
 -Condensed Gel Pack (chaos)
 
+-Added Rod Of The Misty Lake, (yet another, but this time a for real) summon weapon for Cirno
+
 
 --Changed:
+
+-Update renamed to Anniversary Update
 
 -Arms dealer now sells Shark Bait if the player has Shark Bait
 
@@ -42,7 +46,7 @@ Changelog:
 
 -Added IL patch to force items to have no gravity in Near Orbit
 
--Made Overseen Asteriods MUCH more tanky
+-Made Overseen Asteriods MUCH more tanky to discourge trying to kill them normally
 
 -Added Over Encumbrance
 
@@ -52,9 +56,27 @@ Changelog:
 
 -Reworked Transformer: Now grants electric charge regen to cooldown stacks
 
+-Buffed the Shin Sash to also make friendly players ninja dodge
+
+-Dragon's Might Potion adding stacks when it shouldn't have (especially with the buff hotkey)
+
+-Dragon's Might and Matrix Potions are now ignored by Fargos Inf Buffs, added backup coding to make them stop functioning properly below 5 ticks remaining
+
+-Acid Burn debuff damage on the player has been slightly lowered
+
+-Disabled the large Space Station Structure, for now
+
+-Disabled use of some very OP shit from popular QoL mods
+
+--New changes to Cirno:
+-Reduced Cirno's on-hit debuff chilled time (projectiles still chill for quite a while due to being vanilla projectiles)
+
 --New changes to Phaethon:
 -Made shadow nebula screen projectiles spaced out more and less frequent
 -Re-added missing final phase telegraphs
+
+--New changes to Helen Hellion Weygold:
+-Reverted FNF attack, notes do damage again, side projectiles are missing (unless in nightmare), the debuff is still there thou so you need to keep moving
 
 
 
@@ -85,11 +107,11 @@ Changelog:
 
 
 
-3.625-(1/19/21)--Patch 15: Spaced Out!
+3.625-(1/19/21)--Patch 15: Anniversary Update!
 
 --Added
 
--Starduster, The Tongue, Lunar Leech, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap
+-Starduster, The Tongue, Lunar Leech, Rod Of The Misty Lake, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap, Condensed Gel Pack
 
 -The entire Dank Wood Furnature set by Rijam
 
@@ -104,6 +126,8 @@ Changelog:
 -Some new config options!
 
 -Spider Armor buff to deal with cobwebs and webbed debuffs, optional via config, suggested by Cata
+
+-Some items from other popular QoL mods are now considered "cheating", due to their gamebreaking nature; be warned
 
 
 --Changed:
@@ -131,7 +155,7 @@ Changelog:
 
 -Cratrosity/Cratrogeddon can now be summoned during the day
 
--Transmutation Powder can now convert vanilla ores to their respective opposites as well
+-Transmutation Powder can now convert vanilla ores (non-evil) to their respective opposites as well
 
 -Luminous Alter is now crafted at a Lihzard Altar
 
@@ -167,6 +191,12 @@ Changelog:
 
 -Updated Mana Herb visuals
 
+-Made Overseen Asteriods MUCH more tanky to discourge trying to kill them normally
+
+-Optimized the after-effect on null-related things to not draw every frame, and only check for updates every 5 frames unless one is active, then it stays active for 7.5 seconds consistantly
+
+-Dragon's Might and Matrix Potions are now ignored by Fargos Inf Buffs, and made them stop functioning properly below 5 ticks remaining, just incase
+
 -Rebalanced Druidic Sneakers: now works on Normal, Hallowed, and Jungle Grass
 
 -Rebalanced several tech weapons: adjusted Electric Charge use (some were consuming too much)
@@ -201,6 +231,8 @@ Changelog:
 
 -Buffed Flail-O-Nades: No longer causes any immunity frames, applies sticky grenades to enemies on hit that do double damage, spawns Proxy Mine I's instead of Sticky Grenades on tile hit
 
+-Buffed Shin Sash: Smoke bombs, when they explode cause friendly players nearby them to Ninja Dodge
+
 -Nerfed Massive Bleeding: Can no longer affect enemies immune to bleeding
 
 -Nerfed Pickaxe Yoyos: decreased "power" of spinning pickaxes in mining; this is not a revert, they are still stronger than before the previous patch
@@ -225,6 +257,7 @@ Changelog:
 
 -New changes to Spider Queen:
 -Cobwebs are now a special version that will Acidburn on contact, and are cleaned up after the fight is over
+-Acid Burn debuff damage (As Spider Queen is still the only source of it) on the player has been slightly lowered
 
 -New changes to Helen Hellion Weygold:
 -When dropping loot: if Aimbot bullets are dropped, an extra random is picked from the pool, furthermore, a stack of 30 Lead Cannonballs drops along with the SBC Cannon MK2
@@ -251,6 +284,8 @@ Changelog:
 -Starfish Burster not saving ammo
 
 -Solis Nova making enemies despawn
+
+-Dragon's Might Potion adding stacks when it shouldn't have (especially with the buff hotkey)
 
 -Buff Burning not working as expected, even when you had it disabled it was having an effect (without it showing visually)
 

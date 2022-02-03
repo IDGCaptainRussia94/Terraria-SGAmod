@@ -518,17 +518,26 @@ namespace SGAmod
 				Vector2 pos2 = self.GetDimensions().ToRectangle().BottomRight();
 
 				bool darknessUnlocked = false;
+				bool cheat = false;
 
 				if (tag3.ContainsKey("highestDimDungeonFloor"))
 					floors = tag3.GetByte("highestDimDungeonFloor");
 				if (tag3.ContainsKey("darknessVision"))
 					darknessUnlocked = tag3.GetBool("darknessVision");
+				if (tag3.ContainsKey("cheating"))
+					cheat = tag3.GetBool("cheating");
+
+				Vector2 lenn = Vector2.Zero;
 
 				if (floors > 0)
 				{
 					string text = "Floors completed: " + (floors < 0 ? "None" : "" + (int)floors);
+					lenn = new Vector2(-Main.fontMouseText.MeasureString(text).X - 8, 5);
 					Utils.DrawBorderString(spriteBatch, text, pos + new Vector2(-Main.fontMouseText.MeasureString(text).X - 8, 5), Color.DeepSkyBlue);
 				}
+
+				if (cheat)
+					Utils.DrawBorderString(spriteBatch, "CHEAT", pos + new Vector2(-Main.fontMouseText.MeasureString("CHEAT").X - 8, 5)+new Vector2(lenn.X,0), Color.Red);
 
 				if (darknessUnlocked)
 				{

@@ -180,7 +180,7 @@ namespace SGAmod.NPCs.Sharkvern
 
             if (shark == null)
             {
-                if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && !SGAWorld.downedSharkvern && Main.raining && (SGAConfig.Instance.NegativeWorldEffects || SGAWorld.NightmareHardcore>0))
+                if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && !SGAWorld.downedSharkvern && Main.raining && (SGAConfig.Instance.NegativeWorldEffects || SGAmod.DRMMode))
                 {
                     if (!SGAWorld.sharkvernMessage)
                     {

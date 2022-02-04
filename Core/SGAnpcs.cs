@@ -1660,7 +1660,7 @@ namespace SGAmod
 				case NPCID.Nurse:
 					if (Hellion.GetHellion() != null)
 					{
-						chat = "I see your busy with that girl... what do you want me for?";
+						chat = "I see you're busy with that other girl... what do you want me for?";
 					}
 					break;
 

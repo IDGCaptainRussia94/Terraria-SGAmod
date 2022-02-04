@@ -150,6 +150,8 @@ namespace SGAmod.NPCs.Hellion
 
         public static void UpdateAll()
         {
+            if (Main.dedServ)
+                return;
 
             particles = new List<ShadowParticle>(particles).Where(testby => testby.active).ToList();
 

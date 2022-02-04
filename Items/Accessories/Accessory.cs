@@ -4287,12 +4287,12 @@ namespace SGAmod.Items.Accessories
 
         public override bool Autoload(ref string name)
         {
-            SGAPlayer.PreHurtEvent += SGAPlayer_PreHurtEvent;
+            SGAPlayer.HurtEvent += SGAPlayer_PreHurtEvent;
 			//SGAPlayer.AfterTheHitEvent += SGAPlayer_AfterTheHitEvent;
 			return true;
         }
 
-		private void DoMoreDamageAndTakeLess(SGAPlayer player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		private void DoMoreDamageAndTakeLess(SGAPlayer player, PlayerDeathReason damageSource, ref int damage, ref int hitDirection, bool pvp, bool quiet, ref bool Crit, int cooldownCounter)
 		{
 			if (player.refractor)
 			{
@@ -4311,9 +4311,9 @@ namespace SGAmod.Items.Accessories
 			}
 		}
 
-		private void SGAPlayer_PreHurtEvent(SGAPlayer player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		private void SGAPlayer_PreHurtEvent(SGAPlayer player, PlayerDeathReason damageSource, ref int damage, ref int hitDirection, bool pvp, bool quiet, ref bool Crit, int cooldownCounter)
 		{
-			DoMoreDamageAndTakeLess(player, pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
+			DoMoreDamageAndTakeLess(player, damageSource, ref damage, ref hitDirection, pvp, quiet, ref Crit, cooldownCounter);
 		}
 
         public override void UpdateAccessory(Player player, bool hideVisual)

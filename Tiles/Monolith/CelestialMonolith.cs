@@ -10,6 +10,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace SGAmod.Tiles.Monolith
@@ -151,6 +152,9 @@ namespace SGAmod.Tiles.Monolith
 								Main.spriteBatch.End();
 								Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
 
+								Texture2D glowOrb = ModContent.GetTexture("SGAmod/Glow");
+								for(int xx=0;xx<4;xx+=1)
+								Main.spriteBatch.Draw(glowOrb, offset - Main.screenPosition, null, Color.Black * Math.Min(te.ActiveState*2f,1f), 0f, glowOrb.Size() / 2f, 0.60f, SpriteEffects.None, 0f);
 								Main.spriteBatch.Draw(Main.moonTexture[Main.moonType], offset - Main.screenPosition, rectx, Color.White, 0f, rectx.Size() / 2f, 0.25f + (0.75f * te.ActiveState), SpriteEffects.None, 0f);
 
 
@@ -169,7 +173,6 @@ namespace SGAmod.Tiles.Monolith
 										Main.spriteBatch.Draw(glowTex, offset - Main.screenPosition, new Rectangle(0, 0, glowTex.Width / 2, glowTex.Height), Color.White * te.ActiveState, f, glowTex.Size() / 2f, new Vector2(3.2f + floater, 0.80f) * te.ActiveState, SpriteEffects.None, 0f);
 									}
 								}
-
 
 								Main.spriteBatch.Draw(sunTex, offset - Main.screenPosition, null, Color.White, 0f, sunTex.Size() / 2f, 0.25f + (0.75f * te.ActiveState), SpriteEffects.None, 0f);
 							}
@@ -319,8 +322,24 @@ namespace SGAmod.Tiles.Monolith
 			_activeState = (float)reader.ReadDouble();
 			active = reader.ReadBoolean();
 		}
+		public override TagCompound Save()
+		{
+			TagCompound tag = new TagCompound();
+			tag["timer"] = timer;
+			tag["_activeState"] = _activeState;
+			tag["active"] = active;
 
-		public static void ResetTEs()
+			return tag;
+		}
+
+		public override void Load(TagCompound tag)
+        {
+			timer = tag.GetInt("timer");
+			_activeState = tag.GetFloat("_activeState");
+			active = tag.GetBool("active");
+		}
+
+        public static void ResetTEs()
 		{
 			CelestialMonolithTileEntities.Clear();
 			for (int i = 0; i < TileEntity.ByID.Count; i += 1)

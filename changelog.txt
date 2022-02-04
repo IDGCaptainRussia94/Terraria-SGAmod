@@ -74,6 +74,10 @@ Changelog:
 
 -Nerfed SBC Cannon: Cannonballs explode on knockback immune enemies again, but only on the weaker version
 
+-Updated Celestial Monolith with original sprites (Thx Rijam!), updated their other visuals, and effectively finished them
+
+-Jungle Templar's ability can now be ended early by pressing the ability again, slightly reduced electric charge cost
+
 --New changes to Cirno:
 -Reduced Cirno's on-hit debuff chilled time (projectiles still chill for quite a while due to being vanilla projectiles)
 
@@ -228,6 +232,8 @@ Changelog:
 -Reworked Transformer: Now grants electric charge regen to cooldown stacks instead of from Electrified
 
 -Buffed Hallowed Visor: defense increased by 1
+
+-Buffed Jungle Templar Armor: Ability can now be ended early by pressing the ability again, and slightly reduced electric charge cost
 
 -Buffed Sticky Situation: does more damage to segmented enemies
 

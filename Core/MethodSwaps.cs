@@ -89,8 +89,11 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
-        private static double Player_Hurt(On.Terraria.Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
+		private static double Player_Hurt(On.Terraria.Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
         {
+			SGAPlayer sply = self.SGAPly();
+			SGAPlayer.DoHurt(sply, damageSource, ref Damage, ref hitDirection, pvp, quiet, ref Crit, cooldownCounter);
+
 			if (self.SGAPly().undyingValor)
             {
 				double ddd = orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
@@ -416,7 +419,7 @@ namespace SGAmod
 				}
 			}
 
-			if ((sgaply.nightmareplayer && IdgNPC.bossAlive) || sgaply.noLifeRegen)
+			if (((sgaply.nightmareplayer || SGAmod.DRMMode) && IdgNPC.bossAlive) || sgaply.noLifeRegen)
 				return;
 
 			orig(self);

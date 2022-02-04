@@ -52,6 +52,14 @@ namespace SGAmod
 	public partial class SGAPlayer : ModPlayer
 	{
 
+		public delegate void HurtDelegate(SGAPlayer player, PlayerDeathReason damageSource, ref int Damage, ref int hitDirection, bool pvp, bool quiet, ref bool Crit, int cooldownCounter);
+		public static event HurtDelegate HurtEvent;
+
+		public static void DoHurt(SGAPlayer player, PlayerDeathReason damageSource, ref int Damage, ref int hitDirection, bool pvp, bool quiet, ref bool Crit, int cooldownCounter)
+        {
+			HurtEvent.Invoke(player, damageSource, ref Damage, ref hitDirection, pvp, quiet, ref Crit, cooldownCounter);
+        }
+
 		public bool CalamityAbyss
 		{
 			get

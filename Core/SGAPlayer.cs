@@ -2063,7 +2063,7 @@ namespace SGAmod
 		public void AfterTheHit(NPC npc, Projectile projectile, int damage, bool crit)
 		{
 
-			//AfterTheHitEvent.Invoke(this, null, null, damage, crit);
+			AfterTheHitEvent.Invoke(this, npc == null ? default : npc, projectile == null ? default : projectile, damage, crit);
 
 			if (MisterCreeperset)
 			{

@@ -125,7 +125,7 @@ namespace SGAmod
 		public const bool SpaceBossActive = true;
 		public static bool NoGravityItems = false;
 		public static int NoGravityItemsTimer = 0;
-		internal const bool DevDisableCheating = false;
+		public static bool DevDisableCheating => Main.LocalPlayer != null && Main.LocalPlayer.HasItem(ModContent.ItemType<Debug13>());
 
 		public static int SafeModeCheck
         {

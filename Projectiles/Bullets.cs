@@ -44,7 +44,7 @@ namespace SGAmod.Projectiles
 
 		public override string Texture
 		{
-			get { return ("Terraria/Projectile_"+14); }
+			get { return ("Terraria/Projectile_" + 14); }
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -63,8 +63,8 @@ namespace SGAmod.Projectiles
 			for (int k = oldPos.Length - 1; k >= 0; k -= 1)
 			{
 				Vector2 drawPos = ((oldPos[k] - Main.screenPosition)) + new Vector2(0f, 0f);
-				Color color = Color.Lerp(Color.White, lightColor, (float)k / (oldPos.Length+1));
-				float alphaz = (1f - (float)(k + 1) / (float)(oldPos.Length + 2))*(k!= oldPos.Length - 1 ? 0.5f : 1f);
+				Color color = Color.Lerp(Color.White, lightColor, (float)k / (oldPos.Length + 1));
+				float alphaz = (1f - (float)(k + 1) / (float)(oldPos.Length + 2)) * (k != oldPos.Length - 1 ? 0.5f : 1f);
 				spriteBatch.Draw(tex, drawPos, null, color * alphaz, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
 			}
 
@@ -82,8 +82,8 @@ namespace SGAmod.Projectiles
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			if (Main.rand.Next(0,10)==1)
-			target.AddBuff(mod.BuffType("ThermalBlaze"), 60*3);
+			if (Main.rand.Next(0, 10) == 1)
+				target.AddBuff(mod.BuffType("ThermalBlaze"), 60 * 3);
 		}
 
 		public virtual void effects(int type)
@@ -127,7 +127,7 @@ namespace SGAmod.Projectiles
 		}
 
 
-	
+
 	}
 
 
@@ -208,7 +208,7 @@ namespace SGAmod.Projectiles
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (Main.rand.Next(0, 3) < 2)
-				target.AddBuff(mod.BuffType("AcidBurn"), 30 * (Main.rand.Next(0, 3)==1 ? 2 : 1));
+				target.AddBuff(mod.BuffType("AcidBurn"), 30 * (Main.rand.Next(0, 3) == 1 ? 2 : 1));
 		}
 
 	}
@@ -239,8 +239,8 @@ namespace SGAmod.Projectiles
 
 		public override bool PreKill(int timeLeft)
 		{
-			if (timeLeft>0)
-			projectile.type = ProjectileID.SandBallGun;
+			if (timeLeft > 0)
+				projectile.type = ProjectileID.SandBallGun;
 			return true;
 		}
 
@@ -254,13 +254,13 @@ namespace SGAmod.Projectiles
 			bool seeking = false;
 			NPC target = null;
 			if (projectile.ai[1] <= 0)
-            {
+			{
 				projectile.ai[1] = projectile.velocity.Length();
 			}
 			Player owner = Main.player[projectile.owner];
 
 			if (owner.HasMinionAttackTargetNPC)
-            {
+			{
 				target = Main.npc[owner.MinionAttackTargetNPC];
 				if (!target.dontTakeDamage && (target.Center - projectile.Center).LengthSquared() < 600 * 600)
 				{
@@ -313,10 +313,10 @@ namespace SGAmod.Projectiles
 			{
 				Vector2 drawPos = ((oldPos[k] - Main.screenPosition)) + new Vector2(0f, 0f);
 				Color color = Color.Lerp(Color.White, lightColor, (float)k / (oldPos.Length + 1));
-				float alphaz = 1f-(k/(float)(oldPos.Length));
-				spriteBatch.Draw(tex, drawPos, null, color * alphaz*projectile.Opacity, projectile.rotation, drawOrigin, projectile.scale*0.75f, SpriteEffects.None, 0f);
+				float alphaz = 1f - (k / (float)(oldPos.Length));
+				spriteBatch.Draw(tex, drawPos, null, color * alphaz * projectile.Opacity, projectile.rotation, drawOrigin, projectile.scale * 0.75f, SpriteEffects.None, 0f);
 			}
-			spriteBatch.Draw(tex, projectile.Center-Main.screenPosition, null, Color.White, 0, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, 0, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 
@@ -360,30 +360,30 @@ namespace SGAmod.Projectiles
 			get { return ("SGAmod/Items/Weapons/Ammo/SoulboundBullet"); }
 		}
 
-        public override bool OnTileCollide(Vector2 oldVelocity)
-        {
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
 			Player owner = Main.player[projectile.owner];
 
 			for (float f = 0; f < 20f; f += 1)
 			{
-				int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y)-(Vector2.Normalize(projectile.velocity)*f*5f), projectile.width, projectile.height, 186);
+				int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y) - (Vector2.Normalize(projectile.velocity) * f * 5f), projectile.width, projectile.height, 186);
 				Main.dust[dust].scale = 1f;
 				Main.dust[dust].noGravity = false;
-				Main.dust[dust].velocity = projectile.velocity * Main.rand.NextFloat(0.01f,0.1f);
+				Main.dust[dust].velocity = projectile.velocity * Main.rand.NextFloat(0.01f, 0.1f);
 			}
 
-			owner.Hurt(PlayerDeathReason.ByOther(5), (int)(owner.statDefense*2.00),0,cooldownCounter: 1);
+			owner.Hurt(PlayerDeathReason.ByOther(5), (int)(owner.statDefense * 2.00), 0, cooldownCounter: 1);
 
-			SoundEffectInstance snd = Main.PlaySound(SoundID.NPCKilled,(int)projectile.Center.X, (int)projectile.Center.Y, 39);
-			if (snd!= null)
-            {
+			SoundEffectInstance snd = Main.PlaySound(SoundID.NPCKilled, (int)projectile.Center.X, (int)projectile.Center.Y, 39);
+			if (snd != null)
+			{
 				snd.Pitch = -0.50f;
 			}
 
 			projectile.Kill();
 
 			return false;
-        }
+		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
@@ -433,16 +433,16 @@ namespace SGAmod.Projectiles
 
 			if (projectile.ai[0] != 0)
 			{
-				projectile.velocity += Vector2.Normalize(owner.Center - projectile.Center).RotatedBy(projectile.ai[0]+(float)Math.Sin(projectile.ai[1]) * projectile.localAI[0]) * 0.35f;
+				projectile.velocity += Vector2.Normalize(owner.Center - projectile.Center).RotatedBy(projectile.ai[0] + (float)Math.Sin(projectile.ai[1]) * projectile.localAI[0]) * 0.35f;
 				projectile.velocity *= 0.990f;
 
-				projectile.velocity += Vector2.Normalize(owner.Center - projectile.Center) * 1f*(1f-projectile.Opacity);
+				projectile.velocity += Vector2.Normalize(owner.Center - projectile.Center) * 1f * (1f - projectile.Opacity);
 
 				projectile.Opacity -= 0.005f;
 				projectile.ai[1] += projectile.localAI[1];
 
 				if (projectile.Opacity <= 0)
-                {
+				{
 
 					if (owner.active && !owner.dead && owner.statLife < owner.statLifeMax2 * 0.25f)
 					{
@@ -453,7 +453,7 @@ namespace SGAmod.Projectiles
 					}
 
 					projectile.Kill();
-                }
+				}
 			}
 
 
@@ -483,7 +483,7 @@ namespace SGAmod.Projectiles
 			{
 				return color;
 			};
-			trailEffect.strength = projectile.Opacity*MathHelper.Clamp(projectile.timeLeft/60f,0f,1f)*2f;
+			trailEffect.strength = projectile.Opacity * MathHelper.Clamp(projectile.timeLeft / 60f, 0f, 1f) * 2f;
 			trailEffect.trailThickness = 2f;
 			trailEffect.coordMultiplier = new Vector2(1f, 2f);
 			trailEffect.coordOffset = new Vector2(0, Main.GlobalTime * -2f);
@@ -499,308 +499,369 @@ namespace SGAmod.Projectiles
 			return false;
 		}
 
-}
-
-
-public class NoviteBullet : ModProjectile
-{
-private Vector2[] oldPos = new Vector2[6];
-private float[] oldRot = new float[6];
-public override void SetStaticDefaults()
-{
-DisplayName.SetDefault("Novite Round");
-}
-
-public override void SetDefaults()
-{
-//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
-projectile.width = 12;
-projectile.height = 12;
-projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
-projectile.hostile = false;
-projectile.friendly = true;
-projectile.tileCollide = true;
-projectile.ranged = true;
-projectile.timeLeft = 3000;
-projectile.extraUpdates = 5;
-aiType = ProjectileID.Bullet;
-}
-
-public override bool PreKill(int timeLeft)
-{
-projectile.type = ProjectileID.CursedBullet;
-return true;
-}
-
-public override string Texture
-{
-get { return ("SGAmod/Items/Weapons/Ammo/NoviteBullet"); }
-}
-
-public override void AI()
-{
-
-if (Main.rand.Next(0, 20) == 1)
-{
-	int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, DustID.GoldCoin);
-	Main.dust[dust].scale = 0.20f;
-	Main.dust[dust].noGravity = false;
-	Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(0, 100) * 0.01f);
-}
-
-projectile.position -= projectile.velocity * 0.8f;
-
-for (int k = oldPos.Length - 1; k > 0; k--)
-{
-	oldPos[k] = oldPos[k - 1];
-}
-oldPos[0] = projectile.Center;
-
-projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
-
-Player player = Main.player[projectile.owner];
-
-if (projectile.ai[0] == 0 && player!=null)
-{
-	List<NPC> enemies = SGAUtils.ClosestEnemies(projectile.Center,300);
-
-	if (enemies != null && enemies.Count > 0 && player.SGAPly().ConsumeElectricCharge(30,30))
-	{
-		NPC enemy = enemies[0];
-		projectile.ai[0] = 1;
-		projectile.velocity = Vector2.Normalize(enemy.Center - projectile.Center) * projectile.velocity.Length();
-		Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 67, 0.25f, 0.5f);
 	}
 
-}
-}
 
-public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-{
-
-Texture2D tex = Main.projectileTexture[projectile.type];
-Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
-
-//oldPos.Length - 1
-for (int k = oldPos.Length - 1; k >= 0; k -= 1)
-{
-	Vector2 drawPos = ((oldPos[k] - Main.screenPosition)) + new Vector2(0f, 0f);
-	Color color = Color.Lerp(Color.White, lightColor, (float)k / (oldPos.Length + 1));
-	float alphaz = (1f - (float)(k + 1) / (float)(oldPos.Length + 2)) * 1f;
-	spriteBatch.Draw(tex, drawPos, null, color * alphaz, projectile.rotation, drawOrigin, projectile.scale* alphaz, SpriteEffects.None, 0f);
-}
-return false;
-}
-
-public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-{
-//null
-}
-
-
-
-}
-
-public class AimBotBullet : ModProjectile
-{
-public override void SetStaticDefaults()
-{
-DisplayName.SetDefault("Aimbot Bullet");
-}
-
-public override void SetDefaults()
-{
-projectile.CloneDefaults(ProjectileID.Bullet);
-projectile.width = 12;
-projectile.height = 12;
-projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
-projectile.hostile = false;
-projectile.friendly = true;
-projectile.tileCollide = true;
-projectile.ranged = true;
-projectile.extraUpdates = 400;
-projectile.penetrate = 3;
-projectile.timeLeft = 400;
-projectile.aiStyle = -1;
-projectile.localNPCHitCooldown = -1;
-projectile.usesLocalNPCImmunity = true;
-}
-
-public override void AI()
-{
-
-if (projectile.ai[0] < 1)
-{
-	int dir = 1;
-	if (Main.myPlayer == projectile.owner)
+	public class NoviteBullet : ModProjectile
 	{
-		NPC target = Main.npc[Idglib.FindClosestTarget(0, Main.MouseWorld, new Vector2(0f, 0f), true, true, true, projectile)];
-		if (target != null && Vector2.Distance(target.Center, projectile.Center) < 2000)
+		private Vector2[] oldPos = new Vector2[6];
+		private float[] oldRot = new float[6];
+		public override void SetStaticDefaults()
 		{
-			Vector2 projvel=projectile.velocity;
-			projectile.velocity = target.Center - projectile.Center;
-			projectile.velocity.Normalize(); projectile.velocity *= 8f;
-			IdgProjectile.Sync(projectile.whoAmI);
-			projectile.netUpdate = true;
+			DisplayName.SetDefault("Novite Round");
+		}
+
+		public override void SetDefaults()
+		{
+			//projectile.CloneDefaults(ProjectileID.CursedFlameHostile);
+			projectile.width = 12;
+			projectile.height = 12;
+			projectile.ignoreWater = false;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.tileCollide = true;
+			projectile.ranged = true;
+			projectile.timeLeft = 3000;
+			projectile.extraUpdates = 5;
+			aiType = ProjectileID.Bullet;
+		}
+
+		public override bool PreKill(int timeLeft)
+		{
+			projectile.type = ProjectileID.CursedBullet;
+			return true;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Ammo/NoviteBullet"); }
+		}
+
+		public override void AI()
+		{
+
+			if (Main.rand.Next(0, 20) == 1)
+			{
+				int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, DustID.GoldCoin);
+				Main.dust[dust].scale = 0.20f;
+				Main.dust[dust].noGravity = false;
+				Main.dust[dust].velocity = projectile.velocity * (float)(Main.rand.Next(0, 100) * 0.01f);
+			}
+
+			projectile.position -= projectile.velocity * 0.8f;
+
+			for (int k = oldPos.Length - 1; k > 0; k--)
+			{
+				oldPos[k] = oldPos[k - 1];
+			}
+			oldPos[0] = projectile.Center;
+
+			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
+
+			Player player = Main.player[projectile.owner];
+
+			if (projectile.ai[0] == 0 && player != null)
+			{
+				List<NPC> enemies = SGAUtils.ClosestEnemies(projectile.Center, 300);
+
+				if (enemies != null && enemies.Count > 0 && player.SGAPly().ConsumeElectricCharge(30, 30))
+				{
+					NPC enemy = enemies[0];
+					projectile.ai[0] = 1;
+					projectile.velocity = Vector2.Normalize(enemy.Center - projectile.Center) * projectile.velocity.Length();
+					Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 67, 0.25f, 0.5f);
+				}
+
+			}
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			Texture2D tex = Main.projectileTexture[projectile.type];
+			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
+
+			//oldPos.Length - 1
+			for (int k = oldPos.Length - 1; k >= 0; k -= 1)
+			{
+				Vector2 drawPos = ((oldPos[k] - Main.screenPosition)) + new Vector2(0f, 0f);
+				Color color = Color.Lerp(Color.White, lightColor, (float)k / (oldPos.Length + 1));
+				float alphaz = (1f - (float)(k + 1) / (float)(oldPos.Length + 2)) * 1f;
+				spriteBatch.Draw(tex, drawPos, null, color * alphaz, projectile.rotation, drawOrigin, projectile.scale * alphaz, SpriteEffects.None, 0f);
+			}
+			return false;
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			//null
 		}
 
 
+
 	}
-	dir = Math.Sign(projectile.velocity.X);
-	Main.player[projectile.owner].ChangeDir(dir);
-	Main.player[projectile.owner].itemRotation = (float)Math.Atan2(projectile.velocity.Y * dir, projectile.velocity.X * dir);
-	//Main.player[projectile.owner].itemRotation = projectile.velocity.ToRotation() * Main.player[projectile.owner].direction;
 
-}
-projectile.ai[0] += 1;
-
-Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 0.1f;
-int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1f);
-Main.dust[num655].noGravity = true;
-Main.dust[num655].velocity *= 0.5f;
-}
-
-public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-{
-projectile.damage = (int)(projectile.damage * 1.20f);
-}
-
-public override string Texture
-{
-get { return ("Terraria/Projectile_" + ProjectileID.MoonlordBullet); }
-}
-
-}
-
-public class TungstenBullet : ModProjectile
-{
-private Vector2[] oldPos = new Vector2[6];
-private float[] oldRot = new float[6];
-public override void SetStaticDefaults()
-{
-DisplayName.SetDefault("Tungsten Bullet");
-}
-
-public override void SetDefaults()
-{
-projectile.CloneDefaults(ProjectileID.Bullet);
-projectile.width = 12;
-projectile.height = 12;
-projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
-projectile.hostile = false;
-projectile.friendly = true;
-projectile.tileCollide = true;
-projectile.ranged = true;
-aiType = ProjectileID.Bullet;
-}
-
-public override string Texture
-{
-get { return ("Terraria/Projectile_" + 14); }
-}
-
-}
-
-public class PortalBullet : ProjectilePortal
-{
-public override int takeeffectdelay => 0;
-public override float damagescale => 1f;
-public override int penetrate => 1;
-public override int openclosetime => 8;
-
-
-public override void SetStaticDefaults()
-{
-DisplayName.SetDefault("Spawner");
-}
-
-public override string Texture
-{
-get { return "Terraria/Projectile_" + 658; }
-}
-
-public override void SetDefaults()
-{
-projectile.width = 32;
-projectile.height = 32;
-projectile.friendly = true;
-projectile.timeLeft = 24;
-projectile.tileCollide = false;
-aiType = -1;
-}
-
-public override void Explode()
-{
-
-if (projectile.timeLeft == openclosetime && projectile.ai[0] > 0)
-{
-	Player owner = Main.player[projectile.owner];
-	if (owner != null && !owner.dead)
+	public class AimBotBullet : ModProjectile
 	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Aimbot Bullet");
+		}
 
-		NPC target = Main.npc[Idglib.FindClosestTarget(0, projectile.Center, new Vector2(0f, 0f), true, true, true, projectile)];
-		if (target != null && Vector2.Distance(target.Center,projectile.Center) < 1500)
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Bullet);
+			projectile.width = 12;
+			projectile.height = 12;
+			projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.tileCollide = true;
+			projectile.ranged = true;
+			projectile.extraUpdates = 400;
+			projectile.penetrate = 3;
+			projectile.timeLeft = 400;
+			projectile.aiStyle = -1;
+			projectile.localNPCHitCooldown = -1;
+			projectile.usesLocalNPCImmunity = true;
+		}
+
+		public override void AI()
 		{
 
-			Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 67, 0.25f, 0.5f);
+			if (projectile.ai[0] < 1)
+			{
+				int dir = 1;
+				if (Main.myPlayer == projectile.owner)
+				{
+					List<NPC> targets = SGAUtils.ClosestEnemies(Main.player[projectile.owner].Center, 2000, Main.MouseWorld);
 
-			Vector2 gotohere = new Vector2();
-			gotohere = target.Center-projectile.Center;//Main.MouseScreen - projectile.Center;
-			gotohere.Normalize();
+					if (targets != null && targets.Count > 0)
+					{
+						NPC target = targets[0];// Main.npc[Idglib.FindClosestTarget(0, Main.MouseWorld, new Vector2(0f, 0f), true, true, true, projectile)];
+						if (target != null)
+						{
+							Vector2 projvel = projectile.velocity;
+							projectile.velocity = target.Center - projectile.Center;
+							projectile.velocity.Normalize(); projectile.velocity *= 8f;
+							IdgProjectile.Sync(projectile.whoAmI);
+							projectile.netUpdate = true;
 
-			Vector2 perturbedSpeed = new Vector2(gotohere.X, gotohere.Y).RotatedByRandom(MathHelper.ToRadians(10)) * projectile.velocity.Length();
-			int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y), ProjectileID.BulletHighVelocity, projectile.damage, projectile.knockBack / 8f, owner.whoAmI);
-			Main.projectile[proj].timeLeft = 180;
-			//Main.projectile[proj].penetrate = 1;
-			Main.projectile[proj].GetGlobalProjectile<SGAprojectile>().onehit = true; ;
-			Main.projectile[proj].netUpdate = true;
-			IdgProjectile.Sync(proj);
+							Vector2 pos = Vector2.Normalize(target.position + new Vector2(Main.rand.Next(0, target.width), Main.rand.Next(0, target.height)) - projectile.Center);
 
+							Projectile.NewProjectile(projectile.Center, pos * projectile.velocity.Length() * 400, ModContent.ProjectileType<AimbotBulletEffect>(), 0, 0);
+
+						}
+					}
+
+
+				}
+				dir = Math.Sign(projectile.velocity.X);
+				Main.player[projectile.owner].ChangeDir(dir);
+				Main.player[projectile.owner].itemRotation = (float)Math.Atan2(projectile.velocity.Y * dir, projectile.velocity.X * dir);
+				//Main.player[projectile.owner].itemRotation = projectile.velocity.ToRotation() * Main.player[projectile.owner].direction;
+
+			}
+			projectile.ai[0] += 1;
+
+			/*
+			Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= 0.1f;
+			int num655 = Dust.NewDust(projectile.position, projectile.width, projectile.height, 206, projectile.velocity.X + randomcircle.X * 8f, projectile.velocity.Y + randomcircle.Y * 8f, 100, new Color(30, 30, 30, 20), 1f);
+			Main.dust[num655].noGravity = true;
+			Main.dust[num655].velocity *= 0.5f;
+			*/
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			projectile.damage = (int)(projectile.damage * 1.20f);
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Projectile_" + ProjectileID.MoonlordBullet); }
 		}
 	}
 
-}
-
-}
-
-public override void AI()
-{
-if (projectile.ai[1] < 100)
-{
-	projectile.ai[1] = 100;
-	projectile.ai[0] = ProjectileID.BulletHighVelocity;
-	Player owner = Main.player[projectile.owner];
-	if (owner!=null && Main.myPlayer == owner.whoAmI)
+	public class AimbotBulletEffect : ModProjectile
 	{
-		projectile.Center = Main.MouseWorld;
-		projectile.direction = Main.MouseWorld.X > owner.position.X ? 1 : -1;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("AimbotBullet's Zip");
+		}
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Starfury);
+			aiType = -1;
+			projectile.aiStyle = -1;
+			projectile.timeLeft = 20;
+			projectile.tileCollide = false;
+			projectile.melee = false;
+		}
+
+		public override string Texture
+		{
+			get { return "Terraria/Projectile_591"; }
+		}
+
+		public override bool CanDamage()
+		{
+			return false;
+		}
+		public override void AI()
+		{
+			if (projectile.localAI[0]<=0)
+			projectile.localAI[0] = Main.rand.NextFloat();
+
+			projectile.position -= projectile.velocity;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			Color color = Main.hslToRgb(projectile.localAI[0] % 1f, 0.6f, 0.75f);
+			Color color2 = Main.hslToRgb(projectile.localAI[0] % 1f, 1f, 0.75f);
+
+			float timeleft = MathHelper.Clamp(projectile.timeLeft / 20f, 0f, 1f);
+
+			Texture2D tex = Main.extraTexture[47];
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color * MathHelper.Clamp((projectile.timeLeft-15) / 3f, 0f, 1f)*0.5f, projectile.velocity.ToRotation() + MathHelper.PiOver2, new Vector2(tex.Width / 2f, tex.Height), new Vector2(1f, projectile.velocity.Length() / tex.Height), SpriteEffects.None, 0);
+
+			Texture2D glowTex = Main.extraTexture[46];
+			spriteBatch.Draw(glowTex, projectile.Center+(projectile.velocity*(1f-timeleft)) - Main.screenPosition, null, color2 * MathHelper.Clamp(projectile.timeLeft / 12f, 0f, 1f), projectile.velocity.ToRotation() + MathHelper.PiOver2, glowTex.Size()/2f, new Vector2(0.2f, 0.75f), SpriteEffects.None, 0);
+
+
+			return false;
+		}
 	}
-}
-base.AI();
-}
-
-public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-{
-
-if (scale > 0)
-{
-	Texture2D texture = SGAmod.ExtraTextures[99];
-	Texture2D outer = SGAmod.ExtraTextures[101];
-	spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f) * 0.5f, projectile.rotation, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
-	spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f) * 0.5f, -projectile.rotation, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
 
 
-	outer = SGAmod.ExtraTextures[102];
-	spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f)*0.5f, projectile.rotation*2, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
-	spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f)*0.5f, -projectile.rotation*2, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
+	public class TungstenBullet : ModProjectile
+	{
+		private Vector2[] oldPos = new Vector2[6];
+		private float[] oldRot = new float[6];
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Tungsten Bullet");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.CloneDefaults(ProjectileID.Bullet);
+			projectile.width = 12;
+			projectile.height = 12;
+			projectile.ignoreWater = true;          //Does the projectile's speed be influenced by water?
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.tileCollide = true;
+			projectile.ranged = true;
+			aiType = ProjectileID.Bullet;
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Projectile_" + 14); }
+		}
+
+	}
+
+	public class PortalBullet : ProjectilePortal
+	{
+		public override int takeeffectdelay => 0;
+		public override float damagescale => 1f;
+		public override int penetrate => 1;
+		public override int openclosetime => 8;
 
 
-}
-return false;
-}
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Spawner");
+		}
 
-}
+		public override string Texture
+		{
+			get { return "Terraria/Projectile_" + 658; }
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 32;
+			projectile.height = 32;
+			projectile.friendly = true;
+			projectile.timeLeft = 24;
+			projectile.tileCollide = false;
+			aiType = -1;
+		}
+
+		public override void Explode()
+		{
+
+			if (projectile.timeLeft == openclosetime && projectile.ai[0] > 0)
+			{
+				Player owner = Main.player[projectile.owner];
+				if (owner != null && !owner.dead)
+				{
+
+					NPC target = Main.npc[Idglib.FindClosestTarget(0, projectile.Center, new Vector2(0f, 0f), true, true, true, projectile)];
+					if (target != null && Vector2.Distance(target.Center, projectile.Center) < 1500)
+					{
+
+						Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 67, 0.25f, 0.5f);
+
+						Vector2 gotohere = new Vector2();
+						gotohere = target.Center - projectile.Center;//Main.MouseScreen - projectile.Center;
+						gotohere.Normalize();
+
+						Vector2 perturbedSpeed = new Vector2(gotohere.X, gotohere.Y).RotatedByRandom(MathHelper.ToRadians(10)) * projectile.velocity.Length();
+						int proj = Projectile.NewProjectile(new Vector2(projectile.Center.X, projectile.Center.Y), new Vector2(perturbedSpeed.X, perturbedSpeed.Y), ProjectileID.BulletHighVelocity, projectile.damage, projectile.knockBack / 8f, owner.whoAmI);
+						Main.projectile[proj].timeLeft = 180;
+						//Main.projectile[proj].penetrate = 1;
+						Main.projectile[proj].GetGlobalProjectile<SGAprojectile>().onehit = true; ;
+						Main.projectile[proj].netUpdate = true;
+						IdgProjectile.Sync(proj);
+
+					}
+				}
+
+			}
+
+		}
+
+		public override void AI()
+		{
+			if (projectile.ai[1] < 100)
+			{
+				projectile.ai[1] = 100;
+				projectile.ai[0] = ProjectileID.BulletHighVelocity;
+				Player owner = Main.player[projectile.owner];
+				if (owner != null && Main.myPlayer == owner.whoAmI)
+				{
+					projectile.Center = Main.MouseWorld;
+					projectile.direction = Main.MouseWorld.X > owner.position.X ? 1 : -1;
+				}
+			}
+			base.AI();
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			if (scale > 0)
+			{
+				Texture2D texture = SGAmod.ExtraTextures[99];
+				Texture2D outer = SGAmod.ExtraTextures[101];
+				spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f) * 0.5f, projectile.rotation, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
+				spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f) * 0.5f, -projectile.rotation, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
 
 
+				outer = SGAmod.ExtraTextures[102];
+				spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f) * 0.5f, projectile.rotation * 2, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
+				spriteBatch.Draw(outer, projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, lightColor, 0.75f) * 0.5f, -projectile.rotation * 2, new Vector2(outer.Width / 2, outer.Height / 2), new Vector2(1, 1) * scale, SpriteEffects.None, 0f); ;
 
+
+			}
+			return false;
+		}
+
+	}
 }

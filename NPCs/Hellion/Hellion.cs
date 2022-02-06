@@ -36,7 +36,7 @@ namespace SGAmod.NPCs.Hellion
 	{
 		public static int Checkpoint = 0;
 		public static int momentDelay = 0;
-		public static bool AntiCheatActive => false;
+		public static bool AntiCheatActive => SGAWorld.cheating || SGAmod.cheating;
 		public static MethodInfo CSGodmodeOn = default;
 		public static MethodInfo HMGodmodeOn = default;
 
@@ -44,7 +44,43 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (SGAWorld.modtimer >= 300)
 			{
-				if (SGAWorld.downedHellion < 2 || Main.dedServ || Main.netMode == NetmodeID.Server || Main.gameMenu)
+				if (Main.dedServ || Main.netMode == NetmodeID.Server)
+					return;
+
+				if (AntiCheatActive)
+				{
+
+					int intid = -1;
+                    for (int i = 0; i < Main.WorldList.Count; i += 1)
+                    {
+                        if (Main.WorldList[i] == Main.ActiveWorldFileData)
+                        {
+                            intid = i;
+                            break;
+                        }
+                    }
+					if (intid == -1)
+					return;
+
+					typeof(Main).GetMethod("EraseWorld", SGAmod.UniversalBindingFlags).Invoke(Main.instance, new object[] { intid });
+					Main.LocalPlayer.KillMeForGood();
+
+					List<String> cheatertext = new List<String>();
+					cheatertext.Add("Did you really, REALLY think you could go unpunished for this? Was the overwelming difficulty and my extremely unfair additions to my fight not enough of a cue-in?");
+					cheatertext.Add("Alot of QoL mods these days add features that break the game, other mods, and stop alot of mods from doing mechanics they wish they could do. But like 'why should I invest into this mechanic when I can just fargos it', and it's seriously becoming a problem, and this is me doing something about it. There's a line to be drawn between reducing the grind, and just 'not playing the game anymore'");
+					cheatertext.Add("And as far as I'm concerned, your not playing the game anymore, if you managed to win to this fight without extensive cheating");
+					cheatertext.Add("And if your familiar with old DRM practices, you know what just happened... You earned it, congrats");
+					cheatertext.Add("You were warned...");
+					File.WriteAllLines(SGAmod.filePath + "/YouWereWarned.txt", cheatertext.ToArray());
+
+					Environment.Exit(0);
+
+					return;
+				}
+
+
+
+					if (SGAWorld.downedHellion < 2 || Main.gameMenu)
 					return;
 
 				SGAmod.NightmareUnlocked = true;
@@ -3257,13 +3293,19 @@ namespace SGAmod.NPCs.Hellion
 
 				if (!rematch)
 				{
+					if (introtimer < 180)
+                    {
+						float sinnergy = (float)Math.Sin((introtimer / 180) * MathHelper.Pi);
+						Terraria.GameContent.Events.MoonlordDeathDrama.RequestLight(MathHelper.Clamp(sinnergy*sinnergy*1.25f, 0,1),npc.Center);
+                    }
+
 					if (introtimer == 60)
 					{
-						HellionTaunt("Come on " + SGAmod.HellionUserName + "!");
+						HellionTaunt(HellionAttacks.AntiCheatActive ? "So... you have chosen death" : "Come on " + SGAmod.HellionUserName + "!");
 					}
 					if (introtimer == 180)
 					{
-						HellionTaunt("Lets dance!");
+						HellionTaunt(HellionAttacks.AntiCheatActive ? "Perish" : "Lets dance!");
 					}
 				}
 				else
@@ -3788,6 +3830,138 @@ namespace SGAmod.NPCs.Hellion
 			}
 		}
 
+		public void InsaneCheatStuff(Player thatplayer,int i)
+        {
+			if (SGAmod.cheating || SGAWorld.cheating)
+			{
+
+				thatplayer.AddBuff(ModContent.BuffType<Idglibrary.Buffs.BossFightPurity>(), 5);
+				thatplayer.AddBuff(BuffID.Battle,99999);
+				thatplayer.AddBuff(BuffID.WaterCandle,99999);
+
+				npc.boss = false;
+
+				if (phase > -1 && thatplayer.SGAPly().timer % 200 == 0)
+				{
+					Main.fastForwardTime = true;
+					Main.bloodMoon = true;
+					Main.eclipse = true;
+
+					if (Main.rand.Next(100) < 10)
+					{
+						Main.StartInvasion(Main.rand.Next(1, 5));
+					}
+					if (Main.rand.Next(20) < 1)
+					{
+						thatplayer.AddBuff(ModContent.BuffType<Items.Armors.Desert.SandySwiftnessBuff>(), 60 * 30);
+					}
+					if (Main.rand.Next(20) < 1)
+					{
+						Main.StartSlimeRain();
+					}
+				}
+
+				if (phase > 0)
+				{
+					thatplayer.gravDir = thatplayer.SGAPly().timer % 600 < 300 ? -1 : 1;
+
+					if (thatplayer.SGAPly().timer % (800/(phase+1)) == 0)
+					{
+						thatplayer.selectedItem = Main.rand.Next(10);
+					}
+
+					if (thatplayer.SGAPly().timer % 60 == 0)
+					{
+						if (Main.rand.Next(50) < phase)
+						{
+							thatplayer.AddBuff(ModContent.BuffType<CleansedPerception>(), 60 * 60);
+						}
+						thatplayer.QuickHeal();
+						thatplayer.QuickMana();
+					}
+					if (i == 0 && thatplayer.SGAPly().timer % 300 == 0)
+					{
+
+						if (Main.rand.NextBool())
+						{
+							Main.startPumpkinMoon();
+						}
+						else
+						{
+							Main.startSnowMoon();
+						}
+						Main.snowMoon = true;
+						Main.pumpkinMoon = true;
+					}
+				}
+
+				if (phase > 1)
+				{
+					if (thatplayer.SGAPly().timer % 400 == 0)
+					{
+						thatplayer.DropSelectedItem();
+					}
+					if (i == 0)
+					{
+						if (!NPC.LunarApocalypseIsUp)
+						{
+							if (thatplayer.SGAPly().timer % 1200 == 0)
+							{
+								WorldGen.TriggerLunarApocalypse();
+							}
+						}
+						else
+						{
+
+							var items = Main.npc.Where(testby => testby.active && (testby.type == NPCID.LunarTowerNebula || testby.type == NPCID.LunarTowerSolar || testby.type == NPCID.LunarTowerStardust || testby.type == NPCID.LunarTowerVortex));
+
+							int index = 0;
+							foreach (NPC pillar in items)
+							{
+								float angle = ((index / (float)items.Count()) * MathHelper.TwoPi) + (thatplayer.SGAPly().timer / 300f);
+								Vector2 gothere = noescapeauraloc + Vector2.UnitX.RotatedBy(angle) * noescapeaurasize;
+
+								pillar.Center += (gothere - pillar.Center) * 0.025f;
+
+								index += 1;
+							}
+						}
+					}
+				}
+
+				if (phase > 2 && !thatplayer.HasBuff(BuffID.Suffocation) && thatplayer.SGAPly().timer % 300 == 0)
+				{
+					thatplayer.AddBuff(ModContent.BuffType<NoFly>(), 99999);
+					thatplayer.AddBuff(ModContent.BuffType<AcidBurn>(), 99999);
+
+					Item item = new Item();
+					item.SetDefaults(ItemID.RedPotion);
+					thatplayer.inventory[thatplayer.inventory.Length - 1] = item;
+					thatplayer.selectedItem = thatplayer.inventory.Length - 1;
+					thatplayer.controlUseItem = true;
+					ItemLoader.UseItem(thatplayer.inventory[thatplayer.inventory.Length - 1], thatplayer);
+				}
+
+				if (phase > 3)
+				{
+					if (thatplayer.SGAPly().timer % 320 == 0)
+					thatplayer.inventory[thatplayer.selectedItem].Prefix((int)(TrapPrefix.GetBustedPrefix));
+				}
+
+					if (phase > 4)
+				{
+					thatplayer.SGAPly().disabledAccessories = 120;
+					if (i == 0)
+					{
+						if (Main.rand.Next(500) < 1 && NPC.MoonLordCountdown < 1)
+						{
+							NPC.MoonLordCountdown = 60 * 30;
+						}
+					}
+				}
+			}
+		}
+
 		public void NoEscape()
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)
@@ -3824,6 +3998,10 @@ namespace SGAmod.NPCs.Hellion
 
 				if (thatplayer.active && !thatplayer.dead)
 				{
+
+					InsaneCheatStuff(thatplayer, i);
+
+
 					//nopuritymount
 					//Fine, you can have this one
 

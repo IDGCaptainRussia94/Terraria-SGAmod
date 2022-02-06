@@ -627,16 +627,19 @@ namespace SGAmod.Dimensions.NPCs
 
             tryagain:
 
+                if (deckOfAttacks.Count<1)
+                DrawDeck();//Draw new deck of attacks
+
                 int attack = deckOfAttacks[0];//Top card
                 deckOfAttacks.RemoveAt(0);//Discard drawn card
 
-                if (attack == (int)SpaceBossAttackTypes.ShadowNebula)//Choose: Shadow Nebula
+                if (attack == (int)SpaceBossAttackTypes.ShadowNebula || (!boss.removeDarknessCloud && Main.expertMode))//Choose: Shadow Nebula
                 {
                     boss.specialCooldown = 80 * 60;
                     npc.ai[0] = 50000;//Shadow Nebula
                     return true;
                 }
-                if (boss.celerityBuff < -4500 && boss.phase>2 && boss.goingDark < 0)//Cast Celestial Celerity with high priority over other moves if able
+                if (boss.celerityBuff < -4500 && boss.phase > 1 && boss.goingDark < 0)//Cast Celestial Celerity with high priority over other moves if able
                 {
                     npc.ai[0] = 12501;//Celestial Celerity
                     return true;
@@ -812,11 +815,13 @@ namespace SGAmod.Dimensions.NPCs
 
             if (npc.ai[0] == 12510)
             {
-                boss.celerityBuff += 20;
-                if (boss.celerityBuff > 3000)
-                {
-                    boss.celerityBuff = 3000;
-                }
+                boss.celerityBuff = 10;
+            }
+
+            boss.celerityBuff += 20;
+            if (boss.celerityBuff > 3000)
+            {
+                boss.celerityBuff = 3000;
             }
 
             if (npc.ai[0] == 12800)
@@ -867,6 +872,7 @@ namespace SGAmod.Dimensions.NPCs
 
                 if (npc.ai[0] == 50400)
                 {
+                    boss.removeDarknessCloud = true;
                     npc.ai[0] = 999;
                 }
 
@@ -1324,10 +1330,9 @@ namespace SGAmod.Dimensions.NPCs
             else
             {
                 List<NPC> focusCrystals = Main.npc.Where(testby => testby.active && testby.type == ModContent.NPCType<StationFocusCrystal>()).ToList();
-                if (boss.phase > 2 && focusCrystals.Count > 0)
+                if (boss.removeDarknessCloud && focusCrystals.Count > 0)
                 {
                     getCloser = 2;
-                    Main.NewText("terz");
                     focusCrystals = focusCrystals.OrderBy(testby => (testby.Center - boss.npc.Center).LengthSquared()).ToList();
                     NPC crystalNearest = focusCrystals[0];
                     thisthing = boss.visitedEmptySpaces.Where(testby => (testby - npc.Center).LengthSquared() < 3200 * 3200).OrderBy(testby => (testby - crystalNearest.Center).LengthSquared()).ToArray();//Tries to move near any more existing focus crystals, to heal up
@@ -1474,8 +1479,8 @@ namespace SGAmod.Dimensions.NPCs
             {
                 Vector2 place = target.Center + (Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(-400f, 400f)) + Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.Pi)) * 1500f;
 
-                int proj = Projectile.NewProjectile(place, Vector2.Normalize(ToEnemy) * Main.rand.NextFloat(3.5f, 4f), ModContent.ProjectileType<SpaceBossTelegraphedBasicShot>(), 30, 10);
-                Main.projectile[proj].timeLeft = 500;
+                int proj = Projectile.NewProjectile(place, Vector2.Normalize(ToEnemy) * Main.rand.NextFloat(2.8f, 3.2f), ModContent.ProjectileType<SpaceBossTelegraphedBasicShot>(), 30, 10);
+                Main.projectile[proj].timeLeft = 720;
             }
 
             //boss.shieldeffect<1
@@ -1741,6 +1746,7 @@ namespace SGAmod.Dimensions.NPCs
         public float friction = 1f;
         public int celerityBuff = -100000;
         public int specialCooldown = 0;
+        public bool removeDarknessCloud = false;
         public Vector2[] screenPos;
         public Vector2 startPosition;
         public static SpaceBoss instance;
@@ -2719,11 +2725,17 @@ namespace SGAmod.Dimensions.NPCs
 
                 //Twilight Nebula
 
-                float alphaik = ((1f - sky.darkalpha) * 0.50f * darknessAura) * MathHelper.Clamp(1f - (npc.ai[0] - 100000f) / 180f, 0f, 1f);
-
-                if (sky.darkalpha < 1 && (sky.darkalpha > 0 || (new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) - (npc.Center - Main.screenPosition)).LengthSquared() < 1440000))
+                if (!removeDarknessCloud)
                 {
-                    DarknessNebulaEffect(sunGlow, (sky.darkalpha * 5f) * 6f, npc.Center, alphaik, npc.whoAmI, 10);
+                    float alphaik = ((1f - sky.darkalpha) * 0.50f * darknessAura) * MathHelper.Clamp(1f - (npc.ai[0] - 100000f) / 180f, 0f, 1f);
+
+                    if (alphaik > 0)
+                    {
+                        if (sky.darkalpha < 1 && (sky.darkalpha > 0 || (new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) - (npc.Center - Main.screenPosition)).LengthSquared() < 1440000))
+                        {
+                            DarknessNebulaEffect(sunGlow, (sky.darkalpha * 5f) * 6f, npc.Center, alphaik, npc.whoAmI, 10);
+                        }
+                    }
                 }
             }
         }
@@ -2784,18 +2796,18 @@ namespace SGAmod.Dimensions.NPCs
             if (celerityBuff > 0)
             {
                 Texture2D glowtex = mod.GetTexture("Glow");
-                Vector2 glowOrigin = eyetex.Size() / 2f;
+                Vector2 glowOrigin = glowtex.Size() / 2f;
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
-                float celerityBuffAlpha = MathHelper.Clamp(celerityBuff / 600f, 0f, 1f);
-                float glowScale = 0.5f + celerityBuffAlpha;
+                float celerityBuffAlpha = MathHelper.Clamp(celerityBuff / 300f, 0f, 1f);
+                float glowScale = 1f + celerityBuffAlpha*0.5f;
                 Color glowColor = Color.CornflowerBlue * celerityBuffAlpha;
 
                 foreach (SpaceBossRock rock in Rocks)
                 {
-                    float glowExtra = rock.state == 400 ? 1f : 0.75f;
+                    float glowExtra = rock.state == 400 ? 1f : 0.80f;
 
                     spriteBatch.Draw(glowtex, rock.Position - Main.screenPosition, null, glowColor* glowExtra, 0, glowOrigin, glowScale, SpriteEffects.None, 0f);
                 }

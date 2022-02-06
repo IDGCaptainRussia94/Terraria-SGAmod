@@ -32,7 +32,7 @@ Changelog:
 
 -High Stakes Set is even more risky now, and self damage is reduced, and fixed inventory effect issues
 
--Flash of Soul Sap visuals were updated to be less placeholder (IE not Lifeleech)
+-Flask of Soul Sap visuals were updated to be less placeholder (IE not Lifeleech)
 
 -prismal necklace inherits Summoner Emblem now instead of the hercules beetle
 
@@ -82,6 +82,8 @@ Changelog:
 
 -Brought over Nurse's anti-hellion rules, but is only half as likely to leave
 
+-New sprite for Aimbot Bullets and updated their visuals
+
 --New changes to Cirno:
 -Reduced Cirno's on-hit debuff chilled time (projectiles still chill for quite a while due to being vanilla projectiles)
 
@@ -91,9 +93,11 @@ Changelog:
 -Past the Shadow Nebula phase, will now try to retreat to remaining Helios Crystals to heal up
 -Made player chasing a bit more aggressive during Shadow Nebula
 -Added a new move that also becomes accessible past Shadow Nebula: Celestial Celerity, a "use when possible" buff move that greatly boosts Phaethon's speed over long distances! Goes on a long cooldown after use
+-The dark nebula effect is now gone after the boss uses Shadow Nebula (I think it looks better than it just shrinking back in, as it has clearly dispersed)
 
 --New changes to Helen Hellion Weygold:
 -Reverted FNF attack, notes do damage again, side projectiles are missing (unless in nightmare), the debuff is still there thou so you need to keep moving
+-Made a change for the punished...
 
 
 
@@ -211,6 +215,8 @@ Changelog:
 -Made Overseen Asteriods MUCH more tanky to discourge trying to kill them normally
 
 -Optimized the after-effect on null-related things to not draw every frame, and only check for updates every 5 frames unless one is active, then it stays active for 7.5 seconds consistantly
+
+-New sprite for Aimbot Bullets and updated their visuals
 
 -Dragon's Might and Matrix Potions are now ignored by Fargos Inf Buffs, and made them stop functioning properly below 5 ticks remaining, just incase
 

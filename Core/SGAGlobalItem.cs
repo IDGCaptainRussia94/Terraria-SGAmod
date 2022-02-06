@@ -116,6 +116,9 @@ namespace SGAmod
 
         public bool IsItemCheating(Item item)
         {
+            if (SGAmod.DevDisableCheating)
+                return false;
+
             if ((SGAmod.Fargos.Item1 || SGAmod.Luiafk.Item1))
             {
                 if (item.modItem != null)
@@ -153,7 +156,7 @@ namespace SGAmod
 
         public override bool CanUseItem(Item item, Player player)
         {
-            if (!(SGAmod.cheating && !SGAWorld.cheating))
+            if (!SGAmod.cheating && !SGAWorld.cheating)
             {
                 if (IsItemCheating(item))
                 {

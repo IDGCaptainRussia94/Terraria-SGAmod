@@ -307,11 +307,19 @@ namespace SGAmod
 			float spawnrate2 = player.GetModPlayer<SGAPlayer>().morespawns;
 			spawnRate = (int)(spawnRate / spawnrate2);
 			maxSpawns += (int)((spawnrate2 - 1) * 10f);
-			if (NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()))
+			
+			if (NPC.AnyNPCs(ModContent.NPCType<Hellion>()))
 			{
+				if (HellionAttacks.AntiCheatActive)
+                {
+					maxSpawns *= 3;
+					spawnRate /= 2;
+				}
+
 				//spawnRate = (int)(spawnRate / 25f);
 				//maxSpawns += 20;
 			}
+			
 		}
 
 		public override void SetDefaults(NPC npc)

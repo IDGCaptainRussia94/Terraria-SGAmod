@@ -90,17 +90,21 @@ namespace SGAmod
 		}
 
 		private static double Player_Hurt(On.Terraria.Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
-        {
+		{
 			SGAPlayer sply = self.SGAPly();
-			SGAPlayer.DoHurt(sply, damageSource, ref Damage, ref hitDirection, pvp, quiet, ref Crit, cooldownCounter);
 
-			if (self.SGAPly().undyingValor)
-            {
+			if (sply.undyingValor || sply.refractor)
+			{
 				double ddd = orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
 				if (ddd > 0)
 				{
-					self.SGAPly().DoTStack.Add((300, (Damage / 300f) * 60f));
-					return orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
+					SGAPlayer.DoHurt(sply, damageSource, ref Damage, ref hitDirection, pvp, quiet, ref Crit, cooldownCounter);
+
+					if (sply.undyingValor)
+					{
+						self.SGAPly().DoTStack.Add((300, (Damage / 300f) * 60f));
+						return orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
+					}
 				}
 			}
 

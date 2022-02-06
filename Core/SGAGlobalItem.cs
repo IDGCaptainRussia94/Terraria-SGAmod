@@ -563,7 +563,7 @@ namespace SGAmod
                     s = key;
                 }
 
-                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Precurser's Power, press again to end early\nRepairs wounds at full speed even while moving, but consumes Electric Charge\nAlso during this, throwing damage is increased by Tech Damage scaling" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 80 seconds") + "\nYou gain the ability to run as if on Asphalt, also and fall down faster\nReflect 3X damage and gain knockback immunity while grounded" + Idglib.ColorText(Color.Red, "Gravity is increased, wings are less effective, Shield Break can happen")+ "\n" + Idglib.ColorText(Color.Red, "User is submerged in lava at low Electric Charge") + "\nGain an additional free Cooldown Stack";
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Precurser's Power, press again to end early\nRepairs wounds at full speed even while moving, at an Electric Charge cost\nDuring this ability, throwing damage is increased by Tech Damage scaling" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 80 seconds") + "\nYou gain the ability to run as if on Asphalt, also and fall down faster\nReflect 3X damage and gain knockback immunity while grounded" + Idglib.ColorText(Color.Red, "Gravity is increased, wings are less effective, Shield Break can happen")+ "\n" + Idglib.ColorText(Color.Red, "User is submerged in lava at low Electric Charge") + "\nGain an additional free Cooldown Stack";
 
                 sgaplayer.MaxCooldownStacks += 1;
                 sgaplayer.jungleTemplarSet.Item1 = true;
@@ -613,7 +613,7 @@ namespace SGAmod
                 {
                     s = key;
                 }
-                string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt skybridge below your feet\nYou can land on this bridge while falling down\nHold Down to fall through\nThis consumes electric charge while active, " + Idglib.ColorText(Color.Red, "and will trigger a shield break on deplete");
+                string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt skybridge below your feet\nYou can land on this bridge while falling down, Hold DOWN to fall through\nThis consumes electric charge while active, " + Idglib.ColorText(Color.Red, "and will trigger a shield break on deplete");
 
                 s = "Not Binded!";
 

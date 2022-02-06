@@ -476,18 +476,21 @@ namespace SGAmod.Items.Weapons
 					{
 						projectile.ai[0] = 1000f;
 
-						int rayloc = Idglib.RaycastDown((int)(player.Center.X) / 16, (int)(player.Center.Y - 8f) / 16) * 16;
-						if (!((rayloc - 16) - (projectile.position.Y) > 30 || (rayloc - 16) - (projectile.position.Y) < -30))
+						if (!Collision.CanHitLine(player.Center, 4, 4, player.Center + new Vector2(0,32), 4, 4))
 						{
 
-							//player.Hurt(PlayerDeathReason.ByCustomReason("Testing"), 5, projectile.direction, true, false, false, -1);
-							Vector2 pos = player.Center;//new Vector2((int)(player.Center.X/16), (int)(player.Center.Y/16)) * 16;
+							//int rayloc = Idglib.RaycastDown((int)(player.Center.X) / 16, (int)(player.Center.Y - 8f) / 16) * 16;
+							//if (!((rayloc - 16) - (projectile.position.Y) > 30 || (rayloc - 16) - (projectile.position.Y) < -30))
+							//{
 
-							float damagemul = 1f + (projectile.ai[1] - 130) / 250f;
+								//player.Hurt(PlayerDeathReason.ByCustomReason("Testing"), 5, projectile.direction, true, false, false, -1);
+								Vector2 pos = player.Center;//new Vector2((int)(player.Center.X/16), (int)(player.Center.Y/16)) * 16;
 
-							int thisoned = Projectile.NewProjectile(pos, new Vector2(projectile.direction * 4, 0), GetType() == typeof(BrimflameCharging) ? ModContent.ProjectileType<SurtWaveBrimFlame>() : ModContent.ProjectileType<SurtWave>(), (int)(projectile.damage * damagemul) * 3, projectile.knockBack * 2f, Main.player[projectile.owner].whoAmI);
-							Main.projectile[thisoned].timeLeft = (int)projectile.ai[1];
-							Main.PlaySound(SoundID.Item, player.Center, 74);
+								float damagemul = 1f + (projectile.ai[1] - 130) / 250f;
+
+								int thisoned = Projectile.NewProjectile(pos, new Vector2(projectile.direction * 4, 0), GetType() == typeof(BrimflameCharging) ? ModContent.ProjectileType<SurtWaveBrimFlame>() : ModContent.ProjectileType<SurtWave>(), (int)(projectile.damage * damagemul) * 3, projectile.knockBack * 2f, Main.player[projectile.owner].whoAmI);
+								Main.projectile[thisoned].timeLeft = (int)projectile.ai[1];
+								Main.PlaySound(SoundID.Item, player.Center, 74);
 
 						}
 

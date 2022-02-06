@@ -1894,8 +1894,8 @@ namespace SGAmod.Items
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Helios Focus Crystal");
-			Tooltip.SetDefault("An intact focus crystal used to empower Phaethon\nCould be useful for crafting your own empowerment devices");
+			DisplayName.SetDefault("Helios Focus Prism");
+			Tooltip.SetDefault("An intact focus prism used to empower Phaethon\nCould be useful for crafting your own empowerment devices");
 		}
 		public override void SetDefaults()
 		{
@@ -1914,13 +1914,44 @@ namespace SGAmod.Items
 		{
 			get { return ("Terraria/Item_" + ItemID.DD2ElderCrystal); }
 		}
+
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+        {
+
+			Vector2 drawPos = item.Center;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
+			{
+				spriteBatch.Draw(Main.itemTexture[item.type], drawPos + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * 3f).RotatedBy(item.velocity.X / 6f), null, Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f), 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			SGAmod.FadeInEffect.Parameters["fadeColor"].SetValue(2f);
+			SGAmod.FadeInEffect.Parameters["alpha"].SetValue(0.50f);
+			SGAmod.FadeInEffect.CurrentTechnique.Passes["ColorToAlphaPass"].Apply();
+
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale * 1 / 15f, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+		}
+
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 
 			Vector2 slotSize = new Vector2(52f, 52f) * scale;
 			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
 			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
-			Vector2 textureOrigin = Vector2.Zero;
 
 			slotSize.X /= 1.0f;
 			slotSize.Y = -slotSize.Y / 4f;
@@ -2114,7 +2145,7 @@ namespace SGAmod.Items
 		}
 		public override void SetDefaults()
 		{
-			item.maxStack = 1;
+			item.maxStack = 30;
 			item.width = 14;
 			item.height = 14;
 			item.value = 0;

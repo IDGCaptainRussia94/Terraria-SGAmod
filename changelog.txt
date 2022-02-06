@@ -13,6 +13,8 @@ Changelog:
 
 -The Refractor, an accessory that benfeits crowd control, it reflects damage in an area and reduces damage taken based off number of enemies nearby
 
+-The ability to use the Liquified Gambling, and take your chances at loot or death
+
 
 --Changed:
 
@@ -78,12 +80,17 @@ Changelog:
 
 -Jungle Templar's ability can now be ended early by pressing the ability again, slightly reduced electric charge cost
 
+-Brought over Nurse's anti-hellion rules, but is only half as likely to leave
+
 --New changes to Cirno:
 -Reduced Cirno's on-hit debuff chilled time (projectiles still chill for quite a while due to being vanilla projectiles)
 
 --New changes to Phaethon:
 -Made shadow nebula screen projectiles spaced out more and less frequent
 -Re-added missing final phase telegraphs
+-Past the Shadow Nebula phase, will now try to retreat to remaining Helios Crystals to heal up
+-Made player chasing a bit more aggressive during Shadow Nebula
+-Added a new move that also becomes accessible past Shadow Nebula: Celestial Celerity, a "use when possible" buff move that greatly boosts Phaethon's speed over long distances! Goes on a long cooldown after use
 
 --New changes to Helen Hellion Weygold:
 -Reverted FNF attack, notes do damage again, side projectiles are missing (unless in nightmare), the debuff is still there thou so you need to keep moving
@@ -121,7 +128,7 @@ Changelog:
 
 --Added
 
--Starduster, The Tongue, Lunar Leech, Rod Of The Misty Lake, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap, Condensed Gel Pack
+-Starduster, The Tongue, Lunar Leech, Rod Of The Misty Lake, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, The Refractor, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap, Condensed Gel Pack
 
 -The entire Dank Wood Furnature set by Rijam
 
@@ -225,15 +232,13 @@ Changelog:
 
 -Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
 
--Reworked Jungle Templar Armor: now inflicts severe Lava Burn when power is too low instead of normal Lava Burn, doesn't cause Lava Burn til after atleast 5 seconds of being ingame or if the lava meter is too low
+-Reworked Jungle Templar Armor: now inflicts severe Lava Burn when power is too low instead of normal Lava Burn, doesn't cause Lava Burn til after atleast 5 seconds of being ingame or if the lava meter is too low, Ability can now be ended early by pressing the ability again, and slightly reduced electric charge cost
 
 -Reworked Fist of Moonlord: damage increase per fist's speed has been reduced by 1/3, there's a damage increase cap of 5X, can no longer crit, would-have crits cause the fist to not slow down on hit, and is now Post-Hellion (and is now craftable)
 
 -Reworked Transformer: Now grants electric charge regen to cooldown stacks instead of from Electrified
 
 -Buffed Hallowed Visor: defense increased by 1
-
--Buffed Jungle Templar Armor: Ability can now be ended early by pressing the ability again, and slightly reduced electric charge cost
 
 -Buffed Sticky Situation: does more damage to segmented enemies
 

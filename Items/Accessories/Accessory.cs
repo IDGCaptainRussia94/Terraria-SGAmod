@@ -3526,7 +3526,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Liquified Gambling");
-			Tooltip.SetDefault("'You don't want to question this substance...'\nTag a swig if you want to test your luck...\n+"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") + "+Greatly speeds up the opening of Contraband Crates when worn\nAlso works while in inventory");
+			Tooltip.SetDefault("'You don't want to question this substance...'\nTag a swig if you want to test your luck...\n"+ Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds each") +"\nGreatly speeds up the opening of Contraband Crates when worn\nAlso works while in inventory");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3546,16 +3546,61 @@ namespace SGAmod.Items.Accessories
 
         public override bool UseItem(Player player)
         {
-			switch (Main.rand.Next(2))
+			List<int> possibleEvents = new List<int>();
+			possibleEvents.Add(0);
+			possibleEvents.Add(1);
+			possibleEvents.Add(2);
+			if (!NPC.BusyWithAnyInvasionOfSorts())
+			possibleEvents.Add(3);
+			possibleEvents.Add(4);
+			possibleEvents.Add(5);
+
+			possibleEvents = possibleEvents.OrderBy(testby => Main.rand.Next()).ToList();
+
+			switch (possibleEvents[0])
 			{
+
+				case 5:
+
+					Item item = new Item();
+					item.SetDefaults(ItemID.GenderChangePotion);
+					player.inventory[player.inventory.Length - 1] = item;
+					player.selectedItem = player.inventory.Length - 1;
+					player.controlUseItem = true;
+					ItemLoader.UseItem(player.inventory[player.inventory.Length - 1], player);
+					break;
+
+				case 4:
+
+					Idglib.Chat("And so... I shall make it rain!"+ "[i: " + ModContent.ItemType<MoneySign>() + "]",220,0,220);
+
+					List<int> items = new List<int>() {ItemID.FossilOre,ItemID.SilverCoin,ItemID.CopperCoin,ItemID.GoldOre,ItemID.PlatinumOre };
+					if (Main.hardMode) 
+					{
+						items.Add(ItemID.AdamantiteOre);
+						items.Add(ItemID.TitaniumOre);
+					}
+					for (int i = 0; i < 100; i += 1)
+					{
+						Item.NewItem(player.Center + new Vector2(Main.rand.Next(-1200, 1200), Main.rand.Next(-2600, -1600)), items[Main.rand.Next(items.Count)]);
+					}
+					break;
+				case 3:
+					Main.StartInvasion(Main.hardMode ? Main.rand.Next(1,4) : 1);
+					break;
+				case 2:
+					Vector2 where = player.Center + new Vector2(0, -64);
+					NPC.NewNPC((int)where.X, (int)where.Y, NPCID.DD2EterniaCrystal);
+					//Terraria.GameContent.Events.DD2Event.StartInvasion();
+					break;
 				case 1:
 					Projectile.NewProjectile(player.Center+new Vector2(0, -64),-Vector2.UnitY, ProjectileID.CoinPortal, 50000, 10f);
 					break;
 
 				default:
 					player.DropSelectedItem();
-					player.QuickSpawnItem(ItemID.RedPotion);
-					player.AddBuff(ModContent.BuffType<Idglibrary.Buffs.CurseOfRed>(), 60 * 5);
+					player.QuickSpawnItem(ItemID.RedPotion,1);
+					player.AddBuff(ModContent.BuffType<Idglibrary.Buffs.CurseOfRed>(), 60 * 2);
 					break;
 			}
 			return true;
@@ -3570,7 +3615,7 @@ namespace SGAmod.Items.Accessories
 			item.rare = ItemRarityID.Orange;
 			item.accessory = true;
 
-			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.useStyle = ItemUseStyleID.EatingUsing;
 			item.UseSound = SoundID.Item3;
 			item.useAnimation = 15;
 			item.useTime = 15;
@@ -4282,12 +4327,12 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("The Refractor");
-			Tooltip.SetDefault("Reflect damage taken back at nearby enemies as beams of light\nDamage scales with thorns effect\nTake 10% (multiplicative) less damage per enemies affected, up to 25% less\nRaises thorns effect damage by 2X");
+			Tooltip.SetDefault("Reflect damage taken back at nearby enemies as beams of light\nDoes damage taken before damage scaling, times 3, times thorns level\nDamage scales with thorns effect\nTake 10% (multiplicative) of 25% of the damage less per enemies affected\nRaises thorns by 2X");
 		}
 
         public override bool Autoload(ref string name)
         {
-            SGAPlayer.HurtEvent += SGAPlayer_PreHurtEvent;
+            SGAPlayer.FirstHurtEvent += SGAPlayer_PreHurtEvent;
 			//SGAPlayer.AfterTheHitEvent += SGAPlayer_AfterTheHitEvent;
 			return true;
         }

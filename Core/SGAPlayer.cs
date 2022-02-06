@@ -1793,6 +1793,7 @@ namespace SGAmod
 				}
 			}
 
+			if (PreHurtEvent != null)
 			PreHurtEvent.Invoke(this, pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
 			SGAnpcs.PlayersGotHit();
 
@@ -2063,6 +2064,7 @@ namespace SGAmod
 		public void AfterTheHit(NPC npc, Projectile projectile, int damage, bool crit)
 		{
 
+			if (AfterTheHitEvent != null)
 			AfterTheHitEvent.Invoke(this, npc == null ? default : npc, projectile == null ? default : projectile, damage, crit);
 
 			if (MisterCreeperset)
@@ -2242,6 +2244,13 @@ namespace SGAmod
 					int thisoned = Projectile.NewProjectile(player.Center.X, player.Center.Y, tomouse.X, tomouse.Y, ModContent.ProjectileType<NinjaBombProj>(), 0, 0f, Main.myPlayer);
 					Main.projectile[thisoned].netUpdate = true;
 				}
+			}
+		}
+		public override void ModifyNursePrice(NPC nurse, int health, bool removeDebuffs, ref int price)
+		{
+			if (Hellion.GetHellion() != null)
+			{
+				price = int.MaxValue - 10;
 			}
 		}
 		public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)

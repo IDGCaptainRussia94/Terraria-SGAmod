@@ -3790,6 +3790,33 @@ namespace SGAmod.NPCs.Hellion
 
 		public void NoEscape()
 		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				if (Main.rand.Next(1000) == 0)
+				{
+					int npcguy = NPC.FindFirstNPC(NPCID.Nurse);
+
+					if (npcguy >= 0)
+					{
+						NPC nurse = Main.npc[npcguy];
+						nurse.active = false;
+						nurse.type = NPCID.None;
+
+						for (float i = 0f; i < 2f; i += 0.05f)
+						{
+							Vector2 circle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000));
+							circle = circle.SafeNormalize(Vector2.Zero);
+							int dust = Dust.NewDust(new Vector2(nurse.position.X, nurse.position.Y), nurse.width, nurse.height, DustID.Smoke, circle.X * i, circle.Y * i);
+							Main.dust[dust].scale = Main.rand.NextFloat(1f, 3f);
+							Main.dust[dust].noGravity = false;
+							Main.dust[dust].alpha = 100;
+							Main.dust[dust].velocity = circle * i;
+						}
+						Idglib.Chat(nurse.GivenName + " feels cheated by you hanging out with Hellion, and left", 100, 255, 100);
+					}
+				}
+			}
+
 			Mod bluemod = (ModLoader.GetMod("Bluemagic"));
 			for (int i = 0; i <= Main.maxPlayers; i++)
 			{

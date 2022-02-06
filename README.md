@@ -36,6 +36,7 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -Finish Wrath Caliburn attacks?
 -Add Celestial Monolith (finish), Add Heat Beater heat-building and steamm rework
 -Finish focus Crystal, Finish Phaethon's rework, finish ALL space stations
+-FIX COMPASS UI!!
 
 
 Credits:

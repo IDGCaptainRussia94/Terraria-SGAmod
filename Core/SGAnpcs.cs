@@ -1671,7 +1671,6 @@ namespace SGAmod
 						"What do you mean the dragon isn't for sale? I'll offer you top dollar for it!"};
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
-
 					break;			
 				case NPCID.TaxCollector:
 					if (Main.rand.Next(0, 3) == 0 && NPC.CountNPCS(mod.NPCType("Dergon")) > 0)
@@ -1681,8 +1680,12 @@ namespace SGAmod
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
 					break;
-
-
+					case NPCID.Nurse:
+					if (Hellion.GetHellion() != null)
+					{
+						chat = "I see you're busy with that other girl... what do you want me for?";
+					}
+					break;
 			}
 
 		}

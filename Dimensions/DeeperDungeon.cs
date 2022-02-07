@@ -22,6 +22,7 @@ using SubworldLibrary;
 using SGAmod;
 using SGAmod.Dimensions;
 using SGAmod.Dimensions.NPCs;
+using SGAmod.NPCs.DeeperDungeons;
 
 namespace SGAmod.Dimensions
 {
@@ -102,6 +103,8 @@ namespace SGAmod.Dimensions
         public static int globallineroomindex = 0;
         public static DeeperDungeon instance;
 
+        public static bool hardMode = false;
+        public static bool postPlantera = false;
 
         public static int DungeonTile = TileID.BlueDungeonBrick;
         public static int DungeonWall = WallID.BlueDungeonUnsafe;
@@ -203,7 +206,7 @@ namespace SGAmod.Dimensions
                     if (UniRand.Next(0, 2) == 0)
                         rando.Add(new Vector2(NPCID.Skeleton, 0.8f), 1.5f);
                     if (UniRand.Next(0, 2) == 0)
-                        rando.Add(new Vector2(NPCID.SkeletonArcher, 0.8f), 1.5f);
+                        rando.Add(new Vector2(ModContent.NPCType<SkeletonCrossbower>(), 0.8f), 1.5f);
                 }
 
                 if (UniRand.Next(0, 2) == 0)
@@ -211,20 +214,85 @@ namespace SGAmod.Dimensions
                     rando.Add(new Vector2(NPCID.CursedSkull, 0.25f), 0.8f);
                     rando.Add(new Vector2(NPCID.DungeonSlime, 0.05f), 0.6f);
                     rando.Add(new Vector2(NPCID.DarkCaster, 0.25f), 0.8f);
+                    rando.Add(new Vector2(ModContent.NPCType<HellCaster>(), 0.2f), 0.5f);
                 }
                 else
                 {
                     rando.Add(new Vector2(NPCID.FireImp, 0.25f), 0.8f);
                     rando.Add(new Vector2(NPCID.BoneSerpentHead, 0.05f), 0.6f);
                     rando.Add(new Vector2(NPCID.Hellbat, 0.25f), 0.8f);
+                    rando.Add(new Vector2(ModContent.NPCType<ChaosCaster>(), 0.2f), 0.5f);
                 }
 
                 if (SGAWorld.dungeonlevel > 2)
                 {
-                    rando.Add(new Vector2(NPCID.ZombieElf, 0.25f + (SGAWorld.dungeonlevel - 3) * 0.2f), 0.8f + ((SGAWorld.dungeonlevel - 3) * 0.2f));
-                    rando.Add(new Vector2(NPCID.Scarecrow1, 0.25f + (SGAWorld.dungeonlevel - 3) * 0.2f), 0.8f + ((SGAWorld.dungeonlevel - 3) * 0.2f));
+                    rando.Add(new Vector2(NPCID.ZombieElf, 0.13f + (SGAWorld.dungeonlevel - 3) * 0.2f), 0.4f + ((SGAWorld.dungeonlevel - 3) * 0.2f));
+                    rando.Add(new Vector2(NPCID.Scarecrow1, 0.13f + (SGAWorld.dungeonlevel - 3) * 0.2f), 0.4f + ((SGAWorld.dungeonlevel - 3) * 0.2f));
                 }
 
+                rando.Add(new Vector2(ModContent.NPCType<DungeonBat>(), 0.3f), 0.8f);
+                rando.Add(new Vector2(ModContent.NPCType<FastSkeleton>(), 0.3f), 0.8f);
+
+                if (hardMode)
+                {
+                    rando.Add(new Vector2(NPCID.BlazingWheel, 0.05f), 0.2f);
+                    rando.Add(new Vector2(NPCID.SpikeBall, 0.05f), 0.2f);
+                    if (UniRand.Next(0, 1) == 0)
+                        rando.Add(new Vector2(ModContent.NPCType<LaserSkeleton>(), 0.25f), 0.7f);
+                    if (UniRand.Next(0, 1) == 0)
+                        rando.Add(new Vector2(ModContent.NPCType<SkeletonGunner>(), 0.5f), 0.6f);
+                    if (UniRand.Next(0, 2) == 0)
+                        rando.Add(new Vector2(NPCID.SkeletonArcher, 0.8f), 1.5f);
+                    if (SGAWorld.dungeonlevel > 5)
+                    {
+                        if (UniRand.Next(0, 2) == 0)
+                            rando.Add(new Vector2(ModContent.NPCType<DungeonMimic>(), 0.2f + (SGAWorld.dungeonlevel - 5) * 0.2f), 0.2f);
+                    }
+                }
+
+                if (postPlantera)
+                {
+                    int enemySet = UniRand.Next(0, 3);
+                    if (enemySet == 0)
+                    {
+                        rando.Add(new Vector2(NPCID.BlueArmoredBones, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.BlueArmoredBonesMace, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.BlueArmoredBonesNoPants, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.BlueArmoredBonesSword, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.Necromancer, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.NecromancerArmored, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.SkeletonCommando, 0.25f), 0.8f);
+                        rando.Add(new Vector2(NPCID.Paladin, 0.3f), 0.6f);        
+                    }
+                    if (enemySet == 1)
+                    {
+                        rando.Add(new Vector2(NPCID.RustyArmoredBonesAxe, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.RustyArmoredBonesFlail, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.RustyArmoredBonesSword, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.RustyArmoredBonesSwordNoArmor, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.RaggedCaster, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.RaggedCasterOpenCoat, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.SkeletonSniper, 0.25f), 0.8f);
+                        rando.Add(new Vector2(NPCID.GiantCursedSkull, 0.2f), 0.4f);
+                    }
+                    if (enemySet == 2)
+                    {
+                        rando.Add(new Vector2(NPCID.HellArmoredBones, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.HellArmoredBonesSpikeShield, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.HellArmoredBonesMace, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.HellArmoredBonesSword, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.DiabolistRed, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.DiabolistWhite, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.TacticalSkeleton, 0.25f), 0.8f);
+                        rando.Add(new Vector2(NPCID.GiantCursedSkull, 0.2f), 0.4f);
+                    }
+                    rando.Add(new Vector2(NPCID.BoneLee, 0.25f), 0.8f);
+                    rando.Add(new Vector2(NPCID.DungeonSpirit, 0.3f + SGAWorld.dungeonlevel * 0.2f), 0.3f + SGAWorld.dungeonlevel * 0.2f);
+                    if (UniRand.Next(0, 1) == 0)
+                        rando.Add(new Vector2(ModContent.NPCType<EvilCaster>(), 0.25f), 0.7f);
+                    else
+                        rando.Add(new Vector2(ModContent.NPCType<RuneCaster>(), 0.25f), 0.4f);
+                }
 
 
                 for (int i = 0; i < 5; i += 1)
@@ -244,11 +312,26 @@ namespace SGAmod.Dimensions
             if (unirand.Next(0, 500000) < 1 || alwaysdo)
             {
                 int[] tilestopick = { TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick };
-                int[] wallstopick = { WallID.BlueDungeonUnsafe, WallID.GreenDungeonUnsafe, WallID.PinkDungeonUnsafe };
+                int[] wallsBlue = { WallID.BlueDungeonUnsafe, WallID.BlueDungeonSlabUnsafe, WallID.BlueDungeonTileUnsafe };
+                int[] wallsGreen = { WallID.GreenDungeonUnsafe, WallID.GreenDungeonSlabUnsafe, WallID.GreenDungeonTileUnsafe };
+                int[] wallsPink = { WallID.PinkDungeonUnsafe, WallID.PinkDungeonSlabUnsafe, WallID.PinkDungeonTileUnsafe };
                 int picker = unirand.Next(0, 3);
+                int picker2 = unirand.Next(0, 3);
+
+                if (tilestopick[picker] == TileID.BlueDungeonBrick)
+                {
+                    DeeperDungeon.DungeonWall = wallsBlue[picker2];
+                }
+                if (tilestopick[picker] == TileID.GreenDungeonBrick)
+                {
+                    DeeperDungeon.DungeonWall = wallsGreen[picker2];
+                }
+                if (tilestopick[picker] == TileID.PinkDungeonBrick)
+                {
+                    DeeperDungeon.DungeonWall = wallsPink[picker2];
+                }
 
                 DeeperDungeon.DungeonTile = tilestopick[picker];
-                DeeperDungeon.DungeonWall = wallstopick[picker];
             }
         }
 
@@ -571,6 +654,9 @@ namespace SGAmod.Dimensions
             AddLights(UniRand, ref allareas);
 
             AddPaintnings(UniRand, ref allareas);
+
+            //hardMode = false;
+            //postPlantera = false;
 
             WorldGen._genRandSeed = lastseed;
 

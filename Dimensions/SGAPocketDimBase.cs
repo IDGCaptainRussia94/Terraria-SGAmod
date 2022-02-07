@@ -382,9 +382,10 @@ namespace SGAmod.Dimensions
             }
         }
 
-        public override bool PreNPCLoot(NPC npc)
+        //No longer needed. Skeleton Crossbower now drops the Normal Quiver and the Skeleton Archer only spawns in Hardmode
+        /*public override bool PreNPCLoot(NPC npc)
         {
-
+            
             if (npc.type == NPCID.SkeletonArcher && SGAPocketDim.WhereAmI == typeof(DeeperDungeon))
             {
                 NPCLoader.blockLoot.Add(ItemID.MagicQuiver);
@@ -394,7 +395,7 @@ namespace SGAmod.Dimensions
 
 
             return true;
-        }
+        }*/
 
 
     }

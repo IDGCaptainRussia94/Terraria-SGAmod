@@ -52,7 +52,7 @@ namespace SGAmod.Items.Placeable
 			recipe.AddIngredient(ModContent.ItemType<Consumables.EnergizerBattery>(), 5);
 			recipe.AddIngredient(ModContent.ItemType<Weapons.Technical.LaserMarker>(), 10);
 			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 25);
-			recipe.AddRecipeGroup("SGAmod:PressurePlates", 2);
+			recipe.AddRecipeGroup("SGAmod:EvilBossMaterials", 15);
 			//recipe.AddIngredient(mod.ItemType("WraithFragment3"), 10);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
@@ -64,6 +64,7 @@ namespace SGAmod.Items.Placeable
 			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 8);
 			recipe.AddRecipeGroup("SGAmod:PressurePlates", 2);
 			//recipe.AddIngredient(mod.ItemType("WraithFragment3"), 10);
+			recipe.AddRecipeGroup("SGAmod:EvilBossMaterials", 8);
 			recipe.AddRecipeGroup("SGAmod:TechStuff", 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);

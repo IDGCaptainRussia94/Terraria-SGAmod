@@ -1,7 +1,16 @@
 
 Changelog:
 
-3.625-(2/3/21)-beta 2
+3.625-(2/10/22)-beta 3
+
+--Changed:
+
+-Reduced OP mod scaling a bit
+
+
+
+
+3.625-(2/10/22)-beta 2
 
 -added:
 
@@ -92,7 +101,7 @@ Changelog:
 
 -Moist Sand can now be crafted, and sandblocks will turn into Moist Sand when near water
 
--Seeker and Novite bullets are not considered homing
+-Seeker and Novite bullets are now considered homing
 
 -Reverse Engineering Station recipe changed, added missing wrench variants, Energizer Batteries can be made at Anvils now
 
@@ -165,7 +174,7 @@ Changelog:
 
 
 
-3.625-(1/19/21)--Patch 15: Anniversary Update!
+3.625-(1/19/22)--Patch 15: Anniversary Update!
 
 --Added
 
@@ -257,7 +266,7 @@ Changelog:
 
 -Dragon's Might and Matrix Potions are now ignored by Fargos Inf Buffs, and made them stop functioning properly below 5 ticks remaining, just incase
 
--Seeker and Novite bullets are not considered homing
+-Seeker and Novite bullets are now considered homing
 
 -Reverse Engineering Station recipe changed, added missing wrench variants, Energizer Batteries can be made at Anvils now
 

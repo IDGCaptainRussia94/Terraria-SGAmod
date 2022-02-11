@@ -4096,9 +4096,29 @@ namespace SGAmod.Items.Accessories
 	public class BungalHealingAura : ModProjectile
 	{
 		Effect effect => SGAmod.TrailEffect;
-		public float ringSize => 240 * MathHelper.Clamp(projectile.timeLeft/30f,0f,1f);
-		public int maxSize = 520;
-		public int maxTime = 180;
+		public virtual float RingSize
+		{
+
+			get
+			{
+				Player player = Main.player[projectile.owner];
+
+				return (200f* (1f+(player.SGAPly().auraBoosts.Item1/2f)) * MathHelper.Clamp(projectile.timeLeft / (float)MaxTime, 0f, 1f));
+
+			}
+		}
+		public virtual int MaxSize => 160;
+		public virtual int MaxTime => 30;
+		public virtual int HealingRate
+		{
+
+			get
+			{
+				Player player = Main.player[projectile.owner];
+				return (int)(10f * (1f + (player.SGAPly().auraBoosts.Item1 / 2f)));
+			}
+
+		}
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bungal Healing Aura");
@@ -4125,7 +4145,7 @@ namespace SGAmod.Items.Accessories
 
 			if (projectile.timeLeft > 28)
 			{
-				float realsize = (ringSize * 0.90f);
+				float realsize = (RingSize * 0.90f);
 				bool playerbased = projectile.ai[1] <= 0 && (projectile.owner < Main.maxPlayers && Main.player[projectile.owner].velocity.Length() < 0.05f);
 				bool projbased = projectile.ai[1] > 0 && Main.projectile[(int)projectile.ai[1] - 1].active && Main.projectile[(int)projectile.ai[1] - 1].sentry && Main.projectile[(int)projectile.ai[1] - 1].velocity.Length() < 0.25f;
 
@@ -4142,11 +4162,11 @@ namespace SGAmod.Items.Accessories
 					}
 
 
-					if (projectile.localAI[0] > maxTime && projectile.timeLeft > 29)
+					if (projectile.localAI[0] > MaxTime && projectile.timeLeft > 29)
 					{
 						foreach (Player player in Main.player.Where(testby => testby.active && testby.IsAlliedPlayer(playz) && (testby.Center - projectile.Center).Length() < realsize))
 						{
-							player.SGAPly().postLifeRegenBoost += 10;
+							player.SGAPly().postLifeRegenBoost += HealingRate;
 						}
 					}
 				}
@@ -4174,28 +4194,28 @@ namespace SGAmod.Items.Accessories
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("SmallLaserHorz"));
-			RadialEffect.Parameters["alpha"].SetValue(0.75f * alpha);
+			RadialEffect.Parameters["alpha"].SetValue(0.70f * alpha);
 			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.075f, 0.20f));
 			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(1f, 2f));
-			RadialEffect.Parameters["ringScale"].SetValue(0.005f * ((80f / (float)projectile.width) * ((float)ringSize / 64f)) * alpha);
-			RadialEffect.Parameters["ringOffset"].SetValue(((projectile.timeLeft / (float)maxTime)) * 0.9f);
+			RadialEffect.Parameters["ringScale"].SetValue(0.008f * alpha);
+			RadialEffect.Parameters["ringOffset"].SetValue(((projectile.timeLeft / (float)MaxSize)) * 0.9f);
 			RadialEffect.Parameters["ringColor"].SetValue(Color.Lime.ToVector3());
 			RadialEffect.Parameters["tunnel"].SetValue(false);
 
 			RadialEffect.CurrentTechnique.Passes["RadialAlpha"].Apply();
 
-			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lime, 0, half, ringSize * 0.5f * MathHelper.Clamp(projectile.localAI[0] / 30f, 0f, 1f), default, 0);
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lime, 0, half, RingSize * 0.5f * MathHelper.Clamp(projectile.localAI[0] / (float)MaxTime, 0f, 1f), default, 0);
 
 
 			RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("SmallLaserHorz"));
 			RadialEffect.Parameters["alpha"].SetValue(1.15f * alpha);
 			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.125f, -Main.GlobalTime * 0.275f));
 			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(2f, 5f));
-			RadialEffect.Parameters["ringScale"].SetValue(0.025f * ((80f / (float)projectile.width) * ((float)ringSize / 64f)) * alpha);
+			RadialEffect.Parameters["ringScale"].SetValue(0.032f * alpha);
 
 			RadialEffect.CurrentTechnique.Passes["RadialAlpha"].Apply();
 
-			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lime, 0, half, ringSize * 0.5f*MathHelper.Clamp(projectile.localAI[0]/30f,0f,1f), default, 0);
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lime, 0, half, RingSize * 0.5f*MathHelper.Clamp(projectile.localAI[0]/ (float)MaxTime, 0f,1f), default, 0);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
@@ -4339,7 +4359,7 @@ namespace SGAmod.Items.Accessories
 
 		private void DoMoreDamageAndTakeLess(SGAPlayer player, PlayerDeathReason damageSource, ref int damage, ref int hitDirection, bool pvp, bool quiet, ref bool Crit, int cooldownCounter)
 		{
-			if (player.refractor)
+			if (player.refractor && (cooldownCounter<0 || player.player.hurtCooldowns[cooldownCounter]<=0))
 			{
 				Player ply = player.player;
 				int damageTaken = (int)(damage * 0.75);

@@ -254,7 +254,7 @@ namespace SGAmod.Items.Weapons.Ammo
 
 		public override void SetDefaults()
 		{
-			item.damage = 100000;
+			item.damage = 20;
 			item.ranged = true;
 			item.width = 8;
 			item.height = 8;

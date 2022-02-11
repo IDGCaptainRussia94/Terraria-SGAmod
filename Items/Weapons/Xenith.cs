@@ -20,7 +20,7 @@ namespace SGAmod.Items.Weapons
             get
             {
 				int[] types = new int[]{
-				ModContent.ItemType<UnmanedBow>(),
+				ItemID.TinBow,
 				ItemID.BeesKnees,
 				ItemID.HellwingBow,
 				ItemID.Marrow,
@@ -353,13 +353,30 @@ namespace SGAmod.Items.Weapons
 							damage = (int)(damage * 0.25f);
 						}
 
-						Projectile proj = Projectile.NewProjectileDirect(Position, rotation.ToRotationVector2() * speed*player.ArrowSpeed(), projType,damage,knockback, owner.projectile.owner);
-						proj.Center = Position;
-						proj.usesIDStaticNPCImmunity = true;
-						proj.idStaticNPCHitCooldown = 15;
-						if (hide)
-							proj.Opacity=0f;
-						proj.timeLeft = Math.Min(proj.timeLeft, 300);
+						if (item.type == ModContent.ItemType<HavocGear.Items.Weapons.MangroveBow>())
+						{
+							speed *= 0.75f;
+							for (float ff = -1f; ff < 2.1f; ff += 2f)
+							{
+								Projectile proj = Projectile.NewProjectileDirect(Position, rotation.ToRotationVector2().RotatedBy(ff/5f) * speed * player.ArrowSpeed(), projType, damage/2, knockback, owner.projectile.owner);
+								proj.Center = Position;
+								proj.usesIDStaticNPCImmunity = true;
+								proj.idStaticNPCHitCooldown = 15;
+								proj.timeLeft = Math.Min(proj.timeLeft, 300);
+							}
+						}
+						else
+						{
+							Projectile proj = Projectile.NewProjectileDirect(Position, rotation.ToRotationVector2() * speed * player.ArrowSpeed(), projType, damage, knockback, owner.projectile.owner);
+							proj.Center = Position;
+							proj.usesIDStaticNPCImmunity = true;
+							proj.idStaticNPCHitCooldown = 15;
+							proj.timeLeft = Math.Min(proj.timeLeft, 300);
+							if (hide)
+								proj.Opacity = 0f;
+						}
+
+
 					}
 
 				}

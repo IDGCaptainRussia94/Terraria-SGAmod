@@ -52,7 +52,7 @@ namespace SGAmod.HavocGear.Items
 			}
 			if (random == 5)
 			{
-				player.QuickSpawnItem(SGAWorld.GennedVirulent ? ModContent.ItemType<HorseFlyStaff>() : ModContent.ItemType<GnatStaff>(), 1);
+				player.QuickSpawnItem(ModContent.ItemType<GnatStaff>(), 1);
 			}
 			if (random == 4)
 			{

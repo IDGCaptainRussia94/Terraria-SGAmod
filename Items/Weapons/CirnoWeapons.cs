@@ -193,8 +193,9 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("Snowfall"), 1);
-			recipe.AddIngredient(ItemID.CursedFlame, 15);
+			recipe.AddIngredient(ModContent.ItemType<Snowfall>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<Consumables.GasPasser>(), 3);
+			recipe.AddIngredient(ItemID.CursedFlame, 12);
 			recipe.AddIngredient(ItemID.BlizzardStaff, 1);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this, 1);
@@ -400,6 +401,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ModContent.ItemType<Snowfall>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<Consumables.DivineShower>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<Consumables.Jarate>(), 5);
+			recipe.AddIngredient(ItemID.CandyCorn, 100);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

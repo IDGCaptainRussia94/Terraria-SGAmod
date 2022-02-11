@@ -136,7 +136,7 @@ namespace SGAmod.NPCs.Murk
                     else if (choice == 4)
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SwarmGrenade>(), Main.rand.Next(40, 100));
                     else if (choice == 5)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, SGAWorld.GennedVirulent ? ModContent.ItemType <HorseFlyStaff>() : ModContent.ItemType<GnatStaff>());
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<GnatStaff>());
                     else if (choice == 6)
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<SwarmGun>());
 

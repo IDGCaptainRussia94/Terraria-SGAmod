@@ -93,18 +93,44 @@ namespace SGAmod
 		{
 			SGAPlayer sply = self.SGAPly();
 
-			if (sply.undyingValor || sply.refractor)
+			if (sply.refractor)
+			{
+				if (!self.immune)
+				{
+					/*
+						bool flag = false;
+					if (cooldownCounter == 0)
+					{
+						flag = self.hurtCooldowns[cooldownCounter] <= 0;
+					}
+					if (cooldownCounter == 1)
+					{
+						flag = self.hurtCooldowns[cooldownCounter] <= 0;
+					}
+					if (cooldownCounter == 2)
+					{
+						flag = true;
+						cooldownCounter = -1;
+					}
+					*/
+
+
+					//if (flag)
+					//{
+						SGAPlayer.DoHurt(sply, damageSource, ref Damage, ref hitDirection, pvp, quiet, ref Crit, cooldownCounter);
+					//}
+				}
+				return orig(self, damageSource, Damage, hitDirection, pvp, quiet, Crit, cooldownCounter);
+			}
+
+			if (sply.undyingValor)
 			{
 				double ddd = orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
 				if (ddd > 0)
 				{
-					SGAPlayer.DoHurt(sply, damageSource, ref Damage, ref hitDirection, pvp, quiet, ref Crit, cooldownCounter);
+					self.SGAPly().DoTStack.Add((300, (Damage / 300f) * 60f));
+					return orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
 
-					if (sply.undyingValor)
-					{
-						self.SGAPly().DoTStack.Add((300, (Damage / 300f) * 60f));
-						return orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
-					}
 				}
 			}
 

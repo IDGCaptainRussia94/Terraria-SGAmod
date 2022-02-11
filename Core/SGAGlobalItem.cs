@@ -116,7 +116,7 @@ namespace SGAmod
 
         public bool IsItemCheating(Item item)
         {
-            if (SGAmod.DevDisableCheating)
+            if (SGAmod.DevDisableCheating && Dimensions.SGAPocketDim.WhereAmI == null)
                 return false;
 
             if ((SGAmod.Fargos.Item1 || SGAmod.Luiafk.Item1))
@@ -144,6 +144,11 @@ namespace SGAmod
         {
             if (IsItemCheating(item))
             {
+                if (Dimensions.SGAPocketDim.WhereAmI != null)
+                {
+                    return false;
+                }
+
                 if (!SGAmod.cheating && !SGAmod.cheating)
                 {
                     Main.NewText("You were warned", Color.Red);
@@ -343,10 +348,18 @@ namespace SGAmod
             }
             if (IsItemCheating(item))
             {
+
                     tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "This item is considered cheating, overpowered, and gamebreaking within SGAmod")));
+                if (Dimensions.SGAPocketDim.WhereAmI == null)
+                {
                     tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Using it will permentally mark your world as a cheat world")));
-                if (!SGAmod.cheating && !SGAWorld.cheating)
-                tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Hold UP to be able to use this item, confirming you read this")));
+                    if (!SGAmod.cheating && !SGAWorld.cheating)
+                        tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Hold UP to be able to use this item, confirming you read this")));
+                }
+                else
+                {
+                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "It cannot be used within subworlds")));
+                }
             }
             if (item?.modItem is ITechItem)//Tech items
             {
@@ -367,6 +380,9 @@ namespace SGAmod
                         newline += text3;
                     }
                     tt.text = newline;
+
+
+                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Technological weapons do less damage at low Electric Charge")));
                 }
             }
 

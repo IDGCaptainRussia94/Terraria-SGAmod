@@ -30,7 +30,7 @@ namespace SGAmod.HavocGear.Items
 			item.useTime = 10;
 			item.useStyle = 1;
 			item.consumable = true;
-			item.createTile = mod.TileType("MoistSand");
+			item.createTile = ModContent.TileType<Tiles.MoistSand>();
 		}
 
 		public override void SetStaticDefaults()
@@ -44,6 +44,12 @@ namespace SGAmod.HavocGear.Items
 			recipe.AddIngredient(ModContent.ItemType<MoistSand>());
 			recipe.AddTile(TileID.Furnaces);
 			recipe.SetResult(ItemID.SandBlock, 1);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.SandBlock);
+			recipe.needWater = true;
+			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
 
@@ -1922,16 +1928,17 @@ namespace SGAmod.Items
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			float vel = item.velocity.X / 6f;
 
 			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
 			{
-				spriteBatch.Draw(Main.itemTexture[item.type], drawPos + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * 3f).RotatedBy(item.velocity.X / 6f), null, Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f), 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+				spriteBatch.Draw(Main.itemTexture[item.type], drawPos + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * 3f).RotatedBy(vel), null, Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f), vel, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
 			}
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
-			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, vel, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
@@ -1940,7 +1947,7 @@ namespace SGAmod.Items
 			SGAmod.FadeInEffect.Parameters["alpha"].SetValue(0.50f);
 			SGAmod.FadeInEffect.CurrentTechnique.Passes["ColorToAlphaPass"].Apply();
 
-			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale * 1 / 15f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, vel, Main.itemTexture[item.type].Size() / 2f, scale / 15f, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);

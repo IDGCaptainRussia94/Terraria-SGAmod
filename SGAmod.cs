@@ -200,6 +200,8 @@ namespace SGAmod
 		public static int fogDrawNPCsCounter = 0;
 
 		public static float overpoweredModBaseValue = 0f;
+		public static float overpoweredModBaseHardmodeValue = 0f;
+
 		public static bool cheating = false;
 
 		public static bool DRMMode
@@ -213,7 +215,7 @@ namespace SGAmod
 		{
             get
             {
-				return ((SGAConfig.Instance.OPmods || (SGAmod.cheating || SGAWorld.cheating && !DevDisableCheating))) ? overpoweredModBaseValue : 0;
+				return Main.netMode == 0 && (SGAConfig.Instance.OPmods || ((SGAmod.cheating || SGAWorld.cheating) && !DevDisableCheating)) ? overpoweredModBaseValue+(Main.hardMode ? overpoweredModBaseHardmodeValue : 0f) : 0;
 			}
         }
 
@@ -1340,6 +1342,9 @@ namespace SGAmod
 			{
 			ItemID.ActuationAccessory,
 			ItemID.Wrench,
+			ItemID.BlueWrench,
+			ItemID.GreenWrench,
+			ItemID.YellowWrench,
 			ItemID.Detonator,
 			ItemID.MetalDetector
 			});
@@ -1839,6 +1844,22 @@ namespace SGAmod
 
 					}
 
+				}
+			}
+		}
+
+        public override void RandomUpdate(int i, int j, int type)
+        {
+			for (int x = -2; x < 3; x += 1)
+			{
+				for (int y = -2; y < 3; y += 1)
+				{
+					if (!Main.tile[i+x, j+y].active() && Main.tile[i + x, j + y].liquid>100 && Main.tile[i, j].type == TileID.Sand)
+					{
+						WorldGen.Convert(i, j, ModContent.TileType<Tiles.MoistSand>(), 1);
+						Main.tile[i, j].type = (ushort)ModContent.TileType<Tiles.MoistSand>();
+						NetMessage.SendTileRange(Main.myPlayer, i, j, 1, 1);
+					}
 				}
 			}
 		}

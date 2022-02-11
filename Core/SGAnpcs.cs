@@ -1377,7 +1377,7 @@ namespace SGAmod
 				}
 
 				if (SGAWorld.downedCratrosity)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SalvagedCrate>());
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType <SalvagedCrate>());
 				if (!Main.expertMode)
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < EldritchTentacle>(), Main.rand.Next(15, 30));
 			}
@@ -1386,7 +1386,7 @@ namespace SGAmod
 				SGAWorld.bossprgressor = 1;
 				if (Main.netMode < 1)
 				{
-					Main.NewText("The Moon's dark gaze is apon the world.", 25, 25, 80);
+					//Main.NewText("The Moon's dark gaze is apon the world.", 25, 25, 80);
 				}
 			}
 
@@ -1689,6 +1689,12 @@ namespace SGAmod
 					}
 					break;
 					case NPCID.Nurse:
+
+					if (Main.rand.Next(3) == 0 && Main.LocalPlayer.statLife<Main.LocalPlayer.statLifeMax2)
+                    {
+						chat = Main.rand.NextBool() ? "I can heal your wounds, but surgery doesn't happen over night... not all the time anyways" : "Healing takes time, stay around why don't you?";
+					}
+
 					if (Hellion.GetHellion() != null)
 					{
 						chat = "I see you're busy with that other girl... what do you want me for?";

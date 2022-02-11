@@ -433,7 +433,7 @@ namespace SGAmod
             downedSPinky = tag.GetBool("downedSPinky");
             downedTPD = tag.GetBool("downedTPD");
             downedCirno = tag.GetBool("downedCirno");
-            downedSpaceBoss = tag.GetBool("downedSpaceBoss");
+            //downedSpaceBoss = tag.GetBool("downedSpaceBoss");
             downedSharkvern = tag.GetBool("downedSharkvern");
             downedCratrosity = tag.GetBool("downedCratrosity");
             downedHarbinger = tag.GetBool("downedHarbinger");

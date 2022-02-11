@@ -49,10 +49,22 @@ namespace SGAmod.Items.Placeable
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.TinkerersWorkshop, 1);
 			recipe.AddIngredient(ItemID.MeteoriteBar, 8);
-			recipe.AddIngredient(mod.ItemType("VialofAcid"), 25);
+			recipe.AddIngredient(ModContent.ItemType<Consumables.EnergizerBattery>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<Weapons.Technical.LaserMarker>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 25);
 			recipe.AddRecipeGroup("SGAmod:PressurePlates", 2);
 			//recipe.AddIngredient(mod.ItemType("WraithFragment3"), 10);
-			recipe.AddRecipeGroup("SGAmod:TechStuff", 2);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.TinkerersWorkshop, 1);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 3);
+			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 8);
+			recipe.AddRecipeGroup("SGAmod:PressurePlates", 2);
+			//recipe.AddIngredient(mod.ItemType("WraithFragment3"), 10);
+			recipe.AddRecipeGroup("SGAmod:TechStuff", 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

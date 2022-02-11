@@ -74,7 +74,7 @@ namespace SGAmod.Items.Consumables
 			recipe.AddIngredient(mod.ItemType("MurkyGel"), 8);
 			recipe.AddIngredient(ItemID.CursedFlame, 2);
 			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this,3);
+			recipe.SetResult(this,4);
 			recipe.AddRecipe();
 		}
 

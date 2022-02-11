@@ -2902,6 +2902,7 @@ namespace SGAmod.Dimensions
         public SpaceStationStructure station;
         List<Player> playersInRange = new List<Player>();
         NPC boss = null;
+        NPC bossPreviously = null;
         public float hitVisual = 0f;
 
         public override void SetStaticDefaults()
@@ -2973,6 +2974,7 @@ namespace SGAmod.Dimensions
 
             }
 
+            bossPreviously = boss;
             boss = null;
 
             if (SpaceDim.SpaceBossIsActive)
@@ -3052,6 +3054,14 @@ namespace SGAmod.Dimensions
                 Main.dust[dust].velocity = (randomcircle * num475);
                 Main.dust[dust].noGravity = true;
             }
+
+            if (boss != null)
+            {
+                if (!boss.dontTakeDamage)
+                    boss.StrikeNPC(npc.lifeMax, 0, 1);
+
+            }
+
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)

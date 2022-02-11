@@ -1112,51 +1112,54 @@ namespace SGAmod.NPCs.Hellion
 			if (npc.ai[1] > 7000 && npc.ai[1] <= 8000)
 			{
 				
-				if (SGAmod.DRMMode && npc.ai[1] < 7050)
+				if (npc.ai[1] < 7050)
 				{
 					if (Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<HellionFNFArrowMinigameMasterProjectile>()).Count() > 0)
 					{
 						npc.ai[1] = 7600;
 	
 						int portaltime = 160;
-						int proj = ModContent.ProjectileType<HellionCorePlasmaAttackButGreen>();
-						for (int i = -800; i <= 801; i += 1600)
+						if (SGAmod.DRMMode)
 						{
-							Vector2 where = hell.npc.Center;
-							Vector2 wheretogo = new Vector2(i * 1f, 0).RotatedBy(npc.ai[3]);
-							Vector2 where2 = P.Center - npc.Center;
-							where2.Normalize();
-							Func<Vector2, Vector2, float, float, float> projectilefacing = delegate (Vector2 playerpos, Vector2 projpos, float time, float current)
+							int proj = ModContent.ProjectileType<HellionCorePlasmaAttackButGreen>();
+							for (int i = -800; i <= 801; i += 1600)
 							{
-								return current;
-							};
-							Func<Vector2, Vector2, float, Vector2, Vector2> projectilemoving = delegate (Vector2 playerpos, Vector2 projpos, float time, Vector2 current)
-							{
-								Vector2 instore = new Vector2(wheretogo.X, wheretogo.Y);
-								if (time < 90)
+								Vector2 where = hell.npc.Center;
+								Vector2 wheretogo = new Vector2(i * 1f, 0).RotatedBy(npc.ai[3]);
+								Vector2 where2 = P.Center - npc.Center;
+								where2.Normalize();
+								Func<Vector2, Vector2, float, float, float> projectilefacing = delegate (Vector2 playerpos, Vector2 projpos, float time, float current)
 								{
-									Vector2 gothere = playerpos + instore;
-									Vector2 slideover = gothere - projpos;
-									slideover.Normalize();
-									current += slideover * 10f;
-								}
-								else
+									return current;
+								};
+								Func<Vector2, Vector2, float, Vector2, Vector2> projectilemoving = delegate (Vector2 playerpos, Vector2 projpos, float time, Vector2 current)
 								{
+									Vector2 instore = new Vector2(wheretogo.X, wheretogo.Y);
+									if (time < 90)
+									{
+										Vector2 gothere = playerpos + instore;
+										Vector2 slideover = gothere - projpos;
+										slideover.Normalize();
+										current += slideover * 10f;
+									}
+									else
+									{
+										current /= 1.25f;
+									}
+
+
 									current /= 1.25f;
-								}
+									return current;
+								};
+								Func<float, bool> projectilepattern = (time) => (time == 135);
 
 
-								current /= 1.25f;
-								return current;
-							};
-							Func<float, bool> projectilepattern = (time) => (time == 135);
-
-
-							int ize = ParadoxMirror.SummonMirror(where, Vector2.Zero, 75, portaltime, wheretogo.ToRotation() + MathHelper.ToRadians(180f), proj, projectilepattern, 8f, 400);
-							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
-							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
-							Main.PlaySound(SoundID.Item, (int)Main.projectile[ize].position.X, (int)Main.projectile[ize].position.Y, 33, 0.25f, 0.75f);
-							Main.projectile[ize].netUpdate = true;
+								int ize = ParadoxMirror.SummonMirror(where, Vector2.Zero, 75, portaltime, wheretogo.ToRotation() + MathHelper.ToRadians(180f), proj, projectilepattern, 8f, 400);
+								(Main.projectile[ize].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
+								(Main.projectile[ize].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
+								Main.PlaySound(SoundID.Item, (int)Main.projectile[ize].position.X, (int)Main.projectile[ize].position.Y, 33, 0.25f, 0.75f);
+								Main.projectile[ize].netUpdate = true;
+							}
 						}
 						npc.ai[3] += MathHelper.PiOver2;		
 
@@ -3807,7 +3810,6 @@ namespace SGAmod.NPCs.Hellion
 			if (HellionItems[0].Item1 == ModContent.ItemType<Items.Weapons.SeriousSam.SBCCannonMK2>())
 			{
 				Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.SeriousSam.LeadCannonball>(), 30);
-				goto startover;
 			}
 		}
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -3863,6 +3865,7 @@ namespace SGAmod.NPCs.Hellion
 
 				if (phase > 0)
 				{
+					if (phase<5)
 					thatplayer.gravDir = thatplayer.SGAPly().timer % 600 < 300 ? -1 : 1;
 
 					if (thatplayer.SGAPly().timer % (800/(phase+1)) == 0)
@@ -3879,7 +3882,7 @@ namespace SGAmod.NPCs.Hellion
 						thatplayer.QuickHeal();
 						thatplayer.QuickMana();
 					}
-					if (i == 0 && thatplayer.SGAPly().timer % 300 == 0)
+					if (i == 0 && thatplayer.SGAPly().timer % 200 == 0)
 					{
 
 						if (Main.rand.NextBool())
@@ -3890,8 +3893,9 @@ namespace SGAmod.NPCs.Hellion
 						{
 							Main.startSnowMoon();
 						}
-						Main.snowMoon = true;
-						Main.pumpkinMoon = true;
+						//Main.snowMoon = true;
+						//Main.pumpkinMoon = true;
+						NPC.waveNumber = Main.rand.Next(8,16);
 					}
 				}
 
@@ -5829,7 +5833,7 @@ namespace SGAmod.NPCs.Hellion
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Dance to the Beats");
-			Description.SetDefault("Life Regen disabled\nHealth drains if you aren't actively moving");
+			Description.SetDefault("Life Regen disabled\nHealth drains and defense drops if you aren't actively moving");
 			Main.pvpBuff[Type] = false;
 			Main.debuff[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
@@ -5839,20 +5843,17 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (player.velocity.Length() < 0.1f)
 			{
-				if (player.SGAPly().timer % 10 == 0)
+				player.witheredArmor = true;
+				player.brokenArmor = true;
+				if (player.SGAPly().timer % 2 == 0)
 				{
 					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), CombatText.LifeRegenNegative, 5, dramatic: false, dot: true);
-					player.statLife -= 5;
+					player.statLife -= 1;
 					if (player.statLife < 1)
 					{
 						player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " showed no will to funk"), 1337, 0);
 					}
 				}
-			}
-			else
-			{
-				player.lifeRegen = 0;
-				player.lifeRegenTime = 0;
 			}
 			player.SGAPly().noLifeRegen = true;
 

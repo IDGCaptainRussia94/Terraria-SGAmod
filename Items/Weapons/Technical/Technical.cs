@@ -1318,7 +1318,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class VolcanicSpaceBlaster : NoviteBlaster, ITechItem
 	{
-		public float ElectricChargeScalingPerUse() => 1f;
+		public new float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("V.S.B");
@@ -1783,7 +1783,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Starduster");
-			Tooltip.SetDefault("'Purge your enemies through celestial flames...'\nUses Gel to spray a furry of Stars\nConsumes Electric Charge, Stars fly further the longer you hold\nStars that strike enemies will spawn more stars nearby\nDoes extra damage the less Stars there are");
+			Tooltip.SetDefault("'Purge your enemies through celestial flames...'\nUses Gel to spray a furry of Stars\nConsumes Electric Charge, Stars fly further the longer you hold\nStars that strike enemies will spawn more stars nearby\nDoes extra damage the less Stars there are\nDoesn't get boosted by Fridgeflame Canister");
 		}
 
 		public override void SetDefaults()
@@ -1847,15 +1847,15 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public List<StardusterProjectile> stardust = new List<StardusterProjectile>();
 		public class StardusterProjectile
 		{
-			Vector2 position;
-			Vector2 velocity;
+			protected Vector2 position;
+			protected Vector2 velocity;
 			public int timeLeft = 0;
 			public int timeStart = 0;
 			public int timeLeftMax = 0;
 			public int rando = 0;
 			public Vector2 scale;
 			public Projectile owner;
-			public Vector2 Position
+			public virtual Vector2 Position
             {
 				get
 				{
@@ -1871,7 +1871,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 				timeLeftMax = 30;
 				rando = Main.rand.Next();
 			}
-			public void Update()
+			public virtual void Update()
             {
 				position += velocity;
 				timeLeft -= 1;

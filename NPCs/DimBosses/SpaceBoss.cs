@@ -547,7 +547,6 @@ namespace SGAmod.Dimensions.NPCs
 
         }
 
-
         SpaceBoss boss;
         NPC npc;
         public List<int> deckOfAttacks = new List<int>();
@@ -633,7 +632,7 @@ namespace SGAmod.Dimensions.NPCs
                 int attack = deckOfAttacks[0];//Top card
                 deckOfAttacks.RemoveAt(0);//Discard drawn card
 
-                if (attack == (int)SpaceBossAttackTypes.ShadowNebula || (!boss.removeDarknessCloud && Main.expertMode))//Choose: Shadow Nebula
+                if (attack == (int)SpaceBossAttackTypes.ShadowNebula || (!boss.removeDarknessCloud && boss.phase > 1 && Main.expertMode))//Choose: Shadow Nebula
                 {
                     boss.specialCooldown = 80 * 60;
                     npc.ai[0] = 50000;//Shadow Nebula
@@ -1728,6 +1727,33 @@ namespace SGAmod.Dimensions.NPCs
 
     public class SpaceBoss : ModNPC, ISGABoss, IDrawThroughFog
     {
+        public List<SpaceBossStardust> stardustEffects = new List<SpaceBossStardust>();
+        public class SpaceBossStardust : HavocGear.Items.Weapons.StardusterCharging.StardusterProjectile
+        {
+            public float rotation = 0;
+            public float rotationAdd = 0;
+            public override Vector2 Position
+            {
+                get
+                {
+                    return position;
+                }
+            }
+            public SpaceBossStardust(Vector2 position, Vector2 velocity,int timeLeft = 30) : base(position,velocity)
+            {
+                scale = Vector2.One;
+                this.position = position;
+                this.velocity = velocity;
+                this.timeLeft = timeLeft;
+                timeLeftMax = timeLeft;
+                rando = Main.rand.Next();
+            }
+            public override void Update()
+            {
+                rotation += rotationAdd;
+                base.Update();
+            }
+        }
         public string Trophy() => "PhaethonTrophy";
         public bool Chance() => Main.rand.Next(0, 10) == 0;
         public string RelicName() => "Phaethon";
@@ -2507,6 +2533,7 @@ namespace SGAmod.Dimensions.NPCs
             Initiate();
             state = 0;
             npc.localAI[0] += 1;
+            stardustEffects.ForEach(testby => testby.Update());
 
             if (npc.ai[3] > 1 && npc.life > 0 && !DyingState)
             {
@@ -4207,6 +4234,25 @@ namespace SGAmod.Dimensions.NPCs
             }
         }
 
+        public void FizzleOut()
+        {
+            if (npc.ai[2] < 59)
+            {
+                for (float num475 = 0; num475 < npc.ai[2]/10f; num475 += 0.1f)
+                {
+                    Vector2 startloc = (npc.Center);
+                    int dust = Dust.NewDust(new Vector2(startloc.X, startloc.Y), 0, 0, 185);
+
+                    float anglehalf2 = Main.rand.NextFloat(MathHelper.TwoPi);
+
+                    Main.dust[dust].scale = (3f - Math.Abs(num475) / 25f)*0.5f;
+                    Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+                    Main.dust[dust].velocity = (randomcircle * (1f+num475))*MathHelper.Clamp(npc.ai[2]/60f,0f,1f);
+                    Main.dust[dust].noGravity = true;
+                }
+            }
+        }
+
         public override void AI()
         {
             NPCID.Sets.MustAlwaysDraw[npc.type] = true;
@@ -4216,6 +4262,7 @@ namespace SGAmod.Dimensions.NPCs
             npc.localAI[1] = MathHelper.Clamp(npc.localAI[1] + (Vulneverable ? 0.01f : -0.01f), 0f, 1f);
 
             npc.ai[2] -= 1;
+            FizzleOut();
 
             if (npc.ai[2] < -1)
             {
@@ -4316,8 +4363,6 @@ namespace SGAmod.Dimensions.NPCs
 
         public override void NPCLoot()
         {
-
-
             SoundEffectInstance snd = Main.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 7);
 
             if (snd != null)

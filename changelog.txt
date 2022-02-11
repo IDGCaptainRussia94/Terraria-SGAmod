@@ -72,7 +72,7 @@ Changelog:
 
 -Disabled the large Space Station Structure, for now
 
--Disabled use of some very OP shit from popular QoL mods
+-Disabled use (with punishment) of some very OP shit from popular QoL mods
 
 -Nerfed SBC Cannon: Cannonballs explode on knockback immune enemies again, but only on the weaker version
 
@@ -84,6 +84,36 @@ Changelog:
 
 -New sprite for Aimbot Bullets and updated their visuals
 
+-Disabled the above mentioned OP stuff from being used in subworlds
+
+-Removed Golem's defeat message "The Moon's dark gaze is apon the world."
+
+-Illuminant Essence (boss) will no longer give you real Illuminant Essence before the Banshee is beaten
+
+-Moist Sand can now be crafted, and sandblocks will turn into Moist Sand when near water
+
+-Seeker and Novite bullets are not considered homing
+
+-Reverse Engineering Station recipe changed, added missing wrench variants, Energizer Batteries can be made at Anvils now
+
+-Nerfed Yellow Winter: Moved to Post Pumpkin Moon (requires candy corn)
+
+-Rebalanced Gnat/Horsefly staves: damage slightly dropped, flies will no longer vibe when there aren't enough enemies and now target the same enemies akin to how Autoclicker does, Reduced IFrame immunity time on Horsefly staff and is now crafted instead of dropped by Murk 2
+
+-Rebalanced Seraphim Shard: increased damage to 100 (from 50), decreases life by 50 per shard, cannot be used if life decreased drops below what max vanilla life (only life crystal/heart fruit) would allow
+
+-Rebalanced Engineer Armor: (head summon damage reduced (15% => 10%), Chestplate tech damage increased (10% => 12%), Leggings summon damage reduced (15% => 10%))
+
+-Rebalanced Torch God's Summon: Now gives 2 torches for max minion slots, and 1 torch for each free minion slot
+
+-Rebalanced Xenith: removed Novus Bow (it was used to make Delta Wing), added Tin Bow
+
+-Reworked Shield of Discord: Now blocks 100% of damage from any angle if not under Chaos State, cannot block any damage ever if under Chaos State, blocking gives Chaos State
+
+-Nerfed Mandala Armor: Overseer's Tutelage's arms are now granted based on empty minion slots
+
+-Nerfed Revolver Weapons: Homing ammo reduces damage by 75%
+
 --New changes to Cirno:
 -Reduced Cirno's on-hit debuff chilled time (projectiles still chill for quite a while due to being vanilla projectiles)
 
@@ -94,6 +124,7 @@ Changelog:
 -Made player chasing a bit more aggressive during Shadow Nebula
 -Added a new move that also becomes accessible past Shadow Nebula: Celestial Celerity, a "use when possible" buff move that greatly boosts Phaethon's speed over long distances! Goes on a long cooldown after use
 -The dark nebula effect is now gone after the boss uses Shadow Nebula (I think it looks better than it just shrinking back in, as it has clearly dispersed)
+-Destroying the Prism while healing Phaethon will now damage him, based off their max life (7500 unmodified)
 
 --New changes to Helen Hellion Weygold:
 -Reverted FNF attack, notes do damage again, side projectiles are missing (unless in nightmare), the debuff is still there thou so you need to keep moving
@@ -125,6 +156,12 @@ Changelog:
 -Undying Valor causing you to die in moments on spikes
 
 -Copper Wraith only ambushing you once if you failed to kill them
+
+-The enemies have shittons of HP in MP... hopefully
+
+-Star Metal Mold being incorrect about where it drops from
+
+-Missing Buzz Blaster from Murk's checklist
 
 
 
@@ -220,6 +257,22 @@ Changelog:
 
 -Dragon's Might and Matrix Potions are now ignored by Fargos Inf Buffs, and made them stop functioning properly below 5 ticks remaining, just incase
 
+-Seeker and Novite bullets are not considered homing
+
+-Reverse Engineering Station recipe changed, added missing wrench variants, Energizer Batteries can be made at Anvils now
+
+-Illuminant Essence (boss) will no longer give you real Illuminant Essence before the Banshee is beaten
+
+-Moist Sand can now be crafted, and sandblocks will turn into Moist Sand when near water
+
+-Rebalanced Gnat/Horsefly staves: damage slightly dropped, flies will no longer vibe when there aren't enough enemies and now target the same enemies akin to how Autoclicker does, Reduced IFrame immunity time on Horsefly staff and is now crafted instead of dropped by Murk 2
+
+-Rebalanced Seraphim Shard: increased damage to 100 (from 50), decreases life by 50 per shard, cannot be used if life decreased drops below what max vanilla life (only life crystal/heart fruit) would allow
+
+-Rebalanced Engineer Armor: (head summon damage reduced (15% => 10%), Chestplate tech damage increased (10% => 12%), Leggings summon damage reduced (15% => 10%))
+
+-Rebalanced Torch God's Summon: Now gives 2 torches for max minion slots, and 1 torch for each free minion slot
+
 -Rebalanced Druidic Sneakers: now works on Normal, Hallowed, and Jungle Grass
 
 -Rebalanced several tech weapons: adjusted Electric Charge use (some were consuming too much)
@@ -236,13 +289,17 @@ Changelog:
 
 -Rebalanced Energy Potion: now increases overall electric charge by 20%, instead of +1 regen
 
--Reworked Starfish Burster: 66% to not consume ammo, no longer requires mana
+-Rebalanced Starfish Burster: 66% to not consume ammo, no longer requires mana
+
+-Rebalanced Xenith: removed Novus Bow (it was used to make Delta Wing), added Tin Bow in its place
 
 -Reworked Jungle Templar Armor: now inflicts severe Lava Burn when power is too low instead of normal Lava Burn, doesn't cause Lava Burn til after atleast 5 seconds of being ingame or if the lava meter is too low, Ability can now be ended early by pressing the ability again, and slightly reduced electric charge cost
 
 -Reworked Fist of Moonlord: damage increase per fist's speed has been reduced by 1/3, there's a damage increase cap of 5X, can no longer crit, would-have crits cause the fist to not slow down on hit, and is now Post-Hellion (and is now craftable)
 
 -Reworked Transformer: Now grants electric charge regen to cooldown stacks instead of from Electrified
+
+-Reworked Shield of Discord: Now blocks 100% of damage from any angle if not under Chaos State, cannot block any damage ever if under Chaos State, blocking gives Chaos State
 
 -Buffed Hallowed Visor: defense increased by 1
 
@@ -270,13 +327,21 @@ Changelog:
 
 -Nerfed Mangrove Leggings: throwing speed bonus reduced to 10%, fixed extra 20% leading to a total of a 40% faster speed boost, reduced movement max speed
 
+-Nerfed Mandala Armor: Overseer's Tutelage's arms are now granted based on empty minion slots
+
+-Nerfed Revolver Weapons: Homing ammo reduces damage by 75%
+
 -Nerfed Main-Sequence Staff: Debuff removal is now based on minion slots put in: more minions, more burning debuffs negated in this order: (Sunburn, OnFire!, Burning, Thermal Blaze, Lava Burn, Severe Lava Burn)
 
--Nerfed SBC Cannon: Cannonballs explode on knockback immune enemies again, but only on the weaker version
+-Nerfed SBC Cannon (not MK2): Cannonballs explode on knockback immune enemies again, but only on the weaker version
+
+-Nerfed Yellow Winter: Moved to Post Pumpkin Moon (requires candy corn)
 
 -Skylight's internal name has changed (to SkyLight from Skylight), this will cause the weapon to turn into a missing item on restart... sry about that!
 
 -Adjusted item prices
+
+-Removed Golem's defeat message "The Moon's dark gaze is apon the world."
 
 -Removed EA logo debug text
 
@@ -331,6 +396,14 @@ Changelog:
 -Drills not being affected by mining speed buffs when mining asteriods
 
 -Copper Wraith only ambushing you once if you failed to kill them
+
+-The enemies have shittons of HP in MP... hopefully
+
+-Star Metal Mold being incorrect about where it drops from
+
+-Possibly fixed the Modded damage boosts
+
+-Missing Buzz Blaster from Murk's checklist
 
 -A few minor bugs of mis-matched damage types and other smaller things
 

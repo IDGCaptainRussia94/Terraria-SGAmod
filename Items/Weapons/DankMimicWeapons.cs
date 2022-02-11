@@ -215,7 +215,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 18;
+			item.damage = 16;
 			item.knockBack = 0;
 			item.mana = 10;
 			item.width = 32;
@@ -303,7 +303,7 @@ namespace SGAmod.Items.Weapons
 				{
 					Vector2 vec = (enemy.Center - position);
 					float dist = vec.LengthSquared();
-					if (dist > 64 * 64 && dist < 300 * 300)
+					if (dist > 64 * 64 && dist < 90000)
 					{
 						chargeTimer = 0;
 						velocity += Vector2.Normalize(vec) * 15f;
@@ -457,18 +457,25 @@ namespace SGAmod.Items.Weapons
 			//if (projectile.owner == null || projectile.owner < 0)
 			//return;
 
+			
 			MakeFlies();
 
 			int j = 0;
+
+			
 			List<NPC> enemiesNearby = SGAUtils.ClosestEnemies(projectile.Center, maxChaseDist);
 			foreach (FakeFlyProjectile fly in flies)
 			{
-				NPC enemy = enemiesNearby !=null ? (enemiesNearby.Count > 0 ? enemiesNearby[0] : null) : null;
+				NPC enemy = enemiesNearby !=null ? (enemiesNearby.Count > 0 ? enemiesNearby[j% enemiesNearby.Count] : null) : null;
 				fly.Update(this, enemy, j / (float)maxMinions);
-				if (enemiesNearby!=null && enemiesNearby.Count > 0)
-				enemiesNearby.RemoveAt(0);
+
+				//if (enemiesNearby!=null && enemiesNearby.Count > 0)
+				//enemiesNearby.RemoveAt(0);
+
 				j += 1;
 			}
+			
+			
 
 			Player player = Main.player[projectile.owner];
 			DoPlayerChecks(player);
@@ -558,7 +565,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void SetDefaults()
 		{
-			item.damage = 30;
+			item.damage = 27;
 			item.knockBack = 2f;
 			item.mana = 12;
 			item.width = 32;
@@ -578,6 +585,17 @@ namespace SGAmod.Items.Weapons
 			item.buffType = ModContent.BuffType<FlyMinionBuff2>();
 			// No buffTime because otherwise the item tooltip would say something like "1 minute duration"
 			item.shoot = ModContent.ProjectileType<HorseFlySwarmMinion>();
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<GnatStaff>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.VirulentBar>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<OmniSoul>(), 4);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
 		}
 
 	}
@@ -607,7 +625,7 @@ namespace SGAmod.Items.Weapons
 				{
 					Vector2 vec = (enemy.Center - position);
 					float dist = vec.LengthSquared();
-					if (dist > 64 * 64 && dist < 600 * 600)
+					if (dist > 64 * 64 && dist < 360000)
 					{
 						chargeTimer = 0;
 						velocity /= 2f;
@@ -655,7 +673,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
-			projectile.idStaticNPCHitCooldown = 30;
+			projectile.idStaticNPCHitCooldown = 10;
 			projectile.usesIDStaticNPCImmunity = true;
 		}
 		public override void MakeFlies()

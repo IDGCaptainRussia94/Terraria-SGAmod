@@ -21,14 +21,13 @@ namespace SGAmod.Items.Weapons
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Torch God's Summon");
-			Tooltip.SetDefault("Summons 2 torches per free minion slot; attacking with torches burns them out for 3 seconds\nGain +10 damage per max minions, and +1 pierce per max Sentries, Biome torches inflict debuffs\nTorches provide a small amount of light in the fog");
+			Tooltip.SetDefault("Summons 2 torches per minion slot, and 1 per empty minion slot\nAttacking with torches burns them out for 3 seconds\nGain +10 damage per max minions, and +1 pierce per max Sentries, Biome torches inflict debuffs\nTorches provide a small amount of light in the fog");
 			Item.staff[item.type] = true;
 		}
 
 		public override void SetDefaults()
 		{
 			item.damage = 10;
-			item.crit = 15;
 			item.summon = true;
 			item.width = 44;
 			item.height = 52;
@@ -56,12 +55,17 @@ namespace SGAmod.Items.Weapons
 			flat += player.maxMinions * 10;
         }
 
+		public static int MaxTorches(Player player)
+        {
+			return player.maxMinions*2+(int)((player.maxMinions - (player.SGAPly().GetMinionSlots)) * 1);
+		}
+
 		public void AddFunction(SGAPlayer sgaply)
         {
 			Player player = sgaply.player;
 			if (!player.dead && player.HeldItem.type == ModContent.ItemType<TorchGodSummon>())
 			{
-				for (int i = 0; i < ((player.maxMinions - (player.SGAPly().GetMinionSlots)) * 2)-player.ownedProjectileCounts[ModContent.ProjectileType<TorchGodSummonMinion>()]; i += 1)
+				for (int i = 0; i < MaxTorches(player) - player.ownedProjectileCounts[ModContent.ProjectileType<TorchGodSummonMinion>()]; i += 1)
 				{
 					Projectile proj = Projectile.NewProjectileDirect(player.Center, Vector2.Zero, ModContent.ProjectileType<TorchGodSummonMinion>(), item.damage, 10f, player.whoAmI, player.ownedProjectileCounts[ModContent.ProjectileType<TorchGodSummonMinion>()]+i, -i);
 					if (proj != null)
@@ -355,7 +359,7 @@ namespace SGAmod.Items.Weapons
 				}
 			}
 
-			if (!player.active || player.dead || ((us >= ((player.maxMinions - (player.SGAPly().GetMinionSlots)) * 2) || player.HeldItem.type != ModContent.ItemType<TorchGodSummon>()) && projectile.ai[1] < 1))
+			if (!player.active || player.dead || ((us >= TorchGodSummon.MaxTorches(player) || player.HeldItem.type != ModContent.ItemType<TorchGodSummon>()) && projectile.ai[1] < 1))
 			{
 				projectile.Kill();
 			}

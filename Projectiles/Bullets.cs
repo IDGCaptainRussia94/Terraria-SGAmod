@@ -220,6 +220,7 @@ namespace SGAmod.Projectiles
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Seeker Bullet");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override void SetDefaults()
@@ -328,7 +329,7 @@ namespace SGAmod.Projectiles
 		private float[] oldRot = new float[30];
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Seeker Bullet");
+			DisplayName.SetDefault("Soundbound Bullet");
 		}
 
 		public override void SetDefaults()
@@ -509,6 +510,7 @@ namespace SGAmod.Projectiles
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Round");
+			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
 
 		public override void SetDefaults()
@@ -651,10 +653,13 @@ namespace SGAmod.Projectiles
 
 							Projectile.NewProjectile(projectile.Center, pos * projectile.velocity.Length() * 400, ModContent.ProjectileType<AimbotBulletEffect>(), 0, 0);
 
-						}
+                        }
+                    }
+                    else
+                    {
+						Vector2 pos = Vector2.Normalize(projectile.velocity);
+						Projectile.NewProjectile(projectile.Center, pos * projectile.velocity.Length() * 400, ModContent.ProjectileType<AimbotBulletEffect>(), 0, 0);
 					}
-
-
 				}
 				dir = Math.Sign(projectile.velocity.X);
 				Main.player[projectile.owner].ChangeDir(dir);

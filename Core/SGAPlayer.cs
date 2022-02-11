@@ -2253,7 +2253,13 @@ namespace SGAmod
 				price = int.MaxValue - 10;
 			}
 		}
-		public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+        public override void PostNurseHeal(NPC nurse, int health, bool removeDebuffs, int price)
+        {
+			string[] strs = new string[] { "Stay close, I obviously can't work on you from a distance", "Alright, for the next new seconds I can quickly patch your wounds", "Make sure you keep any unwanted aggressives away in the meantime", "It's not instant but that's just life" };
+			Main.npcChatText = strs[Main.rand.Next(strs.Length)];
+			//stuff
+		}
+        public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
 		{
 
 			if (tidalCharm > 0)
@@ -2684,7 +2690,7 @@ namespace SGAmod
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Consolation Prize");
-			Tooltip.SetDefault("A stroke of bad RNG has given you this stronger pickaxe!");
+			Tooltip.SetDefault("A stroke of bad RNG has given you this stronger pickaxe! (can chop too!)");
 		}
 
 		public override string Texture => "Terraria/Item_"+ItemID.PlatinumPickaxe;
@@ -2696,6 +2702,7 @@ namespace SGAmod
 
         public override void SetDefaults()
 		{
+			item.CloneDefaults(ItemID.PlatinumAxe);
 			item.CloneDefaults(ItemID.PlatinumPickaxe);
 			item.useAnimation = (int)(item.useAnimation/1.50f);
 			item.useTime = (int)(item.useTime / 1.50f);

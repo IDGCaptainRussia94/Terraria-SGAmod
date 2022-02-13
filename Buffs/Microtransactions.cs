@@ -42,14 +42,14 @@ namespace SGAmod.Buffs
 		{
 			player.GetModPlayer<SGAPlayer>().MoneyMismanagement = true;
 		}
-
-		//public override void Update(NPC npc, ref int buffIndex)
-		//{
-		//	npc.GetGlobalNPC<SGAWorld>(mod).eFlames = true;
-		//}
 	}
 	public class HeavyCrates : ModBuff
 	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/HeavyCrates";
+			return true;
+		}
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Heavy Crates");
@@ -64,10 +64,22 @@ namespace SGAmod.Buffs
 		{
 			player.GetModPlayer<SGAPlayer>().HeavyCrates = true;
 		}
+	}
 
-		//public override void Update(NPC npc, ref int buffIndex)
-		//{
-		//	npc.GetGlobalNPC<SGAWorld>(mod).eFlames = true;
-		//}
+	public class HeavyInventory : HeavyCrates
+	{
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			DisplayName.SetDefault("Over Encumbered");
+			Description.SetDefault("Filling every inventory slot has made you slower\n'You have too much to carry'");
+			Main.buffNoTimeDisplay[Type] = true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			base.Update(player, ref buffIndex);
+			player.maxRunSpeed /= 2f;
+		}
 	}
 }

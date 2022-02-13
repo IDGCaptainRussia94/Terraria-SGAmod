@@ -215,7 +215,7 @@ namespace SGAmod.Dimensions.Tiles
 
 				for (int zz = 0; zz < Main.rand.Next(1, 4); zz += 1)
 				{
-					Item.NewItem(new Vector2(i, j) * 16, 16, 16, ItemID.LunarOre, 1);
+					Item.NewItem(new Vector2(i, j) * 16, 16, 16, ModContent.ItemType<CelestineChunk>(), 1);
 				}
 			}
         }

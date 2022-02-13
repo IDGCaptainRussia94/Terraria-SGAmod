@@ -197,7 +197,7 @@ namespace SGAmod.Items.Armors.Mandala
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Overseer's Tutelage");
-            Tooltip.SetDefault("Command the Shadowspirit's arms to attack with 2 attack types:\nDeliver fast short ranged non-piercing punches\nGrab and toss asteriods that can pierce\nAsteriods manifest around you over time, up to 10 plus 2 per sentry slot\nGains more arms per max Minion slots");
+            Tooltip.SetDefault("Command the Shadowspirit's arms to attack with 2 attack types:\nDeliver fast short ranged non-piercing punches\nGrab and toss asteriods that can pierce\nAsteriods manifest around you over time, up to 10 plus 2 per sentry slot\nGains more arms per Empty Minion slots OR every 3rd Max Minion slot");
         }
         public override string Texture => "SGAmod/Dimensions/Space/OverseenHead";
 
@@ -355,7 +355,13 @@ namespace SGAmod.Items.Armors.Mandala
         public List<Projectile> Asteriods => Main.projectile.Where(testby => testby.active && testby.owner == Owner.whoAmI && testby.type == ModContent.ProjectileType<MandalaAsteriodProj>()).ToList();
         public List<Projectile> GrabbableAsteriods => Asteriods.Where(testby => testby.localAI[0] > 30 && testby.timeLeft > 60 && testby.velocity.LengthSquared()<5 && testby.ai[0] < 2 && testby.damage < 1).ToList();
         Player Owner => Main.player[projectile.owner];
-        int ArmsCount => Owner.maxMinions;
+        int ArmsCount
+        {
+            get
+            {
+                return (int)Math.Max((Owner.maxMinions - (Owner.SGAPly().GetMinionSlots)) * 1,1+(Owner.maxMinions / 3));
+            }
+        }
         public int PunchRate => (int)(100/Owner.SGAPly().summonweaponspeed);
 
         public class MandalaArm

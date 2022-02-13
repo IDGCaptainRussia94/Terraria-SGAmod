@@ -278,10 +278,62 @@ namespace SGAmod.Dimensions.NPCs
 
             }
 
+            //Celestial Celerity Form
+            if (state < 400 && boss.celerityBuff > 0 && index % 4==0)
+            {
+                Vector2 posser = Position;
+                state = 400;
+                grabrock = null;
+                LockUnlock(false);
+                bossOffset = posser;
+            }
+            if (state == 400)//Boost mode, from Celestial Celerity
+            {
+                stateTimer += 1;
+                if (boss.celerityBuff < 0)
+                {
+                    Vector2 diff = Position - boss.npc.Center;
+                    velocity += Vector2.Normalize(diff) * 24f;
+                    state = 102;
+                    stateTimer = 0;
+                    Main.NewText("ended");
+                }
+
+                Vector2 vel = boss.npc.velocity;
+
+                float timers = (stateTimer / 30f);
+
+                float velspeed = vel.Length();
+
+                if (velspeed <= 2f)
+                {
+                    float timerz = (index % 2 == 0 ? 1f : -1f);
+                    vel = ((index / (float)indexMax)*(MathHelper.TwoPi* timerz) + (timers* timerz)).ToRotationVector2()*0.75f;
+                }
+
+                Vector2 gothere = Vector2.UnitX;
+
+                float half = 0.50f;
+
+                float angle = ((index/(float)indexMax)-0.50f);// (float)Math.Sin(((index / (float)indexMax) + timers) * MathHelper.TwoPi)+MathHelper.PiOver2;
+
+                gothere = gothere.RotatedBy((angle * (MathHelper.PiOver2*1.25f)) + vel.ToRotation() + MathHelper.Pi) * (3f- MathHelper.Clamp(velspeed / 5f, 1f, 3f))*32f;
+
+                bossOffset = Vector2.SmoothStep(bossOffset, boss.npc.Center + gothere, MathHelper.Clamp(stateTimer/600f,0f,MathHelper.Clamp(velspeed/8f,0.4f,2f))*0.47f);
+
+                if (velspeed > 2)
+                {
+                    int dust = Dust.NewDust(posa, 0, 0, DustID.BlueCrystalShard);
+                    Main.dust[dust].scale = 1f;
+                    Main.dust[dust].alpha = 200;
+                    Main.dust[dust].velocity = Vector2.Normalize(gothere) * (velspeed);
+                    Main.dust[dust].noGravity = true;
+                }
+            }
 
 
 
-            if (installgrab && (state == 100 || state == 200))
+               if (installgrab && (state == 100 || state == 200))
             {
                 int dust = Dust.NewDust(posa, 0, 0, DustID.BlueCrystalShard);
                 Main.dust[dust].scale = 1f;
@@ -495,7 +547,6 @@ namespace SGAmod.Dimensions.NPCs
 
         }
 
-
         SpaceBoss boss;
         NPC npc;
         public List<int> deckOfAttacks = new List<int>();
@@ -575,17 +626,26 @@ namespace SGAmod.Dimensions.NPCs
 
             tryagain:
 
+                if (deckOfAttacks.Count<1)
+                DrawDeck();//Draw new deck of attacks
+
                 int attack = deckOfAttacks[0];//Top card
                 deckOfAttacks.RemoveAt(0);//Discard drawn card
 
-                if (attack == (int)SpaceBossAttackTypes.ShadowNebula)//Choose: Shadow Nebula
+                if (attack == (int)SpaceBossAttackTypes.ShadowNebula || (!boss.removeDarknessCloud && boss.phase > 1 && Main.expertMode))//Choose: Shadow Nebula
                 {
                     boss.specialCooldown = 80 * 60;
                     npc.ai[0] = 50000;//Shadow Nebula
                     return true;
                 }
+                if (boss.celerityBuff < -4500 && boss.phase > 1 && boss.goingDark < 0)//Cast Celestial Celerity with high priority over other moves if able
+                {
+                    npc.ai[0] = 12501;//Celestial Celerity
+                    return true;
+                }
 
-                if (ToEnemy.Length() > 3200 && boss.goingDark < 0)//Heal if too far away, regardless of what is drawn (Shadow Nebula will take priority thou)
+
+                if (boss.celerityBuff<0 && ToEnemy.Length() > 3200 && boss.goingDark < 0)//Heal if too far away, regardless of what is drawn (Shadow Nebula will take priority thou), also ignored if under the buffs of Celestial Celerity
                 {
                     npc.ai[0] = 10000;//Shields up
                     return true;
@@ -720,7 +780,7 @@ namespace SGAmod.Dimensions.NPCs
                     };
                     attack.Shoot = delegate (ManagedSpaceBossAttack managedAttack, SpaceBoss bossy)
                     {
-                        return managedAttack.timePassed % 20 == 0;
+                        return managedAttack.timePassed % 30 == 0;
                     };
                     managedAttacks.Add(attack);
                 }
@@ -740,6 +800,34 @@ namespace SGAmod.Dimensions.NPCs
             }
         }
 
+
+        public void StateCelestialCelerity()
+        {
+            if (npc.ai[0]%20==0 && npc.ai[0] < 12750 && npc.ai[0] > 12550)
+            {
+                var snd = Main.PlaySound(SGAmod.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/P5Loot").WithVolume(1f).WithPitchVariance(.10f), new Vector2(-1,-1));
+                if (snd != null)
+                {
+                    snd.Pitch = MathHelper.Clamp((-0.5f)+ (npc.ai[0]-12500)/600f,-0.50f,0.90f);
+                }
+            }
+
+            if (npc.ai[0] == 12510)
+            {
+                boss.celerityBuff = 10;
+            }
+
+            boss.celerityBuff += 20;
+            if (boss.celerityBuff > 3000)
+            {
+                boss.celerityBuff = 3000;
+            }
+
+            if (npc.ai[0] == 12800)
+            {
+                npc.ai[0] = 999;
+            }
+        }
         public void StateShadowNebula()
         {
             boss.state = 100;
@@ -783,6 +871,7 @@ namespace SGAmod.Dimensions.NPCs
 
                 if (npc.ai[0] == 50400)
                 {
+                    boss.removeDarknessCloud = true;
                     npc.ai[0] = 999;
                 }
 
@@ -1227,14 +1316,40 @@ namespace SGAmod.Dimensions.NPCs
         public void SecureArea()
         {
             Vector2[] thisthing;
+
+            //choose where to go
+
+            int getCloser = 0;
+
             if (boss.goingDark > 0)
-                thisthing = boss.visitedEmptySpaces.Where(testby => (testby - npc.Center).LengthSquared() < 4200 * 4200).OrderBy(testby => (testby - Main.player[npc.target].Center).LengthSquared()).ToArray();
+            {
+                getCloser = 1;
+                thisthing = boss.visitedEmptySpaces.Where(testby => (testby - npc.Center).LengthSquared() < 4200 * 4200).OrderBy(testby => (testby - Main.player[npc.target].Center).LengthSquared()).ToArray();//Tries to move near the player
+            }
             else
-                thisthing = boss.visitedEmptySpaces.OrderBy(testby => (testby - npc.Center).LengthSquared()).ToArray();
+            {
+                List<NPC> focusCrystals = Main.npc.Where(testby => testby.active && testby.type == ModContent.NPCType<StationFocusCrystal>()).ToList();
+                if (boss.removeDarknessCloud && focusCrystals.Count > 0)
+                {
+                    getCloser = 2;
+                    focusCrystals = focusCrystals.OrderBy(testby => (testby.Center - boss.npc.Center).LengthSquared()).ToList();
+                    NPC crystalNearest = focusCrystals[0];
+                    thisthing = boss.visitedEmptySpaces.Where(testby => (testby - npc.Center).LengthSquared() < 3200 * 3200).OrderBy(testby => (testby - crystalNearest.Center).LengthSquared()).ToArray();//Tries to move near any more existing focus crystals, to heal up
+                }
+                else
+                {
+                    thisthing = boss.visitedEmptySpaces.OrderBy(testby => (testby - npc.Center).LengthSquared()).ToArray();//just choses the nearest place to move to
+                }
+            }
+
 
             if (thisthing.Length > 0)
             {
-                int index2 = Main.rand.Next(0, boss.goingDark > 0 ? Math.Min(3, boss.visitedEmptySpaces.Count / 60) : boss.visitedEmptySpaces.Count / 20);
+                int index2 = 0;
+                    index2 = Main.rand.Next(0, boss.goingDark > 0 ? Math.Min(3, boss.visitedEmptySpaces.Count / 300) : boss.visitedEmptySpaces.Count / 20);
+                if (getCloser==2)
+                    index2 = 0;
+
                 boss.visitedEmptySpaces.Remove(thisthing[index2]);
                 boss.goToEmptySpace = thisthing[index2];
             }
@@ -1286,11 +1401,12 @@ namespace SGAmod.Dimensions.NPCs
                 DrawDeck();
             }
 
-            float movementSpeed = 0.25f + (Main.expertMode ? (boss.phase / 20f) : 0);
+            Vector2 dista = boss.goToEmptySpace - npc.Center;
+
+            float movementSpeed = (boss.celerityBuff>0 ? MathHelper.Clamp(dista.Length()/2000f, 0.25f,1f) : 0.25f) + (Main.expertMode ? (boss.phase / 20f) : 0);
             boss.state = 2;
             npc.rotation += npc.velocity.X * 0.002f;
 
-            Vector2 dista = boss.goToEmptySpace - npc.Center;
             boss.friction = 0.95f;
 
             if ((dista).Length() < 160)
@@ -1362,8 +1478,8 @@ namespace SGAmod.Dimensions.NPCs
             {
                 Vector2 place = target.Center + (Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(-400f, 400f)) + Vector2.Normalize(ToEnemy.RotatedBy(MathHelper.Pi)) * 1500f;
 
-                int proj = Projectile.NewProjectile(place, Vector2.Normalize(ToEnemy) * Main.rand.NextFloat(3.5f, 4f), ModContent.ProjectileType<SpaceBossTelegraphedBasicShot>(), 30, 10);
-                Main.projectile[proj].timeLeft = 500;
+                int proj = Projectile.NewProjectile(place, Vector2.Normalize(ToEnemy) * Main.rand.NextFloat(2.8f, 3.2f), ModContent.ProjectileType<SpaceBossTelegraphedBasicShot>(), 30, 10);
+                Main.projectile[proj].timeLeft = 720;
             }
 
             //boss.shieldeffect<1
@@ -1423,6 +1539,7 @@ namespace SGAmod.Dimensions.NPCs
         {
             boss.state = 1;
             npc.ai[0] += 1;
+            boss.celerityBuff -= 1;
             if (boss.goingDark > 0)
             {
                 npc.chaseable = false;
@@ -1488,7 +1605,25 @@ namespace SGAmod.Dimensions.NPCs
                 npc.dontTakeDamage = boss.goingDark > 0;
 
                 if (npc.ai[3] > 1)
+                {
                     StateFinal();
+                }
+                else
+                {
+                    float vel = npc.velocity.Length();
+                    if (boss.celerityBuff > 0 && vel > 1)
+                    {
+                        for (int duster = 0; duster < 1 + vel/3; duster += 1)
+                        {
+                            int dust = Dust.NewDust(npc.Center + Main.rand.NextVector2Circular(32f,32f), 0, 0, ModContent.DustType<LeviDust>());
+                            Main.dust[dust].velocity = Main.rand.NextVector2Circular(2f, 2f) + (npc.velocity * Main.rand.NextFloat(0.25f, 0.75f));
+                            Main.dust[dust].scale = MathHelper.Clamp(vel/24f,0f,1f);
+                            Main.dust[dust].alpha = 200;
+                            Main.dust[dust].noGravity = true;
+                        }
+                    }
+
+                }
 
                 foreach (SpaceBossRock rockyplace in boss.Rocks)
                 {
@@ -1539,6 +1674,13 @@ namespace SGAmod.Dimensions.NPCs
                         return;
                 }
 
+                if (npc.ai[0] > 12500 && npc.ai[0] <= 12800)//Celestial Celerity
+                {
+                    StateCelestialCelerity();
+                        return;
+                }
+
+
                 if (npc.ai[0] >= 10500 && npc.ai[0] < 10900)//Roids grabbing
                 {
                     StateGrabAsteriodsAndSpin();
@@ -1585,6 +1727,33 @@ namespace SGAmod.Dimensions.NPCs
 
     public class SpaceBoss : ModNPC, ISGABoss, IDrawThroughFog
     {
+        public List<SpaceBossStardust> stardustEffects = new List<SpaceBossStardust>();
+        public class SpaceBossStardust : HavocGear.Items.Weapons.StardusterCharging.StardusterProjectile
+        {
+            public float rotation = 0;
+            public float rotationAdd = 0;
+            public override Vector2 Position
+            {
+                get
+                {
+                    return position;
+                }
+            }
+            public SpaceBossStardust(Vector2 position, Vector2 velocity,int timeLeft = 30) : base(position,velocity)
+            {
+                scale = Vector2.One;
+                this.position = position;
+                this.velocity = velocity;
+                this.timeLeft = timeLeft;
+                timeLeftMax = timeLeft;
+                rando = Main.rand.Next();
+            }
+            public override void Update()
+            {
+                rotation += rotationAdd;
+                base.Update();
+            }
+        }
         public string Trophy() => "PhaethonTrophy";
         public bool Chance() => Main.rand.Next(0, 10) == 0;
         public string RelicName() => "Phaethon";
@@ -1603,7 +1772,9 @@ namespace SGAmod.Dimensions.NPCs
         public int countdownToTheEnd = 60 * 100;
         public int installRoids = 0;
         public float friction = 1f;
+        public int celerityBuff = -100000;
         public int specialCooldown = 0;
+        public bool removeDarknessCloud = false;
         public Vector2[] screenPos;
         public Vector2 startPosition;
         public static SpaceBoss instance;
@@ -2369,6 +2540,7 @@ namespace SGAmod.Dimensions.NPCs
             Initiate();
             state = 0;
             npc.localAI[0] += 1;
+            stardustEffects.ForEach(testby => testby.Update());
 
             if (npc.ai[3] > 1 && npc.life > 0 && !DyingState)
             {
@@ -2587,11 +2759,17 @@ namespace SGAmod.Dimensions.NPCs
 
                 //Twilight Nebula
 
-                float alphaik = ((1f - sky.darkalpha) * 0.50f * darknessAura) * MathHelper.Clamp(1f - (npc.ai[0] - 100000f) / 180f, 0f, 1f);
-
-                if (sky.darkalpha < 1 && (sky.darkalpha > 0 || (new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) - (npc.Center - Main.screenPosition)).LengthSquared() < 1440000))
+                if (!removeDarknessCloud)
                 {
-                    DarknessNebulaEffect(sunGlow, (sky.darkalpha * 5f) * 6f, npc.Center, alphaik, npc.whoAmI, 10);
+                    float alphaik = ((1f - sky.darkalpha) * 0.50f * darknessAura) * MathHelper.Clamp(1f - (npc.ai[0] - 100000f) / 180f, 0f, 1f);
+
+                    if (alphaik > 0)
+                    {
+                        if (sky.darkalpha < 1 && (sky.darkalpha > 0 || (new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) - (npc.Center - Main.screenPosition)).LengthSquared() < 1440000))
+                        {
+                            DarknessNebulaEffect(sunGlow, (sky.darkalpha * 5f) * 6f, npc.Center, alphaik, npc.whoAmI, 10);
+                        }
+                    }
                 }
             }
         }
@@ -2649,11 +2827,34 @@ namespace SGAmod.Dimensions.NPCs
             Vector2 rocksmallorig = new Vector2(rocksmall.Width, rocksmall.Height / 2f);
             Vector2 rocklargeorig = new Vector2(rocklarge.Width, rocklarge.Height / 2f);
 
+            if (celerityBuff > 0)
+            {
+                Texture2D glowtex = mod.GetTexture("Glow");
+                Vector2 glowOrigin = glowtex.Size() / 2f;
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+                float celerityBuffAlpha = MathHelper.Clamp(celerityBuff / 300f, 0f, 1f);
+                float glowScale = 1f + celerityBuffAlpha*0.5f;
+                Color glowColor = Color.CornflowerBlue * celerityBuffAlpha;
+
+                foreach (SpaceBossRock rock in Rocks)
+                {
+                    float glowExtra = rock.state == 400 ? 1f : 0.80f;
+
+                    spriteBatch.Draw(glowtex, rock.Position - Main.screenPosition, null, glowColor* glowExtra, 0, glowOrigin, glowScale, SpriteEffects.None, 0f);
+                }
+
+            }
+
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
             //Rocks Lines
+
+
 
             if (!DyingState)
             {
@@ -3751,9 +3952,9 @@ namespace SGAmod.Dimensions.NPCs
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             DrawAdditiveReal(spriteBatch);
-            if (GetType() == typeof(SpaceBossTelegraphedBasicShot))
+            if (GetType() == typeof(SpaceBossTelegraphedBasicShot) && SGAmod.fogDrawNPCsCounter<1)
             {
-                //(this as SpaceBossTelegraphedBasicShot).DrawAdditiveThroughFog(spriteBatch);
+                (this as SpaceBossTelegraphedBasicShot).DrawAdditiveThroughFog(spriteBatch);
 
             }
 
@@ -4040,6 +4241,25 @@ namespace SGAmod.Dimensions.NPCs
             }
         }
 
+        public void FizzleOut()
+        {
+            if (npc.ai[2] < 59)
+            {
+                for (float num475 = 0; num475 < npc.ai[2]/10f; num475 += 0.1f)
+                {
+                    Vector2 startloc = (npc.Center);
+                    int dust = Dust.NewDust(new Vector2(startloc.X, startloc.Y), 0, 0, 185);
+
+                    float anglehalf2 = Main.rand.NextFloat(MathHelper.TwoPi);
+
+                    Main.dust[dust].scale = (3f - Math.Abs(num475) / 25f)*0.5f;
+                    Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+                    Main.dust[dust].velocity = (randomcircle * (1f+num475))*MathHelper.Clamp(npc.ai[2]/60f,0f,1f);
+                    Main.dust[dust].noGravity = true;
+                }
+            }
+        }
+
         public override void AI()
         {
             NPCID.Sets.MustAlwaysDraw[npc.type] = true;
@@ -4049,6 +4269,7 @@ namespace SGAmod.Dimensions.NPCs
             npc.localAI[1] = MathHelper.Clamp(npc.localAI[1] + (Vulneverable ? 0.01f : -0.01f), 0f, 1f);
 
             npc.ai[2] -= 1;
+            FizzleOut();
 
             if (npc.ai[2] < -1)
             {
@@ -4104,6 +4325,12 @@ namespace SGAmod.Dimensions.NPCs
             if (Vulneverable)
                 npc.dontTakeDamage = false;
 
+            if (masterBeforeMe != null && masterBeforeMe.npc.life >= 5)
+            {
+                if (npc.life<npc.lifeMax)
+                npc.life += 1;
+            }
+
             if (npc.ai[3] > 0)
             {
                 if (npc.life < 5 && (masterBeforeMe == null || masterBeforeMe.npc.life < 5))
@@ -4113,7 +4340,9 @@ namespace SGAmod.Dimensions.NPCs
                 }
                 else
                 {
-                    npc.ai[3] -= 1;
+                    npc.ai[3] -= 5;
+                    if (npc.ai[3] < 0)
+                        npc.ai[3] = 0;
                 }
 
                 sganpc.overallResist = 0f;
@@ -4141,8 +4370,6 @@ namespace SGAmod.Dimensions.NPCs
 
         public override void NPCLoot()
         {
-
-
             SoundEffectInstance snd = Main.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 7);
 
             if (snd != null)

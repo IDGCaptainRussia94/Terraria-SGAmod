@@ -52,6 +52,15 @@ namespace SGAmod
 	public partial class SGAPlayer : ModPlayer
 	{
 
+		public delegate void FirstHurtDelegate(SGAPlayer player, PlayerDeathReason damageSource, ref int Damage, ref int hitDirection, bool pvp, bool quiet, ref bool Crit, int cooldownCounter);
+		public static event FirstHurtDelegate FirstHurtEvent;
+
+		public static void DoHurt(SGAPlayer player, PlayerDeathReason damageSource, ref int Damage, ref int hitDirection, bool pvp, bool quiet, ref bool Crit, int cooldownCounter)
+        {
+			if (FirstHurtEvent != null)
+				FirstHurtEvent.Invoke(player, damageSource, ref Damage, ref hitDirection, pvp, quiet, ref Crit, cooldownCounter);
+        }
+
 		public bool CalamityAbyss
 		{
 			get
@@ -718,7 +727,7 @@ namespace SGAmod
 			{
 				for (int g = 0; g < Player.MaxBuffs; g += 1)
 				{
-					if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore > 0))
+					if (player.manaRegenBuff && (SGAConfig.Instance.ManaPotionChange || SGAmod.DRMMode))
 					{
 						if (player.buffType[g] == BuffID.ManaSickness && player.buffTime[g] > 3)
 						{

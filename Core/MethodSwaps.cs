@@ -89,12 +89,49 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
-        private static double Player_Hurt(On.Terraria.Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
-        {
-			if (self.SGAPly().undyingValor)
-            {
-				self.SGAPly().DoTStack.Add((300, (Damage / 300f)*60f));
-				return orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
+		private static double Player_Hurt(On.Terraria.Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
+		{
+			SGAPlayer sply = self.SGAPly();
+
+			if (sply.refractor)
+			{
+				if (!self.immune)
+				{
+					/*
+						bool flag = false;
+					if (cooldownCounter == 0)
+					{
+						flag = self.hurtCooldowns[cooldownCounter] <= 0;
+					}
+					if (cooldownCounter == 1)
+					{
+						flag = self.hurtCooldowns[cooldownCounter] <= 0;
+					}
+					if (cooldownCounter == 2)
+					{
+						flag = true;
+						cooldownCounter = -1;
+					}
+					*/
+
+
+					//if (flag)
+					//{
+						SGAPlayer.DoHurt(sply, damageSource, ref Damage, ref hitDirection, pvp, quiet, ref Crit, cooldownCounter);
+					//}
+				}
+				return orig(self, damageSource, Damage, hitDirection, pvp, quiet, Crit, cooldownCounter);
+			}
+
+			if (sply.undyingValor)
+			{
+				double ddd = orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
+				if (ddd > 0)
+				{
+					self.SGAPly().DoTStack.Add((300, (Damage / 300f) * 60f));
+					return orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
+
+				}
 			}
 
 
@@ -141,7 +178,7 @@ namespace SGAmod
         private static int Main_DrawBuffIcon(On.Terraria.Main.orig_DrawBuffIcon orig, int drawBuffText, int i, int b, int x, int y)
         {
 			SGAPlayer sgaply = Main.LocalPlayer.SGAPly();
-			if (SGAConfig.Instance.PotionFatigue || sgaply.nightmareplayer)
+			if (SGAConfig.Instance.PotionFatigue || SGAmod.DRMMode)
             {
 				int fatigue = sgaply.potionFatigue;
 				if (fatigue < 1)
@@ -412,7 +449,7 @@ namespace SGAmod
 				}
 			}
 
-			if ((sgaply.nightmareplayer && IdgNPC.bossAlive) || sgaply.noLifeRegen)
+			if (((sgaply.nightmareplayer || SGAmod.DRMMode) && IdgNPC.bossAlive) || sgaply.noLifeRegen)
 				return;
 
 			orig(self);
@@ -514,17 +551,26 @@ namespace SGAmod
 				Vector2 pos2 = self.GetDimensions().ToRectangle().BottomRight();
 
 				bool darknessUnlocked = false;
+				bool cheat = false;
 
 				if (tag3.ContainsKey("highestDimDungeonFloor"))
 					floors = tag3.GetByte("highestDimDungeonFloor");
 				if (tag3.ContainsKey("darknessVision"))
 					darknessUnlocked = tag3.GetBool("darknessVision");
+				if (tag3.ContainsKey("cheating"))
+					cheat = tag3.GetBool("cheating");
+
+				Vector2 lenn = Vector2.Zero;
 
 				if (floors > 0)
 				{
 					string text = "Floors completed: " + (floors < 0 ? "None" : "" + (int)floors);
+					lenn = new Vector2(-Main.fontMouseText.MeasureString(text).X - 8, 5);
 					Utils.DrawBorderString(spriteBatch, text, pos + new Vector2(-Main.fontMouseText.MeasureString(text).X - 8, 5), Color.DeepSkyBlue);
 				}
+
+				if (cheat)
+					Utils.DrawBorderString(spriteBatch, "CHEAT", pos + new Vector2(-Main.fontMouseText.MeasureString("CHEAT").X - 8, 5)+new Vector2(lenn.X,0), Color.Red);
 
 				if (darknessUnlocked)
 				{

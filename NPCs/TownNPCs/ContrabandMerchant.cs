@@ -34,6 +34,9 @@ namespace SGAmod.NPCs.TownNPCs
 		public static GlowrockCurrency GlowrockCustomCurrencySystem;
 		public static int GlowrockCustomCurrencyID;
 
+		public static CrateCurrency CrateCurrencyCustomCurrencySystem;
+		public static int CrateCurrencyCustomCurrencyID;
+
 
 
 		public override string Texture
@@ -68,6 +71,8 @@ namespace SGAmod.NPCs.TownNPCs
 			GlowrockCustomCurrencySystem = new GlowrockCurrency(ModContent.ItemType<Glowrock>(), 999L);
 			GlowrockCustomCurrencyID = CustomCurrencyManager.RegisterCurrency(GlowrockCustomCurrencySystem);
 
+			CrateCurrencyCustomCurrencySystem = new CrateCurrency(ModContent.ItemType<TerrariacoCrateBase>(), 999L);
+			CrateCurrencyCustomCurrencyID = CustomCurrencyManager.RegisterCurrency(CrateCurrencyCustomCurrencySystem);
 			return true;
 			//return mod.Properties.Autoload;
 		}
@@ -299,8 +304,8 @@ namespace SGAmod.NPCs.TownNPCs
 			//{
 
 			shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Accessories.LiquidGambling>());
-			shop.item[nextSlot].shopCustomPrice = 250;
-			shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.DesertFossilCurrencyCustomCurrencyID;
+			shop.item[nextSlot].shopCustomPrice = 30;
+			shop.item[nextSlot].shopSpecialCurrency = ContrabandMerchant.CrateCurrencyCustomCurrencyID;
 			nextSlot++;
 
 
@@ -508,6 +513,30 @@ namespace SGAmod.NPCs.TownNPCs
 					Language.GetTextValue("LegacyTooltip.50"),
 					price,
 					"Glowrock"
+				});
+		}
+	}
+
+	public class CrateCurrency : CustomCurrencySingleCoin
+	{
+		public Color SGACustomCurrencyTextColor = Color.Goldenrod;
+
+		public CrateCurrency(int coinItemID, long currencyCap) : base(coinItemID, currencyCap)
+		{
+		}
+
+		public override void GetPriceText(string[] lines, ref int currentLine, int price)
+		{
+			Color color = SGACustomCurrencyTextColor * ((float)Main.mouseTextColor / 255f);
+			SGAPlayer modplayer = Main.LocalPlayer.GetModPlayer<SGAPlayer>();
+			lines[currentLine++] = string.Format("[c/{0:X2}{1:X2}{2:X2}:{3} {4} {5}]", new object[]
+				{
+					color.R,
+					color.G,
+					color.B,
+					Language.GetTextValue("LegacyTooltip.50"),
+					price,
+					"Terraria Co Supply Crate"
 				});
 		}
 	}

@@ -861,34 +861,48 @@ namespace SGAmod.Dimensions
                     Main.spriteBatch.End();
                 }
 
-                swaptargets = (swaptargets + 1) % 2;
-                RenderTarget2D target = swaptargets == 0 ? SGAmod.postRenderEffectsTarget : SGAmod.postRenderEffectsTargetCopy;
-                RenderTarget2D targetOther = swaptargets == 1 ? SGAmod.postRenderEffectsTarget : SGAmod.postRenderEffectsTargetCopy;
+                SGAmod.postRenderEffectsTargetDoUpdates--;
 
-                Main.graphics.GraphicsDevice.SetRenderTarget(target);
-                Main.graphics.GraphicsDevice.Clear(Color.Transparent);
-
-                Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
-
-                //Main.spriteBatch.Begin(SpriteSortMode.Immediate, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
-                Main.spriteBatch.Draw(targetOther, new Vector2(0, 0), null, Color.Black * 0.96f, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
-
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-
-                foreach (Projectile proj in Main.projectile.Where(proj => proj.active && proj.modProjectile != null && proj.modProjectile is IPostEffectsDraw))
+                if (SGAmod.postRenderEffectsTargetDoUpdates < -4)
                 {
-                    (proj.modProjectile as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch, 2f);
-                }
-                foreach (NPC npc in Main.npc.Where(npc => npc.active && npc.modNPC != null && npc.modNPC is IPostEffectsDraw))
-                {
-                    (npc.modNPC as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch, 2f);
+                    SGAmod.postRenderEffectsTargetDoUpdates = 1;
                 }
 
-                Main.spriteBatch.End();
+                if (SGAmod.postRenderEffectsTargetDoUpdates > 0)
+                {
+
+                    swaptargets = (swaptargets + 1) % 2;
+                    RenderTarget2D target = swaptargets == 0 ? SGAmod.postRenderEffectsTarget : SGAmod.postRenderEffectsTargetCopy;
+                    RenderTarget2D targetOther = swaptargets == 1 ? SGAmod.postRenderEffectsTarget : SGAmod.postRenderEffectsTargetCopy;
+
+                    Main.graphics.GraphicsDevice.SetRenderTarget(target);
+                    Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+                    Main.spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+
+                    //Main.spriteBatch.Begin(SpriteSortMode.Immediate, blind, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+                    Main.spriteBatch.Draw(targetOther, new Vector2(0, 0), null, Color.Black * 0.96f, 0, new Vector2(0, 0), new Vector2(1f, 1f), SpriteEffects.None, 0f);
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+                    foreach (Projectile proj in Main.projectile.Where(proj => proj.active && proj.modProjectile != null && proj.modProjectile is IPostEffectsDraw))
+                    {
+                        SGAmod.postRenderEffectsTargetDoUpdates = 450;
+                        (proj.modProjectile as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch, 2f);
+                    }
+                    foreach (NPC npc in Main.npc.Where(npc => npc.active && npc.modNPC != null && npc.modNPC is IPostEffectsDraw))
+                    {
+                        SGAmod.postRenderEffectsTargetDoUpdates = 450;
+                        (npc.modNPC as IPostEffectsDraw).PostEffectsDraw(Main.spriteBatch, 2f);
+                    }
+
+                    Main.spriteBatch.End();
+
+                }
 
 
-                Main.graphics.GraphicsDevice.SetRenderTargets(binds);
+                    Main.graphics.GraphicsDevice.SetRenderTargets(binds);
 
 
 
@@ -1137,7 +1151,7 @@ namespace SGAmod.Dimensions
                                 ShadowEffect.Parameters["noisePercent"].SetValue(1f);
                                 ShadowEffect.Parameters["noiseScalar"].SetValue(new Vector4(0, 0, 1f, 1f));
 
-                                ShadowEffect.CurrentTechnique.Passes["ColorFilter"].Apply();
+                                ShadowEffect.CurrentTechnique.Passes["ColorFilterInverted"].Apply();
 
 
 

@@ -108,6 +108,10 @@ namespace SGAmod.NPCs.Murk
             SGAWorld.downedMurk = Main.hardMode ? 2 : 2;
             SGAWorld.GenVirulent();
 
+            Player[] plz = Main.player.Where(testby => testby.active && testby.armor[0].type == ModContent.ItemType<Items.Armors.Engineer.EngineerHead>() && testby.armor[1].type == ModContent.ItemType<Items.Armors.Engineer.EngineerChest>() && testby.armor[2].type == ModContent.ItemType<Items.Armors.Engineer.EngineerLegs>()).ToArray();
+            if (plz.Length > 0)
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Accessories.BustlingFungus>());
+
             for (int i = 0; i < (Main.hardMode ? 2 : 1); i += 1)
             {
                 if (Main.expertMode)
@@ -134,7 +138,7 @@ namespace SGAmod.NPCs.Murk
                     else if (choice == 4)
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SwarmGrenade>(), Main.rand.Next(40, 100));
                     else if (choice == 5)
-                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, SGAWorld.GennedVirulent ? ModContent.ItemType <HorseFlyStaff>() : ModContent.ItemType<GnatStaff>());
+                        Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<GnatStaff>());
                     else if (choice == 6)
                         Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<SwarmGun>());
                     if (Main.rand.Next(7) == 0)
@@ -869,11 +873,11 @@ namespace SGAmod.NPCs.Murk
                                 num663 = NPCID.SpikedJungleSlime;
                             if (Main.rand.NextBool())
                                 num663 = ModContent.NPCType<SwampSlime>();
-                            if ((npc.localAI[0] < 0 && Main.expertMode) || (SGAWorld.NightmareHardcore > 0 && Main.rand.Next(2) == 0))
+                            if ((npc.localAI[0] < 0 && Main.expertMode) || ((SGAmod.DRMMode) && Main.rand.Next(2) == 0))
                             {
                                 if (Main.rand.Next(0, 100) < 20)
                                     num663 = NPCID.SpikedJungleSlime;
-                                if (num663 == NPCID.JungleSlime || num663 == ModContent.NPCType<SwampSlime>() || (SGAWorld.NightmareHardcore>0 && Main.rand.Next(3) == 0))
+                                if (num663 == NPCID.JungleSlime || num663 == ModContent.NPCType<SwampSlime>() || (SGAmod.DRMMode && Main.rand.Next(3) == 0))
                                     num663 = ModContent.NPCType<BossFly3>();
                             }
 

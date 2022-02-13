@@ -412,6 +412,107 @@ namespace SGAmod
 		}
 	}*/
 
+		#region CheatyStuff
+		//Luiafk disables
+
+		public static void ApplyLuiafkDisables()
+		{
+			var _ = ApplyLuiafkPatches;
+		}
+
+		internal static bool ApplyLuiafkPatches
+		{
+			get
+			{
+				if (SGAmod.Luiafk.Item1)
+				{
+					Assembly assybcl = SGAmod.Luiafk.Item2.GetType().Assembly;
+					Type luiafkPlayer = null;
+
+					foreach (Type typea in assybcl.GetTypes())
+					{
+						//SGAmod.Instance.Logger.Debug(typea.Name);
+						if (typea.Name == "LuiafkPlayer")
+						{
+							luiafkPlayer = typea;
+							//break;
+						}
+					}
+
+					MethodInfo mothoa = luiafkPlayer.GetMethod("ProcessTriggers", SGAmod.UniversalBindingFlags);
+					HookEndpointManager.Add(mothoa, (hook_LuiafkHotkeyDetour)DetourLuiafkHotkeys);
+					mothoa = luiafkPlayer.GetMethod("PostUpdate", SGAmod.UniversalBindingFlags);
+					HookEndpointManager.Add(mothoa, (hook_LuiafkUpdateDetour)DetourLuiafkUpdate);
+					mothoa = luiafkPlayer.GetMethod("PostUpdateEquips", SGAmod.UniversalBindingFlags);
+					HookEndpointManager.Add(mothoa, (hook_LuiafkUpdateDetour)DetourLuiafkUpdate);
+				}
+
+				return false;
+			}
+		}
+
+		private delegate void orig_LuiafkHotkeyDetour(object luiafkModPlayer, TriggersSet triggerSet);
+		private delegate void hook_LuiafkHotkeyDetour(orig_LuiafkHotkeyDetour orig, object luiafkModPlayer, TriggersSet triggerSet);
+		private static void DetourLuiafkHotkeys(orig_LuiafkHotkeyDetour orig, object luiafkModPlayer, TriggersSet triggerSet)
+		{
+			if (SGAmod.DevDisableCheating)
+			orig(luiafkModPlayer, triggerSet);
+		}
+
+		private delegate void orig_LuiafkUpdateyDetour(object luiafkModPlayer);
+		private delegate void hook_LuiafkUpdateDetour(orig_LuiafkUpdateyDetour orig, object luiafkModPlayer);
+		private static void DetourLuiafkUpdate(orig_LuiafkUpdateyDetour orig, object luiafkModPlayer)
+		{
+			if (SGAmod.DevDisableCheating)
+				orig(luiafkModPlayer);
+		}
+
+		//Fargos Inf Potion Exceptions
+
+		public static void ApplyFargosBuffExceptions()
+		{
+			var _ = ApplyFargosPatches;
+		}
+
+		internal static bool ApplyFargosPatches
+		{
+			get
+			{
+				if (SGAmod.Fargos.Item1)
+				{
+					Assembly assybcl = SGAmod.Fargos.Item2.GetType().Assembly;
+					Type FargosglobalItemType = null;
+
+					foreach (Type typea in assybcl.GetTypes())
+					{
+						//SGAmod.Instance.Logger.Debug(typea.Name);
+						if (typea.Name == "FargoGlobalItem")
+						{
+							FargosglobalItemType = typea;
+							//break;
+						}
+					}
+
+					MethodInfo mothoa = FargosglobalItemType.GetMethod("UpdateInventory", SGAmod.UniversalBindingFlags);
+
+					HookEndpointManager.Add(mothoa, (hook_FargosPotionDetour)DetourFargosInfPotion);
+				}
+
+				return false;
+			}
+		}
+
+		private delegate void orig_FargosPotionDetour(object fargoglobalitem,Item item, Player player);
+		private delegate void hook_FargosPotionDetour(orig_FargosPotionDetour orig, object fargoglobalitem, Item item, Player player);
+		private static void DetourFargosInfPotion(orig_FargosPotionDetour orig, object fargoglobalitem, Item item, Player player)
+		{
+			if (item.modItem != null && item.modItem is IPotionCantBeInfinite)
+				return;
+
+			orig(fargoglobalitem, item,player);
+		}
+#endregion
+
 		//Cheat Heroesgode
 		#region CheatyStuff
 

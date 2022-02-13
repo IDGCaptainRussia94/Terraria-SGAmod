@@ -17,14 +17,17 @@ namespace SGAmod.Buffs
 			Description.SetDefault("30% increase to all damage types except Summon damage, which gets 50%");
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
-			Main.debuff[Type] = false;
+			Main.debuff[Type] = true;
 			canBeCleared = false;
 		}
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.BoostAllDamage(0.30f);
-			player.minionDamage += 0.20f;
+			if (player.buffTime[buffIndex] > 5)
+			{
+				player.BoostAllDamage(0.30f);
+				player.minionDamage += 0.20f;
+			}
 			if (player.buffTime[buffIndex] < 20)
 			{
 			player.AddBuff(ModContent.BuffType<WorseWeakness>(),60*30);
@@ -210,7 +213,7 @@ namespace SGAmod.Buffs
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Energy");
-			Description.SetDefault("+1 passive Electric Charge Rate, Recharge delay is halved");
+			Description.SetDefault("25% increased passive Electric Charge Rate, Recharge delay is halved");
 			Main.debuff[Type] = false;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = false;
@@ -218,7 +221,8 @@ namespace SGAmod.Buffs
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.SGAPly().electricrechargerate += 1;
+			//player.SGAPly().electricrechargerate += 1;
+			player.SGAPly().electricRechargeRateMul += 0.25f;
 			player.SGAPly().electricChargeReducedDelay *= 0.5f;
 		}
 	}

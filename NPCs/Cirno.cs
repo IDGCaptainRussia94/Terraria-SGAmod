@@ -103,7 +103,7 @@ namespace SGAmod.NPCs
 				}
 				else
 				{
-					string[] dropitems = { "Starburster", "Snowfall", "IceScepter", "RubiedBlade", "IcicleFall", "Magishield" };
+					string[] dropitems = { "Starburster", "Snowfall", "IceScepter", "RubiedBlade", "IcicleFall", "RodOfTheMistyLake", "Magishield" };
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(dropitems[Main.rand.Next(0, dropitems.Length)]));
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CryostalBar"), Main.rand.Next(15, 25));
 					if (Main.rand.Next(3)==0)
@@ -620,7 +620,7 @@ namespace SGAmod.NPCs
 		{
 			//if (Main.expertMode || Main.rand.Next(2) == 0)
 			//{
-			player.AddBuff(BuffID.Chilled, 600, true);
+			player.AddBuff(BuffID.Chilled, 200, true);
 			if (Main.expertMode)
 				player.AddBuff(BuffID.Frostburn, 60 * 4, true);
 			//}
@@ -1162,11 +1162,11 @@ return false;
 
 		public override void OnHitPlayer(Player target, int damage, bool crit)
 		{
-			target.AddBuff(BuffID.Chilled, 60 * 5);
+			target.AddBuff(BuffID.Chilled, 60 * 2);
 		}
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			target.AddBuff(BuffID.Chilled, 60 * 5);
+			target.AddBuff(BuffID.Chilled, 60 * 2);
 		}
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{

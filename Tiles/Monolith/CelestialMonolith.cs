@@ -10,6 +10,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace SGAmod.Tiles.Monolith
@@ -43,12 +44,13 @@ namespace SGAmod.Tiles.Monolith
 
 		public override void AnimateTile(ref int frame, ref int frameCounter)
 		{
-			frame = Main.tileFrame[TileID.LunarMonolith];
+			frame = 0;// Main.tileFrame[TileID.LunarMonolith];
 			frameCounter = Main.tileFrameCounter[TileID.LunarMonolith];
 		}
 
 		public override void DrawEffects(int x, int y, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
 		{
+			
 			if (Main.tile[x, y].type == base.Type)
 			{
 				if (nextSpecialDrawIndex < Main.specX.Length)
@@ -58,6 +60,7 @@ namespace SGAmod.Tiles.Monolith
 					nextSpecialDrawIndex += 1;
 				}
 			}
+			
 		}
 
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
@@ -70,7 +73,8 @@ namespace SGAmod.Tiles.Monolith
 				if (tile.frameX == 0 && tile.frameY % 56 == 0)//top left
 				{
 					int yFrame = j - (tile.frameY / 18) - (tile.frameY == 56 ? -3 : 0);
-					Texture2D inner = Main.tileTexture[Type];
+					//Texture2D inner = Main.tileTexture[Type];
+					Texture2D inner = ModContent.GetTexture("SGAmod/Tiles/Monolith/CelestialMonolithTex");
 					Texture2D star = ModContent.GetTexture("SGAmod/Tiles/TechTiles/LuminousAlterStar");
 					Rectangle rect = new Rectangle(0, (int)((Main.GlobalTime * 1) % 2) * (star.Height / 2), star.Width, star.Height / 2);
 					Rectangle rect2 = new Rectangle(0, (int)(((Main.GlobalTime * 1) + 1) % 2) * (star.Height / 2), star.Width, star.Height / 2);
@@ -92,15 +96,15 @@ namespace SGAmod.Tiles.Monolith
 						{
 
 							Main.spriteBatch.End();
-							Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+							Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
 
 							Texture2D sunTex = Main.sunTexture;
 
 							ArmorShaderData stardustsshader3 = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye);
 
 							DrawData value28 = new DrawData(inner, new Vector2(240, 240), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, inner.Width, inner.Height)), Microsoft.Xna.Framework.Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
-							stardustsshader3.UseColor(Color.Lerp(Color.Transparent, Color.Yellow*0.25f, te.ActiveState).ToVector3());
-							stardustsshader3.UseOpacity(te.ActiveState/2f);
+							stardustsshader3.UseColor(Color.Lerp(Color.Transparent, (Main.dayTime ? Color.Blue * 1.0f : Color.Yellow * 0.50f), te.ActiveState).ToVector3());
+							stardustsshader3.UseOpacity(te.ActiveState/1f);
 							stardustsshader3.Apply(null, new DrawData?(value28));
 
 							//Main.spriteBatch.Draw(mod.GetTexture("Tiles/Monolith/CelestialMonolith"), new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, new Rectangle(tile.frameX, tile.frameY + animate, 16, height), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
@@ -111,30 +115,67 @@ namespace SGAmod.Tiles.Monolith
 							if (te.ActiveState > 0)
 							{
 								//spriteBatch.Draw(inner, zerooroffset + (new Vector2(i, j) * 16) - Main.screenPosition, new Rectangle(0, 0, 16, 16), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+
+								int yyy = Main.dayTime ? 1 : 4;
+
 								for (int xx = 0; xx < 2; xx++)
 								{
 									for (int yy = 0; yy < 3; yy++)
 									{
-										Main.spriteBatch.Draw(inner, new Vector2((i + xx) * 16, (j + yy) * 16) + zerooroffset-Main.screenPosition, new Rectangle(xx * 18, yy*18, 16, 16), Color.White* te.ActiveState, 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
+										int yyyy = (yy * 18) + (int)(yyy * (56));
+
+										Rectangle rectz = new Rectangle(xx * 18, yyyy, 16, 16);
+										Main.spriteBatch.Draw(inner, new Vector2(((i + xx) * 16), (j + yy) * 16) + zerooroffset-Main.screenPosition, rectz, Color.White* te.ActiveState, 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
+									}
+								}
+							}
+
+							if (Main.dayTime)
+							{
+								int maxFrame = 8;
+								int frame = (int)((Main.GlobalTime*8) % maxFrame);
+								int frameHeight = (Main.moonTexture[Main.moonType].Height / maxFrame);
+								Rectangle rectx = new Rectangle(0, frame * frameHeight, (Main.moonTexture[Main.moonType].Width), frameHeight);
+
+								Main.spriteBatch.End();
+								Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+
+								if (te.ActiveState > 0)
+								{
+									Texture2D glowTex = mod.GetTexture("Glow");
+									for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
+									{
+										Main.spriteBatch.Draw(glowTex, offset - Main.screenPosition, null, Color.Blue * te.ActiveState, f, glowTex.Size() / 2f, new Vector2(3.2f + floater, 0.80f) * te.ActiveState, SpriteEffects.None, 0f);
 									}
 								}
 
+								Main.spriteBatch.End();
+								Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+
+								Texture2D glowOrb = ModContent.GetTexture("SGAmod/Glow");
+								for(int xx=0;xx<4;xx+=1)
+								Main.spriteBatch.Draw(glowOrb, offset - Main.screenPosition, null, Color.Black * Math.Min(te.ActiveState*2f,1f), 0f, glowOrb.Size() / 2f, 0.60f, SpriteEffects.None, 0f);
+								Main.spriteBatch.Draw(Main.moonTexture[Main.moonType], offset - Main.screenPosition, rectx, Color.White, 0f, rectx.Size() / 2f, 0.25f + (0.75f * te.ActiveState), SpriteEffects.None, 0f);
+
+
 							}
-
-							Main.spriteBatch.End();
-							Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
-
-							if (te.ActiveState > 0)
+							else
 							{
-								Texture2D glowTex = mod.GetTexture("Glow");
-								for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 10f)
+
+								Main.spriteBatch.End();
+								Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
+
+								if (te.ActiveState > 0)
 								{
-									Main.spriteBatch.Draw(glowTex, offset - Main.screenPosition, new Rectangle(0,0, glowTex.Width/2, glowTex.Height), Color.White * te.ActiveState, f, glowTex.Size() / 2f, new Vector2(3.2f+ floater, 0.80f) * te.ActiveState, SpriteEffects.None, 0f);
+									Texture2D glowTex = mod.GetTexture("Glow");
+									for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 10f)
+									{
+										Main.spriteBatch.Draw(glowTex, offset - Main.screenPosition, new Rectangle(0, 0, glowTex.Width / 2, glowTex.Height), Color.White * te.ActiveState, f, glowTex.Size() / 2f, new Vector2(3.2f + floater, 0.80f) * te.ActiveState, SpriteEffects.None, 0f);
+									}
 								}
+
+								Main.spriteBatch.Draw(sunTex, offset - Main.screenPosition, null, Color.White, 0f, sunTex.Size() / 2f, 0.25f + (0.75f * te.ActiveState), SpriteEffects.None, 0f);
 							}
-
-
-							Main.spriteBatch.Draw(sunTex, offset - Main.screenPosition, null, Color.White, 0f, sunTex.Size() / 2f, 0.25f + (0.75f * te.ActiveState), SpriteEffects.None, 0f);
 
 							Main.spriteBatch.End();
 							Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
@@ -155,6 +196,7 @@ namespace SGAmod.Tiles.Monolith
 
 
 			Texture2D texture;
+			Texture2D texture2 = ModContent.GetTexture("SGAmod/Tiles/Monolith/CelestialMonolithTex");
 			if (Main.canDrawColorTile(i, j))
 			{
 				texture = Main.tileAltTexture[Type, (int)tile.color()];
@@ -177,7 +219,21 @@ namespace SGAmod.Tiles.Monolith
 				animate = Main.tileFrame[Type] * animationFrameHeight;
 			}
 
-			//Main.spriteBatch.Draw(texture, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, new Rectangle(tile.frameX, tile.frameY + animate, 16, height), Lighting.GetColor(i, j), 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
+			//int yFrame = j - (tile.frameY / 18) - (tile.frameY == 56 ? -3 : 0);
+			//int teid = ModContent.GetInstance<CelestialMonolithTE>().Find(i - (tile.frameX / 18), yFrame);
+
+			int yyy = Main.dayTime ? 2 : 3;
+
+			Rectangle recta = new Rectangle(tile.frameX, (tile.frameY >= 56 ? tile.frameY - 56 : tile.frameY) + (int)(yyy * (56)), 16, height);
+
+			if (tile.frameY < 56)
+            {
+				//recta = new Rectangle(tile.frameX, (tile.frameY) + (int)(yyy * (0)), 16, height);
+			}
+
+			Main.spriteBatch.Draw(texture2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, recta, Lighting.GetColor(i, j), 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
+
+			//Main.spriteBatch.Draw(texture2, new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, new Rectangle(tile.frameX, tile.frameY + animate, 16, height), Lighting.GetColor(i, j), 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
 			return true;
 
 		}
@@ -266,34 +322,41 @@ namespace SGAmod.Tiles.Monolith
 			_activeState = (float)reader.ReadDouble();
 			active = reader.ReadBoolean();
 		}
+		public override TagCompound Save()
+		{
+			TagCompound tag = new TagCompound();
+			tag["timer"] = timer;
+			tag["_activeState"] = _activeState;
+			tag["active"] = active;
 
-		public static void ResetTEs()
+			return tag;
+		}
+
+		public override void Load(TagCompound tag)
+        {
+			timer = tag.GetInt("timer");
+			_activeState = tag.GetFloat("_activeState");
+			active = tag.GetBool("active");
+		}
+
+        public static void ResetTEs()
 		{
 			CelestialMonolithTileEntities.Clear();
 			for (int i = 0; i < TileEntity.ByID.Count; i += 1)
 			{
-				//try
-				//{
 				TileEntity te;
 				if (TileEntity.ByID.TryGetValue(i, out te))
 				{
 					if (te != null)
 					{
-						Main.NewText("tester " + te.GetType().Name);
+						//Main.NewText("tester " + te.GetType().Name);
 						if (te is CelestialMonolithTE cele)
 						{
 							CelestialMonolithTileEntities.Add(cele);
 						}
 					}
 				}
-				//}
-				//catch
-				//{
-
-				//}
-
 			}
-			//Main.NewText("tester " + CelestialMonolithTE.CelestialMonolithTileEntities.Count + ": ");
 		}
 
 		public override void Update()
@@ -349,7 +412,7 @@ namespace SGAmod.Tiles.Monolith
 			if (Main.netMode == 1)
 			{
 				NetMessage.SendTileRange(Main.myPlayer, i - 1, j - 2, 2, 3);
-				NetMessage.SendData(87, -1, -1, null, i - 1, j - 2, Type, 0f, 0, 0, 0);
+				NetMessage.SendData(MessageID.TileEntityPlacement, -1, -1, null, i - 1, j - 2, Type, 0f, 0, 0, 0);
 				return -1;
 			}
 			return Place(i - 1, j - 2);

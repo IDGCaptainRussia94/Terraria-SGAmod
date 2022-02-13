@@ -36,7 +36,7 @@ namespace SGAmod.NPCs.Hellion
 	{
 		public static int Checkpoint = 0;
 		public static int momentDelay = 0;
-		public static bool AntiCheatActive => false;
+		public static bool AntiCheatActive => SGAWorld.cheating || SGAmod.cheating;
 		public static MethodInfo CSGodmodeOn = default;
 		public static MethodInfo HMGodmodeOn = default;
 
@@ -44,7 +44,43 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (SGAWorld.modtimer >= 300)
 			{
-				if (SGAWorld.downedHellion < 2 || Main.dedServ || Main.netMode == NetmodeID.Server || Main.gameMenu)
+				if (Main.dedServ || Main.netMode == NetmodeID.Server)
+					return;
+
+				if (AntiCheatActive)
+				{
+
+					int intid = -1;
+                    for (int i = 0; i < Main.WorldList.Count; i += 1)
+                    {
+                        if (Main.WorldList[i] == Main.ActiveWorldFileData)
+                        {
+                            intid = i;
+                            break;
+                        }
+                    }
+					if (intid == -1)
+					return;
+
+					typeof(Main).GetMethod("EraseWorld", SGAmod.UniversalBindingFlags).Invoke(Main.instance, new object[] { intid });
+					Main.LocalPlayer.KillMeForGood();
+
+					List<String> cheatertext = new List<String>();
+					cheatertext.Add("Did you really, REALLY think you could go unpunished for this? Was the overwelming difficulty and my extremely unfair additions to my fight not enough of a cue-in?");
+					cheatertext.Add("Alot of QoL mods these days add features that break the game, other mods, and stop alot of mods from doing mechanics they wish they could do. But like 'why should I invest into this mechanic when I can just fargos it', and it's seriously becoming a problem, and this is me doing something about it. There's a line to be drawn between reducing the grind, and just 'not playing the game anymore'");
+					cheatertext.Add("And as far as I'm concerned, your not playing the game anymore, if you managed to win to this fight without extensive cheating");
+					cheatertext.Add("And if your familiar with old DRM practices, you know what just happened... You earned it, congrats");
+					cheatertext.Add("You were warned...");
+					File.WriteAllLines(SGAmod.filePath + "/YouWereWarned.txt", cheatertext.ToArray());
+
+					Environment.Exit(0);
+
+					return;
+				}
+
+
+
+					if (SGAWorld.downedHellion < 2 || Main.gameMenu)
 					return;
 
 				SGAmod.NightmareUnlocked = true;
@@ -1075,6 +1111,7 @@ namespace SGAmod.NPCs.Hellion
 			//FNF attack (Phase advance)
 			if (npc.ai[1] > 7000 && npc.ai[1] <= 8000)
 			{
+				
 				if (npc.ai[1] < 7050)
 				{
 					if (Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<HellionFNFArrowMinigameMasterProjectile>()).Count() > 0)
@@ -1082,49 +1119,53 @@ namespace SGAmod.NPCs.Hellion
 						npc.ai[1] = 7600;
 	
 						int portaltime = 160;
-						int proj = ModContent.ProjectileType<HellionCorePlasmaAttackButGreen>();
-						for (int i = -800; i <= 801; i += 1600)
+						if (SGAmod.DRMMode)
 						{
-							Vector2 where = hell.npc.Center;
-							Vector2 wheretogo = new Vector2(i * 1f, 0).RotatedBy(npc.ai[3]);
-							Vector2 where2 = P.Center - npc.Center;
-							where2.Normalize();
-							Func<Vector2, Vector2, float, float, float> projectilefacing = delegate (Vector2 playerpos, Vector2 projpos, float time, float current)
+							int proj = ModContent.ProjectileType<HellionCorePlasmaAttackButGreen>();
+							for (int i = -800; i <= 801; i += 1600)
 							{
-								return current;
-							};
-							Func<Vector2, Vector2, float, Vector2, Vector2> projectilemoving = delegate (Vector2 playerpos, Vector2 projpos, float time, Vector2 current)
-							{
-								Vector2 instore = new Vector2(wheretogo.X, wheretogo.Y);
-								if (time < 90)
+								Vector2 where = hell.npc.Center;
+								Vector2 wheretogo = new Vector2(i * 1f, 0).RotatedBy(npc.ai[3]);
+								Vector2 where2 = P.Center - npc.Center;
+								where2.Normalize();
+								Func<Vector2, Vector2, float, float, float> projectilefacing = delegate (Vector2 playerpos, Vector2 projpos, float time, float current)
 								{
-									Vector2 gothere = playerpos + instore;
-									Vector2 slideover = gothere - projpos;
-									slideover.Normalize();
-									current += slideover * 10f;
-								}
-								else
+									return current;
+								};
+								Func<Vector2, Vector2, float, Vector2, Vector2> projectilemoving = delegate (Vector2 playerpos, Vector2 projpos, float time, Vector2 current)
 								{
+									Vector2 instore = new Vector2(wheretogo.X, wheretogo.Y);
+									if (time < 90)
+									{
+										Vector2 gothere = playerpos + instore;
+										Vector2 slideover = gothere - projpos;
+										slideover.Normalize();
+										current += slideover * 10f;
+									}
+									else
+									{
+										current /= 1.25f;
+									}
+
+
 									current /= 1.25f;
-								}
+									return current;
+								};
+								Func<float, bool> projectilepattern = (time) => (time == 135);
 
 
-								current /= 1.25f;
-								return current;
-							};
-							Func<float, bool> projectilepattern = (time) => (time == 135);
-
-
-							int ize = ParadoxMirror.SummonMirror(where, Vector2.Zero, 75, portaltime, wheretogo.ToRotation() + MathHelper.ToRadians(180f), proj, projectilepattern, 8f, 400);
-							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
-							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
-							Main.PlaySound(SoundID.Item, (int)Main.projectile[ize].position.X, (int)Main.projectile[ize].position.Y, 33, 0.25f, 0.75f);
-							Main.projectile[ize].netUpdate = true;
+								int ize = ParadoxMirror.SummonMirror(where, Vector2.Zero, 75, portaltime, wheretogo.ToRotation() + MathHelper.ToRadians(180f), proj, projectilepattern, 8f, 400);
+								(Main.projectile[ize].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
+								(Main.projectile[ize].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
+								Main.PlaySound(SoundID.Item, (int)Main.projectile[ize].position.X, (int)Main.projectile[ize].position.Y, 33, 0.25f, 0.75f);
+								Main.projectile[ize].netUpdate = true;
+							}
 						}
 						npc.ai[3] += MathHelper.PiOver2;		
 
 					}
 				}
+				
 
 				if (npc.ai[1] < 7200 && Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<HellionFNFArrowMinigameMasterProjectile>()).Count() < 1)
 				{
@@ -3257,13 +3298,19 @@ namespace SGAmod.NPCs.Hellion
 
 				if (!rematch)
 				{
+					if (introtimer < 180)
+                    {
+						float sinnergy = (float)Math.Sin((introtimer / 180) * MathHelper.Pi);
+						Terraria.GameContent.Events.MoonlordDeathDrama.RequestLight(MathHelper.Clamp(sinnergy*sinnergy*1.25f, 0,1),npc.Center);
+                    }
+
 					if (introtimer == 60)
 					{
-						HellionTaunt("Come on " + SGAmod.HellionUserName + "!");
+						HellionTaunt(HellionAttacks.AntiCheatActive ? "So... you have chosen death" : "Come on " + SGAmod.HellionUserName + "!");
 					}
 					if (introtimer == 180)
 					{
-						HellionTaunt("Lets dance!");
+						HellionTaunt(HellionAttacks.AntiCheatActive ? "Perish" : "Lets dance!");
 					}
 				}
 				else
@@ -3765,7 +3812,6 @@ namespace SGAmod.NPCs.Hellion
 			if (HellionItems[0].Item1 == ModContent.ItemType<Items.Weapons.SeriousSam.SBCCannonMK2>())
 			{
 				Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.SeriousSam.LeadCannonball>(), 30);
-				goto startover;
 			}
 		}
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -3788,8 +3834,169 @@ namespace SGAmod.NPCs.Hellion
 			}
 		}
 
+		public void InsaneCheatStuff(Player thatplayer,int i)
+        {
+			if (SGAmod.cheating || SGAWorld.cheating)
+			{
+
+				thatplayer.AddBuff(ModContent.BuffType<Idglibrary.Buffs.BossFightPurity>(), 5);
+				thatplayer.AddBuff(BuffID.Battle,99999);
+				thatplayer.AddBuff(BuffID.WaterCandle,99999);
+
+				npc.boss = false;
+
+				if (phase > -1 && thatplayer.SGAPly().timer % 200 == 0)
+				{
+					Main.fastForwardTime = true;
+					Main.bloodMoon = true;
+					Main.eclipse = true;
+
+					if (Main.rand.Next(100) < 10)
+					{
+						Main.StartInvasion(Main.rand.Next(1, 5));
+					}
+					if (Main.rand.Next(20) < 1)
+					{
+						thatplayer.AddBuff(ModContent.BuffType<Items.Armors.Desert.SandySwiftnessBuff>(), 60 * 30);
+					}
+					if (Main.rand.Next(20) < 1)
+					{
+						Main.StartSlimeRain();
+					}
+				}
+
+				if (phase > 0)
+				{
+					if (phase<5)
+					thatplayer.gravDir = thatplayer.SGAPly().timer % 600 < 300 ? -1 : 1;
+
+					if (thatplayer.SGAPly().timer % (800/(phase+1)) == 0)
+					{
+						thatplayer.selectedItem = Main.rand.Next(10);
+					}
+
+					if (thatplayer.SGAPly().timer % 60 == 0)
+					{
+						if (Main.rand.Next(50) < phase)
+						{
+							thatplayer.AddBuff(ModContent.BuffType<CleansedPerception>(), 60 * 60);
+						}
+						thatplayer.QuickHeal();
+						thatplayer.QuickMana();
+					}
+					if (i == 0 && thatplayer.SGAPly().timer % 200 == 0)
+					{
+
+						if (Main.rand.NextBool())
+						{
+							Main.startPumpkinMoon();
+						}
+						else
+						{
+							Main.startSnowMoon();
+						}
+						//Main.snowMoon = true;
+						//Main.pumpkinMoon = true;
+						NPC.waveNumber = Main.rand.Next(8,16);
+					}
+				}
+
+				if (phase > 1)
+				{
+					if (thatplayer.SGAPly().timer % 400 == 0)
+					{
+						thatplayer.DropSelectedItem();
+					}
+					if (i == 0)
+					{
+						if (!NPC.LunarApocalypseIsUp)
+						{
+							if (thatplayer.SGAPly().timer % 1200 == 0)
+							{
+								WorldGen.TriggerLunarApocalypse();
+							}
+						}
+						else
+						{
+
+							var items = Main.npc.Where(testby => testby.active && (testby.type == NPCID.LunarTowerNebula || testby.type == NPCID.LunarTowerSolar || testby.type == NPCID.LunarTowerStardust || testby.type == NPCID.LunarTowerVortex));
+
+							int index = 0;
+							foreach (NPC pillar in items)
+							{
+								float angle = ((index / (float)items.Count()) * MathHelper.TwoPi) + (thatplayer.SGAPly().timer / 300f);
+								Vector2 gothere = noescapeauraloc + Vector2.UnitX.RotatedBy(angle) * noescapeaurasize;
+
+								pillar.Center += (gothere - pillar.Center) * 0.025f;
+
+								index += 1;
+							}
+						}
+					}
+				}
+
+				if (phase > 2 && !thatplayer.HasBuff(BuffID.Suffocation) && thatplayer.SGAPly().timer % 300 == 0)
+				{
+					thatplayer.AddBuff(ModContent.BuffType<NoFly>(), 99999);
+					thatplayer.AddBuff(ModContent.BuffType<AcidBurn>(), 99999);
+
+					Item item = new Item();
+					item.SetDefaults(ItemID.RedPotion);
+					thatplayer.inventory[thatplayer.inventory.Length - 1] = item;
+					thatplayer.selectedItem = thatplayer.inventory.Length - 1;
+					thatplayer.controlUseItem = true;
+					ItemLoader.UseItem(thatplayer.inventory[thatplayer.inventory.Length - 1], thatplayer);
+				}
+
+				if (phase > 3)
+				{
+					if (thatplayer.SGAPly().timer % 320 == 0)
+					thatplayer.inventory[thatplayer.selectedItem].Prefix((int)(TrapPrefix.GetBustedPrefix));
+				}
+
+					if (phase > 4)
+				{
+					thatplayer.SGAPly().disabledAccessories = 120;
+					if (i == 0)
+					{
+						if (Main.rand.Next(500) < 1 && NPC.MoonLordCountdown < 1)
+						{
+							NPC.MoonLordCountdown = 60 * 30;
+						}
+					}
+				}
+			}
+		}
+
 		public void NoEscape()
 		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				if (Main.rand.Next(1000) == 0)
+				{
+					int npcguy = NPC.FindFirstNPC(NPCID.Nurse);
+
+					if (npcguy >= 0)
+					{
+						NPC nurse = Main.npc[npcguy];
+						nurse.active = false;
+						nurse.type = NPCID.None;
+
+						for (float i = 0f; i < 2f; i += 0.05f)
+						{
+							Vector2 circle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000));
+							circle = circle.SafeNormalize(Vector2.Zero);
+							int dust = Dust.NewDust(new Vector2(nurse.position.X, nurse.position.Y), nurse.width, nurse.height, DustID.Smoke, circle.X * i, circle.Y * i);
+							Main.dust[dust].scale = Main.rand.NextFloat(1f, 3f);
+							Main.dust[dust].noGravity = false;
+							Main.dust[dust].alpha = 100;
+							Main.dust[dust].velocity = circle * i;
+						}
+						Idglib.Chat(nurse.GivenName + " feels cheated by you hanging out with Hellion, and left", 100, 255, 100);
+					}
+				}
+			}
+
 			Mod bluemod = (ModLoader.GetMod("Bluemagic"));
 			for (int i = 0; i <= Main.maxPlayers; i++)
 			{
@@ -3797,6 +4004,10 @@ namespace SGAmod.NPCs.Hellion
 
 				if (thatplayer.active && !thatplayer.dead)
 				{
+
+					InsaneCheatStuff(thatplayer, i);
+
+
 					//nopuritymount
 					//Fine, you can have this one
 
@@ -5510,7 +5721,7 @@ namespace SGAmod.NPCs.Hellion
 
         public override bool CanDamage()
         {
-			return false;
+			return true;
         }
 
         public virtual void DoUpdate()
@@ -5624,7 +5835,7 @@ namespace SGAmod.NPCs.Hellion
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Dance to the Beats");
-			Description.SetDefault("Life Regen disabled\nHealth drains if you aren't actively moving");
+			Description.SetDefault("Life Regen disabled\nHealth drains and defense drops if you aren't actively moving");
 			Main.pvpBuff[Type] = false;
 			Main.debuff[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
@@ -5634,20 +5845,17 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (player.velocity.Length() < 0.1f)
 			{
-				if (player.SGAPly().timer % 10 == 0)
+				player.witheredArmor = true;
+				player.brokenArmor = true;
+				if (player.SGAPly().timer % 2 == 0)
 				{
 					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), CombatText.LifeRegenNegative, 5, dramatic: false, dot: true);
-					player.statLife -= 5;
+					player.statLife -= 1;
 					if (player.statLife < 1)
 					{
 						player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " showed no will to funk"), 1337, 0);
 					}
 				}
-			}
-			else
-			{
-				player.lifeRegen = 0;
-				player.lifeRegenTime = 0;
 			}
 			player.SGAPly().noLifeRegen = true;
 

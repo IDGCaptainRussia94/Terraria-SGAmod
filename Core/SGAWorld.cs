@@ -67,6 +67,7 @@ namespace SGAmod
 
         public static int SnapCooldown = 0;
 
+        public static bool cheating = false;
         public static int harbingercounter = 0;
         public static int golemchecker = 0;
         public static int stolecrafting = 0;
@@ -102,7 +103,7 @@ namespace SGAmod
 
             Tiles.Monolith.CelestialMonolithTE.ResetTEs();
 
-            if (Dimensions.SGAPocketDim.WhereAmI != null)
+            if (Dimensions.SGAPocketDim.WhereAmI == null)
             downedSpaceBoss = false;
 
             if (SGAmod.cachedata == false)
@@ -230,15 +231,27 @@ namespace SGAmod
             }
         }
 
+        public void DoFallenSpaceRocks()
+        {
+            if (!Main.hardMode || Main.dayTime)
+                return;
+
+            if (Main.rand.Next(100000) < Main.maxTilesX/(Main.netMode == NetmodeID.SinglePlayer ? 6 : 3))
+            {
+                Projectile.NewProjectile(new Vector2(Main.rand.Next(Main.maxTilesX * 16), 50), Vector2.UnitY.RotatedBy((Main.rand.NextFloat(-1f,1f)*MathHelper.Pi)*0.10f)*Main.rand.NextFloat(3f,6f), ModContent.ProjectileType<Dimensions.FallingSpaceRock>(), 1000, 10);
+            }
+        }
+
         public override void PostUpdate()
         {
-            if (!SGAConfig.Instance.OPmods)
-                SGAmod.overpoweredMod = 0;
 
             if ((Main.netMode < 1 || Main.myPlayer == 0) && Main.expertMode)
                 NightmareHardcore = Main.LocalPlayer.GetModPlayer<SGAPlayer>().nightmareplayer ? 1 : 0;
 
             WorldIsTin = (WorldGen.CopperTierOre == 7 ? false : true);
+
+            DoFallenSpaceRocks();
+
             if (Main.dayTime == true)
             {
                 harbingercounter = 0;
@@ -261,23 +274,6 @@ namespace SGAmod
             harbingercounter += 1;
             if (NPC.downedAncientCultist)
                 stolecrafting += 1;
-            if (Main.netMode < 1)
-            {
-                /*if (harbingercounter == 5)
-                {
-                    if (Main.rand.Next(0, 10) < 5 && bossprgressor == 1 && downedHarbinger == false && DD2Event.DownedInvasionT3 && NPC.downedMartians)
-                    {
-                        harbingercounter = -600;
-                        Idglib.Chat("You feel a darker presence watching over you...", 0, 0, 75);
-                    }
-                }
-                if (harbingercounter == -5)
-                {
-                    harbingercounter = 6;
-                    SGAmod.CalamityNoRevengenceNoDeathNoU();
-                    NPC.SpawnOnPlayer(Main.rand.Next(0, Main.PlayerList.Count), mod.NPCType("Harbinger"));
-                }*/
-            }
 
             questvars[11] = Math.Max(questvars[11] - 1, 0);
             if (questvars[10] > 100 && questvars[10] < 1000)
@@ -382,6 +378,7 @@ namespace SGAmod
             tag["tidalCharmUnlocked"] = GennedVirulent;
             tag["downedPrismBansheeByte"] = downedPrismBanshee; 
             tag["highestDimDungeonFloor"] = highestDimDungeonFloor; 
+            tag["cheating"] = SGAmod.cheating || cheating; 
 
             tag["downedSpiderQueen"] = downedSpiderQueen;
             tag["downedCratrosityPML"] = downedCratrosityPML;
@@ -428,13 +425,15 @@ namespace SGAmod
                 WorldIsNovus = tag.GetBool("WorldIsNovus");
             if (tag.ContainsKey("darknessVision"))
                 darknessVision = tag.GetBool("darknessVision");
+            if (tag.ContainsKey("cheating"))
+                cheating = SGAmod.cheating || tag.GetBool("cheating");
 
             tf2cratedrops = tag.GetBool("tf2cratedrops");
             downedCustomInvasion = tag.GetBool("customInvasion");
             downedSPinky = tag.GetBool("downedSPinky");
             downedTPD = tag.GetBool("downedTPD");
             downedCirno = tag.GetBool("downedCirno");
-            downedSpaceBoss = tag.GetBool("downedSpaceBoss");
+            //downedSpaceBoss = tag.GetBool("downedSpaceBoss");
             downedSharkvern = tag.GetBool("downedSharkvern");
             downedCratrosity = tag.GetBool("downedCratrosity");
             downedHarbinger = tag.GetBool("downedHarbinger");
@@ -654,14 +653,15 @@ namespace SGAmod
                     chance = 2;
                     if (tile.active() && tile.type == TileID.RainCloud || tile.type == TileID.Cloud)
                     {
-                        chance = 4;
+                        chance = 3;
                         tiletype = TileType<Biomass>();
                         size[0] = 2;
                         size[1] = 5;
                     }
-                    if (tile.active() && (geny < WorldGen.worldSurfaceLow || (WorldGen.genRand.Next(0, 1000) < 2)))
+                    bool randon = (WorldGen.genRand.Next(0, 1000) < 3);
+                    if (tile.active() && (geny < WorldGen.worldSurfaceLow || (randon)))
                     {
-                        chance = 100;
+                        chance = (randon) ? 100 : 25;
                         tiletype = TileType<Biomass>();
                     }
                 }

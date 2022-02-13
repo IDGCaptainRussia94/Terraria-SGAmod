@@ -100,6 +100,8 @@ namespace SGAmod.Items.Pets
         {
             projectile.CloneDefaults(ProjectileID.ZephyrFish);
             aiType = ProjectileID.ZephyrFish;
+            projectile.hostile = false;
+            projectile.friendly = true;
             projectile.netImportant = true;
         }
 
@@ -232,6 +234,8 @@ namespace SGAmod.Items.Pets
         {
             projectile.CloneDefaults(ProjectileID.ZephyrFish);
             aiType = ProjectileID.ZephyrFish;
+            projectile.hostile = false;
+            projectile.friendly = true;
             projectile.netImportant = true;
         }
 

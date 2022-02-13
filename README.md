@@ -22,11 +22,10 @@ As it currently stands, regen is effectively gimped and energizer batteries are 
 -Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy and Seismic Resonator Ore Creator), Aurora Gear and finish Luminous Alter Tile Entity!
 -Add Hellion army bar, STILL! (canned)
 
-Todo-Aurora Gear, Finish Vibranium enemies, Seismic Resonantor to create the ore, Add Hellion checkpoints!, Finish Luminious Alter (effects), Money Drain Staff thingy, upgradable drones and solar panels? (Laser orbital strike!)
+Todo-Finish Vibranium enemies, Seismic Resonantor to create the ore, Finish Luminious Alter (effects), Money Drain Staff thingy, upgradable drones and solar panels? (Laser orbital strike!)
 Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -A resonating material called Vibranium can now be found and made into a powerful new armor set, but only if you can overcome the strong new enemies that guard it!
 -WoF yoyo that leeches out HP from enemies into the yoyo, heals the player when it retracts (moonlord upgrade too)
--Concussion (thing) accessory that grants bonus damage based off your knockback VS enemy knockback resistance, or just if enemy is immune to knockback
 -Omni-shoot, combine all the one-off ammo types of: Styngers, Stakes, Candycorn, Jack o' Lanterns, Nails, and Starfish into an endgame weapon with swappable forms
 
 -"boring" swords:
@@ -35,8 +34,9 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -Fix Prismic Banshee features (add laser accel), add Rod of Teleportation Telefragging
 
 -Finish Wrath Caliburn attacks?
--Add Celestial Monolith (finish)
--Add focus Crystal, Finish Phaethon's rework, finish ALL space stations
+-Add Celestial Monolith (finish), Add Heat Beater heat-building and steamm rework
+-Finish focus Crystal, Finish Phaethon's rework, finish ALL space stations
+-FIX COMPASS UI!!
 
 
 Credits:

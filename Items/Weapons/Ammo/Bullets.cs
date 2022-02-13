@@ -252,11 +252,6 @@ namespace SGAmod.Items.Weapons.Ammo
 			Tooltip.SetDefault("Adjusts your aim to target the scrub nearest your mouse cursor; bullet travels instantly\nAimbot bullets can pierce 2 targets ending on the 3rd, does not cause immunity frames\nBullets do 20% increased damage after each hit they pass through\n'GIT GUD, GET LMAOBOX!'\n(disclaimer, does not function in pvp)");
 		}
 
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return lightColor = Main.hslToRgb((Main.GlobalTime / 7f) % 1f, 0.85f, 0.45f);
-		}
-
 		public override void SetDefaults()
 		{
 			item.damage = 20;
@@ -282,8 +277,9 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddIngredient(mod.ItemType("DrakeniteBar"), 1);
 			recipe.AddIngredient(ItemID.MoonlordBullet, 100);
 			recipe.AddIngredient(ItemID.MeteorShot, 50);
+			recipe.AddIngredient(ItemID.ChlorophyteBullet, 50);
 			recipe.AddTile(TileID.LunarCraftingStation);
-			recipe.SetResult(this, 150);
+			recipe.SetResult(this, 200);
 			recipe.AddRecipe();
 		}
 	}

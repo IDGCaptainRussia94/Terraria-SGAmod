@@ -3186,6 +3186,11 @@ namespace SGAmod.Items.Weapons
 				}
 			}
 
+			foreach(Player player in Main.player.Where(testby => testby.active && (testby.Center-projectile.Center).Length()<200 && Main.player[projectile.owner].IsAlliedPlayer(testby)))
+            {
+				player.NinjaDodge();
+			}
+
 			return true;
 		}
 

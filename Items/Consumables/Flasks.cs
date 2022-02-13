@@ -258,17 +258,22 @@ namespace SGAmod.Items.Consumables
 
 			if (proj == null || Main.rand.Next(100) < ((proj.modProjectile != null && proj.modProjectile is ITrueMeleeProjectile) ? 100 : 20));
 			{
-				Item.NewItem(npc.Center,ItemID.Star);
-				IdgNPC.AddBuffBypass(npc.whoAmI, ModContent.BuffType<SoulSapDebuff>(), 60 * 8);
-
-				for (int i = 0; i < 25; i += 1)
+				if (npc.SGANPCs().flaskCooldown < 1)
 				{
-					Vector2 value = new Vector2(Main.rand.Next(-10, 11), Main.rand.Next(-10, 11));
-					value.Normalize();
-					int num45 = Gore.NewGore(npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height)), value * Main.rand.NextFloat(3, 6), 17, (float)Main.rand.Next(20, 60) * 0.01f);
-					Main.gore[num45].sticky = false;
-				}
+					Item.NewItem(npc.Center, ItemID.Star);
+					//npc.buffType[npc.buffType.Length - 1] = ModContent.BuffType<SoulSapDebuff>();
+					//npc.buffTime[npc.buffType.Length - 1] = 8 * 60;
+					IdgNPC.AddBuffBypass(npc.whoAmI, ModContent.BuffType<SoulSapDebuff>(), 60 * 8);
+					npc.SGANPCs().flaskCooldown = 8*60;
 
+					for (int i = 0; i < 25; i += 1)
+					{
+						Vector2 value = new Vector2(Main.rand.Next(-10, 11), Main.rand.Next(-10, 11));
+						value.Normalize();
+						int num45 = Gore.NewGore(npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height)), value * Main.rand.NextFloat(3, 6), 17, (float)Main.rand.Next(20, 60) * 0.01f);
+						Main.gore[num45].sticky = false;
+					}
+				}
 			}
 		}
 

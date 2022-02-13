@@ -779,7 +779,7 @@ namespace SGAmod.Items.Consumables
 			recipe.AddIngredient(ModContent.ItemType <HavocGear.Items.Biomass>(), 5);
 			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.MoistSand>(), 6);
 			recipe.AddIngredient(ItemID.Bunny, 1);
-			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this, 5);
 			recipe.AddRecipe();
 		}

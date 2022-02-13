@@ -105,6 +105,7 @@ namespace SGAmod
 		public int watched = 0;
 		public bool NoHit = true;
 		public bool treatAsNight = false;
+		public int flaskCooldown = 0;
 		public static bool dropFork = false;
 		public List<DamageStack> damageStacks = new List<DamageStack>();
 
@@ -191,6 +192,8 @@ namespace SGAmod
 			marked = false;
 			drawonce = true;
 			reducedDefense = 0;
+			if (flaskCooldown > 0)
+				flaskCooldown -= 1;
 			crimsonCatastrophe = (byte)Math.Max(crimsonCatastrophe - 1, 0);
 			if (invertedTime > 0)
 				invertedTime -= 1;
@@ -304,22 +307,30 @@ namespace SGAmod
 			float spawnrate2 = player.GetModPlayer<SGAPlayer>().morespawns;
 			spawnRate = (int)(spawnRate / spawnrate2);
 			maxSpawns += (int)((spawnrate2 - 1) * 10f);
-			if (NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()))
+			
+			if (NPC.AnyNPCs(ModContent.NPCType<Hellion>()))
 			{
+				if (HellionAttacks.AntiCheatActive)
+                {
+					maxSpawns *= 3;
+					spawnRate /= 2;
+				}
+
 				//spawnRate = (int)(spawnRate / 25f);
 				//maxSpawns += 20;
 			}
+			
 		}
 
 		public override void SetDefaults(NPC npc)
 		{
-			if (SGAmod.overpoweredMod > 0)
+			if (SGAmod.OverpoweredMod > 0)
 			{
 				if (!npc.friendly)
 				{
-					npc.life += (int)(npc.life * (1f + SGAmod.overpoweredMod));
-					npc.lifeMax += (int)(npc.lifeMax * (1f + SGAmod.overpoweredMod));
-					npc.damage = npc.damage + (int)(1f + SGAmod.overpoweredMod);
+					npc.life += (int)(npc.life * (1f + SGAmod.OverpoweredMod));
+					npc.lifeMax += (int)(npc.lifeMax * (1f + SGAmod.OverpoweredMod));
+					npc.damage = npc.damage + (int)(1f + SGAmod.OverpoweredMod);
 				}
 
 			}
@@ -1368,7 +1379,7 @@ namespace SGAmod
 				}
 
 				if (SGAWorld.downedCratrosity)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SalvagedCrate>());
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType <SalvagedCrate>());
 				if (!Main.expertMode)
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < EldritchTentacle>(), Main.rand.Next(15, 30));
 			}
@@ -1377,7 +1388,7 @@ namespace SGAmod
 				SGAWorld.bossprgressor = 1;
 				if (Main.netMode < 1)
 				{
-					Main.NewText("The Moon's dark gaze is apon the world.", 25, 25, 80);
+					//Main.NewText("The Moon's dark gaze is apon the world.", 25, 25, 80);
 				}
 			}
 
@@ -1432,9 +1443,12 @@ namespace SGAmod
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("OmegaSigil"));
 			}
 
-			if (npc.type == NPCID.WallofFlesh && Main.rand.Next(100) <= 10 && !Main.expertMode)
+			if (npc.type == NPCID.WallofFlesh)
 			{
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
+				if (Main.rand.Next(100) <= 25 && !Main.expertMode)
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<LeechYoyo>());
+				if (Main.rand.Next(100) <= 10 && !Main.expertMode)
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
 			}
 
 			if (npc.type == NPCID.GoblinSorcerer && Main.rand.Next(100) <= 5)
@@ -1667,7 +1681,6 @@ namespace SGAmod
 						"What do you mean the dragon isn't for sale? I'll offer you top dollar for it!"};
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
-
 					break;			
 				case NPCID.TaxCollector:
 					if (Main.rand.Next(0, 3) == 0 && NPC.CountNPCS(mod.NPCType("Dergon")) > 0)
@@ -1677,8 +1690,18 @@ namespace SGAmod
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
 					break;
+					case NPCID.Nurse:
 
+					if (Main.rand.Next(3) == 0 && Main.LocalPlayer.statLife<Main.LocalPlayer.statLifeMax2)
+                    {
+						chat = Main.rand.NextBool() ? "I can heal your wounds, but surgery doesn't happen over night... not all the time anyways" : "Healing takes time, stay around why don't you?";
+					}
 
+					if (Hellion.GetHellion() != null)
+					{
+						chat = "I see you're busy with that other girl... what do you want me for?";
+					}
+					break;
 			}
 
 		}

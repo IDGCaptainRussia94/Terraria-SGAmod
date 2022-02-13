@@ -316,7 +316,7 @@ namespace SGAmod.NPCs.Wraiths
 			float speedmulti = 0.75f;
 			if (!Main.expertMode)
 				speedmulti = 0.5f;
-			if (SGAWorld.NightmareHardcore > 0)
+			if (SGAmod.DRMMode)
 				speedmulti = 1f;
 			CopperArmorPiece myself = npc.modNPC as CopperArmorPiece;
 			int npctype = mod.NPCType(myself.attachedType);
@@ -358,7 +358,7 @@ namespace SGAmod.NPCs.Wraiths
 						{
 
 
-							List<Projectile> one = Idglib.Shattershots(npc.Center, npc.Center + new Vector2(-15 * npc.spriteDirection, 0), new Vector2(0, 0), Math.Abs(npc.ai[1]) < 18 ? ProjectileID.DD2BetsyArrow : (SGAWorld.NightmareHardcore > 0 ? mod.ProjectileType("UnmanedArrow") : ProjectileID.WoodenArrowHostile), 7, 12, 0, 1, true, (Main.rand.Next(-100, 100) * 0.000f) - npc.rotation, true, 300);
+							List<Projectile> one = Idglib.Shattershots(npc.Center, npc.Center + new Vector2(-15 * npc.spriteDirection, 0), new Vector2(0, 0), Math.Abs(npc.ai[1]) < 18 ? ProjectileID.DD2BetsyArrow : (SGAmod.DRMMode ? mod.ProjectileType("UnmanedArrow") : ProjectileID.WoodenArrowHostile), 7, 12, 0, 1, true, (Main.rand.Next(-100, 100) * 0.000f) - npc.rotation, true, 300);
 							one[0].hostile = true;
 							one[0].friendly = false;
 							one[0].localAI[0] = P.whoAmI;
@@ -591,7 +591,6 @@ namespace SGAmod.NPCs.Wraiths
 
 			if (SGAWorld.craftwarning < 30)
 			{
-				SGAWorld.craftwarning = 50;
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TrueCopperWraithNotch"));
 			}
 			if (Main.expertMode)
@@ -667,7 +666,6 @@ namespace SGAmod.NPCs.Wraiths
 
 			}
 
-			//npc.netUpdate = true;
 			Player P = Main.player[npc.target];
 			if (npc.target < 0 || npc.target == 255 || Main.player[npc.target].dead || !Main.player[npc.target].active)
 			{

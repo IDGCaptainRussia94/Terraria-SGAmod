@@ -1324,6 +1324,7 @@ namespace SGAmod.NPCs
         {
 			if (NPC.CountNPCS(ModContent.NPCType<PrismBanshee>()) < 1)
 			{
+			if (SGAWorld.downedPrismBanshee>0)
 				Item.NewItem(item.Center, ModContent.ItemType<IlluminantEssence>(), item.stack);
 				return false;
 			}

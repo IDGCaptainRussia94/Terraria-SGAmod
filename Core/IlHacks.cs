@@ -28,34 +28,37 @@ namespace SGAmod
 			SGAmod.Instance.Logger.Debug("Loading an unhealthy ammount of IL patches");
 
 			IL.Terraria.Main.Update += RemoveUpdateCinematic;
+			IL.Terraria.Main.DoDraw += BGPatchOfPain;
+			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
+			IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
+			IL.Terraria.Main.DoDraw += DrawBehindVoidLayers;
+
 			IL.Terraria.Player.AdjTiles += ForcedAdjTilesHack;
 			IL.Terraria.Player.Update += SwimInAirHack;
-			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
-			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
 			IL.Terraria.Player.DashMovement += EoCBonkInjection;
 			IL.Terraria.Player.StickyMovement += AddCustomWebsCollision;
-
-			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
-			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += AdjustLifeRegen;
 			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
-			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 			IL.Terraria.Player.ExtractinatorUse += Player_ExtractinatorUse;
 			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
 
+            IL.Terraria.Item.UpdateItem += ItemsHaveNoGravityInSpace;
+
+			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
+			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += AdjustLifeRegen;
+
+			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
+			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
+
+			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
+
 			IL.Terraria.GameContent.Events.Sandstorm.EmitDust += ForceSandStormEffects;
             IL.Terraria.UI.ItemSorting.Sort += IgnoreManifestDevArmors;
 
-            IL.Terraria.Main.DoDraw += BGPatchOfPain;
-
 			//if (SGAmod.OSType < 1)//Only windows
 			//IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
-
-			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
-			IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
-			IL.Terraria.Main.DoDraw += DrawBehindVoidLayers;
 
 			//IL.Terraria.Lighting.AddLight_int_int_float_float_float += AddLightHack;
 
@@ -70,10 +73,41 @@ namespace SGAmod
 		}
 
 
+		//Causes all items to think they have no gravity while SGAmod.NoGravityItems is true
 
-		//Allows custom-tiles for web collisions
+		private delegate bool NoGravityForThisItemDelegate(bool previous,Item item);
+		private static bool NoGravityForThisItemMethod(bool previous,Item item)
+		{
+			return previous || (SGAmod.NoGravityItems);
+		}
+		private static void ItemsHaveNoGravityInSpace(ILContext il)
+        {
+            ILCursor c = new ILCursor(il)
+            {
+                Index = il.Instrs.Count - 1
+            };
 
-		private delegate int CollisionOtherCobwebsDelegate(Player player, int starterNumber);
+            if (c.TryGotoPrev(MoveType.After, i => i.MatchLdsfld<Terraria.ID.ItemID.Sets>("ItemNoGravity")))
+			{
+
+				ILLabel operandLabel = default;
+				if (c.TryGotoNext(MoveType.Before, i => i.MatchBrfalse(out operandLabel)))
+				{
+					c.Emit(OpCodes.Ldarg_0);
+					c.EmitDelegate<NoGravityForThisItemDelegate>(NoGravityForThisItemMethod);
+					return;
+				}
+
+				throw new Exception("IL Error Test 2");
+			}
+			throw new Exception("IL Error Test 1");
+		}
+
+
+
+        //Allows custom-tiles for web collisions
+
+        private delegate int CollisionOtherCobwebsDelegate(Player player, int starterNumber);
 		private static int CollisionOtherCobwebsMethod(Player player, int starterNumber)
 		{
 			if (SGAWorld.modtimer > 120)

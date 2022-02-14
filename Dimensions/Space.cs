@@ -139,11 +139,15 @@ namespace SGAmod.Dimensions
         public bool mainBase = false;
 
         public bool securityActivated = false;
+        public string loopsnd = "";
+        public SoundEffectInstance loopingSiren = default;
         public int maxSecurity = 5;
         public int securitySpawnDelay = 120;
         public List<SecurityEnemy> securityToSpawn = new List<SecurityEnemy>();
-        public List<(SecurityEnemy,Vector3, NPC)> securitySpawned = new List<(SecurityEnemy,Vector3, NPC)>();
+        public List<(SecurityEnemy,Vector3, NPC, int)> securitySpawned = new List<(SecurityEnemy,Vector3, NPC,int)>();
+        public List<NPC> securitySpawnedNPCs = new List<NPC>();
         public List<(FilledSpaceArea, Vector2)> roomsToGenerateLater = new List<(FilledSpaceArea, Vector2)>();
+        public bool SecurityActive => securityActivated && (securitySpawned.Count > 0 || securityToSpawn.Count > 0 || securitySpawnedNPCs.Count > 0);
 
 
         public int thickness = 3;
@@ -167,6 +171,7 @@ namespace SGAmod.Dimensions
         public SpaceStationStructure(Vector2 position)
         {
             this.position = position;
+            loopsnd = Main.rand.NextBool() ? "Siren01" : "Voice_IntruderAlert";
             StationObjects.Add(this);
             type = 0;
         }
@@ -194,18 +199,34 @@ namespace SGAmod.Dimensions
             for (int i = 0; i < 5; i += 1)
             {
                 int typeofenemy = NPCID.GrayGrunt;
-                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 60);
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 120);
                 securityToSpawn.Add(secenemy);
             }
 
             for (int i = 0; i < 3; i += 1)
             {
                 int typeofenemy = NPCID.MartianOfficer;
-                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 100);
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 220);
+                securityToSpawn.Add(secenemy);
+            }
+
+            for (int i = 0; i < 2; i += 1)
+            {
+                int typeofenemy = NPCID.MartianEngineer;
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 150);
                 securityToSpawn.Add(secenemy);
             }
 
             securityToSpawn = securityToSpawn.OrderBy(testby => Main.rand.Next()).ToList();
+        }
+
+        public virtual void TriggerSecurity()
+        {
+            if (securityActivated == false) 
+            {
+                securityActivated = true;
+
+            }
         }
 
         public void SpawnFocusCrystals()
@@ -252,6 +273,21 @@ namespace SGAmod.Dimensions
         {
             return tile.type == tileType || tile.type == tileTypeInside || tile.type == tileTypeLight;
         }
+        private void SpawnSecurity()
+        {
+            if (securityToSpawn.Count > 0)
+            {
+                Vector2 place = placesToBuild[Main.rand.Next(placesToBuild.Count)].Item1;
+                SecurityEnemy enemy = securityToSpawn[0];
+
+                //NPC.NewNPC((int)place.X, (int)place.Y, enemy.type);
+                securitySpawnDelay = enemy.delay;
+
+                securitySpawned.Add((enemy, new Vector3(place, 120), null, 0));
+
+                securityToSpawn.RemoveAt(0);
+            }
+        }
 
         public void Update()
         {
@@ -269,39 +305,115 @@ namespace SGAmod.Dimensions
                     }
                 }
 
-                Main.NewText("Security size: " + securitySpawned.Count);
+                //Main.NewText("Security size: " + securitySpawned.Count+" delay"+ securitySpawnDelay);
 
                 if (securitySpawned.Count > 0)
                 {
 
-                    foreach ((SecurityEnemy, Vector3, NPC) managedEnemySpawns in securitySpawned)
+                    foreach ((SecurityEnemy, Vector3, NPC,int) managedEnemySpawns in securitySpawned)
                     {
                         Vector3 data = managedEnemySpawns.Item2;
                         if ((int)data.Z == spawnTime)
                         {
-                            NPC.NewNPC((int)data.X, (int)data.Y, managedEnemySpawns.Item1.type);
+                            NPC guy = Main.npc[NPC.NewNPC((int)data.X, (int)data.Y, managedEnemySpawns.Item1.type)];
+                            securitySpawnedNPCs.Add(guy);
                         }
                     }
 
-                    securitySpawned = securitySpawned.Select(testby => (testby.Item1, new Vector3(testby.Item2.X, testby.Item2.Y, testby.Item2.Z - 1), testby.Item3)).Where(testby => testby.Item2.Z > -60 && !(testby.Item3 == null || !testby.Item3.active)).ToList();
+                    securitySpawned = securitySpawned.Select(testby => (testby.Item1, new Vector3(testby.Item2.X, testby.Item2.Y, testby.Item2.Z - 1), testby.Item3,testby.Item4+1)).Where(testby => testby.Item2.Z > -60 || (testby.Item3 != null && testby.Item3.active)).ToList();
 
                 }
+
+                if (securitySpawnedNPCs.Count > 0)
+                {
+                    securitySpawnedNPCs = securitySpawnedNPCs.Where(testby => testby != null && testby.active).ToList();
+                }
+
+                if (SecurityActive)
+                {
+                    if (loopingSiren == default || loopingSiren.State != SoundState.Playing)
+                    {
+                        loopingSiren = Main.PlaySound(SGAmod.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/"+loopsnd).WithVolume(0.4f).WithPitchVariance(.10f), position);
+                    }
+                }
+
             }
         }
 
-        private void SpawnSecurity()
+        public virtual void DrawStation()
         {
-            if (securityToSpawn.Count > 0)
+            if (securitySpawned.Count > 0)
             {
-                Vector2 place = placesToBuild[Main.rand.Next(placesToBuild.Count)].Item1;
-                SecurityEnemy enemy = securityToSpawn[0];
+                Effect effect = SGAmod.TextureBlendEffect;
+                Texture2D glowTex = SGAmod.Instance.GetTexture("Extra_49c");
+                Texture2D glowTex2 = SGAmod.Instance.GetTexture("Glow");
 
-                //NPC.NewNPC((int)place.X, (int)place.Y, enemy.type);
-                securitySpawnDelay = enemy.delay;
+                for (int i = 0; i < 3; i += 1)
+                {
+                    if (i == 0)
+                    {
+                        Main.spriteBatch.End();
+                        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+                    }
+                    if (i == 1)
+                    {
+                        Main.spriteBatch.End();
+                        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+                    }
 
-                securitySpawned.Add((enemy, new Vector3(place, 120), null));
+                    if (i > 0)
+                    {
 
-                securityToSpawn.RemoveAt(0);
+                        effect.Parameters["coordMultiplier"].SetValue(new Vector2(1f, 1f));
+                        effect.Parameters["coordOffset"].SetValue(new Vector2(0f, 0f));
+                        effect.Parameters["noiseMultiplier"].SetValue(new Vector2(1f, 1f));
+                        effect.Parameters["noiseOffset"].SetValue(new Vector2(0f, 0f));
+
+                        effect.Parameters["Texture"].SetValue(i == 1 ? SGAmod.Instance.GetTexture("ElectricFireNoColor") : SGAmod.Instance.GetTexture("LightBeam"));
+                        effect.Parameters["noiseTexture"].SetValue(glowTex);
+                        effect.Parameters["textureProgress"].SetValue(0);
+                        effect.Parameters["noiseBlendPercent"].SetValue(1f);
+
+                        Color colorz = Color.Turquoise;
+                        effect.Parameters["colorTo"].SetValue(colorz.ToVector4());
+                        effect.Parameters["colorFrom"].SetValue(Color.Black.ToVector4());
+
+                    }
+
+
+                    foreach ((SecurityEnemy, Vector3, NPC, int) managedEnemySpawns in securitySpawned)
+                    {
+                        float fadeOut = Math.Min((managedEnemySpawns.Item2.Z + 60f) / 60f, 1f);
+                        if (fadeOut > 0f)
+                        {
+                            float alpha = MathHelper.Clamp(managedEnemySpawns.Item4 / 30f, 0f, fadeOut);
+                            if (i > 0)
+                            {
+                                effect.Parameters["strength"].SetValue(MathHelper.Clamp(alpha * 1f, 0f, 1f) * 2f);
+                                effect.Parameters["noiseProgress"].SetValue(managedEnemySpawns.Item4 / 60f);
+                                effect.CurrentTechnique.Passes["TextureBlend"].Apply();
+                            }
+
+                            if (i == 0)
+                            {
+                                float fadeOut2 = Math.Min((managedEnemySpawns.Item2.Z + 60f) / 180f, 1f);
+                                float sizeGrow2 = MathHelper.Clamp(managedEnemySpawns.Item4 / 80f, 0f, fadeOut2);
+                                Vector2 glowSize = glowTex2.Size()/2f;
+                                for (float ii = 15; ii > 1; ii -= 0.75f)
+                                {
+                                    Vector2 sizer = (new Vector2(0.5f, 0.5f) + (new Vector2(0.25f, 0.5f) * sizeGrow2)) * (1+ii/6f);
+                                    Main.spriteBatch.Draw(glowTex2, new Vector2(managedEnemySpawns.Item2.X, managedEnemySpawns.Item2.Y) - Main.screenPosition, null, Color.Black * 1f * alpha, 0, glowSize, sizer, SpriteEffects.None, 0);
+                                }
+                            }
+                            else
+                            {
+
+                                Main.spriteBatch.Draw(glowTex, new Vector2(managedEnemySpawns.Item2.X, managedEnemySpawns.Item2.Y) - Main.screenPosition, null, Color.White * 0.50f * alpha, 0, glowTex.Size() / 2f, new Vector2(0.5f, 0.5f) + (new Vector2(0.25f, 0.5f) * alpha), SpriteEffects.None, 0);
+                            }
+                        }
+                    }
+                }
+
             }
         }
 
@@ -1634,6 +1746,21 @@ namespace SGAmod.Dimensions
             SGAmod.NoGravityItemsTimer = 10;
         }
 
+        public override void DoDraws(int type)
+        {
+            if (type == 2)
+            {
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+                foreach (SpaceStationStructure station in SpaceStationStructure.StationObjects)
+                {
+                    station.DrawStation();
+                }
+
+                Main.spriteBatch.End();
+            }
+        }
+
         public override void Load()
         {
             Main.dayTime = false;
@@ -2904,6 +3031,9 @@ namespace SGAmod.Dimensions
         NPC boss = null;
         NPC bossPreviously = null;
         public float hitVisual = 0f;
+        public bool shielded = false;
+        public float shieldedVisual = 0;
+
 
         public override void SetStaticDefaults()
         {
@@ -2938,6 +3068,9 @@ namespace SGAmod.Dimensions
 
         public override void HitEffect(int hitDirection, double damage)
         {
+            if (!SpaceDim.SpaceBossIsActive)
+            station.TriggerSecurity();
+
             SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_CrystalCartImpact, (int)npc.Center.X, (int)npc.Center.Y);
             if (sound != null)
             {
@@ -2948,11 +3081,21 @@ namespace SGAmod.Dimensions
 
         public override void AI()
         {
+            if (npc.life < (int)(npc.lifeMax * 0.9))
+            {
+                if (!SpaceDim.SpaceBossIsActive)
+                    station.TriggerSecurity();
+            }
+
+
             NPCID.Sets.MustAlwaysDraw[npc.type] = true;
             npc.localAI[0] += 1;
             hitVisual = Math.Max(hitVisual - 0.1f, 0f);
 
-            npc.dontTakeDamage = true;
+            shielded = true;
+            npc.dontTakeDamage = false;
+
+            bool bossExists = SpaceDim.SpaceBossIsActive;
 
             int checkRange = 2400 * 2400;
             int checkRange2 = 420 * 420;
@@ -2964,15 +3107,17 @@ namespace SGAmod.Dimensions
             {
                 if ((player.Center - npc.Center).LengthSquared() < checkRange)
                 {
-                    if ((player.Center - npc.Center).LengthSquared() < checkRange2)
+                    if (!bossExists && (player.Center - npc.Center).LengthSquared() < checkRange2)
                     {
-                        npc.dontTakeDamage = false;
+                        shielded = false;
                     }
 
                     player.AddBuff(ModContent.BuffType<Buffs.MiningFatigue>(), 2);
                 }
-
             }
+
+            if (station.SecurityActive || bossExists)
+                shielded = true;
 
             bossPreviously = boss;
             boss = null;
@@ -2991,21 +3136,24 @@ namespace SGAmod.Dimensions
                     healScaling /= 3f;
                 }
 
-                if (trueBoss.goingDark > 0 || trueBoss.DyingState || trueBoss.Sleeping || boss.ai[3] > 1 || (boss.Center-npc.Center).Length()> toCheckDist)
+                if (trueBoss.goingDark > 0 || trueBoss.DyingState || trueBoss.Sleeping || boss.ai[3] > 1 || (boss.Center - npc.Center).Length() > toCheckDist)
                 {
                     boss = null;
                 }
                 if (boss != null)
                 {
-                    float healRate = (npc.lifeMax / (60f*30f)) * healScaling;
+                    float healRate = (npc.lifeMax / (60f * 30f)) * healScaling;
                     boss.life = Math.Min(boss.life + (int)healRate, boss.lifeMax);
+                    shielded = false;
                 }
             }
             if (SpaceDim.crystalAsteriods)
                 npc.localAI[1] = Math.Min(npc.localAI[1] + 0.005f, 1f);
 
+            npc.dontTakeDamage = shielded;
 
-            }
+            shieldedVisual = MathHelper.Clamp(shieldedVisual + (shielded ? 0.05f : -0.05f), 0f, 1f);
+        }
 
         public override void NPCLoot()
         {
@@ -3134,20 +3282,20 @@ namespace SGAmod.Dimensions
 
             if (poz.X > -size && poz.X < Main.screenWidth + size && poz.Y > -size && poz.Y < Main.screenHeight + size)
             {
-                List<(float, float,float)> layers = new List<(float, float,float)>();
+                List<(float, float, float)> layers = new List<(float, float, float)>();
 
                 for (float f2 = 1; f2 <= 3; f2 += 1f)
                 {
                     for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
                     {
-                        float extraAngle = ((f2-1f) / 3f) * MathHelper.Pi/2f;
-                        float rotter = (Main.GlobalTime / 3f)+f+ extraAngle;
+                        float extraAngle = ((f2 - 1f) / 3f) * MathHelper.Pi / 2f;
+                        float rotter = (Main.GlobalTime / 3f) + f + extraAngle;
 
-                        float realAnglez = (f/3f)+((MathHelper.TwoPi/3f)*(f2-1f))+(Main.GlobalTime / 3);
+                        float realAnglez = (f / 3f) + ((MathHelper.TwoPi / 3f) * (f2 - 1f)) + (Main.GlobalTime / 3);
 
                         rotter = MathHelper.SmoothStep(rotter, realAnglez, npc.localAI[1]);
 
-                        layers.Add((f,f2, rotter));
+                        layers.Add((f, f2, rotter));
                     }
                 }
 
@@ -3164,7 +3312,7 @@ namespace SGAmod.Dimensions
 
                 Color colorz = Color.White;
 
-                spriteBatch.Draw(glowTex2, npc.Center - Main.screenPosition, null, Color.White * 0.50f * overallAlpha, 0, glowTex2.Size()/2f, new Vector2(1f, 1f) * 1f, SpriteEffects.None, 0);
+                spriteBatch.Draw(glowTex2, npc.Center - Main.screenPosition, null, Color.White * 0.50f * overallAlpha, 0, glowTex2.Size() / 2f, new Vector2(1f, 1f) * 1f, SpriteEffects.None, 0);
 
                 if (npc.localAI[1] < 1)
                 {
@@ -3178,7 +3326,7 @@ namespace SGAmod.Dimensions
 
                         float addedAngle = MathHelper.SmoothStep(0f, MathHelper.Pi, npc.localAI[1]);
 
-                        spriteBatch.Draw(glowTex, npc.Center + (rotter.ToRotationVector2() * (dister)) - Main.screenPosition, null, Color.White * 1.50f * overallAlpha*(1f- npc.localAI[1]), rotter + MathHelper.PiOver2 + addedAngle, halfGlow, new Vector2(1f, 1f) * 1.25f, SpriteEffects.None, 0);
+                        spriteBatch.Draw(glowTex, npc.Center + (rotter.ToRotationVector2() * (dister)) - Main.screenPosition, null, Color.White * 1.50f * overallAlpha * (1f - npc.localAI[1]), rotter + MathHelper.PiOver2 + addedAngle, halfGlow, new Vector2(1f, 1f) * 1.25f, SpriteEffects.None, 0);
                     }
                 }
 
@@ -3196,17 +3344,17 @@ namespace SGAmod.Dimensions
 
                     DrawData value7 = new DrawData(otherTex, new Vector2(30f, 30f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(randoz.Next(10000), randoz.Next(10000), otherTex.Width, otherTex.Height)), Microsoft.Xna.Framework.Color.White, npc.rotation, glowTex.Size() / 2f, npc.scale * 5f, SpriteEffects.None, 0);
 
-                    float dister = MathHelper.SmoothStep((40f + (f2 * 8f)) + (float)Math.Sin((f2*2f) + (Main.GlobalTime * 2f)) * 10f, 42f, npc.localAI[1]);
+                    float dister = MathHelper.SmoothStep((40f + (f2 * 8f)) + (float)Math.Sin((f2 * 2f) + (Main.GlobalTime * 2f)) * 10f, 42f, npc.localAI[1]);
 
                     float addedAngle = MathHelper.SmoothStep(0f, MathHelper.Pi, npc.localAI[1]);
 
-                    stardustsshader.UseColor(Main.hslToRgb(((rotter/MathHelper.TwoPi)+ (f / MathHelper.TwoPi)) % 1f,1f-(npc.localAI[1]/1.5f),0.75f).ToVector3() * 1f);
+                    stardustsshader.UseColor(Main.hslToRgb(((rotter / MathHelper.TwoPi) + (f / MathHelper.TwoPi)) % 1f, 1f - (npc.localAI[1] / 1.5f), 0.75f).ToVector3() * 1f);
                     stardustsshader.UseOpacity(1f);
                     stardustsshader.Apply(null, new DrawData?(value7));
 
                     intdexer += 1;
 
-                    spriteBatch.Draw(otherTex, npc.Center + (rotter.ToRotationVector2() * (dister)) - Main.screenPosition, null, Color.White * 1f * overallAlpha, rotter+MathHelper.PiOver2+ addedAngle, otherTex.Size()/2f, new Vector2(1f, 1f), SpriteEffects.None, 0);
+                    spriteBatch.Draw(otherTex, npc.Center + (rotter.ToRotationVector2() * (dister)) - Main.screenPosition, null, Color.White * 1f * overallAlpha, rotter + MathHelper.PiOver2 + addedAngle, otherTex.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0);
                 }
 
                 Main.spriteBatch.End();
@@ -3214,10 +3362,9 @@ namespace SGAmod.Dimensions
 
                 for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
                 {
-                    spriteBatch.Draw(mainTex, npc.Center + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * (4f+(hitVisual*2f)))-Main.screenPosition, null, Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f), 0, mainTex.Size() / 2f, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(mainTex, npc.Center + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * (4f + (hitVisual * 2f))) - Main.screenPosition, null, Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f), 0, mainTex.Size() / 2f, 1f, SpriteEffects.None, 0f);
                 }
 
-                
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
@@ -3268,6 +3415,66 @@ hallowed.Parameters["rainbowScale"].SetValue(0.8f);
                     spriteBatch.Draw(mainTex, npc.Center - Main.screenPosition, null, Color.White * 1f * overallAlpha, 0, mainTex.Size() / 2f, new Vector2(1f, 1f), SpriteEffects.None, 0);
 
                 }
+
+                Texture2D[] texs = { mod.GetTexture("voronoismol"), mod.GetTexture("voronoismol"), mod.GetTexture("voronoismol"), mod.GetTexture("voronoismol") };
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+                if (shieldedVisual > 0)
+                {
+                    float index = 0;
+
+                    List<float> scalePercentList = new List<float>();
+
+                    for(float ff = 0; ff < 1; ff += 1 / 4f)
+                    {
+                        scalePercentList.Add((ff+Main.GlobalTime/4f)%1f);
+                    }
+
+                    //scalePercentList = scalePercentList.OrderBy(testby => 100-testby).ToList();
+
+                    var deathShader = GameShaders.Misc["ForceField"];
+
+                    foreach (float perr in scalePercentList)
+                    {
+                        Texture2D tex = texs[0];
+
+                        Vector2 sizer = new Vector2(tex.Width, tex.Height);
+                        DrawData value9 = new DrawData(tex, new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, (int)sizer.X, (int)sizer.Y)), Microsoft.Xna.Framework.Color.White, npc.rotation, tex.Size() / 2f, npc.scale, SpriteEffects.None, 0);
+                        float percex = 0;// (index / (float)texs.Length);
+                        float colorAlpha = MathHelper.Clamp((float)Math.Sin(perr*MathHelper.Pi)*1.75f,0f,1f)*0.5f;
+                        deathShader.UseColor(Main.hslToRgb((percex + (Main.GlobalTime * (0.25f))) % 1f, 0.75f, 0.75f) * colorAlpha * overallAlpha * shieldedVisual);
+                        deathShader.UseOpacity(0.70f);
+                        GameShaders.Misc["ForceField"].Apply(new DrawData?(value9));
+
+                        float scaleEffect = 0.75f+ (perr*0.25f);// + ((float)Math.Sin(((index / 4f) * MathHelper.Pi) + Main.GlobalTime / 1f) * 0.15f);
+
+
+                        spriteBatch.Draw(texs[0], npc.Center + new Vector2(0, -4) - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, (new Vector2(160f, 100f) / tex.Size()) * scaleEffect, index % 2 == 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+                        index += 1;
+                    }
+
+                        /*
+                        foreach (Texture2D tex in texs)
+                        {
+                            Vector2 sizer = new Vector2(tex.Width, tex.Height);
+                            DrawData value9 = new DrawData(tex, new Vector2(300f, 300f), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, (int)sizer.X, (int)sizer.Y)), Microsoft.Xna.Framework.Color.White, npc.rotation, tex.Size() / 2f, npc.scale, SpriteEffects.None, 0);
+                            var deathShader = GameShaders.Misc["ForceField"];
+                            float percex = 0;// (index / (float)texs.Length);
+                            float colorAlpha = (1f / (1f + index));
+                            deathShader.UseColor(Main.hslToRgb((percex + (Main.GlobalTime*(0.25f)))%1f,0.75f,0.75f)* colorAlpha* overallAlpha*shieldedVisual);
+                            deathShader.UseOpacity(0.70f);
+                            GameShaders.Misc["ForceField"].Apply(new DrawData?(value9));
+
+                            float scaleEffect = 1f+((float)Math.Sin(((index / 4f) * MathHelper.Pi) + Main.GlobalTime / 1f) * 0.15f);
+
+                            spriteBatch.Draw(tex, npc.Center + new Vector2(0, -4) - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, (new Vector2(160f, 100f) / tex.Size())*(1f+(index/12f))* scaleEffect, index%2==0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+                            index -= 1;
+                        }
+                        */
+                    }
+
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
@@ -3337,11 +3544,11 @@ hallowed.Parameters["rainbowScale"].SetValue(0.8f);
             }
 
 
-            for (int num1181 = 0; num1181 < 20; num1181++)
+            for (int num1181 = 0; num1181 < 16; num1181++)
             {
                 float num1182 = (float)num1181 / 20f;
                 Vector2 vector123 = new Vector2(Main.rand.NextFloat() * 10f, 0f).RotatedBy(num1182 * -(float)Math.PI + Main.rand.NextFloat() * 0.1f - 0.05f);
-                int itemz = Item.NewItem(projectile.Center+ vector123*3, ModContent.ItemType<Glowrock>(), Main.rand.Next(1, 4));
+                int itemz = Item.NewItem(projectile.Center+ vector123*3, ModContent.ItemType<Glowrock>(), Main.rand.Next(1, 3));
                 if (itemz >= 0)
                 {
                     Main.item[itemz].velocity = (Vector2.Normalize(vector123)*0.50f)+(vector123*0.75f);

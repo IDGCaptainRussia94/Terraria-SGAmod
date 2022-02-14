@@ -296,7 +296,6 @@ namespace SGAmod.Dimensions.NPCs
                     velocity += Vector2.Normalize(diff) * 24f;
                     state = 102;
                     stateTimer = 0;
-                    Main.NewText("ended");
                 }
 
                 Vector2 vel = boss.npc.velocity;
@@ -1276,7 +1275,7 @@ namespace SGAmod.Dimensions.NPCs
                     }
                 }
 
-                Vector2 gowhere = boss.RocksAreas.OrderBy(testby => (Main.player[npc.target].Center - testby.Position).LengthSquared()).Reverse().ToArray()[0].Position;
+                Vector2 gowhere = boss.RocksAreas.Where(testby => (testby.Position - npc.Center).Length() < 10000).OrderBy(testby => (Main.player[npc.target].Center - testby.Position).LengthSquared()).Reverse().ToArray()[0].Position;
                 npc.Center = gowhere;
 
             }
@@ -2727,11 +2726,11 @@ namespace SGAmod.Dimensions.NPCs
 
                     UnifiedRandom rando = new UnifiedRandom(npc.whoAmI);
 
-                    for (float f = 0f; f < 1f; f += 1 / 100f)
+                    for (float f = 0f; f < 1f; f += 1 / 120f)
                     {
                         float prog = MathHelper.Clamp((f + (Main.GlobalTime * 0.05f) + rando.NextFloat(1f)) % (1f), 0f, 1f);
                         float alpha = MathHelper.Clamp((prog * 5f) * MathHelper.Clamp(1.5f - (prog * 1.5f), 0f, 1f), 0f, 1f) * MathHelper.Clamp((float)Math.Sin((Main.GlobalTime * 0.1f) + rando.NextFloat(MathHelper.TwoPi)), 0f, 1f);
-                        ordering.Add((prog, alpha, rando.NextFloat(MathHelper.TwoPi) + (Main.GlobalTime * rando.NextFloat(-0.5f, 0.5f)), rando.NextVector2Circular(256f, 256f)));
+                        ordering.Add((prog, alpha, rando.NextFloat(MathHelper.TwoPi) + (Main.GlobalTime * rando.NextFloat(-0.5f, 0.5f)), rando.NextVector2Circular(320f, 320f)));
                     }
                     ordering = ordering.OrderBy(testby => testby.Item1).ToList();
 
@@ -2742,9 +2741,10 @@ namespace SGAmod.Dimensions.NPCs
 
                         float angle = prog.Item3;
 
-                        Vector2 pos = Vector2.Lerp(sky.sunPosition, npc.Center - Main.screenPosition, prog.Item1);
+                        float percentToSun = (prog.Item1* prog.Item1);
+                        Vector2 pos = Vector2.Lerp(npc.Center - Main.screenPosition, sky.sunPosition, 1f-(percentToSun));
 
-                        spriteBatch.Draw(tex, pos + (prog.Item4 * prog.Item1), null, (Color.Lerp(Color.Yellow, Color.Blue, prog.Item1) * (prog.Item2) * (shieldeffect / 15f)) * sky.skyalpha, angle, starhalf, (0.25f + prog.Item1 * 0.5f), SpriteEffects.None, 0f);
+                        spriteBatch.Draw(tex, pos + (prog.Item4 * (percentToSun)), null, (Color.Lerp(Color.Yellow, Color.Blue, percentToSun) * (prog.Item2)*MathHelper.Clamp(percentToSun*4f,0f,1f) * (shieldeffect / 15f)) * sky.skyalpha, angle, starhalf, (0.25f + percentToSun * 0.5f), SpriteEffects.None, 0f);
 
                         index2 += 1;
                     }

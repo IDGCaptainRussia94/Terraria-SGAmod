@@ -1751,6 +1751,10 @@ namespace SGAmod
 
 		public override void UpdateDead()
 		{
+
+				if (DoTStack.Count > 0)
+					DoTStack.Clear();
+
 			NoHitCharmTimer = 0;
 			if (NoHitCharm && !IdgNPC.bossAlive)
 			{

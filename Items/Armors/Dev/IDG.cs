@@ -45,7 +45,7 @@ namespace SGAmod.Items.Armors.Dev
 			public override void AddEffects(Player player)
 			{
 				player.maxMinions += 1;
-				player.minionDamage += 0.40f;
+				player.minionDamage += 0.30f;
 				player.rangedDamage += 0.25f;
 				player.rangedCrit += 15;
 				player.maxTurrets += 1;
@@ -56,7 +56,7 @@ namespace SGAmod.Items.Armors.Dev
 			{
 				tooltips.Add(new TooltipLine(mod, "IDG", "+1 max minions, +1 max sentries"));
 				tooltips.Add(new TooltipLine(mod, "IDG", "25% increased ranged damage, 15% increased ranged crit chance"));
-				tooltips.Add(new TooltipLine(mod, "IDG", "40% increased summon damage, Summon weapons are used 50% faster"));
+				tooltips.Add(new TooltipLine(mod, "IDG", "30% increased summon damage, Summon weapons are used 50% faster"));
 				return tooltips;
 			}
 			public override void UpdateEquip(Player player)
@@ -195,14 +195,14 @@ namespace SGAmod.Items.Armors.Dev
 				player.moveSpeed += 2f;
 				player.accRunSpeed += 2f;
 				player.wingTimeMax = (int)((float)player.wingTimeMax*(1.20f));
-				player.maxMinions += 2;
+				player.maxMinions += 1;
 				player.statManaMax2 += 60;
 				player.ammoCost80 = true;
 				player.GetModPlayer<SGAPlayer>().boosterPowerLeftMax += (int)(10000f * 0.20f);
 		}
 			public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 			{
-				tooltips.Add(new TooltipLine(mod, "IDG", "+2 max minions, +60 Mana, 20% chance to not consume ammo"));
+				tooltips.Add(new TooltipLine(mod, "IDG", "+1 max minions, +60 Mana, 20% chance to not consume ammo"));
 				tooltips.Add(new TooltipLine(mod, "IDG", "Movement speed increased and Flight time improved by 20%"));
 				tooltips.Add(new TooltipLine(mod, "IDG", "20% increased Booster capacity"));
 				return tooltips;

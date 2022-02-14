@@ -603,6 +603,18 @@ namespace SGAmod.Dimensions
         {
 
         }
+
+        public static void PassDraws(int type)
+        {
+            if (SLWorld.currentSubworld is SGAPocketDim subSandvich)
+                subSandvich.DoDraws(type);
+        }
+
+        public virtual void DoDraws(int type)
+        {
+
+        }
+
         public virtual bool IsSpike(int it,int type = 0)
         {
             bool match = (it == SGAmod.Instance.TileType("UnmanedBarTile") || it == SGAmod.Instance.TileType("NoviteBarTile") || it == SGAmod.Instance.TileType("BiomassBarTile"));

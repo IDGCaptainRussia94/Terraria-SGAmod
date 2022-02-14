@@ -372,6 +372,8 @@ namespace SGAmod
 				}
 			}
 
+			//playerDrawData.Add(new DrawData(frontChair, drawPosition + new Vector2(-4, drawPlayer.height - 32).RotatedBy(rotation), null, drawColor * 1f, rotation, frontChairSize, drawScale, drawPlayer.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0));
+
 			if (sgaplayer.terraDivingGear)
 			{
 				int armLayer2 = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MountBack"));
@@ -424,11 +426,21 @@ namespace SGAmod
 					}
 				}
 			}
-            #endregion
 
-            #region armor glowmasks
+			if (player.mount != null && player.mount.Active)
+			{
+				int armsLayer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals("MountFront"));
+				//hjgkhj
+				if (armsLayer >= 0 && player.mount.Type == ModContent.MountType<Items.Mounts.GeneralsArmchairMount>())
+				{
+					layers.Insert(layers.Count - 1, Items.Mounts.GeneralsArmchairMount.GeneralChair);
+				}
+			}
+			#endregion
 
-            string[] stringsz = { "Head", "Body", "Arms", "Legs"};
+			#region armor glowmasks
+
+			string[] stringsz = { "Head", "Body", "Arms", "Legs"};
 			PlayerLayer[] thelayer = { PlayerLayer.Head, PlayerLayer.Body, PlayerLayer.Arms, PlayerLayer.Legs };
 
 			for (int intc = 0; intc < 4; intc += 1)

@@ -1920,28 +1920,26 @@ namespace SGAmod.Items
 		{
 			get { return ("Terraria/Item_" + ItemID.DD2ElderCrystal); }
 		}
-
-        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-
-			Vector2 drawPos = item.Center;
+			float vel = item.velocity.X / 6f;
+			Vector2 drawPos = (item.Center+new Vector2(0, Main.itemTexture[item.type].Height-4)) - Main.screenPosition;
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
-			float vel = item.velocity.X / 6f;
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
 			{
-				spriteBatch.Draw(Main.itemTexture[item.type], drawPos + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * 3f).RotatedBy(vel), null, Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f), vel, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+				spriteBatch.Draw(Main.itemTexture[item.type], (drawPos + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * 3f).RotatedBy(vel)), null, Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f), vel, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, vel, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			SGAmod.FadeInEffect.Parameters["fadeColor"].SetValue(2f);
 			SGAmod.FadeInEffect.Parameters["alpha"].SetValue(0.50f);
@@ -1950,7 +1948,8 @@ namespace SGAmod.Items
 			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, vel, Main.itemTexture[item.type].Size() / 2f, scale / 15f, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			return false;
 		}
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)

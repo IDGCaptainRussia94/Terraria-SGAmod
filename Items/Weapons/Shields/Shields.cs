@@ -558,7 +558,7 @@ namespace SGAmod.Items.Weapons.Shields
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shield of Discord");
-			Tooltip.SetDefault("Left Click to teleport, same Rod of Discord rules apply\nBlocking a hit gives a few seconds of Chaos State\nPerforming a Just Block removes Chaos State from the player");
+			Tooltip.SetDefault("Left Click to teleport, same Rod of Discord rules apply\nBlocking a hit gives 10 seconds of Chaos State\nPerforming a Just Block removes Chaos State from the player");
 			Item.staff[item.type] = true;
 		}
 
@@ -689,7 +689,7 @@ namespace SGAmod.Items.Weapons.Shields
 
         public override bool HandleBlock(ref int damage, Player player2)
         {
-			player2.AddBuff(BuffID.ChaosState, 60 * 3);
+			player2.AddBuff(BuffID.ChaosState, 60 * 10);
 			return base.HandleBlock(ref damage, player2);
         }
 

@@ -3,9 +3,40 @@ Changelog:
 
 3.625-(2/10/22)-beta 3
 
+
 --Changed:
 
 -Reduced OP mod scaling a bit
+
+-Reworked Armchair General: Shiny Stone is now exclusive to a mount you get into if you stand still, this mount also gives defense and endurance as well
+
+-Nerfed IDGCaptainRussia94's Dragon Dressings: Reduced max minions by 1 (from 2)
+
+-Nerfed IDGCaptainRussia94's Dergon Disguise: Reduced summon damage to 30% (from 40%)
+
+-Space Comets are now half as common and drop less
+
+-Updated the space station
+
+--New changes to Murk:
+-Should no longer be able to smack down while teleporting
+
+--New changes to Phaethon:
+-Removed debug text
+-Final phase teleport now has a limited distance teleport
+
+--New changes to S.Pinky:
+-Changed the slimes that spawn during phase 1, and they now spawn off screen instead of appearing out of thin air
+
+--New changes to Hellion Core:
+-phase 1 and phase 2 worm segments now have an intro fading in, and are loosely connected VS being tightly connected like most worm bosses, there is a visual chain between them
+
+
+--Fixed
+
+-DoT stacks killing the player on respawning, they are now cleared on death
+
+-HOPEFULLY FOR REAL THIS TIME, fixed Hellion Core vanishing during the fight (or even at the start of it)
 
 
 

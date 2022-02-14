@@ -2479,7 +2479,9 @@ namespace SGAmod.NPCs
 						{
 							for (int i = 0; i <= 2; i++)
 							{
-								int newguy5 = NPC.NewNPC((int)npc.Center.X + 150 - Main.rand.Next(300), (int)npc.Center.Y + 30, 1);
+								//int newguy5 = NPC.NewNPC((int)npc.Center.X + 150 - Main.rand.Next(300), (int)npc.Center.Y + 30, 1);
+								int newguy5;
+								Hellion.Assist.SpawnOnPlayerButNoTextAndReturnValue(npc.target,1,out newguy5);
 								Main.npc[newguy5].life = npc.lifeMax / 30;
 								Main.npc[newguy5].lifeMax = npc.lifeMax / 30;
 								Main.npc[newguy5].life = npc.lifeMax / 30;
@@ -2507,18 +2509,22 @@ namespace SGAmod.NPCs
 					{
 						if (aicounter % 64 == 0)
 						{
-							int newguy55 = NPC.NewNPC((int)P.Center.X + Main.rand.Next(-300, 300), (int)P.Center.Y - 320, 16, npc.whoAmI);
+							//int newguy55 = NPC.NewNPC((int)P.Center.X + Main.rand.Next(-300, 300), (int)P.Center.Y - 320, 16, npc.whoAmI);
+							int newguy55;
+							Hellion.Assist.SpawnOnPlayerButNoTextAndReturnValue(npc.target, NPCID.MotherSlime, out newguy55);
 							Main.npc[newguy55].life = npc.lifeMax / 12;
 							Main.npc[newguy55].lifeMax = npc.lifeMax / 12;
 							Main.npc[newguy55].boss = false;
-							Main.npc[newguy55].defense = 40;
+							Main.npc[newguy55].defense = 60;
 							Main.npc[newguy55].noTileCollide = true;
 							Main.npc[newguy55].noGravity = true;
 							Main.npc[newguy55].aiStyle = 49;
 							Main.npc[newguy55].damage = 55;
 							Main.npc[newguy55].netUpdate = true;
 
-							int newguy16 = NPC.NewNPC((int)P.Center.X - 800, (int)P.Center.Y - 30, 1);
+							//int newguy16 = NPC.NewNPC((int)P.Center.X - 800, (int)P.Center.Y - 30, 1);
+							int newguy16;
+							Hellion.Assist.SpawnOnPlayerButNoTextAndReturnValue(npc.target, NPCID.Crimslime, out newguy16);
 							Main.npc[newguy16].life = npc.lifeMax / 15;
 							Main.npc[newguy16].lifeMax = npc.lifeMax / 15;
 							Main.npc[newguy16].boss = false;
@@ -2529,11 +2535,13 @@ namespace SGAmod.NPCs
 							Main.npc[newguy16].damage = 63;
 							Main.npc[newguy16].netUpdate = true;
 
-							int newguy116 = NPC.NewNPC((int)P.Center.X + 800, (int)P.Center.Y - 30, 1);
+							//int newguy116 = NPC.NewNPC((int)P.Center.X + 800, (int)P.Center.Y - 30, 1);
+							int newguy116;
+							Hellion.Assist.SpawnOnPlayerButNoTextAndReturnValue(npc.target, NPCID.CorruptSlime, out newguy116);
 							Main.npc[newguy116].life = npc.lifeMax / 15;
 							Main.npc[newguy116].lifeMax = npc.lifeMax / 15;
 							Main.npc[newguy116].boss = false;
-							Main.npc[newguy116].defense = 60;
+							Main.npc[newguy116].defense = 50;
 							Main.npc[newguy116].noTileCollide = true;
 							Main.npc[newguy116].noGravity = true;
 							Main.npc[newguy116].aiStyle = 10;
@@ -2547,7 +2555,9 @@ namespace SGAmod.NPCs
 					{
 						if (aicounter % 200 == 0)
 						{
-							int newguy5 = NPC.NewNPC((int)npc.Center.X, (int)P.Center.Y, NPCID.DungeonSlime);
+							//int newguy5 = NPC.NewNPC((int)npc.Center.X, (int)P.Center.Y, NPCID.DungeonSlime);
+							int newguy5;
+							Hellion.Assist.SpawnOnPlayerButNoTextAndReturnValue(npc.target, 1, out newguy5);
 							Main.npc[newguy5].life = npc.lifeMax / 3;
 							Main.npc[newguy5].lifeMax = npc.lifeMax / 3;
 							Main.npc[newguy5].life = npc.lifeMax / 3;

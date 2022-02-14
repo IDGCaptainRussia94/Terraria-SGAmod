@@ -1183,7 +1183,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/MidasMinionBuff";
+			texture = "SGAmod/Buffs/IceFairiesBuff";
 			return true;
 		}
 

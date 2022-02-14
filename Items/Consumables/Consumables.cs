@@ -426,7 +426,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Joyful Shroom");
-			Tooltip.SetDefault("This is not a normal Mushroom...\nSimply holding too many may have side effects...");
+			Tooltip.SetDefault("This is not a normal Mushroom...\nSimply holding too many at once may have side effects...");
 		}
 
 		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)

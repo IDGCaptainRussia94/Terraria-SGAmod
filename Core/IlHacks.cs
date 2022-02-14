@@ -428,7 +428,7 @@ namespace SGAmod
 
 		}
 
-		//Draws Hellion's Stary effect in the same layer as Moonlord's, also draws stuff right before worm enemies
+		//Draws Hellion's Stary effect in the same layer as Moonlord's, also draws stuff right before worm enemies AND right after the sky and before tile BGs
 		private static void DrawBehindVoidLayers(ILContext il)
 		{
 			ILCursor c = new ILCursor(il);

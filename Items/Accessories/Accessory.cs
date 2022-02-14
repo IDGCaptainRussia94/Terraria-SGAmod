@@ -15,6 +15,7 @@ using SGAmod.Items.Weapons;
 using SGAmod.Buffs;
 using Terraria.Utilities;
 using System.Linq;
+using SGAmod.Items.Mounts;
 
 namespace SGAmod.Items.Accessories
 {
@@ -1802,7 +1803,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Transformer");
-			Tooltip.SetDefault("Electric Bolts will gain an additional arc\n+2000 Max Electric Charge\n+1 per Active Cooldown Stack passive Electric Charge Rate");
+			Tooltip.SetDefault("Electric Bolts will gain an additional arc\n+2000 Max Electric Charge\n+1 passive Electric Charge Rate, per Active Cooldown Stack");
 		}
 
 		public override void SetDefaults()
@@ -4095,6 +4096,39 @@ namespace SGAmod.Items.Accessories
 
 	public class BungalHealingAura : ModProjectile
 	{
+		public class ShroomEffects
+        {
+			public Vector2 position;
+			public Vector2 velocity;
+			public float fadeIn = 0f;
+			public float fadeInRate;
+			public int timeLeft = 0;
+			public int timeMax = 0;
+			public int timeAdd = 0;
+
+			public ShroomEffects(Vector2 position,Vector2 velocity,int time,float fadeInRate)
+            {
+				this.position = position;
+				this.velocity = velocity;
+				this.fadeInRate = fadeInRate;
+				this.timeMax = time;
+				this.timeLeft = time;
+			}
+
+			public void Update()
+            {
+				position += velocity;
+				fadeIn += fadeInRate;
+				timeAdd++;
+				timeLeft -= 1;
+			}
+			public void Draw()
+            {
+
+            }
+
+		}
+
 		Effect effect => SGAmod.TrailEffect;
 		public virtual float RingSize
 		{
@@ -4231,16 +4265,22 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Armchair General");
-			Tooltip.SetDefault("'Lead not by example'\nIncreases your maximum minions by 3, and sentries by 2\n50% Increased Summon damage and increased Minion knockback\nIncreases max electrical charge by 1000 and boosts auras by 1 level\nWhen standing still you emit a healing fungal aura and regenerate life much faster\nYour stationary sentries also emit this aura\n" + Idglib.ColorText(Color.Red,"All other damage and crit chance is reduced by 25%"));
+			Tooltip.SetDefault("'Lead not by example'\nWhen standing still you get in your chair, and emit a healing fungal aura\nYour stationary sentries also emit this aura\nWhile in your chair, you gain knockback immunity, defence, and regen, but can't move\nHide accessory to disable getting into the chair\nIncreases your maximum minions by 3, and sentries by 2\n50% Increased Summon damage and increased Minion knockback\nIncreases max electrical charge by 1000 and boosts auras by 1 level\n\n" + Idglib.ColorText(Color.Red,"All other damage and crit chance is reduced by 25%"));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			base.UpdateAccessory(player, hideVisual);
+
+			if (!hideVisual && player.SGAPly().bustlingFungus.Item2 == 200 && (player.mount == null || !player.mount.Active))
+			{
+				player.mount.SetMount(ModContent.MountType<GeneralsArmchairMount>(), player);
+				//player.AddBuff(ModContent.BuffType<GeneralsArmchairBuff>(), 10);
+			}
+
 			ModContent.GetInstance<BustlingFungus>().UpdateAccessory(player, hideVisual);
 			player.maxMinions += 1;
 			player.minionKB += 1;
-			player.shinyStone = true;
 			player.dd2Accessory = true;//10%
 			player.minionDamage += 0.30f;
 			player.BoostAllDamage(-0.15f,-15);

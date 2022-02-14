@@ -1642,18 +1642,37 @@ namespace SGAmod
 			return dontneedthem;
 
 		}
+
+		public static Type whereWereWeForDrawing = null;
+
 		internal static void DrawBehindAllTilesButBeforeSky()
 		{
+			whereWereWeForDrawing = null;
 			if (!Main.gameMenu)
-			Items.Placeable.CelestialMonolithManager.DrawMonolithAura();
+			{
+				whereWereWeForDrawing = SGAPocketDim.WhereAmI;
+				Items.Placeable.CelestialMonolithManager.DrawMonolithAura();
+				if (whereWereWeForDrawing != null)
+				{
+					SGAPocketDim.PassDraws(0);
+				}
+
+			}
 		}
 		internal static void DrawBehindMoonMan()
 		{
 			NPCs.Hellion.ShadowParticle.Draw();
+			if (whereWereWeForDrawing != null)
+            {
+				SGAPocketDim.PassDraws(1);
+			}
 		}
 		internal static void DrawBehindWormBoys()
 		{
-			//nothing yet
+			if (whereWereWeForDrawing != null)
+			{
+				SGAPocketDim.PassDraws(2);
+			}
 		}
 
 #if Dimensions

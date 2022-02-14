@@ -120,9 +120,14 @@ namespace SGAmod
 						SGAPlayer.DoHurt(sply, damageSource, ref Damage, ref hitDirection, pvp, quiet, ref Crit, cooldownCounter);
 					//}
 				}
+				if (sply.undyingValor)
+                {
+					goto valor;
+                }
 				return orig(self, damageSource, Damage, hitDirection, pvp, quiet, Crit, cooldownCounter);
 			}
 
+		valor:
 			if (sply.undyingValor)
 			{
 				double ddd = orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);

@@ -847,8 +847,8 @@ namespace SGAmod
 					count += 1;
 					dot += stack.Item2;
 				}
-				dot *= 1f + ((count-1) / 3f);
-				float scalepercemn = (Math.Min(0.50f+(DoTResist/2f), 1f));
+				dot *= 1f + ((count-1) / 5f);
+				float scalepercemn = (Math.Min(0.60f+(DoTResist*0.40f), 1f));
 				player.lifeRegen -= (int)(dot/scalepercemn);
 				DoTStack = DoTStack.Select(testby => (testby.Item1 - 1, testby.Item2)).Where(testby => testby.Item1 > 0).ToList();
 			}

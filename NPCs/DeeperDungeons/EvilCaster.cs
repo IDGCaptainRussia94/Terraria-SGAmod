@@ -22,8 +22,8 @@ namespace SGAmod.NPCs.DeeperDungeons
             npc.height = 48;
             npc.damage = 40;
             npc.defense = 7;
-            npc.lifeMax = 160;
-            npc.value = 190f;
+            npc.lifeMax = 600;
+            npc.value = 500f;
             npc.aiStyle = 8;
             npc.knockBackResist = 0.3f;
             npc.buffImmune[BuffID.CursedInferno] = true;

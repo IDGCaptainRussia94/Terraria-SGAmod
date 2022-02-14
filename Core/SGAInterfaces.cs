@@ -64,6 +64,10 @@ namespace SGAmod
 	{
 
 	}
+	interface IBreathableWallType
+	{
+
+	}
 	interface IHellionDrop
 	{
 		int HellionDropAmmount();

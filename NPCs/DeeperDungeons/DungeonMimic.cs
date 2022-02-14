@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -36,41 +37,12 @@ namespace SGAmod.NPCs.DeeperDungeons
 
         public override void NPCLoot()
         {
-            switch(Main.rand.Next(10))
-            {
-            case 0:
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Accessories.RingOfRespite>());
-                break;
-            case 1:
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Accessories.NinjaSash>());//Ninja's Stash
-                break;
-            case 2:
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.Auras.StoneBarrierStaff>());
-                break;
-            case 3:
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Accessories.DiesIraeStone>());
-                break;
-            case 4:
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Accessories.MagusSlippers>());
-                break;
-            case 5:
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.Auras.BeserkerAuraStaff>());//Berserker Aura Staff
-                break;
-            case 6:
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.EnchantedFury>());
-                break;
-            case 7:
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Accessories.CardDeckPersona>());//Hearts of the Cards
-                break;
-            case 8:
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Accessories.YoyoTricks>());//Professional's Drop
-                break;
-            case 9:
-                Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.Almighty.Megido>(), Main.rand.Next(1, 3));
-                break;
-            default:
-                break;
-            }
+            List<int> itemx = Dimensions.DeeperDungeon.CommonItems.ToList();
+            itemx.AddRange(Dimensions.DeeperDungeon.RareItems);
+            int itemz = itemx[Main.rand.Next(itemx.Count)];
+
+            Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, itemz, itemz == ModContent.ItemType<Items.Weapons.Almighty.Megido>() ? Main.rand.Next(1, 3) : 1);
+
         }
     }
 }

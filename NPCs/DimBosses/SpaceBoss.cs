@@ -123,6 +123,7 @@ namespace SGAmod.Dimensions.NPCs
                 if (!openUp)
                 {
                     openUp = true;
+
                     SoundEffectInstance sound = Main.PlaySound(SoundID.Item, (int)BasePosition.X, (int)BasePosition.Y, 32);
                     if (sound != null)
                     {
@@ -316,17 +317,27 @@ namespace SGAmod.Dimensions.NPCs
 
                 float angle = ((index/(float)indexMax)-0.50f);// (float)Math.Sin(((index / (float)indexMax) + timers) * MathHelper.TwoPi)+MathHelper.PiOver2;
 
-                gothere = gothere.RotatedBy((angle * (MathHelper.PiOver2*1.25f)) + vel.ToRotation() + MathHelper.Pi) * (3f- MathHelper.Clamp(velspeed / 5f, 1f, 3f))*32f;
+                gothere = gothere.RotatedBy((angle * (MathHelper.PiOver2*1.25f)) + vel.ToRotation() + MathHelper.Pi) * (3f- MathHelper.Clamp(velspeed / 12f, 1f, 2.25f))*32f;
 
                 bossOffset = Vector2.SmoothStep(bossOffset, boss.npc.Center + gothere, MathHelper.Clamp(stateTimer/600f,0f,MathHelper.Clamp(velspeed/8f,0.4f,2f))*0.47f);
 
                 if (velspeed > 2)
                 {
+
+                    SpaceBoss.SpaceBossStardust dusts = new SpaceBoss.SpaceBossStardust(posa, Vector2.Normalize(gothere) * (velspeed/6f)+Main.rand.NextVector2Circular(3f,3f)*(velspeed/26f),Main.rand.Next(20,30));
+                    dusts.scale = Vector2.One*0.6f;
+                    dusts.fadeIn = 0.32f;
+                    dusts.alpha = 1f;
+                    dusts.fadeTime = Main.rand.Next(10,30);
+                    boss.stardustEffectsOnTopOfRocks.Add(dusts);
+
+                    /*
                     int dust = Dust.NewDust(posa, 0, 0, DustID.BlueCrystalShard);
                     Main.dust[dust].scale = 1f;
                     Main.dust[dust].alpha = 200;
                     Main.dust[dust].velocity = Vector2.Normalize(gothere) * (velspeed);
                     Main.dust[dust].noGravity = true;
+                    */
                 }
             }
 
@@ -813,10 +824,14 @@ namespace SGAmod.Dimensions.NPCs
 
             if (npc.ai[0] == 12510)
             {
-                boss.celerityBuff = 10;
+                boss.celerityBuff = 1;
             }
 
-            boss.celerityBuff += 20;
+            boss.celerityBuff += 5;
+
+            if (boss.celerityBuff >300)
+                boss.celerityBuff += 100;
+
             if (boss.celerityBuff > 3000)
             {
                 boss.celerityBuff = 3000;
@@ -990,14 +1005,24 @@ namespace SGAmod.Dimensions.NPCs
                     sound.Volume = 1.0f;
                 }
 
-                for (int i = 0; i < 60; i += 1)
+                
+                for (int i = 0; i < 180; i += 1)
                 {
                     Vector2 offset = Main.rand.NextVector2Circular(1f, 1f);
-                    int dust = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y) + offset * Main.rand.NextFloat(8f, 10f+i)/5f, 0, 0, ModContent.DustType<LeviDust>());
+                    Vector2 loca = new Vector2(npc.Center.X, npc.Center.Y) + offset * Main.rand.NextFloat(8f, 10f + i) / 5f;
+
+                    SpaceBoss.SpaceBossStardust dusts = new SpaceBoss.SpaceBossStardust(loca, (Vector2.Normalize(offset) * (float)(2f * Main.rand.NextFloat(0.75f, 1.50f) * (i / 6f)))*0.250f, 40+(i/2));
+                    dusts.scale = Vector2.One*1.5f;
+                    dusts.fadeIn = 20;
+                    dusts.fadeTime = 160;
+                    boss.stardustEffectsOnTopOfRocks.Add(dusts);
+
+                    int dust = Dust.NewDust(loca, 0, 0, ModContent.DustType<LeviDust>());
                     Main.dust[dust].scale = 2.5f;
                     Main.dust[dust].velocity = Vector2.Normalize(offset) * (float)(2f * Main.rand.NextFloat(0.75f, 1.50f)*(i/6f));
                     Main.dust[dust].noGravity = true;
                 }
+                
 
                 NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<SpaceBossShadowNebulaRepair>());
             }
@@ -1014,11 +1039,21 @@ namespace SGAmod.Dimensions.NPCs
 
                         if (npc.ai[0] < 12300)
                         {
+
+                            SpaceBoss.SpaceBossStardust dusts = new SpaceBoss.SpaceBossStardust(((SpaceBossRock)eyxxe.boss).Position, (-Offset * ((npc.ai[0] - 12000) / 300f) * 16f) + Main.rand.NextVector2Circular(4f, 4f), Main.rand.Next(10, 20));
+                            dusts.fadeIn = 4;
+                            dusts.fadeTime = 6;
+                            dusts.alpha = 0.5f;
+                            dusts.scale = Vector2.One * (npc.ai[0] - 12000) / 200f;
+                            boss.stardustEffectsOnTopOfRocks.Add(dusts);
+
+                            /*
                             int dust = Dust.NewDust(((SpaceBossRock)eyxxe.boss).Position, 0, 0, ModContent.DustType<LeviDust>());
                             Main.dust[dust].velocity = -Offset * ((npc.ai[0] - 12000) / 300f)*8f;
                             Main.dust[dust].scale = (npc.ai[0] - 12000) / 200f;
                             Main.dust[dust].alpha = 200;
                             Main.dust[dust].noGravity = true;
+                            */
                         }
 
 
@@ -1727,10 +1762,15 @@ namespace SGAmod.Dimensions.NPCs
     public class SpaceBoss : ModNPC, ISGABoss, IDrawThroughFog
     {
         public List<SpaceBossStardust> stardustEffects = new List<SpaceBossStardust>();
+        public List<SpaceBossStardust> stardustEffectsOnTopOfRocks = new List<SpaceBossStardust>();
+
         public class SpaceBossStardust : HavocGear.Items.Weapons.StardusterCharging.StardusterProjectile
         {
             public float rotation = 0;
             public float rotationAdd = 0;
+            public float fadeTime = 30f;
+            public float fadeIn = 30f;
+            public float alpha = 1f;
             public override Vector2 Position
             {
                 get
@@ -1738,7 +1778,7 @@ namespace SGAmod.Dimensions.NPCs
                     return position;
                 }
             }
-            public SpaceBossStardust(Vector2 position, Vector2 velocity,int timeLeft = 30) : base(position,velocity)
+            public SpaceBossStardust(Vector2 position, Vector2 velocity, int timeLeft = 30) : base(position, velocity)
             {
                 scale = Vector2.One;
                 this.position = position;
@@ -1746,6 +1786,8 @@ namespace SGAmod.Dimensions.NPCs
                 this.timeLeft = timeLeft;
                 timeLeftMax = timeLeft;
                 rando = Main.rand.Next();
+                rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                rotationAdd = Main.rand.NextFloat(-1f, 1f) * 0.05f;
             }
             public override void Update()
             {
@@ -2258,10 +2300,22 @@ namespace SGAmod.Dimensions.NPCs
                 UnifiedRandom randomrock = new UnifiedRandom(npc.whoAmI * 8);
                 foreach (SpaceBossEye eye in Eyes)
                 {
-
                     if (eye.boss != this)
                     {
+
                         eye.sleep += 0.015f;
+                        if (!eye.openUp && eye.sleep > 0)
+                        {
+                            for (int i = 0; i < 10; i += 1)
+                            {
+                                SpaceBoss.SpaceBossStardust dusts = new SpaceBoss.SpaceBossStardust(eye.BasePosition, Main.rand.NextVector2Circular(1f, 1f) * (i / 20f), 50);
+                                dusts.scale = Vector2.One * (1.5f + (i / 30f));
+                                dusts.alpha = 0.75f;
+                                dusts.fadeIn = 20;
+                                dusts.fadeTime = 20;
+                                stardustEffectsOnTopOfRocks.Add(dusts);
+                            }
+                        }
                         eye.beamAlpha += 0.015f;
 
                         if (eye.sleep > 1f)
@@ -2291,7 +2345,6 @@ namespace SGAmod.Dimensions.NPCs
                             //canAdvance = false;
                         }
                     }
-
                 }
             }
             else
@@ -2308,13 +2361,28 @@ namespace SGAmod.Dimensions.NPCs
                     }
                 }
 
-                for (int i = 0; i < (boom ? 64 : 2); i += 1)
+                float timeScaleUp = npc.ai[0] / 120f;
+
+                for (int i = 0; i < (boom ? 150 : 3); i += 1)
                 {
+
                     Vector2 offset = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
-                    int dust = Dust.NewDust(new Vector2(npc.Center.X, npc.Center.Y) + offset * Main.rand.NextFloat(16f, 32f), 0, 0, DustID.BlueCrystalShard);
-                    Main.dust[dust].scale = 1.5f;
-                    Main.dust[dust].velocity = Vector2.Normalize(-offset) * (float)((boom ? 8f : 1f) * Main.rand.NextFloat(0.50f, 2.50f));
+                    Vector2 vect = new Vector2(npc.Center.X, npc.Center.Y);
+                    Vector2 vect2 = offset * Main.rand.NextFloat(16f, 32f);
+                    Vector2 vect3 = Vector2.Normalize(-offset) * (float)((boom ? 4f : 1f) * Main.rand.NextFloat(0.50f, 2.50f));
+
+                    SpaceBoss.SpaceBossStardust dusts = new SpaceBoss.SpaceBossStardust(vect + vect2 * (2.5f + (timeScaleUp * 2f)), boom ? vect3 : vect3 * (1f + (timeScaleUp * 2f)), boom ? Main.rand.Next(60, 90) : 25);
+                    dusts.scale = Vector2.One * 1.00f;
+                    dusts.fadeIn = boom ? 50 : 10;
+                    dusts.fadeTime = boom ? 50 : 10;
+                    stardustEffectsOnTopOfRocks.Add(dusts);
+
+
+                    int dust = Dust.NewDust(vect2, 0, 0, DustID.BlueCrystalShard);
+                    Main.dust[dust].scale = 0.5f;
+                    Main.dust[dust].velocity = vect3;
                     Main.dust[dust].noGravity = true;
+
                 }
             }
 
@@ -2532,7 +2600,16 @@ namespace SGAmod.Dimensions.NPCs
             Initiate();
             state = 0;
             npc.localAI[0] += 1;
-            stardustEffects.ForEach(testby => testby.Update());
+            if (stardustEffects.Count > 0)
+            {
+                stardustEffects.ForEach(testby => testby.Update());
+                stardustEffects = stardustEffects.Where(testby => testby.timeLeft > 0).ToList();
+            }
+            if (stardustEffectsOnTopOfRocks.Count > 0)
+            {
+                stardustEffectsOnTopOfRocks.ForEach(testby => testby.Update());
+                stardustEffectsOnTopOfRocks = stardustEffectsOnTopOfRocks.Where(testby => testby.timeLeft > 0).ToList();
+            }
 
             if (npc.ai[3] > 1 && npc.life > 0 && !DyingState)
             {
@@ -2741,10 +2818,10 @@ namespace SGAmod.Dimensions.NPCs
 
                         float angle = prog.Item3;
 
-                        float percentToSun = (prog.Item1* prog.Item1);
-                        Vector2 pos = Vector2.Lerp(npc.Center - Main.screenPosition, sky.sunPosition, 1f-(percentToSun));
+                        float percentToSun = (prog.Item1 * prog.Item1);
+                        Vector2 pos = Vector2.Lerp(npc.Center - Main.screenPosition, sky.sunPosition, 1f - (percentToSun));
 
-                        spriteBatch.Draw(tex, pos + (prog.Item4 * (percentToSun)), null, (Color.Lerp(Color.Yellow, Color.Blue, percentToSun) * (prog.Item2)*MathHelper.Clamp(percentToSun*4f,0f,1f) * (shieldeffect / 15f)) * sky.skyalpha, angle, starhalf, (0.25f + percentToSun * 0.5f), SpriteEffects.None, 0f);
+                        spriteBatch.Draw(tex, pos + (prog.Item4 * (percentToSun)), null, (Color.Lerp(Color.Yellow, Color.Blue, percentToSun) * (prog.Item2) * MathHelper.Clamp(percentToSun * 4f, 0f, 1f) * (shieldeffect / 15f)) * sky.skyalpha, angle, starhalf, (0.25f + percentToSun * 0.5f), SpriteEffects.None, 0f);
 
                         index2 += 1;
                     }
@@ -2767,6 +2844,44 @@ namespace SGAmod.Dimensions.NPCs
             }
         }
 
+        public void DrawGlowStuffs(SpriteBatch spriteBatch, int layer)
+        {
+
+            Texture2D glowtex = mod.GetTexture("Glow");
+            Vector2 glowOrigin = glowtex.Size() / 2f;
+
+            if (layer == 0)
+            {
+                foreach (SpaceBossStardust dust in stardustEffects)
+                {
+                    float alpha2 = MathHelper.Clamp(dust.timeStart / dust.fadeIn, 0f, Math.Min(dust.timeLeft / dust.fadeTime, 1f));
+                    spriteBatch.Draw(glowtex, dust.Position - Main.screenPosition, null, Color.WhiteSmoke * alpha2 * dust.alpha * 0.75f, 0, glowOrigin, dust.scale, SpriteEffects.None, 0f);
+                }
+                foreach (SpaceBossStardust dust in stardustEffects)
+                {
+                    Texture2D starTex = Main.starTexture[dust.rando % Main.starTexture.Length];
+
+                    float alpha2 = MathHelper.Clamp(dust.timeStart / dust.fadeIn, 0f, Math.Min(dust.timeLeft / dust.fadeTime, 1f));
+                    spriteBatch.Draw(starTex, dust.Position - Main.screenPosition, null, Color.White * alpha2 * dust.alpha, 0, starTex.Size() / 2f, dust.scale, SpriteEffects.None, 0f);
+                }
+            }
+            if (layer == 1)
+            {
+                foreach (SpaceBossStardust dust in stardustEffectsOnTopOfRocks)
+                {
+                    float alpha2 = MathHelper.Clamp(dust.timeStart / dust.fadeIn, 0f, Math.Min(dust.timeLeft / dust.fadeTime, 1f));
+                    spriteBatch.Draw(glowtex, dust.Position - Main.screenPosition, null, Color.WhiteSmoke * alpha2 * dust.alpha * 0.75f, 0, glowOrigin, dust.scale, SpriteEffects.None, 0f);
+                }
+                foreach (SpaceBossStardust dust in stardustEffectsOnTopOfRocks)
+                {
+                    Texture2D starTex = Main.starTexture[dust.rando % Main.starTexture.Length];
+
+                    float alpha2 = MathHelper.Clamp(dust.timeStart / dust.fadeIn, 0f, Math.Min(dust.timeLeft / dust.fadeTime, 1f));
+                    spriteBatch.Draw(starTex, dust.Position - Main.screenPosition, null, Color.White * alpha2 * dust.alpha, 0, starTex.Size() / 2f, dust.scale, SpriteEffects.None, 0f);
+                }
+            }
+        }
+
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
@@ -2777,6 +2892,8 @@ namespace SGAmod.Dimensions.NPCs
             Rectangle bufferrect = new Rectangle((int)Main.screenPosition.X - bufferRange, (int)Main.screenPosition.Y - bufferRange, (int)Main.screenPosition.X + Main.screenWidth + bufferRange, (int)Main.screenPosition.Y + Main.screenHeight + bufferRange);
             int bufferRange2 = 640;
             Rectangle bufferrect2 = new Rectangle((int)Main.screenPosition.X - bufferRange2, (int)Main.screenPosition.Y - bufferRange2, (int)Main.screenPosition.X + Main.screenWidth + bufferRange2, (int)Main.screenPosition.Y + Main.screenHeight + bufferRange2);
+
+            DrawGlowStuffs(spriteBatch, 0);
 
             if (!bufferrect2.Contains(npc.Center.ToPoint()))
             {
@@ -2820,10 +2937,12 @@ namespace SGAmod.Dimensions.NPCs
             Vector2 rocksmallorig = new Vector2(rocksmall.Width, rocksmall.Height / 2f);
             Vector2 rocklargeorig = new Vector2(rocklarge.Width, rocklarge.Height / 2f);
 
+            Texture2D glowtex = mod.GetTexture("Glow");
+            Vector2 glowOrigin = glowtex.Size() / 2f;
+
+
             if (celerityBuff > 0)
             {
-                Texture2D glowtex = mod.GetTexture("Glow");
-                Vector2 glowOrigin = glowtex.Size() / 2f;
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
@@ -3083,6 +3202,8 @@ namespace SGAmod.Dimensions.NPCs
                     spriteBatch.Draw(eyetex, npc.Center - Main.screenPosition, new Rectangle(0, 0, (int)eyetexorig.X * 2, (int)eyetexorig.Y), Color.White * 0.25f * MathHelper.Clamp(alpha / 200f, 0f, Math.Max(0.5f - (npc.ai[0] - 100000) * 0.025f, 0)), f + Main.GlobalTime * (index % 2 == 0 ? 1f : -1f), eyetexorig, new Vector2(0.75f, 4f * MathHelper.Clamp(alpha / 200f, 0f, 2f) + (extraadd / 5f)) * alpha / 24f, SpriteEffects.None, 0f);
                 }
             }
+
+            DrawGlowStuffs(spriteBatch,1);
 
             //Shield
 

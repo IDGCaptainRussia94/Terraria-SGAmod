@@ -29,6 +29,7 @@ using SGAmod.NPCs;
 using SGAmod.Dimensions.Tiles;
 using SGAmod.Tiles.Monolith;
 using SGAmod.Items.Accessories;
+using SGAmod.Dimensions.Walls;
 
 namespace SGAmod.Dimensions
 {
@@ -142,7 +143,7 @@ namespace SGAmod.Dimensions
         public string loopsnd = "";
         public SoundEffectInstance loopingSiren = default;
         public int maxSecurity = 5;
-        public int securitySpawnDelay = 120;
+        public int securitySpawnDelay = 80;
         public List<SecurityEnemy> securityToSpawn = new List<SecurityEnemy>();
         public List<(SecurityEnemy,Vector3, NPC, int)> securitySpawned = new List<(SecurityEnemy,Vector3, NPC,int)>();
         public List<NPC> securitySpawnedNPCs = new List<NPC>();
@@ -151,19 +152,21 @@ namespace SGAmod.Dimensions
 
 
         public int thickness = 3;
-        public int tileType = TileID.MeteoriteBrick;
-        public int tileTypeInside = TileID.CopperPlating;
-        public int tileTypePlatform = TileID.TeamBlockWhitePlatform;
-        public int tileTypeSolidPlatform = TileID.MartianConduitPlating;
-        public int tileTypeLight = TileID.DiamondGemspark;
+        public int tileType = ModContent.TileType<UnbreakableMeteoriteBrick>();// TileID.MeteoriteBrick;
+        public int tileTypeInside = ModContent.TileType<UnbreakableCopperPlating>();// TileID.CopperPlating;
+        public int tileTypePlatform = ModContent.TileType<UnbreakableSpacePlatform>();
+        public int tileTypeSolidPlatform = ModContent.TileType<UnbreakableMartianPlating>();// TileID.MartianConduitPlating;
+        public int tileTypeLight = ModContent.TileType<UnbreakableGemspark>();//TileID.DiamondGemspark;
 
         public int tileTypeMainDoorTile = TileID.RubyGemspark;
+       public int tileTypeBubbleTile = ModContent.TileType<UnbreakableBubbleTile>();
 
-        public int wallType = WallID.IridescentBrick;
-        public int wallTypeExitWay = WallID.IridescentBrick;
-        public int wallTypeConnector = WallID.TinPlating;
+        public int wallType = ModContent.WallType<UnbreakableIridescentBrick>();// WallID.IridescentBrick;
+        public int wallTypeExitWay = ModContent.WallType<UnbreakableIridescentBrick>();
+        public int wallTypeConnector = ModContent.WallType<UnbreakableTinPlating>();// WallID.TinPlating
+       public int wallTypeBubble = ModContent.WallType<UnbreakableBubblegumWall>();// WallID.TinPlating
 
-        public int glassType = WallID.BlueStainedGlass;
+        public int glassType = WallID.Glass;
         public NPC focusCrystal = null;
         public List<NPC> stationDefenses = new List<NPC>();
 
@@ -180,6 +183,7 @@ namespace SGAmod.Dimensions
         {
             securityToSpawn.Clear();
             securitySpawned.Clear();
+            securityActivated = false;
 
             foreach (NPC npc in stationDefenses)
             {
@@ -196,28 +200,57 @@ namespace SGAmod.Dimensions
 
             ResetSecurity();
 
-            for (int i = 0; i < 5; i += 1)
+            for (int i = 0; i < 2; i += 1)
             {
-                int typeofenemy = NPCID.GrayGrunt;
+                int typeofenemy = NPCID.GigaZapper;
                 SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 120);
                 securityToSpawn.Add(secenemy);
             }
 
-            for (int i = 0; i < 3; i += 1)
+            for (int i = 0; i < 2; i += 1)
+            {
+                int typeofenemy = NPCID.RayGunner;
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 90);
+                securityToSpawn.Add(secenemy);
+            }
+
+            for (int i = 0; i < 2; i += 1)
             {
                 int typeofenemy = NPCID.MartianOfficer;
-                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 220);
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 120);
+                securityToSpawn.Add(secenemy);
+            }
+
+            for (int i = 0; i < 2; i += 1)
+            {
+                int typeofenemy = NPCID.BrainScrambler;
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 120);
                 securityToSpawn.Add(secenemy);
             }
 
             for (int i = 0; i < 2; i += 1)
             {
                 int typeofenemy = NPCID.MartianEngineer;
-                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 150);
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 90);
+                securityToSpawn.Add(secenemy);
+            }
+
+            for (int i = 0; i < 2; i += 1)
+            {
+                int typeofenemy = NPCID.GrayGrunt;
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 60);
                 securityToSpawn.Add(secenemy);
             }
 
             securityToSpawn = securityToSpawn.OrderBy(testby => Main.rand.Next()).ToList();
+
+            for (int i = 0; i < 6; i += 1)
+            {
+                int typeofenemy = NPCID.GrayGrunt;
+                SecurityEnemy secenemy = new SecurityEnemy(typeofenemy, 40);
+                securityToSpawn.Insert(0,secenemy);
+            }
+
         }
 
         public virtual void TriggerSecurity()
@@ -299,7 +332,7 @@ namespace SGAmod.Dimensions
 
                 if (securitySpawnDelay < 1)
                 {
-                    if (securitySpawned.Count < maxSecurity)
+                    if (securitySpawned.Count < maxSecurity && securitySpawnedNPCs.Count < maxSecurity)
                     {
                         SpawnSecurity();
                     }
@@ -363,7 +396,6 @@ namespace SGAmod.Dimensions
 
                     if (i > 0)
                     {
-
                         effect.Parameters["coordMultiplier"].SetValue(new Vector2(1f, 1f));
                         effect.Parameters["coordOffset"].SetValue(new Vector2(0f, 0f));
                         effect.Parameters["noiseMultiplier"].SetValue(new Vector2(1f, 1f));
@@ -377,7 +409,6 @@ namespace SGAmod.Dimensions
                         Color colorz = Color.Turquoise;
                         effect.Parameters["colorTo"].SetValue(colorz.ToVector4());
                         effect.Parameters["colorFrom"].SetValue(Color.Black.ToVector4());
-
                     }
 
 
@@ -398,22 +429,28 @@ namespace SGAmod.Dimensions
                             {
                                 float fadeOut2 = Math.Min((managedEnemySpawns.Item2.Z + 60f) / 180f, 1f);
                                 float sizeGrow2 = MathHelper.Clamp(managedEnemySpawns.Item4 / 80f, 0f, fadeOut2);
-                                Vector2 glowSize = glowTex2.Size()/2f;
+                                Vector2 glowSize = glowTex2.Size() / 2f;
                                 for (float ii = 15; ii > 1; ii -= 0.75f)
                                 {
-                                    Vector2 sizer = (new Vector2(0.5f, 0.5f) + (new Vector2(0.25f, 0.5f) * sizeGrow2)) * (1+ii/6f);
+                                    Vector2 sizer = (new Vector2(0.5f, 0.5f) + (new Vector2(0.25f, 0.5f) * sizeGrow2)) * (1 + ii / 6f);
                                     Main.spriteBatch.Draw(glowTex2, new Vector2(managedEnemySpawns.Item2.X, managedEnemySpawns.Item2.Y) - Main.screenPosition, null, Color.Black * 1f * alpha, 0, glowSize, sizer, SpriteEffects.None, 0);
                                 }
                             }
                             else
                             {
+                                float fadeOut2 = 1f - Math.Min((managedEnemySpawns.Item2.Z + 60f) / 60f, 1f);
+                                Vector2 sizzz = Vector2.Zero;
+                                if (i == 1)
+                                    sizzz = new Vector2(0, fadeOut2 * 1.50f);
+                                if (i == 2)
+                                    sizzz = new Vector2(fadeOut2 * 1f, 0f);
 
-                                Main.spriteBatch.Draw(glowTex, new Vector2(managedEnemySpawns.Item2.X, managedEnemySpawns.Item2.Y) - Main.screenPosition, null, Color.White * 0.50f * alpha, 0, glowTex.Size() / 2f, new Vector2(0.5f, 0.5f) + (new Vector2(0.25f, 0.5f) * alpha), SpriteEffects.None, 0);
+
+                                Main.spriteBatch.Draw(glowTex, new Vector2(managedEnemySpawns.Item2.X, managedEnemySpawns.Item2.Y) - Main.screenPosition, null, Color.White * 0.50f * alpha, 0, glowTex.Size() / 2f, new Vector2(0.5f, 0.5f) + (new Vector2(0.25f, 0.5f) * alpha) + sizzz, SpriteEffects.None, 0);
                             }
                         }
                     }
                 }
-
             }
         }
 
@@ -525,6 +562,14 @@ namespace SGAmod.Dimensions
             }
         }
 
+        public void PickGlass(UnifiedRandom uniRand)
+        {
+            if (glassType == WallID.Glass)
+            {
+                glassType = SGAmod.Instance.WallType("UnbreakableStainedGlass" + uniRand.Next(5));
+            }
+        }
+
         public void GenerateStationCore(UnifiedRandom uniRand, FilledSpaceArea theLocation,Vector2 position,bool keepTrackOnly = true,bool addObjectsPhase = false)
         {
 
@@ -535,6 +580,8 @@ namespace SGAmod.Dimensions
             int upperlimit = -16;
 
             int defaultSize = 16 * 16;
+
+            PickGlass(uniRand);
 
             Vector2 centerPos = position == default ? theLocation.position : position;
 
@@ -717,7 +764,7 @@ namespace SGAmod.Dimensions
 
                 //Add 1-block bubble walls in recorded places
                 Point[] coordz2 = { new Point(-1, 0), new Point(1, 0) };
-                int tileBubbleType = TileID.Bubble;
+                int tileBubbleType = tileTypeBubbleTile;
 
                 foreach (Point opening in openings)
                 {
@@ -746,7 +793,7 @@ namespace SGAmod.Dimensions
 
                         if (theTileToBubble.type == tileTypeInside && theTile.type == tileBubbleType)
                         {
-                            theTileToBubble.wall = WallID.BubblegumBlock;
+                            theTileToBubble.wall = (ushort)wallTypeBubble;
                             theTileToBubble.wallColor((byte)PaintID.White);
                         }
                     }
@@ -3474,12 +3521,10 @@ hallowed.Parameters["rainbowScale"].SetValue(0.8f);
                         }
                         */
                     }
-
-
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
-
             }
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
     }

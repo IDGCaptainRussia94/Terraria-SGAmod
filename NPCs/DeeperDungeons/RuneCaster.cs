@@ -22,8 +22,8 @@ namespace SGAmod.NPCs.DeeperDungeons
             npc.height = 40;
             npc.damage = 35;
             npc.defense = 5;
-            npc.lifeMax = 75;
-            npc.value = 170f;
+            npc.lifeMax = 600;
+            npc.value = 500f;
             npc.aiStyle = 8;
             npc.knockBackResist = 0.5f;
             aiType = NPCID.RuneWizard;

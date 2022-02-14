@@ -185,9 +185,27 @@ namespace SGAmod.Dimensions
 
                         if (sub.GetType() == typeof(SpaceDim))
                         {
+                            Point loc = new Point((int)(player.Center.X) >> 4, (int)(player.Center.Y) >> 4 );
+                            if (WorldGen.InWorld(loc.X, loc.Y))
+                            {
+                                Tile tilez = Framing.GetTileSafely(loc.X, loc.Y);
+                                if (tilez != null)
+                                {
+                                    if (tilez.wall >= 0)
+                                    {
+                                        ModWall wallz = WallLoader.GetWall(tilez.wall);
+                                        if (wallz != null && wallz is IBreathableWallType)
+                                        {
+                                            goto movingOn;
+                                        }
+                                    }
+                                }
+                            }
                             player.AddBuff(ModContent.BuffType<SharkvernDrown>(), 3);
                         }
                     }
+
+                    movingOn:
 
                     if (spacey)
                     {
@@ -382,22 +400,25 @@ namespace SGAmod.Dimensions
             }
         }
 
-        //No longer needed. Skeleton Crossbower now drops the Normal Quiver and the Skeleton Archer only spawns in Hardmode
-        /*public override bool PreNPCLoot(NPC npc)
+        public override bool PreNPCLoot(NPC npc)
         {
-            
-            if (npc.type == NPCID.SkeletonArcher && SGAPocketDim.WhereAmI == typeof(DeeperDungeon))
+
+            //No longer needed. Skeleton Crossbower now drops the Normal Quiver and the Skeleton Archer only spawns in Hardmode
+            /*if (npc.type == NPCID.SkeletonArcher && SGAPocketDim.WhereAmI == typeof(DeeperDungeon))
             {
                 NPCLoader.blockLoot.Add(ItemID.MagicQuiver);
                 if (Main.rand.Next(50) == 0)
                     Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("NormalQuiver"));
+            }*/
+
+            if ((npc.type == NPCID.GrayGrunt || npc.type == NPCID.RayGunner || npc.type == NPCID.BrainScrambler || npc.type == NPCID.MartianEngineer || npc.type == NPCID.MartianOfficer || npc.type == NPCID.GigaZapper) && SGAPocketDim.WhereAmI == typeof(SpaceDim))
+            {
+                NPCLoader.blockLoot.Add(ItemID.MartianConduitPlating);
             }
 
 
             return true;
-        }*/
-
-
+        }
     }
 
     public class Dimitems : GlobalItem
@@ -618,7 +639,7 @@ namespace SGAmod.Dimensions
 
         public virtual bool IsSpike(int it,int type = 0)
         {
-            bool match = (it == SGAmod.Instance.TileType("UnmanedBarTile") || it == SGAmod.Instance.TileType("NoviteBarTile") || it == SGAmod.Instance.TileType("BiomassBarTile"));
+            bool match = (it == SGAmod.Instance.TileType("UnmanedBarTile") || it == SGAmod.Instance.TileType("NoviteBarTile") || it == SGAmod.Instance.TileType("BiomassBarTile") || it == SGAmod.Instance.TileType("VirulentBarTile"));
             return ((it == TileID.Spikes || it == TileID.WoodenSpikes) && type == 1) || it == TileID.Cobweb || it == TileID.CorruptThorns || it == TileID.CrimtaneThorns || it == TileID.JungleThorns || it == TileID.BreakableIce || it == TileID.MagicalIceBlock || it == TileID.WaterCandle || it == TileID.Torches || it == TileID.LargePiles || it == TileID.MagicalIceBlock || it == TileID.MetalBars || match;
         }
 

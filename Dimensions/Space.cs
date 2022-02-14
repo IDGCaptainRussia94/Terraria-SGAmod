@@ -3463,7 +3463,7 @@ hallowed.Parameters["rainbowScale"].SetValue(0.8f);
 
                 }
 
-                Texture2D[] texs = { mod.GetTexture("voronoismol"), mod.GetTexture("voronoismol"), mod.GetTexture("voronoismol"), mod.GetTexture("voronoismol") };
+                Texture2D[] texs = { mod.GetTexture("Voronoi"), mod.GetTexture("Voronoi"), mod.GetTexture("Voronoi"), mod.GetTexture("Voronoi") };
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);

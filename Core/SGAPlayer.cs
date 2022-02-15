@@ -174,6 +174,7 @@ namespace SGAmod
 		public bool demonsteppers = false;
 		public bool FridgeflameCanister = false;
 		public bool terraDivingGear = false;
+		public bool prismalDivingGear = false;
 		public bool glacialStone = false;
 		public bool rustedBulwark = false;
 		public bool novusStackBoost = false;
@@ -431,6 +432,7 @@ namespace SGAmod
 			Lockedin = false;
 			NoFly = false;
 			airTank = false;
+			prismalDivingGear = false;
 			murkyCharm = false;
 			permaDrown = false;
 			trueMeleeDamage = 1f;

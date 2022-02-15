@@ -170,7 +170,7 @@ namespace SGAmod
         {
             get
             {
-				if (Main.menuMode < 3)
+				if (Main.menuMode < 3 && Main.gameMenu)
 				{
 					return Main.rand.Next(100);
                 }

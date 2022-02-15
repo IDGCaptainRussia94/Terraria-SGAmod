@@ -67,7 +67,7 @@ namespace SGAmod
 
         public static int SnapCooldown = 0;
 
-        public static bool cheating = false;
+        internal static bool cheating = false;
         public static int harbingercounter = 0;
         public static int golemchecker = 0;
         public static int stolecrafting = 0;

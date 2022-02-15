@@ -23,6 +23,29 @@ A few warnings before the changelog:
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
 
+3.627-(2/15/22)--Hotfix 33
+
+--Added
+
+-Novite Air Tank
+
+
+--Changed:
+
+-Added 'the art depicts a moth dueling against a reality shaping and mind controlling entity' to the artist tag of 'Paradox General'
+
+-Reworked Tidal Charm: is now an Amulet (Tidal Amulet), grants air swimming (that includes Flippers) AND causes drowning for 8 seconds when worn when raining/Tempest Sharkvern is defeated
+
+-Buffed Prismal Air Tank: now includes defense increasing buff similar to the former Tidal Charm, thanks to the new Novite Air Tank
+
+
+-Fixed
+
+-Dungeon Floors config menu from going wack ingame
+
+-Buff Burning and other higher challenge factors not working as expected
+
+
 3.625-(2/14/22)--Patch 15: Anniversary Update!
 
 --Added

@@ -667,7 +667,7 @@ namespace SGAmod.Items.Accessories.Charms
 		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, Terraria.Localization.Language.GetTextValue("ItemTooltip.Flipper") + " while it is raining")));
+			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, Terraria.Localization.Language.GetTextValue("ItemTooltip.Flipper") + " in the air while it is raining")));
 			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Most status effects that trigger while wet will trigger here")));
 			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.Red, "But you are always drowning")));
 
@@ -724,11 +724,8 @@ namespace SGAmod.Items.Accessories.Charms
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			if (!player.SGAPly().tpdcpu)
-			{
-				player.GetModPlayer<SGAPlayer>().permaDrown = true;
-				player.GetModPlayer<SGAPlayer>().drownRate += 2;
-			}
+			player.GetModPlayer<SGAPlayer>().permaDrown = true;
+			player.GetModPlayer<SGAPlayer>().drownRate += 2;
 			player.GetModPlayer<SGAPlayer>().tidalCharm = 2;
 		}
 	}

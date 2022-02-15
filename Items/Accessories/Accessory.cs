@@ -2563,6 +2563,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	/*
 	public class TidalCharm : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -2634,6 +2635,7 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	*/
 
 
 	public class TwinesOfFate : ModItem
@@ -4901,8 +4903,8 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
-			recipe.AddIngredient(mod.ItemType("BottledLiquidEssence"), 1);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<BottledLiquidEssence>(), 1);
 			recipe.AddIngredient(ItemID.FlipperPotion, 5);
 			recipe.AddTile(mod.GetTile("PrismalStation"));
 			recipe.SetResult(this);
@@ -4916,15 +4918,15 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Breathing Gear");
-			Tooltip.SetDefault(allText+ "\nEffects of Terra Diving Gear, Murky Charm, and Prismal Air Tank");
+			Tooltip.SetDefault(allText + "\nEffects of Terra Diving Gear, Murky Charm, and Prismal Air Tank");
 		}
 
-        public override bool DrawHead()
-        {
+		public override bool DrawHead()
+		{
 			return false;
-        }
+		}
 
-        public override void SetDefaults()
+		public override void SetDefaults()
 		{
 			item.backSlot = PrismalAirTank.backItem;
 			item.width = 18;
@@ -4943,16 +4945,15 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType < TerraDivingGear>(), 1);
-			recipe.AddIngredient(ModContent.ItemType < PrismalAirTank>(), 1);
-			recipe.AddIngredient(ModContent.ItemType < MurkyCharm>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<TerraDivingGear>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<PrismalAirTank>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<MurkyCharm>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
-			recipe.AddIngredient(ModContent.ItemType <PrismalBar>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 12);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
-
 	}
 
 	public class WraithTargetingGamepad : ModItem

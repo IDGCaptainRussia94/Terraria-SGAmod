@@ -1,6 +1,21 @@
 
 Changelog:
 
+3.627-(12/3/22)--Next Update I guess
+
+--Changed:
+
+-Reworked Tidal Charm: is now an Amulet (Tidal Amulet), grants air swimming AND causes drowning for 10 seconds when worn when raining/Tempest Sharkvern is defeated
+
+
+3.626-(12/3/22)--I'm not even going to call this a hotfix
+
+--Changed:
+
+-mod title changed to the new update, yeah, that's it
+
+
+
 3.625-(2/14/22)-beta 3
 
 -Merged Rijam's Deeper Dungeons update, adds alot of variety to the Deeper Dungeons

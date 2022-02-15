@@ -5,6 +5,8 @@ Changelog:
 
 --Changed:
 
+-Added 'the art depicts a moth dueling against a reality shaping and mind controlling entity' to the artist tag of 'Paradox General'
+
 -Reworked Tidal Charm: is now an Amulet (Tidal Amulet), grants air swimming (that includes Flippers) AND causes drowning for 8 seconds when worn when raining/Tempest Sharkvern is defeated
 
 

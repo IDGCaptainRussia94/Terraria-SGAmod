@@ -19,7 +19,7 @@ namespace SGAmod.Items.Placeable.Paintings
 			SGAmod.Instance.AddItem("SerenityPainting", new SGAPlacablePainting(0, ModContent.TileType<SGAPaintings12X7>(), "Serenity", "Fridaflame and XennaDemonorph"));
 			SGAmod.Instance.AddItem("AdventurePainting", new SGAPlacablePainting(1, ModContent.TileType<SGAPaintings12X7>(), "Onwards, Adventure!", "DSW7"));
 			SGAmod.Instance.AddItem("UnderTheWaterfallPainting", new SGAPlacablePainting(0, ModContent.TileType<SGAPaintings12X8>(), "Under The Waterfall", "Dreamers of the Blue"));
-			SGAmod.Instance.AddItem("ParadoxGeneralPainting", new SGAPlacablePainting(0, ModContent.TileType<SGAPaintings15X11>(), "Paradox General", "Speedymatt123"));
+			SGAmod.Instance.AddItem("ParadoxGeneralPainting", new SGAPlacablePainting(0, ModContent.TileType<SGAPaintings15X11>(), "Paradox General", "Speedymatt123, the art depicts a moth dueling against a reality shaping and mind controlling entity"));
 
 
 		}

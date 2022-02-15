@@ -667,7 +667,7 @@ namespace SGAmod.Items.Accessories.Charms
 		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, Terraria.Localization.Language.GetTextValue("ItemTooltip.Flipper")+" while it is raining")));
+			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, Terraria.Localization.Language.GetTextValue("ItemTooltip.Flipper") + " while it is raining")));
 			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Most status effects that trigger while wet will trigger here")));
 			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.Red, "But you are always drowning")));
 
@@ -691,13 +691,14 @@ namespace SGAmod.Items.Accessories.Charms
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			if (((Main.raining) || SGAWorld.tidalCharmUnlocked))
 			{
+				player.accFlipper = true;
 				player.GetModPlayer<SGAPlayer>().tidalCharm = 2;
 				if (!player.SGAPly().tpdcpu)
 				{
-					player.AddBuff(ModContent.BuffType<TidalDrown>(), 60 * 10);
+					player.AddBuff(ModContent.BuffType<TidalDrown>(), 60 * 8);
 				}
-            }
-			
+			}
+
 
 		}
 
@@ -717,7 +718,7 @@ namespace SGAmod.Items.Accessories.Charms
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "Terraria/Buff_"+BuffID.Suffocation;
+			texture = "Terraria/Buff_" + BuffID.Suffocation;
 			return true;
 		}
 

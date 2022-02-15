@@ -5,7 +5,7 @@ Changelog:
 
 --Changed:
 
--Reworked Tidal Charm: is now an Amulet (Tidal Amulet), grants air swimming AND causes drowning for 10 seconds when worn when raining/Tempest Sharkvern is defeated
+-Reworked Tidal Charm: is now an Amulet (Tidal Amulet), grants air swimming (that includes Flippers) AND causes drowning for 8 seconds when worn when raining/Tempest Sharkvern is defeated
 
 
 3.626-(12/3/22)--I'm not even going to call this a hotfix

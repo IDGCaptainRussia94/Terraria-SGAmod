@@ -20,6 +20,10 @@ namespace SGAmod
 	{
 
 	}
+	interface IPotionCantBeInfinite
+	{
+
+	}
 	interface IDevArmor
 	{
 
@@ -60,6 +64,10 @@ namespace SGAmod
 	{
 
 	}
+	interface IBreathableWallType
+	{
+
+	}
 	interface IHellionDrop
 	{
 		int HellionDropAmmount();
@@ -88,12 +96,18 @@ namespace SGAmod
 	{
 		void PostEffectsDraw(SpriteBatch spriteBatch,float drawScale);
 	}
+	interface IDrawThroughFog
+	{
+		void DrawThroughFog(SpriteBatch spriteBatch);
+	}
 	interface IHitScanItem
 	{
 
 	}
 	interface ITechItem
 	{
+		float ElectricChargeScalingPerUse();
+
 		/*int MaxElectricCharge();
 		int ElectricChargePerUse();
 		int ElectricChargeWhileInUse();*/

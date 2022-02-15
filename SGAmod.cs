@@ -123,6 +123,9 @@ namespace SGAmod
 		public const bool ArmorButtonUpdate = false;
 		public const bool EnchantmentsUpdate = false;
 		public const bool SpaceBossActive = true;
+		public static bool NoGravityItems = false;
+		public static int NoGravityItemsTimer = 0;
+		public static bool DevDisableCheating => Main.LocalPlayer != null && Main.LocalPlayer.HasItem(ModContent.ItemType<Debug13>());
 
 		public static int SafeModeCheck
         {
@@ -193,8 +196,29 @@ namespace SGAmod
 		public static bool updatelasers = false;
 		public static bool updateportals = false;
 		public static bool anysubworld = false;
-		public static float overpoweredMod = 0f;
 		public static int vibraniumCounter = 0;
+		public static int fogDrawNPCsCounter = 0;
+
+		public static float overpoweredModBaseValue = 0f;
+		public static float overpoweredModBaseHardmodeValue = 0f;
+
+		public static bool cheating = false;
+
+		public static bool DRMMode
+        {
+            get
+            {
+				return SGAWorld.NightmareHardcore > 0 || (DevDisableCheating && (cheating || SGAWorld.cheating));
+            }
+        }
+		public static float OverpoweredMod
+		{
+            get
+            {
+				return Main.netMode == 0 && (SGAConfig.Instance.OPmods || ((SGAmod.cheating || SGAWorld.cheating) && !DevDisableCheating)) ? overpoweredModBaseValue+(Main.hardMode ? overpoweredModBaseHardmodeValue : 0f) : 0;
+			}
+        }
+
 		public static bool ForceDrawOverride = false;
 		public static GameTime lastTime = new GameTime();
 		public static (int, int, bool) ExtractedItem = (-1,-1, false);
@@ -203,8 +227,11 @@ namespace SGAmod
 
 		public static List<PostDrawCollection> PostDraw;
 		public static RenderTarget2D drawnscreen;
+		public static RenderTarget2D drawnscreenAdditiveTextures;
+
 		public static RenderTarget2D postRenderEffectsTarget;
 		public static RenderTarget2D postRenderEffectsTargetCopy;
+		public static int postRenderEffectsTargetDoUpdates;
 		public static RenderTarget2D screenExplosionCopy;
 
 		public static (Texture2D, Texture2D) VanillaHearts;
@@ -457,6 +484,8 @@ namespace SGAmod
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/UI/Settings_Inputs_2"));//117
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Tiles_"+ TileID.Torches));//118
 				ExtraTextures.Add(ModContent.GetTexture("Terraria/Glow_239"));//119
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/NPC_" + NPCID.LeechHead));//120
+				ExtraTextures.Add(ModContent.GetTexture("Terraria/Projectile_" + ProjectileID.MoonLeech));//121
 
 				//Texture2D queenTex = ModContent.GetTexture("Terraria/NPC_" +NPCID.IceQueen);
 
@@ -571,7 +600,7 @@ namespace SGAmod
 
 			fild.SetValue(modp, 1f+ (float)fild.GetValue(modp));*/
 
-			overpoweredMod = 0;
+			overpoweredModBaseValue = 0;
 
 			SGAPlayer.ShieldTypes.Clear();
 			SGAPlayer.ShieldTypes.Add(ItemType("DankWoodShield"), ProjectileType("DankWoodShieldProj"));
@@ -652,16 +681,19 @@ namespace SGAmod
 			NinjaSashHotkey = RegisterHotKey("Shin Sash Ability", "Q");
 			//SkillTestKey = RegisterHotKey("(Debug) Skill Tree Key", "T");
 
-			OSType = OSDetect();
-
 			SGAmod.PostDraw = new List<PostDrawCollection>();
+
+			OSType = OSDetect();
+			Logger.Debug("SGAmod filepath defined: " + filePath);
+
 			//On.Terraria.GameInput.LockOnHelper.SetActive += GameInput_LockOnHelper_SetActive;
 
 			if (!Main.dedServ)
 			{
 				if (safeMode == 0 || safeMode == 2)
 				{
-					_ = Core.WinForm.WinHandled;
+					if (SGAmod.OSType == 0)
+						_ = Core.WinForm.WinHandled;
 				}
 				ShadowParticle.Load();
 
@@ -864,13 +896,16 @@ namespace SGAmod
 			SGAILHacks.Unpatch();
 			BCLEntries.Unload();
 
-			Items.Weapons.Almighty.CataLogo.Unload();
 
 
 			if (!Main.dedServ)
 			{			
 				UnLoadMusic(true);
+
 				ShadowParticle.Unload();
+			Items.Weapons.Almighty.CataLogo.Unload();
+			Items.Placeable.CelestialMonolithManager.Unload();
+
 				if (SGAmod.ParadoxMirrorTex != null)
 					SGAmod.ParadoxMirrorTex.Dispose();
 				if (SGAmod.hellionLaserTex != null)
@@ -1113,10 +1148,15 @@ namespace SGAmod
 			foreach (int idofitem in moonlorditems)
 			{
 				recipe = new ModRecipe(this);
-				if (idofitem != ItemID.LastPrism)
-					recipe.AddIngredient(this.ItemType("EldritchTentacle"), 25);
+				if (idofitem == ItemID.LastPrism)
+				{
+					recipe.AddIngredient(ModContent.ItemType<HeliosFocusCrystal>(), 1);
+					recipe.AddIngredient(ModContent.ItemType<EldritchTentacle>(), 40);
+				}
 				else
-					recipe.AddIngredient(this.ItemType("EldritchTentacle"), 35);
+				{
+					recipe.AddIngredient(ModContent.ItemType<EldritchTentacle>(), 25);
+				}
 				recipe.AddRecipeGroup("Fragment", 5);
 				recipe.AddTile(TileID.LunarCraftingStation);
 				recipe.SetResult(idofitem);
@@ -1302,6 +1342,9 @@ namespace SGAmod
 			{
 			ItemID.ActuationAccessory,
 			ItemID.Wrench,
+			ItemID.BlueWrench,
+			ItemID.GreenWrench,
+			ItemID.YellowWrench,
 			ItemID.Detonator,
 			ItemID.MetalDetector
 			});
@@ -1312,6 +1355,16 @@ namespace SGAmod
 			ItemID.PutridScent
 });
 			RecipeGroup.RegisterGroup("SGAmod:HardmodeEvilAccessory", group6);
+
+			group6 = new RecipeGroup(() => "Any Old One's Army tier 2 accessory", new int[]
+{
+			ItemID.HuntressBuckler,
+			ItemID.ApprenticeScarf,
+			ItemID.MonkBelt,
+			ItemID.SquireShield
+});
+			RecipeGroup.RegisterGroup("SGAmod:DD2Accessories", group6);
+
 
 			RecipeGroup pickaxe = new RecipeGroup(() => "Copper or Tin Pickaxe", new int[]
 {
@@ -1368,6 +1421,17 @@ namespace SGAmod
 
 });
 			RecipeGroup.RegisterGroup("SGAmod:Gems", pickaxe);
+
+			pickaxe = new RecipeGroup(() => "Any Horseshoe Balloon", new int[]
+{
+			ItemID.BalloonHorseshoeFart,
+			ItemID.BalloonHorseshoeHoney,
+			ItemID.BalloonHorseshoeSharkron,
+			ItemID.BlueHorseshoeBalloon,
+			ItemID.WhiteHorseshoeBalloon,
+			ItemID.YellowHorseshoeBalloon,
+});
+			RecipeGroup.RegisterGroup("SGAmod:HorseshoeBalloons", pickaxe);
 
 
 			if (RecipeGroup.recipeGroupIDs.ContainsKey("IronBar"))
@@ -1550,7 +1614,10 @@ namespace SGAmod
 
 			if ((!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight)) || initialize)
 			{
-				SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
+				//new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
+
+				SGAmod.drawnscreen = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+				SGAmod.drawnscreenAdditiveTextures = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
 				SGAmod.postRenderEffectsTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.PreserveContents);
 					SGAmod.postRenderEffectsTargetCopy = new RenderTarget2D(Main.graphics.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.HdrBlendable, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
 					SGAmod.screenExplosionCopy = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
@@ -1576,6 +1643,38 @@ namespace SGAmod
 
 		}
 
+		public static Type whereWereWeForDrawing = null;
+
+		internal static void DrawBehindAllTilesButBeforeSky()
+		{
+			whereWereWeForDrawing = null;
+			if (!Main.gameMenu)
+			{
+				whereWereWeForDrawing = SGAPocketDim.WhereAmI;
+				Items.Placeable.CelestialMonolithManager.DrawMonolithAura();
+				if (whereWereWeForDrawing != null)
+				{
+					SGAPocketDim.PassDraws(0);
+				}
+
+			}
+		}
+		internal static void DrawBehindMoonMan()
+		{
+			NPCs.Hellion.ShadowParticle.Draw();
+			if (whereWereWeForDrawing != null)
+            {
+				SGAPocketDim.PassDraws(1);
+			}
+		}
+		internal static void DrawBehindWormBoys()
+		{
+			if (whereWereWeForDrawing != null)
+			{
+				SGAPocketDim.PassDraws(2);
+			}
+		}
+
 #if Dimensions
 		public override void MidUpdatePlayerNPC()
         {
@@ -1593,7 +1692,12 @@ namespace SGAmod
 			ShadowParticle.UpdateAll();
             Items.Weapons.Almighty.RaysOfControlOrb.UpdateAll();
 
-			//Main.worldSurface -= 0.25;
+			if (NoGravityItemsTimer > 0)
+				NoGravityItemsTimer--;
+			else
+				NoGravityItems = false;
+
+			 //Main.worldSurface -= 0.25;
 
 			 PostUpdateEverythingEvent?.Invoke();
 			//Main.NewText(test);
@@ -1657,8 +1761,12 @@ namespace SGAmod
 #endif
 
 			vibraniumCounter = Math.Max(vibraniumCounter - 1, 0);
+			fogDrawNPCsCounter = Math.Max(fogDrawNPCsCounter - 1, 0);
+
 			SGAPlayer.centerOverrideTimerIsActive = Math.Max(SGAPlayer.centerOverrideTimerIsActive - 1, 0);
+
 			SGAWorld.modtimer += 1;
+
 			PrismShardHinted.ApplyPrismOnce = false;
 
 			SkillTree.SKillUI.SkillUITimer = SGAmod.SkillUIActive ? SkillTree.SKillUI.SkillUITimer +1 : 0;
@@ -1759,116 +1867,20 @@ namespace SGAmod
 			}
 		}
 
-	}
-
-	public class CustomSpecialDrawnTiles
-    {
-		public Vector2 position;
-		public Action<SpriteBatch,Vector2> CustomDraw = delegate (SpriteBatch spriteBatch,Vector2 thisposition)
-		{
-
-		};
-
-		public CustomSpecialDrawnTiles(Vector2 place)
+        public override void RandomUpdate(int i, int j, int type)
         {
-
-
-        }
-
-
-	}
-
-	public class MusicStreamingOGGPlus : MusicStreamingOGG
-    {
-		public float volume = 1f;
-		public float volumeGoal = 1f;
-		public float volumeChangeRate = 0.005f;
-
-		public float pitch = 0f;
-		public float pitchGoal = 1f;
-		public float pitchChangeRate = 0.005f;
-
-		public float volumeScale = 0.01f;
-		private bool initCheck = false;
-
-		public MusicStreamingOGGPlus(string path)
-	: base(path)
-		{
-		}
-		public bool StartPlus(float volume = 0f)
-		{
-			if (Main.musicVolume <= 0f)
-				return false;
-
-			initCheck = true;
-			Play();
-
-			this.volume = MathHelper.Clamp(volume, 0f, 1f);
-			this.SetVariable("Volume", volume * Main.musicVolume);
-			return true;
-
-		}
-
-		public Func<bool> doMusic =	delegate() { return false; };
-
-		public override void CheckBuffer()
-		{
-
-			base.CheckBuffer();
-			if (initCheck)
-            {
-				initCheck = false;
-				return;
-			}
-
-			if (volume < 0)
+			for (int x = -2; x < 3; x += 1)
 			{
-				Reset();
-				volume = 0;
-				Stop(AudioStopOptions.Immediate);
-				return;
+				for (int y = -2; y < 3; y += 1)
+				{
+					if (!Main.tile[i+x, j+y].active() && Main.tile[i + x, j + y].liquid>100 && Main.tile[i, j].type == TileID.Sand)
+					{
+						WorldGen.Convert(i, j, ModContent.TileType<Tiles.MoistSand>(), 1);
+						Main.tile[i, j].type = (ushort)ModContent.TileType<Tiles.MoistSand>();
+						NetMessage.SendTileRange(Main.myPlayer, i, j, 1, 1);
+					}
+				}
 			}
-
-			volume += Math.Sign(volumeGoal - volume) * volumeChangeRate;
-			this.volume = MathHelper.Clamp(volume, 0f, 1f);
-			this.SetVariable("Volume", volume * volumeScale * Main.musicVolume);
-
-			pitch += Math.Sign(pitchGoal - pitch) * pitchChangeRate;
-			this.SetVariable("Pitch", pitch);
-
-		}
-
-
-	}
-
-	public class ScreenExplosion
-	{
-		public Vector2 where;
-		public int time = 0;
-		public int timeLeft = 0;
-		public int timeLeftMax = 0;
-		public float strength = 16f;
-		public float decayTime = 16f;
-		public float warmupTime = 16f;
-		public float distance = 1600f;
-		public float alpha = 0.10f;
-		public float perscreenscale = 1.15f;
-		public Func<float,float> strengthBasedOnPercent;
-
-
-		public ScreenExplosion(Vector2 there, int time, float str, float decayTime = 16)
-		{
-			where = there;
-			this.time = 0;
-			this.timeLeft = time;
-			this.timeLeftMax = time;
-			this.strength = str;
-			this.decayTime = decayTime;
-		}
-		public void Update()
-		{
-			timeLeft -= 1;
-			time += 1;
 		}
 
 	}

@@ -27,6 +27,7 @@ using System.Reflection;
 using ReLogic.Graphics;
 using MonoMod.RuntimeDetour.HookGen;
 using Terraria.Cinematics;
+using SGAmod.Items.Weapons.Ammo;
 
 namespace SGAmod.NPCs.Hellion
 {
@@ -35,7 +36,7 @@ namespace SGAmod.NPCs.Hellion
 	{
 		public static int Checkpoint = 0;
 		public static int momentDelay = 0;
-		public static bool AntiCheatActive => false;
+		public static bool AntiCheatActive => SGAWorld.cheating || SGAmod.cheating;
 		public static MethodInfo CSGodmodeOn = default;
 		public static MethodInfo HMGodmodeOn = default;
 
@@ -43,7 +44,43 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (SGAWorld.modtimer >= 300)
 			{
-				if (SGAWorld.downedHellion < 2 || Main.dedServ || Main.netMode == NetmodeID.Server || Main.gameMenu)
+				if (Main.dedServ || Main.netMode == NetmodeID.Server)
+					return;
+
+				if (AntiCheatActive)
+				{
+
+					int intid = -1;
+                    for (int i = 0; i < Main.WorldList.Count; i += 1)
+                    {
+                        if (Main.WorldList[i] == Main.ActiveWorldFileData)
+                        {
+                            intid = i;
+                            break;
+                        }
+                    }
+					if (intid == -1)
+					return;
+
+					typeof(Main).GetMethod("EraseWorld", SGAmod.UniversalBindingFlags).Invoke(Main.instance, new object[] { intid });
+					Main.LocalPlayer.KillMeForGood();
+
+					List<String> cheatertext = new List<String>();
+					cheatertext.Add("Did you really, REALLY think you could go unpunished for this? Was the overwelming difficulty and my extremely unfair additions to my fight not enough of a cue-in?");
+					cheatertext.Add("Alot of QoL mods these days add features that break the game, other mods, and stop alot of mods from doing mechanics they wish they could do. But like 'why should I invest into this mechanic when I can just fargos it', and it's seriously becoming a problem, and this is me doing something about it. There's a line to be drawn between reducing the grind, and just 'not playing the game anymore'");
+					cheatertext.Add("And as far as I'm concerned, your not playing the game anymore, if you managed to win to this fight without extensive cheating");
+					cheatertext.Add("And if your familiar with old DRM practices, you know what just happened... You earned it, congrats");
+					cheatertext.Add("You were warned...");
+					File.WriteAllLines(SGAmod.filePath + "/YouWereWarned.txt", cheatertext.ToArray());
+
+					Environment.Exit(0);
+
+					return;
+				}
+
+
+
+					if (SGAWorld.downedHellion < 2 || Main.gameMenu)
 					return;
 
 				SGAmod.NightmareUnlocked = true;
@@ -680,6 +717,10 @@ namespace SGAmod.NPCs.Hellion
                 //Phase 1
                 if (npc.ai[1] > 96001)
 				{
+
+					hell.noescapeauravisualsize += (1f - hell.noescapeauravisualsize) / 30f;
+					hell.noescapeaurasize = (int)(hell.noescapeaurasize + (2000f - hell.noescapeaurasize) / 60f);
+
 					if (npc.ai[1] % 500 == 0 && npc.ai[1] < 100000)
 					{
 
@@ -1070,6 +1111,7 @@ namespace SGAmod.NPCs.Hellion
 			//FNF attack (Phase advance)
 			if (npc.ai[1] > 7000 && npc.ai[1] <= 8000)
 			{
+				
 				if (npc.ai[1] < 7050)
 				{
 					if (Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<HellionFNFArrowMinigameMasterProjectile>()).Count() > 0)
@@ -1077,49 +1119,53 @@ namespace SGAmod.NPCs.Hellion
 						npc.ai[1] = 7600;
 	
 						int portaltime = 160;
-						int proj = ModContent.ProjectileType<HellionCorePlasmaAttackButGreen>();
-						for (int i = -800; i <= 801; i += 1600)
+						if (SGAmod.DRMMode)
 						{
-							Vector2 where = hell.npc.Center;
-							Vector2 wheretogo = new Vector2(i * 1f, 0).RotatedBy(npc.ai[3]);
-							Vector2 where2 = P.Center - npc.Center;
-							where2.Normalize();
-							Func<Vector2, Vector2, float, float, float> projectilefacing = delegate (Vector2 playerpos, Vector2 projpos, float time, float current)
+							int proj = ModContent.ProjectileType<HellionCorePlasmaAttackButGreen>();
+							for (int i = -800; i <= 801; i += 1600)
 							{
-								return current;
-							};
-							Func<Vector2, Vector2, float, Vector2, Vector2> projectilemoving = delegate (Vector2 playerpos, Vector2 projpos, float time, Vector2 current)
-							{
-								Vector2 instore = new Vector2(wheretogo.X, wheretogo.Y);
-								if (time < 90)
+								Vector2 where = hell.npc.Center;
+								Vector2 wheretogo = new Vector2(i * 1f, 0).RotatedBy(npc.ai[3]);
+								Vector2 where2 = P.Center - npc.Center;
+								where2.Normalize();
+								Func<Vector2, Vector2, float, float, float> projectilefacing = delegate (Vector2 playerpos, Vector2 projpos, float time, float current)
 								{
-									Vector2 gothere = playerpos + instore;
-									Vector2 slideover = gothere - projpos;
-									slideover.Normalize();
-									current += slideover * 10f;
-								}
-								else
+									return current;
+								};
+								Func<Vector2, Vector2, float, Vector2, Vector2> projectilemoving = delegate (Vector2 playerpos, Vector2 projpos, float time, Vector2 current)
 								{
+									Vector2 instore = new Vector2(wheretogo.X, wheretogo.Y);
+									if (time < 90)
+									{
+										Vector2 gothere = playerpos + instore;
+										Vector2 slideover = gothere - projpos;
+										slideover.Normalize();
+										current += slideover * 10f;
+									}
+									else
+									{
+										current /= 1.25f;
+									}
+
+
 									current /= 1.25f;
-								}
+									return current;
+								};
+								Func<float, bool> projectilepattern = (time) => (time == 135);
 
 
-								current /= 1.25f;
-								return current;
-							};
-							Func<float, bool> projectilepattern = (time) => (time == 135);
-
-
-							int ize = ParadoxMirror.SummonMirror(where, Vector2.Zero, 75, portaltime, wheretogo.ToRotation() + MathHelper.ToRadians(180f), proj, projectilepattern, 8f, 400);
-							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
-							(Main.projectile[ize].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
-							Main.PlaySound(SoundID.Item, (int)Main.projectile[ize].position.X, (int)Main.projectile[ize].position.Y, 33, 0.25f, 0.75f);
-							Main.projectile[ize].netUpdate = true;
+								int ize = ParadoxMirror.SummonMirror(where, Vector2.Zero, 75, portaltime, wheretogo.ToRotation() + MathHelper.ToRadians(180f), proj, projectilepattern, 8f, 400);
+								(Main.projectile[ize].modProjectile as ParadoxMirror).projectilefacing = projectilefacing;
+								(Main.projectile[ize].modProjectile as ParadoxMirror).projectilemoving = projectilemoving;
+								Main.PlaySound(SoundID.Item, (int)Main.projectile[ize].position.X, (int)Main.projectile[ize].position.Y, 33, 0.25f, 0.75f);
+								Main.projectile[ize].netUpdate = true;
+							}
 						}
 						npc.ai[3] += MathHelper.PiOver2;		
 
 					}
 				}
+				
 
 				if (npc.ai[1] < 7200 && Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<HellionFNFArrowMinigameMasterProjectile>()).Count() < 1)
 				{
@@ -3250,13 +3296,19 @@ namespace SGAmod.NPCs.Hellion
 
 				if (!rematch)
 				{
+					if (introtimer < 180)
+                    {
+						float sinnergy = (float)Math.Sin((introtimer / 180) * MathHelper.Pi);
+						Terraria.GameContent.Events.MoonlordDeathDrama.RequestLight(MathHelper.Clamp(sinnergy*sinnergy*1.25f, 0,1),npc.Center);
+                    }
+
 					if (introtimer == 60)
 					{
-						HellionTaunt("Come on " + SGAmod.HellionUserName + "!");
+						HellionTaunt(HellionAttacks.AntiCheatActive ? "So... you have chosen death" : "Come on " + SGAmod.HellionUserName + "!");
 					}
 					if (introtimer == 180)
 					{
-						HellionTaunt("Lets dance!");
+						HellionTaunt(HellionAttacks.AntiCheatActive ? "Perish" : "Lets dance!");
 					}
 				}
 				else
@@ -3745,9 +3797,20 @@ namespace SGAmod.NPCs.Hellion
 
 			List<(int, int)> HellionItems = GetHelliondrops;
 
+			startover:
 			HellionItems = HellionItems.OrderBy(testby => Main.rand.Next()).ToList();
 
 			Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, HellionItems[0].Item1, HellionItems[0].Item2);
+
+			if (HellionItems[0].Item1 == ModContent.ItemType<AimBotBullet>())
+            {
+				HellionItems.RemoveAt(0);
+				goto startover;
+            }
+			if (HellionItems[0].Item1 == ModContent.ItemType<Items.Weapons.SeriousSam.SBCCannonMK2>())
+			{
+				Item.NewItem((int)npc.Center.X, (int)npc.Center.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.SeriousSam.LeadCannonball>(), 30);
+			}
 		}
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
@@ -3769,12 +3832,145 @@ namespace SGAmod.NPCs.Hellion
 			}
 		}
 
+		public void InsaneCheatStuff(Player thatplayer,int i)
+        {
+			if (SGAmod.cheating || SGAWorld.cheating)
+			{
+
+				thatplayer.AddBuff(ModContent.BuffType<Idglibrary.Buffs.BossFightPurity>(), 5);
+				thatplayer.AddBuff(BuffID.Battle,99999);
+				thatplayer.AddBuff(BuffID.WaterCandle,99999);
+
+				npc.boss = false;
+
+				if (phase > -1 && thatplayer.SGAPly().timer % 200 == 0)
+				{
+					Main.fastForwardTime = true;
+					Main.bloodMoon = true;
+					Main.eclipse = true;
+
+					if (Main.rand.Next(100) < 10)
+					{
+						Main.StartInvasion(Main.rand.Next(1, 5));
+					}
+					if (Main.rand.Next(20) < 1)
+					{
+						thatplayer.AddBuff(ModContent.BuffType<Items.Armors.Desert.SandySwiftnessBuff>(), 60 * 30);
+					}
+					if (Main.rand.Next(20) < 1)
+					{
+						Main.StartSlimeRain();
+					}
+				}
+
+				if (phase > 0)
+				{
+					if (phase<5)
+					thatplayer.gravDir = thatplayer.SGAPly().timer % 600 < 300 ? -1 : 1;
+
+					if (thatplayer.SGAPly().timer % (800/(phase+1)) == 0)
+					{
+						thatplayer.selectedItem = Main.rand.Next(10);
+					}
+
+					if (thatplayer.SGAPly().timer % 60 == 0)
+					{
+						if (Main.rand.Next(50) < phase)
+						{
+							thatplayer.AddBuff(ModContent.BuffType<CleansedPerception>(), 60 * 60);
+						}
+						thatplayer.QuickHeal();
+						thatplayer.QuickMana();
+					}
+					if (i == 0 && thatplayer.SGAPly().timer % 200 == 0)
+					{
+
+						if (Main.rand.NextBool())
+						{
+							Main.startPumpkinMoon();
+						}
+						else
+						{
+							Main.startSnowMoon();
+						}
+						//Main.snowMoon = true;
+						//Main.pumpkinMoon = true;
+						NPC.waveNumber = Main.rand.Next(8,16);
+					}
+				}
+
+				if (phase > 1)
+				{
+					if (thatplayer.SGAPly().timer % 400 == 0)
+					{
+						thatplayer.DropSelectedItem();
+					}
+					if (i == 0)
+					{
+						if (!NPC.LunarApocalypseIsUp)
+						{
+							if (thatplayer.SGAPly().timer % 1200 == 0)
+							{
+								WorldGen.TriggerLunarApocalypse();
+							}
+						}
+						else
+						{
+
+							var items = Main.npc.Where(testby => testby.active && (testby.type == NPCID.LunarTowerNebula || testby.type == NPCID.LunarTowerSolar || testby.type == NPCID.LunarTowerStardust || testby.type == NPCID.LunarTowerVortex));
+
+							int index = 0;
+							foreach (NPC pillar in items)
+							{
+								float angle = ((index / (float)items.Count()) * MathHelper.TwoPi) + (thatplayer.SGAPly().timer / 300f);
+								Vector2 gothere = noescapeauraloc + Vector2.UnitX.RotatedBy(angle) * noescapeaurasize;
+
+								pillar.Center += (gothere - pillar.Center) * 0.025f;
+
+								index += 1;
+							}
+						}
+					}
+				}
+
+				if (phase > 2 && !thatplayer.HasBuff(BuffID.Suffocation) && thatplayer.SGAPly().timer % 300 == 0)
+				{
+					thatplayer.AddBuff(ModContent.BuffType<NoFly>(), 99999);
+					thatplayer.AddBuff(ModContent.BuffType<AcidBurn>(), 99999);
+
+					Item item = new Item();
+					item.SetDefaults(ItemID.RedPotion);
+					thatplayer.inventory[thatplayer.inventory.Length - 1] = item;
+					thatplayer.selectedItem = thatplayer.inventory.Length - 1;
+					thatplayer.controlUseItem = true;
+					ItemLoader.UseItem(thatplayer.inventory[thatplayer.inventory.Length - 1], thatplayer);
+				}
+
+				if (phase > 3)
+				{
+					if (thatplayer.SGAPly().timer % 320 == 0)
+					thatplayer.inventory[thatplayer.selectedItem].Prefix((int)(TrapPrefix.GetBustedPrefix));
+				}
+
+					if (phase > 4)
+				{
+					thatplayer.SGAPly().disabledAccessories = 120;
+					if (i == 0)
+					{
+						if (Main.rand.Next(500) < 1 && NPC.MoonLordCountdown < 1)
+						{
+							NPC.MoonLordCountdown = 60 * 30;
+						}
+					}
+				}
+			}
+		}
+
 		public void NoEscape()
 		{
-
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{
-				if (Main.rand.Next(500)==0)
+				if (Main.rand.Next(1000) == 0)
 				{
 					int npcguy = NPC.FindFirstNPC(NPCID.Nurse);
 
@@ -3799,16 +3995,17 @@ namespace SGAmod.NPCs.Hellion
 				}
 			}
 
-
-
-
-	Mod bluemod = (ModLoader.GetMod("Bluemagic"));
+			Mod bluemod = (ModLoader.GetMod("Bluemagic"));
 			for (int i = 0; i <= Main.maxPlayers; i++)
 			{
 				Player thatplayer = Main.player[i];
 
 				if (thatplayer.active && !thatplayer.dead)
 				{
+
+					InsaneCheatStuff(thatplayer, i);
+
+
 					//nopuritymount
 					//Fine, you can have this one
 
@@ -4496,14 +4693,14 @@ namespace SGAmod.NPCs.Hellion
 			vectors.Add(hitspot);
 			vectors.Add(projectile.Center);
 
-			Texture2D beam = mod.GetTexture("TrailEffect");
+			Texture2D beam = mod.GetTexture("ElectricFireNoColor");
 
 			TrailHelper trail = new TrailHelper("BasicEffectAlphaPass", beam);
 			trail.projsize = Vector2.Zero;
-			trail.coordOffset = new Vector2(0, Main.GlobalTime * 7.5f);
-			trail.coordMultiplier = new Vector2(1f, 2000f / projectile.velocity.Length());
+			trail.coordOffset = new Vector2(0, Main.GlobalTime * 5f);
+			trail.coordMultiplier = new Vector2(1f, projectile.velocity.Length() *5f);
 			trail.doFade = false;
-			trail.trailThickness = 28 * scale.X;
+			trail.trailThickness = 64 * scale.X;
 			trail.strength = 1.5f;
 			trail.color = delegate (float percent)
 			{
@@ -4512,14 +4709,14 @@ namespace SGAmod.NPCs.Hellion
 			trail.trailThicknessIncrease = 0;
 			trail.DrawTrail(vectors, projectile.Center);
 
-			beam = Main.extraTexture[21];
+			beam = SGAmod.Instance.GetTexture("TiledPerlin");//Main.extraTexture[21];
 
 			trail = new TrailHelper("FadedBasicEffectPass", beam);
 			trail.projsize = Vector2.Zero;
 			trail.coordOffset = new Vector2(0, Main.GlobalTime * 3f);
-			trail.coordMultiplier = new Vector2(1f, 30f);
+			trail.coordMultiplier = new Vector2(1f, projectile.velocity.Length() * 6f);
 			trail.doFade = false;
-			trail.trailThickness = 16 * scale.X;
+			trail.trailThickness = 12 * scale.X;
 			trail.color = delegate (float percent)
 			{
 				return colortex;
@@ -5522,7 +5719,7 @@ namespace SGAmod.NPCs.Hellion
 
         public override bool CanDamage()
         {
-			return false;
+			return true;
         }
 
         public virtual void DoUpdate()
@@ -5636,7 +5833,7 @@ namespace SGAmod.NPCs.Hellion
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Dance to the Beats");
-			Description.SetDefault("Life Regen disabled\nHealth drains if you aren't actively moving");
+			Description.SetDefault("Life Regen disabled\nHealth drains and defense drops if you aren't actively moving");
 			Main.pvpBuff[Type] = false;
 			Main.debuff[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
@@ -5646,20 +5843,17 @@ namespace SGAmod.NPCs.Hellion
 		{
 			if (player.velocity.Length() < 0.1f)
 			{
-				if (player.SGAPly().timer % 10 == 0)
+				player.witheredArmor = true;
+				player.brokenArmor = true;
+				if (player.SGAPly().timer % 2 == 0)
 				{
 					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), CombatText.LifeRegenNegative, 5, dramatic: false, dot: true);
-					player.statLife -= 5;
+					player.statLife -= 1;
 					if (player.statLife < 1)
 					{
 						player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " showed no will to funk"), 1337, 0);
 					}
 				}
-			}
-			else
-			{
-				player.lifeRegen = 0;
-				player.lifeRegenTime = 0;
 			}
 			player.SGAPly().noLifeRegen = true;
 
@@ -5720,6 +5914,60 @@ namespace SGAmod.NPCs.Hellion
 				}
 			}
 		}
+	}
+
+	public class HellionInsanity
+	{
+		public string text = "";
+		public float angle;
+		public float angleAdder;
+		public float distance;
+		public int timeleft = 0;
+		public float flipped = 0f;
+		public float addone = 0f;
+		public float shaking = 0f;
+		public Vector2 scale;
+		public HellionInsanity(string text, float distance, int timeleft)
+		{
+			angle = MathHelper.ToRadians(Main.rand.NextFloat(0f, 360f));
+			this.distance = distance;
+			angleAdder = MathHelper.ToRadians(Main.rand.NextFloat(-1, 1)) / 10f;
+			this.text = text;
+			this.timeleft = timeleft;
+			flipped = 0f;
+			addone = 0f;
+			scale = new Vector2(1f, 1f);
+			if (this.angle > MathHelper.ToRadians(180))
+				flipped = MathHelper.ToRadians(180);
+		}
+
+		public void Update()
+		{
+			addone += 1f;
+			timeleft -= 1;
+			angle += angleAdder;
+		}
+
+		public void Draw()
+		{
+			float alpha = MathHelper.Clamp((float)timeleft / 150f, 0f, Math.Min(addone / 100f, 1f));
+			Vector2 size = Main.fontDeathText.MeasureString(text) * scale;
+
+			Vector2 mathstuff = Main.rand.NextVector2Circular(shaking, shaking) + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * distance;
+
+			Matrix mat = Matrix.CreateScale(scale.X, scale.Y, 1f) * Matrix.CreateTranslation(-size.X / 2f, 0, 0) * Matrix.CreateRotationZ(angle - MathHelper.PiOver2 - flipped) * Matrix.CreateTranslation(mathstuff.X, mathstuff.Y, 0) *
+			Matrix.CreateTranslation((float)Main.screenWidth / 2f, (float)Main.screenHeight / 2f, 0) * Matrix.CreateScale((Main.screenWidth / 1920f), (Main.screenHeight / 1024f), 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, mat * Main.GameViewMatrix.ZoomMatrix);
+
+			Main.spriteBatch.DrawString(Main.fontDeathText, text, Vector2.Zero, Color.Red * alpha);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+
+		}
+
 	}
 
 

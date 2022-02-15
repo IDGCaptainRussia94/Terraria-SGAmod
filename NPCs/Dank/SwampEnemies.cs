@@ -203,12 +203,12 @@ namespace SGAmod.NPCs.Dank
         {
             npc.rotation = npc.velocity.ToRotation();
             Player player = Main.player[npc.target]; npc.TargetClosest(true);
-            if (npc.ai[0] == 0f)
+            if (!npc.lavaImmune)
             {
                 if (npc.Hitbox.Intersects(player.Hitbox))
                 {
                     offset = player.Center - npc.Center;
-                    npc.ai[0] = 1f;
+                    npc.lavaImmune = true;
                 }
 
                 if (npc.wet)
@@ -261,7 +261,7 @@ namespace SGAmod.NPCs.Dank
             }
             else if (!player.dead)
             { 
-                if (npc.ai[0] == 1f)
+                if (npc.lavaImmune)
                 {
                     player.AddBuff(BuffID.Bleeding, 360);
                     player.AddBuff(BuffID.Dazed, 20);
@@ -274,7 +274,6 @@ namespace SGAmod.NPCs.Dank
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            npc.ai[0] = 1f;
             target.AddBuff(BuffID.Bleeding, 360);
         }
 

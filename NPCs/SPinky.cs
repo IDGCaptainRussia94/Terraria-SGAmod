@@ -82,13 +82,6 @@ namespace SGAmod.NPCs
 
 					if (returnval)
                     {
-						/*
-						if (!Filters.Scene["SGAmod:SwirlingVortex"].IsActive())
-                        {
-								Filters.Scene.Activate("SGAmod:SwirlingVortex", default(Vector2));
-						}
-						*/
-
 						SPinkyTrue boss = (thetarget.modNPC as SPinkyTrue);
 						float scale = boss.effectScale;
 						float scale2 = MathHelper.Clamp(-1+((thetarget.ai[0]-1000000)/250f),0f,1f);
@@ -103,14 +96,6 @@ namespace SGAmod.NPCs
 
 					if (thetarget == null)
 					{
-
-						/*
-						if (Filters.Scene["SGAmod:SwirlingVortex"].Active)
-						{
-							Filters.Scene.Deactivate("SGAmod:SwirlingVortex");
-						}
-						*/
-
 						returnval = false;
 						VortexActive = false;
 					}
@@ -770,7 +755,7 @@ namespace SGAmod.NPCs
 				player.position += Collision.TileCollision(player.position, Vector2.Normalize(pull)*Math.Min((effectScale / 600f), 5f), player.width, player.height);
 				if (player.Distance(npc.Center) < Math.Min(npc.ai[0]/10f,256f))
                 {
-					player.Hurt(PlayerDeathReason.ByCustomReason("Became one with the Pink"), 100, 0,cooldownCounter: 1);
+					player.Hurt(PlayerDeathReason.ByCustomReason(player.name+" became one with the Pink"), 100, 0,cooldownCounter: 1);
                 }
 			}
 			if (npc.ai[0] % 300 == 0 && npc.ai[0] > 5200)
@@ -2494,7 +2479,9 @@ namespace SGAmod.NPCs
 						{
 							for (int i = 0; i <= 2; i++)
 							{
-								int newguy5 = NPC.NewNPC((int)npc.Center.X + 150 - Main.rand.Next(300), (int)npc.Center.Y + 30, 1);
+								//int newguy5 = NPC.NewNPC((int)npc.Center.X + 150 - Main.rand.Next(300), (int)npc.Center.Y + 30, 1);
+								int newguy5;
+								Hellion.Assist.SpawnOnPlayerButNoTextAndReturnValue(npc.target,1,out newguy5);
 								Main.npc[newguy5].life = npc.lifeMax / 30;
 								Main.npc[newguy5].lifeMax = npc.lifeMax / 30;
 								Main.npc[newguy5].life = npc.lifeMax / 30;
@@ -2522,18 +2509,22 @@ namespace SGAmod.NPCs
 					{
 						if (aicounter % 64 == 0)
 						{
-							int newguy55 = NPC.NewNPC((int)P.Center.X + Main.rand.Next(-300, 300), (int)P.Center.Y - 320, 16, npc.whoAmI);
+							//int newguy55 = NPC.NewNPC((int)P.Center.X + Main.rand.Next(-300, 300), (int)P.Center.Y - 320, 16, npc.whoAmI);
+							int newguy55;
+							Hellion.Assist.SpawnOnPlayerButNoTextAndReturnValue(npc.target, NPCID.MotherSlime, out newguy55);
 							Main.npc[newguy55].life = npc.lifeMax / 12;
 							Main.npc[newguy55].lifeMax = npc.lifeMax / 12;
 							Main.npc[newguy55].boss = false;
-							Main.npc[newguy55].defense = 40;
+							Main.npc[newguy55].defense = 60;
 							Main.npc[newguy55].noTileCollide = true;
 							Main.npc[newguy55].noGravity = true;
 							Main.npc[newguy55].aiStyle = 49;
 							Main.npc[newguy55].damage = 55;
 							Main.npc[newguy55].netUpdate = true;
 
-							int newguy16 = NPC.NewNPC((int)P.Center.X - 800, (int)P.Center.Y - 30, 1);
+							//int newguy16 = NPC.NewNPC((int)P.Center.X - 800, (int)P.Center.Y - 30, 1);
+							int newguy16;
+							Hellion.Assist.SpawnOnPlayerButNoTextAndReturnValue(npc.target, NPCID.Crimslime, out newguy16);
 							Main.npc[newguy16].life = npc.lifeMax / 15;
 							Main.npc[newguy16].lifeMax = npc.lifeMax / 15;
 							Main.npc[newguy16].boss = false;
@@ -2544,11 +2535,13 @@ namespace SGAmod.NPCs
 							Main.npc[newguy16].damage = 63;
 							Main.npc[newguy16].netUpdate = true;
 
-							int newguy116 = NPC.NewNPC((int)P.Center.X + 800, (int)P.Center.Y - 30, 1);
+							//int newguy116 = NPC.NewNPC((int)P.Center.X + 800, (int)P.Center.Y - 30, 1);
+							int newguy116;
+							Hellion.Assist.SpawnOnPlayerButNoTextAndReturnValue(npc.target, NPCID.CorruptSlime, out newguy116);
 							Main.npc[newguy116].life = npc.lifeMax / 15;
 							Main.npc[newguy116].lifeMax = npc.lifeMax / 15;
 							Main.npc[newguy116].boss = false;
-							Main.npc[newguy116].defense = 60;
+							Main.npc[newguy116].defense = 50;
 							Main.npc[newguy116].noTileCollide = true;
 							Main.npc[newguy116].noGravity = true;
 							Main.npc[newguy116].aiStyle = 10;
@@ -2562,7 +2555,9 @@ namespace SGAmod.NPCs
 					{
 						if (aicounter % 200 == 0)
 						{
-							int newguy5 = NPC.NewNPC((int)npc.Center.X, (int)P.Center.Y, NPCID.DungeonSlime);
+							//int newguy5 = NPC.NewNPC((int)npc.Center.X, (int)P.Center.Y, NPCID.DungeonSlime);
+							int newguy5;
+							Hellion.Assist.SpawnOnPlayerButNoTextAndReturnValue(npc.target, 1, out newguy5);
 							Main.npc[newguy5].life = npc.lifeMax / 3;
 							Main.npc[newguy5].lifeMax = npc.lifeMax / 3;
 							Main.npc[newguy5].life = npc.lifeMax / 3;

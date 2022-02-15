@@ -69,6 +69,16 @@ namespace SGAmod.Items.Placeable
 			mod.AddItem("SwampBatBanner", new SGABanner("SwampBat"));
 			mod.AddItem("SwampJellyBanner", new SGABanner("SwampJelly"));
 			mod.AddItem("TidalElementalBanner", new SGABanner("TidalElemental"));
+			mod.AddItem("SkeletonCrossbowerBanner", new SGABanner("SkeletonCrossbower"));
+			mod.AddItem("SkeletonGunnerBanner", new SGABanner("SkeletonGunner"));
+			mod.AddItem("DungeonBatBanner", new SGABanner("DungeonBat"));
+			mod.AddItem("ChaosCasterBanner", new SGABanner("ChaosCaster"));
+			mod.AddItem("EvilCasterBanner", new SGABanner("EvilCaster"));
+			mod.AddItem("FastSkeletonBanner", new SGABanner("FastSkeleton"));
+			mod.AddItem("FlamingSkullBanner", new SGABanner("FlamingSkull"));
+			mod.AddItem("HellCasterBanner", new SGABanner("HellCaster"));
+			mod.AddItem("LaserSkeletonBanner", new SGABanner("LaserSkeleton"));
+			mod.AddItem("RuneCasterBanner", new SGABanner("RuneCaster"));
 
 			mod.AddItem("CopperWraithTrophy", new BossTrophy(0, trophySprite: "SGAmod/Items/Placeable/CopperWraithTrophy"));
 			mod.AddItem("CaliburnATrophy", new BossTrophy(1, trophySprite: "SGAmod/Items/Placeable/CaliburnATrophy"));

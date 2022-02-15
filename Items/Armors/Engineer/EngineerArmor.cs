@@ -27,7 +27,7 @@ namespace SGAmod.Items.Armors.Engineer
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Helmet");
-            Tooltip.SetDefault("15% increased Summon damage\nIncreases your max number of sentries\n+2000 Max Electric Charge");
+            Tooltip.SetDefault("10% increased Summon damage\nIncreases your max number of sentries\n+2000 Max Electric Charge");
         }
         public override void SetDefaults()
         {
@@ -40,7 +40,7 @@ namespace SGAmod.Items.Armors.Engineer
         public override void UpdateEquip(Player player)
         {
             player.maxTurrets += 1;
-            player.minionDamage += 0.15f;
+            player.minionDamage += 0.10f;
             player.SGAPly().electricChargeMax += 2000;
         }
         public override void AddRecipes()
@@ -65,7 +65,7 @@ namespace SGAmod.Items.Armors.Engineer
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Chestplate");
-            Tooltip.SetDefault("10% increased Technological damage\nIncreases your max number of sentries\n+2 passive Electric Charge Rate\n+2500 Max Electric Charge");
+            Tooltip.SetDefault("12% increased Technological damage\nIncreases your max number of sentries\n+2 passive Electric Charge Rate\n+2500 Max Electric Charge");
         }
         public override bool Autoload(ref string name)
         {
@@ -85,7 +85,7 @@ namespace SGAmod.Items.Armors.Engineer
         {
             player.maxTurrets += 1;
             SGAPlayer sgaply = player.SGAPly();
-            sgaply.techdamage += 0.10f;
+            sgaply.techdamage += 0.12f;
             sgaply.electricrechargerate += 2;
             sgaply.electricChargeCost *= 0.75f;
             sgaply.electricChargeMax += 2500;
@@ -110,7 +110,7 @@ namespace SGAmod.Items.Armors.Engineer
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Leggings");
-            Tooltip.SetDefault("15% increased Summon damage and 25% increased Summon weapon use Speed\n25% reduced Electric Consumption and Recharge Delay\n+1500 Max Electric Charge");
+            Tooltip.SetDefault("10% increased Summon damage and 25% increased Summon weapon use Speed\n25% reduced Electric Consumption and Recharge Delay\n+1500 Max Electric Charge");
         }
 
         public override void SetDefaults()
@@ -123,7 +123,7 @@ namespace SGAmod.Items.Armors.Engineer
         }
         public override void UpdateEquip(Player player)
         {
-            player.minionDamage += 0.15f;
+            player.minionDamage += 0.10f;
 
             SGAPlayer sgaply = player.SGAPly();
 
@@ -564,6 +564,7 @@ namespace SGAmod.Items.Armors.Engineer
     }
     public class ManifestedEngieControls : SeriousSamWeapon, IManifestedItem,ITechItem
     {
+        public float ElectricChargeScalingPerUse() => 1f;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engie Controls");

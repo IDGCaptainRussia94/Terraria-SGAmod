@@ -46,18 +46,18 @@ namespace SGAmod.Items
 				ply.QuickSpawnItem(typeofloot[Main.rand.Next(0, typeofloot.Length)], 1);
 		}
 
-		public override bool CanRightClick()
+        public override bool OnPickup(Player player)
+        {
+			item.maxStack = SGAWorld.downedCratrosity ? 30 : 1;
+			return true;
+        }
+
+        public override bool CanRightClick()
 		{
 			Player ply = Main.LocalPlayer;
 			bool canclick = (ply.CountItem(ItemID.GoldenKey) > 0 || ply.CountItem(ItemID.LightKey) > 0 || ply.CountItem(ItemID.NightKey) > 0 || ply.CountItem(ModContent.ItemType<SwampChestKey>()) > 0 || ply.CountItem(ItemID.TempleKey) > 0 || ply.CountItem(ItemID.ShadowKey) > 0);
 
-			if (Main.dayTime && (int)(Main.GlobalTime * 6000) % 30 == 0 && ply.CountItem(mod.ItemType("TerrariacoCrateKey"))<1)
-			{
-				Main.NewText("This gamble can only be attempted at night", 244, 220, 46);
-				return false;
-			}
-
-			return ((!Main.dayTime && canclick) || ply.CountItem(mod.ItemType("TerrariacoCrateKey")) > 0);
+			return ((canclick) || ply.CountItem(mod.ItemType("TerrariacoCrateKey")) > 0);
 		}
 
 		public override void RightClick(Player ply)

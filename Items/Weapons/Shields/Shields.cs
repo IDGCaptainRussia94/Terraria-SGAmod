@@ -554,11 +554,11 @@ namespace SGAmod.Items.Weapons.Shields
 	public class DiscordShield : CorrodedShield, IShieldItem
 	{
 
-		//public override string DamagePercent => "Blocks "+ (100-(100f/((Main.LocalPlayer.magicDamage*2f)-1f))) + "% of damage at a small angle";
+		public override string DamagePercent => Main.LocalPlayer.HasBuff(BuffID.ChaosState) ? "" :  "almostly completely while not under Chaos State";
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shield of Discord");
-			Tooltip.SetDefault("Left Click to teleport, same Rod of Discord rules apply\nPerforming a Just Block removes chaos state from the player");
+			Tooltip.SetDefault("Left Click to teleport, same Rod of Discord rules apply\nBlocking a hit gives 10 seconds of Chaos State\nPerforming a Just Block removes 4 seconds of Chaos State from the player");
 			Item.staff[item.type] = true;
 		}
 
@@ -680,17 +680,23 @@ namespace SGAmod.Items.Weapons.Shields
 
 	public class DiscordShieldProj : DankWoodShieldProj, IDrawAdditive
 	{
-
-		public override void SetStaticDefaults()
+		public override float BlockAnglePublic => player != null && player.HasBuff(BuffID.ChaosState) ? base.BlockAnglePublic : -5f;
+		public override float BlockDamagePublic => player != null && player.HasBuff(BuffID.ChaosState) ? 0f : 1f;
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("DiscordShieldProj");
 		}
 
-		public override void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex)
+        public override bool HandleBlock(ref int damage, Player player2)
+        {
+			player2.AddBuff(BuffID.ChaosState, 60 * 10);
+			return base.HandleBlock(ref damage, player2);
+        }
+
+        public override void JustBlock(int blocktime, Vector2 where, ref int damage, int damageSourceIndex)
 		{
-			Player player = Main.player[projectile.owner];
 			if (player != null && player.HasBuff(BuffID.ChaosState))
-				player.DelBuff(player.FindBuffIndex(BuffID.ChaosState));
+				player.buffTime[player.FindBuffIndex(BuffID.ChaosState)] -= 240;
 		}
 
 	}

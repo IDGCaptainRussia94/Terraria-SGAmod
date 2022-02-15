@@ -31,7 +31,6 @@ namespace SGAmod
 		[DefaultValue(true)]
 		public bool NegativeWorldEffects { get; set; }
 
-
 		[Label("Dark Sector")]
 		[Tooltip("Enables/Disables the Dark Sector to appear when loading a post-mechs world. [This will moderately break mod progression!]")]
 		[DefaultValue(true)]
@@ -94,10 +93,21 @@ namespace SGAmod
 		[DefaultValue(true)]
 		public bool ManaPotionChange { get; set; }
 
+		[Label("Spider Armor Buff")]
+		[Tooltip("Enables/Disables Spider armor giving cobweb immunity")]
+		[DefaultValue(true)]
+		public bool SpiderArmorBuff { get; set; }
+
+		[Header("Balance Changes")]
 		[Label("Buff Burning")]
 		[Tooltip("Having over 8 potion buffs builds up fatigue, at max fatigue there's a chance for them to became a debuff")]
 		[DefaultValue(false)]
 		public bool PotionFatigue { get; set; }
+
+		[Label("Over Encumbrance")]
+		[Tooltip("FIlling every inventory slot will greatly slow you down")]
+		[DefaultValue(false)]
+		public bool HeavyInventory { get; set; }
 
 		//This is the work of someone who gives 2 shits about netcode. (not me, mostly)
 		public static bool IsPlayerLocalServerOwner(int whoAmI)

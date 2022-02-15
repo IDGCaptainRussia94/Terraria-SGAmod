@@ -59,7 +59,7 @@ namespace SGAmod.Items.Tools
 	public class TerraExcavatorProj : ExcavatorProj
 	{
 		public override int[] Pickaxes => new int[] { ItemID.SpectrePickaxe, ItemID.ShroomiteDiggingClaw, ItemID.ChlorophytePickaxe, ItemID.PickaxeAxe };
-		public override int RealPickPower => 100;
+		public override int RealPickPower => 75;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Terra Excavator");
@@ -116,7 +116,7 @@ namespace SGAmod.Items.Tools
 		public class GeyodoProj : ExcavatorProj
 	{
 		public override int[] Pickaxes => new int[] { ItemID.CobaltPickaxe, ItemID.MythrilPickaxe, ItemID.AdamantitePickaxe, ItemID.MoltenPickaxe };
-		public override int RealPickPower => 70;
+		public override int RealPickPower => 25;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Geyodo Proj");
@@ -182,7 +182,7 @@ namespace SGAmod.Items.Tools
 	{
 		public int PickPower = 0;
 		public int PowerPick = 0;
-		public virtual int RealPickPower => 20;
+		public virtual int RealPickPower => 15;
 		public virtual int[] Pickaxes => new int[] { ItemID.CopperPickaxe, ItemID.IronPickaxe, ItemID.SilverPickaxe, ItemID.GoldPickaxe };
 		public override void SetStaticDefaults()
 		{

@@ -25,7 +25,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Boyfriend's Mic");
-			Tooltip.SetDefault("'So, I heard you like funking on a friday night...'\nChallenge everyone around you to a beatdown of beats\nDeals damage per note hit to random enemies, per Max Sentries, halved for each enemy\nScoring SICK beats spawns hearts and awards more points\nSICK beats also become crits\nDeals your score to ALL enemies near you on completion\nRequires atleast 4 minion slots, spawns an arrow for each slot, each arrow has 8 notes\n" + Idglib.ColorText(Color.Red, "You will be unable to use other items while rapping"));
+			Tooltip.SetDefault("'So, I heard you like funking on a friday night...'\nChallenge everyone around you to a beatdown of beats\nDeals damage per note hit to random enemies, per Max Sentries, halved for each hit on the same enemy\nScoring SICK beats spawns hearts and awards more points\nSICK beats also become crits\nDeals your score as damage to ALL enemies near you on completion\nRequires atleast 4 minion slots, spawns an arrow for each slot, each arrow has 8 notes\n" + Idglib.ColorText(Color.Red, "You will be unable to use other items while rapping"));
 			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}
@@ -96,6 +96,7 @@ namespace SGAmod.Items.Weapons
 
 		public override void GenerateNotes()
 		{
+			int maxNotes = 8;
 			int maxslots = (int)projectile.minionSlots;
 			int arrowindex = 0;// Main.rand.Next(maxslots);
 			float rotter = arrowindex * MathHelper.PiOver2;
@@ -119,7 +120,7 @@ namespace SGAmod.Items.Weapons
 				hudNotes.Add(upArrow);
 
 				AddNote(-1, 20);
-				for (int iii = 0; iii < 8; iii += 1)
+				for (int iii = 0; iii < maxNotes; iii += 1)
 				{
 					AddNote(arrowindex, Math.Max(30 - (maxslots * Main.rand.Next(1, 4)), 5));
 				}
@@ -319,6 +320,7 @@ namespace SGAmod.Items.Weapons
 				{
 					int damage = Main.DamageVar(projectile.damage);
 					enemy.StrikeNPC(damage, 0, 1, projectile.penetrate >99);
+					if (SGAmod.ScreenShake<12)
 					SGAmod.AddScreenShake(4f, 420, projectile.Center);
 					Main.player[projectile.owner].addDPS(damage);
 				}
@@ -367,34 +369,39 @@ namespace SGAmod.Items.Weapons
 
 			float alpha2 = MathHelper.Clamp(projectile.localAI[0] / 3f, 0f, 1f) * MathHelper.Clamp(projectile.timeLeft / 25f, 0f, 1f);
 
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+			if (GetType() != typeof(Accessories.RefractorLaserProj))
+			{
 
-			Effect effect = SGAmod.TextureBlendEffect;
+				spriteBatch.End();
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
-			effect.Parameters["coordMultiplier"].SetValue(new Vector2(1f, 1f));
-			effect.Parameters["coordOffset"].SetValue(new Vector2(0f, 0f));
-			effect.Parameters["noiseMultiplier"].SetValue(new Vector2(1f, 1f));
-			effect.Parameters["noiseOffset"].SetValue(new Vector2(0f, 0f));
+				Effect effect = SGAmod.TextureBlendEffect;
 
-			effect.Parameters["Texture"].SetValue(SGAmod.Instance.GetTexture("Extra_49c"));
-			effect.Parameters["noiseTexture"].SetValue(SGAmod.Instance.GetTexture("Extra_49c"));
-			effect.Parameters["noiseProgress"].SetValue(projectile.localAI[0]/30f);
-			effect.Parameters["textureProgress"].SetValue(0f);
-			effect.Parameters["noiseBlendPercent"].SetValue(1f);
-			effect.Parameters["strength"].SetValue(alpha2);
+				effect.Parameters["coordMultiplier"].SetValue(new Vector2(1f, 1f));
+				effect.Parameters["coordOffset"].SetValue(new Vector2(0f, 0f));
+				effect.Parameters["noiseMultiplier"].SetValue(new Vector2(1f, 1f));
+				effect.Parameters["noiseOffset"].SetValue(new Vector2(0f, 0f));
 
-			effect.Parameters["colorTo"].SetValue(color1.ToVector4()*new Vector4(0.5f,0.5f,0.5f,1f));
-			effect.Parameters["colorFrom"].SetValue(Color.Black.ToVector4());
+				effect.Parameters["Texture"].SetValue(SGAmod.Instance.GetTexture("Extra_49c"));
+				effect.Parameters["noiseTexture"].SetValue(SGAmod.Instance.GetTexture("Extra_49c"));
+				effect.Parameters["noiseProgress"].SetValue(projectile.localAI[0] / 30f);
+				effect.Parameters["textureProgress"].SetValue(0f);
+				effect.Parameters["noiseBlendPercent"].SetValue(1f);
+				effect.Parameters["strength"].SetValue(alpha2);
 
-			effect.CurrentTechnique.Passes["TextureBlend"].Apply();
+				effect.Parameters["colorTo"].SetValue(color1.ToVector4() * new Vector4(0.5f, 0.5f, 0.5f, 1f));
+				effect.Parameters["colorFrom"].SetValue(Color.Black.ToVector4());
 
-			Main.spriteBatch.Draw(mainTex, startingloc + projectile.velocity - Main.screenPosition, null, Color.White, projectile.rotation, mainTex.Size() / 2f, (alpha2+ (projectile.localAI[0]/60f)) * 0.75f, default, 0);
+				effect.CurrentTechnique.Passes["TextureBlend"].Apply();
+
+				Main.spriteBatch.Draw(mainTex, startingloc + projectile.velocity - Main.screenPosition, null, Color.White, projectile.rotation, mainTex.Size() / 2f, (alpha2 + (projectile.localAI[0] / 60f)) * 0.75f, default, 0);
+			}
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
-			Main.spriteBatch.Draw(glowTex, startingloc + projectile.velocity - Main.screenPosition, null, Color.White* alpha2, projectile.rotation, glowTex.Size() / 2f, 0.2f+((alpha2 + (projectile.localAI[0] / 80f)) * 0.42f), default, 0);
+			if (GetType() != typeof(Accessories.RefractorLaserProj))
+				Main.spriteBatch.Draw(glowTex, startingloc + projectile.velocity - Main.screenPosition, null, Color.White* alpha2, projectile.rotation, glowTex.Size() / 2f, 0.2f+((alpha2 + (projectile.localAI[0] / 80f)) * 0.42f), default, 0);
 
 			return false;
 		}

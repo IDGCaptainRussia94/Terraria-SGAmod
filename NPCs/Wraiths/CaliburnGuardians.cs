@@ -1102,6 +1102,11 @@ namespace SGAmod.NPCs.Wraiths
 			{
 				SGAWorld.downedCaliburnGuardianHardmode = true;
 
+				if (npc.life < 1 && Main.expertMode)
+                {
+					Item.NewItem(npc.Center, ModContent.ItemType<Items.Accessories.UndyingValor>());
+				}
+
 				if (!SGAWorld.darknessVision && npc.life<1)
 				SpookyDarkSectorEye.Release(npc.Center, true, new Vector2(20, 20));
 			}

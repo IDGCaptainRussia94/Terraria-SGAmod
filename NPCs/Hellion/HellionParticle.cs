@@ -150,6 +150,8 @@ namespace SGAmod.NPCs.Hellion
 
         public static void UpdateAll()
         {
+            if (Main.dedServ)
+                return;
 
             particles = new List<ShadowParticle>(particles).Where(testby => testby.active).ToList();
 
@@ -220,6 +222,9 @@ namespace SGAmod.NPCs.Hellion
 
             ShadowEffect.Parameters["edgeSmooth"].SetValue(edging);
             ShadowEffect.Parameters["noiseTexture"].SetValue(shadowHellion);
+            ShadowEffect.Parameters["invertLuma"].SetValue(false);
+            ShadowEffect.Parameters["alpha"].SetValue(1f);
+
 
             //Show through
             float percent = 1f;

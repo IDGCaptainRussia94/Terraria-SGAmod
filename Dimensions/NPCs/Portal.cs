@@ -31,10 +31,10 @@ namespace SGAmod.Dimensions.NPCs
 		public override void AI()
 		{
 			if (SGAPocketDim.WhereAmI == null)
-            {
+			{
 				npc.active = false;
 				return;
-            }
+			}
 
 
 			base.AI();
@@ -75,7 +75,7 @@ namespace SGAmod.Dimensions.NPCs
 	}
 
 
-		[AutoloadHead]
+	[AutoloadHead]
 	public class DungeonPortal : ModNPC
 	{
 
@@ -330,7 +330,11 @@ namespace SGAmod.Dimensions.NPCs
 				if (Main.netMode < 1)
 				{
 					if (SGAPocketDim.WhereAmI == null)
+                    {
 						SGAWorld.dungeonlevel = SGAConfigDeeperDungeon.Instance.SetDungeonFloors != null ? SGAConfigDeeperDungeon.Instance.SetDungeonFloors.floor : 0;
+						DeeperDungeon.hardMode = Main.hardMode;
+						DeeperDungeon.postPlantera = NPC.downedPlantBoss;
+					}
 					SGAPocketDim.EnterSubworld(mod.GetType().Name + "_DeeperDungeon", true);
 				}
 				else

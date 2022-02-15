@@ -90,8 +90,93 @@ namespace SGAmod
 
         }
 
+        public static void RemoveCheatItemCraftingRecipes()
+        {
+            Mod luiafk = ModLoader.GetMod("Luiafk");
+            if ((luiafk != null))
+            {
+                for (var i = 0; i < Recipe.numRecipes; i++)
+                {
+                    Recipe recipe = Main.recipe[i];
+                    Item itemz = recipe.createItem;
+                    if (itemz.modItem != null)
+                    {
+                        ModItem mitem = itemz.modItem;
+                        SGAmod.Instance.Logger.Debug("has mod item: "+ mitem.GetType().FullName);
+                        string nullname = mitem.GetType().Namespace;
+                        if (nullname.Length - nullname.Replace("Images.Items.Potions", "").Length > 0)
+                        {
+                            recipe.RemoveRecipe();
+                        }
+                    }
+
+                }
+            }
+        }
+
+        public bool IsItemCheating(Item item)
+        {
+            if (SGAmod.DevDisableCheating && Dimensions.SGAPocketDim.WhereAmI == null)
+                return false;
+
+            if ((SGAmod.Fargos.Item1 || SGAmod.Luiafk.Item1))
+            {
+                if (item.modItem != null)
+                {
+                    Type modtype = item.modItem.GetType();
+                    string nullname = modtype.Namespace;
+                    if (nullname.Length - nullname.Replace("Fargowiltas.Items.Explosives", "").Length > 0)
+                    {
+                        if (modtype.Name != "BoomShuriken" && modtype.Name != "AutoHouse" && modtype.Name != "LihzahrdInstactuationBomb" && modtype.Name != "MiniInstaBridge")
+                            return true;
+                    }
+                    if (nullname.Length - nullname.Replace("Items.AutoBuilders", "").Length > 0)
+                    {
+                        if (modtype.Name != "PrisonBuilder")
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool CheckForCheatyPlaythroughRuiningItems(Item item, Player player)
+        {
+            if (IsItemCheating(item))
+            {
+                if (Dimensions.SGAPocketDim.WhereAmI != null)
+                {
+                    return false;
+                }
+
+                if (!SGAmod.cheating && !SGAmod.cheating)
+                {
+                    Main.NewText("You were warned", Color.Red);
+                    SGAmod.cheating = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public override bool CanUseItem(Item item, Player player)
         {
+            if (!SGAmod.cheating && !SGAWorld.cheating)
+            {
+                if (IsItemCheating(item))
+                {
+                    if (player.controlUp)
+                    {
+                        if (CheckForCheatyPlaythroughRuiningItems(item, player))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
+
+
             if ((player.SGAPly().ReloadingRevolver > 0) && item.damage > 0)
             {
                 return false;
@@ -232,7 +317,7 @@ namespace SGAmod
 
             }
 
-            if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAWorld.NightmareHardcore>0))
+            if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAmod.DRMMode))
             {
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Mana Sickness decays very slowly")));
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Max Mana is reduced by 60")));
@@ -261,7 +346,21 @@ namespace SGAmod
                     tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "A very strong being has locked it away from your possession, talk to the guide")));
                 }
             }
+            if (IsItemCheating(item))
+            {
 
+                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "This item is considered cheating, overpowered, and gamebreaking within SGAmod")));
+                if (Dimensions.SGAPocketDim.WhereAmI == null)
+                {
+                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Using it will permentally mark your world as a cheat world")));
+                    if (!SGAmod.cheating && !SGAWorld.cheating)
+                        tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Hold UP to be able to use this item, confirming you read this")));
+                }
+                else
+                {
+                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "It cannot be used within subworlds")));
+                }
+            }
             if (item?.modItem is ITechItem)//Tech items
             {
                 // Get the vanilla damage tooltip
@@ -281,6 +380,9 @@ namespace SGAmod
                         newline += text3;
                     }
                     tt.text = newline;
+
+
+                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Technological weapons do less damage at low Electric Charge")));
                 }
             }
 
@@ -374,6 +476,7 @@ namespace SGAmod
         public override void UpdateArmorSet(Player player, string set)
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
+
             if (set == "Desert")
             {
                 string s = "Not Binded!";
@@ -442,7 +545,7 @@ namespace SGAmod
             }
             if (set == "Mangrove")
             {
-                player.setBonus = "Crit throwing attacks grant Dryad's Blessing and spawn Mangrove Orbs from you that seek out enemies\nYou are limited to 4 of these Orbs at a time\nWhile you are in the jungle:\n-Greatly Increased regeneration" +
+                player.setBonus = "Throwing Crits apply Dryad's Blessing\nThey also spawn a pair of Mangrove Orbs from you that seek out enemies and inflict Dryad's Bane\nYou are limited to 4 of these Orbs at a time and are damage soft-capped to 50\nWhile you are in the jungle:\n-Greatly Increased regeneration" +
     "\n-Gain an additional Free Cooldown Stack";
 
                 sgaplayer.Mangroveset = true;
@@ -479,7 +582,7 @@ namespace SGAmod
                     s = key;
                 }
 
-                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Precurser's Power for a short time\nRepairs wounds at full speed even while moving, but consumes Electric Charge\nAlso during this, throwing damage is increased by Tech Damage scaling" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 80 seconds") + "\nYou gain the ability to run as if on Asphalt, also and fall down faster\nReflect 3X damage and gain knockback immunity while grounded" + Idglib.ColorText(Color.Red, "Gravity is increased, wings are less effective, Shield Break can happen")+ "\n" + Idglib.ColorText(Color.Red, "User is submerged in lava at low Electric Charge") + "\nGain an additional free Cooldown Stack";
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Precurser's Power, press again to end early\nRepairs wounds at full speed even while moving, at an Electric Charge cost\nDuring this ability, throwing damage is increased by Tech Damage scaling" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 80 seconds") + "\nYou gain the ability to run as if on Asphalt, also and fall down faster\nReflect 3X damage and gain knockback immunity while grounded" + Idglib.ColorText(Color.Red, "Gravity is increased, wings are less effective, Shield Break can happen")+ "\n" + Idglib.ColorText(Color.Red, "User is submerged in lava at low Electric Charge") + "\nGain an additional free Cooldown Stack";
 
                 sgaplayer.MaxCooldownStacks += 1;
                 sgaplayer.jungleTemplarSet.Item1 = true;
@@ -529,7 +632,7 @@ namespace SGAmod
                 {
                     s = key;
                 }
-                string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt skybridge below your feet\nYou can land on this bridge while falling down\nHold Down to fall through\nThis consumes electric charge while active, " + Idglib.ColorText(Color.Red, "and will trigger a shield break on deplete");
+                string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt skybridge below your feet\nYou can land on this bridge while falling down, Hold DOWN to fall through\nThis consumes electric charge while active, " + Idglib.ColorText(Color.Red, "and will trigger a shield break on deplete");
 
                 s = "Not Binded!";
 
@@ -560,6 +663,19 @@ namespace SGAmod
                 sgaplayer.jellybruSet = true;
                 sgaplayer.devempowerment[2] = 3;
             }        
+        }
+
+        public static void VanillaArmorSetBonus(Player player)
+        {
+            if (player.armor[0].type == ItemID.SpiderMask && player.armor[1].type == ItemID.SpiderBreastplate && player.armor[2].type == ItemID.SpiderGreaves)
+            {
+                if (SGAConfig.Instance.SpiderArmorBuff)
+                {
+                    player.setBonus += "\nFreely pass through cobwebs and immunity to webbed";
+                    player.SGAPly().cobwebRepellent = 2;
+                    player.buffImmune[BuffID.Webbed] = true;
+                }
+            }
         }
 
         public bool NovusCoreCheck(Player player, Item item)
@@ -771,6 +887,7 @@ namespace SGAmod
 
         public override bool UseItem(Item item, Player player)
         {
+
             SGAPlayer sga = player.SGAPly();
             if (item.healMana > 0 && sga.restorationFlower)
             {
@@ -1065,12 +1182,13 @@ namespace SGAmod
         {
             SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
 
-            if (item?.modItem is ITechItem)
+            if (item?.modItem is ITechItem tehky)
             {
-                sgaplayer.ConsumeElectricCharge(5+(int)((damage * sgaplayer.techdamage) * 1f), 60);
+                float scalieVal = sgaplayer.techdamage * tehky.ElectricChargeScalingPerUse();
+                sgaplayer.ConsumeElectricCharge(5+(int)((damage * scalieVal) * 1f), 60);
             }
 
-            if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister)
+            if ((item.useAmmo == AmmoID.Gel) && player.GetModPlayer<SGAPlayer>().FridgeflameCanister && item.type != ModContent.ItemType<HavocGear.Items.Weapons.Starduster>())
             {
 
                 int probg = Projectile.NewProjectile(position.X + (int)(speedX * 2f), position.Y + (int)(speedY * 2f), speedX, speedY, mod.ProjectileType("IceFlames"), (int)(damage * 0.75), knockBack, player.whoAmI);
@@ -1148,6 +1266,10 @@ namespace SGAmod
                     player.QuickSpawnItem(mod.ItemType("OmegaSigil"), 1);
                 if (arg == ItemID.WallOfFleshBossBag && Main.rand.Next(100) <= 10)
                     player.QuickSpawnItem(mod.ItemType("Powerjack"), 1);
+                if (arg == ItemID.WallOfFleshBossBag && Main.rand.Next(100) <= 25)
+                    player.QuickSpawnItem(ModContent.ItemType<Items.Weapons.LeechYoyo>(), 1);
+
+
             }
         }
 
@@ -1161,7 +1283,7 @@ namespace SGAmod
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
         {
-            if (item.type == ItemID.SandBlock && item.velocity.Y == 0 && item.wet && Main.rand.Next(50) < 1 && item.stack >= 1)
+            if (item.type == ItemID.SandBlock && item.velocity.Y == 0 && item.wet && Main.rand.Next(50)<1 && item.stack>=1)
             {
                 int item2 = Item.NewItem(item.Center, ModContent.ItemType<MoistSand>(), 1);
                 Item item3 = Main.item[item2];
@@ -1171,13 +1293,13 @@ namespace SGAmod
                     //item3.noGrabDelay = 0;
                     item.stack--;
 
-
+                    
                     if (item.stack < 1)
                     {
                         item.active = false;
                         HopperTile.CleanUpGlitchedItems();
                     }
-
+                    
 
                     if (Main.netMode != NetmodeID.SinglePlayer)
                     {
@@ -1192,7 +1314,7 @@ namespace SGAmod
 
         public override void UpdateInventory(Item item,Player player)
         {
-            if (item.buffType > 0 && SGAmod.overpoweredMod>1f)
+            if (item.buffType > 0 && SGAmod.OverpoweredMod > 1f)
             {
                 item.maxStack = 29;
             }

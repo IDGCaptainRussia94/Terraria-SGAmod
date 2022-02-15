@@ -42,29 +42,42 @@ namespace SGAmod.Items.Armors.JungleTemplar
         {
 			return GetType() == typeof(JungleTemplarHelmet) ? false : base.DrawHead();
         }
-        public static void ActivatePrecurserPower(SGAPlayer sgaply)
+		public static void ActivatePrecurserPower(SGAPlayer sgaply)
 		{
-			if (sgaply.AddCooldownStack(60 * 80, 2))
+			if (sgaply.player.HasBuff(ModContent.BuffType<PrecurserPowerBuff>()))
 			{
-				sgaply.player.AddBuff(ModContent.BuffType<PrecurserPowerBuff>(), 1200);
-				SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_EtherianPortalOpen, (int)sgaply.player.Center.X, (int)sgaply.player.Center.Y);
-				if (sound != null)
-				{
-					sound.Pitch = 0.85f;
-				}
+				sgaply.player.DelBuff(sgaply.player.FindBuffIndex(ModContent.BuffType<PrecurserPowerBuff>()));
 
 				SoundEffectInstance sound2 = Main.PlaySound(SoundID.Zombie, (int)sgaply.player.Center.X, (int)sgaply.player.Center.Y, 35);
 				if (sound2 != null)
 				{
-					sound2.Pitch = -0.5f;
+					sound2.Pitch = 0.5f;
 				}
-
-				for (int i = 0; i < 50; i += 1)
+			}
+			else 
+			{
+				if (sgaply.AddCooldownStack(60 * 80, 2))
 				{
-					int dust = Dust.NewDust(sgaply.player.Hitbox.TopLeft() + new Vector2(0, -8), sgaply.player.Hitbox.Width, sgaply.player.Hitbox.Height + 8, DustID.AncientLight);
-					Main.dust[dust].scale = 2f;
-					Main.dust[dust].noGravity = true;
-					Main.dust[dust].velocity = (sgaply.player.velocity * Main.rand.NextFloat(0.75f, 1f)) + Vector2.UnitX.RotatedBy(-MathHelper.PiOver2 + Main.rand.NextFloat(-1.2f, 1.2f)) * Main.rand.NextFloat(1f, 3f);
+					sgaply.player.AddBuff(ModContent.BuffType<PrecurserPowerBuff>(), 1200);
+					SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_EtherianPortalOpen, (int)sgaply.player.Center.X, (int)sgaply.player.Center.Y);
+					if (sound != null)
+					{
+						sound.Pitch = 0.85f;
+					}
+
+					SoundEffectInstance sound2 = Main.PlaySound(SoundID.Zombie, (int)sgaply.player.Center.X, (int)sgaply.player.Center.Y, 35);
+					if (sound2 != null)
+					{
+						sound2.Pitch = -0.5f;
+					}
+
+					for (int i = 0; i < 50; i += 1)
+					{
+						int dust = Dust.NewDust(sgaply.player.Hitbox.TopLeft() + new Vector2(0, -8), sgaply.player.Hitbox.Width, sgaply.player.Hitbox.Height + 8, DustID.AncientLight);
+						Main.dust[dust].scale = 2f;
+						Main.dust[dust].noGravity = true;
+						Main.dust[dust].velocity = (sgaply.player.velocity * Main.rand.NextFloat(0.75f, 1f)) + Vector2.UnitX.RotatedBy(-MathHelper.PiOver2 + Main.rand.NextFloat(-1.2f, 1.2f)) * Main.rand.NextFloat(1f, 3f);
+					}
 				}
 			}
 		}
@@ -103,15 +116,15 @@ namespace SGAmod.Items.Armors.JungleTemplar
 			{
 				sgaplayer.player.Throwing().thrownDamage *= sgaplayer.techdamage;
 
-				if (sgaplayer.ConsumeElectricCharge(9, 300, true))
+				if (sgaplayer.ConsumeElectricCharge(8, 300, true))
 				{
 					sgaplayer.player.shinyStone = true;
 				}
 			}
 
-			if (!sgaplayer.ConsumeElectricCharge(1000, 0, false, false))
+			if (sgaplayer.timer>300 && sgaplayer.player.lavaTime > 120 && !sgaplayer.ConsumeElectricCharge(1000, 0, false, false))
             {
-				sgaplayer.player.AddBuff(ModContent.BuffType<Buffs.LavaBurnLight>(),150*(Main.expertMode ? 1 : 2));
+				sgaplayer.player.AddBuff(ModContent.BuffType<Buffs.LavaBurn>(),30*(Main.expertMode ? 1 : 2));
 			}
 
 		}

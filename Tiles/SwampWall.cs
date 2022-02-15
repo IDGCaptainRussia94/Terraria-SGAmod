@@ -15,7 +15,7 @@ namespace SGAmod.Tiles
 
         public override bool Drop(int i, int j, ref int type)
         {
-			type = ModContent.ItemType<Items.Placeable.SwampWoodWall>();
+			type = ModContent.ItemType<Items.Placeable.DankWoodFurniture.SwampWoodWall>();
 			return true;
         }
 

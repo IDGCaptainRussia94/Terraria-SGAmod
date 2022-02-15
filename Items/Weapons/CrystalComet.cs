@@ -219,10 +219,11 @@ namespace SGAmod.Items.Weapons
         public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("CrystalComet"), 1);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 20);
-			recipe.AddIngredient(mod.ItemType("DrakeniteBar"), 15);
-			recipe.AddIngredient(mod.ItemType("StygianCore"), 2);
+			recipe.AddIngredient(ModContent.ItemType < CrystalComet>(), 1);
+			recipe.AddIngredient(ModContent.ItemType < StarMetalBar>(), 20);
+			recipe.AddIngredient(ModContent.ItemType < DrakeniteBar>(), 15);
+			recipe.AddIngredient(ModContent.ItemType < StygianCore>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<StarMetalMold>(), 1);
 			recipe.AddIngredient(ItemID.FragmentSolar, 8);
 			recipe.AddIngredient(ItemID.ManaCrystal, 3);
 			recipe.AddTile(TileID.LunarCraftingStation);

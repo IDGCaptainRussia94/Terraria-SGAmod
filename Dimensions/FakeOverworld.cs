@@ -184,41 +184,6 @@ namespace SGAmod.Dimensions
 
         }
 
-        public enum Paints : byte
-        {
-            None,
-            Red,
-            Orange,
-            Yellow,
-            Lime,
-            Green,
-            Teal,
-            Cyan,
-            SkyBlue,
-            Blue,
-            Purple,
-            Violet,
-            Pink,
-            DeepRed,
-            DeepOrange,
-            DeepYellow,
-            DeepLime,
-            DeepGreen,
-            DeepTeal,
-            DeepCyan,
-            DeepSkyBlue,
-            DeepBlue,
-            DeepPurple,
-            DeepViolet,
-            DeepPink,
-            Black,
-            White,
-            Gray,
-            Brown,
-            Shadow,
-            Negative
-        }
-
 
         public override void Load()
         {

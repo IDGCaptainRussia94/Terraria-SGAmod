@@ -13,6 +13,7 @@ using SGAmod.Items.Placeable;
 using SGAmod.Items.Weapons.Vibranium;
 using SGAmod.Items.Accessories;
 using Terraria.Utilities;
+using SGAmod.Items.Placeable.DankWoodFurniture;
 
 namespace SGAmod.HavocGear.Items
 {
@@ -29,7 +30,7 @@ namespace SGAmod.HavocGear.Items
 			item.useTime = 10;
 			item.useStyle = 1;
 			item.consumable = true;
-			item.createTile = mod.TileType("MoistSand");
+			item.createTile = ModContent.TileType<Tiles.MoistSand>();
 		}
 
 		public override void SetStaticDefaults()
@@ -43,6 +44,12 @@ namespace SGAmod.HavocGear.Items
 			recipe.AddIngredient(ModContent.ItemType<MoistSand>());
 			recipe.AddTile(TileID.Furnaces);
 			recipe.SetResult(ItemID.SandBlock, 1);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.SandBlock);
+			recipe.needWater = true;
+			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
 
@@ -223,7 +230,7 @@ namespace SGAmod.HavocGear.Items
 			item.useTime = 10;
 			item.useStyle = ItemUseStyleID.SwingThrow;
 			item.consumable = true;
-			item.createTile = ModContent.TileType<DankWoodBlock>();
+			item.createTile = ModContent.TileType<Tiles.DankWoodFurniture.DankWoodBlock>();
 		}
 
 		public override void SetStaticDefaults()
@@ -232,6 +239,33 @@ namespace SGAmod.HavocGear.Items
 			Tooltip.SetDefault("It smells odd...");
 		}
 
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<DankWoodFence>(), 4);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<BrokenDankWoodFence>(), 4);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<DankWoodWall>(), 4);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<DankWoodPlatform>(), 2);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<SwampWoodWall>(), 4);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
 	}
 	public class DankCore : ModItem
 	{
@@ -367,7 +401,63 @@ namespace SGAmod.Items
         }
     }
 
-		public class OverseenCrystal : ModItem, IRadioactiveItem
+	public class CelestineChunk : ModItem, IRadioactiveItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Celestine Chunk");
+			Tooltip.SetDefault("Inert and radioactive Luminite...");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.width = 16;
+			item.height = 16;
+			item.useTime = 10;
+			item.useAnimation = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.consumable = true;
+			item.value = 0;
+			item.rare = ItemRarityID.Blue;
+		}
+
+		public override string Texture => "Terraria/Item_" + ItemID.LunarOre;
+
+        public override Color? GetAlpha(Color lightColor)
+        {
+			return Color.Lerp(Color.DarkGray, Color.Gray, 0.50f + (float)Math.Sin(Main.GlobalTime / 2f) / 2f);
+        }
+
+        public override void AddRecipes()
+        {
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LunarOre, 1);
+			recipe.AddIngredient(this, 4);
+			recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 1);
+			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.SetResult(ItemID.LunarBar, 2);
+			recipe.AddRecipe();
+		}
+
+        public override void PostUpdate()
+		{
+			Lighting.AddLight(item.Center, Color.White.ToVector3() * 0.55f);
+		}
+
+		public int RadioactiveHeld()
+		{
+			return 2;
+		}
+
+		public int RadioactiveInventory()
+		{
+			return 1;
+		}
+	}
+
+	public class OverseenCrystal : ModItem, IRadioactiveItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -415,7 +505,7 @@ namespace SGAmod.Items
 			recipe.AddRecipe();*/
 
 			recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<AncientFabricItem>(), 5);
 			recipe.AddIngredient(ModContent.ItemType<AdvancedPlating>(), 2);
 			recipe.AddIngredient(this, 2);
 			recipe.AddTile(tileType);
@@ -440,7 +530,7 @@ namespace SGAmod.Items
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.HallowedBar, 4);
 			recipe.AddIngredient(ItemID.SoulofFright, 1);
-			recipe.AddIngredient(ItemID.SoulofNight, 1);
+			recipe.AddIngredient(ItemID.SoulofMight, 1);
 			recipe.AddIngredient(ItemID.SoulofSight, 1);
 			recipe.AddIngredient(this, 5);
 			recipe.AddTile(tileType);
@@ -576,11 +666,11 @@ namespace SGAmod.Items
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("VibraniumCrystal"), 3);
 			recipe.AddIngredient(mod.ItemType("VibraniumPlating"), 3);
-			recipe.AddIngredient(ItemID.LunarBar, 1);
+			recipe.AddIngredient(ItemID.LunarBar, 2);
 			recipe.AddIngredient(mod.ItemType("LunarRoyalGel"), 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.needLava = true;
-			recipe.SetResult(this, 1);
+			recipe.SetResult(this, 2);
 			recipe.AddRecipe();
 		}
 		public override bool Autoload(ref string name)
@@ -852,20 +942,53 @@ namespace SGAmod.Items
 			item.maxStack = 20;
 			item.width = 26;
 			item.height = 14;
-			item.value = Item.sellPrice(0,0,50,0);
+			item.value = Item.sellPrice(0, 0, 50, 0);
 			item.rare = ItemRarityID.Yellow;
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 2);
-			recipe.AddIngredient(mod.ItemType("WraithFragment4"), 2);
-			recipe.AddIngredient(ItemID.MartianConduitPlating, 10);
-			recipe.AddIngredient(ItemID.MeteoriteBar, 1);
-			recipe.AddIngredient(mod.ItemType("VialofAcid"), 3);
+			recipe.AddIngredient(ModContent.ItemType<AdvancedPlating>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<WraithFragment4>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<ManaBattery>(), 1);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 5);
+			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 5);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 2);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<EmptyPlasmaCell>(), 1);
+			recipe.AddIngredient(ItemID.MeteoriteBar, 2);
+			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 3);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<EmptyPlasmaCell>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 2);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+
+		}
+	}
+	public class EmptyPlasmaCell : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Empty Plasma Cell");
+			Tooltip.SetDefault("Casing not yet filled with plasma");
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 20;
+			item.width = 26;
+			item.height = 14;
+			item.value = Item.sellPrice(0,0,10,0);
+			item.rare = ItemRarityID.LightRed;
 		}
 	}
 	public class CryostalBar: ModItem
@@ -1773,6 +1896,99 @@ namespace SGAmod.Items
 
 	}
 
+	public class HeliosFocusCrystal : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Helios Focus Prism");
+			Tooltip.SetDefault("An intact focus prism used to empower Phaethon\nCould be useful for crafting your own empowerment devices");
+		}
+		public override void SetDefaults()
+		{
+			item.width = 40;
+			item.height = 40;
+			item.value = Item.sellPrice(0,5,0,0);
+			item.rare = ItemRarityID.Yellow;
+			item.maxStack = 30;
+			//item.damage = 1;
+		}
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Main.hslToRgb((Main.GlobalTime/4f) % 1f, 1f, 0.75f);
+		}
+		public override string Texture
+		{
+			get { return ("Terraria/Item_" + ItemID.DD2ElderCrystal); }
+		}
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
+			float vel = item.velocity.X / 6f;
+			Vector2 drawPos = (item.Center+new Vector2(0, Main.itemTexture[item.type].Height-4)) - Main.screenPosition;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
+			{
+				spriteBatch.Draw(Main.itemTexture[item.type], (drawPos + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * 3f).RotatedBy(vel)), null, Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f), vel, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, vel, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			SGAmod.FadeInEffect.Parameters["fadeColor"].SetValue(2f);
+			SGAmod.FadeInEffect.Parameters["alpha"].SetValue(0.50f);
+			SGAmod.FadeInEffect.CurrentTechnique.Passes["ColorToAlphaPass"].Apply();
+
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, vel, Main.itemTexture[item.type].Size() / 2f, scale / 15f, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			return false;
+		}
+
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+
+			Vector2 slotSize = new Vector2(52f, 52f) * scale;
+			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+
+			slotSize.X /= 1.0f;
+			slotSize.Y = -slotSize.Y / 4f;
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
+			{
+				spriteBatch.Draw(Main.itemTexture[item.type], drawPos+(Vector2.UnitX.RotatedBy(f+Main.GlobalTime*2f)*3f), null, Main.hslToRgb(f/MathHelper.TwoPi,1f,0.75f), 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			SGAmod.FadeInEffect.Parameters["fadeColor"].SetValue(2f);
+			SGAmod.FadeInEffect.Parameters["alpha"].SetValue(0.50f);
+			SGAmod.FadeInEffect.CurrentTechnique.Passes["ColorToAlphaPass"].Apply();
+
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale*1/15f, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			return false;
+		}
+	}
+
 	public class EntropyTransmuter : ModItem
 	{
 		static internal int MaxEntropy = 100000;
@@ -1926,7 +2142,35 @@ namespace SGAmod.Items
 			item.rare = ItemRarityID.Quest;
 		}
 	}
+		public class ShadowLockBox : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Shadow LockBox");
+			Tooltip.SetDefault("Right click to open, must have a Shadow Key\n'Yes, this is literally just placeholder 1.4 content'");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 30;
+			item.width = 14;
+			item.height = 14;
+			item.value = 0;
+			item.rare = ItemRarityID.Quest;
+		}
+        public override bool CanRightClick()
+        {
+			return Main.LocalPlayer.HasItem(ItemID.ShadowKey);
+        }
 
+        public override void RightClick(Player player)
+        {
+			List<int> lootrare = new List<int> { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow};
+
+			player.QuickSpawnItem(lootrare[Main.rand.Next(lootrare.Count)]);
+		}
+
+
+    }
 	public class HellionCheckpoint1 : ModItem
 	{
 		protected virtual Color color => Color.Lime;

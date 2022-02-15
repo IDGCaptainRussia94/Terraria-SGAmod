@@ -33,6 +33,7 @@ using System.Reflection;
 using AAAAUThrowing;
 using System.Threading;
 using SGAmod.Buffs;
+using SGAmod.Items.Weapons.Ammo;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif
@@ -292,10 +293,11 @@ namespace SGAmod
 			BlackListedItems.Add(ItemID.FragmentSolar);
 			BlackListedItems.Add(ItemID.FragmentStardust);
 			BlackListedItems.Add(ItemID.FragmentVortex);
-			BlackListedItems.Add(SGAmod.Instance.ItemType("StarMetalBar"));
-			BlackListedItems.Add(SGAmod.Instance.ItemType("WraithArrow"));
-			BlackListedItems.Add(SGAmod.Instance.ItemType("ShadowJavelin"));
-			BlackListedItems.Add(SGAmod.Instance.ItemType("SPinkyBagFake"));
+
+			BlackListedItems.Add(ModContent.ItemType<Items.StarMetalBar>());
+			BlackListedItems.Add(ModContent.ItemType<WraithArrow>());
+			BlackListedItems.Add(ModContent.ItemType<Items.Weapons.Javelins.ShadowJavelin>());
+			BlackListedItems.Add(ModContent.ItemType<Items.SPinkyBagFake>());
 		}
 
 		public UncraftClass(Point16 location, Item item, int recipeIndex = 0, int offsetter = 0)
@@ -563,6 +565,24 @@ namespace SGAmod
 			}
 		}*/
 
+		//1.4
+		public static bool RemoveRecipe(this Recipe rec)
+		{
+			for (int i = 0; i < Recipe.numRecipes; i++)
+			{
+				if (Main.recipe[i] == rec)
+				{
+					for (int j = i; j < Recipe.numRecipes - 1; j++)
+					{
+						Main.recipe[j] = Main.recipe[j + 1];
+					}
+					Main.recipe[Recipe.numRecipes - 1] = new Recipe();
+					Recipe.numRecipes--;
+					return true;
+				}
+			}
+			return false;
+		}
 		public static void FindSentryRestingSpotBetter(this Player player,Vector2 position, out int worldX, out int worldY, out int pushYUp)
 		{
 			bool flag = false;

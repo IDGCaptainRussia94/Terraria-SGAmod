@@ -479,13 +479,14 @@ namespace SGAmod.Items.Consumables.LootBoxes
 			WR.Add(new LootBoxContents(ModContent.ItemType<AmberGlowSkull>(), 1), 1);
 			WR.Add(new LootBoxContents(ModContent.ItemType<TwinesOfFate>(), 1), 0.80);
 			WR.Add(new LootBoxContents(ModContent.ItemType<HeartOfEntropy>(), 1), 0.75);
+			WR.Add(new LootBoxContents(ModContent.ItemType<VoidEmbracers>(), 1), 0.75);
 			WR.Add(new LootBoxContents(ModContent.ItemType<TidalCharm>(), 1), 0.75);
 			WR.Add(new LootBoxContents(ModContent.ItemType<FluidDisplacer>(), 1), 0.75);
 			WR.Add(new LootBoxContents(ModContent.ItemType<FridgeFlamesCanister>(), 1), 0.6);
+			WR.Add(new LootBoxContents(ModContent.ItemType<AuraclesInsight>(), 1), 0.80);
+			WR.Add(new LootBoxContents(ModContent.ItemType<CobwebRepellent>(), 1), 1);
+			WR.Add(new LootBoxContents(ModContent.ItemType<LiquidGambling>(), 1), 1);
 			WR.Add(new LootBoxContents(ModContent.ItemType<TerraDivingGear>(), 1), 0.2);
-			WR.Add(new LootBoxContents(ModContent.ItemType<OmegaSigil>(), 1), 0.2);
-			WR.Add(new LootBoxContents(ModContent.ItemType<BloodCharmPendant>(), 1), 0.2);
-			WR.Add(new LootBoxContents(ModContent.ItemType<YoyoGauntlet>(), 1), 0.2);
 
 			loots.Add(WR.Get());
 		}

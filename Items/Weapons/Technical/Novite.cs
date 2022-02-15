@@ -16,6 +16,7 @@ namespace SGAmod.Items.Weapons.Technical
 {
 	public class NoviteKnife : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Knife");
@@ -119,6 +120,7 @@ namespace SGAmod.Items.Weapons.Technical
 	public class NoviteBlaster : SeriousSamWeapon, ITechItem
 	{
 		private bool altfired = false;
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Blaster");
@@ -176,7 +178,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class NovaBlasterCharging : ModProjectile
 	{
-
+		protected bool buttonReleased = false;
 		public virtual int chargeuptime => 100;
 		public virtual float velocity => 32f;
 		public virtual float spacing => 24f;
@@ -191,9 +193,12 @@ namespace SGAmod.Items.Weapons.Technical
 			DisplayName.SetDefault("Nova Blaster Charging");
 		}
 
-		public override bool? CanHitNPC(NPC target) => false;
+        public override bool CanDamage()
+        {
+			return false;
+        }
 
-		public override string Texture
+        public override string Texture
 		{
 			get { return ("SGAmod/Projectiles/WaveProjectile"); }
 		}
@@ -305,6 +310,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 		public override void AI()
 		{
+			projectile.localAI[0] += 1;
 			player = Main.player[projectile.owner];
 
 			if (player == null)
@@ -333,7 +339,7 @@ namespace SGAmod.Items.Weapons.Technical
 					cantchargeup = true;
 			}
 
-			bool channeling = ((player.channel || (projectile.ai[0] < 5 && !cantchargeup)) && !player.noItems && !player.CCed);
+			bool channeling = (((player.channel && !buttonReleased) || (projectile.ai[0] < 5 && !cantchargeup)) && !player.noItems && !player.CCed);
 			bool aiming = true;// firedCount < FireCount;
 
 			if (aiming || channeling)
@@ -372,6 +378,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 				if (!channeling && player.itemTime<fireRate && firedCount < FireCount)
 				{
+					buttonReleased = true;
 					firedCount += 1;
 					player.itemTime = fireRate*(firedCount< FireCount ? 2 : 1);
 					player.itemAnimation = fireRate * (firedCount < FireCount ? 2 : 1);
@@ -385,6 +392,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class NoviteTowerSummon : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novite Tesla Tower");

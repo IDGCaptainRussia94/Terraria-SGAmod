@@ -426,7 +426,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Joyful Shroom");
-			Tooltip.SetDefault("This is not a normal Mushroom...");
+			Tooltip.SetDefault("This is not a normal Mushroom...\nSimply holding too many at once may have side effects...");
 		}
 
 		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
@@ -469,7 +469,7 @@ namespace SGAmod.Items.Consumables
 		{
 			item.width = 14;
 			item.height = 14;
-			item.maxStack = 1;
+			item.maxStack = 30;
 			item.rare = ItemRarityID.Quest;
 			item.value = Item.buyPrice(gold: 1);
 			item.useStyle = ItemUseStyleID.EatingUsing;
@@ -523,7 +523,15 @@ namespace SGAmod.Items.Consumables
 
         public override string Texture => "Terraria/Projectile_"+ProjectileID.Mushroom;
 
-		public override bool UseItem(Player player)
+        public override void UpdateInventory(Player player)
+        {
+            if (item.stack >= 10)
+            {
+				player.AddBuff(ModContent.BuffType<Buffs.CleansedPerception>(), (60 * (item.stack-10))+2);
+			}
+        }
+
+        public override bool UseItem(Player player)
 		{
 			player.AddBuff(ModContent.BuffType<Buffs.CleansedPerception>(),60*60);
 			//Main.expertMode = true;
@@ -771,7 +779,7 @@ namespace SGAmod.Items.Consumables
 			recipe.AddIngredient(ModContent.ItemType <HavocGear.Items.Biomass>(), 5);
 			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.MoistSand>(), 6);
 			recipe.AddIngredient(ItemID.Bunny, 1);
-			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this, 5);
 			recipe.AddRecipe();
 		}
@@ -1083,17 +1091,17 @@ namespace SGAmod.Items.Consumables
 		public static Color SoulColorStatic => Main.hslToRgb(Main.GlobalTime % 1f, 1f, 0.75f);
 
 		public Color SoulColor
-		{
-			get
-			{
+        {
+            get
+            {
 				if (GetType() == typeof(SoulJar))
-				{
+                {
 					return Color.White;
-				}
+                }
 
 				return SoulColorStatic;
-			}
-		}
+            }
+        }
 		public override string Texture
 		{
 			get { return ("SGAmod/Items/Consumables/SoulJar"); }
@@ -1124,13 +1132,13 @@ namespace SGAmod.Items.Consumables
 		{
 			int typeofnpc = -1;
 			if (SGAUtils.IsDigitsOnly(npcType))
-			{
+            {
 				try
 				{
 					typeofnpc = int.Parse(npcType);
-				}
-				catch
-				{
+                }
+                catch
+                {
 					Mod modder = ModLoader.GetMod(modName);
 					typeofnpc = modder != null ? modder.NPCType(npcType) : 0;
 					if (typeofnpc == 0)
@@ -1146,7 +1154,7 @@ namespace SGAmod.Items.Consumables
 					typeofnpc = -1;
 			}
 
-		gother:
+			gother:
 
 			if (typeofnpc > -1)
 			{
@@ -1218,12 +1226,12 @@ namespace SGAmod.Items.Consumables
 				tooltips.Add(new TooltipLine(mod, "SoulJarText", "Contains a soul of an NPC:"));
 				NPC npctoshow = new NPC();
 				npctoshow.SetDefaults(npcTypeToUse);
-				tooltips.Add(new TooltipLine(mod, "SoulJarText", "" + npctoshow.FullName));
-			}
-			else
-			{
+				tooltips.Add(new TooltipLine(mod, "SoulJarText", ""+ npctoshow.FullName));
+            }
+            else
+            {
 				if (GetType() == typeof(SoulJarFull))
-					tooltips.Add(new TooltipLine(mod, "SoulJarText", "This jar appears to be empty"));
+				tooltips.Add(new TooltipLine(mod, "SoulJarText", "This jar appears to be empty"));
 			}
 		}
 
@@ -1231,26 +1239,26 @@ namespace SGAmod.Items.Consumables
 		{
 
 			Texture2D inner = Main.itemTexture[item.type];
-			Texture2D inner2 = Main.itemTexture[ItemID.RedDye];
+				Texture2D inner2 = Main.itemTexture[ItemID.RedDye];
 
-			Vector2 slotSize = new Vector2(52f, 52f);
-			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
-			Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
-			Vector2 textureOrigin = new Vector2(inner.Width, inner.Height) / 2f;
+				Vector2 slotSize = new Vector2(52f, 52f);
+				position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
+				Vector2 drawPos = position + slotSize * Main.inventoryScale / 2f;
+				Vector2 textureOrigin = new Vector2(inner.Width, inner.Height) / 2f;
 
 			//spriteBatch.Draw(inner, drawPos, null, Color.DarkMagenta, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
 
 			spriteBatch.Draw(inner2, drawPos, null, Color.White * 1f, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
-			spriteBatch.Draw(inner, drawPos, null, SoulColor * 1f, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(inner, drawPos, null, SoulColor * 1f, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
 
 			return false;
 		}
-		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
-		{
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
 			Texture2D inner = Main.itemTexture[item.type];
 			Texture2D inner2 = Main.itemTexture[ItemID.RedDye];
 
-			Vector2 drawPos = item.Center - Main.screenPosition;
+			Vector2 drawPos = item.Center-Main.screenPosition;
 			Vector2 textureOrigin = new Vector2(inner.Width, inner.Height) / 2f;
 
 			Color lighting = Lighting.GetColor(((int)item.Center.X) >> 4, ((int)item.Center.Y) >> 4, Color.White);
@@ -1262,7 +1270,7 @@ namespace SGAmod.Items.Consumables
 			return false;
 		}
 
-		public override void AddRecipes()
+        public override void AddRecipes()
 		{
 			if (GetType() == typeof(SoulJar))
 			{
@@ -1273,13 +1281,12 @@ namespace SGAmod.Items.Consumables
 			}
 		}
 
-		public override bool CanUseItem(Player player)
-		{
-			return item.type == ModContent.ItemType<SoulJar>();
-		}
+        public override bool CanUseItem(Player player)
+        {
+            return item.type == ModContent.ItemType<SoulJar>();
+        }
 
-	}
-
+    }
 
 
 	public class SoulJarFull : SoulJar
@@ -1303,7 +1310,7 @@ namespace SGAmod.Items.Consumables
 		}
 	}
 
-	public class SoulJarProj : ModProjectile
+		public class SoulJarProj : ModProjectile
 	{
 
 		public override void SetStaticDefaults()
@@ -1342,30 +1349,30 @@ namespace SGAmod.Items.Consumables
 			aiType = ProjectileID.WoodenArrowFriendly;
 		}
 
-		public override bool PreKill(int timeLeft)
-		{
+        public override bool PreKill(int timeLeft)
+        {
 
 			if (projectile.owner == Main.myPlayer)
 			{
 				int item = Item.NewItem(projectile.getRect(), capture != null ? ModContent.ItemType<SoulJarFull>() : ModContent.ItemType<SoulJar>());
 
 				if (item >= 0 && capture != null && Main.item[item].modItem is SoulJar jar)
-				{
+                {
 					jar.DoCapture(capture);
-				}
+                }
 
-				// Sync the drop for multiplayer
-				// Note the usage of Terraria.ID.MessageID, please use this!
-				if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
+					// Sync the drop for multiplayer
+					// Note the usage of Terraria.ID.MessageID, please use this!
+					if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
 				{
 					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
 				}
 			}
 
 			return true;
-		}
+        }
 
-		public override void AI()
+        public override void AI()
 		{
 
 			projectile.ai[0] = projectile.ai[0] + 1;
@@ -1374,7 +1381,7 @@ namespace SGAmod.Items.Consumables
 
 
 			NPC target = Main.npc[Idglib.FindClosestTarget(0, projectile.Center, new Vector2(0f, 0f), true, true, true, projectile)];
-			if (target != null && target.life < (int)(target.lifeMax * 0.10))
+			if (target != null && target.life<(int)(target.lifeMax*0.10))
 			{
 				if (new Rectangle((int)projectile.position.X, (int)projectile.position.Y, projectile.width, projectile.height).Intersects
 					(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height)))
@@ -1392,12 +1399,12 @@ namespace SGAmod.Items.Consumables
 			Texture2D inner2 = Main.itemTexture[ItemID.RedDye];
 
 			Vector2 slotSize = new Vector2(52f, 52f);
-			Vector2 drawPos = projectile.Center - Main.screenPosition;
+			Vector2 drawPos = projectile.Center-Main.screenPosition;
 			Vector2 textureOrigin = new Vector2(inner.Width, inner.Height) / 2f;
 
 			//spriteBatch.Draw(inner, drawPos, null, Color.DarkMagenta, 0, textureOrigin, Main.inventoryScale * 1f, SpriteEffects.None, 0f);
 
-			Color lighting = Lighting.GetColor(((int)projectile.Center.X) >> 4, ((int)projectile.Center.Y) >> 4, Color.White);
+			Color lighting = Lighting.GetColor(((int)projectile.Center.X) >> 4, ((int)projectile.Center.Y) >> 4,Color.White);
 
 			spriteBatch.Draw(inner2, drawPos, null, Color.White.MultiplyRGB(lighting), projectile.rotation, textureOrigin, projectile.scale, SpriteEffects.None, 0f);
 			spriteBatch.Draw(inner, drawPos, null, SoulColor.MultiplyRGB(lighting), projectile.rotation, textureOrigin, projectile.scale, SpriteEffects.None, 0f);
@@ -1405,7 +1412,7 @@ namespace SGAmod.Items.Consumables
 			return false;
 		}
 
-	}
+    }
 
 	public class EntropicRelocator : ModItem
 	{

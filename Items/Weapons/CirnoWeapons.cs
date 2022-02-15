@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 using SGAmod.NPCs;
 using Idglibrary;
 using AAAAUThrowing;
-
+using System.Linq;
 
 namespace SGAmod.Items.Weapons
 {
@@ -34,7 +34,7 @@ namespace SGAmod.Items.Weapons
 			item.knockBack = 2;
 			item.value = 75000;
 			item.noMelee = true;
-			item.rare = 5;
+			item.rare = ItemRarityID.Pink;
 			item.shoot = 10;
 			item.shootSpeed = 10f;
 			item.UseSound = SoundID.Item60;
@@ -193,8 +193,9 @@ namespace SGAmod.Items.Weapons
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("Snowfall"), 1);
-			recipe.AddIngredient(ItemID.CursedFlame, 15);
+			recipe.AddIngredient(ModContent.ItemType<Snowfall>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<Consumables.GasPasser>(), 3);
+			recipe.AddIngredient(ItemID.CursedFlame, 12);
 			recipe.AddIngredient(ItemID.BlizzardStaff, 1);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this, 1);
@@ -400,6 +401,7 @@ namespace SGAmod.Items.Weapons
 			recipe.AddIngredient(ModContent.ItemType<Snowfall>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<Consumables.DivineShower>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<Consumables.Jarate>(), 5);
+			recipe.AddIngredient(ItemID.CandyCorn, 100);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
@@ -556,7 +558,7 @@ namespace SGAmod.Items.Weapons
 			item.reuseDelay = 20;
 			item.knockBack = 6;
 			item.value = 75000;
-			item.rare = 5;
+			item.rare = ItemRarityID.Pink;
 			item.magic = false;
 			item.ranged = true;
 			item.mana = 10;
@@ -600,7 +602,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Star'Fish' Burster");
-			Tooltip.SetDefault("Fires 4 starfish in bursts at the cost of 1, but requires a small amount of mana\nStarfish bounce off walls and pierce\nUses Starfish as ammo\n90% to not consume ammo");
+			Tooltip.SetDefault("Fires 4 starfish in bursts at the cost of 1, but requires a small amount of mana\nStarfish bounce off walls and pierce\nUses Starfish as ammo\n66% to not consume ammo");
 		}
 		public override bool CanUseItem(Player player)
 		{
@@ -618,12 +620,19 @@ namespace SGAmod.Items.Weapons
 			item.rare = 7;
 			item.magic = false;
 			item.ranged = true;
-			item.mana = 10;
 			//item.shoot = mod.ProjectileType("SunbringerFlare");
 			item.shoot = mod.ProjectileType("StarfishProjectile");
 			item.shootSpeed = 11f;
 			item.useAmmo = 2626;
 		}
+
+		/*
+		public override bool ConsumeAmmo(Player player)
+		{
+			return Main.rand.Next(100) < 33;
+		}
+		*/
+
 
 		public override void AddRecipes()
 		{
@@ -663,7 +672,7 @@ namespace SGAmod.Items.Weapons
 			item.useStyle = 5;
 			item.knockBack = 2;
 			item.value = 50000;
-			item.rare = 5;
+			item.rare = ItemRarityID.Pink;
 			item.shootSpeed = 8f;
 			item.noMelee = true;
 			item.shoot = 14;
@@ -801,8 +810,8 @@ namespace SGAmod.Items.Weapons
 				for (float xx = 0f; xx < 6f; xx += 1f)
 				{
 					int proj2 = Projectile.NewProjectile(projectile.Center, projectile.velocity + new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(0, 3f)), mod.ProjectileType("CirnoIceShardPlayer"), (int)((float)projectile.damage * 1f), 0f, projectile.owner);
-					Main.projectile[proj2].friendly = false;
-					Main.projectile[proj2].hostile = true;
+					Main.projectile[proj2].friendly = true;
+					Main.projectile[proj2].hostile = false;
 					Main.projectile[proj2].netUpdate = true;
 				}
 				projectile.Kill();
@@ -855,7 +864,6 @@ namespace SGAmod.Items.Weapons
 			if (projectile.ai[1]<=0)
 			projectile.velocity.Y += 0.1f;
 		}
-
 	}
 
 	public class CirnoIceShardPlayerOrbit : CirnoIceShardPlayer
@@ -898,6 +906,299 @@ namespace SGAmod.Items.Weapons
 			base.AI();
 		}
 
+	}
+
+	public class RodOfTheMistyLake : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Rod of The Misty Lake");
+			Tooltip.SetDefault("Summons Ice Fairies to fight for you with blasts of ice\nThey orbit around you and seek out enemies\nPeriodically converts projectiles nearby into Cold Damage\nThis also boosts their damage by 25% of your summon damage\nCosts 2 minion slots");
+			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
+			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.damage = 22;
+			item.knockBack = 3f;
+			item.mana = 10;
+			item.width = 32;
+			item.height = 32;
+			item.useTime = 36;
+			item.useAnimation = 36;
+			item.useStyle = 1;
+			item.value = Item.buyPrice(0, 2, 50, 0);
+			item.rare = ItemRarityID.Pink;
+			item.UseSound = SoundID.Item44;
+
+			// These below are needed for a minion weapon
+			item.noMelee = true;
+			item.summon = true;
+			item.buffType = ModContent.BuffType<CirnoMinionBuff>();
+			// No buffTime because otherwise the item tooltip would say something like "1 minute duration"
+			item.shoot = ModContent.ProjectileType<CirnoMinionProjectile>();
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			// This is needed so the buff that keeps your minion alive and allows you to despawn it properly applies
+			player.AddBuff(item.buffType, 2);
+
+			return true;
+		}
+
+	}
+
+	public class CirnoMinionProjectile : ModProjectile
+	{
+		protected float idleAccel = 0.05f;
+		protected float spacingMult = 1f;
+		protected float viewDist = 400f;
+		protected float chaseDist = 200f;
+		protected float chaseAccel = 6f;
+		protected float inertia = 40f;
+		protected float shootCool = 90f;
+		protected float shootSpeed;
+		protected int shoot;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Ice Fairy Minion");
+			ProjectileID.Sets.MinionTargettingFeature[projectile.type] = true;
+			Main.projPet[projectile.type] = true;
+			ProjectileID.Sets.MinionSacrificable[projectile.type] = true;
+			ProjectileID.Sets.Homing[projectile.type] = true;
+		}
+
+		public sealed override void SetDefaults()
+		{
+			projectile.width = 16;
+			projectile.height = 16;
+			projectile.tileCollide = false;
+			projectile.friendly = true;
+			projectile.minion = true;
+			projectile.minionSlots = 2f;
+			projectile.penetrate = -1;
+			projectile.timeLeft = 60;
+		}
+
+		public override bool? CanCutTiles()
+		{
+			return false;
+		}
+
+		// This is mandatory if your minion deals contact damage (further related stuff in AI() in the Movement region)
+		public override bool MinionContactDamage()
+		{
+			return false;
+		}
+
+		public virtual void CreateDust()
+		{
+		}
+
+		public virtual void SelectFrame()
+		{
+		}
+
+		public override void AI()
+		{
+			//if (projectile.owner == null || projectile.owner < 0)
+			//return;
+
+			projectile.ai[0]++;
+			projectile.localAI[0]++;
+			Player player = Main.player[projectile.owner];
+			if (player.dead || !player.active)
+			{
+				player.ClearBuff(ModContent.BuffType<CirnoMinionBuff>());
+			}
+			if (player.HasBuff(ModContent.BuffType<CirnoMinionBuff>()))
+			{
+				projectile.timeLeft = 2;
+			}
+			Vector2 gothere = player.Center;
+
+
+
+			float us = 0f;
+			float maxus = 0f;
+
+			for (int i = 0; i < Main.maxProjectiles; i++) // Loop all projectiles
+			{
+				Projectile currentProjectile = Main.projectile[i];
+				if (currentProjectile.active // Make sure the projectile is active
+				&& currentProjectile.owner == Main.myPlayer // Make sure the projectile's owner is the client's player
+				&& currentProjectile.type == projectile.type)
+				{ // Make sure the projectile is of the same type as this javelin
+
+					if (i == projectile.whoAmI)
+						us = maxus;
+					maxus += 1f;
+
+				}
+
+			}
+
+			float percent = us / maxus;
+			int ptimer = player.SGAPly().timer;
+
+			double angles = (percent*MathHelper.TwoPi) + ((ptimer * player.direction) / 30f);
+			float dist = 64f;
+			Vector2 here = Vector2.One.RotatedBy(angles) * dist;
+			Vector2 where = gothere + here;
+
+			NPC enemy = null;
+
+			List<NPC> enemies = SGAUtils.ClosestEnemies(projectile.Center,1200,player.Center);
+
+			if (enemies != null && enemies.Count > 0)
+            {
+				enemy = enemies[0];
+			}
+
+			if (player.HasMinionAttackTargetNPC)
+            {
+				enemy = Main.npc[player.MinionAttackTargetNPC];
+			}
+
+			if (enemy != null)
+            {
+				where = enemy.Center + Vector2.Normalize(projectile.Center - enemy.Center).RotatedBy((-MathHelper.PiOver2+(angles*MathHelper.Pi))/1.5f) * (dist*2);
+
+				Vector2 generalDist = enemy.Center - projectile.Center;
+
+				projectile.spriteDirection = generalDist.X > 0 ? 1 : -1;
+
+				if ((int)projectile.ai[0]%80==0 && generalDist.Length()< dist + 360)
+                {
+					for (float xx = 0f; xx < 6f; xx += 1f)
+					{
+						Vector2 aiming = Vector2.Normalize(generalDist) * 32f + new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-3, 3f));
+
+						Vector2 distxxx = SGAUtils.PredictiveAim(aiming.Length(), projectile.Center, enemy.Center, enemy.velocity, false) - (projectile.Center);
+
+						int proj2 = Projectile.NewProjectile(projectile.Center,(Vector2.Normalize(distxxx) * aiming.Length()) + new Vector2(Main.rand.NextFloat(-8f, 8f), Main.rand.NextFloat(-8, 8f)), ProjectileID.IceBolt, (int)((float)projectile.damage * 1f), 0f, projectile.owner);
+						Main.projectile[proj2].friendly = true;
+						Main.projectile[proj2].minion = true;
+						Main.projectile[proj2].timeLeft = 30;
+						Main.projectile[proj2].melee = false;
+						Main.projectile[proj2].hostile = false;
+						Main.projectile[proj2].netUpdate = true;
+					}
+				}
+
+            }
+            else
+            {
+				projectile.spriteDirection = projectile.velocity.X > 0 ? 1 : -1;
+			}
+
+			if ((int)(ptimer+ percent * 30)%30 == 0)
+            {
+				List<Projectile> allfriendlyprojs = Main.projectile.Where(testby => testby.active && !testby.coldDamage && testby.damage>0 && testby.owner == projectile.owner && projectile.type != testby.type && (testby.Center - projectile.Center).LengthSquared()<640000).OrderBy(testby => (testby.Center-projectile.Center).LengthSquared()).ToList();
+
+				if (allfriendlyprojs.Count > 0)
+				{
+					Projectile coldenproj = allfriendlyprojs[0];
+					coldenproj.coldDamage = true;
+					if (!coldenproj.hostile)
+					{
+						coldenproj.damage = (int)(coldenproj.damage*(1f+(player.minionDamage-1f)*0.25f));
+					}
+					coldenproj.netUpdate = true;
+
+					Vector2 generalDist = coldenproj.Center - projectile.Center;
+
+					for (int i = 0; i < 60; i += 1)
+                    {
+						int dustx = Dust.NewDust(new Vector2(coldenproj.position.X, coldenproj.position.Y), coldenproj.width, coldenproj.height, 80);
+						Main.dust[dustx].scale = 1.25f;
+						Main.dust[dustx].velocity = Main.rand.NextVector2Circular(4f,4f)+Vector2.Normalize(generalDist)*1f;
+						Main.dust[dustx].noGravity = true;
+					}
+
+					Main.PlaySound(SoundID.Item, (int)coldenproj.Center.X, (int)coldenproj.Center.Y, 30, 1f, -0.5f);
+				}
+
+
+            }
+
+
+			//				Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 30, 1f, -0.5f);
+
+
+			if ((where - projectile.Center).Length() > 8f)
+			{
+				projectile.velocity += Vector2.Normalize((where - projectile.Center)) * 0.01f;
+				projectile.velocity += (where - projectile.Center) * 0.0025f;
+				projectile.velocity *= 0.975f;
+			}
+			float maxspeed = Math.Min(projectile.velocity.Length(), 32);
+			projectile.velocity.Normalize();
+			projectile.velocity *= maxspeed;
+
+			int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, 135);
+			Main.dust[dust].scale = 0.50f;
+			Main.dust[dust].velocity = projectile.velocity * 0.2f;
+			Main.dust[dust].noGravity = true;
+
+			Lighting.AddLight(projectile.Center, Color.Aqua.ToVector3() * 0.78f);
+
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/NPCs/IceFairy"); }
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			Texture2D tex = Main.projectileTexture[projectile.type];
+
+			int maxFrames = 4;
+
+			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / maxFrames) / 2f;
+			Vector2 drawPos = ((projectile.Center - Main.screenPosition)) + new Vector2(0f, 4f);
+			Color color = Color.Lerp((projectile.GetAlpha(lightColor) * 0.5f), Color.White, 0.75f);
+			int timing = (int)(projectile.localAI[0] / 8f);
+			timing %= maxFrames;
+			timing *= ((tex.Height) / maxFrames);
+			spriteBatch.Draw(tex, drawPos, new Rectangle(0, timing, tex.Width, (tex.Height) / maxFrames), color*MathHelper.Clamp(projectile.localAI[0]/30f,0f,1f), projectile.velocity.X * 0.04f, drawOrigin, projectile.scale, projectile.spriteDirection>0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+			return false;
+		}
+
+	}
+	public class CirnoMinionBuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Ice Fairies");
+			Description.SetDefault("They serve the new strongest");
+			Main.buffNoSave[Type] = true;
+			Main.buffNoTimeDisplay[Type] = true;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/IceFairiesBuff";
+			return true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<CirnoMinionProjectile>()] > 0)
+			{
+				player.buffTime[buffIndex] = 18000;
+			}
+			else
+			{
+				player.DelBuff(buffIndex);
+				buffIndex--;
+			}
+		}
 	}
 
 }

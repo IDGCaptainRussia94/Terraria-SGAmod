@@ -54,6 +54,38 @@ namespace SGAmod.Items.Consumables
 
 	}
 
+	public class Debug13 : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug-For testing purposes only");
+			Tooltip.SetDefault("By having this item you are clearly only testing things");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.rare = 8;
+			item.value = 1000;
+			item.useStyle = 2;
+			item.useAnimation = 8;
+			item.useTime = 8;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item9;
+		}
+		public override string Texture
+		{
+			get { return "Terraria/UI/Camera_5"; }
+		}
+
+        public override void UpdateInventory(Player player)
+        {
+			SGAmod.cheating = false;
+			SGAWorld.cheating = false;
+        }
+    }
+
 	public class Debug12 : ModItem
 	{
 		public override void SetStaticDefaults()

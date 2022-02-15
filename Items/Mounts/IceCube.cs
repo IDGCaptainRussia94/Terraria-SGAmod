@@ -13,7 +13,8 @@ namespace SGAmod.Items.Mounts
 {
 	public class IceCubeMount : ModMountData
 	{
-		public override void SetDefaults() {
+		public override void SetDefaults()
+		{
 			mountData.spawnDust = DustID.Ice;
 			mountData.buff = BuffType<IceCubeMountBuff>();
 			mountData.heightBoost = 8;
@@ -29,7 +30,8 @@ namespace SGAmod.Items.Mounts
 			mountData.totalFrames = 4;
 			mountData.constantJump = true;
 			int[] array = new int[mountData.totalFrames];
-			for (int l = 0; l < array.Length; l++) {
+			for (int l = 0; l < array.Length; l++)
+			{
 				array[l] = 10;
 			}
 			mountData.playerYOffsets = array;
@@ -56,7 +58,8 @@ namespace SGAmod.Items.Mounts
 			mountData.swimFrameCount = mountData.inAirFrameCount;
 			mountData.swimFrameDelay = mountData.inAirFrameDelay;
 			mountData.swimFrameStart = mountData.inAirFrameStart;
-			if (Main.netMode == NetmodeID.Server) {
+			if (Main.netMode == NetmodeID.Server)
+			{
 				return;
 			}
 
@@ -77,7 +80,7 @@ namespace SGAmod.Items.Mounts
 			Rectangle rect = player.getRect();
 			if (player.velocity.Y == 0)
 			{
-				for (int i = 0; i < MathHelper.Clamp(Math.Abs(player.velocity.X/8),0,3); i++)
+				for (int i = 0; i < MathHelper.Clamp(Math.Abs(player.velocity.X / 8), 0, 3); i++)
 				{
 					Dust.NewDust(new Vector2(rect.X - 24, rect.Y + rect.Height - 6), rect.Width + 48, 6, 161);
 				}
@@ -94,7 +97,7 @@ namespace SGAmod.Items.Mounts
 				{
 					for (int i = 0; i < 12; i += 3)
 					{
-						iceCubes.Add(new Vector2(a + Main.rand.Next(-2, 3), i+28 + Main.rand.Next(-1, 2)));
+						iceCubes.Add(new Vector2(a + Main.rand.Next(-2, 3), i + 28 + Main.rand.Next(-1, 2)));
 					}
 				}
 			}
@@ -104,15 +107,18 @@ namespace SGAmod.Items.Mounts
 		{
 			player.mount._mountSpecificData = new IceCubeSpecificData();
 
-			for (int i = 0; i < 16; i++) {
+			for (int i = 0; i < 16; i++)
+			{
 				Dust.NewDustPerfect(player.Center + new Vector2(20, 0).RotatedBy(i * Math.PI * 2 / 16f), mountData.spawnDust);
 			}
 			skipDust = true;
 		}
 
-		public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow) {
+        public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
+		{
 			// Draw is called for each mount texture we provide, so we check drawType to avoid duplicate draws.
-			if (drawType == 2) {
+			if (drawType == 3)
+			{
 				// We draw some extra balloons before _Back texture
 				IceCubeSpecificData iceCubes = (IceCubeSpecificData)drawPlayer.mount._mountSpecificData;
 				//int timer = DateTime.Now.Millisecond % 800 / 200;
@@ -125,7 +131,7 @@ namespace SGAmod.Items.Mounts
 					playerDrawData.Add(new DrawData(balloonTexture, drawPosition + icespot.RotatedBy(rotation), null, drawColor*0.4f, rotation, orig, drawScale, spriteEffects ^ SpriteEffects.FlipHorizontally, 0));
 				}*/
 
-				playerDrawData.Add(new DrawData(iceBlock, drawPosition + new Vector2(0,drawPlayer.height-22).RotatedBy(rotation), null, drawColor * 0.75f, rotation, iceBlock.Size() / 2f, drawScale, spriteEffects ^ SpriteEffects.FlipHorizontally, 0));			
+				playerDrawData.Add(new DrawData(iceBlock, drawPosition + new Vector2(0, drawPlayer.height - 22).RotatedBy(rotation), null, drawColor * 0.75f, rotation, iceBlock.Size() / 2f, drawScale, spriteEffects ^ SpriteEffects.FlipHorizontally, 0));
 			}
 			// by returning true, the regular drawing will still happen.
 			return true;

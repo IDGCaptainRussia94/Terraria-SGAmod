@@ -22,7 +22,7 @@ namespace SGAmod.Items.Consumables
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Transmutation Powder");
-			Tooltip.SetDefault("Converts Novus Ore to Novite Ore and vice-versa");
+			Tooltip.SetDefault("Converts Novus Ore to Novite Ore and vice-versa\nAlso works on vanilla ores");
 		}
 
 		public override void SetDefaults()
@@ -74,9 +74,67 @@ namespace SGAmod.Items.Consumables
 	public class TransmutationPowderSpray : ModProjectile
 	{
 		public List<Point16> whatconverted;
+		public static Dictionary<int, int> tileToTileConversion;
+		public static Dictionary<int, int> itemToItemConversion;
+
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Transmutation Powder");
+            #region tileconversionlist
+            tileToTileConversion = new Dictionary<int, int>();
+			itemToItemConversion = new Dictionary<int, int>();
+
+			itemToItemConversion.Add(ModContent.ItemType<NoviteOre>(), ModContent.ItemType<UnmanedOre>());
+			itemToItemConversion.Add(ModContent.ItemType<UnmanedOre>(), ModContent.ItemType<NoviteOre>());
+
+			itemToItemConversion.Add(ItemID.CopperOre,ItemID.TinOre);
+			itemToItemConversion.Add(ItemID.TinOre, ItemID.CopperOre);
+
+			itemToItemConversion.Add(ItemID.IronOre, ItemID.LeadOre);
+			itemToItemConversion.Add(ItemID.LeadOre, ItemID.IronOre);
+
+			itemToItemConversion.Add(ItemID.SilverOre, ItemID.TungstenOre);
+			itemToItemConversion.Add(ItemID.TungstenOre, ItemID.SilverOre);
+
+			itemToItemConversion.Add(ItemID.GoldOre, ItemID.PlatinumOre);
+			itemToItemConversion.Add(ItemID.PlatinumOre, ItemID.GoldOre);
+
+			itemToItemConversion.Add(ItemID.CobaltOre, ItemID.PalladiumOre);
+			itemToItemConversion.Add(ItemID.PalladiumOre, ItemID.CobaltOre);
+
+			itemToItemConversion.Add(ItemID.MythrilOre, ItemID.OrichalcumOre);
+			itemToItemConversion.Add(ItemID.OrichalcumOre, ItemID.MythrilOre);
+
+			itemToItemConversion.Add(ItemID.AdamantiteOre, ItemID.TitaniumOre);
+			itemToItemConversion.Add(ItemID.TitaniumOre, ItemID.AdamantiteOre);
+
+
+
+			tileToTileConversion.Add(ModContent.TileType<UnmanedOreTile>(), ModContent.TileType<NoviteOreTile>());
+			tileToTileConversion.Add(ModContent.TileType<NoviteOreTile>(), ModContent.TileType<UnmanedOreTile>());
+
+			tileToTileConversion.Add(TileID.Copper,TileID.Tin);
+			tileToTileConversion.Add(TileID.Tin,TileID.Copper);
+
+			tileToTileConversion.Add(TileID.Iron, TileID.Lead);
+			tileToTileConversion.Add(TileID.Lead, TileID.Iron);
+
+			tileToTileConversion.Add(TileID.Tungsten, TileID.Silver);
+			tileToTileConversion.Add(TileID.Silver, TileID.Tungsten);
+
+			tileToTileConversion.Add(TileID.Gold, TileID.Platinum);
+			tileToTileConversion.Add(TileID.Platinum, TileID.Gold);
+
+			tileToTileConversion.Add(TileID.Cobalt, TileID.Palladium);
+			tileToTileConversion.Add(TileID.Palladium, TileID.Cobalt);
+
+			tileToTileConversion.Add(TileID.Mythril, TileID.Orichalcum);
+			tileToTileConversion.Add(TileID.Orichalcum, TileID.Mythril);
+
+			tileToTileConversion.Add(TileID.Adamantite, TileID.Titanium);
+			tileToTileConversion.Add(TileID.Titanium, TileID.Adamantite);
+# endregion
+
+            DisplayName.SetDefault("Transmutation Powder");
 		}
 
 		public override string Texture
@@ -118,23 +176,36 @@ namespace SGAmod.Items.Consumables
 				ConvertTiles((int)(projectile.position.X + (float)(projectile.width / 2)) / 16, (int)(projectile.position.Y + (float)(projectile.height / 2)) / 16, 2);
 
 				int dist = 12 * 12;
-				foreach (Item itemtoConvert in Main.item.Where(testby => !testby.newAndShiny && (testby.type == ModContent.ItemType<UnmanedOre>() || testby.type == ModContent.ItemType<NoviteOre>()) && (testby.Center-projectile.Center).LengthSquared()<dist))
+				int outputItem = -1;
+
+				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
 
-					itemtoConvert.type = itemtoConvert.type == ModContent.ItemType<UnmanedOre>() ? ModContent.ItemType<NoviteOre>() : ModContent.ItemType<UnmanedOre>();
-					int stack = itemtoConvert.stack;
-					itemtoConvert.SetDefaults(itemtoConvert.type);
-					itemtoConvert.newAndShiny = true;
-					itemtoConvert.stack = stack;
-
-					for (int a = 0; a < 6; a++)
+					foreach (Item itemtoConvert in Main.item.Where(testby => !testby.newAndShiny && (itemToItemConversion.TryGetValue(testby.type, out outputItem)) && (testby.Center - projectile.Center).LengthSquared() < dist))
 					{
-						int dustIndex = Dust.NewDust(itemtoConvert.Hitbox.TopLeft(), itemtoConvert.Hitbox.Width, itemtoConvert.Hitbox.Height, dustType, 0f, 0f, 150, default(Color), 1f);
-						Dust dust = Main.dust[dustIndex];
-						dust.noGravity = true;
-						dust.velocity.X *= 2f;
-						dust.velocity.Y *= 2f;
-						dust.scale *= 3f;
+						if (outputItem > 2)
+						{
+							itemtoConvert.type = outputItem;// itemtoConvert.type == ModContent.ItemType<UnmanedOre>() ? ModContent.ItemType<NoviteOre>() : ModContent.ItemType<UnmanedOre>();
+							int stack = itemtoConvert.stack;
+							itemtoConvert.SetDefaults(itemtoConvert.type);
+							itemtoConvert.newAndShiny = true;
+							itemtoConvert.stack = stack;
+
+							if (Main.netMode == NetmodeID.Server)
+								NetMessage.SendData(MessageID.SyncItem, -1, -1, null, itemtoConvert.whoAmI);
+
+							outputItem = -1;
+						}
+
+						for (int a = 0; a < 6; a++)
+						{
+							int dustIndex = Dust.NewDust(itemtoConvert.Hitbox.TopLeft(), itemtoConvert.Hitbox.Width, itemtoConvert.Hitbox.Height, dustType, 0f, 0f, 150, default(Color), 1f);
+							Dust dust = Main.dust[dustIndex];
+							dust.noGravity = true;
+							dust.velocity.X *= 2f;
+							dust.velocity.Y *= 2f;
+							dust.scale *= 3f;
+						}
 					}
 				}
 
@@ -189,26 +260,30 @@ namespace SGAmod.Items.Consumables
 
 						if (Main.tile[k, l].active())
 						{
-							if (type == mod.TileType("UnmanedOreTile") || type == mod.TileType("NoviteOreTile"))
+							int newTileType = -1;
+							if (tileToTileConversion.TryGetValue(type,out newTileType))
 							{
-								if (whatconverted.Find(typ2e => new Point16(k,l).X == typ2e.X && new Point16(k, l).Y == typ2e.Y).X<1)
+								if (newTileType > 2)
 								{
-									Main.tile[k, l].type = (type == mod.TileType("NoviteOreTile") ? (ushort)mod.TileType("UnmanedOreTile") : (ushort)mod.TileType("NoviteOreTile"));
-									WorldGen.SquareTileFrame(k, l, true);
-									NetMessage.SendTileSquare(-1, k, l, 1);
-
-									int dustType = DustType<TornadoDust>();
-
-									whatconverted.Add(new Point16(k, l));
-
-									for (int a = 0; a < 6; a++)
+									if (whatconverted.Find(typ2e => new Point16(k, l).X == typ2e.X && new Point16(k, l).Y == typ2e.Y).X < 1)
 									{
-										int dustIndex = Dust.NewDust(new Vector2(k, l) * 16, 16, 16, dustType, 0f, 0f, 150, default(Color), 1f);
-										Dust dust = Main.dust[dustIndex];
-										dust.noGravity = true;
-										dust.velocity.X *= 2f;
-										dust.velocity.Y *= 2f;
-										dust.scale *= 3f;
+										Main.tile[k, l].type = (ushort)newTileType;
+										WorldGen.SquareTileFrame(k, l, true);
+										NetMessage.SendTileSquare(-1, k, l, 1);
+
+										int dustType = DustType<TornadoDust>();
+
+										whatconverted.Add(new Point16(k, l));
+
+										for (int a = 0; a < 6; a++)
+										{
+											int dustIndex = Dust.NewDust(new Vector2(k, l) * 16, 16, 16, dustType, 0f, 0f, 150, default(Color), 1f);
+											Dust dust = Main.dust[dustIndex];
+											dust.noGravity = true;
+											dust.velocity.X *= 2f;
+											dust.velocity.Y *= 2f;
+											dust.scale *= 3f;
+										}
 									}
 								}
 

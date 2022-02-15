@@ -442,7 +442,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Energy Potion");
-			Tooltip.SetDefault("'A bottled transformer for the road'\n+1 passive Electric Charge Rate\nYour Electric Charge Recharge Delay is halved");
+			Tooltip.SetDefault("'A bottled transformer for the road'\n25% increased passive Electric Charge Rate\nYour Electric Charge Recharge Delay is halved");
 		}
 
 		public override void SetDefaults()
@@ -555,7 +555,7 @@ namespace SGAmod.Items.Consumables
 		}
 	}
 
-	public class DragonsMightPotion : ModItem
+	public class DragonsMightPotion : ModItem, IPotionCantBeInfinite
 	{
 		public override void SetStaticDefaults()
 		{
@@ -577,7 +577,7 @@ namespace SGAmod.Items.Consumables
 			item.useTurn = true;
 			item.UseSound = SoundID.Item3;
 			item.consumable = true;
-			item.buffType = mod.BuffType("DragonsMight");
+			item.buffType = ModContent.BuffType<DragonsMight>();
 			item.buffTime = 60*30;
 		}
 
@@ -585,7 +585,7 @@ namespace SGAmod.Items.Consumables
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.RestorationPotion,2);
-			recipe.AddIngredient(ModContent.ItemType < OmniSoul>(), 2);
+			recipe.AddIngredient(ModContent.ItemType <OmniSoul>(), 2);
 			recipe.AddIngredient(ModContent.ItemType < Fridgeflame>(), 2);
 			recipe.AddIngredient(ModContent.ItemType < MurkyGel>(), 3);
 			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 20);
@@ -596,11 +596,12 @@ namespace SGAmod.Items.Consumables
 
         public override bool CanUseItem(Player player)
         {
-			return !player.HasBuff(ModContent.BuffType<WorseWeakness>()) && player.SGAPly().AddCooldownStack(60*60);
+			return !player.HasBuff(ModContent.BuffType<WorseWeakness>()) && player.SGAPly().AddCooldownStack(60*60,testOnly: true);
         }
 
         public override void OnConsumeItem(Player player)
 		{
+			player.SGAPly().AddCooldownStack(60 * 60);
 			//SLWorld.EnterSubworld("SGAmod_Blank");
 			//RippleBoom.MakeShockwave(player.Center,8f,1f,10f,60,1f);
 			//Achivements.SGAAchivements.UnlockAchivement("TPD", Main.LocalPlayer);

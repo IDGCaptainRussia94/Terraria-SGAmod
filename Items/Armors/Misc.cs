@@ -22,7 +22,7 @@ namespace SGAmod.Items.Armors
 			item.height = 18;
 			item.value = Item.sellPrice(0,5);
 			item.rare = ItemRarityID.Pink;
-			item.defense = 15;
+			item.defense = 16;
 		}
 		public override void UpdateEquip(Player player)
 		{

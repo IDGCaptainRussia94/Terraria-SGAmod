@@ -14,10 +14,11 @@ namespace SGAmod.Items.Weapons.SeriousSam
 {
 	public class SBCCannon : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 0.60f;
 		public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("SBC Cannon");
-            Tooltip.SetDefault("Charge up piercing cannon balls that do a huge amount of damage\nBut lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nCannonballs do not crit\nDamage is increased instead based on crit chance, and the explosion however can crit\nUses Lead Cannonballs as ammo\n'Lets get Serious!'");
+            Tooltip.SetDefault("Charge up piercing cannon balls that do a huge amount of damage\nBut lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nCannonballs do not crit and explode on knockback immune enemies\nDamage is increased instead based on crit chance, and the explosion however can crit\nUses Lead Cannonballs as ammo\n'Lets get Serious!'");
 		}
 
 		public override bool CanUseItem(Player player)
@@ -233,7 +234,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 							perturbedSpeed += perturbedSpeed2;
 							offset -= perturbedSpeed;
 							perturbedSpeed /= 2f;
-							int prog = Projectile.NewProjectile(position.X + offset.X, position.Y + offset.Y, perturbedSpeed.X, perturbedSpeed.Y, mod.ProjectileType("SBCBall"), (int)damagescale, projectile.knockBack, player.whoAmI,0f,(float)projectile.damage);
+							int prog = Projectile.NewProjectile(position.X + offset.X, position.Y + offset.Y, perturbedSpeed.X, perturbedSpeed.Y, mod.ProjectileType("SBCBall"), (int)damagescale, projectile.knockBack, player.whoAmI,GetType() == typeof(SBCCannonHolding) ? 0f : 100f,(float)projectile.damage);
 							IdgProjectile.Sync(prog);
 							Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, soundfire).WithVolume(.7f).WithPitchVariance(.25f), projectile.Center);
 						}
@@ -311,7 +312,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			Texture2D texture = Main.projectileTexture[projectile.type];
 			Vector2 origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 			Vector2 scaler = new Vector2(Main.rand.NextFloat(0.75f, 1.25f), Main.rand.NextFloat(0.75f, 1.25f) * 0.5f + (projectile.velocity.Length() / 10f));
-			Main.spriteBatch.Draw(ModContent.GetTexture("SGAmod/HavocGear/Projectiles/HeatWave"), projectile.Center - Main.screenPosition, new Rectangle?(), Color.White * MathHelper.Clamp((projectile.velocity.Length()-6f) / 4f, 0f, 1f), projectile.velocity.ToRotation()+MathHelper.ToRadians(90),
+			Main.spriteBatch.Draw(ModContent.GetTexture("SGAmod/HavocGear/Projectiles/HeatWave"), projectile.Center - Main.screenPosition, new Rectangle?(), Color.White * MathHelper.Clamp((projectile.velocity.Length() - 6f) / 4f, 0f, 1f), projectile.velocity.ToRotation() + MathHelper.ToRadians(90),
 				new Vector2(ModContent.GetTexture("SGAmod/HavocGear/Projectiles/HeatWave").Width * 0.5f, ModContent.GetTexture("SGAmod/HavocGear/Projectiles/HeatWave").Height * 0.5f), scaler, SpriteEffects.None, 0);
 			Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle?(), drawColor, projectile.rotation, origin, projectile.scale, facingleft ? effect : SpriteEffects.None, 0);
 
@@ -348,7 +349,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		{
 			crit = false;
 			projectile.damage -= target.life;
-			if (projectile.damage < 1)// || target.knockBackResist == 0f)
+			if (projectile.damage < 1 || (target.knockBackResist == 0f && projectile.ai[0]<1f))
 				projectile.Kill();
 		}
 
@@ -364,7 +365,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (Math.Abs(oldVelocity.Length()) > 2)
-			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Cannon/Bounce").WithVolume(.7f).WithPitchVariance(.25f), projectile.Center);
+				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Cannon/Bounce").WithVolume(.7f).WithPitchVariance(.25f), projectile.Center);
 
 			return true;
 		}
@@ -372,24 +373,16 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void AI()
 		{
 
-			/*for (int i = 0; i < projectile.scale + 0.5; i++)
+			if (Math.Abs(projectile.velocity.Length()) < 0.5f)
 			{
-				int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("HotDust"));
-				Main.dust[dust].scale = 2.25f * projectile.scale;
-				Main.dust[dust].noGravity = true;
-				Main.dust[dust].color = Main.dust[dust].color * 0.25f;
-				Main.dust[dust].velocity = -projectile.velocity * (float)(Main.rand.Next(20, 100 + (i * 40)) * 0.005f);
-			}*/
-
-			if (Math.Abs(projectile.velocity.Length()) < 0.5f){
-			projectile.Kill();
+				projectile.Kill();
 			}
 
 
 
 
 			projectile.velocity.Y -= 0.15f;
-			projectile.rotation += projectile.velocity.X * 0.25f;//(float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
+			projectile.rotation += projectile.velocity.X * 0.25f;
 
 			projectile.ai[1] += 0.5f;
 		}
@@ -542,7 +535,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("SBC Cannon MK2");
-			Tooltip.SetDefault("SBC Cannon improved with a pressure gauge, bindings, and lunar materials\nCharges and recovers after firing faster, and launches cannonballs faster than it's precursor\nCharge up piercing cannon balls that do a huge amount of damage\nBut lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nCannonballs do not crit\nDamage is increased instead based on crit chance, and the explosion however can crit\nUses Lead Cannonballs as ammo\n'LETS GET SERIOUS!!'");
+			Tooltip.SetDefault("SBC Cannon improved with a pressure gauge, bindings, and lunar materials\nCharges and recovers after firing faster, and launches cannonballs faster than it's precursor\nCharge up piercing cannon balls that do a huge amount of damage\nBut lose power with each enemy they pass through, exploding when they run out of damage\nCharge longer for more speed and much more damage!\nCannonballs do not crit and do not explode on knockback immune enemies\nDamage is increased instead based on crit chance, and the explosion however can crit\nUses Lead Cannonballs as ammo\n'LETS GET SERIOUS!!'");
 		}
 
 		public override bool CanUseItem(Player player)

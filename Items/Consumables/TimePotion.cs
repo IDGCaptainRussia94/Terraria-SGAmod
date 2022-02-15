@@ -14,7 +14,7 @@ using Terraria.Graphics.Effects;
 
 namespace SGAmod.Items.Consumables
 {
-	public class TimePotion : ModItem
+	public class TimePotion : ModItem, IPotionCantBeInfinite
 	{
 		public override void SetStaticDefaults()
 		{
@@ -85,6 +85,8 @@ namespace SGAmod.Items.Consumables
 
 		public override bool Autoload(ref string name)
 		{
+			SGAmod.RenderTargetsCheckEvent += SGAmod_RenderTargetsCheckEvent;
+			SGAmod.RenderTargetsEvent += SGAmod_RenderTargetsEvent;
 			SGAmod.PostUpdateEverythingEvent += SGAmod_PostUpdateEverythingEvent;
 			return true;
 		}
@@ -92,7 +94,25 @@ namespace SGAmod.Items.Consumables
 		public static RenderTarget2D DistortRenderTarget2D;
 		public static int queueRenderTargetUpdate = 0;
 
-		private void SGAmod_PostUpdateEverythingEvent()
+		public static void SGAmod_RenderTargetsCheckEvent(ref bool yay)
+		{
+			yay &= !((DistortRenderTarget2D == null || DistortRenderTarget2D.IsDisposed));
+		}
+
+		public static void SGAmod_RenderTargetsEvent()
+		{
+			if (TimeEffect.queueRenderTargetUpdate > 1)
+			{
+				if (TimeEffect.DistortRenderTarget2D == null || TimeEffect.DistortRenderTarget2D.IsDisposed)
+				{
+					int width = Main.screenWidth / 2;
+					int height = Main.screenHeight / 2;
+					TimeEffect.DistortRenderTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+				}
+			}
+		}
+
+			private void SGAmod_PostUpdateEverythingEvent()
 		{
 			if (Main.dedServ)
 				return;
@@ -103,26 +123,24 @@ namespace SGAmod.Items.Consumables
 
 				if (TimeEffect.queueRenderTargetUpdate > 1)
 				{
-					if (TimeEffect.DistortRenderTarget2D == null || TimeEffect.DistortRenderTarget2D.IsDisposed)
+					SGAmod_RenderTargetsEvent();
+
+					if (TimeEffect.DistortRenderTarget2D != null && !TimeEffect.DistortRenderTarget2D.IsDisposed)
 					{
-						int width = Main.screenWidth / 2;
-						int height = Main.screenHeight / 2;
-						TimeEffect.DistortRenderTarget2D = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 1, RenderTargetUsage.DiscardContents);
+						RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
+
+						//Main.spriteBatch.End();
+						Main.graphics.GraphicsDevice.SetRenderTarget(TimeEffect.DistortRenderTarget2D);
+						Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+						Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicWrap, default, default, default, Matrix.Identity);
+
+						Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 0.50f, SpriteEffects.None, 0f);
+
+						Main.spriteBatch.End();
+
+						Main.graphics.GraphicsDevice.SetRenderTargets(binds);
 					}
-
-					RenderTargetBinding[] binds = Main.graphics.GraphicsDevice.GetRenderTargets();
-
-					//Main.spriteBatch.End();
-					Main.graphics.GraphicsDevice.SetRenderTarget(TimeEffect.DistortRenderTarget2D);
-					Main.graphics.GraphicsDevice.Clear(Color.Transparent);
-
-					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicWrap, default, default, default, Matrix.Identity);
-
-					Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 0.50f, SpriteEffects.None, 0f);
-
-					Main.spriteBatch.End();
-
-					Main.graphics.GraphicsDevice.SetRenderTargets(binds);
 
 				}
 				if (TimeEffect.queueRenderTargetUpdate == 1)
@@ -183,7 +201,7 @@ namespace SGAmod.Items.Consumables
 
 			int buffid = player.FindBuffIndex(mod.BuffType("MatrixBuff"));
 
-			if (player != null && player.active)
+				if (player != null && player.active)
 			{
 
 				SGAPlayer modply = player.GetModPlayer<SGAPlayer>();
@@ -217,52 +235,57 @@ namespace SGAmod.Items.Consumables
 
 					float counterx = 0;
 
-					for (int i = 0; i < Main.maxNPCs; i += 1)
+					if (player.buffTime[buffid] > 5)
 					{
-						NPC proj = Main.npc[i];
-						if (proj != null && proj.active)
+
+						for (int i = 0; i < Main.maxNPCs; i += 1)
 						{
-							if (!proj.townNPC && (proj.Center - projectile.Center).Length() < projectile.ai[0])
+							NPC proj = Main.npc[i];
+							if (proj != null && proj.active)
 							{
-								//proj.position -= proj.velocity * 0.75f;
-								proj.GetGlobalNPC<SGAnpcs>().TimeSlow += 3;
-								if (projectile.ai[1] < 1)
+								if (!proj.townNPC && (proj.Center - projectile.Center).Length() < projectile.ai[0])
 								{
+									//proj.position -= proj.velocity * 0.75f;
+									proj.GetGlobalNPC<SGAnpcs>().TimeSlow += 3;
+									if (projectile.ai[1] < 1)
+									{
 
-									if (proj.boss)
-										player.buffTime[buffid] -= 1;
-									else
-										counterx += 0.25f;
+										if (proj.boss)
+											player.buffTime[buffid] -= 1;
+										else
+											counterx += 0.25f;
 
 
+									}
 								}
 							}
 						}
-					}
 
-					player.buffTime[buffid] -= (int)counterx;
-					if (player.buffTime[buffid] % 4 < ((counterx * 4) % 4))
-						player.buffTime[buffid] -= (int)1;
+						player.buffTime[buffid] -= (int)counterx;
+						if (player.buffTime[buffid] % 4 < ((counterx * 4) % 4))
+							player.buffTime[buffid] -= (int)1;
 
-					counterx = 0;
+						counterx = 0;
 
-					int[] nonolist = { mod.ProjectileType("HellionCascadeShot"), mod.ProjectileType("HellionCascadeShot2") };
-					for (int i = 0; i < Main.maxProjectiles; i += 1)
-					{
-						Projectile proj = Main.projectile[i];
-						if (proj != null && proj.active)
+						int[] nonolist = { mod.ProjectileType("HellionCascadeShot"), mod.ProjectileType("HellionCascadeShot2") };
+
+						for (int i = 0; i < Main.maxProjectiles; i += 1)
 						{
-							if (proj.hostile && (proj.Center - projectile.Center).Length() < projectile.ai[0])
+							Projectile proj = Main.projectile[i];
+							if (proj != null && proj.active)
 							{
-								if (nonolist.Any(type => type != proj.type))
+								if (proj.hostile && (proj.Center - projectile.Center).Length() < projectile.ai[0])
 								{
-									for (int z = 0; z < proj.MaxUpdates; z += 1)
+									if (nonolist.Any(type => type != proj.type))
 									{
-										proj.position -= proj.velocity * 0.75f;
-										counterx += 0.10f;
+										for (int z = 0; z < proj.MaxUpdates; z += 1)
+										{
+											proj.position -= proj.velocity * 0.75f;
+											counterx += 0.10f;
+										}
 									}
-								}
 
+								}
 							}
 						}
 					}

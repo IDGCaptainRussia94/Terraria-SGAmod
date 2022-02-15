@@ -52,7 +52,7 @@ namespace SGAmod.HavocGear.Items
 			}
 			if (random == 5)
 			{
-				player.QuickSpawnItem(SGAWorld.GennedVirulent ? ModContent.ItemType<HorseFlyStaff>() : ModContent.ItemType<GnatStaff>(), 1);
+				player.QuickSpawnItem(ModContent.ItemType<GnatStaff>(), 1);
 			}
 			if (random == 4)
 			{
@@ -229,7 +229,7 @@ namespace SGAmod.Items
 		{
 		player.TryGettingDevArmor();
 
-			string[] dropitems = { "Starburster", "Snowfall", "IceScepter", "RubiedBlade", "IcicleFall", "Magishield"};
+			string[] dropitems = { "Starburster", "Snowfall", "IceScepter", "RubiedBlade", "IcicleFall", "RodOfTheMistyLake", "Magishield"};
 			player.QuickSpawnItem(mod.ItemType(dropitems[Main.rand.Next(dropitems.Length)]));
 			player.QuickSpawnItem(mod.ItemType("CryostalBar"),Main.rand.Next(25, 40));
 			player.QuickSpawnItem(mod.ItemType("CirnoWings"), 1);

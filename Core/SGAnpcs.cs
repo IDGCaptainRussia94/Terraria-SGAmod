@@ -98,11 +98,14 @@ namespace SGAmod
 		public int hellionTimer = 0;
 		public int counter = 0;
 		public int impaled = 0;
+		public int invertedTime = 0;
 		public byte crimsonCatastrophe = 0;
 		private int nonStackingImpaled_;
 		public int PinkyMinion = 0;
 		public int watched = 0;
 		public bool NoHit = true;
+		public bool treatAsNight = false;
+		public int flaskCooldown = 0;
 		public static bool dropFork = false;
 		public List<DamageStack> damageStacks = new List<DamageStack>();
 
@@ -189,7 +192,12 @@ namespace SGAmod
 			marked = false;
 			drawonce = true;
 			reducedDefense = 0;
+			if (flaskCooldown > 0)
+				flaskCooldown -= 1;
 			crimsonCatastrophe = (byte)Math.Max(crimsonCatastrophe - 1, 0);
+			if (invertedTime > 0)
+				invertedTime -= 1;
+
 			if (Snapped > 0)
 			{
 				if (Snapped == 2)
@@ -299,22 +307,30 @@ namespace SGAmod
 			float spawnrate2 = player.GetModPlayer<SGAPlayer>().morespawns;
 			spawnRate = (int)(spawnRate / spawnrate2);
 			maxSpawns += (int)((spawnrate2 - 1) * 10f);
-			if (NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()))
+			
+			if (NPC.AnyNPCs(ModContent.NPCType<Hellion>()))
 			{
+				if (HellionAttacks.AntiCheatActive)
+                {
+					maxSpawns *= 3;
+					spawnRate /= 2;
+				}
+
 				//spawnRate = (int)(spawnRate / 25f);
 				//maxSpawns += 20;
 			}
+			
 		}
 
 		public override void SetDefaults(NPC npc)
 		{
-			if (SGAmod.overpoweredMod > 0)
+			if (SGAmod.OverpoweredMod > 0)
 			{
 				if (!npc.friendly)
 				{
-					npc.life += (int)(npc.life * (1f + SGAmod.overpoweredMod));
-					npc.lifeMax += (int)(npc.lifeMax * (1f + SGAmod.overpoweredMod));
-					npc.damage = npc.damage + (int)(1f + SGAmod.overpoweredMod);
+					npc.life += (int)(npc.life * (1f + SGAmod.OverpoweredMod));
+					npc.lifeMax += (int)(npc.lifeMax * (1f + SGAmod.OverpoweredMod));
+					npc.damage = npc.damage + (int)(1f + SGAmod.OverpoweredMod);
 				}
 
 			}
@@ -960,28 +976,37 @@ namespace SGAmod
 					}
 					if (SGAWorld.downedCratrosity)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("TerrariacoCrateKey"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<TerrariacoCrateKey>());
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(20, 0, 0, 0);
 						nextSlot++;
 					}
 					if (Main.netMode != NetmodeID.SinglePlayer && NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("EntropyTransmuter"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<EntropyTransmuter>());
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(1, 0, 0, 0);
 						nextSlot++;
 					}
 
+					if (player.ZoneBeach)
+					{
+						shop.item[nextSlot].SetDefaults(ItemID.DivingHelmet);
+						nextSlot++;
+					}
+
+					shop.item[nextSlot].SetDefaults(ModContent.ItemType<CobwebRepellent>());
+						nextSlot++;
+
 					if (true)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("PremiumUpgrade"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType <Items.Quests.PremiumUpgrade>());
 						nextSlot++;
 					}
 					if (SGAWorld.downedSPinky && SGAWorld.downedSPinky && SGAWorld.downedCratrosityPML && SGAWorld.downedWraiths > 3 && Main.netMode > 0)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("AncientFabricItem"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType < AncientFabricItem>());
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 1, 0, 0);
 						nextSlot++;
-						shop.item[nextSlot].SetDefaults(mod.ItemType("VibraniumCrystal"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType < VibraniumCrystal>());
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 1, 0, 0);
 						nextSlot++;
 					}
@@ -991,23 +1016,30 @@ namespace SGAmod
 
 					if (!SGAWorld.WorldIsTin || Main.hardMode)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("GunBarrelParts"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType < GunBarrelParts>());
 						shop.item[nextSlot].shopCustomPrice = Main.hardMode ? Item.buyPrice(0, 7, 50, 0) : Item.buyPrice(0, 2, 50, 0);
 						nextSlot++;
 					}
 					if (SGAWorld.WorldIsTin || Main.hardMode)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("SecondCylinder"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType < SecondCylinder>());
 						shop.item[nextSlot].shopCustomPrice = Main.hardMode ? Item.buyPrice(0, 7, 50, 0) : Item.buyPrice(0, 2, 50, 0);
 						nextSlot++;
 					}
 
-					if (player.CountItem(mod.ItemType("SnappyShark")) > 0)
+					if (player.CountItem(ModContent.ItemType<SnappyShark>()) > 0)
 					{
-						shop.item[nextSlot].SetDefaults(mod.ItemType("SharkTooth"));
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType < SharkTooth>());
 						nextSlot++;
 					}
-					if (player.CountItem(mod.ItemType("StarfishBlaster")) + player.CountItem(mod.ItemType("Starfishburster")) > 0)
+
+					if (player.CountItem(ModContent.ItemType<SharkBait>()) > 0)
+					{
+						shop.item[nextSlot].SetDefaults(ModContent.ItemType<SharkBait>());
+						nextSlot++;
+					}
+
+					if (player.CountItem(ModContent.ItemType<StarfishBlaster>()) + player.CountItem(ModContent.ItemType<Starfishburster>()) > 0)
 					{
 						shop.item[nextSlot].SetDefaults(ItemID.Starfish);
 						shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 2, 0);
@@ -1143,10 +1175,9 @@ namespace SGAmod
 
 			if (sgaplayer.greedyperc > 0)
 			{
-
 				foreach (Item item2 in shop.item)
 				{
-					Main.NewText(sgaplayer.greedyperc);
+					//Main.NewText(sgaplayer.greedyperc);
 					item2.value = (int)(item2.value * (1f - (Math.Min(0.95f, sgaplayer.greedyperc * 1f))));
 				}
 			}
@@ -1161,7 +1192,7 @@ namespace SGAmod
 			}
 
 			bool rocket = false;
-			if (Main.rand.Next(0, 3) == 0 && Main.hardMode)
+			if (Main.rand.Next(0, 3) == 0)
 			{
 				shop[nextSlot] = ModContent.ItemType<Items.Mounts.GiantIceCube>();
 				nextSlot++;
@@ -1336,10 +1367,9 @@ namespace SGAmod
 
 			if (npc.type == NPCID.MoonLordCore)
 			{
-				if (Main.rand.Next(20) < 1)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < FistOfMoonlord>());
 				if (Main.rand.Next(10) < (Main.expertMode ? 2 : 1))
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SwordofTheBlueMoon>());
+
 				if (dropFork && !Main.expertMode)
 				{
 					dropFork = false;
@@ -1347,7 +1377,7 @@ namespace SGAmod
 				}
 
 				if (SGAWorld.downedCratrosity)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < SalvagedCrate>());
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType <SalvagedCrate>());
 				if (!Main.expertMode)
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType < EldritchTentacle>(), Main.rand.Next(15, 30));
 			}
@@ -1356,7 +1386,7 @@ namespace SGAmod
 				SGAWorld.bossprgressor = 1;
 				if (Main.netMode < 1)
 				{
-					Main.NewText("The Moon's dark gaze is apon the world.", 25, 25, 80);
+					//Main.NewText("The Moon's dark gaze is apon the world.", 25, 25, 80);
 				}
 			}
 
@@ -1411,9 +1441,12 @@ namespace SGAmod
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("OmegaSigil"));
 			}
 
-			if (npc.type == NPCID.WallofFlesh && Main.rand.Next(100) <= 10 && !Main.expertMode)
+			if (npc.type == NPCID.WallofFlesh)
 			{
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
+				if (Main.rand.Next(100) <= 25 && !Main.expertMode)
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<LeechYoyo>());
+				if (Main.rand.Next(100) <= 10 && !Main.expertMode)
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("Powerjack"));
 			}
 
 			if (npc.type == NPCID.GoblinSorcerer && Main.rand.Next(100) <= 5)
@@ -1465,7 +1498,7 @@ namespace SGAmod
 
 				if ((npc.type == NPCID.EnchantedSword || npc.type == NPCID.IlluminantBat || npc.type == NPCID.IlluminantSlime || npc.type == NPCID.ChaosElemental) && Main.rand.Next(3) <= 1)
 				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), Main.rand.Next(1, Main.rand.Next(1,3)));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<IlluminantEssence>(), Main.rand.Next(1, Main.rand.Next(1,3)));
 				}
 
 
@@ -1476,9 +1509,9 @@ namespace SGAmod
 					{
 						if (Main.player[npc.target].ZoneHoly && npc.position.Y > Main.rockLayer)
 						{
-							if (Main.rand.Next(100) <= 1)
+							if (Main.rand.Next(125) <= 2)
 							{
-								Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("IlluminantEssence"), 1);
+								Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<IlluminantEssence>(), Main.rand.Next(1, 3));
 							}
 						}
 					}
@@ -1646,7 +1679,6 @@ namespace SGAmod
 						"What do you mean the dragon isn't for sale? I'll offer you top dollar for it!"};
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
-
 					break;			
 				case NPCID.TaxCollector:
 					if (Main.rand.Next(0, 3) == 0 && NPC.CountNPCS(mod.NPCType("Dergon")) > 0)
@@ -1656,15 +1688,18 @@ namespace SGAmod
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
 					break;
+					case NPCID.Nurse:
 
-				case NPCID.Nurse:
+					if (Main.rand.Next(3) == 0 && Main.LocalPlayer.statLife<Main.LocalPlayer.statLifeMax2)
+                    {
+						chat = Main.rand.NextBool() ? "I can heal your wounds, but surgery doesn't happen over night... not all the time anyways" : "Healing takes time, stay around why don't you?";
+					}
+
 					if (Hellion.GetHellion() != null)
 					{
 						chat = "I see you're busy with that other girl... what do you want me for?";
 					}
 					break;
-
-
 			}
 
 		}

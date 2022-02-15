@@ -17,6 +17,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class EngineerSentrySummon : NoviteTowerSummon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Engineering Rod");

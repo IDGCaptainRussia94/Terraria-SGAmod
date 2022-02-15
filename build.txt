@@ -1,6 +1,6 @@
 author = IDGCaptainRussia
-version = 3.624
-displayName = SGAmod: [c/ff00ff:Tech N Wreck]
+version = 3.626
+displayName = SGAmod: [c/65c281:Anniversary Update!]
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, .zip, Effects\fxcompiler,*.exe,*.zip, *.xcf, *.idg, *.MD, *.csproj, *.user, obj\*, bin\*, vs\*, git\*
 includePDB = true
 hideCode = true
@@ -8,6 +8,6 @@ homepage = https://discord.gg/aGy34Xw
 hideResources = true
 includeSource = true
 modReferences = Idglibrary,AAAAUThrowing,SubworldLibrary
-weakReferences = CalamityMod@1.4.2.101,IridiumMod,ThoriumMod,BossChecklist,HEROsMod,CheatSheet
+weakReferences = CalamityMod,IridiumMod,ThoriumMod,BossChecklist,HEROsMod,CheatSheet
 sortAfter = Idglibrary,AAAAUThrowing
 sortBefore = IridiumMod

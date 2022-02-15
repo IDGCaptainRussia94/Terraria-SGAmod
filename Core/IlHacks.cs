@@ -28,31 +28,37 @@ namespace SGAmod
 			SGAmod.Instance.Logger.Debug("Loading an unhealthy ammount of IL patches");
 
 			IL.Terraria.Main.Update += RemoveUpdateCinematic;
+			IL.Terraria.Main.DoDraw += BGPatchOfPain;
+			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
+			IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
+			IL.Terraria.Main.DoDraw += DrawBehindVoidLayers;
+
 			IL.Terraria.Player.AdjTiles += ForcedAdjTilesHack;
 			IL.Terraria.Player.Update += SwimInAirHack;
-			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
-			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
 			IL.Terraria.Player.CheckDrowning += BreathingHack;
 			IL.Terraria.Player.DashMovement += EoCBonkInjection;
-
-			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
-			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += AdjustLifeRegen;
+			IL.Terraria.Player.StickyMovement += AddCustomWebsCollision;
 			IL.Terraria.Player.UpdateManaRegen += NoMovementManaRegen;
-			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
 			//IL.Terraria.Player.PickTile += PickPowerOverride;
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 			IL.Terraria.Player.ExtractinatorUse += Player_ExtractinatorUse;
 			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
+
+            IL.Terraria.Item.UpdateItem += ItemsHaveNoGravityInSpace;
+
+			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
+			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += AdjustLifeRegen;
+
+			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
+			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
+
+			IL.Terraria.Projectile.AI_099_2 += YoyoAIHack;
 
 			IL.Terraria.GameContent.Events.Sandstorm.EmitDust += ForceSandStormEffects;
             IL.Terraria.UI.ItemSorting.Sort += IgnoreManifestDevArmors;
 
 			//if (SGAmod.OSType < 1)//Only windows
 			//IL.Terraria.UI.ChestUI.DepositAll += PreventManifestedQuickstack;//Seems to be breaking for Turing and I don't know why, disabled for now
-
-			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
-			IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
-			IL.Terraria.Main.DoDraw += DrawBehindVoidLayers;
 
 			//IL.Terraria.Lighting.AddLight_int_int_float_float_float += AddLightHack;
 
@@ -64,6 +70,121 @@ namespace SGAmod
 			}
 
 			PrivateClassEdits.ApplyPatches();
+		}
+
+
+		//Causes all items to think they have no gravity while SGAmod.NoGravityItems is true
+
+		private delegate bool NoGravityForThisItemDelegate(bool previous,Item item);
+		private static bool NoGravityForThisItemMethod(bool previous,Item item)
+		{
+			return previous || (SGAmod.NoGravityItems);
+		}
+		private static void ItemsHaveNoGravityInSpace(ILContext il)
+        {
+            ILCursor c = new ILCursor(il)
+            {
+                Index = il.Instrs.Count - 1
+            };
+
+            if (c.TryGotoPrev(MoveType.After, i => i.MatchLdsfld<Terraria.ID.ItemID.Sets>("ItemNoGravity")))
+			{
+
+				ILLabel operandLabel = default;
+				if (c.TryGotoNext(MoveType.Before, i => i.MatchBrfalse(out operandLabel)))
+				{
+					c.Emit(OpCodes.Ldarg_0);
+					c.EmitDelegate<NoGravityForThisItemDelegate>(NoGravityForThisItemMethod);
+					return;
+				}
+
+				throw new Exception("IL Error Test 2");
+			}
+			throw new Exception("IL Error Test 1");
+		}
+
+
+
+        //Allows custom-tiles for web collisions
+
+        private delegate int CollisionOtherCobwebsDelegate(Player player, int starterNumber);
+		private static int CollisionOtherCobwebsMethod(Player player, int starterNumber)
+		{
+			if (SGAWorld.modtimer > 120)
+			{
+				int tile = ModContent.TileType<NPCs.SpiderQueen.AcidicWebTile>();
+				if (starterNumber == tile)
+				{
+					player.AddBuff(ModContent.BuffType<Buffs.AcidBurn>(),2);
+					starterNumber = TileID.Cobweb;
+				}
+			}
+			return starterNumber;
+		}
+
+		private delegate void CollisionAddStickyDelegate(Player player);
+		private static void CollisionAddStickyMethod(Player player)
+		{
+			if (player.SGAPly().cobwebRepellent>0)
+			player.stickyBreak += 2;
+		}
+
+		private delegate Vector2 ModdedCobwebsHereDelegate(Player player,Vector2 sticky);
+		private static Vector2 ModdedCobwebsHereMethod(Player player, Vector2 sticky)
+		{
+			if (SGAWorld.modtimer > 120)
+			{
+				int tile = ModContent.TileType<NPCs.SpiderQueen.AcidicWebTile>();
+
+				for (int x = 0; x < 2; x += 1)
+				{
+					for (int y = 0; y < 2; y += 1)
+					{
+						Vector2 here = (player.position / 16)+new Vector2(x,y);
+
+						if (Main.tile[(int)here.X, (int)here.Y].type == tile)
+						{
+							sticky = here;
+							return sticky;
+						}
+					}
+				}
+			}
+
+			return sticky;
+		}
+
+		private static void AddCustomWebsCollision(ILContext il)
+        {
+			ILCursor c = new ILCursor(il);
+
+			if (c.TryGotoNext(MoveType.After, i => i.MatchStloc(3)))
+			{
+				c.Emit(OpCodes.Ldarg_0);
+				c.Emit(OpCodes.Ldloc, 3);
+				c.EmitDelegate<ModdedCobwebsHereDelegate>(ModdedCobwebsHereMethod);
+				c.Emit(OpCodes.Stloc, 3);
+
+				
+				if (c.TryGotoNext(MoveType.After, i => i.MatchStloc(6)))
+				{
+					c.Emit(OpCodes.Ldarg_0);
+					c.Emit(OpCodes.Ldloc, 6);
+					c.EmitDelegate<CollisionOtherCobwebsDelegate>(CollisionOtherCobwebsMethod);
+					c.Emit(OpCodes.Stloc, 6);
+
+					if (c.TryGotoNext(MoveType.After, i => i.MatchStfld<Player>("stickyBreak")))
+					{
+						c.Emit(OpCodes.Ldarg_0);
+						c.EmitDelegate<CollisionAddStickyDelegate>(CollisionAddStickyMethod);
+						return;
+					}
+					throw new Exception("IL Error Test 3");
+				}
+				throw new Exception("IL Error Test 2");
+			}
+
+			throw new Exception("IL Error Test 1");
 		}
 
         internal static void Unpatch()
@@ -81,6 +202,69 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse -= TileInteractionHack;
 			*/
 		}
+
+		//Not... enjoying this one...
+		private delegate bool CheckForSkyDelegate();
+		private static bool CheckForSkyMethod()
+		{
+			return Items.Placeable.CelestialMonolithManager.onlyDrawSky;
+		}
+
+		private static void BGPatchOfPain(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+
+			//1st we make a label...ssss
+			ILLabel jumpToDrawingSky = c.DefineLabel();
+			ILLabel smolBranch = c.DefineLabel();
+
+			c.EmitDelegate<CheckForSkyDelegate>(CheckForSkyMethod);
+			c.Emit(OpCodes.Brfalse_S, smolBranch);
+			c.Emit(OpCodes.Br, jumpToDrawingSky);
+			c.MarkLabel(smolBranch);
+			//c.MarkLabel(jumpToDrawingSky);
+
+
+
+			if (c.TryGotoNext(MoveType.Before, i => i.MatchStfld<Main>("unityMouseOver")))
+			{
+				//Terraria.Graphics.Effects.FilterManager::BeginCapture()
+				MethodInfo methodToLookForpre = typeof(Terraria.Graphics.Effects.FilterManager).GetMethod("BeginCapture", SGAmod.UniversalBindingFlags);
+
+				if (c.TryGotoPrev(MoveType.After, i => i.MatchCallvirt(methodToLookForpre)))
+				{
+
+					//c.MoveAfterLabels();
+					c.MarkLabel(jumpToDrawingSky);
+
+					c.Index = il.Instrs.Count - 1;
+
+					if (c.TryGotoPrev(MoveType.After, i => i.MatchStsfld<Main>("grabSky")))
+					{
+						//IL_390e: callvirt instance void Terraria.Graphics.Effects.OverlayManager::Draw(class [Microsoft.Xna.Framework.Graphics]Microsoft.Xna.Framework.Graphics.SpriteBatch, valuetype Terraria.Graphics.Effects.RenderLayers, bool)
+						MethodInfo methodToLookFor = typeof(SpriteBatch).GetMethod("End", SGAmod.UniversalBindingFlags);
+
+						if (c.TryGotoNext(MoveType.After, i => i.MatchCallvirt(methodToLookFor)))
+						{
+
+							ILLabel smolBranch2 = c.DefineLabel();
+							c.EmitDelegate<CheckForSkyDelegate>(CheckForSkyMethod);
+							c.Emit(OpCodes.Brfalse_S, smolBranch2);
+							c.Emit(OpCodes.Ret);
+							c.MarkLabel(smolBranch2);
+
+
+							return;
+						}
+						throw new Exception("IL Error Test 4");
+					}
+					throw new Exception("IL Error Test 3");
+				}
+				throw new Exception("IL Error Test 2");
+			}
+			throw new Exception("IL Error Test 1");
+		}
+
 
 		//Work around to stop awoken dev armors from being deleted on being Sorted
 
@@ -244,18 +428,27 @@ namespace SGAmod
 
 		}
 
-		//Draws Hellion's Stary effect in the same layer as Moonlord's
+		//Draws Hellion's Stary effect in the same layer as Moonlord's, also draws stuff right before worm enemies AND right after the sky and before tile BGs
 		private static void DrawBehindVoidLayers(ILContext il)
 		{
 			ILCursor c = new ILCursor(il);
+				MethodInfo methodToLookFor = typeof(Main).GetMethod("DrawBackgroundBlackFill", SGAmod.UniversalBindingFlags);
+			c.TryGotoNext(MoveType.After,n => n.MatchCall(methodToLookFor));
+			c.Index--;
+
+			c.EmitDelegate<Action>(SGAmod.DrawBehindAllTilesButBeforeSky);		
+			
 			c.TryGotoNext(n => n.MatchLdfld<Main>("DrawCacheNPCsMoonMoon"));
 			c.Index--;
 
-			c.EmitDelegate<Action>(DrawBehindMoonMan);
-		}
-		private static void DrawBehindMoonMan()
-		{
-			NPCs.Hellion.ShadowParticle.Draw();
+			c.EmitDelegate<Action>(SGAmod.DrawBehindMoonMan);
+
+			methodToLookFor = typeof(Main).GetMethod("SortDrawCacheWorms", SGAmod.UniversalBindingFlags);
+			c.TryGotoNext(MoveType.Before,n => n.MatchCall(methodToLookFor));
+			c.Index--;
+
+			c.EmitDelegate<Action>(SGAmod.DrawBehindWormBoys);
+
 		}
 
 		private delegate bool ExtractorDelegate(int extractedType, int extractedAmmount);//Catches the IDs and stack size of extracts

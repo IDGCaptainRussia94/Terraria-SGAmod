@@ -84,6 +84,14 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 			SGAmod.Instance.AddItem("AlterCraft_Eclipse", new LuminousAlterCraftingHint("Eclipse", "Requires Eclipse", "Terraria/Sun3"));
 			SGAmod.Instance.AddItem("AlterCraft_BloodSun", new LuminousAlterCraftingHint("Blood Sun", "Requires Blood Moon or Eclipse", "Terraria/Sun", Color.Red));
 			SGAmod.Instance.AddItem("AlterCraft_Time", new LuminousAlterCraftingHint("Time", "Seconds to infuse", "Terraria/Item_" + ItemID.Timer1Second));
+
+			Idglib.AbsentItemDisc.Add(SGAmod.Instance.ItemType("AlterCraft_Moon"), "No, you don't need the real moon ya dummy, this is just a guide");
+			Idglib.AbsentItemDisc.Add(SGAmod.Instance.ItemType("AlterCraft_BloodMoon"), "No, you don't need the real blood moon ya dummy, this is just a guide");
+			Idglib.AbsentItemDisc.Add(SGAmod.Instance.ItemType("AlterCraft_Eclipse"), "This Eclipse item isn't obtainable, this is just a guide");
+			Idglib.AbsentItemDisc.Add(SGAmod.Instance.ItemType("AlterCraft_BloodSun"), "No, you don't need the a... well this techically doesn't exist, but anyways this is just a guide");
+			Idglib.AbsentItemDisc.Add(SGAmod.Instance.ItemType("AlterCraft_Time"), "This isn't a recipe you craft, read it more carefully and use the tile with a right click");
+
+
 		}
 
 		public static void AddLuminousAlterRecipe(int catalyst, int outputItem, int time, int numIn = 1, int numOut = 1, Func<bool> Cond = default, string requiredText = "")
@@ -217,13 +225,16 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 		}*/
 		public override void AddRecipes()
 		{
+			/*
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
 			recipe.AddIngredient(mod.ItemType("AuroraTear"), 1);
 			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 12);
-			recipe.AddTile(TileID.LunarCraftingStation);
+			recipe.AddTile(TileID.LihzahrdAltar);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
+			*/
+
 		}
 	}
 }

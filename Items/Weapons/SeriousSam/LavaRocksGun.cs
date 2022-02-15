@@ -15,6 +15,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 {
 	public class LavaRocksGun : SeriousSamWeapon, ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1.25f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lava Rocks Gun");
@@ -24,6 +25,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 		public override void SetDefaults()
 		{
 			item.damage = 60;
+			item.crit = 10;
 			item.useStyle = 5;
 			item.autoReuse = true;
 			item.useAnimation = 20;
@@ -38,7 +40,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 			item.knockBack = 7f;
 			item.rare = 7;
 			item.magic = true;
-			item.mana = 10;
+			item.mana = 8;
 		}
 
 		public override void AddRecipes()

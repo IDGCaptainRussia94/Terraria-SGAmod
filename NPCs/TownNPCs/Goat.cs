@@ -188,6 +188,10 @@ namespace SGAmod.NPCs.TownNPCs
 			shop.item[nextSlot].SetDefaults(mod.ItemType("UnderTheWaterfallPainting"));
 			shop.item[nextSlot].value = Item.buyPrice(1,0);
 			nextSlot += 1; 
+			if (SGAWorld.NightmareHardcore>0 && SGAWorld.downedHellion > 1)
+			shop.item[nextSlot].SetDefaults(mod.ItemType("ParadoxGeneralPainting"));
+			shop.item[nextSlot].value = Item.buyPrice(1,0);
+			nextSlot += 1; 
 
 			shop.item[nextSlot].SetDefaults(mod.ItemType("AncientSpaceDiverHelmet"));
 			nextSlot += 1; 		

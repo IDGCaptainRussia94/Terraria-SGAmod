@@ -24,8 +24,8 @@ namespace SGAmod.Items.Weapons
 			return GetType() != typeof(RevolverBase);
 		}
 
-        public override bool CanUseItem(Player player)
-        {
+		public override bool CanUseItem(Player player)
+		{
 			forcedreload = false;
 			item.autoReuse = false;
 
@@ -34,16 +34,16 @@ namespace SGAmod.Items.Weapons
 
 			if (!player.SGAPly().ConsumeAmmoClip(false)) { item.UseSound = SoundID.Item98; forcedreload = true; item.useTime = 4; item.useAnimation = 4; item.noUseGraphic = true; }
 			return true;
-        }
+		}
 
-        public override void HoldItem(Player player)
-        {
+		public override void HoldItem(Player player)
+		{
 			if (player.itemAnimation < 1)
 			{
 				SGAPlayer sgaply = player.SGAPly();
 				int val = 6;
 				SGAmod.UsesClips.TryGetValue(player.HeldItem.type, out val);
-				if (sgaply.ammoLeftInClipMax != val+sgaply.ammoLeftInClipMaxAddedAmmo)
+				if (sgaply.ammoLeftInClipMax != val + sgaply.ammoLeftInClipMaxAddedAmmo)
 				{
 					sgaply.ammoLeftInClip = 0;
 				}
@@ -51,7 +51,19 @@ namespace SGAmod.Items.Weapons
 				sgaply.ammoLeftInClipMaxLastHeld = sgaply.ammoLeftInClipMax;
 			}
 		}
-
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "RevolverHomingPenalty", Idglib.ColorText(Color.Red, "Damage from Homing ammo is reduced by 75%")));
+		}
+		public bool HomingAmmo(int type)
+        {
+			return ProjectileID.Sets.Homing[type];
+        }
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+			damage = HomingAmmo(type) ? (int)(damage * 0.25f) : damage;
+			return false;
+        }
     }
 	public class DragonRevolver : RevolverBase,IDevItem
 	{
@@ -69,6 +81,7 @@ namespace SGAmod.Items.Weapons
 		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
+			base.ModifyTooltips(tooltips);
 			if (Main.LocalPlayer.GetModPlayer<SGAPlayer>().devempowerment[0] > 0)
 			{
 				tooltips.Add(new TooltipLine(mod, "DevEmpowerment", "--- Enpowerment bonus ---"));
@@ -152,6 +165,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
+			base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
 			//base.Shoot(player,ref position,ref speedX,ref speedY,ref type,ref damage,ref knockBack);
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 
@@ -433,7 +447,7 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("The Jakob");
-			Tooltip.SetDefault("Right click to fan the hammer-rapidly fire the remaining clip with less accuracy\n'If it took more than 1 shot, you weren't using a Jakob's!'");
+			Tooltip.SetDefault("Right click to fan the hammer-rapidly fire the remaining clip with less accuracy\nIf it took more than 1 shot, you weren't using a Jakob's!'");
 			SGAmod.UsesClips.Add(SGAmod.Instance.ItemType("TheJacob"), 6);
 		}
 
@@ -498,7 +512,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			//base.Shoot(player,ref position,ref speedX,ref speedY,ref type,ref damage,ref knockBack);
+			base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.ammoLeftInClip -= 1;
 			if (item.useAnimation > 1000)
@@ -611,7 +625,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			//base.Shoot(player,ref position,ref speedX,ref speedY,ref type,ref damage,ref knockBack);
+			base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.ConsumeAmmoClip();
 			if (player.altFunctionUse == 2)
@@ -988,6 +1002,7 @@ namespace SGAmod.Items.Weapons
 		}
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
+			base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
 			SGAPlayer sgaplayer = player.SGAPly();
 
 			if (!sgaplayer.ConsumeAmmoClip(false) || forcedreload)
@@ -1189,6 +1204,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
+			base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
 			SGAPlayer sgaplayer = player.SGAPly();
 			int clipsize = sgaplayer.ammoLeftInClip;
 			sgaplayer.ConsumeAmmoClip(true, clipsize);
@@ -1249,6 +1265,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
+			base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
 			if (type == ProjectileID.Bullet)
 			{
 				type = ProjectileID.BulletHighVelocity;

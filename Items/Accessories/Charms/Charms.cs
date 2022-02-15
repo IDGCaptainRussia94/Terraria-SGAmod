@@ -642,4 +642,97 @@ namespace SGAmod.Items.Accessories.Charms
 
 	}
 
+	/*
+	public class TidalCharm : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Tidal Amulet");
+			Tooltip.SetDefault("Increases your max Breath by 5 bubbles");
+		}
+
+		public override bool Autoload(ref string name)
+		{
+			SGAPlayer.PostUpdateEquipsEvent += DefenseBoost;
+			return true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.Orange;
+			item.value = Item.sellPrice(0, 0, 75, 0);
+			item.mountType = MountID.MineCart;
+			item.accessory = true;
+		}
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, Terraria.Localization.Language.GetTextValue("ItemTooltip.Flipper")+" while it is raining")));
+			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Most status effects that trigger while wet will trigger here")));
+			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.Red, "But you are always drowning")));
+
+			if (!SGAWorld.tidalCharmUnlocked)
+				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DarkBlue, "Its full potential is locked behind the Tempest Sharkvern")));
+			else
+				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Tempest Sharkvern's defeat allows this to take effect when it is not raining")));
+		}
+
+		public void DefenseBoost(SGAPlayer sgaply)
+		{
+			if (sgaply.tidalCharm >= 2)
+			{
+				Player player = sgaply.player;
+			}
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.breathMax += 100;
+			player.accFlipper = true;
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			if (((Main.raining) || SGAWorld.tidalCharmUnlocked))
+			{
+				player.GetModPlayer<SGAPlayer>().tidalCharm = 2;
+				if (!player.SGAPly().tpdcpu)
+				{
+					player.AddBuff(ModContent.BuffType<TidalDrown>(), 60 * 10);
+				}
+            }
+			
+
+		}
+
+	}
+
+	public class TidalDrown : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Water Bending Presence");
+			Description.SetDefault("Water Density is thick enough to swim in the air as if it were water! But you are losing breath\nAll forms of infinite water breathing are disabled");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = false;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Buff_"+BuffID.Suffocation;
+			return true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			if (!player.SGAPly().tpdcpu)
+			{
+				player.GetModPlayer<SGAPlayer>().permaDrown = true;
+				player.GetModPlayer<SGAPlayer>().drownRate += 2;
+			}
+			player.GetModPlayer<SGAPlayer>().tidalCharm = 2;
+		}
+	}
+	*/
+
 }

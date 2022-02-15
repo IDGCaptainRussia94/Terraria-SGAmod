@@ -162,6 +162,14 @@ namespace SGAmod
 
 		public override void AI()
 		{
+			Player owner = Main.player[projectile.owner];
+			projectile.extraUpdates = 0;
+
+			if (owner != null && owner.active && owner.SGAPly().liquidGambling > 0)
+            {
+				projectile.extraUpdates = 3;
+            }
+
 
 			if (loots==null)
 			{

@@ -12,7 +12,7 @@ namespace SGAmod.Items.Weapons
 {
 	public class WaveBeam : SeriousSamWeapon,ITechItem, IDevItem
 	{
-		private bool altfired=false;
+		public float ElectricChargeScalingPerUse() => 0.5f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Wave Beam");

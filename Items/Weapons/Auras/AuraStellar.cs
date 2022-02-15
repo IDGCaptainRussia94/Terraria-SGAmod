@@ -47,7 +47,9 @@ namespace SGAmod.Items.Weapons.Auras
 			{
 				AuraMinionStellar shoot = Main.projectile[thetarget].modProjectile as AuraMinionStellar;
 				tooltips.Add(new TooltipLine(mod, "Bonuses", "Power Level: "+ shoot.thepower));
-				tooltips.Add(new TooltipLine(mod, "Bonuses", "Passive: Protects players against burning Debuffs"));
+				tooltips.Add(new TooltipLine(mod, "Bonuses", "Passive: Protects players against burning Debuffs, depending on minions put in"));
+				tooltips.Add(new TooltipLine(mod, "Bonuses", "In this order: Sunburn, OnFire!, Burning, Thermal Blaze, Lava Burn, Severe Lava Burn"));
+
 				tooltips.Add(new TooltipLine(mod, "Bonuses", "Each level scales the damage higher"));
 				tooltips.Add(new TooltipLine(mod, "Bonuses", "Each level scales a light that clears the fog"));
 
@@ -89,6 +91,7 @@ namespace SGAmod.Items.Weapons.Auras
 			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.FieryShard>(), 20);
 			recipe.AddIngredient(ModContent.ItemType<StygianCore>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
+			recipe.AddIngredient(ModContent.ItemType<HeliosFocusCrystal>(), 1);
 			recipe.AddIngredient(ItemID.FragmentSolar, 10);
 			recipe.AddTile(TileID.LunarCraftingStation);
 			recipe.SetResult(this);
@@ -187,12 +190,16 @@ namespace SGAmod.Items.Weapons.Auras
 			}
 			if (type is Player alliedplayer && player.IsAlliedPlayer(alliedplayer))
 			{
-				int[] typesofdebuffs = new int[] { BuffID.OnFire, BuffID.Burning, ModContent.BuffType<ThermalBlaze>(), ModContent.BuffType<LavaBurnLight>(), ModContent.BuffType<LavaBurn>() };
+				int[] typesofdebuffs = new int[] { ModContent.BuffType<Sunburn>(),BuffID.OnFire, BuffID.Burning, ModContent.BuffType<ThermalBlaze>(), ModContent.BuffType<LavaBurnLight>(), ModContent.BuffType<LavaBurn>() };
+
+				int index = 0;
 
 				foreach (int typeofbuff in typesofdebuffs)
 				{
-					if (alliedplayer.HasBuff(typeofbuff))
+					if (index < projectile.minionSlots && alliedplayer.HasBuff(typeofbuff))
 						alliedplayer.DelBuff(alliedplayer.FindBuffIndex(typeofbuff));
+
+					index += 1;
 				}
 			}
 		}

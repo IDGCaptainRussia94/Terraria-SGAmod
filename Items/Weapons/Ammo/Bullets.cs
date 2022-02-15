@@ -252,11 +252,6 @@ namespace SGAmod.Items.Weapons.Ammo
 			Tooltip.SetDefault("Adjusts your aim to target the scrub nearest your mouse cursor; bullet travels instantly\nAimbot bullets can pierce 2 targets ending on the 3rd, does not cause immunity frames\nBullets do 20% increased damage after each hit they pass through\n'GIT GUD, GET LMAOBOX!'\n(disclaimer, does not function in pvp)");
 		}
 
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return lightColor = Main.hslToRgb((Main.GlobalTime / 7f) % 1f, 0.85f, 0.45f);
-		}
-
 		public override void SetDefaults()
 		{
 			item.damage = 20;
@@ -282,8 +277,9 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddIngredient(mod.ItemType("DrakeniteBar"), 1);
 			recipe.AddIngredient(ItemID.MoonlordBullet, 100);
 			recipe.AddIngredient(ItemID.MeteorShot, 50);
+			recipe.AddIngredient(ItemID.ChlorophyteBullet, 50);
 			recipe.AddTile(TileID.LunarCraftingStation);
-			recipe.SetResult(this, 150);
+			recipe.SetResult(this, 200);
 			recipe.AddRecipe();
 		}
 	}
@@ -309,7 +305,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			spriteBatch.Draw(inner, position+ (new Vector2(4f,8f)*scale), null, drawColor, Main.GlobalTime, new Vector2(inner.Width / 2, inner.Height / 2), scale, SpriteEffects.None, 0f);
 			spriteBatch.Draw(Main.itemTexture[item.type], position, frame, drawColor, 0, origin, scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 			return false;
 		}
 
@@ -365,7 +361,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			shader.Apply(null);
 			spriteBatch.Draw(Main.itemTexture[item.type], position, frame, drawColor,0, origin, scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 			return false;
 		}
 		public override void SetDefaults()
@@ -465,7 +461,7 @@ namespace SGAmod.Items.Weapons.Ammo
 			shader.Apply(null);
 			spriteBatch.Draw(Main.itemTexture[item.type], position, frame, drawColor, 0, origin, scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 			return false;
 		}
 		public override void SetDefaults()

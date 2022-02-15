@@ -268,10 +268,20 @@ namespace SGAmod
 			if (maxDepth >= 3.40282347E+38f && minDepth < 3.40282347E+38f)
 			{
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-				ArmorShaderData shader2 = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye); shader2.Apply(null);
-				Texture2D sun = SGAmod.ExtraTextures[100];
-				spriteBatch.Draw(sun, new Vector2(Main.screenWidth / 2, Main.screenHeight / 8), null, Color.DeepPink * SGAmod.ProgramSkyAlpha, 0, new Vector2(sun.Width / 2f, sun.Height / 2f), new Vector2(5f, 5f) * SGAmod.ProgramSkyAlpha, SpriteEffects.None, 0f);
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+				ArmorShaderData shader2 = GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye);
+
+				Texture2D sun = Main.sunTexture;
+				Texture2D sun2 = sun;// SGAmod.Instance.GetTexture();
+
+				DrawData value28 = new DrawData(sun2, new Vector2(4, 4), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, sun2.Width, sun2.Height)), Microsoft.Xna.Framework.Color.White, 0, Vector2.Zero, 5f, SpriteEffects.None, 0);
+				shader2.UseColor(Color.DeepPink.ToVector3() * SGAmod.ProgramSkyAlpha);
+				shader2.UseOpacity(SGAmod.ProgramSkyAlpha);
+				shader2.Apply(null, new DrawData?(value28));
+
+				spriteBatch.Draw(sun, new Vector2(Main.screenWidth / 2, Main.screenHeight / 8), null, Main.hslToRgb((Main.GlobalTime/3f)%1f,1f,0.75f)*1 * SGAmod.ProgramSkyAlpha, MathHelper.PiOver2, new Vector2(sun.Width / 2f, sun.Height / 2f), new Vector2(5f, 5f) * SGAmod.ProgramSkyAlpha, SpriteEffects.None, 0f);
+				spriteBatch.Draw(sun, new Vector2(Main.screenWidth / 2, Main.screenHeight / 8), null, Main.hslToRgb((Main.GlobalTime / 3f) % 1f, 1f, 0.75f) * 0.5f * SGAmod.ProgramSkyAlpha, 0, new Vector2(sun.Width / 2f, sun.Height / 2f), new Vector2(5f, 5f) * SGAmod.ProgramSkyAlpha, SpriteEffects.None, 0f);
+				spriteBatch.Draw(sun, new Vector2(Main.screenWidth / 2, Main.screenHeight / 8), null, Main.hslToRgb((Main.GlobalTime / 3f) % 1f, 1f, 0.75f) * 0.5f * SGAmod.ProgramSkyAlpha, MathHelper.PiOver4, new Vector2(sun.Width / 2f, sun.Height / 2f), new Vector2(5f, 5f) * SGAmod.ProgramSkyAlpha, SpriteEffects.None, 0f);
 			}
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);

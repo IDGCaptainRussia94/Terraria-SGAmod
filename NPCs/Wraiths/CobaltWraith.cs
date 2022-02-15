@@ -508,7 +508,7 @@ return true;
 					npc.damage = (int)npc.defDamage * 3;
 					itt = itt = (P.position - npc.position + new Vector2(npc.ai[1] * npc.spriteDirection, -8));
 
-					if (npc.ai[0] % 160 == 0 && SGAWorld.NightmareHardcore > 0)
+					if (npc.ai[0] % 160 == 0 && SGAmod.DRMMode)
 					{
 						Vector2 zxx = itt;
 						itt += P.velocity * 3f;

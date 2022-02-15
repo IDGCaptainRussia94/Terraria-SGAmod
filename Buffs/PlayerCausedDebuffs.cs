@@ -499,7 +499,7 @@ namespace SGAmod.Buffs
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Everlasting Suffering");
-			Description.SetDefault("Damage over time is greatly increased");
+			Description.SetDefault("50% increased Damage-over-time");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;

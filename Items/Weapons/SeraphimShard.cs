@@ -19,14 +19,14 @@ namespace SGAmod.Items.Weapons
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Seraphim Shard");
-			Tooltip.SetDefault("'Some things are better left forgotten...'\nThis shard summons powerful copies to protect its user\n"+ Idglib.ColorText(Color.Red, "At a cost, you lose 20 max mana and 5 max life per active shard"));
+			Tooltip.SetDefault("'Some things are better left forgotten...'\nThis shard summons powerful copies to protect its user\n"+ Idglib.ColorText(Color.Red, "At a cost, you lose 50 max life per active shard\nSummon can't be used if life dropped exceeds max vanilla health"));
 			ItemID.Sets.GamepadWholeScreenUseRange[item.type] = true; // This lets the player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[item.type] = true;
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 50;
+			item.damage = 100;
 			item.knockBack = 4f;
 			item.mana = 25;
 			item.width = 32;
@@ -65,6 +65,15 @@ namespace SGAmod.Items.Weapons
 				};
 			}*/
 		}
+
+        public override bool CanUseItem(Player player)
+        {
+			int count = Main.projectile.Where(currentProjectile => currentProjectile.active
+	&& currentProjectile.owner == Main.myPlayer
+	&& currentProjectile.type == item.shoot).ToList().Count;
+
+			return player.statLifeMax>100+(count*50);
+        }
 
         public override Color? GetAlpha(Color lightColor)
         {
@@ -189,8 +198,8 @@ namespace SGAmod.Items.Weapons
 			int count = Main.projectile.Where(currentProjectile => currentProjectile.active
 				&& currentProjectile.owner == Main.myPlayer
 				&& currentProjectile.type == projectile.type).ToList().Count;
-			sgaplayer.player.statManaMax2 -= count * 20;
-			sgaplayer.player.statLifeMax2 -= count * 5;
+			//sgaplayer.player.statManaMax2 -= count * 50;
+			sgaplayer.player.statLifeMax2 -= count * 50;
 		}
 
 		public override void AI()

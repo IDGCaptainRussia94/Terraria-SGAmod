@@ -68,12 +68,12 @@ namespace SGAmod
 		public static (bool,Mod) Thorium = (false, null);
 		public static (bool, Mod) HerosMod = (false, null);
 		public static (bool, Mod) CheatSheetMod = (false, null);
+		public static (bool, Mod) Fargos = (false, null);
+		public static (bool, Mod) Luiafk = (false, null);
 
 
-		public static void BoostModdedDamage(Player player, float damage, int crit)
+		public static void BoostModdedDamage(Player player, float damage, int crit)//@1.4.2.101
 		{
-			return;
-
 			if (SGAmod.Calamity.Item1 || SGAmod.Thorium.Item1)
 			{
 				PropertyBoostModdedDamage = new ModdedDamage(player, damage, crit);
@@ -86,6 +86,7 @@ namespace SGAmod
 			{
 				if (SGAmod.Calamity.Item1)
 				{
+					SGAmod.Calamity.Item2 = ModLoader.GetMod("CalamityMod");
 
 					CalamityPlayer calply = value.player.GetModPlayer<CalamityPlayer>();
 					calply.throwingDamage += value.damage;
@@ -93,6 +94,7 @@ namespace SGAmod
 				}
 				if (SGAmod.Thorium.Item1)
 				{
+					SGAmod.Thorium.Item2 = ModLoader.GetMod("ThoriumMod");
 
 					SGAmod.Thorium.Item2.Call("BonusBardDamage", value.player, value.damage);
 					SGAmod.Thorium.Item2.Call("BonusBardCrit", value.player, value.crit);
@@ -163,12 +165,20 @@ namespace SGAmod
 				PrivateClassEdits.LoadAntiCheats();
 			}
 
-			overpoweredMod = ((ModLoader.GetMod("AFKPETS") != null ? 0.5f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0) + (ModLoader.GetMod("Luiafk") != null ? 2f : 0) + (ModLoader.GetMod("FargowiltasSouls") != null ? 2.5f : 0));
-							   //Why do people still use Luiafk in legit playthroughs? I donno...
+			overpoweredModBaseValue = ((ModLoader.GetMod("AFKPETS") != null ? 0.25f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 0.75f : 0) + (ModLoader.GetMod("Luiafk") != null ? 1.5f : 0) + (ModLoader.GetMod("Fargowiltas") != null ? 0.5f : 0) + (ModLoader.GetMod("FargowiltasSouls") != null ? 1.5f : 0)) + (ModLoader.GetMod("Antisocial") != null ? 7.5f : 0);
+			overpoweredModBaseHardmodeValue = (ModLoader.GetMod("Wingslot") != null ? 0.75f : 0);
+			//Why do people still use Luiafk in legit playthroughs? I donno...
+			Luiafk.Item2 = ModLoader.GetMod("Luiafk");
+			Luiafk.Item1 = Luiafk.Item2 != null;
+			if (Luiafk.Item2 != null)
+				PrivateClassEdits.ApplyLuiafkDisables();
 
-				Mod fargos = ModLoader.GetMod("Fargowiltas");
-			if (fargos != null)
+			Fargos.Item2 = ModLoader.GetMod("Fargowiltas");
+			if (Fargos.Item2 != null)
 			{
+				Fargos.Item1 = true;
+				Mod fargos = Fargos.Item2;
+				PrivateClassEdits.ApplyFargosBuffExceptions();
 				// AddSummon, order or value in terms of vanilla bosses, your mod internal name, summon  
 				//item internal name, inline method for retrieving downed value, price to sell for in copper
 				fargos.Call("AddSummon", 0.05f, "SGAmod", "WraithCoreFragment", (Func<bool>)(() => SGAWorld.downedWraiths > 0), Item.buyPrice(0, 2, 0, 0));
@@ -198,7 +208,7 @@ namespace SGAmod
 			Mod bossList = ModLoader.GetMod("BossChecklist");
 			if (bossList != null)
 			{
-				_ = BossChecklistEdit.ApplyPatches;
+				_ =BossChecklistEdit.ApplyPatches;
 
 				//bossList.Call("AddBoss", "TPD", 5.5f, (Func<bool>)(() => ExampleWorld.SGAWorld.downedTPD));
 				//bossList.Call("AddBossWithInfo", "Copper Wraith", 0.05f, (Func<bool>)(() => (SGAWorld.downedWraiths > 0)), string.Format("Use a [i:{0}] at anytime, defeat this boss to unlock crafting the furnace,bars, and anything else made there", ItemType("WraithCoreFragment")));
@@ -210,7 +220,7 @@ namespace SGAmod
 
 				bossList.Call("AddMiniBoss", 5.4f, ModContent.NPCType<BossFlyMiniboss1>(), this, "Killer Fly Swarm", (Func<bool>)(() => SGAWorld.downedMurk > 0), new List<int>() { ModContent.ItemType<RoilingSludge>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<RoilingSludge>() }, "Use a [i:" + ItemType("RoilingSludge") + "] in the jungle");
 
-				bossList.Call("AddBoss", 5.5f, ModContent.NPCType<Murk>(), this, "Murk", (Func<bool>)(() => SGAWorld.downedMurk > 1), new List<int>() { ModContent.ItemType<RoilingSludge>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<MurkBossBag>(), ModContent.ItemType<MudAbsorber>(), ModContent.ItemType<MurkyGel>(), ModContent.ItemType<MurkFlail>(), ModContent.ItemType<Mudmore>(), ModContent.ItemType<Mossthorn>(), ModContent.ItemType<Landslide>(), ModContent.ItemType<SwarmGrenade>(), ModContent.ItemType<GnatStaff>() }, "Use a [i:" + ItemType("RoilingSludge") + "] in the jungle after killing the fly swarm", "Murk slinks back into the depths of the jungle");
+				bossList.Call("AddBoss", 5.5f, ModContent.NPCType<Murk>(), this, "Murk", (Func<bool>)(() => SGAWorld.downedMurk > 1), new List<int>() { ModContent.ItemType<RoilingSludge>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<MurkBossBag>(), ModContent.ItemType<MudAbsorber>(), ModContent.ItemType<MurkyGel>(), ModContent.ItemType<MurkFlail>(), ModContent.ItemType<Mudmore>(), ModContent.ItemType<Mossthorn>(), ModContent.ItemType<Landslide>(), ModContent.ItemType<SwarmGrenade>(), ModContent.ItemType<GnatStaff>() ,ModContent.ItemType<SwarmGun>(), ModContent.ItemType<BustlingFungus>() }, "Use a [i:" + ItemType("RoilingSludge") + "] in the jungle after killing the fly swarm", "Murk slinks back into the depths of the jungle");
 
 				bossList.Call("AddBoss", 6.4f, ModContent.NPCType<CobaltWraith>(), this, "Cobalt Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 1)), ModContent.ItemType<WraithCoreFragment2>(), new List<int>() { }, new List<int>() { ModContent.ItemType<WraithFragment4>(), ItemID.Hellstone, ItemID.SoulofLight, ItemID.SoulofNight, ItemID.PalladiumOre, ItemID.CobaltOre, ItemID.MythrilOre, ItemID.OrichalcumOre, ItemID.AdamantiteOre, ItemID.TitaniumOre }, "Use a [i:" + ItemType("WraithCoreFragment2") + "] at anytime, defeat this boss to unlock crafting a hardmode forge, as well as anything crafted at one", "Cobalt Wraith completes its mission", "SGAmod/NPCs/Wraiths/CobaltWraithLog", "SGAmod/NPCs/Wraiths/CobaltWraith_Head_Boss");
 
@@ -226,14 +236,14 @@ namespace SGAmod
 
 				bossList.Call("AddBoss", 10.5f, ModContent.NPCType<Cratrosity>(), this, "Cratrosity", (Func<bool>)(() => SGAWorld.downedCratrosity), new List<int>() { ModContent.ItemType<TerrariacoCrateBase>(), ItemID.GoldenKey, ItemID.NightKey, ItemID.LightKey }, new List<int>() { }, new List<int>() { ModContent.ItemType<IdolOfMidas>(), ModContent.ItemType<TerrariacoCrateKey>(), ModContent.ItemType<CrateBossWeaponMelee>(), ModContent.ItemType<CrateBossWeaponRanged>(), ModContent.ItemType<CrateBossWeaponMagic>(), ModContent.ItemType<CrateBossWeaponSummon>(), ModContent.ItemType<CrateBossWeaponThrown>(), ModContent.ItemType<TF2Emblem>(), ModContent.ItemType<AureateVaultItem>() }, "Right Click a [i:" + ItemType("TerrariacoCrateBase") + "] while you have any of the listed keys in your inventory at night", "All players have paid up their lives to microtransactions", "SGAmod/NPCs/Cratrosity/CratrosityLog");
 
-				bossList.Call("AddBoss", 11.25f, ModContent.NPCType<TPD>(), this, "Twin Prime Destroyers", (Func<bool>)(() => SGAWorld.downedTPD), new List<int>() { ModContent.ItemType<Mechacluskerf>() }, new List<int>() { }, new List<int>() { ItemID.ChlorophyteBar, ItemID.ShroomiteBar, ItemID.SpectreBar, ItemID.Ectoplasm, ModContent.ItemType<StarMetalMold>() }, "Use a [i:" + ItemType("Mechacluskerf") + "] anywhere at night", "Terraria/OneDropLogo", "Terraria/OneDropLogo", (Func<bool>)(() => SGAWorld.downedTPD));
+				bossList.Call("AddBoss", 11.25f, ModContent.NPCType<TPD>(), this, "Twin Prime Destroyers", (Func<bool>)(() => SGAWorld.downedTPD), new List<int>() { ModContent.ItemType<Mechacluskerf>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<StarMetalMold>(), ItemID.ChlorophyteBar, ItemID.ShroomiteBar, ItemID.SpectreBar, ItemID.Ectoplasm}, "Use a [i:" + ItemType("Mechacluskerf") + "] anywhere at night", "Terraria/OneDropLogo", "Terraria/OneDropLogo", (Func<bool>)(() => SGAWorld.downedTPD));
 
-				bossList.Call("AddBoss", 11.85f, ModContent.NPCType<Harbinger>(), this, "Doom Harbinger", (Func<bool>)(() => SGAWorld.downedHarbinger), new List<int>() { ModContent.ItemType<TruelySusEye>() }, new List<int>() { }, new List<int>() { }, "Use a [i:" + ItemType("TruelySusEye") + "] (Semi-removed Boss)", "Harbinger is gone", "Terraria/OneDropLogo", "Terraria/OneDropLogo", (Func<bool>)(() => SGAWorld.downedHarbinger));
+				bossList.Call("AddBoss", 11.85f, ModContent.NPCType<Harbinger>(), this, "Doom Harbinger", (Func<bool>)(() => SGAWorld.downedHarbinger), new List<int>() { ModContent.ItemType<TruelySusEye>() }, new List<int>() { }, new List<int>() { }, "Use a [i:" + ItemType("TruelySusEye") + "] (Semi-removed Boss)","Harbinger is gone", "Terraria/OneDropLogo", "Terraria/OneDropLogo", (Func<bool>)(() => SGAWorld.downedHarbinger));
 
 				if (SGAmod.SpaceBossActive)
 				{
 					List<int> PhaethonDrops = new List<int>() { ModContent.ItemType<OverseenCrystal>(), ModContent.ItemType<StarMetalMold>(), ModContent.ItemType<PhaethonEye>() };
-					bossList.Call("AddBoss", 11.86f, ModContent.NPCType<Dimensions.NPCs.SpaceBoss>(), this, "Phaethon", (Func<bool>)(() => SGAWorld.downedSpaceBoss), new List<int>() { }, new List<int>() { }, PhaethonDrops, "Found in Near Orbit", "The cosmos accept another prey", "SGAmod/NPCs/DimBosses/PhaethonLog", "SGAmod/Doom_Harbinger_Resprite_pupil", (Func<bool>)(() => true));
+					bossList.Call("AddBoss", 11.86f, ModContent.NPCType<Dimensions.NPCs.SpaceBoss>(), this, "Phaethon", (Func<bool>)(() => SGAWorld.downedSpaceBoss), new List<int>() { }, new List<int>() { }, PhaethonDrops, "Found in Near Orbit", "The cosmos accept another prey", "SGAmod/NPCs/DimBosses/PhaethonLog", "SGAmod/Doom_Harbinger_Resprite_pupil");
 				}
 
 				bossList.Call("AddBoss", 13.1f, ModContent.NPCType<LuminiteWraith>(), this, "Terra Wraith", (Func<bool>)(() => (SGAWorld.downedWraiths > 2)), new List<int>() { ModContent.ItemType<WraithCoreFragment3>() }, new List<int>() { }, new List<int>() { ItemID.LunarCraftingStation }, "Use a [i:" + ItemType("WraithCoreFragment3") + "], defeat this boss to get the Ancient Manipulator.", "", "SGAmod/NPCs/Wraiths/LWraithLog", "SGAmod/NPCs/Wraiths/LuminiteWraith_Head_Boss");
@@ -250,7 +260,7 @@ namespace SGAmod
 				bossList.Call("AddBoss", 16f, ModContent.NPCType<SPinky>(), this, "Supreme Pinky", (Func<bool>)(() => SGAWorld.downedSPinky), new List<int>() { ModContent.ItemType<Prettygel>() }, new List<int>() { }, SPinkyDrops, "Use a [i:" + ItemType("Prettygel") + "] at night, infuse 20 [i: " + ItemID.PinkGel + "] at a [i: " + ModContent.ItemType<LuminousAlterItem>() + "]", "Supreme Pinky is content with the justice they have dealt");
 
 				//string.Concat(Enumerable.Repeat("¿", Main.rand.Next(1,10)))
-				bossList.Call("AddBoss", 17.5f, ModContent.NPCType<Hellion>(), this, "                                                                                                                                                              hi", (Func<bool>)(() => false), new List<int>() { ModContent.ItemType<HellionSummon>() }, new List<int>() { }, new List<int>() { ModContent.ItemType<ByteSoul>() }, "Craft & Use the [i:" + ModContent.ItemType<HellionSummon>() + "] or talk to Draken when the time is right... (Expert Only)", "Pathetic...", "SGAmod/NPCs/Hellion/Hellioncore", "SGAmod/NPCs/Hellion/Hellion_map_icon", (Func<bool>)(() => SGAWorld.downedHellion == 0));
+				bossList.Call("AddBoss", 17.5f, ModContent.NPCType<Hellion>(), this, "                                                                                                                                                              hi", (Func<bool>)(() => false), new List<int>() { ModContent.ItemType<HellionSummon>() }, new List<int>() { }, new List<int>() {ModContent.ItemType<ByteSoul>()}, "Craft & Use the [i:" + ModContent.ItemType < HellionSummon>() + "] or talk to Draken when the time is right... (Expert Only)", "Pathetic...", "SGAmod/NPCs/Hellion/Hellioncore", "SGAmod/NPCs/Hellion/Hellion_map_icon", (Func<bool>)(() => SGAWorld.downedHellion == 0));
 
 
 				List<int> moaritems = new List<int>() { ModContent.ItemType<CodeBreakerHead>(), ModContent.ItemType<ByteSoul>(), ModContent.ItemType<DrakeniteBar>() };
@@ -292,6 +302,10 @@ namespace SGAmod
 				yabhb.Call("hbFinishMultiple", ModContent.NPCType<CratrosityCrateDankCrate>(), ModContent.NPCType<CratrosityCrate2334>(), ModContent.NPCType<CratrosityCrate2335>(), ModContent.NPCType<CratrosityCrate2336>(), ModContent.NPCType<CratrosityCrate3203>(), ModContent.NPCType<CratrosityCrate3204>(), ModContent.NPCType<CratrosityCrate3205>(), ModContent.NPCType<CratrosityCrate3206>(), ModContent.NPCType<CratrosityCrate3207>(), ModContent.NPCType<CratrosityCrate3208>());
 
 				yabhb.Call("hbStart");
+				//yabhb.Call("hbForceSmall", true);
+				yabhb.Call("hbFinishMultiple", ModContent.NPCType<Dimensions.NPCs.SpaceBossShadowNebulaEnemy>());
+
+				yabhb.Call("hbStart");
 				yabhb.Call("hbFinishMultiple", NPCType("Harbinger"), NPCType("Harbinger"));
 
 				yabhb.Call("RegisterHealthBarMini", NPCType("PrismBanshee"));
@@ -318,13 +332,20 @@ namespace SGAmod
 			Idglib.AbsentItemDisc.Add(this.ItemType("Tornado"), "5% to drop from Wyverns after Golem");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Upheaval"), "20% to drop from Golem");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Powerjack"), "10% to drop from Wall of Flesh");
-			Idglib.AbsentItemDisc.Add(this.ItemType("SwordofTheBlueMoon"), "10% (20% in expert mod) drop from Moon Lord");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Fieryheart"), "This item is a secret...");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Sunbringer"), "This item is not obtainable yet");
 			Idglib.AbsentItemDisc.Add(this.ItemType("StoneBarrierStaff"), "Found in the Deeper Dungeons");
-			Idglib.AbsentItemDisc.Add(this.ItemType("PeacekeepersDuster"), "Sold by the Traveling Merchant in Hardmode");
 			Idglib.AbsentItemDisc.Add(this.ItemType("SecondCylinder"), "Sold by the Arms Dealer in a world with tin, or in Hardmode");
 			Idglib.AbsentItemDisc.Add(this.ItemType("GunBarrelParts"), "Sold by the Arms Dealer in a world with copper, or in Hardmode");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SwordofTheBlueMoon>(), "10% (20% expert mode) drop from Moon Lord");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SoulPincher>(), "Part of Moon Lord's item pool, can drop as an extra item in the teasure bag");
+
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<PeacekeepersDuster>(), "Sold by the Traveling Merchant in Hardmode");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<ShinobiShiv>(), "Sold by the Traveling Merchant in Hardmode");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<Gunarang>(), "Sold by the Traveling Merchant in Hardmode");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SeraphimShard>(), "Sold by the Traveling Merchant in Hardmode");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<SoldierRocketLauncher>(), "Sold by the Traveling Merchant in Hardmode, comes with rocket I's for sale too");
+			Idglib.AbsentItemDisc.Add(ModContent.ItemType<BustlingFungus>(), "Defeat Murk while the Engineer Armor is worn");
 
 			Idglib.AbsentItemDisc.Add(this.ItemType("PrimordialSkull"), "Sold by the Dergon (Draken)");
 			Idglib.AbsentItemDisc.Add(this.ItemType("CaliburnCompess"), "Sold by the Dergon (Draken)");
@@ -343,18 +364,22 @@ namespace SGAmod
 			Idglib.AbsentItemDisc.Add(this.ItemType("DankCore"), "Is found in Dank Shrines, including crates fished from there");
 			Idglib.AbsentItemDisc.Add(this.ItemType("DankWood"), "Is found in Dank Shrines, including crates fished from there");
 			Idglib.AbsentItemDisc.Add(this.ItemType("IceFairyDust"), "Drops from Ice Fairies, they spawn during the day on the surface biome in hardmode");
-			Idglib.AbsentItemDisc.Add(this.ItemType("Entrophite"), "Is created via an Entropy Transmuter");
+			Idglib.AbsentItemDisc.Add(this.ItemType("Entrophite"), "Found in Limbo, Is also created via an Entropy Transmuter");
+			Idglib.AbsentItemDisc.Add(this.ItemType("HopeHeart"), "Found in the depths of Limbo");
+
 			Idglib.AbsentItemDisc.Add(this.ItemType("EldritchTentacle"), "Drops from Moonlord");
 			Idglib.AbsentItemDisc.Add(this.ItemType("IlluminantEssence"), "Drops from Prismic Banshee, and after her defeat, enemies, the glowing ones... Obviously");
 			Idglib.AbsentItemDisc.Add(this.ItemType("LunarRoyalGel"), "Drops from Supreme Pinky");
 			Idglib.AbsentItemDisc.Add(this.ItemType("CryostalBar"), "Drops from Cirno");
 			Idglib.AbsentItemDisc.Add(this.ItemType("MoneySign"), "Drops from Cratogeddon");
 			Idglib.AbsentItemDisc.Add(this.ItemType("ByteSoul"), "Drops from Hellion Core's 'arms'");
-			Idglib.AbsentItemDisc.Add(this.ItemType("StarMetalMold"), "Drops from Twin Prime Destroyers");
-			Idglib.AbsentItemDisc.Add(this.ItemType("DrakeniteBar"), "Drops Hellion's 2nd form");
-			Idglib.AbsentItemDisc.Add(this.ItemType("UnmanedOre"), "Throw Transmutation Powder onto Novite Ore!");
-			Idglib.AbsentItemDisc.Add(this.ItemType("NoviteOre"), "Throw Transmutation Powder onto Novus Ore!");
+			Idglib.AbsentItemDisc.Add(this.ItemType("StarMetalMold"), "Drops from Phaethon in Single Player, Twin Prime Destroyers in Multiplayer");
 
+			Idglib.AbsentItemDisc.Add(this.ItemType("DrakeniteBar"), "Drops Hellion's 2nd form");
+			Idglib.AbsentItemDisc.Add(this.ItemType("UnmanedOre"), "Spawns one type in world,otherwise throw Transmutation Powder onto Novite Ore!");
+			Idglib.AbsentItemDisc.Add(this.ItemType("NoviteOre"), "Spawns one type in world, otherwise throw Transmutation Powder onto Novus Ore!");
+
+			Idglib.AbsentItemDisc.Add(this.ItemType("HeliosFocusCrystal"), "Drops from Focus Crystals in space IF Phaethon is not present");
 			Idglib.AbsentItemDisc.Add(this.ItemType("AncientFabric"), "Found in the bottom layer of Limbo, use a Braxsaw to mine it");
 			Idglib.AbsentItemDisc.Add(this.ItemType("OverseenCrystal"), "Found in near orbit space, just fly up up and away!");
 			Idglib.AbsentItemDisc.Add(this.ItemType("Glowrock"), "Found in near orbit space, just go fly up and away!");

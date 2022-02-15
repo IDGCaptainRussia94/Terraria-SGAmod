@@ -20,7 +20,7 @@ using SGAmod.Dimensions.NPCs;
 using SGAmod.Effects;
 using SGAmod.Items;
 using Terraria.Cinematics;
-
+using SGAmod.NPCs.Hellion;
 
 namespace SGAmod.Dimensions
 {
@@ -186,13 +186,13 @@ public override int? Music
                         if (nousey > tilerate)
                         {
                             Main.tile[x, y].type = (ushort)SGAmod.Instance.TileType("HardenedFabric");
-                            Main.tile[x, y].color((byte)FakeOverworld.Paints.Shadow);
+                            Main.tile[x, y].color((byte)Paints.Shadow);
                         }
                         else
                         {
                             if (nousey > tilerate - 0.20f)
                             {
-                                Main.tile[x, y].color((byte)FakeOverworld.Paints.Gray);
+                                Main.tile[x, y].color((byte)Paints.Gray);
                             }
                         }
                     }

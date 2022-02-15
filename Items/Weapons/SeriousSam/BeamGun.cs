@@ -25,6 +25,7 @@ namespace SGAmod.Items.Weapons.SeriousSam
 
 	public class BeamGun : SeriousSamWeapon, IHitScanItem,ITechItem
 	{
+		public float ElectricChargeScalingPerUse() => 1f;
 		public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("Beam Gun");

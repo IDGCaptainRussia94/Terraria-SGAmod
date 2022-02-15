@@ -450,17 +450,22 @@ namespace SGAmod.Items.Weapons.Javelins
             }
             if (projectile.ai[1] == (int)JavelinType.SanguineBident)//Sanguine Bident
             {
-                
+                int bleed = ModContent.BuffType<MassiveBleeding>();
+                if (target.buffImmune[BuffID.Bleeding])
+                {
+                    damage += 0.25;
+                }
+
                 if (projectile.modProjectile.GetType() == typeof(JavelinProj))
                 {
-                    if (target.active && target.life > 0 && Main.rand.Next(0,16)<(target.HasBuff(SGAmod.Instance.BuffType("MassiveBleeding")) || target.HasBuff(BuffID.Bleeding) ? 8 : 1))
+                    if (target.active && target.life > 0 && Main.rand.Next(0,12)<(target.HasBuff(bleed) || target.HasBuff(BuffID.Bleeding) ? 8 : 1))
                     {
                         projectile.vampireHeal((int)(projectile.damage / 2f), projectile.Center);
                     }
                 }
                 else
                 {
-                    target.AddBuff(SGAmod.Instance.BuffType("MassiveBleeding"), 60 * 5);
+                    target.AddBuff(ModContent.BuffType<MassiveBleeding>(), 60 * 5);
                 }
                 projectile.netUpdate = true;
 
@@ -485,7 +490,12 @@ namespace SGAmod.Items.Weapons.Javelins
             }
             if (projectile.ai[1] == (int)JavelinType.CrimsonCatastrophe)//Crimson Catastrophe
             {
-                int bleed = SGAmod.Instance.BuffType("MassiveBleeding");
+                int bleed = ModContent.BuffType<MassiveBleeding>();
+                if (target.buffImmune[BuffID.Bleeding])
+                {
+                    damage += 0.50;
+                }
+
                 ModProjectile modproj = projectile.modProjectile;
                 if (modproj.GetType() == typeof(JavelinProj))
                 {

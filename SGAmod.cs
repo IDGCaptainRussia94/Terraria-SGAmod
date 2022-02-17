@@ -125,7 +125,7 @@ namespace SGAmod
 		public const bool SpaceBossActive = true;
 		public static bool NoGravityItems = false;
 		public static int NoGravityItemsTimer = 0;
-		public static bool DevDisableCheating => Main.LocalPlayer != null && Main.LocalPlayer.HasItem(ModContent.ItemType<Debug13>());
+		public static bool DevDisableCheating => Main.LocalPlayer != null && Main.LocalPlayer.HasItem(ModContent.ItemType<Debug13>()) && Main.LocalPlayer.inventory[52].type == ModContent.ItemType<Debug13>();
 
 		public static int SafeModeCheck
         {
@@ -202,13 +202,13 @@ namespace SGAmod
 		public static float overpoweredModBaseValue = 0f;
 		public static float overpoweredModBaseHardmodeValue = 0f;
 
-		public static bool cheating = false;
+		internal static bool cheating = false;
 
 		public static bool DRMMode
         {
             get
             {
-				return SGAWorld.NightmareHardcore > 0 || (DevDisableCheating && (cheating || SGAWorld.cheating));
+				return Main.netMode==0 && (SGAWorld.NightmareHardcore > 0 || (!DevDisableCheating && (cheating || SGAWorld.cheating)));
             }
         }
 		public static float OverpoweredMod
@@ -812,7 +812,7 @@ namespace SGAmod
 				Filters.Scene["SGAmod:ScreenWave"] = new Filter(new ScreenShaderData(screenRef2, "ScreenWave"), EffectPriority.VeryHigh);
 				Ref<Effect> screenRef3 = new Ref<Effect>(GetEffect("Effects/ScreenTimeDistort"));
 				Filters.Scene["SGAmod:ScreenTimeDistort"] = new Filter(new ScreenShaderData(screenRef3, "TimeDistort"), EffectPriority.VeryHigh);
-				Filters.Scene["SGAmod:SwirlingVortex"] = new Filter(new ScreenShaderData("FilterCrystalDestructionVortex").UseImage("SGAmod/Perlin"), EffectPriority.VeryHigh);
+				Filters.Scene["SGAmod:SwirlingVortex"] = new Filter(new ScreenShaderData("FilterCrystalDestructionVortex").UseImage("Images/Misc/Perlin"), EffectPriority.VeryHigh);
 
 
 				//screenRef2 = new Ref<Effect>(GetEffect("Effects/ScreenTrippy"));

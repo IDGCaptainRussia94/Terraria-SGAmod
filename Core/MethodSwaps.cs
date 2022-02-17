@@ -189,7 +189,7 @@ namespace SGAmod
 				if (fatigue < 1)
 					orig(drawBuffText, i, b, x, y);
 
-				if (SGAmod.BuffsThatHavePotions.Where(testby => testby == b).Count()>0)
+				if (SGAmod.BuffsThatHavePotions.Where(testby => testby == b).Count()>0 && !Main.buffNoTimeDisplay[b])
 				{
 					Texture2D extra = Main.extraTexture[80];
 				Texture2D buffTex = Main.buffTexture[b];

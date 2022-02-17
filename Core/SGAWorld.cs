@@ -67,7 +67,7 @@ namespace SGAmod
 
         public static int SnapCooldown = 0;
 
-        public static bool cheating = false;
+        internal static bool cheating = false;
         public static int harbingercounter = 0;
         public static int golemchecker = 0;
         public static int stolecrafting = 0;
@@ -361,7 +361,9 @@ namespace SGAmod
             tag["downedSPinky"] = downedSPinky;
             tag["downedTPD"] = downedTPD;
             tag["downedCirno"] = downedCirno;
+
             tag["downedSpaceBoss"] = downedSpaceBoss;
+
             tag["downedSharkvern"] = downedSharkvern;
             tag["overalldamagedone"] = overalldamagedone;
             tag["downedCratrosity"] = downedCratrosity;
@@ -433,7 +435,7 @@ namespace SGAmod
             downedSPinky = tag.GetBool("downedSPinky");
             downedTPD = tag.GetBool("downedTPD");
             downedCirno = tag.GetBool("downedCirno");
-            //downedSpaceBoss = tag.GetBool("downedSpaceBoss");
+            downedSpaceBoss = tag.GetBool("downedSpaceBoss");
             downedSharkvern = tag.GetBool("downedSharkvern");
             downedCratrosity = tag.GetBool("downedCratrosity");
             downedHarbinger = tag.GetBool("downedHarbinger");

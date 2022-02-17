@@ -642,7 +642,6 @@ namespace SGAmod.Items.Accessories.Charms
 
 	}
 
-	/*
 	public class TidalCharm : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -668,7 +667,7 @@ namespace SGAmod.Items.Accessories.Charms
 		}
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, Terraria.Localization.Language.GetTextValue("ItemTooltip.Flipper")+" while it is raining")));
+			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, Terraria.Localization.Language.GetTextValue("ItemTooltip.Flipper") + " in the air while it is raining")));
 			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Most status effects that trigger while wet will trigger here")));
 			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.Red, "But you are always drowning")));
 
@@ -689,17 +688,17 @@ namespace SGAmod.Items.Accessories.Charms
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.breathMax += 100;
-			player.accFlipper = true;
 			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
 			if (((Main.raining) || SGAWorld.tidalCharmUnlocked))
 			{
+				player.accFlipper = true;
 				player.GetModPlayer<SGAPlayer>().tidalCharm = 2;
 				if (!player.SGAPly().tpdcpu)
 				{
-					player.AddBuff(ModContent.BuffType<TidalDrown>(), 60 * 10);
+					player.AddBuff(ModContent.BuffType<TidalDrown>(), 60 * 8);
 				}
-            }
-			
+			}
+
 
 		}
 
@@ -710,7 +709,7 @@ namespace SGAmod.Items.Accessories.Charms
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Water Bending Presence");
-			Description.SetDefault("Water Density is thick enough to swim in the air as if it were water! But you are losing breath\nAll forms of infinite water breathing are disabled");
+			Description.SetDefault("Water Density is thick enough to swim in the air as if it were water!\nAll forms of infinite water breathing are disabled");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
@@ -719,20 +718,16 @@ namespace SGAmod.Items.Accessories.Charms
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "Terraria/Buff_"+BuffID.Suffocation;
+			texture = "Terraria/Buff_" + BuffID.Suffocation;
 			return true;
 		}
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			if (!player.SGAPly().tpdcpu)
-			{
-				player.GetModPlayer<SGAPlayer>().permaDrown = true;
-				player.GetModPlayer<SGAPlayer>().drownRate += 2;
-			}
+			player.GetModPlayer<SGAPlayer>().permaDrown = true;
+			player.GetModPlayer<SGAPlayer>().drownRate += 2;
 			player.GetModPlayer<SGAPlayer>().tidalCharm = 2;
 		}
 	}
-	*/
 
 }

@@ -34,9 +34,11 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -Fix Prismic Banshee features (add laser accel), add Rod of Teleportation Telefragging
 
 -Finish Wrath Caliburn attacks?
--Add Celestial Monolith (finish), Add Heat Beater heat-building and steamm rework
+-Create Music Mod seperately, add ingame downloader
+-Fix Joyrider, Add Heat Beater heat-building and steam powered rework
 -Finish focus Crystal, Finish Phaethon's rework, finish ALL space stations
 -FIX COMPASS UI!!
+-Snappy Shark teeth stick into enemies, up to 5, increases damage against enemies with teeth in them by 5% per tooth, at 5 teeth, inflicts Gourged
 
 
 Credits:

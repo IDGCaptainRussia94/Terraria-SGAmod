@@ -54,11 +54,11 @@ namespace SGAmod.Items.Mounts
 			//mountData.bodyFrame = 3;
 			mountData.yOffset = -10;
 			mountData.playerHeadOffset = 6;
+			*/
+
 			if (Main.netMode == NetmodeID.Server) {
 				return;
-			}
-
-			*/
+			}	
 
 			mountData.textureWidth = mountData.frontTexture.Width + 20;
 			mountData.textureHeight = mountData.frontTexture.Height;

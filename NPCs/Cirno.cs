@@ -36,7 +36,7 @@ namespace SGAmod.NPCs
 		int attacktype = 0;
 		int nightmareprog = 0;
 		float damagetospellcard = 0.9f;
-		bool nightmaremode => SGAWorld.NightmareHardcore > 0;
+		bool nightmaremode => SGAWorld.NightmareHardcore > 0 || SGAmod.DRMMode;
 		int mixup = 0;
 		public override void SetStaticDefaults()
 		{

@@ -814,9 +814,11 @@ namespace SGAmod
 			}
 		}
 
+		internal bool Sequence => !Main.dedServ && ((player.controlHook && player.controlUp && player.controlInv && Main.MouseScreen.X > Main.screenWidth - 128 && Main.MouseScreen.Y > Main.screenHeight - 128) || ModLoader.GetMod("HeavensMechanic") != null);
+
 		public static void DoPotionFatigue(SGAPlayer sgaply)
 		{
-			if (!SGAConfig.Instance.PotionFatigue && !sgaply.nightmareplayer)
+			if (!SGAConfig.Instance.PotionFatigue && !sgaply.nightmareplayer && !SGAmod.DRMMode)
 			{
 				sgaply.potionFatigue = Math.Max(sgaply.potionFatigue - 20, 0);
 				return;

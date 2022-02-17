@@ -1688,12 +1688,15 @@ namespace SGAmod
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
 					break;
+
+					/*
 					case NPCID.Nurse:
 
 					if (Main.rand.Next(3) == 0 && Main.LocalPlayer.statLife<Main.LocalPlayer.statLifeMax2)
                     {
-						chat = Main.rand.NextBool() ? "I can heal your wounds, but surgery doesn't happen over night... not all the time anyways" : "Healing takes time, stay around why don't you?";
+						chat = Main.rand.NextBool() ? "I can heal your wounds, but surgery doesn't happen over night... not all the time anyways" : ("Healing takes time, "+Main.rand.NextBool() ? "stay around why don't you?" : "but that's just life");
 					}
+					*/
 
 					if (Hellion.GetHellion() != null)
 					{

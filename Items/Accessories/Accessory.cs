@@ -1989,7 +1989,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Demon Steppers");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead\nHold DOWN to stabilizer gravity");
+			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze and Acid Burn\nGrants 25% increased radiation resistance\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead\nHold DOWN to stabilize gravity");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -2563,7 +2563,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
-	
+	/*
 	public class TidalCharm : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -2635,7 +2635,7 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
-	
+	*/
 
 
 	public class TwinesOfFate : ModItem
@@ -4863,15 +4863,74 @@ namespace SGAmod.Items.Accessories
 			recipe.AddRecipe();
 		}
 	}
+	public class NoviteAirTank : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Air Tank");
+			Tooltip.SetDefault("+5 max Breath Bubbles\nGrants defense per missing breath, becomes stronger with better breathing gear");
+		}
+
+		public override bool Autoload(ref string name)
+		{
+			if (GetType() == typeof(NoviteAirTank))
+			{
+                SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostUpdateEquipsEvent;
+
+			}
+			return true;
+		}
+
+        private void SGAPlayer_PostUpdateEquipsEvent(SGAPlayer sgaply)
+        {
+            if (sgaply.airTank)
+            {
+
+				float scaler = 1f + (sgaply.player.arcticDivingGear ? 0.5f : 0f) + (sgaply.terraDivingGear ? 0.75f : 0) + (sgaply.prismalDivingGear ? 0.75f : 0);
+				int defensegiven = (int)((sgaply.player.breathMax/20)*scaler);
+
+				sgaply.player.statDefense += Math.Max((int)((1f - ((float)sgaply.player.breath / (float)sgaply.player.breathMax)) * defensegiven), 0);
+
+			}
+        }
+
+        public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = ItemRarityID.Blue;
+			item.value = Item.sellPrice(0, 1, 50, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			if (player.SGAPly().airTank)
+				return;
+
+			player.SGAPly().airTank = true;
+			player.breathMax += 100;
+			player.ignoreWater = true;
+			//ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<NoviteBar>(), 8);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
 
 	[AutoloadEquip(EquipType.Back)]
-	public class PrismalAirTank : ModItem
+	public class PrismalAirTank : NoviteAirTank
 	{
 		internal static sbyte backItem = 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Air Tank");
-			Tooltip.SetDefault("+5 max Breath Bubbles, "+ Language.GetTextValue("ItemTooltip.FlipperPotion")+ "\nImproved Life and Mana regen while wet\nGrants an additional free Action Cooldown Stack while wet");
+			Tooltip.SetDefault("+5 max Breath Bubbles, "+ Language.GetTextValue("ItemTooltip.FlipperPotion")+ "\nGrants more defense per missing breat, becomes stronger with better breathing gear\nImproved Life and Mana regen while wet\nGrants an additional free Action Cooldown Stack while wet");
 			backItem = item.backSlot;
 		}
 
@@ -4886,24 +4945,22 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			if (player.SGAPly().airTank)
-				return;
-
-			player.SGAPly().airTank = true;
-			player.breathMax += 100;
-			player.ignoreWater = true;
+			base.UpdateAccessory(player, hideVisual);
 			if (player.wet)
 			{
 				player.SGAPly().MaxCooldownStacks += 1;
-				player.manaRegenBonus += 30;
-				player.lifeRegen += 1;
+				ModContent.GetInstance<BottledLiquidEssence>().UpdateAccessory(player, hideVisual);
 			}
+
+			player.ignoreWater = true;
+
 			//ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 8);
+			recipe.AddIngredient(ModContent.ItemType<NoviteAirTank>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<BottledLiquidEssence>(), 1);
 			recipe.AddIngredient(ItemID.FlipperPotion, 5);
 			recipe.AddTile(mod.GetTile("PrismalStation"));
@@ -4938,6 +4995,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			player.SGAPly().prismalDivingGear = true;
 			base.UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<PrismalAirTank>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<MurkyCharm>().UpdateAccessory(player, hideVisual);
@@ -4948,7 +5006,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ModContent.ItemType<TerraDivingGear>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<PrismalAirTank>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<MurkyCharm>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 30);
 			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 12);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);

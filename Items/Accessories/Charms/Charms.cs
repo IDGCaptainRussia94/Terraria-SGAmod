@@ -709,7 +709,7 @@ namespace SGAmod.Items.Accessories.Charms
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Water Bending Presence");
-			Description.SetDefault("Water Density is thick enough to swim in the air as if it were water! But you are losing breath\nAll forms of infinite water breathing are disabled");
+			Description.SetDefault("Water Density is thick enough to swim in the air as if it were water!\nAll forms of infinite water breathing are disabled");
 			Main.debuff[Type] = true;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;

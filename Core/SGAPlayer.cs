@@ -2254,16 +2254,18 @@ namespace SGAmod
 		}
 		public override void ModifyNursePrice(NPC nurse, int health, bool removeDebuffs, ref int price)
 		{
-			if (Hellion.GetHellion() != null)
+			if (Hellion.GetHellion() != null || (SGAmod.DRMMode && IdgNPC.bossAlive))
 			{
-				price = int.MaxValue - 10;
+				price = int.MaxValue - 1;
 			}
 		}
         public override void PostNurseHeal(NPC nurse, int health, bool removeDebuffs, int price)
         {
+			/*
 			string[] strs = new string[] { "Stay close, I obviously can't work on you from a distance", "Alright, for the next new seconds I can quickly patch your wounds", "Make sure you keep any unwanted aggressives away in the meantime", "It's not instant but that's just life" };
 			Main.npcChatText = strs[Main.rand.Next(strs.Length)];
 			//stuff
+			*/
 		}
         public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
 		{
@@ -2708,8 +2710,11 @@ namespace SGAmod
 
         public override void SetDefaults()
 		{
+			int axepower = 0;
 			item.CloneDefaults(ItemID.PlatinumAxe);
+			axepower = item.axe;
 			item.CloneDefaults(ItemID.PlatinumPickaxe);
+			item.axe = axepower;
 			item.useAnimation = (int)(item.useAnimation/1.50f);
 			item.useTime = (int)(item.useTime / 1.50f);
 		}

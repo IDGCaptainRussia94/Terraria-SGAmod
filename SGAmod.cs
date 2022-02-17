@@ -208,7 +208,7 @@ namespace SGAmod
         {
             get
             {
-				return SGAWorld.NightmareHardcore > 0 || (!DevDisableCheating && (cheating || SGAWorld.cheating));
+				return Main.netMode==0 && (SGAWorld.NightmareHardcore > 0 || (!DevDisableCheating && (cheating || SGAWorld.cheating)));
             }
         }
 		public static float OverpoweredMod
@@ -812,7 +812,7 @@ namespace SGAmod
 				Filters.Scene["SGAmod:ScreenWave"] = new Filter(new ScreenShaderData(screenRef2, "ScreenWave"), EffectPriority.VeryHigh);
 				Ref<Effect> screenRef3 = new Ref<Effect>(GetEffect("Effects/ScreenTimeDistort"));
 				Filters.Scene["SGAmod:ScreenTimeDistort"] = new Filter(new ScreenShaderData(screenRef3, "TimeDistort"), EffectPriority.VeryHigh);
-				Filters.Scene["SGAmod:SwirlingVortex"] = new Filter(new ScreenShaderData("FilterCrystalDestructionVortex").UseImage("SGAmod/Perlin"), EffectPriority.VeryHigh);
+				Filters.Scene["SGAmod:SwirlingVortex"] = new Filter(new ScreenShaderData("FilterCrystalDestructionVortex").UseImage("Images/Misc/Perlin"), EffectPriority.VeryHigh);
 
 
 				//screenRef2 = new Ref<Effect>(GetEffect("Effects/ScreenTrippy"));

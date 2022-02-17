@@ -23,6 +23,29 @@ A few warnings before the changelog:
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
 
+3.628-(2/16/22)--Hotfix 34
+
+--Added
+
+-Phaethon Treasure Bag
+
+
+--Changed:
+
+-Removed changed nurse lines, those are for a later feature coming in part 2
+
+-Nurse charges a "bit more" in Nightmare Mode if a boss is alive
+
+
+--Fixed
+
+-Consolation Prize having no axe power
+
+-Pheathon being marked/unmarked in boss checklist when they should/shouldn't be, hopefully
+
+-Missing server check with General's Armchair that lead to SGAmod unloading when trying to start a server with it
+
+
 3.627-(2/15/22)--Hotfix 33
 
 --Added
@@ -43,7 +66,7 @@ A few warnings before the changelog:
 
 -Dungeon Floors config menu from going wack ingame
 
--Buff Burning and other higher challenge factors not working as expected
+-Buff Burning and other higher challenge factors not working as expected when they should have
 
 
 3.625-(2/14/22)--Patch 15: Anniversary Update!

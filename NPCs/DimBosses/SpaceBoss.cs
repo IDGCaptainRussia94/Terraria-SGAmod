@@ -1871,17 +1871,13 @@ namespace SGAmod.Dimensions.NPCs
             npc.defense = 30;
             npc.HitSound = SoundID.NPCHit7;
             npc.DeathSound = SoundID.NPCDeath7;
-            npc.knockBackResist = 0.5f;
-            //npc.immortal = true;
-            animationType = NPCID.Guide;
-            npc.rarity = 1;
-
+            npc.rarity = ItemRarityID.Blue;
             npc.lifeMax = 100000;
             npc.friendly = false;
-            //npc.immortal = true;
             npc.dontTakeDamage = true;
             npc.noTileCollide = true;
             npc.knockBackResist = 0f;
+            bossBag = ModContent.ItemType<Items.PhaethonBag>();
 
             for (int i = BuffID.Count; i < Main.buffNoSave.Length; i += 1)
             {
@@ -1941,10 +1937,12 @@ namespace SGAmod.Dimensions.NPCs
 
             if (Main.expertMode)
             {
-                Item.NewItem(npc.Center, ModContent.ItemType<Items.Accessories.PhaethonEye>());
+                npc.DropBossBags();
             }
-
-            Item.NewItem(npc.Center, ModContent.ItemType<Items.StarMetalMold>());
+            else
+            {
+                Item.NewItem(npc.Center, ModContent.ItemType<Items.StarMetalMold>());
+            }
 
             SGAWorld.downedSpaceBoss = true;
             SubworldCache.AddCache("SGAmod", "SGAWorld", "downedSpaceBoss", true, null);

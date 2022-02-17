@@ -37,6 +37,7 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -Add Celestial Monolith (finish), Add Heat Beater heat-building and steamm rework
 -Finish focus Crystal, Finish Phaethon's rework, finish ALL space stations
 -FIX COMPASS UI!!
+-Snappy Shark teeth stick into enemies, up to 5, increases damage against enemies with teeth in them by 5% per tooth, at 5 teeth, inflicts Gourged
 
 
 Credits:

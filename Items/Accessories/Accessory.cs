@@ -4401,7 +4401,7 @@ namespace SGAmod.Items.Accessories
 
 		private void DoMoreDamageAndTakeLess(SGAPlayer player, PlayerDeathReason damageSource, ref int damage, ref int hitDirection, bool pvp, bool quiet, ref bool Crit, int cooldownCounter)
 		{
-			if (player.refractor && (cooldownCounter<0 || player.player.hurtCooldowns[cooldownCounter]<=0))
+			if (player.refractor && (cooldownCounter<0 || (cooldownCounter >= 0 && player.player.hurtCooldowns[cooldownCounter]<=0)))
 			{
 				Player ply = player.player;
 				int damageTaken = (int)(damage * 0.75);

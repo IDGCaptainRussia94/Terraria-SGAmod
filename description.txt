@@ -22,6 +22,14 @@ A few warnings before the changelog:
 -This mod has not been properly tested/optimized for multiplayer, while it supports some MP features, many things are disabled in MP
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
+3.629-(2/18/22)--Hotfix 35
+
+--Fixed
+
+-Luminous Alter crafting being disabled, no idea why it was :/
+
+-An issue with The Refractor that would cause some projectiles to despawn
+
 
 3.628-(2/16/22)--Hotfix 34
 

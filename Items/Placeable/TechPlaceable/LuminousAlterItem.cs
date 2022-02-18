@@ -224,7 +224,7 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 		}*/
 		public override void AddRecipes()
 		{
-			/*
+			
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
 			recipe.AddIngredient(mod.ItemType("AuroraTear"), 1);
@@ -232,7 +232,7 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 			recipe.AddTile(TileID.LihzahrdAltar);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
-			*/
+			
 
 		}
 	}

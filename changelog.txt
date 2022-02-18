@@ -10,7 +10,7 @@ Changelog:
 
 --Changed:
 
--
+-Copper Wraith's ore/shard drops double in Hard Mode
 
 
 --Fixed

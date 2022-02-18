@@ -516,7 +516,7 @@ namespace SGAmod
 
 	public class WeightedItemSet
 	{
-		public List<(int, int)> itemPairs;
+		public List<(int, int)> itemPairs = new List<(int, int)>();
 		public float weight;
 		public Func<int,bool> condition = delegate (int itemType)
 			 {
@@ -534,10 +534,11 @@ namespace SGAmod
             {
 				condition = cond;
 			}
-        }
+			this.weight = weight;
+
+		}
 
 		public bool CanDrop() => condition(itemPairs[0].Item1);
-
 
 	}
 
@@ -550,7 +551,7 @@ namespace SGAmod
 			if (newSets.Length < 1)
 				return null;
 
-			float totalWeight = newSets.Aggregate(0f, (previous, next) => previous + next.weight, endwith => endwith);
+			float totalWeight = newSets.Select(testby => testby.weight).Aggregate(0f,(previous, next) => previous + next);
 			newSets = newSets.Where(testby => testby.CanDrop()).OrderBy(testby => Main.rand.NextFloat(totalWeight) - testby.weight).ToArray();
 
 			return newSets[0];
@@ -574,7 +575,7 @@ namespace SGAmod
 				}
 
 				if (uniqueOnly)
-				listedSets.RemoveAt(0);
+				listedSets.Remove(set);
 			}
 
 		}

@@ -29,9 +29,9 @@ namespace SGAmod
 
 			IL.Terraria.Main.Update += RemoveUpdateCinematic;
 			IL.Terraria.Main.DoDraw += BGPatchOfPain;
+			IL.Terraria.Main.DoDraw += DrawBehindVoidLayers;
 			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
 			IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
-			IL.Terraria.Main.DoDraw += DrawBehindVoidLayers;
 
 			IL.Terraria.Player.AdjTiles += ForcedAdjTilesHack;
 			IL.Terraria.Player.Update += SwimInAirHack;
@@ -428,7 +428,7 @@ namespace SGAmod
 
 		}
 
-		//Draws Hellion's Stary effect in the same layer as Moonlord's, also draws stuff right before worm enemies AND right after the sky and before tile BGs
+		//Injects a few method calls to handle layered drawing: Draws Hellion's Stary effect in the same layer as Moonlord's, also draws stuff right before worm enemies AND right after the sky and before tile BGs
 		private static void DrawBehindVoidLayers(ILContext il)
 		{
 			ILCursor c = new ILCursor(il);

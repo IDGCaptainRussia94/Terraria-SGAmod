@@ -998,6 +998,14 @@ namespace SGAmod.NPCs.Murk
                 }
             }
         }
+        public static void MurkFog()
+        {
+            Texture2D pern = ModContent.GetTexture("SGAmod/Perlin");
+            Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Lerp(Color.DarkOliveGreen, Color.Black, 0.5f) * 1f, Main.GlobalTime * 0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 0.50f, Main.GlobalTime * 0.14f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 0.50f, Main.GlobalTime * 0.08f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+        }
+
     }
 
     public class Fly : ModNPC
@@ -1176,7 +1184,7 @@ namespace SGAmod.NPCs.Murk
 
             if (Main.netMode != 1 && npc.ai[0] % 300 == 0 && NPC.CountNPCS(ModContent.NPCType<BossFly2>()) < (Main.expertMode ? 2 : 1) && Master.localAI[0] < 0)
             {
-                if ((Master.modNPC as Murk).gastimer<1)
+                if ((Master.modNPC as Murk).gastimer < 1)
                 {
                     int x = (int)(Master.position.X + (float)Main.rand.Next(Master.width - 32));
                     int y = (int)(Master.position.Y + (float)Main.rand.Next(Master.height - 32));

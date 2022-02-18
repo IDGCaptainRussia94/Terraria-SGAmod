@@ -613,7 +613,24 @@ namespace SGAmod.NPCs.Wraiths
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype, (Main.expertMode ? 60 : 30));
 			}
 
-			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 50 : 30, npc.Center);
+			DropHelper.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 50 : 30, npc.Center);
+
+
+
+
+			WeightedItemSet[] sets = {
+			new WeightedItemSet(new (int,int)[]{ (ItemID.SunStone, 1) }),
+			new WeightedItemSet(new (int,int)[]{ (ItemID.MoonStone, 1) }),
+			new WeightedItemSet(new (int,int)[]{ (ItemID.StardustDragonStaff, 1) }),
+			new WeightedItemSet(new (int,int)[]{ (ItemID.CopperBar, 15) }),
+
+				};
+
+			DropHelper.DropFromItemSets(npc.Center, sets,2);
+
+
+
+
 
 			/*for (int f = 0; f < (Main.expertMode ? 50 : 30); f += 1)
 			{

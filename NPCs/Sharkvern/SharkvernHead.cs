@@ -117,11 +117,15 @@ namespace SGAmod.NPCs.Sharkvern
                 types.Insert(types.Count,ItemID.Seashell); 
                 types.Insert(types.Count,ItemID.Starfish); 
                 types.Insert(types.Count,ItemID.SoulofFlight);
-                types.Insert(types.Count,ItemID.Coral); 
+                types.Insert(types.Count,ItemID.Coral);
 
+                DropHelper.DropFixedItemQuanity(types.ToArray(), 75, npc.Center);
+
+                /*
                 for (int f = 0; f < (Main.expertMode ? 150 : 75); f=f+1){
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0,types.Count)]);
                 }
+                */
 
             }
             if(Main.rand.Next(7) == 0)

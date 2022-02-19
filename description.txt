@@ -23,6 +23,13 @@ A few warnings before the changelog:
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
 
+3.630-(2/19/22)--Hotfix 36
+
+--Fixed
+
+-Hopefully for the love of god, fixed the tf2 Emblem/cross mod issue
+
+
 3.629-(2/18/22)--Hotfix 35
 
 --Fixed

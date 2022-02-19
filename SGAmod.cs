@@ -215,7 +215,7 @@ namespace SGAmod
 		{
             get
             {
-				return Main.netMode == 0 && (SGAConfig.Instance.OPmods || ((SGAmod.cheating || SGAWorld.cheating) && !DevDisableCheating)) ? overpoweredModBaseValue+(Main.hardMode ? overpoweredModBaseHardmodeValue : 0f) : 0;
+				return Main.netMode == NetmodeID.SinglePlayer && (SGAConfig.Instance.OPmods || ((SGAmod.cheating || SGAWorld.cheating) && !DevDisableCheating)) ? overpoweredModBaseValue+(Main.hardMode ? overpoweredModBaseHardmodeValue : 0f) : 0;
 			}
         }
 

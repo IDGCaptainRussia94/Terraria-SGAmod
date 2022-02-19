@@ -76,11 +76,16 @@ namespace SGAmod
 		{
 			if (SGAmod.Calamity.Item1 || SGAmod.Thorium.Item1)
 			{
-				PropertyBoostModdedDamage = new ModdedDamage(player, damage, crit);
+				if (SGAmod.Calamity.Item1)
+					PropertyBoostCalDamage = new ModdedDamage(player, damage, crit);
+				if (SGAmod.Thorium.Item1)
+				{
+					PropertyBoostThoriumDamage = new ModdedDamage(player, damage, crit);
+				}
 			}
 		}
 
-		public static ModdedDamage PropertyBoostModdedDamage
+		public static ModdedDamage PropertyBoostCalDamage
 		{
 			set
 			{
@@ -92,25 +97,31 @@ namespace SGAmod
 					calply.throwingDamage += value.damage;
 					calply.throwingCrit += value.crit;
 				}
+			}
+		}
+
+		public static ModdedDamage PropertyBoostThoriumDamage
+		{
+			set
+			{
 				if (SGAmod.Thorium.Item1)
 				{
 					SGAmod.Thorium.Item2 = ModLoader.GetMod("ThoriumMod");
 
-					SGAmod.Thorium.Item2.Call("BonusBardDamage", value.player, value.damage);
-					SGAmod.Thorium.Item2.Call("BonusBardCrit", value.player, value.crit);
-					SGAmod.Thorium.Item2.Call("BonusHealerDamage", value.player, value.damage);
-					SGAmod.Thorium.Item2.Call("BonusHealerCrit", value.player, value.crit);
+					//SGAmod.Thorium.Item2.Call("BonusBardDamage", value.player, 0f);
+					//SGAmod.Thorium.Item2.Call("BonusBardCrit", value.player, value.crit);
+					//SGAmod.Thorium.Item2.Call("BonusHealerDamage", value.player, value.damage);
+					//SGAmod.Thorium.Item2.Call("BonusHealerCrit", value.player, value.crit);
 
-					//ThoriumPlayer thorply = value.player.GetModPlayer<ThoriumPlayer>();
-					//thorply.symphonicDamage += value.damage;
-					//thorply.symphonicCrit += value.crit;
-					//thorply.radiantBoost += value.damage;
-					//thorply.radiantCrit += value.crit;
+					ThoriumPlayer thorply = value.player.GetModPlayer<ThoriumPlayer>();
+					thorply.symphonicDamage += value.damage;
+					thorply.symphonicCrit += value.crit;
+					thorply.radiantBoost += value.damage;
+					thorply.radiantCrit += value.crit;
 				}
 
 			}
 		}
-
 		public static void CalamityNoRevengenceNoDeathNoU()
 		{
 			if (SGAmod.Calamity.Item1)

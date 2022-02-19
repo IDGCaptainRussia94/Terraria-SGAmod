@@ -1006,36 +1006,6 @@ namespace SGAmod
 
 		}
 
-		public static float InverseLerp(float from, float to, float percent, bool clampedValue = false)
-		{
-			if (clampedValue)
-			{
-				if (from < to)
-				{
-					if (percent < from)
-					{
-						return 0f;
-					}
-					if (percent > to)
-					{
-						return 1f;
-					}
-				}
-				else
-				{
-					if (percent < to)
-					{
-						return 1f;
-					}
-					if (percent > from)
-					{
-						return 0f;
-					}
-				}
-			}
-			return (percent - from) / (to - from);
-		}
-
 		//A class made from Turing's Bezier Curve method, this time, with permission!
 		public class BezierCurveTuring
 		{

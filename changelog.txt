@@ -12,6 +12,8 @@ Changelog:
 
 -Copper Wraith's ore/shard drops double in Hard Mode
 
+-Nerfed Caliburn C: shards do less damage (40% => 32% of base damage), and now have diminishing returns (damage*0.32 to the power of 0.75)
+
 
 --Fixed
 

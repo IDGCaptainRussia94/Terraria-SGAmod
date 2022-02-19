@@ -208,7 +208,7 @@ namespace SGAmod
         {
             get
             {
-				return Main.netMode== SinglePlayer && (SGAWorld.NightmareHardcore > 0 || (!DevDisableCheating && (cheating || SGAWorld.cheating)));
+				return Main.netMode== NetmodeID.SinglePlayer && (SGAWorld.NightmareHardcore > 0 || (!DevDisableCheating && (cheating || SGAWorld.cheating)));
             }
         }
 		public static float OverpoweredMod

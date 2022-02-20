@@ -5,12 +5,14 @@ Changelog:
 
 --Added
 
--
+-A few resprites
 
 
 --Changed:
 
--Copper Wraith's ore/shard drops double in Hard Mode
+-Copper Wraith's ore/shard drops doubled in Hard Mode, Cobalt Wraith's doubled in Post Moon Lord
+
+-Braxsaw uses it's own GlowMask now
 
 -Nerfed Caliburn C: shards do less damage (40% => 32% of base damage), and now have diminishing returns (damage*0.32 to the power of 0.75)
 
@@ -20,6 +22,14 @@ Changelog:
 -Texture bleeding on Murk's sprite
 
 -Sharkvern not using the improved random item drop system in normal mode
+
+
+
+3.630-(2/19/22)--Hotfix 36
+
+--Fixed
+
+-Hopefully for the love of god, fixed the tf2 Emblem/cross mod issue
 
 
 3.629-(2/18/22)--Hotfix 35

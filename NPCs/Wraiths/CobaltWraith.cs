@@ -660,7 +660,7 @@ return true;
 			for (ammount = 0; ammount < 1; ammount += 1)
 				types.Insert(types.Count, ItemID.SoulofNight);
 
-			DropHelper.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
+			DropHelper.DropFixedItemQuanity(types.ToArray(), (Main.expertMode ? 100 : 50) *(NPC.downedMoonlord ? 2 : 1), npc.Center);
 
 			/*for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
 			{

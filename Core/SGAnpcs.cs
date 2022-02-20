@@ -324,16 +324,7 @@ namespace SGAmod
 
 		public override void SetDefaults(NPC npc)
 		{
-			if (SGAmod.OverpoweredMod > 0)
-			{
-				if (!npc.friendly)
-				{
-					npc.life += (int)(npc.life * (1f + SGAmod.OverpoweredMod));
-					npc.lifeMax += (int)(npc.lifeMax * (1f + SGAmod.OverpoweredMod));
-					npc.damage = npc.damage + (int)(1f + SGAmod.OverpoweredMod);
-				}
-
-			}
+			MakeEnemiesUtterHell(npc);
 		}
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
@@ -819,6 +810,16 @@ namespace SGAmod
 		}
 		public override void AI(NPC npc)
 		{
+
+			if ((npc.friendly || NPCID.Sets.TownCritter[npc.type] || npc.catchItem>0) && npc.aiStyle != 69 && SGAmod.TotalCheating && npc.type != ModContent.NPCType<NPCs.TownNPCs.Draken>() && Main.rand.Next((int)SGAmod.LocalPlayerPlayTime)> 21600 && Main.rand.Next(100) < 1)
+            {
+				npc.aiStyle = 69;
+				npc.damage = 25;
+				npc.defDamage = 25;
+				npc.dontTakeDamageFromHostiles = true;
+				npc.friendly = false;
+				npc.catchItem = -1;
+			}
 
 			if (thermalblaze)
 			{

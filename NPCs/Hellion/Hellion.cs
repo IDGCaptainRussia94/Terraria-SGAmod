@@ -3834,7 +3834,7 @@ namespace SGAmod.NPCs.Hellion
 
 		public void InsaneCheatStuff(Player thatplayer,int i)
         {
-			if (SGAmod.cheating || SGAWorld.cheating)
+			if (SGAmod.TotalCheating)
 			{
 
 				thatplayer.AddBuff(ModContent.BuffType<Idglibrary.Buffs.BossFightPurity>(), 5);

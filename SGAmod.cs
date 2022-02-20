@@ -125,7 +125,6 @@ namespace SGAmod
 		public const bool SpaceBossActive = true;
 		public static bool NoGravityItems = false;
 		public static int NoGravityItemsTimer = 0;
-		public static bool DevDisableCheating => Main.LocalPlayer != null && Main.LocalPlayer.HasItem(ModContent.ItemType<Debug13>()) && Main.LocalPlayer.inventory[52].type == ModContent.ItemType<Debug13>();
 
 		public static int SafeModeCheck
         {
@@ -203,21 +202,31 @@ namespace SGAmod
 		public static float overpoweredModBaseHardmodeValue = 0f;
 
 		internal static bool cheating = false;
+		internal static bool TotalCheating => Main.netMode == NetmodeID.SinglePlayer && (cheating || SGAWorld.cheating);
 
-		public static bool DRMMode
+		internal static bool DevDisableCheating => Main.LocalPlayer != null && Main.LocalPlayer.HasItem(ModContent.ItemType<Debug13>()) && Main.LocalPlayer.inventory[49].type == ModContent.ItemType<Debug13>();
+		internal static bool DRMMode
         {
             get
             {
-				return Main.netMode== NetmodeID.SinglePlayer && (SGAWorld.NightmareHardcore > 0 || (!DevDisableCheating && (cheating || SGAWorld.cheating)));
+				return Main.netMode == NetmodeID.SinglePlayer && (SGAWorld.NightmareHardcore > 0 || (!DevDisableCheating && (TotalCheating)));
             }
         }
-		public static float OverpoweredMod
+		internal static double EndTimes => 60 * 60 * 6.0;
+		internal static double LocalPlayerPlayTime => Main.ActivePlayerFileData.GetPlayTime().TotalSeconds;
+		internal static float PlayingPercent => MathHelper.Clamp((float)(LocalPlayerPlayTime / EndTimes), 0f, 1f);
+		internal static float OverpoweredMod
 		{
-            get
-            {
-				return Main.netMode == NetmodeID.SinglePlayer && (SGAConfig.Instance.OPmods || ((SGAmod.cheating || SGAWorld.cheating) && !DevDisableCheating)) ? overpoweredModBaseValue+(Main.hardMode ? overpoweredModBaseHardmodeValue : 0f) : 0;
+			get
+			{
+				//Main.NewText("test: "+Main.ActivePlayerFileData.GetPlayTime().TotalSeconds);
+				double sixHours = 60 * 60 * 6.0;
+				float scaleOverTime = MathHelper.Clamp(PlayingPercent, 0f, 1f);
+				return Main.netMode == NetmodeID.SinglePlayer && (SGAConfig.Instance.OPmods || ((TotalCheating) && !DevDisableCheating)) ? (overpoweredModBaseValue + (Main.hardMode ? overpoweredModBaseHardmodeValue : 0f))
+					* scaleOverTime
+					: 0;
 			}
-        }
+		}
 
 		public static bool ForceDrawOverride = false;
 		public static GameTime lastTime = new GameTime();

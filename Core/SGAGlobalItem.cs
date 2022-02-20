@@ -201,6 +201,7 @@ namespace SGAmod
                     Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
 
                     hallowed.Parameters["alpha"].SetValue(0.5f);
+                    hallowed.Parameters["prismAlpha"].SetValue(0f);
                     hallowed.Parameters["prismColor"].SetValue(Items.Placeable.TechPlaceable.LuminousAlterItem.AuroraLineColor.ToVector3());
                     hallowed.Parameters["rainbowScale"].SetValue(0.25f);
                     hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));

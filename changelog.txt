@@ -1,22 +1,28 @@
 
 Changelog:
 
-3.628-(2/16/22)--Patch 16: Anniversary Update Part 2!
+3.635-(2/20/22)--Patch 16
 
 --Added
 
--Novus Shuriken
+-Novus Shuriken, Repent
 
--A few resprites
+-A way to Repent for your sins... Check in with Draken every once in a while
+
+-Novite Airtank resprite
 
 
 --Changed:
+
+-Added Rijam's glowmask tweaks: female armor glowmasks are now properly shown
 
 -Copper Wraith's ore/shard drops doubled in Hard Mode, Cobalt Wraith's doubled in Post Moon Lord
 
 -Updated Braxsaw visuals
 
--Nerfed Caliburn C: shards do less damage (40% => 32% of base damage), and now have diminishing returns (damage*0.32 to the power of 0.75)
+-Made the mod less impossible at first under specific circumstances, that get gradually more intense over time
+
+-Nerfed Caliburn C: shards do less damage (40% => 25% of base damage)
 
 
 --Fixed

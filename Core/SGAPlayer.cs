@@ -1807,6 +1807,11 @@ namespace SGAmod
 			PreHurtEvent.Invoke(this, pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
 			SGAnpcs.PlayersGotHit();
 
+			if (SGAmod.TotalCheating)
+            {
+				player.GetModPlayer<IdgPlayer>().radationAmmount += Math.Min((float)player.GetModPlayer<IdgPlayer>().radationAmmount+(damage * SGAmod.PlayingPercent)/player.GetModPlayer<IdgPlayer>().radresist,player.statLifeMax2-50);
+			}
+
 			if (damageSource.SourceNPCIndex > -1)
 			{
 				NPC npc = Main.npc[damageSource.SourceNPCIndex];

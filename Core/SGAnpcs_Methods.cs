@@ -93,6 +93,33 @@ namespace SGAmod
 
 		}
 
+		public void MakeEnemiesUtterHell(NPC npc)
+        {
+			if (SGAmod.OverpoweredMod > 0)
+			{
+				if (!npc.friendly)
+				{
+					npc.life = (int)(npc.life * (1f + (SGAmod.OverpoweredMod * 2f)));
+					npc.lifeMax = (int)(npc.lifeMax * (1f + (SGAmod.OverpoweredMod * 2f)));
+					npc.damage = (int)(npc.damage * (1f + SGAmod.OverpoweredMod));
+
+					double twoHours = 60 * 60 * 1.0;
+					double sevenHours = 60 * 60 * 7.0;
+
+					for (int i = 0; i < npc.buffImmune.Length; i += 1)
+					{
+						if (Main.rand.Next(0, (int)SGAmod.LocalPlayerPlayTime) > twoHours)
+						{
+							npc.buffImmune[i] = true;
+						}
+					}
+
+				}
+
+			}
+
+		}
+
 		public static void PlayersGotHit()
 		{
 			foreach (SGAnpcs sganpc in Main.npc.Where(testby => testby.active).Select(testby => testby.SGANPCs()))

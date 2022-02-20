@@ -845,13 +845,15 @@ namespace SGAmod
 				}
 			}
 
-			if (count <= 8)
+			int countEm = SGAmod.TotalCheating ? (int)(8 - (SGAmod.PlayingPercent * 6)) : 8;
+
+			if (count <= countEm)
 			{
 				sgaply.potionFatigue = Math.Max(sgaply.potionFatigue - 20, 0);
 				return;
 			}
 
-			sgaply.potionFatigue += (count - 8) * 1;
+			sgaply.potionFatigue += (count - countEm) * 1;
 
 			int fatigue = (int)sgaply.potionFatigue;
 

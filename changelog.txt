@@ -5,6 +5,8 @@ Changelog:
 
 --Added
 
+-Novus Shuriken
+
 -A few resprites
 
 

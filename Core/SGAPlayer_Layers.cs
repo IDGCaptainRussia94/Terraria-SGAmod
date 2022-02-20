@@ -445,16 +445,21 @@ namespace SGAmod
 
 			#region armor glowmasks
 
-			string[] stringsz = { "Head", "Body", "Arms", "Legs"};
-			PlayerLayer[] thelayer = { PlayerLayer.Head, PlayerLayer.Body, PlayerLayer.Arms, PlayerLayer.Legs };
+			string[] stringsz = { "Head", "Body", "Arms", "Legs", "Body" };
+			PlayerLayer[] thelayer = { PlayerLayer.Head, PlayerLayer.Body, PlayerLayer.Arms, PlayerLayer.Legs, PlayerLayer.Body };
 
 			for (int intc = 0; intc < 4; intc += 1)
 			{
+				int oneToLookAt = intc;
+				if (intc == 1 && !player.Male)//Use Female glowmask instead of the male one
+				{
+					oneToLookAt = 4;
+				}
 
-				if (sgaplayer.armorglowmasks[intc] != null)
+				if (sgaplayer.armorglowmasks[oneToLookAt] != null)
 				{
 					Action<PlayerDrawInfo> glowtarget;
-					switch (intc)//donno why but passing the value here from the for loop causes a crash, boo
+					switch (oneToLookAt)//donno why but passing the value here from the for loop causes a crash, boo
 					{
 						case 1: //Body
 							glowtarget = s => DrawGlowmasks(s, 1);
@@ -466,14 +471,14 @@ namespace SGAmod
 							glowtarget = s => DrawGlowmasks(s, 3);
 							break;
 						case 4: //FemaleBody
-							glowtarget = s => DrawGlowmasks(s, 1);
+							glowtarget = s => DrawGlowmasks(s, 4);
 							break;
 						default: //Head
 							glowtarget = s => DrawGlowmasks(s, 0);
 							break;
 					}
-					PlayerLayer glowlayer = new PlayerLayer("SGAmod", "Armor Glowmask", thelayer[intc], glowtarget);
-					int layer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals(stringsz[intc])) + 1;
+					PlayerLayer glowlayer = new PlayerLayer("SGAmod", "Armor Glowmask", thelayer[oneToLookAt], glowtarget);
+					int layer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals(stringsz[oneToLookAt])) + 1;
 					glowlayer.visible = true;
 					layers.Insert(layer, glowlayer);
 				}

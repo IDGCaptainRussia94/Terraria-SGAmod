@@ -12,7 +12,7 @@ Changelog:
 
 -Copper Wraith's ore/shard drops doubled in Hard Mode, Cobalt Wraith's doubled in Post Moon Lord
 
--Braxsaw uses it's own GlowMask now
+-Updated Braxsaw visuals
 
 -Nerfed Caliburn C: shards do less damage (40% => 32% of base damage), and now have diminishing returns (damage*0.32 to the power of 0.75)
 

@@ -140,7 +140,8 @@ namespace SGAmod.Items.Armors.Mandala
 			{
 				sgaplayer.armorglowmasks[1] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
 				sgaplayer.armorglowmasks[2] = "SGAmod/Items/GlowMasks/" + Name + "_GlowArms";
-			}
+                sgaplayer.armorglowmasks[4] = "SGAmod/Items/GlowMasks/" + Name + "_GlowFemale";
+            }
 		}
 	}
 

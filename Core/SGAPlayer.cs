@@ -292,9 +292,13 @@ namespace SGAmod
 
 		public bool dragonFriend = false;
 		public Point benchGodItem = new Point(-1, -1);
-		public string[] armorglowmasks = new string[4];
+		public string[] armorglowmasks = new string[5];
 		public int[] devempowerment = { 0, 0, 0, 0 };
 		public Func<Player, int, Color>[] armorglowcolor = {delegate (Player player,int index)
+		{
+			return Color.White;
+		},
+			delegate (Player player,int index)
 		{
 			return Color.White;
 		},

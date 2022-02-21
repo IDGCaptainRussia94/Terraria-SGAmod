@@ -381,11 +381,11 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("[i: " + item.type + "]");
-			Tooltip.SetDefault("Repent, and you may yet be forgiven for your sins...");
+			Tooltip.SetDefault("Repent, and you may yet be forgiven for your sins...\nReduces your expertise to 0...");
 		}
 
-		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
-		{
+		public static bool DrawnLine(DrawableTooltipLine line, ref int yOffset)
+        {
 			Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.Black);
 
 			Main.spriteBatch.End();
@@ -408,13 +408,13 @@ namespace SGAmod.Items.Consumables
 			hallowed.Parameters["overlayTexture"].SetValue(ModContent.GetTexture("SGAmod/Fire"));
 			hallowed.Parameters["overlayProgress"].SetValue(new Vector3(0, -Main.GlobalTime / 14f, 0));
 			hallowed.Parameters["overlayAlpha"].SetValue(1.5f);
-			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(1f, 0.02f, Main.GlobalTime/2f));
+			hallowed.Parameters["overlayStrength"].SetValue(new Vector3(1f, 0.02f, Main.GlobalTime / 2f));
 			hallowed.Parameters["overlayMinAlpha"].SetValue(0f);
 			hallowed.CurrentTechnique.Passes["PrismNoRainbow"].Apply();
 
 			Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.Red * 0.25f);
 
-			
+
 			hallowed.Parameters["alpha"].SetValue(0.5f);
 			hallowed.Parameters["prismAlpha"].SetValue(1f);
 			hallowed.Parameters["prismColor"].SetValue(Color.Black.ToVector3());
@@ -424,13 +424,19 @@ namespace SGAmod.Items.Consumables
 			hallowed.CurrentTechnique.Passes["PrismNoRainbow"].Apply();
 
 			Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White * 0.25f);
-			
+
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
-
 			return false;
 		}
+
+		
+		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
+		{
+			return DrawnLine(line,ref yOffset);
+		}
+		
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 			float scaleinandout = 3f+MathHelper.Clamp(1f + ((float)Math.Sin(Main.GlobalTime * 2f) * 2f),0f,3f)*0.50f;
@@ -492,12 +498,13 @@ namespace SGAmod.Items.Consumables
 
 		public override bool CanUseItem(Player player)
 		{
-			return SGAmod.TotalCheating && player.SGAPly().ExpertiseCollected >= player.SGAPly().ExpertiseCollectedTotal / 2;
+			return SGAmod.TotalCheating && SGAmod.PlayingPercent>=1f;
 		}
 		public override bool UseItem(Player player)
 		{
 			SGAWorld.cheating = false;
 			SGAmod.cheating = false;
+			player.SGAPly().ExpertiseCollected = 0;
 			return true;
 		}
 	}

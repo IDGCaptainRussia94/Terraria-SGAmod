@@ -1,15 +1,25 @@
 
 Changelog:
 
-3.640-(2/20/22)--whatever
-
---Added
+3.636-(2/21/22)--Hotfix 37
 
 
 --Changed:
 
+-Made the warnings on specific items more present with more tooltips and an over the top effect
+
 
 --Fixed
+
+-Flask of Soul Sap using Star pickups in their crafting recipe, was meant to be a Fallen Star
+
+-Repent being not really useable, and decreased cost
+
+-Celestial Monolith being uncraftable to get Star Metal Bars early
+
+-Caliburn Compass visuals going off center at higher UI scales
+
+-Reservation/JellyBru Shields granting effectively godmode when used with Undying Valor
 
 
 

@@ -298,6 +298,7 @@ namespace SGAmod
 			BlackListedItems.Add(ModContent.ItemType<WraithArrow>());
 			BlackListedItems.Add(ModContent.ItemType<Items.Weapons.Javelins.ShadowJavelin>());
 			BlackListedItems.Add(ModContent.ItemType<Items.SPinkyBagFake>());
+			BlackListedItems.Add(ModContent.ItemType<Items.Placeable.CelestialMonolithItem>());
 		}
 
 		public UncraftClass(Point16 location, Item item, int recipeIndex = 0, int offsetter = 0)

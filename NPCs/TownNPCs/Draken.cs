@@ -803,7 +803,7 @@ namespace SGAmod.NPCs.TownNPCs
 			if (SGAmod.TotalCheating && SGAmod.PlayingPercent >= 1f)
 			{
 				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumables.ThereIsNoMercyThereIsNoInnocenceOnlyDegreesOfGuilt>());
-				shop.item[nextSlot].shopCustomPrice = (modplayer.ExpertiseCollectedTotal / 20);
+				shop.item[nextSlot].shopCustomPrice = (modplayer.ExpertiseCollectedTotal / 40);
 				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
 				nextSlot++;
 			}

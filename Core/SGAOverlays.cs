@@ -331,8 +331,11 @@ namespace SGAmod
 					//Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
 					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
+					Vector2 screenCenterDrawPos = (new Vector2(Main.screenWidth, Main.screenHeight) / 2f) * 1f;
+
 					if (Dimensions.SGAPocketDim.WhereAmI == null)
 					{
+
 						for (int i = 0; i < SGAWorld.CaliburnAlterCoordsX.Length; i += 1)
 						{
 							string[] texs = { "SGAmod/Items/Weapons/Caliburn/CaliburnTypeA", "SGAmod/Items/Weapons/Caliburn/CaliburnTypeB", "SGAmod/Items/Weapons/Caliburn/CaliburnTypeC" };
@@ -340,13 +343,11 @@ namespace SGAmod
 
 							Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
 
-							Vector2 drawPos = (new Vector2(Main.screenWidth, Main.screenHeight) / 2f) * Main.UIScale;
-
-							Vector2 Vecd = (new Vector2(SGAWorld.CaliburnAlterCoordsX[i], SGAWorld.CaliburnAlterCoordsY[i] + 96) - (drawPos + Main.screenPosition));
+							Vector2 Vecd = (new Vector2(SGAWorld.CaliburnAlterCoordsX[i], SGAWorld.CaliburnAlterCoordsY[i] + 96) - (screenCenterDrawPos + Main.screenPosition));
 							float pointthere = Vecd.ToRotation();
 							bool flip = Vecd.X > 0;
 
-							spriteBatch.Draw(tex, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White, pointthere + MathHelper.ToRadians(45) + (flip ? MathHelper.ToRadians(-90) * 3f : 0), drawOrigin, Main.UIScale, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+							spriteBatch.Draw(tex, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White, pointthere + MathHelper.ToRadians(45) + (flip ? MathHelper.ToRadians(-90) * 3f : 0), drawOrigin, Main.UIScale, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 							//spriteBatch.Draw(tex, new Vector2(150, 150), null, Color.White, Main.GlobalTime, drawOrigin, 1, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 
 						}
@@ -363,16 +364,14 @@ namespace SGAmod
 
 							Vector2 drawOrigin = new Vector2(tex.Width, tex.Height/13) / 2f;
 
-							Vector2 drawPos = (new Vector2(Main.screenWidth, Main.screenHeight) / 2f) * Main.UIScale;
-
 							DarkSector sector = DimDingeonsWorld.darkSectors[i];
 
-							Vector2 Vecd = (sector.position.ToVector2()*16) - (drawPos + Main.screenPosition);
+							Vector2 Vecd = (sector.position.ToVector2()*16) - (screenCenterDrawPos + Main.screenPosition);
 							float pointthere = Vecd.ToRotation();
 
 							for(int k=-1;k<3;k+=2)
-							spriteBatch.Draw(tex2, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.Black*0.4f, Main.GlobalTime * 2f*k, tex2.Size() / 2f, Main.UIScale*1.25f, SpriteEffects.FlipHorizontally, 0f);
-							spriteBatch.Draw(tex, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), rect, Color.White*Main.essScale, 0, drawOrigin, Main.UIScale,SpriteEffects.FlipHorizontally, 0f);
+							spriteBatch.Draw(tex2, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.Black*0.4f, Main.GlobalTime * 2f*k, tex2.Size() / 2f, Main.UIScale*1.25f, SpriteEffects.FlipHorizontally, 0f);
+							spriteBatch.Draw(tex, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), rect, Color.White*Main.essScale, 0, drawOrigin, Main.UIScale,SpriteEffects.FlipHorizontally, 0f);
 
 
 						}
@@ -385,13 +384,11 @@ namespace SGAmod
 
 							Texture2D tex2 = Main.itemTexture[ItemID.LifeformAnalyzer];
 
-							Vector2 drawPos = (new Vector2(Main.screenWidth, Main.screenHeight) / 2f) * Main.UIScale;
-
-							Vector2 Vecd = (npc.Center) - (drawPos + Main.screenPosition);
+							Vector2 Vecd = (npc.Center) - (screenCenterDrawPos + Main.screenPosition);
 							float pointthere = Vecd.ToRotation();
 
-							spriteBatch.Draw(tex2, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White * Main.essScale, 0, tex2.Size() / 2f, Main.UIScale, SpriteEffects.FlipHorizontally, 0f);
-							spriteBatch.Draw(tex2, drawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White * Main.essScale, 0, tex2.Size()/2f, Main.UIScale, SpriteEffects.FlipHorizontally, 0f);
+							spriteBatch.Draw(tex2, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White * Main.essScale, 0, tex2.Size() / 2f, Main.UIScale, SpriteEffects.FlipHorizontally, 0f);
+							spriteBatch.Draw(tex2, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White * Main.essScale, 0, tex2.Size()/2f, Main.UIScale, SpriteEffects.FlipHorizontally, 0f);
 
 						}
 					}

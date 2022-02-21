@@ -313,7 +313,7 @@ namespace SGAmod.Items.Consumables
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Bottle, 1);
-			recipe.AddIngredient(ItemID.Star, 1);
+			recipe.AddIngredient(ItemID.FallenStar, 1);
 			recipe.AddIngredient(ModContent.ItemType<HopeHeart>(), 1);
 			recipe.AddTile(TileID.ImbuingStation);
 			recipe.SetResult(this, 1);

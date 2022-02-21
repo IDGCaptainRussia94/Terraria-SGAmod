@@ -1809,7 +1809,7 @@ namespace SGAmod
 
 			if (SGAmod.TotalCheating)
             {
-				player.GetModPlayer<IdgPlayer>().radationAmmount += Math.Min((float)player.GetModPlayer<IdgPlayer>().radationAmmount+(damage * SGAmod.PlayingPercent)/player.GetModPlayer<IdgPlayer>().radresist,player.statLifeMax2-50);
+				player.GetModPlayer<IdgPlayer>().radationAmmount += Math.Min((float)player.GetModPlayer<IdgPlayer>().radationAmmount+(damage * SGAmod.PlayingPercent)/player.GetModPlayer<IdgPlayer>().radresist,player.statLifeMax2 - 10);
 			}
 
 			if (damageSource.SourceNPCIndex > -1)

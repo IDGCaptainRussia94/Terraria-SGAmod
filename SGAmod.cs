@@ -204,7 +204,7 @@ namespace SGAmod
 		internal static bool cheating = false;
 		internal static bool TotalCheating => Main.netMode == NetmodeID.SinglePlayer && (cheating || SGAWorld.cheating);
 
-		internal static bool DevDisableCheating => Main.LocalPlayer != null && Main.LocalPlayer.HasItem(ModContent.ItemType<Debug13>()) && Main.LocalPlayer.inventory[49].type == ModContent.ItemType<Debug13>();
+		internal static bool DevDisableCheating => Main.netMode != NetmodeID.SinglePlayer || (Main.LocalPlayer != null && Main.LocalPlayer.HasItem(ModContent.ItemType<Debug13>()) && Main.LocalPlayer.inventory[49].type == ModContent.ItemType<Debug13>());
 		internal static bool DRMMode
         {
             get

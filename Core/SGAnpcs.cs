@@ -811,7 +811,7 @@ namespace SGAmod
 		public override void AI(NPC npc)
 		{
 
-			if ((npc.friendly || NPCID.Sets.TownCritter[npc.type] || npc.catchItem>0) && npc.aiStyle != 69 && SGAmod.TotalCheating && npc.type != ModContent.NPCType<NPCs.TownNPCs.Draken>() && Main.rand.Next((int)SGAmod.LocalPlayerPlayTime)> 21600 && Main.rand.Next(100) < 1)
+			if ((npc.friendly || NPCID.Sets.TownCritter[npc.type] || npc.catchItem>0) && npc.aiStyle != 69 && SGAmod.TotalCheating && npc.type != ModContent.NPCType<NPCs.TownNPCs.Draken>() && !SGAmod.DevDisableCheating && Main.rand.Next((int)SGAmod.LocalPlayerPlayTime)> 21600 && Main.rand.Next(100) < 1)
             {
 				npc.aiStyle = 69;
 				npc.damage = 25;

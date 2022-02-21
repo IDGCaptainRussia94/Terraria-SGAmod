@@ -868,13 +868,20 @@ namespace SGAmod
 						badBuffSlots = badBuffSlots.OrderBy(testby => player.buffTime[testby]).ToList();
 						player.buffType[badBuffSlots[0]] = badBuffs[Main.rand.Next(badBuffs.Length)];
 
-						sgaply.potionFatigue -= 5000;
+						sgaply.potionFatigue -= SGAmod.TotalCheating ? 2000 : 5000;
 
 						var snd = Main.PlaySound(SoundID.Zombie, (int)player.Center.X, (int)player.Center.Y, 31);
 						if (snd != null)
 						{
 							snd.Pitch = 0.75f;
 						}
+						if (SGAmod.TotalCheating)
+                        {
+							sgaply.disabledAccessories = Math.Max(sgaply.disabledAccessories, (int)SGAmod.PlayingPercent * 300);
+
+						}
+
+
 					}
 				}
 			}

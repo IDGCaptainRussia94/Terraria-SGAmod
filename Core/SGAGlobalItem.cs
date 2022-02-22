@@ -181,6 +181,7 @@ namespace SGAmod
                     {
                         explode.where = Main.LocalPlayer.Center;
                         float fader = MathHelper.Clamp(percent, 0f, 2f - (percent * 2f)) * 1f;
+                        float fader2 = MathHelper.Clamp(percent, 0f, 3f - (percent * 3f)) * 1f;
 
                         if (SGAmod.ScreenShake < percent * 16f)
                             SGAmod.AddScreenShake((0.5f + (percent * 2f)) * MathHelper.Clamp(8f - (percent * 8f), 0f, 1f));
@@ -196,7 +197,7 @@ namespace SGAmod
 
                         explode.alpha = MathHelper.Clamp((float)Math.Pow((percent * 3.15f) - 2f, 1f), 0.1f, 1f);
 
-                        float glow = MathHelper.SmoothStep(0f, 0.80f, (float)Math.Pow(fader * 1.5f, 1.5f));
+                        float glow = MathHelper.SmoothStep(0f, 0.80f, (float)Math.Pow(fader * 1.5f, 2.5f));
                         float glow2 = MathHelper.SmoothStep(0f, 1f, (float)Math.Pow(fader * 2.5f, 1.16f));
 
                         Main.BlackFadeIn = (int)(((glow2 * 255f) * MathHelper.Clamp(explode.alpha * 1.45f, 0f, 1f)) * MathHelper.Clamp(percent * 5f, 0f, 1f));

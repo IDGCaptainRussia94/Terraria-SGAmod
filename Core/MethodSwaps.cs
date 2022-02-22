@@ -128,7 +128,7 @@ namespace SGAmod
 			}
 
 		valor:
-			if (sply.undyingValor)
+			if (sply.undyingValor && sply.GetEnergyShieldAmmountAndRecharge.Item1<1)
 			{
 				double ddd = orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
 				if (ddd > 0)

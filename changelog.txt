@@ -1,6 +1,60 @@
 
 Changelog:
 
+3.636-(2/21/22)--Hotfix 37
+
+
+--Changed:
+
+-Made the warnings on specific items more present with more tooltips and an over the top effect
+
+
+--Fixed
+
+-Flask of Soul Sap using Star pickups in their crafting recipe, was meant to be a Fallen Star
+
+-Repent being not really useable, and decreased cost
+
+-Celestial Monolith being uncraftable to get Star Metal Bars early
+
+-Caliburn Compass visuals going off center at higher UI scales
+
+-Reservation/JellyBru Shields granting effectively godmode when used with Undying Valor
+
+
+
+3.635-(2/20/22)--Patch 16
+
+--Added
+
+-Novus Shuriken, Repent
+
+-A way to Repent for your sins... Check in with Draken every once in a while
+
+-Novite Airtank resprite
+
+
+--Changed:
+
+-Added Rijam's glowmask tweaks: female armor glowmasks are now properly shown
+
+-Copper Wraith's ore/shard drops doubled in Hard Mode, Cobalt Wraith's doubled in Post Moon Lord
+
+-Updated Braxsaw visuals
+
+-Made the mod less impossible at first under specific circumstances, that get gradually more intense over time
+
+-Nerfed Caliburn C: shards do less damage (40% => 25% of base damage)
+
+
+--Fixed
+
+-Texture bleeding on Murk's sprite
+
+-Sharkvern not using the improved random item drop system in normal mode
+
+
+
 3.630-(2/19/22)--Hotfix 36
 
 --Fixed

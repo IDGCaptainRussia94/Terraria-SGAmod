@@ -631,7 +631,7 @@ namespace SGAmod.Items.Weapons.Caliburn
 					Vector2 perturbedSpeed = (new Vector2(speedX, speedY) * speed).RotatedBy(MathHelper.Lerp(-rotation, rotation, (float)Main.rand.Next(0, 100) / 100f)) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
 				perturbedSpeed.RotatedBy(MathHelper.ToRadians(-45));
 				perturbedSpeed *= Main.rand.NextFloat(0.8f, 1.2f);
-				int proj = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CrystalShard, (int)((float)damage * 0.4f), 0, player.whoAmI);
+				int proj = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, ProjectileID.CrystalShard, (int)(damage * 0.25f), 0, player.whoAmI);
 					Main.projectile[proj].melee = true;
 					Main.projectile[proj].magic = false;
 					Main.projectile[proj].hostile = false;

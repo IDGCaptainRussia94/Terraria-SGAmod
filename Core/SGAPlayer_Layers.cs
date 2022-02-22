@@ -298,6 +298,11 @@ namespace SGAmod
 			{
 				Texture2D texture = ModContent.GetTexture(modply.armorglowmasks[index]);
 
+				if (index == 1 && !drawPlayer.Male && modply.armorglowmasks[4] != null)
+				{
+					texture = ModContent.GetTexture(modply.armorglowmasks[4]);
+				}
+
 				int drawX = (int)((drawInfo.position.X + drawPlayer.bodyPosition.X + 10) - Main.screenPosition.X);
 				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) + drawPlayer.gfxOffY - Main.screenPosition.Y);//gravDir 
 				DrawData data;
@@ -440,32 +445,40 @@ namespace SGAmod
 
 			#region armor glowmasks
 
-			string[] stringsz = { "Head", "Body", "Arms", "Legs"};
-			PlayerLayer[] thelayer = { PlayerLayer.Head, PlayerLayer.Body, PlayerLayer.Arms, PlayerLayer.Legs };
+			string[] stringsz = { "Head", "Body", "Arms", "Legs", "Body" };
+			PlayerLayer[] thelayer = { PlayerLayer.Head, PlayerLayer.Body, PlayerLayer.Arms, PlayerLayer.Legs, PlayerLayer.Body };
 
 			for (int intc = 0; intc < 4; intc += 1)
 			{
+				int oneToLookAt = intc;
+				if (intc == 1 && !player.Male)//Use Female glowmask instead of the male one
+				{
+					oneToLookAt = 4;
+				}
 
-				if (sgaplayer.armorglowmasks[intc] != null)
+				if (sgaplayer.armorglowmasks[oneToLookAt] != null)
 				{
 					Action<PlayerDrawInfo> glowtarget;
-					switch (intc)//donno why but passing the value here from the for loop causes a crash, boo
+					switch (oneToLookAt)//donno why but passing the value here from the for loop causes a crash, boo
 					{
-						case 1:
+						case 1: //Body
 							glowtarget = s => DrawGlowmasks(s, 1);
 							break;
-						case 2:
+						case 2: //Arms
 							glowtarget = s => DrawGlowmasks(s, 2);
 							break;
-						case 3:
+						case 3: //Legs
 							glowtarget = s => DrawGlowmasks(s, 3);
 							break;
-						default:
+						case 4: //FemaleBody
+							glowtarget = s => DrawGlowmasks(s, 4);
+							break;
+						default: //Head
 							glowtarget = s => DrawGlowmasks(s, 0);
 							break;
 					}
-					PlayerLayer glowlayer = new PlayerLayer("SGAmod", "Armor Glowmask", thelayer[intc], glowtarget);
-					int layer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals(stringsz[intc])) + 1;
+					PlayerLayer glowlayer = new PlayerLayer("SGAmod", "Armor Glowmask", thelayer[oneToLookAt], glowtarget);
+					int layer = layers.FindIndex(PlayerLayer => PlayerLayer.Name.Equals(stringsz[oneToLookAt])) + 1;
 					glowlayer.visible = true;
 					layers.Insert(layer, glowlayer);
 				}

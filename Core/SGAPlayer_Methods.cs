@@ -845,13 +845,15 @@ namespace SGAmod
 				}
 			}
 
-			if (count <= 8)
+			int countEm = SGAmod.TotalCheating ? (int)(8 - (SGAmod.PlayingPercent * 6)) : 8;
+
+			if (count <= countEm)
 			{
 				sgaply.potionFatigue = Math.Max(sgaply.potionFatigue - 20, 0);
 				return;
 			}
 
-			sgaply.potionFatigue += (count - 8) * 1;
+			sgaply.potionFatigue += (count - countEm) * 1;
 
 			int fatigue = (int)sgaply.potionFatigue;
 
@@ -866,13 +868,20 @@ namespace SGAmod
 						badBuffSlots = badBuffSlots.OrderBy(testby => player.buffTime[testby]).ToList();
 						player.buffType[badBuffSlots[0]] = badBuffs[Main.rand.Next(badBuffs.Length)];
 
-						sgaply.potionFatigue -= 5000;
+						sgaply.potionFatigue -= SGAmod.TotalCheating ? 2000 : 5000;
 
 						var snd = Main.PlaySound(SoundID.Zombie, (int)player.Center.X, (int)player.Center.Y, 31);
 						if (snd != null)
 						{
 							snd.Pitch = 0.75f;
 						}
+						if (SGAmod.TotalCheating)
+                        {
+							sgaply.disabledAccessories = Math.Max(sgaply.disabledAccessories, (int)SGAmod.PlayingPercent * 300);
+
+						}
+
+
 					}
 				}
 			}

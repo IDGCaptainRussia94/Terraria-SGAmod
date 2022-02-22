@@ -8,6 +8,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
+using SGAmod.Items;
 
 namespace SGAmod.NPCs.Wraiths
 {
@@ -594,12 +595,14 @@ namespace SGAmod.NPCs.Wraiths
 			if (Main.expertMode)
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("WraithTargetingGamepad"));
 
-			int shardtype = mod.ItemType("WraithFragment");
+			int shardtype = ModContent.ItemType<WraithFragment>();
 			/*if (SGAWorld.WorldIsTin)
 			{
 				shardtype = mod.ItemType("WraithFragment2");
 				//npc.GivenName = "Tin Wraith";
 			}*/
+
+			
 
 			types.Insert(types.Count, shardtype);
 			types.Insert(types.Count, SGAmod.WorldOres[0, SGAWorld.oretypesprehardmode[0] == TileID.Copper ? 1 : 0]); types.Insert(types.Count, SGAmod.WorldOres[0, SGAWorld.oretypesprehardmode[0] == TileID.Copper ? 1 : 0]);
@@ -607,13 +610,30 @@ namespace SGAmod.NPCs.Wraiths
 			types.Insert(types.Count, SGAmod.WorldOres[2, SGAWorld.oretypesprehardmode[2] == TileID.Silver ? 1 : 0]); types.Insert(types.Count, SGAmod.WorldOres[2, SGAWorld.oretypesprehardmode[2] == TileID.Silver ? 1 : 0]);
 			types.Insert(types.Count, SGAmod.WorldOres[3, SGAWorld.oretypesprehardmode[3] == TileID.Gold ? 1 : 0]);
 
+			DropHelper.DropFixedItemQuanity(types.ToArray(), (Main.expertMode ? 50 : 30)*(Main.hardMode ? 2 : 1), npc.Center);
+
+			
 
 			if (shardtype > 0)
 			{
-				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype, (Main.expertMode ? 60 : 30));
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, shardtype, (Main.expertMode ? 60 : 30) * (Main.hardMode ? 2 : 1));
 			}
 
-			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 50 : 30, npc.Center);
+			/*
+			WeightedItemSet[] sets = {
+							new WeightedItemSet(new (int,int)[]{ (ItemID.CopperPlating, 15),(ItemID.CopperBar, 25)  }),
+			new WeightedItemSet(new (int,int)[]{ (ItemID.SunStone, 1) }),
+			new WeightedItemSet(new (int,int)[]{ (ItemID.MoonStone, 1) }),
+			new WeightedItemSet(new (int,int)[]{ (ItemID.FragmentNebula, 10),(ItemID.FragmentSolar, 10),(ItemID.FragmentStardust, 10),(ItemID.FragmentVortex, 10) },3),
+
+				};
+
+			DropHelper.DropFromItemSets(npc.Center, sets,2);
+			*/
+
+
+
+
 
 			/*for (int f = 0; f < (Main.expertMode ? 50 : 30); f += 1)
 			{

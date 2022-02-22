@@ -125,7 +125,6 @@ namespace SGAmod
 		public const bool SpaceBossActive = true;
 		public static bool NoGravityItems = false;
 		public static int NoGravityItemsTimer = 0;
-		public static bool DevDisableCheating => Main.LocalPlayer != null && Main.LocalPlayer.HasItem(ModContent.ItemType<Debug13>()) && Main.LocalPlayer.inventory[49].type == ModContent.ItemType<Debug13>();
 
 		public static int SafeModeCheck
         {
@@ -203,21 +202,31 @@ namespace SGAmod
 		public static float overpoweredModBaseHardmodeValue = 0f;
 
 		internal static bool cheating = false;
+		internal static bool TotalCheating => Main.netMode == NetmodeID.SinglePlayer && (cheating || SGAWorld.cheating);
 
-		public static bool DRMMode
+		internal static bool DevDisableCheating => Main.netMode != NetmodeID.SinglePlayer || (Main.LocalPlayer != null && Main.LocalPlayer.HasItem(ModContent.ItemType<Debug13>()) && Main.LocalPlayer.inventory[49].type == ModContent.ItemType<Debug13>());
+		internal static bool DRMMode
         {
             get
             {
-				return Main.netMode==0 && (SGAWorld.NightmareHardcore > 0 || (!DevDisableCheating && (cheating || SGAWorld.cheating)));
+				return Main.netMode == NetmodeID.SinglePlayer && (SGAWorld.NightmareHardcore > 0 || (!DevDisableCheating && (TotalCheating)));
             }
         }
-		public static float OverpoweredMod
+		internal static double EndTimes => 60 * 60 * 6.0;
+		internal static double LocalPlayerPlayTime => Main.ActivePlayerFileData.GetPlayTime().TotalSeconds;
+		internal static float PlayingPercent => MathHelper.Clamp((float)(LocalPlayerPlayTime / EndTimes), 0f, 1f);
+		internal static float OverpoweredMod
 		{
-            get
-            {
-				return Main.netMode == 0 && (SGAConfig.Instance.OPmods || ((SGAmod.cheating || SGAWorld.cheating) && !DevDisableCheating)) ? overpoweredModBaseValue+(Main.hardMode ? overpoweredModBaseHardmodeValue : 0f) : 0;
+			get
+			{
+				//Main.NewText("test: "+Main.ActivePlayerFileData.GetPlayTime().TotalSeconds);
+				double sixHours = 60 * 60 * 6.0;
+				float scaleOverTime = MathHelper.Clamp(PlayingPercent, 0f, 1f);
+				return Main.netMode == NetmodeID.SinglePlayer && (SGAConfig.Instance.OPmods || ((TotalCheating) && !DevDisableCheating)) ? (overpoweredModBaseValue + (Main.hardMode ? overpoweredModBaseHardmodeValue : 0f))
+					* scaleOverTime
+					: 0;
 			}
-        }
+		}
 
 		public static bool ForceDrawOverride = false;
 		public static GameTime lastTime = new GameTime();
@@ -930,6 +939,197 @@ namespace SGAmod
 			}
 		}
 
+		public void AddAssemblyStarRecipes()
+        {
+			int tileType = ModContent.TileType<Tiles.ReverseEngineeringStation>();
+			int star = ModContent.ItemType<AssemblyStar>();
+
+			ModRecipe recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ModContent.ItemType<IceFairyDust>(), 5);
+			recipe.AddIngredient(ItemID.IceBlock, 50);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.IceMachine);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.FallenStar, 5);
+			recipe.AddIngredient(ItemID.Cloud, 50);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.SkyMill);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.Silk, 30);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.HandWarmer);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.IceBlock, 20);
+			recipe.AddIngredient(ItemID.Snowball, 100);
+			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 3);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.SnowballLauncher);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ModContent.ItemType<SharkTooth>(), 5);
+			recipe.AddIngredient(ItemID.Chain, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.SharkToothNecklace);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ModContent.ItemType<NormalQuiver>(), 1);
+			recipe.AddIngredient(ItemID.SoulofLight, 3);
+			recipe.AddIngredient(ItemID.SoulofNight, 3);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.MagicQuiver);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.CloudinaBottle, 1);
+			recipe.AddIngredient(ItemID.SandBlock, 50);
+			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.SandstorminaBottle);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.SilkRope, 30);
+			recipe.AddIngredient(ItemID.AncientCloth, 3);
+			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.FlyingCarpet);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ModContent.ItemType<DankCore>(), 2);
+			recipe.AddIngredient(this.ItemType("VirulentBar"), 10);
+			recipe.AddIngredient(ItemID.Frog, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.FrogLeg);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.FlipperPotion, 2);
+			recipe.AddIngredient(ItemID.WaterBucket, 1);
+			recipe.AddIngredient(ItemID.RocketBoots, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.Flipper);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.Obsidian, 20);
+			recipe.AddIngredient(ItemID.Fireblossom, 3);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.ObsidianRose);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.LavaBucket, 3);
+			recipe.AddIngredient(ModContent.ItemType<FieryShard>(), 10);
+			recipe.AddIngredient(ItemID.ObsidianRose, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.LavaCharm);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ModContent.ItemType<RustedBulwark>(), 1);
+			recipe.AddIngredient(ItemID.CobaltBar, 6);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.CobaltShield);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 100);
+			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 15);
+			recipe.AddIngredient(ItemID.SoulofNight, 10);
+			recipe.AddIngredient(ItemID.GoldenKey, 1);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.ShadowKey);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.Gel, 100);
+			recipe.AddIngredient(ModContent.ItemType<DankWood>(), 15);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.SlimeStaff);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ModContent.ItemType<AdvancedPlating>(), 5);
+			recipe.AddRecipeGroup("SGAmod:IchorOrCursed", 5);
+			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 5);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.Uzi);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.TatteredCloth, 5);
+			recipe.AddIngredient(ItemID.Aglet, 1);
+			recipe.AddIngredient(ItemID.WaterWalkingPotion, 3);
+			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 5);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.WaterWalkingBoots);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.HermesBoots, 1);
+			recipe.AddIngredient(ItemID.IceBlock, 25);
+			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 4);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.IceSkates);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.TurtleShell, 1);
+			recipe.AddIngredient(ItemID.FrostCore, 1);
+			recipe.AddIngredient(ModContent.ItemType<CryostalBar>(), 8);
+			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 6);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.FrozenTurtleShell);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ModContent.ItemType<ManaBattery>(), 1);
+			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 6);
+			recipe.AddIngredient(ItemID.Wire, 20);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.MetalDetector);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddIngredient(star, 1);
+			recipe.AddIngredient(ItemID.MetalDetector, 1);
+			recipe.AddIngredient(ItemID.DesertFossil, 20);
+			recipe.AddIngredient(ItemID.Wire, 25);
+			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 8);
+			recipe.AddTile(tileType);
+			recipe.SetResult(ItemID.Extractinator, 1);
+			recipe.AddRecipe();
+		}
+
 		public override void AddRecipes()
 		{
 
@@ -956,194 +1156,11 @@ namespace SGAmod
 				editor.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 2);
 			}
 
-			int tileType = ModContent.TileType<Tiles.ReverseEngineeringStation>();
-
-			ModRecipe recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<IceFairyDust>(), 5);
-			recipe.AddIngredient(ItemID.IceBlock, 50);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.IceMachine);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.FallenStar, 5);
-			recipe.AddIngredient(ItemID.Cloud, 50);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.SkyMill);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.Silk, 30);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.HandWarmer);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.IceBlock, 20);
-			recipe.AddIngredient(ItemID.Snowball, 100);
-			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 3);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.SnowballLauncher);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<SharkTooth>(), 5);
-			recipe.AddIngredient(ItemID.Chain, 1);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.SharkToothNecklace);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ModContent.ItemType <NormalQuiver>(), 1);
-			recipe.AddIngredient(ItemID.SoulofLight, 3);
-			recipe.AddIngredient(ItemID.SoulofNight, 3);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.MagicQuiver);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.CloudinaBottle, 1);
-			recipe.AddIngredient(ItemID.SandBlock, 50);
-			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.SandstorminaBottle);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.SilkRope, 30);
-			recipe.AddIngredient(ItemID.AncientCloth, 3);
-			recipe.AddIngredient(ItemID.AncientBattleArmorMaterial, 1);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.FlyingCarpet);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ModContent.ItemType <DankCore>(), 2);
-			recipe.AddIngredient(this.ItemType("VirulentBar"), 10);
-			recipe.AddIngredient(ItemID.Frog, 1);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.FrogLeg);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.FlipperPotion, 2);
-			recipe.AddIngredient(ItemID.WaterBucket, 1);
-			recipe.AddIngredient(ItemID.RocketBoots, 1);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.Flipper);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.Obsidian, 20);
-			recipe.AddIngredient(ItemID.Fireblossom, 3);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.ObsidianRose);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.LavaBucket, 3);
-			recipe.AddIngredient(ModContent.ItemType <FieryShard>(), 10);
-			recipe.AddIngredient(ItemID.ObsidianRose, 1);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.LavaCharm);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<RustedBulwark>(), 1);
-			recipe.AddIngredient(ItemID.CobaltBar, 6);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.CobaltShield);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 100);
-			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 15);
-			recipe.AddIngredient(ItemID.SoulofNight, 10);
-			recipe.AddIngredient(ItemID.GoldenKey, 1);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.ShadowKey);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.Gel, 100);
-			recipe.AddIngredient(ModContent.ItemType<DankWood>(), 15);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.SlimeStaff);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ModContent.ItemType <AdvancedPlating>(), 5);
-			recipe.AddRecipeGroup("SGAmod:IchorOrCursed", 5);
-			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 5);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.Uzi);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.TatteredCloth, 5);
-			recipe.AddIngredient(ItemID.Aglet, 1);
-			recipe.AddIngredient(ItemID.WaterWalkingPotion, 3);
-			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 5);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.WaterWalkingBoots);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.HermesBoots, 1);
-			recipe.AddIngredient(ItemID.IceBlock, 25);
-			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 4);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.IceSkates);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.TurtleShell, 1);
-			recipe.AddIngredient(ItemID.FrostCore, 1);
-			recipe.AddIngredient(ModContent.ItemType<CryostalBar>(), 8);
-			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 6);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.FrozenTurtleShell);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<ManaBattery>(), 1);
-			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 6);
-			recipe.AddIngredient(ItemID.Wire, 20);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.MetalDetector);
-			recipe.AddRecipe();
-
-			recipe = new ModRecipe(this);
-			recipe.AddIngredient(ModContent.ItemType<AssemblyStar>(), 1);
-			recipe.AddIngredient(ItemID.MetalDetector, 1);
-			recipe.AddIngredient(ItemID.DesertFossil, 20);
-			recipe.AddIngredient(ItemID.Wire, 25);
-			recipe.AddRecipeGroup("SGAmod:Tier2Bars", 8);
-			recipe.AddTile(tileType);
-			recipe.SetResult(ItemID.Extractinator,1);
-			recipe.AddRecipe();
-
 			int[] moonlorditems = { ItemID.Terrarian, ItemID.LunarFlareBook, ItemID.RainbowCrystalStaff, ItemID.SDMG, ItemID.StarWrath, ItemID.Meowmere, ItemID.LastPrism, ItemID.MoonlordTurretStaff, ItemID.FireworksLauncher,ModContent.ItemType<SoulPincher>() };
+
+			AddAssemblyStarRecipes();
+
+			ModRecipe recipe;
 
 			foreach (int idofitem in moonlorditems)
 			{

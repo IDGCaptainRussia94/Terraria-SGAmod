@@ -364,7 +364,7 @@ namespace SGAmod.NPCs.Wraiths
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("LuminiteWraithNotch"));
 			}
 
-			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
+			DropHelper.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
 
 			/*for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
 			{

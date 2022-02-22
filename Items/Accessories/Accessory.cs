@@ -4398,15 +4398,14 @@ namespace SGAmod.Items.Accessories
 			//SGAPlayer.AfterTheHitEvent += SGAPlayer_AfterTheHitEvent;
 			return true;
         }
-
 		private void DoMoreDamageAndTakeLess(SGAPlayer player, PlayerDeathReason damageSource, ref int damage, ref int hitDirection, bool pvp, bool quiet, ref bool Crit, int cooldownCounter)
 		{
-			if (player.refractor && (cooldownCounter<0 || (cooldownCounter >= 0 && player.player.hurtCooldowns[cooldownCounter]<=0)))
+			if (player.refractor && (cooldownCounter < 0 || (cooldownCounter >= 0 && player.player.hurtCooldowns[cooldownCounter] <= 0)))
 			{
 				Player ply = player.player;
 				int damageTaken = (int)(damage * 0.75);
 				damage -= damageTaken;
-				int damageToDo = damage*3;
+				int damageToDo = damage * 3;
 				foreach (NPC npc in Main.npc.Where(testby => testby.active && !testby.friendly && !testby.dontTakeDamage && (testby.Center - ply.Center).Length() < 640))
 				{
 					Projectile proj = Projectile.NewProjectileDirect(ply.Center, Vector2.Zero, ModContent.ProjectileType<RefractorLaserProj>(), (int)(damageToDo * ply.thorns), 10, ply.whoAmI, Main.rand.NextFloat(1f), npc.whoAmI);

@@ -81,7 +81,7 @@ namespace SGAmod.Items.Consumables
 
         public override void UpdateInventory(Player player)
         {
-			if (player.inventory[49].type == item.type && (SGAmod.cheating || SGAWorld.cheating) && player.SGAPly().Sequence)
+			if (player.inventory[49].type == item.type && (SGAmod.TotalCheating) && player.SGAPly().Sequence)
 			{
 				SGAmod.cheating = false;
 				SGAWorld.cheating = false;

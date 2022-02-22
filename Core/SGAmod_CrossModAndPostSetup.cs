@@ -122,7 +122,6 @@ namespace SGAmod
 
 			}
 		}
-
 		public static void CalamityNoRevengenceNoDeathNoU()
 		{
 			if (SGAmod.Calamity.Item1)

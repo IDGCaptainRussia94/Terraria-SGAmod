@@ -1509,6 +1509,8 @@ namespace SGAmod.NPCs
 				//}
 			}
 
+			//Vortex!
+
 			if (npc.ai[0] > 5000)
 			{
 				Texture2D tex2 = Main.itemTexture[ModContent.ItemType<StygianCore>()];

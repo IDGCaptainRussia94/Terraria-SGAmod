@@ -292,9 +292,13 @@ namespace SGAmod
 
 		public bool dragonFriend = false;
 		public Point benchGodItem = new Point(-1, -1);
-		public string[] armorglowmasks = new string[4];
+		public string[] armorglowmasks = new string[5];
 		public int[] devempowerment = { 0, 0, 0, 0 };
 		public Func<Player, int, Color>[] armorglowcolor = {delegate (Player player,int index)
+		{
+			return Color.White;
+		},
+			delegate (Player player,int index)
 		{
 			return Color.White;
 		},
@@ -1802,6 +1806,11 @@ namespace SGAmod
 			if (PreHurtEvent != null)
 			PreHurtEvent.Invoke(this, pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
 			SGAnpcs.PlayersGotHit();
+
+			if (SGAmod.TotalCheating)
+            {
+				player.GetModPlayer<IdgPlayer>().radationAmmount += Math.Min((float)player.GetModPlayer<IdgPlayer>().radationAmmount+(damage * SGAmod.PlayingPercent)/player.GetModPlayer<IdgPlayer>().radresist,player.statLifeMax2 - 10);
+			}
 
 			if (damageSource.SourceNPCIndex > -1)
 			{

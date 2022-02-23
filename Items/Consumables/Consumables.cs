@@ -498,7 +498,7 @@ namespace SGAmod.Items.Consumables
 
 		public override bool CanUseItem(Player player)
 		{
-			return SGAmod.TotalCheating && SGAmod.PlayingPercent>=1f;
+			return SGAmod.TotalCheating && SGAmod.PlayingPercent>=1f && player.SGAPly().ExpertiseCollected > 0;
 		}
 		public override bool UseItem(Player player)
 		{

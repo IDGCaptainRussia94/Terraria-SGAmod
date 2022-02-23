@@ -4,6 +4,10 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Terraria.UI;
+using System;
 
 namespace SGAmod.Items.Accessories
 {
@@ -14,7 +18,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Joyrider");
-			Tooltip.SetDefault("'Minigun powered flight!'\nRapidly Fire bullets below you as you fly!\nRequires Ammo to fly, uses the last ammo type you fired\nDamage and Flight Time are improved by Ammo Damage");
+			Tooltip.SetDefault("'Minigun powered flight!'\nRapidly Fire bullets below you as you fly!\nRequires Ammo to fly\nDamage and Flight Time are improved by Ammo Damage");
 		}
 
 		public override void SetDefaults()
@@ -26,6 +30,11 @@ namespace SGAmod.Items.Accessories
 			item.value = 200000;
 			item.accessory = true;
 			item.wingSlot = wingslo;
+			item.useAmmo = AmmoID.Bullet;
+			item.shoot = ProjectileID.Bullet;
+			item.shootSpeed = 10f;
+			item.damage = 20;
+			item.ranged = true;
 		}
 
 		/*public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
@@ -56,29 +65,74 @@ namespace SGAmod.Items.Accessories
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer<SGAPlayer>();
 
-			int ammotype = (int)sgaplayer.myammo;
-			if (ammotype > 0)
+			int joyriderid = ModContent.ItemType<Joyrider>();
+
+			Item[] possibleJoy = player.armor.Where(testby => testby.type == ModContent.ItemType<Joyrider>())?.ToArray();
+
+			Item joyRider = possibleJoy != null && possibleJoy.Length > 0 ? possibleJoy[0] : null;
+
+			//Check WingSlot if it's enabled
+
+			Mod WingSlot = ModLoader.GetMod("WingSlot");
+
+			if (joyRider == null && WingSlot != null)
 			{
-				Item ammo2 = new Item();
-				ammo2.SetDefaults(ammotype);
-				if (player.CountItem(ammotype) > 0)
+				Type wingPlayer = WingSlot.Code.GetType("WingSlot.WingSlotPlayer");
+				Type itemSlot = WingSlot.Code.GetType("TerraUI.Objects.UIItemSlot");
+				ModPlayer wingply = player.GetModPlayer(WingSlot, "WingSlotPlayer");
+
+				object itemslotinstance = (wingPlayer.GetField("EquipSlot",SGAmod.UniversalBindingFlags).GetValue(wingply));
+				Item inWithin = (Item)((itemSlot.GetProperty("Item", SGAmod.UniversalBindingFlags).GetValue(itemslotinstance)));
+				if (inWithin != null && !inWithin.IsAir && inWithin.type == joyriderid)
+                {
+					joyRider = inWithin;
+				}
+			}
+
+			if (joyRider == null)
+				return;
+
+
+			bool hasTheAmmo = player.HasAmmo(joyRider, true);
+
+			if (hasTheAmmo)
+			{
+				if (player.controlJump)
 				{
-					player.wingTimeMax = 80 + ammo2.damage*5;
+					int projType = item.shoot;
+
+					bool canShoot = true;
+					int damage = joyRider.damage;
+					float knockback = 1;
+					float speed = 32f;
+					if (projType == ProjectileID.Bullet || projType == 10)
+					{
+						player.PickAmmo(item, ref projType, ref speed, ref canShoot, ref damage, ref knockback, true);
+					}
+
+
+
+
+					player.wingTimeMax = 25 + damage * 5;
 
 					Vector2 velo = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(10f, 12f));
 
 
 					velo = velo.RotatedBy(MathHelper.ToRadians(player.velocity.X * 2f));
 
-					if ((sgaplayer.timer % (player.wingTime > 0 ? 3 : 8) == 0 || sgaplayer.timer % (player.wingTime > 0 ? 6 : 11) == 0) && player.controlJump)
+					if (player.velocity.Y != 0 && (sgaplayer.timer % (player.wingTime > 0 ? 3 : 8) == 0 || sgaplayer.timer % (player.wingTime > 0 ? 6 : 11) == 0))
 					{
 
-						player.ConsumeItemRespectInfiniteAmmoTypes(ammo2.type);
+						//player.ConsumeItemRespectInfiniteAmmoTypes(ammo2.type);
+						player.PickAmmo(item, ref projType, ref speed, ref canShoot, ref damage, ref knockback, false);
 						sgaplayer.JoyrideShake = 6;
-						int thisoned = Projectile.NewProjectile(player.Center.X + player.direction * -12, player.Center.Y, velo.X, velo.Y, ammo2.shoot, (int)((float)(ammo2.damage * 1.5) * player.rangedDamage * player.bulletDamage), ammo2.knockBack, Main.myPlayer);
+						int thisoned = Projectile.NewProjectile(player.Center.X + player.direction * -12, player.Center.Y, velo.X, velo.Y, projType, (int)((float)(damage * 1) * (player.rangedDamage + (player.bulletDamage-1f))), knockback, Main.myPlayer);
 					}
-				}
+                }
+                else
+                {
 
+				}
 			}
 			else
 			{
@@ -86,6 +140,9 @@ namespace SGAmod.Items.Accessories
 				player.wings = 0;
 				player.wingTime = 0;
 			}
+
+			if (player.velocity.Y == 0)
+				player.wingTime = player.wingTimeMax;
 		}
 
         public override void UpdateVanity(Player player, EquipType type)

@@ -13,6 +13,7 @@ using SGAmod.HavocGear.Items.Weapons;
 using SGAmod.Items.Weapons;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Buffs;
+using SGAmod.Effects;
 
 namespace SGAmod.NPCs.Murk
 {
@@ -1000,10 +1001,65 @@ namespace SGAmod.NPCs.Murk
         }
         public static void MurkFog()
         {
-            Texture2D pern = ModContent.GetTexture("SGAmod/Perlin");
-            Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Lerp(Color.DarkOliveGreen, Color.Black, 0.5f) * 1f, Main.GlobalTime * 0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 0.50f, Main.GlobalTime * 0.14f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 0.50f, Main.GlobalTime * 0.08f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+            Texture2D pern = ModContent.GetTexture("SGAmod/TiledPerlin");
+
+            for (int type = 0; type < 3; type += 1)
+            {
+
+                float aspectRato = Main.screenWidth / Main.screenHeight;
+
+                Effect effect = SGAmod.RotateTextureEffect;
+
+                VertexBuffer vertexBuffer;
+
+                float perc = (type * MathHelper.TwoPi / 3f);
+                float loops = 3+type+(float)Math.Sin((Main.GlobalTime * 1.5f)+perc)*0.26f;
+
+                float mather = (0.5f)-(0.50f/loops);
+
+                effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Vector2.One) * WVP.Projection());
+                effect.Parameters["imageTexture"].SetValue(pern);
+                effect.Parameters["coordOffset"].SetValue(-new Vector2(mather, mather));
+                effect.Parameters["coordMultiplier"].SetValue(new Vector2(loops, loops));
+                effect.Parameters["strength"].SetValue((1f/(1f+(type/2f)))*0.25f);
+                effect.Parameters["time"].SetValue((0.24f / (1f + (type / 2f)))*Main.GlobalTime*0.20f);
+
+                VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
+
+                //Vector3 screenPos = new Vector3(-16, 0, 0);
+
+                Color colorsa = Color.LimeGreen;
+
+                Vector3 screenPos = new Vector3(Main.screenWidth, Main.screenHeight,0) / 2f;
+                float screenWidth = 0;// Main.screenWidth;
+                float screenHeight = 0;// Main.screenHeight;
+                int outsideScreen = (int)(3200* aspectRato);
+
+                vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-outsideScreen, -outsideScreen, 0), colorsa, new Vector2(0, 0));
+                vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-outsideScreen, screenHeight+ outsideScreen, 0), colorsa, new Vector2(0, 1));
+                vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(screenWidth + outsideScreen, -outsideScreen, 0), colorsa, new Vector2(1, 0));
+
+                vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(screenWidth + outsideScreen, screenHeight+ outsideScreen, 0), colorsa, new Vector2(1, 1));
+                vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-outsideScreen, screenHeight + outsideScreen, 0), colorsa, new Vector2(0, 1));
+                vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(screenWidth + outsideScreen, -outsideScreen, 0), colorsa, new Vector2(1, 0));
+
+                vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+                vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+                Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+                RasterizerState rasterizerState = new RasterizerState();
+                rasterizerState.CullMode = CullMode.None;
+                Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+                effect.CurrentTechnique.Passes["RotateTexturePass"].Apply();
+                Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+
+            }
+
+
+            //Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Lerp(Color.DarkOliveGreen, Color.Black, 0.5f) * 1f, Main.GlobalTime * 0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+            //Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 0.50f, Main.GlobalTime * 0.14f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+            //Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 0.50f, Main.GlobalTime * 0.08f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
         }
 
     }

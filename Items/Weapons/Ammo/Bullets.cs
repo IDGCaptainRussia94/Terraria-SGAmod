@@ -433,10 +433,10 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 1);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 2);
 			recipe.AddIngredient(ItemID.HallowedBar, 1);
-			recipe.AddIngredient(ItemID.SilverBullet, 75);
-			recipe.AddIngredient(ModContent.ItemType<TungstenBullet>(), 75);
+			recipe.AddIngredient(ItemID.SilverBullet, 125);
+			recipe.AddIngredient(ModContent.ItemType<TungstenBullet>(), 125);
 			recipe.AddTile(TileID.ImbuingStation);
-			recipe.SetResult(this, 150);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}
@@ -484,9 +484,9 @@ namespace SGAmod.Items.Weapons.Ammo
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 1);
-			recipe.AddIngredient(mod.ItemType("PrismicBullet"), 150);
+			recipe.AddIngredient(mod.ItemType("PrismicBullet"), 250);
 			recipe.AddTile(TileID.ImbuingStation);
-			recipe.SetResult(this, 150);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}

@@ -1,12 +1,24 @@
 
 Changelog:
 
+3.650-(3/??/??)--Patch 17
+
+--Changed:
+
+-The Fog has been revamped slightly, allowing it to draw neatly to all screensizes
+
+
+
 3.636-(2/21/22)--Hotfix 37
 
 
 --Changed:
 
 -Made the warnings on specific items more present with more tooltips and an over the top effect
+
+-Prismal/Prismic ammo has been made cheaper, sorta.
+
+-Rebalanced Joyrider: fixed issues with other ammo types, now works only with bullets (atm, unless I make an upgrade), adjusted overall flight time scaling. Still has a few issues with not being able to fly properly
 
 
 --Fixed

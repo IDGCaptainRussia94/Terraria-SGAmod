@@ -276,6 +276,7 @@ namespace SGAmod
 		public static Effect VoronoiEffect;
 		public static Effect CataEffect;
 		public static Effect TextureBlendEffect;
+		public static Effect RotateTextureEffect;
 
 
 		public static List<CustomSpecialDrawnTiles> BeforeTilesAdditive = new List<CustomSpecialDrawnTiles>();
@@ -828,6 +829,8 @@ namespace SGAmod
 				//Filters.Scene["SGAmod:ScreenTrippy"] = new Filter(new ScreenShaderData(screenRef2, "ScreenTrippy").UseImage("SGAmod/TiledPerlin", 1, null), EffectPriority.VeryHigh);
 
 				TrailEffect = SGAmod.Instance.GetEffect("Effects/trailShaders");
+				RotateTextureEffect = SGAmod.Instance.GetEffect("Effects/RotateTexture");
+
 				HallowedEffect = SGAmod.Instance.GetEffect("Effects/Hallowed");
 				HallowedEffect.Parameters["overlayScale"].SetValue(new Vector2(1, 1));
 				HallowedEffect.Parameters["rainbowScale"].SetValue(1f);

@@ -37,7 +37,7 @@ namespace SGAmod.Items.Weapons.Trap
 
 	}
 
-		public class DartTrapGun : TrapWeapon
+	public class DartTrapGun : TrapWeapon
 	{
 		public override void SetStaticDefaults()
 		{
@@ -86,7 +86,7 @@ namespace SGAmod.Items.Weapons.Trap
 			Main.projectile[probg].ranged = true;
 			Main.projectile[probg].friendly = true;
 			Main.projectile[probg].hostile = false;
-			Main.projectile[probg].owner= player.whoAmI;
+			Main.projectile[probg].owner = player.whoAmI;
 			SGAprojectile modeproj = Main.projectile[probg].GetGlobalProjectile<SGAprojectile>();
 			modeproj.myplayer = player;
 			return false;
@@ -100,7 +100,7 @@ namespace SGAmod.Items.Weapons.Trap
 		{
 			DisplayName.SetDefault("Portable 'Makeshift' Spear Trap");
 			Tooltip.SetDefault("It's not the same as found in the temple, but it'll do" +
-				"\nLaunches piercing spears at close range" + "\nHold attack to stick the spear into a wall and grapple towards it"+
+				"\nLaunches piercing spears at close range" + "\nHold attack to stick the spear into a wall and grapple towards it" +
 	"\nCounts as trap damage, pierces infinitely, but doesn't crit");
 		}
 
@@ -127,7 +127,7 @@ namespace SGAmod.Items.Weapons.Trap
 			item.shootSpeed = 12f;
 			item.shoot = mod.ProjectileType("TrapSpearGun");
 		}
-        public override void AddRecipes()
+		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 5);
@@ -158,7 +158,7 @@ namespace SGAmod.Items.Weapons.Trap
 		{
 			DisplayName.SetDefault("Portable Spear Trap");
 			Tooltip.SetDefault("'Now we're stabbing'" +
-				"\nVery quickly launches piercing spears at medium range" +"\nHold attack to stick the spear into a wall and grapple towards it" +
+				"\nVery quickly launches piercing spears at medium range" + "\nHold attack to stick the spear into a wall and grapple towards it" +
 	"\nCounts as trap damage, pierces infinitely, but doesn't crit");
 		}
 
@@ -274,7 +274,7 @@ namespace SGAmod.Items.Weapons.Trap
 
 		public override Vector2? HoldoutOffset()
 		{
-			return new Vector2(-10,4);
+			return new Vector2(-10, 4);
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -285,7 +285,7 @@ namespace SGAmod.Items.Weapons.Trap
 				type = ProjectileID.PoisonDartTrap;
 			}
 			//}
-			int probg = Projectile.NewProjectile(position.X + (int)speedX * (type == ProjectileID.PoisonDartTrap ? 2 : 0), position.Y + (int)speedY * (type==ProjectileID.PoisonDartTrap ? 2 : 0), speedX, speedY, type, damage, knockBack, player.whoAmI);
+			int probg = Projectile.NewProjectile(position.X + (int)speedX * (type == ProjectileID.PoisonDartTrap ? 2 : 0), position.Y + (int)speedY * (type == ProjectileID.PoisonDartTrap ? 2 : 0), speedX, speedY, type, damage, knockBack, player.whoAmI);
 			Main.projectile[probg].ranged = true;
 			Main.projectile[probg].friendly = true;
 			Main.projectile[probg].hostile = false;
@@ -368,7 +368,7 @@ namespace SGAmod.Items.Weapons.Trap
 			Main.projectile[probg].ranged = true;
 			Main.projectile[probg].friendly = true;
 			Main.projectile[probg].hostile = false;
-			Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(player.altFunctionUse==2 ? 60 : 5));
+			Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(player.altFunctionUse == 2 ? 60 : 5));
 			Main.projectile[probg].velocity.X = perturbedSpeed.X;
 			Main.projectile[probg].velocity.Y = perturbedSpeed.Y;
 			Main.projectile[probg].owner = player.whoAmI;
@@ -406,7 +406,7 @@ namespace SGAmod.Items.Weapons.Trap
 		public override void AI()
 		{
 			projectile.ai[0] += 1;
-			if (projectile.ai[0]%12==1)
+			if (projectile.ai[0] % 12 == 1)
 			{
 				Main.PlaySound(SoundID.Item34, projectile.position);
 				if (Main.myPlayer == projectile.owner)
@@ -518,7 +518,7 @@ namespace SGAmod.Items.Weapons.Trap
 
 		public override string Texture
 		{
-			get { return ("Terraria/Projectile_"+ProjectileID.SpikyBallTrap); }
+			get { return ("Terraria/Projectile_" + ProjectileID.SpikyBallTrap); }
 		}
 
 		public override void SetDefaults()
@@ -569,7 +569,7 @@ namespace SGAmod.Items.Weapons.Trap
 			recipe.AddIngredient(ItemID.SpikyBall, 100);
 			recipe.AddIngredient(ItemID.SpikyBallTrap, 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
-			recipe.SetResult(this,100);
+			recipe.SetResult(this, 100);
 			recipe.AddRecipe();
 		}
 
@@ -600,7 +600,7 @@ namespace SGAmod.Items.Weapons.Trap
 		}
 	}
 
-		public class TrapSpearGun : ModProjectile
+	public class TrapSpearGun : ModProjectile
 	{
 
 		public virtual int stuntime => 5;
@@ -616,7 +616,7 @@ namespace SGAmod.Items.Weapons.Trap
 		{
 			base.SetDefaults();
 			projectile.CloneDefaults(ProjectileID.SpearTrap);
-			projectile.aiStyle=-1;
+			projectile.aiStyle = -1;
 			//projectile.type = ProjectileID.SpearTrap;
 		}
 
@@ -629,14 +629,14 @@ namespace SGAmod.Items.Weapons.Trap
 		{
 			projectile.type = ProjectileID.SpearTrap;
 
-			if (touchedWall>0 && touchedWall < 2)
-            {
+			if (touchedWall > 0 && touchedWall < 2)
+			{
 				Player basep = Main.player[projectile.owner];
 				if (basep.controlUseItem)
 				{
-					basep.velocity = Vector2.Normalize(projectile.Center - basep.Center)*new Vector2(Math.Abs(projectile.velocity.X), Math.Abs(projectile.velocity.Y));
+					basep.velocity = Vector2.Normalize(projectile.Center - basep.Center) * new Vector2(Math.Abs(projectile.velocity.X), Math.Abs(projectile.velocity.Y));
 				}
-                else
+				else
 				{
 					touchedWall = 2;
 				}
@@ -672,13 +672,13 @@ namespace SGAmod.Items.Weapons.Trap
 			}
 			Vector2 anglez = basep.Center - projectile.Center;
 			anglez.Normalize(); anglez *= 5f;
-				projectile.localAI[0] = basep.Center.X - anglez.X * (-1.5f);
-				projectile.localAI[1] = basep.Center.Y - anglez.Y * (-1.5f);
+			projectile.localAI[0] = basep.Center.X - anglez.X * (-1.5f);
+			projectile.localAI[1] = basep.Center.Y - anglez.Y * (-1.5f);
 
 			Vector2 value8 = new Vector2(projectile.localAI[0], projectile.localAI[1]);
 			projectile.rotation = (basep.Center - value8).ToRotation() - 1.57079637f;
-			basep.direction = ((projectile.Center- basep.Center).X > 0).ToDirectionInt();
-			basep.itemRotation = (projectile.rotation+(float)(Math.PI/2))+(basep.direction<0 ? (float)Math.PI : 0f);
+			basep.direction = ((projectile.Center - basep.Center).X > 0).ToDirectionInt();
+			basep.itemRotation = (projectile.rotation + (float)(Math.PI / 2)) + (basep.direction < 0 ? (float)Math.PI : 0f);
 			if (projectile.ai[0] == 0f)
 			{
 				if (Collision.SolidCollision(projectile.position, projectile.width, projectile.height))
@@ -696,25 +696,25 @@ namespace SGAmod.Items.Weapons.Trap
 					return;
 				}
 			}
-			else if (Collision.SolidCollision(projectile.position, projectile.width, projectile.height) || Vector2.Distance(projectile.Center, value8) < projectile.velocity.Length()+5f)
+			else if (Collision.SolidCollision(projectile.position, projectile.width, projectile.height) || Vector2.Distance(projectile.Center, value8) < projectile.velocity.Length() + 5f)
 			{
 				projectile.Kill();
 				return;
 			}
 
-			if (projectile.ai[0]>0)
+			if (projectile.ai[0] > 0)
 			{
 				float speezx = projectile.velocity.Length();
 				projectile.velocity = basep.Center - projectile.Center;
 				projectile.velocity.Normalize();
-				projectile.velocity *= (speezx+0.15f);
+				projectile.velocity *= (speezx + 0.15f);
 
 			}
 
 			if (touchedWall == 1)
-            {
+			{
 				projectile.Center -= projectile.velocity;
-            }
+			}
 
 		}
 
@@ -796,7 +796,7 @@ namespace SGAmod.Items.Weapons.Trap
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (projectile.velocity.Length() > 13)
-			target.AddBuff(mod.BuffType("Gourged"), 60 * 5);
+				target.AddBuff(mod.BuffType("Gourged"), 60 * 5);
 		}
 
 		public override bool PreDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color lightColor)
@@ -870,8 +870,8 @@ namespace SGAmod.Items.Weapons.Trap
 			for (int i = 0; i < numberProjectiles; i++)
 			{
 				Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(360));
-				HalfVector2 half = new HalfVector2(player.Center.X+(i - (numberProjectiles / 2)) * 20, player.Center.Y - 200);
-				int prog = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, player.whoAmI,ai1: ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue));
+				HalfVector2 half = new HalfVector2(player.Center.X + (i - (numberProjectiles / 2)) * 20, player.Center.Y - 200);
+				int prog = Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, type, damage, knockBack, player.whoAmI, ai1: ReLogic.Utilities.ReinterpretCast.UIntAsFloat(half.PackedValue));
 				Main.projectile[prog].netUpdate = true;
 				IdgProjectile.Sync(prog);
 			}
@@ -931,7 +931,7 @@ namespace SGAmod.Items.Weapons.Trap
 		{
 			Main.PlaySound(SoundID.Item45, projectile.Center);
 
-			int proj = Projectile.NewProjectile(projectile.Center, new Vector2(projectile.velocity.X, projectile.velocity.Y/3f), mod.ProjectileType("ProjectilePortalJones"), projectile.damage, projectile.knockBack, projectile.owner, ProjectileID.Boulder);
+			int proj = Projectile.NewProjectile(projectile.Center, new Vector2(projectile.velocity.X, projectile.velocity.Y / 3f), mod.ProjectileType("ProjectilePortalJones"), projectile.damage, projectile.knockBack, projectile.owner, ProjectileID.Boulder);
 			Main.projectile[proj].penetrate = 2;
 			Main.projectile[proj].netUpdate = true;
 			IdgProjectile.Sync(proj);
@@ -968,7 +968,7 @@ namespace SGAmod.Items.Weapons.Trap
 			speedz.Normalize(); speedz *= atspeed;
 			projectile.velocity = speedz;
 
-			if ((projectile.Center- gohere).Length()< atspeed + 8 || projectile.timeLeft>300)
+			if ((projectile.Center - gohere).Length() < atspeed + 8 || projectile.timeLeft > 300)
 			{
 				projectile.Kill();
 			}
@@ -1023,6 +1023,135 @@ namespace SGAmod.Items.Weapons.Trap
 		}
 
 	}
+	class WreckerBalls : ThrowableTrapSpikyball
+	{
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			DisplayName.SetDefault("w.R.e.C.r.E.r");
+			Tooltip.SetDefault("Throws a spatial spiky ball that links with 8 others with a damaging laser\nThese are in relation to you and the ball\nCounts as trap damage, Pierce infinitely, but don't crit");
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			item.damage = 75;
+			item.shootSpeed = 8f;
+			item.shoot = ModContent.ProjectileType<WreckerBallProj>();
+			item.useTurn = true;
+			//ProjectileID.CultistBossLightningOrbArc
+			item.knockBack = 2;
+			item.UseSound = SoundID.Item1;
+			item.useAnimation = 120;
+			item.useTime = 120;
+			item.value = Item.buyPrice(0, 0, 10, 0);
+			item.rare = ItemRarityID.Red;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<DrakeniteBar>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<ThrowableTrapSpikyball>(), 50);
+			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+			recipe.SetResult(this, 50);
+			recipe.AddRecipe();
+		}
+
+
+		public override bool CanUseItem(Player player)
+		{
+			return true;
+		}
+
+	}
+	public class WreckerBallProj : ModProjectile
+	{
+		public int BallCount => 8;
+		public Player MyPlayer => Main.player[projectile.owner];
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Wrecker");
+		}
+
+		public override string Texture
+		{
+			get { return ("Terraria/Projectile_" + ProjectileID.SpikyBallTrap); }
+		}
+
+		public Vector2 BallPosition(float angle,Vector2 from)
+        {
+			Vector2 here = projectile.Center;
+			Vector2 differ = from-here;
+			return here.RotatedBy(angle, from);
+
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile refProjectile = new Projectile();
+			refProjectile.SetDefaults(ProjectileID.Boulder);
+			aiType = ProjectileID.Boulder;
+			projectile.friendly = true;
+			projectile.hostile = false;
+			projectile.penetrate = -1;
+			projectile.usesIDStaticNPCImmunity = true;
+			projectile.idStaticNPCHitCooldown = 10;
+			projectile.light = 0.5f;
+			projectile.width = 48;
+			projectile.height = 48;
+			projectile.aiStyle = -1;
+			projectile.timeLeft = 600;
+			projectile.Throwing().thrown = true;
+			projectile.tileCollide = true;
+		}
+
+        public override void AI()
+        {
+			projectile.localAI[0] += 1;
+			if (projectile.localAI[0] > 120)
+            {
+				projectile.velocity *= 0.96f;
+            }
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			projectile.penetrate--;
+			if (projectile.penetrate <= 0)
+			{
+				projectile.Kill();
+			}
+			else
+			{
+				var snd = Main.PlaySound(SoundID.DD2_BetsyFireballImpact, projectile.Center);
+				if (snd != null)
+					snd.Pitch = 0.80f;
+				if (projectile.velocity.X != oldVelocity.X)
+				{
+					projectile.velocity.X = -oldVelocity.X;
+				}
+				if (projectile.velocity.Y != oldVelocity.Y)
+				{
+					projectile.velocity.Y = -oldVelocity.Y;
+				}
+			}
+			return false;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D texture = Main.projectileTexture[projectile.type];
+			Vector2 position = projectile.Center;
+
+			Main.spriteBatch.Draw(texture, position - Main.screenPosition, null, Color.White, 0, texture.Size()/2f, Vector2.One, SpriteEffects.None, 0.0f);
+
+
+			return false;
+		}
+	}
+
 
 }
 

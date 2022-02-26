@@ -11,7 +11,7 @@ using Terraria.DataStructures;
 using Idglibrary;
 using SGAmod.Items.Weapons.SeriousSam;
 using SGAmod.Projectiles;
-using AAAAUThrowing;
+
 using SGAmod.Buffs;
 using SGAmod.Effects;
 using Microsoft.Xna.Framework.Audio;
@@ -1591,7 +1591,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 			Texture2D tex = Main.projectileTexture[projectile.type];
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
 			trail.color = delegate (float percent)
 			{
 				return Color.Orange;

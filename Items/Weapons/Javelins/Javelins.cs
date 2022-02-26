@@ -9,7 +9,7 @@ using Terraria.Enums;
 using Terraria.Utilities;
 using Idglibrary;
 using Idglibrary.Bases;
-using AAAAUThrowing;
+
 
 namespace SGAmod.Items.Weapons.Javelins
 {

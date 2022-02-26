@@ -800,13 +800,6 @@ namespace SGAmod.NPCs.TownNPCs
 			// Draken's shop items
 
 			SGAPlayer modplayer = Main.LocalPlayer.SGAPly();
-			if (SGAmod.TotalCheating && SGAmod.PlayingPercent >= 1f)
-			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Consumables.ThereIsNoMercyThereIsNoInnocenceOnlyDegreesOfGuilt>());
-				shop.item[nextSlot].shopCustomPrice = (modplayer.ExpertiseCollectedTotal / 40);
-				shop.item[nextSlot].shopSpecialCurrency = SGAmod.ScrapCustomCurrencyID;
-				nextSlot++;
-			}
 
 			if (Main.hardMode)
 			{

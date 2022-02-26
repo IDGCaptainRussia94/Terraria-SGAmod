@@ -103,7 +103,7 @@ namespace SGAmod.Items.Accessories
 
 					bool canShoot = true;
 					int damage = joyRider.damage;
-					float knockback = 1;
+					float knockback = 0.1f;
 					float speed = 32f;
 					if (projType == ProjectileID.Bullet || projType == 10)
 					{
@@ -126,7 +126,7 @@ namespace SGAmod.Items.Accessories
 						//player.ConsumeItemRespectInfiniteAmmoTypes(ammo2.type);
 						player.PickAmmo(item, ref projType, ref speed, ref canShoot, ref damage, ref knockback, false);
 						sgaplayer.JoyrideShake = 6;
-						int thisoned = Projectile.NewProjectile(player.Center.X + player.direction * -12, player.Center.Y, velo.X, velo.Y, projType, (int)((float)(damage * 1) * (player.rangedDamage + (player.bulletDamage-1f))), knockback, Main.myPlayer);
+						int thisoned = Projectile.NewProjectile(player.Center.X + player.direction * -12, player.Center.Y, velo.X, velo.Y, projType, (int)((float)(damage * 1) * (player.rangedDamage + (player.bulletDamage-1f))), knockback/10f, Main.myPlayer);
 					}
                 }
                 else

@@ -8,15 +8,11 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.GameContent.UI;
-using System.Reflection;
 using SGAmod.Items.Weapons.Trap;
 using SGAmod.Items.Accessories;
 using Idglibrary;
-using AAAAUThrowing;
-using Terraria.Utilities;
+
 using SGAmod.Buffs;
-using SGAmod.Items.Armors;
 using SGAmod.Items.Armors.Vibranium;
 using Terraria.GameContent.Events;
 using Terraria.DataStructures;
@@ -91,165 +87,8 @@ namespace SGAmod
 
         }
 
-        public static void RemoveCheatItemCraftingRecipes()
-        {
-            Mod luiafk = ModLoader.GetMod("Luiafk");
-            if ((luiafk != null))
-            {
-                for (var i = 0; i < Recipe.numRecipes; i++)
-                {
-                    Recipe recipe = Main.recipe[i];
-                    Item itemz = recipe.createItem;
-                    if (itemz.modItem != null)
-                    {
-                        ModItem mitem = itemz.modItem;
-                        SGAmod.Instance.Logger.Debug("has mod item: "+ mitem.GetType().FullName);
-                        string nullname = mitem.GetType().Namespace;
-                        if (nullname.Length - nullname.Replace("Images.Items.Potions", "").Length > 0)
-                        {
-                            recipe.RemoveRecipe();
-                        }
-                    }
-
-                }
-            }
-        }
-
-        public bool IsItemCheating(Item item)
-        {
-            if (SGAmod.DevDisableCheating && Dimensions.SGAPocketDim.WhereAmI == null)
-                return false;
-
-            if ((SGAmod.Fargos.Item1 || SGAmod.Luiafk.Item1))
-            {
-                if (item.modItem != null)
-                {
-                    Type modtype = item.modItem.GetType();
-                    string nullname = modtype.Namespace;
-                    if (nullname.Length - nullname.Replace("Fargowiltas.Items.Explosives", "").Length > 0)
-                    {
-                        if (modtype.Name != "BoomShuriken" && modtype.Name != "AutoHouse" && modtype.Name != "LihzahrdInstactuationBomb" && modtype.Name != "MiniInstaBridge")
-                            return true;
-                    }
-                    if (nullname.Length - nullname.Replace("Items.AutoBuilders", "").Length > 0)
-                    {
-                        if (modtype.Name != "PrisonBuilder")
-                            return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        public bool DoCheatVisualEffect(Item item,Player player,bool cheatingOn = true)
-        {
-            if (!SGAmod.cheating && !SGAmod.cheating)
-            {
-                Main.NewText("You were warned", Color.Red);
-                var snd = Main.PlaySound(SoundID.Item123, -1, -1);
-                if (snd != null)
-                {
-                    snd.Pitch = -0.25f;
-                }
-
-                snd = Main.PlaySound(SoundID.Zombie, -1, -1, 96);
-                if (snd != null)
-                {
-                    snd.Pitch = -0.5f;
-                }
-
-                string[] warnings = { "YOU", "WERE", "WARNED" };
-
-                for (int i = 0; i < 100; i += 1)
-                {
-                    int timeIn = i * 10;
-                    NPCs.Hellion.HellionInsanity youWereWarned = new NPCs.Hellion.HellionInsanity(warnings[i % warnings.Length], 100 + (i * 26), Main.rand.Next(1000, 1100) - timeIn);
-                    youWereWarned.scale = Vector2.One * 1f;
-                    youWereWarned.shaking = 8;
-                    youWereWarned.flipped = MathHelper.Pi;
-                    youWereWarned.timeIn = timeIn;
-                    Dimensions.DimDungeonsProxy.madness.Add(youWereWarned);
-                }
-
-                ScreenExplosion explode = SGAmod.AddScreenExplosion(player.Center, 600, 1.5f, 1600);
-
-                if (explode != null)
-                {
-                    explode.warmupTime = 16;
-                    explode.decayTime = 200;
-                    explode.strengthBasedOnPercent = delegate (float percent)
-                    {
-                        explode.where = Main.LocalPlayer.Center;
-                        float fader = MathHelper.Clamp(percent, 0f, 2f - (percent * 2f)) * 1f;
-                        float fader2 = MathHelper.Clamp(percent, 0f, 3f - (percent * 3f)) * 1f;
-
-                        if (SGAmod.ScreenShake < percent * 16f)
-                            SGAmod.AddScreenShake((0.5f + (percent * 2f)) * MathHelper.Clamp(8f - (percent * 8f), 0f, 1f));
-
-                        if (SGAWorld.modtimer % 30 == 0 && percent < 0.75f)
-                        {
-                            var sound = Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Heartbeat").WithPitchVariance(.025f), new Vector2(-1, -1));
-                            if (sound != null)
-                            {
-                                sound.Pitch -= (0.20f + (percent * 0.70f));
-                            }
-                        }
-
-                        explode.alpha = MathHelper.Clamp((float)Math.Pow((percent * 3.15f) - 2f, 1f), 0.1f, 1f);
-
-                        float glow = MathHelper.SmoothStep(0f, 0.80f, (float)Math.Pow(fader * 1.5f, 2.5f));
-                        float glow2 = MathHelper.SmoothStep(0f, 1f, (float)Math.Pow(fader * 2.5f, 1.16f));
-
-                        Main.BlackFadeIn = (int)(((glow2 * 255f) * MathHelper.Clamp(explode.alpha * 1.45f, 0f, 1f)) * MathHelper.Clamp(percent * 5f, 0f, 1f));
-
-                        if (fader > 0.5f)
-                            MoonlordDeathDrama.RequestLight(glow * MathHelper.Clamp((percent * 1.5f) - 0.75f, 0f, 1f), player.Center);
-
-                        return fader * 1f;
-
-                    };
-
-                }
-
-                if (cheatingOn)
-                SGAmod.cheating = true;
-                return true;
-            }
-            return false;
-        }
-
-        public bool CheckForCheatyPlaythroughRuiningItems(Item item, Player player)
-        {
-            if (IsItemCheating(item))
-            {
-                if (Dimensions.SGAPocketDim.WhereAmI != null)
-                {
-                    return false;
-                }
-                return DoCheatVisualEffect(item,player);
-
-            }
-            return false;
-        }
-
         public override bool CanUseItem(Item item, Player player)
         {
-            if (!SGAmod.cheating && !SGAWorld.cheating)
-            {
-                if (IsItemCheating(item))
-                {
-                    if (player.controlUp)
-                    {
-                        if (CheckForCheatyPlaythroughRuiningItems(item, player))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-            }
-
-
             if ((player.SGAPly().ReloadingRevolver > 0) && item.damage > 0)
             {
                 return false;
@@ -262,18 +101,6 @@ namespace SGAmod
 
         public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
         {
-            if (line.mod == "SGAmod" && line.Name == "CheatingReadThis")
-            {
-                float alpha = MathHelper.Clamp((float)Math.Sin(Main.GlobalTime * 1.5f), 0f, 1f);
-                Vector2 vec = Main.rand.NextVector2Circular(6f, 6f)* alpha;
-                line.X += (int)vec.X;
-                line.Y += (int)vec.Y;
-
-                Items.Consumables.ThereIsNoMercyThereIsNoInnocenceOnlyDegreesOfGuilt.DrawnLine(line,ref yOffset);
-                DynamicSpriteFontExtensionMethods.DrawString(Main.spriteBatch, Main.fontMouseText, line.text, new Vector2(line.X, line.Y), Color.White* ((1f-alpha)*0.60f), 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-                //Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y+64f), Color.White * (1f - alpha));
-                return false;
-            }
 
             if (item.modItem != null && item.modItem is IAuroraItem)
             {
@@ -431,25 +258,6 @@ namespace SGAmod
                 {
                     Color c = Main.hslToRgb(0.5f, 0.20f, 0.7f);
                     tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "A very strong being has locked it away from your possession, talk to the guide")));
-                }
-            }
-            if (IsItemCheating(item))
-            {
-
-                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "This item is considered cheating, overpowered, and gamebreaking within SGAmod")));
-                if (Dimensions.SGAPocketDim.WhereAmI == null)
-                {
-                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Using it will permentally mark your world as a cheat world")));
-                    if (!SGAmod.cheating && !SGAWorld.cheating)
-                    {
-                        tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Hold UP to be able to use this item, confirming you read this")));
-                        tooltips.Add(new TooltipLine(mod, "CheatingReadThis", "There will be DIRE consequences! BE SURE YOU WANT THIS!"));
-
-                    }
-                }
-                else
-                {
-                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "It cannot be used within subworlds")));
                 }
             }
             if (item?.modItem is ITechItem)//Tech items
@@ -974,6 +782,13 @@ namespace SGAmod
 
 
             return false;
+        }
+
+        public override void OnConsumeItem(Item item, Player player)
+        {
+            SGAPlayer sga = player.SGAPly();
+            if (Main.rand.Next(0, 100) < sga.consumeCurse && !sga.tpdcpu)
+                item.stack -= 1;
         }
 
         public override bool UseItem(Item item, Player player)
@@ -1969,25 +1784,6 @@ namespace SGAmod
 
             return Main.rand.Next(100) > (int)(player.GetModPlayer<SGAPlayer>().Thrownsavingchance * 100f);
 
-        }
-
-        public override void OnConsumeItem(Item item, Player player)
-        {
-            SGAPlayer sga = player.SGAPly();
-            if (Main.rand.Next(0, 100) < sga.consumeCurse && !sga.tpdcpu)
-                item.stack -= 1;
-        }
-
-        public override bool ConsumeItem(Item item, Player player)
-        {
-            if (item.Throwing().thrown || item.thrown)
-            {
-                return TrapDamageItems.SavingChanceMethod(player);
-            }
-            else
-            {
-                return true;
-            }
         }
 
         public override bool CanEquipAccessory(Item item, Player player, int slot)

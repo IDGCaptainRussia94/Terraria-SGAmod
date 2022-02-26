@@ -6,7 +6,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
-using AAAAUThrowing;
+
 using SGAmod.NPCs.Cratrosity;
 using System.Collections.Generic;
 using System.Linq;

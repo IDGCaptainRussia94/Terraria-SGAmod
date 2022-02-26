@@ -23,7 +23,7 @@ using SGAmod.NPCs.Sharkvern;
 using SGAmod.NPCs.SpiderQueen;
 using SGAmod.NPCs.Hellion;
 using CalamityMod;
-using AAAAUThrowing;
+
 using Terraria.Utilities;
 using SGAmod.SkillTree;
 using CalamityMod.Projectiles.Ranged;
@@ -81,6 +81,16 @@ namespace SGAmod
 
 			}
 		}
+
+		public void ToogleSatanicMode(bool on)
+        {
+			if (_satanplayer == false && on == true)
+            {
+				if (SGAmod.LocalPlayerPlayTime<60)
+				SGASatanicGlobalItem.DoCheatVisualEffect(Main.LocalPlayer,false);
+			}
+				_satanplayer = on;
+        }
 
 		public void AddEntropy(int ammount)
 		{

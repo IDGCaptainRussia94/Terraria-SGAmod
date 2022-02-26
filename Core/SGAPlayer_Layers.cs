@@ -23,7 +23,7 @@ using SGAmod.NPCs.Sharkvern;
 using SGAmod.NPCs.SpiderQueen;
 using SGAmod.NPCs.Hellion;
 using CalamityMod;
-using AAAAUThrowing;
+
 using Terraria.Utilities;
 using SGAmod.SkillTree;
 
@@ -304,7 +304,8 @@ namespace SGAmod
 				}
 
 				int drawX = (int)((drawInfo.position.X + drawPlayer.bodyPosition.X + 10) - Main.screenPosition.X);
-				int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) + drawPlayer.gfxOffY - Main.screenPosition.Y);//gravDir 
+                int drawY = (int)(((drawPlayer.bodyPosition.Y - 3) + drawPlayer.MountedCenter.Y) + drawPlayer.gfxOffY - Main.screenPosition.Y);//gravDir 
+
 				DrawData data;
 				if (index == 3)
 					data = new DrawData(texture, new Vector2(drawX, drawY), new Rectangle(0, drawPlayer.legFrame.Y, drawPlayer.legFrame.Width, drawPlayer.legFrame.Height), color, (float)drawPlayer.fullRotation, new Vector2(drawPlayer.legFrame.Width / 2, drawPlayer.legFrame.Height / 2), 1f, (drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);

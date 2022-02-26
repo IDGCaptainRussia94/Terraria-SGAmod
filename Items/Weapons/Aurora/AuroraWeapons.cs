@@ -16,7 +16,7 @@ using SGAmod.Buffs;
 using Terraria.Utilities;
 using Microsoft.Xna.Framework.Audio;
 using static SGAmod.SGAUtils;
-using AAAAUThrowing;
+
 
 namespace SGAmod.Items.Weapons.Aurora
 {

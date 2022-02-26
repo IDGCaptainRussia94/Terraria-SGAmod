@@ -12,7 +12,7 @@ using Terraria.Enums;
 using SGAmod.Items.Weapons.Trap;
 using SGAmod.Projectiles;
 using Idglibrary;
-using AAAAUThrowing;
+
 
 namespace SGAmod.Items.Weapons
 {

@@ -4,7 +4,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using SGAmod.NPCs;
 using Idglibrary;
-using AAAAUThrowing;
+
 using System.Linq;
 
 namespace SGAmod.Buffs

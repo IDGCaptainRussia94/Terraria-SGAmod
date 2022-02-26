@@ -25,7 +25,6 @@ using SGAmod.NPCs.SpiderQueen;
 using SGAmod.NPCs.Hellion;
 using SGAmod.Items.Consumables;
 using CalamityMod;
-using AAAAUThrowing;
 using Terraria.Utilities;
 using SGAmod.SkillTree;
 using SGAmod.Dimensions;
@@ -273,9 +272,10 @@ namespace SGAmod
 		public int? resetver = 1;
 		public int claySlowDown = 0;
 		public bool nightmareplayer = false;
+		protected bool _satanplayer = false;
+		public bool SatanPlayer => _satanplayer;
 		public bool playercreated = false;
 		public bool granteditems = false;
-
 		//tech damage
 		public float techdamage = 1f;
 
@@ -1451,9 +1451,16 @@ namespace SGAmod
 
 			}
 
-
-			if (NPC.CountNPCS(mod.NPCType("Cirno")) > 0 || (SGAWorld.downedCirno == false && Main.hardMode && (SGAConfig.Instance.NegativeWorldEffects || SGAmod.DRMMode)))
+			if (Main.raining && player.ZoneSnow && SGAmod.TotalCheating)
+			{
 				player.AddBuff(mod.BuffType("NoFly"), 1, true);
+			}
+			else
+			{
+				if (NPC.CountNPCS(mod.NPCType("Cirno")) > 0 || (SGAWorld.downedCirno == false && Main.hardMode && (SGAConfig.Instance.NegativeWorldEffects || SGAmod.DRMMode)))
+					player.AddBuff(mod.BuffType("NoFly"), (int)(SGAmod.PlayingPercent*1800), true);
+			}
+
 
 			/*if (pmlcrato>0 || NPC.CountNPCS(mod.NPCType("SPinky"))>9990){player.AddBuff(mod.BuffType("Locked"), 2, true);}*/
 
@@ -2492,6 +2499,7 @@ namespace SGAmod
 			tag["ZZZExpertiseCollectedTotalZZZ"] = ExpertiseCollectedTotal;
 			tag["resetver"] = resetver;
 			tag["nightmareplayer"] = nightmareplayer;
+			tag["satanplayer"] = _satanplayer;
 			tag["entropycollected"] = entropyCollected;
 			tag["Drakenshopunlock"] = Drakenshopunlock;
 			tag["benchGodFavor"] = benchGodFavor;
@@ -2526,8 +2534,13 @@ namespace SGAmod
 			Redmanastar = tag.GetInt("Redmanastar");
 
 			resetver = tag.GetInt("resetver");
+
 			if (tag.ContainsKey("nightmareplayer"))
 				nightmareplayer = tag.GetBool("nightmareplayer");
+
+			if (tag.ContainsKey("satanplayer"))
+				_satanplayer = tag.GetBool("satanplayer");
+
 			if (tag.ContainsKey("Electicpermboost"))
 				Electicpermboost = tag.GetInt("Electicpermboost");
 

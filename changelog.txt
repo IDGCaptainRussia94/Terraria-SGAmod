@@ -3,9 +3,27 @@ Changelog:
 
 3.650-(3/??/??)--Patch 17
 
+
 --Changed:
 
+-The former cheating system is now an optional extremely unfair difficulty that is obtained from the starter bag
+
+-Universal Throwing has been desolved and is now vanilla throwing again, as such, it is no longer required for the mod as a dependency.
+
 -The Fog has been revamped slightly, allowing it to draw neatly to all screensizes
+
+-Jagged Overgrown Spikes now require Nails
+
+-Prismal/Prismic ammo has been made cheaper, sorta.
+
+-Rebalanced Joyrider: fixed issues with other ammo types, now works only with bullets (atm, unless I make an upgrade), adjusted overall flight time scaling. Still has a few issues with not being able to fly properly
+
+--New changes to Helen Hellion Waygold:
+-made the ending of the FNF attack easier; those packed notes were WAY too hard to hit without going outside the circle
+
+--Fixed
+
+-Camera panning bosses will no longer cause tiles to not draw
 
 
 
@@ -15,10 +33,6 @@ Changelog:
 --Changed:
 
 -Made the warnings on specific items more present with more tooltips and an over the top effect
-
--Prismal/Prismic ammo has been made cheaper, sorta.
-
--Rebalanced Joyrider: fixed issues with other ammo types, now works only with bullets (atm, unless I make an upgrade), adjusted overall flight time scaling. Still has a few issues with not being able to fly properly
 
 
 --Fixed

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using AAAAUThrowing;
+
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using SGAmod.Effects;

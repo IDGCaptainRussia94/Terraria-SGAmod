@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SGAmod.HavocGear.Items.Accessories;
 using Idglibrary;
-using AAAAUThrowing;
+
 using Terraria.Localization;
 using SGAmod.Items.Weapons;
 using SGAmod.Buffs;

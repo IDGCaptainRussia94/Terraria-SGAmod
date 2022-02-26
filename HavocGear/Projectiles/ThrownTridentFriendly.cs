@@ -6,7 +6,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.Enums;
-using AAAAUThrowing;
+
 
 namespace SGAmod.HavocGear.Projectiles
 {

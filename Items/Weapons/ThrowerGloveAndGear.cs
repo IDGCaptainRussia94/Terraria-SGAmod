@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
 using SGAmod.NPCs.Sharkvern;
-using AAAAUThrowing;
+
 using SGAmod.Items.Weapons;
 using SGAmod.HavocGear.Items.Weapons;
 using Terraria.Utilities;

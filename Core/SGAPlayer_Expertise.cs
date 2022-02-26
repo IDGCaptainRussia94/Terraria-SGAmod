@@ -23,7 +23,7 @@ using SGAmod.NPCs.Sharkvern;
 using SGAmod.NPCs.SpiderQueen;
 using SGAmod.NPCs.Hellion;
 using CalamityMod;
-using AAAAUThrowing;
+
 using Terraria.Utilities;
 using SGAmod.SkillTree;
 

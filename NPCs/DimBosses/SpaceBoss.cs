@@ -1843,7 +1843,7 @@ namespace SGAmod.Dimensions.NPCs
         public override bool Autoload(ref string name)
         {
             name = "Phaethon";
-            SGAmod.ModifyTransformMatrixEvent += MoveCamera;
+            SGAmod.PanCameraEvent += MoveCamera;
             SGAWorld.CutsceneActiveEvent += CutSceneActive;
             if (!SGAmod.SpaceBossActive)
                 return false;
@@ -2237,7 +2237,7 @@ namespace SGAmod.Dimensions.NPCs
             cutsceneposition = 2;
         }
 
-        private void MoveCamera(ref SpriteViewMatrix transform)
+        private void MoveCamera()
         {
             if (SpaceBoss.cutsceneposition > 0 && SpaceBoss.film.IsActive && SGAPocketDim.WhereAmI == typeof(SpaceDim))
             {
@@ -2245,7 +2245,6 @@ namespace SGAmod.Dimensions.NPCs
                 Main.screenPosition = Vector2.Lerp(new Vector2(SpaceBoss.scenecam.X, SpaceBoss.scenecam.Y), Main.screenPosition, MathHelper.Clamp(1f - SpaceBoss.scenecam.Z, 0f, 1f));
             }
         }
-
 
         public void StateWakingUp()
         {
@@ -3208,7 +3207,7 @@ namespace SGAmod.Dimensions.NPCs
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            Texture2D[] texs = { mod.GetTexture("Doom_Harbinger_Resprite_eye"), mod.GetTexture("Noise"), mod.GetTexture("TiledPerlin") };
+            Texture2D[] texs = { mod.GetTexture("Doom_Harbinger_Resprite_eye"), mod.GetTexture("noise"), mod.GetTexture("TiledPerlin") };
 
             int count = 0;
             float shieldAlpha = MathHelper.Clamp(((shieldeffect) / 30f), 0f, 1);

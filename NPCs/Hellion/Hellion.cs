@@ -5432,16 +5432,16 @@ namespace SGAmod.NPCs.Hellion
 				AddNote(0, 30);
 			}
 			AddNote(-1, 80);
-			for (int i = 0; i < 5; i += 1)
+			for (int i = 0; i < 3; i += 1)
 			{
-				AddNote(0, 15);
-				AddNote(3, 15);
+				AddNote(1, 32);
+				AddNote(3, 32);
 			}
 			AddNote(-1, 80);
-			for (int i = 0; i < 5; i += 1)
+			for (int i = 0; i < 4; i += 1)
 			{
-				AddNote(1, 15);
-				AddNote(2, 15);
+				AddNote(0, 32);
+				AddNote(2, 32);
 			}
 			AddNote(-1, 60);
 			AddNote(3, 15);

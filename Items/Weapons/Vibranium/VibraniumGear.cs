@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Microsoft.Xna.Framework.Audio;
-using AAAAUThrowing;
+
 using SGAmod.Items.Placeable;
 using SGAmod.Effects;
 using System.Linq;

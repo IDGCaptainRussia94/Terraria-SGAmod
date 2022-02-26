@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
-using AAAAUThrowing;
+
 using Terraria.Utilities;
 using SGAmod.Tiles;
 using SGAmod.Tiles.TechTiles;

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
-using AAAAUThrowing;
+
 using SGAmod.Effects;
 using SGAmod.SkillTree.Survival;
 using Terraria.Utilities;

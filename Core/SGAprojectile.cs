@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using SGAmod.Items.Weapons;
-using AAAAUThrowing;
+
 
 namespace SGAmod
 {

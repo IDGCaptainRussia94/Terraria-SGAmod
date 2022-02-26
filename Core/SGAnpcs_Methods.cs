@@ -11,7 +11,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Idglibrary;
-using AAAAUThrowing;
+
 using SGAmod.NPCs.Cratrosity;
 using SGAmod.Buffs;
 using System.Linq;

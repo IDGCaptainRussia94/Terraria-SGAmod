@@ -11,7 +11,7 @@ using Terraria.DataStructures;
 using Idglibrary;
 using SGAmod.Items.Weapons.SeriousSam;
 using SGAmod.Projectiles;
-using AAAAUThrowing;
+
 using SGAmod.Buffs;
 using SGAmod.Effects;
 using Microsoft.Xna.Framework.Audio;

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using AAAAUThrowing;
+
 
 namespace SGAmod.HavocGear.Items.Armor
 {

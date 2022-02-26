@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader;
 using Idglibrary;
-using AAAAUThrowing;
+
 
 namespace SGAmod.Items.Armors.Dev
 {

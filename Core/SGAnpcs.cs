@@ -16,7 +16,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Idglibrary;
-using AAAAUThrowing;
+
 using SGAmod.NPCs.Cratrosity;
 using SGAmod.Dimensions;
 using SGAmod.HavocGear.Items.Weapons;
@@ -810,16 +810,6 @@ namespace SGAmod
 		}
 		public override void AI(NPC npc)
 		{
-
-			if ((npc.friendly || NPCID.Sets.TownCritter[npc.type] || npc.catchItem>0) && npc.aiStyle != 69 && SGAmod.TotalCheating && npc.type != ModContent.NPCType<NPCs.TownNPCs.Draken>() && !SGAmod.DevDisableCheating && Main.rand.Next((int)SGAmod.LocalPlayerPlayTime)> 21600 && Main.rand.Next(100) < 1)
-            {
-				npc.aiStyle = 69;
-				npc.damage = 25;
-				npc.defDamage = 25;
-				npc.dontTakeDamageFromHostiles = true;
-				npc.friendly = false;
-				npc.catchItem = -1;
-			}
 
 			if (thermalblaze)
 			{

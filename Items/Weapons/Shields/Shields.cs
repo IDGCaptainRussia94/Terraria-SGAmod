@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics.PackedVector;
 using SGAmod.Projectiles;
 using Idglibrary;
 using System.Linq;
-using AAAAUThrowing;
+
 using Terraria.Graphics.Shaders;
 using SGAmod.Buffs;
 using Microsoft.Xna.Framework.Audio;

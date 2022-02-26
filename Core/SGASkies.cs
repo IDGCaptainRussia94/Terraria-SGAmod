@@ -147,7 +147,7 @@ namespace SGAmod
 			//deathShader.Apply(null);
 			if (maxDepth >= 0 && minDepth < 0)
 			{
-				Texture2D texa = ModContent.GetTexture("SGAmod/Noise");
+				Texture2D texa = ModContent.GetTexture("SGAmod/noise");
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
@@ -242,7 +242,7 @@ namespace SGAmod
 			{
 				if (maxDepth >= singles[i,0] && minDepth < singles[i,1])
 				{
-					Texture2D texa = ModContent.GetTexture("SGAmod/Noise");
+					Texture2D texa = ModContent.GetTexture("SGAmod/noise");
 
 					int sizechunk = texa.Width;
 					for (int y = 0; y < Main.screenHeight + sizechunk; y += sizechunk)

@@ -14,7 +14,7 @@ using Terraria.GameContent.Events;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Effects;
 using System.Linq;
-using AAAAUThrowing;
+
 
 namespace SGAmod.NPCs
 {
@@ -1247,7 +1247,7 @@ return false;
 
 			if (strength > 0)
 			{
-				TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+				TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
 				trail.color = delegate (float percent)
 				{
 					return Color.Aqua;

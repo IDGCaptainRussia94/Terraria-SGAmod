@@ -30,7 +30,7 @@ using SGAmod.Items.Weapons.SeriousSam;
 using ReLogic.Graphics;
 using Terraria.Utilities;
 using System.Reflection;
-using AAAAUThrowing;
+
 using System.Threading;
 using SGAmod.Buffs;
 using SGAmod.Items.Weapons.Ammo;

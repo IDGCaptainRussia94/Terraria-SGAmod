@@ -198,36 +198,6 @@ namespace SGAmod
 		public static int vibraniumCounter = 0;
 		public static int fogDrawNPCsCounter = 0;
 
-		public static float overpoweredModBaseValue = 0f;
-		public static float overpoweredModBaseHardmodeValue = 0f;
-
-		internal static bool cheating = false;
-		internal static bool TotalCheating => Main.netMode == NetmodeID.SinglePlayer && (cheating || SGAWorld.cheating);
-
-		internal static bool DevDisableCheating => Main.netMode != NetmodeID.SinglePlayer || (Main.LocalPlayer != null && Main.LocalPlayer.HasItem(ModContent.ItemType<Debug13>()) && Main.LocalPlayer.inventory[49].type == ModContent.ItemType<Debug13>());
-		internal static bool DRMMode
-        {
-            get
-            {
-				return Main.netMode == NetmodeID.SinglePlayer && (SGAWorld.NightmareHardcore > 0 || (!DevDisableCheating && (TotalCheating)));
-            }
-        }
-		internal static double EndTimes => 60 * 60 * 6.0;
-		internal static double LocalPlayerPlayTime => Main.ActivePlayerFileData.GetPlayTime().TotalSeconds;
-		internal static float PlayingPercent => MathHelper.Clamp((float)(LocalPlayerPlayTime / EndTimes), 0f, 1f);
-		internal static float OverpoweredMod
-		{
-			get
-			{
-				//Main.NewText("test: "+Main.ActivePlayerFileData.GetPlayTime().TotalSeconds);
-				double sixHours = 60 * 60 * 6.0;
-				float scaleOverTime = MathHelper.Clamp(PlayingPercent, 0f, 1f);
-				return Main.netMode == NetmodeID.SinglePlayer && (SGAConfig.Instance.OPmods || ((TotalCheating) && !DevDisableCheating)) ? (overpoweredModBaseValue + (Main.hardMode ? overpoweredModBaseHardmodeValue : 0f))
-					* scaleOverTime
-					: 0;
-			}
-		}
-
 		public static bool ForceDrawOverride = false;
 		public static GameTime lastTime = new GameTime();
 		public static (int, int, bool) ExtractedItem = (-1,-1, false);
@@ -1544,15 +1514,22 @@ namespace SGAmod
 					}
 				}
 			}
-
 		}
 
-		public delegate void ModifyTransformMatrixDelegate(ref SpriteViewMatrix Transform);
-		public static event ModifyTransformMatrixDelegate ModifyTransformMatrixEvent;
+		public delegate void PanCameraEventDelegate();
+		public static event PanCameraEventDelegate PanCameraEvent;
+
+		//public delegate void ModifyTransformMatrixDelegate(ref SpriteViewMatrix Transform);
+		//public static event ModifyTransformMatrixDelegate PanCameraEvent;
+
+		public static void PanCamera()
+        {
+			PanCameraEvent?.Invoke();
+		}
 
 		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
         {
-			ModifyTransformMatrixEvent?.Invoke(ref Transform);
+			//ModifyTransformMatrixEvent?.Invoke(ref Transform);
 
 			if (ScreenShake > 0)
 			{

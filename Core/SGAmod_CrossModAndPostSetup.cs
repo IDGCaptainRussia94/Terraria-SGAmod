@@ -176,8 +176,6 @@ namespace SGAmod
 				PrivateClassEdits.LoadAntiCheats();
 			}
 
-			overpoweredModBaseValue = ((ModLoader.GetMod("AFKPETS") != null ? 0.25f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 0.75f : 0) + (ModLoader.GetMod("Luiafk") != null ? 1.5f : 0) + (ModLoader.GetMod("Fargowiltas") != null ? 0.5f : 0) + (ModLoader.GetMod("FargowiltasSouls") != null ? 1.5f : 0)) + (ModLoader.GetMod("Antisocial") != null ? 7.5f : 0) + (ModLoader.GetMod("AlchemistNPCLite") != null ? 0.75f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0);
-			overpoweredModBaseHardmodeValue = (ModLoader.GetMod("Wingslot") != null ? 0.75f : 0);
 			//Why do people still use Luiafk in legit playthroughs? I donno...
 			Luiafk.Item2 = ModLoader.GetMod("Luiafk");
 			Luiafk.Item1 = Luiafk.Item2 != null;
@@ -426,8 +424,7 @@ namespace SGAmod
 			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("PortalBullet"), "They have no faith in him-I");
 			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("AimBotBullet"), "Only ever they want only to be a part of-TY");*/
 
-
-
+			CalcOpMods();
 		}
 	}
 

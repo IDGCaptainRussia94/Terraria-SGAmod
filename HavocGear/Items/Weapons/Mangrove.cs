@@ -5,7 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using System.Collections.Generic;
 using SGAmod.HavocGear.Items.Tools;
-using AAAAUThrowing;
+
 using SGAmod.Dusts;
 
 namespace SGAmod.HavocGear.Items.Weapons

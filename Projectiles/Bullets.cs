@@ -478,7 +478,7 @@ namespace SGAmod.Projectiles
 			}*/
 
 			//TrailHelper trailEffect = new TrailHelper("BasicEffectAlphaPass", Main.extraTexture[21]);
-			TrailHelper trailEffect = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+			TrailHelper trailEffect = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
 			Color color = Color.Lerp(Color.CornflowerBlue, Color.PaleTurquoise, projectile.Opacity);
 			trailEffect.color = delegate (float percent)
 			{

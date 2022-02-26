@@ -133,7 +133,7 @@ namespace SGAmod.Items.Weapons
 					projectile.oldPos[i] = projectile.position;
 			}
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
 			trail.color = delegate (float percent)
 			{
 				return Color.Magenta;
@@ -377,7 +377,7 @@ namespace SGAmod.Items.Weapons
 					projectile.oldPos[i] = projectile.position;
 			}
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
 			trail.color = delegate (float percent)
 			{
 				return Main.hslToRgb((percent*1f)%1f,0.85f,0.75f);

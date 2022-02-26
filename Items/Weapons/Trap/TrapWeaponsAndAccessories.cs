@@ -12,7 +12,7 @@ using Terraria.Enums;
 using SGAmod.Items.Weapons.Trap;
 using SGAmod.Projectiles;
 using Idglibrary;
-using AAAAUThrowing;
+
 
 namespace SGAmod.Items.Weapons.Trap
 {
@@ -1099,8 +1099,8 @@ namespace SGAmod.Items.Weapons.Trap
 			projectile.usesIDStaticNPCImmunity = true;
 			projectile.idStaticNPCHitCooldown = 10;
 			projectile.light = 0.5f;
-			projectile.width = 48;
-			projectile.height = 48;
+			projectile.width = 8;
+			projectile.height = 8;
 			projectile.aiStyle = -1;
 			projectile.timeLeft = 600;
 			projectile.Throwing().thrown = true;
@@ -1116,26 +1116,18 @@ namespace SGAmod.Items.Weapons.Trap
             }
         }
 
-        public override bool OnTileCollide(Vector2 oldVelocity)
+		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			projectile.penetrate--;
-			if (projectile.penetrate <= 0)
+			var snd = Main.PlaySound(SoundID.DD2_BetsyFireballImpact, projectile.Center);
+			if (snd != null)
+				snd.Pitch = 0.80f;
+			if (projectile.velocity.X != oldVelocity.X)
 			{
-				projectile.Kill();
+				projectile.velocity.X = -oldVelocity.X;
 			}
-			else
+			if (projectile.velocity.Y != oldVelocity.Y)
 			{
-				var snd = Main.PlaySound(SoundID.DD2_BetsyFireballImpact, projectile.Center);
-				if (snd != null)
-					snd.Pitch = 0.80f;
-				if (projectile.velocity.X != oldVelocity.X)
-				{
-					projectile.velocity.X = -oldVelocity.X;
-				}
-				if (projectile.velocity.Y != oldVelocity.Y)
-				{
-					projectile.velocity.Y = -oldVelocity.Y;
-				}
+				projectile.velocity.Y = -oldVelocity.Y;
 			}
 			return false;
 		}
@@ -1197,20 +1189,20 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.SilkRopeCoil, 2);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 5);
-			recipe.AddIngredient(mod.ItemType("JaggedOvergrownSpike"), 4);
-			recipe.AddIngredient(mod.ItemType("GoldenCog"), 1);
-			recipe.AddIngredient(mod.ItemType("JuryRiggedSpikeBuckler"), 1);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<JaggedOvergrownSpike>(), 4);
+			recipe.AddIngredient(ModContent.ItemType<GoldenCog>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<JuryRiggedSpikeBuckler>(), 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.SilkRopeCoil, 2);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 5);
-			recipe.AddIngredient(mod.ItemType("JaggedOvergrownSpike"), 4);
-			recipe.AddIngredient(mod.ItemType("GoldenCog"), 1);
-			recipe.AddIngredient(mod.ItemType("HeartGuard"), 1);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<JaggedOvergrownSpike>(), 4);
+			recipe.AddIngredient(ModContent.ItemType<GoldenCog>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<HeartGuard>(), 1);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -1243,6 +1235,7 @@ namespace SGAmod.Items.Accessories
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.WoodenSpike, 10);
+			recipe.AddIngredient(ItemID.Nail, 20);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);
 			recipe.AddRecipe();

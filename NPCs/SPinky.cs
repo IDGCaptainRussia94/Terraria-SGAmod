@@ -1705,7 +1705,7 @@ namespace SGAmod.NPCs
 				vects.Add(circleLoc+thisloc);
 			}
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
 			trail.color = delegate (float percent)
 			{
 				return Color.Magenta;
@@ -3235,7 +3235,7 @@ namespace SGAmod.NPCs
 					projectile.oldPos[i] = projectile.position;
 			}
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
 			UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);
 			float colorz = rando.NextFloat();
 			trail.color = delegate (float percent)

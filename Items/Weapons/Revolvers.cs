@@ -7,7 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
 using SGAmod.Items.Weapons;
-using AAAAUThrowing;
+
 using System.IO;
 using Microsoft.Xna.Framework.Audio;
 using System.Linq;

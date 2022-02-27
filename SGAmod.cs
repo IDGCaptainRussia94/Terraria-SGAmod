@@ -704,6 +704,7 @@ namespace SGAmod
 
 				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidoSnd", new Sounds.Custom.MegidoSnd());
 				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/MegidolaonSnd", new Sounds.Custom.MegidolaonSnd());
+				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/P5defense", new Sounds.Custom.MegidolaonSnd());
 				AddSound(SoundType.Custom, "SGAmod/Sounds/Custom/RoR2sndTurretFire", new Sounds.Custom.RoR2sndTurretFire());
 
 			}

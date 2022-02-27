@@ -405,6 +405,7 @@ namespace SGAmod.Dimensions
                         effect.Parameters["noiseTexture"].SetValue(glowTex);
                         effect.Parameters["textureProgress"].SetValue(0);
                         effect.Parameters["noiseBlendPercent"].SetValue(1f);
+                        effect.Parameters["alphaChannel"].SetValue(false);
 
                         Color colorz = Color.Turquoise;
                         effect.Parameters["colorTo"].SetValue(colorz.ToVector4());

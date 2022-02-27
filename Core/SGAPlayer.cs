@@ -122,6 +122,9 @@ namespace SGAmod
 		public bool CirnoWings = false;
 		public bool manaUnchained = false;
 		public bool SerratedTooth = false;
+		public bool UkraineArms = false;
+		public int UkraineArmsBuff = 0;
+
 		public int grippinggloves = 0; public int grippingglovestimer = 0;
 		public bool vibraniumSetPlatform = false; public bool vibraniumSetWall = false;
 		public bool mudbuff = false; public bool alkalescentHeart = false; public bool jabALot = false; public bool NoHitCharm = false; public int NoHitCharmTimer = 0;
@@ -239,7 +242,34 @@ namespace SGAmod
 		public float TrapDamageMul = 1f; public float TrapDamageAP = 0f;
 		public float ThrowingSpeed = 1f; public float Thrownsavingchance = 0f;
 		public Vector2 Locked = new Vector2(100, 300);
-		public int electricCharge = 0; public int electricChargeMax = 0; public float electricChargeCost = 1f; public float electricChargeReducedDelay = 1f;
+		protected int _electricCharge = 0; protected int _electricChargeMax = 0; 	
+		public float electricChargeCost = 1f; public float electricChargeReducedDelay = 1f;
+		public float ElectricChargeScalar => 1f;
+		public int electricCharge
+		{
+            get
+            {
+				return _electricCharge;
+			}
+            set
+            {
+				_electricCharge = value;
+			}
+
+		}
+		public int electricChargeMax
+		{
+			get
+			{
+				return _electricChargeMax;
+			}
+			set
+			{
+				_electricChargeMax = value;
+
+			}
+		}
+
 		public int ammoLeftInClip = 6; public int plasmaLeftInClip = 1000;
 		public float electricdelay = -500; public int boosterrechargerate = 15; public int electricrechargerate = 1; public float electricRechargeRateMul = 1f;
 		public int ammoLeftInClipMaxLastHeld = 0;
@@ -419,6 +449,9 @@ namespace SGAmod
 				grippingglovestimer -= 1;
 			}
 
+			UkraineArms = false;
+			if (UkraineArmsBuff>0)
+			UkraineArmsBuff -= 1;
 			gravBoots = false;
 			voidEmbrancers = false;
 			twinesoffate = false;
@@ -595,9 +628,9 @@ namespace SGAmod
 
 			boosterPowerLeft = Math.Min(boosterPowerLeft + (boosterdelay < 1 ? boosterrechargerate : 0), boosterPowerLeftMax);
 
-			electricCharge = Math.Min(electricCharge + (electricdelay < 1 ? (int)(electricrechargerate * electricRechargeRateMul) : 0), electricChargeMax);
+			_electricCharge = Math.Min(_electricCharge+ (electricdelay < 1 ? (int)(electricrechargerate * electricRechargeRateMul) : 0), _electricChargeMax);
 
-			electricChargeMax = Electicpermboost;
+			_electricChargeMax = Electicpermboost;
 			electricrechargerate = 0;
 			electricRechargeRateMul = 1f;
 			electricChargeCost = 1f;
@@ -2651,7 +2684,7 @@ namespace SGAmod
 
 			loot.Add(Main.rand.NextBool() ? ItemID.TsunamiInABottle : (Main.rand.NextBool() ? ItemID.FartinaJar : ItemID.CloudinaBottle));
 			loot.Add(Main.rand.NextBool() ? ItemID.SailfishBoots : ItemID.HermesBoots);
-			loot.Add(SGAmod.Instance.ItemType("ThrowerPouch")); loot.Add(ItemID.GrapplingHook); loot.Add(ItemID.MiningHelmet);
+			loot.Add(ModContent.ItemType<ThrowerPouch>()); loot.Add(ItemID.GrapplingHook); loot.Add(ItemID.MiningHelmet);
 			loot.Add(Main.rand.NextBool() ? ItemID.TungstenPickaxe : ItemID.SilverPickaxe);
 
 			List<int> itemsbonus = new List<int>();
@@ -2669,8 +2702,15 @@ namespace SGAmod
 			((IDGStartBag)item.modItem).AddItem(item3);
 
 			Item item4 = new Item();
-			item4.SetDefaults(SGAmod.Instance.ItemType("BossHints"), false);
+			item4.SetDefaults(ModContent.ItemType<BossHints>(), false);
 			((IDGStartBag)item.modItem).AddItem(item4);
+
+			if (SGAmod.NightmareUnlocked)
+			{
+				Item item5 = new Item();
+				item5.SetDefaults(ModContent.ItemType<ThereIsNoMercyThereIsNoInnocenceOnlyDegreesOfGuilt>(), false);
+				((IDGStartBag)item.modItem).AddItem(item5);
+			}
 
 			for (int k = 0; k < itemsbonus.Count; k++)
 			{

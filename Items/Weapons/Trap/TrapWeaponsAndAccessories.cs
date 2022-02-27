@@ -245,31 +245,22 @@ namespace SGAmod.Items.Weapons.Trap
 		}
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 4);
-			recipe.AddIngredient(mod.ItemType("CryostalBar"), 8);
-			recipe.AddIngredient(ItemID.DartPistol, 1);
-			recipe.AddIngredient(ItemID.SuperDartTrap, 1);
-			recipe.AddIngredient(ItemID.LihzahrdPowerCell, 1);
-			recipe.AddIngredient(ItemID.LihzahrdPressurePlate, 1);
-			recipe.AddIngredient(ItemID.Nanites, 50);
-			recipe.AddIngredient(mod.ItemType("DartTrapGun"), 1);
-			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
-			recipe.SetResult(this);
-			recipe.AddRecipe();
 
-			recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 4);
-			recipe.AddIngredient(mod.ItemType("CryostalBar"), 8);
-			recipe.AddIngredient(ItemID.DartRifle, 1);
-			recipe.AddIngredient(ItemID.SuperDartTrap, 1);
-			recipe.AddIngredient(ItemID.LihzahrdPowerCell, 1);
-			recipe.AddIngredient(ItemID.LihzahrdPressurePlate, 1);
-			recipe.AddIngredient(ItemID.Nanites, 50);
-			recipe.AddIngredient(mod.ItemType("DartTrapGun"), 1);
-			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
-			recipe.SetResult(this);
-			recipe.AddRecipe();
+			foreach (int itemz in new int[2] { ItemID.DartRifle, ItemID.DartPistol })
+			{
+				ModRecipe recipe = new ModRecipe(mod);
+				recipe.AddIngredient(mod.ItemType("AdvancedPlating"), 4);
+				recipe.AddIngredient(mod.ItemType("CryostalBar"), 8);
+				recipe.AddIngredient(itemz, 1);
+				recipe.AddIngredient(ItemID.SuperDartTrap, 1);
+				recipe.AddIngredient(ItemID.LihzahrdPowerCell, 1);
+				recipe.AddIngredient(ItemID.LihzahrdPressurePlate, 1);
+				recipe.AddIngredient(ItemID.Nanites, 50);
+				recipe.AddIngredient(mod.ItemType("DartTrapGun"), 1);
+				recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
+				recipe.SetResult(this);
+				recipe.AddRecipe();
+			}
 		}
 
 		public override Vector2? HoldoutOffset()
@@ -1070,6 +1061,29 @@ namespace SGAmod.Items.Weapons.Trap
 	{
 		public int BallCount => 8;
 		public Player MyPlayer => Main.player[projectile.owner];
+
+
+		public Vector2 BallPosition(float angle, Vector2 from)
+		{
+			Vector2 here = projectile.Center;
+			Vector2 differ = from - here;
+			return here.RotatedBy(angle, from);
+
+		}
+
+		public List<Vector2> AllPoints
+        {
+
+            get
+            {
+				for(float f=0;f<MathHelper.TwoPi;f+=1)
+				Vector2 basepose = BallPosition(f, MyPlayer.Center);
+
+
+			}
+
+        }
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Wrecker");
@@ -1078,14 +1092,6 @@ namespace SGAmod.Items.Weapons.Trap
 		public override string Texture
 		{
 			get { return ("Terraria/Projectile_" + ProjectileID.SpikyBallTrap); }
-		}
-
-		public Vector2 BallPosition(float angle,Vector2 from)
-        {
-			Vector2 here = projectile.Center;
-			Vector2 differ = from-here;
-			return here.RotatedBy(angle, from);
-
 		}
 
 		public override void SetDefaults()
@@ -1136,9 +1142,41 @@ namespace SGAmod.Items.Weapons.Trap
 		{
 			Texture2D texture = Main.projectileTexture[projectile.type];
 			Vector2 position = projectile.Center;
+			float alphaAdd = MathHelper.Clamp(projectile.localAI[0], 0f, Math.Min(projectile.timeLeft / 10f,1f));
+
+			spriteBatch.End();
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Effect effect = SGAmod.TextureBlendEffect;
+
+
+				effect.Parameters["coordMultiplier"].SetValue(new Vector2(1f, 1f));
+				effect.Parameters["coordOffset"].SetValue(new Vector2(0f, 0f));
+				effect.Parameters["noiseMultiplier"].SetValue(new Vector2(1f, 1f));
+				effect.Parameters["noiseOffset"].SetValue(new Vector2(0f, 0f));
+
+				effect.Parameters["Texture"].SetValue(texture);
+				effect.Parameters["noiseTexture"].SetValue(SGAmod.Instance.GetTexture("Extra_49c"));
+				effect.Parameters["noiseProgress"].SetValue(Main.GlobalTime);
+				effect.Parameters["textureProgress"].SetValue(0);
+				effect.Parameters["noiseBlendPercent"].SetValue(1f);
+				effect.Parameters["strength"].SetValue(alphaAdd);
+				effect.Parameters["alphaChannel"].SetValue(false);
+
+				Color colorz = Main.hslToRgb((Main.GlobalTime*0.60f)%1f,1f,0.75f);
+				effect.Parameters["colorTo"].SetValue(colorz.ToVector4());
+				effect.Parameters["colorFrom"].SetValue(Color.Black.ToVector4());
+
+				effect.CurrentTechnique.Passes["TextureBlend"].Apply();
+
+				Main.spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, null, Color.White, projectile.velocity.ToRotation(), texture.Size()/2f, 2f, default, 0);
+			
+
 
 			Main.spriteBatch.Draw(texture, position - Main.screenPosition, null, Color.White, 0, texture.Size()/2f, Vector2.One, SpriteEffects.None, 0.0f);
 
+			spriteBatch.End();
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

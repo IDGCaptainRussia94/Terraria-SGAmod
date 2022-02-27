@@ -1847,8 +1847,8 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public List<StardusterProjectile> stardust = new List<StardusterProjectile>();
 		public class StardusterProjectile
 		{
-			protected Vector2 position;
-			protected Vector2 velocity;
+			public Vector2 position;
+			public Vector2 velocity;
 			public int timeLeft = 0;
 			public int timeStart = 0;
 			public int timeLeftMax = 0;

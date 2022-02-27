@@ -132,6 +132,91 @@ namespace SGAmod
                     return false;
                 }
             }
+
+            if (item.modItem != null && item.modItem is IDedicatedItem)
+            {
+                if (line.mod == "SGAmod" && line.Name == "DedicatedItem")
+                {
+                    Effect hallowed = SGAmod.HallowedEffect;
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
+
+                    Texture2D DedTex = SGAmod.Instance.GetTexture("Voronoi");
+
+                    Effect effect = SGAmod.TextureBlendEffect;
+                    
+                    effect.Parameters["coordMultiplier"].SetValue(new Vector2(3f, 1f));
+                    effect.Parameters["coordOffset"].SetValue(new Vector2(0,0));
+                    effect.Parameters["noiseMultiplier"].SetValue(new Vector2(1f, 1f));
+                    effect.Parameters["noiseOffset"].SetValue(new Vector2(0,0));
+
+                    effect.Parameters["Texture"].SetValue(SGAmod.Instance.GetTexture("SmallLaser"));
+                    effect.Parameters["noiseTexture"].SetValue(SGAmod.Instance.GetTexture("GlowOrb"));
+                    effect.Parameters["noiseProgress"].SetValue(Main.GlobalTime / 1f);
+                    effect.Parameters["textureProgress"].SetValue(0);
+                    effect.Parameters["noiseBlendPercent"].SetValue(1f);
+                    effect.Parameters["strength"].SetValue(1f);
+                    effect.Parameters["alphaChannel"].SetValue(true);
+
+                    Vector4 col1 = Main.hslToRgb(((Main.GlobalTime / 12f)) % 1f, 0.50f, 0.75f).ToVector4();
+                    Vector4 col2 = Main.hslToRgb((((Main.GlobalTime) / 12f) + 0.50f) % 1f, 0.15f, 0.50f).ToVector4();
+
+                    effect.Parameters["colorTo"].SetValue(col1);
+                    effect.Parameters["colorFrom"].SetValue(col2);
+
+                    effect.CurrentTechnique.Passes["TextureBlend"].Apply();
+
+                    float offset = 64f;
+
+                    Vector2 textSize = Main.fontMouseText.MeasureString(line.text) + new Vector2(offset*2f, 0);
+
+                    Main.spriteBatch.Draw(DedTex,new Vector2(line.X- offset, line.Y), null, Color.White,0, new Vector2(0f, 0), (textSize/ new Vector2(DedTex.Width, DedTex.Height))*new Vector2(1f,0.75f), default, 0);
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
+
+                    for (float ff = 0; ff < MathHelper.TwoPi; ff += MathHelper.TwoPi / 4f) 
+                    {
+                        Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y)+ff.ToRotationVector2()*3f, Color.Black);
+                    }
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
+
+                    for (float f = -1; f < 2; f += 2)
+                    {
+
+                        effect.Parameters["coordMultiplier"].SetValue(new Vector2(1f, 1f));
+                        effect.Parameters["coordOffset"].SetValue(new Vector2((Main.GlobalTime / 20f)*f, Main.GlobalTime / 200f));
+                        effect.Parameters["noiseMultiplier"].SetValue(new Vector2(2f, 2f));
+                        effect.Parameters["noiseOffset"].SetValue(new Vector2((Main.GlobalTime / 100f) * f, Main.GlobalTime / -80f));
+
+                        effect.Parameters["Texture"].SetValue(SGAmod.Instance.GetTexture("Voronoi"));
+                        effect.Parameters["noiseTexture"].SetValue(SGAmod.Instance.GetTexture("Voronoi"));
+                        effect.Parameters["noiseProgress"].SetValue(Main.GlobalTime / 1f);
+                        effect.Parameters["textureProgress"].SetValue(0);
+                        effect.Parameters["noiseBlendPercent"].SetValue(0.5f);
+                        effect.Parameters["strength"].SetValue(0.50f);
+                        effect.Parameters["alphaChannel"].SetValue(true);
+
+                        col1 = Main.hslToRgb(((Main.GlobalTime / 6f)+(f/2f)) % 1f, 1f, 0.75f).ToVector4();
+                        col2 = Main.hslToRgb((((Main.GlobalTime) / 6f) + 0.50f + (f / 2f)) % 1f, 0.8f, 0.50f).ToVector4();
+
+                        effect.Parameters["colorTo"].SetValue(col1);
+                        effect.Parameters["colorFrom"].SetValue(col2);
+
+                        effect.CurrentTechnique.Passes["TextureBlend"].Apply();
+
+                        Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
+                    }
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                    return false;
+                }
+            }
+
             return true;
         }
 
@@ -228,7 +313,13 @@ namespace SGAmod
                     tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, dev.Item1 + "'s "+(dev.Item2+ (dev.Item2 != "" ? " " : "")) + "dev weapon")));
                 }
 
-
+                if (item?.modItem is IDedicatedItem)
+                {
+                    string ded = ((IDedicatedItem)item.modItem).DedicatedItem();
+                    Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
+                    tooltips.Add(new TooltipLine(mod, "DedicatedItem", "-- Dedicated --"));
+                    tooltips.Add(new TooltipLine(mod, "DedicatedItem", ded));
+                }
             }
 
             if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAmod.DRMMode))

@@ -153,7 +153,7 @@ namespace SGAmod.Items.Weapons
 
 	}
 
-	public class ShootingStar : CrystalComet, IHellionDrop
+	public class ShootingStar : CrystalComet, IHellionDrop, IDedicatedItem
 	{
 		int IHellionDrop.HellionDropAmmount() => 1;
 		int IHellionDrop.HellionDropType() => ModContent.ItemType<ShootingStar>();
@@ -207,10 +207,12 @@ namespace SGAmod.Items.Weapons
 				};
 			}
 	}
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
-		{
-			Color c = Main.hslToRgb((float)(Main.GlobalTime / 5f) % 1f, 0.45f, 0.65f);
-			tooltips.Add(new TooltipLine(mod, "Dedicated", Idglib.ColorText(c, "Dedicated to Cringe's meme in IDG's Den")));
+
+		public string DedicatedItem()
+        {
+			//tooltips.Add(new TooltipLine(mod, "Dedicated", 
+			//Color c = Main.hslToRgb((float)(Main.GlobalTime / 5f) % 1f, 0.45f, 0.65f);
+			return "To Cringe's meme in IDG's Den";
 		}
 		public override Color? GetAlpha(Color lightColor)
         {

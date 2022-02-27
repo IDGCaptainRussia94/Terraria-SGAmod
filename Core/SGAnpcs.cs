@@ -86,6 +86,7 @@ namespace SGAmod
 		public bool petrified = false;
 		public int noMovement = 0;
 		public bool lavaBurn = false;
+		public int UkraineArmsBuff = 0;
 		public bool TimeSlowImmune = false;
 		public bool dotImmune = false;
 		public float dotResist = 1f;
@@ -187,6 +188,7 @@ namespace SGAmod
 			Sodden = false;
 			lavaBurn = false;
 			SunderedDefense = false;
+			//Main.NewText(UkraineArmsBuff);
 			DankSlow = false;
 			ELS = false;
 			marked = false;
@@ -775,6 +777,11 @@ namespace SGAmod
 
 			CrucibleArenaMaster.UpdatePortal(npc);
 
+			if (npc.SGANPCs().UkraineArmsBuff > 0)
+				npc.SGANPCs().UkraineArmsBuff -= 1;
+
+			//Main.NewText(UkraineArmsBuff+" "+npc.FullName);
+
 			if (PinkyMinion < 1 && NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()) && (npc.type == NPCID.BlueSlime || npc.type == NPCID.GreenSlime || npc.type == NPCID.PurpleSlime || npc.type == NPCID.YellowSlime || npc.type == NPCID.RedSlime || npc.type == NPCID.BlackSlime))
 			{
 				PinkyMinion = 1;
@@ -1125,7 +1132,11 @@ namespace SGAmod
 				shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 25, 0);
 				nextSlot++;
 			}
-
+			if (Items.Accessories.Dedicated.UkraineArms.IsItAPerfectlyGoodTimeForAnInvasion(player))
+			{
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Accessories.Dedicated.UkraineArms>());
+				nextSlot++;
+			}
 
 			if (sgaplayer.MidasIdol > 0)
 			{

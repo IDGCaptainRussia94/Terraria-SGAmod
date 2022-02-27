@@ -305,6 +305,7 @@ return base.CanUseItem(player);
 				effect.Parameters["textureProgress"].SetValue(0);
 				effect.Parameters["noiseBlendPercent"].SetValue(1f);
 				effect.Parameters["strength"].SetValue(MathHelper.Clamp(alpha2*3f,0f,1f));
+				effect.Parameters["alphaChannel"].SetValue(false);
 
 				Color colorz = f < 2 ? (f < 1 ? Color.White : Color.Lime) : Color.Purple;
 				effect.Parameters["colorTo"].SetValue(colorz.ToVector4());

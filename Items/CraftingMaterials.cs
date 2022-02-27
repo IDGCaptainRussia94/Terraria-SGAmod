@@ -1898,6 +1898,8 @@ namespace SGAmod.Items
 
 	public class HeliosFocusCrystal : ModItem
 	{
+		public virtual Color MainColor => Color.Black;
+					public virtual Color BackColor => Color.Black;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Helios Focus Prism");
@@ -1922,6 +1924,8 @@ namespace SGAmod.Items
 		}
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
+			Color glowColor = MainColor == Color.Black ? lightColor : MainColor;
+
 			float vel = item.velocity.X / 6f;
 			Vector2 drawPos = (item.Center+new Vector2(0, Main.itemTexture[item.type].Height-4)) - Main.screenPosition;
 
@@ -1930,13 +1934,14 @@ namespace SGAmod.Items
 
 			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
 			{
-				spriteBatch.Draw(Main.itemTexture[item.type], (drawPos + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * 3f).RotatedBy(vel)), null, Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f), vel, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
+				Color glowColor2 = BackColor == Color.Black ? Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f) : BackColor;
+				spriteBatch.Draw(Main.itemTexture[item.type], (drawPos + (Vector2.UnitX.RotatedBy(f + Main.GlobalTime * 2f) * 3f).RotatedBy(vel)), null, glowColor2, vel, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
 			}
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, vel, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, glowColor, vel, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -1945,7 +1950,7 @@ namespace SGAmod.Items
 			SGAmod.FadeInEffect.Parameters["alpha"].SetValue(0.50f);
 			SGAmod.FadeInEffect.CurrentTechnique.Passes["ColorToAlphaPass"].Apply();
 
-			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, lightColor, vel, Main.itemTexture[item.type].Size() / 2f, scale / 15f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, glowColor, vel, Main.itemTexture[item.type].Size() / 2f, scale / 15f, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -1954,6 +1959,7 @@ namespace SGAmod.Items
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
+			Color glowColor = MainColor == Color.Black ? drawColor : MainColor;
 
 			Vector2 slotSize = new Vector2(52f, 52f) * scale;
 			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
@@ -1966,13 +1972,14 @@ namespace SGAmod.Items
 
 			for (float f = 0; f < MathHelper.TwoPi; f += MathHelper.TwoPi / 6f)
 			{
-				spriteBatch.Draw(Main.itemTexture[item.type], drawPos+(Vector2.UnitX.RotatedBy(f+Main.GlobalTime*2f)*3f), null, Main.hslToRgb(f/MathHelper.TwoPi,1f,0.75f), 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+				Color glowColor2 = BackColor == Color.Black ? Main.hslToRgb(f / MathHelper.TwoPi, 1f, 0.75f) : BackColor;
+				spriteBatch.Draw(Main.itemTexture[item.type], drawPos+(Vector2.UnitX.RotatedBy(f+Main.GlobalTime*2f)*3f), null, glowColor2, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
 			}
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
-			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, glowColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
@@ -1981,7 +1988,7 @@ namespace SGAmod.Items
 			SGAmod.FadeInEffect.Parameters["alpha"].SetValue(0.50f);
 			SGAmod.FadeInEffect.CurrentTechnique.Passes["ColorToAlphaPass"].Apply();
 
-			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, drawColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale*1/15f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, glowColor, 0, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale*1/15f, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);

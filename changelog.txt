@@ -3,12 +3,22 @@ Changelog:
 
 3.650-(3/??/??)--Patch 17
 
+-Added:
+
+-w.R.e.C.E.r
+
+-Ukrainian Valor, an item dedicated to pay homage to Ukrainian bravery in defending their homeland from an unjust war thrust on them
+
 
 --Changed:
 
+-Soldier's Rocket Launcher and Shooting Star have been added to a new catagory of items: Dedicated Items
+
 -The former cheating system is now an optional extremely unfair difficulty that is obtained from the starter bag
 
--Universal Throwing has been desolved and is now vanilla throwing again, as such, it is no longer required for the mod as a dependency.
+-Universal Throwing has been desolved and is now using vanilla throwing again, as such, SGAmod no longer requires it as a dependency.
+
+-Armor glowmasks now work on mounts
 
 -The Fog has been revamped slightly, allowing it to draw neatly to all screensizes
 
@@ -377,7 +387,7 @@ Changelog:
 
 --Added
 
--Starduster, The Tongue, Lunar Leech, Rod Of The Misty Lake, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, The Refractor, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap, Condensed Gel Pack
+-, The Tongue, Lunar Leech, Rod Of The Misty Lake, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, The Refractor, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap, Condensed Gel Pack
 
 -The entire Dank Wood Furnature set by Rijam
 

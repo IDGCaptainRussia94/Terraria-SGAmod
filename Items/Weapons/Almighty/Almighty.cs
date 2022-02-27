@@ -2271,6 +2271,7 @@ namespace SGAmod.Items.Weapons.Almighty
 			effect.Parameters["textureProgress"].SetValue(Main.GlobalTime*2f);
 			effect.Parameters["noiseBlendPercent"].SetValue(1f);
 			effect.Parameters["strength"].SetValue(0.25f);
+			effect.Parameters["alphaChannel"].SetValue(false);
 
 			foreach (OrbParticles particle in partices)
 			{

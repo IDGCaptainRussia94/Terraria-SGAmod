@@ -169,7 +169,7 @@ namespace SGAmod
 
                     float offset = 64f;
 
-                    Vector2 textSize = Main.fontMouseText.MeasureString(line.text) + new Vector2(offset*2f, 0);
+                    Vector2 textSize = Main.fontMouseText.MeasureString(line.text) + new Vector2(offset * 2f, 0);
 
                     Main.spriteBatch.Draw(DedTex,new Vector2(line.X- offset, line.Y), null, Color.White,0, new Vector2(0f, 0), (textSize/ new Vector2(DedTex.Width, DedTex.Height))*new Vector2(1f,0.75f), default, 0);
 
@@ -1483,7 +1483,7 @@ namespace SGAmod
         }
         public override bool CanRoll(Item item)
         {
-            return item.thrown || item.Throwing().thrown;
+            return item.Throwing().thrown;
         }
     }
 

@@ -127,6 +127,7 @@ namespace SGAmod.Tiles
         {
             Player player = Main.player[Main.myPlayer];
             Tile tile = Main.tile[i, j];
+
             int left = i;
             int top = j;
             if (tile.frameX % 36 != 0)

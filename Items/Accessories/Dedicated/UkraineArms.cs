@@ -44,7 +44,7 @@ namespace SGAmod.Items.Accessories.Dedicated
 			int buff = ModContent.BuffType<UkraineValorBuff>();
 			if (npc.HasBuff(buff))
 			{
-				damage = (int)(damage/2f);
+				damage = (int)(damage/200f);
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace SGAmod.Items.Accessories.Dedicated
 			}
         }
 
-		public static bool IsItAPerfectlyGoodTimeForAnInvasion(Player player,NPC npc = default) => ((NPC.BusyWithAnyInvasionOfSorts() || (Main.invasionProgressDisplayLeft > 0 && Main.invasionSize > 0)) && (npc != default || (player != null && player.townNPCs >= 10)));
+		public static bool IsItAPerfectlyGoodTimeForAnInvasion(Player player,NPC npc = default) => (((Main.invasionProgressDisplayLeft > 0 && Main.invasionSize > 0) || Terraria.GameContent.Events.DD2Event.Ongoing) && (npc != default || (player != null && player.townNPCs >= 10)));
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
@@ -303,7 +303,7 @@ namespace SGAmod.Items.Accessories.Dedicated
 
 					List<NPC> helpedNPCs = new List<NPC>();
 
-					foreach (NPC npcTown in Main.npc.Where(testby => testby.active && testby.SGANPCs().UkraineArmsBuff < 1 && testby.townNPC && (testby.Center - ply.MountedCenter).LengthSquared() < 1000000))
+					foreach (NPC npcTown in Main.npc.Where(testby => testby.active && testby.SGANPCs().UkraineArmsBuff < 1 && (testby.townNPC && testby.type != NPCID.DD2EterniaCrystal) && (testby.Center - ply.MountedCenter).LengthSquared() < 1000000))
 					{
 						helpedNPCs.Add(npcTown);
 					}

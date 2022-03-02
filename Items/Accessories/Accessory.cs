@@ -3834,6 +3834,53 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
+	public class TheHitList : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("The Hit List");
+			Tooltip.SetDefault("Grants a banner buff against the last enemy hit\nRequires atleast 50 kills of that enemy in the world and they must have a banner drop");
+		}
+
+        public override string Texture => "Terraria/Item_"+ItemID.ThePlan;
+
+        public override void UpdateInventory(Player player)
+        {
+			player.accJarOfSouls = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.accJarOfSouls = true;
+
+			if (player.lastCreatureHit > 0 && NPC.killCount[player.lastCreatureHit] > 0)
+			{
+				player.NPCBannerBuff[player.lastCreatureHit] = true;
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.TallyCounter, 1);
+			recipe.AddIngredient(ItemID.TatteredCloth, 4);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.DankCore>(), 2);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+
 	public class NoviteCore : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -3874,7 +3921,6 @@ namespace SGAmod.Items.Accessories
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
-
 	}
 	public class NovusCore : ModItem
 	{

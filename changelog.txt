@@ -1,11 +1,11 @@
 
 Changelog:
 
-3.650-(3/??/??)--Patch 17
+3.650-(3/??/??)--Patch 17: Anniversary Update Part 2!
 
 -Added:
 
--w.R.e.C.E.r
+-Spatial Spheres, The Hit List
 
 -Ukrainian Valor, an item dedicated to pay homage to Ukrainian bravery in defending their homeland from an unjust war thrust on them
 
@@ -34,6 +34,8 @@ Changelog:
 --Fixed
 
 -Camera panning bosses will no longer cause tiles to not draw
+
+-Golden Cog causing enemies to  "despawn" by killing them with the 10% extra "non" damage
 
 
 

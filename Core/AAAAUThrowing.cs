@@ -179,6 +179,7 @@ namespace SGAmod
 
         public override bool? PrefixChance(Item item, int pre, UnifiedRandom rand)
         {
+            if (!item.Throwing().thrown)
             return base.PrefixChance(item, pre, rand);
 
             if (item.consumable && item.maxStack<2 && pre==-3)
@@ -188,58 +189,62 @@ namespace SGAmod
 
         public override int ChoosePrefix(Item item,UnifiedRandom rand)
         {
-            return base.ChoosePrefix(item, rand);
-            #region oldcode
-            if (!item.Throwing().thrown && !item.thrown)
-            {
+            if (!item.Throwing().thrown)
                 return base.ChoosePrefix(item, rand);
-            }
-            Mod sga = ModLoader.GetMod("SGAmod");
-            if (sga != null)
+
+            #region oldcode
+
+            SGAmod sga = SGAmod.Instance;
+
+            if (item.consumable == false)
             {
-                //Ain't gonna lie, it's not pretty, but it works for now
-                //Will likely wait for Relogic/TML what they do about this
-                if (Main.rand.Next(0, 10) < 1)
+                if (sga != null)
                 {
-                    List<string> stuff = new List<string>();
-                    stuff.Add("Tossable");
-                    stuff.Add("Impacting");
-                    stuff.Add("Olympian");
-                    return sga.PrefixType(stuff[Main.rand.Next(0, stuff.Count)]);
+                    //Ain't gonna lie, it's not pretty, but it works for now
+                    //Will likely wait for Relogic/TML what they do about this
+                    if (Main.rand.Next(0, 10) < 1)
+                    {
+                        List<string> stuff = new List<string>();
+                        stuff.Add("Tossable");
+                        stuff.Add("Impacting");
+                        stuff.Add("Olympian");
+                        return sga.PrefixType(stuff[Main.rand.Next(0, stuff.Count)]);
+                    }
                 }
+                switch (rand.Next(13))
+                {
+                    case 0:
+                        return PrefixID.Heavy;
+                    case 1:
+                        return PrefixID.Demonic;
+                    case 2:
+                        return PrefixID.Frenzying;
+                    case 3:
+                        return PrefixID.Dangerous;
+                    case 4:
+                        return PrefixID.Savage;
+                    case 5:
+                        return PrefixID.Furious;
+                    case 6:
+                        return PrefixID.Terrible;
+                    case 7:
+                        return PrefixID.Awful;
+                    case 8:
+                        return PrefixID.Dull;
+                    case 9:
+                        return PrefixID.Unhappy;
+                    case 10:
+                        return PrefixID.Unreal;
+                    case 11:
+                        return PrefixID.Shameful;
+                    case 12:
+                        return PrefixID.Zealous;
+                }
+                return PrefixID.Pointy;
             }
-            switch (rand.Next(13))
-            {
-                case 0:
-                    return PrefixID.Heavy;
-                case 1:
-                    return PrefixID.Demonic;
-                case 2:
-                    return PrefixID.Frenzying;
-                case 3:
-                    return PrefixID.Dangerous;
-                case 4:
-                    return PrefixID.Savage;
-                case 5:
-                    return PrefixID.Furious;
-                case 6:
-                    return PrefixID.Terrible;
-                case 7:
-                    return PrefixID.Awful;
-                case 8:
-                    return PrefixID.Dull;
-                case 9:
-                    return PrefixID.Unhappy;
-                case 10:
-                    return PrefixID.Unreal;
-                case 11:
-                    return PrefixID.Shameful;
-                case 12:
-                    return PrefixID.Zealous;
-            }
-            return PrefixID.Pointy;
 
             #endregion
+            return base.ChoosePrefix(item, rand);
         }
     }
 

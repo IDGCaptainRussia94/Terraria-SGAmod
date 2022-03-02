@@ -511,9 +511,11 @@ namespace SGAmod
 					totaldamage = Math.Min(totaldamage, 1f);
 					if (moddedplayer.GoldenCog)
 					{
-						npc.life = npc.life - (int)(damage * 0.10);
-						if (Main.netMode == 2)
-							NetMessage.SendData(23, -1, -1, null, npc.whoAmI, 0f, 0f, 0f, 0, 0, 0);
+						npc.life = Math.Max(npc.life - (int)(damage * 0.10),1);
+						if (Main.netMode != NetmodeID.SinglePlayer)
+						{
+							NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI, 0f, 0f, 0f, 0, 0, 0);
+						}
 					}
 					damage += (int)((npc.defense * totaldamage) / 2.00);
 				}

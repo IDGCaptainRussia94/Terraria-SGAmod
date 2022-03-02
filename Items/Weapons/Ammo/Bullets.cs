@@ -271,15 +271,15 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("Entrophite"), 30);
-			recipe.AddIngredient(mod.ItemType("MoneySign"), 1);
-			recipe.AddIngredient(mod.ItemType("ByteSoul"), 10);
-			recipe.AddIngredient(mod.ItemType("DrakeniteBar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 20);
+			recipe.AddIngredient(ModContent.ItemType<MoneySign>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<ByteSoul>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<DrakeniteBar>(), 1);
 			recipe.AddIngredient(ItemID.MoonlordBullet, 100);
-			recipe.AddIngredient(ItemID.MeteorShot, 50);
-			recipe.AddIngredient(ItemID.ChlorophyteBullet, 50);
+			recipe.AddIngredient(ItemID.MeteorShot, 75);
+			recipe.AddIngredient(ItemID.ChlorophyteBullet, 75);
 			recipe.AddTile(TileID.LunarCraftingStation);
-			recipe.SetResult(this, 200);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}

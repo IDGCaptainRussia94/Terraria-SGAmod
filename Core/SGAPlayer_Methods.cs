@@ -720,6 +720,23 @@ namespace SGAmod
 			return false;
 		}
 
+		public void OnLifeRegen()
+        {
+			/*
+			int npfgf;
+			Assist.SpawnOnPlayerButNoTextAndReturnValue(player.whoAmI,NPCID.TaxCollector,out npfgf);
+			Main.npc[npfgf].aiStyle = 69;
+			Main.npc[npfgf].friendly = false;
+			Main.npc[npfgf].damage = 100;
+			Main.npc[npfgf].defDamage = 100;
+			*/
+
+
+			//player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " clear sucks"), 1, 1,true,false,true,2);
+			//player.statMana += 3;
+			//Main.NewText("test this");
+		}
+
 		public void ShuffleYourFeetElectricCharge()
 		{
 			if (Noviteset > 0 && electricChargeMax > 0)

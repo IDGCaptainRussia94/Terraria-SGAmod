@@ -26,6 +26,8 @@ Changelog:
 
 -Prismal/Prismic ammo has been made cheaper, sorta.
 
+-'Throwable' Trap Spiky Ball no longer requires Spikyball traps
+
 -Rebalanced Joyrider: fixed issues with other ammo types, now works only with bullets (atm, unless I make an upgrade), adjusted overall flight time scaling. Still has a few issues with not being able to fly properly
 
 --New changes to Helen Hellion Waygold:

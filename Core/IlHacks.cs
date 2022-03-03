@@ -43,6 +43,7 @@ namespace SGAmod
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 			IL.Terraria.Player.ExtractinatorUse += Player_ExtractinatorUse;
 			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
+            IL.Terraria.Player.UpdateLifeRegen += DoEffectsOnLifeRegen;
 
             IL.Terraria.Item.UpdateItem += ItemsHaveNoGravityInSpace;
 
@@ -73,9 +74,33 @@ namespace SGAmod
 		}
 
 
-		//Causes all items to think they have no gravity while SGAmod.NoGravityItems is true
+		//Causes stuff to happen when player life regen ticks up
+		private static void DoPlayerLifeRegenEvent(Player player)
+		{
+			player.SGAPly().OnLifeRegen();
+		}
+		private static void DoEffectsOnLifeRegen(ILContext il)
+		{
+			ILCursor c = new ILCursor(il)
+			{
+				Index = il.Instrs.Count - 1
+			};
 
-		private delegate bool NoGravityForThisItemDelegate(bool previous,Item item);
+			if (c.TryGotoPrev(MoveType.Before, i => i.MatchLdfld<Player>("crimsonRegen")))
+			{
+				c.Index -= 1;
+				c.Emit(OpCodes.Ldarg_0);
+				c.EmitDelegate<CollisionAddStickyDelegate>(DoPlayerLifeRegenEvent);
+				return;
+			}
+
+			throw new Exception("IL Error Test 1");
+		}
+
+
+        //Causes all items to think they have no gravity while SGAmod.NoGravityItems is true
+
+        private delegate bool NoGravityForThisItemDelegate(bool previous,Item item);
 		private static bool NoGravityForThisItemMethod(bool previous,Item item)
 		{
 			return previous || (SGAmod.NoGravityItems);

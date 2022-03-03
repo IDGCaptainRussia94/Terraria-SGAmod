@@ -558,7 +558,6 @@ namespace SGAmod.Items.Weapons.Trap
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LihzahrdBrick, 10);
 			recipe.AddIngredient(ItemID.SpikyBall, 100);
-			recipe.AddIngredient(ItemID.SpikyBallTrap, 1);
 			recipe.AddTile(mod.GetTile("ReverseEngineeringStation"));
 			recipe.SetResult(this, 100);
 			recipe.AddRecipe();

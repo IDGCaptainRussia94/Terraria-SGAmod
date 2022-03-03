@@ -3839,7 +3839,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("The Hit List");
-			Tooltip.SetDefault("Grants a banner buff against the last enemy hit\nRequires atleast 50 kills of that enemy in the world and they must have a banner drop");
+			Tooltip.SetDefault("Grants a banner buff against the last enemy hit\nRequires atleast 50 kills of that enemy in the world and they must have a banner drop\nAfter 100 kills, enemies will drop double loot");
 		}
 
         public override string Texture => "Terraria/Item_"+ItemID.ThePlan;

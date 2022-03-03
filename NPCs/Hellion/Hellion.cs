@@ -36,7 +36,7 @@ namespace SGAmod.NPCs.Hellion
 	{
 		public static int Checkpoint = 0;
 		public static int momentDelay = 0;
-		public static bool AntiCheatActive => SGAWorld.cheating || SGAmod.cheating;
+		public static bool AntiCheatActive => SGAmod.TotalCheating;
 		public static MethodInfo CSGodmodeOn = default;
 		public static MethodInfo HMGodmodeOn = default;
 

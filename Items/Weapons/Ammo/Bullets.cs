@@ -137,11 +137,12 @@ namespace SGAmod.Items.Weapons.Ammo
 		}
         public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
         {
+			if (GetType() == typeof(SeekerBullet))
 			flat += item.damage * player.minionDamage;
 		}
         public override void SetDefaults()
 		{
-			item.damage = 10;
+			item.damage = 12;
 			item.summon = true;
 			item.width = 8;
 			item.height = 8;
@@ -179,8 +180,8 @@ namespace SGAmod.Items.Weapons.Ammo
 		}
 		public override void SetDefaults()
 		{
-			item.damage = 50;
-			item.summon = true;
+			item.damage = 60;
+			item.ranged = true;
 			item.width = 8;
 			item.height = 8;
 			item.maxStack = 999;

@@ -261,7 +261,7 @@ namespace SGAmod.NPCs.Hellion
 				}*/
 
 				if (npc.ai[1] == 73500)
-					hell.HellionTaunt("Ugh... Your dermination is unmatched...");
+					hell.HellionTaunt("Ugh... Your determination is unmatched...");
 				if (npc.ai[1] == 73300)
 					hell.HellionTaunt("You might... prove useful...");
 				if (npc.ai[1] == 73050)

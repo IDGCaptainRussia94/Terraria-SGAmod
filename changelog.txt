@@ -5,16 +5,16 @@ Changelog:
 
 -Added:
 
--Spatial Spheres, The Hit List
+-Spatial Spheres, The Hit List, The Bounty Hunter's Mark, Vodka
 
 -Ukrainian Valor, an item dedicated to pay homage to Ukrainian bravery in defending their homeland from an unjust war thrust on them
 
 
 --Changed:
 
--Soldier's Rocket Launcher and Shooting Star have been added to a new catagory of items: Dedicated Items
+-Soldier's Rocket Launcher and Shooting Star have been added to a new catagory of items: Dedicated Items; which was made for the newly added Ukrainian Valor
 
--The former cheating system is now an optional extremely unfair difficulty that is obtained from the starter bag
+-The former cheating system is now an optional extremely unfair difficulty item that is obtained from the starter bag
 
 -Universal Throwing has been desolved and is now using vanilla throwing again, as such, SGAmod no longer requires it as a dependency.
 
@@ -28,7 +28,13 @@ Changelog:
 
 -'Throwable' Trap Spiky Ball no longer requires Spikyball traps
 
+-Reworked Soulbound Bullet: changed to ranged, damage increased to 60 (from 50)
+
 -Rebalanced Joyrider: fixed issues with other ammo types, now works only with bullets (atm, unless I make an upgrade), adjusted overall flight time scaling. Still has a few issues with not being able to fly properly
+
+-Buffed Seeker Bullet: damage increased to 12 (from 10)
+
+-Buffed Demon Steppers: Now includes the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod)
 
 --New changes to Helen Hellion Waygold:
 -made the ending of the FNF attack easier; those packed notes were WAY too hard to hit without going outside the circle

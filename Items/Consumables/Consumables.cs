@@ -224,6 +224,59 @@ namespace SGAmod.Items.Consumables
 		}
 	}
 
+	public class Vodka : MossySalve
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Vodka");
+			Tooltip.SetDefault("'Perfect for when your in The Zone'\nCures 150 life worth of radation damage\n" + Idglib.ColorText(Color.Red, "Might cause aiming to become difficult if you drink too much..."));
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 14;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.Pink;
+			item.value = Item.buyPrice(silver: 50);
+			item.useStyle = ItemUseStyleID.EatingUsing;
+			item.useAnimation = 45;
+			item.useTime = 45;
+			item.useTurn = true;
+			//item.UseSound = SoundID.Drown;
+			item.consumable = true;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return true;
+		}
+		public override bool UseItem(Player player)
+		{
+			Idglibrary.IdgPlayer idg = player.GetModPlayer<IdgPlayer>();
+
+			idg.radationAmmount = Math.Max(idg.radationAmmount - 150, 0);
+
+			player.AddBuff(ModContent.BuffType<Buffs.CheekiBreekiDebuff>(), 60 * 20);
+
+			Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 3, 1f, -0.50f);
+
+			return true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Bottle, 3);
+			recipe.AddIngredient(ItemID.Ale, 4);
+			recipe.AddIngredient(ItemID.Hay, 6);
+			recipe.AddIngredient(ModContent.ItemType<Glowrock>(), 15);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.DankCore>(), 1);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this, 3);
+			recipe.AddRecipe();
+		}
+	}
+
 	public class EnchantedBubble : MossySalve
 	{
 		public override void SetStaticDefaults()

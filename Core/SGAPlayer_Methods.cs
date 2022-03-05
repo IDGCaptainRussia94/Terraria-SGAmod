@@ -404,6 +404,25 @@ namespace SGAmod
 			return false;
 		}
 
+		public static void DrunkAiming()
+        {
+			if (Main.gameMenu)
+				return;
+
+			SGAPlayer sgaply = Main.LocalPlayer.SGAPly();
+			if (sgaply.aimingDrunkTime > 0)
+			{
+				float timeLeft = (sgaply.aimingDrunkTime / 30f);
+				int val1 = (int)(Math.Cos(sgaply.aimingDrunkTime / 40f) * timeLeft);
+				int val2 = (int)(Math.Sin(sgaply.aimingDrunkTime / 46f) * timeLeft);
+
+				Main.mouseX += val1;
+				Main.mouseY += val2;
+				Main.lastMouseX = Main.mouseX;
+				Main.lastMouseY = Main.mouseY;
+			}
+		}
+
 		public static void LimitProjectiles(Player player, int maxprojs, int[] types)
 		{
 

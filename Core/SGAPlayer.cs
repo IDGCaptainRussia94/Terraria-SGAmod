@@ -69,7 +69,7 @@ namespace SGAmod
 		public int manaBoost = 0;
 		public float DoTResist = 1f;
 		public int potionFatigue = 0;
-		public byte invertedTime = 0;
+        public byte invertedTime = 0;
 		public (int, byte) skylightLightInfused = (0, 0);
 		public (int, int) PolarityHarbPower = (0, 0);
 
@@ -86,6 +86,7 @@ namespace SGAmod
 		public float triggerFinger = 1f;
 		public int intimacy = 0;
 		public int toxicity = 0;
+		public int aimingDrunkTime = 0;
 		public bool IceFire = false;
 
 		public float mspeed = 1f;
@@ -154,6 +155,7 @@ namespace SGAmod
 		public int liquidGambling = 0;
 		public bool experimentalPathogen = false;
 		public bool concussionDevice = false;
+		public bool bountyMark = false;
 		public float concussionDeviceEffectiveness = 0f;
 		public FlaskOfBlaze flaskBuff = default;
 		public (bool, int) snakeEyes = (false, 0);
@@ -434,6 +436,7 @@ namespace SGAmod
 			toxicity = 0;
 			consumeCurse = 0;
 			russianRoulette = false;
+			aimingDrunkTime = Math.Max(aimingDrunkTime - 1, 0);
 			if (ReloadingRevolver > 0)
 				ReloadingRevolver -= 1;
 			if (molotovLimit > 0)
@@ -456,6 +459,7 @@ namespace SGAmod
 			voidEmbrancers = false;
 			twinesoffate = false;
 			jabALot = false;
+			bountyMark = false;
 			glacialStone = false;
 			terraDivingGear = false;
 			Duster = false;

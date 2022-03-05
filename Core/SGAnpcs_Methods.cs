@@ -409,8 +409,19 @@ namespace SGAmod
 					}
 				}
 			}
-
 		}
+
+		public void OnBannerDrop(NPC npc, int killer)
+        {
+			Player player = Main.player[killer];
+			if (player.SGAPly().bountyMark)
+			{
+				for (int i = 0; i < 9; i += 1)
+				{
+					npc.NPCLoot();
+				}
+			}
+        }
 
 		public delegate void DoModifiesLateDelegate(NPC npc, Player player, Projectile projectile, Item item, ref int sourcedamage, ref int damage, ref float knockback, ref bool crit);
 

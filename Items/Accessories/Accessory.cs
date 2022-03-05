@@ -1989,12 +1989,15 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Demon Steppers");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze and Acid Burn\nGrants 25% increased radiation resistance\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead\nHold DOWN to stabilize gravity");
+			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze, Acid Burn, Chilled, and Frozen\nGrants 25% increased radiation resistance\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead\nHold DOWN to stabilize gravity");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.buffImmune[BuffID.OnFire] = false;
+			player.buffImmune[BuffID.Chilled] = true;
+			player.buffImmune[BuffID.Frozen] = true;
+
 			player.GetModPlayer<SGAPlayer>().NoFireBurn = 3;
 			if (!player.GetModPlayer<SGAPlayer>().demonsteppers)
 			{
@@ -2052,14 +2055,13 @@ namespace SGAmod.Items.Accessories
 		}
 		public override void AddRecipes()
 		{
-
-
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<GravityStabilizerBoots>(), 1);
 			recipe.AddIngredient(ItemID.FrostsparkBoots, 1);
 			recipe.AddIngredient(ItemID.LavaWaders, 1);
 			recipe.AddRecipeGroup("SGAmod:HorseshoeBalloons", 1);
 			recipe.AddIngredient(ItemID.FrogLeg, 1);
+			recipe.AddIngredient(ItemID.HandWarmer, 1);
 			recipe.AddIngredient(ModContent.ItemType < AmberGlowSkull>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < PrimordialSkull>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < Entrophite>(), 100);
@@ -3834,12 +3836,31 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
-	public class TheHitList : ModItem
+	public class TheBountyHunter : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("The Bounty Hunter's Mark");
+			Tooltip.SetDefault("Reciving a Banner drop causes the killed enemy to drop 10 times loot");
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+	}
+
+	public class TheHitList : TheBountyHunter
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("The Hit List");
-			Tooltip.SetDefault("Grants a banner buff against the last enemy hit\nRequires atleast 50 kills of that enemy in the world and they must have a banner drop\nAfter 100 kills, enemies will drop double loot");
+			Tooltip.SetDefault("Grants a banner buff against the last enemy hit\nRequires atleast 50 kills of that enemy in the world and they must have a banner drop\nReciving a Banner drop causes the killed enemy to drop 10 times loot");
 		}
 
         public override string Texture => "Terraria/Item_"+ItemID.ThePlan;
@@ -3851,6 +3872,8 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			base.UpdateAccessory(player, hideVisual);
+
 			player.accJarOfSouls = true;
 
 			if (player.lastCreatureHit > 0 && NPC.killCount[player.lastCreatureHit] > 0)
@@ -3874,6 +3897,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.TallyCounter, 1);
 			recipe.AddIngredient(ItemID.TatteredCloth, 4);
 			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.DankCore>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<TheBountyHunter>(), 1);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

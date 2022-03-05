@@ -49,6 +49,7 @@ namespace SGAmod
 
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
 			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += AdjustLifeRegen;
+            IL.Terraria.NPC.NPCLoot += DropLootOnBannerDrop;
 
 			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
 			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
@@ -74,8 +75,37 @@ namespace SGAmod
 		}
 
 
-		//Causes stuff to happen when player life regen ticks up
-		private static void DoPlayerLifeRegenEvent(Player player)
+
+		//Runs code on Banner drops on enemies
+		private delegate void DropBannersInjectCodeDelegate(NPC npc,int player);
+		private static void DropBannersInjectCodeMethod(NPC npc, int player)
+		{
+			npc.SGANPCs().OnBannerDrop(npc, player);
+		}
+
+		private static void DropLootOnBannerDrop(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+
+			if (c.TryGotoNext(MoveType.After, i => i.MatchLdloc(11)))
+			{
+				if (c.TryGotoNext(MoveType.After, i => i.MatchPop()))
+				{
+					c.MoveBeforeLabels();
+					c.Emit(OpCodes.Ldarg_0);
+					c.Emit(OpCodes.Ldloc, 9);
+					c.EmitDelegate<DropBannersInjectCodeDelegate>(DropBannersInjectCodeMethod);
+					return;
+				}
+				throw new Exception("IL Error Test 2");
+				return;
+			}
+			throw new Exception("IL Error Test 1");
+		}
+
+
+        //Causes stuff to happen when player life regen ticks up
+        private static void DoPlayerLifeRegenEvent(Player player)
 		{
 			player.SGAPly().OnLifeRegen();
 		}

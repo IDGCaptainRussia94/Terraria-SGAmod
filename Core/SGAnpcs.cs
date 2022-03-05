@@ -1187,12 +1187,16 @@ namespace SGAmod
 
 		public override void SetupTravelShop(int[] shop, ref int nextSlot)
 		{
-			if (Main.rand.Next(0, 3) == 1 && Main.hardMode)
+			if (Main.rand.Next(0, 3) == 0 && Main.hardMode)
 			{
 				shop[nextSlot] = mod.ItemType(Main.rand.NextBool() ? "ShinobiShiv" : "PeacekeepersDuster");
 				nextSlot++;
 			}
-
+			if (Main.rand.Next(0, 3) == 0)
+			{
+				shop[nextSlot] = ModContent.ItemType<TheBountyHunter>();
+				nextSlot++;
+			}
 			bool rocket = false;
 			if (Main.rand.Next(0, 3) == 0)
 			{

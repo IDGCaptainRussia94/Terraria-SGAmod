@@ -62,9 +62,10 @@ namespace SGAmod
 
             On.Terraria.Item.SetDefaults += ApplyThrowingToUThrowing;
             On.Terraria.Projectile.SetDefaults += ApplyThrowingToUThrowingButForProjectiles;
+			On.Terraria.GameInput.PlayerInput.UpdateMainMouse += ApplyDrunkAiming;
 
-            //Unused until more relevant
-            On.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += CtorModWorlData;
+			//Unused until more relevant
+			On.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += CtorModWorlData;
             On.Terraria.GameContent.UI.Elements.UIWorldListItem.DrawSelf += Menu_UICWorldListItem;
             On.Terraria.GameContent.UI.States.UIWorldSelect.ctor += UIWorldSelect_ClearData;
             On.Terraria.DataStructures.PlayerDeathReason.ByOther += DrowningInSpaceIsNotReallyAThing;
@@ -91,6 +92,12 @@ namespace SGAmod
 
 			//On.Terraria.Lighting.AddLight_int_int_float_float_float += AddLight;
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
+		}
+
+        private static void ApplyDrunkAiming(On.Terraria.GameInput.PlayerInput.orig_UpdateMainMouse orig)
+        {
+			orig();
+			SGAPlayer.DrunkAiming();
 		}
 
         private static void ApplyThrowingToUThrowing(On.Terraria.Item.orig_SetDefaults orig, Item self, int Type, bool noMatCheck)

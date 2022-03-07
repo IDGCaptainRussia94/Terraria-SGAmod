@@ -611,7 +611,7 @@ namespace SGAmod
             }
             if (set == "Illuminant")
             {
-                string text1 = "Reduces all new Action Cooldown Stacks by 20%\nEach Active Action Cooldown Stack grants 4% (6% Summon) damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\nAll Vanilla Prefixes on accessories are twice as effective";
+                string text1 = "Reduces all new Action Cooldown Stacks by 20%\nEach Action Cooldown Stack grants 1 Life Regen, 4% (6% Summon) damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\nAll Vanilla Prefixes on accessories are twice as effective";
                 player.setBonus = text1;
                 sgaplayer.illuminantSet.Item1 = 5;
             }            

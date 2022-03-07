@@ -36,6 +36,8 @@ Changelog:
 
 -Buffed Demon Steppers: Now includes the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod)
 
+-Buffed Illuminant Armor: now also increases life regen by 1 per active cooldown stack
+
 --New changes to Helen Hellion Waygold:
 -made the ending of the FNF attack easier; those packed notes were WAY too hard to hit without going outside the circle
 

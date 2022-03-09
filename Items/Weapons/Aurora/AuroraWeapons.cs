@@ -16,12 +16,12 @@ using SGAmod.Buffs;
 using Terraria.Utilities;
 using Microsoft.Xna.Framework.Audio;
 using static SGAmod.SGAUtils;
-using AAAAUThrowing;
+
 
 namespace SGAmod.Items.Weapons.Aurora
 {
 
-    public class SkyLight : ModItem, IAuroraItem
+    public class SkyLightSword : ModItem, IAuroraItem
     {
 
         public static Color[] SkyLightColors => new Color[]{Color.Orange,Color.Cyan,Color.Red,Color.OrangeRed };
@@ -88,7 +88,7 @@ namespace SGAmod.Items.Weapons.Aurora
                     float itemrot = drawInfo.drawPlayer.itemRotation;
                     float itemalpha = 1f;
                     Player drawPlayer = drawInfo.drawPlayer;
-                    float skylightInfuse = MathHelper.Clamp((drawPlayer.SGAPly().skylightLightInfused.Item1 / (float)SkyLight.MaxSkylight) * 2f, 0f, 1f);
+                    float skylightInfuse = MathHelper.Clamp((drawPlayer.SGAPly().skylightLightInfused.Item1 / (float)SkyLightSword.MaxSkylight) * 2f, 0f, 1f);
                     //float skylightInfuse = drawPlayer.SGAPly().skylightLightInfused.Item1 / (float)Skylight.MaxSkylight;
 
                     Projectile[] these = Main.projectile.Where(testby => testby.active && testby.type == ModContent.ProjectileType<SkylightSlashProj>() && testby.owner == drawPlayer.whoAmI).ToArray();
@@ -143,7 +143,7 @@ namespace SGAmod.Items.Weapons.Aurora
             {
                 if (sgaply.skylightLightInfused.Item2 == 0)
                 {
-                    float stuff = MathHelper.Clamp((sgaply.skylightLightInfused.Item1 / (float)SkyLight.MaxSkylight) * 2f, 0f, 1f);
+                    float stuff = MathHelper.Clamp((sgaply.skylightLightInfused.Item1 / (float)SkyLightSword.MaxSkylight) * 2f, 0f, 1f);
                     add += stuff * 0.50f;
                 }
             }
@@ -274,7 +274,7 @@ namespace SGAmod.Items.Weapons.Aurora
                 projectile.Kill();
             }
 
-            if (projectile.timeLeft < 30 && (!player.channel || projectile.ai[0] > 0 || sgaply.skylightLightInfused.Item1>= SkyLight.MaxSkylight))
+            if (projectile.timeLeft < 30 && (!player.channel || projectile.ai[0] > 0 || sgaply.skylightLightInfused.Item1>= SkyLightSword.MaxSkylight))
             {
                 projectile.ai[0] += 1;
                 projectile.netUpdate = true;
@@ -289,7 +289,7 @@ namespace SGAmod.Items.Weapons.Aurora
 
             if (projectile.ai[0] < 1)
             {
-                sgaply.skylightLightInfused.Item1 = (int)MathHelper.Clamp(sgaply.skylightLightInfused.Item1+ SkyLight.SkylightChargeRate, 0, SkyLight.MaxSkylight);
+                sgaply.skylightLightInfused.Item1 = (int)MathHelper.Clamp(sgaply.skylightLightInfused.Item1+ SkyLightSword.SkylightChargeRate, 0, SkyLightSword.MaxSkylight);
                 if (projectile.timeLeft<30)
                 projectile.timeLeft = 30;
             }
@@ -340,7 +340,7 @@ namespace SGAmod.Items.Weapons.Aurora
 
             foreach ((float, float) rotter in rots.OrderBy(testby => testby.Item1))
             {
-                Color clorsz = SkyLight.SkyLightColors[Owner.SGAPly().skylightLightInfused.Item2] * MathHelper.Clamp(projectile.ai[1] / 30f, 0f, Math.Min(projectile.timeLeft / 30f, 1f));
+                Color clorsz = SkyLightSword.SkyLightColors[Owner.SGAPly().skylightLightInfused.Item2] * MathHelper.Clamp(projectile.ai[1] / 30f, 0f, Math.Min(projectile.timeLeft / 30f, 1f));
                 spriteBatch.Draw(glow, Vector2.Lerp(spots[0], spots[1], 1f-rotter.Item1) - Main.screenPosition, null, clorsz*MathHelper.Clamp(5f-(rotter.Item1*5f),0f,Math.Min((rotter.Item1 * 5f),1f)), rotter.Item2, glow.Size() / 2f, rotter.Item1, default, 0);
             }
         }
@@ -362,7 +362,7 @@ namespace SGAmod.Items.Weapons.Aurora
             trail.strength = MathHelper.Clamp(projectile.Opacity, 0f, 1f) * 3f;
             trail.color = delegate (float percent)
             {
-                return SkyLight.SkyLightColors[Owner.SGAPly().skylightLightInfused.Item2] * MathHelper.Clamp(projectile.ai[1]/30f,0f,Math.Min(projectile.timeLeft/30f,1f));
+                return SkyLightSword.SkyLightColors[Owner.SGAPly().skylightLightInfused.Item2] * MathHelper.Clamp(projectile.ai[1]/30f,0f,Math.Min(projectile.timeLeft/30f,1f));
             };
             trail.DrawTrail(trailPos.ToList(), projectile.Center);
 
@@ -416,7 +416,7 @@ namespace SGAmod.Items.Weapons.Aurora
         float TimeLeft => 100f;
         (int,int) TimeToHitWindow => (15,55);
 
-        float BuffTimer => MathHelper.Clamp((Sgaply.skylightLightInfused.Item1 / (float)SkyLight.MaxSkylight) * 5f, 0f, 1f);
+        float BuffTimer => MathHelper.Clamp((Sgaply.skylightLightInfused.Item1 / (float)SkyLightSword.MaxSkylight) * 5f, 0f, 1f);
 
         Vector3 TrueLocation
         {
@@ -491,7 +491,7 @@ namespace SGAmod.Items.Weapons.Aurora
                 projectile.ai[0] = Main.rand.NextFloat(-MathHelper.Pi * 0.25f, MathHelper.Pi * 0.25f);
                 projectile.netUpdate = true;
 
-                Sgaply.skylightLightInfused.Item1 = Math.Max(Sgaply.skylightLightInfused.Item1- SkyLight.SkylightCostPerSlash, 0);
+                Sgaply.skylightLightInfused.Item1 = Math.Max(Sgaply.skylightLightInfused.Item1- SkyLightSword.SkylightCostPerSlash, 0);
 
                 for(int i = 0; i < oldPos.Length; i++)
                 {
@@ -506,7 +506,7 @@ namespace SGAmod.Items.Weapons.Aurora
 
             if (skyhere == default && Main.netMode != NetmodeID.Server)
             {
-                Color otherColor = SkyLight.SkyLightColors[Sgaply.skylightLightInfused.Item2];
+                Color otherColor = SkyLightSword.SkyLightColors[Sgaply.skylightLightInfused.Item2];
 
 
                 float colorz = Main.rand.NextFloat();

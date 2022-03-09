@@ -388,6 +388,7 @@ namespace SGAmod.Items.Weapons
 				effect.Parameters["textureProgress"].SetValue(0f);
 				effect.Parameters["noiseBlendPercent"].SetValue(1f);
 				effect.Parameters["strength"].SetValue(alpha2);
+				effect.Parameters["alphaChannel"].SetValue(false);
 
 				effect.Parameters["colorTo"].SetValue(color1.ToVector4() * new Vector4(0.5f, 0.5f, 0.5f, 1f));
 				effect.Parameters["colorFrom"].SetValue(Color.Black.ToVector4());

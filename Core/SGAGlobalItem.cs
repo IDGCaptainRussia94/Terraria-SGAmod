@@ -8,15 +8,11 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.GameContent.UI;
-using System.Reflection;
 using SGAmod.Items.Weapons.Trap;
 using SGAmod.Items.Accessories;
 using Idglibrary;
-using AAAAUThrowing;
-using Terraria.Utilities;
+
 using SGAmod.Buffs;
-using SGAmod.Items.Armors;
 using SGAmod.Items.Armors.Vibranium;
 using Terraria.GameContent.Events;
 using Terraria.DataStructures;
@@ -24,6 +20,7 @@ using SGAmod.Items.Armors.Dev;
 using SGAmod.Items;
 using SGAmod.Tiles.TechTiles;
 using SGAmod.HavocGear.Items;
+using ReLogic.Graphics;
 
 namespace SGAmod
 {
@@ -90,93 +87,8 @@ namespace SGAmod
 
         }
 
-        public static void RemoveCheatItemCraftingRecipes()
-        {
-            Mod luiafk = ModLoader.GetMod("Luiafk");
-            if ((luiafk != null))
-            {
-                for (var i = 0; i < Recipe.numRecipes; i++)
-                {
-                    Recipe recipe = Main.recipe[i];
-                    Item itemz = recipe.createItem;
-                    if (itemz.modItem != null)
-                    {
-                        ModItem mitem = itemz.modItem;
-                        SGAmod.Instance.Logger.Debug("has mod item: "+ mitem.GetType().FullName);
-                        string nullname = mitem.GetType().Namespace;
-                        if (nullname.Length - nullname.Replace("Images.Items.Potions", "").Length > 0)
-                        {
-                            recipe.RemoveRecipe();
-                        }
-                    }
-
-                }
-            }
-        }
-
-        public bool IsItemCheating(Item item)
-        {
-            if (SGAmod.DevDisableCheating && Dimensions.SGAPocketDim.WhereAmI == null)
-                return false;
-
-            if ((SGAmod.Fargos.Item1 || SGAmod.Luiafk.Item1))
-            {
-                if (item.modItem != null)
-                {
-                    Type modtype = item.modItem.GetType();
-                    string nullname = modtype.Namespace;
-                    if (nullname.Length - nullname.Replace("Fargowiltas.Items.Explosives", "").Length > 0)
-                    {
-                        if (modtype.Name != "BoomShuriken" && modtype.Name != "AutoHouse" && modtype.Name != "LihzahrdInstactuationBomb" && modtype.Name != "MiniInstaBridge")
-                            return true;
-                    }
-                    if (nullname.Length - nullname.Replace("Items.AutoBuilders", "").Length > 0)
-                    {
-                        if (modtype.Name != "PrisonBuilder")
-                            return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        public bool CheckForCheatyPlaythroughRuiningItems(Item item, Player player)
-        {
-            if (IsItemCheating(item))
-            {
-                if (Dimensions.SGAPocketDim.WhereAmI != null)
-                {
-                    return false;
-                }
-
-                if (!SGAmod.cheating && !SGAmod.cheating)
-                {
-                    Main.NewText("You were warned", Color.Red);
-                    SGAmod.cheating = true;
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public override bool CanUseItem(Item item, Player player)
         {
-            if (!SGAmod.cheating && !SGAWorld.cheating)
-            {
-                if (IsItemCheating(item))
-                {
-                    if (player.controlUp)
-                    {
-                        if (CheckForCheatyPlaythroughRuiningItems(item, player))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-            }
-
-
             if ((player.SGAPly().ReloadingRevolver > 0) && item.damage > 0)
             {
                 return false;
@@ -189,6 +101,7 @@ namespace SGAmod
 
         public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
         {
+
             if (item.modItem != null && item.modItem is IAuroraItem)
             {
                 if (line.mod == "Terraria" && line.Name == "ItemName")
@@ -201,6 +114,7 @@ namespace SGAmod
                     Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
 
                     hallowed.Parameters["alpha"].SetValue(0.5f);
+                    hallowed.Parameters["prismAlpha"].SetValue(0f);
                     hallowed.Parameters["prismColor"].SetValue(Items.Placeable.TechPlaceable.LuminousAlterItem.AuroraLineColor.ToVector3());
                     hallowed.Parameters["rainbowScale"].SetValue(0.25f);
                     hallowed.Parameters["overlayScale"].SetValue(new Vector2(1f, 1f));
@@ -218,6 +132,91 @@ namespace SGAmod
                     return false;
                 }
             }
+
+            if (item.modItem != null && item.modItem is IDedicatedItem)
+            {
+                if (line.mod == "SGAmod" && line.Name == "DedicatedItem")
+                {
+                    Effect hallowed = SGAmod.HallowedEffect;
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
+
+                    Texture2D DedTex = SGAmod.Instance.GetTexture("Voronoi");
+
+                    Effect effect = SGAmod.TextureBlendEffect;
+                    
+                    effect.Parameters["coordMultiplier"].SetValue(new Vector2(3f, 1f));
+                    effect.Parameters["coordOffset"].SetValue(new Vector2(0,0));
+                    effect.Parameters["noiseMultiplier"].SetValue(new Vector2(1f, 1f));
+                    effect.Parameters["noiseOffset"].SetValue(new Vector2(0,0));
+
+                    effect.Parameters["Texture"].SetValue(SGAmod.Instance.GetTexture("SmallLaser"));
+                    effect.Parameters["noiseTexture"].SetValue(SGAmod.Instance.GetTexture("GlowOrb"));
+                    effect.Parameters["noiseProgress"].SetValue(Main.GlobalTime / 1f);
+                    effect.Parameters["textureProgress"].SetValue(0);
+                    effect.Parameters["noiseBlendPercent"].SetValue(1f);
+                    effect.Parameters["strength"].SetValue(1f);
+                    effect.Parameters["alphaChannel"].SetValue(true);
+
+                    Vector4 col1 = Main.hslToRgb(((Main.GlobalTime / 12f)) % 1f, 0.50f, 0.75f).ToVector4();
+                    Vector4 col2 = Main.hslToRgb((((Main.GlobalTime) / 12f) + 0.50f) % 1f, 0.15f, 0.50f).ToVector4();
+
+                    effect.Parameters["colorTo"].SetValue(col1);
+                    effect.Parameters["colorFrom"].SetValue(col2);
+
+                    effect.CurrentTechnique.Passes["TextureBlend"].Apply();
+
+                    float offset = 64f;
+
+                    Vector2 textSize = Main.fontMouseText.MeasureString(line.text) + new Vector2(offset * 2f, 0);
+
+                    Main.spriteBatch.Draw(DedTex,new Vector2(line.X- offset, line.Y), null, Color.White,0, new Vector2(0f, 0), (textSize/ new Vector2(DedTex.Width, DedTex.Height))*new Vector2(1f,0.75f), default, 0);
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
+
+                    for (float ff = 0; ff < MathHelper.TwoPi; ff += MathHelper.TwoPi / 4f) 
+                    {
+                        Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y)+ff.ToRotationVector2()*3f, Color.Black);
+                    }
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
+
+                    for (float f = -1; f < 2; f += 2)
+                    {
+
+                        effect.Parameters["coordMultiplier"].SetValue(new Vector2(1f, 1f));
+                        effect.Parameters["coordOffset"].SetValue(new Vector2((Main.GlobalTime / 20f)*f, Main.GlobalTime / 200f));
+                        effect.Parameters["noiseMultiplier"].SetValue(new Vector2(2f, 2f));
+                        effect.Parameters["noiseOffset"].SetValue(new Vector2((Main.GlobalTime / 100f) * f, Main.GlobalTime / -80f));
+
+                        effect.Parameters["Texture"].SetValue(SGAmod.Instance.GetTexture("Voronoi"));
+                        effect.Parameters["noiseTexture"].SetValue(SGAmod.Instance.GetTexture("Voronoi"));
+                        effect.Parameters["noiseProgress"].SetValue(Main.GlobalTime / 1f);
+                        effect.Parameters["textureProgress"].SetValue(0);
+                        effect.Parameters["noiseBlendPercent"].SetValue(0.5f);
+                        effect.Parameters["strength"].SetValue(0.50f);
+                        effect.Parameters["alphaChannel"].SetValue(true);
+
+                        col1 = Main.hslToRgb(((Main.GlobalTime / 6f)+(f/2f)) % 1f, 1f, 0.75f).ToVector4();
+                        col2 = Main.hslToRgb((((Main.GlobalTime) / 6f) + 0.50f + (f / 2f)) % 1f, 0.8f, 0.50f).ToVector4();
+
+                        effect.Parameters["colorTo"].SetValue(col1);
+                        effect.Parameters["colorFrom"].SetValue(col2);
+
+                        effect.CurrentTechnique.Passes["TextureBlend"].Apply();
+
+                        Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.White);
+                    }
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+                    return false;
+                }
+            }
+
             return true;
         }
 
@@ -314,7 +313,13 @@ namespace SGAmod
                     tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, dev.Item1 + "'s "+(dev.Item2+ (dev.Item2 != "" ? " " : "")) + "dev weapon")));
                 }
 
-
+                if (item?.modItem is IDedicatedItem)
+                {
+                    string ded = ((IDedicatedItem)item.modItem).DedicatedItem();
+                    Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
+                    tooltips.Add(new TooltipLine(mod, "DedicatedItem", "-- Dedicated --"));
+                    tooltips.Add(new TooltipLine(mod, "DedicatedItem", ded));
+                }
             }
 
             if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAmod.DRMMode))
@@ -344,21 +349,6 @@ namespace SGAmod
                 {
                     Color c = Main.hslToRgb(0.5f, 0.20f, 0.7f);
                     tooltips.Add(new TooltipLine(mod, "Wraithclue", Idglib.ColorText(c, "A very strong being has locked it away from your possession, talk to the guide")));
-                }
-            }
-            if (IsItemCheating(item))
-            {
-
-                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "This item is considered cheating, overpowered, and gamebreaking within SGAmod")));
-                if (Dimensions.SGAPocketDim.WhereAmI == null)
-                {
-                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Using it will permentally mark your world as a cheat world")));
-                    if (!SGAmod.cheating && !SGAWorld.cheating)
-                        tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "Hold UP to be able to use this item, confirming you read this")));
-                }
-                else
-                {
-                    tooltips.Add(new TooltipLine(mod, "Cheating", Idglib.ColorText(Color.Red, "It cannot be used within subworlds")));
                 }
             }
             if (item?.modItem is ITechItem)//Tech items
@@ -621,7 +611,7 @@ namespace SGAmod
             }
             if (set == "Illuminant")
             {
-                string text1 = "Reduces all new Action Cooldown Stacks by 20%\nEach Active Action Cooldown Stack grants 4% (6% Summon) damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\nAll Vanilla Prefixes on accessories are twice as effective";
+                string text1 = "Reduces all new Action Cooldown Stacks by 20%\nEach Action Cooldown Stack grants 1 Life Regen, 4% (6% Summon) damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\nAll Vanilla Prefixes on accessories are twice as effective";
                 player.setBonus = text1;
                 sgaplayer.illuminantSet.Item1 = 5;
             }            
@@ -883,6 +873,13 @@ namespace SGAmod
 
 
             return false;
+        }
+
+        public override void OnConsumeItem(Item item, Player player)
+        {
+            SGAPlayer sga = player.SGAPly();
+            if (Main.rand.Next(0, 100) < sga.consumeCurse && !sga.tpdcpu)
+                item.stack -= 1;
         }
 
         public override bool UseItem(Item item, Player player)
@@ -1486,7 +1483,7 @@ namespace SGAmod
         }
         public override bool CanRoll(Item item)
         {
-            return item.thrown || item.Throwing().thrown;
+            return item.Throwing().thrown;
         }
     }
 
@@ -1878,25 +1875,6 @@ namespace SGAmod
 
             return Main.rand.Next(100) > (int)(player.GetModPlayer<SGAPlayer>().Thrownsavingchance * 100f);
 
-        }
-
-        public override void OnConsumeItem(Item item, Player player)
-        {
-            SGAPlayer sga = player.SGAPly();
-            if (Main.rand.Next(0, 100) < sga.consumeCurse && !sga.tpdcpu)
-                item.stack -= 1;
-        }
-
-        public override bool ConsumeItem(Item item, Player player)
-        {
-            if (item.Throwing().thrown || item.thrown)
-            {
-                return TrapDamageItems.SavingChanceMethod(player);
-            }
-            else
-            {
-                return true;
-            }
         }
 
         public override bool CanEquipAccessory(Item item, Player player, int slot)

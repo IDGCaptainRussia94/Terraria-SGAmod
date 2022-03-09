@@ -22,7 +22,7 @@ namespace SGAmod.NPCs.TownNPCs
 
 		float walkframe = 0f;
 		int confort = 0;
-		public int partyVictum => BirthdayParty.CelebratingNPCs.FirstOrDefault(type => type == npc.whoAmI);
+		public int PartyVictum => BirthdayParty.CelebratingNPCs.FirstOrDefault(type => type == npc.whoAmI);
 
 		public override bool Autoload(ref string name)
 		{
@@ -200,6 +200,13 @@ namespace SGAmod.NPCs.TownNPCs
 			SGAPlayer modplayer = Main.LocalPlayer.GetModPlayer<SGAPlayer>();
 			int expgathered = Main.LocalPlayer.GetModPlayer<SGAPlayer>().ExpertiseCollectedTotal;
 
+			if (SGAmod.TotalCheating && SGAmod.PlayingPercent >= 1f)
+            {
+				chat.Add("YOU KNOW WHAT YOU DID");
+				chat.Add("REPENT");
+				return chat.Get();
+            }
+
 			if (SGAPocketDim.WhereAmI == typeof(LimboDim))
 			{
 				chat.Add("Rk erb, hqfubswhg whaw!");
@@ -329,7 +336,7 @@ namespace SGAmod.NPCs.TownNPCs
 					chat.Add("The last time I heard of a party, it was in celebration at one of my kind's deaths...",3);
 					chat.Add("No, your not going to play 'pin the tail on my tail'", 3);
 
-					int index = partyVictum;
+					int index = PartyVictum;
 					if (index != default && !Main.LocalPlayer.SGAPly().dragonFriend)
 					{
 						List<int> guys = new List<int>();
@@ -512,7 +519,7 @@ namespace SGAmod.NPCs.TownNPCs
 				if (Main.LocalPlayer.SGAPly().dragonFriend)
 					button2 = "Hug";
 			}
-			if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && partyVictum != default && !Main.LocalPlayer.SGAPly().dragonFriend)
+			if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && PartyVictum != default && !Main.LocalPlayer.SGAPly().dragonFriend)
 			{
 				switch (confort)
 				{
@@ -546,7 +553,7 @@ namespace SGAmod.NPCs.TownNPCs
 		{
 			if (!firstButton)
             {
-				if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && partyVictum != default && !Main.LocalPlayer.SGAPly().dragonFriend)
+				if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && PartyVictum != default && !Main.LocalPlayer.SGAPly().dragonFriend)
                 {
 					switch (confort)
 					{
@@ -790,12 +797,10 @@ namespace SGAmod.NPCs.TownNPCs
 
 		public override void SetupShop(Chest shop, ref int nextSlot)
 		{
+			// Draken's shop items
 
+			SGAPlayer modplayer = Main.LocalPlayer.SGAPly();
 
-			//if (Main.LocalPlayer.GetModPlayer<ExamplePlayer>(mod).ZoneExample)
-			// Here is an example of how your npc can sell items from other mods.
-
-			SGAPlayer modplayer = Main.LocalPlayer.GetModPlayer<SGAPlayer>();
 			if (Main.hardMode)
 			{
 				shop.item[nextSlot].SetDefaults(ItemID.PlatinumCoin);
@@ -1009,8 +1014,10 @@ namespace SGAmod.NPCs.TownNPCs
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Enemies have 20% more HP")));
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Your health is tripled, however you take triple damage")));
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Life regen is completely disabled during bosses")));
+					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Nurse's service is outside your paycheck during bosses")));
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Some SGAmod bosses gain new abilities")));
 					tooltips.Add(new TooltipLine(mod, "Nm1", Idglib.ColorText(Color.Red, "Many optional SGAmod config settings are forced on")));
+
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Your Expertise gain is increased by 25%")));
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "Enemy money dropped is increased by 50%")));
 					tooltips.Add(new TooltipLine(mod, "Nm2", Idglib.ColorText(Color.Lime, "There is a 20% chance for enemies to drop double loot")));

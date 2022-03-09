@@ -29,9 +29,9 @@ namespace SGAmod
 
 			IL.Terraria.Main.Update += RemoveUpdateCinematic;
 			IL.Terraria.Main.DoDraw += BGPatchOfPain;
+			IL.Terraria.Main.DoDraw += DrawBehindVoidLayers;
 			IL.Terraria.Main.DrawInterface_Resources_Life += HUDLifeBarsOverride;
 			IL.Terraria.Main.DrawInterface_Resources_Breath += BreathMeterHack;
-			IL.Terraria.Main.DoDraw += DrawBehindVoidLayers;
 
 			IL.Terraria.Player.AdjTiles += ForcedAdjTilesHack;
 			IL.Terraria.Player.Update += SwimInAirHack;
@@ -43,11 +43,13 @@ namespace SGAmod
 			IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 			IL.Terraria.Player.ExtractinatorUse += Player_ExtractinatorUse;
 			IL.Terraria.Player.CheckMana_Item_int_bool_bool += MagicCostHack;
+            IL.Terraria.Player.UpdateLifeRegen += DoEffectsOnLifeRegen;
 
             IL.Terraria.Item.UpdateItem += ItemsHaveNoGravityInSpace;
 
 			IL.Terraria.NPC.Collision_LavaCollision += ForcedNPCLavaCollisionHack;
 			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += AdjustLifeRegen;
+            IL.Terraria.NPC.NPCLoot += DropLootOnBannerDrop;
 
 			IL.Terraria.GameInput.LockOnHelper.Update += CurserHack;
 			IL.Terraria.GameInput.LockOnHelper.SetUP += CurserAimingHack;
@@ -73,9 +75,62 @@ namespace SGAmod
 		}
 
 
-		//Causes all items to think they have no gravity while SGAmod.NoGravityItems is true
 
-		private delegate bool NoGravityForThisItemDelegate(bool previous,Item item);
+		//Runs code on Banner drops on enemies
+		private delegate void DropBannersInjectCodeDelegate(NPC npc,int player);
+		private static void DropBannersInjectCodeMethod(NPC npc, int player)
+		{
+			npc.SGANPCs().OnBannerDrop(npc, player);
+		}
+
+		private static void DropLootOnBannerDrop(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+
+			if (c.TryGotoNext(MoveType.After, i => i.MatchLdloc(11)))
+			{
+				if (c.TryGotoNext(MoveType.After, i => i.MatchPop()))
+				{
+					c.MoveBeforeLabels();
+					c.Emit(OpCodes.Ldarg_0);
+					c.Emit(OpCodes.Ldloc, 9);
+					c.EmitDelegate<DropBannersInjectCodeDelegate>(DropBannersInjectCodeMethod);
+					return;
+				}
+				throw new Exception("IL Error Test 2");
+				return;
+			}
+			throw new Exception("IL Error Test 1");
+		}
+
+
+        //Causes stuff to happen when player life regen ticks up
+        private static void DoPlayerLifeRegenEvent(Player player)
+		{
+			player.SGAPly().OnLifeRegen();
+		}
+		private static void DoEffectsOnLifeRegen(ILContext il)
+		{
+			ILCursor c = new ILCursor(il)
+			{
+				Index = il.Instrs.Count - 1
+			};
+
+			if (c.TryGotoPrev(MoveType.Before, i => i.MatchLdfld<Player>("crimsonRegen")))
+			{
+				c.Index -= 1;
+				c.Emit(OpCodes.Ldarg_0);
+				c.EmitDelegate<CollisionAddStickyDelegate>(DoPlayerLifeRegenEvent);
+				return;
+			}
+
+			throw new Exception("IL Error Test 1");
+		}
+
+
+        //Causes all items to think they have no gravity while SGAmod.NoGravityItems is true
+
+        private delegate bool NoGravityForThisItemDelegate(bool previous,Item item);
 		private static bool NoGravityForThisItemMethod(bool previous,Item item)
 		{
 			return previous || (SGAmod.NoGravityItems);
@@ -428,7 +483,7 @@ namespace SGAmod
 
 		}
 
-		//Draws Hellion's Stary effect in the same layer as Moonlord's, also draws stuff right before worm enemies
+		//Injects a few method calls to handle layered drawing: Draws Hellion's Stary effect in the same layer as Moonlord's, also draws stuff right before worm enemies AND right after the sky and before tile BGs
 		private static void DrawBehindVoidLayers(ILContext il)
 		{
 			ILCursor c = new ILCursor(il);

@@ -36,7 +36,7 @@ namespace SGAmod.NPCs.Hellion
 	{
 		public static int Checkpoint = 0;
 		public static int momentDelay = 0;
-		public static bool AntiCheatActive => SGAWorld.cheating || SGAmod.cheating;
+		public static bool AntiCheatActive => SGAmod.TotalCheating;
 		public static MethodInfo CSGodmodeOn = default;
 		public static MethodInfo HMGodmodeOn = default;
 
@@ -261,7 +261,7 @@ namespace SGAmod.NPCs.Hellion
 				}*/
 
 				if (npc.ai[1] == 73500)
-					hell.HellionTaunt("Ugh... Your dermination is unmatched...");
+					hell.HellionTaunt("Ugh... Your determination is unmatched...");
 				if (npc.ai[1] == 73300)
 					hell.HellionTaunt("You might... prove useful...");
 				if (npc.ai[1] == 73050)
@@ -3836,7 +3836,7 @@ namespace SGAmod.NPCs.Hellion
 
 		public void InsaneCheatStuff(Player thatplayer,int i)
         {
-			if (SGAmod.cheating || SGAWorld.cheating)
+			if (SGAmod.TotalCheating)
 			{
 
 				thatplayer.AddBuff(ModContent.BuffType<Idglibrary.Buffs.BossFightPurity>(), 5);
@@ -5434,16 +5434,16 @@ namespace SGAmod.NPCs.Hellion
 				AddNote(0, 30);
 			}
 			AddNote(-1, 80);
-			for (int i = 0; i < 5; i += 1)
+			for (int i = 0; i < 3; i += 1)
 			{
-				AddNote(0, 15);
-				AddNote(3, 15);
+				AddNote(1, 32);
+				AddNote(3, 32);
 			}
 			AddNote(-1, 80);
-			for (int i = 0; i < 5; i += 1)
+			for (int i = 0; i < 4; i += 1)
 			{
-				AddNote(1, 15);
-				AddNote(2, 15);
+				AddNote(0, 32);
+				AddNote(2, 32);
 			}
 			AddNote(-1, 60);
 			AddNote(3, 15);
@@ -5928,6 +5928,7 @@ namespace SGAmod.NPCs.Hellion
 		public float flipped = 0f;
 		public float addone = 0f;
 		public float shaking = 0f;
+		public int timeIn = 0;
 		public Vector2 scale;
 		public HellionInsanity(string text, float distance, int timeleft)
 		{
@@ -5952,7 +5953,7 @@ namespace SGAmod.NPCs.Hellion
 
 		public void Draw()
 		{
-			float alpha = MathHelper.Clamp((float)timeleft / 150f, 0f, Math.Min(addone / 100f, 1f));
+			float alpha = MathHelper.Clamp((float)timeleft / 150f, 0f, Math.Min((addone- (float)timeIn) / 100f, 1f));
 			Vector2 size = Main.fontDeathText.MeasureString(text) * scale;
 
 			Vector2 mathstuff = Main.rand.NextVector2Circular(shaking, shaking) + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * distance;

@@ -10,7 +10,7 @@ using Idglibrary;
 using SGAmod.Items.Weapons.SeriousSam;
 using SGAmod.Items.Weapons;
 using SGAmod.HavocGear.Items.Weapons;
-using AAAAUThrowing;
+
 using SGAmod.Effects;
 
 namespace SGAmod.Items.Weapons

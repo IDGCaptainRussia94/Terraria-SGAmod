@@ -119,11 +119,15 @@ namespace SGAmod.NPCs.Sharkvern
                 types.Insert(types.Count,ItemID.Seashell); 
                 types.Insert(types.Count,ItemID.Starfish); 
                 types.Insert(types.Count,ItemID.SoulofFlight);
-                types.Insert(types.Count,ItemID.Coral); 
+                types.Insert(types.Count,ItemID.Coral);
 
+                DropHelper.DropFixedItemQuanity(types.ToArray(), 75, npc.Center);
+
+                /*
                 for (int f = 0; f < (Main.expertMode ? 150 : 75); f=f+1){
                 Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, types[Main.rand.Next(0,types.Count)]);
                 }
+                */
 
             }
             if(Main.rand.Next(7) == 0)
@@ -182,8 +186,18 @@ namespace SGAmod.NPCs.Sharkvern
 
             if (shark == null)
             {
-                if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && !SGAWorld.downedSharkvern && Main.raining && (SGAConfig.Instance.NegativeWorldEffects || SGAmod.DRMMode))
+                bool one = (Main.raining);
+                bool two = (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && !SGAWorld.downedSharkvern && (SGAConfig.Instance.NegativeWorldEffects || SGAmod.DRMMode));
+                bool three = (Main.netMode == NetmodeID.SinglePlayer && !Main.LocalPlayer.ZoneSnow && SGAmod.TotalCheating);
+                int time = 2;
+
+                if (one && (two || three))
                 {
+                    if (three)
+                    {
+                        time += (int)(SGAmod.PlayingPercent * 1800);
+                    }
+
                     if (!SGAWorld.sharkvernMessage)
                     {
                         SGAWorld.sharkvernMessage = true;
@@ -201,7 +215,7 @@ namespace SGAmod.NPCs.Sharkvern
                             if (player2.active && !player2.dead)
                             {
                                 if (!player2.ZoneUnderworldHeight && Collision.CanHitLine(player2.Center, 1, 1, player2.Center - new Vector2(0, 1200), 1, 1))
-                                    player2.AddBuff(ModContent.BuffType<SharkvernDrown>(), 2, true);
+                                    player2.AddBuff(ModContent.BuffType<SharkvernDrown>(), time, true);
                             }
                         }
                     }

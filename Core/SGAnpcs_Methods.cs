@@ -11,7 +11,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Idglibrary;
-using AAAAUThrowing;
+
 using SGAmod.NPCs.Cratrosity;
 using SGAmod.Buffs;
 using System.Linq;
@@ -89,6 +89,33 @@ namespace SGAmod
 				}
 				moddedplayer.ninjaStashLimit += (int)(60 / player.Throwing().thrownDamage);
 				player.ConsumeItem(ammo);
+			}
+
+		}
+
+		public void MakeEnemiesUtterHell(NPC npc)
+        {
+			if (SGAmod.OverpoweredMod > 0)
+			{
+				if (!npc.friendly)
+				{
+					npc.life = (int)(npc.life * (1f + (SGAmod.OverpoweredMod * 2f)));
+					npc.lifeMax = (int)(npc.lifeMax * (1f + (SGAmod.OverpoweredMod * 2f)));
+					npc.damage = (int)(npc.damage * (1f + SGAmod.OverpoweredMod));
+
+					double twoHours = 60 * 60 * 1.0;
+					double sevenHours = 60 * 60 * 7.0;
+
+					for (int i = 0; i < npc.buffImmune.Length; i += 1)
+					{
+						if (Main.rand.Next(0, (int)SGAmod.LocalPlayerPlayTime) > twoHours)
+						{
+							npc.buffImmune[i] = true;
+						}
+					}
+
+				}
+
 			}
 
 		}
@@ -382,8 +409,19 @@ namespace SGAmod
 					}
 				}
 			}
-
 		}
+
+		public void OnBannerDrop(NPC npc, int killer)
+        {
+			Player player = Main.player[killer];
+			if (player.SGAPly().bountyMark)
+			{
+				for (int i = 0; i < 9; i += 1)
+				{
+					npc.NPCLoot();
+				}
+			}
+        }
 
 		public delegate void DoModifiesLateDelegate(NPC npc, Player player, Projectile projectile, Item item, ref int sourcedamage, ref int damage, ref float knockback, ref bool crit);
 
@@ -484,9 +522,11 @@ namespace SGAmod
 					totaldamage = Math.Min(totaldamage, 1f);
 					if (moddedplayer.GoldenCog)
 					{
-						npc.life = npc.life - (int)(damage * 0.10);
-						if (Main.netMode == 2)
-							NetMessage.SendData(23, -1, -1, null, npc.whoAmI, 0f, 0f, 0f, 0, 0, 0);
+						npc.life = Math.Max(npc.life - (int)(damage * 0.10),1);
+						if (Main.netMode != NetmodeID.SinglePlayer)
+						{
+							NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI, 0f, 0f, 0f, 0, 0, 0);
+						}
 					}
 					damage += (int)((npc.defense * totaldamage) / 2.00);
 				}

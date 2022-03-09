@@ -1,11 +1,232 @@
 
 Changelog:
 
-3.625-(2/10/22)-beta 3
+3.650-(3/??/??)--Patch 17: Anniversary Update Part 2!
+
+-Added:
+
+-Spatial Spheres, The Hit List, The Bounty Hunter's Mark, Vodka
+
+-Ukrainian Valor, an item dedicated to pay homage to Ukrainian bravery in defending their homeland from an unjust war thrust on them
+
 
 --Changed:
 
+-Soldier's Rocket Launcher and Shooting Star have been added to a new catagory of items: Dedicated Items; which was made for the newly added Ukrainian Valor
+
+-The former cheating system is now an optional extremely unfair difficulty item that is obtained from the starter bag
+
+-Universal Throwing has been desolved and is now using vanilla throwing again, as such, SGAmod no longer requires it as a dependency.
+
+-Armor glowmasks now work on mounts
+
+-The Fog has been revamped slightly, allowing it to draw neatly to all screensizes
+
+-Jagged Overgrown Spikes now require Nails
+
+-Prismal/Prismic ammo has been made cheaper, sorta.
+
+-'Throwable' Trap Spiky Ball no longer requires Spikyball traps
+
+-Reworked Soulbound Bullet: changed to ranged, damage increased to 60 (from 50)
+
+-Rebalanced Joyrider: fixed issues with other ammo types, now works only with bullets (atm, unless I make an upgrade), adjusted overall flight time scaling. Still has a few issues with not being able to fly properly
+
+-Buffed Seeker Bullet: damage increased to 12 (from 10)
+
+-Buffed Demon Steppers: Now includes the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod)
+
+-Buffed Illuminant Armor: now also increases life regen by 1 per active cooldown stack
+
+--New changes to Helen Hellion Waygold:
+-made the ending of the FNF attack easier; those packed notes were WAY too hard to hit without going outside the circle
+
+--Fixed
+
+-Camera panning bosses will no longer cause tiles to not draw
+
+-Golden Cog causing enemies to  "despawn" by killing them with the 10% extra "non" damage
+
+
+
+3.636-(2/21/22)--Hotfix 37
+
+
+--Changed:
+
+-Made the warnings on specific items more present with more tooltips and an over the top effect
+
+
+--Fixed
+
+-Flask of Soul Sap using Star pickups in their crafting recipe, was meant to be a Fallen Star
+
+-Repent being not really useable, and decreased cost
+
+-Celestial Monolith being uncraftable to get Star Metal Bars early
+
+-Caliburn Compass visuals going off center at higher UI scales
+
+-Reservation/JellyBru Shields granting effectively godmode when used with Undying Valor
+
+
+
+3.635-(2/20/22)--Patch 16
+
+--Added
+
+-Novus Shuriken, Repent
+
+-A way to Repent for your sins... Check in with Draken every once in a while
+
+-Novite Airtank resprite
+
+
+--Changed:
+
+-Added Rijam's glowmask tweaks: female armor glowmasks are now properly shown
+
+-Copper Wraith's ore/shard drops doubled in Hard Mode, Cobalt Wraith's doubled in Post Moon Lord
+
+-Updated Braxsaw visuals
+
+-Made the mod less impossible at first under specific circumstances, that get gradually more intense over time
+
+-Nerfed Caliburn C: shards do less damage (40% => 25% of base damage)
+
+
+--Fixed
+
+-Texture bleeding on Murk's sprite
+
+-Sharkvern not using the improved random item drop system in normal mode
+
+
+
+3.630-(2/19/22)--Hotfix 36
+
+--Fixed
+
+-Hopefully for the love of god, fixed the tf2 Emblem/cross mod issue
+
+
+3.629-(2/18/22)--Hotfix 35
+
+--Fixed
+
+-Luminous Alter crafting being disabled, no idea why it was :/
+
+-An issue with The Refractor that would cause some projectiles to despawn
+
+
+3.628-(2/16/22)--Hotfix 34
+
+--Added
+
+-Phaethon Treasure Bag
+
+
+--Changed:
+
+-Removed changed nurse lines, those are for a later feature coming in part 2
+
+-Nurse charges a "bit more" in Nightmare Mode if a boss is alive
+
+
+--Fixed
+
+-Consolation Prize having no axe power
+
+-Pheathon being marked/unmarked in boss checklist when they should/shouldn't be, hopefully
+
+-Missing server check with General's Armchair that lead to SGAmod unloading when trying to start a server with it
+
+
+3.627-(2/15/22)--Hotfix 33
+
+--Added
+
+-Novite Air Tank
+
+
+--Changed:
+
+-Added 'the art depicts a moth dueling against a reality shaping and mind controlling entity' to the artist tag of 'Paradox General'
+
+-Reworked Tidal Charm: is now an Amulet (Tidal Amulet), grants air swimming (that includes Flippers) AND causes drowning for 8 seconds when worn when raining/Tempest Sharkvern is defeated
+
+-Buffed Prismal Air Tank: now includes defense increasing buff similar to the former Tidal Charm, thanks to the new Novite Air Tank
+
+
+-Fixed
+
+-Dungeon Floors config menu from going wack ingame
+
+-Buff Burning and other higher challenge factors not working as expected when they should have
+
+
+3.626-(12/3/22)--I'm not even going to call this a hotfix
+
+--Changed:
+
+-mod title changed to the new update, yeah, that's it
+
+
+3.626-(12/3/22)--I'm not even going to call this a hotfix
+
+--Changed:
+
+-mod title changed to the new update, yeah, that's it
+
+
+
+3.625-(2/14/22)-beta 3
+
+-Merged Rijam's Deeper Dungeons update, adds alot of variety to the Deeper Dungeons
+
+--Changed:
+
+-Various changes to the Deeper Dungeons:
+-Many things added by the Rijam Update: new enemies, varied wall types, and hardmode/post plantera enemies! Added a few of my own too! (ie Paladin)
+-Includes new loot/bars depending on world progression-up to Post Plantera
+-Implimented the walls to stop the drowning debuff
+
 -Reduced OP mod scaling a bit
+
+-Reworked Armchair General: Shiny Stone is now exclusive to a mount you get into if you stand still, this mount also gives defense and endurance as well
+
+-Nerfed IDGCaptainRussia94's Dragon Dressings: Reduced max minions by 1 (from 2)
+
+-Nerfed IDGCaptainRussia94's Dergon Disguise: Reduced summon damage to 30% (from 40%)
+
+-Space Comets are now half as common and drop less
+
+-Updated the space stations with the (mostly) finished security system code, made copies of all the vanilla tiles+a few new ones, and made them all unbreakable
+
+-Nerfed Shield of Discord: Can now only remove up to 4 seconds of Chaos State, to make up for new stats
+
+-Rebalanced Undying Valor: it now takes 5 (instead of 3) stacks to double the DoT damage taken, DoT resist is now only 40% as effective (instead of 50%)
+
+--New changes to Murk:
+-Should no longer be able to smack down while teleporting
+
+--New changes to Phaethon:
+-Removed debug text
+-Final phase teleport now has a limited distance teleport
+-Added various visuals on top, such as a custom dust system, to replace dusts as well
+
+--New changes to S.Pinky:
+-Changed the slimes that spawn during phase 1, and they now spawn off screen instead of appearing out of thin air
+
+--New changes to Hellion Core:
+-phase 1 and phase 2 worm segments now have an intro fading in, and are loosely connected VS being tightly connected like most worm bosses, there is a visual chain between them
+
+
+--Fixed
+
+-DoT stacks killing the player on respawning, they are now cleared on death
+
+-HOPEFULLY FOR REAL THIS TIME, fixed Hellion Core vanishing during the fight (or even at the start of it)
 
 
 
@@ -174,11 +395,11 @@ Changelog:
 
 
 
-3.625-(1/19/22)--Patch 15: Anniversary Update!
+3.625-(2/14/22)--Patch 15: Anniversary Update!
 
 --Added
 
--Starduster, The Tongue, Lunar Leech, Rod Of The Misty Lake, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, The Refractor, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap, Condensed Gel Pack
+-, The Tongue, Lunar Leech, Rod Of The Misty Lake, Experimental Pathogen, Concussion Device, Liquidifed Gambling, High Stakes Set, Cobweb Repellent, Undying Valor, Bustling Fungus, The Refractor, Armchair General, Empty Plasma Cell, Shadow LockBox, Helios Focus Crystal, Flask of Soul Sap, Condensed Gel Pack
 
 -The entire Dank Wood Furnature set by Rijam
 
@@ -203,12 +424,15 @@ Changelog:
 -now has piles of Moist Sand filling up the water areas
 
 -Various changes to the Deeper Dungeons:
+-Many new things added by the Rijam Dungeon Update: new enemies, varied wall types, and hardmode/post plantera enemies! Added a few of my own too! (ie Paladin)
 -adjusted Loot Room spawn conditions a bit
 -Shadow Chests no longer can contain vanilla Shadow Chest items, instead they now always contain a Shadow LockBox AND one of the SGAmod Deeper Dungeons Shadow Chest loot items
 -Golden Chest loot is replaced with a Lockbox as well (and a key)
+-Includes new loot/bars depending on world progression-up to Post Plantera
 
 -Various changes to Near Orbit:
 -Added Space Station structures, their blocks aren't minable but house a breathable-normal gravity area
+-These stations hold a crystal that behaves like an Ender Crystal for the boss, it applies mining fatigue to the players in range, attacking it triggers waves of enemies that need to be defeated 1st, can only be attacked while near it and not while enemies are alive, unless during the boss fight
 -Ore Generation has been changed a bit
 -Can now generate Fragement Blocks after moonlord is defeated
 -Astral Luminite now drops a different material that requires real Luminite to make Luminite bars, basically, it makes a cheaper way to craft Luminite bars but doesn't skip progression
@@ -251,6 +475,8 @@ Changelog:
 -Plasma Cells can now be obtained in early hardmode, but don't have much use yet
 
 -Moist Sand is created twice as fast
+
+-Reduced OP mod scaling a bit
 
 -Arms dealer now sells Shark Bait if the player has Shark Bait
 
@@ -338,6 +564,10 @@ Changelog:
 
 -Nerfed Mandala Armor: Overseer's Tutelage's arms are now granted based on empty minion slots
 
+-Nerfed IDGCaptainRussia94's Dragon Dressings: Reduced max minions by 1 (from 2)
+
+-Nerfed IDGCaptainRussia94's Dergon Disguise: Reduced summon damage to 30% (from 40%)
+
 -Nerfed Revolver Weapons: Homing ammo reduces damage by 75%
 
 -Nerfed Main-Sequence Staff: Debuff removal is now based on minion slots put in: more minions, more burning debuffs negated in this order: (Sunburn, OnFire!, Burning, Thermal Blaze, Lava Burn, Severe Lava Burn)
@@ -358,23 +588,34 @@ Changelog:
 -Cobwebs are now a special version that will Acidburn on contact, and are cleaned up after the fight is over
 -Acid Burn debuff damage (As Spider Queen is still the only source of it) on the player has been slightly lowered
 
+--New changes to Murk:
+-Should no longer be able to smack down while teleporting
+
 --New changes to Cirno:
 -Reduced Cirno's on-hit debuff chilled time (projectiles still chill for quite a while due to being vanilla projectiles)
+
+-New changes to Phaethon:
+-Will always use Shadow Nebula at the start of phase 3
+-Shadow Nebula completely reworked, boss releases several orbs the player must destroy in order to end the attack: Phaethon can no longer be hurt, grab asteriods, or shield during this attack, and tries to chase the player, and gains new attacks exlusive to Shadow Nebula
+-Shadow Nebula also changes some of his attacks as well
+-The Outpost Space Stations spawn with a crystal that heals the boss (at longer/slower rate when shielded), they cannot be attacked during the fight when outside the healing range of the boss. Breaking these hurts the boss, see Near Orbit Changes above
+-Now drops Greater Healing Potions instead of lesser Healing Potions
+-Final phase teleport now has a limited distance teleport
+-Added various visuals on top, such as a custom dust system, to replace dusts as well
+
+--New changes to Hellion Core:
+-phase 1 and phase 2 worm segments now have an intro fading in, and are loosely connected VS being tightly connected like most worm bosses, there is a visual chain between them
 
 -New changes to Helen Hellion Weygold:
 -When dropping loot: if Aimbot bullets are dropped, an extra random is picked from the pool, furthermore, a stack of 30 Lead Cannonballs drops along with the SBC Cannon MK2
 -Fixed a bug with Hellion's arena ring staying small during the final desperation phase if you did the killing blow during one of her other desperation attacks where it shrinks
 -Reverted FNF attack, notes do damage again, side projectiles are missing (unless in nightmare), the debuff is still there thou so you need to keep moving
-
--New changes to Phaethon:
--Will always use Shadow Nebula at the start of phase 3
--Shadow Nebula completely reworked, boss releases several orbs the player must destroy in order to end the attack: Phaethon can no longer be hurt, grab asteriods, or shield during this attack, and tries to chase the player, and gains new attacks exlusive to Shadow Nebula
--(todo) Shadow Nebula also changes most of his attacks as well
--(todo) The Outpost Space Stations spawn with a crystal that heals the boss (at longer/slower rate when shielded), and mining fatigues the player in range
--Now drops Greater Healing Potions instead of lesser Healing Potions
+-Made a change for the punished...
 
 
 --Fixed:
+
+-HOPEFULLY FOR REAL THIS TIME, fixed Hellion Core vanishing during the fight (or even at the start of it)
 
 -Hopefully fixed Terraria Co Crates not stacking after beating Cratrosity (still an ugly patch thou)
 
@@ -415,6 +656,12 @@ Changelog:
 -Missing Buzz Blaster from Murk's checklist
 
 -A few minor bugs of mis-matched damage types and other smaller things
+
+-Fog causing crashes via the detail ammount dividing by zero
+
+-Handling Gloves being present on the Tech Master's still
+
+-Fist of Moon Lord not being true Melee
 
 
 3.622-(1/19/22)--Hotfix 31

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
 using SGAmod.Items.Weapons.SeriousSam;
-using AAAAUThrowing;
+
 
 namespace SGAmod.Items.Weapons
 {

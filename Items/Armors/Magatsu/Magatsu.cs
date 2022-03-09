@@ -1,4 +1,4 @@
-using AAAAUThrowing;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SGAmod.Tiles;
@@ -144,8 +144,10 @@ namespace SGAmod.Items.Armors.Magatsu
 			{
 				sgaplayer.armorglowmasks[1] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
 				sgaplayer.armorglowmasks[2] = "SGAmod/Items/GlowMasks/" + Name + "_GlowArms";
+				sgaplayer.armorglowmasks[4] = "SGAmod/Items/GlowMasks/" + Name + "_GlowFemale";
 				sgaplayer.armorglowcolor[1] = ArmorGlow;
 				sgaplayer.armorglowcolor[2] = ArmorGlow;
+				sgaplayer.armorglowcolor[4] = ArmorGlow;
 			}
 		}
 	}

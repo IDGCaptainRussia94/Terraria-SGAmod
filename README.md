@@ -32,11 +32,12 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -Dank Wood Sword, Machete, Rusted Blade, Claymore (maybe),Mudmore, Mangrove Striker,Thermal Blade, Rubied Blade, Curcuit Breaker Blade (maybe), Sword of a Thousand Truths (hhmhhmmm), Celestial Flare (maybe), Galactic Inferno (yes, throw globels and bat them at enemies on hit?)
 -call them Zweihänder ? (Nah lets call am Boring Blades)
 -Fix Prismic Banshee features (add laser accel), add Rod of Teleportation Telefragging
+-Make "marked" debuff share damage (when an enemy is hurt, nearby enemies who are marked recive a copy of damage), make sure to add a static field so it isn't always ran or else it would laggy
 
 -Finish Wrath Caliburn attacks?
 -Add Celestial Monolith (finish), Add Heat Beater heat-building and steamm rework
--Finish focus Crystal, Finish Phaethon's rework, finish ALL space stations
--FIX COMPASS UI!!
+-finish Big space station(s)
+-Snappy Shark teeth stick into enemies, up to 5, increases damage against enemies with teeth in them by 5% per tooth, at 5 teeth, inflicts Gourged
 
 
 Credits:

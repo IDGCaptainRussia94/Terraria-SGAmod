@@ -29,6 +29,7 @@ float4 colorFrom;
 float noiseProgress = 0;
 float noiseBlendPercent = 1.0;
 float textureProgress = 0;
+bool alphaChannel = false;
 
 static const float tau = 6.283185307;
 
@@ -37,7 +38,15 @@ static const float pi = 3.14159265359;
 
 float4 main(float2 uv : TEXCOORD) : COLOR 
 { 
-	
+
+	if (alphaChannel)
+	{
+	float4 sampleTex = tex2D(input , uv);
+	if (sampleTex.a<=0)
+	discard;
+	}
+
+
 			float2 noiseCoord = ((uv.xy+noiseOffset)*noiseMultiplier);
 	float4 noiseColor = tex2D( noisetexsampler , noiseCoord);
 	
@@ -54,7 +63,6 @@ float4 main(float2 uv : TEXCOORD) : COLOR
 	
 	float endcolorfloat = lerppcent;
 	float4 endcolor2 = lerp(colorFrom,colorTo,0.50+sin(endcolorfloat*tau)/2.0);
-
 
 	return textureColor*endcolor2*strength; 
 }

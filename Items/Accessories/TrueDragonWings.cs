@@ -363,6 +363,7 @@ namespace SGAmod.Items.Accessories
 				if ((player.GetModPlayer<DergWingsPlayer>().wingFrames) % (9*4) == 4*3)
                 {
 					var snd = Main.PlaySound(SoundID.Item,(int)player.MountedCenter.X, (int)player.MountedCenter.Y, 32);
+					if (snd != null)
 					snd.Pitch = 0.80f;
 				}
 			}

@@ -91,7 +91,6 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 			Idglib.AbsentItemDisc.Add(SGAmod.Instance.ItemType("AlterCraft_BloodSun"), "No, you don't need the a... well this techically doesn't exist, but anyways this is just a guide");
 			Idglib.AbsentItemDisc.Add(SGAmod.Instance.ItemType("AlterCraft_Time"), "This isn't a recipe you craft, read it more carefully and use the tile with a right click");
 
-
 		}
 
 		public static void AddLuminousAlterRecipe(int catalyst, int outputItem, int time, int numIn = 1, int numOut = 1, Func<bool> Cond = default, string requiredText = "")
@@ -224,8 +223,7 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 			}
 		}*/
 		public override void AddRecipes()
-		{
-			/*
+		{		
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
 			recipe.AddIngredient(mod.ItemType("AuroraTear"), 1);
@@ -233,8 +231,6 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 			recipe.AddTile(TileID.LihzahrdAltar);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
-			*/
-
 		}
 	}
 }

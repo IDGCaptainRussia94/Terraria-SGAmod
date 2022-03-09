@@ -17,13 +17,13 @@ namespace SGAmod.Items.Accessories.Charms
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Amulet of Diehard Cataclysm");
-			Tooltip.SetDefault("'Embrace the suffering, indulge on the reward'\n'Truly, only for the worthy... And the british'\n25% more Expertise is earned and respawn instantly outside of boss fights\n" + Idglib.ColorText(Color.Red, "You die in one hit, IFrames cause great damage over time") +"\n" + Idglib.ColorText(Color.Red, "Most if not all methods of death prevention are disabled") +"\n" + Idglib.ColorText(Color.Red, "Death claims you if you attempt to break the curse...") + "\n+An exception to the formentioned rule are Just Blocks\nThis item doesn't take effect til 3 seconds after spawning to prevent soft-locks");
+			Tooltip.SetDefault("'Embrace the suffering, indulge on the reward'\n'Truly, only for the worthy... And the british'\n25% more Expertise is earned and respawn instantly outside of boss fights\n" + Idglib.ColorText(Color.Red, "You die in one hit, IFrames cause great damage over time") + "\n" + Idglib.ColorText(Color.Red, "Most if not all methods of death prevention are disabled") + "\n" + Idglib.ColorText(Color.Red, "Death claims you if you attempt to break the curse...") + "\n+An exception to the formentioned rule are Just Blocks\nThis item doesn't take effect til 3 seconds after spawning to prevent soft-locks");
 			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 10));
 		}
 
 		public override string Texture => "SGAmod/Items/Accessories/Charms/NoHitCharmlv1";
 
-        public override void SetDefaults()
+		public override void SetDefaults()
 		{
 			item.width = 24;
 			item.height = 24;
@@ -44,7 +44,7 @@ namespace SGAmod.Items.Accessories.Charms
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			if (sgaplayer.NoHitCharmTimer > 180)
 			{
-				if (sgaplayer.NoHitCharmTimer<100000)
+				if (sgaplayer.NoHitCharmTimer < 100000)
 				{
 					sgaplayer.NoHitCharmTimer = 1000000;
 					SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_PhantomPhoenixShot, player.MountedCenter);
@@ -68,7 +68,7 @@ namespace SGAmod.Items.Accessories.Charms
 						Main.dust[dust].velocity = f.ToRotationVector2() * 6f;
 					}
 				}
-					sgaplayer.NoHitCharm = true;
+				sgaplayer.NoHitCharm = true;
 				player.shadowDodge = false;
 				player.blackBelt = false;
 			}
@@ -84,7 +84,7 @@ namespace SGAmod.Items.Accessories.Charms
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mining Amulet Tier 1");
-			Tooltip.SetDefault("25% increased mining/hammering/chopping speed\n"+Idglib.ColorText(Color.Red, "There is a very rare chance to consume an extra item whenever items are consumed"));
+			Tooltip.SetDefault("25% increased mining/hammering/chopping speed\n" + Idglib.ColorText(Color.Red, "There is a very rare chance to consume an extra item whenever items are consumed"));
 		}
 
 		public override void SetDefaults()
@@ -99,8 +99,8 @@ namespace SGAmod.Items.Accessories.Charms
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			if (GetType().Name.Length - GetType().Name.Replace("lv3","").Length>0)
-			tooltips.Add(new TooltipLine(mod, "Lv3Charm", "Includes the functionality of Mechanical Minecart"));
+			if (GetType().Name.Length - GetType().Name.Replace("lv3", "").Length > 0)
+				tooltips.Add(new TooltipLine(mod, "Lv3Charm", "Includes the functionality of Mechanical Minecart"));
 		}
 
 		public override bool CanEquipAccessory(Player player, int slot)
@@ -108,14 +108,18 @@ namespace SGAmod.Items.Accessories.Charms
 			bool canequip = true;
 			for (int x = 3; x < 8 + player.extraAccessorySlots; x++)
 			{
-				if (player.armor[x].modItem != null) {
+				if (player.armor[x].modItem != null)
+				{
 					Type myclass = player.armor[x].modItem.GetType();
-					if (myclass.BaseType == typeof(MiningCharmlv1) || myclass == typeof(MiningCharmlv1)) {
+					if (myclass.BaseType == typeof(MiningCharmlv1) || myclass == typeof(MiningCharmlv1))
+					{
 
 						//if (myType==mod.ItemType("MiningCharmlv1") || myType==mod.ItemType("MiningCharmlv2") || myType == mod.ItemType("MiningCharmlv3")){
 						canequip = false;
 						break;
-					} } }
+					}
+				}
+			}
 			return canequip;
 		}
 
@@ -167,7 +171,7 @@ namespace SGAmod.Items.Accessories.Charms
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.EnhancingCharm = 4;
 			if (!sgaplayer.tpdcpu)
-			sgaplayer.potionsicknessincreaser = 10;
+				sgaplayer.potionsicknessincreaser = 10;
 		}
 		public override void AddRecipes()
 		{
@@ -195,7 +199,7 @@ namespace SGAmod.Items.Accessories.Charms
 			DisplayName.SetDefault("Anticipation Amulet Tier 1");
 			Tooltip.SetDefault("When a boss fight starts, you are healed by 100 HP, but only every 2 minutes and while " + Idglib.ColorText(Color.Green, "Anticipation") + " is low" +
 				"\nDuring a boss fight, you build up " + Idglib.ColorText(Color.Green, "Anticipation") + ", which causes your held weapon to do more damage, this caps at a 25% increase\n" +
-	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\n"+Idglib.ColorText(Color.Red, "Damage you take is increased by 20%"));
+	"You lose half your " + Idglib.ColorText(Color.Green, "Anticipation") + " when hurt, and passively drains while no boss is alive\n" + Idglib.ColorText(Color.Red, "Damage you take is increased by 20%"));
 		}
 
 		public override void SetDefaults()
@@ -238,7 +242,7 @@ namespace SGAmod.Items.Accessories.Charms
 		{
 			DisplayName.SetDefault("Reservation Amulet Tier 1");
 			string capper = (GetType() == typeof(ReservationCharmlv3) ? "75" : GetType() == typeof(ReservationCharmlv2) ? "50" : "25");
-			Tooltip.SetDefault("Converts "+ capper + "% of your max HP into a regenerating barrier that blocks damage\nThis barrier's max strength is improved by your tech multiplier\n" + Idglib.ColorText(Color.Red, capper+"% of your HP is capped")+"\n" +Idglib.ColorText(Color.Red,"Damage is applied to shields before any armor reduction")+"\n" + Idglib.ColorText(Color.Red, "Inflicts Shield Break on deplete"));
+			Tooltip.SetDefault("Converts " + capper + "% of your max HP into a regenerating barrier that blocks damage\nThis barrier's max strength is improved by your tech multiplier\n" + Idglib.ColorText(Color.Red, capper + "% of your HP is capped") + "\n" + Idglib.ColorText(Color.Red, "Damage is applied to shields before any armor reduction") + "\n" + Idglib.ColorText(Color.Red, "Inflicts Shield Break on deplete"));
 		}
 
 		public override void SetDefaults()
@@ -257,7 +261,7 @@ namespace SGAmod.Items.Accessories.Charms
 		}
 
 		protected void PostAccessoryUpdate(SGAPlayer sgaplayer)
-        {
+		{
 			Player player = sgaplayer.player;
 
 			//Main.NewText(sgaplayer.energyShieldAmmountAndRecharge.Item2);
@@ -266,7 +270,7 @@ namespace SGAmod.Items.Accessories.Charms
 				if (sgaplayer.energyShieldAmmountAndRecharge.Item3 < 1 && !sgaplayer.Shieldbreak)
 				{
 					sgaplayer.ShieldRecharge();
-					if (sgaplayer.energyShieldAmmountAndRecharge.Item3==0)
+					if (sgaplayer.energyShieldAmmountAndRecharge.Item3 == 0)
 						sgaplayer.StartShieldRecharge();
 
 					float rechargerate = (sgaplayer.jellybruSet ? 600f : 180f);
@@ -279,13 +283,13 @@ namespace SGAmod.Items.Accessories.Charms
 			}
 
 			if (sgaplayer.energyShieldReservation > 0)
-            {
-				int percent = (int)(player.statLifeMax2 * (1f-sgaplayer.energyShieldReservation));
+			{
+				int percent = (int)(player.statLifeMax2 * (1f - sgaplayer.energyShieldReservation));
 				if (player.statLife > percent)
-                {
+				{
 					player.statLife = percent;
 				}
-            }
+			}
 
 		}
 
@@ -296,10 +300,10 @@ namespace SGAmod.Items.Accessories.Charms
 
 			int percentLife = (int)((player.statLifeMax2) * thepercent);
 			sgaplayer.energyShieldAmmountAndRecharge.Item2 += percentLife;
-			sgaplayer.energyShieldReservation += (1f- sgaplayer.energyShieldReservation)*thepercent;
+			sgaplayer.energyShieldReservation += (1f - sgaplayer.energyShieldReservation) * thepercent;
 
-			if (sgaplayer.ShieldType<1000)
-			sgaplayer.ShieldType = 1000;
+			if (sgaplayer.ShieldType < 1000)
+				sgaplayer.ShieldType = 1000;
 		}
 		public override void AddRecipes()
 		{
@@ -640,6 +644,94 @@ namespace SGAmod.Items.Accessories.Charms
 			recipe.AddRecipe();
 		}
 
+	}
+
+	public class TidalCharm : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Tidal Amulet");
+			Tooltip.SetDefault("Increases your max Breath by 5 bubbles");
+		}
+
+		public override bool Autoload(ref string name)
+		{
+			SGAPlayer.PostUpdateEquipsEvent += DefenseBoost;
+			return true;
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 24;
+			item.height = 24;
+			item.rare = ItemRarityID.Orange;
+			item.value = Item.sellPrice(0, 0, 75, 0);
+			item.mountType = MountID.MineCart;
+			item.accessory = true;
+		}
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, Terraria.Localization.Language.GetTextValue("ItemTooltip.Flipper") + " in the air while it is raining")));
+			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Most status effects that trigger while wet will trigger here")));
+			tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.Red, "But you are always drowning")));
+
+			if (!SGAWorld.tidalCharmUnlocked)
+				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DarkBlue, "Its full potential is locked behind the Tempest Sharkvern")));
+			else
+				tooltips.Add(new TooltipLine(mod, "tidalcharm", Idglib.ColorText(Color.DeepSkyBlue, "Tempest Sharkvern's defeat allows this to take effect when it is not raining")));
+		}
+
+		public void DefenseBoost(SGAPlayer sgaply)
+		{
+			if (sgaply.tidalCharm >= 2)
+			{
+				Player player = sgaply.player;
+			}
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.breathMax += 100;
+			SGAPlayer sgaply = player.GetModPlayer<SGAPlayer>();
+			if (((Main.raining) || SGAWorld.tidalCharmUnlocked))
+			{
+				player.accFlipper = true;
+				player.GetModPlayer<SGAPlayer>().tidalCharm = 2;
+				if (!player.SGAPly().tpdcpu)
+				{
+					player.AddBuff(ModContent.BuffType<TidalDrown>(), 60 * 8);
+				}
+			}
+
+
+		}
+
+	}
+
+	public class TidalDrown : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Water Bending Presence");
+			Description.SetDefault("Water Density is thick enough to swim in the air as if it were water!\nAll forms of infinite water breathing are disabled");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			longerExpertDebuff = false;
+		}
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Buff_" + BuffID.Suffocation;
+			return true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.GetModPlayer<SGAPlayer>().permaDrown = true;
+			player.GetModPlayer<SGAPlayer>().drownRate += 2;
+			player.GetModPlayer<SGAPlayer>().tidalCharm = 2;
+		}
 	}
 
 }

@@ -67,7 +67,7 @@ namespace SGAmod
 
         public static int SnapCooldown = 0;
 
-        public static bool cheating = false;
+        internal static bool cheating = false;
         public static int harbingercounter = 0;
         public static int golemchecker = 0;
         public static int stolecrafting = 0;
@@ -236,7 +236,7 @@ namespace SGAmod
             if (!Main.hardMode || Main.dayTime)
                 return;
 
-            if (Main.rand.Next(100000) < Main.maxTilesX/(Main.netMode == NetmodeID.SinglePlayer ? 6 : 3))
+            if (Main.rand.Next(200000) < Main.maxTilesX/(Main.netMode == NetmodeID.SinglePlayer ? 6 : 3))
             {
                 Projectile.NewProjectile(new Vector2(Main.rand.Next(Main.maxTilesX * 16), 50), Vector2.UnitY.RotatedBy((Main.rand.NextFloat(-1f,1f)*MathHelper.Pi)*0.10f)*Main.rand.NextFloat(3f,6f), ModContent.ProjectileType<Dimensions.FallingSpaceRock>(), 1000, 10);
             }
@@ -361,7 +361,9 @@ namespace SGAmod
             tag["downedSPinky"] = downedSPinky;
             tag["downedTPD"] = downedTPD;
             tag["downedCirno"] = downedCirno;
+
             tag["downedSpaceBoss"] = downedSpaceBoss;
+
             tag["downedSharkvern"] = downedSharkvern;
             tag["overalldamagedone"] = overalldamagedone;
             tag["downedCratrosity"] = downedCratrosity;
@@ -433,7 +435,7 @@ namespace SGAmod
             downedSPinky = tag.GetBool("downedSPinky");
             downedTPD = tag.GetBool("downedTPD");
             downedCirno = tag.GetBool("downedCirno");
-            //downedSpaceBoss = tag.GetBool("downedSpaceBoss");
+            downedSpaceBoss = tag.GetBool("downedSpaceBoss");
             downedSharkvern = tag.GetBool("downedSharkvern");
             downedCratrosity = tag.GetBool("downedCratrosity");
             downedHarbinger = tag.GetBool("downedHarbinger");

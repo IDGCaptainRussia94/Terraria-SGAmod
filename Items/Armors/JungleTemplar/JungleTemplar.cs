@@ -1,4 +1,4 @@
-using AAAAUThrowing;
+
 using Idglibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -218,7 +218,9 @@ namespace SGAmod.Items.Armors.JungleTemplar
 		{
 			SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 			sgaplayer.armorglowmasks[1] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
+			sgaplayer.armorglowmasks[4] = "SGAmod/Items/GlowMasks/" + Name + "_GlowFemale";
 			sgaplayer.armorglowcolor[1] = ArmorGlow;
+			sgaplayer.armorglowcolor[4] = ArmorGlow;
 		}
 	}
 

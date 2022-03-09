@@ -76,11 +76,16 @@ namespace SGAmod
 		{
 			if (SGAmod.Calamity.Item1 || SGAmod.Thorium.Item1)
 			{
-				PropertyBoostModdedDamage = new ModdedDamage(player, damage, crit);
+				if (SGAmod.Calamity.Item1)
+					PropertyBoostCalDamage = new ModdedDamage(player, damage, crit);
+				if (SGAmod.Thorium.Item1)
+				{
+					PropertyBoostThoriumDamage = new ModdedDamage(player, damage, crit);
+				}
 			}
 		}
 
-		public static ModdedDamage PropertyBoostModdedDamage
+		public static ModdedDamage PropertyBoostCalDamage
 		{
 			set
 			{
@@ -92,25 +97,31 @@ namespace SGAmod
 					calply.throwingDamage += value.damage;
 					calply.throwingCrit += value.crit;
 				}
+			}
+		}
+
+		public static ModdedDamage PropertyBoostThoriumDamage
+		{
+			set
+			{
 				if (SGAmod.Thorium.Item1)
 				{
 					SGAmod.Thorium.Item2 = ModLoader.GetMod("ThoriumMod");
 
-					SGAmod.Thorium.Item2.Call("BonusBardDamage", value.player, value.damage);
-					SGAmod.Thorium.Item2.Call("BonusBardCrit", value.player, value.crit);
-					SGAmod.Thorium.Item2.Call("BonusHealerDamage", value.player, value.damage);
-					SGAmod.Thorium.Item2.Call("BonusHealerCrit", value.player, value.crit);
+					//SGAmod.Thorium.Item2.Call("BonusBardDamage", value.player, 0f);
+					//SGAmod.Thorium.Item2.Call("BonusBardCrit", value.player, value.crit);
+					//SGAmod.Thorium.Item2.Call("BonusHealerDamage", value.player, value.damage);
+					//SGAmod.Thorium.Item2.Call("BonusHealerCrit", value.player, value.crit);
 
-					//ThoriumPlayer thorply = value.player.GetModPlayer<ThoriumPlayer>();
-					//thorply.symphonicDamage += value.damage;
-					//thorply.symphonicCrit += value.crit;
-					//thorply.radiantBoost += value.damage;
-					//thorply.radiantCrit += value.crit;
+					ThoriumPlayer thorply = value.player.GetModPlayer<ThoriumPlayer>();
+					thorply.symphonicDamage += value.damage;
+					thorply.symphonicCrit += value.crit;
+					thorply.radiantBoost += value.damage;
+					thorply.radiantCrit += value.crit;
 				}
 
 			}
 		}
-
 		public static void CalamityNoRevengenceNoDeathNoU()
 		{
 			if (SGAmod.Calamity.Item1)
@@ -165,8 +176,6 @@ namespace SGAmod
 				PrivateClassEdits.LoadAntiCheats();
 			}
 
-			overpoweredModBaseValue = ((ModLoader.GetMod("AFKPETS") != null ? 0.25f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 0.75f : 0) + (ModLoader.GetMod("Luiafk") != null ? 1.5f : 0) + (ModLoader.GetMod("Fargowiltas") != null ? 0.5f : 0) + (ModLoader.GetMod("FargowiltasSouls") != null ? 1.5f : 0)) + (ModLoader.GetMod("Antisocial") != null ? 7.5f : 0);
-			overpoweredModBaseHardmodeValue = (ModLoader.GetMod("Wingslot") != null ? 0.75f : 0);
 			//Why do people still use Luiafk in legit playthroughs? I donno...
 			Luiafk.Item2 = ModLoader.GetMod("Luiafk");
 			Luiafk.Item1 = Luiafk.Item2 != null;
@@ -415,8 +424,7 @@ namespace SGAmod
 			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("PortalBullet"), "They have no faith in him-I");
 			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("AimBotBullet"), "Only ever they want only to be a part of-TY");*/
 
-
-
+			CalcOpMods();
 		}
 	}
 

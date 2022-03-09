@@ -16,7 +16,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Idglibrary;
-using AAAAUThrowing;
+
 using SGAmod.NPCs.Cratrosity;
 using SGAmod.Dimensions;
 using SGAmod.HavocGear.Items.Weapons;
@@ -86,6 +86,7 @@ namespace SGAmod
 		public bool petrified = false;
 		public int noMovement = 0;
 		public bool lavaBurn = false;
+		public int UkraineArmsBuff = 0;
 		public bool TimeSlowImmune = false;
 		public bool dotImmune = false;
 		public float dotResist = 1f;
@@ -187,6 +188,7 @@ namespace SGAmod
 			Sodden = false;
 			lavaBurn = false;
 			SunderedDefense = false;
+			//Main.NewText(UkraineArmsBuff);
 			DankSlow = false;
 			ELS = false;
 			marked = false;
@@ -324,16 +326,7 @@ namespace SGAmod
 
 		public override void SetDefaults(NPC npc)
 		{
-			if (SGAmod.OverpoweredMod > 0)
-			{
-				if (!npc.friendly)
-				{
-					npc.life += (int)(npc.life * (1f + SGAmod.OverpoweredMod));
-					npc.lifeMax += (int)(npc.lifeMax * (1f + SGAmod.OverpoweredMod));
-					npc.damage = npc.damage + (int)(1f + SGAmod.OverpoweredMod);
-				}
-
-			}
+			MakeEnemiesUtterHell(npc);
 		}
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
@@ -784,6 +777,11 @@ namespace SGAmod
 
 			CrucibleArenaMaster.UpdatePortal(npc);
 
+			if (npc.SGANPCs().UkraineArmsBuff > 0)
+				npc.SGANPCs().UkraineArmsBuff -= 1;
+
+			//Main.NewText(UkraineArmsBuff+" "+npc.FullName);
+
 			if (PinkyMinion < 1 && NPC.AnyNPCs(ModContent.NPCType<SPinkyTrue>()) && (npc.type == NPCID.BlueSlime || npc.type == NPCID.GreenSlime || npc.type == NPCID.PurpleSlime || npc.type == NPCID.YellowSlime || npc.type == NPCID.RedSlime || npc.type == NPCID.BlackSlime))
 			{
 				PinkyMinion = 1;
@@ -1134,7 +1132,11 @@ namespace SGAmod
 				shop.item[nextSlot].shopCustomPrice = Item.buyPrice(0, 0, 25, 0);
 				nextSlot++;
 			}
-
+			if (Items.Accessories.Dedicated.UkraineArms.IsItAPerfectlyGoodTimeForAnInvasion(player))
+			{
+				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Items.Accessories.Dedicated.UkraineArms>());
+				nextSlot++;
+			}
 
 			if (sgaplayer.MidasIdol > 0)
 			{
@@ -1185,12 +1187,16 @@ namespace SGAmod
 
 		public override void SetupTravelShop(int[] shop, ref int nextSlot)
 		{
-			if (Main.rand.Next(0, 3) == 1 && Main.hardMode)
+			if (Main.rand.Next(0, 3) == 0 && Main.hardMode)
 			{
 				shop[nextSlot] = mod.ItemType(Main.rand.NextBool() ? "ShinobiShiv" : "PeacekeepersDuster");
 				nextSlot++;
 			}
-
+			if (Main.rand.Next(0, 3) == 0)
+			{
+				shop[nextSlot] = ModContent.ItemType<TheBountyHunter>();
+				nextSlot++;
+			}
 			bool rocket = false;
 			if (Main.rand.Next(0, 3) == 0)
 			{
@@ -1690,12 +1696,15 @@ namespace SGAmod
 						chat = lines[Main.rand.Next(lines.Length)];
 					}
 					break;
+
+					/*
 					case NPCID.Nurse:
 
 					if (Main.rand.Next(3) == 0 && Main.LocalPlayer.statLife<Main.LocalPlayer.statLifeMax2)
                     {
-						chat = Main.rand.NextBool() ? "I can heal your wounds, but surgery doesn't happen over night... not all the time anyways" : "Healing takes time, stay around why don't you?";
+						chat = Main.rand.NextBool() ? "I can heal your wounds, but surgery doesn't happen over night... not all the time anyways" : ("Healing takes time, "+Main.rand.NextBool() ? "stay around why don't you?" : "but that's just life");
 					}
+					*/
 
 					if (Hellion.GetHellion() != null)
 					{

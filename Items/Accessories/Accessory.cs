@@ -9,12 +9,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SGAmod.HavocGear.Items.Accessories;
 using Idglibrary;
-using AAAAUThrowing;
+
 using Terraria.Localization;
 using SGAmod.Items.Weapons;
 using SGAmod.Buffs;
 using Terraria.Utilities;
 using System.Linq;
+using SGAmod.Items.Mounts;
 
 namespace SGAmod.Items.Accessories
 {
@@ -1802,7 +1803,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Transformer");
-			Tooltip.SetDefault("Electric Bolts will gain an additional arc\n+2000 Max Electric Charge\n+1 per Active Cooldown Stack passive Electric Charge Rate");
+			Tooltip.SetDefault("Electric Bolts will gain an additional arc\n+2000 Max Electric Charge\n+1 passive Electric Charge Rate, per Active Cooldown Stack");
 		}
 
 		public override void SetDefaults()
@@ -1988,12 +1989,15 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Demon Steppers");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze and Acid Burn\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead\nHold DOWN to stabilizer gravity");
+			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze, Acid Burn, Chilled, and Frozen\nGrants 25% increased radiation resistance\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead\nHold DOWN to stabilize gravity");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			player.buffImmune[BuffID.OnFire] = false;
+			player.buffImmune[BuffID.Chilled] = true;
+			player.buffImmune[BuffID.Frozen] = true;
+
 			player.GetModPlayer<SGAPlayer>().NoFireBurn = 3;
 			if (!player.GetModPlayer<SGAPlayer>().demonsteppers)
 			{
@@ -2051,14 +2055,13 @@ namespace SGAmod.Items.Accessories
 		}
 		public override void AddRecipes()
 		{
-
-
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<GravityStabilizerBoots>(), 1);
 			recipe.AddIngredient(ItemID.FrostsparkBoots, 1);
 			recipe.AddIngredient(ItemID.LavaWaders, 1);
 			recipe.AddRecipeGroup("SGAmod:HorseshoeBalloons", 1);
 			recipe.AddIngredient(ItemID.FrogLeg, 1);
+			recipe.AddIngredient(ItemID.HandWarmer, 1);
 			recipe.AddIngredient(ModContent.ItemType < AmberGlowSkull>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < PrimordialSkull>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < Entrophite>(), 100);
@@ -2562,6 +2565,7 @@ namespace SGAmod.Items.Accessories
 
 	}
 
+	/*
 	public class TidalCharm : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -2633,6 +2637,7 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+	*/
 
 
 	public class TwinesOfFate : ModItem
@@ -3831,6 +3836,75 @@ namespace SGAmod.Items.Accessories
 		}
 	}
 
+	public class TheBountyHunter : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("The Bounty Hunter's Mark");
+			Tooltip.SetDefault("Reciving a Banner drop causes the killed enemy to drop 10 times loot");
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+	}
+
+	public class TheHitList : TheBountyHunter
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("The Hit List");
+			Tooltip.SetDefault("Grants a banner buff against the last enemy hit\nRequires atleast 50 kills of that enemy in the world and they must have a banner drop\nReciving a Banner drop causes the killed enemy to drop 10 times loot");
+		}
+
+        public override string Texture => "Terraria/Item_"+ItemID.ThePlan;
+
+        public override void UpdateInventory(Player player)
+        {
+			player.accJarOfSouls = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			base.UpdateAccessory(player, hideVisual);
+
+			player.accJarOfSouls = true;
+
+			if (player.lastCreatureHit > 0 && NPC.killCount[player.lastCreatureHit] > 0)
+			{
+				player.NPCBannerBuff[player.lastCreatureHit] = true;
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 16;
+			item.height = 16;
+			item.value = Item.sellPrice(gold: 1);
+			item.rare = ItemRarityID.Orange;
+			item.accessory = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.TallyCounter, 1);
+			recipe.AddIngredient(ItemID.TatteredCloth, 4);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.DankCore>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<TheBountyHunter>(), 1);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+
+	}
+
 	public class NoviteCore : ModItem
 	{
 		public override void SetStaticDefaults()
@@ -3871,7 +3945,6 @@ namespace SGAmod.Items.Accessories
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();
 		}
-
 	}
 	public class NovusCore : ModItem
 	{
@@ -4095,6 +4168,39 @@ namespace SGAmod.Items.Accessories
 
 	public class BungalHealingAura : ModProjectile
 	{
+		public class ShroomEffects
+        {
+			public Vector2 position;
+			public Vector2 velocity;
+			public float fadeIn = 0f;
+			public float fadeInRate;
+			public int timeLeft = 0;
+			public int timeMax = 0;
+			public int timeAdd = 0;
+
+			public ShroomEffects(Vector2 position,Vector2 velocity,int time,float fadeInRate)
+            {
+				this.position = position;
+				this.velocity = velocity;
+				this.fadeInRate = fadeInRate;
+				this.timeMax = time;
+				this.timeLeft = time;
+			}
+
+			public void Update()
+            {
+				position += velocity;
+				fadeIn += fadeInRate;
+				timeAdd++;
+				timeLeft -= 1;
+			}
+			public void Draw()
+            {
+
+            }
+
+		}
+
 		Effect effect => SGAmod.TrailEffect;
 		public virtual float RingSize
 		{
@@ -4231,16 +4337,22 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Armchair General");
-			Tooltip.SetDefault("'Lead not by example'\nIncreases your maximum minions by 3, and sentries by 2\n50% Increased Summon damage and increased Minion knockback\nIncreases max electrical charge by 1000 and boosts auras by 1 level\nWhen standing still you emit a healing fungal aura and regenerate life much faster\nYour stationary sentries also emit this aura\n" + Idglib.ColorText(Color.Red,"All other damage and crit chance is reduced by 25%"));
+			Tooltip.SetDefault("'Lead not by example'\nWhen standing still you get in your chair, and emit a healing fungal aura\nYour stationary sentries also emit this aura\nWhile in your chair, you gain knockback immunity, defence, and regen, but can't move\nHide accessory to disable getting into the chair\nIncreases your maximum minions by 3, and sentries by 2\n50% Increased Summon damage and increased Minion knockback\nIncreases max electrical charge by 1000 and boosts auras by 1 level\n\n" + Idglib.ColorText(Color.Red,"All other damage and crit chance is reduced by 25%"));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			base.UpdateAccessory(player, hideVisual);
+
+			if (!hideVisual && player.SGAPly().bustlingFungus.Item2 == 200 && (player.mount == null || !player.mount.Active))
+			{
+				player.mount.SetMount(ModContent.MountType<GeneralsArmchairMount>(), player);
+				//player.AddBuff(ModContent.BuffType<GeneralsArmchairBuff>(), 10);
+			}
+
 			ModContent.GetInstance<BustlingFungus>().UpdateAccessory(player, hideVisual);
 			player.maxMinions += 1;
 			player.minionKB += 1;
-			player.shinyStone = true;
 			player.dd2Accessory = true;//10%
 			player.minionDamage += 0.30f;
 			player.BoostAllDamage(-0.15f,-15);
@@ -4356,15 +4468,14 @@ namespace SGAmod.Items.Accessories
 			//SGAPlayer.AfterTheHitEvent += SGAPlayer_AfterTheHitEvent;
 			return true;
         }
-
 		private void DoMoreDamageAndTakeLess(SGAPlayer player, PlayerDeathReason damageSource, ref int damage, ref int hitDirection, bool pvp, bool quiet, ref bool Crit, int cooldownCounter)
 		{
-			if (player.refractor && (cooldownCounter<0 || player.player.hurtCooldowns[cooldownCounter]<=0))
+			if (player.refractor && (cooldownCounter < 0 || (cooldownCounter >= 0 && player.player.hurtCooldowns[cooldownCounter] <= 0)))
 			{
 				Player ply = player.player;
 				int damageTaken = (int)(damage * 0.75);
 				damage -= damageTaken;
-				int damageToDo = damage*3;
+				int damageToDo = damage * 3;
 				foreach (NPC npc in Main.npc.Where(testby => testby.active && !testby.friendly && !testby.dontTakeDamage && (testby.Center - ply.Center).Length() < 640))
 				{
 					Projectile proj = Projectile.NewProjectileDirect(ply.Center, Vector2.Zero, ModContent.ProjectileType<RefractorLaserProj>(), (int)(damageToDo * ply.thorns), 10, ply.whoAmI, Main.rand.NextFloat(1f), npc.whoAmI);
@@ -4821,15 +4932,74 @@ namespace SGAmod.Items.Accessories
 			recipe.AddRecipe();
 		}
 	}
+	public class NoviteAirTank : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Novite Air Tank");
+			Tooltip.SetDefault("+5 max Breath Bubbles\nGrants defense per missing breath, becomes stronger with better breathing gear");
+		}
+
+		public override bool Autoload(ref string name)
+		{
+			if (GetType() == typeof(NoviteAirTank))
+			{
+                SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostUpdateEquipsEvent;
+
+			}
+			return true;
+		}
+
+        private void SGAPlayer_PostUpdateEquipsEvent(SGAPlayer sgaply)
+        {
+            if (sgaply.airTank)
+            {
+
+				float scaler = 1f + (sgaply.player.arcticDivingGear ? 0.5f : 0f) + (sgaply.terraDivingGear ? 0.75f : 0) + (sgaply.prismalDivingGear ? 0.75f : 0);
+				int defensegiven = (int)((sgaply.player.breathMax/20)*scaler);
+
+				sgaply.player.statDefense += Math.Max((int)((1f - ((float)sgaply.player.breath / (float)sgaply.player.breathMax)) * defensegiven), 0);
+
+			}
+        }
+
+        public override void SetDefaults()
+		{
+			item.width = 18;
+			item.height = 24;
+			item.rare = ItemRarityID.Blue;
+			item.value = Item.sellPrice(0, 1, 50, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			if (player.SGAPly().airTank)
+				return;
+
+			player.SGAPly().airTank = true;
+			player.breathMax += 100;
+			player.ignoreWater = true;
+			//ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<NoviteBar>(), 8);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
 
 	[AutoloadEquip(EquipType.Back)]
-	public class PrismalAirTank : ModItem
+	public class PrismalAirTank : NoviteAirTank
 	{
 		internal static sbyte backItem = 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Air Tank");
-			Tooltip.SetDefault("+5 max Breath Bubbles, "+ Language.GetTextValue("ItemTooltip.FlipperPotion")+ "\nImproved Life and Mana regen while wet\nGrants an additional free Action Cooldown Stack while wet");
+			Tooltip.SetDefault("+5 max Breath Bubbles, "+ Language.GetTextValue("ItemTooltip.FlipperPotion")+ "\nGrants more defense per missing breat, becomes stronger with better breathing gear\nImproved Life and Mana regen while wet\nGrants an additional free Action Cooldown Stack while wet");
 			backItem = item.backSlot;
 		}
 
@@ -4844,25 +5014,23 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			if (player.SGAPly().airTank)
-				return;
-
-			player.SGAPly().airTank = true;
-			player.breathMax += 100;
-			player.ignoreWater = true;
+			base.UpdateAccessory(player, hideVisual);
 			if (player.wet)
 			{
 				player.SGAPly().MaxCooldownStacks += 1;
-				player.manaRegenBonus += 30;
-				player.lifeRegen += 1;
+				ModContent.GetInstance<BottledLiquidEssence>().UpdateAccessory(player, hideVisual);
 			}
+
+			player.ignoreWater = true;
+
 			//ModContent.GetInstance<BlinkTech>().UpdateAccessory(player, hideVisual);
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("PrismalBar"), 12);
-			recipe.AddIngredient(mod.ItemType("BottledLiquidEssence"), 1);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 8);
+			recipe.AddIngredient(ModContent.ItemType<NoviteAirTank>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<BottledLiquidEssence>(), 1);
 			recipe.AddIngredient(ItemID.FlipperPotion, 5);
 			recipe.AddTile(mod.GetTile("PrismalStation"));
 			recipe.SetResult(this);
@@ -4876,15 +5044,15 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Breathing Gear");
-			Tooltip.SetDefault(allText+ "\nEffects of Terra Diving Gear, Murky Charm, and Prismal Air Tank");
+			Tooltip.SetDefault(allText + "\nEffects of Terra Diving Gear, Murky Charm, and Prismal Air Tank");
 		}
 
-        public override bool DrawHead()
-        {
+		public override bool DrawHead()
+		{
 			return false;
-        }
+		}
 
-        public override void SetDefaults()
+		public override void SetDefaults()
 		{
 			item.backSlot = PrismalAirTank.backItem;
 			item.width = 18;
@@ -4896,6 +5064,7 @@ namespace SGAmod.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			player.SGAPly().prismalDivingGear = true;
 			base.UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<PrismalAirTank>().UpdateAccessory(player, hideVisual);
 			ModContent.GetInstance<MurkyCharm>().UpdateAccessory(player, hideVisual);
@@ -4903,16 +5072,15 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType < TerraDivingGear>(), 1);
-			recipe.AddIngredient(ModContent.ItemType < PrismalAirTank>(), 1);
-			recipe.AddIngredient(ModContent.ItemType < MurkyCharm>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 20);
-			recipe.AddIngredient(ModContent.ItemType <PrismalBar>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<TerraDivingGear>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<PrismalAirTank>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<MurkyCharm>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 30);
+			recipe.AddIngredient(ModContent.ItemType<PrismalBar>(), 12);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
-
 	}
 
 	public class WraithTargetingGamepad : ModItem

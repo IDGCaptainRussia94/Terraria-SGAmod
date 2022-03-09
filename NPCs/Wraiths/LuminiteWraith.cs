@@ -370,7 +370,7 @@ namespace SGAmod.NPCs.Wraiths
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.LuminiteWraithMask>());
 			}
 
-			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
+			DropHelper.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
 
 			/*for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)
 			{
@@ -2053,7 +2053,7 @@ namespace SGAmod.NPCs.Wraiths
 				trailspots[1].Add(((Vector2.UnitX.RotatedBy(fa)) * (range*(1f-(projectile.timeLeft/300f)))) + projectile.Center);
 			}
 			for (int i = 0; i < 2; i += 1) {
-				TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+				TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
 				trail.color = delegate (float percent)
 				{
 					return Color.Aquamarine;

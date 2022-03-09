@@ -11,6 +11,10 @@ namespace SGAmod
 		(string, string) DevName();
 
 	}
+	interface IDedicatedItem
+	{
+		string DedicatedItem();
+	}
 	interface IRadioactiveItem
 	{
 		int RadioactiveHeld();
@@ -61,6 +65,10 @@ namespace SGAmod
 
 	}
 	interface IMangroveSet
+	{
+
+	}
+	interface IBreathableWallType
 	{
 
 	}

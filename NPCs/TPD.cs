@@ -88,7 +88,7 @@ namespace SGAmod.NPCs
 			types.Insert(types.Count, ItemID.Ectoplasm);
 			types.Insert(types.Count, ItemID.ShroomiteBar); types.Insert(types.Count, ItemID.ChlorophyteBar); types.Insert(types.Count, ItemID.SpectreBar);
 
-			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
+			DropHelper.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 100 : 50, npc.Center);
 
 			/*
 			for (int f = 0; f < (Main.expertMode ? 100 : 50); f = f + 1)

@@ -13,6 +13,7 @@ using SGAmod.HavocGear.Items.Weapons;
 using SGAmod.Items.Weapons;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Buffs;
+using SGAmod.Effects;
 
 namespace SGAmod.NPCs.Murk
 {
@@ -505,10 +506,10 @@ namespace SGAmod.NPCs.Murk
                 {
                     npc.velocity.X = 0f;
                 }
-                
+
                 if (smackdown < 0)
                 {
-                    smackdown = Main.rand.Next(800,1300)+(int)(npc.life/(float)npc.lifeMax)*500;
+                    smackdown = Main.rand.Next(800, 1300) + (int)(npc.life / (float)npc.lifeMax) * 500;
                     //smackdown = -1050;
                     //npc.velocity.Y = -10;
                     npc.ai[0] = -250;
@@ -519,7 +520,7 @@ namespace SGAmod.NPCs.Murk
                     {
                         for (int i = -1; i < 3; i += 2)
                         {
-                            List<Projectile> itz = Idglib.Shattershots(npc.Center + new Vector2(0, k), npc.Center + new Vector2(1000 * i, k), new Vector2(0,0), ProjectileID.MudBall, 70, 30f, 5, 2, true, 0, true, 300);
+                            List<Projectile> itz = Idglib.Shattershots(npc.Center + new Vector2(0, k), npc.Center + new Vector2(1000 * i, k), new Vector2(0, 0), ProjectileID.MudBall, 70, 30f, 5, 2, true, 0, true, 300);
                             foreach (Projectile proj in itz)
                             {
                                 proj.aiStyle = -5;
@@ -529,7 +530,7 @@ namespace SGAmod.NPCs.Murk
 
                     for (float gg = -4f; gg < 4.26f; gg += 0.25f)
                     {
-                        Gore.NewGore(npc.Center + new Vector2(Main.rand.NextFloat(-32, 32), Main.rand.NextFloat(-16, 16)), new Vector2(gg,Main.rand.NextFloat(-3,3)), Main.rand.Next(61, 64), (5f- Math.Abs(gg))/4f);
+                        Gore.NewGore(npc.Center + new Vector2(Main.rand.NextFloat(-32, 32), Main.rand.NextFloat(-16, 16)), new Vector2(gg, Main.rand.NextFloat(-3, 3)), Main.rand.Next(61, 64), (5f - Math.Abs(gg)) / 4f);
                     }
 
                 }
@@ -558,7 +559,7 @@ namespace SGAmod.NPCs.Murk
                         }
                         else
                         {
-                            if (attacktype == 0) 
+                            if (attacktype == 0)
                             {
                                 if ((-npc.localAI[0]) % 15 == 0)
                                 {
@@ -583,12 +584,12 @@ namespace SGAmod.NPCs.Murk
                                 attacktype += 1;
                                 bool boolz = false;// (attacktype + 9) % Math.Max(10, (60 - (int)(attacktype / 5))) == 0;
                                 int input = Math.Max(10, (60 - (int)(attacktype / 5)));
-                                if (((attacktype-10) % input == 0 || boolz) && npc.localAI[0] > -500 && attacktype>10)
+                                if (((attacktype - 10) % input == 0 || boolz) && npc.localAI[0] > -500 && attacktype > 10)
                                 {
                                     npc.TargetClosest(true);
                                     npc.netUpdate = true;
                                     Player target = Main.player[npc.target];
-                                    if (!boolz || input<12)
+                                    if (!boolz || input < 12)
                                     {
                                         var sound = Main.PlaySound(SoundID.Item111, npc.Center);
                                         if (sound != null)
@@ -597,18 +598,18 @@ namespace SGAmod.NPCs.Murk
                                         }
                                     }
 
-                                    float adder = Math.Max(0, attacktype-200);
+                                    float adder = Math.Max(0, attacktype - 200);
                                     float angle = ((adder + (boolz ? 19 : 0)) / (837f / MathHelper.TwoPi));
 
                                     for (float f = 0f; f < MathHelper.TwoPi; f += MathHelper.PiOver4)
                                     {
 
-                                        Vector2 shootthere = Vector2.One.RotatedBy(f+angle);
-                                        if (boolz && input>12)
+                                        Vector2 shootthere = Vector2.One.RotatedBy(f + angle);
+                                        if (boolz && input > 12)
                                         {
                                             for (int xx = 0; xx < 640; xx += 8)
                                             {
-                                                int num657 = Dust.NewDust(npc.Center+ shootthere*xx, 0,0, mod.DustType("MangroveDust"), -shootthere.X, -shootthere.Y, 150, new Color(30, 30, 30, 20), 1f);
+                                                int num657 = Dust.NewDust(npc.Center + shootthere * xx, 0, 0, mod.DustType("MangroveDust"), -shootthere.X, -shootthere.Y, 150, new Color(30, 30, 30, 20), 1f);
                                                 Main.dust[num657].noGravity = true;
                                                 Main.dust[num657].velocity *= 2f;
                                             }
@@ -652,10 +653,10 @@ namespace SGAmod.NPCs.Murk
                     {
                         npc.ai[0] += 1f;
                     }
-                        if ((double)npc.life < (double)npc.lifeMax * 0.6 || Main.hardMode || nightmare)
-                        {
-                            npc.ai[0] += 1f;
-                        }
+                    if ((double)npc.life < (double)npc.lifeMax * 0.6 || Main.hardMode || nightmare)
+                    {
+                        npc.ai[0] += 1f;
+                    }
                     if (NPC.CountNPCS(mod.NPCType("BossFlyMiniboss1")) < 1 || nightmare)
                     {
                         if ((double)npc.life < (double)npc.lifeMax * 0.4 || Main.hardMode || nightmare)
@@ -672,7 +673,7 @@ namespace SGAmod.NPCs.Murk
                     {
                         npc.ai[0] += 4f;
                     }
-                    
+
                     if (npc.ai[0] >= 0f)
                     {
                         float mathit = Math.Abs((Main.player[npc.target].Center.X + (Main.player[npc.target].velocity.X * 3f)) - npc.Center.X);
@@ -733,66 +734,69 @@ namespace SGAmod.NPCs.Murk
             }
             else
             {
-                if (smackdown < -200 && smackdown>=-1000)//FLY DOWN, SMACK!
+                if (npc.ai[1] < 5)
                 {
-                    int slamtime = Main.hardMode ? -900 : -850;
-
-                    npc.noGravity = true;
-                    if (smackdown > slamtime)
+                    if (smackdown < -200 && smackdown >= -1000)//FLY DOWN, SMACK!
                     {
-                        npc.velocity.Y += 2.0f;
-                        if (npc.velocity.Y > 16)
-                            npc.velocity.Y = 16;
+                        int slamtime = Main.hardMode ? -900 : -850;
 
-                        for (int i = 0; i < 4; i += 1)
+                        npc.noGravity = true;
+                        if (smackdown > slamtime)
                         {
-                            int num658x = Dust.NewDust(npc.position, npc.width, npc.height, dustype, Main.rand.NextFloat(-16f, 16f), -npc.velocity.Y * 3f, 100, new Color(30, 30, 30, 20), npc.scale * ((i / 2f)) + 0.75f);
-                            Main.dust[num658x].noGravity = true;
-                        }
+                            npc.velocity.Y += 2.0f;
+                            if (npc.velocity.Y > 16)
+                                npc.velocity.Y = 16;
 
-                    }
-                    else
-                    {
-                        if (smackdown == slamtime-30)
-                        {
-                            SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageCastHeal, -1, -1);
-                            if (sound != null)
-                            {
-                                sound.Volume = 0.99f;
-                                sound.Pitch += 0.5f;
-                            }
-
-                            for (int i = 0; i < 16; i += 1)
-                            {
-                                int num658x = Dust.NewDust(npc.position, npc.width, npc.height, dustype, 0, 0, 100, new Color(30, 30, 30, 20), npc.scale * ((i / 2f)) + 1.75f);
-                                Main.dust[num658x].velocity = Main.rand.NextVector2CircularEdge(12f, 12f);
-                                Main.dust[num658x].noGravity = true;
-                            }
-                        }
-                        if (smackdown < -880)
-                        {
                             for (int i = 0; i < 4; i += 1)
                             {
                                 int num658x = Dust.NewDust(npc.position, npc.width, npc.height, dustype, Main.rand.NextFloat(-16f, 16f), -npc.velocity.Y * 3f, 100, new Color(30, 30, 30, 20), npc.scale * ((i / 2f)) + 0.75f);
                                 Main.dust[num658x].noGravity = true;
                             }
-                        }
-                        npc.velocity.Y -= 0.25f;
-                        npc.velocity /= 1.25f;
-                    }
-                }
 
-                if (npc.localAI[3] > 5f && npc.localAI[3] < 100)
-                    npc.velocity.X *= 0.95f;
-                if (npc.target < 255 && ((npc.direction == 1 && npc.velocity.X < 3f) || (npc.direction == -1 && npc.velocity.X > -3f)))
-                {
-                    if ((npc.direction == -1 && (double)npc.velocity.X < 0.1) || (npc.direction == 1 && (double)npc.velocity.X > -0.1))
-                    {
-                        npc.velocity.X = npc.velocity.X + 0.2f * (float)npc.direction;
+                        }
+                        else
+                        {
+                            if (smackdown == slamtime - 30)
+                            {
+                                SoundEffectInstance sound = Main.PlaySound(SoundID.DD2_DarkMageCastHeal, -1, -1);
+                                if (sound != null)
+                                {
+                                    sound.Volume = 0.99f;
+                                    sound.Pitch += 0.5f;
+                                }
+
+                                for (int i = 0; i < 16; i += 1)
+                                {
+                                    int num658x = Dust.NewDust(npc.position, npc.width, npc.height, dustype, 0, 0, 100, new Color(30, 30, 30, 20), npc.scale * ((i / 2f)) + 1.75f);
+                                    Main.dust[num658x].velocity = Main.rand.NextVector2CircularEdge(12f, 12f);
+                                    Main.dust[num658x].noGravity = true;
+                                }
+                            }
+                            if (smackdown < -880)
+                            {
+                                for (int i = 0; i < 4; i += 1)
+                                {
+                                    int num658x = Dust.NewDust(npc.position, npc.width, npc.height, dustype, Main.rand.NextFloat(-16f, 16f), -npc.velocity.Y * 3f, 100, new Color(30, 30, 30, 20), npc.scale * ((i / 2f)) + 0.75f);
+                                    Main.dust[num658x].noGravity = true;
+                                }
+                            }
+                            npc.velocity.Y -= 0.25f;
+                            npc.velocity /= 1.25f;
+                        }
                     }
-                    else
+
+                    if (npc.localAI[3] > 5f && npc.localAI[3] < 100)
+                        npc.velocity.X *= 0.95f;
+                    if (npc.target < 255 && ((npc.direction == 1 && npc.velocity.X < 3f) || (npc.direction == -1 && npc.velocity.X > -3f)))
                     {
-                        npc.velocity.X = npc.velocity.X * 0.93f;
+                        if ((npc.direction == -1 && (double)npc.velocity.X < 0.1) || (npc.direction == 1 && (double)npc.velocity.X > -0.1))
+                        {
+                            npc.velocity.X = npc.velocity.X + 0.2f * (float)npc.direction;
+                        }
+                        else
+                        {
+                            npc.velocity.X = npc.velocity.X * 0.93f;
+                        }
                     }
                 }
             }
@@ -1000,6 +1004,69 @@ namespace SGAmod.NPCs.Murk
                 }
             }
         }
+        public static void MurkFog()
+        {
+            Texture2D pern = ModContent.GetTexture("SGAmod/TiledPerlin");
+
+            for (int type = 0; type < 3; type += 1)
+            {
+
+                float aspectRato = Main.screenWidth / Main.screenHeight;
+
+                Effect effect = SGAmod.RotateTextureEffect;
+
+                VertexBuffer vertexBuffer;
+
+                float perc = (type * MathHelper.TwoPi / 3f);
+                float loops = 3+type+(float)Math.Sin((Main.GlobalTime * 1.5f)+perc)*0.26f;
+
+                float mather = (0.5f)-(0.50f/loops);
+
+                effect.Parameters["WorldViewProjection"].SetValue(WVP.View(Vector2.One) * WVP.Projection());
+                effect.Parameters["imageTexture"].SetValue(pern);
+                effect.Parameters["coordOffset"].SetValue(-new Vector2(mather, mather));
+                effect.Parameters["coordMultiplier"].SetValue(new Vector2(loops, loops));
+                effect.Parameters["strength"].SetValue((1f/(1f+(type/2f)))*0.25f);
+                effect.Parameters["time"].SetValue((0.24f / (1f + (type / 2f)))*Main.GlobalTime*0.20f);
+
+                VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
+
+                //Vector3 screenPos = new Vector3(-16, 0, 0);
+
+                Color colorsa = Color.LimeGreen;
+
+                Vector3 screenPos = new Vector3(Main.screenWidth, Main.screenHeight,0) / 2f;
+                float screenWidth = 0;// Main.screenWidth;
+                float screenHeight = 0;// Main.screenHeight;
+                int outsideScreen = (int)(3200* aspectRato);
+
+                vertices[0] = new VertexPositionColorTexture(screenPos + new Vector3(-outsideScreen, -outsideScreen, 0), colorsa, new Vector2(0, 0));
+                vertices[1] = new VertexPositionColorTexture(screenPos + new Vector3(-outsideScreen, screenHeight+ outsideScreen, 0), colorsa, new Vector2(0, 1));
+                vertices[2] = new VertexPositionColorTexture(screenPos + new Vector3(screenWidth + outsideScreen, -outsideScreen, 0), colorsa, new Vector2(1, 0));
+
+                vertices[3] = new VertexPositionColorTexture(screenPos + new Vector3(screenWidth + outsideScreen, screenHeight+ outsideScreen, 0), colorsa, new Vector2(1, 1));
+                vertices[4] = new VertexPositionColorTexture(screenPos + new Vector3(-outsideScreen, screenHeight + outsideScreen, 0), colorsa, new Vector2(0, 1));
+                vertices[5] = new VertexPositionColorTexture(screenPos + new Vector3(screenWidth + outsideScreen, -outsideScreen, 0), colorsa, new Vector2(1, 0));
+
+                vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
+                vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+                Main.graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+                RasterizerState rasterizerState = new RasterizerState();
+                rasterizerState.CullMode = CullMode.None;
+                Main.graphics.GraphicsDevice.RasterizerState = rasterizerState;
+                effect.CurrentTechnique.Passes["RotateTexturePass"].Apply();
+                Main.graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+
+            }
+
+
+            //Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Lerp(Color.DarkOliveGreen, Color.Black, 0.5f) * 1f, Main.GlobalTime * 0.24f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+            //Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 0.50f, Main.GlobalTime * 0.14f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+            //Main.spriteBatch.Draw(pern, new Vector2(Main.screenWidth, Main.screenHeight) / 2f, null, Color.Green * 0.50f, Main.GlobalTime * 0.08f, new Vector2(pern.Width / 2, pern.Height / 2), new Vector2(5f, 5f), SpriteEffects.None, 0f);
+        }
+
     }
 
     public class Fly : ModNPC
@@ -1178,7 +1245,7 @@ namespace SGAmod.NPCs.Murk
 
             if (Main.netMode != 1 && npc.ai[0] % 300 == 0 && NPC.CountNPCS(ModContent.NPCType<BossFly2>()) < (Main.expertMode ? 2 : 1) && Master.localAI[0] < 0)
             {
-                if ((Master.modNPC as Murk).gastimer<1)
+                if ((Master.modNPC as Murk).gastimer < 1)
                 {
                     int x = (int)(Master.position.X + (float)Main.rand.Next(Master.width - 32));
                     int y = (int)(Master.position.Y + (float)Main.rand.Next(Master.height - 32));

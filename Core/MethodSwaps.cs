@@ -53,17 +53,23 @@ namespace SGAmod
 
 			On.Terraria.Main.DrawDust += Main_DrawAdditive;
 			On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
+            On.Terraria.Main.CheckMonoliths += Main_CheckMonoliths;
+			On.Terraria.Main.DrawBuffIcon += Main_DrawBuffIcon;
+			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
+			On.Terraria.Main.SetDisplayMode += RecreateRenderTargetsOnScreenChange;
 			On.Terraria.GameContent.Events.DD2Event.SpawnMonsterFromGate += CrucibleArenaMaster.DD2PortalOverrides;
 			On.Terraria.GameContent.UI.Elements.UICharacterListItem.DrawSelf += Menu_UICharacterListItem;
 
-            //Unused until more relevant
-            On.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += CtorModWorlData;
+            On.Terraria.Item.SetDefaults += ApplyThrowingToUThrowing;
+            On.Terraria.Projectile.SetDefaults += ApplyThrowingToUThrowingButForProjectiles;
+			On.Terraria.GameInput.PlayerInput.UpdateMainMouse += ApplyDrunkAiming;
+
+			//Unused until more relevant
+			On.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += CtorModWorlData;
             On.Terraria.GameContent.UI.Elements.UIWorldListItem.DrawSelf += Menu_UICWorldListItem;
             On.Terraria.GameContent.UI.States.UIWorldSelect.ctor += UIWorldSelect_ClearData;
             On.Terraria.DataStructures.PlayerDeathReason.ByOther += DrowningInSpaceIsNotReallyAThing;
 
-            On.Terraria.Main.DrawBuffIcon += Main_DrawBuffIcon;
-			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
 			On.Terraria.Collision.TileCollision += Collision_TileCollision;
 
 
@@ -73,7 +79,6 @@ namespace SGAmod
             On.Terraria.NPC.UpdateNPC_BuffApplyDOTs += NPC_UpdateNPC_BuffApplyDOTs;
 			On.Terraria.UI.ItemSlot.LeftClick_ItemArray_int_int += ItemSlot_LeftClick_refItem_int;
 			On.Terraria.UI.ItemSlot.RightClick_ItemArray_int_int += ItemSlot_RightClick_refItem_int;
-			On.Terraria.Main.SetDisplayMode += RecreateRenderTargetsOnScreenChange;
 
 			if (SGAConfig.Instance.QuestionableDetours)
 			{
@@ -89,7 +94,38 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
-		private static double Player_Hurt(On.Terraria.Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
+        private static void ApplyDrunkAiming(On.Terraria.GameInput.PlayerInput.orig_UpdateMainMouse orig)
+        {
+			orig();
+			SGAPlayer.DrunkAiming();
+		}
+
+        private static void ApplyThrowingToUThrowing(On.Terraria.Item.orig_SetDefaults orig, Item self, int Type, bool noMatCheck)
+        {
+			//Just a little work around to throwing so I don't have to re-write the whole mod
+			orig(self, Type, noMatCheck);
+			if (self != null && self.Throwing().thrown)
+            {
+				self.thrown = true;
+            }
+		}
+
+		private static void ApplyThrowingToUThrowingButForProjectiles(On.Terraria.Projectile.orig_SetDefaults orig, Projectile self, int Type)
+		{
+			//Diddo
+			orig(self, Type);
+			if (self != null && self.Throwing().thrown)
+			{
+				self.thrown = true;
+			}
+		}
+
+		private static void Main_CheckMonoliths(On.Terraria.Main.orig_CheckMonoliths orig)
+        {
+			SGAmod.PanCamera();
+		}
+
+        private static double Player_Hurt(On.Terraria.Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
 		{
 			SGAPlayer sply = self.SGAPly();
 
@@ -120,10 +156,15 @@ namespace SGAmod
 						SGAPlayer.DoHurt(sply, damageSource, ref Damage, ref hitDirection, pvp, quiet, ref Crit, cooldownCounter);
 					//}
 				}
+				if (sply.undyingValor)
+                {
+					goto valor;
+                }
 				return orig(self, damageSource, Damage, hitDirection, pvp, quiet, Crit, cooldownCounter);
 			}
 
-			if (sply.undyingValor)
+		valor:
+			if (sply.undyingValor && sply.GetEnergyShieldAmmountAndRecharge.Item1<1)
 			{
 				double ddd = orig(self, damageSource, 1, hitDirection, pvp, quiet, Crit, cooldownCounter);
 				if (ddd > 0)
@@ -184,7 +225,7 @@ namespace SGAmod
 				if (fatigue < 1)
 					orig(drawBuffText, i, b, x, y);
 
-				if (SGAmod.BuffsThatHavePotions.Where(testby => testby == b).Count()>0)
+				if (SGAmod.BuffsThatHavePotions.Where(testby => testby == b).Count()>0 && !Main.buffNoTimeDisplay[b])
 				{
 					Texture2D extra = Main.extraTexture[80];
 				Texture2D buffTex = Main.buffTexture[b];
@@ -630,6 +671,18 @@ namespace SGAmod
 				spriteBatch.Draw(SGAmod.Instance.GetTexture("GreyHeart"), origin + new Vector2(80, 37), color3 * (0.50f + (float)Math.Cos(Main.GlobalTime * 2f) / 2f));
 			}
 
+			if (sgaPly.SatanPlayer)
+			{
+				string name = "sadomasochism".ToUpper();
+				int index = 0;
+				foreach (char chara in name)
+				{
+					Vector2 poser = origin-new Vector2(-84, -68) + new Vector2(index * 12, 0) + Main.rand.NextVector2Circular(6, 6);
+					Utils.DrawBorderString(spriteBatch, chara.ToString(), poser, Color.Red);
+					index += 1;
+				}
+			}
+
 			if (drakenUnlocked)
 			{
 				Texture2D DergonHeadTex = ModContent.GetTexture("SGAmod/NPCs/TownNPCs/Dergon_Head");
@@ -760,9 +813,10 @@ namespace SGAmod
 			// 'orig' is a delegate that lets you call back into the original method.
 			// 'self' is the 'this' parameter that would have been passed to the original method.
 
+
 			SGAPlayer sgaply = self.SGAPly();
 
-			if (sgaply.phaethonEye > 6 && Main.debuff[buff] && time > 60 && !SGAUtils.BlackListedBuffs(buff))
+			if (self != null && self.active && sgaply != null && sgaply.phaethonEye > 6 && Main.debuff[buff] && time > 60 && !SGAUtils.BlackListedBuffs(buff))
 			{
 				if (Main.rand.Next(3) == 0 && sgaply.AddCooldownStack(time))
 				{

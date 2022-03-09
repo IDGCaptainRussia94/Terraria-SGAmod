@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
-using AAAAUThrowing;
+
 
 namespace SGAmod.Items.Armors.SpaceDiver
 {

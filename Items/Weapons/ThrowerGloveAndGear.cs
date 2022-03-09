@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
 using SGAmod.NPCs.Sharkvern;
-using AAAAUThrowing;
+
 using SGAmod.Items.Weapons;
 using SGAmod.HavocGear.Items.Weapons;
 using Terraria.Utilities;
@@ -46,13 +46,14 @@ namespace SGAmod.Items.Weapons
 			grenadetypes.Add(mod.ItemType("ThermalGrenade"));
 			if ((level != 2 && level>0) || level == 3)
 			{
-				grenadetypes.Add(mod.ItemType("CelestialCocktail"));
-				grenadetypes.Add(mod.ItemType("SludgeBomb"));
+				grenadetypes.Add(ModContent.ItemType<CelestialCocktail>());
+				grenadetypes.Add(ModContent.ItemType<SludgeBomb>());
 				grenadetypes.Add(ItemID.MolotovCocktail);
 				grenadetypes.Add(ItemID.Bone);
 				grenadetypes.Add(ItemID.Ale);
 				grenadetypes.Add(ItemID.SpikyBall);
-				grenadetypes.Add(mod.ItemType("ThrowableTrapSpikyball"));
+				grenadetypes.Add(ModContent.ItemType<Trap.ThrowableTrapSpikyball>());
+				grenadetypes.Add(ModContent.ItemType<Trap.WreckerBalls>());
 			}
 
 			if (level == 2 || level == 3)

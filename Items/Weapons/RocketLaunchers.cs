@@ -12,13 +12,18 @@ using Microsoft.Xna.Framework.Audio;
 namespace SGAmod.Items.Weapons
 {
 
-	public class SoldierRocketLauncher : ModItem
+	public class SoldierRocketLauncher : ModItem,IDedicatedItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Soldier's Rocket Launcher");
 			Tooltip.SetDefault("Becomes stronger with higher tier TF2 emblems you equip\nBlasts from the rockets will push players away with sizable force");
 			SGAmod.UsesClips.Add(SGAmod.Instance.ItemType("SoldierRocketLauncher"), 6);
+		}
+
+		public string DedicatedItem()
+		{
+			return "To Rick May's passing, and the legecy he left behind in Team Fortress 2";
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)

@@ -14,7 +14,7 @@ using SGAmod.Projectiles;
 using System.Linq;
 using Terraria.Utilities;
 using SGAmod.Effects;
-using AAAAUThrowing;
+
 using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Weapons.Almighty
@@ -300,7 +300,7 @@ namespace SGAmod.Items.Weapons.Almighty
 			}
 
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
 			//UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);
 			Color colorz = Color.Turquoise;
 			trail.color = delegate (float percent)
@@ -2271,6 +2271,7 @@ namespace SGAmod.Items.Weapons.Almighty
 			effect.Parameters["textureProgress"].SetValue(Main.GlobalTime*2f);
 			effect.Parameters["noiseBlendPercent"].SetValue(1f);
 			effect.Parameters["strength"].SetValue(0.25f);
+			effect.Parameters["alphaChannel"].SetValue(false);
 
 			foreach (OrbParticles particle in partices)
 			{

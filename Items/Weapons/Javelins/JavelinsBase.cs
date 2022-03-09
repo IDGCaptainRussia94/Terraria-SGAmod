@@ -10,7 +10,7 @@ using Terraria.ID;
 using Terraria.Enums;
 using Idglibrary;
 using Idglibrary.Bases;
-using AAAAUThrowing;
+
 using CalamityMod.Dusts;
 using SGAmod.Buffs;
 

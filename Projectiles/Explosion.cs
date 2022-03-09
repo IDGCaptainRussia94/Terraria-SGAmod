@@ -10,11 +10,11 @@ namespace SGAmod.Projectiles
     public class Explosion : ModProjectile
     {
         public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Explosion");
-		}
+        {
+            DisplayName.SetDefault("Explosion");
+        }
 
-		public override void SetDefaults()
+        public override void SetDefaults()
         {
             projectile.width = 96;
             projectile.height = 96;
@@ -26,16 +26,15 @@ namespace SGAmod.Projectiles
             projectile.timeLeft = 2;
         }
 
-   		public override string Texture
-		{
-			get { return("SGAmod/HavocGear/Projectiles/BoulderBlast");}
-		}     
-
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override string Texture
         {
-        target.immune[projectile.owner] = 2;
-    	}
+            get { return ("SGAmod/HavocGear/Projectiles/BoulderBlast"); }
+        }
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            target.immune[projectile.owner] = 2;
+        }
 
     }
-
 }

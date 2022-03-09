@@ -8,7 +8,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using SGAmod.NPCs;
 using Idglibrary;
-using AAAAUThrowing;
+
 using System.Linq;
 
 namespace SGAmod.Items.Weapons
@@ -1183,7 +1183,7 @@ namespace SGAmod.Items.Weapons
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = "SGAmod/Buffs/MidasMinionBuff";
+			texture = "SGAmod/Buffs/IceFairiesBuff";
 			return true;
 		}
 

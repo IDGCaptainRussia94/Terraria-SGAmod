@@ -126,7 +126,28 @@ namespace SGAmod.Buffs
 			player.statDefense -= 15;
 			player.moveSpeed -= 0.2f;
 			player.SGAPly().UseTimeMul -= 0.25f;
-
 		}
 	}
+	public class CheekiBreekiDebuff : ModBuff
+	{
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Cheeki Breeki Aiming");
+			Description.SetDefault("can't aim straight to shoot straight, too much Vodka");
+			Main.pvpBuff[Type] = true;
+			Main.debuff[Type] = true;
+			Main.buffNoSave[Type] = false;
+			canBeCleared = false;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().aimingDrunkTime = player.buffTime[buffIndex];
+		}
+        public override bool ReApply(Player player, int time, int buffIndex)
+        {
+			player.buffTime[buffIndex] += time;
+			return true;
+        }
+    }
 }

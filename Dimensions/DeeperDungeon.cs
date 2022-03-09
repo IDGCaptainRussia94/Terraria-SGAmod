@@ -22,6 +22,7 @@ using SubworldLibrary;
 using SGAmod;
 using SGAmod.Dimensions;
 using SGAmod.Dimensions.NPCs;
+using SGAmod.NPCs.DeeperDungeons;
 
 namespace SGAmod.Dimensions
 {
@@ -97,11 +98,13 @@ namespace SGAmod.Dimensions
         public override string DimName => "Deeper Dungeons";
         public override int DimType => 2;
         public override float maxSpawns => 1f;
-        public override float spawnRate => Math.Max(0.25f, 0.75f - ((float)SGAWorld.dungeonlevel * 0.10f));
+        public override float spawnRate => Math.Max(0.10f, 0.65f - ((float)SGAWorld.dungeonlevel * 0.05f));
 
         public static int globallineroomindex = 0;
         public static DeeperDungeon instance;
 
+        public static bool hardMode = false;
+        public static bool postPlantera = false;
 
         public static int DungeonTile = TileID.BlueDungeonBrick;
         public static int DungeonWall = WallID.BlueDungeonUnsafe;
@@ -190,44 +193,121 @@ namespace SGAmod.Dimensions
                 }
 
                 WeightedRandom<Vector2> rando = new WeightedRandom<Vector2>();
-                rando.Add(new Vector2(NPCID.AngryBones, 0.25f), 1f);
-                if (UniRand.Next(0, 1) == 0)
-                    rando.Add(new Vector2(NPCID.AngryBonesBig, 0.25f), 0.9f);
-                if (UniRand.Next(0, 1) == 0)
-                    rando.Add(new Vector2(NPCID.AngryBonesBigMuscle, 0.25f), 0.9f);
-                if (UniRand.Next(0, 1) == 0)
-                    rando.Add(new Vector2(NPCID.AngryBonesBigHelmet, 0.25f), 0.9f);
-                if (UniRand.Next(0, 2) == 0)
-                {
-                    rando.Add(new Vector2(NPCID.PantlessSkeleton, 0.4f), 1.2f);
-                    if (UniRand.Next(0, 2) == 0)
-                        rando.Add(new Vector2(NPCID.Skeleton, 0.8f), 1.5f);
-                    if (UniRand.Next(0, 2) == 0)
-                        rando.Add(new Vector2(NPCID.SkeletonArcher, 0.8f), 1.5f);
-                }
 
-                if (UniRand.Next(0, 2) == 0)
+                if (!hardMode || UniRand.Next(5) > SGAWorld.dungeonlevel)
                 {
-                    rando.Add(new Vector2(NPCID.CursedSkull, 0.25f), 0.8f);
-                    rando.Add(new Vector2(NPCID.DungeonSlime, 0.05f), 0.6f);
-                    rando.Add(new Vector2(NPCID.DarkCaster, 0.25f), 0.8f);
-                }
-                else
-                {
-                    rando.Add(new Vector2(NPCID.FireImp, 0.25f), 0.8f);
-                    rando.Add(new Vector2(NPCID.BoneSerpentHead, 0.05f), 0.6f);
-                    rando.Add(new Vector2(NPCID.Hellbat, 0.25f), 0.8f);
+
+                    rando.Add(new Vector2(NPCID.AngryBones, 0.25f), 1f);
+                    if (UniRand.Next(0, 1) == 0)
+                        rando.Add(new Vector2(NPCID.AngryBonesBig, 0.25f), 0.9f);
+                    if (UniRand.Next(0, 1) == 0)
+                        rando.Add(new Vector2(NPCID.AngryBonesBigMuscle, 0.25f), 0.9f);
+                    if (UniRand.Next(0, 1) == 0)
+                        rando.Add(new Vector2(NPCID.AngryBonesBigHelmet, 0.25f), 0.9f);
+                    if (UniRand.Next(0, 2) == 0)
+                    {
+                        rando.Add(new Vector2(NPCID.PantlessSkeleton, 0.4f), 1.2f);
+                        if (UniRand.Next(0, 2) == 0)
+                            rando.Add(new Vector2(NPCID.Skeleton, 0.8f), 1.5f);
+                        if (UniRand.Next(0, 2) == 0)
+                            rando.Add(new Vector2(ModContent.NPCType<SkeletonCrossbower>(), 0.8f), 1.5f);
+                    }
+
+                    if (UniRand.Next(0, 2) == 0)
+                    {
+                        rando.Add(new Vector2(NPCID.CursedSkull, 0.25f), 0.8f);
+                        rando.Add(new Vector2(NPCID.DungeonSlime, 0.05f), 0.6f);
+                        rando.Add(new Vector2(NPCID.DarkCaster, 0.25f), 0.8f);
+                        rando.Add(new Vector2(ModContent.NPCType<HellCaster>(), 0.2f), 0.5f);
+                    }
+                    else
+                    {
+                        rando.Add(new Vector2(NPCID.FireImp, 0.25f), 0.8f);
+                        rando.Add(new Vector2(NPCID.BoneSerpentHead, 0.05f), 0.6f);
+                        rando.Add(new Vector2(NPCID.Hellbat, 0.25f), 0.8f);
+                        rando.Add(new Vector2(ModContent.NPCType<ChaosCaster>(), 0.2f), 0.5f);
+                    }
                 }
 
                 if (SGAWorld.dungeonlevel > 2)
                 {
-                    rando.Add(new Vector2(NPCID.ZombieElf, 0.25f + (SGAWorld.dungeonlevel - 3) * 0.2f), 0.8f + ((SGAWorld.dungeonlevel - 3) * 0.2f));
-                    rando.Add(new Vector2(NPCID.Scarecrow1, 0.25f + (SGAWorld.dungeonlevel - 3) * 0.2f), 0.8f + ((SGAWorld.dungeonlevel - 3) * 0.2f));
+                    rando.Add(new Vector2(NPCID.ZombieElf, 0.13f + Math.Min((SGAWorld.dungeonlevel - 3) * 0.1f,0.325f)), 0.4f + Math.Min((SGAWorld.dungeonlevel - 3) * 0.2f,0.6f));
+                    rando.Add(new Vector2(NPCID.Scarecrow1, 0.13f + Math.Min((SGAWorld.dungeonlevel - 3) * 0.1f, 0.35f)), 0.4f + Math.Min((SGAWorld.dungeonlevel - 3) * 0.2f, 0.6f));
+                }
+
+                rando.Add(new Vector2(ModContent.NPCType<DungeonBat>(), 0.3f), 0.8f);
+                rando.Add(new Vector2(ModContent.NPCType<FastSkeleton>(), 0.3f), 0.8f);
+
+                if (hardMode)
+                {
+                    Main.hardMode = true;
+                    rando.Add(new Vector2(NPCID.BlazingWheel, 0.05f), 0.2f);
+                    rando.Add(new Vector2(NPCID.SpikeBall, 0.05f), 0.2f);
+                    if (UniRand.Next(0, 1) == 0)
+                        rando.Add(new Vector2(ModContent.NPCType<LaserSkeleton>(), 0.25f), 0.7f);
+                    if (UniRand.Next(0, 1) == 0)
+                        rando.Add(new Vector2(ModContent.NPCType<SkeletonGunner>(), 0.5f), 0.6f);
+                    if (UniRand.Next(0, 2) == 0)
+                        rando.Add(new Vector2(NPCID.SkeletonArcher, 0.8f), 1.5f);
+                    if (SGAWorld.dungeonlevel > 5)
+                    {
+                        if (UniRand.Next(0, 2) == 0)
+                            rando.Add(new Vector2(ModContent.NPCType<DungeonMimic>(), 0.2f + (SGAWorld.dungeonlevel - 5) * 0.2f), 0.2f);
+
+                    }
+                }
+
+                if (postPlantera)
+                {
+                    NPC.downedPlantBoss = true;
+
+                    int enemySet = UniRand.Next(0, 3);
+                    if (enemySet == 0)
+                    {
+                        rando.Add(new Vector2(NPCID.BlueArmoredBones, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.BlueArmoredBonesMace, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.BlueArmoredBonesNoPants, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.BlueArmoredBonesSword, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.Necromancer, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.NecromancerArmored, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.SkeletonCommando, 0.25f), 0.8f);
+                        rando.Add(new Vector2(NPCID.Paladin, 0.3f), 0.6f);        
+                    }
+                    if (enemySet == 1)
+                    {
+                        rando.Add(new Vector2(NPCID.RustyArmoredBonesAxe, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.RustyArmoredBonesFlail, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.RustyArmoredBonesSword, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.RustyArmoredBonesSwordNoArmor, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.RaggedCaster, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.RaggedCasterOpenCoat, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.SkeletonSniper, 0.25f), 0.8f);
+                        rando.Add(new Vector2(NPCID.GiantCursedSkull, 0.2f), 0.4f);
+                    }
+                    if (enemySet == 2)
+                    {
+                        rando.Add(new Vector2(NPCID.HellArmoredBones, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.HellArmoredBonesSpikeShield, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.HellArmoredBonesMace, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.HellArmoredBonesSword, 0.8f), 1.3f);
+                        rando.Add(new Vector2(NPCID.DiabolistRed, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.DiabolistWhite, 0.25f), 0.6f);
+                        rando.Add(new Vector2(NPCID.TacticalSkeleton, 0.25f), 0.8f);
+                        rando.Add(new Vector2(NPCID.GiantCursedSkull, 0.2f), 0.4f);
+                    }
+
+                    rando.Add(new Vector2(NPCID.BoneLee, 0.25f), 0.8f);
+                    rando.Add(new Vector2(NPCID.DungeonSpirit, 0.4f), 0.5f);
+                    rando.Add(new Vector2(NPCID.Paladin, 0.15f), 0.6f);
+
+                    if (UniRand.Next(0, 1) == 0)
+                        rando.Add(new Vector2(ModContent.NPCType<EvilCaster>(), 0.25f), 0.7f);
+                    else
+                        rando.Add(new Vector2(ModContent.NPCType<RuneCaster>(), 0.25f), 0.4f);
                 }
 
 
-
-                for (int i = 0; i < 5; i += 1)
+                for (int i = 0; i < 5+Math.Min(SGAWorld.dungeonlevel/5f,5); i += 1)
                 {
                     Vector2 index = rando.Get();
                     pool[(int)index.X] = index.Y;
@@ -244,11 +324,26 @@ namespace SGAmod.Dimensions
             if (unirand.Next(0, 500000) < 1 || alwaysdo)
             {
                 int[] tilestopick = { TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick };
-                int[] wallstopick = { WallID.BlueDungeonUnsafe, WallID.GreenDungeonUnsafe, WallID.PinkDungeonUnsafe };
+                int[] wallsBlue = { WallID.BlueDungeonUnsafe, WallID.BlueDungeonSlabUnsafe, WallID.BlueDungeonTileUnsafe };
+                int[] wallsGreen = { WallID.GreenDungeonUnsafe, WallID.GreenDungeonSlabUnsafe, WallID.GreenDungeonTileUnsafe };
+                int[] wallsPink = { WallID.PinkDungeonUnsafe, WallID.PinkDungeonSlabUnsafe, WallID.PinkDungeonTileUnsafe };
                 int picker = unirand.Next(0, 3);
+                int picker2 = unirand.Next(0, 3);
+
+                switch (tilestopick[picker])
+                {
+                    case TileID.BlueDungeonBrick:
+                        DeeperDungeon.DungeonWall = wallsBlue[picker2];
+                        break;
+                    case TileID.GreenDungeonBrick:
+                        DeeperDungeon.DungeonWall = wallsGreen[picker2];
+                        break;
+                    default:
+                        DeeperDungeon.DungeonWall = wallsPink[picker2];
+                        break;
+                }
 
                 DeeperDungeon.DungeonTile = tilestopick[picker];
-                DeeperDungeon.DungeonWall = wallstopick[picker];
             }
         }
 
@@ -541,7 +636,27 @@ namespace SGAmod.Dimensions
 
 
                 List<int> barTypes = new List<int>();
-                barTypes.Add(4); barTypes.Add(5); barTypes.Add(6); barTypes.Add(7); barTypes.Add(9); barTypes.Add(10); barTypes.Add(SGAmod.Instance.TileType("UnmanedBarTile")); barTypes.Add(SGAmod.Instance.TileType("NoviteBarTile")); barTypes.Add(SGAmod.Instance.TileType("BiomassBarTile"));
+                //Silver and up, includes metorite and hellstone and a few modded bars
+                barTypes.Add(4); barTypes.Add(5); barTypes.Add(6); barTypes.Add(7); barTypes.Add(8); barTypes.Add(9); barTypes.Add(SGAmod.Instance.TileType("UnmanedBarTile")); barTypes.Add(SGAmod.Instance.TileType("NoviteBarTile")); barTypes.Add(SGAmod.Instance.TileType("BiomassBarTile"));
+
+                //Evil Bars
+                barTypes.Add(10); barTypes.Add(19);
+
+                if (hardMode)
+                {
+                    //Hardmode Ore Bars
+                    barTypes.Add(13); barTypes.Add(14);
+                    barTypes.Add(15); barTypes.Add(16);
+                }
+
+                if (postPlantera)
+                {
+                    //Post Plantera Bars
+                    barTypes.Add(20); barTypes.Add(21); barTypes.Add(22);
+                }
+
+                if (SGAWorld.GennedVirulent)
+                    barTypes.Add(SGAmod.Instance.TileType("VirulentBarTile"));
 
 
                 for (int thisone22 = -4; thisone22 < 5; thisone22 += 8)
@@ -571,6 +686,9 @@ namespace SGAmod.Dimensions
             AddLights(UniRand, ref allareas);
 
             AddPaintnings(UniRand, ref allareas);
+
+            //hardMode = false;
+            //postPlantera = false;
 
             WorldGen._genRandSeed = lastseed;
 
@@ -977,11 +1095,11 @@ namespace SGAmod.Dimensions
                                     {
 
                                         int typeofhang = 5;
-                                        if (thetile.wall == WallID.BlueDungeonUnsafe)
+                                        if (thetile.wall == WallID.BlueDungeonUnsafe || thetile.wall == WallID.BlueDungeonSlabUnsafe || thetile.wall == WallID.BlueDungeonTileUnsafe)
                                             typeofhang = 1;
-                                        if (thetile.wall == WallID.GreenDungeonUnsafe)
+                                        if (thetile.wall == WallID.GreenDungeonUnsafe || thetile.wall == WallID.GreenDungeonSlabUnsafe || thetile.wall == WallID.GreenDungeonTileUnsafe)
                                             typeofhang = 3;
-                                        if (thetile.wall == WallID.PinkDungeonUnsafe)
+                                        if (thetile.wall == WallID.PinkDungeonUnsafe || thetile.wall == WallID.PinkDungeonSlabUnsafe || thetile.wall == WallID.PinkDungeonTileUnsafe)
                                             typeofhang = 4;
                                         //if (allareas[x].type == 1)
                                         //    typeofhang = 21;
@@ -1031,9 +1149,9 @@ namespace SGAmod.Dimensions
 
         }
 
-        public static int[] CommonItems => new int[] { SGAmod.Instance.ItemType("RingOfRespite"), SGAmod.Instance.ItemType("StoneBarrierStaff"), SGAmod.Instance.ItemType("NinjaSash"), SGAmod.Instance.ItemType("DiesIraeStone"), SGAmod.Instance.ItemType("MagusSlippers"), SGAmod.Instance.ItemType("YoyoTricks"), SGAmod.Instance.ItemType("Megido") };
-        public static int[] RareItems => new int[] { SGAmod.Instance.ItemType("BenchGodsFavor"), SGAmod.Instance.ItemType("PortalEssence"), SGAmod.Instance.ItemType("DungeonSplunker"), SGAmod.Instance.ItemType("InterdimensionalPartyHat") };
-        public static int[] ShadowItems => new int[] {SGAmod.Instance.ItemType("BeserkerAuraStaff"), SGAmod.Instance.ItemType("EnchantedFury"), SGAmod.Instance.ItemType("CardDeckPersona") };
+        public static int[] CommonItems => new int[] { ModContent.ItemType<Items.Accessories.RingOfRespite>(), ModContent.ItemType<Items.Weapons.Auras.StoneBarrierStaff>(), ModContent.ItemType<Items.Accessories.NinjaSash>(), ModContent.ItemType<Items.Accessories.DiesIraeStone>(), ModContent.ItemType<Items.Accessories.MagusSlippers>(), ModContent.ItemType<Items.Accessories.YoyoTricks>(), ModContent.ItemType < Items.Weapons.Almighty.Megido>() };
+        public static int[] RareItems => new int[] { ModContent.ItemType<Items.Consumables.BenchGodsFavor>(), ModContent.ItemType<Items.Consumables.PortalEssence>(), ModContent.ItemType<Items.DungeonSplunker>(), ModContent.ItemType<Items.Consumables.InterdimensionalPartyHat>() };
+        public static int[] ShadowItems => new int[] { ModContent.ItemType<Items.Weapons.Auras.BeserkerAuraStaff>(), ModContent.ItemType<Items.Weapons.EnchantedFury>(), ModContent.ItemType<Items.Accessories.CardDeckPersona>() };
         //public static int[] ShadowItemsVanilla => new int[] { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow};
 
     public static void AddStuffToChest(int chestid, int loottype,UnifiedRandom unirand)
@@ -1051,6 +1169,13 @@ namespace SGAmod.Dimensions
                     lootmain.Add(SGAmod.Instance.ItemType("VialofAcid"));
                 if (SGAWorld.downedMurk > 1)
                     lootmain.Add(SGAmod.Instance.ItemType("MurkyGel"));
+                if (SGAWorld.GennedVirulent)
+                    lootmain.Add(ModContent.ItemType<HavocGear.Items.VirulentBar>());
+                if (postPlantera)
+                {
+                    lootmain.Add(ItemID.ChlorophyteBar);
+                    lootmain.Add(ItemID.Ectoplasm);
+                }
 
                 if (loottype < 2)//Not Shadow Chest/Unlocked Gold Chest
                 {

@@ -130,7 +130,7 @@ namespace SGAmod.HavocGear.Items
 				player.QuickSpawnItem(types[Main.rand.Next(0, types.Count)]);
 			}*/
 
-			SGAUtils.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 150 : 75,Vector2.Zero,player);
+			DropHelper.DropFixedItemQuanity(types.ToArray(), Main.expertMode ? 150 : 75,Vector2.Zero,player);
 
 			player.TryGettingDevArmor();
 			int lLoot = (Main.rand.Next(0, 4));
@@ -164,6 +164,41 @@ namespace SGAmod.HavocGear.Items
 
 namespace SGAmod.Items
 {
+	public class PhaethonBag : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Treasure Bag");
+			Tooltip.SetDefault("Right click to open");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 999;
+			item.consumable = true;
+			item.width = 32;
+			item.height = 32;
+			item.expert = true;
+			item.rare = -12;
+		}
+
+		public override int BossBagNPC
+		{
+			get
+			{
+				return ModContent.NPCType<Dimensions.NPCs.SpaceBoss>();
+			}
+		}
+
+		public override bool CanRightClick()
+		{
+			return true;
+		}
+		public override void OpenBossBag(Player player)
+		{
+			player.QuickSpawnItem(ModContent.ItemType<StarMetalMold>());
+			player.QuickSpawnItem(ModContent.ItemType<Accessories.PhaethonEye>(), 1);
+		}
+	}	
 	public class SpiderBag : ModItem
 	{
 		public override void SetStaticDefaults()

@@ -155,7 +155,7 @@ namespace SGAmod.NPCs.Wraiths
 
 		public override bool Autoload(ref string name)
         {
-			SGAmod.ModifyTransformMatrixEvent += MoveCamera;
+			SGAmod.PanCameraEvent += MoveCamera;
 			SGAWorld.CutsceneActiveEvent += CutSceneActive;
 			return true;
         }
@@ -225,18 +225,18 @@ namespace SGAmod.NPCs.Wraiths
 		}
 
 		private void PerFrameSettings(FrameEventData evt)
-			{
-				cutsceneposition = 2;
-			}
+		{
+			cutsceneposition = 2;
+		}
 
-			private void MoveCamera(ref SpriteViewMatrix transform)
+		private void MoveCamera()
+		{
+			if (CaliburnGuardianHardmode.cutsceneposition > 0 && CaliburnGuardianHardmode.film.IsActive)
 			{
-				if (CaliburnGuardianHardmode.cutsceneposition > 0 && CaliburnGuardianHardmode.film.IsActive)
-				{
-					Vector2 oldpos = Main.screenPosition;
-					Main.screenPosition = Vector2.Lerp(new Vector2(CaliburnGuardianHardmode.scenecam.X, CaliburnGuardianHardmode.scenecam.Y), Main.screenPosition, MathHelper.Clamp(1f - CaliburnGuardianHardmode.scenecam.Z, 0f, 1f));
-				}
+				Vector2 oldpos = Main.screenPosition;
+				Main.screenPosition = Vector2.Lerp(new Vector2(CaliburnGuardianHardmode.scenecam.X, CaliburnGuardianHardmode.scenecam.Y), Main.screenPosition, MathHelper.Clamp(1f - CaliburnGuardianHardmode.scenecam.Z, 0f, 1f));
 			}
+		}
 
 			public static CaliburnGuardianHardmode SpawnBrother(CaliburnGuardianHardmode leader, Vector2 location,int state,int stateTime,int LeftOrRight, int npcai2)
         {

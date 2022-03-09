@@ -137,11 +137,12 @@ namespace SGAmod.Items.Weapons.Ammo
 		}
         public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
         {
+			if (GetType() == typeof(SeekerBullet))
 			flat += item.damage * player.minionDamage;
 		}
         public override void SetDefaults()
 		{
-			item.damage = 10;
+			item.damage = 12;
 			item.summon = true;
 			item.width = 8;
 			item.height = 8;
@@ -179,8 +180,8 @@ namespace SGAmod.Items.Weapons.Ammo
 		}
 		public override void SetDefaults()
 		{
-			item.damage = 50;
-			item.summon = true;
+			item.damage = 60;
+			item.ranged = true;
 			item.width = 8;
 			item.height = 8;
 			item.maxStack = 999;
@@ -271,15 +272,15 @@ namespace SGAmod.Items.Weapons.Ammo
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("Entrophite"), 30);
-			recipe.AddIngredient(mod.ItemType("MoneySign"), 1);
-			recipe.AddIngredient(mod.ItemType("ByteSoul"), 10);
-			recipe.AddIngredient(mod.ItemType("DrakeniteBar"), 1);
+			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 20);
+			recipe.AddIngredient(ModContent.ItemType<MoneySign>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<ByteSoul>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<DrakeniteBar>(), 1);
 			recipe.AddIngredient(ItemID.MoonlordBullet, 100);
-			recipe.AddIngredient(ItemID.MeteorShot, 50);
-			recipe.AddIngredient(ItemID.ChlorophyteBullet, 50);
+			recipe.AddIngredient(ItemID.MeteorShot, 75);
+			recipe.AddIngredient(ItemID.ChlorophyteBullet, 75);
 			recipe.AddTile(TileID.LunarCraftingStation);
-			recipe.SetResult(this, 200);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}
@@ -433,10 +434,10 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 1);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 2);
 			recipe.AddIngredient(ItemID.HallowedBar, 1);
-			recipe.AddIngredient(ItemID.SilverBullet, 75);
-			recipe.AddIngredient(ModContent.ItemType<TungstenBullet>(), 75);
+			recipe.AddIngredient(ItemID.SilverBullet, 125);
+			recipe.AddIngredient(ModContent.ItemType<TungstenBullet>(), 125);
 			recipe.AddTile(TileID.ImbuingStation);
-			recipe.SetResult(this, 150);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}
@@ -484,9 +485,9 @@ namespace SGAmod.Items.Weapons.Ammo
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 1);
-			recipe.AddIngredient(mod.ItemType("PrismicBullet"), 150);
+			recipe.AddIngredient(mod.ItemType("PrismicBullet"), 250);
 			recipe.AddTile(TileID.ImbuingStation);
-			recipe.SetResult(this, 150);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}

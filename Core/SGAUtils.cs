@@ -30,7 +30,7 @@ using SGAmod.Items.Weapons.SeriousSam;
 using ReLogic.Graphics;
 using Terraria.Utilities;
 using System.Reflection;
-using AAAAUThrowing;
+
 using System.Threading;
 using SGAmod.Buffs;
 using SGAmod.Items.Weapons.Ammo;
@@ -298,6 +298,7 @@ namespace SGAmod
 			BlackListedItems.Add(ModContent.ItemType<WraithArrow>());
 			BlackListedItems.Add(ModContent.ItemType<Items.Weapons.Javelins.ShadowJavelin>());
 			BlackListedItems.Add(ModContent.ItemType<Items.SPinkyBagFake>());
+			BlackListedItems.Add(ModContent.ItemType<Items.Placeable.CelestialMonolithItem>());
 		}
 
 		public UncraftClass(Point16 location, Item item, int recipeIndex = 0, int offsetter = 0)
@@ -511,6 +512,113 @@ namespace SGAmod
 			src.GetData(0, rect, data, 0, count);
 			tex.SetData(data);
 			return tex;
+		}
+	}
+
+	public class WeightedItemSet
+	{
+		public List<(int, int)> itemPairs = new List<(int, int)>();
+		public float weight;
+		public Func<int,bool> condition = delegate (int itemType)
+			 {
+				 return true;
+			 };
+
+		public WeightedItemSet((int,int)[] items,float weight=1, Func<int, bool> cond = default)
+        {
+			foreach ((int, int) itemthis in items)
+			{
+				itemPairs.Add((itemthis.Item1, itemthis.Item2));
+			}
+
+			if (cond != default)
+            {
+				condition = cond;
+			}
+			this.weight = weight;
+
+		}
+
+		public bool CanDrop() => condition(itemPairs[0].Item1);
+
+	}
+
+	public static class DropHelper
+	{
+
+		public static WeightedItemSet SelectFromItemSets(WeightedItemSet[] sets)
+		{
+			WeightedItemSet[] newSets = sets.Where(testby => testby.CanDrop()).ToArray();
+			if (newSets.Length < 1)
+				return null;
+
+			float totalWeight = newSets.Select(testby => testby.weight).Aggregate(0f,(previous, next) => previous + next);
+			newSets = newSets.Where(testby => testby.CanDrop()).OrderBy(testby => Main.rand.NextFloat(totalWeight) - testby.weight).ToArray();
+
+			return newSets[0];
+		}
+
+		public static void DropFromItemSets(Vector2 where,WeightedItemSet[] sets, int drops = 1, bool uniqueOnly = true)
+		{
+			List<WeightedItemSet> listedSets = sets.ToList();
+			int max = Math.Min(drops, sets.Length);
+
+			for (int dropCount = 0; dropCount < max; dropCount += 1)
+			{
+				WeightedItemSet set = SelectFromItemSets(listedSets.ToArray());
+
+				if (set == null)
+					continue;
+
+				foreach ((int, int) itemthis in set.itemPairs)
+				{
+					Item.NewItem(where, itemthis.Item1, itemthis.Item2);
+				}
+
+				if (uniqueOnly)
+				listedSets.Remove(set);
+			}
+
+		}
+
+
+
+		public static void DropFixedItemQuanity(int[] itemtypes, int quanity, Vector2 position, Player player = default,NPC dropPerPlayerFromNPC = default)
+		{
+			int[] itemtypes2 = new int[itemtypes.Length];
+
+			for (int i = 0; i < quanity; i += 1)
+			{
+				itemtypes2[Main.rand.Next(itemtypes.Length)] += 1;
+			}
+
+			if (dropPerPlayerFromNPC != default)
+            {
+				for (int i = 0; i < itemtypes2.Length; i += 1)
+				{
+					if (itemtypes2[i] > 0)
+						dropPerPlayerFromNPC.DropItemInstanced(dropPerPlayerFromNPC.position, dropPerPlayerFromNPC.Hitbox.Size(), itemtypes[i], itemtypes2[i]);
+				}
+				return;
+            }
+
+			if (player == default)
+			{
+
+				for (int i = 0; i < itemtypes2.Length; i += 1)
+				{
+					if (itemtypes2[i] > 0)
+						Item.NewItem(position, itemtypes[i], itemtypes2[i]);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < itemtypes2.Length; i += 1)
+				{
+					if (itemtypes2[i] > 0)
+						player.QuickSpawnItem(itemtypes[i], itemtypes2[i]);
+				}
+			}
 		}
 	}
 
@@ -773,7 +881,6 @@ namespace SGAmod
 					 score = 100000000;
 
 				 return score;
-
 			 };
 
 			if (closestnpcs.Count < 1)
@@ -898,64 +1005,6 @@ namespace SGAmod
 
 			return ammountsOfCoins;
 
-		}
-
-		public static void DropFixedItemQuanity(int[] itemtypes, int quanity, Vector2 position, Player player = default)
-		{
-			int[] itemtypes2 = new int[itemtypes.Length];
-
-			for (int i = 0; i < quanity; i += 1)
-			{
-				itemtypes2[Main.rand.Next(itemtypes.Length)] += 1;
-			}
-
-			if (player == default)
-			{
-
-				for (int i = 0; i < itemtypes2.Length; i += 1)
-				{
-					if (itemtypes2[i] > 0)
-						Item.NewItem(position, itemtypes[i], itemtypes2[i]);
-				}
-			}
-			else
-			{
-				for (int i = 0; i < itemtypes2.Length; i += 1)
-				{
-					if (itemtypes2[i] > 0)
-						player.QuickSpawnItem(itemtypes[i], itemtypes2[i]);
-				}
-			}
-		}
-
-		public static float InverseLerp(float from, float to, float percent, bool clampedValue = false)
-		{
-			if (clampedValue)
-			{
-				if (from < to)
-				{
-					if (percent < from)
-					{
-						return 0f;
-					}
-					if (percent > to)
-					{
-						return 1f;
-					}
-				}
-				else
-				{
-					if (percent < to)
-					{
-						return 1f;
-					}
-					if (percent > from)
-					{
-						return 0f;
-					}
-				}
-			}
-			return (percent - from) / (to - from);
 		}
 
 		//A class made from Turing's Bezier Curve method, this time, with permission!

@@ -17,6 +17,7 @@ using Terraria.Graphics.Shaders;
 using Terraria.DataStructures;
 using System.Linq;
 using SGAmod.Items.Tools;
+using SGAmod.Tiles.DankWoodFurniture;
 
 namespace SGAmod.Dimensions.Tiles
 {
@@ -229,9 +230,225 @@ namespace SGAmod.Dimensions.Tiles
 				b = Color.PaleTurquoise.B * 0.02f;
 			}
 		}
-
-
 	}
+	public class UnbreakableSpacePlatform : DankWoodPlatformTile
+    {
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Tiles_" + TileID.TeamBlockWhitePlatform;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			soundType = SoundID.Dig;
+			dustType = 206;
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("");
+			AddMapEntry(Color.White, name);
+		}
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+		public override bool CanKillTile(int i, int j, ref bool blockDamaged)
+		{
+			return false;
+		}
+	}
+	public class UnbreakableCopperPlating : ModTile
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Tiles_" + TileID.CopperPlating;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			Main.tileSolid[Type] = true;
+			TileID.Sets.ChecksForMerge[Type] = true;
+
+			minPick = 100;
+			soundType = SoundID.Tink;
+			soundStyle = 0;
+			mineResist = 5f;
+			dustType = 247;
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("");
+			AddMapEntry(Color.Silver, name);
+		}
+        public override bool CanExplode(int i, int j)
+        {
+            return false;
+		}
+        public override bool CanKillTile(int i, int j, ref bool blockDamaged)
+        {
+			return false;
+        }
+    }
+
+	public class UnbreakableGemspark : UnbreakableCopperPlating
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Tiles_" + TileID.DiamondGemspark;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			Main.tileSolid[Type] = true;
+			Main.tileLighted[Type] = true;
+
+			base.SetDefaults();
+			soundType = SoundID.Tink;
+			dustType = 247;
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("");
+			AddMapEntry(Color.White, name);
+		}
+
+
+		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+		{
+			if (Main.tile[i, j].active())
+			{
+				r = Color.Silver.R * 0.012f;
+				g = Color.Silver.G * 0.012f;
+				b = Color.Silver.B * 0.012f;
+			}
+		}
+	}
+
+	public class UnbreakableMeteoriteBrick : UnbreakableCopperPlating
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Tiles_" + TileID.MeteoriteBrick;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			soundType = SoundID.Tink;
+			dustType = 247;
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("");
+			AddMapEntry(Color.Brown, name);
+		}
+        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+        {
+			Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
+			Vector2 drawOffset = new Vector2((float)(i * 16), (float)(j * 16)) + zerooroffset;
+
+			Tile tile = Framing.GetTileSafely(i, j);
+
+			spriteBatch.Draw(Type == ModContent.TileType<UnbreakableMeteoriteBrick>() ? Main.glowMaskTexture[111] : Main.glowMaskTexture[94], drawOffset-Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+		}
+    }
+
+	public class UnbreakableMartianPlating : UnbreakableMeteoriteBrick
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Tiles_" + TileID.MeteoriteBrick;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			soundType = SoundID.Tink;
+			dustType = 228;
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("");
+			AddMapEntry(Color.Brown, name);
+		}
+	}
+
+	public class UnbreakableBubbleTile : UnbreakableCopperPlating
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "Terraria/Projectile_" + 447;
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			Main.tileSolid[Type] = false;
+			Main.tileSolidTop[Type] = false;
+			soundType = default;
+			dustType = -1;
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("");
+			AddMapEntry(Color.Brown, name);
+		}
+
+		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+		{
+			var snd = Main.PlaySound(SoundID.NPCHit, (int)i * 16, (int)j * 16, 43);
+			if (snd != null)
+            {
+				snd.Pitch = 0.75f;
+			}
+
+			int typr = 110;
+			for (int xi = 0; xi < 20; xi += 1)
+			{
+				int dust = Dust.NewDust(new Vector2(i, j) * 16, 16, 16, typr);
+				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+				Vector2 normvel = Main.rand.NextVector2Circular(6f, 6f);
+				Color Rainbow = Color.White;
+				Main.dust[dust].color = Rainbow;
+				Main.dust[dust].scale = 0.75f;
+				Main.dust[dust].velocity = ((randomcircle / 1f) + (-normvel));
+				Main.dust[dust].noGravity = true;
+			}
+			fail = true;
+		}
+
+		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+        {
+        Vector2 zerooroffset = Main.drawToScreen ? Vector2.Zero : new Vector2((float)Main.offScreenRange);
+			Vector2 drawOffset = new Vector2((float)(i * 16), (float)(j * 16)) + zerooroffset;
+
+			Tile tile = Framing.GetTileSafely(i, j);
+
+			Texture2D tileFX = Main.tileTexture[Type];
+
+			Tile tile2 = Framing.GetTileSafely(i, j+1);
+			Tile tile3 = Framing.GetTileSafely(i, j+2);
+
+			if (tile2.type != Type && tile3.type != Type)
+			{
+
+				List<float> layeredThings = new List<float>();
+				for(float ff = 0; ff < MathHelper.TwoPi; ff += MathHelper.TwoPi / 4f)
+                {
+					layeredThings.Add(ff + (Main.GlobalTime * 2f));
+				}
+
+				layeredThings = layeredThings.OrderBy(testby => (float)-Math.Sin(testby)).ToList();
+
+				foreach (float layer in layeredThings)
+				{
+					float sizzer = ((float)Math.Sin(layer));
+					if (sizzer <= 0)
+					spriteBatch.Draw(tileFX, drawOffset + new Vector2(8 + (sizzer) * 4f, 16f) - Main.screenPosition, null, Color.Aqua, 0, new Vector2(tileFX.Width / 2, tileFX.Height), new Vector2(0.075f, 1f), SpriteEffects.None, 0f);
+				}
+
+				spriteBatch.Draw(tileFX, drawOffset + new Vector2(8, 16f) - Main.screenPosition, null, Color.Aqua * 0.75f, MathHelper.Pi, new Vector2(tileFX.Width / 2, 0), new Vector2(0.2f, 1f), SpriteEffects.None, 0f);
+
+				foreach (float layer in layeredThings)
+				{
+					float sizzer = ((float)Math.Sin(layer));
+					if (sizzer > 0)
+					spriteBatch.Draw(tileFX, drawOffset + new Vector2(8 + (sizzer) *4f, 16f) - Main.screenPosition, null, Color.Aqua, 0, new Vector2(tileFX.Width / 2, tileFX.Height), new Vector2(0.075f, 1f), SpriteEffects.None, 0f);
+				}
+			}
+			return false;
+		}
+	}
+
 
 	public class HopeOre : Fabric
 	{
@@ -488,4 +705,7 @@ namespace SGAmod.Dimensions.Tiles
 			DrawStatic(this, x, y, spriteBatch);
 		}
 	}
+
+
+
 }

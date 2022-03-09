@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Idglibrary;
 using SGAmod.Dusts;
-using AAAAUThrowing;
+
 
 namespace SGAmod.HavocGear.Projectiles
 {

@@ -14,7 +14,7 @@ using Terraria.GameContent.Events;
 using Microsoft.Xna.Framework.Audio;
 using SGAmod.Effects;
 using System.Linq;
-using AAAAUThrowing;
+
 
 namespace SGAmod.NPCs
 {
@@ -38,7 +38,7 @@ namespace SGAmod.NPCs
 		int attacktype = 0;
 		int nightmareprog = 0;
 		float damagetospellcard = 0.9f;
-		bool nightmaremode => SGAWorld.NightmareHardcore > 0;
+		bool nightmaremode => SGAWorld.NightmareHardcore > 0 || SGAmod.DRMMode;
 		int mixup = 0;
 		public override void SetStaticDefaults()
 		{
@@ -1253,7 +1253,7 @@ return false;
 
 			if (strength > 0)
 			{
-				TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+				TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
 				trail.color = delegate (float percent)
 				{
 					return Color.Aqua;

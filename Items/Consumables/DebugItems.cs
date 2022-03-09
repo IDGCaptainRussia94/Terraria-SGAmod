@@ -81,8 +81,16 @@ namespace SGAmod.Items.Consumables
 
         public override void UpdateInventory(Player player)
         {
-			SGAmod.cheating = false;
-			SGAWorld.cheating = false;
+			if (player.inventory[49].type == item.type && (SGAmod.TotalCheating) && player.SGAPly().Sequence)
+			{
+				SGAmod.cheating = false;
+				SGAWorld.cheating = false;
+				var snd = Main.PlaySound(SoundID.PlayerKilled, -1, -1);
+				if (snd != null)
+                {
+					snd.Pitch = -0.80f;
+				}
+			}
         }
     }
 

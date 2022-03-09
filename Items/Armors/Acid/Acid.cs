@@ -1,4 +1,4 @@
-using AAAAUThrowing;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using System.Collections.Generic;
@@ -114,6 +114,7 @@ namespace SGAmod.Items.Armors.Acid
 			{
 				sgaplayer.armorglowmasks[1] = "SGAmod/Items/GlowMasks/" + Name + "_Glow";
 				sgaplayer.armorglowmasks[2] = "SGAmod/Items/GlowMasks/" + Name + "_ArmsGlow";
+				sgaplayer.armorglowmasks[4] = "SGAmod/Items/GlowMasks/" + Name + "_GlowFemale";
 			}
 		}
 		public override void AddRecipes()

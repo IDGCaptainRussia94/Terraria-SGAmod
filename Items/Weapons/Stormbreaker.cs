@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Idglibrary;
-using AAAAUThrowing;
+
 using System.Linq;
 
 namespace SGAmod.Items.Weapons

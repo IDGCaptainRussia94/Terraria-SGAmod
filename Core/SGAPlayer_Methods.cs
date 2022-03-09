@@ -23,7 +23,7 @@ using SGAmod.NPCs.Sharkvern;
 using SGAmod.NPCs.SpiderQueen;
 using SGAmod.NPCs.Hellion;
 using CalamityMod;
-using AAAAUThrowing;
+
 using Terraria.Utilities;
 using SGAmod.SkillTree;
 using CalamityMod.Projectiles.Ranged;
@@ -81,6 +81,16 @@ namespace SGAmod
 
 			}
 		}
+
+		public void ToogleSatanicMode(bool on)
+        {
+			if (_satanplayer == false && on == true)
+            {
+				if (SGAmod.LocalPlayerPlayTime<60)
+				SGASatanicGlobalItem.DoCheatVisualEffect(Main.LocalPlayer,false);
+			}
+				_satanplayer = on;
+        }
 
 		public void AddEntropy(int ammount)
 		{
@@ -392,6 +402,25 @@ namespace SGAmod
 				}
 			}
 			return false;
+		}
+
+		public static void DrunkAiming()
+        {
+			if (Main.gameMenu)
+				return;
+
+			SGAPlayer sgaply = Main.LocalPlayer.SGAPly();
+			if (sgaply.aimingDrunkTime > 0)
+			{
+				float timeLeft = (sgaply.aimingDrunkTime / 30f);
+				int val1 = (int)(Math.Cos(sgaply.aimingDrunkTime / 40f) * timeLeft);
+				int val2 = (int)(Math.Sin(sgaply.aimingDrunkTime / 46f) * timeLeft);
+
+				Main.mouseX += val1;
+				Main.mouseY += val2;
+				Main.lastMouseX = Main.mouseX;
+				Main.lastMouseY = Main.mouseY;
+			}
 		}
 
 		public static void LimitProjectiles(Player player, int maxprojs, int[] types)
@@ -710,6 +739,23 @@ namespace SGAmod
 			return false;
 		}
 
+		public void OnLifeRegen()
+        {
+			/*
+			int npfgf;
+			Assist.SpawnOnPlayerButNoTextAndReturnValue(player.whoAmI,NPCID.TaxCollector,out npfgf);
+			Main.npc[npfgf].aiStyle = 69;
+			Main.npc[npfgf].friendly = false;
+			Main.npc[npfgf].damage = 100;
+			Main.npc[npfgf].defDamage = 100;
+			*/
+
+
+			//player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " clear sucks"), 1, 1,true,false,true,2);
+			//player.statMana += 3;
+			//Main.NewText("test this");
+		}
+
 		public void ShuffleYourFeetElectricCharge()
 		{
 			if (Noviteset > 0 && electricChargeMax > 0)
@@ -814,9 +860,11 @@ namespace SGAmod
 			}
 		}
 
+		internal bool Sequence => !Main.dedServ && ((player.controlHook && player.controlUp && player.controlInv && Main.MouseScreen.X > Main.screenWidth - 128 && Main.MouseScreen.Y > Main.screenHeight - 128) || ModLoader.GetMod("HeavensMechanic") != null);
+
 		public static void DoPotionFatigue(SGAPlayer sgaply)
 		{
-			if (!SGAConfig.Instance.PotionFatigue && !sgaply.nightmareplayer)
+			if (!SGAConfig.Instance.PotionFatigue && !sgaply.nightmareplayer && !SGAmod.DRMMode)
 			{
 				sgaply.potionFatigue = Math.Max(sgaply.potionFatigue - 20, 0);
 				return;
@@ -843,13 +891,15 @@ namespace SGAmod
 				}
 			}
 
-			if (count <= 8)
+			int countEm = SGAmod.TotalCheating ? (int)(8 - (SGAmod.PlayingPercent * 6)) : 8;
+
+			if (count <= countEm)
 			{
 				sgaply.potionFatigue = Math.Max(sgaply.potionFatigue - 20, 0);
 				return;
 			}
 
-			sgaply.potionFatigue += (count - 8) * 1;
+			sgaply.potionFatigue += (count - countEm) * 1;
 
 			int fatigue = (int)sgaply.potionFatigue;
 
@@ -864,13 +914,20 @@ namespace SGAmod
 						badBuffSlots = badBuffSlots.OrderBy(testby => player.buffTime[testby]).ToList();
 						player.buffType[badBuffSlots[0]] = badBuffs[Main.rand.Next(badBuffs.Length)];
 
-						sgaply.potionFatigue -= 5000;
+						sgaply.potionFatigue -= SGAmod.TotalCheating ? 2000 : 5000;
 
 						var snd = Main.PlaySound(SoundID.Zombie, (int)player.Center.X, (int)player.Center.Y, 31);
 						if (snd != null)
 						{
 							snd.Pitch = 0.75f;
 						}
+						if (SGAmod.TotalCheating)
+                        {
+							sgaply.disabledAccessories = Math.Max(sgaply.disabledAccessories, (int)SGAmod.PlayingPercent * 300);
+
+						}
+
+
 					}
 				}
 			}

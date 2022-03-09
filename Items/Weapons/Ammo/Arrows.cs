@@ -269,9 +269,9 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddRecipeGroup("SGAmod:Tier3Bars", 1);
 			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 1);
 			recipe.AddIngredient(mod.ItemType("WraithFragment3"), 2);
-			recipe.AddIngredient(ItemID.WoodenArrow, 150);
+			recipe.AddIngredient(ItemID.WoodenArrow, 250);
 			recipe.AddTile(TileID.ImbuingStation);
-			recipe.SetResult(this, 150);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}
@@ -303,9 +303,9 @@ namespace SGAmod.Items.Weapons.Ammo
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType("PrismalBar"), 1);
-			recipe.AddIngredient(mod.ItemType("PrismicArrow"), 150);
+			recipe.AddIngredient(mod.ItemType("PrismicArrow"), 250);
 			recipe.AddTile(TileID.ImbuingStation);
-			recipe.SetResult(this, 150);
+			recipe.SetResult(this, 250);
 			recipe.AddRecipe();
 		}
 	}

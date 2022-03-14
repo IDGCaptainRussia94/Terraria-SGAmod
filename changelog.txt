@@ -5,7 +5,7 @@ Changelog:
 
 -Added:
 
--Spatial Spheres, The Hit List, The Bounty Hunter's Mark, Vodka
+-Spatial Spheres, The Hit List, The Bounty Hunter's Mark, Cobalt Horseshoe, Vodka, Fury Potion
 
 -Ukrainian Valor, an item dedicated to pay homage to Ukrainian bravery in defending their homeland from an unjust war thrust on them
 
@@ -28,15 +28,23 @@ Changelog:
 
 -'Throwable' Trap Spiky Ball no longer requires Spikyball traps
 
--Reworked Soulbound Bullet: changed to ranged, damage increased to 60 (from 50)
+-Null Watchers now take Aggro into account, and using items that reduce aggro will reduce the range they can see you at (and vise versa)
+
+-Shadow keys are now made with obsidian
+
+-Reworked Soulbound Bullet: changed to ranged, damage increased to 75 (from 50)
+
+-Reworked Illuminant Armor: no longer gives double prefix bonuses, now has a triggered ability, and increases life regen by 2 per active cooldown stack
 
 -Rebalanced Joyrider: fixed issues with other ammo types, now works only with bullets (atm, unless I make an upgrade), adjusted overall flight time scaling. Still has a few issues with not being able to fly properly
 
+-Rebalanced Demon Steppers: is now post Pheathon, and includes the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod)
+
+-Buffed Rod Of Teleportation: can now telefrag enemies by teleporting into them, gives IFrames after teleporting
+
 -Buffed Seeker Bullet: damage increased to 12 (from 10)
 
--Buffed Demon Steppers: Now includes the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod)
-
--Buffed Illuminant Armor: now also increases life regen by 1 per active cooldown stack
+-Buffed Primordial Skull: Now gives 25% DoT resist while you have OnFire! Doesn't carry over into the Demon Steppers (which gives you healing instead)
 
 --New changes to Helen Hellion Waygold:
 -made the ending of the FNF attack easier; those packed notes were WAY too hard to hit without going outside the circle
@@ -46,6 +54,8 @@ Changelog:
 -Camera panning bosses will no longer cause tiles to not draw
 
 -Golden Cog causing enemies to  "despawn" by killing them with the 10% extra "non" damage
+
+-Cracked Mirror not really working anymore in terms of damage scaling against petrified enemies
 
 
 

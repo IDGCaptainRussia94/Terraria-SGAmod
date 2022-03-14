@@ -252,6 +252,28 @@ namespace SGAmod.Buffs
 		}
 	}
 
+	public class FuryPotionBuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Fury Potion");
+			Description.SetDefault("20% increased critical damage, only 10% with rage/wrath");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			canBeCleared = false;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().AddCritDamage(player.HasBuff(BuffID.Wrath) || player.HasBuff(BuffID.Rage) ? 0.10f : 0.20f);
+		}
+	}
+
 	public class ReflexPotionBuff : ModBuff
 	{
 		public override bool Autoload(ref string name, ref string texture)

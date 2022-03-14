@@ -467,13 +467,14 @@ namespace SGAmod
         {
             SGAPlayer sgaplayer = player.GetModPlayer(mod, typeof(SGAPlayer).Name) as SGAPlayer;
 
+            string s = "Not Binded!";
+            foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
+            {
+                s = key;
+            }
+
             if (set == "Desert")
             {
-                string s = "Not Binded!";
-                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
-                {
-                    s = key;
-                }
                 player.setBonus = "Press the 'Toggle Recipe' (" + s + ") to Summon up a short-lived Sandstorm\n---"+Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 45 seconds")+ "\nIncreased movement, 10% crit, and 35% extra throwing velocity in a Sandstorm\nImmunity to Mighty Winds\nManifested weapon: Sand Tosser";
                 player.buffImmune[BuffID.WindPushed] = true;
                 sgaplayer.desertSet = true;
@@ -504,22 +505,12 @@ namespace SGAmod
             }
             if (set == "Acid")
             {
-                string s = "Not Binded!";
-                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
-                {
-                    s = key;
-                }
 
                 player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Hunger of Fames for a short time\nAll throwing weapons get coated in acid for the 1st hit, but resets your life regeneration" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stacks, adds 60 seconds") + "\nPoison, Venom, and Acid Burn all lower enemy defence by an extra 5\n ";
                 sgaplayer.acidSet = (true, sgaplayer.acidSet.Item2);
             }
             if (set == "Engineer")
             {
-                string s = "Not Binded!";
-                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
-                {
-                    s = key;
-                }
                 player.setBonus = "Hold JUMP to hover at an expense to Electric Charge\nManifested weapon: Engie Controls\nPress the 'Toggle Recipe' (" + s + ") Hotkey to toggle jetpack mode";
                 sgaplayer.manifestedWeaponType = ModContent.ItemType<Items.Armors.Engineer.ManifestedEngieControls>();
             }
@@ -553,11 +544,6 @@ namespace SGAmod
             }
             if (set == "Magatsu")
             {
-                string s = "Not Binded!";
-                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
-                {
-                    s = key;
-                }
                 player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to deploy a shadowy decoy to distract enemies\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 60 seconds") + "\nOnly one decoy may be active at a time\nManifest your own N0ll Watchers to sense nearby enemies and 'watch' them\nYou get one watcher per free minion slot\nScoring an Apocalyptical against a watched enemy spreads a copy of damage nearby\nN0ll Watchers won't see you as an enemy, thus won't give chase on sight\n+2% increased Apocalyptical Chance, +40% increased Apocalyptical Strength\nGain an additional free Cooldown Stack";
 
                 Items.Armors.Magatsu.MagatsuHood.SetBonus(sgaplayer);
@@ -566,11 +552,6 @@ namespace SGAmod
 
             if (set == "JungleTemplar")
             {
-                string s = "Not Binded!";
-                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
-                {
-                    s = key;
-                }
 
                 player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Precurser's Power, press again to end early\nRepairs wounds at full speed even while moving, at an Electric Charge cost\nDuring this ability, throwing damage is increased by Tech Damage scaling" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 80 seconds") + "\nYou gain the ability to run as if on Asphalt, also and fall down faster\nReflect 3X damage and gain knockback immunity while grounded" + Idglib.ColorText(Color.Red, "Gravity is increased, wings are less effective, Shield Break can happen")+ "\n" + Idglib.ColorText(Color.Red, "User is submerged in lava at low Electric Charge") + "\nGain an additional free Cooldown Stack";
 
@@ -596,13 +577,8 @@ namespace SGAmod
             }
             if (set == "Valkyrie")
             {
-                string s = "Not Binded!";
-                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
-                {
-                    s = key;
-                }
 
-                string text2 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to active Ragnarök for a time based off current life regeneration\nThrowing speed and apocalyptical chance are increased"+ Idglib.ColorText(Color.Red,"But resets life regen while active")+"\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stack, adds 150 seconds") + "\n";
+                string text2 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to active Ragnarök for a time based off current life regeneration\nThrowing speed and apocalyptical chance are increased"+ Idglib.ColorText(Color.Red,"But resets life regen while active")+"\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 150 seconds") + "\n";
 
                 string text1 = "Gain a throwing damage increase based on your current life regen\nMale Characters gain 15% Endurance\nFemale Characters gain 20% more flight time\n"+text2;
                 player.setBonus = text1 + "\nGain an additional free Cooldown Stack";
@@ -611,17 +587,14 @@ namespace SGAmod
             }
             if (set == "Illuminant")
             {
-                string text1 = "Reduces all new Action Cooldown Stacks by 20%\nEach Action Cooldown Stack grants 1 Life Regen, 4% (6% Summon) damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\nAll Vanilla Prefixes on accessories are twice as effective";
+                string text2 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Illumination, consuming ALL Cooldown Stacks\n" + Idglib.ColorText(Color.Orange, "Requires 3 Cooldown stacks, adds 60 seconds") + "Gives 10 seconds per stack after the 3rd for the buff\nDoubles armor bonuses while active, cooldown stacks do not decay while active\n";
+
+                string text1 = "Reduces all new Action Cooldown Stacks by 20%\nEach Action Cooldown Stack grants 2 Life Regen, 4% (6% Summon) damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\n" + text2;//All Vanilla Prefixes on accessories are twice as effective";
                 player.setBonus = text1;
                 sgaplayer.illuminantSet.Item1 = 5;
             }            
             if (set == "Vibranium")
             {
-                string s = "Not Binded!";
-                foreach (string key in SGAmod.ToggleRecipeHotKey.GetAssignedKeys())
-                {
-                    s = key;
-                }
                 string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt skybridge below your feet\nYou can land on this bridge while falling down, Hold DOWN to fall through\nThis consumes electric charge while active, " + Idglib.ColorText(Color.Red, "and will trigger a shield break on deplete");
 
                 s = "Not Binded!";

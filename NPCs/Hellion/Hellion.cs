@@ -3304,7 +3304,9 @@ namespace SGAmod.NPCs.Hellion
 
 					if (introtimer == 60)
 					{
-						HellionTaunt(HellionAttacks.AntiCheatActive ? "So... you have chosen death" : "Come on " + SGAmod.HellionUserName + "!");
+						string[] lines = { "So... you have chosen death", "Do you enjoy going through hell?", "So... you want to know TRUE difficulty?", "Time to be put in your place" };
+
+						HellionTaunt(HellionAttacks.AntiCheatActive ? lines[Main.rand.Next(lines.Length)] : "Come on " + SGAmod.HellionUserName + "!");
 					}
 					if (introtimer == 180)
 					{

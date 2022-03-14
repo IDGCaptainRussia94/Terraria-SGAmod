@@ -125,6 +125,18 @@ namespace SGAmod
 		public bool SerratedTooth = false;
 		public bool UkraineArms = false;
 		public int UkraineArmsBuff = 0;
+		protected float _critDamage = 0f;
+		public float CritDamage
+		{
+			get
+			{
+				return _critDamage;
+			}
+			set
+			{
+				_critDamage = value;
+			}
+		}
 
 		public int grippinggloves = 0; public int grippingglovestimer = 0;
 		public bool vibraniumSetPlatform = false; public bool vibraniumSetWall = false;
@@ -149,6 +161,7 @@ namespace SGAmod
 		public bool voidEmbrancers = false;
 		public bool transformerAccessory = false;
 		public bool gravBoots = false;
+		public bool noCooldownRate = false;
 		public bool undyingValor = false;
 		public (bool,int) bustlingFungus = (false,0);
 		public bool highStakesSet = false;
@@ -392,6 +405,7 @@ namespace SGAmod
 			surprised = Math.Max(surprised - 1, 0);
 			tidalCharm = (int)MathHelper.Clamp(tidalCharm - Math.Sign(tidalCharm), -1000, 1000);
 			shinobj -= 1;
+			_critDamage = 1f;
 
 			heldShieldReset -= 1;
 			if (heldShieldReset < 1)
@@ -466,7 +480,7 @@ namespace SGAmod
 			flaskBuff = default;
 			dualityshades = false;
 			forcedMiningSpeed = 100000;
-			realIFrames -= 1;
+			realIFrames--;
 			HeavyCrates = false;
 			Microtransactions = false;
 			MoneyMismanagement = false;
@@ -490,6 +504,7 @@ namespace SGAmod
 			highStakesSet = false;
 			undyingValor = false;
 			refractor = false;
+			noCooldownRate = false;
 
 			if (liquidGambling > 0)
 				liquidGambling--;
@@ -2195,6 +2210,7 @@ namespace SGAmod
 				{
 					Items.Armors.Desert.DesertHelmet.ActivateSandySwiftness(this);
 				}
+					Items.Armors.Illuminant.IlluminantHelmet.ActivateAbility(this);
 
 				if (vibraniumSet)
 				{

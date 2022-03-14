@@ -103,7 +103,7 @@ namespace SGAmod.Dimensions.NPCs
             {
                 if (!sound)
                 {
-                    List<Player> players = Main.player.Where(playercheck => playercheck != null && playercheck.active && !playercheck.dead && (((!playercheck.invis || playercheck.itemTime > 0) && !playercheck.SGAPly().magatsuSet) || playercheck.SGAPly().watcherDebuff>=500) && playercheck.Distance(watcher.npc.Center) < (distance+playercheck.SGAPly().watcherDebuff)
+                    List<Player> players = Main.player.Where(playercheck => playercheck != null && playercheck.active && !playercheck.dead && (((!playercheck.invis || playercheck.itemTime > 0) && !playercheck.SGAPly().magatsuSet) || playercheck.SGAPly().watcherDebuff>=500) && playercheck.Distance(watcher.npc.Center) < playercheck.NullCheckDist(distance+playercheck.SGAPly().watcherDebuff)
                    && (!checkwalls || Collision.CanHitLine(playercheck.Center, 1, 1, watcher.npc.Center, 1, 1))).ToList();
                     players = players.OrderBy(playercheck2 => playercheck2.Distance(watcher.npc.Center)).ToList();
 
@@ -111,7 +111,7 @@ namespace SGAmod.Dimensions.NPCs
                     {
                         Player them = players[0];
                         int add = them.SGAPly().watcherDebuff > 0 ? 2 : 1;
-                        watcher.GrowAwareness(soundLoc, add, distance,true,them);
+                        watcher.GrowAwareness(soundLoc, add, (int)them.NullCheckDist(distance + them.SGAPly().watcherDebuff), true,them);
                     }
 
                 }

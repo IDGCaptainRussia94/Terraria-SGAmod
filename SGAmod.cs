@@ -1030,7 +1030,8 @@ namespace SGAmod
 
 			recipe = new ModRecipe(this);
 			recipe.AddIngredient(star, 1);
-			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 100);
+			recipe.AddIngredient(ModContent.ItemType<Entrophite>(), 75);
+			recipe.AddIngredient(ItemID.Obsidian,25);
 			recipe.AddRecipeGroup("SGAmod:Tier5Bars", 15);
 			recipe.AddIngredient(ItemID.SoulofNight, 10);
 			recipe.AddIngredient(ItemID.GoldenKey, 1);

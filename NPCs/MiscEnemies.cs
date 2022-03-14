@@ -18,7 +18,7 @@ namespace SGAmod.NPCs
         public int sparkleCounter=0;
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Splunker Jellyfish");
+            DisplayName.SetDefault("Spulunker Jellyfish");
             Main.npcFrameCount[npc.type] = Main.npcFrameCount[NPCID.PinkJellyfish];
         }
         public override string Texture => "Terraria/NPC_" + NPCID.PinkJellyfish;

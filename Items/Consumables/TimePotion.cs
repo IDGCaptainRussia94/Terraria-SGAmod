@@ -19,7 +19,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Matrix Potion");
-			Tooltip.SetDefault("'The very fabic of time itself folds around you, compressing the flow of anything passing by'\nGrants a aura around the player that greatly slows down any enemies or projectiles" +
+			Tooltip.SetDefault("'The very fabric of time itself folds around you, compressing the flow of anything passing by'\nGrants a aura around the player that greatly slows down any enemies or projectiles" +
 				"\nTime counts down faster per enemy and projectile affected, bosses slowed make it count down 2X as fast\n" + Idglib.ColorText(Color.Orange, "Requires 3 Cooldown stacks, adds 150 seconds each"));
 		}
 

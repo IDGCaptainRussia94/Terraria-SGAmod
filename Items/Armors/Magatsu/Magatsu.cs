@@ -32,11 +32,12 @@ namespace SGAmod.Items.Armors.Magatsu
 
 		public static void ActivateDecoy(SGAPlayer sgaplayer)
         {
-			bool decoyExists = Main.npc.Where(testby => testby.active && testby.type == ModContent.NPCType<MagatsuDecoy>() && testby.ai[3] == sgaplayer.player.whoAmI).Count() > 0;
-			if (decoyExists)
-				return;
 			if (sgaplayer.AddCooldownStack(60 * 60, 2))
             {
+				bool decoyExists = Main.npc.Where(testby => testby.active && testby.type == ModContent.NPCType<MagatsuDecoy>() && testby.ai[3] == sgaplayer.player.whoAmI).Count() > 0;
+				if (decoyExists)
+					return;
+
 				Vector2 spot = sgaplayer.player.Center;
 				int npc2 = NPC.NewNPC((int)spot.X, (int)spot.Y, ModContent.NPCType<MagatsuDecoy>(), ai3: sgaplayer.player.whoAmI);
 				Main.npc[npc2].life = sgaplayer.player.statLifeMax2*3;

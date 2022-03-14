@@ -729,5 +729,42 @@ namespace SGAmod.Items.Consumables
 		}
 	}
 
+	public class FuryPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Fury Potion");
+			Tooltip.SetDefault("Increases crit damage by 20%\nThis bonus falls to 10% if used with rage or wrath");
+		}
+
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.LightPurple;
+			item.value = 500;
+			item.useStyle = 2;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = ModContent.BuffType<FuryPotionBuff>();
+			item.buffTime = 60 * 300;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.Bottle, 1);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Weapons.SwampSeeds>(), 3);
+			recipe.AddIngredient(ItemID.Deathweed, 1);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
 
 }

@@ -916,6 +916,10 @@ namespace SGAmod
 
 			return allied;
 		}
+		public static float NullCheckDist(this Player player,float dist)
+        {
+			return Math.Max(64,player.aggro + dist);
+		}
 		public static SGAprojectile SGAProj(this Projectile proj)
 		{
 			return proj.GetGlobalProjectile<SGAprojectile>();

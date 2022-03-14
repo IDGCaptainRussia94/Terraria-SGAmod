@@ -473,6 +473,11 @@ namespace SGAmod
 			return false;
 		}
 
+		public void AddCritDamage(float amt)
+        {
+			_critDamage += amt;
+		}
+
 		public void LookForThrowingGear(ref int type)
 		{
 			int[] typesToCheck = { ItemID.Shuriken, ItemID.ThrowingKnife, ItemID.PoisonedKnife, ItemID.FrostDaggerfish, ItemID.StarAnise, ItemID.BoneDagger };
@@ -514,7 +519,7 @@ namespace SGAmod
 			if (Main.netMode != NetmodeID.Server)//ugh
 			{
 
-				if (CooldownStacks.Count > 0)
+				if (!noCooldownRate && CooldownStacks.Count > 0)
 				{
 					for (int stackindex = 0; stackindex < CooldownStacks.Count; stackindex += 1)
 					{

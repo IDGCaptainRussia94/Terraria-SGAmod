@@ -8,6 +8,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Idglibrary;
+using SGAmod.Items;
 
 namespace SGAmod.NPCs.SpiderQueen
 {
@@ -57,12 +58,12 @@ namespace SGAmod.NPCs.SpiderQueen
 			{
 				for (int i = 0; i <= Main.rand.Next(25, 45); i++)
 				{
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("VialofAcid"));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height,ModContent.ItemType<VialofAcid>());
 				}
 				if (Main.rand.Next(0, 3) == 0)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CorrodedShield"));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.Shields.CorrodedShield>());
 				if (Main.rand.Next(0, 3) == 0)
-					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("AmberGlowSkull"));
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Accessories.AmberGlowSkull>());
 			}
 
 		}

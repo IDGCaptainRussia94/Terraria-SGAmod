@@ -38,7 +38,7 @@ Changelog:
 
 -Rebalanced Joyrider: fixed issues with other ammo types, now works only with bullets (atm, unless I make an upgrade), adjusted overall flight time scaling. Still has a few issues with not being able to fly properly
 
--Rebalanced Demon Steppers: is now post Pheathon, and includes the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod)
+-Rebalanced Demon Steppers: is now post Pheathon, and includes the Cobalt Shield, as well as the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod)
 
 -Buffed Rod Of Teleportation: can now telefrag enemies by teleporting into them, gives IFrames after teleporting
 

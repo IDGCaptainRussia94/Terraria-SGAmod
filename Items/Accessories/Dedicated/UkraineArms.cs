@@ -166,7 +166,7 @@ namespace SGAmod.Items.Accessories.Dedicated
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Ukrainian Valor");
-			Description.SetDefault("Banding together against an opressive foe...\nGives players Black Belt, 25% more defense, and 15% increased endurance\nGives Friendly NPCs 50% damage resistance and heals them");
+			Description.SetDefault("Banding together against an oppressive foe...\nGives players Black Belt, 25% more defense, and 15% increased endurance\nGives Friendly NPCs 50% damage resistance and heals them");
 			Main.debuff[Type] = false;
 			Main.buffNoTimeDisplay[Type] = true;
 			Main.buffNoSave[Type] = true;

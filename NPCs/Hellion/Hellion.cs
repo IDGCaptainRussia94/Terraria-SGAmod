@@ -66,8 +66,8 @@ namespace SGAmod.NPCs.Hellion
 					Main.LocalPlayer.KillMeForGood();
 
 					List<String> cheatertext = new List<String>();
-					cheatertext.Add("Did you really, REALLY think you could go unpunished for this? Was the overwelming difficulty and my extremely unfair additions to my fight not enough of a cue-in?");
-					cheatertext.Add("Alot of QoL mods these days add features that break the game, other mods, and stop alot of mods from doing mechanics they wish they could do. But like 'why should I invest into this mechanic when I can just fargos it', and it's seriously becoming a problem, and this is me doing something about it. There's a line to be drawn between reducing the grind, and just 'not playing the game anymore'");
+					cheatertext.Add("Did you really, REALLY think you could go unpunished for this? Was the overwhelming difficulty and my extremely unfair additions to my fight not enough of a cue-in?");
+					cheatertext.Add("A lot of QoL mods these days add features that break the game, other mods, and stop a lot of mods from doing mechanics they wish they could do. But like 'why should I invest into this mechanic when I can just Fargo's it', and it's seriously becoming a problem, and this is me doing something about it. There's a line to be drawn between reducing the grind, and just 'not playing the game anymore'");
 					cheatertext.Add("And as far as I'm concerned, your not playing the game anymore, if you managed to win to this fight without extensive cheating");
 					cheatertext.Add("And if your familiar with old DRM practices, you know what just happened... You earned it, congrats");
 					cheatertext.Add("You were warned...");
@@ -96,7 +96,7 @@ namespace SGAmod.NPCs.Hellion
 				if (!SGAConfigClient.Instance.HellionPrivacy)
 				{
 					helltext.Add("If you really want to save him and yourself, you'll find the key on a new character by holding SHIFT before clicking create but only AFTER you have gotten this message. Yes, I could just 'delete' " + Main.LocalPlayer.name + " if I wanted to, but I won't, because I know what the TML devs would do if I did and that wouldn't help either of us, would it?");
-					helltext.Add("Come now, lets see if your up for a REAL challenge and if you are really a worthy savior. I doubt it thou, the Escaped Expertiment will be mine again in due time.");
+					helltext.Add("Come now, lets see if your up for a REAL challenge and if you are really a worthy savior. I doubt it thou, the Escaped Experiment will be mine again in due time.");
 					helltext.Add("See you soon, I'll be waiting " + SGAmod.HellionUserName);
 				}
 				else
@@ -105,7 +105,7 @@ namespace SGAmod.NPCs.Hellion
 					helltext.Add("Delete this file directory, and fight me again, with the privacy setting off, until then, I'll be waiting to face " + Main.LocalPlayer.name + " again.");
 				}
 
-				helltext.Add("#Helen 'Helion' Weygold");
+				helltext.Add("#Helen 'Hellion' Weygold");
 				File.WriteAllLines(SGAmod.filePath + "/Itsnotoveryet.txt", helltext.ToArray());
 
 				Process.Start(@"" + SGAmod.filePath + "");
@@ -265,7 +265,7 @@ namespace SGAmod.NPCs.Hellion
 				if (npc.ai[1] == 73300)
 					hell.HellionTaunt("You might... prove useful...");
 				if (npc.ai[1] == 73050)
-					hell.HellionTaunt("Curses... For now, I bid you farwell...");
+					hell.HellionTaunt("Curses... For now, I bid you farewell...");
 
 				int portaltime = 450;
 				int snowballproj = ModContent.ProjectileType<HellionSnowball>();
@@ -2766,7 +2766,7 @@ namespace SGAmod.NPCs.Hellion
 			{
 				float[] hellhealthscale = { 10f, 10f, 5f, 5f, 2f, 3f, 3f, 3f, 3f, 3f };
 				string[] texta = { "", "Pff, they were complete peons anyways", "", "Stupid Cutthroats", "", "", "" };
-				string[] text1 = { "", "Ugh, this is getting annoying", "", "Greed Overwelming!", "", "Night time!" };
+				string[] text1 = { "", "Ugh, this is getting annoying", "", "Greed Overwhelming!", "", "Night time!" };
 				string[] text2 = { "", "Goblin Army! Come Forth!", "", "Snow Legion/Pirate Army! Come Forth!", "", "Festive Moons! Come Forth!" };
 				Hellion hell = Hellion.instance;
 				hell.armytimer += 1;

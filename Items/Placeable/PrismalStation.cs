@@ -7,7 +7,7 @@ namespace SGAmod.Items.Placeable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Extractor");
-			Tooltip.SetDefault("It would seem the Lihzahrds knew a way to awaken Novus involving Novite to their full potiental...\nAllows transmuting of a Novus+Novite alloy into Prismal ore");
+			Tooltip.SetDefault("It would seem the Lihzahrds knew a way to awaken Novus involving Novite to their full potential...\nAllows transmuting of a Novus+Novite alloy into Prismal ore");
 		}
 		public override void SetDefaults()
 		{

@@ -18,10 +18,10 @@ namespace SGAmod.Items.Accessories
 		public virtual int totallength=>4;
         public override bool CloneNewInstances => true;
         public virtual string[,] NoteWords => new string[,] { { ":Date 62 AC:", "This is it, I've finally made it to the forgotten lands in hopes of finding wealth and fortune!","It wouldn't be long now! I could already see the coast, eagerly awaiting it!", "With my rucksack and tools in hand, surely nothing can go wrong, right?" },
-		{":Date 62 AC:","I met up with the settlment on the isles, looking for a resupply before heading out, and given my desire for some booze went to the tavern","Pretty lighthearted place, a little on the shady side however, but you never know in these times, I took a seat on the first stool at the bar I could find","When the tavernkeep came over, I ordered up some wine,rented a room, and asked what jobs there are for some quick cash." },
+		{":Date 62 AC:","I met up with the settlement on the isles, looking for a resupply before heading out, and given my desire for some booze went to the tavern","Pretty lighthearted place, a little on the shady side however, but you never know in these times, I took a seat on the first stool at the bar I could find","When the Tavernkeep came over, I ordered up some wine, rented a room, and asked what jobs there are for some quick cash." },
 		{":Date 62 AC:","Monster hunting, mining, and exploring where none had gone before, pretty standard jobs they had","He also said something about Etheria, but at the same time where were people pointing out he let kids stay in a clearly adult tavern, something about defenders, I laughed it off, and went up to my room","So? This is it? The adventure I've dreamed of? Well, I guess I can consider my actions after I take a wee nap." },
-		{":Date 68 AC:","I had first run into something odd... A little girl, in the middle of the dark. Being the parent back home that I am I approuched her.","This however proved to be my folly, as her sweet and innocent apperence quickly turned twisted and... lusty","Needless to say I ran" },
-		{":Date 74 AC:","With one final blow, the monsterious wall of meat came crashing down, for one moment I felt like an utter god!","But it seems said gods had something else in mind when I had unwillingly released","but non the less, I had high hopes!"},
+		{":Date 68 AC:","I had first run into something odd... A little girl, in the middle of the dark. Being the parent back home that I am I approached her.","This however proved to be my folly, as her sweet and innocent appearance quickly turned twisted and... lusty","Needless to say I ran" },
+		{":Date 74 AC:","With one final blow, the monstrous wall of meat came crashing down, for one moment I felt like an utter god!","But it seems said gods had something else in mind when I had unwillingly released","but none the less, I had high hopes!"},
 		{":Date 74 AC:","Things didn't quite go as well as I had hoped, when I got back to the settlement everyone was dead, impaled through the chest but a sharp horn-like object","Furthermore... the entire area was a pastel rainbow color, and it wasn't too long before I found out the cause...","(something was wrote here, but it is too badly written to read)"}
 		};
 		public override void SetStaticDefaults()
@@ -80,42 +80,42 @@ namespace SGAmod.Items.Accessories
 			{"Contains research notes into the current SGAmod boss yet to be fought","How did Draken get these?","","","","","","","",""},
 
 
-			{"Case Specimen: WC01-S -aka- Copper Wraith", "Threat: None","Known Alliegence: Paradox Coalition, Allied",
+			{"Case Specimen: WC01-S -aka- Copper Wraith", "Threat: None","Known Allegiance: Paradox Coalition, Allied",
 				"Following the escape of the DRAKEN experiment, scout classes were manufactured",
 				"Armed with the ability to animate light and weak metals, WC01-S searches the lands for the experiment",
 				"Like all Wraith Cores it is able to discharge beams of energy in a pitch from its core",
-				"These cores are, however, suspectible to direct shattering hits, such as primative arms like arrows",
+				"These cores are, however, susceptible to direct shattering hits, such as primitive arms like arrows",
 				"More research is needed into better protecting the main frame...","",""},
 
-{"Case Specimen: Caliburn Gaurdian", "Threat: Unknown, Likely low","Known Alliegence: Unknown",
+{"Case Specimen: Caliburn Guardian", "Threat: Unknown, Likely low","Known Allegiance: Unknown",
 				"These animated swords are strange, they resonate the same energy used to power wraith cores",
-				"They could be orginal source of power before 'Her Supremacy' aquired the tech elsewhere",
+				"They could be original source of power before 'Her Supremacy' acquired the tech elsewhere",
 				"Non the less, their purpose, and the purpose of these shrines remains unknown",
-				"What is known is that there are 3, and each defeated gaurdian only serves to empower the next",
+				"What is known is that there are 3, and each defeated guardian only serves to empower the next",
 				"More research is required into the matter...","",""},
 
-{"Case Specimen: Spider Queen", "Threat: low","Known Alliegence: Fauna",
+{"Case Specimen: Spider Queen", "Threat: low","Known Allegiance: Fauna",
 				"A giant spider, not unlike the other spiders seen across the various worlds",
-				"This one however has particually powerful acidic venom, which could melt the strongest of metals",
+				"This one however has particularly powerful acidic venom, which could melt the strongest of metals",
 				"Not the priority of the head of research, but could be used in future weapons",
 				"Provided of course the acid just doesn't melt the wraith soldiers themselves",
 				"Outside of the acid she seems to have the ability to weave webs to stop attackers in their tracks","Quite a powerful, brutish creature indeed...",""},
 
-		{"Case Specimen: Murk", "Threat: True power unknown, likely low","Known Alliegence: Slimes?",
+		{"Case Specimen: Murk", "Threat: True power unknown, likely low","Known Allegiance: Slimes?",
 				"A possible relative to the King Slime Specimen, this 'Murk' seems to possess an uncanny ability to control flies",
 				"Flies... that have stingers, an obey Slime's every order, surprisingly powerful all things considered",
 				"There's something off about this creature, it seems to resonate an unholy power",
 				"Maybe that power would be released if the power of all other things in this world would be released?",
 				"Until then, there's nothing of much use in this creature to us","",""},
 
-					{"Case Specimen: WC02 -aka- Cobalt Wraith", "Threat: None","Known Alliegence: Paradox Coalition, Allied",
-				"A standard issue battleclass Wraith, able combat large groups of dissident forces",
+					{"Case Specimen: WC02 -aka- Cobalt Wraith", "Threat: None","Known Allegiance: Paradox Coalition, Allied",
+				"A standard issue battle class Wraith, able combat large groups of dissident forces",
 				"This one was released to this world when a great surge of energy was detected",
 				"it has a form of primitive self learning, in the current process of stealing local knowledge",
-				"Like before however, the cores are suspectible to direct shattering hits, even bullets",
-				"Head of RnD is currently looking into expanding on the artifical intelligence fields of wraiths","They claim they can create something called an 'Emissary' from it, we don't have clearence","For more into this matter, signing off for now"},
+				"Like before however, the cores are susceptible to direct shattering hits, even bullets",
+				"Head of RnD is currently looking into expanding on the artificial intelligence fields of wraiths","They claim they can create something called an 'Emissary' from it, we don't have clearance","For more into this matter, signing off for now"},
 
-		{"Case Profile: Hellon 'Hellion' Weygold", "Threat: I would honestly not like to know","Known Alliegence: Paradox Coalition, Leader",
+		{"Case Profile: Hellon 'Hellion' Weygold", "Threat: I would honestly not like to know","Known Allegiance: Paradox Coalition, Leader",
 				"'Her Supremacy' as many of us are forced to address, is a Hellion, the leader of the Paradox Coalition",
 				"We are not allowed to talk much about Hellion, but she has almost godly powers as we can call them",
 				"Extremely cruel and cunning, has no problems with scorching entire planets when they refuse to meet her demands",

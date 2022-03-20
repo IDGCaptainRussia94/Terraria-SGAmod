@@ -232,7 +232,7 @@ namespace SGAmod.Items.Armors.Desert
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Sandy Swiftness");
-			Description.SetDefault("The desert winds aid your beconing call!");
+			Description.SetDefault("The desert winds aid your beckoning call!");
 			Main.debuff[Type] = false;
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;

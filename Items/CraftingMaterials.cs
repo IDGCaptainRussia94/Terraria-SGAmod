@@ -2002,7 +2002,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Entropy Transmuter");
-			Tooltip.SetDefault("As enemies die near you, the Transmuter absorbs their life essences\nWhich converts Converts Demonite or Crimtane ore in your inventory into Entrophite\nConverts a maximum of 20 per full charge");
+			Tooltip.SetDefault("As enemies die near you, the Transmuter absorbs their life essences\nWhich converts Demonite or Crimtane ore in your inventory into Entrophite\nConverts a maximum of 20 per full charge");
 		}
 		public override void SetDefaults()
 		{

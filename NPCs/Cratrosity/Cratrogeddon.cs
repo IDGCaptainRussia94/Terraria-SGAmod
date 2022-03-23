@@ -64,6 +64,10 @@ namespace SGAmod.NPCs.Cratrosity
 			if (Main.expertMode)
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TerrariacoCrateKeyUber"));
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("MoneySign"), Main.rand.Next(40, Main.expertMode ? 85 : 65));
+			if (Main.rand.Next(7) == 0)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.CratrogeddonMask>());
+			}
 			Achivements.SGAAchivements.UnlockAchivement("Cratrogeddon", Main.LocalPlayer);
 			if (SGAWorld.downedCratrosityPML == false)
 			{

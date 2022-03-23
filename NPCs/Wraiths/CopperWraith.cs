@@ -513,6 +513,8 @@ namespace SGAmod.NPCs.Wraiths
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
 		public string RelicName() => GetType() == typeof(CobaltWraith) ? "Cobalt_Wraith" : "Copper_Wraith";
 		public void NoHitDrops() { }
+		public string MasterPet() => GetType() == typeof(CobaltWraith) ? "CobaltTack" : "CopperTack";
+		public bool PetChance() => Main.rand.Next(4) == 0;
 
 		public int level = 0;
 		public Vector2 OffsetPoints = new Vector2(0f, 0f);
@@ -595,7 +597,13 @@ namespace SGAmod.NPCs.Wraiths
 			if (Main.expertMode)
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("WraithTargetingGamepad"));
 
+			if (Main.rand.Next(7) == 0)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.CopperWraithMask>());
+			}
+
 			int shardtype = ModContent.ItemType<WraithFragment>();
+
 			/*if (SGAWorld.WorldIsTin)
 			{
 				shardtype = mod.ItemType("WraithFragment2");

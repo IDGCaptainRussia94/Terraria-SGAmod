@@ -1799,6 +1799,8 @@ namespace SGAmod.Dimensions.NPCs
         public bool Chance() => Main.rand.Next(0, 10) == 0;
         public string RelicName() => "Phaethon";
         public void NoHitDrops() { }
+		public string MasterPet() => null;
+		public bool PetChance() => false;
 
         public bool TossRoids => (int)npc.ai[0] > 10600 && (int)npc.ai[0] < 10800;
 
@@ -1942,6 +1944,11 @@ namespace SGAmod.Dimensions.NPCs
             else
             {
                 Item.NewItem(npc.Center, ModContent.ItemType<Items.StarMetalMold>());
+            }
+
+            if (Main.rand.Next(7) == 0)
+            {
+              Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.PhaethonMask>());
             }
 
             SGAWorld.downedSpaceBoss = true;

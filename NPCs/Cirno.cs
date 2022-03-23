@@ -25,6 +25,8 @@ namespace SGAmod.NPCs
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
 		public string RelicName() => "Cirno";
 		public void NoHitDrops() { }
+		public string MasterPet() => "FrozenBow";
+		public bool PetChance() => Main.rand.Next(4) == 0;
 
 		int aicounter = 0;
 		int frameid = 0;
@@ -106,6 +108,10 @@ namespace SGAmod.NPCs
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("CryostalBar"), Main.rand.Next(15, 25));
 					if (Main.rand.Next(3)==0)
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("GlacialStone"));
+					if (Main.rand.Next(7) == 0)
+                    {
+						Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.CirnoMask>());
+					}
 				}
 			}
 			Achivements.SGAAchivements.UnlockAchivement("Cirno", Main.LocalPlayer);

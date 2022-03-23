@@ -1368,6 +1368,8 @@ namespace SGAmod
 				{
 					if (interfacenpc.Chance())
 						Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(interfacenpc.Trophy()));
+					if (interfacenpc.PetChance() && Main.expertMode) //Change to Master Mode in 1.4
+						Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(interfacenpc.MasterPet()));
 				}
 			}
 

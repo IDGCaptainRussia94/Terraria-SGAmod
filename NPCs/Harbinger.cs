@@ -17,6 +17,8 @@ namespace SGAmod.NPCs
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
 		public string RelicName() => "Doom_Harbinger";
 		public void NoHitDrops() { }
+		public string MasterPet() => null;
+		public bool PetChance() => false;
 
 		int oldtype=0;
 		int [] orbitors=new int[20];

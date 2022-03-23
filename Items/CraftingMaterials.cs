@@ -636,6 +636,13 @@ namespace SGAmod.Items
 			item.height = 16;
 			item.value = 400;
 			item.rare = ItemRarityID.Purple;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = ModContent.TileType<Tiles.VibraniumPlatingTile>();
 		}
 	}
 	public class VibraniumBar : VibraniumText
@@ -890,7 +897,14 @@ namespace SGAmod.Items
 			item.width = 26;
 			item.height = 14;
 			item.value = 1000;
-			item.rare = 2;
+			item.rare = ItemRarityID.Green;
+			item.useTurn = true;
+			item.autoReuse = true;
+			item.useAnimation = 15;
+			item.useTime = 10;
+			item.useStyle = ItemUseStyleID.SwingThrow;
+			item.consumable = true;
+			item.createTile = ModContent.TileType<Tiles.AdvancedPlatingTile>();
 		}
 		public override void AddRecipes()
 		{
@@ -2149,7 +2163,7 @@ namespace SGAmod.Items
 			item.rare = ItemRarityID.Quest;
 		}
 	}
-		public class ShadowLockBox : ModItem
+	public class ShadowLockBox : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -2164,20 +2178,20 @@ namespace SGAmod.Items
 			item.value = 0;
 			item.rare = ItemRarityID.Quest;
 		}
-        public override bool CanRightClick()
-        {
+		public override bool CanRightClick()
+		{
 			return Main.LocalPlayer.HasItem(ItemID.ShadowKey);
-        }
+		}
 
-        public override void RightClick(Player player)
-        {
-			List<int> lootrare = new List<int> { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow};
+		public override void RightClick(Player player)
+		{
+			List<int> lootrare = new List<int> { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow };
 
 			player.QuickSpawnItem(lootrare[Main.rand.Next(lootrare.Count)]);
 		}
 
 
-    }
+	}
 	public class HellionCheckpoint1 : ModItem
 	{
 		protected virtual Color color => Color.Lime;

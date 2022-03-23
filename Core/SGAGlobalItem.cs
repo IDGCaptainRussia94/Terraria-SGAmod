@@ -412,7 +412,7 @@ namespace SGAmod
             {
                 return "Mangrove";
             }                      
-            if ((head.type == ModContent.ItemType<Items.Armors.HallowedVisor>() || head.type == ModContent.ItemType<Items.Armors.AncientHallowedVisor>()) && body.type == ItemID.HallowedPlateMail && body.type == ItemID.HallowedGreaves)
+            if ((head.type == ModContent.ItemType<Items.Armors.HallowedVisor>() || head.type == ModContent.ItemType<Items.Armors.AncientHallowedVisor>()) && body.type == ItemID.HallowedPlateMail && legs.type == ItemID.HallowedGreaves)
             {
                 return "Hallowed";
             }

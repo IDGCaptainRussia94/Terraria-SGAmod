@@ -57,6 +57,8 @@ Changelog:
 
 -Cracked Mirror not really working anymore in terms of damage scaling against petrified enemies
 
+-Hallowed armor set bonus with visor not working
+
 
 
 3.636-(2/21/22)--Hotfix 37

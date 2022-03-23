@@ -1182,10 +1182,11 @@ namespace SGAmod.Items.Accessories
 
 	public class PrimordialSkull : ModItem
 	{
+		public static string Text => "While you have On-Fire!, you gain the Inferno buff and resist 50% contact damage\nFurthermore, enemies who also are on fire will take 25% increased damage from you during this\nImmunity against Thermal Blaze";
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Primordial Skull");
-			Tooltip.SetDefault("While you have On-Fire!, you gain the Inferno buff and resist 50% contact damage\nFurthermore, enemies who also are on fire will take 25% increased damage from you during this\nImmunity against Thermal Blaze\nA most sinister looking skull, I wonder what else it's for?");
+			Tooltip.SetDefault(Text+"\nThe skull also gives you 20% DoT resist while OnFire!\nA most sinister looking skull, I wonder what else it's for?");
 		}
 
 		public override string Texture
@@ -1199,6 +1200,10 @@ namespace SGAmod.Items.Accessories
 			{
 				player.AddBuff(BuffID.Inferno, 2);
 				player.GetModPlayer<SGAPlayer>().PrimordialSkull = true;
+				if (GetType() == typeof(PrimordialSkull))
+                {
+					player.SGAPly().DoTResist *= 0.75f;
+                }
 			}
 			player.buffImmune[mod.BuffType("ThermalBlaze")] = true;
 		}
@@ -1986,18 +1991,31 @@ namespace SGAmod.Items.Accessories
 	[AutoloadEquip(EquipType.Shoes)]
 	public class DemonSteppers : ModItem
 	{
+		public static int boots = -1;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Demon Steppers");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze, Acid Burn, Chilled, and Frozen\nGrants 25% increased radiation resistance\nEffects of Primordial Skull\nOn Fire! doesn't hurt you and slightly heals you instead\nHold DOWN to stabilize gravity");
+			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nImmunity to Thermal Blaze, Acid Burn, Chilled, and Frozen\nGrants 25% increased radiation resistance\n"+ PrimordialSkull.Text+ "\nOn Fire! doesn't hurt you and slightly heals you instead\nHold DOWN to stabilize gravity");
 		}
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
-		{
-			player.buffImmune[BuffID.OnFire] = false;
-			player.buffImmune[BuffID.Chilled] = true;
-			player.buffImmune[BuffID.Frozen] = true;
+        public override bool Autoload(ref string name)
+        {
+            SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostPostUpdateEquipsEvent;
+			return true;
+        }
 
+        private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer player)
+        {
+            if (player.demonsteppers)
+            {
+				player.player.buffImmune[BuffID.OnFire] = false;
+				player.player.buffImmune[BuffID.Chilled] = true;
+				player.player.buffImmune[BuffID.Frozen] = true;
+			}
+        }
+
+        public override void UpdateAccessory(Player player, bool hideVisual)
+		{
 			player.GetModPlayer<SGAPlayer>().NoFireBurn = 3;
 			if (!player.GetModPlayer<SGAPlayer>().demonsteppers)
 			{
@@ -2017,6 +2035,7 @@ namespace SGAmod.Items.Accessories
 				player.noFallDmg = true;
 				player.autoJump = true;
 				player.extraFall += 15;
+				player.noKnockback = true;
 				if (!hideVisual)
 				player.doubleJumpCloud = true;
 
@@ -2052,6 +2071,10 @@ namespace SGAmod.Items.Accessories
 			item.value = Item.sellPrice(gold: 25);
 			item.rare = ItemRarityID.Lime;
 			item.expert = false;
+			if (GetType() == typeof(DemonSteppers))
+            {
+				boots = item.shoeSlot;
+			}
 		}
 		public override void AddRecipes()
 		{
@@ -2063,9 +2086,11 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.FrogLeg, 1);
 			recipe.AddIngredient(ItemID.HandWarmer, 1);
 			recipe.AddIngredient(ModContent.ItemType < AmberGlowSkull>(), 1);
+			recipe.AddIngredient(ModContent.ItemType <CobaltMagnet>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < PrimordialSkull>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < Entrophite>(), 100);
 			recipe.AddIngredient(ModContent.ItemType < StygianCore>(), 3);
+			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 40);
 			recipe.AddIngredient(ItemID.HellstoneBar, 10);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
@@ -3094,7 +3119,7 @@ namespace SGAmod.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.ObsidianHorseshoe, 1);
+			recipe.AddIngredient(ModContent.ItemType<CobaltHorseshoe>(), 1);
 			recipe.AddIngredient(ItemID.ShoeSpikes, 1);
 			recipe.AddIngredient(ItemID.Spike, 15);
 			recipe.AddTile(TileID.TinkerersWorkbench);
@@ -3633,7 +3658,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("High Stakes Set");
-			Tooltip.SetDefault("'Who knows... Where the whims of fate may lead us.'\nDamage taken and given will be between half or doubled\nSelf caused damage will be greatly reduced\nIncludes the effects of all the gambling conponents");
+			Tooltip.SetDefault("'Who knows... Where the whims of fate may lead us.'\nDamage taken and given will be between half or doubled\nSelf caused damage will be greatly reduced by 75%\nIncludes the effects of all the gambling conponents");
 		}
 
 		public override bool Autoload(ref string name)
@@ -4470,7 +4495,7 @@ namespace SGAmod.Items.Accessories
         }
 		private void DoMoreDamageAndTakeLess(SGAPlayer player, PlayerDeathReason damageSource, ref int damage, ref int hitDirection, bool pvp, bool quiet, ref bool Crit, int cooldownCounter)
 		{
-			if (player.refractor && (cooldownCounter < 0 || (cooldownCounter >= 0 && player.player.hurtCooldowns[cooldownCounter] <= 0)))
+			if (player != null && damageSource != null && player.refractor && (cooldownCounter < 0 || (cooldownCounter >= 0 && player.player.hurtCooldowns[cooldownCounter] <= 0)))
 			{
 				Player ply = player.player;
 				int damageTaken = (int)(damage * 0.75);
@@ -5217,6 +5242,42 @@ namespace SGAmod.Items.Accessories
 		}
 
 	}
+
+	public class CobaltHorseshoe : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Cobalt Horseshoe");
+			Tooltip.SetDefault(Language.GetTextValue("ItemTooltip.CobaltShield")+"\n"+ Language.GetTextValue("ItemTooltip.ObsidianHorseshoe"));
+		}
+
+		public override void SetDefaults()
+		{
+			//item.CloneDefaults(ItemID.ManaFlower);
+			item.width = 24;
+			item.height = 24;
+			item.rare = 2;
+			item.value = Item.sellPrice(0, 0, 50, 0);
+			item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.fireWalk = true;
+			player.noKnockback = true;
+			player.noFallDmg = true;
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.CobaltShield, 1);
+			recipe.AddIngredient(ItemID.ObsidianHorseshoe, 1);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+	}
+
 	public class AversionCharm : ModItem
 	{
 		public override void SetStaticDefaults()

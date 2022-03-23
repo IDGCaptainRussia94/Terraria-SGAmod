@@ -602,15 +602,18 @@ namespace SGAmod
 			{
 				if (player != null && (item?.pick > 0 || (projectile != null && player.heldProj >= 0 && player.heldProj == projectile.whoAmI && player.HeldItem.pick > 0)))
 				{
-					damage = (int)(damage * 3f);
+					sourcedamage = (int)(sourcedamage * 3f);
 					crit = true;
 					Main.PlaySound(SoundID.Tink, (int)npc.Center.X, (int)npc.Center.Y, 0, 1, 0.25f);
 				}
 				else
 				{
-					damage = (int)(damage * 0.25f);
+					sourcedamage = (int)(sourcedamage * 0.25f);
 				}
 			}
+
+			if (crit)
+				sourcedamage = (int)(sourcedamage * sgaply.CritDamage);
 
 			DoModifiesLateEvent?.Invoke(npc,player,projectile,item, ref sourcedamage, ref damage, ref knockback,ref crit);
 

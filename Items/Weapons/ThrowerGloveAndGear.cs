@@ -814,9 +814,6 @@ namespace SGAmod.Items.Weapons
 
 			target.AddBuff(mod.BuffType("ThermalBlaze"), 60*4);
 		}
-
-
-
 	}
 
 	class SludgeBomb : AcidGrenade, IDankSlowText
@@ -837,7 +834,7 @@ namespace SGAmod.Items.Weapons
 			item.thrown = false;
 			item.damage = 80;
 			item.shootSpeed = 4f;
-			item.shoot = mod.ProjectileType("SludgeBombProj");
+			item.shoot = ModContent.ProjectileType<SludgeBombProj>();
 			item.value = Item.buyPrice(0, 0, 2, 0);
 			item.rare = 5;
 		}
@@ -884,11 +881,12 @@ namespace SGAmod.Items.Weapons
 			{
 				float randomfloat = Main.rand.NextFloat(1f, 6f);
 				Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+				Vector2 randomzer = Dimensions.SpaceDim.Gaussian2D(Main.rand.NextFloat(), Main.rand.NextFloat());
 
-				int dust = Dust.NewDust(new Vector2(projectile.Center.X - 32, projectile.Center.Y - 32), 64, 64, 184, 0, 0, 100, new Color(30, 30, 30, 20), 1f);
+				int dust = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y)+ randomzer*24f, 0, 0, 184, 0, 0, 100, new Color(30, 30, 30, 20), 1f);
 				Main.dust[dust].scale = 2.5f;
 				Main.dust[dust].noGravity = true;
-				Main.dust[dust].velocity = (projectile.velocity * (float)(Main.rand.Next(10, 20) * 0.01f)) + (randomcircle * randomfloat);
+				Main.dust[dust].velocity = (projectile.velocity * (float)(Main.rand.Next(10, 20) * 0.01f)) + (randomzer * randomfloat);
 			}
 			for (int i = 0; i < 10; i += 1)
 			{
@@ -1004,9 +1002,14 @@ namespace SGAmod.Items.Weapons
 
 					for (int num654 = 0; num654 < 1 + (projectile.localAI[0]<10003 ? 10 : 0); num654++)
 					{
-						Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); Vector2 ogcircle = randomcircle; randomcircle *= (float)(num654 / 10.00);
-						int num655 = Dust.NewDust(projectile.position + Vector2.UnitX * -20f, projectile.width + 40, projectile.height+40, 184, projectile.velocity.X + randomcircle.X * 4f, projectile.velocity.Y + randomcircle.Y * 4f, 200, new Color(30, 30, 30, 20), 1f);
+						Vector2 randomcircle = Dimensions.SpaceDim.Gaussian2D(Main.rand.NextFloat(), Main.rand.NextFloat());
+
+						//Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize(); 
+						Vector2 ogcircle = randomcircle;// randomcircle *= (float)(num654 / 10.00);
+						int num655 = Dust.NewDust(projectile.Center, 0,0, 184, projectile.velocity.X + randomcircle.X * 1f, projectile.velocity.Y + randomcircle.Y * 1f, 200, new Color(30, 30, 30, 20), 1f);
 						Main.dust[num655].noGravity = true;
+						Main.dust[num655].position += (randomcircle * 20f);
+
 					}
 
 					return;

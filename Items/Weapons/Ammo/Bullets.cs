@@ -180,7 +180,7 @@ namespace SGAmod.Items.Weapons.Ammo
 		}
 		public override void SetDefaults()
 		{
-			item.damage = 60;
+			item.damage = 75;
 			item.ranged = true;
 			item.width = 8;
 			item.height = 8;

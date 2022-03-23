@@ -14,6 +14,32 @@ namespace SGAmod.Items.Armors.Illuminant
 	[AutoloadEquip(EquipType.Head)]
 	public class IlluminantHelmet : ModItem
 	{
+
+		public static void ActivateAbility(SGAPlayer sgaplayer)
+		{
+			if (sgaplayer.illuminantSet.Item1 <= 4)
+				return;
+
+				if (sgaplayer.AddCooldownStack(60 * 60, 3))
+			{
+				int time = 60 * 10;
+                while (sgaplayer.AddCooldownStack(60 * 60, 1))
+                {
+					time += 60 * 10;
+				}
+
+				sgaplayer.player.AddBuff(ModContent.BuffType<IlluminantBuff>(), time);
+				Point spot = sgaplayer.player.Center.ToPoint();
+
+				Main.PlaySound(SoundID.Item, spot.X, spot.Y, 78, 1f, -0.8f);
+				var snd = Main.PlaySound(SoundID.DD2_EtherianPortalOpen, (int)spot.X, (int)spot.Y);
+				if (snd != null)
+				{
+					snd.Pitch = -0.80f;
+				}
+			}
+		}
+
 		public static void IlluminantArmorDrop(int ammount,Vector2 where)
         {
 			List<int> armors = new List<int> {ModContent.ItemType<IlluminantHelmet>(), ModContent.ItemType<IlluminantChestplate>(), ModContent.ItemType<IlluminantLeggings>() };
@@ -55,13 +81,14 @@ namespace SGAmod.Items.Armors.Illuminant
 
 				if (sgaplayer.illuminantSet.Item1 > 4)
 				{
+					float bonusRate = player.HasBuff(ModContent.BuffType<IlluminantBuff>()) ? 2f : 1;
 					//Main.NewText(sgaplayer.illuminantSet.Item2);
-					player.BoostAllDamage(sgaplayer.activestacks * 0.04f, sgaplayer.activestacks*2);
-					player.minionDamage += sgaplayer.activestacks * 0.02f;
-					player.lifeRegen += sgaplayer.activestacks;
+					player.BoostAllDamage(sgaplayer.activestacks * 0.04f* bonusRate, (int)(sgaplayer.activestacks*2* bonusRate));
+					player.minionDamage += sgaplayer.activestacks * 0.02f* bonusRate;
+					player.lifeRegen += (int)(sgaplayer.activestacks*2* bonusRate);
 
 					sgaplayer.actionCooldownRate -= 0.20f;
-
+					/*
 					for (int i = 3; i < 8 + player.extraAccessorySlots; i++)
 					{
 						Item thisitem = player.armor[i];
@@ -75,6 +102,7 @@ namespace SGAmod.Items.Armors.Illuminant
 							thisitem.type = itemtype;
 						}
 					}
+					*/
 				}
 			}
 			sgaplayer.illuminantSet.Item2 = 0;
@@ -155,6 +183,28 @@ namespace SGAmod.Items.Armors.Illuminant
 			sgaplayer.illuminantSet.Item2 += 1;
 			sgaplayer.armorglowmasks[3] = "SGAmod/Items/Armors/Illuminant/" + Name + "_Legs";
 			sgaplayer.armorglowcolor[3] = ArmorGlow;
+		}
+	}
+
+	public class IlluminantBuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Illumination");
+			Description.SetDefault("Cooldown Stacks do not Decay, Illuminant set bonus is stronger");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			canBeCleared = false;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().noCooldownRate = true;
 		}
 	}
 

@@ -50,7 +50,7 @@ namespace SGAmod
 
         public void CalcOpMods()
         {
-            overpoweredModBaseValue = ((ModLoader.GetMod("AFKPETS") != null ? 0.25f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 0.75f : 0) + (ModLoader.GetMod("Luiafk") != null ? 1.5f : 0) + (ModLoader.GetMod("Fargowiltas") != null ? 0.5f : 0) + (ModLoader.GetMod("FargowiltasSouls") != null ? 1.5f : 0)) + (ModLoader.GetMod("Antisocial") != null ? 7.5f : 0) + (ModLoader.GetMod("AlchemistNPCLite") != null ? 0.75f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0);
+            overpoweredModBaseValue = ((ModLoader.GetMod("AlchemistNPC") != null ? 0.75f : 0) + (ModLoader.GetMod("Luiafk") != null ? 1.5f : 0) + (ModLoader.GetMod("Fargowiltas") != null ? 0.5f : 0) + (ModLoader.GetMod("FargowiltasSouls") != null ? 1.5f : 0)) + (ModLoader.GetMod("Antisocial") != null ? 7.5f : 0) + (ModLoader.GetMod("AlchemistNPCLite") != null ? 0.75f : 0) + (ModLoader.GetMod("AlchemistNPC") != null ? 1.5f : 0);
             overpoweredModBaseHardmodeValue = (ModLoader.GetMod("Wingslot") != null ? 0.75f : 0);
 
             overpoweredModBaseValue += (Calamity.Item1 ? 2f : 0)+ (Thorium.Item1 ? 0.50f : 0);

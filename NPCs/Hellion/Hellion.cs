@@ -3306,7 +3306,9 @@ namespace SGAmod.NPCs.Hellion
 
 					if (introtimer == 60)
 					{
-						HellionTaunt(HellionAttacks.AntiCheatActive ? "So... you have chosen death" : "Come on " + SGAmod.HellionUserName + "!");
+						string[] lines = { "So... you have chosen death", "Do you enjoy going through hell?", "So... you want to know TRUE difficulty?", "Time to be put in your place" };
+
+						HellionTaunt(HellionAttacks.AntiCheatActive ? lines[Main.rand.Next(lines.Length)] : "Come on " + SGAmod.HellionUserName + "!");
 					}
 					if (introtimer == 180)
 					{
@@ -4683,12 +4685,14 @@ namespace SGAmod.NPCs.Hellion
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			if (Main.dedServ)
-				return false;
 
-			Color colortex = Color.Red * 0.75f;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+			Color colortex = Color.Red * 1f;
 			if (projectile.ai[1] < 100)
-				colortex = Color.Green * 0.50f;
+				colortex = Color.Green * 0.32f;
 			Vector2 scale = new Vector2(MathHelper.Clamp((float)projectile.timeLeft / 20, 0f, 1f) * scale2, 1f);
 
 			List<Vector2> vectors = new List<Vector2>();
@@ -4703,7 +4707,7 @@ namespace SGAmod.NPCs.Hellion
 			trail.coordMultiplier = new Vector2(1f, projectile.velocity.Length() *5f);
 			trail.doFade = false;
 			trail.trailThickness = 64 * scale.X;
-			trail.strength = 1.5f;
+			trail.strength = 2f;
 			trail.color = delegate (float percent)
 			{
 				return Color.Lerp(colortex, Color.White, 0.20f);
@@ -4718,6 +4722,7 @@ namespace SGAmod.NPCs.Hellion
 			trail.coordOffset = new Vector2(0, Main.GlobalTime * 3f);
 			trail.coordMultiplier = new Vector2(1f, projectile.velocity.Length() * 6f);
 			trail.doFade = false;
+			trail.strength = 1.25f;
 			trail.trailThickness = 12 * scale.X;
 			trail.color = delegate (float percent)
 			{
@@ -4731,6 +4736,10 @@ namespace SGAmod.NPCs.Hellion
 			//Texture2D captex = ModContent.GetTexture("SGAmod/NPCs/Hellion/end_and_start");
 			//Main.spriteBatch.Draw(captex, projectile.Center - Main.screenPosition, null, Color.White * Math.Min(scale2,1f), (projectile.velocity).ToRotation() - ((float)Math.PI / 2f), new Vector2(captex.Width / 2, captex.Height / 2), new Vector2(scale.X, scale.Y), SpriteEffects.None, 0.0f);
 			//Main.spriteBatch.Draw(captex, hitspot - Main.screenPosition, null, Color.White * Math.Min(scale2,1f), projectile.velocity.ToRotation() + ((float)Math.PI / 2f), new Vector2(captex.Width / 2, captex.Height / 2), new Vector2(scale.X, scale.Y), SpriteEffects.None, 0.0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
 
 			return false;
 		}

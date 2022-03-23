@@ -150,7 +150,7 @@ namespace SGAmod
 			SGAPlayer.drawdigistuff(drawInfo, false);
 		});
 
-		public static void DrawilluminantLayer(PlayerDrawInfo drawInfo, bool front)
+		public static void DrawilluminantLayer(PlayerDrawInfo drawInfo, bool front,bool glow)
 		{
 
 			Player drawPlayer = drawInfo.drawPlayer;
@@ -162,36 +162,48 @@ namespace SGAmod
 
 			if (activestacks > 0)
 			{
-				List<Vector4> whichone = new List<Vector4>();
+				bool thisGlow = (glow && drawPlayer.HasBuff(ModContent.BuffType<Items.Armors.Illuminant.IlluminantBuff>())) || !glow;
+				if (!thisGlow)
+					return;
+
+				List<(float, float, float, float, float)> whichone = new List<(float,float,float,float,float)>();
 				UnifiedRandom rando = new UnifiedRandom(drawPlayer.whoAmI);
 
 				for (int i = 0; i < activestacks; i += 1)
 				{
 					float percent = rando.NextFloat(1f) * MathHelper.TwoPi;
-					Matrix mxatrix = Matrix.CreateRotationY((Main.GlobalTime*2f)+ percent) * Matrix.CreateRotationZ(((i / (float)activestacks) * MathHelper.TwoPi)+(Main.GlobalTime * (rando.NextFloat(0.4f,0.6f))));
-					Vector3 vec3 = Vector3.Transform(Vector3.UnitX, mxatrix);
-					float alpha = 1f;
-					if (modply.CooldownStacks.Count >= i)
-						alpha = MathHelper.Clamp((modply.CooldownStacks[i].timeleft / (float)modply.CooldownStacks[i].maxtime)*3f,0f,1f);
+					float rand2 = (rando.NextFloat(0.4f, 0.6f));
+					for (float ff = 1f; ff >= (glow ? 0.0f : 1f); ff -= 0.05f)
+					{
+						//percent += (1f-ff);
 
-					whichone.Add(new Vector4(vec3, alpha));
+						Matrix mxatrix = Matrix.CreateRotationY((Main.GlobalTime * 2f) + (percent + (ff))) * Matrix.CreateRotationZ(((i / (float)activestacks) * MathHelper.TwoPi) + ((Main.GlobalTime)* rand2));
+						Vector3 vec3 = Vector3.Transform(Vector3.UnitX, mxatrix);
+						float alpha = 1f;
+						if (modply.CooldownStacks.Count >= i)
+							alpha = MathHelper.Clamp((modply.CooldownStacks[i].timeleft / (float)modply.CooldownStacks[i].maxtime) * 3f, 0f, 1f);
+
+						whichone.Add((vec3.X, vec3.Y, vec3.Z,alpha,ff));
+					}
 				}
-				whichone = whichone.OrderBy((x) => x.Z).ToList();
+				whichone = whichone.OrderBy((x) => x.Item3).ToList();
+
+				float glower = glow ? Math.Min(drawPlayer.buffTime[drawPlayer.FindBuffIndex(ModContent.BuffType<Items.Armors.Illuminant.IlluminantBuff>())]/300f,1f) : 1f;
 
 				if (whichone.Count > 0)
 				{
+					Texture2D texture = SGAmod.Instance.GetTexture(glow ? "Glow" : "Extra_57b");
+
 					for (int a = 0; a < whichone.Count; a += 1)
 					{
-						Vector4 theplace = whichone[a];
+						Vector4 theplace = new Vector4(whichone[a].Item1, whichone[a].Item2, whichone[a].Item3, whichone[a].Item4);
 						float scaler = 1+theplace.Z;
 
 						if ((scaler >= 1f && front) || (scaler < 1f && !front))
 						{
-
-							Texture2D texture = SGAmod.Instance.GetTexture("Extra_57b");
-
+							float alpha = glow ? whichone[a].Item5 / 2f : 1f;
 							Vector2 drawhere = new Vector2(theplace.X, theplace.Y)* 64f;
-							DrawData data = new DrawData(texture, drawPlayer.MountedCenter+drawhere - Main.screenPosition, null, Color.Magenta*(theplace.W*0.75f), (float)Math.Sin(theplace.X), texture.Size()/2f, 0.5f+(scaler-1f)*0.25f, (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+							DrawData data = new DrawData(texture, drawPlayer.MountedCenter+drawhere - Main.screenPosition, null, Color.Magenta*(theplace.W*0.75f)* glower * alpha, (float)Math.Sin(theplace.X), texture.Size()/2f, (0.5f+(scaler-1f)*0.25f)* whichone[a].Item5, (drawPlayer.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
 							//data.shader = (int)drawPlayer.dye[2].dye;
 							Main.playerDrawData.Add(data);
 						}
@@ -204,12 +216,14 @@ namespace SGAmod
 
 		public static readonly PlayerLayer illuminantEffect = new PlayerLayer("SGAmod", "illuminantEffect", PlayerLayer.MiscEffectsFront, delegate (PlayerDrawInfo drawInfo)
 		{
-			SGAPlayer.DrawilluminantLayer(drawInfo, true);
+			SGAPlayer.DrawilluminantLayer(drawInfo, true, true);
+			SGAPlayer.DrawilluminantLayer(drawInfo, true,false);
 		});
 
 		public static readonly PlayerLayer illuminantEffectBack = new PlayerLayer("SGAmod", "illuminantEffect", PlayerLayer.MiscEffectsBack, delegate (PlayerDrawInfo drawInfo)
 		{
-			SGAPlayer.DrawilluminantLayer(drawInfo, false);
+			SGAPlayer.DrawilluminantLayer(drawInfo, false, true);
+			SGAPlayer.DrawilluminantLayer(drawInfo, false, false);
 		});
 
 		public static readonly PlayerLayer JoyriderWings = new PlayerLayer("SGAmod", "AltWings", PlayerLayer.Wings, delegate (PlayerDrawInfo drawInfo)

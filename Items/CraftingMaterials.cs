@@ -2143,7 +2143,7 @@ namespace SGAmod.Items
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Dungeon Splunker");
+			DisplayName.SetDefault("Dungeon Spulunker");
 			Tooltip.SetDefault("While in your inventory, allows you to use pickaxes in the Deeper Dungeons");
 		}
 		public override Color? GetAlpha(Color lightColor)

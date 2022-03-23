@@ -139,6 +139,8 @@ namespace SGAmod
 					{
 						iboss.NoHitDrops();
 						Items.Placeable.Relics.SGAPlacableRelic.AttemptDropRelic(npc.modNPC);
+						if (iboss.MasterPet() != null)
+							Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType(iboss.MasterPet()));
 					}
 				}
 			}

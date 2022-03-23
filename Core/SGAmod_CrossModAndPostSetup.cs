@@ -52,6 +52,8 @@ using SGAmod.Items.Placeable;
 using SGAmod.Items.Armors.Illuminant;
 using System.Linq;
 using SGAmod.Items.Placeable.TechPlaceable;
+using SGAmod.Items.Pets;
+using SGAmod.Items.Armors.Vanity;
 #if Dimensions
 using SGAmod.Dimensions;
 #endif

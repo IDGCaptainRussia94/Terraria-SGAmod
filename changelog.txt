@@ -9,6 +9,13 @@ Changelog:
 
 -Ukrainian Valor, an item dedicated to pay homage to Ukrainian bravery in defending their homeland from an unjust war thrust on them
 
+--Accepted Rijam's Masks, Pets, and More github addition, this adds:
+-Pet drops from (most) bosses if you no hit them in expert mode
+-Goat now sells new extra item variety
+-Advanced Plating and Vibranium Plating Tiles
+-Trophies for the not-implimented Tin and Palladium Wraith, sold by the Goat
+-Masks for all bosses
+
 
 --Changed:
 
@@ -17,6 +24,10 @@ Changelog:
 -The former cheating system is now an optional extremely unfair difficulty item that is obtained from the starter bag
 
 -Universal Throwing has been desolved and is now using vanilla throwing again, as such, SGAmod no longer requires it as a dependency.
+
+-Goat now sells extra item variety, and is now less annoying and no longer kills friendlies with his fireball
+
+-Heart Lantern Pet and Star in a Bottle Pet now teleport to the player if the player is far away
 
 -Armor glowmasks now work on mounts
 
@@ -58,6 +69,8 @@ Changelog:
 -Cracked Mirror not really working anymore in terms of damage scaling against petrified enemies
 
 -Hallowed armor set bonus with visor not working
+
+-Issues with goat's sprites and shop
 
 
 

@@ -2086,7 +2086,7 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ItemID.FrogLeg, 1);
 			recipe.AddIngredient(ItemID.HandWarmer, 1);
 			recipe.AddIngredient(ModContent.ItemType < AmberGlowSkull>(), 1);
-			recipe.AddIngredient(ModContent.ItemType <CobaltMagnet>(), 1);
+			recipe.AddIngredient(ModContent.ItemType <CobaltHorseshoe>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < PrimordialSkull>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < Entrophite>(), 100);
 			recipe.AddIngredient(ModContent.ItemType < StygianCore>(), 3);

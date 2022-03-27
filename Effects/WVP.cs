@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SGAmod.Effects
 {
-    class WVP
+    public class WVP
     {
         public static GraphicsDevice graphics => Main.graphics.GraphicsDevice;
         public static Matrix World()

@@ -50,7 +50,7 @@ namespace SGAmod.Items.Tools
 
 			if (!chaos)
 			{
-				foreach (NPC enemy in Main.npc.Where(testby => testby.active && !testby.friendly && testby.Hitbox.Intersects(player.Hitbox)))
+				foreach (NPC enemy in Main.npc.Where(testby => testby.active && !testby.friendly && !testby.dontTakeDamage && testby.Hitbox.Intersects(player.Hitbox)))
 				{
 					int damag2e = Main.DamageVar((int)damage);
 					enemy.StrikeNPC(damag2e, 20, player.direction, Main.hardMode);

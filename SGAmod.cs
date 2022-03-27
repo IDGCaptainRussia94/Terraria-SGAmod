@@ -242,6 +242,7 @@ namespace SGAmod
 		public static Effect TrippyRainbowEffect;
 		public static Effect FadeInEffect;
 		public static Effect RadialEffect;
+		public static Effect CircleEffect;
 		public static Effect SphereMapEffect;
 		public static Effect VoronoiEffect;
 		public static Effect CataEffect;
@@ -540,14 +541,14 @@ namespace SGAmod
         {
 			if (unload)
 			{
-				if (SGAmod.musicTest != default && SGAmod.hellionTheme != null)
+				if (SGAmod.musicTest != default)
 				{
 					if (SGAmod.musicTest.IsPlaying)
 						SGAmod.musicTest.Stop(AudioStopOptions.Immediate);
 					SGAmod.musicTest.Dispose();
 				}
 
-				if (SGAmod.hellionTheme != default && SGAmod.hellionTheme != null)
+				if (SGAmod.hellionTheme != null)
 				{
 					if (SGAmod.hellionTheme.IsPlaying)
 						SGAmod.hellionTheme.Stop(AudioStopOptions.Immediate);
@@ -818,6 +819,7 @@ namespace SGAmod
 				TrippyRainbowEffect.Parameters["uIntensity"].SetValue(1f);
 				TrippyRainbowEffect.Parameters["uProgress"].SetValue(0f);
 
+				CircleEffect = SGAmod.Instance.GetEffect("Effects/Circle");
 				RadialEffect = SGAmod.Instance.GetEffect("Effects/Radial");
 				SphereMapEffect = SGAmod.Instance.GetEffect("Effects/SphereMap");
 				VoronoiEffect = SGAmod.Instance.GetEffect("Effects/Voronoi");

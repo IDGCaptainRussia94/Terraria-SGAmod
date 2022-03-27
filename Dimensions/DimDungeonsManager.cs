@@ -223,6 +223,13 @@ namespace SGAmod.Dimensions
 		public override bool UseItem(Player player)
 		{
 			//SLWorld.EnterSubworld("SGAmod_Blank");
+
+			if (ModLoader.GetMod("DyingLight") != null)
+            {
+				SGAPocketDim.EnterSubworld("DyingLight_HeavenDim");
+				return true;
+			}
+
 			SGAPocketDim.EnterSubworld(mod.GetType().Name + "_LimboDim");
 			return true;
 		}

@@ -4671,15 +4671,15 @@ namespace SGAmod.NPCs.Hellion
 		public override void OnHitPlayer(Player player, int damage, bool crit)
 		{
 			player.AddBuff(Idglib.Instance.BuffType("NoImmunities"), 60 * 10, true);
-			if (Main.rand.Next(0, 5) == 1)
+			if (Main.rand.Next(0, 5) == 0)
 				player.AddBuff(BuffID.Weak, 60 * 15, true);
-			if (Main.rand.Next(0, 5) == 1)
+			if (Main.rand.Next(0, 5) == 0)
 				player.AddBuff(BuffID.Ichor, 60 * 10, true);
-			if (Main.rand.Next(0, 5) == 1)
+			if (Main.rand.Next(0, 5) == 0)
 				player.AddBuff(BuffID.Darkness, 60 * 15, true);
-			if (Main.rand.Next(0, 5) == 1)
+			if (Main.rand.Next(0, 5) == 0)
 				player.AddBuff(BuffID.CursedInferno, 60 * 10, true);
-			if (Main.rand.Next(0, 5) == 1)
+			if (Main.rand.Next(0, 5) == 0)
 				player.AddBuff(BuffID.ChaosState, 60 * 10, true);
 		}
 

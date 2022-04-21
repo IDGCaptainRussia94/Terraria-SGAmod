@@ -877,7 +877,7 @@ namespace SGAmod.Items.Weapons.Technical
 
 	public class BeamCannon : SeriousSamWeapon, ITechItem
 	{
-		public float ElectricChargeScalingPerUse() => 0.25f;
+		public float ElectricChargeScalingPerUse() => 0.20f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Beam Cannon");
@@ -890,7 +890,7 @@ namespace SGAmod.Items.Weapons.Technical
 		{
 			item.damage = 150;
 			item.magic = true;	
-			item.crit = 15;
+			item.crit = 20;
 			item.width = 56;
 			item.height = 28;
 			item.useTime = 7;
@@ -929,11 +929,11 @@ namespace SGAmod.Items.Weapons.Technical
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(null, "StarMetalBar", 16);
-			recipe.AddIngredient(null, "PlasmaCell", 3);
-			recipe.AddIngredient(null, "ManaBattery", 5);
-			recipe.AddIngredient(null, "AdvancedPlating", 8);
-			recipe.AddIngredient(ItemID.ChargedBlasterCannon, 1);
+			recipe.AddIngredient(ModContent.ItemType<StarMetalBar>(), 16);
+			recipe.AddIngredient(ModContent.ItemType<PlasmaCell>(), 3);
+			recipe.AddIngredient(ModContent.ItemType<ManaBattery>(), 5);
+			recipe.AddIngredient(ModContent.ItemType< AdvancedPlating>(), 8);
+			recipe.AddIngredient(ModContent.ItemType<BeamGun>(), 1);
 			recipe.AddIngredient(ItemID.LunarBar, 8);
 			recipe.AddTile(mod.TileType("ReverseEngineeringStation"));
 			recipe.SetResult(this);

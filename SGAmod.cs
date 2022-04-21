@@ -243,6 +243,7 @@ namespace SGAmod
 		public static Effect FadeInEffect;
 		public static Effect RadialEffect;
 		public static Effect CircleEffect;
+		public static Effect BloomEffect;
 		public static Effect SphereMapEffect;
 		public static Effect VoronoiEffect;
 		public static Effect CataEffect;
@@ -676,6 +677,7 @@ namespace SGAmod
 					if (SGAmod.OSType == 0)
 						_ = Core.WinForm.WinHandled;
 				}
+
 				ShadowParticle.Load();
 
 				CreateRenderTarget2Ds(Main.screenWidth, Main.screenHeight, false, true);
@@ -819,6 +821,7 @@ namespace SGAmod
 				TrippyRainbowEffect.Parameters["uIntensity"].SetValue(1f);
 				TrippyRainbowEffect.Parameters["uProgress"].SetValue(0f);
 
+				BloomEffect = SGAmod.Instance.GetEffect("Effects/TextureBloom");
 				CircleEffect = SGAmod.Instance.GetEffect("Effects/Circle");
 				RadialEffect = SGAmod.Instance.GetEffect("Effects/Radial");
 				SphereMapEffect = SGAmod.Instance.GetEffect("Effects/SphereMap");
@@ -826,7 +829,7 @@ namespace SGAmod
 				CataEffect = SGAmod.Instance.GetEffect("Effects/CataLogo");
 				TextureBlendEffect = SGAmod.Instance.GetEffect("Effects/TextureBlend");
 
-
+				GameShaders.Armor.BindShader(ModContent.ItemType<Items.Dyes.BloomDye>(), new ArmorShaderData(new Ref<Effect>(GetEffect("Effects/TextureBloom")), "BloomDyePass"));
 
 				GameShaders.Misc["SGAmod:DeathAnimation"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/EffectDeath")), "DeathAnimation").UseImage("Images/Misc/Perlin");
 				GameShaders.Misc["SGAmod:ShaderOutline"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/ShaderOutline")), "ShaderOutline").UseImage("Images/Misc/Perlin");

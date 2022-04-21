@@ -12,13 +12,18 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace SGAmod.Items.Accessories.Charms
 {
-	public class NoHitCharmlv1 : MiningCharmlv1
+	public class NoHitCharmlv1 : MiningCharmlv1,IDedicatedItem
 	{
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Amulet of Diehard Cataclysm");
 			Tooltip.SetDefault("'Embrace the suffering, indulge on the reward'\n'Truly, only for the worthy... And the british'\n25% more Expertise is earned and respawn instantly outside of boss fights\n" + Idglib.ColorText(Color.Red, "You die in one hit, IFrames cause great damage over time") + "\n" + Idglib.ColorText(Color.Red, "Most if not all methods of death prevention are disabled") + "\n" + Idglib.ColorText(Color.Red, "Death claims you if you attempt to break the curse...") + "\n+An exception to the formentioned rule are Just Blocks\nThis item doesn't take effect til 3 seconds after spawning to prevent soft-locks");
 			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 10));
+		}
+
+		public string DedicatedItem()
+		{
+			return "Dedicated to a specific Britith Moth.";
 		}
 
 		public override string Texture => "SGAmod/Items/Accessories/Charms/NoHitCharmlv1";

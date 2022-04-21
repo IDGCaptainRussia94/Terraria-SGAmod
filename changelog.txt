@@ -5,7 +5,7 @@ Changelog:
 
 -Added:
 
--Spatial Spheres, The Hit List, The Bounty Hunter's Mark, Cobalt Horseshoe, Vodka, Fury Potion
+-Spatial Spheres, SoulSpark Boots, The Hit List, The Bounty Hunter's Mark, Cobalt Horseshoe, Vodka, Fury Potion
 
 -Ukrainian Valor, an item dedicated to pay homage to Ukrainian bravery in defending their homeland from an unjust war thrust on them
 
@@ -19,7 +19,7 @@ Changelog:
 
 --Changed:
 
--Soldier's Rocket Launcher and Shooting Star have been added to a new catagory of items: Dedicated Items; which was made for the newly added Ukrainian Valor
+-Soldier's Rocket Launcher, Shooting Star, Nuclear Option, and Amulet of Diehard Cataclysm, have been added to a new catagory of items: Dedicated Items; which was made for the newly added Ukrainian Valor
 
 -The former cheating system is now an optional extremely unfair difficulty item that is obtained from the starter bag
 
@@ -47,9 +47,13 @@ Changelog:
 
 -Reworked Illuminant Armor: no longer gives double prefix bonuses, now has a triggered ability, and increases life regen by 2 per active cooldown stack
 
+-Reworked Midas Insignia: now gives a damage boost based on money sacrificed VS money currently held
+
 -Rebalanced Joyrider: fixed issues with other ammo types, now works only with bullets (atm, unless I make an upgrade), adjusted overall flight time scaling. Still has a few issues with not being able to fly properly
 
--Rebalanced Demon Steppers: is now post Pheathon, and includes the Cobalt Shield, as well as the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod)
+-Rebalanced Demon Steppers: is now post Pheathon, and includes the Cobalt Shield, as well as the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod), now has most of its movement bonuses inherited from the earier SoulSpark Boots
+
+-Buffed Beam Cannon: Electric Charge cost reduced by 5%, base crit increased to 20 from 15
 
 -Buffed Rod Of Teleportation: can now telefrag enemies by teleporting into them, gives IFrames after teleporting
 

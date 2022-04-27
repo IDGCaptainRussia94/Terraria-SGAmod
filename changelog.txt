@@ -77,9 +77,14 @@ Changelog:
 -Issues with goat's sprites and shop
 
 
+3.638-(4/26/22)--Hotfix 38
+
+--Changed:
+
+-Glowrock can now only spawn in the outer 20%'s of the world, and despawns during the day; Rate of falling has been adjusted to make them less common
+
 
 3.636-(2/21/22)--Hotfix 37
-
 
 --Changed:
 

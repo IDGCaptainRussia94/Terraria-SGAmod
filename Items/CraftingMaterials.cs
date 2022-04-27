@@ -359,16 +359,119 @@ namespace SGAmod.Items
 			item.rare = ItemRarityID.Blue;
 		}
 
-        public override void ExtractinatorUse(ref int resultType, ref int resultStack)
-        {
+		public static void DoFallenSpaceRocks()
+		{
+			if (Main.dayTime || !Main.hardMode)
+				return;
+
+			if (Main.rand.Next(400000) < Main.maxTilesX / (Main.netMode == NetmodeID.SinglePlayer ? 6 : 3))
+			{
+				int farside = (int)((Main.maxTilesX * 16) * 0.2f);
+				int closeside = (int)((Main.maxTilesX * 16) * 0.8f);
+
+				int xTile = (int)(Main.rand.NextBool() ? Main.rand.Next(farside) : closeside + Main.rand.Next(farside));
+
+
+				Projectile.NewProjectile(new Vector2(xTile, 50), Vector2.UnitY.RotatedBy((Main.rand.NextFloat(-1f, 1f) * MathHelper.Pi) * 0.10f) * Main.rand.NextFloat(3f, 6f), ModContent.ProjectileType<Dimensions.FallingSpaceRock>(), 1000, 10);
+			}
+		}
+
+		public static void CrashComet(Vector2 pos, Vector2 velocity)
+		{
+            Microsoft.Xna.Framework.Audio.SoundEffectInstance snd = Main.PlaySound(SoundID.DD2_BetsysWrathImpact, (int)pos.X, (int)pos.Y);
+
+			if (snd != null)
+			{
+				snd.Pitch = Main.rand.NextFloat(0.25f, 0.60f);
+			}
+
+			float velocityAngle = velocity.ToRotation().AngleLerp(MathHelper.PiOver2, 0.75f);
+
+			for (int i = 0; i < 60; i += 1)
+			{
+				Vector2 offset = (velocityAngle + (MathHelper.Pi + Main.rand.NextFloat(-0.35f, 0.35f))).ToRotationVector2();
+				int dust = Dust.NewDust(new Vector2(pos.X, pos.Y), 0, 0, DustID.BlueCrystalShard);
+				Main.dust[dust].scale = 1.5f;
+				Main.dust[dust].alpha = 150;
+				Main.dust[dust].velocity = Vector2.Normalize(offset) * (float)(1f * Main.rand.NextFloat(0f, 3f) * (i / 5f));
+				Main.dust[dust].noGravity = true;
+			}
+
+			for (int num1181 = 0; num1181 < 20; num1181++)
+			{
+				float num1182 = (float)num1181 / 15f;
+				Vector2 vector123 = new Vector2((num1182 * 0.80f) + 0.15f, 0f).RotatedBy(Main.rand.NextFloat(-0.25f, 0.25f));
+				Gore gore = Gore.NewGoreDirect(pos, Vector2.Zero, Utils.SelectRandom<int>(Main.rand, 375, 376, 377), 0.75f);
+
+				if (gore != null)
+				{
+					gore.velocity = vector123.RotatedBy(velocityAngle + MathHelper.Pi) * 12f;
+					//gore.velocity.Y -= 2f;
+					//gore.timeLeft = 90;
+				}
+			}
+
+
+			for (int num1181 = 0; num1181 < 16; num1181++)
+			{
+				float num1182 = (float)num1181 / 20f;
+				Vector2 vector123 = new Vector2(Main.rand.NextFloat() * 10f, 0f).RotatedBy(num1182 * -(float)Math.PI + Main.rand.NextFloat() * 0.1f - 0.05f);
+				int itemz = Item.NewItem(pos + vector123 * 3, ModContent.ItemType<Glowrock>(), Main.rand.Next(1, 3));
+				if (itemz >= 0)
+				{
+					Main.item[itemz].velocity = (Vector2.Normalize(vector123) * 0.50f) + (vector123 * 0.75f);
+				}
+			}
+		}
+
+		public override void Update(ref float gravity, ref float maxFallSpeed)
+		{
+			if (Main.dayTime && Main.rand.Next(50) < 1 && item.velocity.LengthSquared() < 2 && Dimensions.SGAPocketDim.WhereAmI == null)
+			{
+				item.active = false;
+				Tiles.TechTiles.HopperTile.CleanUpGlitchedItems();
+
+				var snd = Main.PlaySound(SoundID.NPCKilled, (int)item.Center.X, (int)item.Center.Y, 7);
+
+				if (snd != null)
+				{
+					snd.Pitch = Main.rand.NextFloat(-0.75f, -0.25f);
+				}
+
+				for (float num475 = 0.5f; num475 < 6f + (item.stack / 8f); num475 += 0.25f)
+				{
+					float anglehalf = Main.rand.NextFloat(MathHelper.TwoPi);
+					Vector2 startloc = item.Center;
+					int dust = Dust.NewDust(startloc, 0, 0, DustID.BlueCrystalShard);
+
+					float anglehalf2 = anglehalf + ((float)Math.PI / 2f);
+					Main.dust[dust].position += anglehalf2.ToRotationVector2() * (float)((Main.rand.Next(-200, 200) / 10f));
+
+					Main.dust[dust].scale = 2f - Math.Abs(num475) / 4f;
+					Vector2 randomcircle = new Vector2(Main.rand.Next(-8000, 8000), Main.rand.Next(-8000, 8000)); randomcircle.Normalize();
+					Main.dust[dust].velocity = (randomcircle / 3f) * num475;
+					Main.dust[dust].noGravity = true;
+					Main.dust[dust].rotation = Main.dust[dust].velocity.ToRotation();
+				}
+
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
+				}
+			}
+		}
+
+		public override void ExtractinatorUse(ref int resultType, ref int resultStack)
+		{
 			if (Main.rand.Next(8) < 4)
 				return;
 
 			WeightedRandom<(int, int)> WR = new WeightedRandom<(int, int)>();
-			
+
 			if (NPC.downedPlantBoss)
 			{
-				WR.Add((ItemID.Ectoplasm, Main.rand.Next(1, 1)), 1);
+				WR.Add((ItemID.Ectoplasm, 1), 1);
 			}
 
 			if (NPC.downedMoonlord)
@@ -376,7 +479,7 @@ namespace SGAmod.Items
 
 			WR.Add((ItemID.SoulofLight, 1), 1);
 			WR.Add((ItemID.SoulofNight, 1), 1);
-			WR.Add((ItemID.DarkBlueSolution, Main.rand.Next(1, 9)),0.50);
+			WR.Add((ItemID.DarkBlueSolution, Main.rand.Next(1, 9)), 0.50);
 			WR.Add((ItemID.BlueSolution, Main.rand.Next(1, 9)), 0.50);
 
 			WR.needsRefresh = true;
@@ -390,16 +493,16 @@ namespace SGAmod.Items
 			Lighting.AddLight(item.Center, Color.Blue.ToVector3() * 0.55f);
 		}
 
-        public int RadioactiveHeld()
-        {
+		public int RadioactiveHeld()
+		{
 			return 2;
-        }
+		}
 
-        public int RadioactiveInventory()
-        {
+		public int RadioactiveInventory()
+		{
 			return 1;
-        }
-    }
+		}
+	}
 
 	public class CelestineChunk : ModItem, IRadioactiveItem
 	{

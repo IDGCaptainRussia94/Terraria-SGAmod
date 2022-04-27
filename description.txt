@@ -24,6 +24,13 @@ A few warnings before the changelog:
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
 
+3.639-(4/27/22)--Hotfix 39
+
+--Fixed:
+
+-Glowrocks falling in pre-hardmode
+
+
 3.638-(4/26/22)--Hotfix 38
 
 --Changed:

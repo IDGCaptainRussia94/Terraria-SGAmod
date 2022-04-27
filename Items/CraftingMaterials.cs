@@ -362,7 +362,7 @@ namespace SGAmod.Items
 
 		public static void DoFallenSpaceRocks()
 		{
-			if (Main.dayTime)
+			if (Main.dayTime || !Main.hardMode)
 				return;
 
 			if (Main.rand.Next(400000) < Main.maxTilesX / (Main.netMode == NetmodeID.SinglePlayer ? 6 : 3))

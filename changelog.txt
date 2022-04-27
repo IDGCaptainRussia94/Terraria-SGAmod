@@ -1,28 +1,14 @@
 
 Changelog:
 
-3.636-(2/21/22)--Hotfix 37
+3.639-(4/27/22)--Hotfix 39
+
+--Fixed:
+
+-Glowrocks falling in pre-hardmode
 
 
---Changed:
-
--Made the warnings on specific items more present with more tooltips and an over the top effect
-
-
---Fixed
-
--Flask of Soul Sap using Star pickups in their crafting recipe, was meant to be a Fallen Star
-
--Repent being not really useable, and decreased cost
-
--Celestial Monolith being uncraftable to get Star Metal Bars early
-
--Caliburn Compass visuals going off center at higher UI scales
-
--Reservation/JellyBru Shields granting effectively godmode when used with Undying Valor
-
-
-3.636-(4/26/22)--Hotfix 38
+3.638-(4/26/22)--Hotfix 38
 
 --Changed:
 

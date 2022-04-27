@@ -3555,51 +3555,7 @@ hallowed.Parameters["rainbowScale"].SetValue(0.8f);
 
         public override bool PreKill(int timeLeft)
         {
-            SoundEffectInstance snd = Main.PlaySound(SoundID.DD2_BetsysWrathImpact, (int)projectile.Center.X, (int)projectile.Center.Y);
-
-            if (snd != null)
-            {
-                snd.Pitch = Main.rand.NextFloat(0.25f, 0.60f);
-            }
-
-            float velocityAngle = projectile.velocity.ToRotation().AngleLerp(MathHelper.PiOver2, 0.75f);
-
-            for (int i = 0; i < 60; i += 1)
-            {
-                Vector2 offset = (velocityAngle+(MathHelper.Pi+Main.rand.NextFloat(-0.35f,0.35f))).ToRotationVector2();
-                int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, DustID.BlueCrystalShard);
-                Main.dust[dust].scale = 1.5f;
-                Main.dust[dust].alpha = 150;
-                Main.dust[dust].velocity = Vector2.Normalize(offset) * (float)(1f * Main.rand.NextFloat(0f, 3f)*(i/5f));
-                Main.dust[dust].noGravity = true;
-            }
-
-            for (int num1181 = 0; num1181 < 20; num1181++)
-            {
-                float num1182 = (float)num1181 / 15f;
-                Vector2 vector123 = new Vector2((num1182*0.80f)+0.15f, 0f).RotatedBy(Main.rand.NextFloat(-0.25f,0.25f));
-                Gore gore = Gore.NewGoreDirect(projectile.position, Vector2.Zero, Utils.SelectRandom<int>(Main.rand, 375, 376, 377), 0.75f);
-
-                if (gore != null)
-                {
-                    gore.velocity = vector123.RotatedBy(velocityAngle + MathHelper.Pi)*12f;
-                    //gore.velocity.Y -= 2f;
-                    //gore.timeLeft = 90;
-                }
-            }
-
-
-            for (int num1181 = 0; num1181 < 16; num1181++)
-            {
-                float num1182 = (float)num1181 / 20f;
-                Vector2 vector123 = new Vector2(Main.rand.NextFloat() * 10f, 0f).RotatedBy(num1182 * -(float)Math.PI + Main.rand.NextFloat() * 0.1f - 0.05f);
-                int itemz = Item.NewItem(projectile.Center+ vector123*3, ModContent.ItemType<Glowrock>(), Main.rand.Next(1, 3));
-                if (itemz >= 0)
-                {
-                    Main.item[itemz].velocity = (Vector2.Normalize(vector123)*0.50f)+(vector123*0.75f);
-                }
-            }
-
+            Glowrock.CrashComet(projectile.position + new Vector2(Main.rand.Next(projectile.width), Main.rand.Next(projectile.height)), projectile.velocity);
             return true;
         }
 

@@ -5449,10 +5449,10 @@ namespace SGAmod.NPCs.Hellion
 				AddNote(3, 32);
 			}
 			AddNote(-1, 80);
-			for (int i = 0; i < 4; i += 1)
+			for (int i = 0; i < 3; i += 1)
 			{
-				AddNote(0, 32);
-				AddNote(2, 32);
+				AddNote(1, 32);
+				AddNote(3, 32);
 			}
 			AddNote(-1, 60);
 			AddNote(3, 15);
@@ -5661,7 +5661,6 @@ namespace SGAmod.NPCs.Hellion
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
-
 
 			Texture2D otherTex = Main.projectileTexture[ModContent.ProjectileType<HellionFNFArrow>()];
 

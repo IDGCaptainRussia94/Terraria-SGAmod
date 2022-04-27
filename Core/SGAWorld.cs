@@ -149,7 +149,7 @@ namespace SGAmod
                     CaliburnAlterCoordsX[f] = 0;
                     CaliburnAlterCoordsY[f] = 0;
                 }
-                WorldIsTin = WorldGen.oreTier1 != TileID.Copper;
+                WorldIsTin = WorldGen.CopperTierOre != TileID.Copper;
                 int x = 0;
                 for (x = 0; x < questvars.Length; x++)
                 {
@@ -421,7 +421,7 @@ namespace SGAmod
         //Load downed data
         public override void Load(TagCompound tag)
         {
-            WorldIsTin = WorldGen.oreTier1 == TileID.Tin;
+            WorldIsTin = WorldGen.CopperTierOre == TileID.Tin;
             //var downed = tag.GetList<string>("downed");
             if (tag.ContainsKey("WorldIsNovus"))
                 WorldIsNovus = tag.GetBool("WorldIsNovus");

@@ -3214,7 +3214,7 @@ namespace SGAmod.Dimensions.NPCs
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            Texture2D[] texs = { mod.GetTexture("Doom_Harbinger_Resprite_eye"), mod.GetTexture("noise"), mod.GetTexture("TiledPerlin") };
+            Texture2D[] texs = { mod.GetTexture("Doom_Harbinger_Resprite_eye"), mod.GetTexture("Noise"), mod.GetTexture("TiledPerlin") };
 
             int count = 0;
             float shieldAlpha = MathHelper.Clamp(((shieldeffect) / 30f), 0f, 1);

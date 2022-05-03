@@ -1,8 +1,18 @@
 
 Changelog:
 
+3.652-(5/3/22)--Hotfix 41
 
-3.651-(4/27/22)--Hotfix 40
+--Fixed:
+
+-Stars Above/Wingslot crash relating to UThrowing, I think...
+
+-Updated Joyrider to use the new version of WingSlot's code so it no longer causes errors
+
+-Fixed Phaethon/S Pinky/Prismic Banshee vanishing due to github lowercasing the noise texture... again
+
+
+3.651-(5/3/22)--Hotfix 40
 
 --Fixed:
 

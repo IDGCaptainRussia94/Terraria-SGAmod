@@ -61,8 +61,6 @@ namespace SGAmod
 			On.Terraria.GameContent.Events.DD2Event.SpawnMonsterFromGate += CrucibleArenaMaster.DD2PortalOverrides;
 			On.Terraria.GameContent.UI.Elements.UICharacterListItem.DrawSelf += Menu_UICharacterListItem;
 
-            On.Terraria.Item.SetDefaults += ApplyThrowingToUThrowing;
-            On.Terraria.Projectile.SetDefaults += ApplyThrowingToUThrowingButForProjectiles;
 			On.Terraria.GameInput.PlayerInput.UpdateMainMouse += ApplyDrunkAiming;
 
 			//Unused until more relevant
@@ -95,6 +93,13 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
+		public static void PostApply()
+        {
+			SGAmod.Instance.Logger.Debug("Late Changes as being applied early has caused issues with some other mods");
+			On.Terraria.Item.SetDefaults += ApplyThrowingToUThrowing;
+			On.Terraria.Projectile.SetDefaults += ApplyThrowingToUThrowingButForProjectiles;
+		}
+
         private static void ApplyDrunkAiming(On.Terraria.GameInput.PlayerInput.orig_UpdateMainMouse orig)
         {
 			orig();
@@ -105,10 +110,13 @@ namespace SGAmod
         {
 			//Just a little work around to throwing so I don't have to re-write the whole mod
 			orig(self, Type, noMatCheck);
-			if (self != null && self.Throwing().thrown)
-            {
-				self.thrown = true;
-            }
+			if (!Main.gameMenu)
+			{
+				if (self != null && self.Throwing().thrown)
+				{
+					self.thrown = true;
+				}
+			}
 		}
 
 		private static void ApplyThrowingToUThrowingButForProjectiles(On.Terraria.Projectile.orig_SetDefaults orig, Projectile self, int Type)

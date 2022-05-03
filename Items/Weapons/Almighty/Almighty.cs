@@ -300,7 +300,7 @@ namespace SGAmod.Items.Weapons.Almighty
 			}
 
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
 			//UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);
 			Color colorz = Color.Turquoise;
 			trail.color = delegate (float percent)

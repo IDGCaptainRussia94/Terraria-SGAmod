@@ -427,6 +427,7 @@ namespace SGAmod
 			SGAmod.StuffINeedFuckingSpritesFor.Add(ItemType("AimBotBullet"), "Only ever they want only to be a part of-TY");*/
 
 			CalcOpMods();
+			SGAMethodSwaps.PostApply();
 		}
 	}
 

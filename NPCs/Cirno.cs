@@ -1253,7 +1253,7 @@ return false;
 
 			if (strength > 0)
 			{
-				TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
+				TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
 				trail.color = delegate (float percent)
 				{
 					return Color.Aqua;

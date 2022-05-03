@@ -23,6 +23,25 @@ A few warnings before the changelog:
 -This mod has not been properly tested/optimized for multiplayer, while it supports some MP features, many things are disabled in MP
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
+
+3.652-(5/3/22)--Hotfix 41
+
+--Fixed:
+
+-Stars Above/Wingslot crash relating to UThrowing, I think...
+
+-Updated Joyrider to use the new version of WingSlot's code so it no longer causes errors
+
+-Fixed Phaethon/S Pinky/Prismic Banshee vanishing due to github lowercasing the noise texture... again
+
+
+3.651-(5/3/22)--Hotfix 40
+
+--Fixed:
+
+-Previous Cheat-marked worlds activating Sadomasochist mode, worlds should no longer activate the mode
+
+
 3.650-(5/2/22)--Patch 17: Anniversary Update Part 2!
 
 -Added:

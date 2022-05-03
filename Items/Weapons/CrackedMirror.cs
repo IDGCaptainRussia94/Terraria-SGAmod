@@ -141,7 +141,7 @@ namespace SGAmod.Items.Weapons
 					projectile.oldPos[i] = projectile.position;
 			}
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
 			trail.color = delegate (float percent)
 			{
 				return Color.White;

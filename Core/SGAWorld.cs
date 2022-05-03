@@ -417,7 +417,7 @@ namespace SGAmod
             if (tag.ContainsKey("darknessVision"))
                 darknessVision = tag.GetBool("darknessVision");
             if (tag.ContainsKey("cheating"))
-                cheating = SGAmod.cheating || tag.GetBool("cheating");
+                cheating = false;// SGAmod.cheating || tag.GetBool("cheating");
 
             tf2cratedrops = tag.GetBool("tf2cratedrops");
             downedCustomInvasion = tag.GetBool("customInvasion");

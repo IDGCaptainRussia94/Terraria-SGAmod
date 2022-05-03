@@ -104,10 +104,8 @@ namespace SGAmod
 			safeMode = 0;
 			//SGAmod.AbsentItemDisc.Add(SGAmod.Instance.ItemType("Tornado"), "This is test");
 
-			if (SpecialEvents.Item1)
-				SpecialBirthdayMode = true;
-			if (SpecialEvents.Item2)
-				AprilFoolsMode = true;
+			SpecialBirthdayMode = SpecialEvents.Item1;
+			AprilFoolsMode = SpecialEvents.Item2;
 
 			Properties = new ModProperties()
 			{

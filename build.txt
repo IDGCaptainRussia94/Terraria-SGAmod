@@ -1,5 +1,5 @@
 author = IDGCaptainRussia
-version = 3.650
+version = 3.651
 displayName = SGAmod: [c/65c281:Anniversary Update!]
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, .zip, Effects\fxcompiler,*.exe,*.zip,*.gif, *.xcf, *.idg, *.MD, *.csproj, *.user, obj\*, bin\*, vs\*, git\*
 includePDB = true

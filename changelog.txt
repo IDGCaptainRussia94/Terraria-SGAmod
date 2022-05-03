@@ -1,6 +1,14 @@
 
 Changelog:
 
+
+3.651-(4/27/22)--Hotfix 40
+
+--Fixed:
+
+-Previous Cheat-marked worlds activating Sadomasochist mode, worlds should no longer activate the mode
+
+
 3.650-(5/2/22)--Patch 17: Anniversary Update Part 2!
 
 -Added:

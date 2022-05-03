@@ -2145,7 +2145,6 @@ namespace SGAmod.Items.Accessories
 			recipe.AddIngredient(ModContent.ItemType<SoulSparkBoots>(), 1);
 			recipe.AddIngredient(ItemID.HandWarmer, 1);
 			recipe.AddIngredient(ModContent.ItemType < AmberGlowSkull>(), 1);
-			recipe.AddIngredient(ModContent.ItemType <CobaltHorseshoe>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < PrimordialSkull>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < Entrophite>(), 100);
 			recipe.AddIngredient(ModContent.ItemType < StygianCore>(), 3);
@@ -5464,7 +5463,7 @@ namespace SGAmod.Items.Accessories
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
-			Texture2D inner = mod.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
+			Texture2D inner = mod.GetTexture("Items/GlowMasks/Floudglow");
 
 			Vector2 slotSize = new Vector2(52f, 52f);
 			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
@@ -5488,7 +5487,7 @@ namespace SGAmod.Items.Accessories
 			spriteBatch.Draw(Main.itemTexture[item.type], position, null, alphaColor, rotation, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-			Texture2D inner = mod.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
+			Texture2D inner = mod.GetTexture("Items/GlowMasks/Floudglow");
 
 
 			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);

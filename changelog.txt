@@ -1,11 +1,11 @@
 
 Changelog:
 
-3.650-(3/??/??)--Patch 17: Anniversary Update Part 2!
+3.650-(5/2/22)--Patch 17: Anniversary Update Part 2!
 
 -Added:
 
--Spatial Spheres, SoulSpark Boots, The Hit List, The Bounty Hunter's Mark, Cobalt Horseshoe, Vodka, Fury Potion
+-Spatial Spheres, SoulSpark Boots, The Hit List, The Bounty Hunter's Mark, Cobalt Horseshoe, Vodka, Fury Potion, Potion Injector
 
 -Ukrainian Valor, an item dedicated to pay homage to Ukrainian bravery in defending their homeland from an unjust war thrust on them
 
@@ -43,6 +43,8 @@ Changelog:
 
 -Shadow keys are now made with obsidian
 
+-Cutscene invulnerability now also resets wing time
+
 -Reworked Soulbound Bullet: changed to ranged, damage increased to 75 (from 50)
 
 -Reworked Illuminant Armor: no longer gives double prefix bonuses, now has a triggered ability, and increases life regen by 2 per active cooldown stack
@@ -75,6 +77,13 @@ Changelog:
 -Hallowed armor set bonus with visor not working
 
 -Issues with goat's sprites and shop
+
+
+3.639-(4/27/22)--Hotfix 39
+
+--Fixed:
+
+-Glowrocks falling in pre-hardmode
 
 
 3.638-(4/26/22)--Hotfix 38

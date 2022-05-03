@@ -23,6 +23,83 @@ A few warnings before the changelog:
 -This mod has not been properly tested/optimized for multiplayer, while it supports some MP features, many things are disabled in MP
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
+3.650-(5/2/22)--Patch 17: Anniversary Update Part 2!
+
+-Added:
+
+-Spatial Spheres, SoulSpark Boots, The Hit List, The Bounty Hunter's Mark, Cobalt Horseshoe, Vodka, Fury Potion, Potion Injector
+
+-Ukrainian Valor, an item dedicated to pay homage to Ukrainian bravery in defending their homeland from an unjust war thrust on them
+
+--Accepted Rijam's Masks, Pets, and More github addition, this adds:
+-Pet drops from (most) bosses if you no hit them in expert mode
+-Goat now sells new extra item variety
+-Advanced Plating and Vibranium Plating Tiles
+-Trophies for the not-implimented Tin and Palladium Wraith, sold by the Goat
+-Masks for all bosses
+
+
+--Changed:
+
+-Soldier's Rocket Launcher, Shooting Star, Nuclear Option, and Amulet of Diehard Cataclysm, have been added to a new catagory of items: Dedicated Items; which was made for the newly added Ukrainian Valor
+
+-The former cheating system is now an optional extremely unfair difficulty item that is obtained from the starter bag
+
+-Universal Throwing has been desolved and is now using vanilla throwing again, as such, SGAmod no longer requires it as a dependency.
+
+-Goat now sells extra item variety, and is now less annoying and no longer kills friendlies with his fireball
+
+-Heart Lantern Pet and Star in a Bottle Pet now teleport to the player if the player is far away
+
+-Armor glowmasks now work on mounts
+
+-The Fog has been revamped slightly, allowing it to draw neatly to all screensizes
+
+-Jagged Overgrown Spikes now require Nails
+
+-Prismal/Prismic ammo has been made cheaper, sorta.
+
+-'Throwable' Trap Spiky Ball no longer requires Spikyball traps
+
+-Null Watchers now take Aggro into account, and using items that reduce aggro will reduce the range they can see you at (and vise versa)
+
+-Shadow keys are now made with obsidian
+
+-Cutscene invulnerability now also resets wing time
+
+-Reworked Soulbound Bullet: changed to ranged, damage increased to 75 (from 50)
+
+-Reworked Illuminant Armor: no longer gives double prefix bonuses, now has a triggered ability, and increases life regen by 2 per active cooldown stack
+
+-Reworked Midas Insignia: now gives a damage boost based on money sacrificed VS money currently held
+
+-Rebalanced Joyrider: fixed issues with other ammo types, now works only with bullets (atm, unless I make an upgrade), adjusted overall flight time scaling. Still has a few issues with not being able to fly properly
+
+-Rebalanced Demon Steppers: is now post Pheathon, and includes the Cobalt Shield, as well as the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod), now has most of its movement bonuses inherited from the earier SoulSpark Boots
+
+-Buffed Beam Cannon: Electric Charge cost reduced by 5%, base crit increased to 20 from 15
+
+-Buffed Rod Of Teleportation: can now telefrag enemies by teleporting into them, gives IFrames after teleporting
+
+-Buffed Seeker Bullet: damage increased to 12 (from 10)
+
+-Buffed Primordial Skull: Now gives 25% DoT resist while you have OnFire! Doesn't carry over into the Demon Steppers (which gives you healing instead)
+
+--New changes to Helen Hellion Waygold:
+-made the ending of the FNF attack easier; those packed notes were WAY too hard to hit without going outside the circle
+
+--Fixed
+
+-Camera panning bosses will no longer cause tiles to not draw
+
+-Golden Cog causing enemies to  "despawn" by killing them with the 10% extra "non" damage
+
+-Cracked Mirror not really working anymore in terms of damage scaling against petrified enemies
+
+-Hallowed armor set bonus with visor not working
+
+-Issues with goat's sprites and shop
+
 
 3.636-(2/21/22)--Hotfix 37
 

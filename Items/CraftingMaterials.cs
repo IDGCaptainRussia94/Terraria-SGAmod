@@ -14,6 +14,7 @@ using SGAmod.Items.Weapons.Vibranium;
 using SGAmod.Items.Accessories;
 using Terraria.Utilities;
 using SGAmod.Items.Placeable.DankWoodFurniture;
+using System.Linq;
 
 namespace SGAmod.HavocGear.Items
 {
@@ -2295,6 +2296,68 @@ namespace SGAmod.Items
 
 
 	}
+	public class InfinityPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Potion Injector");
+			Tooltip.SetDefault("Auto-reuses active potions that run out while in your inventory\nFavorite to auto-use any potions you have\nDoes not include flashs, healing, and mana potions\nWill only use potions if you are not actively using other items");
+		}
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 14;
+			item.height = 14;
+			item.value = 0;
+			item.rare = ItemRarityID.Quest;
+		}
+
+		public override void UpdateInventory(Player player)
+		{
+			int potionsLeft = item.stack;
+			List<int> potionTypes = new List<int>();
+
+			if (player.itemTime<1)
+			{
+				int index = -1;
+				foreach (Item itemsz in player.inventory)
+				{
+					index += 1;
+					if (!itemsz.IsAir && itemsz.buffTime> 300 && itemsz.buffType >= 0 && !Main.meleeBuff[itemsz.buffType] && potionTypes.FirstOrDefault(testby => testby == itemsz.buffType) == default)
+					{
+						if ((item.favorited && !player.HasBuff(itemsz.buffType)) || (!item.favorited && player.HasBuff(itemsz.buffType) && player.buffTime[player.FindBuffIndex(itemsz.buffType)]<30))
+                        {
+							ModItem moditem = itemsz.modItem != null ? itemsz.modItem : null;
+
+							if (moditem != null)
+                            {
+								if (!moditem.CanUseItem(player))
+									continue;
+                            }
+
+							int preSelected = player.selectedItem;
+
+							player.inventory[player.inventory.Length - 1] = itemsz.Clone();
+							player.inventory[player.inventory.Length - 1].stack = 1;
+							player.selectedItem = player.inventory.Length - 1;
+							player.controlUseItem = true;
+
+
+							ItemLoader.UseItem(itemsz, player);
+							player.ConsumeItem(itemsz.type);
+
+							potionsLeft--;
+							potionTypes.Add(itemsz.buffType);
+
+							if (potionsLeft < 1)
+								return;
+						}
+					}
+				}
+			}
+		}
+
+    }	
 	public class HellionCheckpoint1 : ModItem
 	{
 		protected virtual Color color => Color.Lime;

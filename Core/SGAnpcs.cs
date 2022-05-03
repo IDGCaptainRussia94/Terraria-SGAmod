@@ -1222,6 +1222,12 @@ namespace SGAmod
 				nextSlot++;
 			}
 
+			if (Main.rand.Next(0, 6) == 1 && NPC.downedBoss3)
+			{
+				shop[nextSlot] = ModContent.ItemType<InfinityPotion>();
+				nextSlot++;
+			}
+
 			if (Main.rand.Next(0, 3) == 1 && NPC.downedBoss2)
 			{
 				shop[nextSlot] = ModContent.ItemType<DynastyJavelin>();

@@ -26,7 +26,7 @@ namespace SGAmod
 {
     public class SGAGlobalItem : GlobalItem
     {
-        public static string pboostertextbase2 = "While you have wing time, hold DOWN while flying to boost in a direction\nHold LEFT or RIGHT to cap your vertical speed and greatly increase horizontal fly speeds\nHold only DOWN to quickly fly upwards, else rapidly fall downwards with no wingtime left";
+        public static string pboostertextbase2 = "While you have wing time, hold DOWN while flying to boost in a direction\nHold LEFT or RIGHT to cap your vertical speed and greatly increase horizontal fly speeds\nHold only DOWN to quickly fly upwards, else rapidly fall downwards with no wing time left";
         public static string pboostertext = "";
         public static string pboostertextboost = "";
         public static string apocalypticaltext
@@ -73,7 +73,7 @@ namespace SGAmod
                     text += "\nTech Weapons have their damage boosted by your tech multiplier";
                     text += "\nIf Electric Charge falls below 50% your damage will be reduced";
                     text += "\nDamage can fall down to -50% damage at no charge";
-                    text += "\nAll Tech Weapons consume a small ammount of Electric Charge on use";
+                    text += "\nAll Tech Weapons consume a small amount of Electric Charge on use";
 
                 }
                 else
@@ -489,7 +489,7 @@ namespace SGAmod
             }
             if (set == "Dank")
             {
-                player.setBonus = "10% of the sum of all damage types is added to your current weapon's attack\nyou regen life faster while on the surface during the day";
+                player.setBonus = "10% of the sum of all damage types is added to your current weapon's attack\nYou regen life faster while on the surface during the day";
                 sgaplayer.Dankset = 3;
             }
             if (set == "Novus")
@@ -500,13 +500,13 @@ namespace SGAmod
             }
             if (set == "Novite")
             {
-                player.setBonus = "Gain a movement bonus based on current charge\nWhen you take damage you discharge a chain bolt at a nearby enemy\nThis costs 750 Electic Charge and is scaled based on Defense and Technological Damage";
+                player.setBonus = "Gain a movement bonus based on current charge\nWhen you take damage you discharge a chain bolt at a nearby enemy\nThis costs 750 Electric Charge and is scaled based on Defense and Technological Damage";
                 sgaplayer.Noviteset = 3;
             }
             if (set == "Acid")
             {
 
-                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Hunger of Fames for a short time\nAll throwing weapons get coated in acid for the 1st hit, but resets your life regeneration" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stacks, adds 60 seconds") + "\nPoison, Venom, and Acid Burn all lower enemy defence by an extra 5\n ";
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Hunger of Fames for a short time\nAll throwing weapons get coated in acid for the 1st hit, but resets your life regeneration" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stacks, adds 60 seconds") + "\nPoison, Venom, and Acid Burn all lower enemy defense by an extra 5\n ";
                 sgaplayer.acidSet = (true, sgaplayer.acidSet.Item2);
             }
             if (set == "Engineer")
@@ -553,7 +553,7 @@ namespace SGAmod
             if (set == "JungleTemplar")
             {
 
-                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Precurser's Power, press again to end early\nRepairs wounds at full speed even while moving, at an Electric Charge cost\nDuring this ability, throwing damage is increased by Tech Damage scaling" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 80 seconds") + "\nYou gain the ability to run as if on Asphalt, also and fall down faster\nReflect 3X damage and gain knockback immunity while grounded" + Idglib.ColorText(Color.Red, "Gravity is increased, wings are less effective, Shield Break can happen")+ "\n" + Idglib.ColorText(Color.Red, "User is submerged in lava at low Electric Charge") + "\nGain an additional free Cooldown Stack";
+                player.setBonus = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Precursor's Power, press again to end early\nRepairs wounds at full speed even while moving, at an Electric Charge cost\nDuring this ability, throwing damage is increased by Tech Damage scaling" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 80 seconds") + "\nYou gain the ability to run as if on Asphalt, also and fall down faster\nReflect 3X damage and gain knockback immunity while grounded" + Idglib.ColorText(Color.Red, "Gravity is increased, wings are less effective, Shield Break can happen")+ "\n" + Idglib.ColorText(Color.Red, "User is submerged in lava at low Electric Charge") + "\nGain an additional free Cooldown Stack";
 
                 sgaplayer.MaxCooldownStacks += 1;
                 sgaplayer.jungleTemplarSet.Item1 = true;
@@ -578,7 +578,7 @@ namespace SGAmod
             if (set == "Valkyrie")
             {
 
-                string text2 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to active Ragnarök for a time based off current life regeneration\nThrowing speed and apocalyptical chance are increased"+ Idglib.ColorText(Color.Red,"But resets life regen while active")+"\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 150 seconds") + "\n";
+                string text2 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to active Ragnarök for a time based off current life regeneration\nThrowing speed and Apocalyptical chance are increased"+ Idglib.ColorText(Color.Red,"But resets life regen while active")+"\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 150 seconds") + "\n";
 
                 string text1 = "Gain a throwing damage increase based on your current life regen\nMale Characters gain 15% Endurance\nFemale Characters gain 20% more flight time\n"+text2;
                 player.setBonus = text1 + "\nGain an additional free Cooldown Stack";
@@ -595,7 +595,7 @@ namespace SGAmod
             }            
             if (set == "Vibranium")
             {
-                string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt skybridge below your feet\nYou can land on this bridge while falling down, Hold DOWN to fall through\nThis consumes electric charge while active, " + Idglib.ColorText(Color.Red, "and will trigger a shield break on deplete");
+                string text1 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to toggle an Asphalt sky bridge below your feet\nYou can land on this bridge while falling down, Hold DOWN to fall through\nThis consumes electric charge while active, " + Idglib.ColorText(Color.Red, "and will trigger a shield break on deplete");
 
                 s = "Not Binded!";
 

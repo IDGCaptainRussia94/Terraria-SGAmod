@@ -963,7 +963,7 @@ namespace SGAmod.NPCs.Hellion
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Hellion Monologging");
+            DisplayName.SetDefault("Hellion Monologuing");
             Main.npcFrameCount[npc.type] = 1;
         }
         public override void SetDefaults()
@@ -1076,7 +1076,7 @@ namespace SGAmod.NPCs.Hellion
                 if (npc.ai[0] == 1000)
                     Hellinstance.HellionTaunt("I have put far too many resources into the project");
                 if (npc.ai[0] == 1100)
-                    Hellinstance.HellionTaunt("And far too many slip ups to have let accured");
+                    Hellinstance.HellionTaunt("And far too many slip ups to have let accrued");
                 if (npc.ai[0] == 1300)
                     Hellinstance.HellionTaunt("So...");
                 if (npc.ai[0] == 1500)
@@ -1264,7 +1264,7 @@ namespace SGAmod.NPCs.Hellion
             if (npc.life < (int)(npc.lifeMax * HellionCore.beginphase[0]) && phase == 0)
             {
                 phase = 1;
-                HellionTaunt("Engauge Seperate Protocall!");
+                HellionTaunt("Engage Separate Protocol!");
             }
             if (npc.life < (int)(npc.lifeMax * HellionCore.beginphase[1]) && phase == 1)
             {

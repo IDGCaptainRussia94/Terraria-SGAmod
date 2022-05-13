@@ -21,7 +21,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Space Bender Potion");
-			Tooltip.SetDefault("'Distance doesn't matter when you flatten space like paper'\nGrants unlimited flight\n" + Idglib.ColorText(Color.Red, "But flying when wingtime is too low will drain your health") + "\n" + Idglib.ColorText(Color.Red, "Mounts drain health as well"));
+			Tooltip.SetDefault("'Distance doesn't matter when you flatten space like paper'\nGrants unlimited flight\n" + Idglib.ColorText(Color.Red, "But flying when wing time is too low will drain your health") + "\n" + Idglib.ColorText(Color.Red, "Mounts drain health as well"));
 		}
 
 		public override void SetDefaults()
@@ -480,7 +480,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Condensing Potion");
-			Tooltip.SetDefault("'Helps deal with overheating, allowing you to preform more actions'\nGrants an additonal free Cooldown Stack, however, all new Cooldown Stacks are 15% longer");
+			Tooltip.SetDefault("'Helps deal with overheating, allowing you to preform more actions'\nGrants an additional free Cooldown Stack, however, all new Cooldown Stacks are 15% longer");
 		}
 
 		public override void SetDefaults()

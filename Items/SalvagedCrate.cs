@@ -80,7 +80,7 @@ namespace SGAmod.Items
 		{
 			DisplayName.SetDefault("Salvaged Supply Crate");
 			//Tooltip.SetDefault("<right> for goodies!");
-			Tooltip.SetDefault("A strange forgotten crate, it looks like an old Terraria Co Crate.\nIt has a keyhole that looks familar to the only locked door I opened in this world...");
+			Tooltip.SetDefault("A strange forgotten crate, it looks like an old Terraria Co Crate.\nIt has a keyhole that looks familiar to the only locked door I opened in this world...");
 
 		}
 

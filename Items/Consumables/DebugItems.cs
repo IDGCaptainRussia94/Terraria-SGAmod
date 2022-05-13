@@ -199,7 +199,7 @@ namespace SGAmod.Items.Consumables
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Debug-Disable Armor/Accesories in inventory");
+			DisplayName.SetDefault("Debug-Disable Armor/Accessories in inventory");
 		}
 
 		public override void SetDefaults()

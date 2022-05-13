@@ -229,7 +229,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vodka");
-			Tooltip.SetDefault("'Perfect for when your in The Zone'\nCures 150 life worth of radation damage\n" + Idglib.ColorText(Color.Red, "Might cause aiming to become difficult if you drink too much..."));
+			Tooltip.SetDefault("'Perfect for when your in The Zone'\nCures 150 life worth of radiation damage\n" + Idglib.ColorText(Color.Red, "Might cause aiming to become difficult if you drink too much..."));
 		}
 
 		public override void SetDefaults()
@@ -753,7 +753,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Consumable Hell");
-			Tooltip.SetDefault("A Red Devil's favorite, eating it will turn your mouth into a literal flame thrower\nThis lasts for 1 minute, cannot be cancelled\nSeveral peppers may be consumed in succession to increase the power of the fire breath\nDeals non-class damage, does not crit\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 90 seconds each"));
+			Tooltip.SetDefault("A Red Devil's favorite, eating it will turn your mouth into a literal flame thrower\nThis lasts for 1 minute, cannot be canceled\nSeveral peppers may be consumed in succession to increase the power of the fire breath\nDeals non-class damage, does not crit\n" + Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 90 seconds each"));
 		}
 
 		public override bool CanUseItem(Player player)
@@ -1086,13 +1086,13 @@ namespace SGAmod.Items.Consumables
 					{
 						BirthdayParty.CelebratingNPCs.Add(indexer);
 					}
-					//Main.NewText("It would seem the item has worked... try making sure you have the npcs first");
+					//Main.NewText("It would seem the item has worked... try making sure you have the NPCs first");
 					break;
 				}
 			}
 			if (!worked)
             {
-				Main.NewText("It would seem the item has failed... try making sure you have the npcs first");
+				Main.NewText("It would seem the item has failed... try making sure you have the NPCs first");
 				return true;
             }
 			player.SGAPly().AddCooldownStack(60 * 200, 1);

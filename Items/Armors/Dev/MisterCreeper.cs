@@ -118,7 +118,7 @@ namespace SGAmod.Items.Armors.Dev
 			tooltips=AddText(tooltips);
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Great for impersonating an explosive fella who draws too many swords"));
 			Color c = Main.hslToRgb((float)(Main.GlobalTime / 4) % 1f, 0.4f, 0.45f);
-			tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, "MisterCreeper's (Legecy) Dev Armor")));
+			tooltips.Add(new TooltipLine(mod, "IDG Dev Item", Idglib.ColorText(c, "MisterCreeper's (Legacy) Dev Armor")));
 		}
 	}
 

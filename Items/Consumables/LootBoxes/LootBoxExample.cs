@@ -88,7 +88,7 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hardmode Potions : Contraband Crate!");
-			Tooltip.SetDefault(defaultText+"Will contain a random ammount of one type of Vanilla hardmode potion\nMay contain Super Healing or Super Mana potions");
+			Tooltip.SetDefault(defaultText+"Will contain a random amount of one type of Vanilla Hardmode potion\nMay contain Super Healing or Super Mana potions");
 		}
 
 		public override void SetDefaults()
@@ -158,7 +158,7 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Potions : Contraband Crate!");
-			Tooltip.SetDefault(defaultText+"Will contain a random ammount of one type of Vanilla prehardmode potion\nMay contain Greater Healing or Greater Mana potions");
+			Tooltip.SetDefault(defaultText+"Will contain a random amount of one type of Vanilla Pre-Hardmode potion\nMay contain Greater Healing or Greater Mana potions");
 		}
 
 		public override void SetDefaults()
@@ -239,7 +239,7 @@ namespace SGAmod.Items.Consumables.LootBoxes
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("SGAmod Potions : Contraband Crate!");
-			Tooltip.SetDefault(defaultText+"Will contain a random ammount of one type of SGAmod potion\nIncludes a few consumables as well");
+			Tooltip.SetDefault(defaultText+"Will contain a random amount of one type of SGAmod potion\nIncludes a few consumables as well");
 		}
 
 		public override void SetDefaults()

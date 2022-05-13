@@ -308,7 +308,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Portable Hive");
-			Tooltip.SetDefault("Bees become enhanced and very aggressive\nSummons up to five enhanced bees to attack foes\nDamage is based on defense and summoner values\nToggle visibity to enable/disable the agressive bee movement\nEffects of Hive Pack, Honey Comb, and all bees do more damage, increases Summon damage by 10%\nGetting hit may splash all nearby players with the Honeyed Buff");
+			Tooltip.SetDefault("Bees become enhanced and very aggressive\nSummons up to five enhanced bees to attack foes\nDamage is based on defense and summoner values\nToggle visibility to enable/disable the aggressive bee movement\nEffects of Hive Pack, Honey Comb, and all bees do more damage, increases Summon damage by 10%\nGetting hit may splash all nearby players with the Honeyed Buff");
 		}
 		public override void SetDefaults()
 		{
@@ -376,7 +376,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Soul of Secrets");
-			Tooltip.SetDefault("While worn, it will unlock the true nature of so called 'Vanity' Dev Armors in your inventory...\nCombines the effects of:\n-Blood Charm Pendant\n-Lifeforce Quintessence\n-Havoc's Fragmented Remains\n-Portable Hive\ntoggle visiblity to disable bee spawning of Portable Hive");
+			Tooltip.SetDefault("While worn, it will unlock the true nature of so called 'Vanity' Dev Armors in your inventory...\nCombines the effects of:\n-Blood Charm Pendant\n-Lifeforce Quintessence\n-Havoc's Fragmented Remains\n-Portable Hive\ntoggle visibility to disable bee spawning of Portable Hive");
 		}
 		public override void SetDefaults()
 		{
@@ -585,7 +585,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sybarite Gem");
-			Tooltip.SetDefault("Apply Midas to yourself for 5 seconds while at full health\nGrants 50% increased Apocalyptical Strength while afflicted with Midas\nScoring an Apocalyptical creates a Coin-splosion\nThe amount is based off their worth times damage divided by max health times Apocalyptical Strength\nCoin projectiles have a chance to be recovered after being expended\n'Eternally Priceless... People would pay alot for this, even their own lives.'");
+			Tooltip.SetDefault("Apply Midas to yourself for 5 seconds while at full health\nGrants 50% increased Apocalyptical Strength while afflicted with Midas\nScoring an Apocalyptical creates a Coin-splosion\nThe amount is based off their worth times damage divided by max health times Apocalyptical Strength\nCoin projectiles have a chance to be recovered after being expended\n'Eternally Priceless... People would pay a lot for this, even their own lives.'");
 		}
 
 		public override void SetDefaults()
@@ -917,7 +917,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blazing Heart");
-			Tooltip.SetDefault("'Nothing will extinish the fire in our hearts!'\nAll effects of the Fiery Heart\nBut your daybreak attacks now bypass enemy immunities\nAlso, max life is improved");
+			Tooltip.SetDefault("'Nothing will extinguish the fire in our hearts!'\nAll effects of the Fiery Heart\nBut your daybreak attacks now bypass enemy immunities\nAlso, max life is improved");
 		}
 		public override void SetDefaults()
 		{
@@ -1228,7 +1228,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Corroded Skull");
-			Tooltip.SetDefault("'It seems suprisingly intact, yet corroded by the Spider Queen'\nGrants immunity against Acid Burn\nGrants 25% increased radiation resistance");
+			Tooltip.SetDefault("'It seems surprisingly intact, yet corroded by the Spider Queen'\nGrants immunity against Acid Burn\nGrants 25% increased radiation resistance");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -1256,7 +1256,7 @@ namespace SGAmod.Items.Accessories
 			DisplayName.SetDefault("Alkalescent Heart");
 			Tooltip.SetDefault("'The Spider Queen's toxic blood pumps through you!'\nDealing crits debuff enemies, doing more damage while they are debuffed as follows:\nWhile not poisoned, poison enemies\nWhile poisoned, do 5% more damage and next crit Venoms\n" +
 				"While Venomed, do 10% more damage and next crit Acid Burns\nWhile Acid Burned, do 15% more damage" +
-				"\nThese damage boosts do not stack; highest takes priority\nMinions may infict this based off your highest crit chance");
+				"\nThese damage boosts do not stack; highest takes priority\nMinions may inflict this based off your highest crit chance");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -1994,7 +1994,7 @@ namespace SGAmod.Items.Accessories
 	public class SoulSparkBoots : ModItem
 	{
 		public static int boots = -1;
-		public static string SSBText => "All effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, Knockback Immunity, and no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nHold DOWN to stabilize gravity";
+		public static string SSBText => "All effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, Knockback Immunity, and no Fall Damage suffered\nDouble Jump ability (toggle with accessory visibility)\nHold DOWN to stabilize gravity";
 		public static string DemonSteppersText => "Immunity to Thermal Blaze, Acid Burn, Chilled, and Frozen\nGrants 25% increased radiation resistance\n" + PrimordialSkull.Text + "\nOn Fire! doesn't hurt you and slightly heals you instead";
 		public override void SetStaticDefaults()
 		{
@@ -2871,7 +2871,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dies Irae Stone");
-			Tooltip.SetDefault("'Judgement is at hand this day...'\nJust Blocking enemy contact damage with SGAmod Shields triggers Apocalypticals\nShield of Cthulhu bonking also triggers Apocalypticals");
+			Tooltip.SetDefault("'Judgment is at hand this day...'\nJust Blocking enemy contact damage with SGAmod Shields triggers Apocalypticals\nShield of Cthulhu bonking also triggers Apocalypticals");
 		}
 
 		public override void SetDefaults()
@@ -3567,7 +3567,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Russian Roulette");
-			Tooltip.SetDefault("ammo using weapons' damage is increased by 50% (100% for Revolvers)\n"+Idglib.ColorText(Color.Red,"But there's a 1/6th chance of shooting yourself instead"));
+			Tooltip.SetDefault("Ammo using weapons' damage is increased by 50% (100% for Revolvers)\n"+Idglib.ColorText(Color.Red,"But there's a 1/6th chance of shooting yourself instead"));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -3716,7 +3716,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("High Stakes Set");
-			Tooltip.SetDefault("'Who knows... Where the whims of fate may lead us.'\nDamage taken and given will be between half or doubled\nSelf caused damage will be greatly reduced by 75%\nIncludes the effects of all the gambling conponents");
+			Tooltip.SetDefault("'Who knows... Where the whims of fate may lead us.'\nDamage taken and given will be between half or doubled\nSelf caused damage will be greatly reduced by 75%\nIncludes the effects of all the gambling components");
 		}
 
 		public override bool Autoload(ref string name)
@@ -3924,7 +3924,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("The Bounty Hunter's Mark");
-			Tooltip.SetDefault("Reciving a Banner drop causes the killed enemy to drop 10 times loot\nThis will also reduce banner requirements by 10 kills");
+			Tooltip.SetDefault("Receiving a Banner drop causes the killed enemy to drop 10 times loot\nThis will also reduce banner requirements by 10 kills");
 		}
 
 		public override void SetDefaults()
@@ -3943,7 +3943,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("The Hit List");
-			Tooltip.SetDefault("Grants a banner buff against the last enemy hit\nRequires atleast 50 kills of that enemy and they must have a banner drop\nReciving a Banner drop causes the killed enemy to drop 10 times loot\nThis will also reduce banner requirements by 10 kills");
+			Tooltip.SetDefault("Grants a banner buff against the last enemy hit\nRequires at least 50 kills of that enemy and they must have a banner drop\nReceiving a Banner drop causes the killed enemy to drop 10 times loot\nThis will also reduce banner requirements by 10 kills");
 		}
 
         public override string Texture => "Terraria/Item_"+ItemID.ThePlan;
@@ -4420,7 +4420,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Armchair General");
-			Tooltip.SetDefault("'Lead not by example'\nWhen standing still you get in your chair, and emit a healing fungal aura\nYour stationary sentries also emit this aura\nWhile in your chair, you gain knockback immunity, defence, and regen, but can't move\nHide accessory to disable getting into the chair\nIncreases your maximum minions by 3, and sentries by 2\n50% Increased Summon damage and increased Minion knockback\nIncreases max electrical charge by 1000 and boosts auras by 1 level\n\n" + Idglib.ColorText(Color.Red,"All other damage and crit chance is reduced by 25%"));
+			Tooltip.SetDefault("'Lead not by example'\nWhen standing still you get in your chair, and emit a healing fungal aura\nYour stationary sentries also emit this aura\nWhile in your chair, you gain knockback immunity, defense, and regen, but can't move\nHide accessory to disable getting into the chair\nIncreases your maximum minions by 3, and sentries by 2\n50% Increased Summon damage and increased Minion knockback\nIncreases max electrical charge by 1000 and boosts auras by 1 level\n\n" + Idglib.ColorText(Color.Red,"All other damage and crit chance is reduced by 25%"));
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -4674,7 +4674,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Magus Slippers");
-			Tooltip.SetDefault("Removes the movement penality from mana regeneration\n'So magical cozy! No wonder mages can focus!'");
+			Tooltip.SetDefault("Removes the movement penalty from mana regeneration\n'So magical cozy! No wonder mages can focus!'");
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -5082,7 +5082,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Prismal Air Tank");
-			Tooltip.SetDefault("+5 max Breath Bubbles, "+ Language.GetTextValue("ItemTooltip.FlipperPotion")+ "\nGrants more defense per missing breat, becomes stronger with better breathing gear\nImproved Life and Mana regen while wet\nGrants an additional free Action Cooldown Stack while wet");
+			Tooltip.SetDefault("+5 max Breath Bubbles, "+ Language.GetTextValue("ItemTooltip.FlipperPotion")+ "\nGrants more defense per missing breath, becomes stronger with better breathing gear\nImproved Life and Mana regen while wet\nGrants an additional free Action Cooldown Stack while wet");
 			backItem = item.backSlot;
 		}
 
@@ -5243,7 +5243,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Jabb-a-wacky");
-			Tooltip.SetDefault("'Skeleton Merchant's personal hook; puts a little el-bone grease into your jabs'\nIncreases Jab-lin jabbing speed by 20% and grants autofire\n"+ Idglib.ColorText(Color.Red, "Your precision gets a little off thou..."));
+			Tooltip.SetDefault("'Skeleton Merchant's personal hook; puts a little el-bone grease into your jabs'\nIncreases Jab-lin jabbing speed by 20% and grants autofire\n"+ Idglib.ColorText(Color.Red, "Your precision gets a little off though..."));
 		}
 
 		public override string Texture
@@ -5277,7 +5277,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("T.P.D.C.P.U");
-			Tooltip.SetDefault("'Twin Prime Destroyers Coolent Processing Unit'\nReduces all new Cooldown Stacks by 25%\nBarrier recharge delay is reduced by 2 seconds\nGrants Immunity to Shield Break\nRemoves the negative effects of most Enchanted Amulets\nAmulet of Diehard Cataclysm is not affected");
+			Tooltip.SetDefault("'Twin Prime Destroyers Coolant Processing Unit'\nReduces all new Cooldown Stacks by 25%\nBarrier recharge delay is reduced by 2 seconds\nGrants Immunity to Shield Break\nRemoves the negative effects of most Enchanted Amulets\nAmulet of Diehard Cataclysm is not affected");
 		}
 
 		public override void SetDefaults()
@@ -5539,7 +5539,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cobalt Magnet");
-			Tooltip.SetDefault("Point at grounded items to quickly attract them from a larger distance\nCan be held out like a torch and used normally by holding shift\nwhile worn:\n-minor increase to item grab radius and grab speed\n-Effects of Celestial Magnet");
+			Tooltip.SetDefault("Point at grounded items to quickly attract them from a larger distance\nCan be held out like a torch and used normally by holding shift\nWhile worn:\n-minor increase to item grab radius and grab speed\n-Effects of Celestial Magnet");
 			Item.staff[item.type] = true;
 		}
 

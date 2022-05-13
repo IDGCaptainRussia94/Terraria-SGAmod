@@ -198,7 +198,7 @@ namespace SGAmod.Items.Armors.Mandala
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Overseer's Tutelage");
-            Tooltip.SetDefault("Command the Shadowspirit's arms to attack with 2 attack types:\nDeliver fast short ranged non-piercing punches\nGrab and toss asteriods that can pierce\nAsteriods manifest around you over time, up to 10 plus 2 per sentry slot\nGains more arms per Empty Minion slots OR every 3rd Max Minion slot");
+            Tooltip.SetDefault("Command the Shadowspirit's arms to attack with 2 attack types:\nDeliver fast short ranged non-piercing punches\nGrab and toss asteroids that can pierce\nAsteriods manifest around you over time, up to 10 plus 2 per sentry slot\nGains more arms per Empty Minion slots OR every 3rd Max Minion slot");
         }
         public override string Texture => "SGAmod/Dimensions/Space/OverseenHead";
 
@@ -944,7 +944,7 @@ namespace SGAmod.Items.Armors.Mandala
         float scale = 1f;
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Overseer's Asteriod");
+            DisplayName.SetDefault("Overseer's Asteroid");
         }
         public override string Texture
         {

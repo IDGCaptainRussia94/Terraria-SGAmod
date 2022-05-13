@@ -702,7 +702,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Caliburn Compass");
-			Tooltip.SetDefault("When held, it points to Caliburn Altars in your world\nCan be used in hardmode to fight a stronger Caliburn spirit\nNon-Consumable");
+			Tooltip.SetDefault("When held, it points to Caliburn Altars in your world\nCan be used in Hardmode to fight a stronger Caliburn spirit\nNon-Consumable");
 		}
 		public override void SetDefaults()
 		{
@@ -753,7 +753,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mechanical Clusterfuck");
-			Tooltip.SetDefault("Summons the Twin-Prime-Destroyers\nIt is highly encourged you do not fight this before late hardmode...");
+			Tooltip.SetDefault("Summons the Twin-Prime-Destroyers\nIt is highly encouraged you do not fight this before late Hardmode...");
 		}
 		public override void SetDefaults()
 		{
@@ -948,9 +948,9 @@ namespace SGAmod.Items.Consumables
 				{
 					tooltips.Add(new TooltipLine(mod, "Nmxx", "'Hmp, very Well done " + SGAmod.HellionUserName + ", you've bested me, this time"));
 					tooltips.Add(new TooltipLine(mod, "Nmxx", "But next time you won't be so lucky..."));
-					tooltips.Add(new TooltipLine(mod, "Nmxx", "My tears have stablized..."));
+					tooltips.Add(new TooltipLine(mod, "Nmxx", "My tears have stabilized..."));
 					tooltips.Add(new TooltipLine(mod, "Nmxx", "Enjoy your fancy reward, you've earned that much..."));
-					tooltips[0].text += " (Stablized)";
+					tooltips[0].text += " (Stabilized)";
 				}
 				tooltips.Add(new TooltipLine(mod, "Nmxx", "Tears a hole in the bastion of reality to bring forth the Paradox General, Helen 'Hellion' Weygold"));
 				tooltips.Add(new TooltipLine(mod, "Nmxx", "Non Consumable"));

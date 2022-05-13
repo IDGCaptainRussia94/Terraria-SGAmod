@@ -18,7 +18,7 @@ namespace SGAmod.Items.Consumables
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Jarate");
-			Tooltip.SetDefault("Throws a jar of 'nature's rain', which inflicts ichor on everyone in a large area for an extended time\nIf it directly hits an enemy, they will get Sodden instead even if immune\nThis increases any further damage they take by 33%\n'Heads up!'\n"+Idglib.ColorText(Color.Orange,"Requires 1 Cooldown stack, adds 30 seconds"));
+			Tooltip.SetDefault("Throws a jar of 'nature's rain', which inflicts Ichor on everyone in a large area for an extended time\nIf it directly hits an enemy, they will get Sodden instead even if immune\nThis increases any further damage they take by 33%\n'Heads up!'\n"+Idglib.ColorText(Color.Orange,"Requires 1 Cooldown stack, adds 30 seconds"));
 
 		}
 

@@ -18,7 +18,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Luminary Wings");
-			Tooltip.SetDefault("'A gift from the heavens for a worthy vessel.' Grants superior wingtime!\nEffects of (Most of) Cirno's Wings, and Prismal Booster (hide this accessory to disable Booster)\nYour movement speed is increased and your max fall speed is doubled");
+			Tooltip.SetDefault("'A gift from the heavens for a worthy vessel.' Grants superior wing time!\nEffects of (Most of) Cirno's Wings, and Prismal Booster (hide this accessory to disable Booster)\nYour movement speed is increased and your max fall speed is doubled");
 		}
 
 		public override void SetDefaults()

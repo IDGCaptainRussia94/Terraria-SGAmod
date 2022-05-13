@@ -174,7 +174,7 @@ namespace SGAmod.Items.Consumables
 			}
 		}
 
-		public static string LifeStealLine => "Melee attacks have a chance to life steal on hit\nChance is much lower with non-true melee hits\nSuccessfully life stealing will incure a delay before you can life steal again";
+		public static string LifeStealLine => "Melee attacks have a chance to life steal on hit\nChance is much lower with non-true melee hits\nSuccessfully life stealing will incur a delay before you can life steal again";
 
 		public override void SetStaticDefaults()
 		{

@@ -178,12 +178,12 @@ namespace SGAmod.Items.Accessories
 			if (xp.Item2)
 				tooltips.Add(new TooltipLine(mod, "Tf2Elem", Idglib.ColorText(Main.hslToRgb((Main.GlobalTime * 3f) % 1f, 1f, 0.75f), "MAXED!")));
 			else
-				tooltips.Add(new TooltipLine(mod, "Tf2Elem", "Contract Xp: " + xp.Item1 + "/" + XpRequiredToMax + " (" + XpPercent * 100f + "%)"));
+				tooltips.Add(new TooltipLine(mod, "Tf2Elem", "Contract XP: " + xp.Item1 + "/" + XpRequiredToMax + " (" + XpPercent * 100f + "%)"));
 
 			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl))
 			{
 				tooltips.Add(new TooltipLine(mod, "Tf2Elem", Idglib.ColorText(Color.Orange, "Emblems gain experience as you slay enemies, gradually gaining their stats")));
-				tooltips.Add(new TooltipLine(mod, "Tf2Elem", Idglib.ColorText(Color.Orange, "XP gained is relative to the ammount of money enemies would drop")));
+				tooltips.Add(new TooltipLine(mod, "Tf2Elem", Idglib.ColorText(Color.Orange, "XP gained is relative to the amount of money enemies would drop")));
 				tooltips.Add(new TooltipLine(mod, "Tf2Elem", Idglib.ColorText(Color.Orange, "At max experience, they fully gain their listed stats")));
 				tooltips.Add(new TooltipLine(mod, "Tf2Elem", Idglib.ColorText(Color.Orange, "Emblems can only be crafted into their higher ranks at max experience")));
 			}

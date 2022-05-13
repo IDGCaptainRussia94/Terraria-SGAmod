@@ -13,7 +13,7 @@ namespace SGAmod.Items.Accessories
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Havoc's Fragmented Remains");
-            Tooltip.SetDefault("'The remains of PeopleMCNugget's dreams of Havoc mod'\n'now at your will and prehaps, can be put back together'\n25% more damage with Havoc weapons\n3 defense per Havoc accessory equipped (8 in hardmode)\nEffects of Photosynthesizer and Serrated Tooth");
+            Tooltip.SetDefault("'The remains of PeopleMCNugget's dreams of Havoc mod'\n'now at your will and perhaps, can be put back together'\n25% more damage with Havoc weapons\n3 defense per Havoc accessory equipped (8 in Hardmode)\nEffects of Photosynthesizer and Serrated Tooth");
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)

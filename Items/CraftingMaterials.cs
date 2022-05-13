@@ -342,7 +342,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Glowrock");
-			Tooltip.SetDefault("These rocks seem to give the Asteriods a glow; Curious.\nExtract it via an Extractinator for some goodies!\nDoesn't have much other use, outside of illegal interests");
+			Tooltip.SetDefault("These rocks seem to give the Asteroids a glow; Curious.\nExtract it via an Extractinator for some goodies!\nDoesn't have much other use, outside of illegal interests");
 			ItemID.Sets.ExtractinatorMode[item.type] = item.type;
 		}
 		public override void SetDefaults()
@@ -754,7 +754,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vibranium Bar");
-			Tooltip.SetDefault("'This alloy is just barely stable enough to not phase out of existance'");
+			Tooltip.SetDefault("'This alloy is just barely stable enough to not phase out of existence'");
 		}
 
 		public override void SetDefaults()
@@ -957,7 +957,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Woven Entrophite");
-			Tooltip.SetDefault("Suprisingly strong, after being interlaced with souls");
+			Tooltip.SetDefault("Surprisingly strong, after being interlaced with souls");
 		}
 
 		public override void SetDefaults()
@@ -1138,7 +1138,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Eldritch Tentacle");
-			Tooltip.SetDefault("Remains of an eldritch deity\nMay be used alongside fragments to craft all of Moonlord's drops");
+			Tooltip.SetDefault("Remains of an eldritch deity\nMay be used alongside fragments to craft all of Moon Lord's drops");
 		}
 
 		public override void SetDefaults()
@@ -1577,7 +1577,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bronze Alloy Wraith Shard");
-			Tooltip.SetDefault("Tin and copper combined through the fires of a hellforge; thus stronger than a standard shard");
+			Tooltip.SetDefault("Tin and copper combined through the fires of a Hellforge; thus stronger than a standard shard");
 		}
 		public override void SetDefaults()
 		{
@@ -1618,7 +1618,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cobalt Wraith Shard");
-			Tooltip.SetDefault("The remains of a stronger wraith; applyable uses in alloys and highly resistant to corrosion");
+			Tooltip.SetDefault("The remains of a stronger wraith; applicable uses in alloys and highly resistant to corrosion");
 		}
 		public override void SetDefaults()
 		{
@@ -1635,7 +1635,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novus Bar");
-			Tooltip.SetDefault("This alloy of Novus and the power of the wraiths have awakened some of its dorment power\nMay be interchanged for iron bars in some crafting recipes");
+			Tooltip.SetDefault("This alloy of Novus and the power of the wraiths have awakened some of its dormant power\nMay be interchanged for iron bars in some crafting recipes");
 		}
 		public override void SetDefaults()
 		{
@@ -1668,7 +1668,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Novus Ore");
-			Tooltip.SetDefault("Stone laden with doment power...");
+			Tooltip.SetDefault("Stone laden with dormant power...");
 		}
 	public override void SetDefaults()
         {
@@ -2120,7 +2120,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Entropy Transmuter");
-			Tooltip.SetDefault("As enemies die near you, the Transmuter absorbs their life essences\nWhich converts Converts Demonite or Crimtane ore in your inventory into Entrophite\nConverts a maximum of 20 per full charge");
+			Tooltip.SetDefault("As enemies die near you, the Transmuter absorbs their life essences\nWhich converts Demonite or Crimtane ore in your inventory into Entrophite\nConverts a maximum of 20 per full charge");
 		}
 		public override void SetDefaults()
 		{
@@ -2184,7 +2184,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("'The Whole Experience'");
-			Tooltip.SetDefault("While in your inventory, specific cutscenes and events will replay\nLuminite Wraith will be summoned in his pre-Moonlord stage\nKiller Fly Swarm will be summoned instead of Murk\nHellion will replay her monolog after Hellion Core");
+			Tooltip.SetDefault("While in your inventory, specific cutscenes and events will replay\nLuminite Wraith will be summoned in his pre-Moon Lord stage\nKiller Fly Swarm will be summoned instead of Murk\nHellion will replay her monologue after Hellion Core");
 			ItemID.Sets.ItemNoGravity[item.type] = true;
 		}
 		public static bool Check()
@@ -2247,7 +2247,7 @@ namespace SGAmod.Items
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Dungeon Spulunker");
+			DisplayName.SetDefault("Dungeon Spelunker");
 			Tooltip.SetDefault("While in your inventory, allows you to use pickaxes in the Deeper Dungeons");
 		}
 		public override Color? GetAlpha(Color lightColor)
@@ -2455,7 +2455,7 @@ namespace SGAmod.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Final Gem");
-			Tooltip.SetDefault("While in your inventory, empowers the Gucci Guantlet to its true full power\nFavorite to disable all the gems");
+			Tooltip.SetDefault("While in your inventory, empowers the Gucci Gauntlet to its true full power\nFavorite to disable all the gems");
 		}
 		public override void SetDefaults()
 		{

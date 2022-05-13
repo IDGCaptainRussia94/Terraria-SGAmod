@@ -162,7 +162,7 @@ namespace SGAmod.Items.Armors.Dev
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 			{
 			tooltips.Add(new TooltipLine(mod, "Jellybru", "+16% magic damage, +100 Mana"));
-			tooltips.Add(new TooltipLine(mod, "Jellybru", "magic cost reduced by 20%, minorly increased Life Regen"));
+			tooltips.Add(new TooltipLine(mod, "Jellybru", "Magic cost reduced by 20%, minorly increased Life Regen"));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.Red, "50% Increased DoT damage taken")));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "--When Shield Down--")));
 			tooltips.Add(new TooltipLine(mod, "Jellybru", Idglib.ColorText(Color.PaleTurquoise, "Gain the powers of the nebula pillar!")));

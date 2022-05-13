@@ -16,6 +16,7 @@ using SGAmod.Buffs;
 using Terraria.Utilities;
 using System.Linq;
 using SGAmod.Items.Mounts;
+using SGAmod.Items.Consumables;
 
 namespace SGAmod.Items.Accessories
 {
@@ -618,7 +619,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Midas Insignia");
-			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin\ndefensive/movement buffs while facing left, offensive buffs while facing right, gold and platinum coins give you both\nIncreased damage with the more coins you have in your inventory (this caps at 25% at 10 platinum)\n15% increased damage against enemies afflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are sacrificed to the Planes of Wealth"));
+			Tooltip.SetDefault("One of the many treasures this greed infested abomination stole....\nPicking up coins grants small buffs depending on the coin\ndefensive/movement buffs while facing left, offensive buffs while facing right, gold and platinum coins give you both\nIncreased damage with more money you have sacrificed (this caps at 25% at 10 platinum)\n15% increased damage against enemies afflicted with Midas\nShop prices are 20% cheaper\n" + Idglib.ColorText(Color.Red, "Any coins picked up are sacrificed to the Planes of Wealth"));
 		}
 
 		public override void SetDefaults()
@@ -639,7 +640,8 @@ namespace SGAmod.Items.Accessories
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 			bool left = player.direction < 0;
-			int coincount = player.CountItem(ItemID.CopperCoin) + (player.CountItem(ItemID.SilverCoin) * 100) + (player.CountItem(ItemID.GoldCoin) * 10000) + (player.CountItem(ItemID.PlatinumCoin) * 1000000);
+			//int coincount = player.CountItem(ItemID.CopperCoin) + (player.CountItem(ItemID.SilverCoin) * 100) + (player.CountItem(ItemID.GoldCoin) * 10000) + (player.CountItem(ItemID.PlatinumCoin) * 1000000);
+			int coincount = player.SGAPly().midasMoneyConsumed;
 			float howmuch = Math.Min(0.25f, (coincount / 10000000f) / 4f);
 			player.BoostAllDamage(howmuch, 5);
 			if (GetType() == typeof(CorperateEpiphany))
@@ -1989,37 +1991,38 @@ namespace SGAmod.Items.Accessories
 	}
 
 	[AutoloadEquip(EquipType.Shoes)]
-	public class DemonSteppers : ModItem
+	public class SoulSparkBoots : ModItem
 	{
 		public static int boots = -1;
+		public static string SSBText => "All effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, Knockback Immunity, and no Fall Damage suffered\nDouble Jump ability (toggle with accessory visibility)\nHold DOWN to stabilize gravity";
+		public static string DemonSteppersText => "Immunity to Thermal Blaze, Acid Burn, Chilled, and Frozen\nGrants 25% increased radiation resistance\n" + PrimordialSkull.Text + "\nOn Fire! doesn't hurt you and slightly heals you instead";
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Demon Steppers");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'\nAll effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, no Fall Damage suffered\nDouble Jump ability (toggle with accessory visibility)\nImmunity to Thermal Blaze, Acid Burn, Chilled, and Frozen\nGrants 25% increased radiation resistance\n"+ PrimordialSkull.Text+ "\nOn Fire! doesn't hurt you and slightly heals you instead\nHold DOWN to stabilize gravity");
+			DisplayName.SetDefault("SoulSpark Boots");
+			Tooltip.SetDefault("'Obligatory Hardmode boots'"+SSBText);
 		}
 
-        public override bool Autoload(ref string name)
-        {
-            SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostPostUpdateEquipsEvent;
+		public override bool Autoload(ref string name)
+		{
+			SGAPlayer.PostPostUpdateEquipsEvent += SGAPlayer_PostPostUpdateEquipsEvent;
 			return true;
-        }
+		}
 
-        private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer player)
-        {
-            if (player.demonsteppers)
-            {
+		private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer player)
+		{
+			if (player.demonsteppers>1)
+			{
 				player.player.buffImmune[BuffID.OnFire] = false;
 				player.player.buffImmune[BuffID.Chilled] = true;
 				player.player.buffImmune[BuffID.Frozen] = true;
 			}
-        }
+		}
 
-        public override void UpdateAccessory(Player player, bool hideVisual)
+		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.GetModPlayer<SGAPlayer>().NoFireBurn = 3;
-			if (!player.GetModPlayer<SGAPlayer>().demonsteppers)
+			if (player.GetModPlayer<SGAPlayer>().demonsteppers<1)
 			{
-				player.GetModPlayer<SGAPlayer>().demonsteppers = true;
+				player.GetModPlayer<SGAPlayer>().demonsteppers = 1;
 				player.rocketBoots += 2;
 				if (!player.GetModPlayer<SGAPlayer>().Walkmode)
 				{
@@ -2037,28 +2040,88 @@ namespace SGAmod.Items.Accessories
 				player.extraFall += 15;
 				player.noKnockback = true;
 				if (!hideVisual)
-				player.doubleJumpCloud = true;
+					player.doubleJumpCloud = true;
 
 			}
 
 			ModContent.GetInstance<GravityStabilizerBoots>().UpdateAccessory(player, hideVisual);
-			ModContent.GetInstance<PrimordialSkull>().UpdateAccessory(player, hideVisual);
-			ModContent.GetInstance<AmberGlowSkull>().UpdateAccessory(player, hideVisual);
 
 		}
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
 			string s = "Not Binded!";
 			foreach (string key in SGAmod.WalkHotKey.GetAssignedKeys())
 			{
 				s = key;
 			}
-			tooltips.Add(new TooltipLine(mod, "DemonSteppersSpeed", "Toggle the speed/frog leg boost with the 'Walk Mode' hotkey (" + s+")"));
-			if (item.wingSlot>0)
-            {
+			tooltips.Add(new TooltipLine(mod, "DemonSteppersSpeed", "Toggle the speed/frog leg boost with the 'Walk Mode' hotkey (" + s + ")"));
+			if (item.wingSlot > 0)
+			{
 				tooltips.Add(new TooltipLine(mod, "DemonSteppersSpeed", "Also effects the flying speed"));
 			}
+		}
+
+		public override void SetDefaults()
+		{
+			item.maxStack = 1;
+			item.width = 26;
+			item.defense = 0;
+			item.accessory = true;
+			item.height = 14;
+			item.value = Item.sellPrice(gold: 10);
+			item.rare = ItemRarityID.Pink;
+			item.expert = false;
+			if (GetType() == typeof(DemonSteppers) || GetType() == typeof(SoulSparkBoots))
+			{
+				boots = item.shoeSlot;
+			}
+		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<GravityStabilizerBoots>(), 1);
+			recipe.AddIngredient(ItemID.FrostsparkBoots, 1);
+			recipe.AddIngredient(ItemID.LavaWaders, 1);
+			recipe.AddRecipeGroup("SGAmod:HorseshoeBalloons", 1);
+			recipe.AddIngredient(ItemID.FrogLeg, 1);
+			recipe.AddIngredient(ModContent.ItemType<AmberGlowSkull>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<CobaltHorseshoe>(), 1);
+			recipe.AddIngredient(ItemID.SoulofLight, 12);
+			recipe.AddIngredient(ItemID.SoulofNight, 12);
+			recipe.AddIngredient(ModContent.ItemType<DivineShower>(), 5);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
+
+	}
+
+	[AutoloadEquip(EquipType.Shoes)]
+	public class DemonSteppers : SoulSparkBoots
+	{
+		public static int boots = -1;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Demon Steppers");
+			Tooltip.SetDefault("'Obligatory Hardmode boots, but Better!'"+SoulSparkBoots.SSBText+"\n" + SoulSparkBoots.DemonSteppersText);
+		}
+
+        public override bool Autoload(ref string name)
+        {
+			return true;
+        }
+
+        public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetModPlayer<SGAPlayer>().NoFireBurn = 3;
+			if (player.GetModPlayer<SGAPlayer>().demonsteppers<2)
+			{
+				player.GetModPlayer<SGAPlayer>().demonsteppers = 2;
+			}
+
+			ModContent.GetInstance<PrimordialSkull>().UpdateAccessory(player, hideVisual);
+			ModContent.GetInstance<AmberGlowSkull>().UpdateAccessory(player, hideVisual);
 		}
 
         public override void SetDefaults()
@@ -2071,27 +2134,22 @@ namespace SGAmod.Items.Accessories
 			item.value = Item.sellPrice(gold: 25);
 			item.rare = ItemRarityID.Lime;
 			item.expert = false;
-			if (GetType() == typeof(DemonSteppers))
-            {
+			if (GetType() == typeof(DemonSteppers) || GetType() == typeof(SoulSparkBoots))
+			{
 				boots = item.shoeSlot;
 			}
 		}
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<GravityStabilizerBoots>(), 1);
-			recipe.AddIngredient(ItemID.FrostsparkBoots, 1);
-			recipe.AddIngredient(ItemID.LavaWaders, 1);
-			recipe.AddRecipeGroup("SGAmod:HorseshoeBalloons", 1);
-			recipe.AddIngredient(ItemID.FrogLeg, 1);
+			recipe.AddIngredient(ModContent.ItemType<SoulSparkBoots>(), 1);
 			recipe.AddIngredient(ItemID.HandWarmer, 1);
 			recipe.AddIngredient(ModContent.ItemType < AmberGlowSkull>(), 1);
-			recipe.AddIngredient(ModContent.ItemType <CobaltMagnet>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < PrimordialSkull>(), 1);
 			recipe.AddIngredient(ModContent.ItemType < Entrophite>(), 100);
 			recipe.AddIngredient(ModContent.ItemType < StygianCore>(), 3);
 			recipe.AddIngredient(ModContent.ItemType<OverseenCrystal>(), 40);
-			recipe.AddIngredient(ItemID.HellstoneBar, 10);
+			recipe.AddIngredient(ItemID.HellstoneBar, 12);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -3866,7 +3924,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("The Bounty Hunter's Mark");
-			Tooltip.SetDefault("Receiving a Banner drop causes the killed enemy to drop 10 times loot");
+			Tooltip.SetDefault("Receiving a Banner drop causes the killed enemy to drop 10 times loot\nThis will also reduce banner requirements by 10 kills");
 		}
 
 		public override void SetDefaults()
@@ -3885,7 +3943,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("The Hit List");
-			Tooltip.SetDefault("Grants a banner buff against the last enemy hit\nRequires at least 50 kills of that enemy in the world and they must have a banner drop\nReciving a Banner drop causes the killed enemy to drop 10 times loot");
+			Tooltip.SetDefault("Grants a banner buff against the last enemy hit\nRequires at least 50 kills of that enemy and they must have a banner drop\nReceiving a Banner drop causes the killed enemy to drop 10 times loot\nThis will also reduce banner requirements by 10 kills");
 		}
 
         public override string Texture => "Terraria/Item_"+ItemID.ThePlan;
@@ -3901,7 +3959,7 @@ namespace SGAmod.Items.Accessories
 
 			player.accJarOfSouls = true;
 
-			if (player.lastCreatureHit > 0 && NPC.killCount[player.lastCreatureHit] > 0)
+			if (player.lastCreatureHit > 0 && NPC.killCount[player.lastCreatureHit] >= 50)
 			{
 				player.NPCBannerBuff[player.lastCreatureHit] = true;
 			}
@@ -5405,7 +5463,7 @@ namespace SGAmod.Items.Accessories
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
-			Texture2D inner = mod.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
+			Texture2D inner = mod.GetTexture("Items/GlowMasks/Floudglow");
 
 			Vector2 slotSize = new Vector2(52f, 52f);
 			position -= slotSize * Main.inventoryScale / 2f - frame.Size() * scale / 2f;
@@ -5429,7 +5487,7 @@ namespace SGAmod.Items.Accessories
 			spriteBatch.Draw(Main.itemTexture[item.type], position, null, alphaColor, rotation, Main.itemTexture[item.type].Size() / 2f, scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-			Texture2D inner = mod.GetTexture("Items/GlowMasks/FluidDisplacer_Glow");
+			Texture2D inner = mod.GetTexture("Items/GlowMasks/Floudglow");
 
 
 			Vector2 textureOrigin = new Vector2(inner.Width / 2, inner.Height / 2);

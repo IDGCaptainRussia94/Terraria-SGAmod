@@ -1567,6 +1567,8 @@ namespace SGAmod.NPCs
 		public bool Chance() => Main.rand.Next(0, 10) == 0 && ((GetType() == typeof(SPinky) && !Main.expertMode) || (GetType() == typeof(SPinkyTrue)));
 		public string RelicName() => GetType() == typeof(SPinkyTrue) ? "SPinky" : "NOU";
 		public void NoHitDrops() { }
+		public string MasterPet() => "MonarchicalCate";
+		public bool PetChance() => Main.rand.Next(4) == 0 && ((GetType() == typeof(SPinky) && !Main.expertMode) || (GetType() == typeof(SPinkyTrue)));
 
 		protected float getHitEffect = 0f;
 		protected int aicounter = 0;
@@ -1705,7 +1707,7 @@ namespace SGAmod.NPCs
 				vects.Add(circleLoc+thisloc);
 			}
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
 			trail.color = delegate (float percent)
 			{
 				return Color.Magenta;
@@ -1761,6 +1763,10 @@ namespace SGAmod.NPCs
 				{
 					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("LunarRoyalGel"), 30);
                     Items.Armors.Illuminant.IlluminantHelmet.IlluminantArmorDrop(1, npc.Center);
+					if (Main.rand.Next(7) == 0)
+					{
+						Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.SupremePinkyMask>());
+					}
 				}
 			}
 
@@ -3235,7 +3241,7 @@ namespace SGAmod.NPCs
 					projectile.oldPos[i] = projectile.position;
 			}
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
 			UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);
 			float colorz = rando.NextFloat();
 			trail.color = delegate (float percent)

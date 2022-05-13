@@ -53,6 +53,7 @@ namespace SGAmod
 
 			On.Terraria.Main.DrawDust += Main_DrawAdditive;
 			On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
+            On.Terraria.Main.DrawPlayers += Main_DrawPlayers;
             On.Terraria.Main.CheckMonoliths += Main_CheckMonoliths;
 			On.Terraria.Main.DrawBuffIcon += Main_DrawBuffIcon;
 			On.Terraria.Main.PlaySound_int_int_int_int_float_float += Main_PlaySound;
@@ -60,8 +61,6 @@ namespace SGAmod
 			On.Terraria.GameContent.Events.DD2Event.SpawnMonsterFromGate += CrucibleArenaMaster.DD2PortalOverrides;
 			On.Terraria.GameContent.UI.Elements.UICharacterListItem.DrawSelf += Menu_UICharacterListItem;
 
-            On.Terraria.Item.SetDefaults += ApplyThrowingToUThrowing;
-            On.Terraria.Projectile.SetDefaults += ApplyThrowingToUThrowingButForProjectiles;
 			On.Terraria.GameInput.PlayerInput.UpdateMainMouse += ApplyDrunkAiming;
 
 			//Unused until more relevant
@@ -94,6 +93,13 @@ namespace SGAmod
 			//IL.Terraria.Player.TileInteractionsUse += TileInteractionHack;
 		}
 
+		public static void PostApply()
+        {
+			SGAmod.Instance.Logger.Debug("Late Changes as being applied early has caused issues with some other mods");
+			On.Terraria.Item.SetDefaults += ApplyThrowingToUThrowing;
+			On.Terraria.Projectile.SetDefaults += ApplyThrowingToUThrowingButForProjectiles;
+		}
+
         private static void ApplyDrunkAiming(On.Terraria.GameInput.PlayerInput.orig_UpdateMainMouse orig)
         {
 			orig();
@@ -104,10 +110,13 @@ namespace SGAmod
         {
 			//Just a little work around to throwing so I don't have to re-write the whole mod
 			orig(self, Type, noMatCheck);
-			if (self != null && self.Throwing().thrown)
-            {
-				self.thrown = true;
-            }
+			if (!Main.gameMenu)
+			{
+				if (self != null && self.Throwing().thrown)
+				{
+					self.thrown = true;
+				}
+			}
 		}
 
 		private static void ApplyThrowingToUThrowingButForProjectiles(On.Terraria.Projectile.orig_SetDefaults orig, Projectile self, int Type)
@@ -859,6 +868,16 @@ namespace SGAmod
 			Main.spriteBatch.End();
 		}
 
+
+		private static void Main_DrawPlayers(On.Terraria.Main.orig_DrawPlayers orig, Main self)
+		{
+			orig(self);
+			if (SGAPocketDim.WhereAmI != null)
+			{
+				SGAPocketDim.PassDraws(3);
+			}
+		}
+
 		static private void Main_DrawProjectiles(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
 		{
 			orig(self);
@@ -901,7 +920,13 @@ namespace SGAmod
 					}
 				}
 			}
+
 			Main.spriteBatch.End();
+
+			if (SGAPocketDim.WhereAmI != null)
+			{
+				SGAPocketDim.PassDraws(4);
+			}
 
 		}
 		static private SoundEffectInstance Main_PlaySound(On.Terraria.Main.orig_PlaySound_int_int_int_int_float_float orig, int type, int x = -1, int y = -1, int Style = 1, float volumeScale = 1f, float pitchOffset = 0f)

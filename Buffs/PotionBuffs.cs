@@ -339,6 +339,7 @@ namespace SGAmod.Buffs
 			player.lavaRose = true;
 		}
 	}
+
 	public class InvincibleBuff : ModBuff
 	{
 		public override bool Autoload(ref string name, ref string texture)
@@ -349,7 +350,7 @@ namespace SGAmod.Buffs
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Invincible");
-			Description.SetDefault("Damage is currently completely prevented\n'that one time you aren't defeated during a cutscene!'");
+			Description.SetDefault("Damage is currently completely prevented and infinite flight\n'that one time you aren't defeated during a cutscene!'");
 			Main.pvpBuff[Type] = true;
 			Main.buffNoSave[Type] = true;
 			Main.debuff[Type] = true;
@@ -358,10 +359,13 @@ namespace SGAmod.Buffs
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.SGAPly().invincible = true;
-
+			if (player.wingTime< player.wingTimeMax)
+            {
+				player.wingTime = player.wingTimeMax;
+			}
 		}
-
 	}
+
 	public class ManaRegenFakeBuff : ModBuff
 	{
 		public override bool Autoload(ref string name, ref string texture)

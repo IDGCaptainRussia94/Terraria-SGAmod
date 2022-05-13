@@ -1,22 +1,51 @@
 
 Changelog:
 
-3.650-(3/??/??)--Patch 17: Anniversary Update Part 2!
+3.652-(5/3/22)--Hotfix 41
+
+--Fixed:
+
+-Stars Above/Wingslot crash relating to UThrowing, I think...
+
+-Updated Joyrider to use the new version of WingSlot's code so it no longer causes errors
+
+-Fixed Phaethon/S Pinky/Prismic Banshee vanishing due to github lowercasing the noise texture... again
+
+
+3.651-(5/3/22)--Hotfix 40
+
+--Fixed:
+
+-Previous Cheat-marked worlds activating Sadomasochist mode, worlds should no longer activate the mode
+
+
+3.650-(5/2/22)--Patch 17: Anniversary Update Part 2!
 
 -Added:
 
--Spatial Spheres, The Hit List, The Bounty Hunter's Mark, Cobalt Horseshoe, Vodka, Fury Potion
+-Spatial Spheres, SoulSpark Boots, The Hit List, The Bounty Hunter's Mark, Cobalt Horseshoe, Vodka, Fury Potion, Potion Injector
 
 -Ukrainian Valor, an item dedicated to pay homage to Ukrainian bravery in defending their homeland from an unjust war thrust on them
+
+--Accepted Rijam's Masks, Pets, and More github addition, this adds:
+-Pet drops from (most) bosses if you no hit them in expert mode
+-Goat now sells new extra item variety
+-Advanced Plating and Vibranium Plating Tiles
+-Trophies for the not-implimented Tin and Palladium Wraith, sold by the Goat
+-Masks for all bosses
 
 
 --Changed:
 
--Soldier's Rocket Launcher and Shooting Star have been added to a new catagory of items: Dedicated Items; which was made for the newly added Ukrainian Valor
+-Soldier's Rocket Launcher, Shooting Star, Nuclear Option, and Amulet of Diehard Cataclysm, have been added to a new catagory of items: Dedicated Items; which was made for the newly added Ukrainian Valor
 
 -The former cheating system is now an optional extremely unfair difficulty item that is obtained from the starter bag
 
 -Universal Throwing has been desolved and is now using vanilla throwing again, as such, SGAmod no longer requires it as a dependency.
+
+-Goat now sells extra item variety, and is now less annoying and no longer kills friendlies with his fireball
+
+-Heart Lantern Pet and Star in a Bottle Pet now teleport to the player if the player is far away
 
 -Armor glowmasks now work on mounts
 
@@ -32,13 +61,19 @@ Changelog:
 
 -Shadow keys are now made with obsidian
 
+-Cutscene invulnerability now also resets wing time
+
 -Reworked Soulbound Bullet: changed to ranged, damage increased to 75 (from 50)
 
 -Reworked Illuminant Armor: no longer gives double prefix bonuses, now has a triggered ability, and increases life regen by 2 per active cooldown stack
 
+-Reworked Midas Insignia: now gives a damage boost based on money sacrificed VS money currently held
+
 -Rebalanced Joyrider: fixed issues with other ammo types, now works only with bullets (atm, unless I make an upgrade), adjusted overall flight time scaling. Still has a few issues with not being able to fly properly
 
--Rebalanced Demon Steppers: is now post Pheathon, and includes the Cobalt Shield, as well as the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod)
+-Rebalanced Demon Steppers: is now post Pheathon, and includes the Cobalt Shield, as well as the Hand Warmer, given the item's fiery nature (Hand Warmer item has a crafting recipe in SGAmod), now has most of its movement bonuses inherited from the earier SoulSpark Boots
+
+-Buffed Beam Cannon: Electric Charge cost reduced by 5%, base crit increased to 20 from 15
 
 -Buffed Rod Of Teleportation: can now telefrag enemies by teleporting into them, gives IFrames after teleporting
 
@@ -57,10 +92,26 @@ Changelog:
 
 -Cracked Mirror not really working anymore in terms of damage scaling against petrified enemies
 
+-Hallowed armor set bonus with visor not working
+
+-Issues with goat's sprites and shop
+
+
+3.639-(4/27/22)--Hotfix 39
+
+--Fixed:
+
+-Glowrocks falling in pre-hardmode
+
+
+3.638-(4/26/22)--Hotfix 38
+
+--Changed:
+
+-Glowrock can now only spawn in the outer 20%'s of the world, and despawns during the day; Rate of falling has been adjusted to make them less common
 
 
 3.636-(2/21/22)--Hotfix 37
-
 
 --Changed:
 

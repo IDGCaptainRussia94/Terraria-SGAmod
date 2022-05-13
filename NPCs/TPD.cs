@@ -21,6 +21,8 @@ namespace SGAmod.NPCs
 		public bool Chance() => Main.rand.Next(0, 10) == 0;
 		public string RelicName() => "TPD";
 		public void NoHitDrops() { }
+		public string MasterPet() => null;
+		public bool PetChance() => false;
 
 		int aistate = 0;
 		int facing = 0;
@@ -77,6 +79,10 @@ namespace SGAmod.NPCs
 
 			if (Main.expertMode)
 			Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("TPDCPU"));
+			if (Main.rand.Next(7) == 0)
+			{
+				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.TPDMask>());
+			}
 
 			List<int> types = new List<int>();
 			types.Insert(types.Count, ItemID.Ectoplasm);

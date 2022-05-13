@@ -300,7 +300,7 @@ namespace SGAmod.Items.Weapons.Almighty
 			}
 
 
-			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("noise"));
+			TrailHelper trail = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
 			//UnifiedRandom rando = new UnifiedRandom(projectile.whoAmI);
 			Color colorz = Color.Turquoise;
 			trail.color = delegate (float percent)
@@ -1792,7 +1792,7 @@ namespace SGAmod.Items.Weapons.Almighty
 		}
 	}
 
-	public class NuclearOption : Megido, IRadioactiveDebuffText
+	public class NuclearOption : Megido, IRadioactiveDebuffText,IDedicatedItem
 	{
 		public override void SetStaticDefaults()
 		{
@@ -1800,7 +1800,12 @@ namespace SGAmod.Items.Weapons.Almighty
 			Tooltip.SetDefault("'Unleash the full raw, unfiltered, cataclysmic wrath of the British...'\nCharges up by holding this item, based off life regen and by grazing projectiles\nWill charge up very slowly if not actively held\nAt 50% charge or higher, activate to unleash a Nuclear Explosion\nSends out a initial shock wave, afterwards only the fireball does damage\nVaporizes most projectiles, and has more range and damage at higher charge\n" + Idglib.ColorText(Color.Red, "Getting hurt and losing health will halve your current charge")+"\n"+Idglib.ColorText(Color.Red, "Only charges up to half outside of boss fights"));
 		}
 
-        public override void SetDefaults()
+		public string DedicatedItem()
+		{
+			return "Dedicated to a specific Britith Moth. 'A bit of a melt, innit it?'";
+		}
+
+		public override void SetDefaults()
 		{
 			base.SetDefaults();
 			item.damage = 250;

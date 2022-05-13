@@ -100,6 +100,10 @@ namespace SGAmod.Items.Placeable
 			mod.AddItem("HellionTrophy", new BossTrophy(15, trophySprite: "SGAmod/Items/Placeable/HellionTrophy"));
 			mod.AddItem("PhaethonTrophy", new BossTrophy(16, trophySprite: "SGAmod/Items/Placeable/PhaethonTrophy"));
 
+			mod.AddItem("PrismicBansheeTrophy", new BossTrophy(17, trophySprite: "SGAmod/Items/Placeable/PrismicBansheeTrophy"));
+			mod.AddItem("TinWraithTrophy", new BossTrophy(18, trophySprite: "SGAmod/Items/Placeable/TinWraithTrophy"));
+			mod.AddItem("PalladiumWraithTrophy", new BossTrophy(19, trophySprite: "SGAmod/Items/Placeable/PalladiumWraithTrophy"));
+
 			return false;
         }
     }

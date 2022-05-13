@@ -1075,10 +1075,6 @@ namespace SGAmod.Items.Consumables
 			Texture2D beam = new Texture2D(Main.graphics.GraphicsDevice, width, height);
 			var dataColors = new Color[width * height];
 
-
-			///
-
-
 			for (int y = 0; y < height; y++)
 			{
 				for (int x = 0; x < width; x++)
@@ -1092,14 +1088,8 @@ namespace SGAmod.Items.Consumables
 				}
 			}
 
-
-			///
-
-
 			beam.SetData(0, null, dataColors, 0, width * height);
 			spriteBatch.Draw(beam, where + new Vector2(2, 2), null, Color.White, 0, new Vector2(beam.Width / 2, beam.Height / 2), scale * 2f, SpriteEffects.None, 0f);
-
-
 
 		}
 

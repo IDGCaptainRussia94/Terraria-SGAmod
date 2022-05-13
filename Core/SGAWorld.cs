@@ -149,7 +149,7 @@ namespace SGAmod
                     CaliburnAlterCoordsX[f] = 0;
                     CaliburnAlterCoordsY[f] = 0;
                 }
-                WorldIsTin = WorldGen.oreTier1 != TileID.Copper;
+                WorldIsTin = WorldGen.CopperTierOre != TileID.Copper;
                 int x = 0;
                 for (x = 0; x < questvars.Length; x++)
                 {
@@ -231,17 +231,6 @@ namespace SGAmod
             }
         }
 
-        public void DoFallenSpaceRocks()
-        {
-            if (!Main.hardMode || Main.dayTime)
-                return;
-
-            if (Main.rand.Next(200000) < Main.maxTilesX/(Main.netMode == NetmodeID.SinglePlayer ? 6 : 3))
-            {
-                Projectile.NewProjectile(new Vector2(Main.rand.Next(Main.maxTilesX * 16), 50), Vector2.UnitY.RotatedBy((Main.rand.NextFloat(-1f,1f)*MathHelper.Pi)*0.10f)*Main.rand.NextFloat(3f,6f), ModContent.ProjectileType<Dimensions.FallingSpaceRock>(), 1000, 10);
-            }
-        }
-
         public override void PostUpdate()
         {
 
@@ -250,7 +239,7 @@ namespace SGAmod
 
             WorldIsTin = (WorldGen.CopperTierOre == 7 ? false : true);
 
-            DoFallenSpaceRocks();
+            Items.Glowrock.DoFallenSpaceRocks();
 
             if (Main.dayTime == true)
             {
@@ -421,14 +410,14 @@ namespace SGAmod
         //Load downed data
         public override void Load(TagCompound tag)
         {
-            WorldIsTin = WorldGen.oreTier1 == TileID.Tin;
+            WorldIsTin = WorldGen.CopperTierOre == TileID.Tin;
             //var downed = tag.GetList<string>("downed");
             if (tag.ContainsKey("WorldIsNovus"))
                 WorldIsNovus = tag.GetBool("WorldIsNovus");
             if (tag.ContainsKey("darknessVision"))
                 darknessVision = tag.GetBool("darknessVision");
             if (tag.ContainsKey("cheating"))
-                cheating = SGAmod.cheating || tag.GetBool("cheating");
+                cheating = false;// SGAmod.cheating || tag.GetBool("cheating");
 
             tf2cratedrops = tag.GetBool("tf2cratedrops");
             downedCustomInvasion = tag.GetBool("customInvasion");

@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using SGAmod.Items.Placeable;
 
 namespace SGAmod.Tiles
 {
@@ -76,7 +77,7 @@ namespace SGAmod.Tiles
 				}
 
 			}
-			if (frameY / 54 == 2) //PML-3nd row
+			if (frameY / 54 == 2) //PML-3rd row
 			{
 				switch (frameX / 54)
 				{
@@ -95,9 +96,24 @@ namespace SGAmod.Tiles
 					case 4:
 						item = mod.ItemType("PhaethonTrophy");
 						break;
+					case 5:
+						item = mod.ItemType("PrismicBansheeTrophy");
+						break;
 				}
-
 			}
+			if (frameY / 54 == 3) //4th row
+			{
+				switch (frameX / 54)
+				{
+					case 0:
+						item = mod.ItemType("TinWraithTrophy");
+						break;
+					case 1:
+						item = mod.ItemType("PalladiumWraithTrophy");
+						break;
+				}
+			}
+
 			if (item > 0)
 			{
 				Item.NewItem(i * 16, j * 16, 48, 48, item);

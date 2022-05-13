@@ -78,11 +78,11 @@ namespace SGAmod.Items.Accessories
 			if (joyRider == null && WingSlot != null)
 			{
 				Type wingPlayer = WingSlot.Code.GetType("WingSlot.WingSlotPlayer");
-				Type itemSlot = WingSlot.Code.GetType("TerraUI.Objects.UIItemSlot");
+				//Type itemSlot = WingSlot.Code.GetType("WingSlot.UI.WingSlotUI");
 				ModPlayer wingply = player.GetModPlayer(WingSlot, "WingSlotPlayer");
 
-				object itemslotinstance = (wingPlayer.GetField("EquipSlot",SGAmod.UniversalBindingFlags).GetValue(wingply));
-				Item inWithin = (Item)((itemSlot.GetProperty("Item", SGAmod.UniversalBindingFlags).GetValue(itemslotinstance)));
+				//object itemslotinstance = (wingPlayer.GetField("EquippedWings", SGAmod.UniversalBindingFlags).GetValue(wingply));
+				Item inWithin = (Item)(wingPlayer.GetProperty("EquippedWings", SGAmod.UniversalBindingFlags).GetValue(wingply));//((itemSlot.GetProperty("Item", SGAmod.UniversalBindingFlags).GetValue(itemslotinstance)));
 				if (inWithin != null && !inWithin.IsAir && inWithin.type == joyriderid)
                 {
 					joyRider = inWithin;

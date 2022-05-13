@@ -1151,7 +1151,7 @@ namespace SGAmod.Dimensions
 
         public static int[] CommonItems => new int[] { ModContent.ItemType<Items.Accessories.RingOfRespite>(), ModContent.ItemType<Items.Weapons.Auras.StoneBarrierStaff>(), ModContent.ItemType<Items.Accessories.NinjaSash>(), ModContent.ItemType<Items.Accessories.DiesIraeStone>(), ModContent.ItemType<Items.Accessories.MagusSlippers>(), ModContent.ItemType<Items.Accessories.YoyoTricks>(), ModContent.ItemType < Items.Weapons.Almighty.Megido>() };
         public static int[] RareItems => new int[] { ModContent.ItemType<Items.Consumables.BenchGodsFavor>(), ModContent.ItemType<Items.Consumables.PortalEssence>(), ModContent.ItemType<Items.DungeonSplunker>(), ModContent.ItemType<Items.Consumables.InterdimensionalPartyHat>() };
-        public static int[] ShadowItems => new int[] { ModContent.ItemType<Items.Weapons.Auras.BeserkerAuraStaff>(), ModContent.ItemType<Items.Weapons.EnchantedFury>(), ModContent.ItemType<Items.Accessories.CardDeckPersona>() };
+        public static int[] ShadowItems => new int[] { ModContent.ItemType<Items.Weapons.Auras.BeserkerAuraStaff>(), ModContent.ItemType<Items.Weapons.EnchantedFury>(), ModContent.ItemType<Items.Accessories.CardDeckPersona>(), ModContent.ItemType<Items.InfinityPotion>() };
         //public static int[] ShadowItemsVanilla => new int[] { ItemID.DarkLance, ItemID.Sunfury, ItemID.Flamelash, ItemID.FlowerofFire, ItemID.HellwingBow};
 
     public static void AddStuffToChest(int chestid, int loottype,UnifiedRandom unirand)
@@ -1161,8 +1161,8 @@ namespace SGAmod.Dimensions
             {
                 List<int> loot = new List<int> { ItemID.AmmoReservationPotion, ItemID.LifeforcePotion, ItemID.EndurancePotion, ItemID.RagePotion, ItemID.InfernoPotion, ItemID.WrathPotion, ItemID.RecallPotion, ItemID.TeleportationPotion, ItemID.LovePotion, ItemID.StinkPotion, ItemID.FishingPotion, ItemID.SonarPotion, ItemID.CratePotion, ItemID.WarmthPotion, ItemID.ThornsPotion, ItemID.WaterWalkingPotion, ItemID.ArcheryPotion, ItemID.HunterPotion, ItemID.GravitationPotion, ItemID.ObsidianSkinPotion, ItemID.RegenerationPotion, ItemID.SwiftnessPotion, ItemID.GillsPotion, ItemID.IronskinPotion, ItemID.ManaRegenerationPotion, ItemID.MagicPowerPotion, ItemID.FeatherfallPotion, ItemID.SpelunkerPotion, ItemID.InvisibilityPotion, ItemID.ShinePotion, ItemID.NightOwlPotion, ItemID.BattlePotion, ItemID.LesserRestorationPotion, ItemID.HealingPotion, ItemID.ManaPotion, ItemID.LesserManaPotion, ItemID.LesserHealingPotion};
 
-                List<int> lootmain = new List<int> { unirand.NextBool() ? SGAmod.Instance.ItemType("UnmanedBar") : SGAmod.Instance.ItemType("NoviteBar"), SGAmod.Instance.ItemType("WraithFragment3"), ItemID.SilverCoin, ItemID.RestorationPotion,ItemID.ManaPotion, ItemID.StrangeBrew,ItemID.Bomb };
-                List<int> lootrare = new List<int> { SGAmod.Instance.ItemType("DankCore"), SGAmod.Instance.ItemType("CondenserPotion"),SGAmod.Instance.ItemType("TinkerPotion"), SGAmod.Instance.ItemType("RagnarokBrew"), SGAmod.Instance.ItemType("DankCrate"), SGAmod.Instance.ItemType("Megido"),ItemID.GreaterHealingPotion,ItemID.GoldCoin,ItemID.Dynamite };
+                List<int> lootmain = new List<int> { unirand.NextBool() ? ModContent.ItemType<Items.UnmanedBar>() : ModContent.ItemType<Items.NoviteBar>(), ModContent.ItemType<Items.WraithFragment3>(), ItemID.SilverCoin, ItemID.RestorationPotion,ItemID.ManaPotion, ItemID.StrangeBrew,ItemID.Bomb };
+                List<int> lootrare = new List<int> { ModContent.ItemType<HavocGear.Items.DankCore>(), ModContent.ItemType<Items.Consumables.CondenserPotion>(), ModContent.ItemType<Items.Consumables.TinkerPotion>(), ModContent.ItemType<Items.Consumables.RagnarokBrew>(), ModContent.ItemType<HavocGear.Items.DankCrate>(), ModContent.ItemType<Items.Weapons.Almighty.Megido>(), ItemID.GreaterHealingPotion,ItemID.GoldCoin,ItemID.Dynamite };
                 int e = 0;
 
                 if (SGAWorld.downedSpiderQueen)

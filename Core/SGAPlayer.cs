@@ -188,7 +188,7 @@ namespace SGAmod
 		public int devpower = 0;
 		public bool EALogo = false;
 		public bool graniteMagnet = false;
-		public bool demonsteppers = false;
+		public int demonsteppers = 0;
 		public bool FridgeflameCanister = false;
 		public bool terraDivingGear = false;
 		public bool prismalDivingGear = false;
@@ -625,7 +625,7 @@ namespace SGAmod
 			lifestealentropy = Math.Min(lifestealentropy + 0.20f, 500);
 			maxblink = 0;
 			EALogo = false;
-			demonsteppers = false;
+			demonsteppers = 0;
 			IceFire = false;
 			FridgeflameCanister = false;
 			BIP = false;

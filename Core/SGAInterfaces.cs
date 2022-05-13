@@ -6,109 +6,109 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SGAmod
 {
-	interface IDevItem
+	public interface IDevItem
 	{
 		(string, string) DevName();
 
 	}
-	interface IDedicatedItem
+	public interface IDedicatedItem
 	{
 		string DedicatedItem();
 	}
-	interface IRadioactiveItem
+	public interface IRadioactiveItem
 	{
 		int RadioactiveHeld();
 		int RadioactiveInventory();
 	}
-	interface IShieldItem
+	public interface IShieldItem
 	{
 
 	}
-	interface IPotionCantBeInfinite
+	public interface IPotionCantBeInfinite
 	{
 
 	}
-	interface IDevArmor
+	public interface IDevArmor
 	{
 
 	}
-	interface IRustBurnText
+	public interface IRustBurnText
 	{
 
 	}
-	interface IDankSlowText
+	public interface IDankSlowText
 	{
 
 	}
-	interface IRadioactiveDebuffText
+	public interface IRadioactiveDebuffText
 	{
 
 	}
-	interface IShieldBashProjectile
+	public interface IShieldBashProjectile
 	{
 
 	}
-	interface INoHitItem
+	public interface INoHitItem
 	{
 
 	}
-	interface IAuroraItem
+	public interface IAuroraItem
 	{
 
-	}	
-	interface IManifestedItem
+	}
+	public interface IManifestedItem
     {
 
     }
-	interface IJablinItem
+	public interface IJablinItem
 	{
 
 	}
-	interface IMangroveSet
+	public interface IMangroveSet
 	{
 
 	}
-	interface IBreathableWallType
+	public interface IBreathableWallType
 	{
 
 	}
-	interface IHellionDrop
+	public interface IHellionDrop
 	{
 		int HellionDropAmmount();
 		int HellionDropType();
 
 
 	}
-	interface INonDestructableProjectile
+	public interface INonDestructableProjectile
 	{
 
 	}
-	interface IConsumablePickup
+	public interface IConsumablePickup
 	{
 
 	}
-	interface ITrueMeleeProjectile
+	public interface ITrueMeleeProjectile
 	{
 
 	}
-	interface IDrawAdditive
+	public interface IDrawAdditive
 	{
 		void DrawAdditive(SpriteBatch spriteBatch);
 	}
 
-	interface IPostEffectsDraw
+	public interface IPostEffectsDraw
 	{
 		void PostEffectsDraw(SpriteBatch spriteBatch,float drawScale);
 	}
-	interface IDrawThroughFog
+	public interface IDrawThroughFog
 	{
 		void DrawThroughFog(SpriteBatch spriteBatch);
 	}
-	interface IHitScanItem
+	public interface IHitScanItem
 	{
 
 	}
-	interface ITechItem
+	public interface ITechItem
 	{
 		float ElectricChargeScalingPerUse();
 
@@ -116,7 +116,7 @@ namespace SGAmod
 		int ElectricChargePerUse();
 		int ElectricChargeWhileInUse();*/
 	}
-	interface ISGABoss
+	public interface ISGABoss
 	{
 		string Trophy();
 		bool Chance();
@@ -124,6 +124,9 @@ namespace SGAmod
 		string RelicName();
 
 		void NoHitDrops();
+
+		string MasterPet();
+		bool PetChance();
 
 	}
 

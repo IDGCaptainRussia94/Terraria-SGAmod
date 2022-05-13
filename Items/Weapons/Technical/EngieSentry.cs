@@ -203,8 +203,6 @@ namespace SGAmod.Items.Weapons.Technical
 					proj.rotation = proj.velocity.ToRotation();
 					Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/RoR2sndTurretFire").WithVolume(0.25f).WithPitchVariance(.25f), projectile.Center);
 				}
-
-
 			}
 
 			projectile.rotation = projectile.rotation.AngleTowards(aimTo, 0.15f);

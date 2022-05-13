@@ -2426,6 +2426,8 @@ namespace SGAmod.NPCs.Hellion
 		public bool Chance() => GetType() != typeof(HellionCore);
 		public string RelicName() => GetType() != typeof(HellionCore) ? "Hellion" : "NOU";
 		public void NoHitDrops() { }
+		public string MasterPet() => null;
+		public bool PetChance() => false;
 
 		private float[] oldRot = new float[12];
 		private Vector2[] oldPos = new Vector2[12];
@@ -4669,15 +4671,15 @@ namespace SGAmod.NPCs.Hellion
 		public override void OnHitPlayer(Player player, int damage, bool crit)
 		{
 			player.AddBuff(Idglib.Instance.BuffType("NoImmunities"), 60 * 10, true);
-			if (Main.rand.Next(0, 5) == 1)
+			if (Main.rand.Next(0, 5) == 0)
 				player.AddBuff(BuffID.Weak, 60 * 15, true);
-			if (Main.rand.Next(0, 5) == 1)
+			if (Main.rand.Next(0, 5) == 0)
 				player.AddBuff(BuffID.Ichor, 60 * 10, true);
-			if (Main.rand.Next(0, 5) == 1)
+			if (Main.rand.Next(0, 5) == 0)
 				player.AddBuff(BuffID.Darkness, 60 * 15, true);
-			if (Main.rand.Next(0, 5) == 1)
+			if (Main.rand.Next(0, 5) == 0)
 				player.AddBuff(BuffID.CursedInferno, 60 * 10, true);
-			if (Main.rand.Next(0, 5) == 1)
+			if (Main.rand.Next(0, 5) == 0)
 				player.AddBuff(BuffID.ChaosState, 60 * 10, true);
 		}
 
@@ -5447,10 +5449,10 @@ namespace SGAmod.NPCs.Hellion
 				AddNote(3, 32);
 			}
 			AddNote(-1, 80);
-			for (int i = 0; i < 4; i += 1)
+			for (int i = 0; i < 3; i += 1)
 			{
-				AddNote(0, 32);
-				AddNote(2, 32);
+				AddNote(1, 32);
+				AddNote(3, 32);
 			}
 			AddNote(-1, 60);
 			AddNote(3, 15);
@@ -5659,7 +5661,6 @@ namespace SGAmod.NPCs.Hellion
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
-
 
 			Texture2D otherTex = Main.projectileTexture[ModContent.ProjectileType<HellionFNFArrow>()];
 

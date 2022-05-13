@@ -597,7 +597,7 @@ namespace SGAmod.Dimensions
             {
                 if (Main.netMode > 0)
                     return null;//This is null for clients on the overworld (normal), but not on the server, wtf? Whatever SP only content!
-                if (!SLWorld.subworld || !Subworld.AnyActive(SGAmod.Instance))
+                if (!SLWorld.subworld || (!(SLWorld.currentSubworld is SGAPocketDim)))
                     return null;
                 return SLWorld.currentSubworld.GetType();
             }

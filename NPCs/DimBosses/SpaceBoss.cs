@@ -1799,6 +1799,8 @@ namespace SGAmod.Dimensions.NPCs
         public bool Chance() => Main.rand.Next(0, 10) == 0;
         public string RelicName() => "Phaethon";
         public void NoHitDrops() { }
+		public string MasterPet() => null;
+		public bool PetChance() => false;
 
         public bool TossRoids => (int)npc.ai[0] > 10600 && (int)npc.ai[0] < 10800;
 
@@ -1942,6 +1944,11 @@ namespace SGAmod.Dimensions.NPCs
             else
             {
                 Item.NewItem(npc.Center, ModContent.ItemType<Items.StarMetalMold>());
+            }
+
+            if (Main.rand.Next(7) == 0)
+            {
+              Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Armors.Vanity.PhaethonMask>());
             }
 
             SGAWorld.downedSpaceBoss = true;
@@ -3207,7 +3214,7 @@ namespace SGAmod.Dimensions.NPCs
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            Texture2D[] texs = { mod.GetTexture("Doom_Harbinger_Resprite_eye"), mod.GetTexture("noise"), mod.GetTexture("TiledPerlin") };
+            Texture2D[] texs = { mod.GetTexture("Doom_Harbinger_Resprite_eye"), mod.GetTexture("Noise"), mod.GetTexture("TiledPerlin") };
 
             int count = 0;
             float shieldAlpha = MathHelper.Clamp(((shieldeffect) / 30f), 0f, 1);

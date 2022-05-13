@@ -72,7 +72,7 @@ namespace SGAmod.HavocGear.Items.Weapons
 		public static int chargeuptime=300;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Wave Beam Charging");
+			DisplayName.SetDefault("Quasar Cannon Charging");
 		}
 
 	public override bool? CanHitNPC(NPC target){return false;}

@@ -662,7 +662,7 @@ namespace SGAmod.Items.Weapons
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.FalconBlade, 1);
-			recipe.AddRecipeGroup("SGAmod:Tier4Bars", 10);
+			recipe.AddIngredient(ItemID.GoldDust, 25);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this, 1);
 			recipe.AddRecipe();

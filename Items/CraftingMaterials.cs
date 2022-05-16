@@ -37,7 +37,7 @@ namespace SGAmod.HavocGear.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moist Sand");
-			Tooltip.SetDefault("'expect nothing else from sand thrown into water'");
+			Tooltip.SetDefault("'expect nothing else from sand thrown into water'\nPlace a Cactus block under sand to stop it from becoming moist in water");
 		}
 		public override void AddRecipes()
 		{

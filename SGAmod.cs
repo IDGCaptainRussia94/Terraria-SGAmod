@@ -1875,11 +1875,14 @@ namespace SGAmod
 			{
 				for (int y = -2; y < 3; y += 1)
 				{
-					if (!Main.tile[i+x, j+y].active() && Main.tile[i + x, j + y].liquid>100 && Main.tile[i, j].type == TileID.Sand)
+					if (!Main.tile[i + x, j + y].active() && Main.tile[i + x, j + y].liquid > 100 && Main.tile[i, j].type == TileID.Sand)
 					{
-						WorldGen.Convert(i, j, ModContent.TileType<Tiles.MoistSand>(), 1);
-						Main.tile[i, j].type = (ushort)ModContent.TileType<Tiles.MoistSand>();
-						NetMessage.SendTileRange(Main.myPlayer, i, j, 1, 1);
+						if (Main.tile[i, j+1].type != TileID.CactusBlock)
+						{
+							WorldGen.Convert(i, j, ModContent.TileType<Tiles.MoistSand>(), 1);
+							Main.tile[i, j].type = (ushort)ModContent.TileType<Tiles.MoistSand>();
+							NetMessage.SendTileRange(Main.myPlayer, i, j, 1, 1);
+						}
 					}
 				}
 			}

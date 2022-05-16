@@ -34,11 +34,13 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -Fix Prismic Banshee features (add laser accel), add Rod of Teleportation Telefragging
 -Make "marked" debuff share damage (when an enemy is hurt, nearby enemies who are marked recive a copy of damage), make sure to add a static field so it isn't always ran or else it would laggy
 
--Finish Wrath Caliburn attacks?
--Add Celestial Monolith (finish), Add Heat Beater heat-building and steamm rework
+
+-(to do) Ukranian valor and spatial spheres drawcode fix
+-Midas Mirror-Broken mirror upgrade but turns enemies into golden statues!
+-Add Celestial Monolith (finish), Add Heat Beater heat-building and steam rework
 -finish Big space station(s)
 -Snappy Shark teeth stick into enemies, up to 5, increases damage against enemies with teeth in them by 5% per tooth, at 5 teeth, inflicts Gourged
-
+-Nurse rework: AOE heal over time
 
 Credits:
 

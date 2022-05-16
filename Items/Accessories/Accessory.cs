@@ -1188,7 +1188,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Primordial Skull");
-			Tooltip.SetDefault(Text+"\nThe skull also gives you 20% DoT resist while OnFire!\nA most sinister looking skull, I wonder what else it's for?");
+			Tooltip.SetDefault(Text+"\nThe skull also gives you 25% DoT resist while OnFire!\nA most sinister looking skull, I wonder what else it's for?");
 		}
 
 		public override string Texture
@@ -1994,7 +1994,7 @@ namespace SGAmod.Items.Accessories
 	public class SoulSparkBoots : ModItem
 	{
 		public static int boots = -1;
-		public static string SSBText => "All effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, Knockback Immunity, and no Fall Damage suffered\nDouble Jump ability (toggle with accessory visiblity)\nHold DOWN to stabilize gravity";
+		public static string SSBText => "All effects of Frostspark boots and Lava Waders improved\nJump Height significantly boosted, Knockback Immunity, and no Fall Damage suffered\nDouble Jump ability (with no wing time)\nHold DOWN to stabilize gravity\nToggle visibility to disable frog leg";
 		public static string DemonSteppersText => "Immunity to Thermal Blaze, Acid Burn, Chilled, and Frozen\nGrants 25% increased radiation resistance\n" + PrimordialSkull.Text + "\nOn Fire! doesn't hurt you and slightly heals you instead";
 		public override void SetStaticDefaults()
 		{
@@ -2010,11 +2010,18 @@ namespace SGAmod.Items.Accessories
 
 		private void SGAPlayer_PostPostUpdateEquipsEvent(SGAPlayer player)
 		{
-			if (player.demonsteppers>1)
+			if (player.demonsteppers > 0)
 			{
-				player.player.buffImmune[BuffID.OnFire] = false;
-				player.player.buffImmune[BuffID.Chilled] = true;
-				player.player.buffImmune[BuffID.Frozen] = true;
+				if (player.demonsteppers > 1)
+				{
+					player.player.buffImmune[BuffID.OnFire] = false;
+					player.player.buffImmune[BuffID.Chilled] = true;
+					player.player.buffImmune[BuffID.Frozen] = true;
+				}
+				if (player.player.wingTime < 1)
+				{
+					player.player.doubleJumpCloud = true;
+				}
 			}
 		}
 
@@ -2039,8 +2046,6 @@ namespace SGAmod.Items.Accessories
 				player.autoJump = true;
 				player.extraFall += 15;
 				player.noKnockback = true;
-				if (!hideVisual)
-					player.doubleJumpCloud = true;
 
 			}
 
@@ -2100,7 +2105,7 @@ namespace SGAmod.Items.Accessories
 	[AutoloadEquip(EquipType.Shoes)]
 	public class DemonSteppers : SoulSparkBoots
 	{
-		public static int boots = -1;
+		public static new int boots = -1;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Demon Steppers");
@@ -2114,6 +2119,7 @@ namespace SGAmod.Items.Accessories
 
         public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			base.UpdateAccessory(player, hideVisual);
 			player.GetModPlayer<SGAPlayer>().NoFireBurn = 3;
 			if (player.GetModPlayer<SGAPlayer>().demonsteppers<2)
 			{

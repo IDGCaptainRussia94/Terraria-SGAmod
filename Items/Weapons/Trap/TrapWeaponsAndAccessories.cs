@@ -1087,7 +1087,7 @@ namespace SGAmod.Items.Weapons.Trap
 			spriteBatch.Draw(Main.itemTexture[item.type], drawPos, null, glowColor, -Main.GlobalTime*0.75f, Main.itemTexture[item.type].Size() / 2f, Main.inventoryScale * 2f, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, default, null, Main.UIScaleMatrix);
 			return false;
 		}
 

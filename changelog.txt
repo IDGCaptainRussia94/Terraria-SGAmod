@@ -1,6 +1,24 @@
 
 Changelog:
 
+3.654-(5/15/22)--Hotfix 42
+
+--Changed:
+
+-Sand will no longer turn to moist sand if Cactus blocks are placed under it
+
+-SoulSpark Boot's double jump is now only active if you have no wing time (like vanilla)
+
+
+--Fixed:
+
+-Cobalt Horseshoe being in the Demonsteppers recipe
+
+-Primordial Skull listing off 20% DoT resist, when it was infact 25%
+
+-Demonsteppers not inheriting SoulSpark Boot buffs
+
+
 3.652-(5/3/22)--Hotfix 41
 
 --Fixed:

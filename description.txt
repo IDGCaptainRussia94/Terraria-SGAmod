@@ -23,6 +23,13 @@ A few warnings before the changelog:
 -This mod has not been properly tested/optimized for multiplayer, while it supports some MP features, many things are disabled in MP
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
+3.655-(6/3/22)--Hotfix 43
+
+--Fixed:
+
+-Throwing being blank on loading a world
+
+
 3.654-(5/15/22)--Hotfix 42
 
 --Changed:

@@ -58,8 +58,19 @@ namespace SGAmod
         {
             UThrowingWeapon myClone = (UThrowingWeapon)base.Clone(item, itemClone);
             myClone.thrown = item.thrown;
-            myClone.thrown = thrown;
+            //myClone.thrown = thrown;
+            if (myClone.thrown)
+            {
+                item.thrown = true;
+            }
             return myClone;
+        }
+
+        public override void UpdateInventory(Item item, Player player)
+        {
+            if (!item.thrown && item.Throwing().thrown)
+                item.thrown = true;
+            //sdsd
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)

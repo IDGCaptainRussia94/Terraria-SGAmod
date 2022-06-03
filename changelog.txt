@@ -1,6 +1,18 @@
 
 Changelog:
 
+3.655-(6/3/22)--Hotfix 43
+
+--Fixed:
+
+-Throwing being blank on loading a world
+
+
+-Failed to fix:
+
+-This mod being anymore more than a long-term failure
+
+
 3.654-(5/15/22)--Hotfix 42
 
 --Changed:

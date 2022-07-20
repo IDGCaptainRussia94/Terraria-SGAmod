@@ -27,11 +27,11 @@ namespace SGAmod
 {
 
 	public class HookEdit
-    {
+	{
 		public bool loaded = false;
 
 		public void Load()
-        {
+		{
 			if (!loaded)
 			{
 				LoadInternal();
@@ -39,24 +39,24 @@ namespace SGAmod
 			}
 		}
 		public void Unload()
-        {
+		{
 			if (loaded)
-            {
+			{
 				UnloadInternal();
 				loaded = false;
 			}
-        }
+		}
 
-		protected virtual void LoadInternal(){}
-		protected virtual void UnloadInternal(){}
+		protected virtual void LoadInternal() { }
+		protected virtual void UnloadInternal() { }
 		internal HookEdit()
-        {
+		{
 			Load();
 		}
 	}
 
 	public class BlockPlayerEquips : HookEdit
-    {
+	{
 		private delegate bool PlayerIsInSandstormDelegate(Player ply);
 
 		protected override void LoadInternal()
@@ -343,29 +343,29 @@ namespace SGAmod
 			}
 		}
 
-		public static void ApplyKnockbackDamage(Player player,ref int damage, float knockBack)
-        {
+		public static void ApplyKnockbackDamage(Player player, ref int damage, float knockBack)
+		{
 			if (player.SGAPly().concussionDevice)
-            {
-				damage = (int)(damage * Math.Min(2f,1f + (knockBack * 0.05f*player.SGAPly().concussionDeviceEffectiveness)));
+			{
+				damage = (int)(damage * Math.Min(2f, 1f + (knockBack * 0.05f * player.SGAPly().concussionDeviceEffectiveness)));
 			}
-        }
+		}
 
 		//PlayerHooks.ModifyHitNPCWithProj(this, Main.npc[i], ref num7, ref knockback, ref crit, ref hitDirection);
 
 		private delegate void orig_FinalDamageDetour(Player player, Item item, NPC npc, ref int damage, ref float knockBack, ref bool crit);
-		private delegate void hook_FinalDamageDetour(orig_FinalDamageDetour orig, Player player,Item item, NPC npc,ref int damage,ref float knockBack,ref bool crit);
+		private delegate void hook_FinalDamageDetour(orig_FinalDamageDetour orig, Player player, Item item, NPC npc, ref int damage, ref float knockBack, ref bool crit);
 		private static void DetourFinalDamageAdjustments(orig_FinalDamageDetour orig, Player player, Item item, NPC npc, ref int damage, ref float knockBack, ref bool crit)
 		{
-            orig(player, item, npc, ref damage, ref knockBack, ref crit);
-			ApplyKnockbackDamage(player,ref damage, knockBack);
+			orig(player, item, npc, ref damage, ref knockBack, ref crit);
+			ApplyKnockbackDamage(player, ref damage, knockBack);
 		}
 
 		private delegate void orig_FinalDamageProjDetour(Projectile projectile, NPC npc, ref int damage, ref float knockBack, ref bool crit, ref int hitDirection);
 		private delegate void hook_FinalDamageProjDetour(orig_FinalDamageProjDetour orig, Projectile projectile, NPC npc, ref int damage, ref float knockBack, ref bool crit, ref int hitDirection);
-		private static void DetourFinalDamageProjAdjustments(orig_FinalDamageProjDetour orig, Projectile projectile, NPC npc, ref int damage, ref float knockBack, ref bool crit,ref int hitDirection)
+		private static void DetourFinalDamageProjAdjustments(orig_FinalDamageProjDetour orig, Projectile projectile, NPC npc, ref int damage, ref float knockBack, ref bool crit, ref int hitDirection)
 		{
-			orig(projectile, npc, ref damage, ref knockBack, ref crit,ref hitDirection);
+			orig(projectile, npc, ref damage, ref knockBack, ref crit, ref hitDirection);
 			ApplyKnockbackDamage(Main.player[projectile.owner], ref damage, knockBack);
 		}
 	}
@@ -394,10 +394,10 @@ namespace SGAmod
 
 		internal static void RemovePatches()
 		{
-			foreach(HookEdit hook in hooksList)
-            {
+			foreach (HookEdit hook in hooksList)
+			{
 				hook.Unload();
-            }
+			}
 		}
 
 		/*public static IEnumerable<Type> GetEveryMethodDerivedFrom(Type baseType, Assembly assemblyToSearch)
@@ -411,6 +411,49 @@ namespace SGAmod
 			}
 		}
 	}*/
+
+		public static void ApplyCheatyItemDisables()
+		{
+			ApplyCheatyItemDisablesPrivate();
+		}
+
+		private static bool IsItemCheating(Type item)
+		{
+
+			Type modtype = item;
+			string nullname = modtype.Namespace;
+			if (nullname.Length - nullname.Replace("Fargowiltas.Items.Explosives", "").Length > 0)
+			{
+				if (modtype.Name != "BoomShuriken" && modtype.Name != "AutoHouse" && modtype.Name != "LihzahrdInstactuationBomb" && modtype.Name != "MiniInstaBridge")
+					return true;
+			}
+			if (nullname.Length - nullname.Replace("Items.AutoBuilders", "").Length > 0)
+			{
+				if (modtype.Name != "PrisonBuilder")
+					return true;
+			}
+
+			return false;
+		}
+
+		internal static void ApplyCheatyItemDisablesPrivate()
+		{
+
+			//Assembly assybcl = SGAmod.Luiafk.Item2.GetType().Assembly;
+			MethodInfo autoLoader = typeof(Mod).GetMethod("AutoloadItem",SGAmod.UniversalBindingFlags);
+
+		HookEndpointManager.Add(autoLoader, (hook_CheatItemDetour)DetourCheatItems);
+				
+		}
+
+		private delegate void orig_CheatItemDetour(Mod self,Type item);
+		private delegate void hook_CheatItemDetour(orig_CheatItemDetour orig,Mod self, Type item);
+		private static void DetourCheatItems(orig_CheatItemDetour orig,Mod self, Type item)
+		{
+			if (!IsItemCheating(item))
+				orig(self,item);
+		}
+
 
 		#region CheatyStuff
 		//Luiafk disables

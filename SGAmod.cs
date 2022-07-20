@@ -113,7 +113,7 @@ namespace SGAmod
 				AutoloadGores = true,
 				AutoloadSounds = true
 			};
-
+			PrivateClassEdits.ApplyCheatyItemDisables();
 		}
 
 		public const bool VibraniumUpdate = true;

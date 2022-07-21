@@ -1999,7 +1999,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("SoulSpark Boots");
-			Tooltip.SetDefault("'Obligatory Hardmode boots'"+SSBText);
+			Tooltip.SetDefault("'Obligatory Hardmode boots'\n"+SSBText);
 		}
 
 		public override bool Autoload(ref string name)

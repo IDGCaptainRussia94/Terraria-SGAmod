@@ -34,7 +34,7 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 -Fix Prismic Banshee features (add laser accel), add Rod of Teleportation Telefragging
 -Make "marked" debuff share damage (when an enemy is hurt, nearby enemies who are marked recive a copy of damage), make sure to add a static field so it isn't always ran or else it would laggy
 -Illusion sub-class weapons, ammo, and other damage source that are generally stronger than most weapons. Can only hit, damage, or otherwise effect enemies under the Mind Break debuff, seperate damage scaling boost variables can be present
-
+-Hallucinogenic bombs and imbuements for melee to make Illusions believable, enemies immune to poison are immune to Hallucinogenics, enemies not confused have a 75% to resist the effects and become immune for a few seconds
 
 -(to do) Ukranian valor and spatial spheres drawcode fix
 -Midas Mirror-Broken mirror upgrade but turns enemies into golden statues!

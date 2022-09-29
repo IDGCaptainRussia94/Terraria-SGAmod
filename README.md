@@ -11,7 +11,7 @@ Github was moved: previous builds of the mod can be found over here: https://git
 -Corruption only: Gas Passer, Wraith Arrows, Dosed Arrows, Corrupted Tome, Cursed Hail, Jagged Spike Buckler (can be bypassed with fishing)
 
 -Ideas: Banners, the Couch, Bannerlord=collection of banners tf2/style things, Tech weapons have an "overclock" mechanic that changes up their gameplay while active and overhaul ideas (maybe?), spider queen can melt normal generated blocks (dirt and so)
-Cruciatus (damage over time debuff attack), Charon's Ferry (shadow tenticle mount thing), Spider body mount with legs?, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Fly Gun, Prism Banishee drops and Aurora drops, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
+Cruciatus (damage over time debuff attack), Charon's Ferry (shadow tenticle mount thing), Spider body mount with legs?, Overwatch (Null Watcher), Torch God's Summon, Orge baseball bat, Prism Banishee drops and Aurora drops, (More) Power Tools? Yoyo Pickaxes! (final tiers), Hamsterball DCU update and Drill Containment Yoyo Upgrade, SS4 Chainsaw rocket ammo type
 Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Binding Vudoo Clothier's Doll Magic, Mana Potion Pet (Blue Gusher), Clothier drop that forces dropped throwing items to attack enemies, Make Enchanted Fury/Seriph Shard a Clothier drop
 -Battery tank sentry, allows EC (Electric Charge) to be collected from Energy-storing TE tiles
 
@@ -19,7 +19,7 @@ Spartan Laser/mining railgun (add mining), Shuricane (shuriken Hurricane!), Bind
 -Tech damage and EC regen will be largely based on forming a tech-mod like base to generate electric charge (EC), storing it inside Tile Entiries, and allowing players to extract it manually or via the Battery tank sentry, moving EC to the player.
 As it currently stands, regen is effectively gimped and energizer batteries are the only viable way to effectively recharge it
 
--Add Hellion Army progress Bar, Vibranium Stuff (including Resonating Crystal Enemy and Seismic Resonator Ore Creator), Aurora Gear and finish Luminous Alter Tile Entity!
+-Add Hellion Army progress Bar, Vibranium enemies and items (including Resonating Crystal Enemy and Seismic Resonator Ore Creator), Aurora Gear and finish Luminous Alter Tile Entity!
 -Add Hellion army bar, STILL! (canned)
 
 Todo-Finish Vibranium enemies, Seismic Resonantor to create the ore, Finish Luminious Alter (effects), Money Drain Staff thingy, upgradable drones and solar panels? (Laser orbital strike!)
@@ -30,17 +30,18 @@ Battle Hud for L.Wraith to tell HP left and show what armor sets are active
 
 -"boring" swords:
 -Dank Wood Sword, Machete, Rusted Blade, Claymore (maybe),Mudmore, Mangrove Striker,Thermal Blade, Rubied Blade, Curcuit Breaker Blade (maybe), Sword of a Thousand Truths (hhmhhmmm), Celestial Flare (maybe), Galactic Inferno (yes, throw globels and bat them at enemies on hit?)
--call them Zweihänder ? (Nah lets call am Boring Blades)
--Fix Prismic Banshee features (add laser accel), add Rod of Teleportation Telefragging
+-call them Zweihänder ? (Nah lets call them Boring Blades)
+-Fix Prismic Banshee features (add laser accel)
 -Make "marked" debuff share damage (when an enemy is hurt, nearby enemies who are marked recive a copy of damage), make sure to add a static field so it isn't always ran or else it would laggy
 -Illusion sub-class weapons, ammo, and other damage source that are generally stronger than most weapons. Can only hit, damage, or otherwise effect enemies under the Mind Break debuff, seperate damage scaling boost variables can be present
 -Hallucinogenic bombs and imbuements for melee to make Illusions believable, enemies immune to poison are immune to Hallucinogenics, enemies not confused have a 75% to resist the effects and become immune for a few seconds
+-Binding Voodoo Clothier's Doll: use two cooldown stackss to spawn a dunny enemy that shares its life with the targeted enemy, fully charge to bind, can only bind 1 enemy at a time
 
--(to do) Ukranian valor and spatial spheres drawcode fix
+-(to do) Ukranian valor and spatial spheres drawcode fix (likely won't finish, no interest, very minor)
 -Midas Mirror-Broken mirror upgrade but turns enemies into golden statues!
 -Add Celestial Monolith (finish), Add Heat Beater heat-building and steam rework
--finish Big space station(s)
--Snappy Shark teeth stick into enemies, up to 5, increases damage against enemies with teeth in them by 5% per tooth, at 5 teeth, inflicts Gourged
+-finish Big space station(s) (likely won't bother finishing, no interest)
+-Snappy Shark teeth stick into enemies, up to 5, increases damage against enemies with teeth in them by 5% per tooth, at 5 teeth, inflicts Gourged and pieces through the enemy
 -Nurse rework: AOE heal over time
 
 Credits:

@@ -842,12 +842,6 @@ namespace SGAmod
 
 		}
 
-		public override bool ModifyNurseHeal(NPC nurse, ref int health, ref bool removeDebuffs, ref string chatText)
-		{
-			return base.ModifyNurseHeal(nurse, ref health, ref removeDebuffs, ref chatText);
-		}
-
-
 		public override void UpdateBadLifeRegen()
 		{
 
@@ -2321,6 +2315,18 @@ namespace SGAmod
 				}
 			}
 		}
+
+		public override bool ModifyNurseHeal(NPC nurse, ref int health, ref bool removeDebuffs, ref string chatText)
+		{
+			if (Main.projectile.Count(testby => testby.type == ModContent.ProjectileType<NurseHealingAura>())>0)
+            {
+				chatText = "I'm already healing, I cannot accept another service right now";
+				return false;
+            }
+
+			return base.ModifyNurseHeal(nurse, ref health, ref removeDebuffs, ref chatText);
+		}
+
 		public override void ModifyNursePrice(NPC nurse, int health, bool removeDebuffs, ref int price)
 		{
 			if (Hellion.GetHellion() != null || (SGAmod.DRMMode && IdgNPC.bossAlive))
@@ -2330,11 +2336,12 @@ namespace SGAmod
 		}
         public override void PostNurseHeal(NPC nurse, int health, bool removeDebuffs, int price)
         {
-			/*
+			
 			string[] strs = new string[] { "Stay close, I obviously can't work on you from a distance", "Alright, for the next new seconds I can quickly patch your wounds", "Make sure you keep any unwanted aggressives away in the meantime", "It's not instant but that's just life" };
 			Main.npcChatText = strs[Main.rand.Next(strs.Length)];
-			//stuff
-			*/
+			Projectile.NewProjectile(nurse.Center, Vector2.Zero, ModContent.ProjectileType<NurseHealingAura>(), health/2,0,player.whoAmI);
+			player.statLife -= health;
+
 		}
         public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
 		{

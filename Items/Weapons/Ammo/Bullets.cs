@@ -6,6 +6,7 @@ using Terraria.Graphics.Shaders;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using System;
 
 namespace SGAmod.Items.Weapons.Ammo
 {
@@ -120,6 +121,56 @@ namespace SGAmod.Items.Weapons.Ammo
 			recipe.AddIngredient(ItemID.MusketBall, 50);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this, 50);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class IllusionaryBullet : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Illusionary Bullet");
+			Tooltip.SetDefault("Deals 25% increased damage to enemies who belive the bullet is real\nOtherwise, it passes right through non-belivers");
+		}
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+			TooltipLine line = new TooltipLine(mod, "IllusionDebuff", Buffs.IllusionDebuff.IllusionDebuffText);
+			line.overrideColor = Color.MediumPurple;
+			tooltips.Add(line);
+        }
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.MediumPurple * ((float)(0.5f + Math.Sin(Main.GlobalTime / 2f) * 0.35f));
+		}
+		public override string Texture
+		{
+			get { return ("Terraria/Item_"+ItemID.HighVelocityBullet); }
+		}
+        public override void SetDefaults()
+		{
+			item.damage = 4;
+			item.ranged = true;
+			item.width = 8;
+			item.height = 8;
+			item.maxStack = 999;
+			item.consumable = true;             //You need to set the item consumable so that the ammo would automatically consumed
+			item.knockBack = 1.5f;
+			item.value = 25;
+			item.rare = 5;
+			item.shoot = ModContent.ProjectileType<Projectiles.IllusionaryBullet>();   //The projectile shoot when your weapon using this ammo
+			item.shootSpeed = 4f;                  //The speed of the projectile
+			item.ammo = AmmoID.Bullet;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.GlowingMushroom, 2);
+			recipe.AddIngredient(ModContent.ItemType<VialofAcid>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Weapons.SwampSeeds>(), 1);
+			recipe.AddIngredient(ItemID.MusketBall, 75);
+			recipe.AddTile(TileID.ImbuingStation);
+			recipe.SetResult(this, 75);
 			recipe.AddRecipe();
 		}
 	}

@@ -690,7 +690,7 @@ namespace SGAmod.NPCs.TownNPCs
 				if (!SGAWorld.downedHarbinger && NPC.downedGolemBoss)
 				{
 					chat = "We're being watched, I don't know by what, but I do know the dungeon isn't occupied by anyone, despite what everyone else is talking about. Maybe those alien-like Probes and those Etheria monsters are behind this?";
-					if (DD2Event.DownedInvasionT3 && NPC.downedMartians)
+					if (DD2Event.DownedInvasionT3 && NPC.downedMartians && Main.rand.Next(100)<10)
 						chat = "After dispatching those previous foes I figured it out: we're being watched, by something from outside this world and I think I know how to get rid of it. I think you could mix some ectoplasm with one of those bloody eyes to create a [i:" + mod.ItemType("TruelySusEye") + "] and see what happens";
 				}
 

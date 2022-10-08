@@ -1,6 +1,29 @@
 
 Changelog:
 
+4.000-(10/7/22)--Patch 18: Path of the Passionate
+
+-IDG's SGAmod will not be updating to 1.4 or later in any shape or form until Relogic abandons the game again and TMODLoader is as stable as it is on 1.3 (Currently, key TML features in 1.4 do not work that I use often, such as detours)
+-The project has become a solo-endever again that I may work on on and off, I am no longer accepting any feedback on features that were "expected" from me anymore or will make me unhappy.
+
+
+-Added:
+
+-Harvested Souls, Illusionary Bullet, Flask of Hallucinogenics
+-Animated mod icon in menu
+
+
+--Changed:
+
+-Nurse healing reworked, can no longer instantly heal, instead spawns a healing aura over herself that heals you while inside it over time, the aura can be heavily weakened if the nurse is badly hurt
+
+-Several key progression items now require Harvested Souls
+
+-Draken now only has a 1/10 chance to mention the Doom Harbinger if he's unlocked and not fought yet
+
+-Numismatic Crucible now upgrades itself with progression (hardmode, mechs, plantera, moonlord)
+
+
 3.655-(6/3/22)--Hotfix 43
 
 --Fixed:

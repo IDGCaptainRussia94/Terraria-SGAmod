@@ -595,6 +595,7 @@ namespace SGAmod.Items
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<UnmanedOre>(), 2);
 			recipe.AddIngredient(ModContent.ItemType<NoviteOre>(), 2);
+			recipe.AddIngredient(ModContent.ItemType<HarvestedSoul>(), 1);
 			recipe.AddIngredient(this, 4);
 			recipe.AddTile(tileType);
 			recipe.SetResult(ModContent.GetInstance<PrismalOre>(),8);
@@ -917,6 +918,7 @@ namespace SGAmod.Items
 			recipe.AddIngredient(ItemID.SoulofFright, 1);
 			recipe.AddIngredient(ItemID.SoulofMight, 1);
 			recipe.AddIngredient(ItemID.SoulofSight, 1);
+			recipe.AddIngredient(ModContent.ItemType<HarvestedSoul>(), 1);
 			recipe.AddTile(TileID.CrystalBall);
 			recipe.SetResult(this, 3);
 			recipe.AddRecipe();
@@ -925,6 +927,36 @@ namespace SGAmod.Items
 		public override void PostUpdate()
 		{
 			Lighting.AddLight(item.Center, Main.hslToRgb((Main.GlobalTime / 3f)%1f, 0.85f, 0.80f).ToVector3() * 0.55f * Main.essScale);
+		}
+	}	
+	public class HarvestedSoul : OmniSoul
+	{
+        public override string Texture => "Terraria/Extra_80";
+        public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Harvested Soul");
+			Tooltip.SetDefault("'The essence of a creature'\nExtracted from a soul jar at a Numisimatic Crucible'\nChance is creature's dropped coin value/1 gold coin");
+			// ticksperframe, frameCount
+			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 4));
+			ItemID.Sets.AnimatesAsSoul[item.type] = true;
+			ItemID.Sets.ItemIconPulse[item.type] = true;
+			ItemID.Sets.ItemNoGravity[item.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			Item refItem = new Item();
+			refItem.SetDefaults(ItemID.SoulofSight);
+			item.width = refItem.width;
+			item.height = refItem.height;
+			item.maxStack = 999;
+			item.value = Item.sellPrice(0,0,10);
+			item.rare = 6;
+		}
+
+		public override void AddRecipes()
+		{
+			//nil
 		}
 	}
 	public class Entrophite : ModItem

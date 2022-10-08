@@ -812,6 +812,8 @@ namespace SGAmod
 				return;
 			if (type == ModContent.BuffType<Buffs.MassiveBleeding>() && self.buffImmune[BuffID.Bleeding])
 				return;
+			if (type == ModContent.BuffType<Buffs.IllusionDebuff>() && self.buffImmune[BuffID.Confused])
+				return;
 
 			orig(self, type, time, quiet);
 

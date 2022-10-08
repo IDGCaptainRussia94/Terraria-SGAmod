@@ -423,6 +423,7 @@ namespace SGAmod.Items.Consumables
 			recipe.AddIngredient(ModContent.ItemType <VirulentBar>(), 3);
 			recipe.AddIngredient(ModContent.ItemType <CryostalBar>(), 3);
 			recipe.AddIngredient(ModContent.ItemType<WraithFragment4>(), 3);
+			recipe.AddIngredient(ModContent.ItemType<HarvestedSoul>(), 1);
 			recipe.AddIngredient(ItemID.FallenStar, 1);
 			recipe.AddTile(TileID.CrystalBall);
 			recipe.SetResult(this, 1);

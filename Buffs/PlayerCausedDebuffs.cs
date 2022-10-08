@@ -55,6 +55,31 @@ namespace SGAmod.Buffs
 			npc.SGANPCs().reducedDefense += 5;
 		}
 	}
+	public class IllusionDebuff : ModBuff
+	{
+
+		public static string IllusionDebuffText => Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) ? "Illusions are real to enemies under the Wracked Mind debuff, else they are fake and do nothing\nUse hallucinogenics to infict Wracked Mind on enemies\nEnemies immune to confusion are immune to Wracked Mind" : "(Hold LEFT CONTROL for more info on Illusion-based weapons)";
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Wracked Mind");
+			Description.SetDefault("Illusions are now very much real");
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = false;
+			Main.buffNoSave[Type] = true;
+		}
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+
+		}
+	}
+
 	public class RadioDebuff : ModBuff
 	{
 

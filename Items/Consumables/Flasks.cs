@@ -8,6 +8,7 @@ using SGAmod;
 using SGAmod.Buffs;
 using Idglibrary;
 using SGAmod.Dusts;
+using System.Collections.Generic;
 //using SubworldLibrary;
 
 namespace SGAmod.Items.Consumables
@@ -385,5 +386,104 @@ namespace SGAmod.Items.Consumables
             //
         }
     }
+
+	public class FlaskOfhallucinogenics : FlaskOfBlaze
+	{
+		public override int FlaskBuff => ModContent.BuffType<FlaskOfhallucinogenicsBuff>();
+		public override int Period => 1;
+		public override int Debuff => BuffID.ScutlixMount;
+		public override int Chance => 4;
+
+		public override void OnRealHit(Player player, Projectile proj, NPC npc, int damage)
+		{
+
+			if (proj == null || Main.rand.Next(100) < ((proj.modProjectile != null && proj.modProjectile is ITrueMeleeProjectile) ? 100 : 20))
+			{
+				IdgNPC.AddBuffBypass(npc.whoAmI, ModContent.BuffType<IllusionDebuff>(), 60 * 15);
+
+				for (int i = 0; i < 25; i += 1)
+				{
+					Vector2 value = new Vector2(Main.rand.Next(-10, 11), Main.rand.Next(-10, 11));
+					value.Normalize();
+					int num45 = Gore.NewGore(npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height)), value * Main.rand.NextFloat(3, 6), Main.rand.Next(426,428), (float)Main.rand.Next(20, 60) * 0.01f);
+					Main.gore[num45].sticky = false;
+				}
+			}
+		}
+
+		public static string hallucinogenicsLine => "Melee attacks may wrack their minds\nTrue Melee have a much higher chance of Wracking Minds";
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Flask of hallucinogenics");
+			Tooltip.SetDefault(hallucinogenicsLine);
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			TooltipLine line = new TooltipLine(mod, "IllusionDebuff", Buffs.IllusionDebuff.IllusionDebuffText);
+			line.overrideColor = Color.MediumPurple;
+			tooltips.Add(line);
+		}
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.MediumPurple * ((float)(0.5f + Math.Sin(Main.GlobalTime / 2f) * 0.35f));
+		}
+
+		public override void FlaskEffect(Rectangle rect, Vector2 speed)
+		{
+
+			Vector2 start = new Vector2(rect.X, rect.Y);
+
+			for (int i = 0; i < 3; i += 1)
+			{
+				if (Main.rand.Next(0, 100) > 90)
+					return;
+
+				int dust = Dust.NewDust(start, rect.Width, rect.Height, 173, 0, 0, 100, Color.MediumPurple, 0.5f);
+				Main.dust[dust].fadeIn = 0.25f;
+				Main.dust[dust].alpha = 180;
+				Main.dust[dust].velocity = speed * Main.rand.NextFloat(0.7f, 1.20f);
+			}
+
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.BottledMud>(), 1);
+			recipe.AddIngredient(ItemID.GlowingMushroom, 3);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Weapons.SwampSeeds>(), 1);
+			recipe.AddTile(TileID.ImbuingStation);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
+
+	public class FlaskOfhallucinogenicsBuff : FlaskOfBlazeBuff
+	{
+		public override FlaskOfBlaze FlaskType => ModContent.GetModItem(ModContent.ItemType<FlaskOfhallucinogenics>()) as FlaskOfhallucinogenics;
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/FlaskOfSoulSapBuff";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			DisplayName.SetDefault("Weapon Imbue: Hallucinogenics");
+			Description.SetDefault(FlaskOfhallucinogenics.hallucinogenicsLine);
+		}
+
+        public override void ModifyBuffTip(ref string tip, ref int rare)
+        {
+			tip += "\n"+Buffs.IllusionDebuff.IllusionDebuffText;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			base.Update(player, ref buffIndex);
+		}
+	}
 
 }

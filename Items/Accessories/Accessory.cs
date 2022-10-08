@@ -4290,7 +4290,7 @@ namespace SGAmod.Items.Accessories
 
 		}
 
-		Effect effect => SGAmod.TrailEffect;
+		protected Effect effect => SGAmod.TrailEffect;
 		public virtual float RingSize
 		{
 
@@ -4401,7 +4401,6 @@ namespace SGAmod.Items.Accessories
 
 			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.Lime, 0, half, RingSize * 0.5f * MathHelper.Clamp(projectile.localAI[0] / (float)MaxTime, 0f, 1f), default, 0);
 
-
 			RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("SmallLaserHorz"));
 			RadialEffect.Parameters["alpha"].SetValue(1.15f * alpha);
 			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.125f, -Main.GlobalTime * 0.275f));
@@ -4417,8 +4416,144 @@ namespace SGAmod.Items.Accessories
 
 			return false;
 		}
-
 	}
+
+	public class NurseHealingAura : BungalHealingAura
+	{
+		int nurseRecentlyHit = 9999;
+		float shrinker1 = 1f;
+		int shrinker2 = 0;
+		public override float RingSize
+		{
+
+			get
+			{
+				Player player = Main.player[projectile.owner];
+
+				return (120);
+
+			}
+		}
+		public override int MaxSize => 160;
+		public override int MaxTime => 30;
+		public override int HealingRate
+		{
+
+			get
+			{
+				Player player = Main.player[projectile.owner];
+				return (int)((projectile.damage)* shrinker1);
+			}
+
+		}
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Nurse Healing Aura");
+		}
+
+		public override void AI()
+		{
+
+			shrinker1 = MathHelper.SmoothStep(shrinker1,shrinker2 > 0 ? 0.25f : 1f,0.15f);
+			shrinker2 -= 1;
+
+			if (projectile.timeLeft > 28 && projectile.localAI[1]<600)
+			{
+				float realsize = (RingSize * 0.90f);
+				int nursehere = NPC.FindFirstNPC(NPCID.Nurse);
+
+				NPC nurse = Main.npc[nursehere];
+
+				if (nursehere>=0)
+				{
+
+					if (nurse.life < nurseRecentlyHit - 20)
+                    {
+						shrinker2 = 150;
+                    }
+
+					Player playz = Main.player[projectile.owner];
+						projectile.timeLeft = 30;
+						projectile.Center = nurse.Center;			
+
+					if (projectile.localAI[0] > MaxTime && projectile.timeLeft > 29)
+					{
+						foreach (Player player in Main.player.Where(testby => testby.active && testby.IsAlliedPlayer(playz) && (testby.Center - projectile.Center).Length() < realsize))
+						{
+							player.SGAPly().postLifeRegenBoost += HealingRate;
+						}
+					}
+
+					nurseRecentlyHit = Math.Max(nurse.life, nurseRecentlyHit);
+					nurseRecentlyHit = (int)Math.Ceiling(MathHelper.SmoothStep(nurseRecentlyHit, nurse.life, 0.15f));
+				}
+			}
+
+			projectile.localAI[1] += 1;
+			projectile.localAI[0] += 1;
+		}
+
+        public override string Texture => "Terraria/Projectile_"+ ProjectileID.NurseSyringeHeal;
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Effect RadialEffect = SGAmod.RadialEffect;
+
+			float alpha = 1f;
+
+			float size = MathHelper.Clamp(projectile.localAI[0] / (float)MaxTime, 0f, 1f);
+
+			Texture2D mainTex = Main.projectileTexture[projectile.type];
+			Vector2 half = mainTex.Size() / 2f;
+
+			float mather = MathHelper.Clamp(projectile.timeLeft / (float)MaxTime, 0f, 1f);
+
+			for (float ff = 0; ff < MathHelper.TwoPi; ff += MathHelper.TwoPi / 20f)
+			{
+				float ff2 = ff + Main.GlobalTime / 8f;
+				Vector2 loc = (Vector2.UnitX.RotatedBy(ff2)) * size * mather * (RingSize*0.85f);
+
+				Main.spriteBatch.Draw(mainTex, projectile.Center + loc - Main.screenPosition, null, Color.White * size * mather, ff2 + MathHelper.PiOver2, half, size* mather, default, 0);
+			}
+
+			mainTex = Main.projectileTexture[ModContent.ProjectileType<BungalHealingAura>()];
+			half = mainTex.Size() / 2f;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("GlowOrb"));
+			RadialEffect.Parameters["alpha"].SetValue(0.70f * alpha);
+			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.025f, 0.20f));
+			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(1f, 2f));
+			RadialEffect.Parameters["ringScale"].SetValue(0.166f * alpha);
+			RadialEffect.Parameters["ringOffset"].SetValue(((projectile.timeLeft / (float)MaxSize)) * 0.9f);
+			RadialEffect.Parameters["ringColor"].SetValue(Color.OrangeRed.ToVector3()*0.25f);
+			RadialEffect.Parameters["tunnel"].SetValue(false);
+
+			RadialEffect.CurrentTechnique.Passes["RadialAlpha"].Apply();
+
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.White, 0, half, RingSize * 0.5f * size, default, 0);
+
+			RadialEffect.Parameters["overlayTexture"].SetValue(SGAmod.Instance.GetTexture("SmallLaserHorz"));
+			RadialEffect.Parameters["alpha"].SetValue(1.15f * alpha);
+			RadialEffect.Parameters["texOffset"].SetValue(new Vector2(-Main.GlobalTime * 0.125f, -Main.GlobalTime * 0.675f));
+			RadialEffect.Parameters["texMultiplier"].SetValue(new Vector2(2f, 8f));
+			RadialEffect.Parameters["ringColor"].SetValue(Color.Red.ToVector3() * 0.5f);
+			RadialEffect.Parameters["ringScale"].SetValue(0.164f * alpha);
+
+			RadialEffect.CurrentTechnique.Passes["RadialAlpha"].Apply();
+
+			Main.spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.White, 0, half, RingSize * 0.5f * size, default, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
+
+			return false;
+		}
+	}
+
+
 
 	[AutoloadEquip(EquipType.HandsOn, EquipType.HandsOff, EquipType.Back)]
 	public class ArmchairGeneral : PrismalNecklace

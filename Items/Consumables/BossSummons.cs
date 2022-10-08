@@ -242,7 +242,8 @@ namespace SGAmod.Items.Consumables
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Seashell, 1);
 			recipe.AddIngredient(ItemID.SharkFin, 1);
-			recipe.AddIngredient(ItemID.ChlorophyteBar, 5);
+			recipe.AddIngredient(ItemID.ChlorophyteBar, 3);
+			recipe.AddIngredient(ModContent.ItemType<OmniSoul>(), 1);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
@@ -753,7 +754,7 @@ namespace SGAmod.Items.Consumables
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mechanical Clusterfuck");
-			Tooltip.SetDefault("Summons the Twin-Prime-Destroyers\nIt is highly encourged you do not fight this before late hardmode...");
+			Tooltip.SetDefault("Summons the Twin-Prime-Destroyers\nIt is highly encourged you do not fight this before late hardmode...\nThe OG Mechdusa");
 		}
 		public override void SetDefaults()
 		{
@@ -814,6 +815,8 @@ namespace SGAmod.Items.Consumables
 			recipe.AddIngredient(547, 3);
 			recipe.AddIngredient(548, 3);
 			recipe.AddIngredient(549, 3);
+			recipe.AddIngredient(ModContent.ItemType<OmniSoul>(), 3);
+
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

@@ -225,6 +225,14 @@ namespace SGAmod
 
 				sb.Draw(Draken, style.Position() + offset, rect, Color.White, 0, new Vector2(frameSize.X, frameSize.Y / 7f) / 2f, 0.50f, backAndForth, 0f);
 
+				Texture2D BGtex = ModContent.GetTexture("SGAmod/DrakenPortraitPurpleBG");
+				Texture2D DergIcon = ModContent.GetTexture("SGAmod/DrakenPortraitSpritesheet");
+
+				Rectangle frameDerg = new Rectangle((((int)(Main.GlobalTime *10f)%39)*40), 0,40, 40);
+
+				//Animated Icon
+				sb.Draw(BGtex, style.Position() + new Vector2(0,0), null, Color.White, 0, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+				sb.Draw(DergIcon, style.Position() + new Vector2(0,0), frameDerg, Color.White, 0, Vector2.Zero, 2f, SpriteEffects.None, 0f);
 
 			}
 		}

@@ -502,6 +502,142 @@ namespace SGAmod.Projectiles
 
 	}
 
+	public class IllusionaryBullet : ModProjectile
+	{
+		private Vector2[] oldPos = new Vector2[30];
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Illusionary Bullet");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 12;
+			projectile.height = 12;
+			projectile.ignoreWater = false;
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.tileCollide = true;
+			projectile.ranged = true;
+			projectile.timeLeft = 900;
+			projectile.extraUpdates = 4;
+			projectile.penetrate = 3;
+			projectile.usesLocalNPCImmunity = true;
+			projectile.localNPCHitCooldown = -1;
+			aiType = ProjectileID.Bullet;
+		}
+
+		public override string Texture
+		{
+			get { return ("SGAmod/Items/Weapons/Ammo/SoulboundBullet"); }
+		}
+
+        public override bool CanDamage()
+        {
+			return projectile.penetrate > 1;
+        }
+
+        public override bool? CanHitNPC(NPC target)
+        {
+			if (target.HasBuff(ModContent.BuffType<Buffs.IllusionDebuff>()))
+				return true;
+			else
+				return false;
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			if (projectile.penetrate > 1)
+			{
+				projectile.velocity *= 2f;
+				projectile.velocity -= oldVelocity.RotatedByRandom(MathHelper.Pi*0.20f)*1.50f;
+				projectile.penetrate = 1;
+			}
+
+			projectile.damage = 0;
+
+			return false;
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			damage = (int)(damage*1.25f);
+			if (projectile.penetrate > 1)
+			{
+				projectile.velocity = Vector2.Zero;
+				projectile.penetrate = 1;
+			}
+			projectile.damage = 0;
+		}
+
+		public override void AI()
+		{
+
+			if (oldPos[0] == default)
+			{
+				for (int i = 0; i < oldPos.Length; i += 1)
+				{
+					oldPos[i] = projectile.Center;
+				}
+			}
+
+			Player owner = Main.player[projectile.owner];
+
+			for (int k = oldPos.Length - 1; k > 0; k--)
+			{
+				oldPos[k] = oldPos[k - 1];
+			}
+
+			oldPos[0] = projectile.Center;
+
+
+			if (projectile.penetrate<=1)
+			{
+				projectile.velocity *= 0.95f;
+
+				projectile.Opacity -= 0.025f;
+
+				if (projectile.Opacity <= 0)
+				{
+
+					projectile.Kill();
+				}
+			}
+
+			projectile.position -= projectile.velocity * 0.5f;
+			projectile.rotation = (float)Math.Atan2((double)projectile.velocity.Y, (double)projectile.velocity.X) + 1.57f;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+
+			Texture2D tex = Main.itemTexture[ModContent.ItemType<Items.Weapons.Ammo.IllusionaryBullet>()];
+			Vector2 drawOrigin = tex.Size()/2f;
+
+			TrailHelper trailEffect = new TrailHelper("BasicEffectAlphaPass", Main.extraTexture[21]);
+			//TrailHelper trailEffect = new TrailHelper("DefaultPass", mod.GetTexture("Noise"));
+			Color color = Color.MediumPurple*projectile.Opacity*0.45f;
+			trailEffect.color = delegate (float percent)
+			{
+				return color;
+			};
+			trailEffect.strength = projectile.Opacity * MathHelper.Clamp(projectile.timeLeft / 80f, 0f, 1f) * 2f;
+			trailEffect.trailThickness = 2f;
+			trailEffect.coordMultiplier = new Vector2(1f, 2f);
+			trailEffect.coordOffset = new Vector2(0, Main.GlobalTime * -2f);
+			trailEffect.trailThicknessIncrease = 2f;
+			trailEffect.capsize = new Vector2(4f, 4f);
+
+			trailEffect.DrawTrail(oldPos.ToList());
+
+			spriteBatch.Draw(tex, projectile.Center-Main.screenPosition, null, Color.MediumPurple * 0.75f*projectile.Opacity, projectile.rotation, drawOrigin, projectile.scale, SpriteEffects.None, 0f);
+
+
+			return false;
+		}
+
+	}
+
 
 	public class NoviteBullet : ModProjectile
 	{

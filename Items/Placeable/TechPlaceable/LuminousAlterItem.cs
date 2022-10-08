@@ -211,6 +211,7 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 				return Color.Lerp(rainbowColor, Color.Lerp(Color.Pink, Color.Aqua, 0.5f + (float)Math.Sin(Main.GlobalTime * 0.735f)), 0.5f + (float)Math.Sin(Main.GlobalTime * 0.375f));
 			}
         }
+
 		/*public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			foreach (TooltipLine line in tooltips)
@@ -222,12 +223,15 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 				}
 			}
 		}*/
+
 		public override void AddRecipes()
-		{		
+		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType("StarMetalBar"), 12);
-			recipe.AddIngredient(mod.ItemType("AuroraTear"), 1);
-			recipe.AddIngredient(mod.ItemType("IlluminantEssence"), 12);
+			recipe.AddIngredient(ModContent.ItemType<StarMetalBar>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<AuroraTear>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<HarvestedSoul>(), 10);
+
 			recipe.AddTile(TileID.LihzahrdAltar);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

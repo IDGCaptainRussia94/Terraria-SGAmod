@@ -16,7 +16,7 @@ namespace SGAmod.Items.Placeable.TechPlaceable
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Numismatic Crucible");
-			Tooltip.SetDefault("Simulates npc deaths and attempts to output their drops below\nPlace a filled Soul Jar into the machine to designate that type of enemy\nRequires Raw money inputed via coins to function\nMoney cost is relative to the money ammount dropped by the designated enemy\n'basically a mob farm block'");
+			Tooltip.SetDefault("Simulates npc deaths and attempts to output their drops below\nPlace a filled Soul Jar into the machine to designate that type of enemy\nRequires Raw money inputed via coins to function\nMoney cost is relative to the money ammount dropped by the designated enemy\nProcess rate and max capacity increases in hardmode, post mech, post Plantera, and post Moonlord\n'basically a mob farm block'");
 		}
 
         public override string Texture => "SGAmod/Tiles/TechTiles/NumismaticCrucibleTile";

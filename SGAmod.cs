@@ -1126,12 +1126,28 @@ namespace SGAmod
 				}
 			}
 
+			int[,] stuff2 = new int[,] {{ ItemID.MechanicalEye, 2 }, { ItemID.MechanicalSkull,2}, {ItemID.MechanicalWorm,2}, {ItemID.TerraBlade,5} };
+			for (int i = 0; i < 4; i += 1)
+			{
+				finder = new RecipeFinder();
+				finder.SetResult(stuff2[i,0]);
+				foreach (Recipe recipe2 in finder.SearchRecipes())
+				{
+					RecipeEditor editor = new RecipeEditor(recipe2);
+					editor.AddIngredient(ModContent.ItemType<HarvestedSoul>(), stuff2[i,1]);
+				}
+			}
+
+
+
 			finder = new RecipeFinder();
 			finder.SetResult(ItemID.LunarBar);
 			foreach (Recipe recipe2 in finder.SearchRecipes())
 			{
 				RecipeEditor editor = new RecipeEditor(recipe2);
 				editor.AddIngredient(ModContent.ItemType<IlluminantEssence>(), 2);
+				editor.AddIngredient(ModContent.ItemType<HarvestedSoul>(), 1);
+				editor.SetResult(ItemID.LunarBar,2);
 			}
 
 			int[] moonlorditems = { ItemID.Terrarian, ItemID.LunarFlareBook, ItemID.RainbowCrystalStaff, ItemID.SDMG, ItemID.StarWrath, ItemID.Meowmere, ItemID.LastPrism, ItemID.MoonlordTurretStaff, ItemID.FireworksLauncher,ModContent.ItemType<SoulPincher>() };

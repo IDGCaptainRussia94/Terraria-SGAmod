@@ -1,6 +1,6 @@
 author = IDGCaptainRussia
-version = 3.657
-displayName = SGAmod: [c/65c281:Anniversary Update!]
+version = 4.000
+displayName = SGAmod: [c/65c281:Path of the Passionate]
 buildIgnore = .vs\*, .git\*, ignore\*, .gitignore, .gitattributes, .zip, Effects\fxcompiler,*.exe,*.zip,*.gif, *.xcf, *.idg, *.MD, *.csproj, *.user, obj\*, bin\*, vs\*, git\*
 includePDB = true
 hideCode = true

@@ -233,14 +233,24 @@ namespace SGAmod.Tiles.TechTiles
 
         }
         public int npcValue = -1;
-        public override int ProcessRate => 50;
+        public override int ProcessRate => (Main.hardMode ? (NPC.downedPlantBoss ? (NPC.downedMoonlord ? 100 : 80) : 60) : 30);
         public int InterestCost => 50;
-        protected int maxStoredMoney = Item.buyPrice(0,1,0);
+        protected int maxStoredMoney = Item.buyPrice(0,1,0,0);
         public int MaxStoredMoney
         {
             get
             {
-                int moneyCapacity = (int)(maxStoredMoney * 2.5f);
+                float theMax = 2.5f;
+                if (Main.hardMode)
+                    theMax += 7.5f;
+                if (NPC.downedMechBossAny)
+                    theMax += 15f;
+                if (NPC.downedPlantBoss)
+                    theMax += 25f;
+                if (NPC.downedMoonlord)
+                    theMax += 50f;
+
+                int moneyCapacity = (int)(maxStoredMoney * theMax);
                 return moneyCapacity;
             }
             set
@@ -409,6 +419,11 @@ namespace SGAmod.Tiles.TechTiles
             List<Item> before = Main.item.ToList();
 
             tempnpc.NPCLoot();
+
+            if (Main.rand.Next(Item.buyPrice(0,1,0,0))<tempnpc.value)
+            {
+                Item.NewItem(tempnpc.Center, ModContent.ItemType<Items.HarvestedSoul>(), 1);
+            }
 
             List<Item> after = Main.item.Except(before).ToList();
             List<(int,Item)> itemsToSpawn = new List<(int, Item)>();

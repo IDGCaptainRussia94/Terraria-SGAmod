@@ -499,7 +499,8 @@ namespace SGAmod
 				}
 			}
 
-			if (((sgaply.nightmareplayer || SGAmod.DRMMode) && IdgNPC.bossAlive) || sgaply.noLifeRegen)
+			//((sgaply.nightmareplayer || SGAmod.DRMMode) && IdgNPC.bossAlive)
+			if (sgaply.noLifeRegen || (sgaply.HealingPointsLeft<1 && !sgaply.SafeRegen))
 				return;
 
 			orig(self);

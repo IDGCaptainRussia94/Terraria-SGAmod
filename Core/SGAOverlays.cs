@@ -41,20 +41,20 @@ namespace SGAmod
 			}
 
 			int foundIndex = 0;
-			int foundLastIndex = layers.Count-1;
+			int foundLastIndex = layers.Count - 1;
 
 			for (int k = 0; k < layers.Count; k++)
 			{
 				if (layers[k].Name == "Vanilla: Resource Bars")
 				{
-					foundIndex = k+1;
+					foundIndex = k + 1;
 					foundLastIndex = foundIndex;
 					break;
 				}
 			}
 
 			layers.Insert(foundIndex, new LegacyGameInterfaceLayer("SGAmod: HUD", DrawHUD, InterfaceScaleType.UI));
-			//layers.Insert(foundLastIndex, new LegacyGameInterfaceLayer("SGAmod: Over HUD", DrawOverHUD, InterfaceScaleType.UI));
+			layers.Insert(foundLastIndex, new LegacyGameInterfaceLayer("SGAmod: Over HUD", DrawOverHUD, InterfaceScaleType.UI));
 
 			int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 			if (mouseTextIndex != -1)
@@ -121,7 +121,7 @@ namespace SGAmod
 
 					//Main.NewText(totalhearts);
 
-					float startingheartindex = ((num * (1f-sgaply.energyShieldReservation)) / num) * UIDisplay_LifePerHeart;
+					float startingheartindex = ((num * (1f - sgaply.energyShieldReservation)) / num) * UIDisplay_LifePerHeart;
 
 					Main.heartTexture = SGAmod.VanillaHearts.Item1;
 					Main.heart2Texture = SGAmod.VanillaHearts.Item2;
@@ -155,7 +155,7 @@ namespace SGAmod
 						int counter = (Main.LocalPlayer.miscCounter + i * 73) / 4;
 						Rectangle glowrect = new Rectangle(0, (counter % 7) * (Main.glowMaskTexture[25].Height / 7), Main.glowMaskTexture[25].Width, Main.glowMaskTexture[25].Height / 7);
 
-						Main.spriteBatch.Draw(Main.glowMaskTexture[25], new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), glowrect, Color.Lerp(colorDye,Color.Black,0f) * energy, MathHelper.Pi, glowrect.Size() / 2f, 0.75f + (energy * 0.25f),
+						Main.spriteBatch.Draw(Main.glowMaskTexture[25], new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), glowrect, Color.Lerp(colorDye, Color.Black, 0f) * energy, MathHelper.Pi, glowrect.Size() / 2f, 0.75f + (energy * 0.25f),
 							((counter % 14) > 6 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | ((counter % 28) > 13 ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
 
 						//Hearts
@@ -164,8 +164,8 @@ namespace SGAmod
 						Main.spriteBatch.Draw(heartTexture2, new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), null, colorDye * energy, 0, new Vector2(heartTexture.Width / 2, heartTexture.Height / 2), 0.75f + (energy * 0.25f), SpriteEffects.None, 0f);
 
 						//Zap again!
-						Main.spriteBatch.Draw(Main.glowMaskTexture[25], new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), glowrect, colorDye * energy, 0, glowrect.Size() / 2f, 0.75f + (energy * 0.25f), 
-							((counter % 14)>6 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | ((counter % 28) > 13 ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
+						Main.spriteBatch.Draw(Main.glowMaskTexture[25], new Vector2(500 + 26 * (i - 1) + num8 + UI_ScreenAnchorX + heartTexture.Width / 2, 32f + ((float)heartTexture.Height - (float)heartTexture.Height * 1f) / 2f + (float)num9 + (float)(heartTexture.Height / 2)), glowrect, colorDye * energy, 0, glowrect.Size() / 2f, 0.75f + (energy * 0.25f),
+							((counter % 14) > 6 ? SpriteEffects.FlipHorizontally : SpriteEffects.None) | ((counter % 28) > 13 ? SpriteEffects.FlipVertically : SpriteEffects.None), 0f);
 
 					}
 
@@ -176,17 +176,17 @@ namespace SGAmod
 
 		public static bool DrawUI()
 		{
-			if (SGAmod.CustomUIMenu.visible) 
+			if (SGAmod.CustomUIMenu.visible)
 			{
 				SGAmod.CustomUIMenu.Draw(Main.spriteBatch);
 			}
 			if (Main.playerInventory)
 			{
 				if (SGAmod.ArmorButtonUpdate && Main.EquipPage == 0)
-				SGAmod.armorButton.Draw(Main.spriteBatch);
+					SGAmod.armorButton.Draw(Main.spriteBatch);
 
 				if (Main.LocalPlayer.SGAPly().benchGodFavor)
-				SGAmod.craftBlockPanel.Draw(Main.spriteBatch);
+					SGAmod.craftBlockPanel.Draw(Main.spriteBatch);
 			}
 			return true;
 		}
@@ -216,14 +216,14 @@ namespace SGAmod
 				for (int i = 0; i < 360; i += 360 / 8)
 				{
 					sizeup = !sizeup;
-					float angle = MathHelper.ToRadians(i+((sizeup ? 400f : -400f)*MathHelper.Clamp(1f- ((float)sga.lockoneffect/70f), 0f,1f)));
-					Vector2 hereas = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * (180f+MathHelper.Clamp(300- sga.lockoneffect*4,0,300));
+					float angle = MathHelper.ToRadians(i + ((sizeup ? 400f : -400f) * MathHelper.Clamp(1f - ((float)sga.lockoneffect / 70f), 0f, 1f)));
+					Vector2 hereas = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * (180f + MathHelper.Clamp(300 - sga.lockoneffect * 4, 0, 300));
 
 					Texture2D arrow = ModContent.GetTexture("SGAmod/MatrixArrow");
 
-					Vector2 drawPos = ((hereas * (sizeup ? 1f : 1f)*Main.essScale) + target.Center) - Main.screenPosition;
+					Vector2 drawPos = ((hereas * (sizeup ? 1f : 1f) * Main.essScale) + target.Center) - Main.screenPosition;
 					float sizer = (sizeup ? 0.5f : 1f);
-					Main.spriteBatch.Draw(arrow, drawPos, null, Main.hslToRgb(((i/360f)-Main.GlobalTime*1f)%1f,1f,0.75f)*MathHelper.Clamp((float)sga.lockoneffect/70f,0f,1f), MathHelper.ToRadians(i)+MathHelper.Pi, new Vector2(arrow.Width* sizer, arrow.Height/2), new Vector2(1, 1), SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(arrow, drawPos, null, Main.hslToRgb(((i / 360f) - Main.GlobalTime * 1f) % 1f, 1f, 0.75f) * MathHelper.Clamp((float)sga.lockoneffect / 70f, 0f, 1f), MathHelper.ToRadians(i) + MathHelper.Pi, new Vector2(arrow.Width * sizer, arrow.Height / 2), new Vector2(1, 1), SpriteEffects.None, 0f);
 
 				}
 			}
@@ -241,19 +241,25 @@ namespace SGAmod
 
 			SGAPlayer sga = Main.LocalPlayer.SGAPly();
 
-			if (sga.GetEnergyShieldAmmountAndRecharge.Item1 > 0 && sga.GetEnergyShieldAmmountAndRecharge.Item2 > 0)
+			bool safe = Main.LocalPlayer.SGAPly().SafeRegen;
+
+			Color barColor = safe ? Color.Lime : Color.Orange;
+
+			Vector2 drawPos = new Vector2(Main.screenWidth - 44, 50);
+
+			Texture2D stain = SGAmod.Instance.GetTexture("TiledPerlin");
+			float percentit = (sga.HealingPointsLeft / (sga.HealingPointsLeftMax * 2f));
+			int barlength = (int)((255f * (percentit)) * Main.UIScale);
+			int height = (int)(10 * Main.UIScale);
+
+			spriteBatch.End();
+			//Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			//Main.NewText(percentit);
+
+			if (sga.HealingPointsLeft > 0)
 			{
-
-				Vector2 drawPos = new Vector2(Main.screenWidth-44,42);
-
-				Texture2D stain = SGAmod.Instance.GetTexture("TiledPerlin");
-				float percentit = (sga.GetEnergyShieldAmmountAndRecharge.Item1 / (float)sga.GetEnergyShieldAmmountAndRecharge.Item2);
-				int barlength = (int)((255f * (percentit)) *Main.UIScale);
-				int height = (int)(24 * Main.UIScale);
-
-				spriteBatch.End();
-				//Matrix Custommatrix = Matrix.CreateScale(Main.screenWidth / 1920f, Main.screenHeight / 1024f, 0f);
-				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
 				//DrawData value28 = new DrawData(stain, new Vector2(240, 240), new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, 0, 120, 120)), Microsoft.Xna.Framework.Color.White, 0, stain.Size() / 2f, 1f, SpriteEffects.None, 0);
 
@@ -269,27 +275,28 @@ namespace SGAmod
 
 				VertexBuffer vertexBuffer;
 
-				Vector3 d3pos = new Vector3(drawPos.X, drawPos.Y, 0)*Main.UIScale;
+				Vector3 d3pos = new Vector3(drawPos.X, drawPos.Y, 0) * Main.UIScale;
 
 				Effect effect = SGAmod.TrailEffect;
 
 				effect.Parameters["WorldViewProjection"].SetValue(Effects.WVP.View(Main.GameViewMatrix.Zoom) * Effects.WVP.Projection());
 				effect.Parameters["imageTexture"].SetValue(stain);
-				effect.Parameters["coordOffset"].SetValue(new Vector2(0, Main.GlobalTime*-0.1f));
-				effect.Parameters["coordMultiplier"].SetValue(new Vector2(0.3f,0.1f));
-				effect.Parameters["strength"].SetValue(MathHelper.Clamp(1.5f,0,3));
+				effect.Parameters["coordOffset"].SetValue(new Vector2(0, Main.GlobalTime * -0.1f));
+				effect.Parameters["coordMultiplier"].SetValue(new Vector2(0.3f, 0.1f));
+				effect.Parameters["strength"].SetValue(MathHelper.Clamp(1.5f, 0, 3));
+				effect.Parameters["yFade"].SetValue(1f);
 
 				VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6];
 
 				Vector3 screenPos = new Vector3(-16, 0, 0);
 
-				vertices[0] = new VertexPositionColorTexture(d3pos + new Vector3(0, 0, 0), Color.Blue, new Vector2(0, 0));
-				vertices[1] = new VertexPositionColorTexture(d3pos + new Vector3(0, height, 0), Color.Blue, new Vector2(0, 1));
-				vertices[2] = new VertexPositionColorTexture(d3pos + new Vector3(-barlength, 0, 0), Color.Blue, new Vector2(percentit, 0));
+				vertices[0] = new VertexPositionColorTexture(d3pos + new Vector3(0, 0, 0), barColor, new Vector2(0, 0));
+				vertices[1] = new VertexPositionColorTexture(d3pos + new Vector3(0, height, 0), barColor, new Vector2(0, 1));
+				vertices[2] = new VertexPositionColorTexture(d3pos + new Vector3(-barlength, 0, 0), barColor, new Vector2(percentit, 0));
 
-				vertices[3] = new VertexPositionColorTexture(d3pos + new Vector3(-barlength, height, 0), Color.Blue, new Vector2(percentit, 1));
-				vertices[4] = new VertexPositionColorTexture(d3pos + new Vector3(0, height, 0), Color.Blue, new Vector2(0, 1));
-				vertices[5] = new VertexPositionColorTexture(d3pos + new Vector3(-barlength, 0, 0), Color.Blue, new Vector2(percentit, 0));;
+				vertices[3] = new VertexPositionColorTexture(d3pos + new Vector3(-barlength, height, 0), barColor, new Vector2(percentit, 1));
+				vertices[4] = new VertexPositionColorTexture(d3pos + new Vector3(0, height, 0), barColor, new Vector2(0, 1));
+				vertices[5] = new VertexPositionColorTexture(d3pos + new Vector3(-barlength, 0, 0), barColor, new Vector2(percentit, 0)); ;
 
 				vertexBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.WriteOnly);
 				vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
@@ -310,10 +317,15 @@ namespace SGAmod
 			spriteBatch.Begin(SpriteSortMode.Deferred, default, default, default, default, null, Matrix.Identity);
 
 
+			string strrring = "" + sga.HealingPointsLeft + (safe ? " SAFE" : "");
+
+			Vector2 size = Main.fontDeathText.MeasureString(strrring);
+			spriteBatch.DrawString(Main.fontMouseText, strrring, drawPos + new Vector2(-256, 32) - new Vector2(size.X / 2f, size.Y / 2f), (safe ? Color.Lime : (sga.HealingPointsLeft < 1 ? Color.Red : Color.White)));
+
 			return true;
 		}
 
-			public static bool DrawHUD()
+		public static bool DrawHUD()
 		{
 
 			if (Main.gameMenu || SGAmod.Instance == null && !Main.dedServ)
@@ -355,31 +367,31 @@ namespace SGAmod
 
 					if (SGAWorld.darknessVision && DimDingeonsWorld.darkSectors.Count > 0)
 					{
-                        for (int i = 0; i < DimDingeonsWorld.darkSectors.Count; i += 1)
-                        {
+						for (int i = 0; i < DimDingeonsWorld.darkSectors.Count; i += 1)
+						{
 
 							Texture2D tex = ModContent.GetTexture("SGAmod/Items/WatchersOfNull");
 							Texture2D tex2 = Main.itemTexture[ModContent.ItemType<AssemblyStar>()];
 							Rectangle rect = new Rectangle(0, 0, tex.Width, tex.Height / 13);
 
-							Vector2 drawOrigin = new Vector2(tex.Width, tex.Height/13) / 2f;
+							Vector2 drawOrigin = new Vector2(tex.Width, tex.Height / 13) / 2f;
 
 							DarkSector sector = DimDingeonsWorld.darkSectors[i];
 
-							Vector2 Vecd = (sector.position.ToVector2()*16) - (screenCenterDrawPos + Main.screenPosition);
+							Vector2 Vecd = (sector.position.ToVector2() * 16) - (screenCenterDrawPos + Main.screenPosition);
 							float pointthere = Vecd.ToRotation();
 
-							for(int k=-1;k<3;k+=2)
-							spriteBatch.Draw(tex2, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.Black*0.4f, Main.GlobalTime * 2f*k, tex2.Size() / 2f, Main.UIScale*1.25f, SpriteEffects.FlipHorizontally, 0f);
-							spriteBatch.Draw(tex, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), rect, Color.White*Main.essScale, 0, drawOrigin, Main.UIScale,SpriteEffects.FlipHorizontally, 0f);
+							for (int k = -1; k < 3; k += 2)
+								spriteBatch.Draw(tex2, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.Black * 0.4f, Main.GlobalTime * 2f * k, tex2.Size() / 2f, Main.UIScale * 1.25f, SpriteEffects.FlipHorizontally, 0f);
+							spriteBatch.Draw(tex, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), rect, Color.White * Main.essScale, 0, drawOrigin, Main.UIScale, SpriteEffects.FlipHorizontally, 0f);
 
 
 						}
 					}
 
-					if (Main.LocalPlayer.SGAPly().phaethonEye>0)
+					if (Main.LocalPlayer.SGAPly().phaethonEye > 0)
 					{
-						foreach(NPC npc in Main.npc.Where(testby => testby.active && testby.rarity > 0))
+						foreach (NPC npc in Main.npc.Where(testby => testby.active && testby.rarity > 0))
 						{
 
 							Texture2D tex2 = Main.itemTexture[ItemID.LifeformAnalyzer];
@@ -388,7 +400,7 @@ namespace SGAmod
 							float pointthere = Vecd.ToRotation();
 
 							spriteBatch.Draw(tex2, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White * Main.essScale, 0, tex2.Size() / 2f, Main.UIScale, SpriteEffects.FlipHorizontally, 0f);
-							spriteBatch.Draw(tex2, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White * Main.essScale, 0, tex2.Size()/2f, Main.UIScale, SpriteEffects.FlipHorizontally, 0f);
+							spriteBatch.Draw(tex2, screenCenterDrawPos + (pointthere.ToRotationVector2() * 64f) + (pointthere.ToRotationVector2() * (float)Math.Pow(Vecd.Length(), 0.9) / 50), null, Color.White * Main.essScale, 0, tex2.Size() / 2f, Main.UIScale, SpriteEffects.FlipHorizontally, 0f);
 
 						}
 					}
@@ -472,20 +484,20 @@ namespace SGAmod
 
 					Texture2D texture = mod.GetTexture("BoostBar");
 
-					int offsetY = -texture.Height+SGAConfigClient.Instance.HUDDisplacement;
+					int offsetY = -texture.Height + SGAConfigClient.Instance.HUDDisplacement;
 
 					if (perc > 0)
 					{
 
 						float drawcolortrans = MathHelper.Clamp((modply.boosterdelay + 100) / 100f, 0f, 1f);
 
-							spriteBatch.End();
+						spriteBatch.End();
 
-							Vector2 scaler = new Vector2(modply.boosterPowerLeftMax / 300f, 1);
-							int drawX = (int)(((locply.position.X + (locply.width / 2))) - Main.screenPosition.X);
-							int drawY = (int)((locply.position.Y + (locply.gravDir == 1 ? locply.height + 10 : -10)) - Main.screenPosition.Y);//gravDir 
+						Vector2 scaler = new Vector2(modply.boosterPowerLeftMax / 300f, 1);
+						int drawX = (int)(((locply.position.X + (locply.width / 2))) - Main.screenPosition.X);
+						int drawY = (int)((locply.position.Y + (locply.gravDir == 1 ? locply.height + 10 : -10)) - Main.screenPosition.Y);//gravDir 
 
-							spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
+						spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
 
 						if (drawcolortrans > 0f)
 						{
@@ -511,7 +523,7 @@ namespace SGAmod
 
 							spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
 
-							float drawcolortrans = MathHelper.Clamp((modply.electricdelay + 100) / 100f, 0.15f+(float)Math.Sin(Main.GlobalTime*5f)/10f, 1f)* (MathHelper.Clamp((1f-perc) * 250f, 0f, 1f));
+							float drawcolortrans = MathHelper.Clamp((modply.electricdelay + 100) / 100f, 0.15f + (float)Math.Sin(Main.GlobalTime * 5f) / 10f, 1f) * (MathHelper.Clamp((1f - perc) * 250f, 0f, 1f));
 
 							if (drawcolortrans > 0f)
 							{
@@ -522,8 +534,8 @@ namespace SGAmod
 								spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
 								GameShaders.Armor.GetShaderFromItemId(ItemID.StardustDye).Apply(null);
 
-								spriteBatch.Draw(texture, new Vector2(-scaler.X, offsetY), new Rectangle(2, 2, 2, texture.Height-2), Color.Aqua * drawcolortrans, 0f, new Vector2(0, 0), new Vector2(scaler.X * perc, scaler.Y), SpriteEffects.None, 0);
-								
+								spriteBatch.Draw(texture, new Vector2(-scaler.X, offsetY), new Rectangle(2, 2, 2, texture.Height - 2), Color.Aqua * drawcolortrans, 0f, new Vector2(0, 0), new Vector2(scaler.X * perc, scaler.Y), SpriteEffects.None, 0);
+
 								spriteBatch.End();
 								spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
 
@@ -545,10 +557,10 @@ namespace SGAmod
 
 						spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(drawX, drawY, 0));
 
-						float drawcolortrans = MathHelper.Clamp(perc*50f, 0f, 1f);
+						float drawcolortrans = MathHelper.Clamp(perc * 50f, 0f, 1f);
 						spriteBatch.Draw(texture, new Vector2(-scaler.X - 2, offsetY), new Rectangle(0, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
 						spriteBatch.Draw(texture, new Vector2(-scaler.X, offsetY), new Rectangle(2, 0, 2, texture.Height), Color.DarkGray * drawcolortrans, 0f, new Vector2(0, 0), scaler, SpriteEffects.None, 0);
-						spriteBatch.Draw(texture, new Vector2(-scaler.X, offsetY), new Rectangle(2, 0, 2, texture.Height), Main.hslToRgb((Main.GlobalTime/3f)%1f,1f,0.75f) * drawcolortrans, 0f, new Vector2(0, 0), new Vector2(scaler.X * perc, scaler.Y), SpriteEffects.None, 0);
+						spriteBatch.Draw(texture, new Vector2(-scaler.X, offsetY), new Rectangle(2, 0, 2, texture.Height), Main.hslToRgb((Main.GlobalTime / 3f) % 1f, 1f, 0.75f) * drawcolortrans, 0f, new Vector2(0, 0), new Vector2(scaler.X * perc, scaler.Y), SpriteEffects.None, 0);
 						spriteBatch.Draw(texture, new Vector2(+scaler.X, offsetY), new Rectangle(4, 0, 2, texture.Height), Color.White * drawcolortrans, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
 						offsetY += texture.Height;
 					}
@@ -560,7 +572,7 @@ namespace SGAmod
 
 						texture = mod.GetTexture("ActionCooldown");
 						int drawX = (int)(((-texture.Width / 4f)));
-						int drawY = (int)(((48+offsetY)));//gravDir 
+						int drawY = (int)(((48 + offsetY)));//gravDir 
 
 						spriteBatch.End();
 						spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.CreateScale(Main.UIScale) * Matrix.CreateTranslation(locply.Center.X - Main.screenPosition.X, locply.Center.Y - Main.screenPosition.Y, 0));
@@ -577,7 +589,7 @@ namespace SGAmod
 								float percprev = 0f;
 								Color colormode = Color.White;
 								if (modply.MaxCooldownStacks <= q)
-									colormode = Color.Lerp(Color.White,Color.Red,0.50f);
+									colormode = Color.Lerp(Color.White, Color.Red, 0.50f);
 
 								if (q - 1 >= 0)
 									percprev = Math.Min(1f, (float)modply.CooldownStacks[q - 1].timeleft / 30f);
@@ -622,7 +634,7 @@ namespace SGAmod
 
 					float maxstr = explosion.strength;
 					if (explosion.strengthBasedOnPercent != default)
-                    {
+					{
 						maxstr = explosion.strengthBasedOnPercent(timeLeftDirect);
 						//Main.NewText(maxstr);
 					}
@@ -632,15 +644,15 @@ namespace SGAmod
 					Vector2 screenCenter = Main.screenPosition + center;
 					Vector2 dist = (screenCenter - explosion.where);
 
-					float distFade = MathHelper.Clamp((explosion.distance- dist.Length()) / 480f, 0f, 1f);
+					float distFade = MathHelper.Clamp((explosion.distance - dist.Length()) / 480f, 0f, 1f);
 
-					for (float str = 1f; str < 1f+(maxstr* warmupTime); str += 0.05f)
+					for (float str = 1f; str < 1f + (maxstr * warmupTime); str += 0.05f)
 					{
-						Vector2 offset = center + dist * (str-1f);
+						Vector2 offset = center + dist * (str - 1f);
 
-						float fadeLater = (1f - ((str - 1f) / (maxstr-1f)));
+						float fadeLater = (1f - ((str - 1f) / (maxstr - 1f)));
 
-						spriteBatch.Draw(SGAmod.screenExplosionCopy, offset, null, Color.White * distFade* fadeLater*explosion.alpha * timeLeft,0, halfOfScreen, 1f+((str-1f)*explosion.perscreenscale* timeLeft), SpriteEffects.None, 0f);
+						spriteBatch.Draw(SGAmod.screenExplosionCopy, offset, null, Color.White * distFade * fadeLater * explosion.alpha * timeLeft, 0, halfOfScreen, 1f + ((str - 1f) * explosion.perscreenscale * timeLeft), SpriteEffects.None, 0f);
 
 					}
 					//Main.NewText("twese");
@@ -658,13 +670,13 @@ namespace SGAmod
 		public override bool IsVisible()
 		{
 			bool draw = false;
-			if (!Main.gameMenu && Main.LocalPlayer != null && SGAmod.Instance != null && SGAmod.screenExplosions.Count>0)
+			if (!Main.gameMenu && Main.LocalPlayer != null && SGAmod.Instance != null && SGAmod.screenExplosions.Count > 0)
 			{
 				//if (Main.LocalPlayer.HeldItem.type == SGAmod.Instance.ItemType("Expertise"))
 				draw = true;
-            }
-            else
-            {
+			}
+			else
+			{
 				Overlays.Scene.Deactivate("SGAmod:ScreenExplosions");
 			}
 
@@ -725,8 +737,8 @@ namespace SGAmod
 
 		public override bool IsVisible()
 		{
-			bool draw=false;
-			if (!Main.gameMenu && Main.LocalPlayer != null && SGAmod.Instance != null && Filters.Scene["SGAmod:ScreenWave"].GetShader().CombinedOpacity>0f)
+			bool draw = false;
+			if (!Main.gameMenu && Main.LocalPlayer != null && SGAmod.Instance != null && Filters.Scene["SGAmod:ScreenWave"].GetShader().CombinedOpacity > 0f)
 			{
 				//if (Main.LocalPlayer.HeldItem.type == SGAmod.Instance.ItemType("Expertise"))
 				draw = true;

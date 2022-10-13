@@ -20,7 +20,7 @@ namespace SGAmod.Items.Accessories.Dedicated
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ukrainian Valor");
-			Tooltip.SetDefault("Grants a strong defensive buff against invasions on your town of 10 NPCs or more\nThis buff is granted to both Teammates and townNPCs\n"+Idglib.ColorText(Color.Blue,"My heart out to all those fighting for their nation")+"\n"+ Idglib.ColorText(Color.Yellow, "That you will survive this invasion on your homeland"));
+			Tooltip.SetDefault("Grants a strong defensive buff against invasions on your town of 10 NPCs or more\nThis buff is granted to both Teammates and townNPCs\n"+Idglib.ColorText(Color.Blue,"My heart goes out to all those fighting for their nation")+"\n"+ Idglib.ColorText(Color.Yellow, "That you will survive this invasion on your homeland, and win!"));
 		}
 
 		public string DedicatedItem()
@@ -52,7 +52,7 @@ namespace SGAmod.Items.Accessories.Dedicated
         {
 			int buff = ModContent.BuffType<UkraineValorBuff>();
 
-			if (player.UkraineArms)
+			if (player.bUkraineArms)
 			{
 				if (UkraineArms.IsItAPerfectlyGoodTimeForAnInvasion(player.player))
 				{
@@ -69,7 +69,15 @@ namespace SGAmod.Items.Accessories.Dedicated
 				{
 					player.player.statDefense = (int)(player.player.statDefense * 1.25f);
 					player.player.endurance += 0.15f;
+
+					/*foreach (NPC npcTown in Main.npc.Where(testby => testby.active && testby.SGANPCs().UkraineArmsBuff >= 0 && (testby.townNPC && testby.type != NPCID.DD2EterniaCrystal) && (testby.Center - player.MountedCenter).LengthSquared() < 1000000))
+					{
+						player.SGAPly().healingPointsStatBoost += 50;
+					}
+					*/
+
 				}
+
 			}
         }
 
@@ -79,7 +87,15 @@ namespace SGAmod.Items.Accessories.Dedicated
 		{
 			SGAPlayer sgaply = player.SGAPly();
 			if (IsItAPerfectlyGoodTimeForAnInvasion(player))
-			sgaply.UkraineArms = true;
+			{
+				sgaply.bUkraineArms = true;
+
+				foreach (NPC npcTown in Main.npc.Where(testby => testby.active && testby.SGANPCs().UkraineArmsBuff >= 0 && (testby.townNPC && testby.type != NPCID.DD2EterniaCrystal) && (testby.Center - player.MountedCenter).LengthSquared() < 1000000))
+				{
+					player.SGAPly().healingPointsStatBoost += 50;
+				}
+
+			}
 		}
 
 		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
@@ -166,7 +182,7 @@ namespace SGAmod.Items.Accessories.Dedicated
 		public override void SetDefaults()
 		{
 			DisplayName.SetDefault("Ukrainian Valor");
-			Description.SetDefault("Banding together against an opressive foe...\nGives players Black Belt, 25% more defense, and 15% increased endurance\nGives Friendly NPCs 50% damage resistance and heals them");
+			Description.SetDefault("Banding together against an opressive foe...\nGives players Black Belt, 25% more defense, and 15% increased endurance\nGives 50 max Regen Pool per NPC being protected\nGives Friendly NPCs 50% damage resistance and heals them");
 			Main.debuff[Type] = false;
 			Main.buffNoTimeDisplay[Type] = true;
 			Main.buffNoSave[Type] = true;
@@ -295,7 +311,7 @@ namespace SGAmod.Items.Accessories.Dedicated
 			if (owner != null && owner.active)
 			{
 				bool ownerExists = false;
-				if (owner is Player ply && !ply.dead && ply.SGAPly().UkraineArms && (UkraineArms.IsItAPerfectlyGoodTimeForAnInvasion(ply)))
+				if (owner is Player ply && !ply.dead && ply.SGAPly().bUkraineArms && (UkraineArms.IsItAPerfectlyGoodTimeForAnInvasion(ply)))
 				{
 					ownerExists = true;
 					ply.SGAPly().UkraineArmsBuff = 60;

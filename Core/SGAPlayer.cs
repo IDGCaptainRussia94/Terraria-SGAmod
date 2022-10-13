@@ -123,7 +123,7 @@ namespace SGAmod
 		public bool CirnoWings = false;
 		public bool manaUnchained = false;
 		public bool SerratedTooth = false;
-		public bool UkraineArms = false;
+		public bool bUkraineArms = false;
 		public int UkraineArmsBuff = 0;
 		protected float _critDamage = 0f;
 		public float CritDamage
@@ -211,6 +211,8 @@ namespace SGAmod
 		public int postLifeRegenBoost = 0;
 
 		//Stat Related
+		private int _PRIVATEhealingPointsLeft = 0;
+		public int healingPointsStatBoost = 0;
 		public float UseTimeMul = 1f;
 		public bool noLifeRegen = false;
 		public int drownRate = 0;
@@ -230,6 +232,40 @@ namespace SGAmod
 		public int centerOverrideTimer = 0;
 		public static int centerOverrideTimerIsActive = 0;
 		public Vector2 centerOverridePosition = default;
+		public bool SafeRegen => player.townNPCs >= 5 && (!IdgNPC.bossAlive && !Items.Accessories.Dedicated.UkraineArms.IsItAPerfectlyGoodTimeForAnInvasion(player));
+
+		public int _healingPointsLeft
+        {
+            get
+            {
+				return Math.Min(_PRIVATEhealingPointsLeft, HealingPointsLeftMax);
+			}
+            set
+            {
+				_PRIVATEhealingPointsLeft = value;
+			}
+        }
+		public int HealingPointsLeftMax
+		{
+			get
+			{
+				int div = nightmareplayer || SGAmod.DRMMode ? 6 : 2;
+
+				return (healingPointsStatBoost/2) + player.statLifeMax2 / div;
+			}
+		}
+
+		public int HealingPointsLeft
+        {
+            get
+            {
+				return _healingPointsLeft+ HealingPointsLeftMax;
+			}
+            set
+            {
+				_healingPointsLeft = value;
+			}
+        }
 
 		public string MoneyCollected => (midasMoneyConsumed / (float)Item.buyPrice(1)) + " platinum collected";
 
@@ -450,6 +486,7 @@ namespace SGAmod
 			toxicity = 0;
 			consumeCurse = 0;
 			russianRoulette = false;
+			healingPointsStatBoost = 0;
 			aimingDrunkTime = Math.Max(aimingDrunkTime - 1, 0);
 			if (ReloadingRevolver > 0)
 				ReloadingRevolver -= 1;
@@ -466,7 +503,7 @@ namespace SGAmod
 				grippingglovestimer -= 1;
 			}
 
-			UkraineArms = false;
+			bUkraineArms = false;
 			if (UkraineArmsBuff>0)
 			UkraineArmsBuff -= 1;
 			gravBoots = false;
@@ -1115,6 +1152,11 @@ namespace SGAmod
 
 			SGAGlobalItem.VanillaArmorSetBonus(player);
 
+			if (player.pStone)
+            {
+				sgaply.healingPointsStatBoost += 150;
+            }
+
 			if (sgaply.ELS)
 			{
 				if (player.lifeRegen < 0)
@@ -1143,6 +1185,20 @@ namespace SGAmod
 			if (player.HasBuff(ModContent.BuffType<TechnoCurse>()))
 			{
 				sgaply.techdamage = Math.Max(sgaply.techdamage - 0.50f, 0);
+			}
+
+			bool healingBuff = player.HasBuff(ModContent.BuffType<RecoveryPotionBuff>());
+
+			int timedelay = healingBuff && sgaply.SafeRegen ? 15 : (healingBuff ? 60 : 30);
+
+			timedelay = (int)(timedelay / (1f + Math.Min(player.lifeRegen,30) / 6f));
+
+			//Main.NewText(player.lifeRegen);
+
+			if (player.statLife>=player.statLifeMax2 && sgaply.timer % timedelay == 0 && (sgaply.SafeRegen || healingBuff))
+			{
+				//player.lifeRegenTime = 0;
+				sgaply._healingPointsLeft += 1;
 			}
 
 			DoPotionFatigue(sgaply);
@@ -1814,6 +1870,7 @@ namespace SGAmod
 				if (DoTStack.Count > 0)
 					DoTStack.Clear();
 
+			HealingPointsLeft = HealingPointsLeftMax;
 			NoHitCharmTimer = 0;
 			if (NoHitCharm && !IdgNPC.bossAlive)
 			{
@@ -2329,6 +2386,12 @@ namespace SGAmod
 
 		public override void ModifyNursePrice(NPC nurse, int health, bool removeDebuffs, ref int price)
 		{
+			if (HealingPointsLeft < HealingPointsLeftMax*2 && price<10000 && health<1)
+            {
+				price = 2500;
+
+			}
+
 			if (Hellion.GetHellion() != null || (SGAmod.DRMMode && IdgNPC.bossAlive))
 			{
 				price = int.MaxValue - 1;
@@ -2341,6 +2404,7 @@ namespace SGAmod
 			Main.npcChatText = strs[Main.rand.Next(strs.Length)];
 			Projectile.NewProjectile(nurse.Center, Vector2.Zero, ModContent.ProjectileType<NurseHealingAura>(), health/2,0,player.whoAmI);
 			player.statLife -= health;
+			//HealingPointsLeft = 0;
 
 		}
         public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)

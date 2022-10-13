@@ -76,7 +76,7 @@ namespace SGAmod.Buffs
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
-
+			npc.SGANPCs().illusionDebuff = true;
 		}
 	}
 

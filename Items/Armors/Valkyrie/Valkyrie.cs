@@ -27,7 +27,7 @@ namespace SGAmod.Items.Armors.Valkyrie
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Valkyrie Helm");
-			Tooltip.SetDefault("15% increased throwing damage, and 20% increased crit chance and velocity\nGrants life regeneration");
+			Tooltip.SetDefault("15% increased throwing damage, and 20% increased crit chance and velocity\nGrants life regeneration\nIncreases max Regen Pool by 75");
 		}
 		public override void SetDefaults()
 		{
@@ -105,6 +105,7 @@ namespace SGAmod.Items.Armors.Valkyrie
 			player.Throwing().thrownVelocity += 0.25f;
 			player.Throwing().thrownDamage += 0.15f;
 			player.Throwing().thrownCrit += 20;
+			player.SGAPly().healingPointsStatBoost += 75;
 		}
 		public override void UpdateVanity(Player player, EquipType type)
 		{
@@ -131,7 +132,7 @@ namespace SGAmod.Items.Armors.Valkyrie
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Valkyrie Breastplate");
-			Tooltip.SetDefault("10% increased throwing damage, velocity, and throwing attack speed\n75% chance to not consume Throwing Items\nGrants life regeneration");
+			Tooltip.SetDefault("10% increased throwing damage, velocity, and throwing attack speed\n75% chance to not consume Throwing Items\nGrants life regeneration\nIncreases max Regen Pool by 100");
 		}
 		public override void SetDefaults()
 		{
@@ -148,6 +149,7 @@ namespace SGAmod.Items.Armors.Valkyrie
 			player.Throwing().thrownDamage += 0.10f;
 			player.SGAPly().Thrownsavingchance += 0.75f;
 			player.SGAPly().ThrowingSpeed += 0.20f;
+			player.SGAPly().healingPointsStatBoost += 100;
 		}
 
 		public override void UpdateVanity(Player player, EquipType type)
@@ -167,7 +169,7 @@ namespace SGAmod.Items.Armors.Valkyrie
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Valkyrie Leggings");
-			Tooltip.SetDefault("10% increased throwing damage\n25% increase to movement speed\nFlight time and movement speed improved by 15% at night\nGrants life regeneration");
+			Tooltip.SetDefault("10% increased throwing damage\n25% increase to movement speed\nFlight time and movement speed improved by 15% at night\nGrants life regeneration\nIncreases max Regen Pool by 75");
 		}
 
         public override bool Autoload(ref string name)
@@ -196,7 +198,7 @@ namespace SGAmod.Items.Armors.Valkyrie
 			player.moveSpeed += 1.25f*(!Main.dayTime ? 1.15f : 1f);
 			player.accRunSpeed += 1.5f * (!Main.dayTime ? 1.15f : 1f);
 			player.Throwing().thrownDamage += 0.10f;
-
+			player.SGAPly().healingPointsStatBoost += 75;
 		}
 		public override void UpdateVanity(Player player, EquipType type)
 		{

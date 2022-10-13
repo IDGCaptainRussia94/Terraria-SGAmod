@@ -216,6 +216,7 @@ namespace SGAmod.Tiles.TechTiles
 
         public class NumismaticCrucibleTE : LuminousAlterTE
     {
+        public int moneyConverted = 0;
         public NPC NPCtoSpawn
         {
             get
@@ -365,7 +366,7 @@ namespace SGAmod.Tiles.TechTiles
             writer.Write((int)chargingProcess);
             writer.Write((int)npcValue);
             writer.Write((int)storedMoney);
-
+            writer.Write((int)moneyConverted);
         }
 
         public override void NetReceive(BinaryReader reader, bool lightReceive)
@@ -374,13 +375,14 @@ namespace SGAmod.Tiles.TechTiles
             chargingProcess = (int)reader.ReadInt32();
             npcValue = (int)reader.ReadInt32();
             storedMoney = reader.ReadInt32();
-
+            moneyConverted = reader.ReadInt32();
         }
 
         public override TagCompound Save()
         {
             TagCompound baseCompound = base.Save();
             baseCompound.Add("storedMoney", (int)storedMoney);
+            baseCompound.Add("moneyConverted", (int)moneyConverted);
 
             return baseCompound;
 
@@ -389,6 +391,8 @@ namespace SGAmod.Tiles.TechTiles
         {
             TagCompound baseCompound = base.DoLoad(tag);
             storedMoney = baseCompound.GetInt("storedMoney");
+            if (baseCompound.ContainsKey("moneyConverted"))
+            moneyConverted = baseCompound.GetInt("moneyConverted");
 
             return baseCompound;
         }
@@ -420,9 +424,20 @@ namespace SGAmod.Tiles.TechTiles
 
             tempnpc.NPCLoot();
 
-            if (Main.rand.Next(Item.buyPrice(0,1,0,0))<tempnpc.value)
+            //Main.NewText(moneyConverted/(float)Item.buyPrice(0, 1, 0, 0));
+
+            moneyConverted += (int)npcValue;
+            if (moneyConverted > Item.buyPrice(0, 1, 0, 0))
             {
-                Item.NewItem(tempnpc.Center, ModContent.ItemType<Items.HarvestedSoul>(), 1);
+                for (int i = 0; i < npcValue; i += Item.buyPrice(0, 1, 0, 0))
+                {
+
+                    //if (Main.rand.Next(Item.buyPrice(0, 1, 0, 0)) < tempnpc.value)
+                    //{
+                    Item.NewItem(tempnpc.Center, ModContent.ItemType<Items.HarvestedSoul>(), 1);
+                    //}
+                    moneyConverted -= Item.buyPrice(0, 1, 0, 0);
+                }
             }
 
             List<Item> after = Main.item.Except(before).ToList();

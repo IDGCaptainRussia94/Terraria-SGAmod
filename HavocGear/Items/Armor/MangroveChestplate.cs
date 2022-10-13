@@ -13,7 +13,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Mangrove Helmet");
-			Tooltip.SetDefault("5% increased throwing damage and 10% crit chance\n15% increased throwing velocity\n1% increased Throwing Apocalyptical Chance");
+			Tooltip.SetDefault("5% increased throwing damage and 10% crit chance\n15% increased throwing velocity\n1% increased Throwing Apocalyptical Chance\nIncreases max Regen Pool by 40");
 		}
 		public override void SetDefaults()
 		{
@@ -30,6 +30,7 @@ namespace SGAmod.HavocGear.Items.Armor
 			player.Throwing().thrownVelocity += 0.15f;
 			player.Throwing().thrownDamage += 0.05f;
 			player.Throwing().thrownCrit += 10;
+			player.SGAPly().healingPointsStatBoost += 40;
 		}
 
 		public override void AddRecipes()
@@ -50,7 +51,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Mangrove Chestplate");
-			Tooltip.SetDefault("10% increased throwing damage\n33% to not consume thrown items\n1% increased Throwing Apocalyptical Chance");
+			Tooltip.SetDefault("10% increased throwing damage\n33% to not consume thrown items\n1% increased Throwing Apocalyptical Chance\nIncreases max Regen Pool by 40");
 		}
 
 		public override void SetDefaults()
@@ -67,6 +68,7 @@ namespace SGAmod.HavocGear.Items.Armor
 			player.SGAPly().apocalypticalChance[3] += 1.0;
 			player.Throwing().thrownCost33 = true;
 			player.Throwing().thrownDamage += 0.07f;
+			player.SGAPly().healingPointsStatBoost += 40;
 		}
 
 		public override void AddRecipes()
@@ -87,7 +89,7 @@ namespace SGAmod.HavocGear.Items.Armor
 		{
 			base.SetStaticDefaults();
 			DisplayName.SetDefault("Mangrove Greaves");
-			Tooltip.SetDefault("6% increased throwing damage and 10% faster throwing item use speed\n20% faster movement speed\n1% increased Throwing Apocalyptical Chance");
+			Tooltip.SetDefault("6% increased throwing damage and 10% faster throwing item use speed\n20% faster movement speed\n1% increased Throwing Apocalyptical Chance\nIncreases max Regen Pool by 40");
 		}
 
 		public override void UpdateEquip(Player player)
@@ -97,6 +99,7 @@ namespace SGAmod.HavocGear.Items.Armor
 			player.Throwing().thrownDamage += 0.06f;
 			player.maxRunSpeed += 0.20f;
 			player.accRunSpeed += 0.25f;
+			player.SGAPly().healingPointsStatBoost += 40;
 		}
 
 		public override void SetDefaults()

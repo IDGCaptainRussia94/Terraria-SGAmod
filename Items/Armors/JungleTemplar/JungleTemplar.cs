@@ -28,7 +28,7 @@ namespace SGAmod.Items.Armors.JungleTemplar
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Jungle Templar Helmet");
-			Tooltip.SetDefault("20% increased Throwing crit chance and 10% increased Technological damage\n25% increase to not consume throwable\n+2000 Max Electric Charge\n+3 electric charge regen rate if exposed to the sun\n" + Idglib.ColorText(Color.Red, "5% less overall crit chance"));
+			Tooltip.SetDefault("20% increased Throwing crit chance and 10% increased Technological damage\n25% increase to not consume throwable\nIncreases max Regen Pool by 50\n+2000 Max Electric Charge\n+3 electric charge regen rate if exposed to the sun\n" + Idglib.ColorText(Color.Red, "5% less overall crit chance"));
 		}
 		public override void SetDefaults()
 		{
@@ -140,6 +140,7 @@ namespace SGAmod.Items.Armors.JungleTemplar
 			sgaplayer.techdamage += 0.10f;
 			sgaplayer.electricChargeMax += 2000;
 			player.Throwing().thrownCrit += 20;
+			sgaplayer.healingPointsStatBoost += 50;
 			sgaplayer.Thrownsavingchance += 0.25f;
 			player.BoostAllDamage(0, -5);
 
@@ -191,7 +192,7 @@ namespace SGAmod.Items.Armors.JungleTemplar
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Jungle Templar Chestplate");
-			Tooltip.SetDefault("25% increased throwing damage, +2 electric charge regen rate\nMax Lava time is increased by 10 seconds\n" + Idglib.ColorText(Color.Red, "5% less overall crit chance"));
+			Tooltip.SetDefault("25% increased throwing damage, +2 electric charge regen rate\nMax Lava time is increased by 10 seconds\nIncreases max Regen Pool by 50\n" + Idglib.ColorText(Color.Red, "5% less overall crit chance"));
 		}
 		public override void SetDefaults()
 		{
@@ -211,6 +212,7 @@ namespace SGAmod.Items.Armors.JungleTemplar
 			sgaplayer.techdamage += 0.10f;
 			player.Throwing().thrownDamage += 0.25f;
 			sgaplayer.electricrechargerate += 2;
+			sgaplayer.healingPointsStatBoost += 50;
 			player.BoostAllDamage(0, -5);
 		}
 
@@ -230,7 +232,7 @@ namespace SGAmod.Items.Armors.JungleTemplar
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Jungle Templar Leggings");
-			Tooltip.SetDefault("15% increased Throwing crit chance\n20% boost to throwing item use speed while grounded\nMax Lava time is increased by 5 seconds\nBeing submerged in lava grants +5 electric charge regen rate\n" + Idglib.ColorText(Color.Red, "5% less overall crit chance"));
+			Tooltip.SetDefault("15% increased Throwing crit chance\n20% boost to throwing item use speed while grounded\nMax Lava time is increased by 5 seconds\nIncreases max Regen Pool by 50\nBeing submerged in lava grants +5 electric charge regen rate\n" + Idglib.ColorText(Color.Red, "5% less overall crit chance"));
 		}
 		public override void SetDefaults()
 		{
@@ -250,6 +252,7 @@ namespace SGAmod.Items.Armors.JungleTemplar
 			sgaplayer.ThrowingSpeed += 0.20f;
 			player.Throwing().thrownCrit += 15;
 			player.BoostAllDamage(0, -5);
+			sgaplayer.healingPointsStatBoost += 50;
 
 			if (player.lavaWet)
             {

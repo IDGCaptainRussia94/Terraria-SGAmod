@@ -935,7 +935,7 @@ namespace SGAmod.Items
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Harvested Soul");
-			Tooltip.SetDefault("'The essence of a creature'\nExtracted from a soul jar at a Numisimatic Crucible'\nChance is creature's dropped coin value/1 gold coin");
+			Tooltip.SetDefault("'The essence of a creature'\nExtracted from a soul jar at a Numisimatic Crucible'\nProduces 1 per gold coin's worth of enemies harvested");//\nChance is creature's dropped coin value/1 gold coin");
 			// ticksperframe, frameCount
 			Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(6, 4));
 			ItemID.Sets.AnimatesAsSoul[item.type] = true;

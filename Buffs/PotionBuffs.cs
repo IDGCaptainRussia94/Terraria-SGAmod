@@ -274,6 +274,28 @@ namespace SGAmod.Buffs
 		}
 	}
 
+	public class RecoveryPotionBuff : ModBuff
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = "SGAmod/Buffs/BuffTemplate";
+			return true;
+		}
+		public override void SetDefaults()
+		{
+			DisplayName.SetDefault("Recovery Potion");
+			Description.SetDefault("Increases max Regen Pool by 50\nrecover Regen Pool over time at full health");
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			canBeCleared = false;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.SGAPly().healingPointsStatBoost += 50;
+		}
+	}
+
 	public class ReflexPotionBuff : ModBuff
 	{
 		public override bool Autoload(ref string name, ref string texture)

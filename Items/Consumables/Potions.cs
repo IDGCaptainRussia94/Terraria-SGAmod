@@ -766,5 +766,41 @@ namespace SGAmod.Items.Consumables
 		}
 	}
 
+	public class RecoveryPotion : ModItem
+	{
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Recovery Potion");
+			Tooltip.SetDefault("Increases max Regen Pool by 50\nIf your life is full, you'll slowly recover Regen Pool over time");
+		}
 
+		public override void SetDefaults()
+		{
+			item.width = 14;
+			item.height = 24;
+			item.maxStack = 30;
+			item.rare = ItemRarityID.Orange;
+			item.value = 500;
+			item.useStyle = ItemUseStyleID.EatingUsing;
+			item.useAnimation = 17;
+			item.useTime = 17;
+			item.useTurn = true;
+			item.UseSound = SoundID.Item3;
+			item.consumable = true;
+			item.buffType = ModContent.BuffType<RecoveryPotionBuff>();
+			item.buffTime = 60 * 600;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.BottledWater, 1);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Weapons.SwampSeeds>(), 3);
+			recipe.AddIngredient(ItemID.Hay, 5);
+			recipe.AddIngredient(ItemID.Daybloom, 1);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this, 1);
+			recipe.AddRecipe();
+		}
+	}
 }

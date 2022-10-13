@@ -68,13 +68,14 @@ namespace SGAmod.Items.Armors.Dev
 			player.BoostAllDamage(-0.10f, -10);
 			player.statLifeMax2 += 75;
 			player.SGAPly().DoTResist *= 0.75f;
+			player.SGAPly().healingPointsStatBoost += 125;
 		}
 		public virtual List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "8% Increased Melee Crit, 12% increased throwing Crit"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "33% to not consume thrown items, 25% increased melee swing speed"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "15% increased throwing rate, 75 increased max life"));
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "25% DoT resistance"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "25% DoT resistance, Increases max Regen Pool by 125"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red, "10% reduced non-melee/throwing damage and crit chance")));
 			return tooltips;
 		}
@@ -158,13 +159,15 @@ namespace SGAmod.Items.Armors.Dev
 
 			player.statLifeMax2 += 100;
 			player.SGAPly().DoTResist *= 0.35f;
+
+			player.SGAPly().healingPointsStatBoost += 150;
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "25% increased melee damage, 32% increased throwing damage"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "Immunity to Knockback, greatly increased Life Regen"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "20% improved Endurance, 100 increased max life"));
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "35% DoT resistance"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "35% DoT resistance, Increases max Regen Pool by 150"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red, "10% reduced non-melee/throwing damage and crit chance")));
 			return tooltips;
 		}
@@ -223,6 +226,8 @@ namespace SGAmod.Items.Armors.Dev
 			player.statLifeMax2 += 75;
 			player.SGAPly().DoTResist *= 0.85f;
 
+			player.SGAPly().healingPointsStatBoost += 125;
+
 		}
 		public override List<TooltipLine> AddText(List<TooltipLine> tooltips)
 		{
@@ -230,7 +235,7 @@ namespace SGAmod.Items.Armors.Dev
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "you don't take ANY self damage (includes fall and explosive damage)"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Orange, "Requires 1 Cooldown stack, adds 60 seconds")));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "75 increased max life"));
-			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "15% DoT resistance"));
+			tooltips.Add(new TooltipLine(mod, "MisterCreeper", "15% DoT resistance, Increases max Regen Pool by 125"));
 			tooltips.Add(new TooltipLine(mod, "MisterCreeper", Idglib.ColorText(Color.Red, "10% reduced non-melee/throwing damage and crit chance")));
 			return tooltips;
 		}

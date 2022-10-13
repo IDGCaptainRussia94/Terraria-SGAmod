@@ -746,6 +746,19 @@ namespace SGAmod
 
 		public void OnLifeRegen()
         {
+			if (!SafeRegen)
+			{
+				_healingPointsLeft -= 1;
+
+				if (HealingPointsLeft < 1)
+				{
+					var snd = Main.PlaySound(SoundID.DD2_SkeletonSummoned, (int)player.position.X, (int)player.position.Y);
+					if (snd != null)
+						snd.Pitch = -0.50f;
+					CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), Color.Red, "Regen Pool depleted...", true, false);
+				}
+			}
+
 			/*
 			int npfgf;
 			Assist.SpawnOnPlayerButNoTextAndReturnValue(player.whoAmI,NPCID.TaxCollector,out npfgf);

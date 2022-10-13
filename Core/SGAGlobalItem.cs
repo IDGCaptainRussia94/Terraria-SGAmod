@@ -328,6 +328,11 @@ namespace SGAmod
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Max Mana is reduced by 60")));
             }
 
+            if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAmod.DRMMode))
+            {
+                tooltips.Add(new TooltipLine(mod, "ActuallyWearThePotionStone",  "Increases max Regen Pool by 150"));
+            }
+
             if (SGAWorld.downedWraiths < 1)
             {
 
@@ -577,7 +582,6 @@ namespace SGAmod
             }
             if (set == "Valkyrie")
             {
-
                 string text2 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to active Ragnarök for a time based off current life regeneration\nThrowing speed and apocalyptical chance are increased"+ Idglib.ColorText(Color.Red,"But resets life regen while active")+"\n" + Idglib.ColorText(Color.Orange, "Requires 2 Cooldown stacks, adds 150 seconds") + "\n";
 
                 string text1 = "Gain a throwing damage increase based on your current life regen\nMale Characters gain 15% Endurance\nFemale Characters gain 20% more flight time\n"+text2;
@@ -589,7 +593,7 @@ namespace SGAmod
             {
                 string text2 = "Press the 'Toggle Recipe' (" + s + ") Hotkey to activate Illumination, consuming ALL Cooldown Stacks\n" + Idglib.ColorText(Color.Orange, "Requires 3 Cooldown stacks, adds 60 seconds") + "Gives 10 seconds per stack after the 3rd for the buff\nDoubles armor bonuses while active, cooldown stacks do not decay while active\n";
 
-                string text1 = "Reduces all new Action Cooldown Stacks by 20%\nEach Action Cooldown Stack grants 2 Life Regen, 4% (6% Summon) damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\n" + text2;//All Vanilla Prefixes on accessories are twice as effective";
+                string text1 = "Reduces all new Action Cooldown Stacks by 20%\nEach Action Cooldown Stack grants 2 Life Regen, 4% (6% Summon) damage and 2% crit chance\nThere is a 25% chance to not add a new Action Cooldown Stack whenever one would be applied\n\nIncreases max Regen Pool by 500\n" + text2;//All Vanilla Prefixes on accessories are twice as effective";
                 player.setBonus = text1;
                 sgaplayer.illuminantSet.Item1 = 5;
             }            
@@ -889,6 +893,9 @@ namespace SGAmod
                     }
 
                 }
+
+                player.GetModPlayer<SGAPlayer>()._healingPointsLeft += item.healLife / 2;
+
             }
             if ((Main.netMode < 1 || SGAmod.SkillRun > 1) && SGAmod.SkillRun > 0)
                 player.SGAPly().skillMananger.UseItem(item);

@@ -9,19 +9,38 @@ Changelog:
 
 -Added:
 
--Harvested Souls, Illusionary Bullet, Flask of Hallucinogenics
+-Harvested Souls, Illusionary Bullet, Flask of Hallucinogenics, Recovery Potion
 -Animated mod icon in menu
 
 
 --Changed:
 
--Nurse healing reworked, can no longer instantly heal, instead spawns a healing aura over herself that heals you while inside it over time, the aura can be heavily weakened if the nurse is badly hurt
+-Reworked life regen: you now have a Regen Pool, which is an ammount of life your able to regen before you become unable to regen life. You can restore it by nurse healing (over time) and drinking potions (add half the potion's healing to the pool), many equipment now buff this mechanic. You do not lose your Regen Pool while safely regening in a safe area (town with atleast 5 NPCs, no boss alive or invasion active), and even regen it if your HP is full while safe
+
+-Nurse healing also reworked, can no longer instantly heal, instead spawns a healing aura over herself that heals you (and restores Regen Pool) while inside it over time, the aura can be heavily weakened if the nurse is badly hurt
 
 -Several key progression items now require Harvested Souls
 
 -Draken now only has a 1/10 chance to mention the Doom Harbinger if he's unlocked and not fought yet
 
 -Numismatic Crucible now upgrades itself with progression (hardmode, mechs, plantera, moonlord)
+
+-Life Regen is no longer disabled in Nightmare Mode during bosses, but the ammount of your life that counts towards your Regen Pool is reduced
+
+-Conch Horn is a bit cheaper to craft
+
+-Buffed Void Em'Bracers: now gives max Regen Pool (a massive one, actually)
+
+-Vanilla: Reworked Philosophers Stone: now gives max Regen Pool (this carries over into crafted upgrades)
+
+-Reworked Dank Wood Armor, Mangrove, Jungle Templar, Valkyrie, Illuminant and Mr.Creeper Armor: now gives max Regen Pool
+
+-Reworked Ukrainian Valor: now gives max Regen Pool per protected NPC
+
+
+-Still Failed to fix:
+
+-This mod being anything more than a long-term failure, but atleast now I've come to terms with it
 
 
 3.655-(6/3/22)--Hotfix 43
@@ -33,7 +52,7 @@ Changelog:
 
 -Failed to fix:
 
--This mod being anymore more than a long-term failure
+-This mod being anything more than a long-term failure
 
 
 3.654-(5/15/22)--Hotfix 42

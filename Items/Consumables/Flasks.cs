@@ -401,12 +401,15 @@ namespace SGAmod.Items.Consumables
 			{
 				IdgNPC.AddBuffBypass(npc.whoAmI, ModContent.BuffType<IllusionDebuff>(), 60 * 15);
 
-				for (int i = 0; i < 25; i += 1)
+				if (npc.HasBuff(ModContent.BuffType<IllusionDebuff>()))
 				{
-					Vector2 value = new Vector2(Main.rand.Next(-10, 11), Main.rand.Next(-10, 11));
-					value.Normalize();
-					int num45 = Gore.NewGore(npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height)), value * Main.rand.NextFloat(3, 6), Main.rand.Next(426,428), (float)Main.rand.Next(20, 60) * 0.01f);
-					Main.gore[num45].sticky = false;
+					for (int i = 0; i < 25; i += 1)
+					{
+						Vector2 value = new Vector2(Main.rand.Next(-10, 11), Main.rand.Next(-10, 11));
+						value.Normalize();
+						int num45 = Gore.NewGore(npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height)), value * Main.rand.NextFloat(3, 6), Main.rand.Next(426, 428), (float)Main.rand.Next(20, 60) * 0.01f);
+						Main.gore[num45].sticky = false;
+					}
 				}
 			}
 		}

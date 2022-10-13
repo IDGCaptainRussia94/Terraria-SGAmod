@@ -108,6 +108,7 @@ namespace SGAmod
 		public bool treatAsNight = false;
 		public int flaskCooldown = 0;
 		public static bool dropFork = false;
+		public bool illusionDebuff = false;
 		public List<DamageStack> damageStacks = new List<DamageStack>();
 
 		public int nonStackingImpaled
@@ -190,6 +191,7 @@ namespace SGAmod
 			SunderedDefense = false;
 			//Main.NewText(UkraineArmsBuff);
 			DankSlow = false;
+			illusionDebuff = false;
 			ELS = false;
 			marked = false;
 			drawonce = true;
@@ -763,6 +765,11 @@ namespace SGAmod
 					dust = Main.dust[num53];
 					dust.velocity += npc.velocity;
 				}
+			}
+
+			if (illusionDebuff)
+            {
+				drawColor = drawColor.MultiplyRGBA(Color.Purple)*0.5f;
 			}
 
 			if (marked)

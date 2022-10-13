@@ -2828,7 +2828,7 @@ namespace SGAmod.Items.Accessories
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Void Em'Bracers");
-			Tooltip.SetDefault("'you don't shrivel up, you embrace your lost vitality'\nGrants 1 defense for every 25 HP lost\nGrants 1 defense for every 10 max HP lost");
+			Tooltip.SetDefault("'you don't shrivel up, you embrace your lost vitality'\nGrants 1 defense for every 25 HP lost\nGrants 1 defense for every 10 max HP lost\nIncreases max Regen Pool by 300, and 4 for every defense");
 		}
 
         public override bool Autoload(ref string name)
@@ -2857,6 +2857,7 @@ namespace SGAmod.Items.Accessories
 			{
 				sgaply.player.statDefense += (int)(sgaply.player.GetModPlayer<IdgPlayer>().radationAmmount / 10f);
 				sgaply.player.statDefense += (int)((sgaply.player.statLifeMax2 - sgaply.player.statLife) / 25);
+				sgaply.healingPointsStatBoost += 300+sgaply.player.statDefense*4;
 			}
 		}
 
@@ -4462,10 +4463,10 @@ namespace SGAmod.Items.Accessories
 				float realsize = (RingSize * 0.90f);
 				int nursehere = NPC.FindFirstNPC(NPCID.Nurse);
 
-				NPC nurse = Main.npc[nursehere];
-
 				if (nursehere>=0)
 				{
+
+					NPC nurse = Main.npc[nursehere];
 
 					if (nurse.life < nurseRecentlyHit - 20)
                     {
@@ -4480,6 +4481,9 @@ namespace SGAmod.Items.Accessories
 					{
 						foreach (Player player in Main.player.Where(testby => testby.active && testby.IsAlliedPlayer(playz) && (testby.Center - projectile.Center).Length() < realsize))
 						{
+							//if (projectile.localAI[0]%3==0)
+							if (projectile.localAI[0]%(1+(int)((40f/(float)HealingRate)))==0 || projectile.localAI[0]%2==0)
+							player.SGAPly()._healingPointsLeft += 1;
 							player.SGAPly().postLifeRegenBoost += HealingRate;
 						}
 					}

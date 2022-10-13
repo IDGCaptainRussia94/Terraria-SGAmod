@@ -184,7 +184,7 @@ namespace SGAmod.Items.Consumables
 				SGAmod.Instance.Logger.Warn("DEBUG CLIENT: item used");
 
 			NPC.SpawnOnPlayer(player.whoAmI, mod.NPCType("CopperWraith"));
-			Main.PlaySound(15, (int)player.position.X, (int)player.position.Y, 0);
+			Main.PlaySound(SoundID.Roar, (int)player.position.X, (int)player.position.Y, 0);
 			return true;
 		}
 		public override void AddRecipes()
@@ -210,7 +210,7 @@ namespace SGAmod.Items.Consumables
 			item.width = 12;
 			item.height = 12;
 			item.maxStack = 99;
-			item.rare = 3;
+			item.rare = ItemRarityID.Orange;
 			item.useAnimation = 45;
 			item.useTime = 45;
 			item.useStyle = 4;
@@ -242,7 +242,7 @@ namespace SGAmod.Items.Consumables
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.Seashell, 1);
 			recipe.AddIngredient(ItemID.SharkFin, 1);
-			recipe.AddIngredient(ItemID.ChlorophyteBar, 3);
+			recipe.AddIngredient(ItemID.ChlorophyteBar, 2);
 			recipe.AddIngredient(ModContent.ItemType<OmniSoul>(), 1);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);

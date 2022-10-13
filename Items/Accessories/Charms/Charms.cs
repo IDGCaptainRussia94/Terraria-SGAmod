@@ -292,6 +292,8 @@ namespace SGAmod.Items.Accessories.Charms
 				int percent = (int)(player.statLifeMax2 * (1f - sgaplayer.energyShieldReservation));
 				if (player.statLife > percent)
 				{
+					int difference = player.statLife - percent;
+					sgaplayer._healingPointsLeft += difference;
 					player.statLife = percent;
 				}
 			}

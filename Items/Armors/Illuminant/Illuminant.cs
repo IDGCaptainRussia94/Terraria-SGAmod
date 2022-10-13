@@ -81,6 +81,8 @@ namespace SGAmod.Items.Armors.Illuminant
 
 				if (sgaplayer.illuminantSet.Item1 > 4)
 				{
+					player.SGAPly().healingPointsStatBoost += 500;
+
 					float bonusRate = player.HasBuff(ModContent.BuffType<IlluminantBuff>()) ? 2f : 1;
 					//Main.NewText(sgaplayer.illuminantSet.Item2);
 					player.BoostAllDamage(sgaplayer.activestacks * 0.04f* bonusRate, (int)(sgaplayer.activestacks*2* bonusRate));

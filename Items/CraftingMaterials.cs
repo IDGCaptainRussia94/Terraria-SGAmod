@@ -379,7 +379,7 @@ namespace SGAmod.Items
 
 		public static void CrashComet(Vector2 pos, Vector2 velocity)
 		{
-            Microsoft.Xna.Framework.Audio.SoundEffectInstance snd = Main.PlaySound(SoundID.DD2_BetsysWrathImpact, (int)pos.X, (int)pos.Y);
+			Microsoft.Xna.Framework.Audio.SoundEffectInstance snd = Main.PlaySound(SoundID.DD2_BetsysWrathImpact, (int)pos.X, (int)pos.Y);
 
 			if (snd != null)
 			{
@@ -461,6 +461,28 @@ namespace SGAmod.Items
 					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
 				}
 			}
+		}
+
+        public override bool GrabStyle(Player player)
+        {
+			return true;
+        }
+
+        public override bool CanPickup(Player player)
+		{
+			return true;
+		}
+
+		public override bool OnPickup(Player player)
+		{
+			bool notFull = player.ItemSpace(item);
+
+			if (!notFull)
+			{
+				player.AddBuff(ModContent.BuffType<Idglibrary.Buffs.RadiationThree>(), 30*item.stack);
+				return false;
+			}
+			return true;
 		}
 
 		public override void ExtractinatorUse(ref int resultType, ref int resultStack)

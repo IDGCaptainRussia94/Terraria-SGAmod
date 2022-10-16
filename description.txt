@@ -52,6 +52,10 @@ A few warnings before the changelog:
 
 -Conch Horn is a bit cheaper to craft
 
+-Glow rock is now extra dangerious if you cannot pick it up normally
+
+-Radiation Cure potions now cost Glowrock instead of Chlorophyte Ore to craft, so now it is craftable at the start of hardmode
+
 -Buffed Void Em'Bracers: now gives max Regen Pool (a massive one, actually)
 
 -Vanilla: Reworked Philosophers Stone: now gives max Regen Pool (this carries over into crafted upgrades)

@@ -545,9 +545,18 @@ namespace SGAmod.Items.Consumables
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.RestorationPotion, 2);
+			recipe.AddIngredient(ModContent.ItemType<Vodka>(), 2);
 			recipe.AddIngredient(ItemID.StrangeBrew);
-			recipe.AddIngredient(ItemID.ChlorophyteOre, 4);
+			recipe.AddIngredient(ModContent.ItemType<Glowrock>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Weapons.SwampSeeds>(), 2);
+			recipe.AddTile(TileID.AlchemyTable);
+			recipe.SetResult(this, 2);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<Vodka>(), 2);
+			recipe.AddIngredient(ItemID.RestorationPotion);
+			recipe.AddIngredient(ModContent.ItemType<Glowrock>(), 10);
 			recipe.AddIngredient(ModContent.ItemType<HavocGear.Items.Weapons.SwampSeeds>(), 2);
 			recipe.AddTile(TileID.AlchemyTable);
 			recipe.SetResult(this, 2);

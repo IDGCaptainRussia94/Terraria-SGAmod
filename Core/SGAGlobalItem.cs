@@ -328,7 +328,7 @@ namespace SGAmod
                 tooltips.Add(new TooltipLine(mod, "ManaRegenPotionOPPlzNerf", Idglib.ColorText(Color.Red, "Max Mana is reduced by 60")));
             }
 
-            if (item.type == ItemID.ManaRegenerationPotion && (SGAConfig.Instance.ManaPotionChange || SGAmod.DRMMode))
+            if (item.type == ItemID.PhilosophersStone)
             {
                 tooltips.Add(new TooltipLine(mod, "ActuallyWearThePotionStone",  "Increases max Regen Pool by 150"));
             }

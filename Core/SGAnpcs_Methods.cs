@@ -135,7 +135,7 @@ namespace SGAmod
 				if (npc.modNPC is ISGABoss iboss)
 				{
 
-					if (npc.GetType() != typeof(HellionCore))
+					if (npc.GetType() != typeof(HellionCore) && npc.GetType() != typeof(NPCs.SPinky) && npc.GetType() != typeof(NPCs.SPinkyClone))
 					{
 						iboss.NoHitDrops();
 						Items.Placeable.Relics.SGAPlacableRelic.AttemptDropRelic(npc.modNPC);

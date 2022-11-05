@@ -279,7 +279,7 @@ namespace SGAmod
 
 				Effect effect = SGAmod.TrailEffect;
 
-				effect.Parameters["WorldViewProjection"].SetValue(Effects.WVP.View(Main.GameViewMatrix.Zoom) * Effects.WVP.Projection());
+				effect.Parameters["WorldViewProjection"].SetValue(Effects.WVP.View(Vector2.One*Main.UIScale) * Effects.WVP.Projection());
 				effect.Parameters["imageTexture"].SetValue(stain);
 				effect.Parameters["coordOffset"].SetValue(new Vector2(0, Main.GlobalTime * -0.1f));
 				effect.Parameters["coordMultiplier"].SetValue(new Vector2(0.3f, 0.1f));

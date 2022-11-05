@@ -10,6 +10,8 @@ Changelog:
 
 -Monarchical Cate dropping from Phase 1 S.Pinky
 
+-Regen Health Bar not properly scaling when zooming in
+
 
 4.000-(10/7/22)--Patch 18: Path of the Passionate
 

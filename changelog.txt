@@ -1,7 +1,7 @@
 
 Changelog:
 
-4.001-(10/7/22)--Hotfix 44
+4.001-(2/1/23)--Hotfix 44
 
 
 --Fixed:
@@ -11,6 +11,8 @@ Changelog:
 -Monarchical Cate dropping from Phase 1 S.Pinky
 
 -Regen Health Bar not properly scaling when zooming in
+
+-Maybe fixed the missing noise texture problem? I hope so
 
 
 4.000-(10/7/22)--Patch 18: Path of the Passionate

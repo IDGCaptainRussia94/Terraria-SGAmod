@@ -24,6 +24,23 @@ A few warnings before the changelog:
 -There's still alot of placeholder sprites! I don't sprite so please be gentle on that front!
 
 
+Changelog:
+
+4.001-(2/1/23)--Hotfix 44
+
+
+--Fixed:
+
+-Philosophers Stone added tooltip was on the Mana Regen potion, whoops
+
+-Monarchical Cate dropping from Phase 1 S.Pinky
+
+-Regen Health Bar not properly scaling when zooming in
+
+-Maybe fixed the missing noise texture problem? I hope so
+
+
+
 4.000-(10/7/22)--Patch 18: Path of the Passionate
 
 -IDG's SGAmod will not be updating to 1.4 or later in any shape or form until Relogic abandons the game again and TMODLoader is as stable as it is on 1.3 (Currently, key TML features in 1.4 do not work that I use often, such as detours)

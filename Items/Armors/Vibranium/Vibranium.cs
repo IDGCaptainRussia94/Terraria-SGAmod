@@ -655,7 +655,7 @@ namespace SGAmod.Items.Armors.Vibranium
 
 		public override string Texture
 		{
-			get { return "Terraria/Projectile_591"; }
+			get { return "SGAmod/Projectiles/VibraniumLaser"; }
 		}
 
 		public override bool CanDamage()

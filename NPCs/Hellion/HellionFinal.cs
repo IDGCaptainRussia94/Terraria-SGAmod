@@ -25,7 +25,8 @@ namespace SGAmod.NPCs.Hellion
 {
 	public class HellionFinal : Hellion
 	{
-		public override bool rematch => true;
+		public override bool rematch => false;
+		public override bool ArmyVersion => true;
 
 		//public override bool Autoload(ref string name)
 		//{
@@ -61,6 +62,8 @@ namespace SGAmod.NPCs.Hellion
 			{
 				introtimer += 1;
 				npc.dontTakeDamage = true;
+				if (introtimer == 2)
+				HellionTaunt(ArmyVersion ? "Army on" : "Army off");
 
 				if (introtimer == 100)
 					HellionTaunt("So... You've come.");

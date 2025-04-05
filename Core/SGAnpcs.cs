@@ -1458,6 +1458,8 @@ namespace SGAmod
 			if (npc.type == NPCID.DD2Betsy && !Main.expertMode)
 			{
 				Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("OmegaSigil"));
+				if (Main.rand.Next(3) == 0)
+					Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, ModContent.ItemType<Items.Weapons.ThrowingKnives.EnchantedCarver>());
 			}
 
 			if (npc.type == NPCID.WallofFlesh)

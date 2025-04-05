@@ -1106,6 +1106,12 @@ namespace SGAmod
 			recipe.AddTile(tileType);
 			recipe.SetResult(ItemID.Extractinator, 1);
 			recipe.AddRecipe();
+
+			recipe = new ModRecipe(this);
+			recipe.AddRecipeGroup("IronBar", 1);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(ItemID.ThrowingKnife, 150);
+			recipe.AddRecipe();
 		}
 
 		public override void AddRecipes()
